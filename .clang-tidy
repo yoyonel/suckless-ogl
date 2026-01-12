@@ -1,0 +1,31 @@
+# .clang-tidy
+---
+Checks: >
+  -*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  hicpp-*,
+  misc-*,
+  performance-*,
+  readability-*,
+  cert-*,
+  portability-*,
+  -readability-identifier-naming,          # LKCS n’impose pas nommage particulier
+  -hicpp-no-array-decay,                   # gênant pour C
+  -cppcoreguidelines-pro-type-vararg,      # possible dans C
+  -clang-analyzer-deadcode.DeadStores,     # trop verbeux
+  -clang-analyzer-security.insecureAPI.vararg,  # varargs en C ok
+  -misc-non-private-member-variables-in-classes, # C only
+  -readability-magic-numbers,              # souvent style kernel tolère chiffres
+  -performance-unnecessary-value-param      # pas adapté au C
+HeaderFilterRegex: '^(src/|include/).*'
+
+WarningsAsErrors: ''
+
+CheckOptions:
+  - key:             readability‑braces‑around‑statements.ShortStatementLines
+    value:           '0'
+  - key:             readability‑function‑size.LineThreshold
+    value:           '200'
+  - key:             readability‑identifier‑length.MinLength
+    value:           '2'
