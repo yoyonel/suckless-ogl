@@ -8,10 +8,15 @@
 typedef struct {
 	GLuint vao;
 	GLuint vbo;
+
+	/* Cached uniform locations */
+	GLint u_inv_view_proj;
+	GLint u_blur_lod;
+	GLint u_env_map;
 } Skybox;
 
 /* Initialize skybox geometry (fullscreen quad) */
-void skybox_init(Skybox* skybox);
+void skybox_init(Skybox* skybox, GLuint shader_program);
 
 /* Render the skybox */
 void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,

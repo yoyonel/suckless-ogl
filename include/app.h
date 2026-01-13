@@ -43,6 +43,10 @@ typedef struct {
 	GLuint phong_shader;
 	GLuint skybox_shader;
 
+	/* Cached uniform locations (Phong) */
+	GLint u_phong_mvp;
+	GLint u_phong_light_dir;
+
 	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
 	float env_lod; /* Blur level */

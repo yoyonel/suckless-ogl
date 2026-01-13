@@ -59,6 +59,7 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	glfwMakeContextCurrent(app->window);
+	glfwSwapInterval(0); /* Disable VSync for performance comparison */
 	glfwSetWindowUserPointer(app->window, app);
 	glfwSetKeyCallback(app->window, key_callback);
 	glfwSetCursorPosCallback(app->window, mouse_callback);
@@ -113,7 +114,11 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	/* Initialize skybox */
-	skybox_init(&app->skybox);
+	skybox_init(&app->skybox, app->skybox_shader);
+
+	/* Cache Phong shader uniforms */
+	app->u_phong_mvp = glGetUniformLocation(app->phong_shader, "uMVP");
+	app->u_phong_light_dir = glGetUniformLocation(app->phong_shader, "lightDir");
 
 	/* Initialize icosphere geometry */
 	icosphere_init(&app->geometry);
@@ -254,14 +259,12 @@ void app_render_icosphere(App* app, mat4 view_proj)
 	/* Use shader and set uniforms */
 	glUseProgram(app->phong_shader);
 
-	GLuint mvp_loc = glGetUniformLocation(app->phong_shader, "uMVP");
-	glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, (float*)mvp);
+	glUniformMatrix4fv(app->u_phong_mvp, 1, GL_FALSE, (float*)mvp);
 
 	/* Set light direction - fixed from above */
 	vec3 light_dir = {0.5f, 1.0f, 0.3f};
 	glm_vec3_normalize(light_dir);
-	GLuint light_loc = glGetUniformLocation(app->phong_shader, "lightDir");
-	glUniform3f(light_loc, light_dir[0], light_dir[1], light_dir[2]);
+	glUniform3f(app->u_phong_light_dir, light_dir[0], light_dir[1], light_dir[2]);
 
 	/* Draw icosphere */
 	glBindVertexArray(app->vao);
