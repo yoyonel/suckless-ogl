@@ -14,7 +14,7 @@ typedef struct {
 void skybox_init(Skybox* skybox);
 
 /* Render the skybox */
-void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_cubemap,
+void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
                    const mat4 inv_view_proj, float blur_lod);
 
 /* Cleanup skybox resources */

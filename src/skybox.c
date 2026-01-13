@@ -25,7 +25,7 @@ void skybox_init(Skybox* skybox)
 	glBindVertexArray(0);
 }
 
-void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_cubemap,
+void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
                    const mat4 inv_view_proj, float blur_lod)
 {
 	/* Render behind everything else */
@@ -42,9 +42,9 @@ void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_cubemap,
 	loc = glGetUniformLocation(shader_program, "blur_lod");
 	glUniform1f(loc, blur_lod);
 
-	/* Bind environment cubemap */
+	/* Bind environment map (equirectangular) */
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, env_cubemap);
+	glBindTexture(GL_TEXTURE_2D, env_map);
 	glUniform1i(glGetUniformLocation(shader_program, "environmentMap"), 0);
 
 	/* Draw fullscreen quad */
