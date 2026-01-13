@@ -14,6 +14,11 @@ typedef struct {
 	int width;
 	int height;
 
+	/* Window state for fullscreen toggle */
+	int is_fullscreen;
+	int saved_x, saved_y;
+	int saved_width, saved_height;
+
 	/* Scene state */
 	int subdivisions;
 	int wireframe;
@@ -37,12 +42,10 @@ typedef struct {
 	/* Shaders */
 	GLuint phong_shader;
 	GLuint skybox_shader;
-	GLuint compute_shader;
 
-	/* Environment mapping */
+	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
-	GLuint env_cubemap;
-	int cubemap_size;
+	float env_lod; /* Blur level */
 
 	/* Skybox rendering */
 	Skybox skybox;

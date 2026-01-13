@@ -1,14 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "app.h"
+#include "log.h"
 
 int main(void)
 {
 	App app;
 
 	if (!app_init(&app, 1024, 768, "Icosphere Phong")) {
-		fprintf(stderr, "Failed to initialize application\n");
+		LOG_ERROR("suckless-ogl.main", "Failed to initialize application");
 		return EXIT_FAILURE;
 	}
 

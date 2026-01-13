@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "log.h"
 
 static char* read_file(const char* path)
 {
@@ -32,7 +33,7 @@ GLuint shader_compile(const char* path, GLenum type)
 {
 	char* src = read_file(path);
 	if (!src) {
-		fprintf(stderr, "Failed to read shader file: %s\n", path);
+		LOG_ERROR("suckless-ogl.shader", "Failed to read shader file: %s", path);
 		return 0;
 	}
 
@@ -46,7 +47,7 @@ GLuint shader_compile(const char* path, GLenum type)
 	if (!success) {
 		char log[512];
 		glGetShaderInfoLog(shader, 512, NULL, log);
-		fprintf(stderr, "Shader compilation error (%s):\n%s\n", path,
+		LOG_ERROR("suckless-ogl.shader", "Shader compilation error (%s):\n%s", path,
 		        log);
 		glDeleteShader(shader);
 		return 0;
@@ -78,7 +79,7 @@ GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
 	if (!success) {
 		char log[512];
 		glGetProgramInfoLog(program, 512, NULL, log);
-		fprintf(stderr, "Shader linking error:\n%s\n", log);
+		LOG_ERROR("suckless-ogl.shader", "Shader linking error:\n%s", log);
 		glDeleteProgram(program);
 		program = 0;
 	}
@@ -105,7 +106,7 @@ GLuint shader_load_compute(const char* compute_path)
 	if (!success) {
 		char log[512];
 		glGetProgramInfoLog(program, 512, NULL, log);
-		fprintf(stderr, "Compute shader linking error:\n%s\n", log);
+		LOG_ERROR("suckless-ogl.shader", "Compute shader linking error:\n%s", log);
 		glDeleteProgram(program);
 		program = 0;
 	}

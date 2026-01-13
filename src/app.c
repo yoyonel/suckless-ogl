@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "log.h"
 
 #define MIN_SUBDIV 0
 #define MAX_SUBDIV 6
@@ -15,6 +16,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 int app_init(App* app, int width, int height, const char* title)
 {
@@ -28,15 +30,17 @@ int app_init(App* app, int width, int height, const char* title)
 	app->camera_pitch = 0.0f;
 	app->camera_distance = 3.0f;
 	app->camera_enabled = 1; /* Enabled by default */
+	app->env_lod = 0.0f;     /* Default blur level */
+	app->is_fullscreen = 0;
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
 
-	app->cubemap_size = CUBEMAP_SIZE;
+
 
 	/* Initialize GLFW */
 	if (!glfwInit()) {
-		fprintf(stderr, "Failed to initialize GLFW\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLFW");
 		return 0;
 	}
 
@@ -49,7 +53,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!app->window) {
-		fprintf(stderr, "Failed to create window\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to create window");
 		glfwTerminate();
 		return 0;
 	}
@@ -59,6 +63,7 @@ int app_init(App* app, int width, int height, const char* title)
 	glfwSetKeyCallback(app->window, key_callback);
 	glfwSetCursorPosCallback(app->window, mouse_callback);
 	glfwSetScrollCallback(app->window, scroll_callback);
+	glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
 
 	/* Enable mouse capture by default */
 	if (app->camera_enabled) {
@@ -68,53 +73,44 @@ int app_init(App* app, int width, int height, const char* title)
 
 	/* Initialize GLAD */
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		fprintf(stderr, "Failed to initialize GLAD\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLAD");
 		glfwDestroyWindow(app->window);
 		glfwTerminate();
 		return 0;
 	}
 
-	printf("OpenGL %s\n", glGetString(GL_VERSION));
+	int major = glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MAJOR);
+	int minor = glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MINOR);
+	LOG_INFO("suckless-ogl.init", "Context Version: %d.%d", major, minor);
+	LOG_INFO("suckless_ogl.context.base.window", "vendor: %s", glGetString(GL_VENDOR));
+	LOG_INFO("suckless_ogl.context.base.window", "renderer: %s", glGetString(GL_RENDERER));
+	LOG_INFO("suckless_ogl.context.base.window", "version: %s", glGetString(GL_VERSION));
+	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
+	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
 	/* Load HDR texture */
 	int hdr_w, hdr_h;
 	app->hdr_texture = texture_load_hdr("assets/env.hdr", &hdr_w, &hdr_h);
 	if (!app->hdr_texture) {
-		fprintf(stderr, "Failed to load HDR texture\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture");
 		return 0;
 	}
-	printf("HDR loaded: %dx%d\n", hdr_w, hdr_h);
+	LOG_INFO("suckless-ogl.app", "Asset Loading Time: (skipping exact timing for now)");
 
 	/* Load shaders */
-	app->compute_shader = shader_load_compute("shaders/equirect2cube.glsl");
-	if (!app->compute_shader) {
-		fprintf(stderr, "Failed to load compute shader\n");
-		return 0;
-	}
-
 	app->phong_shader =
 	    shader_load_program("shaders/phong.vert", "shaders/phong.frag");
 	if (!app->phong_shader) {
-		fprintf(stderr, "Failed to load phong shader\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to load phong shader");
 		return 0;
 	}
 
 	app->skybox_shader = shader_load_program("shaders/background.vert",
 	                                         "shaders/background.frag");
 	if (!app->skybox_shader) {
-		fprintf(stderr, "Failed to load skybox shader\n");
+		LOG_ERROR("suckless-ogl.app", "Failed to load skybox shader");
 		return 0;
 	}
-
-	/* Build environment cubemap */
-	app->env_cubemap = texture_build_env_cubemap(
-	    app->hdr_texture, app->cubemap_size, app->compute_shader);
-	if (!app->env_cubemap) {
-		fprintf(stderr, "Failed to build environment cubemap\n");
-		return 0;
-	}
-	printf("Environment cubemap generated (%dx%d)\n", app->cubemap_size,
-	       app->cubemap_size);
 
 	/* Initialize skybox */
 	skybox_init(&app->skybox);
@@ -145,11 +141,9 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->ebo);
 
 	glDeleteTextures(1, &app->hdr_texture);
-	glDeleteTextures(1, &app->env_cubemap);
 
 	glDeleteProgram(app->phong_shader);
 	glDeleteProgram(app->skybox_shader);
-	glDeleteProgram(app->compute_shader);
 
 	glfwDestroyWindow(app->window);
 	glfwTerminate();
@@ -240,8 +234,8 @@ void app_render(App* app)
 
 	/* Render skybox (without translation, stays centered) */
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	skybox_render(&app->skybox, app->skybox_shader, app->env_cubemap,
-	              inv_view_proj, 3.0f);
+	skybox_render(&app->skybox, app->skybox_shader, app->hdr_texture,
+	              inv_view_proj, app->env_lod);
 
 	/* Render icosphere (with full view matrix including translation) */
 	app_render_icosphere(app, view_proj);
@@ -314,7 +308,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 					glfwSetInputMode(window, GLFW_CURSOR,
 					                 GLFW_CURSOR_NORMAL);
 				}
-				printf("Camera control: %s\n",
+				LOG_INFO("suckless-ogl.app", "Camera control: %s",
 				       app->camera_enabled ? "ENABLED"
 				                           : "DISABLED");
 				break;
@@ -323,7 +317,45 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				app->camera_yaw = 0.0f;
 				app->camera_pitch = 0.0f;
 				app->camera_distance = 3.0f;
-				printf("Camera reset\n");
+				app->env_lod = 0.0f;
+				LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
+				break;
+			case GLFW_KEY_PAGE_UP:
+				app->env_lod += 0.5f;
+				if (app->env_lod > 10.0f)
+					app->env_lod = 10.0f;
+				LOG_INFO("suckless-ogl.app", "Env LOD: %.1f", app->env_lod);
+				break;
+			case GLFW_KEY_PAGE_DOWN:
+				app->env_lod -= 0.5f;
+				if (app->env_lod < 0.0f)
+					app->env_lod = 0.0f;
+				LOG_INFO("suckless-ogl.app", "Env LOD: %.1f", app->env_lod);
+				break;
+			case GLFW_KEY_F:
+				if (!app->is_fullscreen) {
+					/* Switch to fullscreen */
+					GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+					const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+					/* Save window geometry */
+					glfwGetWindowPos(window, &app->saved_x, &app->saved_y);
+					glfwGetWindowSize(window, &app->saved_width,
+					                  &app->saved_height);
+
+					glfwSetWindowMonitor(window, monitor, 0, 0, mode->width,
+					                     mode->height, mode->refreshRate);
+					app->is_fullscreen = 1;
+					LOG_INFO("suckless-ogl.app", "Switched to fullscreen (%dx%d)", mode->width,
+					       mode->height);
+				} else {
+					/* Switch back to windowed */
+					glfwSetWindowMonitor(window, NULL, app->saved_x,
+					                     app->saved_y, app->saved_width,
+					                     app->saved_height, 0);
+					app->is_fullscreen = 0;
+					LOG_INFO("suckless-ogl.app", "Switched to windowed");
+				}
 				break;
 		}
 	}
@@ -375,4 +407,12 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 		app->camera_distance = 1.5f;
 	if (app->camera_distance > 10.0f)
 		app->camera_distance = 10.0f;
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	App* app = (App*)glfwGetWindowUserPointer(window);
+	app->width = width;
+	app->height = height;
+	glViewport(0, 0, width, height);
 }
