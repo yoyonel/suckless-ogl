@@ -163,6 +163,25 @@ case GLFW_KEY_C:
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
     break;
+
+case GLFW_KEY_F:
+    /* Toggle Fullscreen / Windowed */
+    if (!app->is_fullscreen) {
+        // Sauvegarde de la géométrie et passage en plein écran sur moniteur principal
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, ...);
+    } else {
+        // Restauration de la géométrie sauvegardée
+        glfwSetWindowMonitor(window, NULL, app->saved_x, app->saved_y, ...);
+    }
+    break;
+
+case GLFW_KEY_PAGE_UP:
+    app->env_lod = fminf(app->env_lod + 0.5f, 10.0f);
+    break;
+
+case GLFW_KEY_PAGE_DOWN:
+    app->env_lod = fmaxf(app->env_lod - 0.5f, 0.0f);
+    break;
 ```
 
 ## 🎮 Modes de Curseur GLFW
@@ -255,8 +274,10 @@ void app_render(App* app)
 - [x] Pitch clamping (gimbal lock)
 - [x] Distance clamping
 - [x] Sensibilité souris configurable
-- [x] Reset caméra (SPACE)
-- [x] Feedback console (printf)
+- [x] Reset caméra et LOD (SPACE)
+- [x] Contrôle du flou env (PAGE_UP/DOWN)
+- [x] Mode Plein Écran (F)
+- [x] Feedback console structuré (log.c)
 
 ## 🎨 Expérience Utilisateur
 

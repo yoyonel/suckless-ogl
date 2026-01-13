@@ -4,128 +4,87 @@
 
 Une skybox doit toujours apparaître **infiniment lointaine**, peu importe la position de la caméra. Si on utilise la matrice de vue complète (avec translation), la skybox se déplace avec la caméra, créant un effet de proximité indésirable.
 
-## ✨ Solution : Retirer la Translation
+## ✨ Solution : Projection Equirectangulaire
 
 ### **Principe**
 
-On retire la composante de **translation** de la matrice de vue avant de calculer la matrice inverse view-projection pour la skybox. Cela permet :
+Plutôt que d'utiliser un cubemap (qui peut présenter des coutures aux bords des faces), on utilise une texture **equirectangulaire** (panorama 360°) directement. On projette la direction du rayon de vue sur un rectangle 2D.
 
-1. La skybox **ne se déplace pas** avec la caméra
-2. La skybox **tourne** avec la rotation de la caméra
-3. L'illusion d'un environnement **infiniment distant**
+1. La skybox **ne se déplace pas** avec la caméra.
+2. La skybox **tourne** avec la rotation de la caméra.
+3. L'illusion d'un environnement **infiniment distant** est parfaite.
+4. **Zéro couture** : Pas de transition entre les faces.
 
-### **Implémentation en C**
+### **Implémentation dans le Fragment Shader**
+
+On convertit la direction 3D en coordonnées UV 2D :
+
+```glsl
+vec2 SampleEquirectangular(vec3 v) {
+    const vec2 invAtan = vec2(0.1591, 0.3183); // 1/(2*PI), 1/PI
+    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    uv *= invAtan;
+    uv += 0.5;
+    /* Correction de l'orientation verticale */
+    uv.y = 0.5 - uv.y;
+    return uv;
+}
+
+void main() {
+    vec3 dir = normalize(v_direction);
+    vec2 uv = SampleEquirectangular(dir);
+    FragColor = textureLod(environmentMap, uv, blur_lod);
+}
+```
+
+### **Implémentation en C (Matrice de Vue)**
+
+On retire la composante de **translation** de la matrice de vue :
 
 ```c
-/* 1. Créer la matrice de vue normale */
-mat4 view;
-glm_lookat(camera_pos, target, up, view);
+/* Copier la vue et retirer la translation */
+mat4 view_sky;
+glm_mat4_copy(view, view_sky);
+view_sky[3][0] = 0.0f;
+view_sky[3][1] = 0.0f;
+view_sky[3][2] = 0.0f;
 
-/* 2. Copier la vue et retirer la translation */
-mat4 view_no_translation;
-glm_mat4_copy(view, view_no_translation);
-
-/* Retirer la translation (dernière colonne des 3 premières lignes) */
-view_no_translation[3][0] = 0.0f;  // X
-view_no_translation[3][1] = 0.0f;  // Y
-view_no_translation[3][2] = 0.0f;  // Z
-/* view_no_translation[3][3] reste 1.0f */
-
-/* 3. Calculer l'inverse view-projection pour la skybox */
-mat4 inv_view_proj;
-glm_mat4_mul(proj, view_no_translation, inv_view_proj);
-glm_mat4_inv(inv_view_proj, inv_view_proj);
+/* Calculer l'inverse view-projection */
+mat4 inv_vp_sky;
+glm_mat4_mul(proj, view_sky, inv_vp_sky);
+glm_mat4_inv(inv_vp_sky, inv_vp_sky);
 ```
 
 ## 🔍 Détails Techniques
 
-### **Structure d'une Matrice 4x4**
+### **Échantillonnage avec Mipmaps**
 
-En OpenGL (column-major), une matrice de transformation est structurée ainsi :
+L'utilisation de `textureLod` avec une texture equirectangulaire permet un contrôle précis du flou :
+- **LOD 0** : Environnement net.
+- **LOD > 0** : Environnement flouté (utile pour le PBR ou le debug).
 
-```
-[  Xx   Yx   Zx   Tx  ]
-[  Xy   Yy   Zy   Ty  ]
-[  Xz   Yz   Zz   Tz  ]
-[  0    0    0    1   ]
-```
+### **Correction d'Orientation**
 
-Où :
-- **X, Y, Z** : Vecteurs de rotation (3x3)
-- **T (Tx, Ty, Tz)** : Vecteur de translation (dernière colonne)
-
-### **Accès en cglm**
-
-```c
-mat4[3][0]  // Tx - Translation X
-mat4[3][1]  // Ty - Translation Y
-mat4[3][2]  // Tz - Translation Z
-mat4[3][3]  // Toujours 1.0 (coordonnée homogène)
-```
-
-### **Pourquoi ça fonctionne ?**
-
-1. **Sans translation** : La caméra est conceptuellement à l'origine (0,0,0)
-2. **Avec rotation** : L'orientation de la caméra est préservée
-3. **Résultat** : La skybox tourne mais ne se déplace pas
-
-## 📊 Comparaison
-
-### **Avec Translation (❌ Incorrect)**
-
-```c
-// Matrice de vue complète
-glm_lookat(camera_pos, target, up, view);
-glm_mat4_mul(proj, view, view_proj);
-glm_mat4_inv(view_proj, inv_view_proj);
-
-// ❌ Problème : la skybox se déplace avec la caméra
-// ❌ Elle semble proche et finie
-```
-
-### **Sans Translation (✅ Correct)**
-
-```c
-// Retirer la translation
-view[3][0] = 0.0f;
-view[3][1] = 0.0f;
-view[3][2] = 0.0f;
-
-glm_mat4_mul(proj, view, view_proj);
-glm_mat4_inv(view_proj, inv_view_proj);
-
-// ✅ La skybox reste infiniment lointaine
-// ✅ Elle tourne avec la caméra
-```
+L'inversion `uv.y = 0.5 - uv.y` est cruciale pour que le "haut" de l'image HDR corresponde au "haut" dans l'espace 3D.
 
 ## 🎨 Workflow Complet
 
 ```c
-void render_scene() {
-    // 1. Setup caméra
-    mat4 view, proj;
-    glm_lookat(cam_pos, target, up, view);
-    glm_perspective(fov, aspect, near, far, proj);
-    
-    // 2. Pour la skybox : vue sans translation
+void render_scene(App* app) {
+    // 1. Matrice de vue sans translation
     mat4 view_sky;
-    glm_mat4_copy(view, view_sky);
+    glm_mat4_copy(app->view, view_sky);
     view_sky[3][0] = 0.0f;
     view_sky[3][1] = 0.0f;
     view_sky[3][2] = 0.0f;
     
     mat4 inv_vp_sky;
-    glm_mat4_mul(proj, view_sky, inv_vp_sky);
+    glm_mat4_mul(app->proj, view_sky, inv_vp_sky);
     glm_mat4_inv(inv_vp_sky, inv_vp_sky);
     
-    // 3. Render skybox d'abord
-    render_skybox(inv_vp_sky);
-    
-    // 4. Pour les objets : vue complète (avec translation)
-    mat4 view_proj;
-    glm_mat4_mul(proj, view, view_proj);
-    
-    render_objects(view_proj);
+    // 2. Rendu via le module skybox
+    skybox_render(&app->skybox, app->skybox_shader, 
+                  app->hdr_texture, inv_vp_sky, app->env_lod);
 }
 ```
 
@@ -138,7 +97,6 @@ void render_scene() {
 
 ## 📝 Notes Importantes
 
-- La skybox doit être rendue **avant** les objets (ou avec `GL_LEQUAL`)
 - Utiliser `glDepthFunc(GL_LEQUAL)` pour que la skybox soit au fond
 - La skybox n'écrit pas de profondeur significative
 - Le LOD (blur_lod) permet de contrôler le flou de l'environnement

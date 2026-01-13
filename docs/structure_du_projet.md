@@ -19,6 +19,7 @@ icosphere/
 │   ├── shader.c            # Gestion des shaders
 │   ├── texture.c           # Gestion des textures HDR/cubemaps
 │   ├── skybox.c            # Rendu de la skybox
+│   ├── log.c               # Système de logging structuré (Python-style)
 │   └── glad.c              # Chargeur OpenGL (généré)
 │
 ├── include/
@@ -27,21 +28,23 @@ icosphere/
 │   ├── icosphere.h         # Interface de génération de géométrie
 │   ├── shader.h            # Interface de gestion des shaders
 │   ├── texture.h           # Interface de gestion des textures
-│   └── skybox.h            # Interface de rendu de skybox
+│   ├── skybox.h            # Interface de rendu de skybox
+│   └── log.h               # Interface du système de logging
 │
 ├── shaders/
 │   ├── phong.vert          # Vertex shader Phong
 │   ├── phong.frag          # Fragment shader Phong
 │   ├── background.vert     # Vertex shader skybox
-│   ├── background.frag     # Fragment shader skybox
-│   └── equirect2cube.glsl  # Compute shader HDR→Cubemap
+│   └── background.frag     # Fragment shader skybox (Mapping Equirectangulaire)
 │
 ├── assets/
 │   └── env.hdr             # Texture HDR d'environnement
 │
 ├── obj/                    # Fichiers objets (généré)
 ├── bin/                    # Exécutable (généré)
-└── Makefile                # Script de compilation
+├── CMakeLists.txt         # Configuration Build System (CMake)
+├── Makefile               # Wrapper pour Distrobox/CMake
+└── docs/                  # Documentation technique détaillée
 ```
 
 ## Modules et Responsabilités
@@ -80,7 +83,14 @@ icosphere/
 ### 6. **skybox.c / skybox.h**
 - Structure `Skybox` pour le rendu de fond
 - Géométrie de quad plein écran
-- Rendu de l'environnement avec contrôle de blur (LOD)
+- Rendu de l'environnement via mapping equirectangulaire direct
+- Contrôle dynamique du flou (LOD) via `PAGE_UP/DOWN`
+
+### 7. **log.c / log.h**
+- Logging structuré : `YYYY-MM-DD HH:MM:SS,mmm - tag - LEVEL - message`
+- Support des niveaux (INFO, WARN, ERROR, DEBUG)
+- Sortie colorée et redirection stderr pour les erreurs
+- Tags modulaires pour un tracking précis (ex: `suckless_ogl.app`)
 
 ## Améliorations par Rapport au Code Original
 
@@ -153,6 +163,8 @@ Quand le mode caméra est **désactivé** (appuyez sur **C**) :
 - **W** : Toggle wireframe/solid
 - **↑** : Augmenter les subdivisions (max 6)
 - **↓** : Diminuer les subdivisions (min 0)
+- **PAGE_UP / PAGE_DOWN** : Augmenter/Diminuer le flou de l'environnement (LOD)
+- **F** : Basculer entre mode Fenêtré et Plein Écran
 - **ESC** : Quitter l'application
 
 ## Dépendances
@@ -167,5 +179,8 @@ Quand le mode caméra est **désactivé** (appuyez sur **C**) :
 - Utilise OpenGL 4.4 Core Profile
 - Support macOS avec `GLFW_OPENGL_FORWARD_COMPAT`
 - Génération procédurale de géométrie en temps réel
-- Environment mapping avec HDR et mipmaps
-- Compute shaders pour conversion de textures
+- Environment mapping avec HDR et mapping equirectangulaire direct
+- Gestion dynamique du redimensionnement de fenêtre
+- Système de build automatisé avec FetchContent
+- Logging structuré pour un debugging facilité
+- Support complet du Plein Écran interactif
