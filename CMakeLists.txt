@@ -13,6 +13,7 @@ set(SOURCES
     src/texture.c
     src/skybox.c
     src/log.c
+    src/stb_image_impl.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -47,6 +48,15 @@ set(GLAD_GENERATOR "c" CACHE STRING "Language to generate" FORCE)
 
 FetchContent_MakeAvailable(glad)
 
+# 3. STB (Header-only)
+message(STATUS "Fetching stb...")
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG        master # stb doesn't have regular tags, master is common
+)
+FetchContent_MakeAvailable(stb)
+
 # 3. GLFW (System Package)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLFW3 REQUIRED glfw3)
@@ -55,7 +65,7 @@ pkg_check_modules(GLFW3 REQUIRED glfw3)
 add_executable(app ${SOURCES})
 
 # Target properties and includes
-target_include_directories(app PRIVATE src include)
+target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
 target_link_libraries(app PRIVATE cglm glad ${GLFW3_LIBRARIES} m dl)
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 

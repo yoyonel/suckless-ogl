@@ -1,25 +1,25 @@
 #include "texture.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "glad/glad.h"
 #include "log.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 GLuint texture_load_hdr(const char* path, int* width, int* height)
 {
-	int channels;
+	int channels = 0;
 	float* data = stbi_loadf(path, width, height, &channels, 0);
 	if (!data) {
-		LOG_ERROR("suckless-ogl.texture", "Failed to load HDR image: %s", path);
+		LOG_ERROR("suckless-ogl.texture",
+		          "Failed to load HDR image: %s", path);
 		return 0;
 	}
 
-	LOG_INFO("suckless-ogl.texture", "HDR image: %dx%d, channels=%d", *width, *height, channels);
+	LOG_INFO("suckless-ogl.texture", "HDR image: %dx%d, channels=%d",
+	         *width, *height, channels);
 
 	/* Create OpenGL texture */
-	GLuint tex;
+	GLuint tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, *width, *height, 0, GL_RGB,
@@ -27,7 +27,8 @@ GLuint texture_load_hdr(const char* path, int* width, int* height)
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
-		LOG_ERROR("suckless-ogl.texture", "GL error after texture upload: 0x%x", err);
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after texture upload: 0x%x", err);
 		stbi_image_free(data);
 		glDeleteTextures(1, &tex);
 		return 0;
@@ -46,5 +47,3 @@ GLuint texture_load_hdr(const char* path, int* width, int* height)
 
 	return tex;
 }
-
-
