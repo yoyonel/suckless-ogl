@@ -27,7 +27,7 @@ typedef struct {
 
 /* Array operations */
 void vec3array_init(Vec3Array* array);
-void vec3array_push(Vec3Array* array, vec3 v);
+void vec3array_push(Vec3Array* array, vec3 vertex);
 void vec3array_free(Vec3Array* array);
 
 void uintarray_init(UintArray* array);

@@ -6,6 +6,4 @@
 /* Load HDR texture from file */
 GLuint texture_load_hdr(const char* path, int* width, int* height);
 
-
-
 #endif /* TEXTURE_H */
