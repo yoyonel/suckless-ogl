@@ -1,31 +1,26 @@
-# Technique de Rendu Skybox
+# Technique de## Rendu de la Skybox (Equirectangular)
 
-## 🎯 Problème à Résoudre
+Le projet utilise un mapping **Equirectangulaire** direct pour l'environnement. C'est plus efficace en termes de mémoire car cela évite de stocker un cubemap généré.
 
-Une skybox doit toujours apparaître **infiniment lointaine**, peu importe la position de la caméra. Si on utilise la matrice de vue complète (avec translation), la skybox se déplace avec la caméra, créant un effet de proximité indésirable.
+### Optimisation Early-Z
+Pour maximiser les performances sur les GPU intégrés, la skybox est rendue **après** les objets de la scène.
 
-## ✨ Solution : Projection Equirectangulaire
-
-### **Principe**
-
-Plutôt que d'utiliser un cubemap (qui peut présenter des coutures aux bords des faces), on utilise une texture **equirectangulaire** (panorama 360°) directement. On projette la direction du rayon de vue sur un rectangle 2D.
-
-1. La skybox **ne se déplace pas** avec la caméra.
-2. La skybox **tourne** avec la rotation de la caméra.
-3. L'illusion d'un environnement **infiniment distant** est parfaite.
-4. **Zéro couture** : Pas de transition entre les faces.
-
-### **Implémentation dans le Fragment Shader**
-
-On convertit la direction 3D en coordonnées UV 2D :
+1.  **Vertex Shader** : Le shader positionne les triangles de la skybox exactement sur le plan lointain (`z = 1.0`).
+2.  **Depth Test** : En utilisant `glDepthFunc(GL_LEQUAL)`, le GPU rejette automatiquement les fragments de la skybox masqués par les objets 3D (comme l'icosphère) avant de lancer le shader de fragment.
+3.  **Fragment Shader** : Le shader effectue une projection sphérique inverse pour sampler la texture HDR 2D.
 
 ```glsl
+// Projection Equirectangulaire Inverse
+const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 SampleEquirectangular(vec3 v) {
-    const vec2 invAtan = vec2(0.1591, 0.3183); // 1/(2*PI), 1/PI
     vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
     uv *= invAtan;
-    uv += 0.5;
-    /* Correction de l'orientation verticale */
+    uv.x += 0.5;
+    uv.y = 0.5 - uv.y;
+    return uv;
+}
+```
+ */
     uv.y = 0.5 - uv.y;
     return uv;
 }

@@ -8,9 +8,10 @@ out vec3 RayDir;
 
 void main()
 {
-    gl_Position = vec4(in_position.xy, 0.0, 1.0);
+    /* Set depth to 1.0 (w/w) after perspective division */
+    gl_Position = vec4(in_position.xy, 1.0, 1.0);
 
-    vec4 pos = m_inv_view_proj * vec4(in_position.xy, 0.0, 1.0);
+    vec4 pos = m_inv_view_proj * vec4(in_position.xy, 1.0, 1.0);
 
     RayDir = pos.xyz / pos.w;
 }
