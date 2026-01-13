@@ -19,6 +19,8 @@ The project is optimized for a container named `clang-dev`. A `Makefile` wrapper
 - `make`: Configures and builds the project inside the container.
 - `make run`: Builds and executes the application.
 - `make rebuild`: Performs a clean build from scratch (useful when dependencies change).
+- `make format`: Formats all C source and header files using **clang-format**.
+- `make lint`: Performs static analysis across the codebase using **clang-tidy** (Guaranteed **0 warnings**).
 - `make clean-all`: Nukes the `build/` directory.
 
 ## Dependency Management
@@ -69,7 +71,7 @@ Grâce à `FetchContent`, les bibliothèques suivantes sont gérées sans interv
 
 1. **cglm** : Compilé en tant que bibliothèque statique optimisée pour votre CPU.
 2. **GLAD** : Généré à la volée pour cibler exactement le profil OpenGL 4.4 Core.
-3. **stb_image** : Intégrée directement dans le binaire pour le chargement HDR.
+3. **stb_image** : Automatisation via FetchContent. L'implémentation est isolée dans `src/stb_image_impl.c` pour garantir un linting parfaitement propre sur les fichiers sources restants.
 
 ## Folder Structure
 

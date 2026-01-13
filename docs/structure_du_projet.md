@@ -20,7 +20,7 @@ icosphere/
 │   ├── texture.c           # Gestion des textures HDR/cubemaps
 │   ├── skybox.c            # Rendu de la skybox
 │   ├── log.c               # Système de logging structuré (Python-style)
-│   └── glad.c              # Chargeur OpenGL (généré)
+│   └── stb_image_impl.c    # Implémentation isolée de stb_image (pour le linting)
 │
 ├── include/
 │   ├── gl_common.h         # Header OpenGL commun (GLAD + GLFW)
@@ -135,6 +135,12 @@ make run
 
 # Nettoyer les fichiers générés
 make clean
+
+# Formater le code
+make format
+
+# Linter le code (analyse statique - Zero Warning Project)
+make lint
 ```
 
 ## Contrôles
@@ -181,6 +187,7 @@ Quand le mode caméra est **désactivé** (appuyez sur **C**) :
 - Génération procédurale de géométrie en temps réel
 - Environment mapping avec HDR et mapping equirectangulaire direct
 - Gestion dynamique du redimensionnement de fenêtre
-- Système de build automatisé avec FetchContent
+- Système de build automatisé avec FetchContent (cglm, glad, stb)
+- Zéro warning clang-tidy sur l'intégralité du code source projet
 - Logging structuré pour un debugging facilité
 - Support complet du Plein Écran interactif
