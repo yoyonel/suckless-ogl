@@ -27,7 +27,7 @@ run: all
 	@./$(BUILD_DIR)/app
 
 format:
-	$(DISTROBOX) sh -c "find src include -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
+	$(DISTROBOX) sh -c "find src include tests -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
 
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
@@ -75,11 +75,7 @@ coverage:
 	@mkdir -p $(REPORT_DIR)
 	@$(DISTROBOX) llvm-cov show -format=html \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
-		-object $(BUILD_COV_DIR)/tests/test_icosphere \
-		-object $(BUILD_COV_DIR)/tests/test_shader \
-		-object $(BUILD_COV_DIR)/tests/test_log \
-		-object $(BUILD_COV_DIR)/tests/test_skybox \
-		-object $(BUILD_COV_DIR)/tests/test_texture \
+		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
@@ -87,11 +83,7 @@ coverage:
 	@echo "Coverage Summary:"
 	@$(DISTROBOX) llvm-cov report \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
-		-object $(BUILD_COV_DIR)/tests/test_icosphere \
-		-object $(BUILD_COV_DIR)/tests/test_shader \
-		-object $(BUILD_COV_DIR)/tests/test_log \
-		-object $(BUILD_COV_DIR)/tests/test_skybox \
-		-object $(BUILD_COV_DIR)/tests/test_texture \
+		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
 		-ignore-filename-regex="(generated|deps|tests)"
 
 # Docker Integration
