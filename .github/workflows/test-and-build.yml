@@ -1,0 +1,74 @@
+name: CI/CD Suckless OGL
+
+on:
+  push:
+    branches: [ "master", "main", "dev", "develop", "feat/**" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  # JOB 1: Compilation et Tests (S'exécute sur TOUTES les branches sauf master)
+  test-and-coverage:
+    if: github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libgl1-mesa-dev libglew-dev \
+          libglfw3-dev xorg-dev xvfb imagemagick
+
+      - name: Compile with Debug/Coverage symbols
+        run: make  # Ajoute tes flags -fprofile-arcs -ftest-coverage si besoin
+
+      - name: Run Headless Tests & Pixel-Perfect Check
+        run: |
+          # 1. On lance le rendu et on sauve une frame en .png
+          xvfb-run -a ./opengl_app --screenshot output.png
+          
+          # 2. Calcul du checksum de l'image générée
+          CURRENT_HASH=$(sha256sum output.png | awk '{ print $1 }')
+          EXPECTED_HASH="ta_valeur_de_reference_ici"
+          
+          echo "Current Hash: $CURRENT_HASH"
+          
+          if [ "$CURRENT_HASH" != "$EXPECTED_HASH" ]; then
+            echo "Validation Pixel-Perfect échouée !"
+            exit 1
+          fi
+
+      - name: Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: output.png
+
+  # JOB 2: Build et Release (Uniquement sur MASTER)
+  build-and-release:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libgl1-mesa-dev libglew-dev libglfw3-dev xorg-dev
+
+      - name: Compile Optimized
+        run: |
+          # On passe CONTAINER_RUN vide pour ignorer distrobox
+          make CONTAINER_RUN=""
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Release Build ${{ github.run_number }}
+          files: opengl_app
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

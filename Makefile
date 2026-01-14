@@ -2,8 +2,16 @@
 
 BUILD_DIR := build
 CMAKE := cmake
+
+# On définit BOX pour garder la configuration de ton env local
 BOX := clang-dev
-DISTROBOX := distrobox enter $(BOX) --
+
+# Si CONTAINER_RUN n'est pas défini, on utilise distrobox par défaut (ton usage local) [cite: 1]
+# Si on veut désactiver distrobox, on pourra passer CONTAINER_RUN=""
+CONTAINER_RUN ?= distrobox enter $(BOX) --
+
+# On remplace l'ancienne variable par la nouvelle
+DISTROBOX := $(CONTAINER_RUN)
 
 .PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage
 
