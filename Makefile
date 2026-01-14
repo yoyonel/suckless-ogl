@@ -80,6 +80,13 @@ coverage:
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
+	
+	@echo "Coverage Summary:"
+	@$(DISTROBOX) llvm-cov report \
+		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
+		-object $(BUILD_COV_DIR)/tests/test_icosphere \
+		-object $(BUILD_COV_DIR)/tests/test_shader \
+		-ignore-filename-regex="(generated|deps|tests)"
 
 # Docker Integration
 # Auto-detect container engine (podman or docker)
