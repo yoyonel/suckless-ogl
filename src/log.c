@@ -31,7 +31,8 @@ static const char* level_to_string(LogLevel level)
 void log_message(LogLevel level, const char* tag, const char* format, ...)
 {
 	struct timespec ts_now;
-	if (clock_gettime(CLOCK_REALTIME, &ts_now) != 0) { /* NOLINT(misc-include-cleaner) */
+	if (clock_gettime(CLOCK_REALTIME, &ts_now) !=
+	    0) { /* NOLINT(misc-include-cleaner) */
 		ts_now.tv_sec = 0;
 		ts_now.tv_nsec = 0;
 	}
@@ -44,7 +45,8 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 
 	/* Prepare prefix: TIMESTAMP,mmm - tag - LEVEL -  */
 	char prefix[PREFIX_BUFFER_SIZE];
-	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */
+	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	 */
 	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
 	               time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
 	               level_to_string(level));
