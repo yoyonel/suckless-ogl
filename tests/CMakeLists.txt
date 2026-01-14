@@ -19,3 +19,10 @@ target_link_libraries(test_shader PRIVATE unity glad cglm m)
 # Need POSIX defines for log.c
 target_compile_definitions(test_shader PRIVATE _POSIX_C_SOURCE=199309L)
 add_test(NAME TestShader COMMAND test_shader)
+
+# 3. Test Log
+add_executable(test_log test_log.c ${CMAKE_SOURCE_DIR}/src/log.c)
+target_link_libraries(test_log PRIVATE unity)
+# Need POSIX for log.c (clock_gettime) and test_log.c (dup/dup2)
+target_compile_definitions(test_log PRIVATE _POSIX_C_SOURCE=199309L)
+add_test(NAME TestLog COMMAND test_log)
