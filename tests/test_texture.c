@@ -1,11 +1,7 @@
-#include "glad/glad.h"
-
-#include <GLFW/glfw3.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "texture.h"
 #include "unity.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static GLFWwindow* window = NULL;
 

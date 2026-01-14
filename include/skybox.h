@@ -1,11 +1,10 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
+#include "gl_common.h"
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
-
-#include "gl_common.h"
 
 typedef struct {
 	GLuint vao;

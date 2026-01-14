@@ -1,10 +1,9 @@
 #include "shader.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "glad/glad.h"
 #include "log.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /*
  * NOTE ABOUT COVERAGE (LLVM / llvm-cov)
@@ -71,8 +70,13 @@ char* shader_read_file(const char* path)
 	 * regular file cannot be reliably provoked on Linux without mocks
 	 * or kernel-level fault injection.
 	 */
+	size_t read_count = fread(src, 1, size, file_ptr);
 	// llvm-cov ignore next line
-	(void)fread(src, 1, size, file_ptr);
+	if (read_count != size) {
+		free(src);
+		(void)fclose(file_ptr);
+		return NULL;
+	}
 
 	(void)fclose(file_ptr);
 	return src;

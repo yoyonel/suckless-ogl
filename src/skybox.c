@@ -1,8 +1,7 @@
 #include "skybox.h"
 
-#include <cglm/types.h>
-
 #include "glad/glad.h"
+#include <cglm/types.h>
 
 enum { SKYBOX_VERTEX_COUNT = 6 };
 

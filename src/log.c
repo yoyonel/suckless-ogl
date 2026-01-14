@@ -2,7 +2,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <time.h>
+#include <time.h>  // IWYU pragma: keep
 
 enum {
 	MILLI_DIVISOR = 1000000,
@@ -31,8 +31,8 @@ static const char* level_to_string(LogLevel level)
 void log_message(LogLevel level, const char* tag, const char* format, ...)
 {
 	struct timespec ts_now;
-	if (clock_gettime(CLOCK_REALTIME, &ts_now) !=
-	    0) { /* NOLINT(misc-include-cleaner) */
+	// NOLINTNEXTLINE(misc-include-cleaner)
+	if (clock_gettime(CLOCK_REALTIME, &ts_now) != 0) {
 		ts_now.tv_sec = 0;
 		ts_now.tv_nsec = 0;
 	}
@@ -43,23 +43,18 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S",
 	               tm_info);
 
-	/* Prepare prefix: TIMESTAMP,mmm - tag - LEVEL -  */
 	char prefix[PREFIX_BUFFER_SIZE];
-	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	 */
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
 	               time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
 	               level_to_string(level));
 
-	/* Print prefix and then the message */
 	va_list args;
 	va_start(args, format);
-
 	FILE* out = (level == LOG_LEVEL_ERROR) ? stderr : stdout;
 
 	(void)fputs(prefix, out);
 	(void)vfprintf(out, format, args);
 	(void)fputs("\n", out);
-
 	va_end(args);
 }

@@ -1,13 +1,12 @@
 #ifndef APP_H
 #define APP_H
 
-#include <cglm/cglm.h>
-
 #include "gl_common.h"
 #include "icosphere.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
+#include <cglm/cglm.h>
 
 typedef struct {
 	GLFWwindow* window;

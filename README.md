@@ -1,66 +1,68 @@
-# Development
+# Suckless-OGL
 
-Distrobox Fedora:
-```shell
-$ distrobox enter clang-dev
+[![CI/CD Pipeline](https://github.com/yoyonel/suckless-ogl/actions/workflows/main.yml/badge.svg)](https://github.com/yoyonel/suckless-ogl/actions)
+[![Coverage Report](https://img.shields.io/badge/coverage-report-brightgreen)](https://yoyonel.github.io/suckless-ogl/)
+[![Latest Release](https://img.shields.io/github/v/release/yoyonel/suckless-ogl?include_prereleases&label=release&color=blue)](https://github.com/yoyonel/suckless-ogl/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Suckless-OGL** est un moteur de rendu 3D minimaliste écrit en C. Fidèle à la philosophie "suckless", il privilégie un code source compact, une gestion rigoureuse des ressources et une absence de dépendances superflues. Il implémente un pipeline moderne basé sur **OpenGL 4.4 Core Profile**.
+
+## 🚀 Fonctionnalités
+- **Minimalisme** : Architecture légère centrée sur la performance et la lisibilité.
+- **Rendu Moderne** : Support des Skyboxes, IcoSpheres, textures et éclairage de Phong.
+- **Shaders Dynamiques** : Chargement et compilation de fichiers GLSL (vertex/fragment).
+- **Environnement Isolé** : Support natif de `distrobox` pour garantir un environnement de compilation reproductible.
+- **Qualité & Tests** : Suite de tests unitaires, couverture de code et analyse statique via `clang-tidy`.
+
+## 🛠️ Compilation et Utilisation
+
+Le projet utilise un wrapper `Makefile` qui pilote `CMake` pour simplifier les interactions.
+
+### Drapeaux de Compilation & Environnement
+Le build est configuré avec les réglages suivants :
+- **Optimisation** : `-Wall -Wextra -O2` pour un code propre et performant.
+- **Standard POSIX** : `-D_POSIX_C_SOURCE=199309L` pour le support de `clock_gettime`.
+- **Analyse Statique** : Intégration de `clang-tidy` avec des filtres d'en-têtes stricts.
+- **Conteneurisation** : Utilisation par défaut de `distrobox` avec l'image `clang-dev` pour isoler les dépendances.
+
+### Commandes principales
+| Commande | Action |
+| :--- | :--- |
+| `make all` | Compile le projet (génère GLAD et le binaire `app`). |
+| `make run` | Compile et lance l'application immédiatement. |
+| `make test` | Exécute la suite de tests unitaires via `ctest`. |
+| `make format` | Applique le formatage `clang-format` sur `src`, `include` et `tests`. |
+| `make lint` | Lance l'analyse statique `clang-tidy` sur les fichiers sources. |
+| `make coverage` | Génère un rapport HTML complet via `llvm-cov` dans `build-coverage/`. |
+
+## 🤖 Workflow CI/CD (GitHub Actions)
+
+Le pipeline est structuré pour optimiser le build tout en garantissant une qualité maximale :
+
+1. **Test & Coverage** : Compilation instrumentée et exécution des tests sous **Xvfb** (serveur X virtuel). Un rapport de couverture est généré et sauvegardé en artefact.
+2. **Lint & Format Check** :
+   - Vérifie que le code est formaté. Si `make format` modifie un fichier, le CI échoue.
+   - Lance `make lint` pour valider la conformité CERT et la sécurité.
+3. **Build & Release** : 
+   - Se déclenche sur `master` ou sur les tags `v*`.
+   - Package le binaire `app` avec les dossiers `assets/` et `shaders/`.
+   - Compresse le tout dans une archive `.tar.gz` et crée une **GitHub Release** automatique.
+
+## 📁 Structure du Projet
+- `src/` & `include/` : Cœur du moteur (Log, App, Shader, Texture, Icosphere).
+- `shaders/` : Sources GLSL (Phong, Background/Skybox).
+- `assets/` : Ressources HDR et textures.
+- `tests/` : Tests unitaires (Icosphere, Shader, Skybox, Texture, Log).
+- `docs/` : Documentation technique approfondie.
+
+## 📦 Docker / Podman
+Pour tester l'application dans un conteneur avec redirection X11:
+```bash
+make docker-build
+make docker-run
 ```
+(Nécessite un serveur X local et les permissions xhost configurées).
 
-Installation des dépendances du projet:
-```shell
-$ sudo dnf install -y     \
-    clang               \
-    clang-tools-extra   \
-    llvm                \
-    make                \
-    libX11-devel        \
-    mesa-libGL-devel
-    
-$ sudo dnf install -y   \
-    libX11-devel        \
-    libXi-devel         \
-    mesa-libGL-devel    \
-    glfw-devel
-```
+📄 Licence
 
-Compilation:
-```shell
-$ mkdir deps/cglm/build-static && cd deps/cglm/build-static
-$ cmake ..   -DCGLM_SHARED=OFF   -DCGLM_STATIC=ON   -DCMAKE_BUILD_TYPE=Release   -DCMAKE_POSITION_INDEPENDENT_CODE=ON   -DCMAKE_INSTALL_PREFIX=$HOME/.local
-$ make -j$(nproc) && make install
-$ ls $HOME/.local/lib64/
- cmake   pkgconfig   libcglm.a
-# pas super propre de linker à la main mais bon ... à voir pour rendre ça plus clean/dynamique
-$ cat Makefile | grep cglm
-# CGLM_CFLAGS := $(shell pkg-config --cflags cglm)
-# CGLM_LIBS := $(shell pkg-config --libs cglm)
-CGLM_LIBS := $(HOME)/.local/lib64/libcglm.a
-
-$ /usr/bin/time /bin/sh -c 'make clean && make -j$(nproc)'
-rm -rf build
-rm -rf build/app
-mkdir -p build
-clang -std=c99 -Wall -Wextra -O2 -Isrc -Iinclude -Ideps/glad  -I/home/latty/.local/include src/main.c deps/glad/glad.c -o build/app -lglfw /home/latty/.local/lib64/libcglm.a -lm -ldl
-3.78user 0.10system 0:03.93elapsed 99%CPU (0avgtext+0avgdata 135892maxresident)k
-0inputs+648outputs (0major+36157minor)pagefaults 0swaps
-
-$ file build/app
-build/app: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=bc0d9823ee482c66edef683026ed1f8b04dcab69, for GNU/Linux 3.2.0, not stripped
-
-# à noter pas de cglm qui est build en statique 
-$ ldd build/app
-	linux-vdso.so.1 (0x00007fe0d55e4000)
-	libglfw.so.3 => /lib64/libglfw.so.3 (0x00007fe0d555c000)
-	libm.so.6 => /lib64/libm.so.6 (0x00007fe0d5467000)
-	libc.so.6 => /lib64/libc.so.6 (0x00007fe0d5274000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007fe0d55e6000)	
-```
-
-Lint & format:
-```shell
-$ make format
-clang-format -i src/main.c deps/glad/glad.c
-```
-
-TODO: Glad et récupération des sources générées/targétées
-https://github.com/Dav1dde/glad
-https://gen.glad.sh/
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.

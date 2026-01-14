@@ -1,0 +1,113 @@
+name: Suckless-OGL CI/CD
+
+permissions:
+  contents: write    # Nécessaire pour pousser sur gh-pages et créer des releases
+  pages: write       # Nécessaire pour GitHub Pages
+  id-token: write    # Recommandé pour l'authentification moderne
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["master", "main"]
+
+jobs:
+  # 1. Tests et Couverture
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgl1-mesa-dev \
+          libglew-dev libglfw3-dev xorg-dev xvfb llvm libgl1-mesa-dri
+          
+      - name: Run Coverage with Xvfb
+        run: xvfb-run -a -s "-screen 0 1024x768x24" make coverage CONTAINER_RUN=""
+
+      # On sauvegarde le dossier build pour les jobs suivants
+      - name: Cache Build Directory
+        uses: actions/cache/save@v4
+        with:
+          path: build/
+          key: build-${{ github.sha }}
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build-coverage/coverage_report/
+      
+      - name: Deploy Coverage to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build-coverage/coverage_report/
+
+  # 2. Qualité (dépend des tests)
+  lint-and-format:
+    needs: test-and-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Restore Build Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/
+          key: build-${{ github.sha }}
+
+      - name: Install Lint Tools
+        run: sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
+
+      - name: Check Formatting (No Apply)
+        # On vérifie si git détecte des changements après make format
+        run: |
+          make format CONTAINER_RUN=""
+          git diff --exit-code || (echo "Code not formatted! Run 'make format' locally." && exit 1)
+        
+      - name: Run Linter
+        run: make lint CONTAINER_RUN=""
+
+  # 3. Release (dépend de la qualité)
+  build-and-release:
+    needs: lint-and-format
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Restore Build Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/
+          key: build-${{ github.sha }}
+
+      - name: Install Dependencies
+        run: sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev
+        
+      - name: Finalize Build
+        run: make all CONTAINER_RUN=""
+
+      - name: Package Release
+        run: |
+          mkdir -p release_dist/
+          cp build/app release_dist/
+          cp -r assets/ shaders/ release_dist/
+          tar -czvf suckless-ogl-linux-x64.tar.gz -C release_dist .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest-master' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('Build {0}', github.run_number) }}
+          files: suckless-ogl-linux-x64.tar.gz
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
