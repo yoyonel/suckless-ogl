@@ -5,7 +5,7 @@ CMAKE := cmake
 BOX := clang-dev
 DISTROBOX := distrobox enter $(BOX) --
 
-.PHONY: all clean clean-all rebuild run help format lint
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -32,6 +32,18 @@ format:
 lint:
 	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -Isrc -Iinclude -isystem $(CURDIR)/build/_deps/stb-src -isystem $(CURDIR)/build/_deps/glad-build/include -isystem $(CURDIR)/build/_deps/cglm-src/include
 
+deps-setup:
+	@chmod +x scripts/setup_offline_deps.sh
+	@./scripts/setup_offline_deps.sh
+
+deps-clean:
+	@echo "Removing offline dependency cache..."
+	@rm -rf deps/
+
+offline-test:
+	@echo "Running build in a simulated offline environment (using bogus proxy)..."
+	@http_proxy=http://127.0.0.1:0 https_proxy=http://127.0.0.1:0 $(MAKE) rebuild
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Build the project (default)"
@@ -41,4 +53,6 @@ help:
 	@echo "  run        - Build and run the application"
 	@echo "  format     - Format code using clang-format"
 	@echo "  lint       - Lint code using clang-tidy"
+	@echo "  deps-setup - Download dependencies for offline build"
+	@echo "  deps-clean - Remove the local dependency cache"
 	@echo "  help       - Show this help message"

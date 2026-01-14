@@ -21,6 +21,33 @@ set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
 # Dependencies (automated via FetchContent)
 include(FetchContent)
+
+# --- Offline Support Logic ---
+# If a 'deps' directory exists, we check for subdirectories and use them as source overrides.
+# This allows building offline if the dependencies are already cloned there.
+set(OFFLINE_DEPS_DIR "${CMAKE_SOURCE_DIR}/deps")
+if(EXISTS "${OFFLINE_DEPS_DIR}")
+    message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
+    
+    # List of dependencies we want to support overrides for
+    set(MANIFEST_DEPS "cglm" "glad" "stb")
+    
+    foreach(dep ${MANIFEST_DEPS})
+        if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
+            message(STATUS "  Using local source for ${dep}: ${OFFLINE_DEPS_DIR}/${dep}")
+            string(TOUPPER "${dep}" dep_upper)
+            set(FETCHCONTENT_SOURCE_DIR_${dep_upper} "${OFFLINE_DEPS_DIR}/${dep}" CACHE PATH "Local source override for ${dep}")
+        endif()
+    endforeach()
+    
+    # Force FetchContent to not even try to connect if we are in offline mode
+    set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Forbid FetchContent from using network" FORCE)
+    
+    # GLAD specific: use the local specification file instead of downloading it
+    set(GLAD_REPRODUCIBLE ON CACHE BOOL "Use local gl.xml for GLAD" FORCE)
+endif()
+# -----------------------------
+
 # GLFW, CGLM, GLAD are handled below.
 
 # 1. CGLM (Static Build)
