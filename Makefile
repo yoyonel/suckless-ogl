@@ -94,7 +94,39 @@ CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
 IMAGE_NAME := suckless-ogl
 
 docker-build:
-	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) .
+	$(CONTAINER_ENGINE) build \
+		--layers=true \
+		-t $(IMAGE_NAME) .
+
+docker-build-no-cache:
+	$(CONTAINER_ENGINE) build \
+		--no-cache \
+		-t $(IMAGE_NAME) .
+
+docker-run:
+	@echo "Running Container with X11 forwarding..."
+	xhost +local: > /dev/null 2>&1 || true
+	$(CONTAINER_ENGINE) run --rm -it \
+		--security-opt label=disable \
+		--network host \
+		-e DISPLAY=$(DISPLAY) \
+		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+		suckless-ogl /bin/bash -c "export DISPLAY=$(DISPLAY) && ./app"
+
+# Clean dangling images
+docker-clean:
+	@echo "Cleaning dangling images..."
+	$(CONTAINER_ENGINE) image prune -f
+
+# Clean all unused images and build cache
+docker-clean-all:
+	@echo "Cleaning all unused images and cache..."
+	$(CONTAINER_ENGINE) system prune -a -f
+
+# Show disk usage
+docker-usage:
+	@echo "Docker/Podman disk usage:"
+	$(CONTAINER_ENGINE) system df
 
 help:
 	@echo "Available targets:"

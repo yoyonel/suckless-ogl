@@ -1,25 +1,36 @@
-# Version Control
-.git/
-.gitignore
-
-# Build Artifacts
+# Build artifacts
 build/
-bin/
-obj/
-.cache/
+build-*/
+*.o
+*.a
+*.so
 
-# IDE/Editor
-.idea/
+# IDE and editor files
 .vscode/
+.idea/
 *.swp
 *.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+.gitmodules
 
 # Documentation
 docs/
-walkthrough.md
-task.md
-implementation_plan.md
-ssh_automation_plan.md
+README.md
+*.md
 
-# Scripts
-scripts/setup_offline_deps.sh
+# Makefile and scripts not needed in container
+Makefile
+run.sh
+compile_flags.txt
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+
+# scripts
+!entrypoint.sh
