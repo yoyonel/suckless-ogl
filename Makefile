@@ -5,7 +5,7 @@ CMAKE := cmake
 BOX := clang-dev
 DISTROBOX := distrobox enter $(BOX) --
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -52,6 +52,14 @@ offline-test:
 	@echo "Running build in a simulated offline environment (using bogus proxy)..."
 	@http_proxy=http://127.0.0.1:0 https_proxy=http://127.0.0.1:0 $(MAKE) rebuild
 
+# Docker Integration
+# Auto-detect container engine (podman or docker)
+CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
+IMAGE_NAME := suckless-ogl
+
+docker-build:
+	$(CONTAINER_ENGINE) build -t $(IMAGE_NAME) .
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Build the project (default)"
@@ -63,4 +71,6 @@ help:
 	@echo "  lint       - Lint code using clang-tidy"
 	@echo "  deps-setup - Download dependencies for offline build"
 	@echo "  deps-clean - Remove the local dependency cache"
+	@echo "  offline-test - Verify build works without internet (requires unshare)"
+	@echo "  docker-build - Build the Docker image"
 	@echo "  help       - Show this help message"
