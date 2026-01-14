@@ -106,6 +106,14 @@ endif()
 # --- Unit Testing ---
 enable_testing()
 
+# --- Code Coverage ---
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+if(CODE_COVERAGE)
+    message(STATUS "Code Coverage: ON (Using llvm-cov)")
+    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+    add_link_options(-fprofile-instr-generate)
+endif()
+
 # Fetch Unity (Lightweight C Testing Framework)
 FetchContent_Declare(
     unity

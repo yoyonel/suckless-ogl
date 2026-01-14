@@ -5,7 +5,7 @@ CMAKE := cmake
 BOX := clang-dev
 DISTROBOX := distrobox enter $(BOX) --
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -55,6 +55,32 @@ offline-test:
 test:
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
+# Code Coverage
+BUILD_COV_DIR := build-coverage
+REPORT_DIR := $(BUILD_COV_DIR)/coverage_report
+
+coverage:
+	@echo "Building with coverage instrumentation..."
+	@mkdir -p $(BUILD_COV_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
+	
+	@echo "Running tests to generate profile data..."
+	@$(DISTROBOX) sh -c "LLVM_PROFILE_FILE='$(CURDIR)/$(BUILD_COV_DIR)/test_%p.profraw' ctest --test-dir $(BUILD_COV_DIR) --output-on-failure"
+	
+	@echo "Merging profile data..."
+	@$(DISTROBOX) llvm-profdata merge -sparse $(BUILD_COV_DIR)/*.profraw -o $(BUILD_COV_DIR)/coverage.profdata
+	
+	@echo "Generating HTML report..."
+	@mkdir -p $(REPORT_DIR)
+	@$(DISTROBOX) llvm-cov show -format=html \
+		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
+		-object $(BUILD_COV_DIR)/tests/test_icosphere \
+		-object $(BUILD_COV_DIR)/tests/test_shader \
+		-output-dir=$(REPORT_DIR) \
+		-ignore-filename-regex="(generated|deps|tests)"
+	@echo "Report generated at: $(REPORT_DIR)/index.html"
+
 # Docker Integration
 # Auto-detect container engine (podman or docker)
 CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
@@ -76,5 +102,6 @@ help:
 	@echo "  deps-clean - Remove the local dependency cache"
 	@echo "  offline-test - Verify build works without internet (requires unshare)"
 	@echo "  test       - Run unit tests with ctest"
+	@echo "  coverage   - Generate HTML code coverage report (llvm-cov)"
 	@echo "  docker-build - Build the Docker image"
 	@echo "  help       - Show this help message"
