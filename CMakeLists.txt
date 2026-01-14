@@ -99,4 +99,6 @@ target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 # Compiler flags
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(app PRIVATE -Wall -Wextra -O2)
+    # Enable POSIX features (e.g. clock_gettime)
+    target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
 endif()

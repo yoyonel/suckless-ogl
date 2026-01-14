@@ -26,7 +26,7 @@ static char* read_file(const char* path)
 		return NULL;
 	}
 	size_t size = (size_t)len;
-	char* src = malloc(size + 1);
+	char* src = calloc(size + 1, 1);
 	if (!src) {
 		(void)fclose(file_ptr);
 		return NULL;
@@ -38,13 +38,8 @@ static char* read_file(const char* path)
 		return NULL;
 	}
 
-	size_t read_bytes = fread(src, 1, size, file_ptr);
+	(void)fread(src, 1, size, file_ptr);
 	(void)fclose(file_ptr);
-
-	if (read_bytes > size) {
-		read_bytes = size;
-	}
-	src[read_bytes] = '\0';  // NOLINT
 
 	return src;
 }
