@@ -42,9 +42,7 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 
 	/* Prepare prefix: TIMESTAMP,mmm - tag - LEVEL -  */
 	char prefix[PREFIX_BUFFER_SIZE];
-	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	 */
-	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
+	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ", /* NOLINT(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */
 	               time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
 	               level_to_string(level));
 
