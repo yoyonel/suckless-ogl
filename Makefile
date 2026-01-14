@@ -29,8 +29,16 @@ run: all
 format:
 	$(DISTROBOX) sh -c "find src include -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
 
-lint:
-	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -Isrc -Iinclude -isystem $(CURDIR)/build/_deps/stb-src -isystem $(CURDIR)/build/_deps/glad-build/include -isystem $(CURDIR)/build/_deps/cglm-src/include
+# Resolve dependency paths for linting
+# We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
+STB_INC := $(shell [ -d deps/stb ] && echo deps/stb || echo build/_deps/stb-src)
+CGLM_INC := $(shell [ -d deps/cglm ] && echo deps/cglm/include || echo build/_deps/cglm-src/include)
+GLAD_INC := build/_deps/glad-build/include
+
+lint: $(BUILD_DIR)/Makefile
+	@echo "Ensuring dependencies are generated..."
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
+	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC)
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh
