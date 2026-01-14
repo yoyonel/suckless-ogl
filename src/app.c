@@ -1,22 +1,20 @@
 #include "app.h"
 
-#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
-#include <cglm/vec3.h>
-#include <cglm/util.h>
 #include <cglm/types.h>
-
+#include <cglm/util.h>
+#include <cglm/vec3.h>
 #include <math.h>
 #include <stdio.h>
 
+#include "glad/glad.h"
 #include "icosphere.h"
+#include "log.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
-
-#include "log.h"
 
 #define MOUSE_SENSITIVITY 0.002F
 #define MIN_PITCH -1.5F
@@ -64,8 +62,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app->camera_yaw = DEFAULT_CAMERA_ANGLE;
 	app->camera_pitch = DEFAULT_CAMERA_ANGLE;
 	app->camera_distance = DEFAULT_CAMERA_DISTANCE;
-	app->camera_enabled = 1; /* Enabled by default */
-	app->env_lod = DEFAULT_ENV_LOD;     /* Default blur level */
+	app->camera_enabled = 1;        /* Enabled by default */
+	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
 	app->is_fullscreen = 0;
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
@@ -209,7 +207,8 @@ void app_run(App* app)
 
 			glBindBuffer(GL_ARRAY_BUFFER, app->vbo);
 			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.vertices.size * sizeof(vec3)),
+			             (GLsizeiptr)(app->geometry.vertices.size *
+			                          sizeof(vec3)),
 			             app->geometry.vertices.data,
 			             GL_STATIC_DRAW);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
@@ -218,7 +217,8 @@ void app_run(App* app)
 
 			glBindBuffer(GL_ARRAY_BUFFER, app->nbo);
 			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.normals.size * sizeof(vec3)),
+			             (GLsizeiptr)(app->geometry.normals.size *
+			                          sizeof(vec3)),
 			             app->geometry.normals.data,
 			             GL_STATIC_DRAW);
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
@@ -226,10 +226,11 @@ void app_run(App* app)
 			glEnableVertexAttribArray(1);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->ebo);
-			glBufferData(
-			    GL_ELEMENT_ARRAY_BUFFER,
-			    (GLsizeiptr)(app->geometry.indices.size * sizeof(unsigned int)),
-			    app->geometry.indices.data, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			             (GLsizeiptr)(app->geometry.indices.size *
+			                          sizeof(unsigned int)),
+			             app->geometry.indices.data,
+			             GL_STATIC_DRAW);
 
 			glBindVertexArray(0);
 			last_subdiv = app->subdivisions;
@@ -267,8 +268,9 @@ void app_render(App* app)
 	vec3 camera_up = {0.0F, 1.0F, 0.0F};
 
 	glm_lookat(camera_pos, target, camera_up, view);
-	glm_perspective(glm_rad(FOV_ANGLE), (float)app->width / (float)app->height,
-	                NEAR_PLANE, FAR_PLANE, proj);
+	glm_perspective(glm_rad(FOV_ANGLE),
+	                (float)app->width / (float)app->height, NEAR_PLANE,
+	                FAR_PLANE, proj);
 
 	/* Calculate MVP for icosphere */
 	glm_mat4_mul(proj, view, view_proj);
@@ -364,8 +366,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 					glfwSetInputMode(window, GLFW_CURSOR,
 					                 GLFW_CURSOR_NORMAL);
 				}
-				LOG_INFO("suckless-ogl.app", "Camera control: %s",
-				         app->camera_enabled ? "ENABLED" : "DISABLED");
+				LOG_INFO("suckless-ogl.app",
+				         "Camera control: %s",
+				         app->camera_enabled ? "ENABLED"
+				                             : "DISABLED");
 				break;
 			case GLFW_KEY_SPACE:
 				/* Reset camera to default position */
@@ -373,7 +377,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				app->camera_pitch = DEFAULT_CAMERA_ANGLE;
 				app->camera_distance = DEFAULT_CAMERA_DISTANCE;
 				app->env_lod = DEFAULT_ENV_LOD;
-				LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
+				LOG_INFO("suckless-ogl.app",
+				         "Camera and LOD reset");
 				break;
 			case GLFW_KEY_PAGE_UP:
 				app->env_lod += LOD_STEP;
@@ -412,7 +417,8 @@ static void app_toggle_fullscreen(App* app, GLFWwindow* window)
 
 		/* Save window geometry */
 		glfwGetWindowPos(window, &app->saved_x, &app->saved_y);
-		glfwGetWindowSize(window, &app->saved_width, &app->saved_height);
+		glfwGetWindowSize(window, &app->saved_width,
+		                  &app->saved_height);
 
 		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width,
 		                     mode->height, mode->refreshRate);

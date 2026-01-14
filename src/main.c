@@ -1,12 +1,9 @@
+#include <stdlib.h>
+
 #include "app.h"
 #include "log.h"
 
-#include <stdlib.h>
-
-enum {
-	WINDOW_WIDTH = 1024,
-	WINDOW_HEIGHT = 768
-};
+enum { WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 768 };
 
 int main(void)
 {

@@ -6,9 +6,7 @@
 #include "glad/glad.h"
 #include "log.h"
 
-enum {
-	INFO_LOG_SIZE = 512
-};
+enum { INFO_LOG_SIZE = 512 };
 
 static char* read_file(const char* path)
 {
@@ -46,7 +44,7 @@ static char* read_file(const char* path)
 	if (read_bytes > size) {
 		read_bytes = size;
 	}
-	src[read_bytes] = '\0'; // NOLINT
+	src[read_bytes] = '\0';  // NOLINT
 
 	return src;
 }
@@ -86,7 +84,8 @@ GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
 		return 0;
 	}
 
-	GLuint fragment_shader = shader_compile(fragment_path, GL_FRAGMENT_SHADER);
+	GLuint fragment_shader =
+	    shader_compile(fragment_path, GL_FRAGMENT_SHADER);
 	if (fragment_shader == 0) {
 		glDeleteShader(vertex_shader);
 		return 0;

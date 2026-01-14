@@ -1,4 +1,4 @@
-#define _POSIX_C_SOURCE 199309L // NOLINT
+#define _POSIX_C_SOURCE 199309L  // NOLINT
 #include "log.h"
 
 #include <stdarg.h>
@@ -32,16 +32,18 @@ static const char* level_to_string(LogLevel level)
 void log_message(LogLevel level, const char* tag, const char* format, ...)
 {
 	struct timespec ts_now;
-	(void)clock_gettime(CLOCK_REALTIME, &ts_now); // NOLINT
+	(void)clock_gettime(CLOCK_REALTIME, &ts_now);  // NOLINT
 
 	struct tm* tm_info = localtime(&ts_now.tv_sec);
 
 	char time_buf[TIME_BUFFER_SIZE];
-	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", tm_info);
+	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S",
+	               tm_info);
 
 	/* Prepare prefix: TIMESTAMP,mmm - tag - LEVEL -  */
 	char prefix[PREFIX_BUFFER_SIZE];
-	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling) */
+	/* NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	 */
 	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
 	               time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
 	               level_to_string(level));

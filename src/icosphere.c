@@ -1,10 +1,9 @@
 #include "icosphere.h"
 
+#include <cglm/types.h>
+#include <cglm/vec3.h>
 #include <stdint.h>
 #include <stdlib.h>
-
-#include <cglm/vec3.h>
-#include <cglm/types.h>
 
 enum {
 	INITIAL_VEC3_CAPACITY = 128,
@@ -125,7 +124,8 @@ static unsigned int get_midpoint(unsigned int point1, unsigned int point2,
 
 	/* Open addressing with linear probing */
 	while (hash->entries[index].midpoint != 0) {
-		if (hash->entries[index].a == idx_a && hash->entries[index].b == idx_b) {
+		if (hash->entries[index].a == idx_a &&
+		    hash->entries[index].b == idx_b) {
 			return hash->entries[index].midpoint;
 		}
 		index = (index + 1) % hash->capacity;
@@ -172,9 +172,12 @@ static void subdivide(Vec3Array* vertices, UintArray* indices, int depth)
 			unsigned int vertex1_idx = indices->data[i + 1];
 			unsigned int vertex2_idx = indices->data[i + 2];
 
-			unsigned int mid0_idx = get_midpoint(vertex0_idx, vertex1_idx, vertices, &hash);
-			unsigned int mid1_idx = get_midpoint(vertex1_idx, vertex2_idx, vertices, &hash);
-			unsigned int mid2_idx = get_midpoint(vertex2_idx, vertex0_idx, vertices, &hash);
+			unsigned int mid0_idx = get_midpoint(
+			    vertex0_idx, vertex1_idx, vertices, &hash);
+			unsigned int mid1_idx = get_midpoint(
+			    vertex1_idx, vertex2_idx, vertices, &hash);
+			unsigned int mid2_idx = get_midpoint(
+			    vertex2_idx, vertex0_idx, vertices, &hash);
 
 			/* Create 4 new triangles */
 			uintarray_push(&new_indices, vertex0_idx);

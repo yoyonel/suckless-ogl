@@ -1,11 +1,10 @@
 #include "skybox.h"
+
 #include <cglm/types.h>
 
 #include "glad/glad.h"
 
-enum {
-	SKYBOX_VERTEX_COUNT = 6
-};
+enum { SKYBOX_VERTEX_COUNT = 6 };
 
 /* Fullscreen quad vertices (NDC space) */
 static const float quad_vertices[] = {
