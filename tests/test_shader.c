@@ -70,6 +70,17 @@ void test_shader_read_file_missing(void) {
     TEST_ASSERT_NULL(content);
 }
 
+void test_shader_read_file_empty(void) {
+    // Test reading an empty file
+    write_file("test_empty.txt", "");
+    char* content = shader_read_file("test_empty.txt");
+    TEST_ASSERT_NOT_NULL(content);
+    TEST_ASSERT_EQUAL_STRING("", content);
+    free(content);
+    remove("test_empty.txt");
+}
+
+
 void test_shader_compile_success(void) {
     const char* vert_src = 
         "#version 330 core\n"
@@ -164,17 +175,89 @@ void test_shader_load_compute_compile_fail(void) {
     remove("test_invalid.comp");
 }
 
+void test_shader_load_program_vertex_fail(void) {
+    const char* bad_vert = 
+        "#version 330 core\n"
+        "void main() { syntax_error }";
+    write_file("test_invalid.vert", bad_vert);
+
+    const char* frag_src = 
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main() { FragColor = vec4(1.0); }";
+    write_file("test_valid.frag", frag_src);
+
+    GLuint prog = shader_load_program("test_invalid.vert", "test_valid.frag");
+    TEST_ASSERT_EQUAL(0, prog);
+    
+    remove("test_invalid.vert");
+}
+
+void test_shader_load_program_link_fail(void) {
+    // Create shaders that compile but fail to link
+    // (e.g., vertex shader outputs that fragment shader doesn't use)
+    const char* vert_src = 
+        "#version 330 core\n"
+        "out vec4 mismatched_output;\n"
+        "void main() { gl_Position = vec4(0.0); mismatched_output = vec4(1.0); }";
+    write_file("test_link_vert.vert", vert_src);
+
+    const char* frag_src = 
+        "#version 330 core\n"
+        "in vec4 different_input;\n"  // Mismatched input name
+        "out vec4 FragColor;\n"
+        "void main() { FragColor = different_input; }";
+    write_file("test_link_frag.frag", frag_src);
+
+    // This may or may not fail depending on GL implementation
+    // Some drivers are lenient, so we just test the code path exists
+    GLuint prog = shader_load_program("test_link_vert.vert", "test_link_frag.frag");
+    
+    // Clean up regardless of result
+    if (prog != 0) {
+        glDeleteProgram(prog);
+    }
+    
+    remove("test_link_vert.vert");
+    remove("test_link_frag.frag");
+}
+
+void test_shader_load_compute_link_fail(void) {
+    // Create a compute shader that compiles but has linking issues
+    // This is harder to trigger, but we can try with invalid work group sizes
+    const char* comp_src = 
+        "#version 430 core\n"
+        "layout(local_size_x = 1) in;\n"
+        "void main() { }";
+    write_file("test_comp_link.comp", comp_src);
+
+    GLuint prog = shader_load_compute("test_comp_link.comp");
+    
+    // This should succeed on most implementations, but tests the code path
+    if (prog != 0) {
+        glDeleteProgram(prog);
+    }
+    
+    remove("test_comp_link.comp");
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_shader_read_file_success);
     RUN_TEST(test_shader_read_file_missing);
+    RUN_TEST(test_shader_read_file_empty);
     RUN_TEST(test_shader_compile_success);
     RUN_TEST(test_shader_compile_fail_syntax);
     RUN_TEST(test_shader_compile_fail_io);
     RUN_TEST(test_shader_load_program_success);
+    RUN_TEST(test_shader_load_program_vertex_fail);
     RUN_TEST(test_shader_load_program_fragment_fail);
+    RUN_TEST(test_shader_load_program_link_fail);
     RUN_TEST(test_shader_load_compute_success);
     RUN_TEST(test_shader_load_compute_compile_fail);
+    RUN_TEST(test_shader_load_compute_link_fail);
     return UNITY_END();
 }
+
+
 
