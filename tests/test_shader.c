@@ -1,41 +1,180 @@
 #include "unity.h"
 #include "shader.h"
+#include "glad/glad.h"
+#include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+static GLFWwindow* window = NULL;
+
 void setUp(void) {
+    if (!glfwInit()) {
+        TEST_FAIL_MESSAGE("Failed to initialize GLFW");
+    }
+    
+    // Hidden window for headless-like testing
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    // Request a reasonable core profile
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(640, 480, "Test Window", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        TEST_FAIL_MESSAGE("Failed to create GLFW window");
+    }
+
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        TEST_FAIL_MESSAGE("Failed to initialize GLAD");
+    }
 }
 
 void tearDown(void) {
+    if (window) {
+        glfwDestroyWindow(window);
+    }
+    glfwTerminate();
+    
+    // Cleanup files
+    remove("test_valid.vert");
+    remove("test_valid.frag");
+    remove("test_invalid.vert");
 }
 
-void test_shader_read_existing_file(void) {
-    const char* filename = "test_dummy.txt";
-    const char* content = "Hello World from Test";
-    
-    // Create dummy file
-    FILE* f = fopen(filename, "w");
-    fputs(content, f);
-    fclose(f);
-    
-    // Read it back
-    char* result = shader_read_file(filename);
-    TEST_ASSERT_NOT_NULL(result);
-    TEST_ASSERT_EQUAL_STRING(content, result);
-    
-    free(result);
-    remove(filename);
+// Helper to write string to file
+static void write_file(const char* path, const char* content) {
+    FILE* f = fopen(path, "w");
+    if (f) {
+        fputs(content, f);
+        fclose(f);
+    }
 }
 
-void test_shader_read_nonexistent_file(void) {
-    char* result = shader_read_file("nonexistent_file_12345.txt");
-    TEST_ASSERT_NULL(result);
+void test_shader_read_file_success(void) {
+    write_file("test_read.txt", "content");
+    char* content = shader_read_file("test_read.txt");
+    TEST_ASSERT_NOT_NULL(content);
+    TEST_ASSERT_EQUAL_STRING("content", content);
+    free(content);
+    remove("test_read.txt");
+}
+
+void test_shader_read_file_missing(void) {
+    char* content = shader_read_file("non_existent.txt");
+    TEST_ASSERT_NULL(content);
+}
+
+void test_shader_compile_success(void) {
+    const char* vert_src = 
+        "#version 330 core\n"
+        "void main() { gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }";
+    write_file("test_valid.vert", vert_src);
+
+    GLuint shader = shader_compile("test_valid.vert", GL_VERTEX_SHADER);
+    TEST_ASSERT_NOT_EQUAL(0, shader);
+    
+    GLint type = 0;
+    glGetShaderiv(shader, GL_SHADER_TYPE, &type);
+    TEST_ASSERT_EQUAL(GL_VERTEX_SHADER, type);
+
+    glDeleteShader(shader);
+}
+
+void test_shader_compile_fail_syntax(void) {
+    const char* bad_src = 
+        "#version 330 core\n"
+        "void main() { syntax_error }"; // Missing semicolon/invalid code
+    write_file("test_invalid.vert", bad_src);
+
+    // This should print an error to stderr (tested via log module usually, but here we just check return 0)
+    GLuint shader = shader_compile("test_invalid.vert", GL_VERTEX_SHADER);
+    TEST_ASSERT_EQUAL(0, shader);
+}
+
+void test_shader_compile_fail_io(void) {
+    GLuint shader = shader_compile("does_not_exist.vert", GL_VERTEX_SHADER);
+    TEST_ASSERT_EQUAL(0, shader);
+}
+
+void test_shader_load_program_success(void) {
+    const char* vert_src = 
+        "#version 330 core\n"
+        "void main() { gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }";
+    write_file("test_valid.vert", vert_src);
+
+    const char* frag_src = 
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main() { FragColor = vec4(1.0); }";
+    write_file("test_valid.frag", frag_src);
+
+    GLuint prog = shader_load_program("test_valid.vert", "test_valid.frag");
+    TEST_ASSERT_NOT_EQUAL(0, prog);
+    
+    glDeleteProgram(prog);
+}
+
+void test_shader_load_program_fragment_fail(void) {
+    const char* vert_src = 
+        "#version 330 core\n"
+        "void main() { gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }";
+    write_file("test_valid.vert", vert_src);
+
+    const char* bad_frag = 
+        "#version 330 core\n"
+        "void main() { invalid_syntax }";
+    write_file("test_invalid.frag", bad_frag);
+
+    GLuint prog = shader_load_program("test_valid.vert", "test_invalid.frag");
+    TEST_ASSERT_EQUAL(0, prog);
+    
+    remove("test_invalid.frag");
+}
+
+void test_shader_load_compute_success(void) {
+    const char* comp_src = 
+        "#version 430 core\n"
+        "layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;\n"
+        "void main() { }";
+    write_file("test_valid.comp", comp_src);
+
+    GLuint prog = shader_load_compute("test_valid.comp");
+    TEST_ASSERT_NOT_EQUAL(0, prog);
+    
+    glDeleteProgram(prog);
+    remove("test_valid.comp");
+}
+
+void test_shader_load_compute_compile_fail(void) {
+    const char* bad_comp = 
+        "#version 430 core\n"
+        "layout(local_size_x = 1) in;\n"
+        "void main() { syntax_error }";
+    write_file("test_invalid.comp", bad_comp);
+
+    GLuint prog = shader_load_compute("test_invalid.comp");
+    TEST_ASSERT_EQUAL(0, prog);
+    
+    remove("test_invalid.comp");
 }
 
 int main(void) {
     UNITY_BEGIN();
-    RUN_TEST(test_shader_read_existing_file);
-    RUN_TEST(test_shader_read_nonexistent_file);
+    RUN_TEST(test_shader_read_file_success);
+    RUN_TEST(test_shader_read_file_missing);
+    RUN_TEST(test_shader_compile_success);
+    RUN_TEST(test_shader_compile_fail_syntax);
+    RUN_TEST(test_shader_compile_fail_io);
+    RUN_TEST(test_shader_load_program_success);
+    RUN_TEST(test_shader_load_program_fragment_fail);
+    RUN_TEST(test_shader_load_compute_success);
+    RUN_TEST(test_shader_load_compute_compile_fail);
     return UNITY_END();
 }
+

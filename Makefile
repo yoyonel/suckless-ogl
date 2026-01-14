@@ -77,6 +77,9 @@ coverage:
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
 		-object $(BUILD_COV_DIR)/tests/test_icosphere \
 		-object $(BUILD_COV_DIR)/tests/test_shader \
+		-object $(BUILD_COV_DIR)/tests/test_log \
+		-object $(BUILD_COV_DIR)/tests/test_skybox \
+		-object $(BUILD_COV_DIR)/tests/test_texture \
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
@@ -86,6 +89,9 @@ coverage:
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
 		-object $(BUILD_COV_DIR)/tests/test_icosphere \
 		-object $(BUILD_COV_DIR)/tests/test_shader \
+		-object $(BUILD_COV_DIR)/tests/test_log \
+		-object $(BUILD_COV_DIR)/tests/test_skybox \
+		-object $(BUILD_COV_DIR)/tests/test_texture \
 		-ignore-filename-regex="(generated|deps|tests)"
 
 # Docker Integration
