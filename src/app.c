@@ -1,5 +1,11 @@
 #include "app.h"
 
+#include "glad/glad.h"
+#include "icosphere.h"
+#include "log.h"
+#include "shader.h"
+#include "skybox.h"
+#include "texture.h"
 #include <GLFW/glfw3.h>
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
@@ -8,13 +14,6 @@
 #include <cglm/vec3.h>
 #include <math.h>
 #include <stdio.h>
-
-#include "glad/glad.h"
-#include "icosphere.h"
-#include "log.h"
-#include "shader.h"
-#include "skybox.h"
-#include "texture.h"
 
 #define MOUSE_SENSITIVITY 0.002F
 #define MIN_PITCH -1.5F

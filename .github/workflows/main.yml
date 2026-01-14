@@ -1,0 +1,82 @@
+name: Suckless-OGL CI/CD
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lint Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
+      
+      - name: Check Formatting
+        run: make format CONTAINER_RUN=""
+        
+      - name: Run Linter
+        run: make lint CONTAINER_RUN=""
+
+  test-and-coverage:
+    needs: lint-and-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Test Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgl1-mesa-dev \
+          libglew-dev libglfw3-dev xorg-dev xvfb llvm libgl1-mesa-dri
+          
+      - name: Run Coverage with Xvfb
+        # On encapsule l'appel make avec xvfb-run
+        # -a : auto-servernum pour éviter les conflits
+        # -s : options pour le serveur X virtuel (résolution/profondeur)
+        run: |
+          xvfb-run -a -s "-screen 0 1024x768x24" make coverage CONTAINER_RUN=""
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build-coverage/coverage_report/
+
+  build-and-release:
+    needs: test-and-coverage
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev
+      
+      - name: Compile Optimized
+        run: make all CONTAINER_RUN=""
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          # On définit dynamiquement le tag
+          # Si c'est un vrai tag (v1.x), on l'utilise. Sinon, on crée un tag 'latest-master'
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest-master' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('Development Build {0}', github.run_number) }}
+          files: build/app
+          # On force la mise à jour du tag 'latest-master' pour pointer sur le dernier commit
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

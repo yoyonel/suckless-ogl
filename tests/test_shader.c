@@ -1,13 +1,9 @@
-#include "glad/glad.h"
-
-#include <GLFW/glfw3.h>
+#include "shader.h"
+#include "unity.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-
-#include "shader.h"
-#include "unity.h"
 
 static GLFWwindow* window = NULL;
 

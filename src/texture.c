@@ -1,9 +1,8 @@
 #include "texture.h"
 
-#include <stb_image.h>
-
 #include "glad/glad.h"
 #include "log.h"
+#include <stb_image.h>
 
 GLuint texture_load_hdr(const char* path, int* width, int* height)
 {

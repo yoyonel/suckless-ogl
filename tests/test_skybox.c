@@ -1,11 +1,7 @@
-#include "glad/glad.h"
-
-#include <GLFW/glfw3.h>
-#include <cglm/cam.h>
-#include <cglm/mat4.h>
-
 #include "skybox.h"
 #include "unity.h"
+#include <cglm/cam.h>
+#include <cglm/mat4.h>
 
 static GLFWwindow* window = NULL;
 static GLuint test_shader = 0;
