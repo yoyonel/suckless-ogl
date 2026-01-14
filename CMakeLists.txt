@@ -41,7 +41,7 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
     endforeach()
     
     # Force FetchContent to not even try to connect if we are in offline mode
-    set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Forbid FetchContent from using network" FORCE)
+    # set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Forbid FetchContent from using network" FORCE)
     
     # GLAD specific: use the local specification file instead of downloading it
     set(GLAD_REPRODUCIBLE ON CACHE BOOL "Use local gl.xml for GLAD" FORCE)
@@ -102,3 +102,17 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     # Enable POSIX features (e.g. clock_gettime)
     target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
 endif()
+
+# --- Unit Testing ---
+enable_testing()
+
+# Fetch Unity (Lightweight C Testing Framework)
+FetchContent_Declare(
+    unity
+    GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
+    GIT_TAG        v2.6.0
+)
+FetchContent_MakeAvailable(unity)
+
+# Add tests subdirectory
+add_subdirectory(tests)

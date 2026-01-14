@@ -8,7 +8,7 @@
 
 enum { INFO_LOG_SIZE = 512 };
 
-static char* read_file(const char* path)
+char* shader_read_file(const char* path)
 {
 	FILE* file_ptr = fopen(path, "rb");
 	if (!file_ptr) {
@@ -46,7 +46,7 @@ static char* read_file(const char* path)
 
 GLuint shader_compile(const char* path, GLenum type)
 {
-	char* src = read_file(path);
+	char* src = shader_read_file(path);
 	if (!src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Failed to read shader file: %s", path);

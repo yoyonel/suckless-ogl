@@ -6,6 +6,9 @@
 /* Compile a single shader from file */
 GLuint shader_compile(const char* path, GLenum type);
 
+/* Read shader source from file (exposed for testing) */
+char* shader_read_file(const char* path);
+
 /* Create a shader program from vertex and fragment shader files */
 GLuint shader_load_program(const char* vertex_path, const char* fragment_path);
 
