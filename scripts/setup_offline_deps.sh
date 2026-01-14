@@ -38,5 +38,12 @@ if [ ! -f "$DEPS_DIR/glad/glad/files/gl.xml" ]; then
     echo "This might cause issues during offline builds."
 fi
 
+if [ ! -f "$DEPS_DIR/unity" ]; then
+    echo "Cloning unity..."
+    git clone --depth 1 https://github.com/ThrowTheSwitch/Unity.git "$DEPS_DIR/unity"
+else
+    echo "unity already exists in $DEPS_DIR"
+fi
+
 echo "Done! You can now build the project offline."
 echo "CMake will automatically detect the '$DEPS_DIR' directory."

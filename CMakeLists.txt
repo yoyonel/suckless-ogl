@@ -30,7 +30,7 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
     message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
     
     # List of dependencies we want to support overrides for
-    set(MANIFEST_DEPS "cglm" "glad" "stb")
+    set(MANIFEST_DEPS "cglm" "glad" "stb" "unity")
     
     foreach(dep ${MANIFEST_DEPS})
         if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
