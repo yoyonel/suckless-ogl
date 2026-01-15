@@ -373,9 +373,6 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	    glGetUniformLocation(app->pbr_instanced_shader, "pbr_exposure"),
 	    app->u_exposure);
 
-	// 4. Mode Wireframe
-	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
 	// 5. L'UNIQUE APPEL DE RENDU POUR LA GRILLE DE SPHÈRES
 	// instanced_group_draw lie le VAO et appelle glDrawElementsInstanced
 	instanced_group_draw(&app->instanced_group, app->geometry.indices.size);
@@ -424,6 +421,8 @@ void app_cleanup(App* app)
 	glDeleteProgram(app->skybox_shader);
 
 	material_free_lib(app->material_lib);
+
+	instanced_group_cleanup(&app->instanced_group);
 
 	glfwDestroyWindow(app->window);
 	glfwTerminate();
@@ -545,6 +544,8 @@ void app_render(App* app)
 
 	/* 1. Render icosphere FIRST (populates depth buffer for early-Z
 	 * culling) */
+	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+	//
 	// app_render_icosphere(app, view_proj);
 	// app_render_icosphere_pbr(app, view, proj, camera_pos);
 	app_render_instanced(app, view, proj, camera_pos);
@@ -586,10 +587,6 @@ void app_render_icosphere(App* app, mat4 view_proj)
 
 	/* Draw icosphere */
 	glBindVertexArray(app->sphere_vao);
-
-	/* Only set polygon mode for the icosphere */
-	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
 	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
 	               GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
@@ -650,8 +647,6 @@ void app_render_icosphere_pbr(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 
 		PBRMaterial* material = &app->material_lib->materials[i];
 
-		glPolygonMode(GL_FRONT_AND_BACK,
-		              app->wireframe ? GL_LINE : GL_FILL);
 // On passe les paramètres au shader via la fonction d'instance
 #ifndef USE_RAYTRACE_BILLBOARD
 		app_render_pbr_instance(app, view, proj, camera_pos,

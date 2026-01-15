@@ -81,8 +81,7 @@ static void restore_gl_state(const GLStateBackup* state)
 		glDisable(GL_BLEND);
 	}
 
-	glPolygonMode(GL_FRONT, state->polygon_mode[0]);
-	glPolygonMode(GL_BACK, state->polygon_mode[1]);
+	glPolygonMode(GL_FRONT_AND_BACK, state->polygon_mode[0]);
 }
 
 static void setup_ui_render_state(void)
