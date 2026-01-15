@@ -3,4 +3,4 @@ env \
     __GLX_VENDOR_LIBRARY_NAME=nvidia \
     __VK_LAYER_NV_optimus=NVIDIA_onl vblank_mode=0 \
     __GL_SYNC_TO_VBLANK=0 \
-    mangohud build/app
+    ./build/app

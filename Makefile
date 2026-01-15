@@ -24,6 +24,7 @@ $(BUILD_DIR)/Makefile:
 
 clean:
 	@if [ -d $(BUILD_DIR) ]; then $(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target clean; fi
+	@$(DISTROBOX) rm -rf $(BUILD_DIR)
 
 clean-all:
 	@echo "Removing entire build directory..."
@@ -42,11 +43,12 @@ format:
 STB_INC := $(shell [ -d deps/stb ] && echo deps/stb || echo build/_deps/stb-src)
 CGLM_INC := $(shell [ -d deps/cglm ] && echo deps/cglm/include || echo build/_deps/cglm-src/include)
 GLAD_INC := build/_deps/glad-build/include
+CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cjson-src)
 
 lint: $(BUILD_DIR)/Makefile
 	@echo "Ensuring dependencies are generated..."
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
-	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=199309L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC)
+	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=199309L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh

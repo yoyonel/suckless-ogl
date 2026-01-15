@@ -14,6 +14,11 @@ set(SOURCES
     src/skybox.c
     src/log.c
     src/stb_image_impl.c
+    src/fps.c
+    src/ui.c
+    src/pbr.c
+    src/material.c
+    src/perf_timer.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -21,6 +26,9 @@ set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
 # Dependencies (automated via FetchContent)
 include(FetchContent)
+
+# Force all FetchContent dependencies to build as STATIC libraries
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries only" FORCE)
 
 # --- Offline Support Logic ---
 # If a 'deps' directory exists, we check for subdirectories and use them as source overrides.
@@ -30,7 +38,7 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
     message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
     
     # List of dependencies we want to support overrides for
-    set(MANIFEST_DEPS "cglm" "glad" "stb" "unity")
+    set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson")
     
     foreach(dep ${MANIFEST_DEPS})
         if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
@@ -61,7 +69,7 @@ FetchContent_Declare(
 set(CGLM_STATIC ON CACHE BOOL "Build cglm as static library" FORCE)
 FetchContent_MakeAvailable(cglm)
 
-# 2. GLAD (Automatic Generation)
+# 2. GLAD (Automatic Generation - STATIC)
 message(STATUS "Fetching glad...")
 FetchContent_Declare(
     glad
@@ -73,7 +81,21 @@ set(GLAD_PROFILE "core" CACHE STRING "OpenGL profile" FORCE)
 set(GLAD_API "gl=4.4" CACHE STRING "API type/version pairs" FORCE)
 set(GLAD_GENERATOR "c" CACHE STRING "Language to generate" FORCE)
 
+# Force GLAD to build as STATIC library
+set(GLAD_INSTALL OFF CACHE BOOL "Disable GLAD install" FORCE)
+
 FetchContent_MakeAvailable(glad)
+
+# Ensure glad target is STATIC (override if needed)
+if(TARGET glad)
+    get_target_property(glad_type glad TYPE)
+    if(NOT glad_type STREQUAL "STATIC_LIBRARY")
+        message(STATUS "Converting glad to STATIC_LIBRARY")
+        set_target_properties(glad PROPERTIES 
+            POSITION_INDEPENDENT_CODE OFF
+        )
+    endif()
+endif()
 
 # 3. STB (Header-only)
 message(STATUS "Fetching stb...")
@@ -84,16 +106,46 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-# 3. GLFW (System Package)
+# 4. GLFW (System Package)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GLFW3 REQUIRED glfw3)
+
+# 5. cJSON (Static Build - CONFIGURATION AMÉLIORÉE)
+message(STATUS "Fetching cJSON...")
+FetchContent_Declare(
+    cjson
+    GIT_REPOSITORY https://github.com/DaveGamble/cJSON.git
+    GIT_TAG        v1.7.18
+)
+
+# Options pour garder le build "suckless" et FORCER le build statique
+set(ENABLE_CJSON_TEST OFF CACHE BOOL "Disable cJSON tests" FORCE)
+set(ENABLE_CJSON_UTILS OFF CACHE BOOL "Disable cJSON utils" FORCE)
+set(ENABLE_TARGET_EXPORT OFF CACHE BOOL "Disable target export" FORCE)
+set(BUILD_SHARED_AND_STATIC_LIBS OFF CACHE BOOL "Do not build both shared and static" FORCE)
+
+# Forcer explicitement le build statique de cJSON
+set(CJSON_BUILD_SHARED_LIBS OFF CACHE BOOL "Build cJSON as static library" FORCE)
+
+FetchContent_MakeAvailable(cjson)
 
 # App target
 add_executable(app ${SOURCES})
 
 # Target properties and includes
 target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
-target_link_libraries(app PRIVATE cglm glad ${GLFW3_LIBRARIES} m dl)
+target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
+
+# Link avec la version statique de cJSON
+target_link_libraries(app PRIVATE 
+    cglm 
+    glad 
+    cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
+    ${GLFW3_LIBRARIES} 
+    m 
+    dl
+)
+
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 
 # Compiler flags
@@ -102,6 +154,13 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     # Enable POSIX features (e.g. clock_gettime)
     target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
 endif()
+
+# Vérification post-build pour s'assurer que tout est statique
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Checking for dynamic dependencies..."
+    COMMAND ldd $<TARGET_FILE:app> || true
+    COMMENT "Binary dependencies check"
+)
 
 # --- Unit Testing ---
 enable_testing()

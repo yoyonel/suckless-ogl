@@ -32,7 +32,7 @@ Run the following command while you have an active internet connection:
 ```bash
 make deps-setup
 ```
-This script will clone `cglm`, `glad`, and `stb` into a local `deps/` directory (automatically ignored by Git).
+This script will clone `cglm`, `glad`, `stb`, `unity`, `cjson` into a local `deps/` directory (automatically ignored by Git).
 
 ### 2. Building (Offline)
 Once the `deps/` directory is populated, CMake will automatically detect it and use the local sources instead of trying to download them. Simply run:
@@ -67,6 +67,14 @@ Dependencies are automatically managed via CMake's `FetchContent` module. No man
 - **Source**: System library.
 - **Automation**: Located using `pkg-config`. Ensure `glfw-devel` (or equivalent) is installed in your development container.
 
+### Unity
+- **Source**: [ThrowTheSwitch/Unity](https://github.com/ThrowTheSwitch/Unity)
+- **Automation**: Fetched at configuration time.
+
+### cJSON
+- **Source**: [DaveGamble/cJSON](https://github.com/DaveGamble/cJSON)
+- **Automation**: Fetched at configuration time.
+
 ## Folder Structure
 
 ## Fast Parallel Builds
@@ -98,6 +106,8 @@ Grâce à `FetchContent`, les bibliothèques suivantes sont gérées sans interv
 1. **cglm** : Compilé en tant que bibliothèque statique optimisée pour votre CPU.
 2. **GLAD** : Généré à la volée pour cibler exactement le profil OpenGL 4.4 Core.
 3. **stb_image** : Automatisation via FetchContent. L'implémentation est isolée dans `src/stb_image_impl.c` pour garantir un linting parfaitement propre sur les fichiers sources restants.
+4. **unity** : Automatisation via FetchContent.
+5. **cjson** : Automatisation via FetchContent.
 
 ## Folder Structure
 
@@ -105,4 +115,6 @@ Grâce à `FetchContent`, les bibliothèques suivantes sont gérées sans interv
 - `Makefile` : Raccourcis pour Docker/Distrobox et builds rapides.
 - `docs/` : Documentation complète du moteur.
 - `src/log.c` : Cœur du système de logging.
+- `assets/` : Dossier contenant les assets.
 - `assets/env.hdr` : Texture d'environnement source (Equirectangulaire).
+- `deps/` : Dossier contenant les dépendances externes.
