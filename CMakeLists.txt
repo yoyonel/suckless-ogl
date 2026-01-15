@@ -130,6 +130,27 @@ set(CJSON_BUILD_SHARED_LIBS OFF CACHE BOOL "Build cJSON as static library" FORCE
 
 FetchContent_MakeAvailable(cjson)
 
+# --- Configuration du profil Profiling (équivalent Cargo) ---
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
+endif()
+
+# Création d'un profil spécifique "Profiling"
+set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags for profiling" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
+
+# Activation du LTO (Link Time Optimization)
+include(CheckIPOSupported)
+check_ipo_supported(RESULT lto_supported OUTPUT lto_error)
+
+if(lto_supported)
+    message(STATUS "LTO (IPO) is supported and enabled for Profiling/Release")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO ON)
+    # On l'active aussi pour notre mode personnalisé
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_PROFILING ON)
+endif()
+
 # App target
 add_executable(app ${SOURCES})
 
@@ -150,9 +171,16 @@ target_link_libraries(app PRIVATE
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 
 # Compiler flags
+# Compiler flags
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(app PRIVATE -Wall -Wextra -O2)
-    # Enable POSIX features (e.g. clock_gettime)
+    target_compile_options(app PRIVATE -Wall -Wextra)
+    
+    # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind) 
+    # puissent reconstruire la pile d'appel (stack trace) correctement.
+    if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+        target_compile_options(app PRIVATE -fno-omit-frame-pointer)
+    endif()
+
     target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
 endif()
 
