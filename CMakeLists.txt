@@ -19,6 +19,7 @@ set(SOURCES
     src/pbr.c
     src/material.c
     src/perf_timer.c
+    src/instanced_rendering.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)

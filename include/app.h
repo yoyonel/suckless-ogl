@@ -4,6 +4,7 @@
 #include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
+#include "instanced_rendering.h"
 #include "material.h"
 #include "shader.h"
 #include "skybox.h"
@@ -36,10 +37,13 @@ typedef struct {
 
 	/* Icosphere geometry */
 	IcosphereGeometry geometry;
-	GLuint vao;
-	GLuint vbo;
-	GLuint nbo;
-	GLuint ebo;
+	GLuint sphere_vao;
+	GLuint sphere_vbo;
+	GLuint sphere_nbo;
+	GLuint sphere_ebo;
+
+	/* Instanced rendering */
+	InstancedGroup instanced_group;
 
 	/* Billboards */
 	GLuint quad_vao;
@@ -50,6 +54,7 @@ typedef struct {
 	/* Shaders */
 	GLuint phong_shader;
 	GLuint skybox_shader;
+	GLuint pbr_instanced_shader;
 
 	/* Cached uniform locations (Phong) */
 	GLint u_phong_mvp;
@@ -99,6 +104,7 @@ void app_run(App* app);
 
 /* Rendering */
 void app_render(App* app);
+void app_update_gpu_buffers(App* app);
 void app_render_icosphere(App* app, mat4 view_proj);
 void app_render_icosphere_pbr(App* app, mat4 view, mat4 proj, vec3 camera_pos);
 void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
@@ -109,6 +115,8 @@ void app_render_pbr_billboard(App* app, mat4 view, mat4 invView, mat4 proj,
                               float roughness, vec3 albedo);
 void app_render_ui(App* app);
 void app_init_quad(App* app);
+void app_init_instancing(App* app);
+void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos);
 /* Input handling */
 void app_handle_input(App* app);
 

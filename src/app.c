@@ -3,6 +3,7 @@
 #include "fps.h"
 #include "glad/glad.h"
 #include "icosphere.h"
+#include "instanced_rendering.h"
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
@@ -20,6 +21,7 @@
 #include <cglm/vec3.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>  // for malloc
 
 #define MOUSE_SENSITIVITY 0.002F
 #define MIN_PITCH -1.5F
@@ -248,10 +250,10 @@ int app_init(App* app, int width, int height, const char* title)
 	icosphere_init(&app->geometry);
 
 	/* Create OpenGL buffers */
-	glGenVertexArrays(1, &app->vao);
-	glGenBuffers(1, &app->vbo);
-	glGenBuffers(1, &app->nbo);
-	glGenBuffers(1, &app->ebo);
+	glGenVertexArrays(1, &app->sphere_vao);
+	glGenBuffers(1, &app->sphere_vbo);
+	glGenBuffers(1, &app->sphere_nbo);
+	glGenBuffers(1, &app->sphere_ebo);
 
 	app->quad_indices_size = 0;
 	app_init_quad(app);
@@ -268,7 +270,115 @@ int app_init(App* app, int width, int height, const char* title)
 	app->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
+	app_init_instancing(app);
+	app->pbr_instanced_shader = shader_load_program(
+	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
+	if (!app->pbr_instanced_shader) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to load pbr_instanced shader");
+		return 0;
+	}
+
 	return 1;
+}
+
+void app_init_instancing(App* app)
+{
+	// 1. Calcul des dimensions (identique au legacy)
+	const int total_count =
+	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int cols = DEFAULT_COLS;
+	const int rows = (total_count + cols - 1) / cols;
+	const float spacing = DEFAULT_SPACING;
+
+	const float grid_w = (float)(cols - 1) * spacing;
+	const float grid_h = (float)(rows - 1) * spacing;
+
+	// 2. Allocation temporaire pour le transfert
+	SphereInstance* data = malloc(sizeof(SphereInstance) * total_count);
+	if (!data) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for instancing");
+		return;
+	}
+
+	for (int i = 0; i < total_count; i++) {
+		const int grid_x = i % cols;
+		const int grid_y = i / cols;
+
+		// Calcul de la matrice Model (Logique de centrage reproduite)
+		glm_mat4_identity(data[i].model);
+
+		const float pos_x = ((float)grid_x * spacing) -
+		                    (grid_w * HALF_OFFSET_MULTIPLIER);
+		const float pos_y = -(((float)grid_y * spacing) -
+		                      (grid_h * HALF_OFFSET_MULTIPLIER));
+
+		vec3 position = {pos_x, pos_y, 0.0F};
+		// NOLINTNEXTLINE(misc-include-cleaner)
+		glm_translate(data[i].model, position);
+
+		// Récupération des propriétés du matériau depuis la
+		// bibliothèque
+		PBRMaterial* mat = &app->material_lib->materials[i];
+
+		glm_vec3_copy(mat->albedo, data[i].albedo);
+		data[i].metallic = mat->metallic;
+		data[i].roughness = mat->roughness;
+		data[i].ao = 1.0F;  // Valeur par défaut
+	}
+
+	// 3. Initialisation du groupe (Transfert VBO Instance + Création VAO)
+	instanced_group_init(&app->instanced_group, data, total_count);
+
+	// 4. Premier lien avec la géométrie actuelle
+	// Note: on utilise les noms de buffers de ton app.h (sphere_vbo, etc.)
+	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
+	                          app->sphere_nbo, app->sphere_ebo);
+
+	free(data);
+}
+
+void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
+{
+	// 1. Utiliser le shader instancié
+	glUseProgram(app->pbr_instanced_shader);
+
+	// 2. Bind des textures IBL (une seule fois pour tout le groupe)
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+
+	glUniform1i(
+	    glGetUniformLocation(app->pbr_instanced_shader, "irradianceMap"),
+	    0);
+	glUniform1i(
+	    glGetUniformLocation(app->pbr_instanced_shader, "prefilterMap"), 1);
+	glUniform1i(glGetUniformLocation(app->pbr_instanced_shader, "brdfLUT"),
+	            2);
+
+	// 3. Uniforms globaux (Caméra et Matrices de vue)
+	glUniform3fv(glGetUniformLocation(app->pbr_instanced_shader, "camPos"),
+	             1, camera_pos);
+	glUniformMatrix4fv(
+	    glGetUniformLocation(app->pbr_instanced_shader, "projection"), 1,
+	    GL_FALSE, (float*)proj);
+	glUniformMatrix4fv(
+	    glGetUniformLocation(app->pbr_instanced_shader, "view"), 1,
+	    GL_FALSE, (float*)view);
+	glUniform1f(
+	    glGetUniformLocation(app->pbr_instanced_shader, "pbr_exposure"),
+	    app->u_exposure);
+
+	// 4. Mode Wireframe
+	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+
+	// 5. L'UNIQUE APPEL DE RENDU POUR LA GRILLE DE SPHÈRES
+	// instanced_group_draw lie le VAO et appelle glDrawElementsInstanced
+	instanced_group_draw(&app->instanced_group, app->geometry.indices.size);
 }
 
 void app_init_quad(App* app)
@@ -302,10 +412,10 @@ void app_cleanup(App* app)
 	icosphere_free(&app->geometry);
 	skybox_cleanup(&app->skybox);
 
-	glDeleteVertexArrays(1, &app->vao);
-	glDeleteBuffers(1, &app->vbo);
-	glDeleteBuffers(1, &app->nbo);
-	glDeleteBuffers(1, &app->ebo);
+	glDeleteVertexArrays(1, &app->sphere_vao);
+	glDeleteBuffers(1, &app->sphere_vbo);
+	glDeleteBuffers(1, &app->sphere_nbo);
+	glDeleteBuffers(1, &app->sphere_ebo);
 
 	ui_destroy(&app->ui);
 
@@ -334,36 +444,12 @@ void app_run(App* app)
 			icosphere_generate(&app->geometry, app->subdivisions);
 
 			/* Upload to GPU */
-			glBindVertexArray(app->vao);
+			app_update_gpu_buffers(app);
 
-			glBindBuffer(GL_ARRAY_BUFFER, app->vbo);
-			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.vertices.size *
-			                          sizeof(vec3)),
-			             app->geometry.vertices.data,
-			             GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-			                      sizeof(vec3), (void*)0);
-			glEnableVertexAttribArray(0);
+			instanced_group_bind_mesh(
+			    &app->instanced_group, app->sphere_vbo,
+			    app->sphere_nbo, app->sphere_ebo);
 
-			glBindBuffer(GL_ARRAY_BUFFER, app->nbo);
-			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.normals.size *
-			                          sizeof(vec3)),
-			             app->geometry.normals.data,
-			             GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-			                      sizeof(vec3), (void*)0);
-			glEnableVertexAttribArray(1);
-
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.indices.size *
-			                          sizeof(unsigned int)),
-			             app->geometry.indices.data,
-			             GL_STATIC_DRAW);
-
-			glBindVertexArray(0);
 			last_subdiv = app->subdivisions;
 		}
 
@@ -372,6 +458,33 @@ void app_run(App* app)
 		glfwSwapBuffers(app->window);
 		glfwPollEvents();
 	}
+}
+
+void app_update_gpu_buffers(App* app)
+{
+	glBindVertexArray(app->sphere_vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_vbo);
+	glBufferData(GL_ARRAY_BUFFER,
+	             (GLsizeiptr)(app->geometry.vertices.size * sizeof(vec3)),
+	             app->geometry.vertices.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_nbo);
+	glBufferData(GL_ARRAY_BUFFER,
+	             (GLsizeiptr)(app->geometry.normals.size * sizeof(vec3)),
+	             app->geometry.normals.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->sphere_ebo);
+	glBufferData(
+	    GL_ELEMENT_ARRAY_BUFFER,
+	    (GLsizeiptr)(app->geometry.indices.size * sizeof(unsigned int)),
+	    app->geometry.indices.data, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
 }
 
 void app_render(App* app)
@@ -433,7 +546,8 @@ void app_render(App* app)
 	/* 1. Render icosphere FIRST (populates depth buffer for early-Z
 	 * culling) */
 	// app_render_icosphere(app, view_proj);
-	app_render_icosphere_pbr(app, view, proj, camera_pos);
+	// app_render_icosphere_pbr(app, view, proj, camera_pos);
+	app_render_instanced(app, view, proj, camera_pos);
 
 	/* 2. Render skybox LAST (using LEQUAL to fill background) */
 	/* We always use FILL for the skybox regardless of wireframe mode */
@@ -471,7 +585,7 @@ void app_render_icosphere(App* app, mat4 view_proj)
 	            light_dir[2]);
 
 	/* Draw icosphere */
-	glBindVertexArray(app->vao);
+	glBindVertexArray(app->sphere_vao);
 
 	/* Only set polygon mode for the icosphere */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
@@ -646,7 +760,7 @@ void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
 	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
 
 	// 4. Draw
-	glBindVertexArray(app->vao);
+	glBindVertexArray(app->sphere_vao);
 	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
 	               GL_UNSIGNED_INT, 0);
 }
