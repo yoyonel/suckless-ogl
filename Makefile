@@ -36,7 +36,7 @@ clean:
 
 clean-all:
 	@echo "Removing all build directories..."
-	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR)
+	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) build-ssbo
 
 rebuild: clean-all all
 
@@ -176,6 +176,22 @@ docker-usage:
 	@echo "Docker/Podman disk usage:"
 	$(CONTAINER_ENGINE) system df
 
+# Build avec SSBO
+.PHONY: build-ssbo run-ssbo clean-ssbo
+
+build-ssbo:
+	@echo "Building with SSBO rendering enabled..."
+	@mkdir -p build-ssbo
+	@$(DISTROBOX) $(CMAKE) -B build-ssbo -DUSE_SSBO_RENDERING=ON -G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build build-ssbo --parallel $(shell nproc)
+
+run-ssbo: build-ssbo
+	@./build-ssbo/app
+
+clean-ssbo:
+	@echo "Cleaning SSBO build..."
+	@rm -rf build-ssbo
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Build the project (default)"
@@ -183,6 +199,9 @@ help:
 	@echo "  clean-all  - Completely remove the build directory"
 	@echo "  rebuild    - Full clean and rebuild from scratch"
 	@echo "  run        - Build and run the application"
+	@echo "  build-ssbo - Build with SSBO rendering (alternative path)"
+	@echo "  run-ssbo   - Build and run with SSBO rendering"
+	@echo "  clean-ssbo - Clean SSBO-specific build"
 	@echo "  format     - Format code using clang-format"
 	@echo "  lint       - Lint code using clang-tidy"
 	@echo "  deps-setup - Download dependencies for offline build"

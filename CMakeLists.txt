@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.14)
 project(suckless-ogl C)
 
+# Option pour activer le rendu SSBO
+option(USE_SSBO_RENDERING "Use SSBO-based rendering instead of instanced rendering" OFF)
+
+if(USE_SSBO_RENDERING)
+    add_compile_definitions(USE_SSBO_RENDERING)
+    message(STATUS "SSBO rendering: ENABLED")
+else()
+    message(STATUS "SSBO rendering: DISABLED (using legacy instanced rendering)")
+endif()
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -20,6 +30,7 @@ set(SOURCES
     src/material.c
     src/perf_timer.c
     src/instanced_rendering.c
+    src/ssbo_rendering.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)

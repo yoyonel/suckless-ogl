@@ -4,6 +4,9 @@
 #include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
+#ifdef USE_SSBO_RENDERING
+#include "ssbo_rendering.h"
+#endif
 #include "instanced_rendering.h"
 #include "material.h"
 #include "shader.h"
@@ -42,8 +45,13 @@ typedef struct {
 	GLuint sphere_nbo;
 	GLuint sphere_ebo;
 
+#ifdef USE_SSBO_RENDERING
+	SSBOGroup ssbo_group;
+	GLuint pbr_ssbo_shader;
+#endif
 	/* Instanced rendering */
 	InstancedGroup instanced_group;
+	GLuint pbr_instanced_shader;
 
 	/* Billboards */
 	GLuint quad_vao;
@@ -54,7 +62,6 @@ typedef struct {
 	/* Shaders */
 	GLuint phong_shader;
 	GLuint skybox_shader;
-	GLuint pbr_instanced_shader;
 
 	/* Cached uniform locations (Phong) */
 	GLint u_phong_mvp;
@@ -110,6 +117,9 @@ void app_render_icosphere_pbr(App* app, mat4 view, mat4 proj, vec3 camera_pos);
 void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
                              mat4 model, float metallic, float roughness,
                              vec3 albedo);
+#ifdef USE_SSBO_RENDERING
+void app_init_ssbo(App* app);
+#endif
 void app_render_pbr_billboard(App* app, mat4 view, mat4 invView, mat4 proj,
                               vec3 camera_pos, mat4 model, float metallic,
                               float roughness, vec3 albedo);

@@ -4,6 +4,9 @@
 #include "glad/glad.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#ifdef USE_SSBO_RENDERING
+#include "ssbo_rendering.h"
+#endif
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
@@ -270,6 +273,16 @@ int app_init(App* app, int width, int height, const char* title)
 	app->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
+#ifdef USE_SSBO_RENDERING
+	app_init_ssbo(app);
+	app->pbr_ssbo_shader = shader_load_program("shaders/pbr_ibl_ssbo.vert",
+	                                           "shaders/pbr_ibl_ssbo.frag");
+	if (!app->pbr_ssbo_shader) {
+		LOG_ERROR("suckless-ogl.app", "Failed to load pbr_ssbo shader");
+		return 0;
+	}
+	LOG_INFO("suckless-ogl.app", "SSBO rendering mode active");
+#else
 	app_init_instancing(app);
 	app->pbr_instanced_shader = shader_load_program(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
@@ -278,9 +291,70 @@ int app_init(App* app, int width, int height, const char* title)
 		          "Failed to load pbr_instanced shader");
 		return 0;
 	}
+	LOG_INFO("suckless-ogl.app", "Legacy instanced rendering mode active");
+#endif
 
 	return 1;
 }
+
+#ifdef USE_SSBO_RENDERING
+void app_init_ssbo(App* app)
+{
+	const int total_count =
+	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int cols = DEFAULT_COLS;
+	const int rows = (total_count + cols - 1) / cols;
+	const float spacing = DEFAULT_SPACING;
+
+	const float grid_w = (float)(cols - 1) * spacing;
+	const float grid_h = (float)(rows - 1) * spacing;
+
+	SphereInstanceSSBO* data =
+	    malloc(sizeof(SphereInstanceSSBO) * total_count);
+	if (!data) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for SSBO");
+		return;
+	}
+
+	for (int i = 0; i < total_count; i++) {
+		const int grid_x = i % cols;
+		const int grid_y = i / cols;
+
+		glm_mat4_identity(data[i].model);
+
+		const float pos_x = ((float)grid_x * spacing) -
+		                    (grid_w * HALF_OFFSET_MULTIPLIER);
+		const float pos_y = -(((float)grid_y * spacing) -
+		                      (grid_h * HALF_OFFSET_MULTIPLIER));
+
+		vec3 position = {pos_x, pos_y, 0.0F};
+		glm_translate(data[i].model, position);
+
+		PBRMaterial* mat = &app->material_lib->materials[i];
+
+		glm_vec3_copy(mat->albedo, data[i].albedo);
+		data[i].metallic = mat->metallic;
+		data[i].roughness = mat->roughness;
+		data[i].ao = 1.0F;
+		data[i]._padding[0] = 0.0F;
+		data[i]._padding[1] = 0.0F;
+	}
+
+	/* Debug : vérifier la première instance */
+	LOG_DEBUG("suckless-ogl.ssbo",
+	          "First instance - pos: (%.2f, %.2f, %.2f), albedo: (%.2f, "
+	          "%.2f, %.2f)",
+	          data[0].model[3][0], data[0].model[3][1], data[0].model[3][2],
+	          data[0].albedo[0], data[0].albedo[1], data[0].albedo[2]);
+
+	ssbo_group_init(&app->ssbo_group, data, total_count);
+	ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo, app->sphere_nbo,
+	                     app->sphere_ebo);
+
+	free(data);
+}
+#endif
 
 void app_init_instancing(App* app)
 {
@@ -341,10 +415,15 @@ void app_init_instancing(App* app)
 
 void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 {
-	// 1. Utiliser le shader instancié
-	glUseProgram(app->pbr_instanced_shader);
+	GLuint id_current_shader = 0;
+#ifdef USE_SSBO_RENDERING
+	id_current_shader = app->pbr_ssbo_shader;
+#else
+	id_current_shader = app->pbr_instanced_shader;
+#endif
 
-	// 2. Bind des textures IBL (une seule fois pour tout le groupe)
+	glUseProgram(id_current_shader);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
 	glActiveTexture(GL_TEXTURE1);
@@ -352,30 +431,26 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
 
-	glUniform1i(
-	    glGetUniformLocation(app->pbr_instanced_shader, "irradianceMap"),
-	    0);
-	glUniform1i(
-	    glGetUniformLocation(app->pbr_instanced_shader, "prefilterMap"), 1);
-	glUniform1i(glGetUniformLocation(app->pbr_instanced_shader, "brdfLUT"),
-	            2);
+	glUniform1i(glGetUniformLocation(id_current_shader, "irradianceMap"),
+	            0);
+	glUniform1i(glGetUniformLocation(id_current_shader, "prefilterMap"), 1);
+	glUniform1i(glGetUniformLocation(id_current_shader, "brdfLUT"), 2);
 
-	// 3. Uniforms globaux (Caméra et Matrices de vue)
-	glUniform3fv(glGetUniformLocation(app->pbr_instanced_shader, "camPos"),
-	             1, camera_pos);
+	glUniform3fv(glGetUniformLocation(id_current_shader, "camPos"), 1,
+	             camera_pos);
 	glUniformMatrix4fv(
-	    glGetUniformLocation(app->pbr_instanced_shader, "projection"), 1,
-	    GL_FALSE, (float*)proj);
-	glUniformMatrix4fv(
-	    glGetUniformLocation(app->pbr_instanced_shader, "view"), 1,
-	    GL_FALSE, (float*)view);
-	glUniform1f(
-	    glGetUniformLocation(app->pbr_instanced_shader, "pbr_exposure"),
-	    app->u_exposure);
+	    glGetUniformLocation(id_current_shader, "projection"), 1, GL_FALSE,
+	    (float*)proj);
+	glUniformMatrix4fv(glGetUniformLocation(id_current_shader, "view"), 1,
+	                   GL_FALSE, (float*)view);
+	glUniform1f(glGetUniformLocation(id_current_shader, "pbr_exposure"),
+	            app->u_exposure);
 
-	// 5. L'UNIQUE APPEL DE RENDU POUR LA GRILLE DE SPHÈRES
-	// instanced_group_draw lie le VAO et appelle glDrawElementsInstanced
+#ifdef USE_SSBO_RENDERING
+	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);
+#else
 	instanced_group_draw(&app->instanced_group, app->geometry.indices.size);
+#endif
 }
 
 void app_init_quad(App* app)
@@ -422,7 +497,11 @@ void app_cleanup(App* app)
 
 	material_free_lib(app->material_lib);
 
+#ifdef USE_SSBO_RENDERING
+	ssbo_group_cleanup(&app->ssbo_group);
+#else
 	instanced_group_cleanup(&app->instanced_group);
+#endif
 
 	glfwDestroyWindow(app->window);
 	glfwTerminate();
@@ -445,9 +524,14 @@ void app_run(App* app)
 			/* Upload to GPU */
 			app_update_gpu_buffers(app);
 
+#ifdef USE_SSBO_RENDERING
+			ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo,
+			                     app->sphere_nbo, app->sphere_ebo);
+#else
 			instanced_group_bind_mesh(
 			    &app->instanced_group, app->sphere_vbo,
 			    app->sphere_nbo, app->sphere_ebo);
+#endif
 
 			last_subdiv = app->subdivisions;
 		}
