@@ -31,6 +31,7 @@ set(SOURCES
     src/perf_timer.c
     src/instanced_rendering.c
     src/ssbo_rendering.c
+    src/camera.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)

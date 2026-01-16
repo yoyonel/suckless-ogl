@@ -7,6 +7,7 @@
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
+#include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "shader.h"
@@ -29,14 +30,14 @@ typedef struct {
 	int subdivisions;
 	int wireframe;
 
-	/* Camera state */
-	float camera_yaw;   /* Horizontal rotation (radians) */
-	float camera_pitch; /* Vertical rotation (radians) */
-	float camera_distance;
-	int camera_enabled; /* Mouse control enabled */
-	int first_mouse;    /* First mouse movement flag */
+	// /* Mouse state */
+	int first_mouse; /* First mouse movement flag */
 	double last_mouse_x;
 	double last_mouse_y;
+
+	// /* Camera state */
+	int camera_enabled; /* Mouse control enabled */
+	Camera camera;
 
 	/* Icosphere geometry */
 	IcosphereGeometry geometry;
@@ -52,12 +53,6 @@ typedef struct {
 	/* Instanced rendering */
 	InstancedGroup instanced_group;
 	GLuint pbr_instanced_shader;
-
-	/* Billboards */
-	GLuint quad_vao;
-	GLuint quad_vbo;
-	GLuint quad_ebo;
-	GLsizei quad_indices_size;
 
 	/* Shaders */
 	GLuint phong_shader;
@@ -77,6 +72,7 @@ typedef struct {
 	/* FPS counter */
 	FpsCounter fps_counter;
 	double last_frame_time;
+	double delta_time;
 
 	/* UI */
 	UIContext ui;
@@ -120,11 +116,7 @@ void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
 #ifdef USE_SSBO_RENDERING
 void app_init_ssbo(App* app);
 #endif
-void app_render_pbr_billboard(App* app, mat4 view, mat4 invView, mat4 proj,
-                              vec3 camera_pos, mat4 model, float metallic,
-                              float roughness, vec3 albedo);
 void app_render_ui(App* app);
-void app_init_quad(App* app);
 void app_init_instancing(App* app);
 void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos);
 /* Input handling */

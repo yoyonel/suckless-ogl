@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include "app_settings.h"
 #include "fps.h"
 #include "glad/glad.h"
 #include "icosphere.h"
@@ -7,6 +8,7 @@
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
+#include "camera.h"
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
@@ -22,67 +24,14 @@
 #include <cglm/types.h>
 #include <cglm/util.h>
 #include <cglm/vec3.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>  // for malloc
 
-#define MOUSE_SENSITIVITY 0.002F
-#define MIN_PITCH -1.5F
-#define MAX_PITCH 1.5F
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-// #define USE_RAYTRACE_BILLBOARD
-
-enum {
-	MIN_SUBDIV = 0,
-	MAX_SUBDIV = 6,
-	CUBEMAP_SIZE = 1024,
-	INITIAL_SUBDIVISIONS = 3
-};
-
-static const float DEFAULT_CAMERA_DISTANCE = 20.0F;
-static const float DEFAULT_ENV_LOD = 0.0F;
-static const float DEFAULT_CAMERA_ANGLE = 0.0F;
-static const float NEAR_PLANE = 0.1F;
-static const float FAR_PLANE = 100.0F;
-static const float FOV_ANGLE = 60.0F;
-static const float MAX_ENV_LOD = 10.0F;
-static const float MIN_ENV_LOD = 0.0F;
-static const float LOD_STEP = 0.5F;
-static const float MIN_CAMERA_DISTANCE = 1.5F;
-static const float MAX_CAMERA_DISTANCE = 50.0F;
-static const float ZOOM_STEP = 0.2F;
-static const float LIGHT_DIR_X = 0.5F;
-static const float LIGHT_DIR_Y = 1.0F;
-static const float LIGHT_DIR_Z = 0.3F;
-// PBR+IBL
-static const int PREFILTERED_SPECULAR_MAP_SIZE = 1024;
-static const int IRIDIANCE_MAP_SIZE = 64;
-static const int BRDF_LUT_MAP_SIZE = 512;
-static const float DEFAULT_CLAMP_MULTIPLIER = 6.0F;
-static const float DEFAULT_METALLIC = 1.0F;
-static const float DEFAULT_ROUGHNESS = 0.0F;
-static const float DEFAULT_AO = 1.0F;
-static const float DEFAULT_EXPOSURE = 1.0F;
-//
-static const float DEFAULT_FONT_SIZE = 32.0F;
-static const float DEFAULT_FPS_SMOOTHING = 0.95F;
-static const float DEFAULT_FPS_WINDOW = 5.0F;
-//
-static const int DEFAULT_COLS = 10;
-static const float DEFAULT_SPACING = 2.5F;
-static const float HALF_OFFSET_MULTIPLIER = 0.5F;
-//
-static const float DEFAULT_FONT_SHADOW_OFFSET_X = 2.0F;
-static const float DEFAULT_FONT_SHADOW_OFFSET_Y = 2.0F;
-static const float DEFAULT_FONT_OFFSET_X = 0.0F;
-static const float DEFAULT_FONT_OFFSET_Y = 0.0F;
-static const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F};
-static const vec3 DEFAULT_FONT_SHADOW_COLOR = {0.0F, 0.0F, 0.0F};
-static const int MAX_FPS_TEXT_LENGTH = 64;
-//
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
+static void camera_process_key_callback(Camera* camera, int key, int action);
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static void framebuffer_size_callback(GLFWwindow* window, int width,
@@ -97,16 +46,15 @@ int app_init(App* app, int width, int height, const char* title)
 	app->wireframe = 0;
 
 	/* Camera initial state */
-	app->camera_yaw = DEFAULT_CAMERA_ANGLE;
-	app->camera_pitch = DEFAULT_CAMERA_ANGLE;
-	app->camera_distance = DEFAULT_CAMERA_DISTANCE;
 	app->camera_enabled = 1;        /* Enabled by default */
 	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
 	app->is_fullscreen = 0;
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
-
+	//
+	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
+	            DEFAULT_CAMERA_PITCH);
 	/* Initialize GLFW */
 	if (!glfwInit()) {
 		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLFW");
@@ -201,12 +149,6 @@ int app_init(App* app, int width, int height, const char* title)
 		LOG_ERROR("suckless-ogl.app", "Failed to load pbr shader");
 		return 0;
 	}
-	app->pbr_rt_shader = shader_load_program("shaders/pbr_ibl_rt.vert",
-	                                         "shaders/pbr_ibl_rt.frag");
-	if (!app->pbr_rt_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load pbr rt shader");
-		return 0;
-	}
 
 	app->u_metallic = DEFAULT_METALLIC;
 	app->u_roughness = DEFAULT_ROUGHNESS;
@@ -257,9 +199,6 @@ int app_init(App* app, int width, int height, const char* title)
 	glGenBuffers(1, &app->sphere_vbo);
 	glGenBuffers(1, &app->sphere_nbo);
 	glGenBuffers(1, &app->sphere_ebo);
-
-	app->quad_indices_size = 0;
-	app_init_quad(app);
 
 	/* Enable depth testing */
 	glEnable(GL_DEPTH_TEST);
@@ -453,32 +392,6 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 #endif
 }
 
-void app_init_quad(App* app)
-{
-	const float QUAD_VERTICES[] = {-1.0F, -1.0F, 0.0F, 1.0F,  -1.0F, 0.0F,
-	                               1.0F,  1.0F,  0.0F, -1.0F, 1.0F,  0.0F};
-	const unsigned int QUAD_INDICES[] = {0, 1, 2, 2, 3, 0};
-
-	glGenVertexArrays(1, &app->quad_vao);
-	glGenBuffers(1, &app->quad_vbo);
-	glGenBuffers(1, &app->quad_ebo);
-
-	glBindVertexArray(app->quad_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, app->quad_vbo);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD_VERTICES), QUAD_VERTICES,
-	             GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->quad_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(QUAD_INDICES),
-	             QUAD_INDICES, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-	                      (void*)0);
-	glEnableVertexAttribArray(0);
-
-	app->quad_indices_size =
-	    (GLsizei)sizeof(QUAD_INDICES) / sizeof(unsigned int);
-}
-
 void app_cleanup(App* app)
 {
 	icosphere_free(&app->geometry);
@@ -513,9 +426,10 @@ void app_run(App* app)
 
 	while (!glfwWindowShouldClose(app->window)) {
 		double current_time = glfwGetTime();
-		double delta_time = current_time - app->last_frame_time;
+		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
-		fps_update(&app->fps_counter, delta_time, current_time);
+		fps_update(&app->fps_counter, app->delta_time, current_time);
+		camera_process_keyboard(&app->camera, (float)app->delta_time);
 
 		/* Regenerate icosphere if subdivision level changed */
 		if (app->subdivisions != last_subdiv) {
@@ -591,23 +505,16 @@ void app_render(App* app)
 		return;
 	}
 
-	/* Calculate camera position from yaw, pitch, and distance */
-	float cam_x = app->camera_distance * cosf(app->camera_pitch) *
-	              sinf(app->camera_yaw);
-	float cam_y = app->camera_distance * sinf(app->camera_pitch);
-	float cam_z = app->camera_distance * cosf(app->camera_pitch) *
-	              cosf(app->camera_yaw);
-
 	/* Setup camera matrices */
 	mat4 view;
 	mat4 proj;
 	mat4 view_proj;
 	mat4 inv_view_proj;
-	vec3 camera_pos = {cam_x, cam_y, cam_z};
-	vec3 target = {0.0F, 0.0F, 0.0F};
-	vec3 camera_up = {0.0F, 1.0F, 0.0F};
 
-	glm_lookat(camera_pos, target, camera_up, view);
+	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
+	                   app->camera.position[2]};
+	camera_get_view_matrix(&app->camera, view);
+
 	glm_perspective(glm_rad(FOV_ANGLE),
 	                (float)app->width / (float)app->height, NEAR_PLANE,
 	                FAR_PLANE, proj);
@@ -674,128 +581,6 @@ void app_render_icosphere(App* app, mat4 view_proj)
 	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
 	               GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-}
-
-void app_render_icosphere_pbr(App* app, mat4 view, mat4 proj, vec3 camera_pos)
-{
-	glUseProgram(app->pbr_shader);
-
-	// Bind des textures une seule fois avant la boucle (Optimisation)
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
-
-	glUniform1i(glGetUniformLocation(app->pbr_shader, "irradianceMap"), 0);
-	glUniform1i(glGetUniformLocation(app->pbr_shader, "prefilterMap"), 1);
-	glUniform1i(glGetUniformLocation(app->pbr_shader, "brdfLUT"), 2);
-	glUniform3fv(glGetUniformLocation(app->pbr_shader, "camPos"), 1,
-	             camera_pos);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_shader, "projection"),
-	                   1, GL_FALSE, (float*)proj);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_shader, "view"), 1,
-	                   GL_FALSE, (float*)view);
-
-	// Calcul de la grille
-	const int total_count =
-	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
-	const int cols = DEFAULT_COLS;
-	const int rows = (total_count + cols - 1) / cols;
-	const float spacing = DEFAULT_SPACING;
-
-	// Calcul des dimensions totales pour le centrage
-	const float grid_w = (float)(cols - 1) * spacing;
-	const float grid_h = (float)(rows - 1) * spacing;
-
-	mat4 invView;
-	glm_mat4_inv(view, invView);
-
-	for (int i = 0; i < total_count; i++) {
-		const int grid_x = i % cols;
-		const int grid_y = i / cols;
-
-		mat4 model_matrix;
-		glm_mat4_identity(model_matrix);
-
-		// Centrage : (pos_brute - (taille_totale * 0.5))
-		const float pos_x = ((float)grid_x * spacing) -
-		                    (grid_w * HALF_OFFSET_MULTIPLIER);
-		const float pos_y = -(((float)grid_y * spacing) -
-		                      (grid_h * HALF_OFFSET_MULTIPLIER));
-
-		vec3 position = {pos_x, pos_y, 0.0F};
-		// NOLINTNEXTLINE(misc-include-cleaner)
-		glm_translate(model_matrix, position);
-
-		PBRMaterial* material = &app->material_lib->materials[i];
-
-// On passe les paramètres au shader via la fonction d'instance
-#ifndef USE_RAYTRACE_BILLBOARD
-		app_render_pbr_instance(app, view, proj, camera_pos,
-		                        model_matrix, material->metallic,
-		                        material->roughness, material->albedo);
-#else
-		app_render_pbr_billboard(app, view, invView, proj, camera_pos,
-		                         model_matrix, material->metallic,
-		                         material->roughness, material->albedo);
-#endif
-	}
-}
-
-void app_render_pbr_billboard(App* app, mat4 view, mat4 invView, mat4 proj,
-                              vec3 camera_pos, mat4 model, float metallic,
-                              float roughness, vec3 albedo)
-{
-	glUseProgram(app->pbr_rt_shader);
-
-	// Uniforms existants
-	glUniform3fv(glGetUniformLocation(app->pbr_rt_shader, "camPos"), 1,
-	             camera_pos);
-	glUniformMatrix4fv(
-	    glGetUniformLocation(app->pbr_rt_shader, "projection"), 1, GL_FALSE,
-	    (float*)proj);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_rt_shader, "view"), 1,
-	                   GL_FALSE, (float*)view);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_rt_shader, "model"), 1,
-	                   GL_FALSE, (float*)model);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_rt_shader, "invView"),
-	                   1, GL_FALSE, (float*)invView);
-
-	// Nouveaux Uniforms Billboard
-	glUniform1f(glGetUniformLocation(app->pbr_rt_shader, "SphereRadius"),
-	            1.0F);
-	// glUniform1f(
-	//     glGetUniformLocation(app->pbr_rt_shader,
-	//     "aa_width_multiplier"), 1.0f);
-	// glUniform1f(glGetUniformLocation(app->pbr_rt_shader,
-	// "aa_distance_factor"),
-	//             0.002f);
-
-	// Paramètres PBR
-	glUniform3f(glGetUniformLocation(app->pbr_rt_shader, "material.albedo"),
-	            albedo[0], albedo[1], albedo[2]);
-	glUniform1f(
-	    glGetUniformLocation(app->pbr_rt_shader, "material.metallic"),
-	    metallic);
-	glUniform1f(
-	    glGetUniformLocation(app->pbr_rt_shader, "material.roughness"),
-	    roughness);
-	glUniform1f(glGetUniformLocation(app->pbr_rt_shader, "material.ao"),
-	            app->u_ao);
-	glUniform1f(glGetUniformLocation(app->pbr_rt_shader, "pbr_exposure"),
-	            app->u_exposure);
-
-	// Activer le blending pour l'AA analytique
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glBindVertexArray(app->quad_vao);
-	glDrawElements(GL_TRIANGLES, app->quad_indices_size, GL_UNSIGNED_INT,
-	               0);
-
-	glDisable(GL_BLEND);
 }
 
 void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
@@ -881,13 +666,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	(void)mods;
 
 	App* app = (App*)glfwGetWindowUserPointer(window);
-
 	if (action == GLFW_PRESS) {
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			case GLFW_KEY_W:
+			case GLFW_KEY_Z:  // key 'W' on French layout keyboard
 				app->wireframe = !app->wireframe;
 				break;
 			case GLFW_KEY_UP:
@@ -918,9 +702,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				break;
 			case GLFW_KEY_SPACE:
 				/* Reset camera to default position */
-				app->camera_yaw = DEFAULT_CAMERA_ANGLE;
-				app->camera_pitch = DEFAULT_CAMERA_ANGLE;
-				app->camera_distance = DEFAULT_CAMERA_DISTANCE;
+				camera_init(
+				    &app->camera, DEFAULT_CAMERA_DISTANCE,
+				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
 				app->env_lod = DEFAULT_ENV_LOD;
 				LOG_INFO("suckless-ogl.app",
 				         "Camera and LOD reset");
@@ -948,6 +732,31 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				/* Ignore other keys */
 				break;
 		}
+	}
+
+	camera_process_key_callback(&app->camera, key, action);
+}
+
+static void camera_process_key_callback(Camera* camera, int key, int action)
+{
+	int pressed = (action != GLFW_RELEASE);
+	if (key == GLFW_KEY_W) {
+		camera->move_forward = pressed;
+	}
+	if (key == GLFW_KEY_S) {
+		camera->move_backward = pressed;
+	}
+	if (key == GLFW_KEY_A) {
+		camera->move_left = pressed;
+	}
+	if (key == GLFW_KEY_D) {
+		camera->move_right = pressed;
+	}
+	if (key == GLFW_KEY_Q) {
+		camera->move_up = pressed;
+	}
+	if (key == GLFW_KEY_E) {
+		camera->move_down = pressed;
 	}
 }
 
@@ -1003,16 +812,7 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	app->last_mouse_y = ypos;
 
 	/* Update camera rotation (note: -delta_x for natural mouse movement) */
-	app->camera_yaw += (float)(-delta_x * MOUSE_SENSITIVITY);
-	app->camera_pitch += (float)(-delta_y * MOUSE_SENSITIVITY);
-
-	/* Clamp pitch to avoid gimbal lock */
-	if (app->camera_pitch > MAX_PITCH) {
-		app->camera_pitch = MAX_PITCH;
-	}
-	if (app->camera_pitch < MIN_PITCH) {
-		app->camera_pitch = MIN_PITCH;
-	}
+	camera_process_mouse(&app->camera, (float)delta_x, (float)delta_y);
 }
 
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -1020,16 +820,8 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	(void)xoffset;
 	App* app = (App*)glfwGetWindowUserPointer(window);
 
-	/* Zoom in/out with mouse wheel */
-	app->camera_distance -= (float)yoffset * ZOOM_STEP;
-
-	/* Clamp distance */
-	if (app->camera_distance < MIN_CAMERA_DISTANCE) {
-		app->camera_distance = MIN_CAMERA_DISTANCE;
-	}
-	if (app->camera_distance > MAX_CAMERA_DISTANCE) {
-		app->camera_distance = MAX_CAMERA_DISTANCE;
-	}
+	// On passe le yoffset directement à la caméra
+	camera_process_scroll(&app->camera, (float)yoffset);
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
