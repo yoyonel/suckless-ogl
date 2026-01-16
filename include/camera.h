@@ -24,6 +24,24 @@ typedef struct {
 	int move_right;
 	int move_up;
 	int move_down;
+
+	// === PHYSIQUE RÉALISTE ===
+
+	// Option 1: Inertie / Momentum
+	vec3 velocity_current;  // Vitesse actuelle (3D)
+	float acceleration;     // Vitesse d'accélération (ex: 5.0)
+	float friction;         // Coefficient de friction 0-1 (ex: 0.85)
+
+	// Option 2: Rotation smooth
+	float yaw_target;          // Orientation cible (yaw)
+	float pitch_target;        // Orientation cible (pitch)
+	float rotation_smoothing;  // Facteur de lissage rotation (ex: 0.15)
+
+	// Option 3: Head bobbing
+	float bobbing_time;       // Temps accumulé pour l'oscillation
+	float bobbing_frequency;  // Fréquence de balancement (ex: 2.0)
+	float bobbing_amplitude;  // Amplitude verticale (ex: 0.05)
+	int bobbing_enabled;      // Activé/désactivé
 } Camera;
 
 void camera_init(Camera* cam, float distance, float yaw, float pitch);
