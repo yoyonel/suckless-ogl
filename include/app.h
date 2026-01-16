@@ -40,8 +40,8 @@ typedef struct {
 	Camera camera;
 
 	/* Icosphere geometry */
-	IcosphereGeometry geometry;
-	GLuint sphere_vao;
+	IcosphereGeometry geometry;  // CPU side
+	GLuint sphere_vao;           // GPU side
 	GLuint sphere_vbo;
 	GLuint sphere_nbo;
 	GLuint sphere_ebo;
@@ -55,12 +55,7 @@ typedef struct {
 	GLuint pbr_instanced_shader;
 
 	/* Shaders */
-	GLuint phong_shader;
 	GLuint skybox_shader;
-
-	/* Cached uniform locations (Phong) */
-	GLint u_phong_mvp;
-	GLint u_phong_light_dir;
 
 	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
@@ -87,8 +82,6 @@ typedef struct {
 	int show_debug_tex;
 
 	/* PBR */
-	GLuint pbr_shader;
-	GLuint pbr_rt_shader;
 	float u_metallic;
 	float u_roughness;
 	float u_ao;
@@ -108,11 +101,6 @@ void app_run(App* app);
 /* Rendering */
 void app_render(App* app);
 void app_update_gpu_buffers(App* app);
-void app_render_icosphere(App* app, mat4 view_proj);
-void app_render_icosphere_pbr(App* app, mat4 view, mat4 proj, vec3 camera_pos);
-void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
-                             mat4 model, float metallic, float roughness,
-                             vec3 albedo);
 #ifdef USE_SSBO_RENDERING
 void app_init_ssbo(App* app);
 #endif

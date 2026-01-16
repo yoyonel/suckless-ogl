@@ -146,30 +146,16 @@ int app_init(App* app, int width, int height, const char* title)
 		app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	}
 
-	app->pbr_shader =
-	    shader_load_program("shaders/pbr_ibl.vert", "shaders/pbr_ibl.frag");
-	if (!app->pbr_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load pbr shader");
-		return 0;
-	}
-
 	app->u_metallic = DEFAULT_METALLIC;
 	app->u_roughness = DEFAULT_ROUGHNESS;
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
 
 	/* Load shaders */
-	app->phong_shader =
-	    shader_load_program("shaders/phong.vert", "shaders/phong.frag");
-	if (!app->phong_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load phong shader");
-		return 0;
-	}
-
 	app->skybox_shader = shader_load_program("shaders/background.vert",
 	                                         "shaders/background.frag");
 
-	if (!app->phong_shader || !app->skybox_shader) {
+	if (!app->skybox_shader) {
 		LOG_ERROR("suckless-ogl.app", "Failed to create shaders");
 		return 0;
 	}
@@ -188,11 +174,6 @@ int app_init(App* app, int width, int height, const char* title)
 
 	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
-
-	/* Cache Phong shader uniforms */
-	app->u_phong_mvp = glGetUniformLocation(app->phong_shader, "uMVP");
-	app->u_phong_light_dir =
-	    glGetUniformLocation(app->phong_shader, "lightDir");
 
 	/* Initialize icosphere geometry */
 	icosphere_init(&app->geometry);
@@ -413,7 +394,6 @@ void app_cleanup(App* app)
 	ui_destroy(&app->ui);
 
 	glDeleteTextures(1, &app->hdr_texture);
-	glDeleteProgram(app->phong_shader);
 	glDeleteProgram(app->skybox_shader);
 
 	material_free_lib(app->material_lib);
@@ -544,9 +524,6 @@ void app_render(App* app)
 	/* 1. Render icosphere FIRST (populates depth buffer for early-Z
 	 * culling) */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-	//
-	// app_render_icosphere(app, view_proj);
-	// app_render_icosphere_pbr(app, view, proj, camera_pos);
 	app_render_instanced(app, view, proj, camera_pos);
 
 	/* 2. Render skybox LAST (using LEQUAL to fill background) */
@@ -554,87 +531,8 @@ void app_render(App* app)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	skybox_render(&app->skybox, app->skybox_shader, app->hdr_texture,
 	              inv_view_proj, app->env_lod);
-	// skybox_render(&app->skybox, app->skybox_shader,
-	//               app->spec_prefiltered_tex, inv_view_proj,
-	//               app->env_lod);
-	// skybox_render(&app->skybox, app->skybox_shader, app->irradiance_tex,
-	//               inv_view_proj, app->env_lod);
 
 	app_render_ui(app);
-}
-
-void app_render_icosphere(App* app, mat4 view_proj)
-{
-	/* The icosphere is stationary at the origin */
-	mat4 model;
-	glm_mat4_identity(model);
-
-	/* Build MVP matrix */
-	mat4 mvp;
-	glm_mat4_mul(view_proj, model, mvp);
-
-	/* Use shader and set uniforms */
-	glUseProgram(app->phong_shader);
-
-	glUniformMatrix4fv(app->u_phong_mvp, 1, GL_FALSE, (float*)mvp);
-
-	/* Set light direction - fixed from above */
-	vec3 light_dir = {LIGHT_DIR_X, LIGHT_DIR_Y, LIGHT_DIR_Z};
-	glm_vec3_normalize(light_dir);
-	glUniform3f(app->u_phong_light_dir, light_dir[0], light_dir[1],
-	            light_dir[2]);
-
-	/* Draw icosphere */
-	glBindVertexArray(app->sphere_vao);
-	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
-	               GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-}
-
-void app_render_pbr_instance(App* app, mat4 view, mat4 proj, vec3 camera_pos,
-                             mat4 model, float metallic, float roughness,
-                             vec3 albedo)
-{
-	glUseProgram(app->pbr_shader);
-
-	// 1. Matrices
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_shader, "projection"),
-	                   1, GL_FALSE, (float*)proj);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_shader, "view"), 1,
-	                   GL_FALSE, (float*)view);
-	glUniformMatrix4fv(glGetUniformLocation(app->pbr_shader, "model"), 1,
-	                   GL_FALSE, (float*)model);
-	glUniform3fv(glGetUniformLocation(app->pbr_shader, "camPos"), 1,
-	             camera_pos);
-
-	// 2. Paramètres
-	glUniform3f(glGetUniformLocation(app->pbr_shader, "material.albedo"),
-	            albedo[0], albedo[1], albedo[2]);
-	glUniform1f(glGetUniformLocation(app->pbr_shader, "material.metallic"),
-	            metallic);
-	glUniform1f(glGetUniformLocation(app->pbr_shader, "material.roughness"),
-	            roughness);
-	glUniform1f(glGetUniformLocation(app->pbr_shader, "material.ao"),
-	            app->u_ao);
-	glUniform1f(glGetUniformLocation(app->pbr_shader, "pbr_exposure"),
-	            app->u_exposure);
-
-	// LOG_DEBUG("suckless-ogl.app", "Metallic: %.1F, Roughness: %.1F",
-	//           metallic, roughness);
-
-	// 3. Textures (On peut optimiser en ne les bindant qu'une fois par
-	// frame hors de la boucle)
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
-
-	// 4. Draw
-	glBindVertexArray(app->sphere_vao);
-	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
-	               GL_UNSIGNED_INT, 0);
 }
 
 void app_render_ui(App* app)
