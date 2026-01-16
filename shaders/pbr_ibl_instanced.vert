@@ -10,10 +10,10 @@ layout (location = 7) in vec3 i_pbr;       // Emplacement 7 (x: metallic, y: rou
 
 out vec3 WorldPos;
 out vec3 Normal;
-out vec3 v_Albedo;
-out float v_Metallic;
-out float v_Roughness;
-out float v_AO;
+out vec3 Albedo;
+out float Metallic;
+out float Roughness;
+out float AO;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -26,10 +26,10 @@ void main() {
     mat3 normalMatrix = mat3(transpose(inverse(i_model)));
     Normal = normalize(normalMatrix * in_normal);
 
-    v_Albedo = i_albedo;
-    v_Metallic = i_pbr.x;
-    v_Roughness = i_pbr.y;
-    v_AO = i_pbr.z;
+    Albedo = i_albedo;
+    Metallic = i_pbr.x;
+    Roughness = i_pbr.y;
+    AO = i_pbr.z;
 
     gl_Position = projection * view * vec4(WorldPos, 1.0);
 }

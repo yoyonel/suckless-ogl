@@ -67,6 +67,7 @@ int app_init(App* app, int width, int height, const char* title)
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+	glfwWindowHint(GLFW_SAMPLES, DEFAULT_SAMPLES);
 
 	app->window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!app->window) {
@@ -102,6 +103,8 @@ int app_init(App* app, int width, int height, const char* title)
 	int minor =
 	    glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MINOR);
 	LOG_INFO("suckless-ogl.init", "Context Version: %d.%d", major, minor);
+	LOG_INFO("suckless-ogl.init", "samples: %d", DEFAULT_SAMPLES);
+
 	LOG_INFO("suckless_ogl.context.base.window", "vendor: %s",
 	         glGetString(GL_VENDOR));
 	LOG_INFO("suckless_ogl.context.base.window", "renderer: %s",
@@ -203,6 +206,11 @@ int app_init(App* app, int width, int height, const char* title)
 	/* Enable depth testing */
 	glEnable(GL_DEPTH_TEST);
 
+	/* Enable multisampling */
+	if (DEFAULT_SAMPLES > 1) {
+		glEnable(GL_MULTISAMPLE);
+	}
+
 	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
 	app->last_frame_time = glfwGetTime();
 
@@ -214,8 +222,8 @@ int app_init(App* app, int width, int height, const char* title)
 
 #ifdef USE_SSBO_RENDERING
 	app_init_ssbo(app);
-	app->pbr_ssbo_shader = shader_load_program("shaders/pbr_ibl_ssbo.vert",
-	                                           "shaders/pbr_ibl_ssbo.frag");
+	app->pbr_ssbo_shader = shader_load_program(
+	    "shaders/pbr_ibl_ssbo.vert", "shaders/pbr_ibl_instanced.frag");
 	if (!app->pbr_ssbo_shader) {
 		LOG_ERROR("suckless-ogl.app", "Failed to load pbr_ssbo shader");
 		return 0;

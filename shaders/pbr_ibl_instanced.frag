@@ -4,10 +4,10 @@ out vec4 FragColor;
 
 in vec3 WorldPos;
 in vec3 Normal;
-in vec3 v_Albedo;
-in float v_Metallic;
-in float v_Roughness;
-in float v_AO;
+in vec3 Albedo;
+in float Metallic;
+in float Roughness;
+in float AO;
 
 uniform vec3 camPos;
 uniform sampler2D irradianceMap;
@@ -44,58 +44,41 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 // ----------------------------------------------------------------------------
 // compute_IBL_PBR avec Multiple Scattering
-// Reproduit exactement la logique de ton shader Python
 // ----------------------------------------------------------------------------
-vec3 compute_IBL_PBR(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV)
+vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV, float roughness)
 {
-    // Fresnel pour IBL
-    vec3 F = fresnelSchlickRoughness(NdotV, F0, v_Roughness);
-    vec3 kS = F;
-    vec3 kD = (1.0 - kS) * (1.0 - v_Metallic);
-
+    // Fresnel avec rugosité corrigée
+    vec3 F = fresnelSchlickRoughness(NdotV, F0, roughness);
+    
     // --- DIFFUSE IBL ---
+    vec3 kS = F;
+    vec3 kD = (1.0 - kS) * (1.0 - Metallic);
     vec3 irradiance = texture(irradianceMap, dirToUV(N)).rgb;
-    vec3 diffuse = irradiance * v_Albedo;
+    vec3 diffuse = irradiance * Albedo;
 
-    // --- SPECULAR IBL ---
-    // Calcul dynamique du nombre de LODs (comme dans ton shader Python)
-    // Note: en GLSL, textureQueryLevels ne fonctionne qu'avec samplerCube
-    // Pour sampler2D, on utilise une valeur fixe ou un uniform
-    const float MAX_REFLECTION_LOD = 4.0; // Ajuste selon tes mipmaps
+    // --- SPECULAR IBL (Split-Sum) ---
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilterMap, dirToUV(R), roughness * MAX_REFLECTION_LOD).rgb;
     
-    vec3 prefilteredColor = textureLod(prefilterMap, dirToUV(R), v_Roughness * MAX_REFLECTION_LOD).rgb;
-
-    // BRDF LUT lookup avec correction de coordonnées pour éviter artifacts aux bords
-    vec2 brdfUV = vec2(NdotV, v_Roughness);
-    
-    // Cette correction évite les artifacts aux bords de la texture
+    // BRDF LUT lookup
+    vec2 brdfUV = vec2(NdotV, roughness);
     vec2 texSize = vec2(textureSize(brdfLUT, 0));
-    brdfUV = brdfUV * (texSize - 1.0) / texSize + 0.5 / texSize;
-    
+    brdfUV = brdfUV * (texSize - 1.0) / texSize + 0.5 / texSize; // Correction de bord
     vec2 brdf = texture(brdfLUT, brdfUV).rg;
-
-    // --- MULTIPLE SCATTERING COMPENSATION ---
-    // Split-sum approximation avec compensation de multiple scattering
+    
+    // --- COMPENSATION MULTIPLE SCATTERING ---
     vec3 FssEss = F * brdf.x + brdf.y;
-
-    // Average Fresnel pour multiple scattering
-    // Cette approximation capture la réflectance moyenne sur toutes les directions
     vec3 Favg = F0 + (1.0 - F0) * (1.0 / 21.0);
     float Ess = brdf.x + brdf.y;
-    
-    // Terme de multiple scattering
     vec3 Fms = Favg * FssEss / max(1.0 - Favg * (1.0 - Ess), EPSILON);
     vec3 multipleScattering = Fms * (1.0 - Ess);
 
     vec3 specular = prefilteredColor * (FssEss + multipleScattering);
-
-    // Energy conservation finale avec multiple scattering
-    kD = (1.0 - (FssEss + multipleScattering)) * (1.0 - v_Metallic);
-
-    // Combinaison finale avec AO
-    vec3 ambient = (kD * diffuse + specular) * v_AO;
     
-    return ambient;
+    // Conservation d'énergie finale
+    kD = (1.0 - (FssEss + multipleScattering)) * (1.0 - Metallic);
+    
+    return (kD * diffuse + specular) * AO;
 }
 
 // ----------------------------------------------------------------------------
@@ -112,31 +95,36 @@ vec3 ACESFilm(vec3 x)
     return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
 
+float compute_roughness_clamping(vec3 N, float roughness) {
+    // --- Roughness Clamping (Anti-Aliasing Spéculaire) ---
+    // On calcule la variation de la normale dans l'espace écran
+    vec3 dNdx = dFdx(N);
+    vec3 dNdy = dFdy(N);
+    float maxVariation = max(dot(dNdx, dNdx), dot(dNdy, dNdy));
+
+    // On ajuste la rugosité minimale : plus la normale change vite, 
+    // plus on augmente la rugosité pour "étaler" le reflet et éviter le scintillement.
+    float normalThreshold = 0.1; // Ajustable selon le besoin
+    roughness = max(roughness, pow(maxVariation, normalThreshold));
+    roughness = clamp(roughness, 0.0, 1.0);
+    return roughness;
+}
+
 void main() {
     vec3 N = normalize(Normal);
     vec3 V = normalize(camPos - WorldPos);
     vec3 R = reflect(-V, N);
 
     float NdotV = max(dot(N, V), 0.0);
-    vec3 F0 = mix(vec3(0.04), v_Albedo, v_Metallic);
+    vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
 
-    // IBL Reflection
-    vec3 F = fresnelSchlickRoughness(NdotV, F0, v_Roughness);
-    vec3 kS = F;
-    vec3 kD = (1.0 - kS) * (1.0 - v_Metallic);
+    // 1. Calcul de la rugosité anti-scintillement
+    float clamped_roughness = compute_roughness_clamping(N, Roughness);
 
-    // Diffuse (Irradiance)
-    vec3 irradiance = texture(irradianceMap, dirToUV(N)).rgb;
-    vec3 diffuse = irradiance * v_Albedo;
+    // 2. Appel à la fonction complète avec compensation d'énergie
+    vec3 ambient = compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, clamped_roughness);
 
-    // Specular (Prefiltered)
-    const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilterMap, dirToUV(R), v_Roughness * MAX_REFLECTION_LOD).rgb;
-    vec2 envBRDF = texture(brdfLUT, vec2(NdotV, v_Roughness)).rg;
-    vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
-
-    vec3 ambient = (kD * diffuse + specular) * v_AO;
-
+    // 3. Post-processing
     vec3 color = ambient * pbr_exposure;
     color = ACESFilm(color);
     color = pow(color, vec3(1.0 / 2.2));

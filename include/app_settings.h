@@ -1,3 +1,5 @@
+#define DEFAULT_SAMPLES 4
+
 enum {
 	MIN_SUBDIV = 0,
 	MAX_SUBDIV = 6,

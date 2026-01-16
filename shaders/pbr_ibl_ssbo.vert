@@ -22,7 +22,7 @@ uniform mat4 projection;
 uniform mat4 view;
 
 /* Outputs vers le fragment shader */
-out vec3 FragPos;
+out vec3 WorldPos;
 out vec3 Normal;
 out vec3 Albedo;
 out float Metallic;
@@ -34,7 +34,7 @@ void main()
 	InstanceData inst = instances[gl_InstanceID];
 	
 	vec4 worldPos = inst.model * vec4(aPos, 1.0);
-	FragPos = worldPos.xyz;
+	WorldPos = worldPos.xyz;
 	
 	/* CORRECTION : Pour une sphère unitaire, la normale EST la position normalisée */
 	/* On applique juste la rotation de la matrice model (pas de scale dans notre cas) */
