@@ -73,7 +73,7 @@ offline-test:
 test:
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
-# Code Coverage
+# Code Coverage (version améliorée avec résumé)
 BUILD_COV_DIR := build-coverage
 REPORT_DIR := $(BUILD_COV_DIR)/coverage_report
 
@@ -93,6 +93,7 @@ coverage:
 	@mkdir -p $(REPORT_DIR)
 	@$(DISTROBOX) llvm-cov show -format=html \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
+		$(BUILD_COV_DIR)/app \
 		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
@@ -101,8 +102,9 @@ coverage:
 	@echo "Coverage Summary:"
 	@$(DISTROBOX) llvm-cov report \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
+		$(BUILD_COV_DIR)/app \
 		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
-		-ignore-filename-regex="(generated|deps|tests)"
+		-ignore-filename-regex="(generated|deps|tests)" | tee $(BUILD_COV_DIR)/coverage_summary.txt
 
 apitrace:
 	@echo "Running Apitrace..."
