@@ -759,10 +759,22 @@ static void app_save_raw_frame(App* app, const char* filename)
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
-	FILE* f = fopen(filename, "wb");
-	if (f) {
-		fwrite(pixels, 1, size, f);
-		fclose(f);
+	FILE* file = fopen(filename, "wb");
+	if (file) {
+		size_t result = fwrite(pixels, 1, size, file);
+		if (result != size) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to write RAW frame to file: %s",
+			          filename);
+			return;
+		}
+		result = fclose(file);
+		if (result != 0) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to close file for RAW capture: %s",
+			          filename);
+			return;
+		}
 		LOG_INFO("suckless-ogl.app", "RAW frame captured: %s",
 		         filename);
 	} else {

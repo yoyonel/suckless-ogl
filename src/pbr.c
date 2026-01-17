@@ -129,10 +129,13 @@ float compute_mean_luminance_gpu(GLuint hdr_tex, int width, int height,
 	glBufferData(GL_SHADER_STORAGE_BUFFER, (GLsizeiptr)sizeof(float), NULL,
 	             GL_STREAM_READ);
 
-	static GLuint prog1 = 0;
+	GLuint prog1 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
 	if (prog1 == 0) {
-		prog1 = shader_load_compute(
-		    "shaders/IBL/luminance_reduce_pass1.glsl");
+		/* possibilité de logger une erreur */
+		LOG_ERROR("suckless-ogl.ibl", "Failed to load compute shader");
+		glDeleteBuffers(2, ssbos);
+		return 0.0F;
 	}
 
 	glUseProgram(prog1);
@@ -143,10 +146,13 @@ float compute_mean_luminance_gpu(GLuint hdr_tex, int width, int height,
 	glDispatchCompute(group_x, group_y, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	static GLuint prog2 = 0;
+	GLuint prog2 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 	if (prog2 == 0) {
-		prog2 = shader_load_compute(
-		    "shaders/IBL/luminance_reduce_pass2.glsl");
+		/* possibilité de logger une erreur */
+		LOG_ERROR("suckless-ogl.ibl", "Failed to load compute shader");
+		glDeleteBuffers(2, ssbos);
+		return 0.0F;
 	}
 
 	glUseProgram(prog2);
