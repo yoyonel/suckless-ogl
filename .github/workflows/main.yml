@@ -1,118 +1,139 @@
 name: Suckless-OGL CI/CD
 
 permissions:
-  contents: write    # Nécessaire pour pousser sur gh-pages et créer des releases
-  pages: write       # Nécessaire pour GitHub Pages
-  id-token: write    # Recommandé pour l'authentification moderne
+  contents: write
+  pages: write
+  pull-requests: write
+  id-token: write
 
 on:
   push:
-    branches: ["**"]
+    # On ne lance au push QUE sur master pour mettre à jour le site officiel et les releases
+    branches: ["master", "main"]
     tags: ["v*"]
   pull_request:
+    # Pour tout le reste, on passe par les PRs (master/main comme cibles)
+    # Cela garantit un seul run par commit dans une PR
     branches: ["master", "main"]
 
 jobs:
-  # 1. Tests et Couverture
+  # --- JOB 1 : TESTS, COUVERTURE ET CAPTURES VISUELLES ---
   test-and-coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0
+
       - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            build-essential \
-            cmake \
-            clang \
-            llvm \
-            libgl1-mesa-dev \
-            libglew-dev \
-            libglfw3-dev \
-            xorg-dev \
-            xvfb \
-            libgl1-mesa-dri \
-            mesa-vulkan-drivers
+            build-essential cmake clang llvm \
+            libgl1-mesa-dev libglew-dev libglfw3-dev \
+            xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
+            imagemagick
 
-      # Rendre le script Xvfb exécutable
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
           
-      - name: Run Coverage with Xvfb
+      - name: Run Coverage and Generate Visuals
         run: |
-          # Xvfb-run s'occupe de démarrer/arrêter Xvfb automatiquement
-          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN=""
-        env:
-          CC: clang
+          # 1. Exécution des tests via Xvfb
+          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
+          
+          # 2. Préparation des dossiers
+          mkdir -p visual_artifacts/${{ github.sha }}
+          mkdir -p build-coverage/coverage_report/visual_tests
+          
+          # 3. Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
+          # On capture la référence, le rendu actuel et la carte de différence
+          [ -f tests/ref_frame.raw ] && convert -size 1024x768 -depth 8 rgb:tests/ref_frame.raw -flip visual_artifacts/${{ github.sha }}/ref.png || echo "No ref"
+          [ -f tests/failed_frame_actual.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_frame_actual.raw -flip visual_artifacts/${{ github.sha }}/actual.png || echo "No actual"
+          [ -f tests/failed_diff_map.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_diff_map.raw -flip visual_artifacts/${{ github.sha }}/diff.png || echo "No diff"
 
-      - name: Generate Coverage Summary
-        run: |
-          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          cat build-coverage/coverage_summary.txt || echo "No summary file generated" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          # 4. Génération de l'index HTML interactif (Comparaison par survol)
+          cat <<EOF > build-coverage/coverage_report/visual_tests/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Visual Regression Report</title>
+            <style>
+              body { font-family: sans-serif; background: #121212; color: #eee; padding: 20px; text-align: center; }
+              .compare-container { position: relative; width: 1024px; height: 768px; margin: 0 auto; border: 2px solid #444; cursor: crosshair; }
+              .compare-container img { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transition: opacity 0.2s; }
+              .compare-container .img-ref { opacity: 1; }
+              .compare-container:hover .img-actual { opacity: 1; }
+              .diff-map { margin-top: 20px; border: 2px solid #f00; width: 1024px; }
+            </style>
+          </head>
+          <body>
+            <h1>Visual Regression Analysis</h1>
+            <p>Passez la souris sur l'image pour comparer : <b>Référence</b> vs <b>Rendu PR</b></p>
+            <div class="compare-container">
+              <img src="ref.png" class="img-ref">
+              <img src="actual.png" class="img-actual">
+            </div>
+            <h3>Carte des différences (Diff Map)</h3>
+            <img src="diff.png" class="diff-map">
+            <br><a href="../index.html" style="color: #00ff95;">Retour au Rapport de Couverture</a>
+          </body>
+          </html>
+          EOF
 
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v4
+          # 5. Copie des PNG pour le rapport statique
+          cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
+
+      - name: Upload Images to Visual Storage Branch
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: coverage-report
-          path: build-coverage/coverage_report/
-          retention-days: 30
-      
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./visual_artifacts
+          publish_branch: visual-artifacts
+          keep_files: true
+
+      - name: Post Visual Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ## 🎨 Visual Regression Report (${{ github.sha }})
+            
+            | Reference | Actual (PR) | Difference Map |
+            |:---:|:---:|:---:|
+            | ![Ref](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/ref.png) | ![Actual](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/actual.png) | ![Diff](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/diff.png) |
+            
+            > [!TIP]
+            > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.raw`.
+
       - name: Deploy Coverage to GitHub Pages
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build-coverage/coverage_report/
-          
-      # Sauvegarder le build pour les jobs suivants
-      - name: Cache Build Directory
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            build/
-            build-coverage/
-          key: build-${{ github.sha }}
 
-  # 2. Qualité (dépend des tests)
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build-coverage/coverage_report/
+
+  # --- JOB 2 : QUALITÉ ET LINT ---
   lint-and-format:
     needs: test-and-coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Restore Build Cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            build/
-            build-coverage/
-          key: build-${{ github.sha }}
-
       - name: Install Lint Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang-format \
-            clang-tidy \
-            libgl1-mesa-dev \
-            libglew-dev \
-            libglfw3-dev \
-            cmake
-
-      - name: Check Formatting (No Apply)
-        # On vérifie si git détecte des changements après make format
+        run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
+      - name: Run Format & Lint
         run: |
           make format CONTAINER_RUN=""
-          git diff --exit-code || (echo "❌ Code not formatted! Run 'make format' locally." && exit 1)
-        
-      - name: Run Linter
-        run: make lint CONTAINER_RUN=""
-        continue-on-error: true  # Ne pas bloquer le build sur les warnings de linter
+          git diff --exit-code || (echo "❌ Format error" && exit 1)
+          make lint CONTAINER_RUN=""
 
-  # 3. Build de Production
+  # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
     needs: lint-and-format
     runs-on: ubuntu-latest
@@ -121,105 +142,31 @@ jobs:
         build_type: [Release, Profiling]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Dependencies
+      - name: Install Deps
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev
+      - name: Build
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            cmake \
-            libgl1-mesa-dev \
-            libglew-dev \
-            libglfw3-dev
-
-      - name: Build (${{ matrix.build_type }})
-        run: |
-          mkdir -p build-${{ matrix.build_type }}
-          cmake -B build-${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          cmake --build build-${{ matrix.build_type }} --parallel $(nproc)
-
-      - name: Upload Build Artifact
+          cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          cmake --build build --parallel $(nproc)
+      - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
-          name: suckless-ogl-${{ matrix.build_type }}-${{ github.sha }}
-          path: build-${{ matrix.build_type }}/app
-          retention-days: 7
+          name: app-${{ matrix.build_type }}
+          path: build/app
 
-  # 4. Release (seulement sur master/main ou tags)
+  # --- JOB 4 : RELEASE ---
   release:
     needs: build-production
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Download Release Build
-        uses: actions/download-artifact@v4
-        with:
-          name: suckless-ogl-Release-${{ github.sha }}
-          path: release_dist/
-
-      - name: Download Profiling Build
-        uses: actions/download-artifact@v4
-        with:
-          name: suckless-ogl-Profiling-${{ github.sha }}
-          path: profiling_dist/
-
-      - name: Package Release
-        run: |
-          chmod +x release_dist/app
-          chmod +x profiling_dist/app
-          
-          # Package Release
-          mkdir -p release_package
-          cp release_dist/app release_package/
-          cp -r assets/ shaders/ release_package/ 2>/dev/null || true
-          tar -czvf suckless-ogl-linux-x64-release.tar.gz -C release_package .
-          
-          # Package Profiling
-          mkdir -p profiling_package
-          cp profiling_dist/app profiling_package/
-          cp -r assets/ shaders/ profiling_package/ 2>/dev/null || true
-          tar -czvf suckless-ogl-linux-x64-profiling.tar.gz -C profiling_package .
-
-      - name: Create GitHub Release
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts }
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest-master' }}
-          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('Build {0}', github.run_number) }}
-          body: |
-            ## 📦 Builds
-            
-            - **Release**: Optimized build (O3 + LTO)
-            - **Profiling**: Optimized with debug symbols (O3 + LTO + debug info)
-            
-            ## 📊 Coverage Report
-            Coverage report available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/coverage/
-            
-            ## ✅ Tests
-            All tests passed ✓
-          files: |
-            suckless-ogl-linux-x64-release.tar.gz
-            suckless-ogl-linux-x64-profiling.tar.gz
-          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          tag_name: ${{ github.ref_name }}
+          files: artifacts/app-*/app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # 5. Test Docker Build (optionnel, parallèle)
-  docker-build:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || contains(github.event.head_commit.message, '[docker]')
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Build Docker Image
-        run: docker build -t suckless-ogl:test .
-        
-      - name: Test Docker Image
-        run: |
-          docker run --rm \
-            -e DISPLAY=$DISPLAY \
-            -v /tmp/.X11-unix:/tmp/.X11-unix \
-            suckless-ogl:test /bin/bash -c "echo 'Docker build successful'"

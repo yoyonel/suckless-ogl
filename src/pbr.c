@@ -4,6 +4,7 @@
 #include "log.h"
 #include "shader.h"
 #include <math.h>
+#include <stddef.h>  // Fournit NULL (proprement)
 #include <stdint.h>  // Fournit uint32_t
 
 // Constantes pour éviter les "Magic Numbers" et faciliter le linting
