@@ -1,44 +1,56 @@
-# Test configuration
+# tests/CMakeLists.txt - Mise à jour complète
 
-# Link against the project sources but ideally we should have a library target
-# For now we just add the source files directly to the tests
+# Common dependencies for all tests
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
+set(TEST_INCLUDE_DIRS ../src ../include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
-# Include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_SOURCE_DIR}/src)
+# Helper macro to add a test executable
+macro(add_unit_test test_name sources)
+    add_executable(${test_name} ${test_name}.c ${sources})
+    target_link_libraries(${test_name} PRIVATE ${TEST_COMMON_LIBS})
+    target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
+    target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
+    add_test(NAME ${test_name} COMMAND ${test_name})
+endmacro()
 
-# 1. Test Icosphere
-add_executable(test_icosphere test_icosphere.c ${CMAKE_SOURCE_DIR}/src/icosphere.c)
-target_link_libraries(test_icosphere PRIVATE unity cglm m)
-add_test(NAME TestIcosphere COMMAND $<TARGET_FILE:test_icosphere>)
+# Helper macro to add a test that requires Xvfb (OpenGL context)
+macro(add_xvfb_test test_name sources)
+    add_executable(${test_name} ${test_name}.c ${sources})
+    target_link_libraries(${test_name} PRIVATE ${TEST_COMMON_LIBS})
+    target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
+    target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
+    
+    # Wrapper script pour Xvfb
+    add_test(NAME ${test_name} 
+             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
+endmacro()
 
-# 2. Test Shader
-# Needs shader.c and log.c
-add_executable(test_shader test_shader.c ${CMAKE_SOURCE_DIR}/src/shader.c ${CMAKE_SOURCE_DIR}/src/log.c)
-target_link_libraries(test_shader PRIVATE unity glad cglm m glfw)
-# Need POSIX defines for log.c
-target_compile_definitions(test_shader PRIVATE _POSIX_C_SOURCE=199309L)
-add_test(NAME TestShader COMMAND $<TARGET_FILE:test_shader>)
+# Tests existants (sans OpenGL)
+add_unit_test(test_icosphere "../src/icosphere.c")
+add_unit_test(test_log "../src/log.c")
+add_unit_test(test_shader "../src/shader.c;../src/log.c")
+add_unit_test(test_skybox "../src/skybox.c;../src/shader.c;../src/log.c;../src/texture.c;../src/stb_image_impl.c")
+add_unit_test(test_texture "../src/texture.c;../src/log.c;../src/stb_image_impl.c")
 
-# 3. Test Log
-add_executable(test_log test_log.c ${CMAKE_SOURCE_DIR}/src/log.c)
-target_link_libraries(test_log PRIVATE unity)
-# Need POSIX for log.c (clock_gettime) and test_log.c (dup/dup2)
-target_compile_definitions(test_log PRIVATE _POSIX_C_SOURCE=199309L)
-add_test(NAME TestLog COMMAND $<TARGET_FILE:test_log>)
+# Tests sans dépendances OpenGL
+add_unit_test(test_camera "../src/camera.c")
+add_unit_test(test_fps "../src/fps.c")
+add_unit_test(test_perf_timer "../src/perf_timer.c;../src/log.c")
+add_unit_test(test_stb_image_impl "../src/stb_image_impl.c")
 
-# 4. Test Skybox
-add_executable(test_skybox test_skybox.c ${CMAKE_SOURCE_DIR}/src/skybox.c)
-target_link_libraries(test_skybox PRIVATE unity glad cglm m glfw)
-add_test(NAME TestSkybox COMMAND $<TARGET_FILE:test_skybox>)
+# Tests nécessitant un contexte OpenGL (avec Xvfb)
+add_xvfb_test(test_app "../src/app.c;../src/shader.c;../src/log.c;../src/icosphere.c;../src/skybox.c;../src/texture.c;../src/stb_image_impl.c;../src/fps.c;../src/ui.c;../src/pbr.c;../src/material.c;../src/perf_timer.c;../src/instanced_rendering.c;../src/ssbo_rendering.c;../src/camera.c")
 
-# 5. Test Texture
-add_executable(test_texture test_texture.c 
-    ${CMAKE_SOURCE_DIR}/src/texture.c 
-    ${CMAKE_SOURCE_DIR}/src/log.c
-    ${CMAKE_SOURCE_DIR}/src/stb_image_impl.c)
-target_link_libraries(test_texture PRIVATE unity glad cglm m glfw)
-target_include_directories(test_texture PRIVATE ${stb_SOURCE_DIR})
-target_compile_definitions(test_texture PRIVATE _POSIX_C_SOURCE=199309L)
-add_test(NAME TestTexture COMMAND $<TARGET_FILE:test_texture>)
+add_xvfb_test(test_pbr "../src/pbr.c;../src/shader.c;../src/log.c;../src/material.c")
 
+add_xvfb_test(test_material "../src/material.c;../src/log.c")
+
+add_xvfb_test(test_ui "../src/ui.c;../src/shader.c;../src/log.c;../src/stb_image_impl.c")
+
+add_xvfb_test(test_instanced_rendering "../src/instanced_rendering.c;../src/log.c")
+
+add_xvfb_test(test_ssbo_rendering "../src/ssbo_rendering.c;../src/log.c")
+
+# NOTE: test_main est commenté car main.c contient main() qui entre en conflit avec Unity
+# Pour tester main.c, il faudrait refactoriser le code ou utiliser une approche différente
+# add_unit_test(test_main "../src/main.c;...")

@@ -1,49 +1,37 @@
 #include "app.h"
 
+#include "app_settings.h"
+#include "fps.h"
 #include "glad/glad.h"
 #include "icosphere.h"
+#include "instanced_rendering.h"
+#ifdef USE_SSBO_RENDERING
+#include "ssbo_rendering.h"
+#endif
+#include "camera.h"
 #include "log.h"
+#include "material.h"
+#include "pbr.h"
+#include "perf_timer.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
+#include "ui.h"
 #include <GLFW/glfw3.h>
+#include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
 #include <cglm/vec3.h>
-#include <math.h>
 #include <stdio.h>
+#include <stdlib.h>  // for malloc
 
-#define MOUSE_SENSITIVITY 0.002F
-#define MIN_PITCH -1.5F
-#define MAX_PITCH 1.5F
-
-enum {
-	MIN_SUBDIV = 0,
-	MAX_SUBDIV = 6,
-	CUBEMAP_SIZE = 1024,
-	INITIAL_SUBDIVISIONS = 2
-};
-
-static const float DEFAULT_CAMERA_DISTANCE = 3.0F;
-static const float DEFAULT_ENV_LOD = 0.0F;
-static const float DEFAULT_CAMERA_ANGLE = 0.0F;
-static const float NEAR_PLANE = 0.1F;
-static const float FAR_PLANE = 100.0F;
-static const float FOV_ANGLE = 60.0F;
-static const float MAX_ENV_LOD = 10.0F;
-static const float MIN_ENV_LOD = 0.0F;
-static const float LOD_STEP = 0.5F;
-static const float MIN_CAMERA_DISTANCE = 1.5F;
-static const float MAX_CAMERA_DISTANCE = 10.0F;
-static const float ZOOM_STEP = 0.2F;
-static const float LIGHT_DIR_X = 0.5F;
-static const float LIGHT_DIR_Y = 1.0F;
-static const float LIGHT_DIR_Z = 0.3F;
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods);
+static void camera_process_key_callback(Camera* camera, int key, int action);
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static void framebuffer_size_callback(GLFWwindow* window, int width,
@@ -58,16 +46,15 @@ int app_init(App* app, int width, int height, const char* title)
 	app->wireframe = 0;
 
 	/* Camera initial state */
-	app->camera_yaw = DEFAULT_CAMERA_ANGLE;
-	app->camera_pitch = DEFAULT_CAMERA_ANGLE;
-	app->camera_distance = DEFAULT_CAMERA_DISTANCE;
 	app->camera_enabled = 1;        /* Enabled by default */
 	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
 	app->is_fullscreen = 0;
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
-
+	//
+	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
+	            DEFAULT_CAMERA_PITCH);
 	/* Initialize GLFW */
 	if (!glfwInit()) {
 		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLFW");
@@ -80,6 +67,7 @@ int app_init(App* app, int width, int height, const char* title)
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+	glfwWindowHint(GLFW_SAMPLES, DEFAULT_SAMPLES);
 
 	app->window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!app->window) {
@@ -115,6 +103,8 @@ int app_init(App* app, int width, int height, const char* title)
 	int minor =
 	    glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MINOR);
 	LOG_INFO("suckless-ogl.init", "Context Version: %d.%d", major, minor);
+	LOG_INFO("suckless-ogl.init", "samples: %d", DEFAULT_SAMPLES);
+
 	LOG_INFO("suckless_ogl.context.base.window", "vendor: %s",
 	         glGetString(GL_VENDOR));
 	LOG_INFO("suckless_ogl.context.base.window", "renderer: %s",
@@ -127,51 +117,268 @@ int app_init(App* app, int width, int height, const char* title)
 	/* Load HDR texture */
 	int hdr_w = 0;
 	int hdr_h = 0;
-	app->hdr_texture = texture_load_hdr("assets/env.hdr", &hdr_w, &hdr_h);
+
+	PERF_MEASURE_LOG("Asset Loading Time (CPU + Upload)")
+	{
+		app->hdr_texture =
+		    texture_load_hdr("assets/env.hdr", &hdr_w, &hdr_h);
+	}
 	if (!app->hdr_texture) {
 		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture");
 		return 0;
 	}
-	LOG_INFO("suckless-ogl.app",
-	         "Asset Loading Time: (skipping exact timing for now)");
 
-	/* Load shaders */
-	app->phong_shader =
-	    shader_load_program("shaders/phong.vert", "shaders/phong.frag");
-	if (!app->phong_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load phong shader");
-		return 0;
+	GPU_MEASURE_LOG("PBR Generation Time (GPU Compute)")
+	{
+		app->spec_prefiltered_tex = build_prefiltered_specular_map(
+		    app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
+		    PREFILTERED_SPECULAR_MAP_SIZE / 2);
+
+		float auto_threshold = compute_mean_luminance_gpu(
+		    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
+		LOG_INFO("suckless-ogl.ibl",
+		         "Computed adaptive clamp threshold: %.2f",
+		         auto_threshold);
+
+		app->irradiance_tex = build_irradiance_map(
+		    app->hdr_texture, IRIDIANCE_MAP_SIZE, auto_threshold);
+
+		app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	}
 
+	app->u_metallic = DEFAULT_METALLIC;
+	app->u_roughness = DEFAULT_ROUGHNESS;
+	app->u_ao = DEFAULT_AO;
+	app->u_exposure = DEFAULT_EXPOSURE;
+
+	/* Load shaders */
 	app->skybox_shader = shader_load_program("shaders/background.vert",
 	                                         "shaders/background.frag");
 
-	if (!app->phong_shader || !app->skybox_shader) {
+	if (!app->skybox_shader) {
 		LOG_ERROR("suckless-ogl.app", "Failed to create shaders");
+		return 0;
+	}
+
+	//
+	app->debug_shader = shader_load_program("shaders/debug_tex.vert",
+	                                        "shaders/debug_tex.frag");
+	glGenVertexArrays(1, &app->empty_vao);
+	app->debug_lod = 0.0F;
+	app->show_debug_tex = false;
+
+	if (!app->debug_shader) {
+		LOG_ERROR("suckless-ogl.app", "Failed to load debug shader");
 		return 0;
 	}
 
 	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
 
-	/* Cache Phong shader uniforms */
-	app->u_phong_mvp = glGetUniformLocation(app->phong_shader, "uMVP");
-	app->u_phong_light_dir =
-	    glGetUniformLocation(app->phong_shader, "lightDir");
-
 	/* Initialize icosphere geometry */
 	icosphere_init(&app->geometry);
 
 	/* Create OpenGL buffers */
-	glGenVertexArrays(1, &app->vao);
-	glGenBuffers(1, &app->vbo);
-	glGenBuffers(1, &app->nbo);
-	glGenBuffers(1, &app->ebo);
+	glGenVertexArrays(1, &app->sphere_vao);
+	glGenBuffers(1, &app->sphere_vbo);
+	glGenBuffers(1, &app->sphere_nbo);
+	glGenBuffers(1, &app->sphere_ebo);
 
 	/* Enable depth testing */
 	glEnable(GL_DEPTH_TEST);
 
+	/* Enable multisampling */
+	if (DEFAULT_SAMPLES > 1) {
+		glEnable(GL_MULTISAMPLE);
+	}
+
+	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
+	app->last_frame_time = glfwGetTime();
+
+	ui_init(&app->ui, "assets/fonts/FiraCode-Regular.ttf",
+	        DEFAULT_FONT_SIZE);
+
+	app->material_lib =
+	    material_load_presets("assets/materials/pbr_materials.json");
+
+#ifdef USE_SSBO_RENDERING
+	app_init_ssbo(app);
+	app->pbr_ssbo_shader = shader_load_program(
+	    "shaders/pbr_ibl_ssbo.vert", "shaders/pbr_ibl_instanced.frag");
+	if (!app->pbr_ssbo_shader) {
+		LOG_ERROR("suckless-ogl.app", "Failed to load pbr_ssbo shader");
+		return 0;
+	}
+	LOG_INFO("suckless-ogl.app", "SSBO rendering mode active");
+#else
+	app_init_instancing(app);
+	app->pbr_instanced_shader = shader_load_program(
+	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
+	if (!app->pbr_instanced_shader) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to load pbr_instanced shader");
+		return 0;
+	}
+	LOG_INFO("suckless-ogl.app", "Legacy instanced rendering mode active");
+#endif
+
 	return 1;
+}
+
+#ifdef USE_SSBO_RENDERING
+void app_init_ssbo(App* app)
+{
+	const int total_count =
+	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int cols = DEFAULT_COLS;
+	const int rows = (total_count + cols - 1) / cols;
+	const float spacing = DEFAULT_SPACING;
+
+	const float grid_w = (float)(cols - 1) * spacing;
+	const float grid_h = (float)(rows - 1) * spacing;
+
+	SphereInstanceSSBO* data =
+	    malloc(sizeof(SphereInstanceSSBO) * total_count);
+	if (!data) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for SSBO");
+		return;
+	}
+
+	for (int i = 0; i < total_count; i++) {
+		const int grid_x = i % cols;
+		const int grid_y = i / cols;
+
+		glm_mat4_identity(data[i].model);
+
+		const float pos_x = ((float)grid_x * spacing) -
+		                    (grid_w * HALF_OFFSET_MULTIPLIER);
+		const float pos_y = -(((float)grid_y * spacing) -
+		                      (grid_h * HALF_OFFSET_MULTIPLIER));
+
+		vec3 position = {pos_x, pos_y, 0.0F};
+		glm_translate(data[i].model, position);
+
+		PBRMaterial* mat = &app->material_lib->materials[i];
+
+		glm_vec3_copy(mat->albedo, data[i].albedo);
+		data[i].metallic = mat->metallic;
+		data[i].roughness = mat->roughness;
+		data[i].ao = 1.0F;
+		data[i]._padding[0] = 0.0F;
+		data[i]._padding[1] = 0.0F;
+	}
+
+	/* Debug : vérifier la première instance */
+	LOG_DEBUG("suckless-ogl.ssbo",
+	          "First instance - pos: (%.2f, %.2f, %.2f), albedo: (%.2f, "
+	          "%.2f, %.2f)",
+	          data[0].model[3][0], data[0].model[3][1], data[0].model[3][2],
+	          data[0].albedo[0], data[0].albedo[1], data[0].albedo[2]);
+
+	ssbo_group_init(&app->ssbo_group, data, total_count);
+	ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo, app->sphere_nbo,
+	                     app->sphere_ebo);
+
+	free(data);
+}
+#endif
+
+void app_init_instancing(App* app)
+{
+	// 1. Calcul des dimensions (identique au legacy)
+	const int total_count =
+	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int cols = DEFAULT_COLS;
+	const int rows = (total_count + cols - 1) / cols;
+	const float spacing = DEFAULT_SPACING;
+
+	const float grid_w = (float)(cols - 1) * spacing;
+	const float grid_h = (float)(rows - 1) * spacing;
+
+	// 2. Allocation temporaire pour le transfert
+	SphereInstance* data = malloc(sizeof(SphereInstance) * total_count);
+	if (!data) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for instancing");
+		return;
+	}
+
+	for (int i = 0; i < total_count; i++) {
+		const int grid_x = i % cols;
+		const int grid_y = i / cols;
+
+		// Calcul de la matrice Model (Logique de centrage reproduite)
+		glm_mat4_identity(data[i].model);
+
+		const float pos_x = ((float)grid_x * spacing) -
+		                    (grid_w * HALF_OFFSET_MULTIPLIER);
+		const float pos_y = -(((float)grid_y * spacing) -
+		                      (grid_h * HALF_OFFSET_MULTIPLIER));
+
+		vec3 position = {pos_x, pos_y, 0.0F};
+		// NOLINTNEXTLINE(misc-include-cleaner)
+		glm_translate(data[i].model, position);
+
+		// Récupération des propriétés du matériau depuis la
+		// bibliothèque
+		PBRMaterial* mat = &app->material_lib->materials[i];
+
+		glm_vec3_copy(mat->albedo, data[i].albedo);
+		data[i].metallic = mat->metallic;
+		data[i].roughness = mat->roughness;
+		data[i].ao = 1.0F;  // Valeur par défaut
+	}
+
+	// 3. Initialisation du groupe (Transfert VBO Instance + Création VAO)
+	instanced_group_init(&app->instanced_group, data, total_count);
+
+	// 4. Premier lien avec la géométrie actuelle
+	// Note: on utilise les noms de buffers de ton app.h (sphere_vbo, etc.)
+	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
+	                          app->sphere_nbo, app->sphere_ebo);
+
+	free(data);
+}
+
+void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
+{
+	GLuint id_current_shader = 0;
+#ifdef USE_SSBO_RENDERING
+	id_current_shader = app->pbr_ssbo_shader;
+#else
+	id_current_shader = app->pbr_instanced_shader;
+#endif
+
+	glUseProgram(id_current_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+
+	glUniform1i(glGetUniformLocation(id_current_shader, "irradianceMap"),
+	            0);
+	glUniform1i(glGetUniformLocation(id_current_shader, "prefilterMap"), 1);
+	glUniform1i(glGetUniformLocation(id_current_shader, "brdfLUT"), 2);
+
+	glUniform3fv(glGetUniformLocation(id_current_shader, "camPos"), 1,
+	             camera_pos);
+	glUniformMatrix4fv(
+	    glGetUniformLocation(id_current_shader, "projection"), 1, GL_FALSE,
+	    (float*)proj);
+	glUniformMatrix4fv(glGetUniformLocation(id_current_shader, "view"), 1,
+	                   GL_FALSE, (float*)view);
+	glUniform1f(glGetUniformLocation(id_current_shader, "pbr_exposure"),
+	            app->u_exposure);
+
+#ifdef USE_SSBO_RENDERING
+	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);
+#else
+	instanced_group_draw(&app->instanced_group, app->geometry.indices.size);
+#endif
 }
 
 void app_cleanup(App* app)
@@ -179,14 +386,23 @@ void app_cleanup(App* app)
 	icosphere_free(&app->geometry);
 	skybox_cleanup(&app->skybox);
 
-	glDeleteVertexArrays(1, &app->vao);
-	glDeleteBuffers(1, &app->vbo);
-	glDeleteBuffers(1, &app->nbo);
-	glDeleteBuffers(1, &app->ebo);
+	glDeleteVertexArrays(1, &app->sphere_vao);
+	glDeleteBuffers(1, &app->sphere_vbo);
+	glDeleteBuffers(1, &app->sphere_nbo);
+	glDeleteBuffers(1, &app->sphere_ebo);
+
+	ui_destroy(&app->ui);
 
 	glDeleteTextures(1, &app->hdr_texture);
-	glDeleteProgram(app->phong_shader);
 	glDeleteProgram(app->skybox_shader);
+
+	material_free_lib(app->material_lib);
+
+#ifdef USE_SSBO_RENDERING
+	ssbo_group_cleanup(&app->ssbo_group);
+#else
+	instanced_group_cleanup(&app->instanced_group);
+#endif
 
 	glfwDestroyWindow(app->window);
 	glfwTerminate();
@@ -197,41 +413,28 @@ void app_run(App* app)
 	int last_subdiv = -1;
 
 	while (!glfwWindowShouldClose(app->window)) {
+		double current_time = glfwGetTime();
+		app->delta_time = current_time - app->last_frame_time;
+		app->last_frame_time = current_time;
+		fps_update(&app->fps_counter, app->delta_time, current_time);
+		camera_process_keyboard(&app->camera, (float)app->delta_time);
+
 		/* Regenerate icosphere if subdivision level changed */
 		if (app->subdivisions != last_subdiv) {
 			icosphere_generate(&app->geometry, app->subdivisions);
 
 			/* Upload to GPU */
-			glBindVertexArray(app->vao);
+			app_update_gpu_buffers(app);
 
-			glBindBuffer(GL_ARRAY_BUFFER, app->vbo);
-			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.vertices.size *
-			                          sizeof(vec3)),
-			             app->geometry.vertices.data,
-			             GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-			                      sizeof(vec3), (void*)0);
-			glEnableVertexAttribArray(0);
+#ifdef USE_SSBO_RENDERING
+			ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo,
+			                     app->sphere_nbo, app->sphere_ebo);
+#else
+			instanced_group_bind_mesh(
+			    &app->instanced_group, app->sphere_vbo,
+			    app->sphere_nbo, app->sphere_ebo);
+#endif
 
-			glBindBuffer(GL_ARRAY_BUFFER, app->nbo);
-			glBufferData(GL_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.normals.size *
-			                          sizeof(vec3)),
-			             app->geometry.normals.data,
-			             GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-			                      sizeof(vec3), (void*)0);
-			glEnableVertexAttribArray(1);
-
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-			             (GLsizeiptr)(app->geometry.indices.size *
-			                          sizeof(unsigned int)),
-			             app->geometry.indices.data,
-			             GL_STATIC_DRAW);
-
-			glBindVertexArray(0);
 			last_subdiv = app->subdivisions;
 		}
 
@@ -242,6 +445,33 @@ void app_run(App* app)
 	}
 }
 
+void app_update_gpu_buffers(App* app)
+{
+	glBindVertexArray(app->sphere_vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_vbo);
+	glBufferData(GL_ARRAY_BUFFER,
+	             (GLsizeiptr)(app->geometry.vertices.size * sizeof(vec3)),
+	             app->geometry.vertices.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_nbo);
+	glBufferData(GL_ARRAY_BUFFER,
+	             (GLsizeiptr)(app->geometry.normals.size * sizeof(vec3)),
+	             app->geometry.normals.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->sphere_ebo);
+	glBufferData(
+	    GL_ELEMENT_ARRAY_BUFFER,
+	    (GLsizeiptr)(app->geometry.indices.size * sizeof(unsigned int)),
+	    app->geometry.indices.data, GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+}
+
 void app_render(App* app)
 {
 	/* Explicitly clear color and depth.
@@ -250,23 +480,29 @@ void app_render(App* app)
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/* Calculate camera position from yaw, pitch, and distance */
-	float cam_x = app->camera_distance * cosf(app->camera_pitch) *
-	              sinf(app->camera_yaw);
-	float cam_y = app->camera_distance * sinf(app->camera_pitch);
-	float cam_z = app->camera_distance * cosf(app->camera_pitch) *
-	              cosf(app->camera_yaw);
+	if (app->show_debug_tex) {
+		glUseProgram(app->debug_shader);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+		glUniform1i(glGetUniformLocation(app->debug_shader, "tex"), 0);
+		glUniform1f(glGetUniformLocation(app->debug_shader, "lod"),
+		            app->debug_lod);
+		glBindVertexArray(app->empty_vao);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+		return;
+	}
 
 	/* Setup camera matrices */
 	mat4 view;
 	mat4 proj;
 	mat4 view_proj;
 	mat4 inv_view_proj;
-	vec3 camera_pos = {cam_x, cam_y, cam_z};
-	vec3 target = {0.0F, 0.0F, 0.0F};
-	vec3 camera_up = {0.0F, 1.0F, 0.0F};
 
-	glm_lookat(camera_pos, target, camera_up, view);
+	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
+	                   app->camera.position[2]};
+	camera_get_view_matrix(&app->camera, view);
+
 	glm_perspective(glm_rad(FOV_ANGLE),
 	                (float)app->width / (float)app->height, NEAR_PLANE,
 	                FAR_PLANE, proj);
@@ -287,45 +523,46 @@ void app_render(App* app)
 
 	/* 1. Render icosphere FIRST (populates depth buffer for early-Z
 	 * culling) */
-	app_render_icosphere(app, view_proj);
+	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+	app_render_instanced(app, view, proj, camera_pos);
 
 	/* 2. Render skybox LAST (using LEQUAL to fill background) */
 	/* We always use FILL for the skybox regardless of wireframe mode */
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	skybox_render(&app->skybox, app->skybox_shader, app->hdr_texture,
 	              inv_view_proj, app->env_lod);
+
+	app_render_ui(app);
 }
 
-void app_render_icosphere(App* app, mat4 view_proj)
+void app_render_ui(App* app)
 {
-	/* The icosphere is stationary at the origin */
-	mat4 model;
-	glm_mat4_identity(model);
+	char fps_text[MAX_FPS_TEXT_LENGTH];
+	double fps = 0.0F;
+	if (app->fps_counter.average_frame_time > 0) {
+		fps = 1.0F / app->fps_counter.average_frame_time;
+	}
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)snprintf(fps_text, sizeof(fps_text), "FPS: %.1F", fps);
 
-	/* Build MVP matrix */
-	mat4 mvp;
-	glm_mat4_mul(view_proj, model, mvp);
+	// Paramètres OpenGL pour le texte (Alpha blending)
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
 
-	/* Use shader and set uniforms */
-	glUseProgram(app->phong_shader);
+	// 1. DESSINER L'OMBRE (Décalée de 2 pixels, en Noir)
+	ui_draw_text(&app->ui, fps_text, DEFAULT_FONT_SHADOW_OFFSET_X,
+	             DEFAULT_FONT_SHADOW_OFFSET_Y,
+	             (float*)DEFAULT_FONT_SHADOW_COLOR, app->width,
+	             app->height);
 
-	glUniformMatrix4fv(app->u_phong_mvp, 1, GL_FALSE, (float*)mvp);
+	// 2. DESSINER LE TEXTE (En Jaune ou Blanc)
+	ui_draw_text(&app->ui, fps_text, DEFAULT_FONT_OFFSET_X,
+	             DEFAULT_FONT_OFFSET_Y, (float*)DEFAULT_FONT_COLOR,
+	             app->width, app->height);
 
-	/* Set light direction - fixed from above */
-	vec3 light_dir = {LIGHT_DIR_X, LIGHT_DIR_Y, LIGHT_DIR_Z};
-	glm_vec3_normalize(light_dir);
-	glUniform3f(app->u_phong_light_dir, light_dir[0], light_dir[1],
-	            light_dir[2]);
-
-	/* Draw icosphere */
-	glBindVertexArray(app->vao);
-
-	/* Only set polygon mode for the icosphere */
-	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
-	glDrawElements(GL_TRIANGLES, (GLsizei)app->geometry.indices.size,
-	               GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
@@ -335,13 +572,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	(void)mods;
 
 	App* app = (App*)glfwGetWindowUserPointer(window);
-
 	if (action == GLFW_PRESS) {
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			case GLFW_KEY_W:
+			case GLFW_KEY_Z:  // key 'W' on French layout keyboard
 				app->wireframe = !app->wireframe;
 				break;
 			case GLFW_KEY_UP:
@@ -372,9 +608,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				break;
 			case GLFW_KEY_SPACE:
 				/* Reset camera to default position */
-				app->camera_yaw = DEFAULT_CAMERA_ANGLE;
-				app->camera_pitch = DEFAULT_CAMERA_ANGLE;
-				app->camera_distance = DEFAULT_CAMERA_DISTANCE;
+				camera_init(
+				    &app->camera, DEFAULT_CAMERA_DISTANCE,
+				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
 				app->env_lod = DEFAULT_ENV_LOD;
 				LOG_INFO("suckless-ogl.app",
 				         "Camera and LOD reset");
@@ -402,6 +638,31 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				/* Ignore other keys */
 				break;
 		}
+	}
+
+	camera_process_key_callback(&app->camera, key, action);
+}
+
+static void camera_process_key_callback(Camera* camera, int key, int action)
+{
+	int pressed = (action != GLFW_RELEASE);
+	if (key == GLFW_KEY_W) {
+		camera->move_forward = pressed;
+	}
+	if (key == GLFW_KEY_S) {
+		camera->move_backward = pressed;
+	}
+	if (key == GLFW_KEY_A) {
+		camera->move_left = pressed;
+	}
+	if (key == GLFW_KEY_D) {
+		camera->move_right = pressed;
+	}
+	if (key == GLFW_KEY_Q) {
+		camera->move_up = pressed;
+	}
+	if (key == GLFW_KEY_E) {
+		camera->move_down = pressed;
 	}
 }
 
@@ -457,16 +718,7 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	app->last_mouse_y = ypos;
 
 	/* Update camera rotation (note: -delta_x for natural mouse movement) */
-	app->camera_yaw += (float)(-delta_x * MOUSE_SENSITIVITY);
-	app->camera_pitch += (float)(-delta_y * MOUSE_SENSITIVITY);
-
-	/* Clamp pitch to avoid gimbal lock */
-	if (app->camera_pitch > MAX_PITCH) {
-		app->camera_pitch = MAX_PITCH;
-	}
-	if (app->camera_pitch < MIN_PITCH) {
-		app->camera_pitch = MIN_PITCH;
-	}
+	camera_process_mouse(&app->camera, (float)delta_x, (float)delta_y);
 }
 
 static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
@@ -474,16 +726,8 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	(void)xoffset;
 	App* app = (App*)glfwGetWindowUserPointer(window);
 
-	/* Zoom in/out with mouse wheel */
-	app->camera_distance -= (float)yoffset * ZOOM_STEP;
-
-	/* Clamp distance */
-	if (app->camera_distance < MIN_CAMERA_DISTANCE) {
-		app->camera_distance = MIN_CAMERA_DISTANCE;
-	}
-	if (app->camera_distance > MAX_CAMERA_DISTANCE) {
-		app->camera_distance = MAX_CAMERA_DISTANCE;
-	}
+	// On passe le yoffset directement à la caméra
+	camera_process_scroll(&app->camera, (float)yoffset);
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)

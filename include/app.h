@@ -1,11 +1,19 @@
 #ifndef APP_H
 #define APP_H
 
+#include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
+#ifdef USE_SSBO_RENDERING
+#include "ssbo_rendering.h"
+#endif
+#include "camera.h"
+#include "instanced_rendering.h"
+#include "material.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
+#include "ui.h"
 #include <cglm/cglm.h>
 
 typedef struct {
@@ -22,29 +30,32 @@ typedef struct {
 	int subdivisions;
 	int wireframe;
 
-	/* Camera state */
-	float camera_yaw;   /* Horizontal rotation (radians) */
-	float camera_pitch; /* Vertical rotation (radians) */
-	float camera_distance;
-	int camera_enabled; /* Mouse control enabled */
-	int first_mouse;    /* First mouse movement flag */
+	// /* Mouse state */
+	int first_mouse; /* First mouse movement flag */
 	double last_mouse_x;
 	double last_mouse_y;
 
+	// /* Camera state */
+	int camera_enabled; /* Mouse control enabled */
+	Camera camera;
+
 	/* Icosphere geometry */
-	IcosphereGeometry geometry;
-	GLuint vao;
-	GLuint vbo;
-	GLuint nbo;
-	GLuint ebo;
+	IcosphereGeometry geometry;  // CPU side
+	GLuint sphere_vao;           // GPU side
+	GLuint sphere_vbo;
+	GLuint sphere_nbo;
+	GLuint sphere_ebo;
+
+#ifdef USE_SSBO_RENDERING
+	SSBOGroup ssbo_group;
+	GLuint pbr_ssbo_shader;
+#endif
+	/* Instanced rendering */
+	InstancedGroup instanced_group;
+	GLuint pbr_instanced_shader;
 
 	/* Shaders */
-	GLuint phong_shader;
 	GLuint skybox_shader;
-
-	/* Cached uniform locations (Phong) */
-	GLint u_phong_mvp;
-	GLint u_phong_light_dir;
 
 	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
@@ -52,6 +63,32 @@ typedef struct {
 
 	/* Skybox rendering */
 	Skybox skybox;
+
+	/* FPS counter */
+	FpsCounter fps_counter;
+	double last_frame_time;
+	double delta_time;
+
+	/* UI */
+	UIContext ui;
+
+	GLuint spec_prefiltered_tex;  // La texture filtrée
+	GLuint irradiance_tex;
+	GLuint brdf_lut_tex;
+
+	GLuint empty_vao;
+	GLuint debug_shader;
+	float debug_lod;
+	int show_debug_tex;
+
+	/* PBR */
+	float u_metallic;
+	float u_roughness;
+	float u_ao;
+	float u_exposure;
+
+	MaterialLib* material_lib;
+
 } App;
 
 /* Initialization and cleanup */
@@ -63,8 +100,13 @@ void app_run(App* app);
 
 /* Rendering */
 void app_render(App* app);
-void app_render_icosphere(App* app, mat4 view_proj);
-
+void app_update_gpu_buffers(App* app);
+#ifdef USE_SSBO_RENDERING
+void app_init_ssbo(App* app);
+#endif
+void app_render_ui(App* app);
+void app_init_instancing(App* app);
+void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos);
 /* Input handling */
 void app_handle_input(App* app);
 

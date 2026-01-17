@@ -57,8 +57,13 @@ dkms.conf
 # Project specific
 build/
 build-coverage/
+build-*/
 bin/
 obj/
 .cache/
 deps/
 compile_commands.json
+build-prof/
+callgrind.out.*
+*.trace*
+perf.*
