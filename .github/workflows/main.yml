@@ -66,8 +66,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build-coverage/coverage_report/
-          destination_dir: coverage
-
+          
       # Sauvegarder le build pour les jobs suivants
       - name: Cache Build Directory
         uses: actions/cache/save@v4
