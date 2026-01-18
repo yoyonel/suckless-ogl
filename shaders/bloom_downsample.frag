@@ -33,10 +33,21 @@ void main() {
     vec3 k = texture(srcTexture, vec2(TexCoords.x + x, TexCoords.y + y)).rgb;
     vec3 l = texture(srcTexture, vec2(TexCoords.x - x, TexCoords.y - y)).rgb;
     vec3 m = texture(srcTexture, vec2(TexCoords.x + x, TexCoords.y - y)).rgb;
+    
+    /* Inputs are safe now that weights are distributed */
 
     /* Pondération pour garder l'énergie stable */
-    FragColor = e*0.125;
-    FragColor += (a+c+g+i)*0.03125;
-    FragColor += (b+d+f+h)*0.0625;
-    FragColor += (j+k+l+m)*0.125;
+    /* Pondération pour garder l'énergie stable */
+    /* Optimization: Multiply weights individually to avoid FP16 overflow during intermediate additions */
+    /* (a+b+c+d) can overflow if inputs are > 16376.0. a*w + b*w is safe. */
+    
+    FragColor = e * 0.125;
+    FragColor += a * 0.03125; FragColor += c * 0.03125;
+    FragColor += g * 0.03125; FragColor += i * 0.03125;
+    
+    FragColor += b * 0.0625;  FragColor += d * 0.0625;
+    FragColor += f * 0.0625;  FragColor += h * 0.0625;
+    
+    FragColor += j * 0.125;   FragColor += k * 0.125;
+    FragColor += l * 0.125;   FragColor += m * 0.125;
 }
