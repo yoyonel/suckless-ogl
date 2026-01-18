@@ -128,14 +128,6 @@ typedef struct {
 void postprocess_apply_preset(PostProcess* post_processing,
                               const PostProcessPreset* preset);
 
-/* Definitions de presets (disponibles globalement) */
-extern const PostProcessPreset PRESET_DEFAULT;
-extern const PostProcessPreset PRESET_SUBTLE;
-extern const PostProcessPreset PRESET_CINEMATIC;
-extern const PostProcessPreset PRESET_VINTAGE;
-extern const PostProcessPreset PRESET_MATRIX;
-extern const PostProcessPreset PRESET_BW_CONTRAST;
-
 /* Rendu */
 void postprocess_begin(
     PostProcess* post_processing); /* Commence le rendu dans le FBO */
