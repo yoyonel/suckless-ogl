@@ -10,6 +10,10 @@
 #define DEFAULT_GRAIN_INTENSITY 0.02F    /* 0.05 était trop visible */
 #define DEFAULT_EXPOSURE 1.00F
 #define DEFAULT_CHROM_ABBR_STRENGTH 0.01F /* x3 pour le rendre visible */
+#define DEFAULT_BLOOM_INTENSITY 0.0F
+#define DEFAULT_BLOOM_THRESHOLD 1.0F
+#define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
+#define DEFAULT_BLOOM_RADIUS 1.0F
 
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
@@ -78,9 +82,9 @@ typedef struct {
 	GLuint scene_fbo;       /* FBO pour le rendu de la scène */
 	GLuint scene_color_tex; /* Texture de couleur HDR */
 	GLuint scene_depth_rbo; /* Renderbuffer pour depth/stencil */
-	
+
 	/* Bloom Resources */
-	GLuint bloom_fbo;       /* FBO partagé pour le blit */
+	GLuint bloom_fbo; /* FBO partagé pour le blit */
 	BloomMip bloom_mips[BLOOM_MIP_LEVELS];
 
 	/* Quad plein écran */
