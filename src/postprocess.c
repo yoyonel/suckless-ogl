@@ -41,10 +41,10 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->chrom_abbr.strength = DEFAULT_CHROM_ABBR_STRENGTH;
 
 	/* Bloom defaults (Off) */
-	post_processing->bloom.intensity = 0.0F;
-	post_processing->bloom.threshold = 1.0F;
-	post_processing->bloom.soft_threshold = 0.5F;
-	post_processing->bloom.radius = 1.0F;
+	post_processing->bloom.intensity = DEFAULT_BLOOM_INTENSITY;
+	post_processing->bloom.threshold = DEFAULT_BLOOM_THRESHOLD;
+	post_processing->bloom.soft_threshold = DEFAULT_BLOOM_SOFT_THRESHOLD;
+	post_processing->bloom.radius = DEFAULT_BLOOM_RADIUS;
 
 	/* Initialisation Color Grading (Neutre) */
 	post_processing->color_grading.saturation = 1.0F;
@@ -270,7 +270,8 @@ void postprocess_begin(PostProcess* post_processing)
 
 void postprocess_end(PostProcess* post_processing)
 {
-	/* Générer le bloom (si activé) avant de binder le framebuffer par défaut */
+	/* Générer le bloom (si activé) avant de binder le framebuffer par
+	 * défaut */
 	render_bloom(post_processing);
 
 	/* Retour au framebuffer par défaut */
@@ -478,24 +479,28 @@ static int create_bloom_resources(PostProcess* post_processing)
 	glGenFramebuffers(1, &post_processing->bloom_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->bloom_fbo);
 
-	int w = post_processing->width;
-	int h = post_processing->height;
+	int width = post_processing->width;
+	int height = post_processing->height;
 
 	for (int i = 0; i < BLOOM_MIP_LEVELS; i++) {
 		/* Chaque niveau est la moitié du précédent */
-		w /= 2;
-		h /= 2;
-		if (w < 1) w = 1;
-		if (h < 1) h = 1;
+		width /= 2;
+		height /= 2;
+		if (width < 1) {
+			width = 1;
+		}
+		if (height < 1) {
+			height = 1;
+		}
 
-		post_processing->bloom_mips[i].width = w;
-		post_processing->bloom_mips[i].height = h;
+		post_processing->bloom_mips[i].width = width;
+		post_processing->bloom_mips[i].height = height;
 
 		glGenTextures(1, &post_processing->bloom_mips[i].texture);
 		glBindTexture(GL_TEXTURE_2D,
 		              post_processing->bloom_mips[i].texture);
 		/* R11G11B10F is good for HDR and saves memory vs RGBA16F */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, w, h, 0,
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, width, height, 0,
 		             GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		                GL_LINEAR);
@@ -586,11 +591,11 @@ static void render_bloom(PostProcess* post_processing)
 
 	/* 3. Upsample Loop with Blending */
 	glUseProgram(post_processing->bloom_upsample_shader);
-	glUniform1i(glGetUniformLocation(
-	                post_processing->bloom_upsample_shader, "srcTexture"),
+	glUniform1i(glGetUniformLocation(post_processing->bloom_upsample_shader,
+	                                 "srcTexture"),
 	            0);
-	glUniform1f(glGetUniformLocation(
-	                post_processing->bloom_upsample_shader, "filterRadius"),
+	glUniform1f(glGetUniformLocation(post_processing->bloom_upsample_shader,
+	                                 "filterRadius"),
 	            post_processing->bloom.radius);
 
 	glEnable(GL_BLEND);
