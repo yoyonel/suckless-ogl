@@ -3,8 +3,6 @@
 #include "gl_common.h"
 #include <stddef.h>
 
-#define BUFFER_OFFSET(i) (const char*)NULL + (i)
-
 void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
                           int count)
 {
