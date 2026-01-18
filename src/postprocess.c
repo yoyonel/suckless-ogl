@@ -38,6 +38,13 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->exposure.exposure = DEFAULT_EXPOSURE;
 	post_processing->chrom_abbr.strength = DEFAULT_CHROM_ABBR_STRENGTH;
 
+	/* Initialisation Color Grading (Neutre) */
+	post_processing->color_grading.saturation = 1.0F;
+	post_processing->color_grading.contrast = 1.0F;
+	post_processing->color_grading.gamma = 1.0F;
+	post_processing->color_grading.gain = 1.0F;
+	post_processing->color_grading.offset = 0.0F;
+
 	/* Effets désactivés par défaut */
 	post_processing->active_effects = 0;
 
@@ -150,6 +157,35 @@ void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength)
 	post_processing->chrom_abbr.strength = strength;
 }
 
+void postprocess_set_color_grading(PostProcess* post_processing,
+                                   float saturation, float contrast,
+                                   float gamma, float gain, float offset)
+{
+	post_processing->color_grading.saturation = saturation;
+	post_processing->color_grading.contrast = contrast;
+	post_processing->color_grading.gamma = gamma;
+	post_processing->color_grading.gain = gain;
+	post_processing->color_grading.offset = offset;
+}
+
+void postprocess_set_grading_ue_default(PostProcess* post_processing)
+{
+	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
+	 * Le "look" UE vient de l'application de ces valeurs neutres
+	 * combinées à la courbe de tone mapping ACES dans le shader.
+	 */
+	post_processing->color_grading.saturation =
+	    1.0F;                                       /* Pas de changement */
+	post_processing->color_grading.contrast = 1.0F; /* Pas de changement */
+	post_processing->color_grading.gamma = 1.0F;    /* Pas de changement */
+	post_processing->color_grading.gain = 1.0F;     /* Pas de changement */
+	post_processing->color_grading.offset = 0.0F;   /* Pas de changement */
+
+	/* On s'assure que l'effet est activé pour passer dans le pipeline ACES
+	 */
+	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
+}
+
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
@@ -189,6 +225,10 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableChromAbbr"),
 	            postprocess_is_enabled(post_processing, POSTFX_CHROM_ABBR));
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "enableColorGrading"),
+	    postprocess_is_enabled(post_processing, POSTFX_COLOR_GRADING));
 
 	/* Envoyer les paramètres des effets */
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
@@ -209,6 +249,22 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "chromAbbrStrength"),
 	            post_processing->chrom_abbr.strength);
+	/* Paramètres Color Grading */
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "gradSaturation"),
+	            post_processing->color_grading.saturation);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "gradContrast"),
+	            post_processing->color_grading.contrast);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "gradGamma"),
+	            post_processing->color_grading.gamma);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "gradGain"),
+	            post_processing->color_grading.gain);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "gradOffset"),
+	            post_processing->color_grading.offset);
 
 	/* Dessiner le quad */
 	glBindVertexArray(post_processing->screen_quad_vao);
