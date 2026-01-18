@@ -185,76 +185,104 @@ void postprocess_set_grading_ue_default(PostProcess* post_processing)
 	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
 }
 
-void postprocess_preset_default(PostProcess* post_processing)
+void postprocess_apply_preset(PostProcess* post_processing,
+                              const PostProcessPreset* preset)
 {
-	postprocess_disable(post_processing, POSTFX_VIGNETTE);
-	postprocess_disable(post_processing, POSTFX_GRAIN);
-	postprocess_disable(post_processing, POSTFX_CHROM_ABBR);
-	postprocess_set_exposure(post_processing, DEFAULT_EXPOSURE);
-	postprocess_set_grading_ue_default(post_processing);
+	post_processing->active_effects = preset->active_effects;
+	post_processing->vignette = preset->vignette;
+	post_processing->grain = preset->grain;
+	post_processing->exposure = preset->exposure;
+	post_processing->chrom_abbr = preset->chrom_abbr;
+	post_processing->color_grading = preset->color_grading;
 }
 
-void postprocess_preset_subtle(PostProcess* post_processing)
-{
-	postprocess_enable(post_processing, POSTFX_VIGNETTE);
-	postprocess_enable(post_processing, POSTFX_GRAIN);
-	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_vignette(post_processing, 0.3F, 0.7F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_grain(post_processing, 0.02F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_chrom_abbr(post_processing, 0.01F);
-	postprocess_set_exposure(post_processing, DEFAULT_EXPOSURE);
-}
+const PostProcessPreset PRESET_DEFAULT = {
+    .active_effects =
+        (unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
+                 .extent = DEFAULT_VIGNETTE_EXTENT},
+    .grain = {.intensity = DEFAULT_GRAIN_INTENSITY},
+    .exposure = {.exposure = DEFAULT_EXPOSURE},
+    .chrom_abbr = {.strength = DEFAULT_CHROM_ABBR_STRENGTH},
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F}};
 
-void postprocess_preset_cinematic(PostProcess* post_processing)
-{
-	postprocess_enable(post_processing, POSTFX_VIGNETTE);
-	postprocess_enable(post_processing, POSTFX_GRAIN);
-	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_vignette(post_processing, 0.5F, 0.6F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_grain(post_processing, 0.03F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_chrom_abbr(post_processing, 0.015F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_exposure(post_processing, 1.2F);
-}
+const PostProcessPreset PRESET_SUBTLE = {
+    .active_effects = (unsigned int)POSTFX_VIGNETTE |
+                      (unsigned int)POSTFX_GRAIN |
+                      (unsigned int)POSTFX_CHROM_ABBR |
+                      (unsigned int)POSTFX_EXPOSURE |
+                      (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = 0.3F, .extent = 0.7F},
+    .grain = {.intensity = 0.02F},
+    .exposure = {.exposure = DEFAULT_EXPOSURE},
+    .chrom_abbr = {.strength = 0.01F},
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F}};
 
-void postprocess_preset_vintage(PostProcess* post_processing)
-{
-	postprocess_enable(post_processing, POSTFX_VIGNETTE);
-	postprocess_enable(post_processing, POSTFX_GRAIN);
-	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_vignette(post_processing, 0.7F, 0.5F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_grain(post_processing, 0.06F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_chrom_abbr(post_processing, 0.02F);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_exposure(post_processing, 0.9F);
-}
+const PostProcessPreset PRESET_CINEMATIC = {
+    .active_effects = (unsigned int)POSTFX_VIGNETTE |
+                      (unsigned int)POSTFX_GRAIN |
+                      (unsigned int)POSTFX_CHROM_ABBR |
+                      (unsigned int)POSTFX_EXPOSURE |
+                      (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = 0.5F, .extent = 0.6F},
+    .grain = {.intensity = 0.03F},
+    .exposure = {.exposure = 1.2F},
+    .chrom_abbr = {.strength = 0.015F},
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F}};
 
-void postprocess_preset_matrix_grading(PostProcess* post_processing)
-{
-	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
-	/* Saturation basse, Contraste fort, Gamma vert, Gain fort, Offset léger */
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_color_grading(post_processing, 0.5F, 1.2F, 0.9F, 1.1F,
-	                              0.02F); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-}
+const PostProcessPreset PRESET_VINTAGE = {
+    .active_effects = (unsigned int)POSTFX_VIGNETTE |
+                      (unsigned int)POSTFX_GRAIN |
+                      (unsigned int)POSTFX_CHROM_ABBR |
+                      (unsigned int)POSTFX_EXPOSURE |
+                      (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = 0.7F, .extent = 0.5F},
+    .grain = {.intensity = 0.06F},
+    .exposure = {.exposure = 0.9F},
+    .chrom_abbr = {.strength = 0.02F},
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F}};
 
-void postprocess_preset_bw_contrast(PostProcess* post_processing)
-{
-	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
-	/* Saturation 0, Contraste fort */
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	postprocess_set_color_grading(post_processing, 0.0F, 1.5F, 1.0F, 1.0F,
-	                              0.0F);
-}
+const PostProcessPreset PRESET_MATRIX = {
+    .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
+                 .extent = DEFAULT_VIGNETTE_EXTENT},
+    .grain = {.intensity = DEFAULT_GRAIN_INTENSITY},
+    .exposure = {.exposure = DEFAULT_EXPOSURE},
+    .chrom_abbr = {.strength = DEFAULT_CHROM_ABBR_STRENGTH},
+    .color_grading = {.saturation = 0.5F,
+                      .contrast = 1.2F,
+                      .gamma = 0.9F,
+                      .gain = 1.1F,
+                      .offset = 0.02F}};
+
+const PostProcessPreset PRESET_BW_CONTRAST = {
+    .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
+    .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
+                 .extent = DEFAULT_VIGNETTE_EXTENT},
+    .grain = {.intensity = DEFAULT_GRAIN_INTENSITY},
+    .exposure = {.exposure = DEFAULT_EXPOSURE},
+    .chrom_abbr = {.strength = DEFAULT_CHROM_ABBR_STRENGTH},
+    .color_grading = {.saturation = 0.0F,
+                      .contrast = 1.5F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F}};
 
 void postprocess_begin(PostProcess* post_processing)
 {

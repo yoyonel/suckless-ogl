@@ -671,39 +671,39 @@ static void handle_postprocess_input(App* app, int key)
 
 		/* Presets pour le post-processing */
 		case GLFW_KEY_1: /* Preset: Aucun */
-			postprocess_preset_default(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_DEFAULT);
 			LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 			break;
 
 		case GLFW_KEY_2: /* Preset: Subtle */
-			postprocess_preset_subtle(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_SUBTLE);
 			LOG_INFO("suckless-ogl.app", "Style: Subtle");
 			break;
 
 		case GLFW_KEY_3: /* Preset: Cinématique */
-			postprocess_preset_cinematic(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_CINEMATIC);
 			LOG_INFO("suckless-ogl.app", "Style: Cinématique");
 			break;
 
 		case GLFW_KEY_4: /* Preset: Vintage */
-			postprocess_preset_vintage(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_VINTAGE);
 			LOG_INFO("suckless-ogl.app", "Style: Vintage");
 			break;
 
 		case GLFW_KEY_5: /* Style: "Matrix" */
-			postprocess_preset_matrix_grading(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_MATRIX);
 			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
 			break;
 
 		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
-			postprocess_preset_bw_contrast(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_BW_CONTRAST);
 			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
 			break;
 
 		case GLFW_KEY_0:
 		case GLFW_KEY_KP_0:
 			/* Reset complet */
-			postprocess_preset_default(&app->postprocess);
+			postprocess_apply_preset(&app->postprocess, &PRESET_DEFAULT);
 			LOG_INFO("suckless-ogl.app",
 			         "Color Grading: Reset to Defaults");
 			break;
