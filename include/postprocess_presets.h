@@ -21,7 +21,11 @@ static const PostProcessPreset PRESET_DEFAULT = {
                       .contrast = 1.0F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .offset = 0.0F}};
+                      .offset = 0.0F},
+    .bloom = {.intensity = 0.0F,
+              .threshold = 1.0F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
@@ -36,13 +40,17 @@ static const PostProcessPreset PRESET_SUBTLE = {
                       .contrast = 1.0F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .offset = 0.0F}};
+                      .offset = 0.0F},
+    .bloom = {.intensity = 0.02F,
+              .threshold = 1.0F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 static const PostProcessPreset PRESET_CINEMATIC = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
-        (unsigned int)POSTFX_COLOR_GRADING,
+        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
     .vignette = {.intensity = 0.5F, .extent = 0.6F},
     .grain = {.intensity = 0.03F},
     .exposure = {.exposure = 1.2F},
@@ -51,7 +59,11 @@ static const PostProcessPreset PRESET_CINEMATIC = {
                       .contrast = 1.0F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .offset = 0.0F}};
+                      .offset = 0.0F},
+    .bloom = {.intensity = 0.04F,
+              .threshold = 1.0F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 static const PostProcessPreset PRESET_VINTAGE = {
     .active_effects =
@@ -66,10 +78,15 @@ static const PostProcessPreset PRESET_VINTAGE = {
                       .contrast = 1.0F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .offset = 0.0F}};
+                      .offset = 0.0F},
+    .bloom = {.intensity = 0.0F,
+              .threshold = 1.0F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 static const PostProcessPreset PRESET_MATRIX = {
-    .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
+    .active_effects =
+        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
                  .extent = DEFAULT_VIGNETTE_EXTENT},
     .grain = {.intensity = DEFAULT_GRAIN_INTENSITY},
@@ -79,7 +96,11 @@ static const PostProcessPreset PRESET_MATRIX = {
                       .contrast = 1.2F,
                       .gamma = 0.9F,
                       .gain = 1.1F,
-                      .offset = 0.02F}};
+                      .offset = 0.02F},
+    .bloom = {.intensity = 0.2F,
+              .threshold = 0.8F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 static const PostProcessPreset PRESET_BW_CONTRAST = {
     .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
@@ -92,6 +113,11 @@ static const PostProcessPreset PRESET_BW_CONTRAST = {
                       .contrast = 1.5F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .offset = 0.0F}};
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .bloom = {.intensity = 0.0F,
+              .threshold = 1.0F,
+              .soft_threshold = 0.5F,
+              .radius = 1.0F}};
 
 #endif /* POSTPROCESS_PRESETS_H */

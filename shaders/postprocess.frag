@@ -33,6 +33,11 @@ uniform float gradGamma;
 uniform float gradGain;
 uniform float gradOffset;
 
+/* Paramètres Bloom */
+uniform sampler2D bloomTexture;
+uniform int enableBloom;
+uniform float bloomIntensity;
+
 /* Fonction de bruit pseudo-aléatoire pour le grain */
 float random(vec2 co) {
     return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
@@ -123,6 +128,12 @@ void main() {
         color = applyChromAbbr(TexCoords);
     } else {
         color = texture(screenTexture, TexCoords).rgb;
+    }
+    
+    /* Appliquer le Bloom (Additif, avant exposition) */
+    if (enableBloom != 0) {
+        vec3 bloomColor = texture(bloomTexture, TexCoords).rgb;
+        color += bloomColor * bloomIntensity;
     }
     
     /* Appliquer l'exposition en premier (pour le HDR -> LDR) */

@@ -641,6 +641,15 @@ static void handle_postprocess_input(App* app, int key)
 			             : "OFF");
 			break;
 
+		case GLFW_KEY_B: /* Toggle Bloom */
+			postprocess_toggle(&app->postprocess, POSTFX_BLOOM);
+			LOG_INFO("suckless-ogl.app", "Bloom: %s",
+			         postprocess_is_enabled(&app->postprocess,
+			                                POSTFX_BLOOM)
+			             ? "ON"
+			             : "OFF");
+			break;
+
 		case GLFW_KEY_X: /* Toggle Chromatic Aberration */
 			postprocess_toggle(&app->postprocess,
 			                   POSTFX_CHROM_ABBR);

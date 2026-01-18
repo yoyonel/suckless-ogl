@@ -53,6 +53,10 @@ void test_postprocess_init_creates_resources(void)
     TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vao);
     TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vbo);
     TEST_ASSERT_NOT_EQUAL(0, pp.postprocess_shader);
+    /* Bloom resources */
+    TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fbo);
+    TEST_ASSERT_NOT_EQUAL(0, pp.bloom_mips[0].texture);
+
     TEST_ASSERT_EQUAL(640, pp.width);
     TEST_ASSERT_EQUAL(480, pp.height);
 
@@ -115,6 +119,7 @@ void test_postprocess_apply_preset(void)
 
     // Initial is 0.0, Vintage is 0.0 or something else? Let's check color grading
     TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.color_grading.contrast, pp.color_grading.contrast);
+    TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.bloom.intensity, pp.bloom.intensity);
 
     postprocess_cleanup(&pp);
 }

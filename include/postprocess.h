@@ -55,12 +55,33 @@ typedef struct {
 	                   (visible aux bords) */
 } ChromAbberationParams;
 
+/* Paramètres pour le Bloom (Physically Based) */
+typedef struct {
+	float intensity;      /* Puissance globale (0.0 - 1.0+) */
+	float threshold;      /* Seuil de luminance (1.0+) */
+	float soft_threshold; /* Genou de transition (0.0 - 1.0) */
+	float radius;         /* Rayon du bloom (simulé par # mips) */
+} BloomParams;
+
+/* Structure pour un niveau de mip du Bloom */
+typedef struct {
+	GLuint texture;
+	int width;
+	int height;
+} BloomMip;
+
+#define BLOOM_MIP_LEVELS 5
+
 /* Structure principale du système de post-processing */
 typedef struct {
 	/* Framebuffers */
 	GLuint scene_fbo;       /* FBO pour le rendu de la scène */
 	GLuint scene_color_tex; /* Texture de couleur HDR */
 	GLuint scene_depth_rbo; /* Renderbuffer pour depth/stencil */
+	
+	/* Bloom Resources */
+	GLuint bloom_fbo;       /* FBO partagé pour le blit */
+	BloomMip bloom_mips[BLOOM_MIP_LEVELS];
 
 	/* Quad plein écran */
 	GLuint screen_quad_vao;
@@ -68,6 +89,9 @@ typedef struct {
 
 	/* Shaders */
 	GLuint postprocess_shader; /* Shader combinant tous les effets */
+	GLuint bloom_prefilter_shader;
+	GLuint bloom_downsample_shader;
+	GLuint bloom_upsample_shader;
 
 	/* Dimensions */
 	int width;
@@ -82,6 +106,7 @@ typedef struct {
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
 	ColorGradingParams color_grading;
+	BloomParams bloom;
 
 	/* Temps pour effets animés (grain) */
 	float time;
@@ -113,6 +138,8 @@ void postprocess_set_vignette(PostProcess* post_processing, float intensity,
 void postprocess_set_grain(PostProcess* post_processing, float intensity);
 void postprocess_set_exposure(PostProcess* post_processing, float exposure);
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
+void postprocess_set_bloom(PostProcess* post_processing, float intensity,
+                           float threshold, float soft_threshold);
 
 /* Structure de Preset pour l'application en masse de paramètres */
 typedef struct {
@@ -122,6 +149,7 @@ typedef struct {
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
 	ColorGradingParams color_grading;
+	BloomParams bloom;
 } PostProcessPreset;
 
 /* Application de preset */
