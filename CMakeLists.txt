@@ -194,7 +194,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
-    target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
+    add_compile_definitions(_POSIX_C_SOURCE=200809L)
 endif()
 
 # Vérification post-build pour s'assurer que tout est statique

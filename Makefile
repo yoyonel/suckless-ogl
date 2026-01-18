@@ -56,7 +56,7 @@ CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cj
 lint: $(BUILD_DIR)/Makefile
 	@echo "Ensuring dependencies are generated..."
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
-	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=199309L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
+	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=200809L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh

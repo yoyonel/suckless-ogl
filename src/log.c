@@ -1,6 +1,4 @@
-// NOLINTNEXTLINE(bugprone-reserved-identifier, cert-dcl37-c, cert-dcl51-cpp)
-#define _POSIX_C_SOURCE \
-	199309L  // Garantit la disponibilité de clock_gettime et CLOCK_REALTIME
+// _POSIX_C_SOURCE defined globally via CMakeLists.txt
 #include "log.h"
 
 #include <stdarg.h>
