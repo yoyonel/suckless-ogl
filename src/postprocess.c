@@ -12,9 +12,18 @@ static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_bloom_resources(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 static void render_bloom(PostProcess* post_processing);
+static void render_auto_exposure(PostProcess* post_processing);
 
 /* TODO: move to gl_common.h and mutualize with skybox rendering */
 enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
+
+/* Auto Exposure Constants */
+static const float EXPOSURE_MIN_LUM = 0.5F;
+static const float EXPOSURE_DEFAULT_MAX_LUM = 5000.0F;
+static const float EXPOSURE_SPEED_UP = 2.0F;
+static const float EXPOSURE_SPEED_DOWN = 1.0F;
+static const float EXPOSURE_DEFAULT_KEY_VALUE = 1.0F;
+static const float EXPOSURE_INITIAL_VAL = 0.5F;
 
 /* Vertices pour un quad plein écran */
 static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
@@ -52,6 +61,17 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->color_grading.gamma = 1.0F;
 	post_processing->color_grading.gain = 1.0F;
 	post_processing->color_grading.offset = 0.0F;
+
+	post_processing->color_grading.offset = 0.0F;
+
+	/* Initialisation Auto Exposure (Stabilisé) */
+	/* Initialisation Auto Exposure (Stabilisé) */
+	post_processing->auto_exposure.min_luminance =
+	    EXPOSURE_MIN_LUM; /* Limite le boost max à x2 (1.0 / 0.5) */
+	post_processing->auto_exposure.max_luminance = EXPOSURE_DEFAULT_MAX_LUM;
+	post_processing->auto_exposure.speed_up = EXPOSURE_SPEED_UP;
+	post_processing->auto_exposure.speed_down = EXPOSURE_SPEED_DOWN;
+	post_processing->auto_exposure.key_value = EXPOSURE_DEFAULT_KEY_VALUE;
 
 	/* Effets désactivés par défaut */
 	post_processing->active_effects = 0;
@@ -100,12 +120,20 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->bloom_upsample_shader = shader_load_program(
 	    "shaders/postprocess.vert", "shaders/bloom_upsample.frag");
 
+	post_processing->lum_downsample_shader = shader_load_program(
+	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
+
+	post_processing->lum_adapt_shader =
+	    shader_load_compute("shaders/lum_adapt.comp");
+
 	if (!post_processing->bloom_prefilter_shader ||
 	    !post_processing->bloom_downsample_shader ||
-	    !post_processing->bloom_upsample_shader) {
+	    !post_processing->bloom_upsample_shader ||
+	    !post_processing->lum_downsample_shader ||
+	    !post_processing->lum_adapt_shader) {
 		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to load bloom shaders");
-		/* On continue quand même, le bloom ne marchera juste pas */
+		          "Failed to load post-process shaders");
+		/* On continue quand même */
 	}
 
 	LOG_INFO("suckless-ogl.postprocess",
@@ -237,6 +265,27 @@ void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
 	post_processing->dof.bokeh_scale = bokeh_scale;
 }
 
+float postprocess_get_exposure(PostProcess* post_processing)
+{
+	float pixel[4];
+	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, pixel);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return pixel[0]; /* Red channel contains exposure */
+}
+
+void postprocess_set_auto_exposure(PostProcess* post_processing,
+                                   float min_luminance, float max_luminance,
+                                   float speed_up, float speed_down,
+                                   float key_value)
+{
+	post_processing->auto_exposure.min_luminance = min_luminance;
+	post_processing->auto_exposure.max_luminance = max_luminance;
+	post_processing->auto_exposure.speed_up = speed_up;
+	post_processing->auto_exposure.speed_down = speed_down;
+	post_processing->auto_exposure.key_value = key_value;
+}
+
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
 {
 	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
@@ -284,6 +333,13 @@ void postprocess_end(PostProcess* post_processing)
 	 * défaut */
 	render_bloom(post_processing);
 
+	/* Auto Exposure Pass (Compute) - Must be done before binding final
+	 * shader */
+	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE) &&
+	    post_processing->lum_adapt_shader != 0) {
+		render_auto_exposure(post_processing);
+	}
+
 	/* Retour au framebuffer par défaut */
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -320,6 +376,13 @@ void postprocess_end(PostProcess* post_processing)
 	                                 "depthTexture"),
 	            2);
 
+	/* Bind Exposure Texture (Unit 3) */
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "autoExposureTexture"),
+	            3);
+
 	/* Envoyer les flags d'effets actifs */
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableVignette"),
@@ -330,6 +393,14 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableExposure"),
 	            postprocess_is_enabled(post_processing, POSTFX_EXPOSURE));
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "enableAutoExposure"),
+	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE));
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "enableExposureDebug"),
+	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG));
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableChromAbbr"),
 	            postprocess_is_enabled(post_processing, POSTFX_CHROM_ABBR));
@@ -410,6 +481,77 @@ void postprocess_end(PostProcess* post_processing)
 void postprocess_update_time(PostProcess* post_processing, float delta_time)
 {
 	post_processing->time += delta_time;
+	post_processing->delta_time =
+	    delta_time; /* Save dt for compute shader */
+}
+
+static void render_auto_exposure(PostProcess* post_processing)
+{
+	/* 1. Downsample Scene -> 64x64 Log Luminance */
+	glViewport(0, 0, LUM_DOWNSAMPLE_SIZE, LUM_DOWNSAMPLE_SIZE);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->lum_downsample_fbo);
+
+	glUseProgram(post_processing->lum_downsample_shader);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,
+	              post_processing->scene_color_tex); /* Input: Scene */
+	glUniform1i(glGetUniformLocation(post_processing->lum_downsample_shader,
+	                                 "sceneTexture"),
+	            0);
+
+	/* Draw Fullscreen Quad (Reuse existing vao) */
+	glBindVertexArray(post_processing->screen_quad_vao);
+	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+	glBindVertexArray(0); /* Unbind */
+
+	/* 2. Compute Adaptation */
+	glUseProgram(post_processing->lum_adapt_shader);
+
+	/* Input: Downsampled Log Lum */
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->lum_downsample_tex);
+	/* Note: In compute, samplers map to texture units bound via
+	   glActiveTexture? Yes, usually. Or uniform binding. Let's send 0
+	   explicitly. */
+	glUniform1i(glGetUniformLocation(post_processing->lum_adapt_shader,
+	                                 "lumTexture"),
+	            0);
+
+	/* Output: Exposure Storage Image (Image Unit 1) */
+	glBindImageTexture(1, post_processing->exposure_tex, 0, GL_FALSE, 0,
+	                   GL_READ_WRITE, GL_RGBA32F);
+
+	/* Uniforms */
+	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
+	                                 "deltaTime"),
+	            post_processing->delta_time);
+	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
+	                                 "minLuminance"),
+	            post_processing->auto_exposure.min_luminance);
+	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
+	                                 "maxLuminance"),
+	            post_processing->auto_exposure.max_luminance);
+	glUniform1f(
+	    glGetUniformLocation(post_processing->lum_adapt_shader, "speedUp"),
+	    post_processing->auto_exposure.speed_up);
+	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
+	                                 "speedDown"),
+	            post_processing->auto_exposure.speed_down);
+	glUniform1f(
+	    glGetUniformLocation(post_processing->lum_adapt_shader, "keyValue"),
+	    post_processing->auto_exposure.key_value);
+
+	/* Dispatch (Single Group 1,1,1 as coded in Shader) */
+	glDispatchCompute(1, 1, 1);
+
+	/* Memory Barrier to ensure image write is visible to fragment shader
+	 * next pass */
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+	                GL_TEXTURE_FETCH_BARRIER_BIT);
+
+	/* Restore Viewport */
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, post_processing->width, post_processing->height);
 }
 
 /* Fonctions privées */
@@ -448,7 +590,6 @@ static int create_framebuffer(PostProcess* post_processing)
 	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,
 	                       0);
 
-	/* Vérifier que le framebuffer est complet */
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
 	    GL_FRAMEBUFFER_COMPLETE) {
 		LOG_ERROR("suckless-ogl.postprocess",
@@ -456,6 +597,49 @@ static int create_framebuffer(PostProcess* post_processing)
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return 0;
 	}
+
+	/* --------------------------
+	   Auto Exposure Resources
+	   -------------------------- */
+
+	/* 1. Downsample Logic (64x64 R16F) */
+	glGenFramebuffers(1, &post_processing->lum_downsample_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->lum_downsample_fbo);
+
+	glGenTextures(1, &post_processing->lum_downsample_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->lum_downsample_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, LUM_DOWNSAMPLE_SIZE,
+	             LUM_DOWNSAMPLE_SIZE, 0, GL_RED, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D,
+	                       post_processing->lum_downsample_tex, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
+	    GL_FRAMEBUFFER_COMPLETE) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Lum Downsample FBO incomplete!");
+		return 0;
+	}
+
+	/* 2. Adaptation Storage (1x1 RGBA32F) */
+	glGenTextures(1, &post_processing->exposure_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
+
+	/* Utilisation de GL_RGBA32F pour compatibilité maximale Image
+	 * Load/Store */
+	/* Init: (0.5, 0, 0, 1) */
+	/* Init: (0.5, 0, 0, 1) */
+	float initialValues[4] = {EXPOSURE_INITIAL_VAL, 0.0F, 0.0F, 1.0F};
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1, 1, 0, GL_RGBA, GL_FLOAT,
+	             initialValues);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return 1;

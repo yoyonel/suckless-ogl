@@ -41,8 +41,11 @@ uniform sampler2D depthTexture;
 uniform int enableBloom;
 uniform int enableDoF; /* Flag d'activation DoF */
 uniform int enableDoFDebug; /* Flag de debug DoF */
+uniform int enableAutoExposure; /* Flag Auto Exposure */
+uniform int enableExposureDebug; /* Flag Debug Auto Exposure */
 
 uniform float bloomIntensity;
+uniform sampler2D autoExposureTexture; /* Texture 1x1 R32F */
 
 /* Paramètres DoF */
 uniform float dofFocalDistance;
@@ -250,9 +253,17 @@ void main() {
     }
     
     /* Appliquer l'exposition en premier (pour le HDR -> LDR) */
-    if (enableExposure != 0) {
-        color = applyExposure(color);
+    float finalExposure = 1.0;
+    if (enableAutoExposure != 0) {
+        /* Lire l'exposition calculée par le Compute Shader */
+        float autoExp = texture(autoExposureTexture, vec2(0.5)).r;
+        /* Manual Exposure agit comme une compensation (EV bias) */
+        finalExposure = autoExp * exposure;
+    } else if (enableExposure != 0) {
+        finalExposure = exposure;
     }
+    
+    color *= finalExposure;
     
     /* Appliquer le color grading */
     if (enableColorGrading != 0) {

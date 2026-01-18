@@ -28,10 +28,12 @@ typedef enum {
 	POSTFX_EXPOSURE = (1U << 2),   /* 0x04 */
 	POSTFX_CHROM_ABBR = (1U << 3), /* 0x08 */
 	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1U << 4),         /* 0x10 */
-	POSTFX_COLOR_GRADING = (1U << 5), /* 0x20 */
-	POSTFX_DOF = (1U << 6),           /* 0x40 */
-	POSTFX_DOF_DEBUG = (1U << 7),     /* 0x80 - Debug Visualization */
+	POSTFX_BLOOM = (1U << 4),          /* 0x10 */
+	POSTFX_COLOR_GRADING = (1U << 5),  /* 0x20 */
+	POSTFX_DOF = (1U << 6),            /* 0x40 */
+	POSTFX_DOF_DEBUG = (1U << 7),      /* 0x80 - Debug Visualization */
+	POSTFX_AUTO_EXPOSURE = (1U << 8),  /* 0x100 */
+	POSTFX_EXPOSURE_DEBUG = (1U << 9), /* 0x200 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
@@ -89,18 +91,34 @@ typedef struct {
 	float bokeh_scale; /* Taille du flou (simule l'ouverture) */
 } DoFParams;
 
+/* Paramètres pour l'Auto Exposure (Eye Adaptation) */
+typedef struct {
+	float min_luminance; /* Luminance min (clamping) */
+	float max_luminance; /* Luminance max (clamping) */
+	float speed_up; /* Vitesse d'adaptation vers clair (pupille s'ouvre) */
+	float speed_down; /* Vitesse d'adaptation vers sombre (pupille se ferme)
+	                   */
+	float key_value;  /* Target exposure value (middle gray), def: 1.0 */
+} AutoExposureParams;
+
 #define BLOOM_MIP_LEVELS 5
+#define LUM_DOWNSAMPLE_SIZE 64
 
 /* Structure principale du système de post-processing */
 typedef struct {
-	/* Framebuffers */
-	GLuint scene_fbo;       /* FBO pour le rendu de la scène */
-	GLuint scene_color_tex; /* Texture de couleur HDR */
-	GLuint scene_depth_tex; /* Texture de profondeur (remplace RBO) */
+	/* FBO principal et textures */
+	GLuint scene_fbo;
+	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
+	GLuint scene_depth_tex; /* Depth (GL_DEPTH_COMPONENT32F) */
 
 	/* Bloom Resources */
 	GLuint bloom_fbo; /* FBO partagé pour le blit */
 	BloomMip bloom_mips[BLOOM_MIP_LEVELS];
+
+	/* Auto Exposure Resources */
+	GLuint lum_downsample_fbo; /* FBO pour downsample luminance */
+	GLuint lum_downsample_tex; /* Texture 64x64 Log Luminance */
+	GLuint exposure_tex; /* Texture 1x1 R32F (Storage) - Current Exposure */
 
 	/* Quad plein écran */
 	GLuint screen_quad_vao;
@@ -111,16 +129,18 @@ typedef struct {
 	GLuint bloom_prefilter_shader;
 	GLuint bloom_downsample_shader;
 	GLuint bloom_upsample_shader;
+	GLuint lum_downsample_shader; /* Shader pour Log Lum Downsample */
+	GLuint lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
 	GLuint dof_shader;
 
 	/* Dimensions */
 	int width;
 	int height;
 
-	/* Effets actifs (masque de bits) */
+	/* Pipeline Settings (Effets actifs) */
 	unsigned int active_effects;
 
-	/* Paramètres des effets */
+	/* Paramètres Effets */
 	VignetteParams vignette;
 	GrainParams grain;
 	ExposureParams exposure;
@@ -128,9 +148,11 @@ typedef struct {
 	ColorGradingParams color_grading;
 	BloomParams bloom;
 	DoFParams dof;
+	AutoExposureParams auto_exposure;
 
 	/* Temps pour effets animés (grain) */
 	float time;
+	float delta_time; /* Added needed for time integration */
 } PostProcess;
 
 /* Initialisation et nettoyage */
@@ -163,6 +185,11 @@ void postprocess_set_bloom(PostProcess* post_processing, float intensity,
                            float threshold, float soft_threshold);
 void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
                          float focal_range, float bokeh_scale);
+float postprocess_get_exposure(PostProcess* post_processing);
+void postprocess_set_auto_exposure(PostProcess* post_processing,
+                                   float min_luminance, float max_luminance,
+                                   float speed_up, float speed_down,
+                                   float key_value);
 
 /* Structure de Preset pour l'application en masse de paramètres */
 typedef struct {
