@@ -50,6 +50,7 @@ set(OPENGL_TESTS
     test_instanced_rendering
     test_ssbo_rendering
     test_app
+    test_postprocess
 )
 
 # Pour chaque fichier test trouvé
