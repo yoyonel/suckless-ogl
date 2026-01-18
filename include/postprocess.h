@@ -13,13 +13,13 @@
 
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
-	POSTFX_VIGNETTE = (1 << 0),   /* 0x01 */
-	POSTFX_GRAIN = (1 << 1),      /* 0x02 */
-	POSTFX_EXPOSURE = (1 << 2),   /* 0x04 */
-	POSTFX_CHROM_ABBR = (1 << 3), /* 0x08 */
+	POSTFX_VIGNETTE = (1U << 0),      /* 0x01 */
+	POSTFX_GRAIN = (1U << 1),         /* 0x02 */
+	POSTFX_EXPOSURE = (1U << 2),      /* 0x04 */
+	POSTFX_CHROM_ABBR = (1U << 3),    /* 0x08 */
 	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1 << 4),         /* 0x10 */
-	POSTFX_COLOR_GRADING = (1 << 5), /* 0x20 */
+	POSTFX_BLOOM = (1U << 4),         /* 0x10 */
+	POSTFX_COLOR_GRADING = (1U << 5), /* 0x20 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
@@ -114,13 +114,27 @@ void postprocess_set_grain(PostProcess* post_processing, float intensity);
 void postprocess_set_exposure(PostProcess* post_processing, float exposure);
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
 
-/* Presets */
-void postprocess_preset_default(PostProcess* post_processing);
-void postprocess_preset_subtle(PostProcess* post_processing);
-void postprocess_preset_cinematic(PostProcess* post_processing);
-void postprocess_preset_vintage(PostProcess* post_processing);
-void postprocess_preset_matrix_grading(PostProcess* post_processing);
-void postprocess_preset_bw_contrast(PostProcess* post_processing);
+/* Structure de Preset pour l'application en masse de paramètres */
+typedef struct {
+	unsigned int active_effects;
+	VignetteParams vignette;
+	GrainParams grain;
+	ExposureParams exposure;
+	ChromAbberationParams chrom_abbr;
+	ColorGradingParams color_grading;
+} PostProcessPreset;
+
+/* Application de preset */
+void postprocess_apply_preset(PostProcess* post_processing,
+                              const PostProcessPreset* preset);
+
+/* Definitions de presets (disponibles globalement) */
+extern const PostProcessPreset PRESET_DEFAULT;
+extern const PostProcessPreset PRESET_SUBTLE;
+extern const PostProcessPreset PRESET_CINEMATIC;
+extern const PostProcessPreset PRESET_VINTAGE;
+extern const PostProcessPreset PRESET_MATRIX;
+extern const PostProcessPreset PRESET_BW_CONTRAST;
 
 /* Rendu */
 void postprocess_begin(
