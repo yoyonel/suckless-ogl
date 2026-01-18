@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
+#include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
@@ -38,6 +39,9 @@ typedef struct {
 	// /* Camera state */
 	int camera_enabled; /* Mouse control enabled */
 	Camera camera;
+
+	/* Post-processing */
+	PostProcess postprocess;
 
 	/* Icosphere geometry */
 	IcosphereGeometry geometry;  // CPU side

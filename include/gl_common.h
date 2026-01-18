@@ -7,4 +7,6 @@
 /* Now we can include GLFW which may pull in OpenGL headers */
 #include <GLFW/glfw3.h>
 
+#define BUFFER_OFFSET(i) (const char*)NULL + (i)
+
 #endif /* GL_COMMON_H */
