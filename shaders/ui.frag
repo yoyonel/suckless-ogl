@@ -5,12 +5,15 @@ out vec4 color;
 uniform sampler2D text;     // L'atlas de la font
 uniform vec3 textColor;     // La couleur passée depuis le C
 
+uniform int useTexture;     // 1 = Text (Atlas), 0 = Solid Rect
+
 void main() {
-    // On récupère la valeur de gris dans le canal Rouge
-    float alpha = texture(text, TexCoords).r;
+    float alpha = 1.0;
     
-    // Si l'alpha est trop bas, on ne dessine rien (évite les artefacts)
-    if (alpha < 0.1) discard;
+    if (useTexture != 0) {
+        alpha = texture(text, TexCoords).r;
+         if (alpha < 0.1) discard;
+    }
 
     color = vec4(textColor, alpha);
 }

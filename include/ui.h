@@ -21,6 +21,10 @@ typedef struct {
 int ui_init(UIContext* ui_context, const char* font_path, float font_size);
 void ui_draw_text(UIContext* ui_context, const char* text, float x, float y,
                   vec3 color, int screen_width, int screen_height);
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
+                  float width, float height, vec3 color, int screen_width,
+                  int screen_height);
 void ui_destroy(UIContext* ui_context);
 
 #endif

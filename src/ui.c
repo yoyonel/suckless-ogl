@@ -320,9 +320,12 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 	    glGetUniformLocation(ui_context->shader, "projection");
 	const GLint color_loc =
 	    glGetUniformLocation(ui_context->shader, "textColor");
+	const GLint use_tex_loc =
+	    glGetUniformLocation(ui_context->shader, "useTexture");
 
 	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (float*)projection);
 	glUniform3fv(color_loc, 1, color);
+	glUniform1i(use_tex_loc, 1); /* Enable Texture for Text */
 
 	// Bind texture and vertex array
 	glActiveTexture(GL_TEXTURE0);
@@ -364,6 +367,69 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
+
+	// Restore OpenGL state
+	restore_gl_state(&saved_state);
+}
+
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
+                  float width, float height, vec3 color, int screen_width,
+                  int screen_height)
+{
+	if (ui_context == NULL || ui_context->shader == 0) {
+		return;
+	}
+
+	// Save and setup OpenGL state
+	const GLStateBackup saved_state = save_gl_state();
+	setup_ui_render_state();
+
+	// Activate shader
+	glUseProgram(ui_context->shader);
+
+	// Setup orthographic projection
+	mat4 projection;  // NOLINT(misc-include-cleaner)
+	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
+	          1.0F, projection);
+
+	// Upload uniforms
+	const GLint proj_loc =
+	    glGetUniformLocation(ui_context->shader, "projection");
+	const GLint color_loc =
+	    glGetUniformLocation(ui_context->shader, "textColor");
+	const GLint use_tex_loc =
+	    glGetUniformLocation(ui_context->shader, "useTexture");
+
+	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (float*)projection);
+	glUniform3fv(color_loc, 1, color);
+	glUniform1i(use_tex_loc, 0); /* Disable Texture for Rect */
+
+	// Bind vertex array (No texture binding needed, but VAO is required)
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	/* Construct Quad manually */
+	UIQuad quad = {
+	    .vertices = {
+	        // Triangle 1
+	        {rect_x, rect_y + height, 0.0F, 0.0F},  // Bottom-left
+	        {rect_x, rect_y, 0.0F, 0.0F},           // Top-left
+	        {rect_x + width, rect_y, 0.0F, 0.0F},   // Top-right
+
+	        // Triangle 2
+	        {rect_x, rect_y + height, 0.0F, 0.0F},         // Bottom-left
+	        {rect_x + width, rect_y, 0.0F, 0.0F},          // Top-right
+	        {rect_x + width, rect_y + height, 0.0F, 0.0F}  // Bottom-right
+	    }};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+
+	// Cleanup
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
 	// Restore OpenGL state
