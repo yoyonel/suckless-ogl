@@ -11,12 +11,15 @@ layout(binding=1, rgba16f) restrict writeonly uniform image2D prefilteredEnvMap;
 
 layout(location=0) uniform float roughnessValue;
 layout(location=1) uniform int currentMipLevel;
+layout(location=2) uniform float clampThreshold;
 
 layout(local_size_x=32, local_size_y=32, local_size_z=1) in;
 
 // Convertit un vecteur directionnel en coordonnées UV équirectangulaires
+// Convertit un vecteur directionnel en coordonnées UV équirectangulaires
 vec2 dirToUV(vec3 v) {
-    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    float phi = (abs(v.z) < 1e-5 && abs(v.x) < 1e-5) ? 0.0 : atan(v.z, v.x);
+    vec2 uv = vec2(phi, asin(clamp(v.y, -1.0, 1.0)));
     uv *= vec2(1.0 / TwoPI, 1.0 / PI);
     uv += 0.5;
     return uv;
@@ -40,6 +43,7 @@ vec2 sampleHammersley(uint i)
 vec3 sampleGGX(float u1, float u2, float roughness)
 {
     float alpha = roughness * roughness;
+    alpha = max(alpha, 0.001); /* Prevent divide by zero */
 
     float cosTheta = sqrt((1.0 - u2) / (1.0 + (alpha*alpha - 1.0) * u2));
     float sinTheta = sqrt(1.0 - cosTheta*cosTheta);// Trig. identity
@@ -51,6 +55,7 @@ vec3 sampleGGX(float u1, float u2, float roughness)
 float ndfGGX(float cosHalfVector, float roughness)
 {
     float alpha   = roughness * roughness;
+    alpha = max(alpha, 0.001); /* Prevent divide by zero */
     float alphaSq = alpha * alpha;
 
     float denom = (cosHalfVector * cosHalfVector) * (alphaSq - 1.0) + 1.0;
@@ -87,6 +92,9 @@ void main(void) {
     vec3 accumulatedColor = vec3(0);
     float totalWeight = 0;
 
+    /* Ensure valid clamp threshold */
+    float safeThreshold = max(clampThreshold, 1.0);
+
     for (uint i=0; i<SAMPLE_COUNT; ++i) {
         vec2 u = sampleHammersley(i);
         vec3 H = tangentToWorld(sampleGGX(u.x, u.y, roughnessValue), normal, tangent, bitangent);
@@ -103,10 +111,29 @@ void main(void) {
             float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 1e-5);
             float mipLevel = roughnessValue == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);
 
-            accumulatedColor += textureLod(envMap, dirToUV(L), mipLevel).rgb * NoL;
+            vec3 envColor = textureLod(envMap, dirToUV(L), mipLevel).rgb;
+            
+            /* Sanitize envColor (remove NaNs) */
+            if (any(isnan(envColor)) || any(isinf(envColor))) {
+                envColor = vec3(0.0);
+            }
+
+            /* Clamping "Fireflies" pour éviter les NaNs/Artefacts avec les cartes HDR très intenses */
+            envColor = min(envColor, vec3(safeThreshold));
+            
+            accumulatedColor += envColor * NoL;
             totalWeight += NoL;
         }
     }
 
-    imageStore(prefilteredEnvMap, ivec2(gl_GlobalInvocationID.xy), vec4(accumulatedColor / totalWeight, 1.0));
+    vec4 resultColor = vec4(accumulatedColor, 1.0);
+    if (totalWeight > 0.0) {
+        resultColor = vec4(accumulatedColor / totalWeight, 1.0);
+    }
+    
+    /* Force clamp to prevent INF/MAX_FLOAT issues in the texture */
+    resultColor.rgb = min(resultColor.rgb, vec3(65500.0)); 
+    
+    imageStore(prefilteredEnvMap, ivec2(gl_GlobalInvocationID.xy), resultColor);
 }
+

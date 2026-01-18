@@ -11,8 +11,10 @@ const float PI = 3.14159265359;
 const float TWO_PI = 2.0 * PI;
 
 // Helpers pour le mapping Equirectangulaire
+// Helpers pour le mapping Equirectangulaire
 vec2 dirToUV(vec3 v) {
-    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    float phi = (abs(v.z) < 1e-5 && abs(v.x) < 1e-5) ? 0.0 : atan(v.z, v.x);
+    vec2 uv = vec2(phi, asin(clamp(v.y, -1.0, 1.0)));
     uv *= vec2(1.0 / TWO_PI, 1.0 / PI);
     uv += 0.5;
     return uv;
@@ -66,6 +68,11 @@ void main(void) {
 
             // On échantillonne l'envMap d'origine
             vec3 env_color = textureLod(envMap, dirToUV(sampleVec), 0.0).rgb;
+            
+            /* Sanitize Input */
+            if (any(isnan(env_color)) || any(isinf(env_color))) env_color = vec3(0.0);
+            env_color = max(env_color, vec3(0.0)); /* No negative light */
+
             env_color = soft_clamp_smoothstep(env_color);
 
             irradiance += env_color * cos(theta) * sin(theta);
@@ -74,6 +81,10 @@ void main(void) {
     }
 
     irradiance = PI * irradiance * (1.0 / nrSamples);
-    // gl_GlobalInvocationID.xy contient l'index du pixel [x, y]
+    
+    /* Sanitize Output */
+    if (any(isnan(irradiance)) || any(isinf(irradiance))) irradiance = vec3(0.0);
+    irradiance = max(irradiance, vec3(0.0));
+
     imageStore(irradianceMap, ivec2(gl_GlobalInvocationID.xy), vec4(irradiance, 1.0));
 }

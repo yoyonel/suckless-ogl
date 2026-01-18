@@ -11,7 +11,8 @@
 static const uint32_t COMPUTE_GROUP_SIZE_PBR = 32;
 static const uint32_t COMPUTE_GROUP_SIZE_LUM = 16;
 
-GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height)
+GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height,
+                                      float threshold)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
 
@@ -45,6 +46,9 @@ GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height)
 
 		float roughness = (float)level / (float)(levels - 1);
 		glUniform1f(0, roughness);
+		/* Location 2 correspond à clampThreshold ajouté dans le shader
+		 */
+		glUniform1f(2, threshold);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, env_hdr_tex);

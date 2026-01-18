@@ -13,6 +13,7 @@ uniform vec3 camPos;
 uniform sampler2D irradianceMap;
 uniform sampler2D prefilterMap;
 uniform sampler2D brdfLUT;
+uniform int debugMode;
 
 const float PI = 3.14159265359;
 const float INV_PI = 0.31830988618; // 1/PI précalculé
@@ -22,7 +23,8 @@ const float EPSILON = 1e-6;
 // Helper: Direction vers UV Equirectangulaire
 // ----------------------------------------------------------------------------
 vec2 dirToUV(vec3 v) {
-    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    float phi = (abs(v.z) < 1e-5 && abs(v.x) < 1e-5) ? 0.0 : atan(v.z, v.x);
+    vec2 uv = vec2(phi, asin(clamp(v.y, -1.0, 1.0)));
     uv *= vec2(0.1591, 0.3183); // 1/2PI, 1/PI
     uv += 0.5;
     
@@ -50,14 +52,17 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV, floa
     vec3 F = fresnelSchlickRoughness(NdotV, F0, roughness);
     
     // --- DIFFUSE IBL ---
+    // --- DIFFUSE IBL ---
     vec3 kS = F;
     vec3 kD = (1.0 - kS) * (1.0 - Metallic);
     vec3 irradiance = texture(irradianceMap, dirToUV(N)).rgb;
+    irradiance = max(irradiance, vec3(0.0)); // Prevent negative light
     vec3 diffuse = irradiance * Albedo;
 
     // --- SPECULAR IBL (Split-Sum) ---
     const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefilterMap, dirToUV(R), roughness * MAX_REFLECTION_LOD).rgb;
+    prefilteredColor = max(prefilteredColor, vec3(0.0)); // Prevent negative light
     
     // BRDF LUT lookup
     vec2 brdfUV = vec2(NdotV, roughness);
@@ -103,13 +108,49 @@ void main() {
     float NdotV = max(dot(N, V), 0.0);
     vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
 
-    // 1. Calcul de la rugosité anti-scintillement
+    // 1. Calcul de la rugosité anti-scintillement et sécurisée
     float clamped_roughness = compute_roughness_clamping(N, Roughness);
+    clamped_roughness = max(clamped_roughness, 0.04); /* Prevent 0.0 roughness singularity */
 
     // 2. Appel à la fonction complète avec compensation d'énergie
     vec3 ambient = compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, clamped_roughness);
-
+    
     vec3 color = ambient;
+
+    // --- DEBUG VIEW ---
+    // 0: Final PBR
+    // 1: Albedo
+    // 2: Normal
+    // 3: Metallic
+    // 4: Roughness
+    // 5: AO
+    // 6: Irradiance (Diffuse)
+    // 7: Prefilter (Specular)
+    // 8: BRDF LUT
+    
+    if (debugMode != 0) {
+        if (debugMode == 1) color = vec3(Albedo);
+        else if (debugMode == 2) color = N * 0.5 + 0.5;
+        else if (debugMode == 3) color = vec3(Metallic);
+        else if (debugMode == 4) color = vec3(Roughness);
+        else if (debugMode == 5) color = vec3(AO);
+        else if (debugMode == 6) {
+             vec3 irradiance = texture(irradianceMap, dirToUV(N)).rgb;
+             /* Gamma correct for visualization */
+             color = pow(irradiance, vec3(1.0/2.2));
+        }
+        else if (debugMode == 7) {
+             const float MAX_REFLECTION_LOD = 4.0;
+             vec3 prefiltered = textureLod(prefilterMap, dirToUV(R), Roughness * MAX_REFLECTION_LOD).rgb;
+             color = pow(prefiltered, vec3(1.0/2.2));
+        }
+        else if (debugMode == 8) {
+             vec2 brdfUV = vec2(max(dot(N, V), 0.0), Roughness);
+             vec2 texSize = vec2(textureSize(brdfLUT, 0));
+             brdfUV = brdfUV * (texSize - 1.0) / texSize + 0.5 / texSize; 
+             color = vec3(texture(brdfLUT, brdfUV).rg, 0.0);
+        }
+    }
     
     FragColor = vec4(color, 1.0);
 }

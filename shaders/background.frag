@@ -9,7 +9,8 @@ uniform float blur_lod;
 const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 SampleEquirectangular(vec3 v)
 {
-    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    float phi = (abs(v.z) < 1e-5 && abs(v.x) < 1e-5) ? 0.0 : atan(v.z, v.x);
+    vec2 uv = vec2(phi, asin(clamp(v.y, -1.0, 1.0)));
     uv *= invAtan;
     uv.x += 0.5;
     uv.y = 0.5 - uv.y; // Flip Y for correct top-down orientation
@@ -19,7 +20,16 @@ vec2 SampleEquirectangular(vec3 v)
 void main()
 {
     vec2 uv = SampleEquirectangular(normalize(RayDir));
-	vec3 envColor = textureLod(environmentMap, uv, blur_lod).rgb;
-
-	FragColor = vec4(envColor, 1.0);
+    vec3 envColor = textureLod(environmentMap, uv, 0.0).rgb;
+    
+    /* Sanitize NaN/Inf (Branchless-ish) */
+    /* isnan is the only one needing replacement. isinf is handled by min */
+    if (any(isnan(envColor))) envColor = vec3(0.0);
+    
+    /* Clamp max brightness */
+    /* 200.0 is safe for bloom accumulation */
+    envColor = min(envColor, vec3(200.0));
+    envColor = max(envColor, vec3(0.0));
+    
+    FragColor = vec4(envColor, 1.0);
 }
