@@ -3,7 +3,6 @@
 #include "gl_common.h"
 #include "log.h"
 #include "shader.h"
-#include <stdlib.h>
 #include <string.h>
 
 static int create_framebuffer(PostProcess* post_processing);
@@ -25,7 +24,7 @@ static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
 
 int postprocess_init(PostProcess* post_processing, int width, int height)
 {
-	memset(post_processing, 0, sizeof(PostProcess));
+	*post_processing = (PostProcess){0};
 
 	post_processing->width = width;
 	post_processing->height = height;
@@ -184,6 +183,77 @@ void postprocess_set_grading_ue_default(PostProcess* post_processing)
 	/* On s'assure que l'effet est activé pour passer dans le pipeline ACES
 	 */
 	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
+}
+
+void postprocess_preset_default(PostProcess* post_processing)
+{
+	postprocess_disable(post_processing, POSTFX_VIGNETTE);
+	postprocess_disable(post_processing, POSTFX_GRAIN);
+	postprocess_disable(post_processing, POSTFX_CHROM_ABBR);
+	postprocess_set_exposure(post_processing, DEFAULT_EXPOSURE);
+	postprocess_set_grading_ue_default(post_processing);
+}
+
+void postprocess_preset_subtle(PostProcess* post_processing)
+{
+	postprocess_enable(post_processing, POSTFX_VIGNETTE);
+	postprocess_enable(post_processing, POSTFX_GRAIN);
+	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_vignette(post_processing, 0.3F, 0.7F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_grain(post_processing, 0.02F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_chrom_abbr(post_processing, 0.01F);
+	postprocess_set_exposure(post_processing, DEFAULT_EXPOSURE);
+}
+
+void postprocess_preset_cinematic(PostProcess* post_processing)
+{
+	postprocess_enable(post_processing, POSTFX_VIGNETTE);
+	postprocess_enable(post_processing, POSTFX_GRAIN);
+	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_vignette(post_processing, 0.5F, 0.6F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_grain(post_processing, 0.03F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_chrom_abbr(post_processing, 0.015F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_exposure(post_processing, 1.2F);
+}
+
+void postprocess_preset_vintage(PostProcess* post_processing)
+{
+	postprocess_enable(post_processing, POSTFX_VIGNETTE);
+	postprocess_enable(post_processing, POSTFX_GRAIN);
+	postprocess_enable(post_processing, POSTFX_CHROM_ABBR);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_vignette(post_processing, 0.7F, 0.5F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_grain(post_processing, 0.06F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_chrom_abbr(post_processing, 0.02F);
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_exposure(post_processing, 0.9F);
+}
+
+void postprocess_preset_matrix_grading(PostProcess* post_processing)
+{
+	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
+	/* Saturation basse, Contraste fort, Gamma vert, Gain fort, Offset léger */
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_color_grading(post_processing, 0.5F, 1.2F, 0.9F, 1.1F,
+	                              0.02F); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+}
+
+void postprocess_preset_bw_contrast(PostProcess* post_processing)
+{
+	postprocess_enable(post_processing, POSTFX_COLOR_GRADING);
+	/* Saturation 0, Contraste fort */
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	postprocess_set_color_grading(post_processing, 0.0F, 1.5F, 1.0F, 1.0F,
+	                              0.0F);
 }
 
 void postprocess_begin(PostProcess* post_processing)

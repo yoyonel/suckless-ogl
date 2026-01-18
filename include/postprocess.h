@@ -114,6 +114,14 @@ void postprocess_set_grain(PostProcess* post_processing, float intensity);
 void postprocess_set_exposure(PostProcess* post_processing, float exposure);
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
 
+/* Presets */
+void postprocess_preset_default(PostProcess* post_processing);
+void postprocess_preset_subtle(PostProcess* post_processing);
+void postprocess_preset_cinematic(PostProcess* post_processing);
+void postprocess_preset_vintage(PostProcess* post_processing);
+void postprocess_preset_matrix_grading(PostProcess* post_processing);
+void postprocess_preset_bw_contrast(PostProcess* post_processing);
+
 /* Rendu */
 void postprocess_begin(
     PostProcess* post_processing); /* Commence le rendu dans le FBO */
