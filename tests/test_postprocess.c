@@ -50,7 +50,7 @@ void test_postprocess_init_creates_resources(void)
 	TEST_ASSERT_EQUAL(1, result);
 	TEST_ASSERT_NOT_EQUAL(0, pp.scene_fbo);
 	TEST_ASSERT_NOT_EQUAL(0, pp.scene_color_tex);
-	TEST_ASSERT_NOT_EQUAL(0, pp.scene_depth_rbo);
+	TEST_ASSERT_NOT_EQUAL(0, pp.scene_depth_tex);
 	TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vao);
 	TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vbo);
 	TEST_ASSERT_NOT_EQUAL(0, pp.postprocess_shader);
@@ -129,6 +129,8 @@ void test_postprocess_apply_preset(void)
 	                         pp.color_grading.contrast);
 	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.bloom.intensity,
 	                         pp.bloom.intensity);
+	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.dof.focal_distance,
+	                         pp.dof.focal_distance);
 
 	postprocess_cleanup(&pp);
 }

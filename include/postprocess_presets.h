@@ -25,7 +25,10 @@ static const PostProcessPreset PRESET_DEFAULT = {
     .bloom = {.intensity = 0.0F,
               .threshold = 1.0F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
@@ -44,13 +47,16 @@ static const PostProcessPreset PRESET_SUBTLE = {
     .bloom = {.intensity = 0.02F,
               .threshold = 1.0F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 static const PostProcessPreset PRESET_CINEMATIC = {
-    .active_effects =
-        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+    (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
-        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
+        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM |
+        (unsigned int)POSTFX_DOF,
     .vignette = {.intensity = 0.5F, .extent = 0.6F},
     .grain = {.intensity = 0.03F},
     .exposure = {.exposure = 1.2F},
@@ -63,7 +69,10 @@ static const PostProcessPreset PRESET_CINEMATIC = {
     .bloom = {.intensity = 0.04F,
               .threshold = 1.0F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 static const PostProcessPreset PRESET_VINTAGE = {
     .active_effects =
@@ -82,7 +91,10 @@ static const PostProcessPreset PRESET_VINTAGE = {
     .bloom = {.intensity = 0.0F,
               .threshold = 1.0F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 static const PostProcessPreset PRESET_MATRIX = {
     .active_effects =
@@ -100,7 +112,10 @@ static const PostProcessPreset PRESET_MATRIX = {
     .bloom = {.intensity = 0.2F,
               .threshold = 0.8F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 static const PostProcessPreset PRESET_BW_CONTRAST = {
     .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
@@ -113,11 +128,13 @@ static const PostProcessPreset PRESET_BW_CONTRAST = {
                       .contrast = 1.5F,
                       .gamma = 1.0F,
                       .gain = 1.0F,
-                      .gain = 1.0F,
                       .offset = 0.0F},
     .bloom = {.intensity = 0.0F,
               .threshold = 1.0F,
               .soft_threshold = 0.5F,
-              .radius = 1.0F}};
+              .radius = 1.0F},
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
 #endif /* POSTPROCESS_PRESETS_H */

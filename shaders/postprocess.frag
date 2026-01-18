@@ -35,8 +35,19 @@ uniform float gradOffset;
 
 /* Paramètres Bloom */
 uniform sampler2D bloomTexture;
+/* Depth Texture pour DoF */
+uniform sampler2D depthTexture;
+
 uniform int enableBloom;
+uniform int enableDoF; /* Flag d'activation DoF */
+uniform int enableDoFDebug; /* Flag de debug DoF */
+
 uniform float bloomIntensity;
+
+/* Paramètres DoF */
+uniform float dofFocalDistance;
+uniform float dofFocalRange;
+uniform float dofBokehScale;
 
 /* Fonction de bruit pseudo-aléatoire pour le grain */
 float random(vec2 co) {
@@ -130,6 +141,108 @@ void main() {
         color = texture(screenTexture, TexCoords).rgb;
     }
     
+    
+    /* --------------------------------------------------------
+       Depth of Field (DoF) - "Cinematic" / Unreal Style Logic
+       -------------------------------------------------------- */
+    if (enableDoF != 0) {
+        float depth = texture(depthTexture, TexCoords).r;
+        
+        /* Lineariser la depth pour avoir des unités réelles */
+        /* Ces valeurs doivent correspondre à celles de l'application (app_settings.h) */
+        float zNear = 0.1;
+        float zFar = 1000.0; 
+        
+        /* Formule de linéarisation pour projection perspective standard */
+        /* z_ndc = 2.0 * depth - 1.0 */
+        /* dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear)) */
+        float z_ndc = 2.0 * depth - 1.0;
+        float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
+        
+        /* 1. Calcul du Circle of Confusion (CoC) */
+        /* CoC = |1 - FocalDist / Dist| * Scale */
+        float coc = abs(dist - dofFocalDistance) / (dist + 0.0001); /* Eviter div by zero */
+        float blurAmount = clamp(coc * dofBokehScale, 0.0, 1.0);
+        
+        /* Si on est dans le "Focal Range", on reste net */
+        if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
+             blurAmount = 0.0;
+        } else {
+             /* Transition douce pour éviter le popping */
+             float edge = dofFocalRange;
+             float distDiff = abs(dist - dofFocalDistance);
+             if (distDiff < edge + 5.0) { /* 5.0 unités de transition */
+                 blurAmount *= (distDiff - edge) / 5.0;
+             }
+        }
+        
+        /* HACK: Skybox Fix. Si depth est très proche de 1.0 (Far Plane), on ne floute pas.
+           Avec zFar=1000.0 et D32F, 1.0 est la skybox. On utilise un seuil très strict. */
+        if (depth >= 0.99999) {
+            blurAmount = 0.0;
+        }
+        
+        blurAmount = clamp(blurAmount, 0.0, 1.0);
+        
+        /* 2. Bokeh Blur (Poisson Disk Sampling simplifié) */
+        /* Pour l'instant, un simple Box Blur pondéré par le CoC pour tester */
+        /* Optimisation: Ne faire le blur que si blurAmount > epsilon */
+        
+        if (blurAmount > 0.01) {
+            vec3 acc = vec3(0.0);
+            float totalWeight = 0.0;
+            
+            /* Rayon du disque de flou en pixels (max) */
+            float maxRadius = 10.0 * blurAmount; /* Rayon un peu plus large pour compenser le meilleur sampling */
+            
+            vec2 texSize = vec2(textureSize(screenTexture, 0));
+            vec2 pixelSize = 1.0 / texSize;
+            
+            /* Golden Angle Spiral Sampling for Pattern-less Bokeh */
+            /* 16 samples is a good balance for quality vs perf */
+            int samples = 16;
+            float goldenAngle = 2.39996323;
+            
+            for(int i = 0; i < samples; i++) {
+                 float theta = float(i) * goldenAngle;
+                 float r = sqrt(float(i) / float(samples));
+                 
+                 vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
+                 
+                 /* Sample Color */
+                 vec3 sampleCol = texture(screenTexture, TexCoords + offset).rgb;
+                 
+                 /* Weighting: Uniforme pour un bokeh en forme de disque plat */
+                 float weight = 1.0; 
+                 
+                 acc += sampleCol * weight;
+                 totalWeight += weight;
+            }
+            
+            color = acc / totalWeight;
+        }
+        
+        /* Debug Visualization (Unreal Style) */
+        /* Green = Near Field Blur */
+        /* Blue = Far Field Blur */
+        /* Black = In Focus */
+        if (enableDoFDebug != 0) {
+            vec3 debugColor = vec3(0.0); /* Black by default (In Focus) */
+            
+            if (dist < dofFocalDistance && blurAmount > 0.0) {
+                /* Near Field - Green */
+                debugColor = vec3(0.0, blurAmount, 0.0); 
+            } else if (dist > dofFocalDistance && blurAmount > 0.0) {
+                /* Far Field - Blue */
+                debugColor = vec3(0.0, 0.0, blurAmount);
+            }
+            
+            /* Blend with original mostly to see shapes, or just Replace? 
+               Unreal replaces. Let's replace but keep it visualized by intensity. */
+             color = debugColor;
+        }
+    }
+
     /* Appliquer le Bloom (Additif, avant exposition) */
     if (enableBloom != 0) {
         vec3 bloomColor = texture(bloomTexture, TexCoords).rgb;

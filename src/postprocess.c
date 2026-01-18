@@ -229,6 +229,14 @@ void postprocess_set_bloom(PostProcess* post_processing, float intensity,
 	post_processing->bloom.soft_threshold = soft_threshold;
 }
 
+void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
+                         float focal_range, float bokeh_scale)
+{
+	post_processing->dof.focal_distance = focal_distance;
+	post_processing->dof.focal_range = focal_range;
+	post_processing->dof.bokeh_scale = bokeh_scale;
+}
+
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
 {
 	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
@@ -258,7 +266,9 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->exposure = preset->exposure;
 	post_processing->chrom_abbr = preset->chrom_abbr;
 	post_processing->color_grading = preset->color_grading;
+	post_processing->color_grading = preset->color_grading;
 	post_processing->bloom = preset->bloom;
+	post_processing->dof = preset->dof;
 }
 
 void postprocess_begin(PostProcess* post_processing)
@@ -303,6 +313,13 @@ void postprocess_end(PostProcess* post_processing)
 	                                 "bloomTexture"),
 	            1);
 
+	/* Bind la texture de Profondeur (pour le DoF) */
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "depthTexture"),
+	            2);
+
 	/* Envoyer les flags d'effets actifs */
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableVignette"),
@@ -323,6 +340,12 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableBloom"),
 	            postprocess_is_enabled(post_processing, POSTFX_BLOOM));
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "enableDoF"),
+	            postprocess_is_enabled(post_processing, POSTFX_DOF));
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "enableDoFDebug"),
+	            postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG));
 
 	/* Envoyer les paramètres des effets */
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
@@ -346,6 +369,17 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "bloomIntensity"),
 	            post_processing->bloom.intensity);
+
+	/* Paramètres DoF */
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "dofFocalDistance"),
+	            post_processing->dof.focal_distance);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "dofFocalRange"),
+	            post_processing->dof.focal_range);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "dofBokehScale"),
+	            post_processing->dof.bokeh_scale);
 
 	/* Paramètres Color Grading */
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
@@ -399,14 +433,20 @@ static int create_framebuffer(PostProcess* post_processing)
 	                       GL_TEXTURE_2D, post_processing->scene_color_tex,
 	                       0);
 
-	/* Créer le renderbuffer pour depth/stencil */
-	glGenRenderbuffers(1, &post_processing->scene_depth_rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, post_processing->scene_depth_rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,
-	                      post_processing->width, post_processing->height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-	                          GL_RENDERBUFFER,
-	                          post_processing->scene_depth_rbo);
+	/* Créer la texture de profondeur (D32F pour précision max) */
+	glGenTextures(1, &post_processing->scene_depth_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F,
+	             post_processing->width, post_processing->height, 0,
+	             GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,
+	                       0);
 
 	/* Vérifier que le framebuffer est complet */
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
@@ -456,9 +496,9 @@ static void destroy_framebuffer(PostProcess* post_processing)
 		glDeleteTextures(1, &post_processing->scene_color_tex);
 		post_processing->scene_color_tex = 0;
 	}
-	if (post_processing->scene_depth_rbo) {
-		glDeleteRenderbuffers(1, &post_processing->scene_depth_rbo);
-		post_processing->scene_depth_rbo = 0;
+	if (post_processing->scene_depth_tex) {
+		glDeleteTextures(1, &post_processing->scene_depth_tex);
+		post_processing->scene_depth_tex = 0;
 	}
 }
 
@@ -500,8 +540,8 @@ static int create_bloom_resources(PostProcess* post_processing)
 		glBindTexture(GL_TEXTURE_2D,
 		              post_processing->bloom_mips[i].texture);
 		/* R11G11B10F is good for HDR and saves memory vs RGBA16F */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, width, height, 0,
-		             GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, width, height,
+		             0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 		                GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,

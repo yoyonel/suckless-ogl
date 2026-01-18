@@ -13,7 +13,13 @@
 #define DEFAULT_BLOOM_INTENSITY 0.0F
 #define DEFAULT_BLOOM_THRESHOLD 1.0F
 #define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
+#define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_RADIUS 1.0F
+
+/* DoF defaults */
+#define DEFAULT_DOF_FOCAL_DISTANCE 20.0F /* Match default camera distance */
+#define DEFAULT_DOF_FOCAL_RANGE 10.0F    /* Wider range */
+#define DEFAULT_DOF_BOKEH_SCALE 1.0F     /* Subtle blur */
 
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
@@ -24,6 +30,8 @@ typedef enum {
 	/* Réservé pour futurs effets */
 	POSTFX_BLOOM = (1U << 4),         /* 0x10 */
 	POSTFX_COLOR_GRADING = (1U << 5), /* 0x20 */
+	POSTFX_DOF = (1U << 6),           /* 0x40 */
+	POSTFX_DOF_DEBUG = (1U << 7),     /* 0x80 - Debug Visualization */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
@@ -74,6 +82,13 @@ typedef struct {
 	int height;
 } BloomMip;
 
+/* Paramètres pour le Depth of Field */
+typedef struct {
+	float focal_distance; /* Distance de mise au point (unités monde) */
+	float focal_range; /* Plage de netteté (autour de la distance focale) */
+	float bokeh_scale; /* Taille du flou (simule l'ouverture) */
+} DoFParams;
+
 #define BLOOM_MIP_LEVELS 5
 
 /* Structure principale du système de post-processing */
@@ -81,7 +96,7 @@ typedef struct {
 	/* Framebuffers */
 	GLuint scene_fbo;       /* FBO pour le rendu de la scène */
 	GLuint scene_color_tex; /* Texture de couleur HDR */
-	GLuint scene_depth_rbo; /* Renderbuffer pour depth/stencil */
+	GLuint scene_depth_tex; /* Texture de profondeur (remplace RBO) */
 
 	/* Bloom Resources */
 	GLuint bloom_fbo; /* FBO partagé pour le blit */
@@ -96,6 +111,7 @@ typedef struct {
 	GLuint bloom_prefilter_shader;
 	GLuint bloom_downsample_shader;
 	GLuint bloom_upsample_shader;
+	GLuint dof_shader;
 
 	/* Dimensions */
 	int width;
@@ -111,6 +127,7 @@ typedef struct {
 	ChromAbberationParams chrom_abbr;
 	ColorGradingParams color_grading;
 	BloomParams bloom;
+	DoFParams dof;
 
 	/* Temps pour effets animés (grain) */
 	float time;
@@ -144,6 +161,8 @@ void postprocess_set_exposure(PostProcess* post_processing, float exposure);
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
 void postprocess_set_bloom(PostProcess* post_processing, float intensity,
                            float threshold, float soft_threshold);
+void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
+                         float focal_range, float bokeh_scale);
 
 /* Structure de Preset pour l'application en masse de paramètres */
 typedef struct {
@@ -154,6 +173,7 @@ typedef struct {
 	ChromAbberationParams chrom_abbr;
 	ColorGradingParams color_grading;
 	BloomParams bloom;
+	DoFParams dof;
 } PostProcessPreset;
 
 /* Application de preset */

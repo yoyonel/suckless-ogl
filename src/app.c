@@ -52,6 +52,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->camera_enabled = 1;        /* Enabled by default */
 	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
 	app->is_fullscreen = 0;
+	app->show_help = 0; /* Hidden by default */
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
@@ -617,6 +618,82 @@ void app_render_ui(App* app)
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+
+	/* Help Screen Overlay */
+	if (app->show_help) {
+		/* Setup strict 2D state again just in case */
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+
+		static const float HELP_START_X = 20.0F;
+		static const float HELP_START_Y = 60.0F;
+		static const float HELP_STEP_Y = 35.0F;
+		static const float HELP_SECTION_PADDING = 10.0F;
+		static const vec3 HELP_COLOR = {1.0F, 1.0F,
+		                                0.5F}; /* Yellow-ish */
+
+		float startX = HELP_START_X;
+		float startY = HELP_START_Y;
+		float stepY = HELP_STEP_Y;
+		vec3 helpColor = {HELP_COLOR[0], HELP_COLOR[1], HELP_COLOR[2]};
+
+		ui_draw_text(&app->ui, "--- COMMANDES ---", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[F1]       Aide (On/Off)", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[F]        Plein Ecran", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[C]        Camera (Souris)", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[Z]        Wireframe", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[SPACE]    Reset Camera", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[WASD+QE]  Deplacement", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[PgUp/Dn]  Env Map Flou", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[P]        Capture Ecran", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		startY += HELP_SECTION_PADDING;
+		ui_draw_text(&app->ui, "--- POST-PROCESS ---", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[H]        DOF On/Off", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[Shift+H]  DOF Debug", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[B]        Bloom On/Off", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[G]        Grain On/Off", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[X]        Chrom. Abbr.", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[1-6]      Presets", startX, startY,
+		             helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[0]        Reset Post FX", startX,
+		             startY, helpColor, app->width, app->height);
+
+		/* Cleanup */
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+	}
 }
 
 static void handle_postprocess_input(App* app, int key)
@@ -650,6 +727,30 @@ static void handle_postprocess_input(App* app, int key)
 			             : "OFF");
 			break;
 
+		case GLFW_KEY_H: /* Toggle DOF / Debug */
+			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
+			        GLFW_PRESS ||
+			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
+			        GLFW_PRESS) {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_DOF_DEBUG);
+				LOG_INFO(
+				    "suckless-ogl.app", "DOF DEBUG: %s",
+				    postprocess_is_enabled(&app->postprocess,
+				                           POSTFX_DOF_DEBUG)
+				        ? "ON"
+				        : "OFF");
+			} else {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_DOF);
+				LOG_INFO("suckless-ogl.app", "DOF: %s",
+				         postprocess_is_enabled(
+				             &app->postprocess, POSTFX_DOF)
+				             ? "ON"
+				             : "OFF");
+			}
+			break;
+
 		case GLFW_KEY_X: /* Toggle Chromatic Aberration */
 			postprocess_toggle(&app->postprocess,
 			                   POSTFX_CHROM_ABBR);
@@ -660,6 +761,11 @@ static void handle_postprocess_input(App* app, int key)
 			             : "OFF");
 			break;
 
+		case GLFW_KEY_R: /* Reload Shaders */
+			/* TODO: Implement shader reloading system */
+			LOG_INFO("suckless-ogl.app",
+			         "Shader reloading not implemented yet");
+			break;
 		case GLFW_KEY_KP_ADD: /* Augmenter l'exposition */
 		{
 			float current = app->postprocess.exposure.exposure;
@@ -744,6 +850,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
+				break;
+			case GLFW_KEY_F1: /* Toggle Help */
+				app->show_help = !app->show_help;
 				break;
 			case GLFW_KEY_P:  // Handle 'P' for Screenshot/Capture
 				app_save_raw_frame(app, "capture_frame.raw");

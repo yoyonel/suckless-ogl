@@ -24,6 +24,7 @@ typedef struct {
 
 	/* Window state for fullscreen toggle */
 	int is_fullscreen;
+	int show_help; /* Debug/Help overlay */
 	int saved_x, saved_y;
 	int saved_width, saved_height;
 
