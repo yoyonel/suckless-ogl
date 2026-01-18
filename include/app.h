@@ -24,7 +24,12 @@ typedef struct {
 
 	/* Window state for fullscreen toggle */
 	int is_fullscreen;
+	/* Debug Flags */
+	int show_exposure_debug;
+	int pbr_debug_mode; /* 0=None, 1=Albedo, 2=Normal... */
+	int show_imgui_demo;
 	int show_help; /* Debug/Help overlay */
+	int show_info_overlay;
 	int saved_x, saved_y;
 	int saved_width, saved_height;
 
@@ -93,6 +98,11 @@ typedef struct {
 	float u_exposure;
 
 	MaterialLib* material_lib;
+
+	/* Dynamic HDR Switching */
+	char** hdr_files;      /* Array of filenames */
+	int hdr_count;         /* Total number of HDR files */
+	int current_hdr_index; /* Index of currently loaded HDR */
 
 } App;
 

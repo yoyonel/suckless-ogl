@@ -1,3 +1,4 @@
+// _POSIX_C_SOURCE defined in CMakeLists.txt
 #include "app.h"
 
 #include "app_settings.h"
@@ -26,8 +27,16 @@
 #include <cglm/types.h>
 #include <cglm/util.h>
 #include <cglm/vec3.h>
+#include <dirent.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>  // for malloc
+#include <string.h>
+
+enum { PBR_DEBUG_MODE_COUNT = 9 };
+enum { MAX_PATH_LENGTH = 256 };
+static const float GRAPH_TEXT_PADDING = 20.0F;
+static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -40,6 +49,100 @@ static void framebuffer_size_callback(GLFWwindow* window, int width,
                                       int height);
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
 static void app_save_raw_frame(App* app, const char* filename);
+static void app_scan_hdr_files(App* app);
+static int app_load_env_map(App* app, const char* filename);
+
+static void app_scan_hdr_files(App* app)
+{
+	app->hdr_count = 0;
+	app->hdr_files = NULL;
+	app->current_hdr_index = -1;
+
+	app->current_hdr_index = -1;
+
+	DIR* dir_handle = NULL;
+	struct dirent* entry = NULL;
+	dir_handle = opendir("assets/textures/hdr");
+	if (dir_handle) {
+		while ((entry = readdir(dir_handle)) != NULL) {
+			char* dot = strrchr(entry->d_name, '.');
+			if (dot && strcmp(dot, ".hdr") == 0) {
+				app->hdr_count++;
+				app->hdr_files =
+				    realloc(app->hdr_files,
+				            app->hdr_count * sizeof(char*));
+				app->hdr_files[app->hdr_count - 1] =
+				    strdup(entry->d_name);
+			}
+		}
+		closedir(dir_handle);
+	} else {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to open assets/textures/hdr directory!");
+	}
+	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
+}
+
+static int app_load_env_map(App* app, const char* filename)
+{
+	char path[MAX_PATH_LENGTH];
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)snprintf(path, sizeof(path), "assets/textures/hdr/%s", filename);
+
+	int hdr_w = 0;
+	int hdr_h = 0;
+
+	/* Cleanup old textures if simple reload */
+	if (app->hdr_texture) {
+		glDeleteTextures(1, &app->hdr_texture);
+	}
+	if (app->spec_prefiltered_tex) {
+		glDeleteTextures(1, &app->spec_prefiltered_tex);
+	}
+	if (app->irradiance_tex) {
+		glDeleteTextures(1, &app->irradiance_tex);
+	}
+
+	PERF_MEASURE_LOG("Asset Loading Time (CPU + Upload)")
+	{
+		app->hdr_texture = texture_load_hdr(path, &hdr_w, &hdr_h);
+	}
+	if (!app->hdr_texture) {
+		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture: %s",
+		          path);
+		return 0;
+	}
+
+	float auto_threshold = compute_mean_luminance_gpu(
+	    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
+
+	if (auto_threshold < 1.0F || isnan(auto_threshold) ||
+	    isinf(auto_threshold)) {
+		static const float DEFAULT_AUTO_THRESHOLD = 5.0F;
+		auto_threshold = DEFAULT_AUTO_THRESHOLD;
+		LOG_WARN("suckless-ogl.ibl",
+		         "Invalid auto_threshold detected. Using default: %.2f",
+		         auto_threshold);
+	}
+
+	PERF_MEASURE_LOG("Prefiltered Map Generation")
+	{
+		app->spec_prefiltered_tex = build_prefiltered_specular_map(
+		    app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
+		    PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
+	}
+
+	PERF_MEASURE_LOG("Irradiance Map Generation")
+	{
+		app->irradiance_tex = build_irradiance_map(
+		    app->hdr_texture, IRIDIANCE_MAP_SIZE, auto_threshold);
+	}
+
+	LOG_INFO("suckless-ogl.app", "Loaded Environment: %s (Thresh: %.2f)",
+	         filename, auto_threshold);
+
+	return 1;
+}
 
 int app_init(App* app, int width, int height, const char* title)
 {
@@ -51,6 +154,9 @@ int app_init(App* app, int width, int height, const char* title)
 	/* Camera initial state */
 	app->camera_enabled = 1;        /* Enabled by default */
 	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
+	app->show_info_overlay = 1;
+	app->show_exposure_debug = 0;
+	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
 	app->show_help = 0; /* Hidden by default */
 	app->first_mouse = 1;
@@ -119,36 +225,25 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
-	/* Load HDR texture */
-	int hdr_w = 0;
-	int hdr_h = 0;
+	/* Scan & Load HDR Environment */
+	app->brdf_lut_tex =
+	    build_brdf_lut_map(BRDF_LUT_MAP_SIZE); /* BRDF is constant */
 
-	PERF_MEASURE_LOG("Asset Loading Time (CPU + Upload)")
-	{
-		app->hdr_texture =
-		    texture_load_hdr("assets/env.hdr", &hdr_w, &hdr_h);
-	}
-	if (!app->hdr_texture) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture");
-		return 0;
-	}
-
-	GPU_MEASURE_LOG("PBR Generation Time (GPU Compute)")
-	{
-		app->spec_prefiltered_tex = build_prefiltered_specular_map(
-		    app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
-		    PREFILTERED_SPECULAR_MAP_SIZE / 2);
-
-		float auto_threshold = compute_mean_luminance_gpu(
-		    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
-		LOG_INFO("suckless-ogl.ibl",
-		         "Computed adaptive clamp threshold: %.2f",
-		         auto_threshold);
-
-		app->irradiance_tex = build_irradiance_map(
-		    app->hdr_texture, IRIDIANCE_MAP_SIZE, auto_threshold);
-
-		app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
+	app_scan_hdr_files(app);
+	if (app->hdr_count > 0) {
+		/* Try to find 'env.hdr' as default, otherwise pick first */
+		int default_idx = 0;
+		for (int i = 0; i < app->hdr_count; i++) {
+			if (strcmp(app->hdr_files[i], "env.hdr") == 0) {
+				default_idx = i;
+				break;
+			}
+		}
+		app->current_hdr_index = default_idx;
+		app_load_env_map(app, app->hdr_files[default_idx]);
+	} else {
+		LOG_ERROR("suckless-ogl.init",
+		          "No HDR files found in assets/textures/hdr/!");
 	}
 
 	app->u_metallic = DEFAULT_METALLIC;
@@ -237,6 +332,8 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_disable(&app->postprocess, POSTFX_VIGNETTE);
 	postprocess_disable(&app->postprocess, POSTFX_GRAIN);
 	postprocess_disable(&app->postprocess, POSTFX_CHROM_ABBR);
+	postprocess_enable(&app->postprocess,
+	                   POSTFX_AUTO_EXPOSURE); /* Enable by default */
 	postprocess_set_exposure(&app->postprocess, DEFAULT_EXPOSURE);
 	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
@@ -381,6 +478,10 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	            0);
 	glUniform1i(glGetUniformLocation(id_current_shader, "prefilterMap"), 1);
 	glUniform1i(glGetUniformLocation(id_current_shader, "brdfLUT"), 2);
+
+	/* Pass PBR Debug Mode */
+	glUniform1i(glGetUniformLocation(id_current_shader, "debugMode"),
+	            app->pbr_debug_mode);
 
 	glUniform3fv(glGetUniformLocation(id_current_shader, "camPos"), 1,
 	             camera_pos);
@@ -590,6 +691,149 @@ void app_render(App* app)
 	app_render_ui(app);
 }
 
+static void app_draw_debug_overlay(App* app)
+{
+	/* Auto Exposure Debug Text */
+	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+
+		float exposure_val = 0.0F;
+		glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+		              &exposure_val);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		char debug_text[128];
+		float luminance =
+		    (exposure_val > 0.0001F) ? (1.0F / exposure_val) : 0.0F;
+		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+		(void)snprintf(debug_text, sizeof(debug_text),
+		               "Auto Exposure: %.4f | Scene Lum: %.4f",
+		               exposure_val, luminance);
+
+		vec3 debugColor = {1.0F, 0.5F, 0.0F}; /* Orange */
+		ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
+		             DEFAULT_FONT_OFFSET_Y + 30.0F, debugColor,
+		             app->width, app->height);
+
+		/* -----------------------
+		   Luminance Histogram
+		   ----------------------- */
+		const int HISTO_SIZE = 64;
+		const int MAP_SIZE = 64;
+		const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
+		float* lum_data = malloc(TOTAL_PIXELS * sizeof(float));
+
+		if (lum_data) {
+			glBindTexture(GL_TEXTURE_2D,
+			              app->postprocess.lum_downsample_tex);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+			              lum_data);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			/* Compute Histograms */
+			int buckets[HISTO_SIZE];
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				buckets[i] = 0;
+			}
+
+			static const float HISTO_MIN_INIT = 1000.0F;
+			static const float HISTO_MAX_INIT = -1000.0F;
+			float min_lum = HISTO_MIN_INIT;
+			float max_lum = HISTO_MAX_INIT;
+
+			for (int i = 0; i < TOTAL_PIXELS; i++) {
+				float val = lum_data[i];
+				if (val < min_lum) {
+					min_lum = val;
+				}
+				if (val > max_lum) {
+					max_lum = val;
+				}
+
+				static const float RANGE_OFFSET = 5.0F;
+				static const float RANGE_SCALE = 10.0F;
+				float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
+				int idx = (int)(norm * (float)HISTO_SIZE);
+				if (idx < 0) {
+					idx = 0;
+				}
+				if (idx >= HISTO_SIZE) {
+					idx = HISTO_SIZE - 1;
+				}
+
+				buckets[idx]++;
+			}
+
+			/* Draw Graph */
+			static const float GRAPH_POS_X = 20.0F;
+			static const float GRAPH_POS_Y_OFF = 200.0F;
+			static const float GRAPH_DIM_W = 300.0F;
+			static const float GRAPH_DIM_H = 100.0F;
+
+			float graph_x = GRAPH_POS_X;
+			float graph_y = app->height - GRAPH_POS_Y_OFF;
+			float graph_w = GRAPH_DIM_W;
+			float graph_h = GRAPH_DIM_H;
+			float bar_w = graph_w / (float)HISTO_SIZE;
+
+			/* Background */
+			ui_draw_rect(&app->ui, graph_x, graph_y, graph_w,
+			             graph_h, (vec3){0.0F, 0.0F, 0.0F},
+			             app->width, app->height);
+
+			/* Find peak for scaling */
+			int max_bucket = 1;
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				if (buckets[i] > max_bucket) {
+					max_bucket = buckets[i];
+				}
+			}
+
+			/* Draw Bars */
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				float h_val = (float)buckets[i] /
+				              (float)max_bucket * graph_h;
+				vec3 bar_col = {0.0F, 0.7F, 0.0F}; /* Green */
+				if (i < HISTO_SIZE / 2) {
+					bar_col[0] = 0.0F;
+					bar_col[1] = 0.5F;
+					bar_col[2] = 0.8F;
+				} else {
+					bar_col[0] = 0.8F;
+					bar_col[1] = 0.5F;
+					bar_col[2] = 0.0F;
+				}
+
+				ui_draw_rect(
+				    &app->ui, graph_x + (float)i * bar_w,
+				    graph_y + (graph_h - h_val), bar_w, h_val,
+				    bar_col, app->width, app->height);
+			}
+
+			/* Draw Range Info */
+			char range_text[64];
+			// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			(void)snprintf(range_text, sizeof(range_text),
+			               "Log Lum Range: [%.2f, %.2f]", min_lum,
+			               max_lum);
+			ui_draw_text(&app->ui, range_text, graph_x,
+			             graph_y - GRAPH_TEXT_PADDING,
+			             (float*)GRAPH_TEXT_COLOR, app->width,
+			             app->height);
+
+			free(lum_data);
+		}
+
+		/* Cleanup */
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+	}
+}
+
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 void app_render_ui(App* app)
 {
 	char fps_text[MAX_FPS_TEXT_LENGTH];
@@ -616,8 +860,158 @@ void app_render_ui(App* app)
 	             DEFAULT_FONT_OFFSET_Y, (float*)DEFAULT_FONT_COLOR,
 	             app->width, app->height);
 
+	/* 3. DESSINER LE NOM DE L'ENVIRONNEMENT */
+	if (app->hdr_count > 0 && app->current_hdr_index >= 0) {
+		char env_text[256];
+		snprintf(env_text, sizeof(env_text), "Env: %s",
+		         app->hdr_files[app->current_hdr_index]);
+		ui_draw_text(&app->ui, env_text, DEFAULT_FONT_OFFSET_X,
+		             DEFAULT_FONT_OFFSET_Y + 15.0F,
+		             (vec3){0.7f, 0.7f, 0.7f}, app->width, app->height);
+	}
+
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+
+	/* Auto Exposure Debug Text */
+	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
+
+		float exposure_val = 0.0F;
+		glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+		              &exposure_val);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		char debug_text[128];
+		float luminance =
+		    (exposure_val > 0.0001F) ? (1.0F / exposure_val) : 0.0F;
+		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+		(void)snprintf(debug_text, sizeof(debug_text),
+		               "Auto Exposure: %.4f | Scene Lum: %.4f",
+		               exposure_val, luminance);
+
+		vec3 debugColor = {1.0F, 0.5F, 0.0F}; /* Orange */
+		ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
+		             DEFAULT_FONT_OFFSET_Y + 30.0F, debugColor,
+		             app->width, app->height);
+
+		/* -----------------------
+		   Luminance Histogram
+		   ----------------------- */
+		const int HISTO_SIZE = 64;
+		const int MAP_SIZE = 64;
+		const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
+		float* lum_data = malloc(TOTAL_PIXELS * sizeof(float));
+
+		if (lum_data) {
+			glBindTexture(GL_TEXTURE_2D,
+			              app->postprocess.lum_downsample_tex);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+			              lum_data);
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			/* Compute Histograms */
+			int buckets[HISTO_SIZE];
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				buckets[i] = 0;
+			}
+
+			static const float HISTO_MIN_INIT = 1000.0F;
+			static const float HISTO_MAX_INIT = -1000.0F;
+			float min_lum = HISTO_MIN_INIT;
+			float max_lum = HISTO_MAX_INIT;
+
+			for (int i = 0; i < TOTAL_PIXELS; i++) {
+				float val = lum_data[i];
+				if (val < min_lum) {
+					min_lum = val;
+				}
+				if (val > max_lum) {
+					max_lum = val;
+				}
+
+				static const float RANGE_OFFSET = 5.0F;
+				static const float RANGE_SCALE = 10.0F;
+				float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
+				int idx = (int)(norm * (float)HISTO_SIZE);
+				if (idx < 0) {
+					idx = 0;
+				}
+				if (idx >= HISTO_SIZE) {
+					idx = HISTO_SIZE - 1;
+				}
+
+				buckets[idx]++;
+			}
+
+			/* Draw Graph */
+			static const float GRAPH_POS_X = 20.0F;
+			static const float GRAPH_POS_Y_OFF = 200.0F;
+			static const float GRAPH_DIM_W = 300.0F;
+			static const float GRAPH_DIM_H = 100.0F;
+
+			float graph_x = GRAPH_POS_X;
+			float graph_y = app->height - GRAPH_POS_Y_OFF;
+			float graph_w = GRAPH_DIM_W;
+			float graph_h = GRAPH_DIM_H;
+			float bar_w = graph_w / (float)HISTO_SIZE;
+
+			/* Background */
+			ui_draw_rect(&app->ui, graph_x, graph_y, graph_w,
+			             graph_h, (vec3){0.0F, 0.0F, 0.0F},
+			             app->width, app->height); /* Black BG */
+
+			/* Find peak for scaling */
+			int max_bucket = 1;
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				if (buckets[i] > max_bucket) {
+					max_bucket = buckets[i];
+				}
+			}
+
+			/* Draw Bars */
+			for (int i = 0; i < HISTO_SIZE; i++) {
+				float h_val = (float)buckets[i] /
+				              (float)max_bucket * graph_h;
+				vec3 bar_col = {0.0F, 0.7F, 0.0F}; /* Green */
+				if (i <
+				    HISTO_SIZE / 2) { /* < 0 Log Lum = Dark */
+					bar_col[0] = 0.0F;
+					bar_col[1] = 0.5F;
+					bar_col[2] = 0.8F;
+				} else { /* > 0 Log Lum = Bright */
+					bar_col[0] = 0.8F;
+					bar_col[1] = 0.5F;
+					bar_col[2] = 0.0F;
+				}
+
+				ui_draw_rect(
+				    &app->ui, graph_x + (float)i * bar_w,
+				    graph_y + (graph_h - h_val), bar_w - 0.0F,
+				    h_val, bar_col, app->width, app->height);
+			}
+
+			/* Draw Range Info */
+			char range_text[64];
+			// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			(void)snprintf(range_text, sizeof(range_text),
+			               "Log Lum Range: [%.2f, %.2f]", min_lum,
+			               max_lum);
+			ui_draw_text(&app->ui, range_text, graph_x,
+			             graph_y - GRAPH_TEXT_PADDING,
+			             (float*)GRAPH_TEXT_COLOR, app->width,
+			             app->height);
+
+			free(lum_data);
+		}
+
+		/* Cleanup */
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+	}
 
 	/* Help Screen Overlay */
 	if (app->show_help) {
@@ -630,8 +1024,8 @@ void app_render_ui(App* app)
 		static const float HELP_START_Y = 60.0F;
 		static const float HELP_STEP_Y = 35.0F;
 		static const float HELP_SECTION_PADDING = 10.0F;
-		static const vec3 HELP_COLOR = {1.0F, 1.0F,
-		                                0.5F}; /* Yellow-ish */
+		static const vec3 HELP_COLOR = {0.1F, 1.0F,
+		                                0.25F}; /* Yellow-ish */
 
 		float startX = HELP_START_X;
 		float startY = HELP_START_Y;
@@ -659,7 +1053,17 @@ void app_render_ui(App* app)
 		ui_draw_text(&app->ui, "[WASD+QE]  Deplacement", startX, startY,
 		             helpColor, app->width, app->height);
 		startY += stepY;
-		ui_draw_text(&app->ui, "[PgUp/Dn]  Env Map Flou", startX,
+		ui_draw_text(&app->ui, "[PgUp/Dn]  Cycle Environment", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[S+PgU/D]  Env Map Blur", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui, "[F5]       PBR Debug View", startX,
+		             startY, helpColor, app->width, app->height);
+		startY += stepY;
+		ui_draw_text(&app->ui,
+		             "[J]        Auto Exposure (Shift+J: Dbg)", startX,
 		             startY, helpColor, app->width, app->height);
 		startY += stepY;
 		ui_draw_text(&app->ui, "[P]        Capture Ecran", startX,
@@ -696,6 +1100,7 @@ void app_render_ui(App* app)
 	}
 }
 
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 static void handle_postprocess_input(App* app, int key)
 {
 	switch (key) {
@@ -787,6 +1192,49 @@ static void handle_postprocess_input(App* app, int key)
 			         app->postprocess.exposure.exposure);
 		} break;
 
+		case GLFW_KEY_J: /* Toggle Auto Exposure */
+			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
+			        GLFW_PRESS ||
+			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
+			        GLFW_PRESS) {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_EXPOSURE_DEBUG);
+				LOG_INFO("suckless-ogl.app",
+				         "Auto Exposure Debug: %s",
+				         postprocess_is_enabled(
+				             &app->postprocess,
+				             POSTFX_EXPOSURE_DEBUG)
+				             ? "ON"
+				             : "OFF");
+			} else {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_AUTO_EXPOSURE);
+				LOG_INFO(
+				    "suckless-ogl.app", "Auto Exposure: %s",
+				    postprocess_is_enabled(&app->postprocess,
+				                           POSTFX_AUTO_EXPOSURE)
+				        ? "ON"
+				        : "OFF");
+			}
+			break;
+
+		case GLFW_KEY_F5: /* Cycle PBR Debug Modes */
+		{
+			app->pbr_debug_mode = (app->pbr_debug_mode + 1) %
+			                      PBR_DEBUG_MODE_COUNT; /* 0..8 */
+			const char* modeNames[] = {"Final PBR",
+			                           "Albedo",
+			                           "Normal",
+			                           "Metallic",
+			                           "Roughness",
+			                           "AO",
+			                           "Irradiance (Diff)",
+			                           "Prefilter (Spec)",
+			                           "BRDF LUT"};
+			LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
+			         modeNames[app->pbr_debug_mode]);
+		} break;
+
 		/* Presets pour le post-processing */
 		case GLFW_KEY_1: /* Preset: Aucun */
 			postprocess_apply_preset(&app->postprocess,
@@ -836,6 +1284,53 @@ static void handle_postprocess_input(App* app, int key)
 
 		default:
 			break;
+	}
+}
+
+static void app_handle_env_input(App* app, int action, int mods, int key)
+{
+	if (action != GLFW_PRESS && action != GLFW_REPEAT)
+		return;
+
+	if (key == GLFW_KEY_PAGE_UP) {
+		// NOLINTNEXTLINE(hicpp-signed-bitwise)
+		if (mods & GLFW_MOD_SHIFT) {
+			app->env_lod += LOD_STEP;
+			if (app->env_lod > MAX_ENV_LOD)
+				app->env_lod = MAX_ENV_LOD;
+			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
+			         app->env_lod);
+		} else {
+			/* Next Environment */
+			if (app->hdr_count > 1) {
+				app->current_hdr_index =
+				    (app->current_hdr_index + 1) %
+				    app->hdr_count;
+				app_load_env_map(
+				    app,
+				    app->hdr_files[app->current_hdr_index]);
+			}
+		}
+	} else if (key == GLFW_KEY_PAGE_DOWN) {
+		// NOLINTNEXTLINE(hicpp-signed-bitwise)
+		if (mods & GLFW_MOD_SHIFT) {
+			app->env_lod -= LOD_STEP;
+			if (app->env_lod < MIN_ENV_LOD)
+				app->env_lod = MIN_ENV_LOD;
+			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
+			         app->env_lod);
+		} else {
+			/* Previous Environment */
+			if (app->hdr_count > 1) {
+				app->current_hdr_index--;
+				if (app->current_hdr_index < 0)
+					app->current_hdr_index =
+					    app->hdr_count - 1;
+				app_load_env_map(
+				    app,
+				    app->hdr_files[app->current_hdr_index]);
+			}
+		}
 	}
 }
 
@@ -896,20 +1391,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				         "Camera and LOD reset");
 				break;
 			case GLFW_KEY_PAGE_UP:
-				app->env_lod += LOD_STEP;
-				if (app->env_lod > MAX_ENV_LOD) {
-					app->env_lod = MAX_ENV_LOD;
-				}
-				LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-				         app->env_lod);
-				break;
 			case GLFW_KEY_PAGE_DOWN:
-				app->env_lod -= LOD_STEP;
-				if (app->env_lod < MIN_ENV_LOD) {
-					app->env_lod = MIN_ENV_LOD;
-				}
-				LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-				         app->env_lod);
+				app_handle_env_input(app, action, mods, key);
 				break;
 			case GLFW_KEY_F:
 				app_toggle_fullscreen(app, window);
