@@ -524,7 +524,7 @@ void app_render(App* app)
 	   Many Intel drivers perform better with color clear than without it.
 	 */
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/* glClear handled by postprocess_begin */
 
 	if (app->show_debug_tex) {
 		glUseProgram(app->debug_shader);
@@ -810,6 +810,59 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				postprocess_set_exposure(&app->postprocess,
 				                         0.9F);
 				LOG_INFO("suckless-ogl.app", "Style: Vintage");
+				break;
+
+			case GLFW_KEY_5: /* Style: "Matrix" (Vert, Contraste
+			                    élevé) */
+				postprocess_enable(&app->postprocess,
+				                   POSTFX_COLOR_GRADING);
+				/* Saturation basse, Contraste fort, Gamma vert,
+				 * Gain fort, Offset léger */
+				postprocess_set_color_grading(
+				    &app->postprocess, 0.5F, /* Saturation */
+				    1.2F,                    /* Contraste */
+				    0.9F,                    /* Gamma */
+				    1.1F,                    /* Gain */
+				    0.02F);                  /* Offset */
+				/* On teinte via le Gain/Gamma global ici pour
+				l'exemple simple, ou on ajusterait les
+				composantes RGB si on étendait la struct. */
+				LOG_INFO("suckless-ogl.app",
+				         "Style: Matrix Grading");
+				break;
+
+			case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
+				postprocess_enable(&app->postprocess,
+				                   POSTFX_COLOR_GRADING);
+				postprocess_set_color_grading(
+				    &app->postprocess,
+				    0.0F,  /* Saturation (N&B) */
+				    1.5F,  /* Contraste fort */
+				    1.0F,  /* Gamma neutre */
+				    1.0F,  /* Gain neutre */
+				    0.0F); /* Offset neutre */
+				LOG_INFO("suckless-ogl.app",
+				         "Style: Noir & Blanc");
+				break;
+
+			case GLFW_KEY_0:
+			case GLFW_KEY_KP_0:
+				/* Reset complet vers le look standard Unreal
+				 * Engine */
+				postprocess_set_grading_ue_default(
+				    &app->postprocess);
+
+				/* Optionnel : Reset aussi l'exposition et
+				 * autres effets pour un vrai "Clean State" */
+				postprocess_set_exposure(&app->postprocess,
+				                         1.0F);
+				postprocess_set_vignette(
+				    &app->postprocess,
+				    DEFAULT_VIGNETTE_INTENSITY,
+				    DEFAULT_VIGNETTE_EXTENT);
+
+				LOG_INFO("suckless-ogl.app",
+				         "Color Grading: Reset to UE Defaults");
 				break;
 			default:
 				/* Ignore other keys */

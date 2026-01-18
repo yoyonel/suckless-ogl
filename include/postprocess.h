@@ -18,8 +18,18 @@ typedef enum {
 	POSTFX_EXPOSURE = (1 << 2),   /* 0x04 */
 	POSTFX_CHROM_ABBR = (1 << 3), /* 0x08 */
 	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1 << 4), /* 0x10 */
+	POSTFX_BLOOM = (1 << 4),         /* 0x10 */
+	POSTFX_COLOR_GRADING = (1 << 5), /* 0x20 */
 } PostProcessEffect;
+
+/* Structure pour le Color Grading (Style Unreal Engine) */
+typedef struct {
+	float saturation; /* 0.0 (Gris) - 2.0 (Saturé), Défaut: 1.0 */
+	float contrast;   /* 0.0 - 2.0, Défaut: 1.0 */
+	float gamma;      /* 0.0 - 2.0, Défaut: 1.0 */
+	float gain;       /* 0.0 - 2.0, Défaut: 1.0 */
+	float offset;     /* -1.0 - 1.0, Défaut: 0.0 */
+} ColorGradingParams;
 
 /* Paramètres pour le vignettage */
 typedef struct {
@@ -71,6 +81,7 @@ typedef struct {
 	GrainParams grain;
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
+	ColorGradingParams color_grading;
 
 	/* Temps pour effets animés (grain) */
 	float time;
@@ -90,6 +101,11 @@ void postprocess_disable(PostProcess* post_processing,
 void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect);
 int postprocess_is_enabled(PostProcess* post_processing,
                            PostProcessEffect effect);
+/* Configuration des paramètres de Color Grading */
+void postprocess_set_color_grading(PostProcess* post_processing,
+                                   float saturation, float contrast,
+                                   float gamma, float gain, float offset);
+void postprocess_set_grading_ue_default(PostProcess* post_processing);
 
 /* Configuration des paramètres */
 void postprocess_set_vignette(PostProcess* post_processing, float intensity,
