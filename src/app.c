@@ -418,7 +418,27 @@ void app_run(App* app)
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
-		camera_process_keyboard(&app->camera, (float)app->delta_time);
+
+		// 1. Mise à jour de la physique (clavier) avec fixed timestep
+		app->camera.physics_accumulator += (float)app->delta_time;
+		while (app->camera.physics_accumulator >=
+		       app->camera.fixed_timestep) {
+			camera_fixed_update(&app->camera);
+			app->camera.physics_accumulator -=
+			    app->camera.fixed_timestep;
+		}
+
+		// 2. Interpolation de la rotation (smoothing)
+		float alpha = app->camera.rotation_smoothing;
+		app->camera.yaw =
+		    app->camera.yaw +
+		    ((app->camera.yaw_target - app->camera.yaw) * alpha);
+		app->camera.pitch =
+		    app->camera.pitch +
+		    ((app->camera.pitch_target - app->camera.pitch) * alpha);
+
+		// 3. Mise à jour des vecteurs de la caméra
+		camera_update_vectors(&app->camera);
 
 		/* Regenerate icosphere if subdivision level changed */
 		if (app->subdivisions != last_subdiv) {

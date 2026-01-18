@@ -1,30 +1,10 @@
 #include "camera.h"
 
-#include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
 #include <cglm/vec3.h>
 #include <math.h>
-
-#define DEFAULT_CAMERA_SPEED 15.0F
-#define DEFAULT_CAMERA_SENSITIVITY 0.15F
-#define DEFAULT_CAMERA_ZOOM 45.0F
-#define DEFAULT_ZOOM_SPEED 1.0F
-#define DEFAULT_MAX_PITCH 89.0F
-#define DEFAULT_MIN_PITCH -89.0F
-#define DEFAULT_MAX_ALPHA 1.0F
-
-// Paramètres physique réaliste
-#define DEFAULT_ACCELERATION 10.0F  // Vitesse d'accélération
-#define DEFAULT_FRICTION \
-	0.85F  // Friction (0-1, plus proche de 1 = plus glissant)
-#define DEFAULT_ROTATION_SMOOTHING 0.18F   // Lissage rotation (0-1)
-#define DEFAULT_BOBBING_FREQUENCY 2.2F     // Fréquence balancement
-#define DEFAULT_BOBBING_AMPLITUDE 0.0004F  // Amplitude balancement
-#define DEFAULT_MIN_VELOCITY_FOR_BOBBING 0.5F
-#define DEFAULT_BOBBING_RESET_SPEED 0.95F
-#define DEFAULT_MIN_VELOCITY 0.01F
 
 void camera_init(Camera* cam, float distance, float yaw, float pitch)
 {
@@ -37,28 +17,32 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	cam->sensitivity = DEFAULT_CAMERA_SENSITIVITY;
 	cam->zoom = DEFAULT_CAMERA_ZOOM;
 
-	// Reset des inputs
 	cam->move_forward = cam->move_backward = 0;
 	cam->move_left = cam->move_right = 0;
 	cam->move_up = cam->move_down = 0;
 
-	// === Initialisation physique réaliste ===
-
-	// Option 1: Inertie
+	// Physique
 	glm_vec3_zero(cam->velocity_current);
 	cam->acceleration = DEFAULT_ACCELERATION;
 	cam->friction = DEFAULT_FRICTION;
 
-	// Option 2: Rotation smooth
+	// Rotation smooth
 	cam->yaw_target = yaw;
 	cam->pitch_target = pitch;
 	cam->rotation_smoothing = DEFAULT_ROTATION_SMOOTHING;
 
-	// Option 3: Head bobbing
+	// Head bobbing
 	cam->bobbing_time = 0.0F;
 	cam->bobbing_frequency = DEFAULT_BOBBING_FREQUENCY;
 	cam->bobbing_amplitude = DEFAULT_BOBBING_AMPLITUDE;
-	cam->bobbing_enabled = 1;  // Activé par défaut
+	cam->bobbing_enabled = 1;
+
+	// Fixed timestep
+	cam->physics_accumulator = 0.0F;
+	cam->fixed_timestep = DEFAULT_FIXED_TIMESTEP;
+
+	// Lissage souris
+	cam->mouse_smoothing_factor = DEFAULT_MOUSE_SMOOTHING_FACTOR;
 
 	camera_update_vectors(cam);
 }
@@ -66,31 +50,23 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 void camera_update_vectors(Camera* cam)
 {
 	vec3 front;
-
-	// Utiliser les valeurs actuelles (smoothed) au lieu des targets
 	front[0] = cosf(glm_rad(cam->yaw)) * cosf(glm_rad(cam->pitch));
 	front[1] = sinf(glm_rad(cam->pitch));
 	front[2] = sinf(glm_rad(cam->yaw)) * cosf(glm_rad(cam->pitch));
-
 	glm_vec3_normalize_to(front, cam->front);
 
-	// Right = Front x WorldUp
 	glm_vec3_cross(cam->front, cam->world_up, cam->right);
 	glm_vec3_normalize(cam->right);
 
-	// Up = Right x Front
 	glm_vec3_cross(cam->right, cam->front, cam->up);
 	glm_vec3_normalize(cam->up);
 }
 
-void camera_process_keyboard(Camera* cam, float delta_time)
+// NOUVELLE FONCTION : Mise à jour physique avec pas de temps fixe
+void camera_fixed_update(Camera* cam)
 {
-	// === OPTION 1: SYSTÈME D'INERTIE ===
-
-	// 1. Calculer la direction cible basée sur les inputs
 	vec3 target_velocity;
 	glm_vec3_zero(target_velocity);
-
 	vec3 temp;
 
 	if (cam->move_forward) {
@@ -118,79 +94,85 @@ void camera_process_keyboard(Camera* cam, float delta_time)
 		glm_vec3_sub(target_velocity, temp, target_velocity);
 	}
 
-	// 2. Interpoler vers la vitesse cible (accélération progressive)
-	float alpha = cam->acceleration * delta_time;
+	// Interpolation avec alpha basé sur fixed_timestep
+	float alpha = cam->acceleration * cam->fixed_timestep;
 	if (alpha > DEFAULT_MAX_ALPHA) {
 		alpha = DEFAULT_MAX_ALPHA;
 	}
-
 	glm_vec3_lerp(cam->velocity_current, target_velocity, alpha,
 	              cam->velocity_current);
 
-	// 3. Appliquer friction si pas d'input actif
+	// Friction
 	float target_norm = glm_vec3_norm(target_velocity);
 	if (target_norm < DEFAULT_MIN_VELOCITY) {
-		// Aucun input : friction décélère progressivement
 		glm_vec3_scale(cam->velocity_current, cam->friction,
 		               cam->velocity_current);
 	}
 
-	// 4. Déplacer la position avec la vitesse actuelle
+	// Déplacement
 	vec3 movement;
-	glm_vec3_scale(cam->velocity_current, delta_time, movement);
+	glm_vec3_scale(cam->velocity_current, cam->fixed_timestep, movement);
 	glm_vec3_add(cam->position, movement, cam->position);
 
-	// === OPTION 3: HEAD BOBBING ===
-
+	// Head bobbing
 	if (cam->bobbing_enabled) {
-		// Calculer la vitesse réelle de déplacement
 		float current_speed = glm_vec3_norm(cam->velocity_current);
-
-		// Activer le bobbing seulement si on bouge significativement
 		if (current_speed > DEFAULT_MIN_VELOCITY_FOR_BOBBING) {
-			// Incrémenter le temps en fonction de la vitesse
 			cam->bobbing_time +=
-			    delta_time * current_speed / cam->velocity;
-
-			// Calculer l'offset vertical (sinusoïdal)
+			    cam->fixed_timestep * current_speed / cam->velocity;
 			float bobbing_offset =
 			    sinf(cam->bobbing_time * cam->bobbing_frequency) *
 			    cam->bobbing_amplitude;
-
-			// Appliquer directement à la position Y
 			cam->position[1] += bobbing_offset;
 		} else {
-			// Reset progressif du temps quand on s'arrête
 			cam->bobbing_time *= DEFAULT_BOBBING_RESET_SPEED;
 		}
 	}
 }
 
+// Fonction à appeler dans la boucle de jeu
+void camera_update(Camera* cam, float delta_time)
+{
+	// Accumule le temps pour la physique
+	cam->physics_accumulator += delta_time;
+
+	// Tant qu'il y a assez de temps pour une mise à jour physique
+	while (cam->physics_accumulator >= cam->fixed_timestep) {
+		camera_fixed_update(cam);
+		cam->physics_accumulator -= cam->fixed_timestep;
+	}
+
+	// Interpolation de la rotation (pour un rendu fluide)
+	float alpha = cam->rotation_smoothing;
+	cam->yaw = cam->yaw + ((cam->yaw_target - cam->yaw) * alpha);
+	cam->pitch = cam->pitch + ((cam->pitch_target - cam->pitch) * alpha);
+
+	camera_update_vectors(cam);
+}
+
+// Dans camera_process_mouse :
 void camera_process_mouse(Camera* cam, float xoffset, float yoffset)
 {
-	// === OPTION 2: ROTATION SMOOTH ===
+	static float smoothed_x = 0.0F;
+	static float smoothed_y = 0.0F;
 
-	xoffset *= cam->sensitivity;
-	yoffset *= cam->sensitivity;
+	// Lissage des inputs souris (ajustable via cam->mouse_smoothing_factor)
+	smoothed_x = (cam->mouse_smoothing_factor * smoothed_x) +
+	             ((1.0F - cam->mouse_smoothing_factor) * xoffset);
+	smoothed_y = (cam->mouse_smoothing_factor * smoothed_y) +
+	             ((1.0F - cam->mouse_smoothing_factor) * yoffset);
 
-	// Mettre à jour les targets au lieu des valeurs directes
-	cam->yaw_target += xoffset;
-	cam->pitch_target -= yoffset;  // Inversé pour un mouvement naturel
+	// Application
+	cam->yaw_target += smoothed_x * cam->sensitivity;
+	cam->pitch_target -= smoothed_y * cam->sensitivity;
 
-	// Clamping du pitch target
+	// Clamping
 	if (cam->pitch_target > DEFAULT_MAX_PITCH) {
 		cam->pitch_target = DEFAULT_MAX_PITCH;
 	}
 	if (cam->pitch_target < DEFAULT_MIN_PITCH) {
 		cam->pitch_target = DEFAULT_MIN_PITCH;
 	}
-
-	// Interpolation exponentielle vers les targets (smooth damping)
-	float alpha = cam->rotation_smoothing;
-	cam->yaw = cam->yaw + ((cam->yaw_target - cam->yaw) * alpha);
-	cam->pitch = cam->pitch + ((cam->pitch_target - cam->pitch) * alpha);
-
-	camera_update_vectors(cam);
 }
 
 void camera_get_view_matrix(Camera* cam, mat4 view)
@@ -202,16 +184,7 @@ void camera_get_view_matrix(Camera* cam, mat4 view)
 
 void camera_process_scroll(Camera* cam, float yoffset)
 {
-	// Sensibilité du scroll (équivalent à ton ZOOM_STEP)
-	float zoom_speed = DEFAULT_ZOOM_SPEED;
 	vec3 move;
-
-	// On calcule le vecteur de déplacement : front * yoffset
-	glm_vec3_scale(cam->front, yoffset * zoom_speed, move);
-
-	// On l'ajoute à la position actuelle
+	glm_vec3_scale(cam->front, yoffset * DEFAULT_ZOOM_SPEED, move);
 	glm_vec3_add(cam->position, move, cam->position);
-
-	// Note : Si tu préfères un zoom optique (FOV),
-	// tu modifierais cam->zoom au lieu de cam->position.
 }
