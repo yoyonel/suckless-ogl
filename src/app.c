@@ -1,4 +1,3 @@
-// _POSIX_C_SOURCE defined in CMakeLists.txt
 #include "app.h"
 
 #include "app_settings.h"
@@ -51,6 +50,8 @@ static void app_toggle_fullscreen(App* app, GLFWwindow* window);
 static void app_save_raw_frame(App* app, const char* filename);
 static void app_scan_hdr_files(App* app);
 static int app_load_env_map(App* app, const char* filename);
+static void app_draw_help_overlay(App* app);
+static void app_draw_debug_overlay(App* app);
 
 static void app_scan_hdr_files(App* app)
 {
@@ -691,6 +692,90 @@ void app_render(App* app)
 	app_render_ui(app);
 }
 
+static void app_draw_help_overlay(App* app)
+{
+	/* Setup strict 2D state again just in case */
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+	static const float HELP_START_X = 20.0F;
+	static const float HELP_START_Y = 60.0F;
+	static const float HELP_STEP_Y = 35.0F;
+	static const float HELP_SECTION_PADDING = 10.0F;
+	static const vec3 HELP_COLOR = {0.1F, 1.0F, 0.25F}; /* Yellow-ish */
+
+	float startX = HELP_START_X;
+	float startY = HELP_START_Y;
+	float stepY = HELP_STEP_Y;
+	vec3 helpColor = {HELP_COLOR[0], HELP_COLOR[1], HELP_COLOR[2]};
+
+	ui_draw_text(&app->ui, "--- COMMANDES ---", startX, startY, helpColor,
+	             app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[F1]       Aide (On/Off)", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[F]        Plein Ecran", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[C]        Camera (Souris)", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[Z]        Wireframe", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[SPACE]    Reset Camera", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[WASD+QE]  Deplacement", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[PgUp/Dn]  Cycle Environment", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[S+PgU/D]  Env Map Blur", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[F5]       PBR Debug View", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[J]        Auto Exposure (Shift+J: Dbg)",
+	             startX, startY, helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[P]        Capture Ecran", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	startY += HELP_SECTION_PADDING;
+	ui_draw_text(&app->ui, "--- POST-PROCESS ---", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[H]        DOF On/Off", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[Shift+H]  DOF Debug", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[B]        Bloom On/Off", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[G]        Grain On/Off", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[X]        Chrom. Abbr.", startX, startY,
+	             helpColor, app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[1-6]      Presets", startX, startY, helpColor,
+	             app->width, app->height);
+	startY += stepY;
+	ui_draw_text(&app->ui, "[0]        Reset Post FX", startX, startY,
+	             helpColor, app->width, app->height);
+
+	/* Cleanup */
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+}
+
 static void app_draw_debug_overlay(App* app)
 {
 	/* Auto Exposure Debug Text */
@@ -875,228 +960,12 @@ void app_render_ui(App* app)
 
 	/* Auto Exposure Debug Text */
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
-
-		float exposure_val = 0.0F;
-		glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
-		              &exposure_val);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		char debug_text[128];
-		float luminance =
-		    (exposure_val > 0.0001F) ? (1.0F / exposure_val) : 0.0F;
-		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		(void)snprintf(debug_text, sizeof(debug_text),
-		               "Auto Exposure: %.4f | Scene Lum: %.4f",
-		               exposure_val, luminance);
-
-		vec3 debugColor = {1.0F, 0.5F, 0.0F}; /* Orange */
-		ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
-		             DEFAULT_FONT_OFFSET_Y + 30.0F, debugColor,
-		             app->width, app->height);
-
-		/* -----------------------
-		   Luminance Histogram
-		   ----------------------- */
-		const int HISTO_SIZE = 64;
-		const int MAP_SIZE = 64;
-		const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
-		float* lum_data = malloc(TOTAL_PIXELS * sizeof(float));
-
-		if (lum_data) {
-			glBindTexture(GL_TEXTURE_2D,
-			              app->postprocess.lum_downsample_tex);
-			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
-			              lum_data);
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			/* Compute Histograms */
-			int buckets[HISTO_SIZE];
-			for (int i = 0; i < HISTO_SIZE; i++) {
-				buckets[i] = 0;
-			}
-
-			static const float HISTO_MIN_INIT = 1000.0F;
-			static const float HISTO_MAX_INIT = -1000.0F;
-			float min_lum = HISTO_MIN_INIT;
-			float max_lum = HISTO_MAX_INIT;
-
-			for (int i = 0; i < TOTAL_PIXELS; i++) {
-				float val = lum_data[i];
-				if (val < min_lum) {
-					min_lum = val;
-				}
-				if (val > max_lum) {
-					max_lum = val;
-				}
-
-				static const float RANGE_OFFSET = 5.0F;
-				static const float RANGE_SCALE = 10.0F;
-				float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
-				int idx = (int)(norm * (float)HISTO_SIZE);
-				if (idx < 0) {
-					idx = 0;
-				}
-				if (idx >= HISTO_SIZE) {
-					idx = HISTO_SIZE - 1;
-				}
-
-				buckets[idx]++;
-			}
-
-			/* Draw Graph */
-			static const float GRAPH_POS_X = 20.0F;
-			static const float GRAPH_POS_Y_OFF = 200.0F;
-			static const float GRAPH_DIM_W = 300.0F;
-			static const float GRAPH_DIM_H = 100.0F;
-
-			float graph_x = GRAPH_POS_X;
-			float graph_y = app->height - GRAPH_POS_Y_OFF;
-			float graph_w = GRAPH_DIM_W;
-			float graph_h = GRAPH_DIM_H;
-			float bar_w = graph_w / (float)HISTO_SIZE;
-
-			/* Background */
-			ui_draw_rect(&app->ui, graph_x, graph_y, graph_w,
-			             graph_h, (vec3){0.0F, 0.0F, 0.0F},
-			             app->width, app->height); /* Black BG */
-
-			/* Find peak for scaling */
-			int max_bucket = 1;
-			for (int i = 0; i < HISTO_SIZE; i++) {
-				if (buckets[i] > max_bucket) {
-					max_bucket = buckets[i];
-				}
-			}
-
-			/* Draw Bars */
-			for (int i = 0; i < HISTO_SIZE; i++) {
-				float h_val = (float)buckets[i] /
-				              (float)max_bucket * graph_h;
-				vec3 bar_col = {0.0F, 0.7F, 0.0F}; /* Green */
-				if (i <
-				    HISTO_SIZE / 2) { /* < 0 Log Lum = Dark */
-					bar_col[0] = 0.0F;
-					bar_col[1] = 0.5F;
-					bar_col[2] = 0.8F;
-				} else { /* > 0 Log Lum = Bright */
-					bar_col[0] = 0.8F;
-					bar_col[1] = 0.5F;
-					bar_col[2] = 0.0F;
-				}
-
-				ui_draw_rect(
-				    &app->ui, graph_x + (float)i * bar_w,
-				    graph_y + (graph_h - h_val), bar_w - 0.0F,
-				    h_val, bar_col, app->width, app->height);
-			}
-
-			/* Draw Range Info */
-			char range_text[64];
-			// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			(void)snprintf(range_text, sizeof(range_text),
-			               "Log Lum Range: [%.2f, %.2f]", min_lum,
-			               max_lum);
-			ui_draw_text(&app->ui, range_text, graph_x,
-			             graph_y - GRAPH_TEXT_PADDING,
-			             (float*)GRAPH_TEXT_COLOR, app->width,
-			             app->height);
-
-			free(lum_data);
-		}
-
-		/* Cleanup */
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+		app_draw_debug_overlay(app);
 	}
 
 	/* Help Screen Overlay */
 	if (app->show_help) {
-		/* Setup strict 2D state again just in case */
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
-
-		static const float HELP_START_X = 20.0F;
-		static const float HELP_START_Y = 60.0F;
-		static const float HELP_STEP_Y = 35.0F;
-		static const float HELP_SECTION_PADDING = 10.0F;
-		static const vec3 HELP_COLOR = {0.1F, 1.0F,
-		                                0.25F}; /* Yellow-ish */
-
-		float startX = HELP_START_X;
-		float startY = HELP_START_Y;
-		float stepY = HELP_STEP_Y;
-		vec3 helpColor = {HELP_COLOR[0], HELP_COLOR[1], HELP_COLOR[2]};
-
-		ui_draw_text(&app->ui, "--- COMMANDES ---", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[F1]       Aide (On/Off)", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[F]        Plein Ecran", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[C]        Camera (Souris)", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[Z]        Wireframe", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[SPACE]    Reset Camera", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[WASD+QE]  Deplacement", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[PgUp/Dn]  Cycle Environment", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[S+PgU/D]  Env Map Blur", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[F5]       PBR Debug View", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui,
-		             "[J]        Auto Exposure (Shift+J: Dbg)", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[P]        Capture Ecran", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		startY += HELP_SECTION_PADDING;
-		ui_draw_text(&app->ui, "--- POST-PROCESS ---", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[H]        DOF On/Off", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[Shift+H]  DOF Debug", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[B]        Bloom On/Off", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[G]        Grain On/Off", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[X]        Chrom. Abbr.", startX,
-		             startY, helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[1-6]      Presets", startX, startY,
-		             helpColor, app->width, app->height);
-		startY += stepY;
-		ui_draw_text(&app->ui, "[0]        Reset Post FX", startX,
-		             startY, helpColor, app->width, app->height);
-
-		/* Cleanup */
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+		app_draw_help_overlay(app);
 	}
 }
 

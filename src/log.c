@@ -1,4 +1,3 @@
-// _POSIX_C_SOURCE defined globally via CMakeLists.txt
 #include "log.h"
 
 #include <stdarg.h>
