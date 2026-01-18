@@ -4,6 +4,7 @@
 set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
 set(TEST_INCLUDE_DIRS ../src ../include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
+
 # Helper macro to add a test executable
 macro(add_unit_test test_name sources)
     add_executable(${test_name} ${test_name}.c ${sources})
@@ -11,18 +12,21 @@ macro(add_unit_test test_name sources)
     target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
     target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
     add_test(NAME ${test_name} COMMAND ${test_name})
+    # Set working directory to root so assets/ and shaders/ are found
+    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endmacro()
 
-# Helper macro to add a test that requires Xvfb (OpenGL context)
+# Helper macro for OpenGL tests
 macro(add_xvfb_test test_name sources)
     add_executable(${test_name} ${test_name}.c ${sources})
     target_link_libraries(${test_name} PRIVATE ${TEST_COMMON_LIBS})
     target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
     target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
     
-    # Wrapper script pour Xvfb
     add_test(NAME ${test_name} 
              COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
+    # Set working directory to root
+    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endmacro()
 
 # Tests existants (sans OpenGL)

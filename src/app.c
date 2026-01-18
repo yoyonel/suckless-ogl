@@ -37,6 +37,7 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static void framebuffer_size_callback(GLFWwindow* window, int width,
                                       int height);
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
+static void app_save_raw_frame(App* app, const char* filename);
 
 int app_init(App* app, int width, int height, const char* title)
 {
@@ -577,6 +578,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
+			case GLFW_KEY_P:  // Handle 'P' for Screenshot/Capture
+				app_save_raw_frame(app, "capture_frame.raw");
+				break;
 			case GLFW_KEY_Z:  // key 'W' on French layout keyboard
 				app->wireframe = !app->wireframe;
 				break;
@@ -736,4 +740,49 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	app->width = width;
 	app->height = height;
 	glViewport(0, 0, width, height);
+}
+
+static void app_save_raw_frame(App* app, const char* filename)
+{
+	int width = app->width;
+	int height = app->height;
+	size_t size = width * height * 3;
+	unsigned char* pixels = malloc(size);
+
+	if (!pixels) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for RAW capture");
+		return;
+	}
+
+	// Use 1-byte alignment to handle any window resolution correctly
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	FILE* file = fopen(filename, "wb");
+	if (file) {
+		size_t result = fwrite(pixels, 1, size, file);
+		if (result != size) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to write RAW frame to file: %s",
+			          filename);
+			return;
+		}
+		result = fclose(file);
+		if (result != 0) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to close file for RAW capture: %s",
+			          filename);
+			return;
+		}
+		LOG_INFO("suckless-ogl.app", "RAW frame captured: %s",
+		         filename);
+	} else {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to open file for RAW capture");
+	}
+
+	free(pixels);
+	// Reset alignment to default for other operations
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
 }
