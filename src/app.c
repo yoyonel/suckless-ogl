@@ -14,6 +14,7 @@
 #include "pbr.h"
 #include "perf_timer.h"
 #include "postprocess.h"
+#include "postprocess_presets.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
