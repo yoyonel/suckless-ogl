@@ -13,7 +13,6 @@ uniform vec3 camPos;
 uniform sampler2D irradianceMap;
 uniform sampler2D prefilterMap;
 uniform sampler2D brdfLUT;
-uniform float pbr_exposure;
 
 const float PI = 3.14159265359;
 const float INV_PI = 0.31830988618; // 1/PI précalculé
@@ -81,20 +80,6 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV, floa
     return (kD * diffuse + specular) * AO;
 }
 
-// ----------------------------------------------------------------------------
-// ACES Filmic Tonemapping
-// Courbe de tonemapping utilisée dans l'industrie du cinéma
-// ----------------------------------------------------------------------------
-vec3 ACESFilm(vec3 x)
-{
-    const float a = 2.51;
-    const float b = 0.03;
-    const float c = 2.43;
-    const float d = 0.59;
-    const float e = 0.14;
-    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
-}
-
 float compute_roughness_clamping(vec3 N, float roughness) {
     // --- Roughness Clamping (Anti-Aliasing Spéculaire) ---
     // On calcule la variation de la normale dans l'espace écran
@@ -124,10 +109,7 @@ void main() {
     // 2. Appel à la fonction complète avec compensation d'énergie
     vec3 ambient = compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, clamped_roughness);
 
-    // 3. Post-processing
-    vec3 color = ambient * pbr_exposure;
-    color = ACESFilm(color);
-    color = pow(color, vec3(1.0 / 2.2));
-
+    vec3 color = ambient;
+    
     FragColor = vec4(color, 1.0);
 }

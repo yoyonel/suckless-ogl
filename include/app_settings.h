@@ -31,7 +31,6 @@ static const float DEFAULT_CLAMP_MULTIPLIER = 6.0F;
 static const float DEFAULT_METALLIC = 1.0F;
 static const float DEFAULT_ROUGHNESS = 0.0F;
 static const float DEFAULT_AO = 1.0F;
-static const float DEFAULT_EXPOSURE = 1.0F;
 //
 static const float DEFAULT_FONT_SIZE = 32.0F;
 static const float DEFAULT_FPS_SMOOTHING = 0.95F;
@@ -48,3 +47,6 @@ static const float DEFAULT_FONT_OFFSET_Y = 0.0F;
 static const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F};
 static const vec3 DEFAULT_FONT_SHADOW_COLOR = {0.0F, 0.0F, 0.0F};
 static const int MAX_FPS_TEXT_LENGTH = 64;
+// Postprocess
+static const float DEFAULT_EXPOSURE_STEP = 0.1F;
+static const float DEFAULT_MIN_EXPOSURE = 0.1F;

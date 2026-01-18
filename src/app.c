@@ -13,6 +13,8 @@
 #include "material.h"
 #include "pbr.h"
 #include "perf_timer.h"
+#include "postprocess.h"
+#include "postprocess_presets.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
@@ -37,6 +39,7 @@ static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static void framebuffer_size_callback(GLFWwindow* window, int width,
                                       int height);
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
+static void app_save_raw_frame(App* app, const char* filename);
 
 int app_init(App* app, int width, int height, const char* title)
 {
@@ -52,6 +55,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
+
 	//
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -221,6 +225,19 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 	LOG_INFO("suckless-ogl.app", "Legacy instanced rendering mode active");
 #endif
+
+	/* Initialize post-processing */
+	if (!postprocess_init(&app->postprocess, width, height)) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to initialize post-processing");
+		return 0;
+	}
+
+	postprocess_disable(&app->postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&app->postprocess, POSTFX_GRAIN);
+	postprocess_disable(&app->postprocess, POSTFX_CHROM_ABBR);
+	postprocess_set_exposure(&app->postprocess, DEFAULT_EXPOSURE);
+	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
 	return 1;
 }
@@ -404,6 +421,8 @@ void app_cleanup(App* app)
 	instanced_group_cleanup(&app->instanced_group);
 #endif
 
+	postprocess_cleanup(&app->postprocess);
+
 	glfwDestroyWindow(app->window);
 	glfwTerminate();
 }
@@ -417,7 +436,32 @@ void app_run(App* app)
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
-		camera_process_keyboard(&app->camera, (float)app->delta_time);
+
+		/* Mettre à jour le temps pour le post-processing (grain animé)
+		 */
+		postprocess_update_time(&app->postprocess,
+		                        (float)app->delta_time);
+
+		// 1. Mise à jour de la physique (clavier) avec fixed timestep
+		app->camera.physics_accumulator += (float)app->delta_time;
+		while (app->camera.physics_accumulator >=
+		       app->camera.fixed_timestep) {
+			camera_fixed_update(&app->camera);
+			app->camera.physics_accumulator -=
+			    app->camera.fixed_timestep;
+		}
+
+		// 2. Interpolation de la rotation (smoothing)
+		float alpha = app->camera.rotation_smoothing;
+		app->camera.yaw =
+		    app->camera.yaw +
+		    ((app->camera.yaw_target - app->camera.yaw) * alpha);
+		app->camera.pitch =
+		    app->camera.pitch +
+		    ((app->camera.pitch_target - app->camera.pitch) * alpha);
+
+		// 3. Mise à jour des vecteurs de la caméra
+		camera_update_vectors(&app->camera);
 
 		/* Regenerate icosphere if subdivision level changed */
 		if (app->subdivisions != last_subdiv) {
@@ -474,11 +518,14 @@ void app_update_gpu_buffers(App* app)
 
 void app_render(App* app)
 {
+	/* Commencer le rendu dans le framebuffer de post-processing */
+	postprocess_begin(&app->postprocess);
+
 	/* Explicitly clear color and depth.
 	   Many Intel drivers perform better with color clear than without it.
 	 */
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/* glClear handled by postprocess_begin */
 
 	if (app->show_debug_tex) {
 		glUseProgram(app->debug_shader);
@@ -490,6 +537,10 @@ void app_render(App* app)
 		glBindVertexArray(app->empty_vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
+
+		/* Terminer et appliquer le post-processing */
+		postprocess_end(&app->postprocess);
+
 		return;
 	}
 
@@ -532,6 +583,9 @@ void app_render(App* app)
 	skybox_render(&app->skybox, app->skybox_shader, app->hdr_texture,
 	              inv_view_proj, app->env_lod);
 
+	/* 3. Post-processing */
+	postprocess_end(&app->postprocess);
+
 	app_render_ui(app);
 }
 
@@ -565,6 +619,120 @@ void app_render_ui(App* app)
 	glDisable(GL_BLEND);
 }
 
+static void handle_postprocess_input(App* app, int key)
+{
+	switch (key) {
+		/* Post-Processing Toggles */
+		case GLFW_KEY_V: /* Toggle Vignette */
+			postprocess_toggle(&app->postprocess, POSTFX_VIGNETTE);
+			LOG_INFO("suckless-ogl.app", "Vignette: %s",
+			         postprocess_is_enabled(&app->postprocess,
+			                                POSTFX_VIGNETTE)
+			             ? "ON"
+			             : "OFF");
+			break;
+
+		case GLFW_KEY_G: /* Toggle Grain */
+			postprocess_toggle(&app->postprocess, POSTFX_GRAIN);
+			LOG_INFO("suckless-ogl.app", "Grain: %s",
+			         postprocess_is_enabled(&app->postprocess,
+			                                POSTFX_GRAIN)
+			             ? "ON"
+			             : "OFF");
+			break;
+
+		case GLFW_KEY_B: /* Toggle Bloom */
+			postprocess_toggle(&app->postprocess, POSTFX_BLOOM);
+			LOG_INFO("suckless-ogl.app", "Bloom: %s",
+			         postprocess_is_enabled(&app->postprocess,
+			                                POSTFX_BLOOM)
+			             ? "ON"
+			             : "OFF");
+			break;
+
+		case GLFW_KEY_X: /* Toggle Chromatic Aberration */
+			postprocess_toggle(&app->postprocess,
+			                   POSTFX_CHROM_ABBR);
+			LOG_INFO("suckless-ogl.app", "Chromatic Aberration: %s",
+			         postprocess_is_enabled(&app->postprocess,
+			                                POSTFX_CHROM_ABBR)
+			             ? "ON"
+			             : "OFF");
+			break;
+
+		case GLFW_KEY_KP_ADD: /* Augmenter l'exposition */
+		{
+			float current = app->postprocess.exposure.exposure;
+			postprocess_set_exposure(
+			    &app->postprocess, current + DEFAULT_EXPOSURE_STEP);
+			LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
+			         app->postprocess.exposure.exposure);
+		} break;
+
+		case GLFW_KEY_KP_SUBTRACT: /* Diminuer l'exposition */
+		{
+			float current = app->postprocess.exposure.exposure;
+			postprocess_set_exposure(
+			    &app->postprocess,
+			    current > DEFAULT_MIN_EXPOSURE
+			        ? current - DEFAULT_EXPOSURE_STEP
+			        : DEFAULT_MIN_EXPOSURE);
+			LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
+			         app->postprocess.exposure.exposure);
+		} break;
+
+		/* Presets pour le post-processing */
+		case GLFW_KEY_1: /* Preset: Aucun */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_DEFAULT);
+			LOG_INFO("suckless-ogl.app",
+			         "Style: Aucun (rendu pur)");
+			break;
+
+		case GLFW_KEY_2: /* Preset: Subtle */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_SUBTLE);
+			LOG_INFO("suckless-ogl.app", "Style: Subtle");
+			break;
+
+		case GLFW_KEY_3: /* Preset: Cinématique */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_CINEMATIC);
+			LOG_INFO("suckless-ogl.app", "Style: Cinématique");
+			break;
+
+		case GLFW_KEY_4: /* Preset: Vintage */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_VINTAGE);
+			LOG_INFO("suckless-ogl.app", "Style: Vintage");
+			break;
+
+		case GLFW_KEY_5: /* Style: "Matrix" */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_MATRIX);
+			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
+			break;
+
+		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_BW_CONTRAST);
+			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
+			break;
+
+		case GLFW_KEY_0:
+		case GLFW_KEY_KP_0:
+			/* Reset complet */
+			postprocess_apply_preset(&app->postprocess,
+			                         &PRESET_DEFAULT);
+			LOG_INFO("suckless-ogl.app",
+			         "Color Grading: Reset to Defaults");
+			break;
+
+		default:
+			break;
+	}
+}
+
 static void key_callback(GLFWwindow* window, int key, int scancode, int action,
                          int mods)
 {
@@ -576,6 +744,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 		switch (key) {
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
+				break;
+			case GLFW_KEY_P:  // Handle 'P' for Screenshot/Capture
+				app_save_raw_frame(app, "capture_frame.raw");
 				break;
 			case GLFW_KEY_Z:  // key 'W' on French layout keyboard
 				app->wireframe = !app->wireframe;
@@ -634,8 +805,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			case GLFW_KEY_F:
 				app_toggle_fullscreen(app, window);
 				break;
+			/* Post-Processing */
 			default:
-				/* Ignore other keys */
+				handle_postprocess_input(app, key);
 				break;
 		}
 	}
@@ -736,4 +908,52 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	app->width = width;
 	app->height = height;
 	glViewport(0, 0, width, height);
+
+	/* Redimensionner le post-processing */
+	postprocess_resize(&app->postprocess, width, height);
+}
+
+static void app_save_raw_frame(App* app, const char* filename)
+{
+	int width = app->width;
+	int height = app->height;
+	size_t size = width * height * 3;
+	unsigned char* pixels = malloc(size);
+
+	if (!pixels) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for RAW capture");
+		return;
+	}
+
+	// Use 1-byte alignment to handle any window resolution correctly
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+	FILE* file = fopen(filename, "wb");
+	if (file) {
+		size_t result = fwrite(pixels, 1, size, file);
+		if (result != size) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to write RAW frame to file: %s",
+			          filename);
+			return;
+		}
+		result = fclose(file);
+		if (result != 0) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to close file for RAW capture: %s",
+			          filename);
+			return;
+		}
+		LOG_INFO("suckless-ogl.app", "RAW frame captured: %s",
+		         filename);
+	} else {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to open file for RAW capture");
+	}
+
+	free(pixels);
+	// Reset alignment to default for other operations
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
 }
