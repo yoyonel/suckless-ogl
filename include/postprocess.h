@@ -13,10 +13,10 @@
 
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
-	POSTFX_VIGNETTE = (1U << 0),      /* 0x01 */
-	POSTFX_GRAIN = (1U << 1),         /* 0x02 */
-	POSTFX_EXPOSURE = (1U << 2),      /* 0x04 */
-	POSTFX_CHROM_ABBR = (1U << 3),    /* 0x08 */
+	POSTFX_VIGNETTE = (1U << 0),   /* 0x01 */
+	POSTFX_GRAIN = (1U << 1),      /* 0x02 */
+	POSTFX_EXPOSURE = (1U << 2),   /* 0x04 */
+	POSTFX_CHROM_ABBR = (1U << 3), /* 0x08 */
 	/* Réservé pour futurs effets */
 	POSTFX_BLOOM = (1U << 4),         /* 0x10 */
 	POSTFX_COLOR_GRADING = (1U << 5), /* 0x20 */

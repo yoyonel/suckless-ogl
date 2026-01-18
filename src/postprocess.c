@@ -196,8 +196,6 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->color_grading = preset->color_grading;
 }
 
-
-
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */

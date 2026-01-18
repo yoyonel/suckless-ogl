@@ -24,11 +24,10 @@ static const PostProcessPreset PRESET_DEFAULT = {
                       .offset = 0.0F}};
 
 static const PostProcessPreset PRESET_SUBTLE = {
-    .active_effects = (unsigned int)POSTFX_VIGNETTE |
-                      (unsigned int)POSTFX_GRAIN |
-                      (unsigned int)POSTFX_CHROM_ABBR |
-                      (unsigned int)POSTFX_EXPOSURE |
-                      (unsigned int)POSTFX_COLOR_GRADING,
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
+        (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = 0.3F, .extent = 0.7F},
     .grain = {.intensity = 0.02F},
     .exposure = {.exposure = DEFAULT_EXPOSURE},
@@ -40,11 +39,10 @@ static const PostProcessPreset PRESET_SUBTLE = {
                       .offset = 0.0F}};
 
 static const PostProcessPreset PRESET_CINEMATIC = {
-    .active_effects = (unsigned int)POSTFX_VIGNETTE |
-                      (unsigned int)POSTFX_GRAIN |
-                      (unsigned int)POSTFX_CHROM_ABBR |
-                      (unsigned int)POSTFX_EXPOSURE |
-                      (unsigned int)POSTFX_COLOR_GRADING,
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
+        (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = 0.5F, .extent = 0.6F},
     .grain = {.intensity = 0.03F},
     .exposure = {.exposure = 1.2F},
@@ -56,11 +54,10 @@ static const PostProcessPreset PRESET_CINEMATIC = {
                       .offset = 0.0F}};
 
 static const PostProcessPreset PRESET_VINTAGE = {
-    .active_effects = (unsigned int)POSTFX_VIGNETTE |
-                      (unsigned int)POSTFX_GRAIN |
-                      (unsigned int)POSTFX_CHROM_ABBR |
-                      (unsigned int)POSTFX_EXPOSURE |
-                      (unsigned int)POSTFX_COLOR_GRADING,
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
+        (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = 0.7F, .extent = 0.5F},
     .grain = {.intensity = 0.06F},
     .exposure = {.exposure = 0.9F},
