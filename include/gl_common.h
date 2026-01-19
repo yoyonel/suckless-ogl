@@ -7,6 +7,7 @@
 /* Now we can include GLFW which may pull in OpenGL headers */
 #include <GLFW/glfw3.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define BUFFER_OFFSET(i) ((void*)(intptr_t)(i))
 
