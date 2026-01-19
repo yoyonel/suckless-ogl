@@ -196,23 +196,23 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 
 void postprocess_enable(PostProcess* post_processing, PostProcessEffect effect)
 {
-	post_processing->active_effects |= effect;
+	post_processing->active_effects |= (unsigned int)effect;
 }
 
 void postprocess_disable(PostProcess* post_processing, PostProcessEffect effect)
 {
-	post_processing->active_effects &= ~effect;
+	post_processing->active_effects &= ~(unsigned int)effect;
 }
 
 void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect)
 {
-	post_processing->active_effects ^= effect;
+	post_processing->active_effects ^= (unsigned int)effect;
 }
 
 int postprocess_is_enabled(PostProcess* post_processing,
                            PostProcessEffect effect)
 {
-	return (post_processing->active_effects & effect) != 0;
+	return (post_processing->active_effects & (unsigned int)effect) != 0;
 }
 
 void postprocess_set_vignette(PostProcess* post_processing, float intensity,

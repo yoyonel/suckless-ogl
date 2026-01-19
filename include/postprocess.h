@@ -9,10 +9,9 @@
 #define DEFAULT_VIGNETTE_EXTENT 0.7F     /* Plus large = effet plus doux */
 #define DEFAULT_GRAIN_INTENSITY 0.02F    /* 0.05 était trop visible */
 #define DEFAULT_EXPOSURE 1.00F
-#define DEFAULT_CHROM_ABBR_STRENGTH 0.01F /* x3 pour le rendre visible */
+#define DEFAULT_CHROM_ABBR_STRENGTH 0.005F /* x3 pour le rendre visible */
 #define DEFAULT_BLOOM_INTENSITY 0.0F
 #define DEFAULT_BLOOM_THRESHOLD 1.0F
-#define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_RADIUS 1.0F
 
@@ -23,17 +22,17 @@
 
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
-	POSTFX_VIGNETTE = (1U << 0),   /* 0x01 */
-	POSTFX_GRAIN = (1U << 1),      /* 0x02 */
-	POSTFX_EXPOSURE = (1U << 2),   /* 0x04 */
-	POSTFX_CHROM_ABBR = (1U << 3), /* 0x08 */
+	POSTFX_VIGNETTE = (1U << 0U),   /* 0x01 */
+	POSTFX_GRAIN = (1U << 1U),      /* 0x02 */
+	POSTFX_EXPOSURE = (1U << 2U),   /* 0x04 */
+	POSTFX_CHROM_ABBR = (1U << 3U), /* 0x08 */
 	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1U << 4),          /* 0x10 */
-	POSTFX_COLOR_GRADING = (1U << 5),  /* 0x20 */
-	POSTFX_DOF = (1U << 6),            /* 0x40 */
-	POSTFX_DOF_DEBUG = (1U << 7),      /* 0x80 - Debug Visualization */
-	POSTFX_AUTO_EXPOSURE = (1U << 8),  /* 0x100 */
-	POSTFX_EXPOSURE_DEBUG = (1U << 9), /* 0x200 */
+	POSTFX_BLOOM = (1U << 4U),          /* 0x10 */
+	POSTFX_COLOR_GRADING = (1U << 5U),  /* 0x20 */
+	POSTFX_DOF = (1U << 6U),            /* 0x40 */
+	POSTFX_DOF_DEBUG = (1U << 7U),      /* 0x80 - Debug Visualization */
+	POSTFX_AUTO_EXPOSURE = (1U << 8U),  /* 0x100 */
+	POSTFX_EXPOSURE_DEBUG = (1U << 9U), /* 0x200 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
