@@ -137,8 +137,12 @@ vec3 apply_color_grading(vec3 color) {
 void main() {
     vec3 color;
     
-    /* Si aberration chromatique active, on récupère la couleur différemment */
-    if (enableChromAbbr != 0) {
+    /* Skybox Hack: Depth ~ 1.0 */
+    float depth = texture(depthTexture, TexCoords).r;
+    bool isSkybox = depth >= 0.99999;
+
+    /* Si aberration chromatique active et PAS sur la skybox */
+    if (enableChromAbbr != 0 && !isSkybox) {
         color = applyChromAbbr(TexCoords);
     } else {
         color = texture(screenTexture, TexCoords).rgb;
