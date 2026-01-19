@@ -53,6 +53,9 @@ rebuild: clean-all all
 run: all
 	@./$(BUILD_DIR)/app
 
+run-software: all
+	LIBGL_ALWAYS_SOFTWARE=1 ./$(BUILD_DIR)/app
+
 format:
 	$(DISTROBOX) sh -c "find src include tests -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
 

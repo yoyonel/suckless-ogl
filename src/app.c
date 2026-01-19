@@ -352,8 +352,7 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_disable(&app->postprocess, POSTFX_VIGNETTE);
 	postprocess_disable(&app->postprocess, POSTFX_GRAIN);
 	postprocess_disable(&app->postprocess, POSTFX_CHROM_ABBR);
-	postprocess_enable(&app->postprocess,
-	                   POSTFX_AUTO_EXPOSURE); /* Enable by default */
+	postprocess_disable(&app->postprocess, POSTFX_AUTO_EXPOSURE);
 	postprocess_set_exposure(&app->postprocess, DEFAULT_EXPOSURE);
 	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
