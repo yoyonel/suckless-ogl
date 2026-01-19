@@ -6,9 +6,19 @@ CMAKE := cmake
 # On définit BOX pour garder la configuration de ton env local
 BOX := clang-dev
 
-# Si CONTAINER_RUN n'est pas défini, on utilise distrobox par défaut (ton usage local) [cite: 1]
-# Si on veut désactiver distrobox, on pourra passer CONTAINER_RUN=""
-CONTAINER_RUN ?= distrobox enter $(BOX) --
+# Smart detection: Use distrobox only if available and if the container exists
+DISTROBOX_CMD := $(shell command -v distrobox 2> /dev/null)
+ifneq ($(DISTROBOX_CMD),)
+    # Check if the specific box exists
+    BOX_EXISTS := $(shell distrobox list --no-color 2>/dev/null | grep -w "$(BOX)")
+    ifneq ($(BOX_EXISTS),)
+         CONTAINER_RUN_DEFAULT := distrobox enter $(BOX) --
+    endif
+endif
+
+# If CONTAINER_RUN is not defined, use the detected default (or empty/local)
+# To disable distrobox even if available, pass CONTAINER_RUN=""
+CONTAINER_RUN ?= $(CONTAINER_RUN_DEFAULT)
 
 # On remplace l'ancienne variable par la nouvelle
 DISTROBOX := $(CONTAINER_RUN)
@@ -145,7 +155,6 @@ IMAGE_NAME := suckless-ogl
 
 docker-build:
 	$(CONTAINER_ENGINE) build \
-		--layers=true \
 		-t $(IMAGE_NAME) .
 
 docker-build-no-cache:
