@@ -72,6 +72,11 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum);
 
+static int compare_strings(const void* a, const void* b)
+{
+	return strcmp(*(const char**)a, *(const char**)b);
+}
+
 static void app_scan_hdr_files(App* app)
 {
 	app->hdr_count = 0;
@@ -96,6 +101,12 @@ static void app_scan_hdr_files(App* app)
 			}
 		}
 		closedir(dir_handle);
+
+		/* Sort files alphabetically for deterministic order */
+		if (app->hdr_count > 1) {
+			qsort(app->hdr_files, app->hdr_count, sizeof(char*),
+			      compare_strings);
+		}
 	} else {
 		LOG_ERROR("suckless-ogl.app",
 		          "Failed to open assets/textures/hdr directory!");
