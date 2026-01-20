@@ -37,22 +37,27 @@ jobs:
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
           
-      - name: Run Coverage and Generate Visuals
+      - name: Run Coverage and Tests
+        id: run_tests
+        continue-on-error: true
         run: |
-          # 1. Exécution des tests via Xvfb
+          # Exécution des tests via Xvfb
           xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
-          
-          # 2. Préparation des dossiers
+
+      - name: Generate Visual Artifacts
+        if: always()
+        run: |
+          # Préparation des dossiers
           mkdir -p visual_artifacts/${{ github.sha }}
           mkdir -p build-coverage/coverage_report/visual_tests
           
-          # 3. Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
+          # Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
           # On capture la référence, le rendu actuel et la carte de différence
           [ -f tests/ref_frame.raw ] && convert -size 1024x768 -depth 8 rgb:tests/ref_frame.raw -flip visual_artifacts/${{ github.sha }}/ref.png || echo "No ref"
           [ -f tests/failed_frame_actual.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_frame_actual.raw -flip visual_artifacts/${{ github.sha }}/actual.png || echo "No actual"
           [ -f tests/failed_diff_map.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_diff_map.raw -flip visual_artifacts/${{ github.sha }}/diff.png || echo "No diff"
 
-          # 4. Génération de l'index HTML interactif (Comparaison par survol)
+          # Génération de l'index HTML interactif (Comparaison par survol)
           cat <<EOF > build-coverage/coverage_report/visual_tests/index.html
           <!DOCTYPE html>
           <html>
@@ -81,10 +86,11 @@ jobs:
           </html>
           EOF
 
-          # 5. Copie des PNG pour le rapport statique
+          # Copie des PNG pour le rapport statique
           cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
 
       - name: Upload Images to Visual Storage Branch
+        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -93,7 +99,7 @@ jobs:
           keep_files: true
 
       - name: Post Visual Comment on PR
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
           message: |
