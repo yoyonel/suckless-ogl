@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visual Regression Report</title>
+  <style>
+    body { font-family: sans-serif; background: #121212; color: #eee; padding: 20px; text-align: center; }
+    .compare-container { position: relative; width: 1024px; height: 768px; margin: 0 auto; border: 2px solid #444; cursor: crosshair; }
+    .compare-container img { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transition: opacity 0.2s; }
+    .compare-container .img-ref { opacity: 1; }
+    .compare-container:hover .img-actual { opacity: 1; }
+    .diff-map { margin-top: 20px; border: 2px solid #f00; width: 1024px; }
+  </style>
+</head>
+<body>
+  <h1>Visual Regression Analysis</h1>
+  <p>Passez la souris sur l'image pour comparer : <b>Référence</b> vs <b>Rendu PR</b></p>
+  <div class="compare-container">
+    <img src="ref.png" class="img-ref">
+    <img src="actual.png" class="img-actual">
+  </div>
+  <h3>Carte des différences (Diff Map)</h3>
+  <img src="diff.png" class="diff-map">
+  <br><a href="../index.html" style="color: #00ff95;">Retour au Rapport de Couverture</a>
+</body>
+</html>
