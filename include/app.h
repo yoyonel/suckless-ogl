@@ -104,6 +104,9 @@ typedef struct {
 	int hdr_count;         /* Total number of HDR files */
 	int current_hdr_index; /* Index of currently loaded HDR */
 
+	/* Auto-computed threshold for IBL */
+	float auto_threshold; /* Computed mean luminance for exposure */
+
 } App;
 
 /* Initialization and cleanup */

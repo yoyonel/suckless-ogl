@@ -50,3 +50,5 @@ static const int MAX_FPS_TEXT_LENGTH = 64;
 // Postprocess
 static const float DEFAULT_EXPOSURE_STEP = 0.1F;
 static const float DEFAULT_MIN_EXPOSURE = 0.1F;
+
+static const float DEFAULT_AUTO_THRESHOLD = 5.0F;

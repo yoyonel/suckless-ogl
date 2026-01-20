@@ -135,15 +135,19 @@ static int app_load_env_map(App* app, const char* filename)
 
 	float auto_threshold = compute_mean_luminance_gpu(
 	    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
-
+	LOG_INFO("suckless-ogl.ibl",
+	         "Auto threshold from compute_mean_luminance_gpu: %.2f",
+	         auto_threshold);
 	if (auto_threshold < 1.0F || isnan(auto_threshold) ||
 	    isinf(auto_threshold)) {
-		static const float DEFAULT_AUTO_THRESHOLD = 5.0F;
 		auto_threshold = DEFAULT_AUTO_THRESHOLD;
 		LOG_WARN("suckless-ogl.ibl",
 		         "Invalid auto_threshold detected. Using default: %.2f",
 		         auto_threshold);
 	}
+
+	/* Store for later use in preset resets */
+	app->auto_threshold = auto_threshold;
 
 	PERF_MEASURE_LOG("Prefiltered Map Generation")
 	{
@@ -160,6 +164,9 @@ static int app_load_env_map(App* app, const char* filename)
 
 	LOG_INFO("suckless-ogl.app", "Loaded Environment: %s (Thresh: %.2f)",
 	         filename, auto_threshold);
+
+	/* Update postprocess exposure to match new environment */
+	postprocess_set_exposure(&app->postprocess, auto_threshold);
 
 	return 1;
 }
@@ -353,7 +360,9 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_disable(&app->postprocess, POSTFX_GRAIN);
 	postprocess_disable(&app->postprocess, POSTFX_CHROM_ABBR);
 	postprocess_disable(&app->postprocess, POSTFX_AUTO_EXPOSURE);
-	postprocess_set_exposure(&app->postprocess, DEFAULT_EXPOSURE);
+	postprocess_enable(&app->postprocess, POSTFX_EXPOSURE);
+	postprocess_enable(&app->postprocess, POSTFX_COLOR_GRADING);
+	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
 	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
 	return 1;
@@ -1139,8 +1148,11 @@ static void handle_postprocess_input(App* app, int key)
 		case GLFW_KEY_1: /* Preset: Aucun */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_DEFAULT);
+			postprocess_set_exposure(&app->postprocess,
+			                         app->auto_threshold);
 			LOG_INFO("suckless-ogl.app",
-			         "Style: Aucun (rendu pur)");
+			         "Style: Aucun (rendu pur) - Exposure: %.2f",
+			         app->auto_threshold);
 			break;
 
 		case GLFW_KEY_2: /* Preset: Subtle */
@@ -1178,6 +1190,8 @@ static void handle_postprocess_input(App* app, int key)
 			/* Reset complet */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_DEFAULT);
+			postprocess_set_exposure(&app->postprocess,
+			                         app->auto_threshold);
 			LOG_INFO("suckless-ogl.app",
 			         "Color Grading: Reset to Defaults");
 			break;
