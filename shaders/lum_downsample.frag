@@ -27,7 +27,7 @@ void main()
             
             /* Masquage des pixels trop sombres (Fond noir, coins sombres)
                pour éviter qu'ils ne faussent la moyenne géométrique vers le bas */
-            if (lum > 0.05) { 
+            if (lum > 0.05 && !isinf(lum)) { 
                 totalLogLum += log2(lum);
                 weight += 1.0;
             }

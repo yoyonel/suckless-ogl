@@ -28,6 +28,9 @@ void main()
     if (coord.x < texSize.x && coord.y < texSize.y) {
         vec3 color = texelFetch(hdrTexture, coord, 0).rgb;
         lum = dot(color, vec3(0.2126, 0.7152, 0.0722));
+        if (isinf(lum) || isnan(lum)) {
+            lum = 0.0;
+        }
     }
 
     sharedLum[localIndex] = lum;

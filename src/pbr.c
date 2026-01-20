@@ -176,6 +176,10 @@ float compute_mean_luminance_gpu(GLuint hdr_tex, int width, int height,
 
 	glDeleteBuffers(2, ssbos);
 
+	if (isinf(mean) || isnan(mean)) {
+		mean = 0.0F;
+	}
+
 	return mean * clamp_multiplier;
 }
 

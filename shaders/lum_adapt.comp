@@ -30,7 +30,7 @@ void main()
                 float logVal = textureLod(lumTexture, uv, 0).r;
                 
                 /* Si le pixel est valide (pas la sentinelle -100.0) */
-                if (logVal > -50.0) {
+                if (logVal > -50.0 && !isinf(logVal)) {
                     totalLogLum += logVal;
                     validPixels += 1.0;
                 }
