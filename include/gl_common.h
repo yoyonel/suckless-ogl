@@ -9,6 +9,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define BUFFER_OFFSET(i) ((void*)(intptr_t)(i))
+#define BUFFER_OFFSET(offset) ((void*)((char*)0 + (offset)))
 
 #endif /* GL_COMMON_H */
