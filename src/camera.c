@@ -184,7 +184,8 @@ void camera_get_view_matrix(Camera* cam, mat4 view)
 
 void camera_process_scroll(Camera* cam, float yoffset)
 {
-	vec3 move;
-	glm_vec3_scale(cam->front, yoffset * DEFAULT_ZOOM_SPEED, move);
-	glm_vec3_add(cam->position, move, cam->position);
+	vec3 impulse;
+	glm_vec3_scale(cam->front, yoffset * DEFAULT_SCROLL_SENSITIVITY,
+	               impulse);
+	glm_vec3_add(cam->velocity_current, impulse, cam->velocity_current);
 }
