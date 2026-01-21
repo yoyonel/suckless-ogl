@@ -48,8 +48,6 @@ static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
 static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
-static const float ENV_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 1.25F;
-static const float EXPOSURE_TEXT_Y_OFFSET_FACTOR = 2.0F;
 static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -749,66 +747,50 @@ static void app_draw_help_overlay(App* app)
 
 	static const float HELP_START_X = 20.0F;
 	static const float HELP_START_Y = 60.0F;
-	static const float HELP_STEP_Y = 35.0F;
+	static const float HELP_PADDING = 5.0F;
 	static const float HELP_SECTION_PADDING = 10.0F;
 	static const vec3 HELP_COLOR = {0.1F, 1.0F, 0.25F}; /* Yellow-ish */
 
-	float startX = HELP_START_X;
-	float startY = HELP_START_Y;
-	float stepY = HELP_STEP_Y;
-	vec3 helpColor = {HELP_COLOR[0], HELP_COLOR[1], HELP_COLOR[2]};
+	UILayout layout;
+	ui_layout_init(&layout, &app->ui, HELP_START_X, HELP_START_Y,
+	               HELP_PADDING, app->width, app->height);
 
-	ui_draw_text(&app->ui, "--- COMMANDES ---", startX, startY, helpColor,
-	             app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[F1]       Aide (On/Off)", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[F]        Plein Ecran", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[C]        Camera (Souris)", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[Z]        Wireframe", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[SPACE]    Reset Camera", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[WASD+QE]  Deplacement", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[PgUp/Dn]  Cycle Environment", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[S+PgU/D]  Env Map Blur", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[F5]       PBR Debug View", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[J]        Auto Exposure (Shift+J: Dbg)",
-	             startX, startY, helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[P]        Capture Ecran", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	startY += HELP_SECTION_PADDING;
-	ui_draw_text(&app->ui, "--- POST-PROCESS ---", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[H]        DOF On/Off", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[Shift+H]  DOF Debug", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[B]        Bloom On/Off", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[G]        Grain On/Off", startX, startY,
-	             helpColor, app->width, app->height);
+	/* Section: Controls */
+	ui_layout_text(&layout, "--- Controls ---", HELP_COLOR);
+	ui_layout_text(&layout, "[WASD] Move", HELP_COLOR);
+	ui_layout_text(&layout, "[Mouse] Look", HELP_COLOR);
+	ui_layout_text(&layout, "[Scroll] Speed/Zoom", HELP_COLOR);
+	ui_layout_text(&layout, "[Left Click] Capture Mouse", HELP_COLOR);
+	ui_layout_text(&layout, "[ESC] Release Mouse/Exit", HELP_COLOR);
+
+	ui_layout_separator(&layout, HELP_SECTION_PADDING);
+
+	/* Section: Features */
+	ui_layout_text(&layout, "--- Features ---", HELP_COLOR);
+	ui_layout_text(&layout, "[F] Toggle Flashlight", HELP_COLOR);
+	ui_layout_text(&layout, "[Z] Toggle Wireframe", HELP_COLOR);
+	ui_layout_text(&layout, "[H] Toggle UI/Help", HELP_COLOR);
+	ui_layout_text(&layout, "[J] Toggle Auto-Exposure", HELP_COLOR);
+	ui_layout_text(&layout, "[B] Toggle Bloom", HELP_COLOR);
+
+	ui_layout_separator(&layout, HELP_SECTION_PADDING);
+
+	/* Section: Environment */
+	ui_layout_text(&layout, "--- Environment ---", HELP_COLOR);
+	ui_layout_text(&layout, "[PgUp/PgDn] Change HDR", HELP_COLOR);
+	ui_layout_text(&layout, "[Shift + PgUp/PgDn] Blur HDR", HELP_COLOR);
+
+	ui_layout_separator(&layout, HELP_SECTION_PADDING);
+
+	/* Section: Post-Process Styles */
+	ui_layout_text(&layout, "--- Styles (Numpad) ---", HELP_COLOR);
+	ui_layout_text(&layout, "[1] Default (Clean)", HELP_COLOR);
+	ui_layout_text(&layout, "[2] Subtle", HELP_COLOR);
+	ui_layout_text(&layout, "[3] Cinematic", HELP_COLOR);
+	ui_layout_text(&layout, "[4] Vintage", HELP_COLOR);
+	ui_layout_text(&layout, "[5] Matrix", HELP_COLOR);
+	ui_layout_text(&layout, "[6] BW Contrast", HELP_COLOR);
+	ui_layout_text(&layout, "[0] Reset", HELP_COLOR);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -972,43 +954,49 @@ static void app_draw_debug_overlay(App* app)
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 void app_render_ui(App* app)
 {
+	/* --- Draw Main Info Overlay --- */
+	UILayout layout;
+	/* Start slightly offset from top-left */
+	ui_layout_init(&layout, &app->ui, DEFAULT_FONT_OFFSET_X,
+	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
+	               app->height);
+
+	/* 1. FPS */
+	static const float MS_PER_SECOND = 1000.0F;
 	char fps_text[MAX_FPS_TEXT_LENGTH];
-	double fps = 0.0F;
-	if (app->fps_counter.average_frame_time > 0) {
-		fps = 1.0F / app->fps_counter.average_frame_time;
+	float current_fps = 0.0F;
+	float frame_time_ms = 0.0F;
+
+	if (app->fps_counter.average_frame_time > 0.0F) {
+		current_fps = 1.0F / (float)app->fps_counter.average_frame_time;
+		frame_time_ms =
+		    (float)app->fps_counter.average_frame_time * MS_PER_SECOND;
 	}
+
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(fps_text, sizeof(fps_text), "FPS: %.1F", fps);
+	(void)snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
+	               current_fps, frame_time_ms);
 
-	// Paramètres OpenGL pour le texte (Alpha blending)
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
+	ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
 
-	// 1. DESSINER L'OMBRE (Décalée de 2 pixels, en
-	// Noir)
-	ui_draw_text(&app->ui, fps_text, DEFAULT_FONT_SHADOW_OFFSET_X,
-	             DEFAULT_FONT_SHADOW_OFFSET_Y,
-	             (float*)DEFAULT_FONT_SHADOW_COLOR, app->width,
-	             app->height);
+	/* 2. Position */
+	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
+	               app->camera.position[0], app->camera.position[1],
+	               app->camera.position[2]);
+	ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
 
-	// 2. DESSINER LE TEXTE (En Jaune ou Blanc)
-	ui_draw_text(&app->ui, fps_text, DEFAULT_FONT_OFFSET_X,
-	             DEFAULT_FONT_OFFSET_Y, (float*)DEFAULT_FONT_COLOR,
-	             app->width, app->height);
-
-	/* 3. DESSINER LE NOM DE L'ENVIRONNEMENT */
+	/* 3. Environment */
 	if (app->hdr_count > 0 && app->current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 		(void)snprintf(env_text, sizeof(env_text), "Env: %s",
 		               app->hdr_files[app->current_hdr_index]);
-		ui_draw_text(&app->ui, env_text, DEFAULT_FONT_OFFSET_X,
-		             DEFAULT_FONT_OFFSET_Y + ENV_TEXT_Y_OFFSET,
-		             (float*)ENV_TEXT_COLOR, app->width, app->height);
+		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
 	}
 
-	/* 4. DESSINER L'EXPOSITION (Sous le nom de l'environnement) */
+	/* 4. Exposure */
 	float exposure_val = 0.0F;
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_AUTO_EXPOSURE)) {
 		/* Async Readback using PBO to avoid pipeline stall */
@@ -1040,10 +1028,7 @@ void app_render_ui(App* app)
 	(void)snprintf(exposure_text, sizeof(exposure_text), "Exposure: %.3f",
 	               exposure_val);
 
-	ui_draw_text(&app->ui, exposure_text, DEFAULT_FONT_OFFSET_X,
-	             DEFAULT_FONT_OFFSET_Y +
-	                 (ENV_TEXT_Y_OFFSET * EXPOSURE_TEXT_Y_OFFSET_FACTOR),
-	             (float*)ENV_TEXT_COLOR, app->width, app->height);
+	ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);

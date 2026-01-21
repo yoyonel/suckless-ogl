@@ -60,12 +60,39 @@ void test_ui_functions_exist(void)
 	TEST_PASS();
 }
 
+void test_ui_layout_stacking(void)
+{
+	UIContext ui;
+	ui.font_size = 20.0f; /* Fake font size */
+
+	UILayout layout;
+	float start_y = 100.0f;
+	float padding = 5.0f;
+
+	ui_layout_init(&layout, &ui, 0.0f, start_y, padding, 800, 600);
+	TEST_ASSERT_EQUAL_FLOAT(start_y, layout.cursor_y);
+
+	/* Adding text should advance cursor by font_size + padding */
+	ui_layout_text(&layout, "Item 1", (vec3){1, 1, 1}); /* Mock call */
+
+	float expected_y = start_y + ui.font_size + padding;
+	TEST_ASSERT_EQUAL_FLOAT(expected_y, layout.cursor_y);
+
+	/* Separator should add exact space */
+	float space = 10.0f;
+	ui_layout_separator(&layout, space);
+
+	expected_y += space;
+	TEST_ASSERT_EQUAL_FLOAT(expected_y, layout.cursor_y);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_ui_module_exists);
 	RUN_TEST(test_ui_initialization);
 	RUN_TEST(test_ui_functions_exist);
+	RUN_TEST(test_ui_layout_stacking);
 
 	return UNITY_END();
 }

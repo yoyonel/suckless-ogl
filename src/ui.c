@@ -256,6 +256,7 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	ui_context->shader = 0;
 	ui_context->vao = 0;
 	ui_context->vbo = 0;
+	ui_context->font_size = font_size;
 	for (int i = 0; i < FONT_CHAR_COUNT; i++) {
 		ui_context->cdata[i] = (GlyphInfo){0};
 	}
@@ -297,7 +298,8 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 }
 
 void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
-                  float y_pos, vec3 color, int screen_width, int screen_height)
+                  float y_pos, const vec3 color, int screen_width,
+                  int screen_height)
 {
 	if (ui_context == NULL || text == NULL || ui_context->shader == 0) {
 		return;
@@ -375,7 +377,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 
 // NOLINTNEXTLINE(readability-identifier-length)
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
-                  float width, float height, vec3 color, int screen_width,
+                  float width, float height, const vec3 color, int screen_width,
                   int screen_height)
 {
 	if (ui_context == NULL || ui_context->shader == 0) {
@@ -460,4 +462,38 @@ void ui_destroy(UIContext* ui_context)
 	}
 
 	LOG_INFO("ui", "UI system destroyed");
+}
+
+void ui_layout_init(UILayout* layout, UIContext* ui_ctx, float start_x,
+                    float start_y, float padding, int screen_width,
+                    int screen_height)
+{
+	layout->ui = ui_ctx;
+	layout->start_x = start_x;
+	layout->cursor_y = start_y;
+	layout->padding = padding;
+	layout->screen_width = screen_width;
+	layout->screen_height = screen_height;
+}
+
+void ui_layout_text(UILayout* layout, const char* text, const vec3 color)
+{
+	if (!layout || !layout->ui) {
+		return;
+	}
+
+	ui_draw_text(layout->ui, text, layout->start_x, layout->cursor_y, color,
+	             layout->screen_width, layout->screen_height);
+
+	/* Advance cursor */
+	/* Note: ui->font_size indicates height roughly */
+	layout->cursor_y += layout->ui->font_size + layout->padding;
+}
+
+void ui_layout_separator(UILayout* layout, float space)
+{
+	if (!layout) {
+		return;
+	}
+	layout->cursor_y += space;
 }
