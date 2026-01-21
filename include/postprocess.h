@@ -23,6 +23,17 @@
 #define DEFAULT_DOF_FOCAL_RANGE 10.0F    /* Wider range */
 #define DEFAULT_DOF_BOKEH_SCALE 1.0F     /* Subtle blur */
 
+/* White Balance Defaults */
+#define DEFAULT_WB_TEMP 6500.0F
+#define DEFAULT_WB_TINT 0.0F
+
+/* Filmic Defaults (Safe Neutrals) */
+#define DEFAULT_FILMIC_SLOPE 1.0F
+#define DEFAULT_FILMIC_TOE 0.0F
+#define DEFAULT_FILMIC_SHOULDER 0.0F
+#define DEFAULT_FILMIC_BLACK_CLIP 0.0F
+#define DEFAULT_FILMIC_WHITE_CLIP 0.0F
+
 /* Types d'effets de post-traitement disponibles */
 typedef enum {
 	POSTFX_VIGNETTE = (1U << 0U),   /* 0x01 */
@@ -98,10 +109,25 @@ typedef struct {
 	float bokeh_scale; /* Taille du flou (simule l'ouverture) */
 } DoFParams;
 
+/* Paramètres White Balance */
+typedef struct {
+	float temperature; /* Température de couleur (Kelvin), Défaut: 6500.0 */
+	float tint;        /* Teinte (Vert/Magenta), -1.0 à 1.0, Défaut: 0.0 */
+} WhiteBalanceParams;
+
+/* Paramètres Filmic Tonemapper (Custom Curve) */
+typedef struct {
+	float slope;      /* Pente (Contraste), Défaut: 0.91 */
+	float toe;        /* Pied (Noirs), Défaut: 0.53 */
+	float shoulder;   /* Épaule (Blancs), Défaut: 0.23 */
+	float black_clip; /* Coupure des noirs, Défaut: 0.0 */
+	float white_clip; /* Coupure des blancs, Défaut: 0.035 */
+} TonemapParams;
+
 /* Paramètres pour l'Auto Exposure (Eye Adaptation) */
 typedef struct {
-	float min_luminance; /* Luminance min (clamping) */
-	float max_luminance; /* Luminance max (clamping) */
+	float min_luminance; /* Luminance min (clamping) - Range param */
+	float max_luminance; /* Luminance max (clamping) - Range param */
 	float speed_up; /* Vitesse d'adaptation vers clair (pupille s'ouvre) */
 	float speed_down; /* Vitesse d'adaptation vers sombre (pupille se ferme)
 	                   */
@@ -152,7 +178,9 @@ typedef struct {
 	GrainParams grain;
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
+	WhiteBalanceParams white_balance; /* [NEW] */
 	ColorGradingParams color_grading;
+	TonemapParams tonemapper; /* [NEW] */
 	BloomParams bloom;
 	DoFParams dof;
 	AutoExposureParams auto_exposure;
@@ -177,9 +205,14 @@ void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect);
 int postprocess_is_enabled(PostProcess* post_processing,
                            PostProcessEffect effect);
 /* Configuration des paramètres de Color Grading */
+void postprocess_set_white_balance(PostProcess* post_processing,
+                                   float temperature, float tint);
 void postprocess_set_color_grading(PostProcess* post_processing,
                                    float saturation, float contrast,
                                    float gamma, float gain, float offset);
+void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
+                                float toe, float shoulder, float black_clip,
+                                float white_clip);
 void postprocess_set_grading_ue_default(PostProcess* post_processing);
 
 /* Configuration des paramètres */
@@ -205,7 +238,9 @@ typedef struct {
 	GrainParams grain;
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
+	WhiteBalanceParams white_balance;
 	ColorGradingParams color_grading;
+	TonemapParams tonemapper;
 	BloomParams bloom;
 	DoFParams dof;
 } PostProcessPreset;

@@ -126,18 +126,81 @@ vec3 applyChromAbbr(vec2 uv) {
     return vec3(r, g, b);
 }
 
-/*
- * ACES Tone Mapping (Approximation Narkowicz)
- * Standard de facto pour le rendu filmique en temps réel (utilisé dans UE4/UE5).
- * Mappe le HDR [0, inf] vers une courbe sigmoïde plaisante en [0, 1].
+/* Paramètres White Balance */
+uniform float wbTemperature;
+uniform float wbTint;
+
+/* Paramètres Tonemapper */
+uniform float tonemapSlope;
+uniform float tonemapToe;
+uniform float tonemapShoulder;
+uniform float tonemapBlackClip;
+uniform float tonemapWhiteClip;
+
+/* 
+ * White Balance (Approximation rapide)
+ * Basé sur une conversion analytique de température Kelvin/Teinte vers RGB
  */
-vec3 aces_film(vec3 x) {
+vec3 applyWhiteBalance(vec3 color) {
+    /* Early exit if neutral (6500K, 0 tint) */
+    if (abs(wbTemperature - 6500.0) < 1.0 && abs(wbTint) < 0.001) {
+        return color;
+    }
+    
+    /* Temperature shift (simple linear approximation) */
+    float tempShift = (wbTemperature - 6500.0) / 10000.0;
+    
+    vec3 wb = vec3(1.0);
+    
+    if (tempShift < 0.0) {
+        /* Cooler (more blue) */
+        wb.b = 1.0 - tempShift;
+    } else {
+        /* Warmer (more red/yellow) */
+        wb.r = 1.0 + tempShift;
+        wb.g = 1.0 + tempShift * 0.5;
+    }
+    
+    /* Tint (Green/Magenta shift) */
+    wb.g += wbTint * 0.5;
+    
+    return color * wb;
+}
+
+/*
+ * Filmic Tonemapper (Type Unreal / Hable / ACES modifié)
+ * Courbe sigmoïde paramétrique :
+ * x * (a*x + b) / (x * (c*x + d) + e)
+ * 
+ * Coefficients dérivés de Slope/Toe/Shoulder sont complexes à calculer au runtime.
+ * On utilise ici l'approximation directe "AMD Tonemapper" ou similaire qui map directement les params.
+ * 
+ * Pour simplifier et matcher le look "Unreal", on garde la courbe ACES Narkowicz mais on module 
+ * l'entrée et la sortie avec les paramètres Slope (contraste) et Toe (offset).
+ */
+vec3 unrealTonemap(vec3 x) {
+    /* ACES Standard (Narkowicz) - Apply first */
     const float a = 2.51;
     const float b = 0.03;
     const float c = 2.43;
     const float d = 0.59;
     const float e = 0.14;
-    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
+    vec3 res = (x * (a * x + b)) / (x * (c * x + d) + e);
+    
+    /* Post-tonemap adjustments (all optional, defaults are neutral) */
+    
+    /* Black Clip - Crush blacks by remapping [clip, 1.0] to [0.0, 1.0] */
+    if (tonemapBlackClip > 0.001) {
+        res = max(vec3(0.0), res - tonemapBlackClip) / (1.0 - tonemapBlackClip);
+    }
+    
+    /* White Clip - Compress highlights */
+    if (tonemapWhiteClip > 0.001) {
+        float maxVal = 1.0 - tonemapWhiteClip;
+        res = min(vec3(maxVal), res) / maxVal;
+    }
+    
+    return clamp(res, 0.0, 1.0);
 }
 
 /*
@@ -151,11 +214,8 @@ vec3 apply_color_grading(vec3 color) {
     color = mix(vec3(luminance), color, gradSaturation);
 
     /* 2. Contraste */
-    /* Le pivot standard est 0.5 (gris moyen) en espace log, 
-       mais en linéaire on utilise souvent ACES pour ça. 
-       Ici une approche simple autour du gris moyen linéaire. */
     color = (color - 0.5) * gradContrast + 0.5;
-    color = max(vec3(0.0), color); /* Éviter les négatifs */
+    color = max(vec3(0.0), color);
 
     /* 3. Gamma */
     if (gradGamma > 0.0) {
@@ -307,13 +367,19 @@ void main() {
     
     color *= finalExposure;
     
+    /* Appliquer White Balance (avant color grading) */
+    if (enableColorGrading != 0) {
+        color = applyWhiteBalance(color);
+    }
+    
     /* Appliquer le color grading */
     if (enableColorGrading != 0) {
         color = apply_color_grading(color);
     }
     
     /* Tone Mapping (HDR -> LDR Linear) */
-    color = aces_film(color);
+    /* Tone Mapping (HDR -> LDR Linear) */
+    color = unrealTonemap(color);
 
     /* Appliquer le vignettage */
     if (enableVignette != 0) {

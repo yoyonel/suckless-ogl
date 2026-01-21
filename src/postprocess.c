@@ -62,6 +62,17 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->bloom.soft_threshold = DEFAULT_BLOOM_SOFT_THRESHOLD;
 	post_processing->bloom.radius = DEFAULT_BLOOM_RADIUS;
 
+	/* White Balance Defaults */
+	post_processing->white_balance.temperature = DEFAULT_WB_TEMP;
+	post_processing->white_balance.tint = DEFAULT_WB_TINT;
+
+	/* Tonemapper Defaults */
+	post_processing->tonemapper.slope = DEFAULT_FILMIC_SLOPE;
+	post_processing->tonemapper.toe = DEFAULT_FILMIC_TOE;
+	post_processing->tonemapper.shoulder = DEFAULT_FILMIC_SHOULDER;
+	post_processing->tonemapper.black_clip = DEFAULT_FILMIC_BLACK_CLIP;
+	post_processing->tonemapper.white_clip = DEFAULT_FILMIC_WHITE_CLIP;
+
 	/* Initialisation Color Grading (Neutre) */
 	post_processing->color_grading.saturation = 1.0F;
 	post_processing->color_grading.contrast = 1.0F;
@@ -244,6 +255,13 @@ void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength)
 	post_processing->chrom_abbr.strength = strength;
 }
 
+void postprocess_set_white_balance(PostProcess* post_processing,
+                                   float temperature, float tint)
+{
+	post_processing->white_balance.temperature = temperature;
+	post_processing->white_balance.tint = tint;
+}
+
 void postprocess_set_color_grading(PostProcess* post_processing,
                                    float saturation, float contrast,
                                    float gamma, float gain, float offset)
@@ -252,8 +270,18 @@ void postprocess_set_color_grading(PostProcess* post_processing,
 	post_processing->color_grading.contrast = contrast;
 	post_processing->color_grading.gamma = gamma;
 	post_processing->color_grading.gain = gain;
-	post_processing->color_grading.gain = gain;
 	post_processing->color_grading.offset = offset;
+}
+
+void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
+                                float toe, float shoulder, float black_clip,
+                                float white_clip)
+{
+	post_processing->tonemapper.slope = slope;
+	post_processing->tonemapper.toe = toe;
+	post_processing->tonemapper.shoulder = shoulder;
+	post_processing->tonemapper.black_clip = black_clip;
+	post_processing->tonemapper.white_clip = white_clip;
 }
 
 void postprocess_set_bloom(PostProcess* post_processing, float intensity,
@@ -319,10 +347,9 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->grain = preset->grain;
 	post_processing->exposure = preset->exposure;
 	post_processing->chrom_abbr = preset->chrom_abbr;
-	post_processing->exposure = preset->exposure;
-	post_processing->chrom_abbr = preset->chrom_abbr;
+	post_processing->white_balance = preset->white_balance;
 	post_processing->color_grading = preset->color_grading;
-	post_processing->color_grading = preset->color_grading;
+	post_processing->tonemapper = preset->tonemapper;
 	post_processing->bloom = preset->bloom;
 	post_processing->dof = preset->dof;
 }
@@ -493,6 +520,31 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "gradOffset"),
 	            post_processing->color_grading.offset);
+
+	/* Paramètres White Balance */
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "wbTemperature"),
+	            post_processing->white_balance.temperature);
+	glUniform1f(
+	    glGetUniformLocation(post_processing->postprocess_shader, "wbTint"),
+	    post_processing->white_balance.tint);
+
+	/* Paramètres Tonemapper */
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "tonemapSlope"),
+	            post_processing->tonemapper.slope);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "tonemapToe"),
+	            post_processing->tonemapper.toe);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "tonemapShoulder"),
+	            post_processing->tonemapper.shoulder);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "tonemapBlackClip"),
+	            post_processing->tonemapper.black_clip);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "tonemapWhiteClip"),
+	            post_processing->tonemapper.white_clip);
 
 	/* Dessiner le quad */
 	glBindVertexArray(post_processing->screen_quad_vao);
