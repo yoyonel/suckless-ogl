@@ -19,6 +19,7 @@
 #include "skybox.h"
 #include "texture.h"
 #include "ui.h"
+#include "utils.h"
 #include <GLFW/glfw3.h>
 #include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>
@@ -118,7 +119,8 @@ static int app_load_env_map(App* app, const char* filename)
 {
 	char path[MAX_PATH_LENGTH];
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(path, sizeof(path), "assets/textures/hdr/%s", filename);
+	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
+	                    filename);
 
 	int hdr_w = 0;
 	int hdr_h = 0;
@@ -807,10 +809,10 @@ static void draw_exposure_debug_text(App* app)
 	float luminance =
 	    (exposure_val > LUMINANCE_EPSILON) ? (1.0F / exposure_val) : 0.0F;
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(debug_text, sizeof(debug_text),
-	               "Auto Exposure: %.4f | Scene "
-	               "Lum: %.4f",
-	               exposure_val, luminance);
+	(void)safe_snprintf(debug_text, sizeof(debug_text),
+	                    "Auto Exposure: %.4f | Scene "
+	                    "Lum: %.4f",
+	                    exposure_val, luminance);
 
 	ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
 	             DEFAULT_FONT_OFFSET_Y + DEBUG_TEXT_Y_OFFSET,
@@ -913,9 +915,8 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
 
 	/* Draw Range Info */
 	char range_text[RANGE_TEXT_BUFFER_SIZE];
-	// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(range_text, sizeof(range_text),
-	               "Log Lum Range: [%.2f, %.2f]", min_lum, max_lum);
+	(void)safe_snprintf(range_text, sizeof(range_text),
+	                    "Log Lum Range: [%.2f, %.2f]", min_lum, max_lum);
 	ui_draw_text(&app->ui, range_text, graph_x,
 	             graph_y - GRAPH_TEXT_PADDING, (float*)GRAPH_TEXT_COLOR,
 	             app->width, app->height);
@@ -973,26 +974,24 @@ void app_render_ui(App* app)
 		    (float)app->fps_counter.average_frame_time * MS_PER_SECOND;
 	}
 
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
-	               current_fps, frame_time_ms);
+	(void)safe_snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
+	                    current_fps, frame_time_ms);
 
 	ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
 
 	/* 2. Position */
 	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-	               app->camera.position[0], app->camera.position[1],
-	               app->camera.position[2]);
+	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
+	                    app->camera.position[0], app->camera.position[1],
+	                    app->camera.position[2]);
 	ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
 
 	/* 3. Environment */
 	if (app->hdr_count > 0 && app->current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		(void)snprintf(env_text, sizeof(env_text), "Env: %s",
-		               app->hdr_files[app->current_hdr_index]);
+		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
+		                    app->hdr_files[app->current_hdr_index]);
 		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
 	}
 
@@ -1025,8 +1024,8 @@ void app_render_ui(App* app)
 
 	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(exposure_text, sizeof(exposure_text), "Exposure: %.3f",
-	               exposure_val);
+	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
+	                    "Exposure: %.3f", exposure_val);
 
 	ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
 

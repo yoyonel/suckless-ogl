@@ -1,5 +1,6 @@
 #include "log.h"
 
+#include "utils.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>  // IWYU pragma: keep
@@ -41,10 +42,9 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	               tm_info);
 
 	char prefix[PREFIX_BUFFER_SIZE];
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
-	               time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
-	               level_to_string(level));
+	(void)safe_snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
+	                    time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
+	                    level_to_string(level));
 
 	FILE* out = (level == LOG_LEVEL_ERROR) ? stderr : stdout;
 	(void)fputs(prefix, out);
