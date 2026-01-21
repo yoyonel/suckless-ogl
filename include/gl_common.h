@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define BUFFER_OFFSET(offset) ((void*)((char*)0 + (offset)))
+#define BUFFER_OFFSET(offset) \
+	((void*)(uintptr_t)(offset))  // NOLINT(performance-no-int-to-ptr)
 
 #endif /* GL_COMMON_H */
