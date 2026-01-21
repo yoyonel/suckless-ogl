@@ -8,6 +8,9 @@
 #define DEFAULT_VIGNETTE_INTENSITY 0.03F /* 0.5 était trop fort */
 #define DEFAULT_VIGNETTE_EXTENT 0.7F     /* Plus large = effet plus doux */
 #define DEFAULT_GRAIN_INTENSITY 0.02F    /* 0.05 était trop visible */
+#define DEFAULT_GRAIN_SHADOWS_MAX 0.09F
+#define DEFAULT_GRAIN_HIGHLIGHTS_MIN 0.5F
+#define DEFAULT_GRAIN_TEXEL_SIZE 1.0F
 #define DEFAULT_EXPOSURE 1.00F
 #define DEFAULT_CHROM_ABBR_STRENGTH 0.005F /* x3 pour le rendre visible */
 #define DEFAULT_BLOOM_INTENSITY 0.0F
@@ -53,8 +56,13 @@ typedef struct {
 
 /* Paramètres pour le grain */
 typedef struct {
-	float intensity; /* 0.0 - 0.1, défaut: 0.02, recommandé: 0.01-0.03
-	                    (film) */
+	float intensity;            /* Global multiplier */
+	float intensity_shadows;    /* Multiplier for dark areas */
+	float intensity_midtones;   /* Multiplier for mid-tone areas */
+	float intensity_highlights; /* Multiplier for bright areas */
+	float shadows_max;          /* Luma threshold for shadows (0.0 - 1.0) */
+	float highlights_min; /* Luma threshold for highlights (0.0 - 1.0) */
+	float texel_size;     /* Grain particle size (scale) */
 } GrainParams;
 
 /* Paramètres pour l'exposition */

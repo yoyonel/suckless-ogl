@@ -46,6 +46,13 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;
 	post_processing->vignette.extent = DEFAULT_VIGNETTE_EXTENT;
 	post_processing->grain.intensity = DEFAULT_GRAIN_INTENSITY;
+	post_processing->grain.intensity_shadows = 1.0F;
+	post_processing->grain.intensity_midtones = 1.0F;
+	post_processing->grain.intensity_highlights = 1.0F;
+	post_processing->grain.shadows_max = DEFAULT_GRAIN_SHADOWS_MAX;
+	post_processing->grain.highlights_min = DEFAULT_GRAIN_HIGHLIGHTS_MIN;
+	post_processing->grain.texel_size = DEFAULT_GRAIN_TEXEL_SIZE;
+
 	post_processing->exposure.exposure = DEFAULT_EXPOSURE;
 	post_processing->chrom_abbr.strength = DEFAULT_CHROM_ABBR_STRENGTH;
 
@@ -428,6 +435,24 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "grainIntensity"),
 	            post_processing->grain.intensity);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainIntensityShadows"),
+	            post_processing->grain.intensity_shadows);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainIntensityMidtones"),
+	            post_processing->grain.intensity_midtones);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainIntensityHighlights"),
+	            post_processing->grain.intensity_highlights);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainShadowsMax"),
+	            post_processing->grain.shadows_max);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainHighlightsMin"),
+	            post_processing->grain.highlights_min);
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "grainTexelSize"),
+	            post_processing->grain.texel_size);
 	glUniform1f(
 	    glGetUniformLocation(post_processing->postprocess_shader, "time"),
 	    post_processing->time);
