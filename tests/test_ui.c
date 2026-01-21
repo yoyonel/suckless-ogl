@@ -66,5 +66,6 @@ int main(void)
 	RUN_TEST(test_ui_module_exists);
 	RUN_TEST(test_ui_initialization);
 	RUN_TEST(test_ui_functions_exist);
+
 	return UNITY_END();
 }

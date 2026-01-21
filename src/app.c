@@ -37,17 +37,19 @@ enum { MAX_PATH_LENGTH = 256 };
 enum {
 	DEBUG_TEXT_BUFFER_SIZE = 128,
 	RANGE_TEXT_BUFFER_SIZE = 64,
-	ENV_TEXT_BUFFER_SIZE = 256
+	ENV_TEXT_BUFFER_SIZE = 256,
+	EXPOSURE_TEXT_BUFFER_SIZE = 64
 };
 static const float GRAPH_TEXT_PADDING = 20.0F;
 static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
 static const float LUMINANCE_EPSILON = 0.0001F;
-static const float DEBUG_TEXT_Y_OFFSET = 30.0F;
+static const float DEBUG_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 4.0F;
 static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
 static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
-static const float ENV_TEXT_Y_OFFSET = 15.0F;
+static const float ENV_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 1.25F;
+static const float EXPOSURE_TEXT_Y_OFFSET_FACTOR = 2.0F;
 static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -261,6 +263,13 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "version: %s",
 	         glGetString(GL_VERSION));
 	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
+	/* Async PBO Init */
+	glGenBuffers(1, &app->exposure_pbo);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
+	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	app->current_exposure = 1.0F;
+
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
 	/* Scan & Load HDR Environment */
@@ -553,6 +562,7 @@ void app_cleanup(App* app)
 
 	glDeleteTextures(1, &app->hdr_texture);
 	glDeleteProgram(app->skybox_shader);
+	glDeleteBuffers(1, &app->exposure_pbo);
 
 	material_free_lib(app->material_lib);
 
@@ -799,17 +809,7 @@ static void app_draw_help_overlay(App* app)
 	startY += stepY;
 	ui_draw_text(&app->ui, "[G]        Grain On/Off", startX, startY,
 	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[X]        Chrom. Abbr.", startX, startY,
-	             helpColor, app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[1-6]      Presets", startX, startY, helpColor,
-	             app->width, app->height);
-	startY += stepY;
-	ui_draw_text(&app->ui, "[0]        Reset Post FX", startX, startY,
-	             helpColor, app->width, app->height);
 
-	/* Cleanup */
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 }
@@ -826,8 +826,9 @@ static void draw_exposure_debug_text(App* app)
 	    (exposure_val > LUMINANCE_EPSILON) ? (1.0F / exposure_val) : 0.0F;
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)snprintf(debug_text, sizeof(debug_text),
-	               "Auto Exposure: %.4f | Scene Lum: %.4f", exposure_val,
-	               luminance);
+	               "Auto Exposure: %.4f | Scene "
+	               "Lum: %.4f",
+	               exposure_val, luminance);
 
 	ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
 	             DEFAULT_FONT_OFFSET_Y + DEBUG_TEXT_Y_OFFSET,
@@ -984,7 +985,8 @@ void app_render_ui(App* app)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 
-	// 1. DESSINER L'OMBRE (Décalée de 2 pixels, en Noir)
+	// 1. DESSINER L'OMBRE (Décalée de 2 pixels, en
+	// Noir)
 	ui_draw_text(&app->ui, fps_text, DEFAULT_FONT_SHADOW_OFFSET_X,
 	             DEFAULT_FONT_SHADOW_OFFSET_Y,
 	             (float*)DEFAULT_FONT_SHADOW_COLOR, app->width,
@@ -1005,6 +1007,43 @@ void app_render_ui(App* app)
 		             DEFAULT_FONT_OFFSET_Y + ENV_TEXT_Y_OFFSET,
 		             (float*)ENV_TEXT_COLOR, app->width, app->height);
 	}
+
+	/* 4. DESSINER L'EXPOSITION (Sous le nom de l'environnement) */
+	float exposure_val = 0.0F;
+	if (postprocess_is_enabled(&app->postprocess, POSTFX_AUTO_EXPOSURE)) {
+		/* Async Readback using PBO to avoid pipeline stall */
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
+
+		/* 1. Read PREVIOUS frame's data (if available) */
+		float* ptr =
+		    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		if (ptr) {
+			app->current_exposure = *ptr;
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		}
+
+		/* 2. Trigger async read for CURRENT frame */
+		glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+		              0); /* Offset 0 */
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+		exposure_val = app->current_exposure;
+	} else {
+		exposure_val = app->postprocess.exposure.exposure;
+	}
+
+	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)snprintf(exposure_text, sizeof(exposure_text), "Exposure: %.3f",
+	               exposure_val);
+
+	ui_draw_text(&app->ui, exposure_text, DEFAULT_FONT_OFFSET_X,
+	             DEFAULT_FONT_OFFSET_Y +
+	                 (ENV_TEXT_Y_OFFSET * EXPOSURE_TEXT_Y_OFFSET_FACTOR),
+	             (float*)ENV_TEXT_COLOR, app->width, app->height);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -1076,7 +1115,8 @@ static void handle_postprocess_input(App* app, int key)
 			}
 			break;
 
-		case GLFW_KEY_X: /* Toggle Chromatic Aberration */
+		case GLFW_KEY_X: /* Toggle Chromatic
+		                    Aberration */
 			postprocess_toggle(&app->postprocess,
 			                   POSTFX_CHROM_ABBR);
 			LOG_INFO("suckless-ogl.app", "Chromatic Aberration: %s",
@@ -1087,11 +1127,14 @@ static void handle_postprocess_input(App* app, int key)
 			break;
 
 		case GLFW_KEY_R: /* Reload Shaders */
-			/* TODO: Implement shader reloading system */
+			/* TODO: Implement shader reloading
+			 * system */
 			LOG_INFO("suckless-ogl.app",
-			         "Shader reloading not implemented yet");
+			         "Shader reloading not "
+			         "implemented yet");
 			break;
-		case GLFW_KEY_KP_ADD: /* Augmenter l'exposition */
+		case GLFW_KEY_KP_ADD: /* Augmenter
+		                         l'exposition */
 		{
 			float current = app->postprocess.exposure.exposure;
 			postprocess_set_exposure(
@@ -1100,7 +1143,9 @@ static void handle_postprocess_input(App* app, int key)
 			         app->postprocess.exposure.exposure);
 		} break;
 
-		case GLFW_KEY_KP_SUBTRACT: /* Diminuer l'exposition */
+		case GLFW_KEY_KP_SUBTRACT: /* Diminuer
+		                              l'exposition
+		                            */
 		{
 			float current = app->postprocess.exposure.exposure;
 			postprocess_set_exposure(
@@ -1120,7 +1165,8 @@ static void handle_postprocess_input(App* app, int key)
 				postprocess_toggle(&app->postprocess,
 				                   POSTFX_EXPOSURE_DEBUG);
 				LOG_INFO("suckless-ogl.app",
-				         "Auto Exposure Debug: %s",
+				         "Auto Exposure Debug: "
+				         "%s",
 				         postprocess_is_enabled(
 				             &app->postprocess,
 				             POSTFX_EXPOSURE_DEBUG)
@@ -1138,10 +1184,12 @@ static void handle_postprocess_input(App* app, int key)
 			}
 			break;
 
-		case GLFW_KEY_F5: /* Cycle PBR Debug Modes */
+		case GLFW_KEY_F5: /* Cycle PBR Debug Modes
+		                   */
 		{
 			app->pbr_debug_mode = (app->pbr_debug_mode + 1) %
-			                      PBR_DEBUG_MODE_COUNT; /* 0..8 */
+			                      PBR_DEBUG_MODE_COUNT; /* 0..8
+			                                             */
 			const char* modeNames[] = {"Final PBR",
 			                           "Albedo",
 			                           "Normal",
@@ -1162,7 +1210,8 @@ static void handle_postprocess_input(App* app, int key)
 			postprocess_set_exposure(&app->postprocess,
 			                         app->auto_threshold);
 			LOG_INFO("suckless-ogl.app",
-			         "Style: Aucun (rendu pur) - Exposure: %.2f",
+			         "Style: Aucun (rendu "
+			         "pur) - Exposure: %.2f",
 			         app->auto_threshold);
 			break;
 
@@ -1190,7 +1239,8 @@ static void handle_postprocess_input(App* app, int key)
 			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
 			break;
 
-		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
+		case GLFW_KEY_6: /* Style: "Noir et Blanc
+		                    Contrasté" */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_BW_CONTRAST);
 			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
@@ -1204,7 +1254,8 @@ static void handle_postprocess_input(App* app, int key)
 			postprocess_set_exposure(&app->postprocess,
 			                         app->auto_threshold);
 			LOG_INFO("suckless-ogl.app",
-			         "Color Grading: Reset to Defaults");
+			         "Color Grading: Reset to "
+			         "Defaults");
 			break;
 
 		default:
@@ -1270,10 +1321,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			case GLFW_KEY_F1: /* Toggle Help */
 				app->show_help = !app->show_help;
 				break;
-			case GLFW_KEY_P:  // Handle 'P' for Screenshot/Capture
+			case GLFW_KEY_P:  // Handle 'P' for
+			                  // Screenshot/Capture
 				app_save_raw_frame(app, "capture_frame.raw");
 				break;
-			case GLFW_KEY_Z:  // key 'W' on French layout keyboard
+			case GLFW_KEY_Z:  // key 'W' on
+			                  // French layout
+			                  // keyboard
 				app->wireframe = !app->wireframe;
 				break;
 			case GLFW_KEY_UP:
@@ -1303,13 +1357,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				                             : "DISABLED");
 				break;
 			case GLFW_KEY_SPACE:
-				/* Reset camera to default position */
+				/* Reset camera to default
+				 * position */
 				camera_init(
 				    &app->camera, DEFAULT_CAMERA_DISTANCE,
 				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
 				app->env_lod = DEFAULT_ENV_LOD;
 				LOG_INFO("suckless-ogl.app",
-				         "Camera and LOD reset");
+				         "Camera and LOD "
+				         "reset");
 				break;
 			case GLFW_KEY_PAGE_UP:
 			case GLFW_KEY_PAGE_DOWN:
@@ -1402,7 +1458,8 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	app->last_mouse_x = xpos;
 	app->last_mouse_y = ypos;
 
-	/* Update camera rotation (note: -delta_x for natural mouse movement) */
+	/* Update camera rotation (note: -delta_x for
+	 * natural mouse movement) */
 	camera_process_mouse(&app->camera, (float)delta_x, (float)delta_y);
 }
 
@@ -1435,11 +1492,13 @@ static void app_save_raw_frame(App* app, const char* filename)
 
 	if (!pixels) {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for RAW capture");
+		          "Failed to allocate memory for "
+		          "RAW capture");
 		return;
 	}
 
-	// Use 1-byte alignment to handle any window resolution correctly
+	// Use 1-byte alignment to handle any window
+	// resolution correctly
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
@@ -1448,14 +1507,16 @@ static void app_save_raw_frame(App* app, const char* filename)
 		size_t result = fwrite(pixels, 1, size, file);
 		if (result != size) {
 			LOG_ERROR("suckless-ogl.app",
-			          "Failed to write RAW frame to file: %s",
+			          "Failed to write RAW "
+			          "frame to file: %s",
 			          filename);
 			return;
 		}
 		result = fclose(file);
 		if (result != 0) {
 			LOG_ERROR("suckless-ogl.app",
-			          "Failed to close file for RAW capture: %s",
+			          "Failed to close file "
+			          "for RAW capture: %s",
 			          filename);
 			return;
 		}

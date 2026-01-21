@@ -107,6 +107,10 @@ typedef struct {
 	/* Auto-computed threshold for IBL */
 	float auto_threshold; /* Computed mean luminance for exposure */
 
+	/* Async Exposure Readback */
+	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
+	float current_exposure; /* CPU-side cached exposure value */
+
 } App;
 
 /* Initialization and cleanup */
