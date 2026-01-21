@@ -118,7 +118,6 @@ static void app_scan_hdr_files(App* app)
 static int app_load_env_map(App* app, const char* filename)
 {
 	char path[MAX_PATH_LENGTH];
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
 	                    filename);
 
@@ -808,7 +807,6 @@ static void draw_exposure_debug_text(App* app)
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	float luminance =
 	    (exposure_val > LUMINANCE_EPSILON) ? (1.0F / exposure_val) : 0.0F;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)safe_snprintf(debug_text, sizeof(debug_text),
 	                    "Auto Exposure: %.4f | Scene "
 	                    "Lum: %.4f",
@@ -989,7 +987,6 @@ void app_render_ui(App* app)
 	/* 3. Environment */
 	if (app->hdr_count > 0 && app->current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
-		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
 		                    app->hdr_files[app->current_hdr_index]);
 		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
@@ -1023,7 +1020,6 @@ void app_render_ui(App* app)
 	}
 
 	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
 	                    "Exposure: %.3f", exposure_val);
 
@@ -1254,8 +1250,7 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 	}
 
 	if (key == GLFW_KEY_PAGE_UP) {
-		// NOLINTNEXTLINE(hicpp-signed-bitwise)
-		if ((mods & GLFW_MOD_SHIFT) != 0) {
+		if (check_flag(mods, GLFW_MOD_SHIFT)) {
 			app->env_lod += LOD_STEP;
 			if (app->env_lod > MAX_ENV_LOD) {
 				app->env_lod = MAX_ENV_LOD;
@@ -1270,8 +1265,7 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			    app, app->hdr_files[app->current_hdr_index]);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
-		// NOLINTNEXTLINE(hicpp-signed-bitwise)
-		if ((mods & GLFW_MOD_SHIFT) != 0) {
+		if (check_flag(mods, GLFW_MOD_SHIFT)) {
 			app->env_lod -= LOD_STEP;
 			if (app->env_lod < MIN_ENV_LOD) {
 				app->env_lod = MIN_ENV_LOD;

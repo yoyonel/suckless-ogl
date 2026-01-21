@@ -51,7 +51,6 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
 	(void)vfprintf(out, format, args);
 	va_end(args);
 

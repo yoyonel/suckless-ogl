@@ -37,4 +37,9 @@ __attribute__((format(printf, 3, 4))) static inline bool safe_snprintf(
 	return (result >= 0 && (size_t)result < buf_size);
 }
 
+static inline bool check_flag(int value, int flag)
+{
+	return ((unsigned int)value & (unsigned int)flag) != 0;
+}
+
 #endif  // UTILS_H
