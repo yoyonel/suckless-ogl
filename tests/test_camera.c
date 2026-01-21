@@ -150,6 +150,7 @@ void test_camera_process_scroll_changes_position(void)
 	glm_vec3_copy(cam.position, initial_pos);
 
 	camera_process_scroll(&cam, 1.0f);
+	camera_fixed_update(&cam);
 
 	// La position devrait avoir changé
 	float distance_moved = glm_vec3_distance(initial_pos, cam.position);
