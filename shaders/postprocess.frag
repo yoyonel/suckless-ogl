@@ -93,19 +93,13 @@ vec3 applyGrain(vec3 color, vec2 uv) {
                      highlightMask * grainIntensityHighlights;
 
     /* 3. Generate Noise with Texel Size */
-    vec2 resolution = vec2(textureSize(screenTexture, 0));
-    vec2 coord = uv * resolution / grainTexelSize;
-    
-    /* Use floor to pixelate the noise (Texel Size effect) */
-    vec2 noiseCoord = floor(coord);
+    /* Scale UV by texel size - larger texelSize = coarser grain */
+    vec2 grainUV = uv / grainTexelSize;
     
     /* Add time offset to animate */
-    float noise = random(noiseCoord + vec2(time)) * 2.0 - 1.0;
+    float noise = random(grainUV + vec2(time)) * 2.0 - 1.0;
 
     /* 4. Apply Grain */
-    /* Overlay blend mode approximation or simple additive?
-       Simple additive is standard for digital grain, but modulation by color 
-       can be better. Current was additive: color + noise * intensity. */
     return color + noise * grainIntensity * lumaMult;
 }
 
