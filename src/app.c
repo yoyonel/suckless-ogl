@@ -72,9 +72,9 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum);
 
-static int compare_strings(const void* a, const void* b)
+static int compare_strings(const void* string_a, const void* string_b)
 {
-	return strcmp(*(const char**)a, *(const char**)b);
+	return strcmp(*(const char**)string_a, *(const char**)string_b);
 }
 
 static void app_scan_hdr_files(App* app)
