@@ -135,6 +135,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
       - name: Run Format & Lint
         run: |
+          clang-tidy --version && clang-format --version
           make format CONTAINER_RUN=""
           git diff --exit-code || (echo "❌ Format error" && exit 1)
           make lint CONTAINER_RUN=""
