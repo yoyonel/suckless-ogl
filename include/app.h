@@ -30,6 +30,8 @@ typedef struct {
 	int show_imgui_demo;
 	int show_help; /* Debug/Help overlay */
 	int show_info_overlay;
+	int text_overlay_mode; /* 0=Off, 1=FPS, 2=FPS+Envmap,
+	                          3=FPS+Envmap+Exposure */
 	int saved_x, saved_y;
 	int saved_width, saved_height;
 

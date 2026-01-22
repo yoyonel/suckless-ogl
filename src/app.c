@@ -195,6 +195,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
 	app->show_info_overlay = 1;
 	app->show_exposure_debug = 0;
+	app->text_overlay_mode = 0; /* Off by default */
 	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
 	app->show_help = 0; /* Hidden by default */
@@ -768,6 +769,8 @@ static void app_draw_help_overlay(App* app)
 
 	/* Section: Features */
 	ui_layout_text(&layout, "--- Features ---", HELP_COLOR);
+	ui_layout_text(&layout, "[F1] Cycle Text Overlays", HELP_COLOR);
+	ui_layout_text(&layout, "[F2] Toggle Help", HELP_COLOR);
 	ui_layout_text(&layout, "[F] Toggle Flashlight", HELP_COLOR);
 	ui_layout_text(&layout, "[Z] Toggle Wireframe", HELP_COLOR);
 	ui_layout_text(&layout, "[H] Toggle UI/Help", HELP_COLOR);
@@ -960,70 +963,85 @@ void app_render_ui(App* app)
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
-	/* 1. FPS */
-	static const float MS_PER_SECOND = 1000.0F;
-	char fps_text[MAX_FPS_TEXT_LENGTH];
-	float current_fps = 0.0F;
-	float frame_time_ms = 0.0F;
+	/* Conditional text overlay rendering based on text_overlay_mode */
+	/* Mode 0: Off, Mode 1: FPS, Mode 2: FPS+Envmap, Mode 3:
+	 * FPS+Envmap+Exposure */
 
-	if (app->fps_counter.average_frame_time > 0.0F) {
-		current_fps = 1.0F / (float)app->fps_counter.average_frame_time;
-		frame_time_ms =
-		    (float)app->fps_counter.average_frame_time * MS_PER_SECOND;
+	/* 1. FPS - shown in modes 1, 2, 3 */
+	if (app->text_overlay_mode >= 1) {
+		static const float MS_PER_SECOND = 1000.0F;
+		char fps_text[MAX_FPS_TEXT_LENGTH];
+		float current_fps = 0.0F;
+		float frame_time_ms = 0.0F;
+
+		if (app->fps_counter.average_frame_time > 0.0F) {
+			current_fps =
+			    1.0F / (float)app->fps_counter.average_frame_time;
+			frame_time_ms =
+			    (float)app->fps_counter.average_frame_time *
+			    MS_PER_SECOND;
+		}
+
+		(void)safe_snprintf(fps_text, sizeof(fps_text),
+		                    "FPS: %.1f (%.2f ms)", current_fps,
+		                    frame_time_ms);
+
+		ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
 	}
 
-	(void)safe_snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
-	                    current_fps, frame_time_ms);
-
-	ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
-
-	/* 2. Position */
+	/* 2. Position - always shown for compatibility (can be removed if
+	 * unwanted) */
 	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
 	                    app->camera.position[0], app->camera.position[1],
 	                    app->camera.position[2]);
 	ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
 
-	/* 3. Environment */
-	if (app->hdr_count > 0 && app->current_hdr_index >= 0) {
+	/* 3. Environment - shown in modes 2, 3 */
+	if (app->text_overlay_mode >= 2 && app->hdr_count > 0 &&
+	    app->current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
 		                    app->hdr_files[app->current_hdr_index]);
 		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
 	}
 
-	/* 4. Exposure */
-	float exposure_val = 0.0F;
-	if (postprocess_is_enabled(&app->postprocess, POSTFX_AUTO_EXPOSURE)) {
-		/* Async Readback using PBO to avoid pipeline stall */
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
+	/* 4. Exposure - shown in mode 3 only */
+	if (app->text_overlay_mode >= 3) {
+		float exposure_val = 0.0F;
+		if (postprocess_is_enabled(&app->postprocess,
+		                           POSTFX_AUTO_EXPOSURE)) {
+			/* Async Readback using PBO to avoid pipeline stall */
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
 
-		/* 1. Read PREVIOUS frame's data (if available) */
-		float* ptr =
-		    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-		if (ptr) {
-			app->current_exposure = *ptr;
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			/* 1. Read PREVIOUS frame's data (if available) */
+			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
+			                                 GL_READ_ONLY);
+			if (ptr) {
+				app->current_exposure = *ptr;
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
+
+			/* 2. Trigger async read for CURRENT frame */
+			glBindTexture(GL_TEXTURE_2D,
+			              app->postprocess.exposure_tex);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
+			              0); /* Offset 0 */
+			glBindTexture(GL_TEXTURE_2D, 0);
+
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+			exposure_val = app->current_exposure;
+		} else {
+			exposure_val = app->postprocess.exposure.exposure;
 		}
 
-		/* 2. Trigger async read for CURRENT frame */
-		glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
-		              0); /* Offset 0 */
-		glBindTexture(GL_TEXTURE_2D, 0);
+		char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
+		(void)safe_snprintf(exposure_text, sizeof(exposure_text),
+		                    "Exposure: %.3f", exposure_val);
 
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-		exposure_val = app->current_exposure;
-	} else {
-		exposure_val = app->postprocess.exposure.exposure;
+		ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
 	}
-
-	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
-	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
-	                    "Exposure: %.3f", exposure_val);
-
-	ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -1296,7 +1314,20 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			case GLFW_KEY_F1: /* Toggle Help */
+			case GLFW_KEY_F1: /* Cycle Text Overlays */
+				app->text_overlay_mode =
+				    (app->text_overlay_mode + 1) % 4;
+				{
+					const char* mode_names[] = {
+					    "Off", "FPS", "FPS + Envmap",
+					    "FPS + Envmap + Exposure"};
+					LOG_INFO(
+					    "suckless-ogl.app",
+					    "Text Overlay: %s",
+					    mode_names[app->text_overlay_mode]);
+				}
+				break;
+			case GLFW_KEY_F2: /* Toggle Help */
 				app->show_help = !app->show_help;
 				break;
 			case GLFW_KEY_P:  // Handle 'P' for
