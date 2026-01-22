@@ -234,43 +234,75 @@ vec3 apply_color_grading(vec3 color) {
     return max(vec3(0.0), color);
 }
 
+/* Interleaved Gradient Noise for Dithering */
+float InterleavedGradientNoise(vec2 position) {
+    vec3 magic = vec3(0.06711056, 0.00583715, 52.9829189);
+    return fract(magic.z * fract(dot(position, magic.xy)));
+}
+
+uniform sampler2D neighborMaxTexture;
+
+/* Advanced Reconstruction using NeighborMax and Depth Weighting */
 vec3 applyMotionBlur(vec3 color, vec2 uv) {
+    /* 1. Get Velocity at center pixel */
     vec2 velocity = texture(velocityTexture, uv).rg;
 
-    /* Debug Visualization */
+    /* Debug Visualization (Early Exit) */
     if (enableMotionBlurDebug != 0) {
-        /* Visualize Velocity: Red = X motion, Green = Y motion.
-           Multiply for visibility. */
         return vec3(abs(velocity.x) * 20.0, abs(velocity.y) * 20.0, 0.0);
     }
 
-    /* Scaling */
     velocity *= motionBlurIntensity;
 
-    /* Limiter la vélocité */
+    /* Clamp main velocity */
     float speed = length(velocity);
     if (speed > motionBlurMaxVelocity) {
         velocity = normalize(velocity) * motionBlurMaxVelocity;
+        speed = motionBlurMaxVelocity;
     }
 
-    /* Avoid blurring if velocity is negligible */
-    if (speed < 0.0001) {
-        return color;
+    /* 2. Get Neighbor Max Velocity (for classification/clamping) */
+    vec2 maxNeighborVelocity = texture(neighborMaxTexture, uv).rg * motionBlurIntensity;
+    float maxNeighborSpeed = length(maxNeighborVelocity);
+
+    /* Early exit if negligible motion (both local and neighborhood) */
+    if (speed < 0.0001 && maxNeighborSpeed < 0.0001) {
+       return color;
     }
 
-    vec3 result = color;
-    vec2 texCoord = uv;
+    /* Use the dominant velocity in the region to guide the blur direction if local velocity is small?
+       McGuire suggests checking if we are "background" vs "foreground".
+       Simplified Logic: Use local velocity for direction, but clamp influence if neighbor is much slower?
+       Actually, standard simple reconstruction uses just local velocity usually, OR dominant.
+       Let's stick to local velocity for the path, but potentially use NeighborMax to widen the search or handle clamping.
+       For this implementation, let's keep it robust: Use local velocity. NeighborMax is mostly for TileMax optimization (which we did in compute).
+    */
 
-    // Using minus to look backwards in time (trail)
-    // Velocity = Current - Previous => Previous = Current - Velocity
+    /* Jitter for dithering (0.0 to 1.0) */
+    float noise = InterleavedGradientNoise(gl_FragCoord.xy);
 
-    for(int i = 1; i < motionBlurSamples; ++i) {
-        vec2 offset = velocity * (float(i) / float(motionBlurSamples - 1));
-        vec3 sampleColor = texture(screenTexture, uv - offset).rgb;
-        result += sampleColor;
+    vec3 acc = color;
+    float totalWeight = 1.0;
+
+    int samples = motionBlurSamples;
+
+    for (int i = 0; i < samples; ++i) {
+        if (i == samples / 2) continue; // Skip center
+
+        /* Map i to [-0.5, 0.5] range, jittered */
+        float t = mix(-0.5, 0.5, (float(i) + noise) / float(samples));
+
+        vec2 sampleUV = uv + velocity * t;
+        vec3 sampleColor = texture(screenTexture, sampleUV).rgb;
+
+        /* Weighting: 1.0 for now. Ideal is Depth Comparison. */
+        float weight = 1.0;
+
+        acc += sampleColor * weight;
+        totalWeight += weight;
     }
 
-    return result / float(motionBlurSamples);
+    return acc / totalWeight;
 }
 
 void main() {

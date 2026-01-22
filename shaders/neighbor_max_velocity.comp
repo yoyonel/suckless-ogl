@@ -1,0 +1,40 @@
+#version 450 core
+layout (local_size_x = 16, local_size_y = 16) in;
+
+layout (binding = 0) uniform sampler2D tileMaxTexture;
+layout (binding = 1, rg16f) uniform writeonly image2D neighborMaxTexture;
+
+void main() {
+    ivec2 tilePos = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 gridSize = textureSize(tileMaxTexture, 0);
+
+    if (tilePos.x >= gridSize.x || tilePos.y >= gridSize.y) {
+        return;
+    }
+
+    vec2 maxVel = vec2(0.0);
+    float maxLenSq = -1.0;
+
+    /* 3x3 Neighborhood search */
+    for (int y = -1; y <= 1; ++y) {
+        for (int x = -1; x <= 1; ++x) {
+            ivec2 lookupPos = tilePos + ivec2(x, y);
+
+            /* Bounds check (sampler might handle clamping but texelFetch is strictly coordinate based) */
+            /* Using sampler is easier for clamping, but here we use manual fetch for precision/control */
+            /* Actually, texture() with clamp_to_edge is easier if we had UVs.
+               Let's clamp integer coords manually. */
+            lookupPos = clamp(lookupPos, ivec2(0), gridSize - ivec2(1));
+
+            vec2 v = texelFetch(tileMaxTexture, lookupPos, 0).rg;
+            float lenSq = dot(v, v);
+
+            if (lenSq > maxLenSq) {
+                maxLenSq = lenSq;
+                maxVel = v;
+            }
+        }
+    }
+
+    imageStore(neighborMaxTexture, tilePos, vec4(maxVel, 0.0, 0.0));
+}

@@ -156,6 +156,10 @@ typedef struct {
 	GLuint lum_downsample_tex; /* Texture 64x64 Log Luminance */
 	GLuint exposure_tex; /* Texture 1x1 R32F (Storage) - Current Exposure */
 
+	/* Motion Blur Resources (McGuire) */
+	GLuint tile_max_tex;     /* 1/16th resolution RG16F */
+	GLuint neighbor_max_tex; /* 1/16th resolution RG16F */
+
 	/* Quad plein écran */
 	GLuint screen_quad_vao;
 	GLuint screen_quad_vbo;
@@ -167,6 +171,8 @@ typedef struct {
 	GLuint bloom_upsample_shader;
 	GLuint lum_downsample_shader; /* Shader pour Log Lum Downsample */
 	GLuint lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
+	GLuint tile_max_shader;  /* Compute Shader: Tile Max Velocity */
+	GLuint neighbor_max_shader; /* Compute Shader: Neighbor Max Velocity */
 	GLuint dof_shader;
 
 	/* Dimensions */
