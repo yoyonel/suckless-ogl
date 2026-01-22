@@ -1,17 +1,53 @@
 #!/bin/sh
 #
-# Pre-push hook to run linter
+# Pre-push hook to run linter only if source files changed
 #
 
-echo "Running pre-push hook: make lint..."
+z40=0000000000000000000000000000000000000000
+run_lint=0
 
-# Exécuter make lint
-make lint
+echo "Running pre-push hook..."
 
-if [ $? -ne 0 ]; then
-    echo "❌ Lint failed. Push aborted."
-    exit 1
+while read local_ref local_sha remote_ref remote_sha
+do
+    if [ "$local_sha" = "$z40" ]; then
+        # Handle delete
+        continue
+    fi
+
+    if [ "$remote_sha" = "$z40" ]; then
+        # New branch, try to compare against default branch
+        if git rev-parse --verify origin/main >/dev/null 2>&1; then
+            range="origin/main...$local_sha"
+        elif git rev-parse --verify origin/master >/dev/null 2>&1; then
+            range="origin/master...$local_sha"
+        else
+            echo "⚠️  Could not determine base branch. Assessing all files."
+            run_lint=1
+            break
+        fi
+    else
+        range="$remote_sha..$local_sha"
+    fi
+
+    # Check if any .c or .h file is in the list of changed files
+    if git diff --name-only "$range" 2>/dev/null | grep -E '\.(c|h)$' > /dev/null 2>&1; then
+        run_lint=1
+        echo "   -> Detected source changes in $local_ref"
+        break
+    fi
+done
+
+if [ "$run_lint" -eq 1 ]; then
+    echo "🔍 Sources modified. Running 'make lint'..."
+    make lint
+    if [ $? -ne 0 ]; then
+        echo "❌ Lint failed. Push aborted."
+        exit 1
+    fi
+    echo "✅ Lint passed."
+else
+    echo "⏭️  No source changes detected. Skipping lint."
 fi
 
-echo "✅ Lint passed. Proceeding with push."
 exit 0
