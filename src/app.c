@@ -319,6 +319,10 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
+	/* Initialize debug shader uniform cache */
+	app->debug_cache.tex = glGetUniformLocation(app->debug_shader, "tex");
+	app->debug_cache.lod = glGetUniformLocation(app->debug_shader, "lod");
+
 	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
 
@@ -366,6 +370,26 @@ int app_init(App* app, int width, int height, const char* title)
 		          "Failed to load pbr_instanced shader");
 		return 0;
 	}
+
+	/* Initialize PBR shader uniform cache */
+	app->pbr_cache.irradiance_map =
+	    glGetUniformLocation(app->pbr_instanced_shader, "irradianceMap");
+	app->pbr_cache.prefilter_map =
+	    glGetUniformLocation(app->pbr_instanced_shader, "prefilterMap");
+	app->pbr_cache.brdf_lut =
+	    glGetUniformLocation(app->pbr_instanced_shader, "brdfLUT");
+	app->pbr_cache.debug_mode =
+	    glGetUniformLocation(app->pbr_instanced_shader, "debugMode");
+	app->pbr_cache.cam_pos =
+	    glGetUniformLocation(app->pbr_instanced_shader, "camPos");
+	app->pbr_cache.projection =
+	    glGetUniformLocation(app->pbr_instanced_shader, "projection");
+	app->pbr_cache.view =
+	    glGetUniformLocation(app->pbr_instanced_shader, "view");
+	app->pbr_cache.pbr_exposure =
+	    glGetUniformLocation(app->pbr_instanced_shader, "pbr_exposure");
+	app->pbr_cache.previous_view_proj =
+	    glGetUniformLocation(app->pbr_instanced_shader, "previousViewProj");
 	LOG_INFO("suckless-ogl.app", "Legacy instanced rendering mode active");
 #endif
 
@@ -522,29 +546,22 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
 
-	glUniform1i(glGetUniformLocation(id_current_shader, "irradianceMap"),
-	            0);
-	glUniform1i(glGetUniformLocation(id_current_shader, "prefilterMap"), 1);
-	glUniform1i(glGetUniformLocation(id_current_shader, "brdfLUT"), 2);
+	glUniform1i(app->pbr_cache.irradiance_map, 0);
+	glUniform1i(app->pbr_cache.prefilter_map, 1);
+	glUniform1i(app->pbr_cache.brdf_lut, 2);
 
 	/* Pass PBR Debug Mode */
-	glUniform1i(glGetUniformLocation(id_current_shader, "debugMode"),
-	            app->pbr_debug_mode);
+	glUniform1i(app->pbr_cache.debug_mode, app->pbr_debug_mode);
 
-	glUniform3fv(glGetUniformLocation(id_current_shader, "camPos"), 1,
-	             camera_pos);
-	glUniformMatrix4fv(
-	    glGetUniformLocation(id_current_shader, "projection"), 1, GL_FALSE,
-	    (float*)proj);
-	glUniformMatrix4fv(glGetUniformLocation(id_current_shader, "view"), 1,
-	                   GL_FALSE, (float*)view);
-	glUniform1f(glGetUniformLocation(id_current_shader, "pbr_exposure"),
-	            app->u_exposure);
+	glUniform3fv(app->pbr_cache.cam_pos, 1, camera_pos);
+	glUniformMatrix4fv(app->pbr_cache.projection, 1, GL_FALSE,
+	                   (float*)proj);
+	glUniformMatrix4fv(app->pbr_cache.view, 1, GL_FALSE, (float*)view);
+	glUniform1f(app->pbr_cache.pbr_exposure, app->u_exposure);
 
 	/* Pass Previous ViewProj for Velocity Buffer */
-	glUniformMatrix4fv(
-	    glGetUniformLocation(id_current_shader, "previousViewProj"), 1,
-	    GL_FALSE, (float*)app->postprocess.previous_view_proj);
+	glUniformMatrix4fv(app->pbr_cache.previous_view_proj, 1, GL_FALSE,
+	                   (float*)app->postprocess.previous_view_proj);
 
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);
@@ -687,9 +704,8 @@ void app_render(App* app)
 		glUseProgram(app->debug_shader);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
-		glUniform1i(glGetUniformLocation(app->debug_shader, "tex"), 0);
-		glUniform1f(glGetUniformLocation(app->debug_shader, "lod"),
-		            app->debug_lod);
+		glUniform1i(app->debug_cache.tex, 0);
+		glUniform1f(app->debug_cache.lod, app->debug_lod);
 		glBindVertexArray(app->empty_vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);

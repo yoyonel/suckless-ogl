@@ -18,6 +18,23 @@
 #include <cglm/cglm.h>
 
 typedef struct {
+	GLint irradiance_map;
+	GLint prefilter_map;
+	GLint brdf_lut;
+	GLint debug_mode;
+	GLint cam_pos;
+	GLint projection;
+	GLint view;
+	GLint pbr_exposure;
+	GLint previous_view_proj;
+} PBRShaderCache;
+
+typedef struct {
+	GLint tex;
+	GLint lod;
+} DebugShaderCache;
+
+typedef struct {
 	GLFWwindow* window;
 	int width;
 	int height;
@@ -113,6 +130,9 @@ typedef struct {
 	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
 	float current_exposure; /* CPU-side cached exposure value */
 
+	/* Uniform Caches */
+	PBRShaderCache pbr_cache;
+	DebugShaderCache debug_cache;
 } App;
 
 /* Initialization and cleanup */
