@@ -131,11 +131,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lint Tools
-        run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install clang-format 19.1.7 via pip
+        run: |
+          pip install clang-format==19.1.7
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy
       - name: Run Format & Lint
         run: |
-          clang-tidy --version && clang-format --version
+          clang-format --version
           make format CONTAINER_RUN=""
           git diff --exit-code || (echo "❌ Format error" && exit 1)
           make lint CONTAINER_RUN=""
