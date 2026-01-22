@@ -110,7 +110,7 @@ jobs:
             
             | Reference | Actual (PR) | Difference Map |
             |:---:|:---:|:---:|
-            | ![Ref](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/ref.png) | ![Actual](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/actual.png) | ![Diff](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/diff.png) |
+            | ![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref.png?raw=true) | ![Actual](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/actual.png?raw=true) | ![Diff](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/diff.png?raw=true) |
             
             > [!TIP]
             > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.raw`.
