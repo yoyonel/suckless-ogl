@@ -1317,23 +1317,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
 			case GLFW_KEY_F1: /* Cycle Text Overlays */
-				{
-					static const char* mode_names[] = {
-						"Off", "FPS + Position",
-						"FPS + Position + Envmap",
-						"FPS + Position + Envmap + "
-						"Exposure"};
-					static const int mode_count = sizeof(mode_names) / sizeof(mode_names[0]);
-					
-					app->text_overlay_mode =
-						(app->text_overlay_mode + 1) % mode_count;
-					
-					LOG_INFO(
-						"suckless-ogl.app",
-						"Text Overlay: %s",
-						mode_names[app->text_overlay_mode]);
-				}
-				break;
+			{
+				static const char* mode_names[] = {
+				    "Off", "FPS + Position",
+				    "FPS + Position + Envmap",
+				    "FPS + Position + Envmap + "
+				    "Exposure"};
+				static const int mode_count =
+				    sizeof(mode_names) / sizeof(mode_names[0]);
+
+				app->text_overlay_mode =
+				    (app->text_overlay_mode + 1) % mode_count;
+
+				LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
+				         mode_names[app->text_overlay_mode]);
+			} break;
 			case GLFW_KEY_F2: /* Toggle Help */
 				app->show_help = !app->show_help;
 				break;
