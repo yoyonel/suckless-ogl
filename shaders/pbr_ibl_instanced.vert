@@ -17,10 +17,14 @@ out float AO;
 
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 previousViewProj;
+
+out vec4 CurrentClipPos;
+out vec4 PreviousClipPos;
 
 void main() {
     WorldPos = vec3(i_model * vec4(in_position, 1.0));
-    
+
     // Calcul de la NormalMatrix par instance
     // Si vous n'avez pas de scale non-uniforme, mat3(i_model) suffit pour les performances
     mat3 normalMatrix = mat3(transpose(inverse(i_model)));
@@ -31,5 +35,8 @@ void main() {
     Roughness = i_pbr.y;
     AO = i_pbr.z;
 
-    gl_Position = projection * view * vec4(WorldPos, 1.0);
+    CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
+    PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
+
+    gl_Position = CurrentClipPos;
 }

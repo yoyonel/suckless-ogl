@@ -541,6 +541,11 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	glUniform1f(glGetUniformLocation(id_current_shader, "pbr_exposure"),
 	            app->u_exposure);
 
+	/* Pass Previous ViewProj for Velocity Buffer */
+	glUniformMatrix4fv(
+	    glGetUniformLocation(id_current_shader, "previousViewProj"), 1,
+	    GL_FALSE, (float*)app->postprocess.previous_view_proj);
+
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);
 #else
@@ -737,6 +742,9 @@ void app_render(App* app)
 	/* 3. Post-processing */
 	postprocess_end(&app->postprocess);
 
+	/* Update Matrices for next frame (Velocity Buffer) */
+	postprocess_update_matrices(&app->postprocess, view_proj);
+
 	app_render_ui(app);
 }
 
@@ -776,6 +784,7 @@ static void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[H] Toggle UI/Help", HELP_COLOR);
 	ui_layout_text(&layout, "[J] Toggle Auto-Exposure", HELP_COLOR);
 	ui_layout_text(&layout, "[B] Toggle Bloom", HELP_COLOR);
+	ui_layout_text(&layout, "[M] Toggle Motion Blur", HELP_COLOR);
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
@@ -1112,6 +1121,32 @@ static void handle_postprocess_input(App* app, int key)
 				             &app->postprocess, POSTFX_DOF)
 				             ? "ON"
 				             : "OFF");
+			}
+			break;
+
+		case GLFW_KEY_M: /* Toggle Motion Blur / Debug */
+			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
+			        GLFW_PRESS ||
+			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
+			        GLFW_PRESS) {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_MOTION_BLUR_DEBUG);
+				LOG_INFO("suckless-ogl.app",
+				         "Motion Blur DEBUG: %s",
+				         postprocess_is_enabled(
+				             &app->postprocess,
+				             POSTFX_MOTION_BLUR_DEBUG)
+				             ? "ON"
+				             : "OFF");
+			} else {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_MOTION_BLUR);
+				LOG_INFO(
+				    "suckless-ogl.app", "Motion Blur: %s",
+				    postprocess_is_enabled(&app->postprocess,
+				                           POSTFX_MOTION_BLUR)
+				        ? "ON"
+				        : "OFF");
 			}
 			break;
 

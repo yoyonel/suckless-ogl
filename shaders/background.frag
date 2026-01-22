@@ -1,7 +1,8 @@
 #version 450 core
 
 in vec3 RayDir;
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec2 VelocityOut;
 
 uniform sampler2D environmentMap;
 uniform float blur_lod;
@@ -21,15 +22,16 @@ void main()
 {
     vec2 uv = SampleEquirectangular(normalize(RayDir));
     vec3 envColor = textureLod(environmentMap, uv, 0.0).rgb;
-    
+
     /* Sanitize NaN/Inf (Branchless-ish) */
     /* isnan is the only one needing replacement. isinf is handled by min */
     if (any(isnan(envColor))) envColor = vec3(0.0);
-    
+
     /* Clamp max brightness */
     /* 200.0 is safe for bloom accumulation */
     envColor = min(envColor, vec3(200.0));
     envColor = max(envColor, vec3(0.0));
-    
+
     FragColor = vec4(envColor, 1.0);
+    VelocityOut = vec2(0.0); /* Skybox has no velocity */
 }

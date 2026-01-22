@@ -58,6 +58,14 @@ uniform float dofFocalDistance;
 uniform float dofFocalRange;
 uniform float dofBokehScale;
 
+/* Paramètres Motion Blur */
+uniform sampler2D velocityTexture;
+uniform float motionBlurIntensity;
+uniform float motionBlurMaxVelocity;
+uniform int motionBlurSamples;
+uniform int enableMotionBlur;
+uniform int enableMotionBlurDebug;
+
 /* Fonction de bruit pseudo-aléatoire pour le grain */
 float random(vec2 co) {
     return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
@@ -79,10 +87,10 @@ vec3 applyGrain(vec3 color, vec2 uv) {
     /* 2. Calculate Intensity based on Luminance Ranges */
     /* Shadows: [0, shadowsMax] */
     float shadowMask = 1.0 - smoothstep(0.0, grainShadowsMax, luma);
-    
+
     /* Highlights: [highlightsMin, 1.0] */
     float highlightMask = smoothstep(grainHighlightsMin, 1.0, luma);
-    
+
     /* Midtones: Fill the gap */
     float midtoneMask = 1.0 - shadowMask - highlightMask;
     midtoneMask = max(0.0, midtoneMask);
@@ -95,7 +103,7 @@ vec3 applyGrain(vec3 color, vec2 uv) {
     /* 3. Generate Noise with Texel Size */
     /* Scale UV by texel size - larger texelSize = coarser grain */
     vec2 grainUV = uv / grainTexelSize;
-    
+
     /* Add time offset to animate */
     float noise = random(grainUV + vec2(time)) * 2.0 - 1.0;
 
@@ -112,11 +120,11 @@ vec3 applyExposure(vec3 color) {
 /* Effet Aberration Chromatique */
 vec3 applyChromAbbr(vec2 uv) {
     vec2 direction = uv - vec2(0.5);
-    
+
     float r = texture(screenTexture, uv + direction * chromAbbrStrength).r;
     float g = texture(screenTexture, uv).g;
     float b = texture(screenTexture, uv - direction * chromAbbrStrength).b;
-    
+
     return vec3(r, g, b);
 }
 
@@ -131,7 +139,7 @@ uniform float tonemapShoulder;
 uniform float tonemapBlackClip;
 uniform float tonemapWhiteClip;
 
-/* 
+/*
  * White Balance (Approximation rapide)
  * Basé sur une conversion analytique de température Kelvin/Teinte vers RGB
  */
@@ -140,12 +148,12 @@ vec3 applyWhiteBalance(vec3 color) {
     if (abs(wbTemperature - 6500.0) < 1.0 && abs(wbTint) < 0.001) {
         return color;
     }
-    
+
     /* Temperature shift (simple linear approximation) */
     float tempShift = (wbTemperature - 6500.0) / 10000.0;
-    
+
     vec3 wb = vec3(1.0);
-    
+
     if (tempShift < 0.0) {
         /* Cooler (more blue) */
         wb.b = 1.0 - tempShift;
@@ -154,10 +162,10 @@ vec3 applyWhiteBalance(vec3 color) {
         wb.r = 1.0 + tempShift;
         wb.g = 1.0 + tempShift * 0.5;
     }
-    
+
     /* Tint (Green/Magenta shift) */
     wb.g += wbTint * 0.5;
-    
+
     return color * wb;
 }
 
@@ -165,11 +173,11 @@ vec3 applyWhiteBalance(vec3 color) {
  * Filmic Tonemapper (Type Unreal / Hable / ACES modifié)
  * Courbe sigmoïde paramétrique :
  * x * (a*x + b) / (x * (c*x + d) + e)
- * 
+ *
  * Coefficients dérivés de Slope/Toe/Shoulder sont complexes à calculer au runtime.
  * On utilise ici l'approximation directe "AMD Tonemapper" ou similaire qui map directement les params.
- * 
- * Pour simplifier et matcher le look "Unreal", on garde la courbe ACES Narkowicz mais on module 
+ *
+ * Pour simplifier et matcher le look "Unreal", on garde la courbe ACES Narkowicz mais on module
  * l'entrée et la sortie avec les paramètres Slope (contraste) et Toe (offset).
  */
 vec3 unrealTonemap(vec3 x) {
@@ -180,20 +188,20 @@ vec3 unrealTonemap(vec3 x) {
     const float d = 0.59;
     const float e = 0.14;
     vec3 res = (x * (a * x + b)) / (x * (c * x + d) + e);
-    
+
     /* Post-tonemap adjustments (all optional, defaults are neutral) */
-    
+
     /* Black Clip - Crush blacks by remapping [clip, 1.0] to [0.0, 1.0] */
     if (tonemapBlackClip > 0.001) {
         res = max(vec3(0.0), res - tonemapBlackClip) / (1.0 - tonemapBlackClip);
     }
-    
+
     /* White Clip - Compress highlights */
     if (tonemapWhiteClip > 0.001) {
         float maxVal = 1.0 - tonemapWhiteClip;
         res = min(vec3(maxVal), res) / maxVal;
     }
-    
+
     return clamp(res, 0.0, 1.0);
 }
 
@@ -221,48 +229,102 @@ vec3 apply_color_grading(vec3 color) {
 
     /* 5. Offset */
     color = color + gradOffset;
-    
+
     /* Clamp final pour sécurité avant tone map */
     return max(vec3(0.0), color);
 }
 
+vec3 applyMotionBlur(vec3 color, vec2 uv) {
+    vec2 velocity = texture(velocityTexture, uv).rg;
+
+    /* Debug Visualization */
+    if (enableMotionBlurDebug != 0) {
+        /* Visualize Velocity: Red = X motion, Green = Y motion.
+           Multiply for visibility. */
+        return vec3(abs(velocity.x) * 20.0, abs(velocity.y) * 20.0, 0.0);
+    }
+
+    /* Scaling */
+    velocity *= motionBlurIntensity;
+
+    /* Limiter la vélocité */
+    float speed = length(velocity);
+    if (speed > motionBlurMaxVelocity) {
+        velocity = normalize(velocity) * motionBlurMaxVelocity;
+    }
+
+    /* Avoid blurring if velocity is negligible */
+    if (speed < 0.0001) {
+        return color;
+    }
+
+    vec3 result = color;
+    vec2 texCoord = uv;
+
+    // Using minus to look backwards in time (trail)
+    // Velocity = Current - Previous => Previous = Current - Velocity
+
+    for(int i = 1; i < motionBlurSamples; ++i) {
+        vec2 offset = velocity * (float(i) / float(motionBlurSamples - 1));
+        vec3 sampleColor = texture(screenTexture, uv - offset).rgb;
+        result += sampleColor;
+    }
+
+    return result / float(motionBlurSamples);
+}
+
 void main() {
+/* 1. Priority Debug Check for Motion Blur */
+    if (enableMotionBlurDebug != 0) {
+        /* Visualize Velocity: Red = X, Green = Y */
+        /* Note: applyMotionBlur will return debug color immediately if debug is on */
+        /* but we need to pass a dummy color. The UVs matter. */
+        vec3 debugColor = applyMotionBlur(vec3(0.0), TexCoords);
+        FragColor = vec4(debugColor, 1.0);
+        return;
+    }
+
     vec3 color;
-    
+
     /* Skybox Hack: Depth ~ 1.0 */
     float depth = texture(depthTexture, TexCoords).r;
     bool isSkybox = depth >= 0.99999;
 
-    /* Si aberration chromatique active et PAS sur la skybox */
+    /* 2. Base Color (Standard or Chromatic Aberration) */
     if (enableChromAbbr != 0 && !isSkybox) {
         color = applyChromAbbr(TexCoords);
     } else {
         color = texture(screenTexture, TexCoords).rgb;
     }
-    
-    
+
+    /* 3. Apply Motion Blur (Normal Mode) */
+    if (enableMotionBlur != 0) {
+        color = applyMotionBlur(color, TexCoords);
+    }
+
+
     /* --------------------------------------------------------
        Depth of Field (DoF) - "Cinematic" / Unreal Style Logic
        -------------------------------------------------------- */
     if (enableDoF != 0) {
         float depth = texture(depthTexture, TexCoords).r;
-        
+
         /* Lineariser la depth pour avoir des unités réelles */
         /* Ces valeurs doivent correspondre à celles de l'application (app_settings.h) */
         float zNear = 0.1;
-        float zFar = 1000.0; 
-        
+        float zFar = 1000.0;
+
         /* Formule de linéarisation pour projection perspective standard */
         /* z_ndc = 2.0 * depth - 1.0 */
         /* dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear)) */
         float z_ndc = 2.0 * depth - 1.0;
         float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
-        
+
         /* 1. Calcul du Circle of Confusion (CoC) */
         /* CoC = |1 - FocalDist / Dist| * Scale */
         float coc = abs(dist - dofFocalDistance) / (dist + 0.0001); /* Eviter div by zero */
         float blurAmount = clamp(coc * dofBokehScale, 0.0, 1.0);
-        
+
         /* Si on est dans le "Focal Range", on reste net */
         if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
              blurAmount = 0.0;
@@ -274,69 +336,69 @@ void main() {
                  blurAmount *= (distDiff - edge) / 5.0;
              }
         }
-        
+
         /* HACK: Skybox Fix. Si depth est très proche de 1.0 (Far Plane), on ne floute pas.
            Avec zFar=1000.0 et D32F, 1.0 est la skybox. On utilise un seuil très strict. */
         if (depth >= 0.99999) {
             blurAmount = 0.0;
         }
-        
+
         blurAmount = clamp(blurAmount, 0.0, 1.0);
-        
+
         /* 2. Bokeh Blur (Poisson Disk Sampling simplifié) */
         /* Pour l'instant, un simple Box Blur pondéré par le CoC pour tester */
         /* Optimisation: Ne faire le blur que si blurAmount > epsilon */
-        
+
         if (blurAmount > 0.01) {
             vec3 acc = vec3(0.0);
             float totalWeight = 0.0;
-            
+
             /* Rayon du disque de flou en pixels (max) */
             float maxRadius = 10.0 * blurAmount; /* Rayon un peu plus large pour compenser le meilleur sampling */
-            
+
             vec2 texSize = vec2(textureSize(screenTexture, 0));
             vec2 pixelSize = 1.0 / texSize;
-            
+
             /* Golden Angle Spiral Sampling for Pattern-less Bokeh */
             /* 16 samples is a good balance for quality vs perf */
             int samples = 16;
             float goldenAngle = 2.39996323;
-            
+
             for(int i = 0; i < samples; i++) {
                  float theta = float(i) * goldenAngle;
                  float r = sqrt(float(i) / float(samples));
-                 
+
                  vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
-                 
+
                  /* Sample Color */
                  vec3 sampleCol = texture(screenTexture, TexCoords + offset).rgb;
-                 
+
                  /* Weighting: Uniforme pour un bokeh en forme de disque plat */
-                 float weight = 1.0; 
-                 
+                 float weight = 1.0;
+
                  acc += sampleCol * weight;
                  totalWeight += weight;
             }
-            
+
             color = acc / totalWeight;
         }
-        
+
         /* Debug Visualization (Unreal Style) */
         /* Green = Near Field Blur */
         /* Blue = Far Field Blur */
         /* Black = In Focus */
         if (enableDoFDebug != 0) {
             vec3 debugColor = vec3(0.0); /* Black by default (In Focus) */
-            
+
             if (dist < dofFocalDistance && blurAmount > 0.0) {
                 /* Near Field - Green */
-                debugColor = vec3(0.0, blurAmount, 0.0); 
+                debugColor = vec3(0.0, blurAmount, 0.0);
             } else if (dist > dofFocalDistance && blurAmount > 0.0) {
                 /* Far Field - Blue */
                 debugColor = vec3(0.0, 0.0, blurAmount);
             }
-            
-            /* Blend with original mostly to see shapes, or just Replace? 
+
+            /* Blend with original mostly to see shapes, or just Replace?
                Unreal replaces. Let's replace but keep it visualized by intensity. */
              color = debugColor;
         }
@@ -347,7 +409,7 @@ void main() {
         vec3 bloomColor = texture(bloomTexture, TexCoords).rgb;
         color += bloomColor * bloomIntensity;
     }
-    
+
     /* Appliquer l'exposition en premier (pour le HDR -> LDR) */
     float finalExposure = 1.0;
     if (enableAutoExposure != 0) {
@@ -358,19 +420,19 @@ void main() {
     } else if (enableExposure != 0) {
         finalExposure = exposure;
     }
-    
+
     color *= finalExposure;
-    
+
     /* Appliquer White Balance (avant color grading) */
     if (enableColorGrading != 0) {
         color = applyWhiteBalance(color);
     }
-    
+
     /* Appliquer le color grading */
     if (enableColorGrading != 0) {
         color = apply_color_grading(color);
     }
-    
+
     /* Tone Mapping (HDR -> LDR Linear) */
     /* Tone Mapping (HDR -> LDR Linear) */
     color = unrealTonemap(color);
@@ -379,7 +441,7 @@ void main() {
     if (enableVignette != 0) {
         color = applyVignette(color, TexCoords);
     }
-    
+
     /* Correction Gamma (Linear -> sRGB) */
     color = pow(color, vec3(1.0 / 2.2));
 
@@ -387,6 +449,6 @@ void main() {
     if (enableGrain != 0) {
         color = applyGrain(color, TexCoords);
     }
-    
+
     FragColor = vec4(color, 1.0);
 }

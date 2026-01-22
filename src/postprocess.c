@@ -91,6 +91,9 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->auto_exposure.speed_down = EXPOSURE_SPEED_DOWN;
 	post_processing->auto_exposure.key_value = EXPOSURE_DEFAULT_KEY_VALUE;
 
+	/* Motion Blur Defaults */
+	glm_mat4_identity(post_processing->previous_view_proj);
+
 	/* Effets désactivés par défaut */
 	post_processing->active_effects = 0;
 
@@ -410,12 +413,16 @@ void postprocess_end(PostProcess* post_processing)
 	                                 "depthTexture"),
 	            2);
 
-	/* Bind Exposure Texture (Unit 3) */
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "autoExposureTexture"),
 	            3);
+
+	/* Bind Velocity Texture (Unit 4) */
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "velocityTexture"),
+	            4);
 
 	/* Envoyer les flags d'effets actifs */
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
@@ -445,6 +452,25 @@ void postprocess_end(PostProcess* post_processing)
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableBloom"),
 	            postprocess_is_enabled(post_processing, POSTFX_BLOOM));
+
+	/* Motion Blur Uniforms */
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "enableMotionBlur"),
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR));
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "enableMotionBlurDebug"),
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "motionBlurIntensity"),
+	            1.0f); /* Hardcoded intensity for now, could be in struct */
+	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "motionBlurMaxVelocity"),
+	            0.05f); /* Max velocity clamp */
+	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
+	                                 "motionBlurSamples"),
+	            16);
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableDoF"),
 	            postprocess_is_enabled(post_processing, POSTFX_DOF));
@@ -562,6 +588,13 @@ void postprocess_update_time(PostProcess* post_processing, float delta_time)
 	    delta_time; /* Save dt for compute shader */
 }
 
+void postprocess_update_matrices(PostProcess* post_processing,
+                                 const mat4 view_proj)
+{
+	/* Save current as previous for next frame */
+	glm_mat4_copy((vec4*)view_proj, post_processing->previous_view_proj);
+}
+
 static void render_auto_exposure(PostProcess* post_processing)
 {
 	/* 1. Downsample Scene -> 64x64 Log Luminance */
@@ -651,6 +684,23 @@ static int create_framebuffer(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, post_processing->scene_color_tex,
 	                       0);
+
+	/* Créer la texture de vélocité (GL_RG16F) */
+	glGenTextures(1, &post_processing->velocity_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, post_processing->width,
+	             post_processing->height, 0, GL_RG, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+	                       GL_TEXTURE_2D, post_processing->velocity_tex, 0);
+
+	/* Configurer les buffers de rendu (MRT) */
+	GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	glDrawBuffers(2, drawBuffers);
 
 	/* Créer la texture de profondeur (D32F pour précision max) */
 	glGenTextures(1, &post_processing->scene_depth_tex);

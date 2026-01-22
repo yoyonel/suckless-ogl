@@ -41,12 +41,14 @@ typedef enum {
 	POSTFX_EXPOSURE = (1U << 2U),   /* 0x04 */
 	POSTFX_CHROM_ABBR = (1U << 3U), /* 0x08 */
 	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1U << 4U),          /* 0x10 */
-	POSTFX_COLOR_GRADING = (1U << 5U),  /* 0x20 */
-	POSTFX_DOF = (1U << 6U),            /* 0x40 */
-	POSTFX_DOF_DEBUG = (1U << 7U),      /* 0x80 - Debug Visualization */
-	POSTFX_AUTO_EXPOSURE = (1U << 8U),  /* 0x100 */
-	POSTFX_EXPOSURE_DEBUG = (1U << 9U), /* 0x200 */
+	POSTFX_BLOOM = (1U << 4U),              /* 0x10 */
+	POSTFX_COLOR_GRADING = (1U << 5U),      /* 0x20 */
+	POSTFX_DOF = (1U << 6U),                /* 0x40 */
+	POSTFX_DOF_DEBUG = (1U << 7U),          /* 0x80 - Debug Visualization */
+	POSTFX_AUTO_EXPOSURE = (1U << 8U),      /* 0x100 */
+	POSTFX_EXPOSURE_DEBUG = (1U << 9U),     /* 0x200 */
+	POSTFX_MOTION_BLUR = (1U << 10U),       /* 0x400 */
+	POSTFX_MOTION_BLUR_DEBUG = (1U << 11U), /* 0x800 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
@@ -142,6 +144,7 @@ typedef struct {
 	/* FBO principal et textures */
 	GLuint scene_fbo;
 	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
+	GLuint velocity_tex;    /* Velocity Buffer (GL_RG16F) */
 	GLuint scene_depth_tex; /* Depth (GL_DEPTH_COMPONENT32F) */
 
 	/* Bloom Resources */
@@ -188,6 +191,9 @@ typedef struct {
 	/* Temps pour effets animés (grain) */
 	float time;
 	float delta_time; /* Added needed for time integration */
+
+	/* Matrices pour Motion Blur */
+	mat4 previous_view_proj;
 } PostProcess;
 
 /* Initialisation et nettoyage */
@@ -230,6 +236,9 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float min_luminance, float max_luminance,
                                    float speed_up, float speed_down,
                                    float key_value);
+
+void postprocess_update_matrices(PostProcess* post_processing,
+                                 const mat4 view_proj);
 
 /* Structure de Preset pour l'application en masse de paramètres */
 typedef struct {
