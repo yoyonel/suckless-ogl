@@ -15,26 +15,74 @@ void main() {
     vec2 maxVel = vec2(0.0);
     float maxLenSq = -1.0;
 
-    /* 3x3 Neighborhood search */
-    for (int y = -1; y <= 1; ++y) {
-        for (int x = -1; x <= 1; ++x) {
-            ivec2 lookupPos = tilePos + ivec2(x, y);
+    /* Optimized 3x3 Neighborhood search using textureGather
+       textureGather fetches 4 texels (2x2 quad) in a single instruction
+       We need to cover a 3x3 area, which requires 4 gather calls:
+       - Top-left quad (covers positions -1,-1 to 0,0)
+       - Top-right quad (covers positions 0,-1 to 1,0)
+       - Bottom-left quad (covers positions -1,0 to 0,1)
+       - Bottom-right quad (covers positions 0,0 to 1,1)
+    */
 
-            /* Bounds check (sampler might handle clamping but texelFetch is strictly coordinate based) */
-            /* Using sampler is easier for clamping, but here we use manual fetch for precision/control */
-            /* Actually, texture() with clamp_to_edge is easier if we had UVs.
-               Let's clamp integer coords manually. */
-            lookupPos = clamp(lookupPos, ivec2(0), gridSize - ivec2(1));
+    vec2 texSize = vec2(textureSize(tileMaxTexture, 0));
+    vec2 centerUV = (vec2(tilePos) + 0.5) / texSize;
+    vec2 texelSize = 1.0 / texSize;
 
-            vec2 v = texelFetch(tileMaxTexture, lookupPos, 0).rg;
-            float lenSq = dot(v, v);
+    /* Gather 4 quads to cover 3x3 neighborhood
+       textureGather returns vec4 with components in this order:
+       - .w = bottom-left
+       - .z = bottom-right
+       - .y = top-right
+       - .x = top-left
+    */
 
-            if (lenSq > maxLenSq) {
-                maxLenSq = lenSq;
-                maxVel = v;
-            }
-        }
+    // Top-left quad (offset by -0.5 texels)
+    vec4 gatherX_TL = textureGather(tileMaxTexture, centerUV + vec2(-0.5, -0.5) * texelSize, 0); // Red channel (X)
+    vec4 gatherY_TL = textureGather(tileMaxTexture, centerUV + vec2(-0.5, -0.5) * texelSize, 1); // Green channel (Y)
+
+    // Top-right quad (offset by +0.5, -0.5 texels)
+    vec4 gatherX_TR = textureGather(tileMaxTexture, centerUV + vec2(0.5, -0.5) * texelSize, 0);
+    vec4 gatherY_TR = textureGather(tileMaxTexture, centerUV + vec2(0.5, -0.5) * texelSize, 1);
+
+    // Bottom-left quad (offset by -0.5, +0.5 texels)
+    vec4 gatherX_BL = textureGather(tileMaxTexture, centerUV + vec2(-0.5, 0.5) * texelSize, 0);
+    vec4 gatherY_BL = textureGather(tileMaxTexture, centerUV + vec2(-0.5, 0.5) * texelSize, 1);
+
+    // Bottom-right quad (offset by +0.5, +0.5 texels)
+    vec4 gatherX_BR = textureGather(tileMaxTexture, centerUV + vec2(0.5, 0.5) * texelSize, 0);
+    vec4 gatherY_BR = textureGather(tileMaxTexture, centerUV + vec2(0.5, 0.5) * texelSize, 1);
+
+    /* Process all 16 gathered texels (with overlap, center is sampled 4 times)
+       We'll check all unique positions in the 3x3 grid */
+
+    // Helper macro to check velocity
+    #define CHECK_VEL(vx, vy) { \
+        vec2 v = vec2(vx, vy); \
+        float lenSq = dot(v, v); \
+        if (lenSq > maxLenSq) { \
+            maxLenSq = lenSq; \
+            maxVel = v; \
+        } \
     }
+
+    // Top-left quad covers: (-1,-1), (0,-1), (-1,0), (0,0)
+    CHECK_VEL(gatherX_TL.x, gatherY_TL.x); // (-1, -1)
+    CHECK_VEL(gatherX_TL.y, gatherY_TL.y); // (0, -1)
+    CHECK_VEL(gatherX_TL.w, gatherY_TL.w); // (-1, 0)
+    CHECK_VEL(gatherX_TL.z, gatherY_TL.z); // (0, 0) - center
+
+    // Top-right quad adds: (1,-1), (1,0)
+    CHECK_VEL(gatherX_TR.y, gatherY_TR.y); // (1, -1)
+    CHECK_VEL(gatherX_TR.z, gatherY_TR.z); // (1, 0)
+
+    // Bottom-left quad adds: (-1,1), (0,1)
+    CHECK_VEL(gatherX_BL.w, gatherY_BL.w); // (-1, 1)
+    CHECK_VEL(gatherX_BL.z, gatherY_BL.z); // (0, 1)
+
+    // Bottom-right quad adds: (1,1)
+    CHECK_VEL(gatherX_BR.z, gatherY_BR.z); // (1, 1)
+
+    #undef CHECK_VEL
 
     imageStore(neighborMaxTexture, tilePos, vec4(maxVel, 0.0, 0.0));
 }

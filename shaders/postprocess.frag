@@ -230,8 +230,15 @@ vec3 apply_color_grading(vec3 color) {
     /* 5. Offset */
     color = color + gradOffset;
 
-    /* Clamp final pour sécurité avant tone map */
     return max(vec3(0.0), color);
+}
+
+/* Depth Linearization Helper */
+float linearizeDepth(float d) {
+    float zNear = 0.1;
+    float zFar = 1000.0;
+    float z_ndc = 2.0 * d - 1.0;
+    return (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 }
 
 /* Interleaved Gradient Noise for Dithering */
@@ -281,6 +288,9 @@ vec3 applyMotionBlur(vec3 color, vec2 uv) {
     /* Jitter for dithering (0.0 to 1.0) */
     float noise = InterleavedGradientNoise(gl_FragCoord.xy);
 
+    /* Get center depth for comparison */
+    float centerDepth = linearizeDepth(texture(depthTexture, uv).r);
+
     vec3 acc = color;
     float totalWeight = 1.0;
 
@@ -295,8 +305,24 @@ vec3 applyMotionBlur(vec3 color, vec2 uv) {
         vec2 sampleUV = uv + velocity * t;
         vec3 sampleColor = texture(screenTexture, sampleUV).rgb;
 
-        /* Weighting: 1.0 for now. Ideal is Depth Comparison. */
+        /* Depth-aware weighting to prevent background bleeding over foreground */
+        float sampleDepth = linearizeDepth(texture(depthTexture, sampleUV).r);
+
+        /* If sample is significantly behind center (larger depth = farther), reduce weight
+           This prevents background blur from contaminating sharp foreground edges */
+        float depthDiff = sampleDepth - centerDepth;
         float weight = 1.0;
+
+        if (depthDiff > 1.0) {
+            /* Sample is behind center - reduce contribution */
+            weight = 0.1;
+        } else if (depthDiff < -1.0) {
+            /* Sample is in front - keep full weight (foreground can blur over background) */
+            weight = 1.0;
+        } else {
+            /* Similar depth - full weight */
+            weight = 1.0;
+        }
 
         acc += sampleColor * weight;
         totalWeight += weight;
@@ -385,6 +411,9 @@ void main() {
             vec3 acc = vec3(0.0);
             float totalWeight = 0.0;
 
+            /* Get center depth for comparison */
+            float centerDepth = linearizeDepth(depth);
+
             /* Rayon du disque de flou en pixels (max) */
             float maxRadius = 10.0 * blurAmount; /* Rayon un peu plus large pour compenser le meilleur sampling */
 
@@ -402,11 +431,24 @@ void main() {
 
                  vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
 
-                 /* Sample Color */
+                 /* Sample Color and Depth */
                  vec3 sampleCol = texture(screenTexture, TexCoords + offset).rgb;
+                 float sampleDepth = linearizeDepth(texture(depthTexture, TexCoords + offset).r);
 
-                 /* Weighting: Uniforme pour un bokeh en forme de disque plat */
+                 /* Depth-aware weighting to prevent background bleeding over foreground */
+                 float depthDiff = sampleDepth - centerDepth;
                  float weight = 1.0;
+
+                 if (depthDiff > 1.0) {
+                     /* Sample is behind center - reduce contribution */
+                     weight = 0.1;
+                 } else if (depthDiff < -1.0) {
+                     /* Sample is in front - keep full weight */
+                     weight = 1.0;
+                 } else {
+                     /* Similar depth - full weight */
+                     weight = 1.0;
+                 }
 
                  acc += sampleCol * weight;
                  totalWeight += weight;
