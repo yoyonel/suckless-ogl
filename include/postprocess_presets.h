@@ -77,7 +77,7 @@ static const PostProcessPreset PRESET_SUBTLE = {
 
 static const PostProcessPreset PRESET_CINEMATIC = {
     (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
-        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
+        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_AUTO_EXPOSURE |
         (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM |
         (unsigned int)POSTFX_DOF,
     .vignette = {.intensity = 0.5F, .extent = 0.6F},
