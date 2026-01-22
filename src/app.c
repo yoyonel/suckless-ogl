@@ -964,8 +964,8 @@ void app_render_ui(App* app)
 	               app->height);
 
 	/* Conditional text overlay rendering based on text_overlay_mode */
-	/* Mode 0: Off, Mode 1: FPS, Mode 2: FPS+Envmap, Mode 3:
-	 * FPS+Envmap+Exposure */
+	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2: FPS+Position+Envmap, 
+	 * Mode 3: FPS+Position+Envmap+Exposure */
 
 	/* 1. FPS - shown in modes 1, 2, 3 */
 	if (app->text_overlay_mode >= 1) {
@@ -989,13 +989,14 @@ void app_render_ui(App* app)
 		ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
 	}
 
-	/* 2. Position - always shown for compatibility (can be removed if
-	 * unwanted) */
-	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
-	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-	                    app->camera.position[0], app->camera.position[1],
-	                    app->camera.position[2]);
-	ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
+	/* 2. Position - shown in modes 1, 2, 3 */
+	if (app->text_overlay_mode >= 1) {
+		char pos_text[DEBUG_TEXT_BUFFER_SIZE];
+		(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
+		                    app->camera.position[0], app->camera.position[1],
+		                    app->camera.position[2]);
+		ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
+	}
 
 	/* 3. Environment - shown in modes 2, 3 */
 	if (app->text_overlay_mode >= 2 && app->hdr_count > 0 &&
@@ -1319,8 +1320,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				    (app->text_overlay_mode + 1) % 4;
 				{
 					const char* mode_names[] = {
-					    "Off", "FPS", "FPS + Envmap",
-					    "FPS + Envmap + Exposure"};
+					    "Off", "FPS + Position", "FPS + Position + Envmap",
+					    "FPS + Position + Envmap + Exposure"};
 					LOG_INFO(
 					    "suckless-ogl.app",
 					    "Text Overlay: %s",
