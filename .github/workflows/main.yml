@@ -102,6 +102,7 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ## 🎨 Visual Regression Report (${{ github.sha }})
             
