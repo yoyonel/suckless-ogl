@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# Pre-commit hook to auto-format code
+#
+
+echo "Running pre-commit hook: make format..."
+
+# Exécuter make format
+make format
+
+# Vérifier si des fichiers ont été modifiés
+git diff --name-only --exit-code > /dev/null
+if [ $? -ne 0 ]; then
+    echo "⚠️  Files formatted. Adding them to commit..."
+    # Ajouter seulement les fichiers C/H qui ont été modifiés par le formatage
+    # On récupère la liste des fichiers modifiés et on les restage
+    git diff --name-only | grep -E '\.(c|h)$' | xargs git add
+fi
+
+exit 0

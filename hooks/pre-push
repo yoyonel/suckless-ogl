@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Pre-push hook to run linter
+#
+
+echo "Running pre-push hook: make lint..."
+
+# Exécuter make lint
+make lint
+
+if [ $? -ne 0 ]; then
+    echo "❌ Lint failed. Push aborted."
+    exit 1
+fi
+
+echo "✅ Lint passed. Proceeding with push."
+exit 0
