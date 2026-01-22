@@ -964,7 +964,7 @@ void app_render_ui(App* app)
 	               app->height);
 
 	/* Conditional text overlay rendering based on text_overlay_mode */
-	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2: FPS+Position+Envmap, 
+	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2: FPS+Position+Envmap,
 	 * Mode 3: FPS+Position+Envmap+Exposure */
 
 	/* 1. FPS - shown in modes 1, 2, 3 */
@@ -992,9 +992,10 @@ void app_render_ui(App* app)
 	/* 2. Position - shown in modes 1, 2, 3 */
 	if (app->text_overlay_mode >= 1) {
 		char pos_text[DEBUG_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-		                    app->camera.position[0], app->camera.position[1],
-		                    app->camera.position[2]);
+		(void)safe_snprintf(
+		    pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
+		    app->camera.position[0], app->camera.position[1],
+		    app->camera.position[2]);
 		ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
 	}
 
@@ -1316,16 +1317,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
 			case GLFW_KEY_F1: /* Cycle Text Overlays */
-				app->text_overlay_mode =
-				    (app->text_overlay_mode + 1) % 4;
 				{
-					const char* mode_names[] = {
-					    "Off", "FPS + Position", "FPS + Position + Envmap",
-					    "FPS + Position + Envmap + Exposure"};
+					static const char* mode_names[] = {
+						"Off", "FPS + Position",
+						"FPS + Position + Envmap",
+						"FPS + Position + Envmap + "
+						"Exposure"};
+					static const int mode_count = sizeof(mode_names) / sizeof(mode_names[0]);
+					
+					app->text_overlay_mode =
+						(app->text_overlay_mode + 1) % mode_count;
+					
 					LOG_INFO(
-					    "suckless-ogl.app",
-					    "Text Overlay: %s",
-					    mode_names[app->text_overlay_mode]);
+						"suckless-ogl.app",
+						"Text Overlay: %s",
+						mode_names[app->text_overlay_mode]);
 				}
 				break;
 			case GLFW_KEY_F2: /* Toggle Help */
