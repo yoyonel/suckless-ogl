@@ -101,6 +101,8 @@ jobs:
       - name: Post Visual Comment on PR
         if: always() && github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
