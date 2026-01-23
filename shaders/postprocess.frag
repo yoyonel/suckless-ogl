@@ -420,12 +420,12 @@ void main() {
 
     /* Appliquer l'exposition */
     float finalExposure = 1.0;
-    float autoExp = 1.0;
 
     if (enableAutoExposure != 0) {
-        autoExp = texture(autoExposureTexture, vec2(0.5)).r;
-        finalExposure = autoExp * exposure;
+        /* Auto-exposure REPLACES manual exposure (no multiplication) */
+        finalExposure = texture(autoExposureTexture, vec2(0.5)).r;
     } else if (enableExposure != 0) {
+        /* Manual exposure only when auto-exposure is disabled */
         finalExposure = exposure;
     }
 

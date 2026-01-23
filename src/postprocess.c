@@ -21,13 +21,13 @@ enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
 
 /* Auto Exposure Constants */
 static const float EXPOSURE_MIN_LUM =
-    1.0F; /* Limite le boost max (1.0 = pas de boost) */
+    0.7F; /* Limite le boost max (1.0 = pas de boost) */
 static const float EXPOSURE_DEFAULT_MAX_LUM = 5000.0F;
 static const float EXPOSURE_SPEED_UP = 2.0F;
 static const float EXPOSURE_SPEED_DOWN = 1.0F;
 static const float EXPOSURE_DEFAULT_KEY_VALUE =
-    0.18F; /* Standard photographic middle gray */
-static const float EXPOSURE_INITIAL_VAL = 1.836F;
+    0.45F; /* Very high-key (indoor HDR) - 0.18 standard, 0.25 outdoor */
+static const float EXPOSURE_INITIAL_VAL = 1.20F;
 
 /* Compute Shader Constants */
 enum { COMPUTE_WORK_GROUP_SIZE = 16 };

@@ -79,7 +79,11 @@ typedef struct {
 	float texel_size;     /* Grain particle size (scale) */
 } GrainParams;
 
-/* Paramètres pour l'exposition */
+/* Paramètres pour l'exposition
+ * NOTE: When POSTFX_AUTO_EXPOSURE is enabled, this manual exposure is IGNORED.
+ * Auto-exposure will calculate and apply exposure automatically.
+ * Only use manual exposure when auto-exposure is disabled.
+ */
 typedef struct {
 	float exposure; /* 0.5 - 2.0, défaut: 1.0, recommandé: 0.8-1.5 */
 } ExposureParams;
