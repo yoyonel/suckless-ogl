@@ -178,11 +178,11 @@ GLuint shader_load_compute(const char* compute_path)
  * New Generic Shader API Implementation
  * ------------------------------------------------------------------------- */
 
-static int cmp_uniform_entry(const void* a, const void* b)
+static int cmp_uniform_entry(const void* lhs, const void* rhs)
 {
-	const UniformEntry* entry_a = (const UniformEntry*)a;
-	const UniformEntry* entry_b = (const UniformEntry*)b;
-	return strcmp(entry_a->name, entry_b->name);
+	const UniformEntry* entry_lhs = (const UniformEntry*)lhs;
+	const UniformEntry* entry_rhs = (const UniformEntry*)rhs;
+	return strcmp(entry_lhs->name, entry_rhs->name);
 }
 
 static void shader_cache_uniforms(Shader* shader)
