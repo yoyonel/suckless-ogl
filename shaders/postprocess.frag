@@ -5,12 +5,20 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 
+/* ============================================================================
+   UNIFORMS - Effect Flags
+   ============================================================================ */
+
 /* Flags d'activation des effets */
 uniform int enableVignette;
 uniform int enableGrain;
 uniform int enableExposure;
 uniform int enableChromAbbr;
 uniform int enableColorGrading;
+
+/* ============================================================================
+   UNIFORMS - Effect Parameters
+   ============================================================================ */
 
 /* Paramètres Vignette */
 uniform float vignetteIntensity;
@@ -78,6 +86,10 @@ uniform float tonemapShoulder;
 uniform float tonemapBlackClip;
 uniform float tonemapWhiteClip;
 
+/* ============================================================================
+   UTILITY FUNCTIONS
+   ============================================================================ */
+
 /* Fonction de bruit pseudo-aléatoire pour le grain */
 float random(vec2 co) {
     return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
@@ -97,6 +109,10 @@ float linearizeDepth(float d) {
     return (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 }
 
+/* ============================================================================
+   EFFECT: VIGNETTE
+   ============================================================================ */
+
 /* Effet Vignette */
 vec3 applyVignette(vec3 color, vec2 uv) {
     vec2 centered = uv * 2.0 - 1.0;
@@ -104,6 +120,10 @@ vec3 applyVignette(vec3 color, vec2 uv) {
     float vignette = smoothstep(vignetteExtent, vignetteExtent - 0.4, dist);
     return color * mix(1.0, vignette, vignetteIntensity);
 }
+
+/* ============================================================================
+   EFFECT: GRAIN
+   ============================================================================ */
 
 /* Effet Grain */
 vec3 applyGrain(vec3 color, vec2 uv) {
@@ -137,11 +157,19 @@ vec3 applyGrain(vec3 color, vec2 uv) {
     return color + noise * grainIntensity * lumaMult;
 }
 
+/* ============================================================================
+   EFFECT: EXPOSURE
+   ============================================================================ */
+
 /* Effet Exposition (Tone Mapping) */
 vec3 applyExposure(vec3 color) {
     /* Exposition linéaire simple */
     return color * exposure;
 }
+
+/* ============================================================================
+   EFFECT: MOTION BLUR
+   ============================================================================ */
 
 /* Advanced Reconstruction using NeighborMax and Depth Weighting */
 vec3 applyMotionBlur(vec2 uv) {
@@ -223,6 +251,10 @@ vec3 getSceneSource(vec2 uv) {
     return texture(screenTexture, uv).rgb;
 }
 
+/* ============================================================================
+   EFFECT: CHROMATIC ABERRATION
+   ============================================================================ */
+
 /* Effet Aberration Chromatique (Optimized: single Motion Blur call) */
 vec3 applyChromAbbr(vec2 uv) {
     vec2 direction = uv - vec2(0.5);
@@ -237,6 +269,10 @@ vec3 applyChromAbbr(vec2 uv) {
 
     return vec3(r, centerBlurred.g, b);
 }
+
+/* ============================================================================
+   EFFECT: WHITE BALANCE
+   ============================================================================ */
 
 /*
  * White Balance (Approximation rapide)
@@ -268,6 +304,10 @@ vec3 applyWhiteBalance(vec3 color) {
     return color * wb;
 }
 
+/* ============================================================================
+   EFFECT: TONEMAPPING
+   ============================================================================ */
+
 /*
  * Filmic Tonemapper (Type Unreal / Hable / ACES modifié)
  */
@@ -291,6 +331,10 @@ vec3 unrealTonemap(vec3 x) {
 
     return clamp(res, 0.0, 1.0);
 }
+
+/* ============================================================================
+   EFFECT: COLOR GRADING
+   ============================================================================ */
 
 /*
  * Logique Color Grading Unreal Engine
@@ -317,6 +361,10 @@ vec3 apply_color_grading(vec3 color) {
 
     return max(vec3(0.0), color);
 }
+
+/* ============================================================================
+   MAIN PIPELINE
+   ============================================================================ */
 
 void main() {
     /* 1. Priority Debug Check for Motion Blur */
