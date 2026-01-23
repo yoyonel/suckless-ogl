@@ -3,6 +3,8 @@
 #include "shader.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 /* Minimal stub for window/context */
@@ -60,6 +62,28 @@ static const char* f_shader_src =
     "   FragColor = vec4(uColor * uIntensity, 1.0);\n"
     "}\0";
 
+/* Shader with many types for extensive coverage */
+static const char* complex_v_shader_src =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "uniform vec2 uVec2;\n"
+    "uniform vec3 uVec3;\n"
+    "uniform vec4 uVec4;\n"
+    "uniform mat4 uMat4;\n"
+    "uniform float uFloat;\n"
+    "uniform int uInt;\n"
+    "void main() {\n"
+    "   gl_Position = uMat4 * vec4(aPos, 1.0) + vec4(uVec3, 0.0) + uVec4 * "
+    "uFloat + vec4(uVec2, 0.0, 0.0) * float(uInt);\n"
+    "}\0";
+
+/* Compute Shader Test - Minimal */
+static const char* c_shader_src =
+    "#version 430 core\n"
+    "layout(local_size_x = 1) in;\n"
+    "void main() {\n"
+    "}\0";
+
 /* Helpers to write temp files */
 static void write_temp_file(const char* name, const char* content)
 {
@@ -81,9 +105,6 @@ void test_Shader_Load_And_Cache(void)
 
 	/* Verify Cache Content */
 	/* We expect: uModel, uViewProj, uColor, uIntensity */
-	/* Note: active uniforms might be optimized out if not used?
-	   In this simple shader, they are used. */
-
 	TEST_ASSERT_NOT_NULL(s->entries);
 	TEST_ASSERT_GREATER_OR_EQUAL_INT(4, s->entry_count);
 
@@ -119,12 +140,8 @@ void test_Shader_Setters(void)
 
 	shader_use(s);
 
-	/* Call setters - we can't easily verify the result without
-	   rendering/feedback, but we verify they don't crash and ideally GL
-	   error check */
-
+	/* Call setters */
 	shader_set_float(s, "uIntensity", 0.5f);
-	/* GL Error Check */
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
 	float color[3] = {1.0f, 0.0f, 0.0f};
@@ -140,11 +157,58 @@ void test_Shader_Setters(void)
 	unlink("test_api.frag");
 }
 
+/* Covers shader_load_compute_program AND all setter variants */
+void test_Shader_Complex_Types_And_Compute(void)
+{
+	/* 1. Test standard shader with ALL types (Vec2, Vec4, Mat4, Int) */
+	write_temp_file("complex.vert", complex_v_shader_src);
+	write_temp_file("complex.frag", f_shader_src); /* Reuse simple frag */
+
+	Shader* s = shader_load("complex.vert", "complex.frag");
+	TEST_ASSERT_NOT_NULL(s);
+	shader_use(s);
+
+	float vec2[2] = {1.0f, 2.0f};
+	float vec3[3] = {1.0f, 2.0f, 3.0f};
+	float vec4[4] = {1.0f, 2.0f, 3.0f, 4.0f};
+	float mat4[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+
+	/* Test all setters with valid uniforms */
+	shader_set_vec2(s, "uVec2", vec2);
+	shader_set_vec3(s, "uVec3", vec3);
+	shader_set_vec4(s, "uVec4", vec4);
+	shader_set_mat4(s, "uMat4", mat4);
+	shader_set_float(s, "uFloat", 1.0f);
+	shader_set_int(s, "uInt", 1);
+
+	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
+
+	shader_destroy(s);
+	unlink("complex.vert");
+	unlink("complex.frag");
+
+	/* 2. Test Compute Shader Loading (Coverage for
+	 * shader_load_compute_program) */
+	GLint major, minor;
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	if (major >= 4 && (major > 4 || minor >= 3)) {
+		write_temp_file("test_api.comp", c_shader_src);
+		Shader* cs = shader_load_compute_program("test_api.comp");
+		if (cs) {
+			shader_destroy(cs);
+		}
+		unlink("test_api.comp");
+	}
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_Shader_Load_And_Cache);
 	RUN_TEST(test_Shader_Setters);
+	RUN_TEST(test_Shader_Complex_Types_And_Compute);
 
 	if (window) {
 		glfwDestroyWindow(window);
