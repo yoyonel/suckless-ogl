@@ -42,6 +42,7 @@ file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
     test_shader
+    test_shader_api
     test_texture
     test_skybox
     test_pbr
@@ -57,15 +58,15 @@ set(OPENGL_TESTS
 foreach(test_file ${TEST_SOURCES})
     # Extraire le nom du test (sans .c)
     get_filename_component(test_name ${test_file} NAME_WE)
-    
+
     # Créer l'exécutable
     add_executable(${test_name} ${test_file})
     target_link_libraries(${test_name} PRIVATE app_testlib)
-    
+
     # Déterminer si c'est un test OpenGL
     if(${test_name} IN_LIST OPENGL_TESTS)
         # Test avec Xvfb
-        add_test(NAME ${test_name} 
+        add_test(NAME ${test_name}
                  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
         message(STATUS "Test OpenGL découvert: ${test_name} (avec Xvfb)")
     else()
@@ -73,7 +74,7 @@ foreach(test_file ${TEST_SOURCES})
         add_test(NAME ${test_name} COMMAND ${test_name})
         message(STATUS "Test unitaire découvert: ${test_name}")
     endif()
-    
+
     # Working directory = racine du projet
     set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endforeach()
