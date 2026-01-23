@@ -18,23 +18,6 @@
 #include <cglm/cglm.h>
 
 typedef struct {
-	GLint irradiance_map;
-	GLint prefilter_map;
-	GLint brdf_lut;
-	GLint debug_mode;
-	GLint cam_pos;
-	GLint projection;
-	GLint view;
-	GLint pbr_exposure;
-	GLint previous_view_proj;
-} PBRShaderCache;
-
-typedef struct {
-	GLint tex;
-	GLint lod;
-} DebugShaderCache;
-
-typedef struct {
 	GLFWwindow* window;
 	int width;
 	int height;
@@ -77,14 +60,14 @@ typedef struct {
 
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group;
-	GLuint pbr_ssbo_shader;
+	Shader* pbr_ssbo_shader;
 #endif
 	/* Instanced rendering */
 	InstancedGroup instanced_group;
-	GLuint pbr_instanced_shader;
+	Shader* pbr_instanced_shader;
 
 	/* Shaders */
-	GLuint skybox_shader;
+	GLuint skybox_shader; /* Remains GLuint for now (Skybox module) */
 
 	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
@@ -106,7 +89,7 @@ typedef struct {
 	GLuint brdf_lut_tex;
 
 	GLuint empty_vao;
-	GLuint debug_shader;
+	Shader* debug_shader;
 	float debug_lod;
 	int show_debug_tex;
 
@@ -130,9 +113,6 @@ typedef struct {
 	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
 	float current_exposure; /* CPU-side cached exposure value */
 
-	/* Uniform Caches */
-	PBRShaderCache pbr_cache;
-	DebugShaderCache debug_cache;
 } App;
 
 /* Initialization and cleanup */
