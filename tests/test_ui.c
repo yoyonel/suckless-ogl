@@ -62,7 +62,7 @@ void test_ui_functions_exist(void)
 
 void test_ui_layout_stacking(void)
 {
-	UIContext ui;
+	UIContext ui = {0};
 	ui.font_size = 20.0f; /* Fake font size */
 
 	UILayout layout;
