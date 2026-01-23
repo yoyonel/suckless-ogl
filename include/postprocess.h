@@ -243,8 +243,7 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float speed_up, float speed_down,
                                    float key_value);
 
-void postprocess_update_matrices(PostProcess* post_processing,
-                                 const mat4 view_proj);
+void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj);
 
 /* Structure de Preset pour l'application en masse de paramètres */
 typedef struct {

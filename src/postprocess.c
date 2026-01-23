@@ -3,6 +3,8 @@
 #include "gl_common.h"
 #include "log.h"
 #include "shader.h"
+#include <cglm/mat4.h>
+#include <cglm/types.h>
 #include <string.h>
 
 static int create_framebuffer(PostProcess* post_processing);
@@ -24,6 +26,14 @@ static const float EXPOSURE_SPEED_UP = 2.0F;
 static const float EXPOSURE_SPEED_DOWN = 1.0F;
 static const float EXPOSURE_DEFAULT_KEY_VALUE = 1.0F;
 static const float EXPOSURE_INITIAL_VAL = 0.5F;
+
+/* Compute Shader Constants */
+enum { COMPUTE_WORK_GROUP_SIZE = 16 };
+
+/* Motion Blur Constants */
+static const float MB_INTENSITY = 1.0F;
+static const float MB_MAX_VELOCITY = 0.05F;
+static const int MB_SAMPLES = 16;
 
 /* Vertices pour un quad plein écran */
 static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
@@ -82,7 +92,6 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 
 	post_processing->color_grading.offset = 0.0F;
 
-	/* Initialisation Auto Exposure (Stabilisé) */
 	/* Initialisation Auto Exposure (Stabilisé) */
 	post_processing->auto_exposure.min_luminance =
 	    EXPOSURE_MIN_LUM; /* Limite le boost max à x2 (1.0 / 0.5) */
@@ -396,8 +405,12 @@ void postprocess_end(PostProcess* post_processing)
 	/* Motion Blur Pre-Pass (Compute) */
 	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) &&
 	    post_processing->tile_max_shader != 0) {
-		int groups_x = (post_processing->width + 15) / 16;
-		int groups_y = (post_processing->height + 15) / 16;
+		int groups_x =
+		    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+		    COMPUTE_WORK_GROUP_SIZE;
+		int groups_y =
+		    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+		    COMPUTE_WORK_GROUP_SIZE;
 
 		/* Pass 1: Tile Max Velocity */
 		glUseProgram(post_processing->tile_max_shader);
@@ -486,9 +499,10 @@ void postprocess_end(PostProcess* post_processing)
 	/* Bind Neighbor Max Texture (Unit 5) */
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, post_processing->neighbor_max_tex);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "neighborMaxTexture"),
-	            5);
+	glUniform1i(
+	    glGetUniformLocation(post_processing->postprocess_shader,
+	                         "neighborMaxTexture"),
+	    BLOOM_MIP_LEVELS); /* Unit 5 matches BLOOM_MIP_LEVELS define */
 
 	/* Envoyer les flags d'effets actifs */
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
@@ -530,13 +544,13 @@ void postprocess_end(PostProcess* post_processing)
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "motionBlurIntensity"),
-	            1.0f); /* Hardcoded intensity for now, could be in struct */
+	            MB_INTENSITY);
 	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "motionBlurMaxVelocity"),
-	            0.05f); /* Max velocity clamp */
+	            MB_MAX_VELOCITY);
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "motionBlurSamples"),
-	            16);
+	            MB_SAMPLES);
 	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
 	                                 "enableDoF"),
 	            postprocess_is_enabled(post_processing, POSTFX_DOF));
@@ -654,11 +668,10 @@ void postprocess_update_time(PostProcess* post_processing, float delta_time)
 	    delta_time; /* Save dt for compute shader */
 }
 
-void postprocess_update_matrices(PostProcess* post_processing,
-                                 const mat4 view_proj)
+void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
 {
 	/* Save current as previous for next frame */
-	glm_mat4_copy((vec4*)view_proj, post_processing->previous_view_proj);
+	glm_mat4_copy(view_proj, post_processing->previous_view_proj);
 }
 
 static void render_auto_exposure(PostProcess* post_processing)
@@ -771,12 +784,18 @@ static int create_framebuffer(PostProcess* post_processing)
 	/* --------------------------
 	   Motion Blur Resources (McGuire)
 	   -------------------------- */
-	int tile_width = (post_processing->width + 15) / 16;
-	int tile_height = (post_processing->height + 15) / 16;
-	if (tile_width < 1)
+	int tile_width =
+	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+	    COMPUTE_WORK_GROUP_SIZE;
+	int tile_height =
+	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+	    COMPUTE_WORK_GROUP_SIZE;
+	if (tile_width < 1) {
 		tile_width = 1;
-	if (tile_height < 1)
+	}
+	if (tile_height < 1) {
 		tile_height = 1;
+	}
 
 	/* Tile Max Texture (RG16F) */
 	glGenTextures(1, &post_processing->tile_max_tex);
