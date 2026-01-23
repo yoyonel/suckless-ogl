@@ -20,12 +20,14 @@ static void render_auto_exposure(PostProcess* post_processing);
 enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
 
 /* Auto Exposure Constants */
-static const float EXPOSURE_MIN_LUM = 0.5F;
+static const float EXPOSURE_MIN_LUM =
+    1.0F; /* Limite le boost max (1.0 = pas de boost) */
 static const float EXPOSURE_DEFAULT_MAX_LUM = 5000.0F;
 static const float EXPOSURE_SPEED_UP = 2.0F;
 static const float EXPOSURE_SPEED_DOWN = 1.0F;
-static const float EXPOSURE_DEFAULT_KEY_VALUE = 1.0F;
-static const float EXPOSURE_INITIAL_VAL = 0.5F;
+static const float EXPOSURE_DEFAULT_KEY_VALUE =
+    0.18F; /* Standard photographic middle gray */
+static const float EXPOSURE_INITIAL_VAL = 1.836F;
 
 /* Compute Shader Constants */
 enum { COMPUTE_WORK_GROUP_SIZE = 16 };
@@ -33,7 +35,7 @@ enum { COMPUTE_WORK_GROUP_SIZE = 16 };
 /* Motion Blur Constants */
 static const float MB_INTENSITY = 1.0F;
 static const float MB_MAX_VELOCITY = 0.05F;
-static const int MB_SAMPLES = 16;
+static const int MB_SAMPLES = 8;
 
 /* Vertices pour un quad plein écran */
 static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =

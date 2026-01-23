@@ -223,16 +223,19 @@ vec3 getSceneSource(vec2 uv) {
     return texture(screenTexture, uv).rgb;
 }
 
-/* Effet Aberration Chromatique (Modified to use getSceneSource) */
+/* Effet Aberration Chromatique (Optimized: single Motion Blur call) */
 vec3 applyChromAbbr(vec2 uv) {
     vec2 direction = uv - vec2(0.5);
 
-    /* Sample from the "Scene Source" (which might be motion blurred) */
-    float r = getSceneSource(uv + direction * chromAbbrStrength).r;
-    float g = getSceneSource(uv).g;
-    float b = getSceneSource(uv - direction * chromAbbrStrength).b;
+    /* Get center pixel with motion blur (if enabled) */
+    vec3 centerBlurred = getSceneSource(uv);
 
-    return vec3(r, g, b);
+    /* Direct texture samples for R/B channels (skip motion blur for performance)
+     * Trade-off: Only green channel gets motion blur, but CA is subtle at edges */
+    float r = texture(screenTexture, uv + direction * chromAbbrStrength).r;
+    float b = texture(screenTexture, uv - direction * chromAbbrStrength).b;
+
+    return vec3(r, centerBlurred.g, b);
 }
 
 /*
@@ -340,65 +343,72 @@ void main() {
 
     /* --------------------------------------------------------
        Depth of Field (DoF) - "Cinematic" / Unreal Style Logic
+       (Optimized with early exit)
        -------------------------------------------------------- */
     if (enableDoF != 0) {
         float depth = texture(depthTexture, TexCoords).r;
-        float zNear = 0.1;
-        float zFar = 1000.0;
-        float z_ndc = 2.0 * depth - 1.0;
-        float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 
-        float coc = abs(dist - dofFocalDistance) / (dist + 0.0001);
-        float blurAmount = clamp(coc * dofBokehScale, 0.0, 1.0);
-
-        if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
-             blurAmount = 0.0;
-        } else {
-             float edge = dofFocalRange;
-             float distDiff = abs(dist - dofFocalDistance);
-             if (distDiff < edge + 5.0) {
-                 blurAmount *= (distDiff - edge) / 5.0;
-             }
-        }
-
+        /* Early exit for skybox (before any expensive calculations) */
         if (depth >= 0.99999) {
-            blurAmount = 0.0;
-        }
+            /* Skip DoF for skybox */
+        } else {
+            float zNear = 0.1;
+            float zFar = 1000.0;
+            float z_ndc = 2.0 * depth - 1.0;
+            float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 
-        blurAmount = clamp(blurAmount, 0.0, 1.0);
+            float coc = abs(dist - dofFocalDistance) / (dist + 0.0001);
+            float blurAmount = clamp(coc * dofBokehScale, 0.0, 1.0);
 
-        if (blurAmount > 0.01) {
-            vec3 acc = vec3(0.0);
-            float totalWeight = 0.0;
-            float centerDepth = linearizeDepth(depth);
-            float maxRadius = 10.0 * blurAmount;
-            vec2 texSize = vec2(textureSize(screenTexture, 0));
-            vec2 pixelSize = 1.0 / texSize;
-            int samples = 16;
-            float goldenAngle = 2.39996323;
-
-            for(int i = 0; i < samples; i++) {
-                 float theta = float(i) * goldenAngle;
-                 float r = sqrt(float(i) / float(samples));
-                 vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
-                 vec3 sampleCol = texture(screenTexture, TexCoords + offset).rgb;
-                 float sampleDepth = linearizeDepth(texture(depthTexture, TexCoords + offset).r);
-                 float depthDiff = sampleDepth - centerDepth;
-                 float weight = 1.0;
-                 if (depthDiff > 1.0) weight = 0.1;
-                 else if (depthDiff < -1.0) weight = 1.0;
-                 else weight = 1.0;
-                 acc += sampleCol * weight;
-                 totalWeight += weight;
+            /* Apply focal range (in-focus zone) */
+            if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
+                blurAmount = 0.0;
+            } else {
+                /* Smooth transition at edges of focal range */
+                float edge = dofFocalRange;
+                float distDiff = abs(dist - dofFocalDistance);
+                if (distDiff < edge + 5.0) {
+                    blurAmount *= (distDiff - edge) / 5.0;
+                }
             }
-            color = acc / totalWeight;
-        }
 
-        if (enableDoFDebug != 0) {
-            vec3 debugColor = vec3(0.0);
-            if (dist < dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, blurAmount, 0.0);
-            else if (dist > dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, 0.0, blurAmount);
-            color = debugColor;
+            blurAmount = clamp(blurAmount, 0.0, 1.0);
+
+            /* ⭐ CRITICAL OPTIMIZATION: Early exit before expensive blur loop */
+            if (blurAmount > 0.01) {
+                vec3 acc = vec3(0.0);
+                float totalWeight = 0.0;
+                float centerDepth = linearizeDepth(depth);
+                float maxRadius = 10.0 * blurAmount;
+                vec2 texSize = vec2(textureSize(screenTexture, 0));
+                vec2 pixelSize = 1.0 / texSize;
+                int samples = 16;
+                float goldenAngle = 2.39996323;
+
+                for(int i = 0; i < samples; i++) {
+                     float theta = float(i) * goldenAngle;
+                     float r = sqrt(float(i) / float(samples));
+                     vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
+                     vec3 sampleCol = texture(screenTexture, TexCoords + offset).rgb;
+                     float sampleDepth = linearizeDepth(texture(depthTexture, TexCoords + offset).r);
+                     float depthDiff = sampleDepth - centerDepth;
+                     float weight = 1.0;
+                     if (depthDiff > 1.0) weight = 0.1;
+                     else if (depthDiff < -1.0) weight = 1.0;
+                     else weight = 1.0;
+                     acc += sampleCol * weight;
+                     totalWeight += weight;
+                }
+                color = acc / totalWeight;
+            }
+
+            /* Debug visualization */
+            if (enableDoFDebug != 0) {
+                vec3 debugColor = vec3(0.0);
+                if (dist < dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, blurAmount, 0.0);
+                else if (dist > dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, 0.0, blurAmount);
+                color = debugColor;
+            }
         }
     }
 

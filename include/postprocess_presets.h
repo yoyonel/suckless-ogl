@@ -44,8 +44,7 @@ static const PostProcessPreset PRESET_DEFAULT = {
 static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
-        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
-        (unsigned int)POSTFX_COLOR_GRADING,
+        (unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = 0.3F, .extent = 0.7F},
     .grain = {.intensity = 0.02F,
               .intensity_shadows = 1.0F,
@@ -77,9 +76,9 @@ static const PostProcessPreset PRESET_SUBTLE = {
 
 static const PostProcessPreset PRESET_CINEMATIC = {
     (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
-        (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
-        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM |
-        (unsigned int)POSTFX_DOF,
+        (unsigned int)POSTFX_AUTO_EXPOSURE | (unsigned int)POSTFX_BLOOM |
+        (unsigned int)POSTFX_DOF | (unsigned int)POSTFX_COLOR_GRADING |
+        (unsigned int)POSTFX_MOTION_BLUR,
     .vignette = {.intensity = 0.5F, .extent = 0.6F},
     .grain = {.intensity = 0.03F,
               .intensity_shadows = 1.2F,

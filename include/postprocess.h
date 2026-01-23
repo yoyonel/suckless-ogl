@@ -174,7 +174,6 @@ typedef struct {
 	Shader* lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
 	Shader* tile_max_shader;  /* Compute Shader: Tile Max Velocity */
 	Shader* neighbor_max_shader; /* Compute Shader: Neighbor Max Velocity */
-	Shader* dof_shader;
 
 	/* Dimensions */
 	int width;
