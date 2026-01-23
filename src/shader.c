@@ -28,62 +28,339 @@ enum { INFO_LOG_SIZE = 512 };
 
 enum { MAX_SHADER_NAME_LEN = 256 };
 
-char* shader_read_file(const char* path)
+/* -------------------------------------------------------------------------
+ * Internal Include Processing (Chunk-List / Single-Pass Allocation)
+ * ------------------------------------------------------------------------- */
+
+typedef struct LoadedBuffer {
+	char* data;
+	struct LoadedBuffer* next;
+} LoadedBuffer;
+
+typedef struct Chunk {
+	const char* ptr;
+	size_t len;
+	struct Chunk* next;
+} Chunk;
+
+typedef struct {
+	LoadedBuffer* buffers_head; /* List of all raw file buffers to free */
+	Chunk* chunks_head; /* Ordered list of text chunks to assemble */
+	Chunk* chunks_tail;
+	size_t total_size;
+	int recursion_depth;
+} IncludeContext;
+
+enum { MAX_INCLUDE_DEPTH = 16 };
+/* 16MB limit for shader source to prevent abuse/taint issues */
+/* 16MB limit for shader source to prevent abuse/taint issues */
+enum { MAX_SHADER_SOURCE_SIZE = 16 * 1024 * 1024 };
+enum { PATH_BUFFER_SIZE = 256 };
+enum { RESOLVED_PATH_BUFFER_SIZE = 512 };
+enum { HEADER_TAG_LEN = 7 };
+
+/* Forward declaration */
+static bool process_source(IncludeContext* ctx, const char* current_file_src,
+                           const char* current_file_path);
+
+/*
+ * Reads an entire file into a null-terminated string.
+ * This is the only place doing raw I/O and malloc for file content.
+ */
+static char* load_file_into_ram(const char* path)
 {
 	FILE* file_ptr = fopen(path, "rb");
 	if (!file_ptr) {
-		perror("fopen");
+		LOG_ERROR("suckless-ogl.shader", "Failed to open file: %s",
+		          path);
 		return NULL;
 	}
 
-	/* fseek failure on regular files is non-deterministic and not
-	 * realistically testable without fault injection. */
-	// llvm-cov ignore next line
-	// llvm-cov ignore next line
 	if (fseek(file_ptr, 0, SEEK_END) != 0) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to seek end: %s",
+		          path);
 		(void)fclose(file_ptr);
 		return NULL;
 	}
 
 	long len = ftell(file_ptr);
-	/* ftell < 0 is likewise a defensive-only path */
-	// llvm-cov ignore next line
 	if (len < 0) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to tell size: %s",
+		          path);
 		(void)fclose(file_ptr);
 		return NULL;
 	}
 
 	size_t size = (size_t)len;
-	char* src = calloc(size + 1, 1);
-	/* malloc/calloc failure is not realistically testable */
-	// llvm-cov ignore next line
-	if (!src) {
+	char* buf = safe_calloc(size + 1, 1);
+	if (!buf) {
+		LOG_ERROR("suckless-ogl.shader", "Allocation failed: %s", path);
 		(void)fclose(file_ptr);
 		return NULL;
 	}
 
-	// llvm-cov ignore next line
 	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to seek set: %s",
+		          path);
+		free(buf);
 		(void)fclose(file_ptr);
-		free(src);
 		return NULL;
 	}
 
-	/*
-	 * Short reads from fread() after a successful fopen/ftell on a
-	 * regular file cannot be reliably provoked on Linux without mocks
-	 * or kernel-level fault injection.
-	 */
-	size_t read_count = fread(src, 1, size, file_ptr);
-	// llvm-cov ignore next line
+	size_t read_count = fread(buf, 1, size, file_ptr);
 	if (read_count != size) {
-		free(src);
+		LOG_ERROR("suckless-ogl.shader", "Incomplete read: %s", path);
+		free(buf);
 		(void)fclose(file_ptr);
 		return NULL;
 	}
 
 	(void)fclose(file_ptr);
-	return src;
+	return buf;
+}
+
+static void ctx_add_buffer(IncludeContext* ctx, char* data)
+{
+	LoadedBuffer* loaded_buf = malloc(sizeof(LoadedBuffer));
+	loaded_buf->data = data;
+	loaded_buf->next = ctx->buffers_head;
+	ctx->buffers_head = loaded_buf;
+}
+
+static void ctx_add_chunk(IncludeContext* ctx, const char* ptr, size_t len)
+{
+	if (len == 0) {
+		return;
+	}
+	Chunk* chunk = malloc(sizeof(Chunk));
+	chunk->ptr = ptr;
+	chunk->len = len;
+	chunk->next = NULL;
+
+	if (ctx->chunks_tail) {
+		ctx->chunks_tail->next = chunk;
+	} else {
+		ctx->chunks_head = chunk;
+	}
+	ctx->chunks_tail = chunk;
+	ctx->total_size += len;
+}
+
+static void ctx_free(IncludeContext* ctx)
+{
+	/* Free all file buffers */
+	while (ctx->buffers_head) {
+		LoadedBuffer* next = ctx->buffers_head->next;
+		free(ctx->buffers_head->data);
+		free(ctx->buffers_head);
+		ctx->buffers_head = next;
+	}
+	/* Free all chunk nodes (pointers inside are owned by buffers above) */
+	while (ctx->chunks_head) {
+		Chunk* next = ctx->chunks_head->next;
+		free(ctx->chunks_head);
+		ctx->chunks_head = next;
+	}
+}
+
+/* Returns directory part of path (including trailing slash) or "./" */
+static void get_dir_from_path(const char* path, char* out_dir, size_t size)
+{
+	const char* last_slash = strrchr(path, '/');
+	if (last_slash) {
+		size_t len = (size_t)(last_slash - path) + 1;
+		if (len >= size) {
+			len = size - 1;
+		}
+		safe_memcpy(out_dir, size, path, len);
+		out_dir[len] = '\0';
+	} else {
+		safe_snprintf(out_dir, size, "./");
+	}
+}
+
+/*
+ * Helper to resolve and parse an included file.
+ * Returns true on success, false on error.
+ */
+// NOLINTNEXTLINE(misc-no-recursion)
+static bool resolve_and_parse_include(IncludeContext* ctx,
+                                      const char* path_term,
+                                      const char* current_file_path)
+{
+	/* Resolve relative path */
+	char current_dir[PATH_BUFFER_SIZE];
+	get_dir_from_path(current_file_path, current_dir, sizeof(current_dir));
+
+	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
+	safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s", current_dir,
+	              path_term);
+
+	/* Load the included file */
+	char* inc_src = load_file_into_ram(resolved_path);
+	if (!inc_src) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Failed to resolve include: %s (in %s)", path_term,
+		          current_file_path);
+		return false;
+	}
+
+	ctx_add_buffer(ctx, inc_src);
+
+	/* Recursively process the included content */
+	return process_source(ctx, inc_src, resolved_path);
+}
+
+/*
+ * Helper to parse the include path from the arguments after @header.
+ * Writes the parsed path to out_path.
+ * Returns the pointer to the end of the line (or end of args).
+ */
+static const char* parse_include_path(const char* args, char* out_path,
+                                      size_t size)
+{
+	while (*args == ' ' || *args == '\t') {
+		args++;
+	}
+
+	const char* end_of_line = strchr(args, '\n');
+	if (!end_of_line) {
+		end_of_line = args + strlen(args);
+	}
+
+	/* Extract path token */
+	const char* path_start = args;
+	const char* path_end = end_of_line;
+
+	if (*args == '"') {
+		path_start = args + 1;
+		const char* close_quote = strchr(path_start, '"');
+		if (close_quote && close_quote < end_of_line) {
+			path_end = close_quote;
+		}
+	}
+
+	size_t path_len = (size_t)(path_end - path_start);
+	if (path_len >= size) {
+		path_len = size - 1;
+	}
+	safe_memcpy(out_path, size, path_start, path_len);
+	out_path[path_len] = '\0';
+
+	/* Trim trailing whitespace if no quotes */
+	if (*args != '"') {
+		char* ptr = out_path + path_len - 1;
+		while (ptr >= out_path && (*ptr == ' ' || *ptr == '\r')) {
+			*ptr = '\0';
+			ptr--;
+		}
+	}
+
+	return end_of_line;
+}
+
+/* Recursive function to process text and resolve @header */
+// NOLINTNEXTLINE(misc-no-recursion)
+static bool process_source(IncludeContext* ctx, const char* current_file_src,
+                           const char* current_file_path)
+{
+	if (ctx->recursion_depth > MAX_INCLUDE_DEPTH) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Max include depth exceeded at: %s",
+		          current_file_path);
+		return false;
+	}
+
+	ctx->recursion_depth++;
+	const char* cursor = current_file_src;
+
+	while (cursor && *cursor) {
+		const char* next_tag = strstr(cursor, "@header");
+		if (!next_tag) {
+			ctx_add_chunk(ctx, cursor, strlen(cursor));
+			break;
+		}
+
+		/* Check valid start of line */
+		bool at_line_start =
+		    (next_tag == current_file_src) || (*(next_tag - 1) == '\n');
+
+		if (!at_line_start) {
+			size_t len =
+			    (size_t)(next_tag - cursor) + HEADER_TAG_LEN;
+			ctx_add_chunk(ctx, cursor, len);
+			cursor = next_tag + HEADER_TAG_LEN;
+			continue;
+		}
+
+		/* Add chunk BEFORE the tag */
+		ctx_add_chunk(ctx, cursor, (size_t)(next_tag - cursor));
+
+		/* Parse path */
+		char raw_inc_path[PATH_BUFFER_SIZE];
+		const char* end_of_line =
+		    parse_include_path(next_tag + HEADER_TAG_LEN, raw_inc_path,
+		                       sizeof(raw_inc_path));
+
+		if (!resolve_and_parse_include(ctx, raw_inc_path,
+		                               current_file_path)) {
+			return false;
+		}
+
+		cursor = end_of_line;
+		if (*cursor == '\n') {
+			cursor++;
+		}
+	}
+
+	ctx->recursion_depth--;
+	return true;
+}
+
+char* shader_read_file(const char* path)
+{
+	/* 1. Load root file */
+	char* root_src = load_file_into_ram(path);
+	if (!root_src) {
+		return NULL;
+	}
+
+	/* 2. Setup Context */
+	IncludeContext ctx = {0};
+	ctx_add_buffer(&ctx, root_src);
+
+	/* 3. Recursively parse and build chunk list */
+	if (!process_source(&ctx, root_src, path)) {
+		ctx_free(&ctx);
+		return NULL;
+	}
+
+	/* 4. Single Allocation for final result */
+	char* final_src = safe_calloc(ctx.total_size + 1, 1);
+	if (!final_src) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Final allocation failed (%lu bytes)",
+		          ctx.total_size);
+		ctx_free(&ctx);
+		return NULL;
+	}
+
+	/* 5. Assemble */
+	char* wptr = final_src;
+	Chunk* node = ctx.chunks_head;
+	while (node) {
+		safe_memcpy(wptr,
+		            ctx.total_size + 1 - (size_t)(wptr - final_src),
+		            node->ptr, node->len);
+		wptr += node->len;
+		node = node->next;
+	}
+	*wptr = '\0'; /* Null terminate */
+
+	/* 6. Cleanup intermediate buffers */
+	ctx_free(&ctx);
+
+	return final_src;
 }
 
 GLuint shader_compile(const char* path, GLenum type)

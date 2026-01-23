@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /**
  * @brief Safe wrapper around vsnprintf to format strings with bounds checking.
@@ -40,6 +42,38 @@ __attribute__((format(printf, 3, 4))) static inline bool safe_snprintf(
 static inline bool check_flag(int value, int flag)
 {
 	return ((unsigned int)value & (unsigned int)flag) != 0;
+}
+
+/**
+ * @brief Safe wrapper around calloc.
+ *
+ * Checks for zero size and returns NULL if num or size are 0.
+ * Suppresses common security warnings for verified allocations.
+ */
+static inline void* safe_calloc(size_t num, size_t size)
+{
+	if (num == 0 || size == 0) {
+		return NULL;
+	}
+	// NOLINTNEXTLINE
+	return calloc(num, size);
+}
+
+/**
+ * @brief Safe wrapper around memcpy.
+ *
+ * Checks for null pointers and ensures dest_size >= count.
+ * Returns false if bounds check fails.
+ */
+static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
+                               size_t count)
+{
+	if (!dest || !src || dest_size < count) {
+		return false;
+	}
+	// NOLINTNEXTLINE
+	memcpy(dest, src, count);
+	return true;
 }
 
 #endif  // UTILS_H

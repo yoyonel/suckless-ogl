@@ -3,7 +3,7 @@
 
 #include "gl_common.h"
 
-/* Compile a single shader from file */
+/* Compile a single shader from file (supports @header includes) */
 GLuint shader_compile(const char* path, GLenum type);
 
 /* Read shader source from file (exposed for testing) */

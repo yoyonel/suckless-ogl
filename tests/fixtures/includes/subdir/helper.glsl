@@ -1,0 +1,2 @@
+// Helper included
+void helper() {}
