@@ -5,75 +5,58 @@ uniform float dofFocalDistance;
 uniform float dofFocalRange;
 uniform float dofBokehScale;
 
+/* Texture floutée (1/2 res, 13-tap filter) */
+uniform sampler2D dofBlurTexture;
+
 /* ============================================================================
-   EFFECT: DEPTH OF FIELD
+   EFFECT: DEPTH OF FIELD (OPTIMIZED KAWASE / JIMENEZ)
    ============================================================================ */
 
 vec3 applyDoF(vec3 color, vec2 uv) {
     float depth = texture(depthTexture, uv).r;
 
-    /* Early exit for skybox (before any expensive calculations) */
+    /* Early exit for skybox (before any calculation) */
     if (depth >= 0.99999) {
-        /* Skip DoF for skybox */
         return color;
     }
 
+    /* Calculate Circle of Confusion (CoC) */
     float zNear = 0.1;
     float zFar = 1000.0;
     float z_ndc = 2.0 * depth - 1.0;
     float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 
     float coc = abs(dist - dofFocalDistance) / (dist + 0.0001);
-    float blurAmount = clamp(coc * dofBokehScale, 0.0, 1.0);
 
     /* Apply focal range (in-focus zone) */
+    float blurFactor = 0.0;
     if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
-        blurAmount = 0.0;
+        blurFactor = 0.0;
     } else {
         /* Smooth transition at edges of focal range */
         float edge = dofFocalRange;
         float distDiff = abs(dist - dofFocalDistance);
         if (distDiff < edge + 5.0) {
-            blurAmount *= (distDiff - edge) / 5.0;
+            blurFactor = (distDiff - edge) / 5.0;
+        } else {
+            blurFactor = 1.0;
         }
     }
 
-    blurAmount = clamp(blurAmount, 0.0, 1.0);
+    blurFactor *= clamp(coc * dofBokehScale, 0.0, 1.0);
+    blurFactor = clamp(blurFactor, 0.0, 1.0);
 
-    /* ⭐ CRITICAL OPTIMIZATION: Early exit before expensive blur loop */
-    if (blurAmount > 0.01) {
-
-        vec3 acc = vec3(0.0);
-        float totalWeight = 0.0;
-        float centerDepth = linearizeDepth(depth);
-        float maxRadius = 10.0 * blurAmount;
-        vec2 texSize = vec2(textureSize(screenTexture, 0));
-        vec2 pixelSize = 1.0 / texSize;
-        int samples = 16;
-        float goldenAngle = 2.39996323;
-
-        for(int i = 0; i < samples; i++) {
-             float theta = float(i) * goldenAngle;
-             float r = sqrt(float(i) / float(samples));
-             vec2 offset = vec2(cos(theta), sin(theta)) * r * maxRadius * pixelSize;
-             vec3 sampleCol = texture(screenTexture, uv + offset).rgb;
-             float sampleDepth = linearizeDepth(texture(depthTexture, uv + offset).r);
-             float depthDiff = sampleDepth - centerDepth;
-             float weight = 1.0;
-             if (depthDiff > 1.0) weight = 0.1;
-             else if (depthDiff < -1.0) weight = 1.0;
-             else weight = 1.0;
-             acc += sampleCol * weight;
-             totalWeight += weight;
-        }
-        color = acc / totalWeight;
+    /* OPTIMIZED: Mix with pre-blurred texture instead of real-time sampling loop */
+    if (blurFactor > 0.01) {
+        vec3 blurredColor = texture(dofBlurTexture, uv).rgb;
+        color = mix(color, blurredColor, blurFactor);
     }
 
     /* Debug visualization */
     if (enableDoFDebug != 0) {
         vec3 debugColor = vec3(0.0);
-        if (dist < dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, blurAmount, 0.0);
-        else if (dist > dofFocalDistance && blurAmount > 0.0) debugColor = vec3(0.0, 0.0, blurAmount);
+        if (dist < dofFocalDistance && blurFactor > 0.0) debugColor = vec3(0.0, blurFactor, 0.0);
+        else if (dist > dofFocalDistance && blurFactor > 0.0) debugColor = vec3(0.0, 0.0, blurFactor);
         return debugColor;
     }
 

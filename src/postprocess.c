@@ -19,6 +19,17 @@ static void render_auto_exposure(PostProcess* post_processing);
 /* TODO: move to gl_common.h and mutualize with skybox rendering */
 enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
 
+/* Texture Units */
+enum {
+	POSTPROCESS_TEX_UNIT_SCENE = 0,
+	POSTPROCESS_TEX_UNIT_BLOOM = 1,
+	POSTPROCESS_TEX_UNIT_DEPTH = 2,
+	POSTPROCESS_TEX_UNIT_EXPOSURE = 3,
+	POSTPROCESS_TEX_UNIT_VELOCITY = 4,
+	POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX = 5,
+	POSTPROCESS_TEX_UNIT_DOF_BLUR = 6
+};
+
 /* Auto Exposure Constants */
 static const float EXPOSURE_MIN_LUM =
     0.7F; /* Limite le boost max (1.0 = pas de boost) */
@@ -141,9 +152,58 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		          "Failed to load postprocess shader");
 		destroy_framebuffer(post_processing);
 		destroy_bloom_resources(post_processing);
+		destroy_bloom_resources(post_processing);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
+
+	/* Créer les ressources DoF (1/2 Res Blur) */
+	/* Create FBO */
+	glGenFramebuffers(1, &post_processing->dof_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
+
+	int dof_width = width / 4;
+	int dof_height = height / 4;
+	if (dof_width < 1) {
+		dof_width = 1;
+	}
+	if (dof_height < 1) {
+		dof_height = 1;
+	}
+
+	/* Create Texture (R11F_G11F_B10F is sufficient for bokeh) */
+	glGenTextures(1, &post_processing->dof_blur_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
+	             0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	/* Create Temp Texture for Ping-Pong */
+	glGenTextures(1, &post_processing->dof_temp_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
+	             0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
+	    GL_FRAMEBUFFER_COMPLETE) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to create DoF framebuffer");
+		destroy_framebuffer(post_processing);
+		destroy_bloom_resources(post_processing);
+		destroy_screen_quad(post_processing);
+		return 0;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	post_processing->bloom_prefilter_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/bloom_prefilter.frag");
@@ -213,6 +273,15 @@ void postprocess_cleanup(PostProcess* post_processing)
 	}
 	destroy_bloom_resources(post_processing);
 
+	if (post_processing->dof_fbo) {
+		glDeleteFramebuffers(1, &post_processing->dof_fbo);
+		post_processing->dof_fbo = 0;
+	}
+	if (post_processing->dof_blur_tex) {
+		glDeleteTextures(1, &post_processing->dof_blur_tex);
+		post_processing->dof_blur_tex = 0;
+	}
+
 	LOG_INFO("suckless-ogl.postprocess", "Post-processing cleaned up");
 }
 
@@ -238,6 +307,51 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to resize bloom resources");
 	}
+
+	/* Resize DoF Resources */
+	if (post_processing->dof_fbo) {
+		glDeleteFramebuffers(1, &post_processing->dof_fbo);
+		post_processing->dof_fbo = 0;
+	}
+	if (post_processing->dof_blur_tex) {
+		glDeleteTextures(1, &post_processing->dof_blur_tex);
+		post_processing->dof_blur_tex = 0;
+	}
+
+	glGenFramebuffers(1, &post_processing->dof_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
+
+	int dof_width = width / 4;
+	int dof_height = height / 4;
+	if (dof_width < 1) {
+		dof_width = 1;
+	}
+	if (dof_height < 1) {
+		dof_height = 1;
+	}
+
+	glGenTextures(1, &post_processing->dof_blur_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
+	             0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	/* Resize Temp Texture */
+	glGenTextures(1, &post_processing->dof_temp_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
+	             0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
 }
@@ -397,6 +511,65 @@ void postprocess_end(PostProcess* post_processing)
 	 * défaut */
 	render_bloom(post_processing);
 
+	/* DoF Blur Pass (if DoF enabled) */
+	/* We reuse bloom_downsample to get a filtered 1/2 res version of the
+	 * scene */
+	if (postprocess_is_enabled(post_processing, POSTFX_DOF) ||
+	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
+		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
+		int dof_width = post_processing->width / 4;
+		int dof_height = post_processing->height / 4;
+		if (dof_width < 1) {
+			dof_width = 1;
+		}
+		if (dof_height < 1) {
+			dof_height = 1;
+		}
+		glViewport(0, 0, dof_width, dof_height);
+
+		/* Pass 1: Downsample/Blur Scene -> Temp (13-tap) */
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		                       GL_TEXTURE_2D,
+		                       post_processing->dof_temp_tex, 0);
+
+		shader_use(post_processing->bloom_downsample_shader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+		shader_set_int(post_processing->bloom_downsample_shader,
+		               "srcTexture", 0);
+
+		vec2 src_res = {(float)post_processing->width,
+		                (float)post_processing->height};
+		shader_set_vec2(post_processing->bloom_downsample_shader,
+		                "srcResolution", (float*)&src_res);
+
+		glBindVertexArray(post_processing->screen_quad_vao);
+		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+		/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final) */
+		/* Using bloom_upsample (Tent 3x3 radius adjustable) to widen
+		 * the blur */
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		                       GL_TEXTURE_2D,
+		                       post_processing->dof_blur_tex, 0);
+
+		shader_use(post_processing->bloom_upsample_shader);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
+		shader_set_int(post_processing->bloom_upsample_shader,
+		               "srcTexture", 0);
+		/* Scale radius to 1.0 (standard neighbor) or higher for wider
+		 * blur */
+		shader_set_float(post_processing->bloom_upsample_shader,
+		                 "filterRadius", 1.0F);
+
+		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+		glBindVertexArray(0);
+	}
+
 	/* Auto Exposure Pass (Compute) - Must be done before binding final
 	 * shader */
 	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE) &&
@@ -455,42 +628,51 @@ void postprocess_end(PostProcess* post_processing)
 	shader_use(post_processing->postprocess_shader);
 
 	/* Bind la texture de la scène */
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_SCENE);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(post_processing->postprocess_shader, "screenTexture", 0);
+	shader_set_int(post_processing->postprocess_shader, "screenTexture",
+	               POSTPROCESS_TEX_UNIT_SCENE);
 
 	/* Bind la texture de Bloom */
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM);
 	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
 		glBindTexture(GL_TEXTURE_2D,
 		              post_processing->bloom_mips[0].texture);
 	} else {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	shader_set_int(post_processing->postprocess_shader, "bloomTexture", 1);
+	shader_set_int(post_processing->postprocess_shader, "bloomTexture",
+	               POSTPROCESS_TEX_UNIT_BLOOM);
 
 	/* Bind la texture de Profondeur (pour le DoF) */
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
-	shader_set_int(post_processing->postprocess_shader, "depthTexture", 2);
+	shader_set_int(post_processing->postprocess_shader, "depthTexture",
+	               POSTPROCESS_TEX_UNIT_DEPTH);
 
 	/* Bind Exposure Texture (Unit 3) */
-	glActiveTexture(GL_TEXTURE3);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
 	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
 	shader_set_int(post_processing->postprocess_shader,
-	               "autoExposureTexture", 3);
+	               "autoExposureTexture", POSTPROCESS_TEX_UNIT_EXPOSURE);
 
 	/* Bind Velocity Texture (Unit 4) */
-	glActiveTexture(GL_TEXTURE4);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
 	shader_set_int(post_processing->postprocess_shader, "velocityTexture",
-	               4);
+	               POSTPROCESS_TEX_UNIT_VELOCITY);
 
 	/* Bind Neighbor Max Texture (Unit 5) */
-	glActiveTexture(GL_TEXTURE5);
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
 	glBindTexture(GL_TEXTURE_2D, post_processing->neighbor_max_tex);
 	shader_set_int(post_processing->postprocess_shader,
-	               "neighborMaxTexture", BLOOM_MIP_LEVELS);
+	               "neighborMaxTexture", POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
+
+	/* Bind DoF Blurred Texture (Unit 6) */
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
+	shader_set_int(post_processing->postprocess_shader, "dofBlurTexture",
+	               POSTPROCESS_TEX_UNIT_DOF_BLUR);
 
 	/* Envoyer les flags d'effets actifs */
 	shader_set_int(

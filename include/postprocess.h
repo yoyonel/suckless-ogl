@@ -21,8 +21,8 @@
 
 /* DoF defaults */
 #define DEFAULT_DOF_FOCAL_DISTANCE 20.0F /* Match default camera distance */
-#define DEFAULT_DOF_FOCAL_RANGE 10.0F    /* Wider range */
-#define DEFAULT_DOF_BOKEH_SCALE 1.0F     /* Subtle blur */
+#define DEFAULT_DOF_FOCAL_RANGE 5.0F     /* Narrower range */
+#define DEFAULT_DOF_BOKEH_SCALE 10.0F    /* Stronger blur */
 
 /* White Balance Defaults */
 #define DEFAULT_WB_TEMP 6500.0F
@@ -155,6 +155,11 @@ typedef struct {
 	/* Bloom Resources */
 	GLuint bloom_fbo; /* FBO partagé pour le blit */
 	BloomMip bloom_mips[BLOOM_MIP_LEVELS];
+
+	/* DoF Resources */
+	GLuint dof_fbo;
+	GLuint dof_blur_tex; /* 1/4 Res Blurred Texture (Final) */
+	GLuint dof_temp_tex; /* 1/4 Res Intermediate Texture (Ping-Pong) */
 
 	/* Auto Exposure Resources */
 	GLuint lum_downsample_fbo; /* FBO pour downsample luminance */
