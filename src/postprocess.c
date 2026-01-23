@@ -131,8 +131,8 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	}
 
 	/* Charger le shader de post-processing */
-	post_processing->postprocess_shader = shader_load_program(
-	    "shaders/postprocess.vert", "shaders/postprocess.frag");
+	post_processing->postprocess_shader =
+	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
 
 	if (!post_processing->postprocess_shader) {
 		LOG_ERROR("suckless-ogl.postprocess",
@@ -143,24 +143,24 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
-	post_processing->bloom_prefilter_shader = shader_load_program(
+	post_processing->bloom_prefilter_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/bloom_prefilter.frag");
-	post_processing->bloom_downsample_shader = shader_load_program(
+	post_processing->bloom_downsample_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/bloom_downsample.frag");
-	post_processing->bloom_upsample_shader = shader_load_program(
+	post_processing->bloom_upsample_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/bloom_upsample.frag");
 
-	post_processing->lum_downsample_shader = shader_load_program(
+	post_processing->lum_downsample_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
 
 	post_processing->lum_adapt_shader =
-	    shader_load_compute("shaders/lum_adapt.comp");
+	    shader_load_compute_program("shaders/lum_adapt.comp");
 
 	/* Motion Blur Compute Shaders */
 	post_processing->tile_max_shader =
-	    shader_load_compute("shaders/tile_max_velocity.comp");
+	    shader_load_compute_program("shaders/tile_max_velocity.comp");
 	post_processing->neighbor_max_shader =
-	    shader_load_compute("shaders/neighbor_max_velocity.comp");
+	    shader_load_compute_program("shaders/neighbor_max_velocity.comp");
 
 	if (!post_processing->bloom_prefilter_shader ||
 	    !post_processing->bloom_downsample_shader ||
@@ -186,28 +186,28 @@ void postprocess_cleanup(PostProcess* post_processing)
 	destroy_screen_quad(post_processing);
 
 	if (post_processing->postprocess_shader) {
-		glDeleteProgram(post_processing->postprocess_shader);
-		post_processing->postprocess_shader = 0;
+		shader_destroy(post_processing->postprocess_shader);
+		post_processing->postprocess_shader = NULL;
 	}
 	if (post_processing->bloom_prefilter_shader) {
-		glDeleteProgram(post_processing->bloom_prefilter_shader);
-		post_processing->bloom_prefilter_shader = 0;
+		shader_destroy(post_processing->bloom_prefilter_shader);
+		post_processing->bloom_prefilter_shader = NULL;
 	}
 	if (post_processing->bloom_downsample_shader) {
-		glDeleteProgram(post_processing->bloom_downsample_shader);
-		post_processing->bloom_downsample_shader = 0;
+		shader_destroy(post_processing->bloom_downsample_shader);
+		post_processing->bloom_downsample_shader = NULL;
 	}
 	if (post_processing->bloom_upsample_shader) {
-		glDeleteProgram(post_processing->bloom_upsample_shader);
-		post_processing->bloom_upsample_shader = 0;
+		shader_destroy(post_processing->bloom_upsample_shader);
+		post_processing->bloom_upsample_shader = NULL;
 	}
 	if (post_processing->tile_max_shader) {
-		glDeleteProgram(post_processing->tile_max_shader);
-		post_processing->tile_max_shader = 0;
+		shader_destroy(post_processing->tile_max_shader);
+		post_processing->tile_max_shader = NULL;
 	}
 	if (post_processing->neighbor_max_shader) {
-		glDeleteProgram(post_processing->neighbor_max_shader);
-		post_processing->neighbor_max_shader = 0;
+		shader_destroy(post_processing->neighbor_max_shader);
+		post_processing->neighbor_max_shader = NULL;
 	}
 	destroy_bloom_resources(post_processing);
 
@@ -413,14 +413,12 @@ void postprocess_end(PostProcess* post_processing)
 		    COMPUTE_WORK_GROUP_SIZE;
 
 		/* Pass 1: Tile Max Velocity */
-		glUseProgram(post_processing->tile_max_shader);
+		shader_use(post_processing->tile_max_shader);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-		glUniform1i(
-		    glGetUniformLocation(post_processing->tile_max_shader,
-		                         "velocityTexture"),
-		    0);
+		shader_set_int(post_processing->tile_max_shader,
+		               "velocityTexture", 0);
 
 		glBindImageTexture(1, post_processing->tile_max_tex, 0,
 		                   GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
@@ -430,14 +428,12 @@ void postprocess_end(PostProcess* post_processing)
 		                GL_TEXTURE_FETCH_BARRIER_BIT);
 
 		/* Pass 2: Neighbor Max Velocity */
-		glUseProgram(post_processing->neighbor_max_shader);
+		shader_use(post_processing->neighbor_max_shader);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, post_processing->tile_max_tex);
-		glUniform1i(
-		    glGetUniformLocation(post_processing->neighbor_max_shader,
-		                         "tileMaxTexture"),
-		    0);
+		shader_set_int(post_processing->neighbor_max_shader,
+		               "tileMaxTexture", 0);
 
 		glBindImageTexture(1, post_processing->neighbor_max_tex, 0,
 		                   GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
@@ -454,14 +450,12 @@ void postprocess_end(PostProcess* post_processing)
 	glDisable(GL_DEPTH_TEST);
 
 	/* Utiliser le shader de post-processing */
-	glUseProgram(post_processing->postprocess_shader);
+	shader_use(post_processing->postprocess_shader);
 
 	/* Bind la texture de la scène */
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "screenTexture"),
-	            0);
+	shader_set_int(post_processing->postprocess_shader, "screenTexture", 0);
 
 	/* Bind la texture de Bloom */
 	glActiveTexture(GL_TEXTURE1);
@@ -471,186 +465,145 @@ void postprocess_end(PostProcess* post_processing)
 	} else {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "bloomTexture"),
-	            1);
+	shader_set_int(post_processing->postprocess_shader, "bloomTexture", 1);
 
 	/* Bind la texture de Profondeur (pour le DoF) */
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "depthTexture"),
-	            2);
+	shader_set_int(post_processing->postprocess_shader, "depthTexture", 2);
 
 	/* Bind Exposure Texture (Unit 3) */
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, post_processing->exposure_tex);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "autoExposureTexture"),
-	            3);
+	shader_set_int(post_processing->postprocess_shader,
+	               "autoExposureTexture", 3);
 
 	/* Bind Velocity Texture (Unit 4) */
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "velocityTexture"),
-	            4);
+	shader_set_int(post_processing->postprocess_shader, "velocityTexture",
+	               4);
 
 	/* Bind Neighbor Max Texture (Unit 5) */
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, post_processing->neighbor_max_tex);
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "neighborMaxTexture"),
-	    BLOOM_MIP_LEVELS); /* Unit 5 matches BLOOM_MIP_LEVELS define */
+	shader_set_int(post_processing->postprocess_shader,
+	               "neighborMaxTexture", BLOOM_MIP_LEVELS);
 
 	/* Envoyer les flags d'effets actifs */
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableVignette"),
-	            postprocess_is_enabled(post_processing, POSTFX_VIGNETTE));
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableGrain"),
-	            postprocess_is_enabled(post_processing, POSTFX_GRAIN));
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableExposure"),
-	            postprocess_is_enabled(post_processing, POSTFX_EXPOSURE));
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "enableAutoExposure"),
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableVignette",
+	    postprocess_is_enabled(post_processing, POSTFX_VIGNETTE));
+	shader_set_int(post_processing->postprocess_shader, "enableGrain",
+	               postprocess_is_enabled(post_processing, POSTFX_GRAIN));
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableExposure",
+	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE));
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableAutoExposure",
 	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE));
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "enableExposureDebug"),
-	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG));
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableChromAbbr"),
-	            postprocess_is_enabled(post_processing, POSTFX_CHROM_ABBR));
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "enableColorGrading"),
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableChromAbbr",
+	    postprocess_is_enabled(post_processing, POSTFX_CHROM_ABBR));
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableColorGrading",
 	    postprocess_is_enabled(post_processing, POSTFX_COLOR_GRADING));
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableBloom"),
-	            postprocess_is_enabled(post_processing, POSTFX_BLOOM));
+	shader_set_int(post_processing->postprocess_shader, "enableBloom",
+	               postprocess_is_enabled(post_processing, POSTFX_BLOOM));
 
 	/* Motion Blur Uniforms */
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "enableMotionBlur"),
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableMotionBlur",
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR));
-	glUniform1i(
-	    glGetUniformLocation(post_processing->postprocess_shader,
-	                         "enableMotionBlurDebug"),
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableMotionBlurDebug",
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "motionBlurIntensity"),
-	            MB_INTENSITY);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "motionBlurMaxVelocity"),
-	            MB_MAX_VELOCITY);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "motionBlurSamples"),
-	            MB_SAMPLES);
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableDoF"),
-	            postprocess_is_enabled(post_processing, POSTFX_DOF));
-	glUniform1i(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "enableDoFDebug"),
-	            postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG));
+	shader_set_float(post_processing->postprocess_shader,
+	                 "motionBlurIntensity", MB_INTENSITY);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "motionBlurMaxVelocity", MB_MAX_VELOCITY);
+	shader_set_int(post_processing->postprocess_shader, "motionBlurSamples",
+	               MB_SAMPLES);
+	shader_set_int(post_processing->postprocess_shader, "enableDoF",
+	               postprocess_is_enabled(post_processing, POSTFX_DOF));
+	shader_set_int(
+	    post_processing->postprocess_shader, "enableDoFDebug",
+	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG));
 
 	/* Envoyer les paramètres des effets */
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "vignetteIntensity"),
-	            post_processing->vignette.intensity);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "vignetteExtent"),
-	            post_processing->vignette.extent);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainIntensity"),
-	            post_processing->grain.intensity);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainIntensityShadows"),
-	            post_processing->grain.intensity_shadows);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainIntensityMidtones"),
-	            post_processing->grain.intensity_midtones);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainIntensityHighlights"),
-	            post_processing->grain.intensity_highlights);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainShadowsMax"),
-	            post_processing->grain.shadows_max);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainHighlightsMin"),
-	            post_processing->grain.highlights_min);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "grainTexelSize"),
-	            post_processing->grain.texel_size);
-	glUniform1f(
-	    glGetUniformLocation(post_processing->postprocess_shader, "time"),
-	    post_processing->time);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "exposure"),
-	            post_processing->exposure.exposure);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "chromAbbrStrength"),
-	            post_processing->chrom_abbr.strength);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "bloomIntensity"),
-	            post_processing->bloom.intensity);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "vignetteIntensity",
+	                 post_processing->vignette.intensity);
+	shader_set_float(post_processing->postprocess_shader, "vignetteExtent",
+	                 post_processing->vignette.extent);
+	shader_set_float(post_processing->postprocess_shader, "grainIntensity",
+	                 post_processing->grain.intensity);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "grainIntensityShadows",
+	                 post_processing->grain.intensity_shadows);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "grainIntensityMidtones",
+	                 post_processing->grain.intensity_midtones);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "grainIntensityHighlights",
+	                 post_processing->grain.intensity_highlights);
+	shader_set_float(post_processing->postprocess_shader, "grainShadowsMax",
+	                 post_processing->grain.shadows_max);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "grainHighlightsMin",
+	                 post_processing->grain.highlights_min);
+	shader_set_float(post_processing->postprocess_shader, "grainTexelSize",
+	                 post_processing->grain.texel_size);
+	shader_set_float(post_processing->postprocess_shader, "time",
+	                 post_processing->time);
+	shader_set_float(post_processing->postprocess_shader, "exposure",
+	                 post_processing->exposure.exposure);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "chromAbbrStrength",
+	                 post_processing->chrom_abbr.strength);
+	shader_set_float(post_processing->postprocess_shader, "bloomIntensity",
+	                 post_processing->bloom.intensity);
 
 	/* Paramètres DoF */
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "dofFocalDistance"),
-	            post_processing->dof.focal_distance);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "dofFocalRange"),
-	            post_processing->dof.focal_range);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "dofBokehScale"),
-	            post_processing->dof.bokeh_scale);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "dofFocalDistance",
+	                 post_processing->dof.focal_distance);
+	shader_set_float(post_processing->postprocess_shader, "dofFocalRange",
+	                 post_processing->dof.focal_range);
+	shader_set_float(post_processing->postprocess_shader, "dofBokehScale",
+	                 post_processing->dof.bokeh_scale);
 
 	/* Paramètres Color Grading */
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "gradSaturation"),
-	            post_processing->color_grading.saturation);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "gradContrast"),
-	            post_processing->color_grading.contrast);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "gradGamma"),
-	            post_processing->color_grading.gamma);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "gradGain"),
-	            post_processing->color_grading.gain);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "gradOffset"),
-	            post_processing->color_grading.offset);
+	shader_set_float(post_processing->postprocess_shader, "gradSaturation",
+	                 post_processing->color_grading.saturation);
+	shader_set_float(post_processing->postprocess_shader, "gradContrast",
+	                 post_processing->color_grading.contrast);
+	shader_set_float(post_processing->postprocess_shader, "gradGamma",
+	                 post_processing->color_grading.gamma);
+	shader_set_float(post_processing->postprocess_shader, "gradGain",
+	                 post_processing->color_grading.gain);
+	shader_set_float(post_processing->postprocess_shader, "gradOffset",
+	                 post_processing->color_grading.offset);
 
 	/* Paramètres White Balance */
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "wbTemperature"),
-	            post_processing->white_balance.temperature);
-	glUniform1f(
-	    glGetUniformLocation(post_processing->postprocess_shader, "wbTint"),
-	    post_processing->white_balance.tint);
+	shader_set_float(post_processing->postprocess_shader, "wbTemperature",
+	                 post_processing->white_balance.temperature);
+	shader_set_float(post_processing->postprocess_shader, "wbTint",
+	                 post_processing->white_balance.tint);
 
 	/* Paramètres Tonemapper */
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "tonemapSlope"),
-	            post_processing->tonemapper.slope);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "tonemapToe"),
-	            post_processing->tonemapper.toe);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "tonemapShoulder"),
-	            post_processing->tonemapper.shoulder);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "tonemapBlackClip"),
-	            post_processing->tonemapper.black_clip);
-	glUniform1f(glGetUniformLocation(post_processing->postprocess_shader,
-	                                 "tonemapWhiteClip"),
-	            post_processing->tonemapper.white_clip);
+	shader_set_float(post_processing->postprocess_shader, "tonemapSlope",
+	                 post_processing->tonemapper.slope);
+	shader_set_float(post_processing->postprocess_shader, "tonemapToe",
+	                 post_processing->tonemapper.toe);
+	shader_set_float(post_processing->postprocess_shader, "tonemapShoulder",
+	                 post_processing->tonemapper.shoulder);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "tonemapBlackClip",
+	                 post_processing->tonemapper.black_clip);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "tonemapWhiteClip",
+	                 post_processing->tonemapper.white_clip);
 
 	/* Dessiner le quad */
 	glBindVertexArray(post_processing->screen_quad_vao);
@@ -680,13 +633,12 @@ static void render_auto_exposure(PostProcess* post_processing)
 	glViewport(0, 0, LUM_DOWNSAMPLE_SIZE, LUM_DOWNSAMPLE_SIZE);
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->lum_downsample_fbo);
 
-	glUseProgram(post_processing->lum_downsample_shader);
+	shader_use(post_processing->lum_downsample_shader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->scene_color_tex); /* Input: Scene */
-	glUniform1i(glGetUniformLocation(post_processing->lum_downsample_shader,
-	                                 "sceneTexture"),
-	            0);
+	shader_set_int(post_processing->lum_downsample_shader, "sceneTexture",
+	               0);
 
 	/* Draw Fullscreen Quad (Reuse existing vao) */
 	glBindVertexArray(post_processing->screen_quad_vao);
@@ -694,7 +646,7 @@ static void render_auto_exposure(PostProcess* post_processing)
 	glBindVertexArray(0); /* Unbind */
 
 	/* 2. Compute Adaptation */
-	glUseProgram(post_processing->lum_adapt_shader);
+	shader_use(post_processing->lum_adapt_shader);
 
 	/* Input: Downsampled Log Lum */
 	glActiveTexture(GL_TEXTURE0);
@@ -702,33 +654,26 @@ static void render_auto_exposure(PostProcess* post_processing)
 	/* Note: In compute, samplers map to texture units bound via
 	   glActiveTexture? Yes, usually. Or uniform binding. Let's send 0
 	   explicitly. */
-	glUniform1i(glGetUniformLocation(post_processing->lum_adapt_shader,
-	                                 "lumTexture"),
-	            0);
+	shader_set_int(post_processing->lum_adapt_shader, "lumTexture", 0);
 
 	/* Output: Exposure Storage Image (Image Unit 1) */
 	glBindImageTexture(1, post_processing->exposure_tex, 0, GL_FALSE, 0,
 	                   GL_READ_WRITE, GL_RGBA32F);
 
 	/* Uniforms */
-	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
-	                                 "deltaTime"),
-	            post_processing->delta_time);
-	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
-	                                 "minLuminance"),
-	            post_processing->auto_exposure.min_luminance);
-	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
-	                                 "maxLuminance"),
-	            post_processing->auto_exposure.max_luminance);
-	glUniform1f(
-	    glGetUniformLocation(post_processing->lum_adapt_shader, "speedUp"),
-	    post_processing->auto_exposure.speed_up);
-	glUniform1f(glGetUniformLocation(post_processing->lum_adapt_shader,
-	                                 "speedDown"),
-	            post_processing->auto_exposure.speed_down);
-	glUniform1f(
-	    glGetUniformLocation(post_processing->lum_adapt_shader, "keyValue"),
-	    post_processing->auto_exposure.key_value);
+	/* Uniforms */
+	shader_set_float(post_processing->lum_adapt_shader, "deltaTime",
+	                 post_processing->delta_time);
+	shader_set_float(post_processing->lum_adapt_shader, "minLuminance",
+	                 post_processing->auto_exposure.min_luminance);
+	shader_set_float(post_processing->lum_adapt_shader, "maxLuminance",
+	                 post_processing->auto_exposure.max_luminance);
+	shader_set_float(post_processing->lum_adapt_shader, "speedUp",
+	                 post_processing->auto_exposure.speed_up);
+	shader_set_float(post_processing->lum_adapt_shader, "speedDown",
+	                 post_processing->auto_exposure.speed_down);
+	shader_set_float(post_processing->lum_adapt_shader, "keyValue",
+	                 post_processing->auto_exposure.key_value);
 
 	/* Barrier to ensure Downsample FBO write is visible to Compute Sampler
 	 */
@@ -1020,19 +965,16 @@ static void render_bloom(PostProcess* post_processing)
 	glDisable(GL_DEPTH_TEST);
 
 	/* 1. Prefilter Pass: Extract bright parts from Scene -> Mip 0 */
-	glUseProgram(post_processing->bloom_prefilter_shader);
-	glUniform1f(glGetUniformLocation(
-	                post_processing->bloom_prefilter_shader, "threshold"),
-	            post_processing->bloom.threshold);
-	glUniform1f(glGetUniformLocation(
-	                post_processing->bloom_prefilter_shader, "knee"),
-	            post_processing->bloom.soft_threshold);
+	shader_use(post_processing->bloom_prefilter_shader);
+	shader_set_float(post_processing->bloom_prefilter_shader, "threshold",
+	                 post_processing->bloom.threshold);
+	shader_set_float(post_processing->bloom_prefilter_shader, "knee",
+	                 post_processing->bloom.soft_threshold);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	glUniform1i(glGetUniformLocation(
-	                post_processing->bloom_prefilter_shader, "srcTexture"),
-	            0);
+	shader_set_int(post_processing->bloom_prefilter_shader, "srcTexture",
+	               0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D,
@@ -1044,10 +986,9 @@ static void render_bloom(PostProcess* post_processing)
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
 	/* 2. Downsample Loop */
-	glUseProgram(post_processing->bloom_downsample_shader);
-	glUniform1i(glGetUniformLocation(
-	                post_processing->bloom_downsample_shader, "srcTexture"),
-	            0);
+	shader_use(post_processing->bloom_downsample_shader);
+	shader_set_int(post_processing->bloom_downsample_shader, "srcTexture",
+	               0);
 
 	for (int i = 0; i < BLOOM_MIP_LEVELS - 1; i++) {
 		const BloomMip* mip_src = &post_processing->bloom_mips[i];
@@ -1055,10 +996,11 @@ static void render_bloom(PostProcess* post_processing)
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mip_src->texture);
-		glUniform2f(glGetUniformLocation(
-		                post_processing->bloom_downsample_shader,
-		                "srcResolution"),
-		            (float)mip_src->width, (float)mip_src->height);
+
+		vec2 resolution = {(float)mip_src->width,
+		                   (float)mip_src->height};
+		shader_set_vec2(post_processing->bloom_downsample_shader,
+		                "srcResolution", resolution);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 		                       GL_TEXTURE_2D, mip_dst->texture, 0);
@@ -1068,13 +1010,10 @@ static void render_bloom(PostProcess* post_processing)
 	}
 
 	/* 3. Upsample Loop with Blending */
-	glUseProgram(post_processing->bloom_upsample_shader);
-	glUniform1i(glGetUniformLocation(post_processing->bloom_upsample_shader,
-	                                 "srcTexture"),
-	            0);
-	glUniform1f(glGetUniformLocation(post_processing->bloom_upsample_shader,
-	                                 "filterRadius"),
-	            post_processing->bloom.radius);
+	shader_use(post_processing->bloom_upsample_shader);
+	shader_set_int(post_processing->bloom_upsample_shader, "srcTexture", 0);
+	shader_set_float(post_processing->bloom_upsample_shader, "filterRadius",
+	                 post_processing->bloom.radius);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);

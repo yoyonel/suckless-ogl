@@ -2,6 +2,7 @@
 #define POSTPROCESS_H
 
 #include "gl_common.h"
+#include "shader.h"
 #include <cglm/cglm.h>
 
 /* Valeurs par défaut - plus subtiles et cinématiques */
@@ -165,15 +166,15 @@ typedef struct {
 	GLuint screen_quad_vbo;
 
 	/* Shaders */
-	GLuint postprocess_shader; /* Shader combinant tous les effets */
-	GLuint bloom_prefilter_shader;
-	GLuint bloom_downsample_shader;
-	GLuint bloom_upsample_shader;
-	GLuint lum_downsample_shader; /* Shader pour Log Lum Downsample */
-	GLuint lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
-	GLuint tile_max_shader;  /* Compute Shader: Tile Max Velocity */
-	GLuint neighbor_max_shader; /* Compute Shader: Neighbor Max Velocity */
-	GLuint dof_shader;
+	Shader* postprocess_shader; /* Shader combinant tous les effets */
+	Shader* bloom_prefilter_shader;
+	Shader* bloom_downsample_shader;
+	Shader* bloom_upsample_shader;
+	Shader* lum_downsample_shader; /* Shader pour Log Lum Downsample */
+	Shader* lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
+	Shader* tile_max_shader;  /* Compute Shader: Tile Max Velocity */
+	Shader* neighbor_max_shader; /* Compute Shader: Neighbor Max Velocity */
+	Shader* dof_shader;
 
 	/* Dimensions */
 	int width;

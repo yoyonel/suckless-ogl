@@ -48,7 +48,6 @@ uniform int enableBloom;
 uniform int enableDoF; /* Flag d'activation DoF */
 uniform int enableDoFDebug; /* Flag de debug DoF */
 uniform int enableAutoExposure; /* Flag Auto Exposure */
-uniform int enableExposureDebug; /* Flag Debug Auto Exposure */
 
 uniform float bloomIntensity;
 uniform sampler2D autoExposureTexture; /* Texture 1x1 R32F */
@@ -181,12 +180,18 @@ vec3 applyWhiteBalance(vec3 color) {
  * l'entrée et la sortie avec les paramètres Slope (contraste) et Toe (offset).
  */
 vec3 unrealTonemap(vec3 x) {
-    /* ACES Standard (Narkowicz) - Apply first */
-    const float a = 2.51;
+    /* ACES Standard (Narkowicz) - Parametrized */
+    /* We use the params to modulate the standard ACES curve behavior */
+    /* Slope -> Modulates 'a' (contrast) */
+    /* Toe -> Modulates 'e' (offset/toe) */
+    /* Shoulder -> Modulates 'd' (shoulder falloff) */
+
+    float a = 2.51 * tonemapSlope;
     const float b = 0.03;
     const float c = 2.43;
-    const float d = 0.59;
-    const float e = 0.14;
+    float d = 0.59 * tonemapShoulder;
+    float e = 0.14 * (1.1 - tonemapToe); /* Toe acts inversely, lower toe means flatter start */
+
     vec3 res = (x * (a * x + b)) / (x * (c * x + d) + e);
 
     /* Post-tonemap adjustments (all optional, defaults are neutral) */
@@ -486,9 +491,11 @@ void main() {
 
     /* Appliquer l'exposition en premier (pour le HDR -> LDR) */
     float finalExposure = 1.0;
+    float autoExp = 1.0;
+
     if (enableAutoExposure != 0) {
         /* Lire l'exposition calculée par le Compute Shader */
-        float autoExp = texture(autoExposureTexture, vec2(0.5)).r;
+        autoExp = texture(autoExposureTexture, vec2(0.5)).r;
         /* Manual Exposure agit comme une compensation (EV bias) */
         finalExposure = autoExp * exposure;
     } else if (enableExposure != 0) {

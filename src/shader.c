@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 #include "log.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +25,8 @@
  */
 
 enum { INFO_LOG_SIZE = 512 };
+
+enum { MAX_SHADER_NAME_LEN = 256 };
 
 char* shader_read_file(const char* path)
 {
@@ -223,7 +226,7 @@ static void shader_cache_uniforms(Shader* shader)
 	      cmp_uniform_entry);
 }
 
-static Shader* shader_create_from_program(GLuint program)
+static Shader* shader_create_from_program(GLuint program, const char* name)
 {
 	if (program == 0) {
 		return NULL;
@@ -231,6 +234,11 @@ static Shader* shader_create_from_program(GLuint program)
 
 	Shader* shader = calloc(1, sizeof(Shader));
 	shader->program = program;
+	if (name) {
+		shader->name = strdup(name);
+	} else {
+		shader->name = strdup("Unknown Shader");
+	}
 	shader_cache_uniforms(shader);
 
 	return shader;
@@ -239,13 +247,19 @@ static Shader* shader_create_from_program(GLuint program)
 Shader* shader_load(const char* vertex_path, const char* fragment_path)
 {
 	GLuint program = shader_load_program(vertex_path, fragment_path);
-	return shader_create_from_program(program);
+
+	/* Construct a name from paths */
+	char name[MAX_SHADER_NAME_LEN];
+	safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
+	              fragment_path);
+
+	return shader_create_from_program(program, name);
 }
 
 Shader* shader_load_compute_program(const char* compute_path)
 {
 	GLuint program = shader_load_compute(compute_path);
-	return shader_create_from_program(program);
+	return shader_create_from_program(program, compute_path);
 }
 
 void shader_destroy(Shader* shader)
@@ -263,6 +277,10 @@ void shader_destroy(Shader* shader)
 
 	if (shader->program) {
 		glDeleteProgram(shader->program);
+	}
+
+	if (shader->name) {
+		free(shader->name);
 	}
 
 	free(shader);
@@ -292,7 +310,8 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 	}
 
 	LOG_WARN("suckless-ogl.shader",
-	         "Uniform '%s' not found or active in shader %d", name,
+	         "Uniform '%s' not found or active in shader '%s' (ID %d)",
+	         name, shader->name ? shader->name : "Unknown",
 	         shader->program);
 	return -1;
 }

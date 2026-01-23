@@ -179,7 +179,7 @@ void test_postprocess_cleanup(void)
 	TEST_ASSERT_FALSE(glIsFramebuffer(fbo));
 	TEST_ASSERT_FALSE(glIsTexture(tex));
 	TEST_ASSERT_EQUAL(0, pp.scene_fbo);
-	TEST_ASSERT_EQUAL(0, pp.postprocess_shader);
+	TEST_ASSERT_NULL(pp.postprocess_shader);
 }
 
 int main(void)

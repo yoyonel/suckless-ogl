@@ -26,6 +26,7 @@ typedef struct {
 
 typedef struct {
 	GLuint program;        /* OpenGL Program ID */
+	char* name;            /* Shader Name/Description (owned) */
 	UniformEntry* entries; /* Sorted dynamic array of uniform entries */
 	int entry_count;
 	int entry_capacity;
