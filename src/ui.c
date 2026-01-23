@@ -1,5 +1,6 @@
 #include "ui.h"
 
+#include "glad/glad.h"
 #include "log.h"
 #include "shader.h"
 #include <cglm/affine.h>       // NOLINT(misc-include-cleaner)
@@ -253,7 +254,7 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 
 	// Initialize to safe defaults (manual zeroing to avoid memset warning)
 	ui_context->texture = 0;
-	ui_context->shader = 0;
+	ui_context->shader = NULL;
 	ui_context->vao = 0;
 	ui_context->vbo = 0;
 	ui_context->font_size = font_size;
@@ -283,9 +284,8 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	}
 
 	// Load shader
-	ui_context->shader =
-	    shader_load_program("shaders/ui.vert", "shaders/ui.frag");
-	if (ui_context->shader == 0) {
+	ui_context->shader = shader_load("shaders/ui.vert", "shaders/ui.frag");
+	if (ui_context->shader == NULL) {
 		LOG_ERROR("ui", "Failed to load UI shader");
 		glDeleteTextures(1, &ui_context->texture);
 		glDeleteBuffers(1, &ui_context->vbo);
@@ -301,7 +301,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
                   float y_pos, const vec3 color, int screen_width,
                   int screen_height)
 {
-	if (ui_context == NULL || text == NULL || ui_context->shader == 0) {
+	if (ui_context == NULL || text == NULL || ui_context->shader == NULL) {
 		return;
 	}
 
@@ -310,7 +310,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 	setup_ui_render_state();
 
 	// Activate shader
-	glUseProgram(ui_context->shader);
+	shader_use(ui_context->shader);
 
 	// Setup orthographic projection
 	mat4 projection;  // NOLINT(misc-include-cleaner)
@@ -318,16 +318,10 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 	          1.0F, projection);
 
 	// Upload uniforms
-	const GLint proj_loc =
-	    glGetUniformLocation(ui_context->shader, "projection");
-	const GLint color_loc =
-	    glGetUniformLocation(ui_context->shader, "textColor");
-	const GLint use_tex_loc =
-	    glGetUniformLocation(ui_context->shader, "useTexture");
-
-	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (float*)projection);
-	glUniform3fv(color_loc, 1, color);
-	glUniform1i(use_tex_loc, 1); /* Enable Texture for Text */
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
+	shader_set_int(ui_context->shader, "useTexture",
+	               1); /* Enable Texture for Text */
 
 	// Bind texture and vertex array
 	glActiveTexture(GL_TEXTURE0);
@@ -380,7 +374,7 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height)
 {
-	if (ui_context == NULL || ui_context->shader == 0) {
+	if (ui_context == NULL || ui_context->shader == NULL) {
 		return;
 	}
 
@@ -389,7 +383,7 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
 	setup_ui_render_state();
 
 	// Activate shader
-	glUseProgram(ui_context->shader);
+	shader_use(ui_context->shader);
 
 	// Setup orthographic projection
 	mat4 projection;  // NOLINT(misc-include-cleaner)
@@ -397,16 +391,10 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
 	          1.0F, projection);
 
 	// Upload uniforms
-	const GLint proj_loc =
-	    glGetUniformLocation(ui_context->shader, "projection");
-	const GLint color_loc =
-	    glGetUniformLocation(ui_context->shader, "textColor");
-	const GLint use_tex_loc =
-	    glGetUniformLocation(ui_context->shader, "useTexture");
-
-	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (float*)projection);
-	glUniform3fv(color_loc, 1, color);
-	glUniform1i(use_tex_loc, 0); /* Disable Texture for Rect */
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
+	shader_set_int(ui_context->shader, "useTexture",
+	               0); /* Disable Texture for Rect */
 
 	// Bind vertex array (No texture binding needed, but VAO is required)
 	glBindVertexArray(ui_context->vao);
@@ -457,8 +445,8 @@ void ui_destroy(UIContext* ui_context)
 		ui_context->vao = 0;
 	}
 	if (ui_context->shader != 0) {
-		glDeleteProgram(ui_context->shader);
-		ui_context->shader = 0;
+		shader_destroy(ui_context->shader);
+		ui_context->shader = NULL;
 	}
 
 	LOG_INFO("ui", "UI system destroyed");

@@ -1,7 +1,6 @@
 #ifndef UI_H
 #define UI_H
 
-#include "glad/glad.h"
 #include <cglm/cglm.h>
 
 typedef struct {
@@ -11,9 +10,11 @@ typedef struct {
 	float advance;         // Espacement horizontal
 } GlyphInfo;
 
+#include "shader.h"
+
 typedef struct {
 	GLuint texture;
-	GLuint shader;
+	Shader* shader;
 	GLuint vao, vbo;
 	GlyphInfo cdata[96];  // Pour les caractères ASCII 32 à 126
 	float font_size;
