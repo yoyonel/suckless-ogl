@@ -83,7 +83,7 @@ offline-test:
 	@echo "Running build in a simulated offline environment (using bogus proxy)..."
 	@http_proxy=http://127.0.0.1:0 https_proxy=http://127.0.0.1:0 $(MAKE) rebuild
 
-test:
+test: all
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
 # Code Coverage (version améliorée avec résumé)
@@ -95,13 +95,13 @@ coverage:
 	@mkdir -p $(BUILD_COV_DIR)
 	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
-	
+
 	@echo "Running tests to generate profile data..."
 	@$(DISTROBOX) sh -c "LLVM_PROFILE_FILE='$(CURDIR)/$(BUILD_COV_DIR)/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir $(BUILD_COV_DIR) --output-on-failure"
-	
+
 	@echo "Merging profile data..."
 	@$(DISTROBOX) llvm-profdata merge -sparse $(BUILD_COV_DIR)/*.profraw -o $(BUILD_COV_DIR)/coverage.profdata
-	
+
 	@echo "Generating HTML report..."
 	@mkdir -p $(REPORT_DIR)
 	@$(DISTROBOX) llvm-cov show -format=html \
@@ -111,7 +111,7 @@ coverage:
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
-	
+
 	@echo "Coverage Summary:"
 	@$(DISTROBOX) llvm-cov report \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
@@ -150,7 +150,7 @@ perf: profile
 valgrind:
 	@echo "Running Valgrind (very slow to start)..."
 	@$(DISTROBOX) valgrind --leak-check=full --show-leak-kinds=definite --errors-for-leak-kinds=definite ./$(BUILD_PROF_DIR)/app
-	
+
 # Docker Integration
 # Auto-detect container engine (podman or docker)
 CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)

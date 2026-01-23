@@ -1350,8 +1350,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				static const char* mode_names[] = {
 				    "Off", "FPS + Position",
 				    "FPS + Position + Envmap",
-				    "FPS + Position + Envmap + "
-				    "Exposure"};
+				    "FPS + Position + Envmap + Exposure"};
 				static const int mode_count =
 				    sizeof(mode_names) / sizeof(mode_names[0]);
 
