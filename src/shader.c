@@ -4,6 +4,7 @@
 #include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * NOTE ABOUT COVERAGE (LLVM / llvm-cov)
@@ -171,4 +172,175 @@ GLuint shader_load_compute(const char* compute_path)
 	glDeleteShader(compute_shader);
 
 	return program;
+}
+
+/* -------------------------------------------------------------------------
+ * New Generic Shader API Implementation
+ * ------------------------------------------------------------------------- */
+
+static int cmp_uniform_entry(const void* a, const void* b)
+{
+	const UniformEntry* entry_a = (const UniformEntry*)a;
+	const UniformEntry* entry_b = (const UniformEntry*)b;
+	return strcmp(entry_a->name, entry_b->name);
+}
+
+static void shader_cache_uniforms(Shader* shader)
+{
+	GLint count = 0;
+	glGetProgramiv(shader->program, GL_ACTIVE_UNIFORMS, &count);
+
+	if (count == 0) {
+		shader->entry_count = 0;
+		shader->entries = NULL;
+		return;
+	}
+
+	shader->entry_count = count;
+	shader->entries = calloc(count, sizeof(UniformEntry));
+
+	GLint max_name_len = 0;
+	glGetProgramiv(shader->program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
+	               &max_name_len);
+	char* name_buffer = calloc(max_name_len + 1, 1);
+
+	for (int i = 0; i < count; i++) {
+		GLsizei length = 0;
+		GLint size = 0;
+		GLenum type = 0;
+		glGetActiveUniform(shader->program, i, max_name_len, &length,
+		                   &size, &type, name_buffer);
+
+		shader->entries[i].name = strdup(name_buffer);
+		shader->entries[i].location =
+		    glGetUniformLocation(shader->program, name_buffer);
+	}
+
+	free(name_buffer);
+
+	/* Sort for binary search */
+	qsort(shader->entries, shader->entry_count, sizeof(UniformEntry),
+	      cmp_uniform_entry);
+}
+
+static Shader* shader_create_from_program(GLuint program)
+{
+	if (program == 0) {
+		return NULL;
+	}
+
+	Shader* shader = calloc(1, sizeof(Shader));
+	shader->program = program;
+	shader_cache_uniforms(shader);
+
+	return shader;
+}
+
+Shader* shader_load(const char* vertex_path, const char* fragment_path)
+{
+	GLuint program = shader_load_program(vertex_path, fragment_path);
+	return shader_create_from_program(program);
+}
+
+Shader* shader_load_compute_program(const char* compute_path)
+{
+	GLuint program = shader_load_compute(compute_path);
+	return shader_create_from_program(program);
+}
+
+void shader_destroy(Shader* shader)
+{
+	if (!shader) {
+		return;
+	}
+
+	if (shader->entries) {
+		for (int i = 0; i < shader->entry_count; i++) {
+			free(shader->entries[i].name);
+		}
+		free(shader->entries);
+	}
+
+	if (shader->program) {
+		glDeleteProgram(shader->program);
+	}
+
+	free(shader);
+}
+
+void shader_use(Shader* shader)
+{
+	if (shader) {
+		glUseProgram(shader->program);
+	}
+}
+
+GLint shader_get_uniform_location(Shader* shader, const char* name)
+{
+	if (!shader || !shader->entries || shader->entry_count == 0) {
+		return -1;
+	}
+
+	UniformEntry key;
+	key.name = (char*)name; /* Cast away const for bsearch key */
+
+	UniformEntry* res = bsearch(&key, shader->entries, shader->entry_count,
+	                            sizeof(UniformEntry), cmp_uniform_entry);
+
+	if (res) {
+		return res->location;
+	}
+
+	LOG_WARN("suckless-ogl.shader",
+	         "Uniform '%s' not found or active in shader %d", name,
+	         shader->program);
+	return -1;
+}
+
+void shader_set_int(Shader* shader, const char* name, int value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniform1i(loc, value);
+	}
+}
+
+void shader_set_float(Shader* shader, const char* name, float value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniform1f(loc, value);
+	}
+}
+
+void shader_set_vec2(Shader* shader, const char* name, const float* value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniform2fv(loc, 1, value);
+	}
+}
+
+void shader_set_vec3(Shader* shader, const char* name, const float* value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniform3fv(loc, 1, value);
+	}
+}
+
+void shader_set_vec4(Shader* shader, const char* name, const float* value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniform4fv(loc, 1, value);
+	}
+}
+
+void shader_set_mat4(Shader* shader, const char* name, const float* value)
+{
+	GLint loc = shader_get_uniform_location(shader, name);
+	if (loc != -1) {
+		glUniformMatrix4fv(loc, 1, GL_FALSE, value);
+	}
 }
