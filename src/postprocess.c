@@ -32,12 +32,12 @@ enum {
 
 /* Auto Exposure Constants */
 static const float EXPOSURE_MIN_LUM =
-    0.7F; /* Limite le boost max (1.0 = pas de boost) */
+    0.05F; /* Limite le boost max à x4 (0.20 / 0.05) */
 static const float EXPOSURE_DEFAULT_MAX_LUM = 5000.0F;
 static const float EXPOSURE_SPEED_UP = 2.0F;
 static const float EXPOSURE_SPEED_DOWN = 1.0F;
 static const float EXPOSURE_DEFAULT_KEY_VALUE =
-    0.45F; /* Very high-key (indoor HDR) - 0.18 standard, 0.25 outdoor */
+    0.20F; /* Standard Photographic Middle Gray - WAS 0.45F */
 static const float EXPOSURE_INITIAL_VAL = 1.20F;
 
 /* Compute Shader Constants */
