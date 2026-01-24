@@ -1,6 +1,9 @@
 /* Paramètres Aberration Chromatique */
 uniform int enableChromAbbr;
-uniform float chromAbbrStrength;
+struct ChromAbberationParams {
+    float strength;
+};
+uniform ChromAbberationParams chromAbbr;
 
 /* ============================================================================
    EFFECT: CHROMATIC ABERRATION
@@ -15,8 +18,8 @@ vec3 applyChromAbbr(vec2 uv) {
 
     /* Direct texture samples for R/B channels (skip motion blur for performance)
      * Trade-off: Only green channel gets motion blur, but CA is subtle at edges */
-    float r = texture(screenTexture, uv + direction * chromAbbrStrength).r;
-    float b = texture(screenTexture, uv - direction * chromAbbrStrength).b;
+    float r = texture(screenTexture, uv + direction * chromAbbr.strength).r;
+    float b = texture(screenTexture, uv - direction * chromAbbr.strength).b;
 
     return vec3(r, centerBlurred.g, b);
 }

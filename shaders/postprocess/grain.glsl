@@ -1,12 +1,14 @@
-/* Paramètres Grain */
+struct GrainParams {
+    float intensity;
+    float intensityShadows;
+    float intensityMidtones;
+    float intensityHighlights;
+    float shadowsMax;
+    float highlightsMin;
+    float texelSize;
+};
+uniform GrainParams grain;
 uniform int enableGrain;
-uniform float grainIntensity;
-uniform float grainIntensityShadows;
-uniform float grainIntensityMidtones;
-uniform float grainIntensityHighlights;
-uniform float grainShadowsMax;
-uniform float grainHighlightsMin;
-uniform float grainTexelSize;
 uniform float time;
 
 /* ============================================================================
@@ -20,27 +22,27 @@ vec3 applyGrain(vec3 color, vec2 uv) {
 
     /* 2. Calculate Intensity based on Luminance Ranges */
     /* Shadows: [0, shadowsMax] */
-    float shadowMask = 1.0 - smoothstep(0.0, grainShadowsMax, luma);
+    float shadowMask = 1.0 - smoothstep(0.0, grain.shadowsMax, luma);
 
     /* Highlights: [highlightsMin, 1.0] */
-    float highlightMask = smoothstep(grainHighlightsMin, 1.0, luma);
+    float highlightMask = smoothstep(grain.highlightsMin, 1.0, luma);
 
     /* Midtones: Fill the gap */
     float midtoneMask = 1.0 - shadowMask - highlightMask;
     midtoneMask = max(0.0, midtoneMask);
 
     /* Composite Multiplier */
-    float lumaMult = shadowMask * grainIntensityShadows +
-                     midtoneMask * grainIntensityMidtones +
-                     highlightMask * grainIntensityHighlights;
+    float lumaMult = shadowMask * grain.intensityShadows +
+                     midtoneMask * grain.intensityMidtones +
+                     highlightMask * grain.intensityHighlights;
 
     /* 3. Generate Noise with Texel Size */
     /* Scale UV by texel size - larger texelSize = coarser grain */
-    vec2 grainUV = uv / grainTexelSize;
+    vec2 grainUV = uv / grain.texelSize;
 
     /* Add time offset to animate */
     float noise = random(grainUV + vec2(time)) * 2.0 - 1.0;
 
     /* 4. Apply Grain */
-    return color + noise * grainIntensity * lumaMult;
+    return color + noise * grain.intensity * lumaMult;
 }

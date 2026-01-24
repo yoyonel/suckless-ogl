@@ -1,8 +1,11 @@
 /* Paramètres Motion Blur */
 uniform sampler2D velocityTexture;
-uniform float motionBlurIntensity;
-uniform float motionBlurMaxVelocity;
-uniform int motionBlurSamples;
+struct MotionBlurParams {
+    float intensity;
+    float maxVelocity;
+    int samples;
+};
+uniform MotionBlurParams motionBlur;
 uniform int enableMotionBlur;
 uniform int enableMotionBlurDebug;
 
@@ -22,17 +25,17 @@ vec3 applyMotionBlur(vec2 uv) {
         return vec3(abs(velocity.x) * 20.0, abs(velocity.y) * 20.0, 0.0);
     }
 
-    velocity *= motionBlurIntensity;
+    velocity *= motionBlur.intensity;
 
     /* Clamp main velocity */
     float speed = length(velocity);
-    if (speed > motionBlurMaxVelocity) {
-        velocity = normalize(velocity) * motionBlurMaxVelocity;
-        speed = motionBlurMaxVelocity;
+    if (speed > motionBlur.maxVelocity) {
+        velocity = normalize(velocity) * motionBlur.maxVelocity;
+        speed = motionBlur.maxVelocity;
     }
 
     /* 2. Get Neighbor Max Velocity */
-    vec2 maxNeighborVelocity = texture(neighborMaxTexture, uv).rg * motionBlurIntensity;
+    vec2 maxNeighborVelocity = texture(neighborMaxTexture, uv).rg * motionBlur.intensity;
     float maxNeighborSpeed = length(maxNeighborVelocity);
 
     /* Fetch Center Color (Raw) */
@@ -52,7 +55,7 @@ vec3 applyMotionBlur(vec2 uv) {
     vec3 acc = centerColor;
     float totalWeight = 1.0;
 
-    int samples = motionBlurSamples;
+    int samples = motionBlur.samples;
 
     for (int i = 0; i < samples; ++i) {
         if (i == samples / 2) continue; // Skip center

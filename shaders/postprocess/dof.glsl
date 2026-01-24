@@ -1,9 +1,12 @@
 /* Paramètres DoF */
 uniform int enableDoF; /* Flag d'activation DoF */
 uniform int enableDoFDebug; /* Flag de debug DoF */
-uniform float dofFocalDistance;
-uniform float dofFocalRange;
-uniform float dofBokehScale;
+struct DoFParams {
+    float focalDistance;
+    float focalRange;
+    float bokehScale;
+};
+uniform DoFParams dof;
 
 /* Texture floutée (1/2 res, 13-tap filter) */
 uniform sampler2D dofBlurTexture;
@@ -26,16 +29,16 @@ vec3 applyDoF(vec3 color, vec2 uv) {
     float z_ndc = 2.0 * depth - 1.0;
     float dist = (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 
-    float coc = abs(dist - dofFocalDistance) / (dist + 0.0001);
+    float coc = abs(dist - dof.focalDistance) / (dist + 0.0001);
 
     /* Apply focal range (in-focus zone) */
     float blurFactor = 0.0;
-    if (dist > dofFocalDistance - dofFocalRange && dist < dofFocalDistance + dofFocalRange) {
+    if (dist > dof.focalDistance - dof.focalRange && dist < dof.focalDistance + dof.focalRange) {
         blurFactor = 0.0;
     } else {
         /* Smooth transition at edges of focal range */
-        float edge = dofFocalRange;
-        float distDiff = abs(dist - dofFocalDistance);
+        float edge = dof.focalRange;
+        float distDiff = abs(dist - dof.focalDistance);
         if (distDiff < edge + 5.0) {
             blurFactor = (distDiff - edge) / 5.0;
         } else {
@@ -43,7 +46,7 @@ vec3 applyDoF(vec3 color, vec2 uv) {
         }
     }
 
-    blurFactor *= clamp(coc * dofBokehScale, 0.0, 1.0);
+    blurFactor *= clamp(coc * dof.bokehScale, 0.0, 1.0);
     blurFactor = clamp(blurFactor, 0.0, 1.0);
 
     /* OPTIMIZED: Mix with pre-blurred texture instead of real-time sampling loop */
@@ -55,8 +58,8 @@ vec3 applyDoF(vec3 color, vec2 uv) {
     /* Debug visualization */
     if (enableDoFDebug != 0) {
         vec3 debugColor = vec3(0.0);
-        if (dist < dofFocalDistance && blurFactor > 0.0) debugColor = vec3(0.0, blurFactor, 0.0);
-        else if (dist > dofFocalDistance && blurFactor > 0.0) debugColor = vec3(0.0, 0.0, blurFactor);
+        if (dist < dof.focalDistance && blurFactor > 0.0) debugColor = vec3(0.0, blurFactor, 0.0);
+        else if (dist > dof.focalDistance && blurFactor > 0.0) debugColor = vec3(0.0, 0.0, blurFactor);
         return debugColor;
     }
 

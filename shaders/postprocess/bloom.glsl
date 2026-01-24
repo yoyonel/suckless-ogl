@@ -1,7 +1,10 @@
 /* Paramètres Bloom */
 uniform sampler2D bloomTexture;
 uniform int enableBloom;
-uniform float bloomIntensity;
+struct BloomParams {
+    float intensity;
+};
+uniform BloomParams bloom;
 
 /* ============================================================================
    EFFECT: BLOOM
@@ -9,5 +12,5 @@ uniform float bloomIntensity;
 
 vec3 applyBloom(vec3 color) {
     vec3 bloomColor = texture(bloomTexture, TexCoords).rgb;
-    return color + bloomColor * bloomIntensity;
+    return color + bloomColor * bloom.intensity;
 }

@@ -1,14 +1,20 @@
 /* Paramètres Color Grading (Unreal Style) */
 uniform int enableColorGrading;
-uniform float gradSaturation;
-uniform float gradContrast;
-uniform float gradGamma;
-uniform float gradGain;
-uniform float gradOffset;
+struct ColorGradingParams {
+    float saturation;
+    float contrast;
+    float gamma;
+    float gain;
+    float offset;
+};
+uniform ColorGradingParams grad;
 
 /* Paramètres White Balance */
-uniform float wbTemperature;
-uniform float wbTint;
+struct WhiteBalanceParams {
+    float temperature;
+    float tint;
+};
+uniform WhiteBalanceParams wb;
 
 /* ============================================================================
    EFFECT: WHITE BALANCE
@@ -20,28 +26,28 @@ uniform float wbTint;
  */
 vec3 applyWhiteBalance(vec3 color) {
     /* Early exit if neutral (6500K, 0 tint) */
-    if (abs(wbTemperature - 6500.0) < 1.0 && abs(wbTint) < 0.001) {
+    if (abs(wb.temperature - 6500.0) < 1.0 && abs(wb.tint) < 0.001) {
         return color;
     }
 
     /* Temperature shift (simple linear approximation) */
-    float tempShift = (wbTemperature - 6500.0) / 10000.0;
+    float tempShift = (wb.temperature - 6500.0) / 10000.0;
 
-    vec3 wb = vec3(1.0);
+    vec3 wbColor = vec3(1.0);
 
     if (tempShift < 0.0) {
         /* Cooler (more blue) */
-        wb.b = 1.0 - tempShift;
+        wbColor.b = 1.0 - tempShift;
     } else {
         /* Warmer (more red/yellow) */
-        wb.r = 1.0 + tempShift;
-        wb.g = 1.0 + tempShift * 0.5;
+        wbColor.r = 1.0 + tempShift;
+        wbColor.g = 1.0 + tempShift * 0.5;
     }
 
     /* Tint (Green/Magenta shift) */
-    wb.g += wbTint * 0.5;
+    wbColor.g += wb.tint * 0.5;
 
-    return color * wb;
+    return color * wbColor;
 }
 
 /* ============================================================================
@@ -57,22 +63,22 @@ vec3 apply_color_grading(vec3 color) {
 
     /* 1. Saturation */
     float luminance = dot(color, vec3(0.2126, 0.7152, 0.0722));
-    color = mix(vec3(luminance), color, gradSaturation);
+    color = mix(vec3(luminance), color, grad.saturation);
 
     /* 2. Contraste */
-    color = (color - 0.5) * gradContrast + 0.5;
+    color = (color - 0.5) * grad.contrast + 0.5;
     color = max(vec3(0.0), color);
 
     /* 3. Gamma */
-    if (gradGamma > 0.0) {
-        color = pow(color, vec3(gradGamma));
+    if (grad.gamma > 0.0) {
+        color = pow(color, vec3(grad.gamma));
     }
 
     /* 4. Gain */
-    color = color * gradGain;
+    color = color * grad.gain;
 
     /* 5. Offset */
-    color = color + gradOffset;
+    color = color + grad.offset;
 
     return max(vec3(0.0), color);
 }

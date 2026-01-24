@@ -502,41 +502,41 @@ void postprocess_apply_preset(PostProcess* post_processing,
 
 static void upload_vignette_params(Shader* shader, const VignetteParams* params)
 {
-	shader_set_float(shader, "vignetteIntensity", params->intensity);
-	shader_set_float(shader, "vignetteSmoothness", params->smoothness);
-	shader_set_float(shader, "vignetteRoundness", params->roundness);
+	shader_set_float(shader, "vignette.intensity", params->intensity);
+	shader_set_float(shader, "vignette.smoothness", params->smoothness);
+	shader_set_float(shader, "vignette.roundness", params->roundness);
 }
 
 static void upload_grain_params(Shader* shader, const GrainParams* params,
                                 float time)
 {
-	shader_set_float(shader, "grainIntensity", params->intensity);
-	shader_set_float(shader, "grainIntensityShadows",
+	shader_set_float(shader, "grain.intensity", params->intensity);
+	shader_set_float(shader, "grain.intensityShadows",
 	                 params->intensity_shadows);
-	shader_set_float(shader, "grainIntensityMidtones",
+	shader_set_float(shader, "grain.intensityMidtones",
 	                 params->intensity_midtones);
-	shader_set_float(shader, "grainIntensityHighlights",
+	shader_set_float(shader, "grain.intensityHighlights",
 	                 params->intensity_highlights);
-	shader_set_float(shader, "grainShadowsMax", params->shadows_max);
-	shader_set_float(shader, "grainHighlightsMin", params->highlights_min);
-	shader_set_float(shader, "grainTexelSize", params->texel_size);
+	shader_set_float(shader, "grain.shadowsMax", params->shadows_max);
+	shader_set_float(shader, "grain.highlightsMin", params->highlights_min);
+	shader_set_float(shader, "grain.texelSize", params->texel_size);
 	shader_set_float(shader, "time", time);
 }
 
 static void upload_exposure_params(Shader* shader, const ExposureParams* params)
 {
-	shader_set_float(shader, "exposure", params->exposure);
+	shader_set_float(shader, "exposure.exposure", params->exposure);
 }
 
 static void upload_chrom_abbr_params(Shader* shader,
                                      const ChromAbberationParams* params)
 {
-	shader_set_float(shader, "chromAbbrStrength", params->strength);
+	shader_set_float(shader, "chromAbbr.strength", params->strength);
 }
 
 static void upload_bloom_params(Shader* shader, const BloomParams* params)
 {
-	shader_set_float(shader, "bloomIntensity", params->intensity);
+	shader_set_float(shader, "bloom.intensity", params->intensity);
 	/* Threshold and soft_threshold are likely used in prefilter, not main
 	 * pass, but we keep them available if needed or if logic changes.
 	 * Currently main shader only needs intensity to mix.
@@ -545,43 +545,43 @@ static void upload_bloom_params(Shader* shader, const BloomParams* params)
 
 static void upload_dof_params(Shader* shader, const DoFParams* params)
 {
-	shader_set_float(shader, "dofFocalDistance", params->focal_distance);
-	shader_set_float(shader, "dofFocalRange", params->focal_range);
-	shader_set_float(shader, "dofBokehScale", params->bokeh_scale);
+	shader_set_float(shader, "dof.focalDistance", params->focal_distance);
+	shader_set_float(shader, "dof.focalRange", params->focal_range);
+	shader_set_float(shader, "dof.bokehScale", params->bokeh_scale);
 }
 
 static void upload_grading_params(Shader* shader,
                                   const ColorGradingParams* params)
 {
-	shader_set_float(shader, "gradSaturation", params->saturation);
-	shader_set_float(shader, "gradContrast", params->contrast);
-	shader_set_float(shader, "gradGamma", params->gamma);
-	shader_set_float(shader, "gradGain", params->gain);
-	shader_set_float(shader, "gradOffset", params->offset);
+	shader_set_float(shader, "grad.saturation", params->saturation);
+	shader_set_float(shader, "grad.contrast", params->contrast);
+	shader_set_float(shader, "grad.gamma", params->gamma);
+	shader_set_float(shader, "grad.gain", params->gain);
+	shader_set_float(shader, "grad.offset", params->offset);
 }
 
 static void upload_white_balance_params(Shader* shader,
                                         const WhiteBalanceParams* params)
 {
-	shader_set_float(shader, "wbTemperature", params->temperature);
-	shader_set_float(shader, "wbTint", params->tint);
+	shader_set_float(shader, "wb.temperature", params->temperature);
+	shader_set_float(shader, "wb.tint", params->tint);
 }
 
 static void upload_tonemap_params(Shader* shader, const TonemapParams* params)
 {
-	shader_set_float(shader, "tonemapSlope", params->slope);
-	shader_set_float(shader, "tonemapToe", params->toe);
-	shader_set_float(shader, "tonemapShoulder", params->shoulder);
-	shader_set_float(shader, "tonemapBlackClip", params->black_clip);
-	shader_set_float(shader, "tonemapWhiteClip", params->white_clip);
+	shader_set_float(shader, "tonemap.slope", params->slope);
+	shader_set_float(shader, "tonemap.toe", params->toe);
+	shader_set_float(shader, "tonemap.shoulder", params->shoulder);
+	shader_set_float(shader, "tonemap.blackClip", params->black_clip);
+	shader_set_float(shader, "tonemap.whiteClip", params->white_clip);
 }
 
 static void upload_motion_blur_params(Shader* shader, float intensity,
                                       float max_v, int samples)
 {
-	shader_set_float(shader, "motionBlurIntensity", intensity);
-	shader_set_float(shader, "motionBlurMaxVelocity", max_v);
-	shader_set_int(shader, "motionBlurSamples", samples);
+	shader_set_float(shader, "motionBlur.intensity", intensity);
+	shader_set_float(shader, "motionBlur.maxVelocity", max_v);
+	shader_set_int(shader, "motionBlur.samples", samples);
 }
 
 void postprocess_begin(PostProcess* post_processing)
