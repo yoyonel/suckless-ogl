@@ -20,6 +20,7 @@
 #include "texture.h"
 #include "ui.h"
 #include "utils.h"
+#include "window.h"
 #include <GLFW/glfw3.h>
 #include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>
@@ -206,29 +207,18 @@ int app_init(App* app, int width, int height, const char* title)
 	//
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
-	/* Initialize GLFW */
-	if (!glfwInit()) {
-		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLFW");
-		return 0;
-	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-	glfwWindowHint(GLFW_SAMPLES, DEFAULT_SAMPLES);
-
-	app->window = glfwCreateWindow(width, height, title, NULL, NULL);
+	/* Initialize Window & Context via Window Module */
+	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->window) {
 		LOG_ERROR("suckless-ogl.app", "Failed to create window");
-		glfwTerminate();
 		return 0;
 	}
 
-	glfwMakeContextCurrent(app->window);
-	glfwSwapInterval(0); /* Disable VSync for performance comparison */
+	/* Disable VSync for performance comparison */
+	glfwSwapInterval(0);
+
+	/* Setup Callbacks */
 	glfwSetWindowUserPointer(app->window, app);
 	glfwSetKeyCallback(app->window, key_callback);
 	glfwSetCursorPosCallback(app->window, mouse_callback);
@@ -239,14 +229,6 @@ int app_init(App* app, int width, int height, const char* title)
 	if (app->camera_enabled) {
 		glfwSetInputMode(app->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
-	}
-
-	/* Initialize GLAD */
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		LOG_ERROR("suckless-ogl.app", "Failed to initialize GLAD");
-		glfwDestroyWindow(app->window);
-		glfwTerminate();
-		return 0;
 	}
 
 	int major =
@@ -574,8 +556,7 @@ void app_cleanup(App* app)
 
 	postprocess_cleanup(&app->postprocess);
 
-	glfwDestroyWindow(app->window);
-	glfwTerminate();
+	window_destroy(app->window);
 }
 
 void app_run(App* app)

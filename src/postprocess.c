@@ -500,82 +500,88 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->dof = preset->dof;
 }
 
-static void upload_vignette_params(Shader* s, const VignetteParams* p)
+static void upload_vignette_params(Shader* shader, const VignetteParams* params)
 {
-	shader_set_float(s, "vignetteIntensity", p->intensity);
-	shader_set_float(s, "vignetteSmoothness", p->smoothness);
-	shader_set_float(s, "vignetteRoundness", p->roundness);
+	shader_set_float(shader, "vignetteIntensity", params->intensity);
+	shader_set_float(shader, "vignetteSmoothness", params->smoothness);
+	shader_set_float(shader, "vignetteRoundness", params->roundness);
 }
 
-static void upload_grain_params(Shader* s, const GrainParams* p, float time)
+static void upload_grain_params(Shader* shader, const GrainParams* params,
+                                float time)
 {
-	shader_set_float(s, "grainIntensity", p->intensity);
-	shader_set_float(s, "grainIntensityShadows", p->intensity_shadows);
-	shader_set_float(s, "grainIntensityMidtones", p->intensity_midtones);
-	shader_set_float(s, "grainIntensityHighlights",
-	                 p->intensity_highlights);
-	shader_set_float(s, "grainShadowsMax", p->shadows_max);
-	shader_set_float(s, "grainHighlightsMin", p->highlights_min);
-	shader_set_float(s, "grainTexelSize", p->texel_size);
-	shader_set_float(s, "time", time);
+	shader_set_float(shader, "grainIntensity", params->intensity);
+	shader_set_float(shader, "grainIntensityShadows",
+	                 params->intensity_shadows);
+	shader_set_float(shader, "grainIntensityMidtones",
+	                 params->intensity_midtones);
+	shader_set_float(shader, "grainIntensityHighlights",
+	                 params->intensity_highlights);
+	shader_set_float(shader, "grainShadowsMax", params->shadows_max);
+	shader_set_float(shader, "grainHighlightsMin", params->highlights_min);
+	shader_set_float(shader, "grainTexelSize", params->texel_size);
+	shader_set_float(shader, "time", time);
 }
 
-static void upload_exposure_params(Shader* s, const ExposureParams* p)
+static void upload_exposure_params(Shader* shader, const ExposureParams* params)
 {
-	shader_set_float(s, "exposure", p->exposure);
+	shader_set_float(shader, "exposure", params->exposure);
 }
 
-static void upload_chrom_abbr_params(Shader* s, const ChromAbberationParams* p)
+static void upload_chrom_abbr_params(Shader* shader,
+                                     const ChromAbberationParams* params)
 {
-	shader_set_float(s, "chromAbbrStrength", p->strength);
+	shader_set_float(shader, "chromAbbrStrength", params->strength);
 }
 
-static void upload_bloom_params(Shader* s, const BloomParams* p)
+static void upload_bloom_params(Shader* shader, const BloomParams* params)
 {
-	shader_set_float(s, "bloomIntensity", p->intensity);
+	shader_set_float(shader, "bloomIntensity", params->intensity);
 	/* Threshold and soft_threshold are likely used in prefilter, not main
 	 * pass, but we keep them available if needed or if logic changes.
 	 * Currently main shader only needs intensity to mix.
 	 */
 }
 
-static void upload_dof_params(Shader* s, const DoFParams* p)
+static void upload_dof_params(Shader* shader, const DoFParams* params)
 {
-	shader_set_float(s, "dofFocalDistance", p->focal_distance);
-	shader_set_float(s, "dofFocalRange", p->focal_range);
-	shader_set_float(s, "dofBokehScale", p->bokeh_scale);
+	shader_set_float(shader, "dofFocalDistance", params->focal_distance);
+	shader_set_float(shader, "dofFocalRange", params->focal_range);
+	shader_set_float(shader, "dofBokehScale", params->bokeh_scale);
 }
 
-static void upload_grading_params(Shader* s, const ColorGradingParams* p)
+static void upload_grading_params(Shader* shader,
+                                  const ColorGradingParams* params)
 {
-	shader_set_float(s, "gradSaturation", p->saturation);
-	shader_set_float(s, "gradContrast", p->contrast);
-	shader_set_float(s, "gradGamma", p->gamma);
-	shader_set_float(s, "gradGain", p->gain);
-	shader_set_float(s, "gradOffset", p->offset);
+	shader_set_float(shader, "gradSaturation", params->saturation);
+	shader_set_float(shader, "gradContrast", params->contrast);
+	shader_set_float(shader, "gradGamma", params->gamma);
+	shader_set_float(shader, "gradGain", params->gain);
+	shader_set_float(shader, "gradOffset", params->offset);
 }
 
-static void upload_white_balance_params(Shader* s, const WhiteBalanceParams* p)
+static void upload_white_balance_params(Shader* shader,
+                                        const WhiteBalanceParams* params)
 {
-	shader_set_float(s, "wbTemperature", p->temperature);
-	shader_set_float(s, "wbTint", p->tint);
+	shader_set_float(shader, "wbTemperature", params->temperature);
+	shader_set_float(shader, "wbTint", params->tint);
 }
 
-static void upload_tonemap_params(Shader* s, const TonemapParams* p)
+static void upload_tonemap_params(Shader* shader, const TonemapParams* params)
 {
-	shader_set_float(s, "tonemapSlope", p->slope);
-	shader_set_float(s, "tonemapToe", p->toe);
-	shader_set_float(s, "tonemapShoulder", p->shoulder);
-	shader_set_float(s, "tonemapBlackClip", p->black_clip);
-	shader_set_float(s, "tonemapWhiteClip", p->white_clip);
+	shader_set_float(shader, "tonemapSlope", params->slope);
+	shader_set_float(shader, "tonemapToe", params->toe);
+	shader_set_float(shader, "tonemapShoulder", params->shoulder);
+	shader_set_float(shader, "tonemapBlackClip", params->black_clip);
+	shader_set_float(shader, "tonemapWhiteClip", params->white_clip);
 }
 
-static void upload_motion_blur_params(Shader* s, float intensity, float max_v,
-                                      int samples)
+static void upload_motion_blur_params(Shader* shader, float intensity,
+                                      float max_v, int samples)
 {
-	shader_set_float(s, "motionBlurIntensity", intensity);
-	shader_set_float(s, "motionBlurMaxVelocity", max_v);
-	shader_set_int(s, "motionBlurSamples", samples);
+	shader_set_float(shader, "motionBlurIntensity", intensity);
+	shader_set_float(shader, "motionBlurMaxVelocity", max_v);
+	shader_set_int(shader, "motionBlurSamples", samples);
 }
 
 void postprocess_begin(PostProcess* post_processing)
