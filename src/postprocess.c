@@ -705,6 +705,7 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Retour au framebuffer par défaut */
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, post_processing->width, post_processing->height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	/* Désactiver le depth test pour le quad */
