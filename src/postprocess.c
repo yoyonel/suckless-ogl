@@ -14,6 +14,8 @@ static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_bloom_resources(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 static void render_bloom(PostProcess* post_processing);
+static void render_dof(PostProcess* post_processing);
+static void render_motion_blur(PostProcess* post_processing);
 static void render_auto_exposure(PostProcess* post_processing);
 
 /* TODO: move to gl_common.h and mutualize with skybox rendering */
@@ -602,58 +604,7 @@ void postprocess_end(PostProcess* post_processing)
 	 * scene */
 	if (postprocess_is_enabled(post_processing, POSTFX_DOF) ||
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
-		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
-		int dof_width = post_processing->width / 4;
-		int dof_height = post_processing->height / 4;
-		if (dof_width < 1) {
-			dof_width = 1;
-		}
-		if (dof_height < 1) {
-			dof_height = 1;
-		}
-		glViewport(0, 0, dof_width, dof_height);
-
-		/* Pass 1: Downsample/Blur Scene -> Temp (13-tap) */
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D,
-		                       post_processing->dof_temp_tex, 0);
-
-		shader_use(post_processing->bloom_downsample_shader);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-		shader_set_int(post_processing->bloom_downsample_shader,
-		               "srcTexture", 0);
-
-		vec2 src_res = {(float)post_processing->width,
-		                (float)post_processing->height};
-		shader_set_vec2(post_processing->bloom_downsample_shader,
-		                "srcResolution", (float*)&src_res);
-
-		glBindVertexArray(post_processing->screen_quad_vao);
-		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-		/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final) */
-		/* Using bloom_upsample (Tent 3x3 radius adjustable) to widen
-		 * the blur */
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D,
-		                       post_processing->dof_blur_tex, 0);
-
-		shader_use(post_processing->bloom_upsample_shader);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
-		shader_set_int(post_processing->bloom_upsample_shader,
-		               "srcTexture", 0);
-		/* Scale radius to 1.0 (standard neighbor) or higher for wider
-		 * blur */
-		shader_set_float(post_processing->bloom_upsample_shader,
-		                 "filterRadius", 1.0F);
-
-		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-		glBindVertexArray(0);
+		render_dof(post_processing);
 	}
 
 	/* Auto Exposure Pass (Compute) - Must be done before binding final
@@ -666,41 +617,7 @@ void postprocess_end(PostProcess* post_processing)
 	/* Motion Blur Pre-Pass (Compute) */
 	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) &&
 	    post_processing->tile_max_shader != 0) {
-		int groups_x =
-		    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-		    COMPUTE_WORK_GROUP_SIZE;
-		int groups_y =
-		    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-		    COMPUTE_WORK_GROUP_SIZE;
-
-		/* Pass 1: Tile Max Velocity */
-		shader_use(post_processing->tile_max_shader);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-		shader_set_int(post_processing->tile_max_shader,
-		               "velocityTexture", 0);
-
-		glBindImageTexture(1, post_processing->tile_max_tex, 0,
-		                   GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
-
-		glDispatchCompute(groups_x, groups_y, 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-		                GL_TEXTURE_FETCH_BARRIER_BIT);
-
-		/* Pass 2: Neighbor Max Velocity */
-		shader_use(post_processing->neighbor_max_shader);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, post_processing->tile_max_tex);
-		shader_set_int(post_processing->neighbor_max_shader,
-		               "tileMaxTexture", 0);
-
-		glBindImageTexture(1, post_processing->neighbor_max_tex, 0,
-		                   GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
-
-		glDispatchCompute(groups_x, groups_y, 1);
-		glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+		render_motion_blur(post_processing);
 	}
 
 	/* Retour au framebuffer par défaut */
@@ -1260,4 +1177,95 @@ static void render_bloom(PostProcess* post_processing)
 	glBindVertexArray(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
+}
+
+static void render_dof(PostProcess* post_processing)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
+	int dof_width = post_processing->width / 4;
+	int dof_height = post_processing->height / 4;
+	if (dof_width < 1) {
+		dof_width = 1;
+	}
+	if (dof_height < 1) {
+		dof_height = 1;
+	}
+	glViewport(0, 0, dof_width, dof_height);
+
+	/* Pass 1: Downsample/Blur Scene -> Temp (13-tap) */
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, post_processing->dof_temp_tex, 0);
+
+	shader_use(post_processing->bloom_downsample_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+	shader_set_int(post_processing->bloom_downsample_shader, "srcTexture",
+	               0);
+
+	vec2 src_res = {(float)post_processing->width,
+	                (float)post_processing->height};
+	shader_set_vec2(post_processing->bloom_downsample_shader,
+	                "srcResolution", (float*)&src_res);
+
+	glBindVertexArray(post_processing->screen_quad_vao);
+	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+	/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final) */
+	/* Using bloom_upsample (Tent 3x3 radius adjustable) to widen
+	 * the blur */
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
+
+	shader_use(post_processing->bloom_upsample_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
+	shader_set_int(post_processing->bloom_upsample_shader, "srcTexture", 0);
+	/* Scale radius to 1.0 (standard neighbor) or higher for wider
+	 * blur */
+	shader_set_float(post_processing->bloom_upsample_shader, "filterRadius",
+	                 1.0F);
+
+	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+	glBindVertexArray(0);
+}
+
+static void render_motion_blur(PostProcess* post_processing)
+{
+	int groups_x =
+	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+	    COMPUTE_WORK_GROUP_SIZE;
+	int groups_y =
+	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
+	    COMPUTE_WORK_GROUP_SIZE;
+
+	/* Pass 1: Tile Max Velocity */
+	shader_use(post_processing->tile_max_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	shader_set_int(post_processing->tile_max_shader, "velocityTexture", 0);
+
+	glBindImageTexture(1, post_processing->tile_max_tex, 0, GL_FALSE, 0,
+	                   GL_WRITE_ONLY, GL_RG16F);
+
+	glDispatchCompute(groups_x, groups_y, 1);
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+	                GL_TEXTURE_FETCH_BARRIER_BIT);
+
+	/* Pass 2: Neighbor Max Velocity */
+	shader_use(post_processing->neighbor_max_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->tile_max_tex);
+	shader_set_int(post_processing->neighbor_max_shader, "tileMaxTexture",
+	               0);
+
+	glBindImageTexture(1, post_processing->neighbor_max_tex, 0, GL_FALSE, 0,
+	                   GL_WRITE_ONLY, GL_RG16F);
+
+	glDispatchCompute(groups_x, groups_y, 1);
+	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 }

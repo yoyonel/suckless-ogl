@@ -38,6 +38,7 @@ typedef struct {
 	/* Scene state */
 	int subdivisions;
 	int wireframe;
+	int show_envmap;
 
 	// /* Mouse state */
 	int first_mouse; /* First mouse movement flag */

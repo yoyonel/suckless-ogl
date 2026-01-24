@@ -201,7 +201,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app->text_overlay_mode = 0; /* Off by default */
 	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
-	app->show_help = 0; /* Hidden by default */
+	app->show_help = 0;   /* Hidden by default */
+	app->show_envmap = 1; /* Enabled by default */
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
@@ -786,10 +787,13 @@ void app_render(App* app)
 	}
 
 	/* 2. Render skybox LAST (using LEQUAL to fill background) */
-	/* We always use FILL for the skybox regardless of wireframe mode */
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	skybox_render(&app->skybox, app->skybox_shader, app->hdr_texture,
-	              inv_view_proj, app->env_lod);
+	if (app->show_envmap) {
+		/* We always use FILL for the skybox regardless of wireframe
+		 * mode */
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		skybox_render(&app->skybox, app->skybox_shader,
+		              app->hdr_texture, inv_view_proj, app->env_lod);
+	}
 
 	/* 3. Post-processing */
 	postprocess_end(&app->postprocess);
@@ -838,6 +842,7 @@ static void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[B] Toggle Bloom", HELP_COLOR);
 	ui_layout_text(&layout, "[M] Toggle Motion Blur", HELP_COLOR);
 	ui_layout_text(&layout, "[L] Toggle Billboard Mode", HELP_COLOR);
+	ui_layout_text(&layout, "[K] Toggle Envmap", HELP_COLOR);
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
@@ -1481,6 +1486,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				LOG_INFO("suckless-ogl.app",
 				         "Billboard Mode: %s",
 				         app->billboard_mode ? "ON" : "OFF");
+				break;
+			case GLFW_KEY_K:
+				app->show_envmap = !app->show_envmap;
+				LOG_INFO("suckless-ogl.app", "Envmap: %s",
+				         app->show_envmap ? "ON" : "OFF");
 				break;
 			/* Post-Processing */
 			default:
