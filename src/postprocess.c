@@ -67,7 +67,8 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 
 	/* Paramètres par défaut */
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;
-	post_processing->vignette.extent = DEFAULT_VIGNETTE_EXTENT;
+	post_processing->vignette.smoothness = DEFAULT_VIGNETTE_SMOOTHNESS;
+	post_processing->vignette.roundness = DEFAULT_VIGNETTE_ROUNDNESS;
 	post_processing->grain.intensity = DEFAULT_GRAIN_INTENSITY;
 	post_processing->grain.intensity_shadows = 1.0F;
 	post_processing->grain.intensity_midtones = 1.0F;
@@ -378,10 +379,11 @@ int postprocess_is_enabled(PostProcess* post_processing,
 }
 
 void postprocess_set_vignette(PostProcess* post_processing, float intensity,
-                              float extent)
+                              float smoothness, float roundness)
 {
 	post_processing->vignette.intensity = intensity;
-	post_processing->vignette.extent = extent;
+	post_processing->vignette.smoothness = smoothness;
+	post_processing->vignette.roundness = roundness;
 }
 
 void postprocess_set_grain(PostProcess* post_processing, float intensity)
@@ -718,8 +720,12 @@ void postprocess_end(PostProcess* post_processing)
 	shader_set_float(post_processing->postprocess_shader,
 	                 "vignetteIntensity",
 	                 post_processing->vignette.intensity);
-	shader_set_float(post_processing->postprocess_shader, "vignetteExtent",
-	                 post_processing->vignette.extent);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "vignetteSmoothness",
+	                 post_processing->vignette.smoothness);
+	shader_set_float(post_processing->postprocess_shader,
+	                 "vignetteRoundness",
+	                 post_processing->vignette.roundness);
 	shader_set_float(post_processing->postprocess_shader, "grainIntensity",
 	                 post_processing->grain.intensity);
 	shader_set_float(post_processing->postprocess_shader,

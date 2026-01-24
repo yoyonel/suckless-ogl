@@ -12,7 +12,8 @@
 static const PostProcessPreset PRESET_DEFAULT = {
     .active_effects = (unsigned int)POSTFX_EXPOSURE,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
-                 .extent = DEFAULT_VIGNETTE_EXTENT},
+                 .smoothness = DEFAULT_VIGNETTE_SMOOTHNESS,
+                 .roundness = DEFAULT_VIGNETTE_ROUNDNESS},
     .grain = {.intensity = DEFAULT_GRAIN_INTENSITY,
               .intensity_shadows = 1.0F,
               .intensity_midtones = 1.0F,
@@ -45,7 +46,7 @@ static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING,
-    .vignette = {.intensity = 0.3F, .extent = 0.7F},
+    .vignette = {.intensity = 0.3F, .smoothness = 0.5F, .roundness = 1.0F},
     .grain = {.intensity = 0.02F,
               .intensity_shadows = 1.0F,
               .intensity_midtones = 1.0F,
@@ -79,7 +80,7 @@ static const PostProcessPreset PRESET_CINEMATIC = {
         (unsigned int)POSTFX_AUTO_EXPOSURE | (unsigned int)POSTFX_BLOOM |
         (unsigned int)POSTFX_DOF | (unsigned int)POSTFX_COLOR_GRADING |
         (unsigned int)POSTFX_MOTION_BLUR,
-    .vignette = {.intensity = 0.5F, .extent = 0.6F},
+    .vignette = {.intensity = 0.5F, .smoothness = 0.6F, .roundness = 0.5F},
     .grain = {.intensity = 0.03F,
               .intensity_shadows = 1.2F,
               .intensity_midtones = 1.0F,
@@ -113,7 +114,7 @@ static const PostProcessPreset PRESET_VINTAGE = {
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_CHROM_ABBR | (unsigned int)POSTFX_EXPOSURE |
         (unsigned int)POSTFX_COLOR_GRADING,
-    .vignette = {.intensity = 0.7F, .extent = 0.5F},
+    .vignette = {.intensity = 0.7F, .smoothness = 0.8F, .roundness = 1.0F},
     .grain = {.intensity = 0.06F,
               .intensity_shadows = 1.5F,
               .intensity_midtones = 1.0F,
@@ -146,7 +147,8 @@ static const PostProcessPreset PRESET_MATRIX = {
     .active_effects =
         (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
-                 .extent = DEFAULT_VIGNETTE_EXTENT},
+                 .smoothness = DEFAULT_VIGNETTE_SMOOTHNESS,
+                 .roundness = DEFAULT_VIGNETTE_ROUNDNESS},
     .grain = {.intensity = DEFAULT_GRAIN_INTENSITY,
               .intensity_shadows = 1.0F,
               .intensity_midtones = 1.0F,
@@ -178,7 +180,8 @@ static const PostProcessPreset PRESET_MATRIX = {
 static const PostProcessPreset PRESET_BW_CONTRAST = {
     .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
-                 .extent = DEFAULT_VIGNETTE_EXTENT},
+                 .smoothness = DEFAULT_VIGNETTE_SMOOTHNESS,
+                 .roundness = DEFAULT_VIGNETTE_ROUNDNESS},
     .grain = {.intensity = DEFAULT_GRAIN_INTENSITY,
               .intensity_shadows = 1.0F,
               .intensity_midtones = 1.0F,

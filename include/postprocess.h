@@ -6,8 +6,9 @@
 #include <cglm/cglm.h>
 
 /* Valeurs par défaut - plus subtiles et cinématiques */
-#define DEFAULT_VIGNETTE_INTENSITY 0.03F /* 0.5 était trop fort */
-#define DEFAULT_VIGNETTE_EXTENT 0.7F     /* Plus large = effet plus doux */
+#define DEFAULT_VIGNETTE_INTENSITY 0.8F  /* 0.0 - 1.0+ */
+#define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /* 0.0 (Hard) - 1.0 (Soft) */
+#define DEFAULT_VIGNETTE_ROUNDNESS 1.0F  /* 0.0 (Rect) - 1.0 (Round) */
 #define DEFAULT_GRAIN_INTENSITY 0.02F    /* 0.05 était trop visible */
 #define DEFAULT_GRAIN_SHADOWS_MAX 0.09F
 #define DEFAULT_GRAIN_HIGHLIGHTS_MIN 0.5F
@@ -63,9 +64,9 @@ typedef struct {
 
 /* Paramètres pour le vignettage */
 typedef struct {
-	float intensity; /* 0.0 - 1.0, défaut: 0.3, recommandé: 0.2-0.4 (subtil)
-	                  */
-	float extent; /* 0.3 - 0.8, défaut: 0.7, recommandé: 0.6-0.8 (doux) */
+	float intensity;  /* 0.0 - 1.0+ */
+	float smoothness; /* 0.0 - 1.0 */
+	float roundness;  /* 0.0 - 1.0 */
 } VignetteParams;
 
 /* Paramètres pour le grain */
@@ -238,7 +239,7 @@ void postprocess_set_grading_ue_default(PostProcess* post_processing);
 
 /* Configuration des paramètres */
 void postprocess_set_vignette(PostProcess* post_processing, float intensity,
-                              float extent);
+                              float smoothness, float roundness);
 void postprocess_set_grain(PostProcess* post_processing, float intensity);
 void postprocess_set_exposure(PostProcess* post_processing, float exposure);
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
