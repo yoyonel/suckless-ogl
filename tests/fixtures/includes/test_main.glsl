@@ -1,3 +1,6 @@
 // Main shader
-@header "subdir/helper.glsl"
-void main() { helper(); }
+@header "subdir/helper.glsl";
+void main()
+{
+	helper();
+}

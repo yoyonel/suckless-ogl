@@ -1,2 +1,4 @@
 // Helper included
-void helper() {}
+void helper()
+{
+}

@@ -66,6 +66,11 @@ typedef struct {
 	InstancedGroup instanced_group;
 	Shader* pbr_instanced_shader;
 
+	/* Billboard rendering */
+	int billboard_mode;
+	GLuint quad_vbo;
+	Shader* pbr_billboard_shader;
+
 	/* Shaders */
 	GLuint skybox_shader; /* Remains GLuint for now (Skybox module) */
 

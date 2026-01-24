@@ -16,6 +16,37 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
 	             GL_STATIC_DRAW);
 }
 
+// Helper interne pour configurer les attributs d'instance
+static void setup_instance_attributes()
+{
+	GLsizei size_instance = (GLsizei)sizeof(SphereInstance);
+	GLuint index_vattrib = 2;  // Start at 2 (0=Pos, 1=Norm usually)
+
+	// mat4 model (Locations 2, 3, 4, 5)
+	for (int i = 0; i < 4; i++) {
+		glEnableVertexAttribArray(index_vattrib);
+		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
+		                      size_instance,
+		                      // NOLINTNEXTLINE(misc-include-cleaner)
+		                      BUFFER_OFFSET(i * sizeof(vec4)));
+		glVertexAttribDivisor(index_vattrib, 1);
+		index_vattrib++;
+	}
+	// Albedo (6) + PBR (7)
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                      size_instance,
+	                      BUFFER_OFFSET(offsetof(SphereInstance, albedo)));
+	glVertexAttribDivisor(index_vattrib, 1);
+	index_vattrib++;
+
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(
+	    index_vattrib, 3, GL_FLOAT, GL_FALSE, size_instance,
+	    BUFFER_OFFSET(offsetof(SphereInstance, metallic)));
+	glVertexAttribDivisor(index_vattrib, 1);
+}
+
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo)
 {
@@ -41,34 +72,40 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 
 	// -- INSTANCES (VBO Interne) --
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
-	GLsizei size_instance = (GLsizei)sizeof(SphereInstance);
+	setup_instance_attributes();
 
-	GLuint index_generic_vertex_attribute = 2;
-	// mat4 model (Locations 2, 3, 4, 5)
-	for (int i = 0; i < 4; i++) {
-		glEnableVertexAttribArray(index_generic_vertex_attribute);
-		glVertexAttribPointer(index_generic_vertex_attribute, 4,
-		                      GL_FLOAT, GL_FALSE, size_instance,
-		                      // NOLINTNEXTLINE(misc-include-cleaner)
-		                      BUFFER_OFFSET(i * sizeof(vec4)));
-		glVertexAttribDivisor(index_generic_vertex_attribute, 1);
-		index_generic_vertex_attribute++;
+	glBindVertexArray(0);
+}
+
+void instanced_group_bind_billboard(InstancedGroup* group, GLuint vbo)
+{
+	if (group->vao != 0) {
+		glDeleteVertexArrays(1, &group->vao);
+		group->vao = 0;
 	}
-	// Albedo (6) + PBR (7)
-	glEnableVertexAttribArray(index_generic_vertex_attribute);
-	glVertexAttribPointer(index_generic_vertex_attribute, 3, GL_FLOAT,
-	                      GL_FALSE, size_instance,
-	                      BUFFER_OFFSET(offsetof(SphereInstance, albedo)));
-	glVertexAttribDivisor(index_generic_vertex_attribute, 1);
-	index_generic_vertex_attribute++;
 
-	glEnableVertexAttribArray(index_generic_vertex_attribute);
-	glVertexAttribPointer(
-	    index_generic_vertex_attribute, 3, GL_FLOAT, GL_FALSE,
-	    size_instance, BUFFER_OFFSET(offsetof(SphereInstance, metallic)));
-	glVertexAttribDivisor(index_generic_vertex_attribute, 1);
-	// index_generic_vertex_attribute++;
+	glGenVertexArrays(1, &group->vao);
+	glBindVertexArray(group->vao);
 
+	// -- GÉOMÉTRIE (Quad) --
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// Pas de normales (index 1) pour les billboards
+
+	// -- INSTANCES --
+	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
+	setup_instance_attributes();
+
+	glBindVertexArray(0);
+}
+
+void instanced_group_draw_arrays(InstancedGroup* group, GLenum mode, int first,
+                                 int count)
+{
+	glBindVertexArray(group->vao);
+	glDrawArraysInstanced(mode, first, count, group->instance_count);
 	glBindVertexArray(0);
 }
 

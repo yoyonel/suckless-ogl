@@ -30,6 +30,7 @@
 #include <cglm/vec3.h>
 #include <dirent.h>
 #include <math.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>  // for malloc
 #include <string.h>
@@ -73,6 +74,7 @@ static int compute_luminance_histogram(App* app, int* buckets, int size,
 static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum);
+static void app_update_instancing_mode(App* app);
 
 static int compare_strings(const void* string_a, const void* string_b)
 {
@@ -301,6 +303,27 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
+	app->billboard_mode = 0;
+	app->pbr_billboard_shader = shader_load(
+	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
+	if (!app->pbr_billboard_shader) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to load billboard shader");
+		return 0;
+	}
+
+	// Initialize Quad VAO for billboards
+	static const float quadVertices[] = {
+	    -0.5F, 0.5F, 0.0F, -0.5F, -0.5F, 0.0F,
+	    0.5F,  0.5F, 0.0F, 0.5F,  -0.5F, 0.0F,
+	};
+
+	glGenBuffers(1, &app->quad_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, app->quad_vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices,
+	             GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
 
@@ -349,7 +372,8 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	LOG_INFO("suckless-ogl.app", "Legacy instanced rendering mode active");
+	/* Setup initial VAO based on default mode (Mesh) */
+	app_update_instancing_mode(app);
 #endif
 
 	/* Initialize post-processing */
@@ -487,6 +511,51 @@ void app_init_instancing(App* app)
 	free(data);
 }
 
+static void app_update_instancing_mode(App* app)
+{
+	/* Re-create internal VAO based on mode */
+	/* Note: initialization data is already in instance_vbo, we just re-bind
+	 */
+	if (app->billboard_mode) {
+		instanced_group_bind_billboard(&app->instanced_group,
+		                               app->quad_vbo);
+	} else {
+		instanced_group_bind_mesh(&app->instanced_group,
+		                          app->sphere_vbo, app->sphere_nbo,
+		                          app->sphere_ebo);
+	}
+}
+
+void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
+{
+	Shader* current_shader = app->pbr_billboard_shader;
+	shader_use(current_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+
+	shader_set_int(current_shader, "irradianceMap", 0);
+	shader_set_int(current_shader, "prefilterMap", 1);
+	shader_set_int(current_shader, "brdfLUT", 2);
+
+	shader_set_int(current_shader, "debugMode", app->pbr_debug_mode);
+
+	shader_set_vec3(current_shader, "camPos", camera_pos);
+	shader_set_mat4(current_shader, "projection", (float*)proj);
+	shader_set_mat4(current_shader, "view", (float*)view);
+	shader_set_mat4(current_shader, "previousViewProj",
+	                (float*)app->postprocess.previous_view_proj);
+
+	// Draw Quads Instanced
+	// 4 vertices per quad (Triangle Strip)
+	instanced_group_draw_arrays(&app->instanced_group, GL_TRIANGLE_STRIP, 0,
+	                            4);
+}
+
 void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 {
 	Shader* current_shader = NULL;
@@ -543,6 +612,9 @@ void app_cleanup(App* app)
 	glDeleteProgram(app->skybox_shader);
 	shader_destroy(app->debug_shader);
 	glDeleteBuffers(1, &app->exposure_pbo);
+
+	glDeleteBuffers(1, &app->quad_vbo);
+	shader_destroy(app->pbr_billboard_shader);
 
 	material_free_lib(app->material_lib);
 
@@ -703,10 +775,15 @@ void app_render(App* app)
 	glm_mat4_mul(proj, view_no_translation, inv_view_proj);
 	glm_mat4_inv(inv_view_proj, inv_view_proj);
 
-	/* 1. Render icosphere FIRST (populates depth buffer for early-Z
-	 * culling) */
+	/* 1. Render icosphere or billboards FIRST (populates depth buffer for
+	 * early-Z culling) */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-	app_render_instanced(app, view, proj, camera_pos);
+
+	if (app->billboard_mode) {
+		app_render_billboards(app, view, proj, camera_pos);
+	} else {
+		app_render_instanced(app, view, proj, camera_pos);
+	}
 
 	/* 2. Render skybox LAST (using LEQUAL to fill background) */
 	/* We always use FILL for the skybox regardless of wireframe mode */
@@ -760,6 +837,7 @@ static void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[J] Toggle Auto-Exposure", HELP_COLOR);
 	ui_layout_text(&layout, "[B] Toggle Bloom", HELP_COLOR);
 	ui_layout_text(&layout, "[M] Toggle Motion Blur", HELP_COLOR);
+	ui_layout_text(&layout, "[L] Toggle Billboard Mode", HELP_COLOR);
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
@@ -1396,6 +1474,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				break;
 			case GLFW_KEY_F:
 				app_toggle_fullscreen(app, window);
+				break;
+			case GLFW_KEY_L:
+				app->billboard_mode = !app->billboard_mode;
+				app_update_instancing_mode(app);
+				LOG_INFO("suckless-ogl.app",
+				         "Billboard Mode: %s",
+				         app->billboard_mode ? "ON" : "OFF");
 				break;
 			/* Post-Processing */
 			default:

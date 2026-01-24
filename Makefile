@@ -57,7 +57,7 @@ run-software: all
 	LIBGL_ALWAYS_SOFTWARE=1 ./$(BUILD_DIR)/app
 
 format:
-	$(DISTROBOX) sh -c "find src include tests -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
+	$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format -i"
 
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps

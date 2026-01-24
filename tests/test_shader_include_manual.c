@@ -25,13 +25,13 @@ int main(void)
 		return 1;
 	}
 
-	if (strstr(src, "void helper() {}") == NULL) {
+	if (strstr(src, "void helper()\n{\n}") == NULL) {
 		fprintf(stderr, "FAIL: Included content not found.\n");
 		free(src);
 		return 1;
 	}
 
-	if (strstr(src, "void main() { helper(); }") == NULL) {
+	if (strstr(src, "void main()\n{\n\thelper();\n}") == NULL) {
 		fprintf(stderr, "FAIL: Main content not found.\n");
 		free(src);
 		return 1;
