@@ -500,6 +500,84 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->dof = preset->dof;
 }
 
+static void upload_vignette_params(Shader* s, const VignetteParams* p)
+{
+	shader_set_float(s, "vignetteIntensity", p->intensity);
+	shader_set_float(s, "vignetteSmoothness", p->smoothness);
+	shader_set_float(s, "vignetteRoundness", p->roundness);
+}
+
+static void upload_grain_params(Shader* s, const GrainParams* p, float time)
+{
+	shader_set_float(s, "grainIntensity", p->intensity);
+	shader_set_float(s, "grainIntensityShadows", p->intensity_shadows);
+	shader_set_float(s, "grainIntensityMidtones", p->intensity_midtones);
+	shader_set_float(s, "grainIntensityHighlights",
+	                 p->intensity_highlights);
+	shader_set_float(s, "grainShadowsMax", p->shadows_max);
+	shader_set_float(s, "grainHighlightsMin", p->highlights_min);
+	shader_set_float(s, "grainTexelSize", p->texel_size);
+	shader_set_float(s, "time", time);
+}
+
+static void upload_exposure_params(Shader* s, const ExposureParams* p)
+{
+	shader_set_float(s, "exposure", p->exposure);
+}
+
+static void upload_chrom_abbr_params(Shader* s, const ChromAbberationParams* p)
+{
+	shader_set_float(s, "chromAbbrStrength", p->strength);
+}
+
+static void upload_bloom_params(Shader* s, const BloomParams* p)
+{
+	shader_set_float(s, "bloomIntensity", p->intensity);
+	/* Threshold and soft_threshold are likely used in prefilter, not main
+	 * pass, but we keep them available if needed or if logic changes.
+	 * Currently main shader only needs intensity to mix.
+	 */
+}
+
+static void upload_dof_params(Shader* s, const DoFParams* p)
+{
+	shader_set_float(s, "dofFocalDistance", p->focal_distance);
+	shader_set_float(s, "dofFocalRange", p->focal_range);
+	shader_set_float(s, "dofBokehScale", p->bokeh_scale);
+}
+
+static void upload_grading_params(Shader* s, const ColorGradingParams* p)
+{
+	shader_set_float(s, "gradSaturation", p->saturation);
+	shader_set_float(s, "gradContrast", p->contrast);
+	shader_set_float(s, "gradGamma", p->gamma);
+	shader_set_float(s, "gradGain", p->gain);
+	shader_set_float(s, "gradOffset", p->offset);
+}
+
+static void upload_white_balance_params(Shader* s, const WhiteBalanceParams* p)
+{
+	shader_set_float(s, "wbTemperature", p->temperature);
+	shader_set_float(s, "wbTint", p->tint);
+}
+
+static void upload_tonemap_params(Shader* s, const TonemapParams* p)
+{
+	shader_set_float(s, "tonemapSlope", p->slope);
+	shader_set_float(s, "tonemapToe", p->toe);
+	shader_set_float(s, "tonemapShoulder", p->shoulder);
+	shader_set_float(s, "tonemapBlackClip", p->black_clip);
+	shader_set_float(s, "tonemapWhiteClip", p->white_clip);
+}
+
+static void upload_motion_blur_params(Shader* s, float intensity, float max_v,
+                                      int samples)
+{
+	shader_set_float(s, "motionBlurIntensity", intensity);
+	shader_set_float(s, "motionBlurMaxVelocity", max_v);
+	shader_set_int(s, "motionBlurSamples", samples);
+}
+
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
@@ -697,103 +775,51 @@ void postprocess_end(PostProcess* post_processing)
 	shader_set_int(post_processing->postprocess_shader, "enableBloom",
 	               postprocess_is_enabled(post_processing, POSTFX_BLOOM));
 
-	/* Motion Blur Uniforms */
+	/* Motion Blur Flags & Uniforms */
 	shader_set_int(
 	    post_processing->postprocess_shader, "enableMotionBlur",
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR));
 	shader_set_int(
 	    post_processing->postprocess_shader, "enableMotionBlurDebug",
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
-	shader_set_float(post_processing->postprocess_shader,
-	                 "motionBlurIntensity", MB_INTENSITY);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "motionBlurMaxVelocity", MB_MAX_VELOCITY);
-	shader_set_int(post_processing->postprocess_shader, "motionBlurSamples",
-	               MB_SAMPLES);
+
+	upload_motion_blur_params(post_processing->postprocess_shader,
+	                          MB_INTENSITY, MB_MAX_VELOCITY, MB_SAMPLES);
+
+	/* DoF Flags */
 	shader_set_int(post_processing->postprocess_shader, "enableDoF",
 	               postprocess_is_enabled(post_processing, POSTFX_DOF));
 	shader_set_int(
 	    post_processing->postprocess_shader, "enableDoFDebug",
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG));
 
-	/* Envoyer les paramètres des effets */
-	shader_set_float(post_processing->postprocess_shader,
-	                 "vignetteIntensity",
-	                 post_processing->vignette.intensity);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "vignetteSmoothness",
-	                 post_processing->vignette.smoothness);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "vignetteRoundness",
-	                 post_processing->vignette.roundness);
-	shader_set_float(post_processing->postprocess_shader, "grainIntensity",
-	                 post_processing->grain.intensity);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "grainIntensityShadows",
-	                 post_processing->grain.intensity_shadows);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "grainIntensityMidtones",
-	                 post_processing->grain.intensity_midtones);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "grainIntensityHighlights",
-	                 post_processing->grain.intensity_highlights);
-	shader_set_float(post_processing->postprocess_shader, "grainShadowsMax",
-	                 post_processing->grain.shadows_max);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "grainHighlightsMin",
-	                 post_processing->grain.highlights_min);
-	shader_set_float(post_processing->postprocess_shader, "grainTexelSize",
-	                 post_processing->grain.texel_size);
-	shader_set_float(post_processing->postprocess_shader, "time",
-	                 post_processing->time);
-	shader_set_float(post_processing->postprocess_shader, "exposure",
-	                 post_processing->exposure.exposure);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "chromAbbrStrength",
-	                 post_processing->chrom_abbr.strength);
-	shader_set_float(post_processing->postprocess_shader, "bloomIntensity",
-	                 post_processing->bloom.intensity);
+	/* Envoyer les paramètres via helpers (High Habitability) */
+	upload_vignette_params(post_processing->postprocess_shader,
+	                       &post_processing->vignette);
 
-	/* Paramètres DoF */
-	shader_set_float(post_processing->postprocess_shader,
-	                 "dofFocalDistance",
-	                 post_processing->dof.focal_distance);
-	shader_set_float(post_processing->postprocess_shader, "dofFocalRange",
-	                 post_processing->dof.focal_range);
-	shader_set_float(post_processing->postprocess_shader, "dofBokehScale",
-	                 post_processing->dof.bokeh_scale);
+	upload_grain_params(post_processing->postprocess_shader,
+	                    &post_processing->grain, post_processing->time);
 
-	/* Paramètres Color Grading */
-	shader_set_float(post_processing->postprocess_shader, "gradSaturation",
-	                 post_processing->color_grading.saturation);
-	shader_set_float(post_processing->postprocess_shader, "gradContrast",
-	                 post_processing->color_grading.contrast);
-	shader_set_float(post_processing->postprocess_shader, "gradGamma",
-	                 post_processing->color_grading.gamma);
-	shader_set_float(post_processing->postprocess_shader, "gradGain",
-	                 post_processing->color_grading.gain);
-	shader_set_float(post_processing->postprocess_shader, "gradOffset",
-	                 post_processing->color_grading.offset);
+	upload_exposure_params(post_processing->postprocess_shader,
+	                       &post_processing->exposure);
 
-	/* Paramètres White Balance */
-	shader_set_float(post_processing->postprocess_shader, "wbTemperature",
-	                 post_processing->white_balance.temperature);
-	shader_set_float(post_processing->postprocess_shader, "wbTint",
-	                 post_processing->white_balance.tint);
+	upload_chrom_abbr_params(post_processing->postprocess_shader,
+	                         &post_processing->chrom_abbr);
 
-	/* Paramètres Tonemapper */
-	shader_set_float(post_processing->postprocess_shader, "tonemapSlope",
-	                 post_processing->tonemapper.slope);
-	shader_set_float(post_processing->postprocess_shader, "tonemapToe",
-	                 post_processing->tonemapper.toe);
-	shader_set_float(post_processing->postprocess_shader, "tonemapShoulder",
-	                 post_processing->tonemapper.shoulder);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "tonemapBlackClip",
-	                 post_processing->tonemapper.black_clip);
-	shader_set_float(post_processing->postprocess_shader,
-	                 "tonemapWhiteClip",
-	                 post_processing->tonemapper.white_clip);
+	upload_bloom_params(post_processing->postprocess_shader,
+	                    &post_processing->bloom);
+
+	upload_dof_params(post_processing->postprocess_shader,
+	                  &post_processing->dof);
+
+	upload_grading_params(post_processing->postprocess_shader,
+	                      &post_processing->color_grading);
+
+	upload_white_balance_params(post_processing->postprocess_shader,
+	                            &post_processing->white_balance);
+
+	upload_tonemap_params(post_processing->postprocess_shader,
+	                      &post_processing->tonemapper);
 
 	/* Dessiner le quad */
 	glBindVertexArray(post_processing->screen_quad_vao);
