@@ -1,0 +1,21 @@
+// .zed/tasks.json
+[
+  {
+    "label": "Build Project",
+    "command": "make",
+    "description": "Compile le projet via Makefile",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+  },
+  {
+    "label": "Run suckless-ogl",
+    "command": "./build/app", // Ajuste le nom de l'exécutable produit
+    "description": "Lance l'application",
+    "use_new_terminal": true,
+  },
+  {
+    "label": "Clean & Build",
+    "command": "make clean && bear -- make",
+    "description": "Nettoyage complet et régénération de la base LSP",
+  },
+]

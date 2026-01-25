@@ -1,0 +1,23 @@
+{
+  "languages": {
+    "C": {
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "clang-format",
+          "arguments": ["-i"],
+        },
+      },
+    },
+  },
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "path": "clangd",
+        "arguments": ["--background-index", "--clang-tidy"],
+      },
+    },
+  },
+  "ui_font_size": 16,
+  "buffer_font_family": "JetBrainsMono Nerd Font", // Si tu l'as installée
+}
