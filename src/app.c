@@ -11,15 +11,15 @@
 #include "ssbo_rendering.h"
 #endif
 #include "camera.h"
+#include "environment.h"
+#include "gl_common.h"
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
-#include "perf_timer.h"
 #include "postprocess.h"
 #include "postprocess_presets.h"
 #include "shader.h"
 #include "skybox.h"
-#include "texture.h"
 #include "ui.h"
 #include "utils.h"
 #include "window.h"
@@ -30,15 +30,12 @@
 #include <cglm/types.h>
 #include <cglm/util.h>
 #include <cglm/vec3.h>
-#include <dirent.h>
-#include <math.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>  // for malloc
 #include <string.h>
 
 enum { PBR_DEBUG_MODE_COUNT = 9 };
-enum { MAX_PATH_LENGTH = 256 };
 enum {
 	DEBUG_TEXT_BUFFER_SIZE = 128,
 	RANGE_TEXT_BUFFER_SIZE = 64,
@@ -66,8 +63,6 @@ static void framebuffer_size_callback(GLFWwindow* window, int width,
                                       int height);
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
 static void app_save_raw_frame(App* app, const char* filename);
-static void app_scan_hdr_files(App* app);
-static int app_load_env_map(App* app, const char* filename);
 static void app_draw_help_overlay(App* app);
 static void app_draw_debug_overlay(App* app);
 static void draw_exposure_debug_text(App* app);
@@ -76,117 +71,6 @@ static int compute_luminance_histogram(App* app, int* buckets, int size,
 static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum);
-static void app_update_instancing_mode(App* app);
-
-static int compare_strings(const void* string_a, const void* string_b)
-{
-	return strcmp(*(const char**)string_a, *(const char**)string_b);
-}
-
-static void app_scan_hdr_files(App* app)
-{
-	app->hdr_count = 0;
-	app->hdr_files = NULL;
-	app->current_hdr_index = -1;
-
-	app->current_hdr_index = -1;
-
-	DIR* dir_handle = NULL;
-	struct dirent* entry = NULL;
-	dir_handle = opendir("assets/textures/hdr");
-	if (dir_handle) {
-		while ((entry = readdir(dir_handle)) != NULL) {
-			char* dot = strrchr(entry->d_name, '.');
-			if (dot && strcmp(dot, ".hdr") == 0) {
-				app->hdr_count++;
-				app->hdr_files =
-				    realloc(app->hdr_files,
-				            app->hdr_count * sizeof(char*));
-				app->hdr_files[app->hdr_count - 1] =
-				    strdup(entry->d_name);
-			}
-		}
-		closedir(dir_handle);
-
-		/* Sort files alphabetically for deterministic order */
-		if (app->hdr_count > 1) {
-			qsort(app->hdr_files, app->hdr_count, sizeof(char*),
-			      compare_strings);
-		}
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open assets/textures/hdr directory!");
-	}
-	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
-}
-
-static int app_load_env_map(App* app, const char* filename)
-{
-	char path[MAX_PATH_LENGTH];
-	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
-	                    filename);
-
-	int hdr_w = 0;
-	int hdr_h = 0;
-
-	/* Cleanup old textures if simple reload */
-	if (app->hdr_texture) {
-		glDeleteTextures(1, &app->hdr_texture);
-	}
-	if (app->spec_prefiltered_tex) {
-		glDeleteTextures(1, &app->spec_prefiltered_tex);
-	}
-	if (app->irradiance_tex) {
-		glDeleteTextures(1, &app->irradiance_tex);
-	}
-
-	PERF_MEASURE_LOG("Asset Loading Time (CPU + Upload)")
-	{
-		app->hdr_texture = texture_load_hdr(path, &hdr_w, &hdr_h);
-	}
-	if (!app->hdr_texture) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture: %s",
-		          path);
-		return 0;
-	}
-
-	float auto_threshold = compute_mean_luminance_gpu(
-	    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
-	LOG_INFO("suckless-ogl.ibl",
-	         "Auto threshold from compute_mean_luminance_gpu: %.2f",
-	         auto_threshold);
-	if (auto_threshold < 1.0F || isnan(auto_threshold) ||
-	    isinf(auto_threshold)) {
-		auto_threshold = DEFAULT_AUTO_THRESHOLD;
-		LOG_WARN("suckless-ogl.ibl",
-		         "Invalid auto_threshold detected. Using default: %.2f",
-		         auto_threshold);
-	}
-
-	/* Store for later use in preset resets */
-	app->auto_threshold = auto_threshold;
-
-	PERF_MEASURE_LOG("Prefiltered Map Generation")
-	{
-		app->spec_prefiltered_tex = build_prefiltered_specular_map(
-		    app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
-		    PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
-	}
-
-	PERF_MEASURE_LOG("Irradiance Map Generation")
-	{
-		app->irradiance_tex = build_irradiance_map(
-		    app->hdr_texture, IRIDIANCE_MAP_SIZE, auto_threshold);
-	}
-
-	LOG_INFO("suckless-ogl.app", "Loaded Environment: %s (Thresh: %.2f)",
-	         filename, auto_threshold);
-
-	/* Update postprocess exposure to match new environment */
-	postprocess_set_exposure(&app->postprocess, auto_threshold);
-
-	return 1;
-}
 
 int app_init(App* app, int width, int height, const char* title)
 {
@@ -260,21 +144,25 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
 	/* Scan & Load HDR Environment */
-	app->brdf_lut_tex =
+	environment_init(&app->env);
+	app->env.brdf_lut_tex =
 	    build_brdf_lut_map(BRDF_LUT_MAP_SIZE); /* BRDF is constant */
 
-	app_scan_hdr_files(app);
-	if (app->hdr_count > 0) {
+	environment_scan_files(&app->env, "assets/textures/hdr");
+	if (app->env.hdr_count > 0) {
 		/* Try to find 'env.hdr' as default, otherwise pick first */
 		int default_idx = 0;
-		for (int i = 0; i < app->hdr_count; i++) {
-			if (strcmp(app->hdr_files[i], "env.hdr") == 0) {
+		for (int i = 0; i < app->env.hdr_count; i++) {
+			if (strcmp(app->env.hdr_files[i], "env.hdr") == 0) {
 				default_idx = i;
 				break;
 			}
 		}
-		app->current_hdr_index = default_idx;
-		app_load_env_map(app, app->hdr_files[default_idx]);
+		app->env.current_hdr_index = default_idx;
+		environment_load(&app->env, app->env.hdr_files[default_idx]);
+		/* Update postprocess exposure to match new environment */
+		postprocess_set_exposure(&app->postprocess,
+		                         app->env.auto_threshold);
 	} else {
 		LOG_ERROR("suckless-ogl.init",
 		          "No HDR files found in assets/textures/hdr/!");
@@ -381,9 +269,6 @@ int app_init(App* app, int width, int height, const char* title)
 		          "Failed to load pbr_instanced shader");
 		return 0;
 	}
-
-	/* Setup initial VAO based on default mode (Mesh) */
-	app_update_instancing_mode(app);
 #endif
 
 	/* Initialize post-processing */
@@ -399,7 +284,7 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_disable(&app->postprocess, POSTFX_AUTO_EXPOSURE);
 	postprocess_enable(&app->postprocess, POSTFX_EXPOSURE);
 	postprocess_enable(&app->postprocess, POSTFX_COLOR_GRADING);
-	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
+	postprocess_set_exposure(&app->postprocess, app->env.auto_threshold);
 	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
 	return 1;
@@ -526,23 +411,17 @@ void app_init_instancing(App* app)
 	free(data);
 }
 
-static void app_update_instancing_mode(App* app)
-{
-	/* No longer needed as we have separate groups initialized */
-	(void)app;
-}
-
 void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 {
 	Shader* current_shader = app->pbr_billboard_shader;
 	shader_use(current_shader);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.irradiance_tex);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.spec_prefiltered_tex);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.brdf_lut_tex);
 
 	shader_set_int(current_shader, "irradianceMap", 0);
 	shader_set_int(current_shader, "prefilterMap", 1);
@@ -576,11 +455,11 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	shader_use(current_shader);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.irradiance_tex);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.spec_prefiltered_tex);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+	glBindTexture(GL_TEXTURE_2D, app->env.brdf_lut_tex);
 
 	shader_set_int(current_shader, "irradianceMap", 0);
 	shader_set_int(current_shader, "prefilterMap", 1);
@@ -618,10 +497,7 @@ void app_cleanup(App* app)
 
 	ui_destroy(&app->ui);
 
-	glDeleteTextures(1, &app->hdr_texture);
-	glDeleteTextures(1, &app->brdf_lut_tex);
-	glDeleteTextures(1, &app->spec_prefiltered_tex);
-	glDeleteTextures(1, &app->irradiance_tex);
+	environment_cleanup(&app->env);
 
 	glDeleteProgram(app->skybox_shader);
 	shader_destroy(app->debug_shader);
@@ -765,7 +641,7 @@ void app_render(App* app)
 	if (app->show_debug_tex) {
 		shader_use(app->debug_shader);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
+		glBindTexture(GL_TEXTURE_2D, app->env.brdf_lut_tex);
 		shader_set_int(app->debug_shader, "tex", 0);
 		shader_set_float(app->debug_shader, "lod", app->debug_lod);
 		glBindVertexArray(app->empty_vao);
@@ -822,7 +698,8 @@ void app_render(App* app)
 		 * mode */
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		skybox_render(&app->skybox, app->skybox_shader,
-		              app->hdr_texture, inv_view_proj, app->env_lod);
+		              app->env.hdr_texture, inv_view_proj,
+		              app->env_lod);
 	}
 
 	/* 3. Post-processing */
@@ -1133,12 +1010,17 @@ void app_render_ui(App* app)
 	}
 
 	/* 3. Environment - shown in modes 2, 3 */
-	if (app->text_overlay_mode >= 2 && app->hdr_count > 0 &&
-	    app->current_hdr_index >= 0) {
-		char env_text[ENV_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
-		                    app->hdr_files[app->current_hdr_index]);
-		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
+	if (app->text_overlay_mode >= 2 && app->env.hdr_count > 0 &&
+	    app->env.current_hdr_index >= 0) {
+		char env_info[ENV_TEXT_BUFFER_SIZE];
+		const char* current_hdr =
+		    (app->env.current_hdr_index >= 0)
+		        ? app->env.hdr_files[app->env.current_hdr_index]
+		        : "None";
+		(void)safe_snprintf(env_info, sizeof(env_info),
+		                    "HDR: %s (%.2f)", current_hdr,
+		                    app->env.auto_threshold);
+		ui_layout_text(&layout, env_info, ENV_TEXT_COLOR);
 	}
 
 	/* 4. Exposure - shown in mode 3 only */
@@ -1368,11 +1250,11 @@ static void handle_postprocess_input(App* app, int key)
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_DEFAULT);
 			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
+			                         app->env.auto_threshold);
 			LOG_INFO("suckless-ogl.app",
 			         "Style: Aucun (rendu "
 			         "pur) - Exposure: %.2f",
-			         app->auto_threshold);
+			         app->env.auto_threshold);
 			break;
 
 		case GLFW_KEY_2: /* Preset: Subtle */
@@ -1412,7 +1294,7 @@ static void handle_postprocess_input(App* app, int key)
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_DEFAULT);
 			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
+			                         app->env.auto_threshold);
 			LOG_INFO("suckless-ogl.app",
 			         "Color Grading: Reset to "
 			         "Defaults");
@@ -1437,12 +1319,16 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->env_lod);
-		} else if (app->hdr_count > 1) {
+		} else if (app->env.hdr_count > 1) {
 			/* Next Environment */
-			app->current_hdr_index =
-			    (app->current_hdr_index + 1) % app->hdr_count;
-			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
+			app->env.current_hdr_index =
+			    (app->env.current_hdr_index + 1) %
+			    app->env.hdr_count;
+			environment_load(
+			    &app->env,
+			    app->env.hdr_files[app->env.current_hdr_index]);
+			postprocess_set_exposure(&app->postprocess,
+			                         app->env.auto_threshold);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
@@ -1452,14 +1338,26 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->env_lod);
-		} else if (app->hdr_count > 1) {
+		} else if (app->env.hdr_count > 1) {
 			/* Previous Environment */
-			app->current_hdr_index--;
-			if (app->current_hdr_index < 0) {
-				app->current_hdr_index = app->hdr_count - 1;
+			app->env.current_hdr_index--;
+			if (app->env.current_hdr_index < 0) {
+				app->env.current_hdr_index =
+				    app->env.hdr_count - 1;
 			}
-			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
+			environment_load(
+			    &app->env,
+			    app->env.hdr_files[app->env.current_hdr_index]);
+			postprocess_set_exposure(&app->postprocess,
+			                         app->env.auto_threshold);
+		}
+	} else if (key == GLFW_KEY_R) {
+		if (app->env.current_hdr_index >= 0) {
+			environment_load(
+			    &app->env,
+			    app->env.hdr_files[app->env.current_hdr_index]);
+			postprocess_set_exposure(&app->postprocess,
+			                         app->env.auto_threshold);
 		}
 	}
 }
@@ -1549,7 +1447,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				break;
 			case GLFW_KEY_L:
 				app->billboard_mode = !app->billboard_mode;
-				app_update_instancing_mode(app);
 				LOG_INFO("suckless-ogl.app",
 				         "Billboard Mode: %s",
 				         app->billboard_mode ? "ON" : "OFF");

@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define MAX_PATH_LENGTH 256
+
 #define BUFFER_OFFSET(offset) \
 	((void*)(uintptr_t)(offset))  // NOLINT(performance-no-int-to-ptr)
 

@@ -29,6 +29,7 @@ set(SOURCES
     src/shader.c
     src/texture.c
     src/skybox.c
+    src/environment.c
     src/log.c
     src/stb_image_impl.c
     src/fps.c
@@ -49,6 +50,9 @@ set(SOURCES
     src/window.c
     src/gl_debug.c
 )
+
+# Exclude STB implementation from Unity Build to avoid redefinitions
+set_source_files_properties(src/stb_image_impl.c PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)

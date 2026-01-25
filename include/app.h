@@ -10,6 +10,7 @@
 #endif
 #include "billboard_rendering.h"
 #include "camera.h"
+#include "environment.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "postprocess.h"
@@ -78,8 +79,8 @@ typedef struct {
 	/* Shaders */
 	GLuint skybox_shader; /* Remains GLuint for now (Skybox module) */
 
-	/* Environment mapping (equirectangular) */
-	GLuint hdr_texture;
+	/* Environment module */
+	Environment env;
 	float env_lod; /* Blur level */
 
 	/* Skybox rendering */
@@ -94,10 +95,6 @@ typedef struct {
 	/* UI */
 	UIContext ui;
 
-	GLuint spec_prefiltered_tex;  // La texture filtrée
-	GLuint irradiance_tex;
-	GLuint brdf_lut_tex;
-
 	GLuint empty_vao;
 	Shader* debug_shader;
 	float debug_lod;
@@ -110,14 +107,6 @@ typedef struct {
 	float u_exposure;
 
 	MaterialLib* material_lib;
-
-	/* Dynamic HDR Switching */
-	char** hdr_files;      /* Array of filenames */
-	int hdr_count;         /* Total number of HDR files */
-	int current_hdr_index; /* Index of currently loaded HDR */
-
-	/* Auto-computed threshold for IBL */
-	float auto_threshold; /* Computed mean luminance for exposure */
 
 	/* Async Exposure Readback */
 	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
