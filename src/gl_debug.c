@@ -124,7 +124,9 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 void setup_opengl_debug(void)
 {
 	glEnable(GL_DEBUG_OUTPUT);
+#ifdef DEBUG_SYNCHRONOUS
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+#endif
 
 	glDebugMessageCallback(gl_debug_callback, NULL);
 
