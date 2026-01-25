@@ -174,11 +174,12 @@ jobs:
           fi
           cmake -B build -DCMAKE_BUILD_TYPE=$BTYPE $FLAGS
           cmake --build build --parallel $(nproc)
+          mv build/app build/app-${{ matrix.build_type }}
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.build_type }}
-          path: build/app
+          path: build/app-${{ matrix.build_type }}
 
   # --- JOB 4 : RELEASE ---
   release:
@@ -193,6 +194,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          files: artifacts/app-*/app
+          files: artifacts/app-*/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
