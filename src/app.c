@@ -548,8 +548,9 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	shader_set_vec3(current_shader, "camPos", camera_pos);
 	shader_set_mat4(current_shader, "projection", (float*)proj);
 	shader_set_mat4(current_shader, "view", (float*)view);
-	shader_set_mat4(current_shader, "previousViewProj",
-	                (float*)app->postprocess.previous_view_proj);
+	shader_set_mat4(
+	    current_shader, "previousViewProj",
+	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
 
 	// Draw Quads Instanced
 	// 4 vertices per quad (Triangle Strip)
@@ -587,8 +588,9 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	shader_set_mat4(current_shader, "view", (float*)view);
 
 	/* Pass Previous ViewProj for Velocity Buffer */
-	shader_set_mat4(current_shader, "previousViewProj",
-	                (float*)app->postprocess.previous_view_proj);
+	shader_set_mat4(
+	    current_shader, "previousViewProj",
+	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
 
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);

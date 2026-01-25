@@ -3,10 +3,10 @@
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
+#include "effects/fx_motion_blur.h"
 #include "gl_common.h"
 #include "log.h"
 #include "shader.h"
-#include <cglm/mat4.h>
 #include <cglm/types.h>
 #include <string.h>
 
@@ -14,7 +14,6 @@ static int create_framebuffer(PostProcess* post_processing);
 static int create_screen_quad(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
-static void render_motion_blur(PostProcess* post_processing);
 
 /* Texture Units */
 enum {
@@ -29,11 +28,6 @@ enum {
 
 /* Compute Shader Constants */
 enum { COMPUTE_WORK_GROUP_SIZE = 16 };
-
-/* Motion Blur Constants */
-static const float MB_INTENSITY = 1.0F;
-static const float MB_MAX_VELOCITY = 0.05F;
-static const int MB_SAMPLES = 8;
 
 /* Vertices pour un quad plein écran */
 static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
@@ -101,8 +95,12 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->auto_exposure.speed_down = EXPOSURE_SPEED_DOWN;
 	post_processing->auto_exposure.key_value = EXPOSURE_DEFAULT_KEY_VALUE;
 
-	/* Motion Blur Defaults */
-	glm_mat4_identity(post_processing->previous_view_proj);
+	/* Initialisation Motion Blur */
+	if (!fx_motion_blur_init(post_processing)) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to create motion blur resources");
+		/* On continue quand même */
+	}
 
 	/* Effets désactivés par défaut */
 	post_processing->active_effects = 0;
@@ -155,13 +153,6 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
-	if (!post_processing->tile_max_shader ||
-	    !post_processing->neighbor_max_shader) {
-		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to load post-process shaders");
-		/* On continue quand même */
-	}
-
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Post-processing initialized (%dx%d)", width, height);
 
@@ -180,6 +171,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 	fx_bloom_cleanup(post_processing);
 	fx_dof_cleanup(post_processing);
 	fx_auto_exposure_cleanup(post_processing);
+	fx_motion_blur_cleanup(post_processing);
 
 	LOG_INFO("suckless-ogl.postprocess", "Post-processing cleaned up");
 }
@@ -208,6 +200,7 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	}
 
 	fx_dof_resize(post_processing);
+	fx_motion_blur_resize(post_processing);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
@@ -422,14 +415,6 @@ static void upload_tonemap_params(Shader* shader, const TonemapParams* params)
 	shader_set_float(shader, "tonemap.whiteClip", params->white_clip);
 }
 
-static void upload_motion_blur_params(Shader* shader, float intensity,
-                                      float max_v, int samples)
-{
-	shader_set_float(shader, "motionBlur.intensity", intensity);
-	shader_set_float(shader, "motionBlur.maxVelocity", max_v);
-	shader_set_int(shader, "motionBlur.samples", samples);
-}
-
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
@@ -457,9 +442,8 @@ void postprocess_end(PostProcess* post_processing)
 	}
 
 	/* Motion Blur Pre-Pass (Compute) */
-	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) &&
-	    post_processing->tile_max_shader != 0) {
-		render_motion_blur(post_processing);
+	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
+		fx_motion_blur_render(post_processing);
 	}
 
 	/* Retour au framebuffer par défaut */
@@ -511,7 +495,8 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Bind Neighbor Max Texture (Unit 5) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
-	glBindTexture(GL_TEXTURE_2D, post_processing->neighbor_max_tex);
+	glBindTexture(GL_TEXTURE_2D,
+	              post_processing->motion_blur_fx.neighbor_max_tex);
 	shader_set_int(post_processing->postprocess_shader,
 	               "neighborMaxTexture", POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
 
@@ -550,8 +535,8 @@ void postprocess_end(PostProcess* post_processing)
 	    post_processing->postprocess_shader, "enableMotionBlurDebug",
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
 
-	upload_motion_blur_params(post_processing->postprocess_shader,
-	                          MB_INTENSITY, MB_MAX_VELOCITY, MB_SAMPLES);
+	fx_motion_blur_upload_params(post_processing->postprocess_shader,
+	                             &post_processing->motion_blur);
 
 	/* DoF Flags */
 	shader_set_int(post_processing->postprocess_shader, "enableDoF",
@@ -606,8 +591,7 @@ void postprocess_update_time(PostProcess* post_processing, float delta_time)
 
 void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
 {
-	/* Save current as previous for next frame */
-	glm_mat4_copy(view_proj, post_processing->previous_view_proj);
+	fx_motion_blur_update_matrices(post_processing, view_proj);
 }
 
 /* Fonctions privées */
@@ -644,41 +628,7 @@ static int create_framebuffer(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
 	                       GL_TEXTURE_2D, post_processing->velocity_tex, 0);
 
-	/* --------------------------
-	   Motion Blur Resources (McGuire)
-	   -------------------------- */
-	int tile_width =
-	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
-	int tile_height =
-	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
-	if (tile_width < 1) {
-		tile_width = 1;
-	}
-	if (tile_height < 1) {
-		tile_height = 1;
-	}
-
-	/* Tile Max Texture (RG16F) */
-	glGenTextures(1, &post_processing->tile_max_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->tile_max_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, tile_width, tile_height, 0,
-	             GL_RG, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
 	/* Neighbor Max Texture (RG16F) */
-	glGenTextures(1, &post_processing->neighbor_max_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->neighbor_max_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, tile_width, tile_height, 0,
-	             GL_RG, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	/* Configurer les buffers de rendu (MRT) */
 	GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
@@ -752,14 +702,6 @@ static void destroy_framebuffer(PostProcess* post_processing)
 		glDeleteTextures(1, &post_processing->scene_depth_tex);
 		post_processing->scene_depth_tex = 0;
 	}
-	if (post_processing->tile_max_tex) {
-		glDeleteTextures(1, &post_processing->tile_max_tex);
-		post_processing->tile_max_tex = 0;
-	}
-	if (post_processing->neighbor_max_tex) {
-		glDeleteTextures(1, &post_processing->neighbor_max_tex);
-		post_processing->neighbor_max_tex = 0;
-	}
 }
 
 static void destroy_screen_quad(PostProcess* post_processing)
@@ -772,42 +714,4 @@ static void destroy_screen_quad(PostProcess* post_processing)
 		glDeleteBuffers(1, &post_processing->screen_quad_vbo);
 		post_processing->screen_quad_vbo = 0;
 	}
-}
-
-static void render_motion_blur(PostProcess* post_processing)
-{
-	int groups_x =
-	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
-	int groups_y =
-	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
-
-	/* Pass 1: Tile Max Velocity */
-	shader_use(post_processing->tile_max_shader);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-	shader_set_int(post_processing->tile_max_shader, "velocityTexture", 0);
-
-	glBindImageTexture(1, post_processing->tile_max_tex, 0, GL_FALSE, 0,
-	                   GL_WRITE_ONLY, GL_RG16F);
-
-	glDispatchCompute(groups_x, groups_y, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-	                GL_TEXTURE_FETCH_BARRIER_BIT);
-
-	/* Pass 2: Neighbor Max Velocity */
-	shader_use(post_processing->neighbor_max_shader);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->tile_max_tex);
-	shader_set_int(post_processing->neighbor_max_shader, "tileMaxTexture",
-	               0);
-
-	glBindImageTexture(1, post_processing->neighbor_max_tex, 0, GL_FALSE, 0,
-	                   GL_WRITE_ONLY, GL_RG16F);
-
-	glDispatchCompute(groups_x, groups_y, 1);
-	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 }

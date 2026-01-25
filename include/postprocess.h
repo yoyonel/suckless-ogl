@@ -4,6 +4,7 @@
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
+#include "effects/fx_motion_blur.h"
 #include "gl_common.h"
 #include "shader.h"
 #include <cglm/cglm.h>
@@ -133,9 +134,8 @@ typedef struct PostProcess {
 	/* Auto Exposure Resources */
 	AutoExposureFX auto_exposure_fx;
 
-	/* Motion Blur Resources (McGuire) */
-	GLuint tile_max_tex;     /* 1/16th resolution RG16F */
-	GLuint neighbor_max_tex; /* 1/16th resolution RG16F */
+	/* Motion Blur Resources */
+	MotionBlurFX motion_blur_fx;
 
 	/* Quad plein écran */
 	GLuint screen_quad_vao;
@@ -166,12 +166,10 @@ typedef struct PostProcess {
 	DoFParams dof;
 	AutoExposureParams auto_exposure;
 
+	MotionBlurParams motion_blur;
 	/* Temps pour effets animés (grain) */
 	float time;
 	float delta_time; /* Added needed for time integration */
-
-	/* Matrices pour Motion Blur */
-	mat4 previous_view_proj;
 } PostProcess;
 
 /* Initialisation et nettoyage */
