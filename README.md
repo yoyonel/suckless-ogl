@@ -2,6 +2,7 @@
 
 [![CI/CD Pipeline](https://github.com/yoyonel/suckless-ogl/actions/workflows/main.yml/badge.svg)](https://github.com/yoyonel/suckless-ogl/actions)
 [![Coverage Report](https://img.shields.io/badge/coverage-report-brightgreen)](https://yoyonel.github.io/suckless-ogl/)
+[![CodeQL Status](https://github.com/yoyonel/suckless-ogl/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/yoyonel/suckless-ogl/actions/workflows/github-code-scanning/codeql)
 [![Latest Release](https://img.shields.io/github/v/release/yoyonel/suckless-ogl?include_prereleases&label=release&color=blue)](https://github.com/yoyonel/suckless-ogl/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -43,7 +44,7 @@ Le pipeline est structuré pour optimiser le build tout en garantissant une qual
 2. **Lint & Format Check** :
    - Vérifie que le code est formaté. Si `make format` modifie un fichier, le CI échoue.
    - Lance `make lint` pour valider la conformité CERT et la sécurité.
-3. **Build & Release** : 
+3. **Build & Release** :
    - Se déclenche sur `master` ou sur les tags `v*`.
    - Package le binaire `app` avec les dossiers `assets/` et `shaders/`.
    - Compresse le tout dans une archive `.tar.gz` et crée une **GitHub Release** automatique.
