@@ -36,7 +36,7 @@ jobs:
 
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
-          
+
       - name: Run Coverage and Tests
         id: run_tests
         continue-on-error: true
@@ -50,7 +50,7 @@ jobs:
           # Préparation des dossiers
           mkdir -p visual_artifacts/${{ github.sha }}
           mkdir -p build-coverage/coverage_report/visual_tests
-          
+
           # Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
           # On capture la référence, le rendu actuel et la carte de différence
           [ -f tests/ref_frame.raw ] && convert -size 1024x768 -depth 8 rgb:tests/ref_frame.raw -flip visual_artifacts/${{ github.sha }}/ref.png || echo "No ref"
@@ -107,11 +107,11 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ## 🎨 Visual Regression Report (${{ github.sha }})
-            
+
             | Reference | Actual (PR) | Difference Map |
             |:---:|:---:|:---:|
             | ![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref.png?raw=true) | ![Actual](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/actual.png?raw=true) | ![Diff](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/diff.png?raw=true) |
-            
+
             > [!TIP]
             > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.raw`.
 
@@ -159,14 +159,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [Release, Profiling]
+        build_type: [Release, Profiling, UltraRelease]
     steps:
       - uses: actions/checkout@v4
       - name: Install Deps
         run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          FLAGS=""
+          BTYPE=${{ matrix.build_type }}
+          if [ "$BTYPE" == "UltraRelease" ]; then
+            BTYPE="Release"
+            FLAGS="-DENABLE_UNITY_BUILD=ON -DENABLE_NATIVE_ARCH=ON -DENABLE_AGGRESSIVE_MATH=ON"
+          fi
+          cmake -B build -DCMAKE_BUILD_TYPE=$BTYPE $FLAGS
           cmake --build build --parallel $(nproc)
       - name: Upload Binaries
         uses: actions/upload-artifact@v4
