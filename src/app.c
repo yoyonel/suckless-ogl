@@ -870,7 +870,8 @@ static void app_draw_help_overlay(App* app)
 static void draw_exposure_debug_text(App* app)
 {
 	float exposure_val = 0.0F;
-	glBindTexture(GL_TEXTURE_2D, app->postprocess.exposure_tex);
+	glBindTexture(GL_TEXTURE_2D,
+	              app->postprocess.auto_exposure_fx.exposure_tex);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, &exposure_val);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -898,7 +899,8 @@ static int compute_luminance_histogram(App* app, int* buckets, int size,
 		return 0;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, app->postprocess.lum_downsample_tex);
+	glBindTexture(GL_TEXTURE_2D,
+	              app->postprocess.auto_exposure_fx.downsample_tex);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, lum_data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -1092,8 +1094,9 @@ void app_render_ui(App* app)
 			}
 
 			/* 2. Trigger async read for CURRENT frame */
-			glBindTexture(GL_TEXTURE_2D,
-			              app->postprocess.exposure_tex);
+			glBindTexture(
+			    GL_TEXTURE_2D,
+			    app->postprocess.auto_exposure_fx.exposure_tex);
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
 			              0); /* Offset 0 */
 			glBindTexture(GL_TEXTURE_2D, 0);

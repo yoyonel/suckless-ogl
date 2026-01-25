@@ -1,6 +1,7 @@
 #ifndef POSTPROCESS_H
 #define POSTPROCESS_H
 
+#include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
 #include "gl_common.h"
@@ -113,18 +114,7 @@ typedef struct {
 	float white_clip; /* Coupure des blancs, Défaut: 0.035 */
 } TonemapParams;
 
-/* Paramètres pour l'Auto Exposure (Eye Adaptation) */
-typedef struct {
-	float min_luminance; /* Luminance min (clamping) - Range param */
-	float max_luminance; /* Luminance max (clamping) - Range param */
-	float speed_up; /* Vitesse d'adaptation vers clair (pupille s'ouvre) */
-	float speed_down; /* Vitesse d'adaptation vers sombre (pupille se ferme)
-	                   */
-	float key_value;  /* Target exposure value (middle gray), def: 1.0 */
-} AutoExposureParams;
-
 #define BLOOM_MIP_LEVELS 5
-#define LUM_DOWNSAMPLE_SIZE 64
 
 /* Structure principale du système de post-processing */
 typedef struct PostProcess {
@@ -141,9 +131,7 @@ typedef struct PostProcess {
 	DoFFX dof_fx;
 
 	/* Auto Exposure Resources */
-	GLuint lum_downsample_fbo; /* FBO pour downsample luminance */
-	GLuint lum_downsample_tex; /* Texture 64x64 Log Luminance */
-	GLuint exposure_tex; /* Texture 1x1 R32F (Storage) - Current Exposure */
+	AutoExposureFX auto_exposure_fx;
 
 	/* Motion Blur Resources (McGuire) */
 	GLuint tile_max_tex;     /* 1/16th resolution RG16F */
@@ -154,11 +142,10 @@ typedef struct PostProcess {
 	GLuint screen_quad_vbo;
 
 	/* Shaders */
-	Shader* postprocess_shader;    /* Shader combinant tous les effets */
-	Shader* lum_downsample_shader; /* Shader pour Log Lum Downsample */
-	Shader* lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
-	Shader* tile_max_shader;  /* Compute Shader: Tile Max Velocity */
-	Shader* neighbor_max_shader; /* Compute Shader: Neighbor Max Velocity */
+	Shader* postprocess_shader;  /* Shader combinant tous les effets */
+	Shader* tile_max_shader;     /* Compute Shader: Tile Max Velocity */
+	Shader* neighbor_max_shader; /* Compute Shader: Neighbor Max
+	                                Velocity */
 
 	/* Dimensions */
 	int width;
