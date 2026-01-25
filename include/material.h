@@ -1,14 +1,17 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include "gl_common.h"
 #include <cglm/cglm.h>
 
+#define MAX_MATERIAL_NAME_LENGTH 64
+
 typedef struct {
-	char name[64];
+	char name[MAX_MATERIAL_NAME_LENGTH];
 	vec3 albedo;
 	float metallic;
 	float roughness;
-} PBRMaterial;
+} __attribute__((aligned(SIMD_ALIGNMENT))) PBRMaterial;
 
 // On peut stocker une liste de presets
 typedef struct {

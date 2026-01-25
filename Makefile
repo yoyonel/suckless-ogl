@@ -30,8 +30,10 @@ APITRACE_BIN := $(APITRACE_DIR)/bin/apitrace
 
 #
 BUILD_PROF_DIR := build-prof
+BUILD_REL_DIR := build-release
+BUILD_SMALL_DIR := build-small
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage release small debug-release
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -245,4 +247,51 @@ help:
 	@echo "  docker-build - Build the Docker image"
 	@echo "  profile    - Build with optimizations and debug symbols (for profiling)"
 	@echo "  perf       - Build and run Linux 'perf' profiler"
+	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
+	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  help       - Show this help message"
+
+# --- Release Build (Max Speed) ---
+release:
+	@echo "Building for Release (Speed at all costs)..."
+	@mkdir -p $(BUILD_REL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_REL_DIR) \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DENABLE_NATIVE_ARCH=ON \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-DENABLE_UNITY_BUILD=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@echo "Stripping binary..."
+	@$(DISTROBOX) strip --strip-all $(BUILD_REL_DIR)/app
+	@echo "Done. Binary is at $(BUILD_REL_DIR)/app"
+	@du -h $(BUILD_REL_DIR)/app
+
+# --- Debug Release Build (For Segfault Hunting) ---
+debug-release:
+	@echo "Building for Debug Release (Release + Symbols + No Strip)..."
+	@mkdir -p $(BUILD_REL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_REL_DIR) \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DENABLE_NATIVE_ARCH=ON \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-DENABLE_UNITY_BUILD=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@echo "Done. Binary is at $(BUILD_REL_DIR)/app (Not stripped)"
+	@du -h $(BUILD_REL_DIR)/app
+
+# --- Small Build (Min Size) ---
+small:
+	@echo "Building for Size (MinSizeRel)..."
+	@mkdir -p $(BUILD_SMALL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_SMALL_DIR) \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DENABLE_NATIVE_ARCH=OFF \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_SMALL_DIR) --parallel $(shell nproc)
+	@echo "Stripping binary..."
+	@$(DISTROBOX) strip --strip-all $(BUILD_SMALL_DIR)/app
+	@echo "Done. Binary is at $(BUILD_SMALL_DIR)/app"
+	@du -h $(BUILD_SMALL_DIR)/app

@@ -11,7 +11,7 @@ typedef struct {
 	float roughness;
 	float ao;
 	float padding;
-} SphereInstance;
+} __attribute__((aligned(SIMD_ALIGNMENT))) SphereInstance;
 
 typedef struct {
 	GLuint vao;           // VAO dédié (Mesh + Instances)

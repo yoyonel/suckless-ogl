@@ -9,7 +9,7 @@
 #include <stddef.h>
 
 /* Compute Shader Constants */
-enum { COMPUTE_WORK_GROUP_SIZE = 16 };
+enum { MB_COMPUTE_GROUP_SIZE = 16 };
 
 /* Motion Blur Constants (Default values) */
 static const float DEFAULT_MB_INTENSITY = 1.0F;
@@ -71,11 +71,11 @@ int fx_motion_blur_resize(PostProcess* post_processing)
 	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
 
 	int tile_width =
-	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
+	    (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	    MB_COMPUTE_GROUP_SIZE;
 	int tile_height =
-	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
+	    (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	    MB_COMPUTE_GROUP_SIZE;
 
 	if (tile_width < 1) {
 		tile_width = 1;
@@ -118,12 +118,10 @@ void fx_motion_blur_render(PostProcess* post_processing)
 {
 	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
 
-	int groups_x =
-	    (post_processing->width + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
-	int groups_y =
-	    (post_processing->height + (COMPUTE_WORK_GROUP_SIZE - 1)) /
-	    COMPUTE_WORK_GROUP_SIZE;
+	int groups_x = (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	               MB_COMPUTE_GROUP_SIZE;
+	int groups_y = (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	               MB_COMPUTE_GROUP_SIZE;
 
 	/* Pass 1: Tile Max Velocity */
 	shader_use(mb_fx->tile_max_shader);

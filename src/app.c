@@ -476,11 +476,12 @@ void app_init_instancing(App* app)
 	const float grid_w = (float)(cols - 1) * spacing;
 	const float grid_h = (float)(rows - 1) * spacing;
 
-	// 2. Allocation temporaire pour le transfert
-	SphereInstance* data = malloc(sizeof(SphereInstance) * total_count);
-	if (!data) {
+	// 2. Allocation temporaire pour le transfert (alignée pour SIMD/AVX)
+	SphereInstance* data = NULL;
+	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
+	                   sizeof(SphereInstance) * (size_t)total_count) != 0) {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for instancing");
+		          "Failed to allocate aligned memory for instancing");
 		return;
 	}
 

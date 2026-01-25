@@ -167,6 +167,30 @@ endif()
 set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags for profiling" FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
 
+# --- Optimisations Avancées ---
+option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" OFF)
+option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
+option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
+
+if(ENABLE_UNITY_BUILD)
+    set(CMAKE_UNITY_BUILD ON)
+    message(STATUS "Unity Build: ENABLED")
+endif()
+
+if(ENABLE_NATIVE_ARCH)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        add_compile_options(-march=native)
+        message(STATUS "Native Architecture Optimization: ENABLED")
+    endif()
+endif()
+
+if(ENABLE_AGGRESSIVE_MATH)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        add_compile_options(-ffast-math)
+        message(STATUS "Aggressive Math Optimization: ENABLED")
+    endif()
+endif()
+
 # Activation du LTO (Link Time Optimization)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT lto_supported OUTPUT lto_error)

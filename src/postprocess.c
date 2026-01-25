@@ -27,7 +27,7 @@ enum {
 };
 
 /* Compute Shader Constants */
-enum { COMPUTE_WORK_GROUP_SIZE = 16 };
+enum { POSTPROCESS_COMPUTE_GROUP_SIZE = 16 };
 
 /* Vertices pour un quad plein écran */
 static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
