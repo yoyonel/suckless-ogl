@@ -11,6 +11,13 @@ else()
     message(STATUS "SSBO rendering: DISABLED (using legacy instanced rendering)")
 endif()
 
+# Option pour activer le debug synchrone (tueur de performance)
+option(DEBUG_SYNCHRONOUS "Enable synchronous OpenGL debug output" OFF)
+if(DEBUG_SYNCHRONOUS)
+    add_compile_definitions(DEBUG_SYNCHRONOUS)
+    message(WARNING "OpenGL Synchronous Debug: ENABLED (Expect low performance)")
+endif()
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 

@@ -157,6 +157,7 @@ float compute_mean_luminance_gpu(GLuint hdr_tex, int width, int height,
 		/* possibilité de logger une erreur */
 		LOG_ERROR("suckless-ogl.ibl", "Failed to load compute shader");
 		glDeleteBuffers(2, ssbos);
+		glDeleteProgram(prog1);
 		return 0.0F;
 	}
 
@@ -175,6 +176,8 @@ float compute_mean_luminance_gpu(GLuint hdr_tex, int width, int height,
 	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float), &mean);
 
 	glDeleteBuffers(2, ssbos);
+	glDeleteProgram(prog1);  // Nettoyage propre
+	glDeleteProgram(prog2);  // Nettoyage propre
 
 	if (isinf(mean) || isnan(mean)) {
 		mean = 0.0F;

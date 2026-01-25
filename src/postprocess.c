@@ -172,6 +172,11 @@ void postprocess_cleanup(PostProcess* post_processing)
 	destroy_framebuffer(post_processing);
 	destroy_screen_quad(post_processing);
 
+	if (post_processing->settings_ubo) {
+		glDeleteBuffers(1, &post_processing->settings_ubo);
+		post_processing->settings_ubo = 0;
+	}
+
 	if (post_processing->postprocess_shader) {
 		shader_destroy(post_processing->postprocess_shader);
 		post_processing->postprocess_shader = NULL;
@@ -626,6 +631,10 @@ static void destroy_framebuffer(PostProcess* post_processing)
 	if (post_processing->scene_depth_tex) {
 		glDeleteTextures(1, &post_processing->scene_depth_tex);
 		post_processing->scene_depth_tex = 0;
+	}
+	if (post_processing->velocity_tex) {
+		glDeleteTextures(1, &post_processing->velocity_tex);
+		post_processing->velocity_tex = 0;
 	}
 }
 

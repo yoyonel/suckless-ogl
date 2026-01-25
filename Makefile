@@ -206,6 +206,22 @@ clean-ssbo:
 	@echo "Cleaning SSBO build..."
 	@rm -rf build-ssbo
 
+# Build avec Sync Debug
+.PHONY: build-sync run-sync clean-sync
+
+build-sync:
+	@echo "Building with Synchronous Debug enabled (SLOW)..."
+	@mkdir -p build-sync
+	@$(DISTROBOX) $(CMAKE) -B build-sync -DDEBUG_SYNCHRONOUS=ON -G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build build-sync --parallel $(shell nproc)
+
+run-sync: build-sync
+	@./build-sync/app
+
+clean-sync:
+	@echo "Cleaning Sync Debug build..."
+	@rm -rf build-sync
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Build the project (default)"
@@ -216,6 +232,9 @@ help:
 	@echo "  build-ssbo - Build with SSBO rendering (alternative path)"
 	@echo "  run-ssbo   - Build and run with SSBO rendering"
 	@echo "  clean-ssbo - Clean SSBO-specific build"
+	@echo "  build-sync - Build with Synchronous Debug (SLOW)"
+	@echo "  run-sync   - Build and run with Synchronous Debug"
+	@echo "  clean-sync - Clean Sync Debug build"
 	@echo "  format     - Format code using clang-format"
 	@echo "  lint       - Lint code using clang-tidy"
 	@echo "  deps-setup - Download dependencies for offline build"

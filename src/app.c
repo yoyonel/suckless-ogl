@@ -610,6 +610,7 @@ void app_cleanup(App* app)
 	skybox_cleanup(&app->skybox);
 
 	glDeleteVertexArrays(1, &app->sphere_vao);
+	glDeleteVertexArrays(1, &app->empty_vao);
 	glDeleteBuffers(1, &app->sphere_vbo);
 	glDeleteBuffers(1, &app->sphere_nbo);
 	glDeleteBuffers(1, &app->sphere_ebo);
@@ -617,6 +618,10 @@ void app_cleanup(App* app)
 	ui_destroy(&app->ui);
 
 	glDeleteTextures(1, &app->hdr_texture);
+	glDeleteTextures(1, &app->brdf_lut_tex);
+	glDeleteTextures(1, &app->spec_prefiltered_tex);
+	glDeleteTextures(1, &app->irradiance_tex);
+
 	glDeleteProgram(app->skybox_shader);
 	shader_destroy(app->debug_shader);
 	glDeleteBuffers(1, &app->exposure_pbo);
