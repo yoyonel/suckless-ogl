@@ -161,11 +161,6 @@ int app_init(App* app, int width, int height, const char* title)
 		          "No HDR files found in assets/textures/hdr/!");
 	}
 
-	app->u_metallic = DEFAULT_METALLIC;
-	app->u_roughness = DEFAULT_ROUGHNESS;
-	app->u_ao = DEFAULT_AO;
-	app->u_exposure = DEFAULT_EXPOSURE;
-
 	/* Load shaders */
 	app->skybox_shader = shader_load_program("shaders/background.vert",
 	                                         "shaders/background.frag");

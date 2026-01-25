@@ -100,12 +100,6 @@ typedef struct {
 	float debug_lod;
 	int show_debug_tex;
 
-	/* PBR */
-	float u_metallic;
-	float u_roughness;
-	float u_ao;
-	float u_exposure;
-
 	MaterialLib* material_lib;
 } App;
 
