@@ -260,7 +260,8 @@ int app_init(App* app, int width, int height, const char* title)
 #endif
 
 	/* Initialize post-processing */
-	if (!postprocess_init(&app->postprocess, width, height)) {
+	if (!postprocess_init(&app->postprocess, width, height,
+	                      DEFAULT_SAMPLES)) {
 		LOG_ERROR("suckless-ogl.app",
 		          "Failed to initialize post-processing");
 		return 0;
@@ -1347,8 +1348,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				static const char* mode_names[] = {
 				    "Off", "FPS + Position",
 				    "FPS + Position + Envmap",
-				    "FPS + Position + Envmap + "
-				    "Exposure"};
+				    "FPS + Position + Envmap + Exposure"};
 				static const int mode_count =
 				    sizeof(mode_names) / sizeof(mode_names[0]);
 

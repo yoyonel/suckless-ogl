@@ -45,7 +45,7 @@ void tearDown(void)
 void test_postprocess_init_creates_resources(void)
 {
 	PostProcess pp = {0};
-	int result = postprocess_init(&pp, 640, 480);
+	int result = postprocess_init(&pp, 640, 480, 4);
 
 	TEST_ASSERT_EQUAL(1, result);
 	TEST_ASSERT_NOT_EQUAL(0, pp.scene_fbo);
@@ -70,7 +70,7 @@ void test_postprocess_init_creates_resources(void)
 void test_postprocess_defaults(void)
 {
 	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	postprocess_init(&pp, 100, 100, 4);
 
 	TEST_ASSERT_EQUAL(0, pp.active_effects);
 	TEST_ASSERT_FLOAT_WITHIN(1e-5, DEFAULT_EXPOSURE, pp.exposure.exposure);
@@ -84,7 +84,7 @@ void test_postprocess_defaults(void)
 void test_postprocess_toggle_effects(void)
 {
 	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	postprocess_init(&pp, 100, 100, 4);
 
 	// Initial state: 0
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
@@ -111,7 +111,7 @@ void test_postprocess_toggle_effects(void)
 void test_postprocess_apply_preset(void)
 {
 	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	postprocess_init(&pp, 100, 100, 4);
 
 	// Apply Vintage preset
 	postprocess_apply_preset(&pp, &PRESET_VINTAGE);
@@ -141,7 +141,7 @@ void test_postprocess_apply_preset(void)
 void test_postprocess_resize(void)
 {
 	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	postprocess_init(&pp, 100, 100, 4);
 
 	GLuint old_fbo = pp.scene_fbo;
 	GLuint old_tex = pp.scene_color_tex;
@@ -172,7 +172,7 @@ void test_postprocess_resize(void)
 void test_postprocess_cleanup(void)
 {
 	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	postprocess_init(&pp, 100, 100, 4);
 
 	GLuint fbo = pp.scene_fbo;
 	GLuint tex = pp.scene_color_tex;

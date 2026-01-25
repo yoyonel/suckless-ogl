@@ -193,7 +193,13 @@ typedef struct {
 /* Structure principale du système de post-processing */
 typedef struct PostProcess {
 	/* FBO principal et textures */
-	GLuint scene_fbo;
+	int samples;              /* Number of MSAA samples */
+	GLuint msaa_fbo;          /* Multisampled FBO (if samples > 1) */
+	GLuint msaa_color_tex;    /* Multisampled Color Texture */
+	GLuint msaa_velocity_tex; /* Multisampled Velocity Texture */
+	GLuint msaa_depth_tex;    /* Multisampled Depth Texture */
+
+	GLuint scene_fbo;       /* Resolved FBO (Single Sampled) */
 	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
 	GLuint velocity_tex;    /* Velocity Buffer (GL_RG16F) */
 	GLuint scene_depth_tex; /* Depth (GL_DEPTH_COMPONENT32F) */
@@ -249,7 +255,8 @@ typedef struct PostProcess {
 } PostProcess;
 
 /* Initialisation et nettoyage */
-int postprocess_init(PostProcess* post_processing, int width, int height);
+int postprocess_init(PostProcess* post_processing, int width, int height,
+                     int samples);
 void postprocess_cleanup(PostProcess* post_processing);
 
 /* Redimensionnement */

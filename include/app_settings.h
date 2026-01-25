@@ -3,7 +3,7 @@
 
 #include <cglm/types.h>
 
-#define DEFAULT_SAMPLES 4
+#define DEFAULT_SAMPLES 1
 
 enum {
 	MIN_SUBDIV = 0,

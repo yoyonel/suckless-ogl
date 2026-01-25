@@ -38,12 +38,14 @@ static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
      -1.0F, 1.0F, 0.0F, 1.0F,  1.0F,  -1.0F,
      1.0F,  0.0F, 1.0F, 1.0F,  1.0F,  1.0F};
 
-int postprocess_init(PostProcess* post_processing, int width, int height)
+int postprocess_init(PostProcess* post_processing, int width, int height,
+                     int samples)
 {
 	*post_processing = (PostProcess){0};
 
 	post_processing->width = width;
 	post_processing->height = height;
+	post_processing->samples = samples;
 	post_processing->time = 0.0F;
 
 	/* Paramètres par défaut */
@@ -361,12 +363,49 @@ void postprocess_apply_preset(PostProcess* post_processing,
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	if (post_processing->samples > 1) {
+		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->msaa_fbo);
+	} else {
+		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void postprocess_end(PostProcess* post_processing)
 {
+	/* Step 0: Resolve MSAA if active */
+	if (post_processing->samples > 1) {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER,
+		                  post_processing->msaa_fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER,
+		                  post_processing->scene_fbo);
+
+		/* Resolve Color */
+		glReadBuffer(GL_COLOR_ATTACHMENT0);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glBlitFramebuffer(
+		    0, 0, post_processing->width, post_processing->height, 0, 0,
+		    post_processing->width, post_processing->height,
+		    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+		/* Resolve Velocity */
+		glReadBuffer(GL_COLOR_ATTACHMENT1);
+		glDrawBuffer(GL_COLOR_ATTACHMENT1);
+		glBlitFramebuffer(
+		    0, 0, post_processing->width, post_processing->height, 0, 0,
+		    post_processing->width, post_processing->height,
+		    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+		/* Resolve Depth */
+		glBlitFramebuffer(
+		    0, 0, post_processing->width, post_processing->height, 0, 0,
+		    post_processing->width, post_processing->height,
+		    GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	}
+
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
 	fx_bloom_render(post_processing);
@@ -587,6 +626,63 @@ static int create_framebuffer(PostProcess* post_processing)
 		return 0;
 	}
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/* Check if we need MSAA FBO */
+	if (post_processing->samples > 1) {
+		glGenFramebuffers(1, &post_processing->msaa_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, post_processing->msaa_fbo);
+
+		/* Create Multisampled Color Texture */
+		glGenTextures(1, &post_processing->msaa_color_tex);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE,
+		              post_processing->msaa_color_tex);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,
+		                        post_processing->samples, GL_RGBA16F,
+		                        post_processing->width,
+		                        post_processing->height, GL_TRUE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+		                       GL_TEXTURE_2D_MULTISAMPLE,
+		                       post_processing->msaa_color_tex, 0);
+
+		/* Create Multisampled Velocity Texture */
+		glGenTextures(1, &post_processing->msaa_velocity_tex);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE,
+		              post_processing->msaa_velocity_tex);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE,
+		                        post_processing->samples, GL_RG16F,
+		                        post_processing->width,
+		                        post_processing->height, GL_TRUE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+		                       GL_TEXTURE_2D_MULTISAMPLE,
+		                       post_processing->msaa_velocity_tex, 0);
+
+		/* Set Draw Buffers for MSAA FBO */
+		glDrawBuffers(2, drawBuffers);
+
+		/* Create Multisampled Depth Texture */
+		glGenTextures(1, &post_processing->msaa_depth_tex);
+		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE,
+		              post_processing->msaa_depth_tex);
+		glTexImage2DMultisample(
+		    GL_TEXTURE_2D_MULTISAMPLE, post_processing->samples,
+		    GL_DEPTH_COMPONENT32F, post_processing->width,
+		    post_processing->height, GL_TRUE);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+		                       GL_TEXTURE_2D_MULTISAMPLE,
+		                       post_processing->msaa_depth_tex, 0);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
+		    GL_FRAMEBUFFER_COMPLETE) {
+			LOG_ERROR("suckless-ogl.postprocess",
+			          "MSAA Framebuffer incomplete!");
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			return 0;
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	return 1;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -635,6 +731,24 @@ static void destroy_framebuffer(PostProcess* post_processing)
 	if (post_processing->velocity_tex) {
 		glDeleteTextures(1, &post_processing->velocity_tex);
 		post_processing->velocity_tex = 0;
+	}
+
+	/* Cleanup MSAA resources */
+	if (post_processing->msaa_fbo) {
+		glDeleteFramebuffers(1, &post_processing->msaa_fbo);
+		post_processing->msaa_fbo = 0;
+	}
+	if (post_processing->msaa_color_tex) {
+		glDeleteTextures(1, &post_processing->msaa_color_tex);
+		post_processing->msaa_color_tex = 0;
+	}
+	if (post_processing->msaa_velocity_tex) {
+		glDeleteTextures(1, &post_processing->msaa_velocity_tex);
+		post_processing->msaa_velocity_tex = 0;
+	}
+	if (post_processing->msaa_depth_tex) {
+		glDeleteTextures(1, &post_processing->msaa_depth_tex);
+		post_processing->msaa_depth_tex = 0;
 	}
 }
 
