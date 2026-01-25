@@ -51,21 +51,31 @@ void test_app_render_single_frame(void)
 	             current_pixels);
 
 	// Load reference frame
-	unsigned char* ref_pixels = malloc(pixel_data_size);
-	TEST_ASSERT_NOT_NULL(ref_pixels);
-
 	FILE* fref = fopen("tests/ref_frame.raw", "rb");
 	if (fref == NULL) {
 		free(current_pixels);
-		free(ref_pixels);
 		TEST_FAIL_MESSAGE(
 		    "Reference image tests/ref_frame.raw not found.");
+		return;
+	}
+
+	unsigned char* ref_pixels = malloc(pixel_data_size);
+	if (ref_pixels == NULL) {
+		free(current_pixels);
+		fclose(fref);
+		TEST_FAIL_MESSAGE("Failed to allocate memory for ref_pixels");
+		return;
 	}
 
 	size_t read_bytes = fread(ref_pixels, 1, pixel_data_size, fref);
 	fclose(fref);
-	TEST_ASSERT_EQUAL_UINT_MESSAGE(pixel_data_size, read_bytes,
-	                               "Reference file size mismatch");
+	if (read_bytes != pixel_data_size) {
+		free(current_pixels);
+		free(ref_pixels);
+		TEST_ASSERT_EQUAL_UINT_MESSAGE(pixel_data_size, read_bytes,
+		                               "Reference file size mismatch");
+		return;
+	}
 
 	// Compare with tolerance
 	int diff_count = 0;
