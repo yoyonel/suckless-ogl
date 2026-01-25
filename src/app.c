@@ -134,13 +134,6 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "version: %s",
 	         glGetString(GL_VERSION));
 	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
-	/* Async PBO Init */
-	glGenBuffers(1, &app->exposure_pbo);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-	app->current_exposure = 1.0F;
-
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
 	/* Scan & Load HDR Environment */
@@ -501,8 +494,6 @@ void app_cleanup(App* app)
 
 	glDeleteProgram(app->skybox_shader);
 	shader_destroy(app->debug_shader);
-	glDeleteBuffers(1, &app->exposure_pbo);
-
 	glDeleteBuffers(1, &app->quad_vbo);
 	shader_destroy(app->pbr_billboard_shader);
 
@@ -1028,28 +1019,10 @@ void app_render_ui(App* app)
 		float exposure_val = 0.0F;
 		if (postprocess_is_enabled(&app->postprocess,
 		                           POSTFX_AUTO_EXPOSURE)) {
-			/* Async Readback using PBO to avoid pipeline stall */
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-
-			/* 1. Read PREVIOUS frame's data (if available) */
-			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
-			                                 GL_READ_ONLY);
-			if (ptr) {
-				app->current_exposure = *ptr;
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			}
-
-			/* 2. Trigger async read for CURRENT frame */
-			glBindTexture(
-			    GL_TEXTURE_2D,
+			ui_update_exposure_readback(
+			    &app->ui,
 			    app->postprocess.auto_exposure_fx.exposure_tex);
-			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
-			              0); /* Offset 0 */
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-			exposure_val = app->current_exposure;
+			exposure_val = ui_get_exposure(&app->ui);
 		} else {
 			exposure_val = app->postprocess.exposure.exposure;
 		}
@@ -1379,7 +1352,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				static const char* mode_names[] = {
 				    "Off", "FPS + Position",
 				    "FPS + Position + Envmap",
-				    "FPS + Position + Envmap + Exposure"};
+				    "FPS + Position + Envmap + "
+				    "Exposure"};
 				static const int mode_count =
 				    sizeof(mode_names) / sizeof(mode_names[0]);
 

@@ -107,11 +107,6 @@ typedef struct {
 	float u_exposure;
 
 	MaterialLib* material_lib;
-
-	/* Async Exposure Readback */
-	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
-	float current_exposure; /* CPU-side cached exposure value */
-
 } App;
 
 /* Initialization and cleanup */

@@ -17,12 +17,6 @@
 // Constants
 // ============================================================================
 
-enum FontAtlasConfig {
-	FONT_ATLAS_SIZE = 512,
-	FONT_FIRST_CHAR = 32,
-	FONT_CHAR_COUNT = 96
-};
-
 enum VertexConfig {
 	QUAD_VERTICES_COUNT = 6,
 	VERTEX_COMPONENTS = 4,  // x, y, u, v
@@ -262,6 +256,13 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 		ui_context->cdata[i] = (GlyphInfo){0};
 	}
 
+	/* Initialize Exposure PBO */
+	glGenBuffers(1, &ui_context->exposure_pbo);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, ui_context->exposure_pbo);
+	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	ui_context->current_exposure = 1.0F;
+
 	// Load font file
 	size_t font_buffer_size = 0;
 	unsigned char* font_buffer =
@@ -444,6 +445,10 @@ void ui_destroy(UIContext* ui_context)
 		glDeleteVertexArrays(1, &ui_context->vao);
 		ui_context->vao = 0;
 	}
+	if (ui_context->exposure_pbo != 0) {
+		glDeleteBuffers(1, &ui_context->exposure_pbo);
+		ui_context->exposure_pbo = 0;
+	}
 	if (ui_context->shader != 0) {
 		shader_destroy(ui_context->shader);
 		ui_context->shader = NULL;
@@ -484,4 +489,33 @@ void ui_layout_separator(UILayout* layout, float space)
 		return;
 	}
 	layout->cursor_y += space;
+}
+
+void ui_update_exposure_readback(UIContext* ui_ctx, GLuint exposure_tex)
+{
+	if (!ui_ctx || exposure_tex == 0) {
+		return;
+	}
+
+	/* Async Readback using PBO to avoid pipeline stall */
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, ui_ctx->exposure_pbo);
+
+	/* 1. Read PREVIOUS frame's data (if available) */
+	float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+	if (ptr) {
+		ui_ctx->current_exposure = *ptr;
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+	}
+
+	/* 2. Trigger async read for CURRENT frame */
+	glBindTexture(GL_TEXTURE_2D, exposure_tex);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0); /* Offset 0 */
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+float ui_get_exposure(const UIContext* ui_ctx)
+{
+	return ui_ctx ? ui_ctx->current_exposure : 1.0F;
 }
