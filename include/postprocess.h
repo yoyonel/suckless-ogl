@@ -2,6 +2,7 @@
 #define POSTPROCESS_H
 
 #include "effects/fx_bloom.h"
+#include "effects/fx_dof.h"
 #include "gl_common.h"
 #include "shader.h"
 #include <cglm/cglm.h>
@@ -97,13 +98,6 @@ typedef struct {
 	                   (visible aux bords) */
 } ChromAbberationParams;
 
-/* Paramètres pour le Depth of Field */
-typedef struct {
-	float focal_distance; /* Distance de mise au point (unités monde) */
-	float focal_range; /* Plage de netteté (autour de la distance focale) */
-	float bokeh_scale; /* Taille du flou (simule l'ouverture) */
-} DoFParams;
-
 /* Paramètres White Balance */
 typedef struct {
 	float temperature; /* Température de couleur (Kelvin), Défaut: 6500.0 */
@@ -144,9 +138,7 @@ typedef struct PostProcess {
 	BloomFX bloom_fx;
 
 	/* DoF Resources */
-	GLuint dof_fbo;
-	GLuint dof_blur_tex; /* 1/4 Res Blurred Texture (Final) */
-	GLuint dof_temp_tex; /* 1/4 Res Intermediate Texture (Ping-Pong) */
+	DoFFX dof_fx;
 
 	/* Auto Exposure Resources */
 	GLuint lum_downsample_fbo; /* FBO pour downsample luminance */

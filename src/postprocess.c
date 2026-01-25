@@ -1,6 +1,7 @@
 #include "postprocess.h"
 
 #include "effects/fx_bloom.h"
+#include "effects/fx_dof.h"
 #include "gl_common.h"
 #include "log.h"
 #include "shader.h"
@@ -12,7 +13,6 @@ static int create_framebuffer(PostProcess* post_processing);
 static int create_screen_quad(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
-static void render_dof(PostProcess* post_processing);
 static void render_motion_blur(PostProcess* post_processing);
 static void render_auto_exposure(PostProcess* post_processing);
 
@@ -145,62 +145,15 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->postprocess_shader =
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
 
-	if (!post_processing->postprocess_shader) {
+	/* Créer les ressources DoF */
+	if (!fx_dof_init(post_processing)) {
 		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to load postprocess shader");
+		          "Failed to create dof resources");
 		destroy_framebuffer(post_processing);
 		fx_bloom_cleanup(post_processing);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
-
-	/* Créer les ressources DoF (1/2 Res Blur) */
-	/* Create FBO */
-	glGenFramebuffers(1, &post_processing->dof_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
-
-	int dof_width = width / 4;
-	int dof_height = height / 4;
-	if (dof_width < 1) {
-		dof_width = 1;
-	}
-	if (dof_height < 1) {
-		dof_height = 1;
-	}
-
-	/* Create Texture (R11F_G11F_B10F is sufficient for bokeh) */
-	glGenTextures(1, &post_processing->dof_blur_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	/* Create Temp Texture for Ping-Pong */
-	glGenTextures(1, &post_processing->dof_temp_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
-	    GL_FRAMEBUFFER_COMPLETE) {
-		LOG_ERROR("suckless-ogl.postprocess",
-		          "Failed to create DoF framebuffer");
-		destroy_framebuffer(post_processing);
-		fx_bloom_cleanup(post_processing);
-		destroy_screen_quad(post_processing);
-		return 0;
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	post_processing->lum_downsample_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
@@ -239,15 +192,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 		post_processing->postprocess_shader = NULL;
 	}
 	fx_bloom_cleanup(post_processing);
-
-	if (post_processing->dof_fbo) {
-		glDeleteFramebuffers(1, &post_processing->dof_fbo);
-		post_processing->dof_fbo = 0;
-	}
-	if (post_processing->dof_blur_tex) {
-		glDeleteTextures(1, &post_processing->dof_blur_tex);
-		post_processing->dof_blur_tex = 0;
-	}
+	fx_dof_cleanup(post_processing);
 
 	LOG_INFO("suckless-ogl.postprocess", "Post-processing cleaned up");
 }
@@ -275,49 +220,7 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 		          "Failed to resize bloom resources");
 	}
 
-	/* Resize DoF Resources */
-	if (post_processing->dof_fbo) {
-		glDeleteFramebuffers(1, &post_processing->dof_fbo);
-		post_processing->dof_fbo = 0;
-	}
-	if (post_processing->dof_blur_tex) {
-		glDeleteTextures(1, &post_processing->dof_blur_tex);
-		post_processing->dof_blur_tex = 0;
-	}
-
-	glGenFramebuffers(1, &post_processing->dof_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
-
-	int dof_width = width / 4;
-	int dof_height = height / 4;
-	if (dof_width < 1) {
-		dof_width = 1;
-	}
-	if (dof_height < 1) {
-		dof_height = 1;
-	}
-
-	glGenTextures(1, &post_processing->dof_blur_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	/* Resize Temp Texture */
-	glGenTextures(1, &post_processing->dof_temp_tex);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
+	fx_dof_resize(post_processing);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
@@ -507,9 +410,7 @@ static void upload_bloom_params(Shader* shader, const BloomParams* params)
 
 static void upload_dof_params(Shader* shader, const DoFParams* params)
 {
-	shader_set_float(shader, "dof.focalDistance", params->focal_distance);
-	shader_set_float(shader, "dof.focalRange", params->focal_range);
-	shader_set_float(shader, "dof.bokehScale", params->bokeh_scale);
+	fx_dof_upload_params(shader, params);
 }
 
 static void upload_grading_params(Shader* shader,
@@ -564,7 +465,7 @@ void postprocess_end(PostProcess* post_processing)
 	 * scene */
 	if (postprocess_is_enabled(post_processing, POSTFX_DOF) ||
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
-		render_dof(post_processing);
+		fx_dof_render(post_processing);
 	}
 
 	/* Auto Exposure Pass (Compute) - Must be done before binding final
@@ -634,7 +535,7 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Bind DoF Blurred Texture (Unit 6) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_blur_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
 	shader_set_int(post_processing->postprocess_shader, "dofBlurTexture",
 	               POSTPROCESS_TEX_UNIT_DOF_BLUR);
 
@@ -995,61 +896,6 @@ static void destroy_screen_quad(PostProcess* post_processing)
 		glDeleteBuffers(1, &post_processing->screen_quad_vbo);
 		post_processing->screen_quad_vbo = 0;
 	}
-}
-
-static void render_dof(PostProcess* post_processing)
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
-	int dof_width = post_processing->width / 4;
-	int dof_height = post_processing->height / 4;
-	if (dof_width < 1) {
-		dof_width = 1;
-	}
-	if (dof_height < 1) {
-		dof_height = 1;
-	}
-	glViewport(0, 0, dof_width, dof_height);
-
-	/* Pass 1: Downsample/Blur Scene -> Temp (13-tap) */
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, post_processing->dof_temp_tex, 0);
-
-	shader_use(fx_bloom_get_downsample_shader(post_processing));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(fx_bloom_get_downsample_shader(post_processing),
-	               "srcTexture", 0);
-
-	vec2 src_res = {(float)post_processing->width,
-	                (float)post_processing->height};
-	shader_set_vec2(fx_bloom_get_downsample_shader(post_processing),
-	                "srcResolution", (float*)&src_res);
-
-	glBindVertexArray(post_processing->screen_quad_vao);
-	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-	/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final)
-	 */
-	/* Using bloom_upsample (Tent 3x3 radius adjustable) to
-	 * widen the blur */
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
-
-	shader_use(fx_bloom_get_upsample_shader(post_processing));
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
-	shader_set_int(fx_bloom_get_upsample_shader(post_processing),
-	               "srcTexture", 0);
-	/* Scale radius to 1.0 (standard neighbor) or higher for
-	 * wider blur */
-	shader_set_float(fx_bloom_get_upsample_shader(post_processing),
-	                 "filterRadius", 1.0F);
-
-	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-	glBindVertexArray(0);
 }
 
 static void render_motion_blur(PostProcess* post_processing)

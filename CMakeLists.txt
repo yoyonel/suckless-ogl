@@ -34,6 +34,7 @@ set(SOURCES
     src/camera.c
     src/postprocess.c
     src/effects/fx_bloom.c
+    src/effects/fx_dof.c
     src/window.c
 )
 
