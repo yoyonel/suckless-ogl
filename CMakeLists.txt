@@ -30,6 +30,7 @@ set(SOURCES
     src/material.c
     src/perf_timer.c
     src/instanced_rendering.c
+    src/billboard_rendering.c
     src/ssbo_rendering.c
     src/camera.c
     src/postprocess.c

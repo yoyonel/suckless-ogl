@@ -7,6 +7,7 @@
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
+#include "billboard_rendering.h"
 #include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
@@ -69,6 +70,7 @@ typedef struct {
 
 	/* Billboard rendering */
 	int billboard_mode;
+	BillboardGroup billboard_group;  // Dedicated group
 	GLuint quad_vbo;
 	Shader* pbr_billboard_shader;
 

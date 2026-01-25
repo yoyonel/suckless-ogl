@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "app_settings.h"
+#include "billboard_rendering.h"
 #include "fps.h"
 #include "glad/glad.h"
 #include "icosphere.h"
@@ -304,7 +305,7 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	app->billboard_mode = 0;
+	app->billboard_mode = 1;
 	app->pbr_billboard_shader = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
 	if (!app->pbr_billboard_shader) {
@@ -509,22 +510,17 @@ void app_init_instancing(App* app)
 	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
 	                          app->sphere_nbo, app->sphere_ebo);
 
+	/* Initialize Billboard Group as well (shares the same data) */
+	billboard_group_init(&app->billboard_group, data, total_count);
+	billboard_group_prepare(&app->billboard_group, app->quad_vbo);
+
 	free(data);
 }
 
 static void app_update_instancing_mode(App* app)
 {
-	/* Re-create internal VAO based on mode */
-	/* Note: initialization data is already in instance_vbo, we just re-bind
-	 */
-	if (app->billboard_mode) {
-		instanced_group_bind_billboard(&app->instanced_group,
-		                               app->quad_vbo);
-	} else {
-		instanced_group_bind_mesh(&app->instanced_group,
-		                          app->sphere_vbo, app->sphere_nbo,
-		                          app->sphere_ebo);
-	}
+	/* No longer needed as we have separate groups initialized */
+	(void)app;
 }
 
 void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
@@ -553,9 +549,10 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
 
 	// Draw Quads Instanced
-	// 4 vertices per quad (Triangle Strip)
-	instanced_group_draw_arrays(&app->instanced_group, GL_TRIANGLE_STRIP, 0,
-	                            4);
+	// Draw Quads Instanced
+	// 4 vertices per quad (Triangle Strip) is handled inside
+	// billboard_rendering
+	billboard_group_draw(&app->billboard_group);
 }
 
 void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
@@ -626,6 +623,7 @@ void app_cleanup(App* app)
 	shader_destroy(app->pbr_ssbo_shader);
 #else
 	instanced_group_cleanup(&app->instanced_group);
+	billboard_group_cleanup(&app->billboard_group);
 	shader_destroy(app->pbr_instanced_shader);
 #endif
 
