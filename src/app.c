@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include "adaptive_sampler.h"
 #include "app_settings.h"
 #include "billboard_rendering.h"
 #include "fps.h"
@@ -346,7 +347,14 @@ int app_init(App* app, int width, int height, const char* title)
 		glEnable(GL_MULTISAMPLE);
 	}
 
+	static const float SAMPLER_WINDOW = 5.0F;
+	static const size_t SAMPLER_TARGET = 200;
+	static const float SAMPLER_INITIAL_GUESS = 60.0F;
+
 	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
+	// 5.0s window, 200 samples
+	adaptive_sampler_init(&app->fps_sampler, SAMPLER_WINDOW, SAMPLER_TARGET,
+	                      SAMPLER_INITIAL_GUESS);
 	app->last_frame_time = glfwGetTime();
 
 	ui_init(&app->ui, "assets/fonts/FiraCode-Regular.ttf",
@@ -628,6 +636,7 @@ void app_cleanup(App* app)
 #endif
 
 	postprocess_cleanup(&app->postprocess);
+	adaptive_sampler_cleanup(&app->fps_sampler);
 
 	window_destroy(app->window);
 }
@@ -641,6 +650,21 @@ void app_run(App* app)
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
+		// Adaptive Sampling of Frame Time
+		adaptive_sampler_should_sample(
+		    &app->fps_sampler, (float)app->delta_time, current_time);
+
+		if (adaptive_sampler_is_finished(&app->fps_sampler,
+		                                 current_time)) {
+			float avg =
+			    adaptive_sampler_get_average(&app->fps_sampler);
+			size_t count = adaptive_sampler_get_sample_count(
+			    &app->fps_sampler);
+			LOG_INFO("suckless-ogl.sampler",
+			         "Window Finished. Samples: %zu, Avg FPS: %.2f",
+			         count, avg);
+			adaptive_sampler_reset(&app->fps_sampler, current_time);
+		}
 
 		/* Mettre à jour le temps pour le post-processing (grain animé)
 		 */
@@ -1056,6 +1080,40 @@ void app_render_ui(App* app)
 		                    frame_time_ms);
 
 		ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
+
+		/* Adaptive Sampler Debug */
+		if (app->text_overlay_mode >= 2) {
+			static const size_t SAMPLER_BUF_SIZE = 256;
+			static const size_t SAMPLER_WIDTH = 40;
+			static const size_t AVG_TEXT_SIZE = 64;
+
+			char sampler_buf[SAMPLER_BUF_SIZE];
+			float sampled_avg =
+			    adaptive_sampler_get_average(&app->fps_sampler);
+			adaptive_sampler_ascii_plot(
+			    &app->fps_sampler, sampler_buf, sizeof(sampler_buf),
+			    SAMPLER_WIDTH, sampled_avg);
+
+			/* Show numerical average */
+			char avg_text[AVG_TEXT_SIZE];
+			(void)safe_snprintf(avg_text, sizeof(avg_text),
+			                    "Sampled Avg: %.2f", sampled_avg);
+			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
+
+			/* Split lines manually to avoid newline issues */
+			char* newline_ptr = strchr(sampler_buf, '\n');
+			if (newline_ptr) {
+				*newline_ptr = '\0';
+				ui_layout_text(
+				    &layout, sampler_buf,
+				    DEFAULT_FONT_COLOR); /* Timeline markers */
+				ui_layout_text(&layout, newline_ptr + 1,
+				               DEFAULT_FONT_COLOR); /* Graph */
+			} else {
+				ui_layout_text(&layout, sampler_buf,
+				               DEFAULT_FONT_COLOR);
+			}
+		}
 	}
 
 	/* 2. Position - shown in modes 1, 2, 3 */

@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include "adaptive_sampler.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
@@ -86,6 +87,7 @@ typedef struct {
 
 	/* FPS counter */
 	FpsCounter fps_counter;
+	AdaptiveSampler fps_sampler; /* Adaptive Frame Time Sampler */
 	double last_frame_time;
 	double delta_time;
 

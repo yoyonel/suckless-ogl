@@ -38,6 +38,7 @@ set(SOURCES
     src/effects/fx_dof.c
     src/effects/fx_auto_exposure.c
     src/effects/fx_motion_blur.c
+    src/adaptive_sampler.c
     src/window.c
     src/gl_debug.c
 )
