@@ -1,5 +1,6 @@
 #include "postprocess.h"
 
+#include "effects/fx_bloom.h"
 #include "gl_common.h"
 #include "log.h"
 #include "shader.h"
@@ -8,18 +9,12 @@
 #include <string.h>
 
 static int create_framebuffer(PostProcess* post_processing);
-static int create_bloom_resources(PostProcess* post_processing);
 static int create_screen_quad(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
-static void destroy_bloom_resources(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
-static void render_bloom(PostProcess* post_processing);
 static void render_dof(PostProcess* post_processing);
 static void render_motion_blur(PostProcess* post_processing);
 static void render_auto_exposure(PostProcess* post_processing);
-
-/* TODO: move to gl_common.h and mutualize with skybox rendering */
-enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
 
 /* Texture Units */
 enum {
@@ -130,7 +125,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	}
 
 	/* Créer les ressources Bloom */
-	if (!create_bloom_resources(post_processing)) {
+	if (!fx_bloom_init(post_processing)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create bloom resources");
 		destroy_framebuffer(post_processing);
@@ -142,7 +137,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create screen quad");
 		destroy_framebuffer(post_processing);
-		destroy_bloom_resources(post_processing);
+		fx_bloom_cleanup(post_processing);
 		return 0;
 	}
 
@@ -154,8 +149,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to load postprocess shader");
 		destroy_framebuffer(post_processing);
-		destroy_bloom_resources(post_processing);
-		destroy_bloom_resources(post_processing);
+		fx_bloom_cleanup(post_processing);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
@@ -202,18 +196,11 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create DoF framebuffer");
 		destroy_framebuffer(post_processing);
-		destroy_bloom_resources(post_processing);
+		fx_bloom_cleanup(post_processing);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	post_processing->bloom_prefilter_shader = shader_load(
-	    "shaders/postprocess.vert", "shaders/bloom_prefilter.frag");
-	post_processing->bloom_downsample_shader = shader_load(
-	    "shaders/postprocess.vert", "shaders/bloom_downsample.frag");
-	post_processing->bloom_upsample_shader = shader_load(
-	    "shaders/postprocess.vert", "shaders/bloom_upsample.frag");
 
 	post_processing->lum_downsample_shader = shader_load(
 	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
@@ -227,10 +214,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->neighbor_max_shader =
 	    shader_load_compute_program("shaders/neighbor_max_velocity.comp");
 
-	if (!post_processing->bloom_prefilter_shader ||
-	    !post_processing->bloom_downsample_shader ||
-	    !post_processing->bloom_upsample_shader ||
-	    !post_processing->lum_downsample_shader ||
+	if (!post_processing->lum_downsample_shader ||
 	    !post_processing->lum_adapt_shader ||
 	    !post_processing->tile_max_shader ||
 	    !post_processing->neighbor_max_shader) {
@@ -254,27 +238,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 		shader_destroy(post_processing->postprocess_shader);
 		post_processing->postprocess_shader = NULL;
 	}
-	if (post_processing->bloom_prefilter_shader) {
-		shader_destroy(post_processing->bloom_prefilter_shader);
-		post_processing->bloom_prefilter_shader = NULL;
-	}
-	if (post_processing->bloom_downsample_shader) {
-		shader_destroy(post_processing->bloom_downsample_shader);
-		post_processing->bloom_downsample_shader = NULL;
-	}
-	if (post_processing->bloom_upsample_shader) {
-		shader_destroy(post_processing->bloom_upsample_shader);
-		post_processing->bloom_upsample_shader = NULL;
-	}
-	if (post_processing->tile_max_shader) {
-		shader_destroy(post_processing->tile_max_shader);
-		post_processing->tile_max_shader = NULL;
-	}
-	if (post_processing->neighbor_max_shader) {
-		shader_destroy(post_processing->neighbor_max_shader);
-		post_processing->neighbor_max_shader = NULL;
-	}
-	destroy_bloom_resources(post_processing);
+	fx_bloom_cleanup(post_processing);
 
 	if (post_processing->dof_fbo) {
 		glDeleteFramebuffers(1, &post_processing->dof_fbo);
@@ -305,8 +269,8 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 		          "Failed to resize framebuffer");
 	}
 
-	destroy_bloom_resources(post_processing);
-	if (!create_bloom_resources(post_processing)) {
+	fx_bloom_cleanup(post_processing);
+	if (!fx_bloom_init(post_processing)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to resize bloom resources");
 	}
@@ -538,11 +502,7 @@ static void upload_chrom_abbr_params(Shader* shader,
 
 static void upload_bloom_params(Shader* shader, const BloomParams* params)
 {
-	shader_set_float(shader, "bloom.intensity", params->intensity);
-	/* Threshold and soft_threshold are likely used in prefilter, not main
-	 * pass, but we keep them available if needed or if logic changes.
-	 * Currently main shader only needs intensity to mix.
-	 */
+	fx_bloom_upload_params(shader, params);
 }
 
 static void upload_dof_params(Shader* shader, const DoFParams* params)
@@ -597,7 +557,7 @@ void postprocess_end(PostProcess* post_processing)
 {
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
-	render_bloom(post_processing);
+	fx_bloom_render(post_processing);
 
 	/* DoF Blur Pass (if DoF enabled) */
 	/* We reuse bloom_downsample to get a filtered 1/2 res version of the
@@ -641,7 +601,7 @@ void postprocess_end(PostProcess* post_processing)
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM);
 	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
 		glBindTexture(GL_TEXTURE_2D,
-		              post_processing->bloom_mips[0].texture);
+		              post_processing->bloom_fx.mips[0].texture);
 	} else {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -1037,148 +997,6 @@ static void destroy_screen_quad(PostProcess* post_processing)
 	}
 }
 
-static int create_bloom_resources(PostProcess* post_processing)
-{
-	glGenFramebuffers(1, &post_processing->bloom_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->bloom_fbo);
-
-	int width = post_processing->width;
-	int height = post_processing->height;
-
-	for (int i = 0; i < BLOOM_MIP_LEVELS; i++) {
-		/* Chaque niveau est la moitié du précédent */
-		width /= 2;
-		height /= 2;
-		if (width < 1) {
-			width = 1;
-		}
-		if (height < 1) {
-			height = 1;
-		}
-
-		post_processing->bloom_mips[i].width = width;
-		post_processing->bloom_mips[i].height = height;
-
-		glGenTextures(1, &post_processing->bloom_mips[i].texture);
-		glBindTexture(GL_TEXTURE_2D,
-		              post_processing->bloom_mips[i].texture);
-		/* R11G11B10F is good for HDR and saves memory vs RGBA16F */
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, width, height,
-		             0, GL_RGB, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		                GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-		                GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-		                GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-		                GL_CLAMP_TO_EDGE);
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return 1;
-}
-
-static void destroy_bloom_resources(PostProcess* post_processing)
-{
-	if (post_processing->bloom_fbo) {
-		glDeleteFramebuffers(1, &post_processing->bloom_fbo);
-		post_processing->bloom_fbo = 0;
-	}
-
-	for (int i = 0; i < BLOOM_MIP_LEVELS; i++) {
-		if (post_processing->bloom_mips[i].texture) {
-			glDeleteTextures(
-			    1, &post_processing->bloom_mips[i].texture);
-			post_processing->bloom_mips[i].texture = 0;
-		}
-	}
-}
-
-static void render_bloom(PostProcess* post_processing)
-{
-	if (!postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
-		return;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->bloom_fbo);
-	glDisable(GL_DEPTH_TEST);
-
-	/* 1. Prefilter Pass: Extract bright parts from Scene -> Mip 0 */
-	shader_use(post_processing->bloom_prefilter_shader);
-	shader_set_float(post_processing->bloom_prefilter_shader, "threshold",
-	                 post_processing->bloom.threshold);
-	shader_set_float(post_processing->bloom_prefilter_shader, "knee",
-	                 post_processing->bloom.soft_threshold);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(post_processing->bloom_prefilter_shader, "srcTexture",
-	               0);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D,
-	                       post_processing->bloom_mips[0].texture, 0);
-	glViewport(0, 0, post_processing->bloom_mips[0].width,
-	           post_processing->bloom_mips[0].height);
-
-	glBindVertexArray(post_processing->screen_quad_vao);
-	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-	/* 2. Downsample Loop */
-	shader_use(post_processing->bloom_downsample_shader);
-	shader_set_int(post_processing->bloom_downsample_shader, "srcTexture",
-	               0);
-
-	for (int i = 0; i < BLOOM_MIP_LEVELS - 1; i++) {
-		const BloomMip* mip_src = &post_processing->bloom_mips[i];
-		const BloomMip* mip_dst = &post_processing->bloom_mips[i + 1];
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mip_src->texture);
-
-		vec2 resolution = {(float)mip_src->width,
-		                   (float)mip_src->height};
-		shader_set_vec2(post_processing->bloom_downsample_shader,
-		                "srcResolution", resolution);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D, mip_dst->texture, 0);
-		glViewport(0, 0, mip_dst->width, mip_dst->height);
-
-		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-	}
-
-	/* 3. Upsample Loop with Blending */
-	shader_use(post_processing->bloom_upsample_shader);
-	shader_set_int(post_processing->bloom_upsample_shader, "srcTexture", 0);
-	shader_set_float(post_processing->bloom_upsample_shader, "filterRadius",
-	                 post_processing->bloom.radius);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE);
-	glBlendEquation(GL_FUNC_ADD);
-
-	for (int i = BLOOM_MIP_LEVELS - 2; i >= 0; i--) {
-		const BloomMip* mip_src = &post_processing->bloom_mips[i + 1];
-		const BloomMip* mip_dst = &post_processing->bloom_mips[i];
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mip_src->texture);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D, mip_dst->texture, 0);
-		glViewport(0, 0, mip_dst->width, mip_dst->height);
-
-		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-	}
-
-	glDisable(GL_BLEND);
-	glBindVertexArray(0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, post_processing->width, post_processing->height);
-}
-
 static void render_dof(PostProcess* post_processing)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->dof_fbo);
@@ -1196,36 +1014,38 @@ static void render_dof(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, post_processing->dof_temp_tex, 0);
 
-	shader_use(post_processing->bloom_downsample_shader);
+	shader_use(fx_bloom_get_downsample_shader(post_processing));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(post_processing->bloom_downsample_shader, "srcTexture",
-	               0);
+	shader_set_int(fx_bloom_get_downsample_shader(post_processing),
+	               "srcTexture", 0);
 
 	vec2 src_res = {(float)post_processing->width,
 	                (float)post_processing->height};
-	shader_set_vec2(post_processing->bloom_downsample_shader,
+	shader_set_vec2(fx_bloom_get_downsample_shader(post_processing),
 	                "srcResolution", (float*)&src_res);
 
 	glBindVertexArray(post_processing->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
-	/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final) */
-	/* Using bloom_upsample (Tent 3x3 radius adjustable) to widen
-	 * the blur */
+	/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final)
+	 */
+	/* Using bloom_upsample (Tent 3x3 radius adjustable) to
+	 * widen the blur */
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, post_processing->dof_blur_tex, 0);
 
-	shader_use(post_processing->bloom_upsample_shader);
+	shader_use(fx_bloom_get_upsample_shader(post_processing));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->dof_temp_tex);
-	shader_set_int(post_processing->bloom_upsample_shader, "srcTexture", 0);
-	/* Scale radius to 1.0 (standard neighbor) or higher for wider
-	 * blur */
-	shader_set_float(post_processing->bloom_upsample_shader, "filterRadius",
-	                 1.0F);
+	shader_set_int(fx_bloom_get_upsample_shader(post_processing),
+	               "srcTexture", 0);
+	/* Scale radius to 1.0 (standard neighbor) or higher for
+	 * wider blur */
+	shader_set_float(fx_bloom_get_upsample_shader(post_processing),
+	                 "filterRadius", 1.0F);
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 

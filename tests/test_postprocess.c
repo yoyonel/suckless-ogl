@@ -55,8 +55,8 @@ void test_postprocess_init_creates_resources(void)
 	TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vbo);
 	TEST_ASSERT_NOT_EQUAL(0, pp.postprocess_shader);
 	/* Bloom resources */
-	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fbo);
-	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_mips[0].texture);
+	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fx.fbo);
+	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fx.mips[0].texture);
 
 	TEST_ASSERT_EQUAL(640, pp.width);
 	TEST_ASSERT_EQUAL(480, pp.height);

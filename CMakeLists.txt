@@ -33,6 +33,7 @@ set(SOURCES
     src/ssbo_rendering.c
     src/camera.c
     src/postprocess.c
+    src/effects/fx_bloom.c
     src/window.c
 )
 

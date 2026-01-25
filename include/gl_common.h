@@ -12,4 +12,6 @@
 #define BUFFER_OFFSET(offset) \
 	((void*)(uintptr_t)(offset))  // NOLINT(performance-no-int-to-ptr)
 
+#define SCREEN_QUAD_VERTEX_COUNT 6
+
 #endif /* GL_COMMON_H */

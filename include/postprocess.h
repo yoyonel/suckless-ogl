@@ -1,9 +1,11 @@
 #ifndef POSTPROCESS_H
 #define POSTPROCESS_H
 
+#include "effects/fx_bloom.h"
 #include "gl_common.h"
 #include "shader.h"
 #include <cglm/cglm.h>
+#include <cglm/types.h>
 
 /* Valeurs par défaut - plus subtiles et cinématiques */
 #define DEFAULT_VIGNETTE_INTENSITY 0.8F  /* 0.0 - 1.0+ */
@@ -95,21 +97,6 @@ typedef struct {
 	                   (visible aux bords) */
 } ChromAbberationParams;
 
-/* Paramètres pour le Bloom (Physically Based) */
-typedef struct {
-	float intensity;      /* Puissance globale (0.0 - 1.0+) */
-	float threshold;      /* Seuil de luminance (1.0+) */
-	float soft_threshold; /* Genou de transition (0.0 - 1.0) */
-	float radius;         /* Rayon du bloom (simulé par # mips) */
-} BloomParams;
-
-/* Structure pour un niveau de mip du Bloom */
-typedef struct {
-	GLuint texture;
-	int width;
-	int height;
-} BloomMip;
-
 /* Paramètres pour le Depth of Field */
 typedef struct {
 	float focal_distance; /* Distance de mise au point (unités monde) */
@@ -146,7 +133,7 @@ typedef struct {
 #define LUM_DOWNSAMPLE_SIZE 64
 
 /* Structure principale du système de post-processing */
-typedef struct {
+typedef struct PostProcess {
 	/* FBO principal et textures */
 	GLuint scene_fbo;
 	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
@@ -154,8 +141,7 @@ typedef struct {
 	GLuint scene_depth_tex; /* Depth (GL_DEPTH_COMPONENT32F) */
 
 	/* Bloom Resources */
-	GLuint bloom_fbo; /* FBO partagé pour le blit */
-	BloomMip bloom_mips[BLOOM_MIP_LEVELS];
+	BloomFX bloom_fx;
 
 	/* DoF Resources */
 	GLuint dof_fbo;
@@ -176,10 +162,7 @@ typedef struct {
 	GLuint screen_quad_vbo;
 
 	/* Shaders */
-	Shader* postprocess_shader; /* Shader combinant tous les effets */
-	Shader* bloom_prefilter_shader;
-	Shader* bloom_downsample_shader;
-	Shader* bloom_upsample_shader;
+	Shader* postprocess_shader;    /* Shader combinant tous les effets */
 	Shader* lum_downsample_shader; /* Shader pour Log Lum Downsample */
 	Shader* lum_adapt_shader; /* Compute Shader pour moyenne + adaptation */
 	Shader* tile_max_shader;  /* Compute Shader: Tile Max Velocity */
