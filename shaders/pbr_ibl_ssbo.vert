@@ -13,7 +13,8 @@ struct InstanceData {
 	float _padding[2];
 };
 
-layout(std430, binding = 0) readonly buffer InstanceBuffer {
+layout(std430, binding = 0) readonly buffer InstanceBuffer
+{
 	InstanceData instances[];
 };
 
@@ -32,19 +33,21 @@ out float AO;
 void main()
 {
 	InstanceData inst = instances[gl_InstanceID];
-	
+
 	vec4 worldPos = inst.model * vec4(aPos, 1.0);
 	WorldPos = worldPos.xyz;
-	
-	/* CORRECTION : Pour une sphère unitaire, la normale EST la position normalisée */
-	/* On applique juste la rotation de la matrice model (pas de scale dans notre cas) */
+
+	/* CORRECTION : Pour une sphère unitaire, la normale EST la position
+	 * normalisée */
+	/* On applique juste la rotation de la matrice model (pas de scale dans
+	 * notre cas) */
 	Normal = normalize(mat3(inst.model) * aNormal);
-	
+
 	/* Passage des propriétés matériau */
 	Albedo = inst.albedo;
 	Metallic = inst.metallic;
 	Roughness = inst.roughness;
 	AO = inst.ao;
-	
+
 	gl_Position = projection * view * worldPos;
 }

@@ -31,7 +31,7 @@ void perf_timer_start(PerfTimer* timer)
 		return;
 	}
 	// NOLINTNEXTLINE(misc-include-cleaner)
-	clock_gettime(CLOCK_MONOTONIC, &timer->start);
+	(void)clock_gettime(CLOCK_MONOTONIC, &timer->start);
 }
 
 double perf_timer_elapsed_ms(PerfTimer* timer)
@@ -40,7 +40,7 @@ double perf_timer_elapsed_ms(PerfTimer* timer)
 		return 0.0;
 	}
 	// NOLINTNEXTLINE(misc-include-cleaner)
-	clock_gettime(CLOCK_MONOTONIC, &timer->end);
+	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
 	    (double)(timer->end.tv_sec - timer->start.tv_sec);
@@ -56,7 +56,7 @@ double perf_timer_elapsed_us(PerfTimer* timer)
 		return 0.0;
 	}
 	// NOLINTNEXTLINE(misc-include-cleaner)
-	clock_gettime(CLOCK_MONOTONIC, &timer->end);
+	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
 	    (double)(timer->end.tv_sec - timer->start.tv_sec);
@@ -72,7 +72,7 @@ double perf_timer_elapsed_s(PerfTimer* timer)
 		return 0.0;
 	}
 	// NOLINTNEXTLINE(misc-include-cleaner)
-	clock_gettime(CLOCK_MONOTONIC, &timer->end);
+	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
 	    (double)(timer->end.tv_sec - timer->start.tv_sec);

@@ -11,7 +11,7 @@ typedef struct {
 	float roughness;
 	float ao;
 	float padding;
-} SphereInstance;
+} __attribute__((aligned(SIMD_ALIGNMENT))) SphereInstance;
 
 typedef struct {
 	GLuint vao;           // VAO dédié (Mesh + Instances)
@@ -23,12 +23,17 @@ typedef struct {
 void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
                           int count);
 
-/* Lie le groupe aux buffers de géométrie de l'App (à appeler quand l'icosphere
+/* Lie le groupe aux buffers de quand l'icosphere
  * change) */
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo);
 
+void instanced_group_bind_billboard(InstancedGroup* group, GLuint vbo);
+
 void instanced_group_draw(InstancedGroup* group, size_t index_count);
+
+void instanced_group_draw_arrays(InstancedGroup* group, GLenum mode, int first,
+                                 int count);
 
 void instanced_group_cleanup(InstancedGroup* group);
 

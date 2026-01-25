@@ -54,7 +54,8 @@ void test_texture_load_hdr_success(void)
 	int width = 0, height = 0;
 
 	// Use the actual HDR file from assets (relative to build/tests)
-	GLuint tex = texture_load_hdr("assets/env.hdr", &width, &height);
+	GLuint tex = texture_load_hdr(
+	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
 
 	// Should return non-zero texture ID
 	TEST_ASSERT_NOT_EQUAL(0, tex);
@@ -72,7 +73,8 @@ void test_texture_load_hdr_success(void)
 void test_texture_load_hdr_creates_gl_texture(void)
 {
 	int width = 0, height = 0;
-	GLuint tex = texture_load_hdr("assets/env.hdr", &width, &height);
+	GLuint tex = texture_load_hdr(
+	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
 
 	TEST_ASSERT_NOT_EQUAL(0, tex);
 
@@ -103,7 +105,8 @@ void test_texture_load_hdr_creates_gl_texture(void)
 void test_texture_load_hdr_sets_parameters(void)
 {
 	int width = 0, height = 0;
-	GLuint tex = texture_load_hdr("assets/env.hdr", &width, &height);
+	GLuint tex = texture_load_hdr(
+	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
 
 	TEST_ASSERT_NOT_EQUAL(0, tex);
 

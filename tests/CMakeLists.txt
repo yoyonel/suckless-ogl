@@ -1,60 +1,109 @@
-# tests/CMakeLists.txt - Mise à jour complète
+# tests/CMakeLists.txt - Version avec auto-découverte des tests
 
-# Common dependencies for all tests
+# =============================================================================
+# CONFIGURATION COMMUNE
+# =============================================================================
+
 set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
-set(TEST_INCLUDE_DIRS ../src ../include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
+set(TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
+# =============================================================================
+# BIBLIOTHÈQUE PARTAGÉE POUR LES TESTS
+# =============================================================================
 
-# Helper macro to add a test executable
-macro(add_unit_test test_name sources)
-    add_executable(${test_name} ${test_name}.c ${sources})
-    target_link_libraries(${test_name} PRIVATE ${TEST_COMMON_LIBS})
-    target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
-    target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
-    add_test(NAME ${test_name} COMMAND ${test_name})
-    # Set working directory to root so assets/ and shaders/ are found
+# Convertir les chemins relatifs de SOURCES en chemins absolus
+set(TEST_LIB_SOURCES "")
+foreach(source ${SOURCES})
+    # Si le chemin est déjà absolu, le garder tel quel
+    if(IS_ABSOLUTE ${source})
+        list(APPEND TEST_LIB_SOURCES ${source})
+    else()
+        # Sinon, le préfixer avec CMAKE_SOURCE_DIR
+        list(APPEND TEST_LIB_SOURCES ${CMAKE_SOURCE_DIR}/${source})
+    endif()
+endforeach()
+
+# Exclure main.c
+list(FILTER TEST_LIB_SOURCES EXCLUDE REGEX ".*main\\.c$")
+
+# Créer la bibliothèque de test (compilée une seule fois)
+add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
+target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
+target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
+# target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
+
+# =============================================================================
+# AUTO-DÉCOUVERTE DES TESTS
+# =============================================================================
+
+# Lister tous les fichiers test_*.c dans le répertoire tests/
+file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
+
+# Tests qui nécessitent OpenGL (à mettre dans Xvfb)
+set(OPENGL_TESTS
+    test_shader
+    test_shader_api
+    test_texture
+    test_skybox
+    test_pbr
+    test_material
+    test_ui
+    test_instanced_rendering
+    test_ssbo_rendering
+    test_app
+    test_postprocess
+)
+
+# Pour chaque fichier test trouvé
+foreach(test_file ${TEST_SOURCES})
+    # Extraire le nom du test (sans .c)
+    get_filename_component(test_name ${test_file} NAME_WE)
+
+    # Créer l'exécutable
+    add_executable(${test_name} ${test_file})
+    target_link_libraries(${test_name} PRIVATE app_testlib)
+
+    # Déterminer si c'est un test OpenGL
+    if(${test_name} IN_LIST OPENGL_TESTS)
+        # Test avec Xvfb
+        add_test(NAME ${test_name}
+                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
+        message(STATUS "Test OpenGL découvert: ${test_name} (avec Xvfb)")
+    else()
+        # Test simple
+        add_test(NAME ${test_name} COMMAND ${test_name})
+        message(STATUS "Test unitaire découvert: ${test_name}")
+    endif()
+
+    # Working directory = racine du projet
     set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
-endmacro()
+endforeach()
 
-# Helper macro for OpenGL tests
-macro(add_xvfb_test test_name sources)
-    add_executable(${test_name} ${test_name}.c ${sources})
-    target_link_libraries(${test_name} PRIVATE ${TEST_COMMON_LIBS})
-    target_include_directories(${test_name} PRIVATE ${TEST_INCLUDE_DIRS})
-    target_compile_definitions(${test_name} PRIVATE GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
-    
-    add_test(NAME ${test_name} 
-             COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
-    # Set working directory to root
-    set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
-endmacro()
-
-# Tests existants (sans OpenGL)
-add_unit_test(test_icosphere "../src/icosphere.c")
-add_unit_test(test_log "../src/log.c")
-add_unit_test(test_shader "../src/shader.c;../src/log.c")
-add_unit_test(test_skybox "../src/skybox.c;../src/shader.c;../src/log.c;../src/texture.c;../src/stb_image_impl.c")
-add_unit_test(test_texture "../src/texture.c;../src/log.c;../src/stb_image_impl.c")
-
-# Tests sans dépendances OpenGL
-add_unit_test(test_camera "../src/camera.c")
-add_unit_test(test_fps "../src/fps.c")
-add_unit_test(test_perf_timer "../src/perf_timer.c;../src/log.c")
-add_unit_test(test_stb_image_impl "../src/stb_image_impl.c")
-
-# Tests nécessitant un contexte OpenGL (avec Xvfb)
-add_xvfb_test(test_app "../src/app.c;../src/shader.c;../src/log.c;../src/icosphere.c;../src/skybox.c;../src/texture.c;../src/stb_image_impl.c;../src/fps.c;../src/ui.c;../src/pbr.c;../src/material.c;../src/perf_timer.c;../src/instanced_rendering.c;../src/ssbo_rendering.c;../src/camera.c")
-
-add_xvfb_test(test_pbr "../src/pbr.c;../src/shader.c;../src/log.c;../src/material.c")
-
-add_xvfb_test(test_material "../src/material.c;../src/log.c")
-
-add_xvfb_test(test_ui "../src/ui.c;../src/shader.c;../src/log.c;../src/stb_image_impl.c")
-
-add_xvfb_test(test_instanced_rendering "../src/instanced_rendering.c;../src/log.c")
-
-add_xvfb_test(test_ssbo_rendering "../src/ssbo_rendering.c;../src/log.c")
-
-# NOTE: test_main est commenté car main.c contient main() qui entre en conflit avec Unity
-# Pour tester main.c, il faudrait refactoriser le code ou utiliser une approche différente
-# add_unit_test(test_main "../src/main.c;...")
+# =============================================================================
+# NOTES ET DOCUMENTATION
+# =============================================================================
+# Cette approche offre plusieurs avantages :
+#
+# 1. ZÉRO MAINTENANCE - Les tests sont découverts automatiquement
+#    Ajouter un test = créer test_foo.c, c'est tout !
+#
+# 2. FAST COMPILATION - app_testlib compilée une fois, réutilisée partout
+#
+# 3. CONSISTANCE - Tous les tests utilisent exactement le même code
+#
+# 4. FLEXIBILITÉ - Facile d'identifier les tests OpenGL vs unitaires
+#
+# Pour ajouter un nouveau test :
+# 1. Créer tests/test_monmodule.c
+# 2. Si nécessite OpenGL, l'ajouter dans OPENGL_TESTS
+# 3. cmake .. && make (pas besoin de modifier CMakeLists.txt!)
+#
+# Pour voir tous les tests disponibles :
+#   cd build && ctest -N
+#
+# Pour lancer tous les tests :
+#   cd build && ctest --output-on-failure
+#
+# Pour lancer un test spécifique :
+#   cd build && ctest -R test_camera --verbose
+# =============================================================================

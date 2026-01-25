@@ -1,0 +1,80 @@
+#version 440 core
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+/* Entrée: Texture 64x64 Log Luminance */
+layout(binding = 0) uniform sampler2D lumTexture;
+
+/* Sortie: Texture 1x1 RGBA32F (Exposure Factor) */
+layout(rgba32f, binding = 1) uniform image2D exposureImage;
+
+uniform float deltaTime;
+uniform float minLuminance;
+uniform float maxLuminance;
+uniform float speedUp;
+uniform float speedDown;
+uniform float keyValue; /* Target middle gray (ex: 1.0) */
+
+void main()
+{
+    /* Seul le thread (0,0) fait le travail */
+    if (gl_GlobalInvocationID.x == 0 && gl_GlobalInvocationID.y == 0) {
+        
+        float totalLogLum = 0.0;
+        int size = 64;
+        float validPixels = 0.0;
+        
+        for(int y = 0; y < size; y++) {
+            for(int x = 0; x < size; x++) {
+                vec2 uv = (vec2(x, y) + 0.5) / float(size); 
+                float logVal = textureLod(lumTexture, uv, 0).r;
+                
+                /* Si le pixel est valide (pas la sentinelle -100.0) */
+                if (logVal > -50.0 && !isinf(logVal)) {
+                    totalLogLum += logVal;
+                    validPixels += 1.0;
+                }
+            }
+        }
+        
+        float sceneLum = 0.0;
+        
+        /* Moyenne uniquement sur les pixels valides (objets, ciel) */
+        if (validPixels > 0.0) {
+             float avgLogLum = totalLogLum / validPixels;
+             sceneLum = exp2(avgLogLum);
+        } else {
+             /* Si tout l'écran est noir (validPixels == 0), on suppose une luminance très faible par défaut */
+             sceneLum = 0.1; 
+        }
+        
+        /* Protection contre luminance nulle */
+        sceneLum = max(sceneLum, 0.0001);
+        
+        /* Clamping Luminance */
+        sceneLum = clamp(sceneLum, minLuminance, maxLuminance);
+        
+        /* Calcul de l'exposition cible */
+        float targetExposure = keyValue / sceneLum;
+        
+        /* Lire l'exposition précédente (Red channel) */
+        float currentExposure = imageLoad(exposureImage, ivec2(0, 0)).r;
+        
+        /* Adaptation Temporelle */
+        float adjustmentSpeed = (targetExposure > currentExposure) ? speedUp : speedDown;
+        
+        float factor = 1.0 - exp(-deltaTime * adjustmentSpeed);
+        float newExposure = currentExposure + (targetExposure - currentExposure) * factor;
+        
+        /* Protection NaN/Inf */
+        if (isnan(newExposure) || isinf(newExposure)) {
+            newExposure = currentExposure;
+        }
+        
+        /* Ensure valid range */
+        newExposure = max(newExposure, 0.001);
+        
+        /* Ecriture (RGBA) */
+        imageStore(exposureImage, ivec2(0, 0), vec4(newExposure, 0.0, 0.0, 1.0));
+    }
+}

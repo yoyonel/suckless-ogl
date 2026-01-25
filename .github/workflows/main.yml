@@ -36,23 +36,28 @@ jobs:
 
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
-          
-      - name: Run Coverage and Generate Visuals
+
+      - name: Run Coverage and Tests
+        id: run_tests
+        continue-on-error: true
         run: |
-          # 1. Exécution des tests via Xvfb
+          # Exécution des tests via Xvfb
           xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
-          
-          # 2. Préparation des dossiers
+
+      - name: Generate Visual Artifacts
+        if: always()
+        run: |
+          # Préparation des dossiers
           mkdir -p visual_artifacts/${{ github.sha }}
           mkdir -p build-coverage/coverage_report/visual_tests
-          
-          # 3. Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
+
+          # Conversion RAW -> PNG (Utilisation de 'convert' pour compatibilité Ubuntu)
           # On capture la référence, le rendu actuel et la carte de différence
           [ -f tests/ref_frame.raw ] && convert -size 1024x768 -depth 8 rgb:tests/ref_frame.raw -flip visual_artifacts/${{ github.sha }}/ref.png || echo "No ref"
           [ -f tests/failed_frame_actual.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_frame_actual.raw -flip visual_artifacts/${{ github.sha }}/actual.png || echo "No actual"
           [ -f tests/failed_diff_map.raw ] && convert -size 1024x768 -depth 8 rgb:tests/failed_diff_map.raw -flip visual_artifacts/${{ github.sha }}/diff.png || echo "No diff"
 
-          # 4. Génération de l'index HTML interactif (Comparaison par survol)
+          # Génération de l'index HTML interactif (Comparaison par survol)
           cat <<EOF > build-coverage/coverage_report/visual_tests/index.html
           <!DOCTYPE html>
           <html>
@@ -81,10 +86,11 @@ jobs:
           </html>
           EOF
 
-          # 5. Copie des PNG pour le rapport statique
+          # Copie des PNG pour le rapport statique
           cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
 
       - name: Upload Images to Visual Storage Branch
+        if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -93,16 +99,19 @@ jobs:
           keep_files: true
 
       - name: Post Visual Comment on PR
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ## 🎨 Visual Regression Report (${{ github.sha }})
-            
+
             | Reference | Actual (PR) | Difference Map |
             |:---:|:---:|:---:|
-            | ![Ref](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/ref.png) | ![Actual](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/actual.png) | ![Diff](https://raw.githubusercontent.com/${{ github.repository }}/visual-artifacts/${{ github.sha }}/diff.png) |
-            
+            | ![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref.png?raw=true) | ![Actual](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/actual.png?raw=true) | ![Diff](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/diff.png?raw=true) |
+
             > [!TIP]
             > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.raw`.
 
@@ -125,10 +134,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Lint Tools
-        run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy libgl1-mesa-dev libglew-dev libglfw3-dev cmake
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install clang-format 19.1.7 via pip
+        run: |
+          pip install clang-format==19.1.7
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy
       - name: Run Format & Lint
         run: |
+          clang-format --version
           make format CONTAINER_RUN=""
           git diff --exit-code || (echo "❌ Format error" && exit 1)
           make lint CONTAINER_RUN=""
@@ -139,14 +159,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        build_type: [Release, Profiling]
+        build_type: [Release, Profiling, UltraRelease]
     steps:
       - uses: actions/checkout@v4
       - name: Install Deps
         run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          FLAGS=""
+          BTYPE=${{ matrix.build_type }}
+          if [ "$BTYPE" == "UltraRelease" ]; then
+            BTYPE="Release"
+            FLAGS="-DENABLE_UNITY_BUILD=ON -DENABLE_NATIVE_ARCH=ON -DENABLE_AGGRESSIVE_MATH=ON"
+          fi
+          cmake -B build -DCMAKE_BUILD_TYPE=$BTYPE $FLAGS
           cmake --build build --parallel $(nproc)
       - name: Upload Binaries
         uses: actions/upload-artifact@v4

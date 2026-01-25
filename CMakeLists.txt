@@ -11,6 +11,13 @@ else()
     message(STATUS "SSBO rendering: DISABLED (using legacy instanced rendering)")
 endif()
 
+# Option pour activer le debug synchrone (tueur de performance)
+option(DEBUG_SYNCHRONOUS "Enable synchronous OpenGL debug output" OFF)
+if(DEBUG_SYNCHRONOUS)
+    add_compile_definitions(DEBUG_SYNCHRONOUS)
+    message(WARNING "OpenGL Synchronous Debug: ENABLED (Expect low performance)")
+endif()
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -30,8 +37,17 @@ set(SOURCES
     src/material.c
     src/perf_timer.c
     src/instanced_rendering.c
+    src/billboard_rendering.c
     src/ssbo_rendering.c
     src/camera.c
+    src/postprocess.c
+    src/effects/fx_bloom.c
+    src/effects/fx_dof.c
+    src/effects/fx_auto_exposure.c
+    src/effects/fx_motion_blur.c
+    src/adaptive_sampler.c
+    src/window.c
+    src/gl_debug.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -49,10 +65,10 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries only" FORCE)
 set(OFFLINE_DEPS_DIR "${CMAKE_SOURCE_DIR}/deps")
 if(EXISTS "${OFFLINE_DEPS_DIR}")
     message(STATUS "Offline mode: Checking for local dependencies in ${OFFLINE_DEPS_DIR}")
-    
+
     # List of dependencies we want to support overrides for
     set(MANIFEST_DEPS "cglm" "glad" "stb" "unity" "cjson")
-    
+
     foreach(dep ${MANIFEST_DEPS})
         if(EXISTS "${OFFLINE_DEPS_DIR}/${dep}")
             message(STATUS "  Using local source for ${dep}: ${OFFLINE_DEPS_DIR}/${dep}")
@@ -60,10 +76,10 @@ if(EXISTS "${OFFLINE_DEPS_DIR}")
             set(FETCHCONTENT_SOURCE_DIR_${dep_upper} "${OFFLINE_DEPS_DIR}/${dep}" CACHE PATH "Local source override for ${dep}")
         endif()
     endforeach()
-    
+
     # Force FetchContent to not even try to connect if we are in offline mode
     # set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Forbid FetchContent from using network" FORCE)
-    
+
     # GLAD specific: use the local specification file instead of downloading it
     set(GLAD_REPRODUCIBLE ON CACHE BOOL "Use local gl.xml for GLAD" FORCE)
 endif()
@@ -104,7 +120,7 @@ if(TARGET glad)
     get_target_property(glad_type glad TYPE)
     if(NOT glad_type STREQUAL "STATIC_LIBRARY")
         message(STATUS "Converting glad to STATIC_LIBRARY")
-        set_target_properties(glad PROPERTIES 
+        set_target_properties(glad PROPERTIES
             POSITION_INDEPENDENT_CODE OFF
         )
     endif()
@@ -151,6 +167,30 @@ endif()
 set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags for profiling" FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
 
+# --- Optimisations Avancées ---
+option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" OFF)
+option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
+option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
+
+if(ENABLE_UNITY_BUILD)
+    set(CMAKE_UNITY_BUILD ON)
+    message(STATUS "Unity Build: ENABLED")
+endif()
+
+if(ENABLE_NATIVE_ARCH)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        add_compile_options(-march=native)
+        message(STATUS "Native Architecture Optimization: ENABLED")
+    endif()
+endif()
+
+if(ENABLE_AGGRESSIVE_MATH)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        add_compile_options(-ffast-math)
+        message(STATUS "Aggressive Math Optimization: ENABLED")
+    endif()
+endif()
+
 # Activation du LTO (Link Time Optimization)
 include(CheckIPOSupported)
 check_ipo_supported(RESULT lto_supported OUTPUT lto_error)
@@ -171,12 +211,12 @@ target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
 target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
 
 # Link avec la version statique de cJSON
-target_link_libraries(app PRIVATE 
-    cglm 
-    glad 
+target_link_libraries(app PRIVATE
+    cglm
+    glad
     cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
-    ${GLFW3_LIBRARIES} 
-    m 
+    ${GLFW3_LIBRARIES}
+    m
     dl
 )
 
@@ -186,14 +226,14 @@ target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 # Compiler flags
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(app PRIVATE -Wall -Wextra)
-    
-    # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind) 
+
+    # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind)
     # puissent reconstruire la pile d'appel (stack trace) correctement.
     if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
-    target_compile_definitions(app PRIVATE _POSIX_C_SOURCE=199309L)
+    add_compile_definitions(_POSIX_C_SOURCE=200809L)
 endif()
 
 # Vérification post-build pour s'assurer que tout est statique

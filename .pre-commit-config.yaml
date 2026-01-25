@@ -1,0 +1,28 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+
+-   repo: local
+    hooks:
+    -   id: make-format
+        name: make format
+        description: Run 'make format' to auto-format C code using clang-format.
+        entry: make format
+        language: system
+        files: \.(c|h)$
+        pass_filenames: false
+        stages: [pre-commit]
+
+    -   id: make-lint
+        name: make lint
+        description: Run 'make lint' to check code quality using clang-tidy via Makefile.
+        entry: make lint
+        language: system
+        files: \.(c|h)$
+        pass_filenames: false
+        stages: [pre-push]

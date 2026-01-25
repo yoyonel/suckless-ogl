@@ -6,9 +6,19 @@ CMAKE := cmake
 # On définit BOX pour garder la configuration de ton env local
 BOX := clang-dev
 
-# Si CONTAINER_RUN n'est pas défini, on utilise distrobox par défaut (ton usage local) [cite: 1]
-# Si on veut désactiver distrobox, on pourra passer CONTAINER_RUN=""
-CONTAINER_RUN ?= distrobox enter $(BOX) --
+# Smart detection: Use distrobox only if available and if the container exists
+DISTROBOX_CMD := $(shell command -v distrobox 2> /dev/null)
+ifneq ($(DISTROBOX_CMD),)
+    # Check if the specific box exists
+    BOX_EXISTS := $(shell distrobox list --no-color 2>/dev/null | grep -w "$(BOX)")
+    ifneq ($(BOX_EXISTS),)
+         CONTAINER_RUN_DEFAULT := distrobox enter $(BOX) --
+    endif
+endif
+
+# If CONTAINER_RUN is not defined, use the detected default (or empty/local)
+# To disable distrobox even if available, pass CONTAINER_RUN=""
+CONTAINER_RUN ?= $(CONTAINER_RUN_DEFAULT)
 
 # On remplace l'ancienne variable par la nouvelle
 DISTROBOX := $(CONTAINER_RUN)
@@ -20,8 +30,10 @@ APITRACE_BIN := $(APITRACE_DIR)/bin/apitrace
 
 #
 BUILD_PROF_DIR := build-prof
+BUILD_REL_DIR := build-release
+BUILD_SMALL_DIR := build-small
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage release small debug-release
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -43,8 +55,11 @@ rebuild: clean-all all
 run: all
 	@./$(BUILD_DIR)/app
 
+run-software: all
+	LIBGL_ALWAYS_SOFTWARE=1 ./$(BUILD_DIR)/app
+
 format:
-	$(DISTROBOX) sh -c "find src include tests -name \"*.c\" -o -name \"*.h\" | xargs clang-format -i"
+	$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format -i"
 
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
@@ -56,7 +71,7 @@ CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cj
 lint: $(BUILD_DIR)/Makefile
 	@echo "Ensuring dependencies are generated..."
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
-	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=199309L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
+	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=200809L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh
@@ -70,7 +85,7 @@ offline-test:
 	@echo "Running build in a simulated offline environment (using bogus proxy)..."
 	@http_proxy=http://127.0.0.1:0 https_proxy=http://127.0.0.1:0 $(MAKE) rebuild
 
-test:
+test: all
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
 # Code Coverage (version améliorée avec résumé)
@@ -82,13 +97,13 @@ coverage:
 	@mkdir -p $(BUILD_COV_DIR)
 	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
-	
+
 	@echo "Running tests to generate profile data..."
 	@$(DISTROBOX) sh -c "LLVM_PROFILE_FILE='$(CURDIR)/$(BUILD_COV_DIR)/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir $(BUILD_COV_DIR) --output-on-failure"
-	
+
 	@echo "Merging profile data..."
 	@$(DISTROBOX) llvm-profdata merge -sparse $(BUILD_COV_DIR)/*.profraw -o $(BUILD_COV_DIR)/coverage.profdata
-	
+
 	@echo "Generating HTML report..."
 	@mkdir -p $(REPORT_DIR)
 	@$(DISTROBOX) llvm-cov show -format=html \
@@ -98,7 +113,7 @@ coverage:
 		-output-dir=$(REPORT_DIR) \
 		-ignore-filename-regex="(generated|deps|tests)"
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
-	
+
 	@echo "Coverage Summary:"
 	@$(DISTROBOX) llvm-cov report \
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
@@ -137,7 +152,7 @@ perf: profile
 valgrind:
 	@echo "Running Valgrind (very slow to start)..."
 	@$(DISTROBOX) valgrind --leak-check=full --show-leak-kinds=definite --errors-for-leak-kinds=definite ./$(BUILD_PROF_DIR)/app
-	
+
 # Docker Integration
 # Auto-detect container engine (podman or docker)
 CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
@@ -145,7 +160,6 @@ IMAGE_NAME := suckless-ogl
 
 docker-build:
 	$(CONTAINER_ENGINE) build \
-		--layers=true \
 		-t $(IMAGE_NAME) .
 
 docker-build-no-cache:
@@ -194,6 +208,22 @@ clean-ssbo:
 	@echo "Cleaning SSBO build..."
 	@rm -rf build-ssbo
 
+# Build avec Sync Debug
+.PHONY: build-sync run-sync clean-sync
+
+build-sync:
+	@echo "Building with Synchronous Debug enabled (SLOW)..."
+	@mkdir -p build-sync
+	@$(DISTROBOX) $(CMAKE) -B build-sync -DDEBUG_SYNCHRONOUS=ON -G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build build-sync --parallel $(shell nproc)
+
+run-sync: build-sync
+	@./build-sync/app
+
+clean-sync:
+	@echo "Cleaning Sync Debug build..."
+	@rm -rf build-sync
+
 help:
 	@echo "Available targets:"
 	@echo "  all        - Build the project (default)"
@@ -204,6 +234,9 @@ help:
 	@echo "  build-ssbo - Build with SSBO rendering (alternative path)"
 	@echo "  run-ssbo   - Build and run with SSBO rendering"
 	@echo "  clean-ssbo - Clean SSBO-specific build"
+	@echo "  build-sync - Build with Synchronous Debug (SLOW)"
+	@echo "  run-sync   - Build and run with Synchronous Debug"
+	@echo "  clean-sync - Clean Sync Debug build"
 	@echo "  format     - Format code using clang-format"
 	@echo "  lint       - Lint code using clang-tidy"
 	@echo "  deps-setup - Download dependencies for offline build"
@@ -214,4 +247,51 @@ help:
 	@echo "  docker-build - Build the Docker image"
 	@echo "  profile    - Build with optimizations and debug symbols (for profiling)"
 	@echo "  perf       - Build and run Linux 'perf' profiler"
+	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
+	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  help       - Show this help message"
+
+# --- Release Build (Max Speed) ---
+release:
+	@echo "Building for Release (Speed at all costs)..."
+	@mkdir -p $(BUILD_REL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_REL_DIR) \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DENABLE_NATIVE_ARCH=ON \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-DENABLE_UNITY_BUILD=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@echo "Stripping binary..."
+	@$(DISTROBOX) strip --strip-all $(BUILD_REL_DIR)/app
+	@echo "Done. Binary is at $(BUILD_REL_DIR)/app"
+	@du -h $(BUILD_REL_DIR)/app
+
+# --- Debug Release Build (For Segfault Hunting) ---
+debug-release:
+	@echo "Building for Debug Release (Release + Symbols + No Strip)..."
+	@mkdir -p $(BUILD_REL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_REL_DIR) \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DENABLE_NATIVE_ARCH=ON \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-DENABLE_UNITY_BUILD=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@echo "Done. Binary is at $(BUILD_REL_DIR)/app (Not stripped)"
+	@du -h $(BUILD_REL_DIR)/app
+
+# --- Small Build (Min Size) ---
+small:
+	@echo "Building for Size (MinSizeRel)..."
+	@mkdir -p $(BUILD_SMALL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_SMALL_DIR) \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DENABLE_NATIVE_ARCH=OFF \
+		-DENABLE_AGGRESSIVE_MATH=ON \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_SMALL_DIR) --parallel $(shell nproc)
+	@echo "Stripping binary..."
+	@$(DISTROBOX) strip --strip-all $(BUILD_SMALL_DIR)/app
+	@echo "Done. Binary is at $(BUILD_SMALL_DIR)/app"
+	@du -h $(BUILD_SMALL_DIR)/app

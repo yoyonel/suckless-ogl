@@ -85,32 +85,33 @@ void test_app_render_single_frame(void)
 	float diff_percentage =
 	    (float)diff_count / (float)(fb_width * fb_height);
 
+	// Always generate diff map and actual frame for CI visual reporting
+	unsigned char* diff_map = malloc(pixel_data_size);
+	for (size_t i = 0; i < pixel_data_size; i++) {
+		int delta = abs((int)current_pixels[i] - (int)ref_pixels[i]);
+		diff_map[i] = (delta > pixel_tol) ? 255 : 0;
+	}
+
+	// Save diagnostic files (always, for CI visual report)
+	FILE* fdiff = fopen("tests/failed_diff_map.raw", "wb");
+	if (fdiff) {
+		fwrite(diff_map, 1, pixel_data_size, fdiff);
+		fclose(fdiff);
+	}
+
+	FILE* fcur = fopen("tests/failed_frame_actual.raw", "wb");
+	if (fcur) {
+		fwrite(current_pixels, 1, pixel_data_size, fcur);
+		fclose(fcur);
+	}
+
+	free(diff_map);
+
 	if (diff_percentage > 0.00f) {
-		unsigned char* diff_map = malloc(pixel_data_size);
-
-		for (size_t i = 0; i < pixel_data_size; i++) {
-			int delta =
-			    abs((int)current_pixels[i] - (int)ref_pixels[i]);
-			diff_map[i] = (delta > pixel_tol) ? 255 : 0;
-		}
-
-		// Save diagnostic
-		FILE* fdiff = fopen("tests/failed_diff_map.raw", "wb");
-		if (fdiff) {
-			fwrite(diff_map, 1, pixel_data_size, fdiff);
-			fclose(fdiff);
-			printf(
-			    "\n[VISUAL] Regression detected! Diff map saved to "
-			    "tests/failed_diff_map.raw\n");
-		}
-
-		FILE* fcur = fopen("tests/failed_frame_actual.raw", "wb");
-		if (fcur) {
-			fwrite(current_pixels, 1, pixel_data_size, fcur);
-			fclose(fcur);
-		}
-
-		free(diff_map);
+		printf(
+		    "\n[VISUAL] Regression detected! Diff: %.2f%% (saved to "
+		    "tests/failed_diff_map.raw)\n",
+		    diff_percentage * 100.0f);
 	}
 
 	// Allow up to 2% difference for MSAA/driver noise

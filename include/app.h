@@ -1,15 +1,18 @@
 #ifndef APP_H
 #define APP_H
 
+#include "adaptive_sampler.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
+#include "billboard_rendering.h"
 #include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
+#include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
@@ -23,12 +26,21 @@ typedef struct {
 
 	/* Window state for fullscreen toggle */
 	int is_fullscreen;
+	/* Debug Flags */
+	int show_exposure_debug;
+	int pbr_debug_mode; /* 0=None, 1=Albedo, 2=Normal... */
+	int show_imgui_demo;
+	int show_help; /* Debug/Help overlay */
+	int show_info_overlay;
+	int text_overlay_mode; /* 0=Off, 1=FPS+Position, 2=FPS+Position+Envmap,
+	                          3=FPS+Position+Envmap+Exposure */
 	int saved_x, saved_y;
 	int saved_width, saved_height;
 
 	/* Scene state */
 	int subdivisions;
 	int wireframe;
+	int show_envmap;
 
 	// /* Mouse state */
 	int first_mouse; /* First mouse movement flag */
@@ -39,6 +51,9 @@ typedef struct {
 	int camera_enabled; /* Mouse control enabled */
 	Camera camera;
 
+	/* Post-processing */
+	PostProcess postprocess;
+
 	/* Icosphere geometry */
 	IcosphereGeometry geometry;  // CPU side
 	GLuint sphere_vao;           // GPU side
@@ -48,14 +63,20 @@ typedef struct {
 
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group;
-	GLuint pbr_ssbo_shader;
+	Shader* pbr_ssbo_shader;
 #endif
 	/* Instanced rendering */
 	InstancedGroup instanced_group;
-	GLuint pbr_instanced_shader;
+	Shader* pbr_instanced_shader;
+
+	/* Billboard rendering */
+	int billboard_mode;
+	BillboardGroup billboard_group;  // Dedicated group
+	GLuint quad_vbo;
+	Shader* pbr_billboard_shader;
 
 	/* Shaders */
-	GLuint skybox_shader;
+	GLuint skybox_shader; /* Remains GLuint for now (Skybox module) */
 
 	/* Environment mapping (equirectangular) */
 	GLuint hdr_texture;
@@ -66,6 +87,7 @@ typedef struct {
 
 	/* FPS counter */
 	FpsCounter fps_counter;
+	AdaptiveSampler fps_sampler; /* Adaptive Frame Time Sampler */
 	double last_frame_time;
 	double delta_time;
 
@@ -77,7 +99,7 @@ typedef struct {
 	GLuint brdf_lut_tex;
 
 	GLuint empty_vao;
-	GLuint debug_shader;
+	Shader* debug_shader;
 	float debug_lod;
 	int show_debug_tex;
 
@@ -88,6 +110,18 @@ typedef struct {
 	float u_exposure;
 
 	MaterialLib* material_lib;
+
+	/* Dynamic HDR Switching */
+	char** hdr_files;      /* Array of filenames */
+	int hdr_count;         /* Total number of HDR files */
+	int current_hdr_index; /* Index of currently loaded HDR */
+
+	/* Auto-computed threshold for IBL */
+	float auto_threshold; /* Computed mean luminance for exposure */
+
+	/* Async Exposure Readback */
+	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
+	float current_exposure; /* CPU-side cached exposure value */
 
 } App;
 
