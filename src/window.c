@@ -1,5 +1,6 @@
 #include "window.h"
 
+#include "gl_debug.h"
 #include "glad/glad.h"
 #include "log.h"
 #include <GLFW/glfw3.h>
@@ -39,6 +40,9 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 		glfwTerminate();
 		return NULL;
 	}
+
+	/* Initialize OpenGL Debug */
+	setup_opengl_debug();
 
 	/* Log Context Info */
 	int major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);

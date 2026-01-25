@@ -38,6 +38,7 @@ set(SOURCES
     src/effects/fx_auto_exposure.c
     src/effects/fx_motion_blur.c
     src/window.c
+    src/gl_debug.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
