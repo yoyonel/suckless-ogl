@@ -8,6 +8,7 @@ uniform sampler2D screenTexture;
 uniform sampler2D depthTexture;
 
 /* Includes for Post-Process Effects */
+@header "postprocess/ubo.glsl";
 @header "postprocess/defines.glsl";
 @header "postprocess/bloom.glsl";
 @header "postprocess/motion_blur.glsl";
@@ -27,7 +28,7 @@ uniform sampler2D depthTexture;
 void main()
 {
 	/* 1. Priority Debug Check for Motion Blur */
-	if (enableMotionBlurDebug != 0) {
+	if (enableMotionBlurDebug) {
 		vec3 debugColor = applyMotionBlur(TexCoords);
 		FragColor = vec4(debugColor, 1.0);
 		return;
@@ -40,7 +41,7 @@ void main()
 	bool isSkybox = depth >= 0.99999;
 
 	/* 2. Pipeline: Motion Blur -> Chromatic Aberration */
-	if (enableChromAbbr != 0 && !isSkybox) {
+	if (enableChromAbbr && !isSkybox) {
 		/* CA samples "SceneSource" (which calls MB) */
 		color = applyChromAbbr(TexCoords);
 	} else {
@@ -49,7 +50,7 @@ void main()
 	}
 
 	/* 3. Depth of Field */
-	if (enableDoF != 0) {
+	if (enableDoF) {
 		/* applyDoF handles skybox check internally */
 		vec3 dofColor = applyDoF(color, TexCoords);
 
@@ -60,7 +61,7 @@ void main()
 	}
 
 	/* 4. Bloom */
-	if (enableBloom != 0) {
+	if (enableBloom) {
 		color = applyBloom(color);
 	}
 
@@ -69,25 +70,17 @@ void main()
 	color *= finalExposure;
 
 	/* 6. Color Grading & White Balance */
-	if (enableColorGrading != 0) {
+	if (enableColorGrading) {
 		/* apply_color_grading handles WB internally in our new module
 		 */
 		color = apply_color_grading(color);
 	}
-	/* Note: if color grading is disabled, we might skip WB?
-	   Original code had separate check for WB but apply_color_grading
-	   combined them. Let's check original logic: Original: if
-	   (enableColorGrading != 0) applyWhiteBalance(color) if
-	   (enableColorGrading != 0) apply_color_grading(color) So effectively
-	   WB is only applied if ColorGrading is ON. My new module combines
-	   them, so calling apply_color_grading is correct.
-	*/
 
 	/* 7. Tonemapping */
 	color = unrealTonemap(color);
 
 	/* 8. Vignette */
-	if (enableVignette != 0) {
+	if (enableVignette) {
 		color = applyVignette(color, TexCoords);
 	}
 
@@ -95,7 +88,7 @@ void main()
 	color = pow(color, vec3(1.0 / 2.2));
 
 	/* 10. Grain */
-	if (enableGrain != 0) {
+	if (enableGrain) {
 		color = applyGrain(color, TexCoords);
 	}
 

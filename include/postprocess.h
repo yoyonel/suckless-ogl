@@ -117,6 +117,79 @@ typedef struct {
 
 #define BLOOM_MIP_LEVELS 5
 
+/**
+ * @brief Uniform Buffer Object structure for post-processing settings.
+ * Aligned for std140 layout in GLSL.
+ */
+typedef struct {
+	uint32_t active_effects;
+	float time;
+	float _pad0[2];
+
+	/* Vignette */
+	float vignette_intensity;
+	float vignette_smoothness;
+	float vignette_roundness;
+	float _pad1;
+
+	/* Grain */
+	float grain_intensity;
+	float grain_intensity_shadows;
+	float grain_intensity_midtones;
+	float grain_intensity_highlights;
+	float grain_shadows_max;
+	float grain_highlights_min;
+	float grain_texel_size;
+	float _pad2;
+
+	/* Exposure */
+	float exposure_manual;
+	float _pad3[3];
+
+	/* Chrom Abbr */
+	float chrom_abbr_strength;
+	float _pad4[3];
+
+	/* White Balance */
+	float wb_temperature;
+	float wb_tint;
+	float _pad5[2];
+
+	/* Color Grading */
+	float grading_saturation;
+	float grading_contrast;
+	float grading_gamma;
+	float grading_gain;
+	float grading_offset;
+	float _pad6[3];
+
+	/* Tonemapper */
+	float tonemap_slope;
+	float tonemap_toe;
+	float tonemap_shoulder;
+	float tonemap_black_clip;
+	float tonemap_white_clip;
+	float _pad7[3];
+
+	/* Bloom */
+	float bloom_intensity;
+	float bloom_threshold;
+	float bloom_soft_threshold;
+	float bloom_radius;
+
+	/* DoF */
+	float dof_focal_distance;
+	float dof_focal_range;
+	float dof_bokeh_scale;
+	float _pad8;
+
+	/* Motion Blur */
+	float mb_intensity;
+	float mb_max_velocity;
+	int32_t mb_samples;
+	float _pad9;
+} PostProcessUBO;
+
 /* Structure principale du système de post-processing */
 typedef struct PostProcess {
 	/* FBO principal et textures */
@@ -140,6 +213,9 @@ typedef struct PostProcess {
 	/* Quad plein écran */
 	GLuint screen_quad_vao;
 	GLuint screen_quad_vbo;
+
+	/* UBO for settings */
+	GLuint settings_ubo;
 
 	/* Shaders */
 	Shader* postprocess_shader;  /* Shader combinant tous les effets */

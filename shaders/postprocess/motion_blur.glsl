@@ -1,14 +1,4 @@
-/* Paramètres Motion Blur */
 uniform sampler2D velocityTexture;
-struct MotionBlurParams {
-	float intensity;
-	float maxVelocity;
-	int samples;
-};
-uniform MotionBlurParams motionBlur;
-uniform int enableMotionBlur;
-uniform int enableMotionBlurDebug;
-
 uniform sampler2D neighborMaxTexture;
 
 /* ============================================================================
@@ -23,23 +13,23 @@ vec3 applyMotionBlur(vec2 uv)
 	vec2 velocity = texture(velocityTexture, uv).rg;
 
 	/* Debug Visualization (Early Exit) */
-	if (enableMotionBlurDebug != 0) {
+	if (enableMotionBlurDebug) {
 		return vec3(abs(velocity.x) * 20.0, abs(velocity.y) * 20.0,
 		            0.0);
 	}
 
-	velocity *= motionBlur.intensity;
+	velocity *= mb_intensity;
 
 	/* Clamp main velocity */
 	float speed = length(velocity);
-	if (speed > motionBlur.maxVelocity) {
-		velocity = normalize(velocity) * motionBlur.maxVelocity;
-		speed = motionBlur.maxVelocity;
+	if (speed > mb_maxVelocity) {
+		velocity = normalize(velocity) * mb_maxVelocity;
+		speed = mb_maxVelocity;
 	}
 
 	/* 2. Get Neighbor Max Velocity */
 	vec2 maxNeighborVelocity =
-	    texture(neighborMaxTexture, uv).rg * motionBlur.intensity;
+	    texture(neighborMaxTexture, uv).rg * mb_intensity;
 	float maxNeighborSpeed = length(maxNeighborVelocity);
 
 	/* Fetch Center Color (Raw) */
@@ -59,7 +49,7 @@ vec3 applyMotionBlur(vec2 uv)
 	vec3 acc = centerColor;
 	float totalWeight = 1.0;
 
-	int samples = motionBlur.samples;
+	int samples = mb_samples;
 
 	for (int i = 0; i < samples; ++i) {
 		if (i == samples / 2)
@@ -96,7 +86,7 @@ vec3 applyMotionBlur(vec2 uv)
 /* Wrapper to get "Scene Color" (Blurred or Raw) for CA to sample */
 vec3 getSceneSource(vec2 uv)
 {
-	if (enableMotionBlur != 0) {
+	if (enableMotionBlur) {
 		return applyMotionBlur(uv);
 	}
 	return texture(screenTexture, uv).rgb;

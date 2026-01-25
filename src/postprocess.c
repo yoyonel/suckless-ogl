@@ -133,6 +133,14 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->postprocess_shader =
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
 
+	/* Initialize UBO */
+	glGenBuffers(1, &post_processing->settings_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(PostProcessUBO), NULL,
+	             GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, post_processing->settings_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 	if (!fx_auto_exposure_init(post_processing)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create auto exposure resources");
@@ -345,76 +353,6 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->dof = preset->dof;
 }
 
-static void upload_vignette_params(Shader* shader, const VignetteParams* params)
-{
-	shader_set_float(shader, "vignette.intensity", params->intensity);
-	shader_set_float(shader, "vignette.smoothness", params->smoothness);
-	shader_set_float(shader, "vignette.roundness", params->roundness);
-}
-
-static void upload_grain_params(Shader* shader, const GrainParams* params,
-                                float time)
-{
-	shader_set_float(shader, "grain.intensity", params->intensity);
-	shader_set_float(shader, "grain.intensityShadows",
-	                 params->intensity_shadows);
-	shader_set_float(shader, "grain.intensityMidtones",
-	                 params->intensity_midtones);
-	shader_set_float(shader, "grain.intensityHighlights",
-	                 params->intensity_highlights);
-	shader_set_float(shader, "grain.shadowsMax", params->shadows_max);
-	shader_set_float(shader, "grain.highlightsMin", params->highlights_min);
-	shader_set_float(shader, "grain.texelSize", params->texel_size);
-	shader_set_float(shader, "time", time);
-}
-
-static void upload_exposure_params(Shader* shader, const ExposureParams* params)
-{
-	shader_set_float(shader, "exposure.exposure", params->exposure);
-}
-
-static void upload_chrom_abbr_params(Shader* shader,
-                                     const ChromAbberationParams* params)
-{
-	shader_set_float(shader, "chromAbbr.strength", params->strength);
-}
-
-static void upload_bloom_params(Shader* shader, const BloomParams* params)
-{
-	fx_bloom_upload_params(shader, params);
-}
-
-static void upload_dof_params(Shader* shader, const DoFParams* params)
-{
-	fx_dof_upload_params(shader, params);
-}
-
-static void upload_grading_params(Shader* shader,
-                                  const ColorGradingParams* params)
-{
-	shader_set_float(shader, "grad.saturation", params->saturation);
-	shader_set_float(shader, "grad.contrast", params->contrast);
-	shader_set_float(shader, "grad.gamma", params->gamma);
-	shader_set_float(shader, "grad.gain", params->gain);
-	shader_set_float(shader, "grad.offset", params->offset);
-}
-
-static void upload_white_balance_params(Shader* shader,
-                                        const WhiteBalanceParams* params)
-{
-	shader_set_float(shader, "wb.temperature", params->temperature);
-	shader_set_float(shader, "wb.tint", params->tint);
-}
-
-static void upload_tonemap_params(Shader* shader, const TonemapParams* params)
-{
-	shader_set_float(shader, "tonemap.slope", params->slope);
-	shader_set_float(shader, "tonemap.toe", params->toe);
-	shader_set_float(shader, "tonemap.shoulder", params->shoulder);
-	shader_set_float(shader, "tonemap.blackClip", params->black_clip);
-	shader_set_float(shader, "tonemap.whiteClip", params->white_clip);
-}
-
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
@@ -506,72 +444,59 @@ void postprocess_end(PostProcess* post_processing)
 	shader_set_int(post_processing->postprocess_shader, "dofBlurTexture",
 	               POSTPROCESS_TEX_UNIT_DOF_BLUR);
 
-	/* Envoyer les flags d'effets actifs */
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableVignette",
-	    postprocess_is_enabled(post_processing, POSTFX_VIGNETTE));
-	shader_set_int(post_processing->postprocess_shader, "enableGrain",
-	               postprocess_is_enabled(post_processing, POSTFX_GRAIN));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableExposure",
-	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableAutoExposure",
-	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableChromAbbr",
-	    postprocess_is_enabled(post_processing, POSTFX_CHROM_ABBR));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableColorGrading",
-	    postprocess_is_enabled(post_processing, POSTFX_COLOR_GRADING));
-	shader_set_int(post_processing->postprocess_shader, "enableBloom",
-	               postprocess_is_enabled(post_processing, POSTFX_BLOOM));
+	/* Upload settings via UBO */
+	PostProcessUBO ubo = {0};
+	ubo.active_effects = post_processing->active_effects;
+	ubo.time = post_processing->time;
 
-	/* Motion Blur Flags & Uniforms */
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableMotionBlur",
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableMotionBlurDebug",
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG));
+	ubo.vignette_intensity = post_processing->vignette.intensity;
+	ubo.vignette_smoothness = post_processing->vignette.smoothness;
+	ubo.vignette_roundness = post_processing->vignette.roundness;
 
-	fx_motion_blur_upload_params(post_processing->postprocess_shader,
-	                             &post_processing->motion_blur);
+	ubo.grain_intensity = post_processing->grain.intensity;
+	ubo.grain_intensity_shadows = post_processing->grain.intensity_shadows;
+	ubo.grain_intensity_midtones =
+	    post_processing->grain.intensity_midtones;
+	ubo.grain_intensity_highlights =
+	    post_processing->grain.intensity_highlights;
+	ubo.grain_shadows_max = post_processing->grain.shadows_max;
+	ubo.grain_highlights_min = post_processing->grain.highlights_min;
+	ubo.grain_texel_size = post_processing->grain.texel_size;
 
-	/* DoF Flags */
-	shader_set_int(post_processing->postprocess_shader, "enableDoF",
-	               postprocess_is_enabled(post_processing, POSTFX_DOF));
-	shader_set_int(
-	    post_processing->postprocess_shader, "enableDoFDebug",
-	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG));
+	ubo.exposure_manual = post_processing->exposure.exposure;
+	ubo.chrom_abbr_strength = post_processing->chrom_abbr.strength;
 
-	/* Envoyer les paramètres via helpers (High Habitability) */
-	upload_vignette_params(post_processing->postprocess_shader,
-	                       &post_processing->vignette);
+	ubo.wb_temperature = post_processing->white_balance.temperature;
+	ubo.wb_tint = post_processing->white_balance.tint;
 
-	upload_grain_params(post_processing->postprocess_shader,
-	                    &post_processing->grain, post_processing->time);
+	ubo.grading_saturation = post_processing->color_grading.saturation;
+	ubo.grading_contrast = post_processing->color_grading.contrast;
+	ubo.grading_gamma = post_processing->color_grading.gamma;
+	ubo.grading_gain = post_processing->color_grading.gain;
+	ubo.grading_offset = post_processing->color_grading.offset;
 
-	upload_exposure_params(post_processing->postprocess_shader,
-	                       &post_processing->exposure);
+	ubo.tonemap_slope = post_processing->tonemapper.slope;
+	ubo.tonemap_toe = post_processing->tonemapper.toe;
+	ubo.tonemap_shoulder = post_processing->tonemapper.shoulder;
+	ubo.tonemap_black_clip = post_processing->tonemapper.black_clip;
+	ubo.tonemap_white_clip = post_processing->tonemapper.white_clip;
 
-	upload_chrom_abbr_params(post_processing->postprocess_shader,
-	                         &post_processing->chrom_abbr);
+	ubo.bloom_intensity = post_processing->bloom.intensity;
+	ubo.bloom_threshold = post_processing->bloom.threshold;
+	ubo.bloom_soft_threshold = post_processing->bloom.soft_threshold;
+	ubo.bloom_radius = post_processing->bloom.radius;
 
-	upload_bloom_params(post_processing->postprocess_shader,
-	                    &post_processing->bloom);
+	ubo.dof_focal_distance = post_processing->dof.focal_distance;
+	ubo.dof_focal_range = post_processing->dof.focal_range;
+	ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
 
-	upload_dof_params(post_processing->postprocess_shader,
-	                  &post_processing->dof);
+	ubo.mb_intensity = post_processing->motion_blur.intensity;
+	ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
+	ubo.mb_samples = post_processing->motion_blur.samples;
 
-	upload_grading_params(post_processing->postprocess_shader,
-	                      &post_processing->color_grading);
-
-	upload_white_balance_params(post_processing->postprocess_shader,
-	                            &post_processing->white_balance);
-
-	upload_tonemap_params(post_processing->postprocess_shader,
-	                      &post_processing->tonemapper);
+	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO), &ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	/* Dessiner le quad */
 	glBindVertexArray(post_processing->screen_quad_vao);

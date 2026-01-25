@@ -1,13 +1,3 @@
-/* Paramètres Vignette */
-uniform int enableVignette;
-
-struct VignetteParams {
-	float intensity;
-	float smoothness;
-	float roundness;
-};
-uniform VignetteParams vignette;
-
 /* ============================================================================
    EFFECT: VIGNETTE (Rounded Rect / Polynomial Falloff)
    ============================================================================
@@ -34,7 +24,7 @@ float sdRoundedBox(vec2 p, vec2 b, float r)
 
 vec3 applyVignette(vec3 color, vec2 uv)
 {
-	if (enableVignette == 0)
+	if (!enableVignette)
 		return color;
 
 	/* Center UVs: (-1 to 1) */
@@ -83,7 +73,7 @@ vec3 applyVignette(vec3 color, vec2 uv)
 
 	/* Blend distance metrics based on roundness */
 	/* Roundness 1.0 = Circle, 0.0 = Rect */
-	float dist = mix(dist_rect, dist_circle, vignette.roundness);
+	float dist = mix(dist_rect, dist_circle, v_roundness);
 
 	/*
 	 * Falloff calculation
@@ -102,7 +92,7 @@ vec3 applyVignette(vec3 color, vec2 uv)
 	 * corners/edges inwards */
 	/* Outer edge is at dist = 1.0 (approx, depends on aspect/roundness) */
 
-	float softness = clamp(vignette.smoothness, 0.05, 1.0);
+	float softness = clamp(v_smoothness, 0.05, 1.0);
 
 	/*
 	 * Invert dist so 1 is center, 0 is edge? No, standard vignette is dark
@@ -128,7 +118,7 @@ vec3 applyVignette(vec3 color, vec2 uv)
 	/* Apply Intensity: Mix between 1.0 (no vignette) and Factor */
 	/* Actually intensity usually means "how dark is the darkness" */
 
-	float final_mask = mix(1.0, factor, vignette.intensity);
+	float final_mask = mix(1.0, factor, v_intensity);
 
 	return color * final_mask;
 }

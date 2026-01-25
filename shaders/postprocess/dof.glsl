@@ -1,13 +1,3 @@
-/* Paramètres DoF */
-uniform int enableDoF;      /* Flag d'activation DoF */
-uniform int enableDoFDebug; /* Flag de debug DoF */
-struct DoFParams {
-	float focalDistance;
-	float focalRange;
-	float bokehScale;
-};
-uniform DoFParams dof;
-
 /* Texture floutée (1/2 res, 13-tap filter) */
 uniform sampler2D dofBlurTexture;
 
@@ -32,17 +22,17 @@ vec3 applyDoF(vec3 color, vec2 uv)
 	float dist =
 	    (2.0 * zNear * zFar) / (zFar + zNear - z_ndc * (zFar - zNear));
 
-	float coc = abs(dist - dof.focalDistance) / (dist + 0.0001);
+	float coc = abs(dist - d_focalDistance) / (dist + 0.0001);
 
 	/* Apply focal range (in-focus zone) */
 	float blurFactor = 0.0;
-	if (dist > dof.focalDistance - dof.focalRange &&
-	    dist < dof.focalDistance + dof.focalRange) {
+	if (dist > d_focalDistance - d_focalRange &&
+	    dist < d_focalDistance + d_focalRange) {
 		blurFactor = 0.0;
 	} else {
 		/* Smooth transition at edges of focal range */
-		float edge = dof.focalRange;
-		float distDiff = abs(dist - dof.focalDistance);
+		float edge = d_focalRange;
+		float distDiff = abs(dist - d_focalDistance);
 		if (distDiff < edge + 5.0) {
 			blurFactor = (distDiff - edge) / 5.0;
 		} else {
@@ -50,7 +40,7 @@ vec3 applyDoF(vec3 color, vec2 uv)
 		}
 	}
 
-	blurFactor *= clamp(coc * dof.bokehScale, 0.0, 1.0);
+	blurFactor *= clamp(coc * d_bokehScale, 0.0, 1.0);
 	blurFactor = clamp(blurFactor, 0.0, 1.0);
 
 	/* OPTIMIZED: Mix with pre-blurred texture instead of real-time sampling
@@ -61,11 +51,11 @@ vec3 applyDoF(vec3 color, vec2 uv)
 	}
 
 	/* Debug visualization */
-	if (enableDoFDebug != 0) {
+	if (enableDoFDebug) {
 		vec3 debugColor = vec3(0.0);
-		if (dist < dof.focalDistance && blurFactor > 0.0)
+		if (dist < d_focalDistance && blurFactor > 0.0)
 			debugColor = vec3(0.0, blurFactor, 0.0);
-		else if (dist > dof.focalDistance && blurFactor > 0.0)
+		else if (dist > d_focalDistance && blurFactor > 0.0)
 			debugColor = vec3(0.0, 0.0, blurFactor);
 		return debugColor;
 	}
