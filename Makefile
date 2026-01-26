@@ -55,6 +55,12 @@ rebuild: clean-all all
 run: all
 	@./$(BUILD_DIR)/app
 
+run-release: release
+	@./$(BUILD_REL_DIR)/app
+
+run-small: small
+	@./$(BUILD_SMALL_DIR)/app
+
 run-software: all
 	LIBGL_ALWAYS_SOFTWARE=1 ./$(BUILD_DIR)/app
 
@@ -231,6 +237,8 @@ help:
 	@echo "  clean-all  - Completely remove the build directory"
 	@echo "  rebuild    - Full clean and rebuild from scratch"
 	@echo "  run        - Build and run the application"
+	@echo "  run-release - Build and run the application in release mode"
+	@echo "  run-small   - Build and run the application in small mode"
 	@echo "  build-ssbo - Build with SSBO rendering (alternative path)"
 	@echo "  run-ssbo   - Build and run with SSBO rendering"
 	@echo "  clean-ssbo - Clean SSBO-specific build"

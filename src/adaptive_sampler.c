@@ -100,8 +100,8 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 	}
 
 	/* EMA Update */
-	sampler->avg_dt = sampler->alpha * delta_time +
-	                  (1.0F - sampler->alpha) * sampler->avg_dt;
+	sampler->avg_dt = (sampler->alpha * delta_time) +
+	                  ((1.0F - sampler->alpha) * sampler->avg_dt);
 
 	double elapsed = current_time - sampler->window_start_time;
 
