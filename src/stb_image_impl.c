@@ -3,3 +3,6 @@
 
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <stb_truetype.h>
+
+#undef STB_IMAGE_IMPLEMENTATION
+#undef STB_TRUETYPE_IMPLEMENTATION

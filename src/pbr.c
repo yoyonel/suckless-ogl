@@ -31,6 +31,12 @@ GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height,
 	GLuint shader = shader_load_compute("shaders/IBL/spmap.glsl");
 	glUseProgram(shader);
 
+	/* Explicitly set envMap sampler to unit 0 (fix for Intel/Mesa) */
+	GLint u_env_map = glGetUniformLocation(shader, "envMap");
+	if (u_env_map >= 0) {
+		glUniform1i(u_env_map, 0);
+	}
+
 	for (int level = 0; level < levels; level++) {
 		// Utilisation de uint32_t pour éviter les warnings sur les
 		// bitwise
@@ -63,7 +69,7 @@ GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height,
 		                    COMPUTE_GROUP_SIZE_PBR;
 
 		glDispatchCompute(groups_x, groups_y, 1);
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 		LOG_INFO("IBL", "Prefiltered level %d (%ux%u) roughness %.2f",
 		         level, mip_w, mip_h, roughness);

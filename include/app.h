@@ -15,7 +15,6 @@
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
-#include "texture.h"
 #include "ui.h"
 #include <cglm/cglm.h>
 
@@ -134,6 +133,7 @@ void app_run(App* app);
 
 /* Rendering */
 void app_render(App* app);
+void app_update(App* app);
 void app_update_gpu_buffers(App* app);
 #ifdef USE_SSBO_RENDERING
 void app_init_ssbo(App* app);
