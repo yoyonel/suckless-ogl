@@ -72,7 +72,7 @@ void test_postprocess_defaults(void)
 	PostProcess pp = {0};
 	postprocess_init(&pp, 100, 100, 4);
 
-	TEST_ASSERT_EQUAL(0, pp.active_effects);
+	TEST_ASSERT_EQUAL(POSTFX_FXAA, pp.active_effects);
 	TEST_ASSERT_FLOAT_WITHIN(1e-5, DEFAULT_EXPOSURE, pp.exposure.exposure);
 	TEST_ASSERT_FLOAT_WITHIN(1e-5, DEFAULT_VIGNETTE_INTENSITY,
 	                         pp.vignette.intensity);

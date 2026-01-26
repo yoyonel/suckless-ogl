@@ -104,8 +104,14 @@ int postprocess_init(PostProcess* post_processing, int width, int height,
 		/* On continue quand même */
 	}
 
-	/* Effets désactivés par défaut */
+	/* Effets désactivés par défaut (sauf FXAA) */
 	post_processing->active_effects = 0;
+	post_processing->enable_fxaa = 1;
+	post_processing->fxaa.subpix = DEFAULT_FXAA_SUBPIX;
+	post_processing->fxaa.edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD;
+	post_processing->fxaa.edge_threshold_min =
+	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
+	postprocess_enable(post_processing, POSTFX_FXAA);
 
 	/* Créer le framebuffer */
 	if (!create_framebuffer(post_processing)) {
@@ -537,6 +543,10 @@ void postprocess_end(PostProcess* post_processing)
 	ubo.mb_intensity = post_processing->motion_blur.intensity;
 	ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
 	ubo.mb_samples = post_processing->motion_blur.samples;
+
+	ubo.fxaa_subpix = post_processing->fxaa.subpix;
+	ubo.fxaa_edge_threshold = post_processing->fxaa.edge_threshold;
+	ubo.fxaa_edge_threshold_min = post_processing->fxaa.edge_threshold_min;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO), &ubo);

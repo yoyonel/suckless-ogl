@@ -137,8 +137,9 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
 	/* Enable Multisample & Alpha-to-Coverage for Raytraced Billboards */
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	/* FXAA replaces MSAA for performance. */
+	// glEnable(GL_MULTISAMPLE);
+	// glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
 	/* Scan & Load HDR Environment */
 	environment_init(&app->env);
@@ -1423,6 +1424,28 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				LOG_INFO("suckless-ogl.app",
 				         "Billboard Mode: %s",
 				         app->billboard_mode ? "ON" : "OFF");
+				break;
+			case GLFW_KEY_X:
+				if (mods & GLFW_MOD_SHIFT) {
+					postprocess_toggle(&app->postprocess,
+					                   POSTFX_FXAA_DEBUG);
+					LOG_INFO("suckless-ogl.app",
+					         "FXAA Debug: %s",
+					         postprocess_is_enabled(
+					             &app->postprocess,
+					             POSTFX_FXAA_DEBUG)
+					             ? "ON"
+					             : "OFF");
+				} else {
+					postprocess_toggle(&app->postprocess,
+					                   POSTFX_FXAA);
+					LOG_INFO(
+					    "suckless-ogl.app", "FXAA: %s",
+					    postprocess_is_enabled(
+					        &app->postprocess, POSTFX_FXAA)
+					        ? "ON"
+					        : "OFF");
+				}
 				break;
 			case GLFW_KEY_K:
 				app->show_envmap = !app->show_envmap;
