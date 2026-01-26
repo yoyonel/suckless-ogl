@@ -33,25 +33,12 @@ void main()
 	float scaleZ = length(vec3(i_model[2]));
 	float maxScale = max(scaleX, max(scaleY, scaleZ));
 
-	SphereRadius = maxScale * 0.5;  // Model is usually diameter 1 or radius
-	                                // 1? Icosphere is radius 1?
-	// Let's check icosphere generation. It uses radius 1. So if model scale
-	// is 1, radius is 1. Since we want diameter 1 to be scale 1 usually,
-	// wait. Icosphere vertices are on unit circle (~1.0). So radius is 1.0.
-	// If I scale by 1.0, the object is radius 1.0.
-	// Wait, typical "unit sphere" is radius 1 or radius 0.5 (diameter 1)?
-	// The existing code uses radius 1.0 (X=0.52... Z=0.85...). distance is
-	// sqrt(0.52^2 + 0.85^2) ~= 1. So existing spheres have Radius = Scale.
-
 	SphereRadius = maxScale;
 	SphereCenter = vec3(i_model[3]);
 
 	// Billboard calculation
 	// We want the quad to always face the camera, but centered at
-	// SphereCenter. Standard billboard technique: Camera Right =
-	// vec3(view[0][0], view[1][0], view[2][0]) Camera Up    =
-	// vec3(view[0][1], view[1][1], view[2][1])
-
+	// SphereCenter. Standard billboard technique:
 	vec3 camRight = vec3(view[0][0], view[1][0], view[2][0]);
 	vec3 camUp = vec3(view[0][1], view[1][1], view[2][1]);
 
@@ -63,9 +50,9 @@ void main()
 	// in range [-0.5, 0.5], sides are length 1.0. So we multiply by
 	// SphereRadius * 2.0.
 
-	// Add a small padding (1.5x) to ensure the quad covers the sphere even
+	// Add a small padding (1.6x) to ensure the quad covers the sphere even
 	// in perspective projection and to avoid harsh clipping at the edges.
-	float quadSize = SphereRadius * 2.0 * 1.5;
+	float quadSize = SphereRadius * 2.0 * 1.6;
 
 	WorldPos = SphereCenter + camRight * in_position.x * quadSize +
 	           camUp * in_position.y * quadSize;
