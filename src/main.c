@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "app.h"
+#include "gl_common.h"
 #include "log.h"
 #include <stdlib.h>
 

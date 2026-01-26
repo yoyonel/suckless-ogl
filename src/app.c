@@ -4,17 +4,19 @@
 #include "app_settings.h"
 #include "billboard_rendering.h"
 #include "fps.h"
+#include "gl_common.h"
 #include "glad/glad.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include <stb_image.h>
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
+#include "async_loader.h"
 #include "camera.h"
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
-#include "perf_timer.h"
 #include "postprocess.h"
 #include "postprocess_presets.h"
 #include "shader.h"
@@ -67,7 +69,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width,
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
 static void app_save_raw_frame(App* app, const char* filename);
 static void app_scan_hdr_files(App* app);
-static int app_load_env_map(App* app, const char* filename);
+static int app_load_env_map(const char* filename);
 static void app_draw_help_overlay(App* app);
 static void app_draw_debug_overlay(App* app);
 static void draw_exposure_debug_text(App* app);
@@ -120,76 +122,25 @@ static void app_scan_hdr_files(App* app)
 	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
 }
 
-static int app_load_env_map(App* app, const char* filename)
+static int app_load_env_map(const char* filename)
 {
 	char path[MAX_PATH_LENGTH];
 	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
 	                    filename);
 
-	int hdr_w = 0;
-	int hdr_h = 0;
-
-	/* Cleanup old textures if simple reload */
-	if (app->hdr_texture) {
-		glDeleteTextures(1, &app->hdr_texture);
+	LOG_INFO("suckless-ogl.app", "Queuing async load for: %s", path);
+	if (async_loader_request(path)) {
+		return 1;
 	}
-	if (app->spec_prefiltered_tex) {
-		glDeleteTextures(1, &app->spec_prefiltered_tex);
-	}
-	if (app->irradiance_tex) {
-		glDeleteTextures(1, &app->irradiance_tex);
-	}
-
-	PERF_MEASURE_LOG("Asset Loading Time (CPU + Upload)")
-	{
-		app->hdr_texture = texture_load_hdr(path, &hdr_w, &hdr_h);
-	}
-	if (!app->hdr_texture) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load HDR texture: %s",
-		          path);
-		return 0;
-	}
-
-	float auto_threshold = compute_mean_luminance_gpu(
-	    app->hdr_texture, hdr_w, hdr_h, DEFAULT_CLAMP_MULTIPLIER);
-	LOG_INFO("suckless-ogl.ibl",
-	         "Auto threshold from compute_mean_luminance_gpu: %.2f",
-	         auto_threshold);
-	if (auto_threshold < 1.0F || isnan(auto_threshold) ||
-	    isinf(auto_threshold)) {
-		auto_threshold = DEFAULT_AUTO_THRESHOLD;
-		LOG_WARN("suckless-ogl.ibl",
-		         "Invalid auto_threshold detected. Using default: %.2f",
-		         auto_threshold);
-	}
-
-	/* Store for later use in preset resets */
-	app->auto_threshold = auto_threshold;
-
-	PERF_MEASURE_LOG("Prefiltered Map Generation")
-	{
-		app->spec_prefiltered_tex = build_prefiltered_specular_map(
-		    app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
-		    PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
-	}
-
-	PERF_MEASURE_LOG("Irradiance Map Generation")
-	{
-		app->irradiance_tex = build_irradiance_map(
-		    app->hdr_texture, IRIDIANCE_MAP_SIZE, auto_threshold);
-	}
-
-	LOG_INFO("suckless-ogl.app", "Loaded Environment: %s (Thresh: %.2f)",
-	         filename, auto_threshold);
-
-	/* Update postprocess exposure to match new environment */
-	postprocess_set_exposure(&app->postprocess, auto_threshold);
-
-	return 1;
+	LOG_WARN("suckless-ogl.app",
+	         "Async load request failed/ignored for: %s", path);
+	return 0;
 }
 
 int app_init(App* app, int width, int height, const char* title)
 {
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)memset(app, 0, sizeof(App));
 	app->width = width;
 	app->height = height;
 	app->subdivisions = INITIAL_SUBDIVISIONS;
@@ -263,6 +214,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app->brdf_lut_tex =
 	    build_brdf_lut_map(BRDF_LUT_MAP_SIZE); /* BRDF is constant */
 
+	async_loader_init();
+
 	app_scan_hdr_files(app);
 	if (app->hdr_count > 0) {
 		/* Try to find 'env.hdr' as default, otherwise pick first */
@@ -274,7 +227,7 @@ int app_init(App* app, int width, int height, const char* title)
 			}
 		}
 		app->current_hdr_index = default_idx;
-		app_load_env_map(app, app->hdr_files[default_idx]);
+		app_load_env_map(app->hdr_files[default_idx]);
 	} else {
 		LOG_ERROR("suckless-ogl.init",
 		          "No HDR files found in assets/textures/hdr/!");
@@ -644,6 +597,8 @@ void app_cleanup(App* app)
 	postprocess_cleanup(&app->postprocess);
 	adaptive_sampler_cleanup(&app->fps_sampler);
 
+	async_loader_shutdown();
+
 	window_destroy(app->window);
 }
 
@@ -719,8 +674,65 @@ void app_run(App* app)
 
 		app_render(app);
 
+		app_update(app);
+
 		glfwSwapBuffers(app->window);
 		glfwPollEvents();
+	}
+}
+
+void app_update(App* app)
+{
+	AsyncRequest req;
+	if (async_loader_poll(&req)) {
+		LOG_INFO("suckless-ogl.app", "Async load completed for: %s",
+		         req.path);
+
+		/* 1. Upload to GPU */
+		GLuint new_hdr_tex =
+		    texture_upload_hdr(req.data, req.width, req.height);
+		stbi_image_free(req.data); /* We own the data from async
+		                              loader now */
+
+		if (new_hdr_tex) {
+			/* 2. Replace old texture */
+			if (app->hdr_texture) {
+				glDeleteTextures(1, &app->hdr_texture);
+			}
+			app->hdr_texture = new_hdr_tex;
+
+			/* 3. Re-run generation pipeline */
+			if (app->spec_prefiltered_tex) {
+				glDeleteTextures(1, &app->spec_prefiltered_tex);
+			}
+			if (app->irradiance_tex) {
+				glDeleteTextures(1, &app->irradiance_tex);
+			}
+
+			float auto_threshold = compute_mean_luminance_gpu(
+			    app->hdr_texture, req.width, req.height,
+			    DEFAULT_CLAMP_MULTIPLIER);
+
+			if (auto_threshold < 1.0F || isnan(auto_threshold) ||
+			    isinf(auto_threshold)) {
+				auto_threshold = DEFAULT_AUTO_THRESHOLD;
+			}
+			app->auto_threshold = auto_threshold;
+
+			app->spec_prefiltered_tex =
+			    build_prefiltered_specular_map(
+			        app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
+			        PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
+
+			app->irradiance_tex = build_irradiance_map(
+			    app->hdr_texture, IRIDIANCE_MAP_SIZE,
+			    auto_threshold);
+
+			postprocess_set_exposure(&app->postprocess,
+			                         auto_threshold);
+			LOG_INFO("suckless-ogl.app",
+			         "Environment updated successfully.");
+		}
 	}
 }
 
@@ -1442,7 +1454,7 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			app->current_hdr_index =
 			    (app->current_hdr_index + 1) % app->hdr_count;
 			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
+			    app->hdr_files[app->current_hdr_index]);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
@@ -1453,13 +1465,12 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->env_lod);
 		} else if (app->hdr_count > 1) {
-			/* Previous Environment */
 			app->current_hdr_index--;
 			if (app->current_hdr_index < 0) {
 				app->current_hdr_index = app->hdr_count - 1;
 			}
 			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
+			    app->hdr_files[app->current_hdr_index]);
 		}
 	}
 }
@@ -1481,7 +1492,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 				static const char* mode_names[] = {
 				    "Off", "FPS + Position",
 				    "FPS + Position + Envmap",
-				    "FPS + Position + Envmap + Exposure"};
+				    "FPS + Position + Envmap + ", "Exposure"};
 				static const int mode_count =
 				    sizeof(mode_names) / sizeof(mode_names[0]);
 

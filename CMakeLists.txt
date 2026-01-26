@@ -29,6 +29,7 @@ set(SOURCES
     src/shader.c
     src/texture.c
     src/skybox.c
+    src/async_loader.c
     src/log.c
     src/stb_image_impl.c
     src/fps.c
@@ -211,6 +212,7 @@ target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
 target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
 
 # Link avec la version statique de cJSON
+find_package(Threads REQUIRED)
 target_link_libraries(app PRIVATE
     cglm
     glad
@@ -218,6 +220,7 @@ target_link_libraries(app PRIVATE
     ${GLFW3_LIBRARIES}
     m
     dl
+    Threads::Threads
 )
 
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)

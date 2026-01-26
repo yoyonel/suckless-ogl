@@ -2,6 +2,9 @@
 #include "main.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 // Instance App partagée entre tous les tests
 static App g_test_app;
@@ -35,6 +38,20 @@ void test_app_render_single_frame(void)
 	int fb_width, fb_height;
 	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
 	printf("Resolution: %dx%d\n", fb_width, fb_height);
+
+	// Wait for async load to complete
+	printf("Waiting for async HDR load...\n");
+	int timeout = 1000;  // 10s approximately (100 * 100ms) -- wait, no loop
+	                     // sleep here, just yield
+	while (g_test_app.hdr_texture == 0 && timeout-- > 0) {
+		app_update(&g_test_app);
+		glfwPollEvents();
+		struct timespec req = {0, 10000000};  // 10ms
+		nanosleep(&req, NULL);
+	}
+	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.hdr_texture,
+	                              "HDR texture never loaded");
+	printf("HDR Load completed.\n");
 
 	// Generate geometry and render
 	icosphere_generate(&g_test_app.geometry, g_test_app.subdivisions);
