@@ -10,6 +10,13 @@
 #include <cglm/cglm.h>
 #include <cglm/types.h>
 
+/* FXAA Defaults (Ultra / Aggressive) */
+#define DEFAULT_FXAA_SUBPIX 1.00F /* 0.0 - 1.0 (Max: 1.0) */
+#define DEFAULT_FXAA_EDGE_THRESHOLD \
+	0.063F /* 0.063 - 0.333 (Min: 0.063 pour max détection) */
+#define DEFAULT_FXAA_EDGE_THRESHOLD_MIN \
+	0.0312F /* 0.0312 - 0.0833 (Min: 0.0312 pour max sensibilité) */
+
 /* Valeurs par défaut - plus subtiles et cinématiques */
 #define DEFAULT_VIGNETTE_INTENSITY 0.8F  /* 0.0 - 1.0+ */
 #define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /* 0.0 (Hard) - 1.0 (Soft) */
@@ -56,6 +63,8 @@ typedef enum {
 	POSTFX_EXPOSURE_DEBUG = (1U << 9U),     /* 0x200 */
 	POSTFX_MOTION_BLUR = (1U << 10U),       /* 0x400 */
 	POSTFX_MOTION_BLUR_DEBUG = (1U << 11U), /* 0x800 */
+	POSTFX_FXAA = (1U << 12U),              /* 0x1000 */
+	POSTFX_FXAA_DEBUG = (1U << 13U),        /* 0x2000 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
@@ -188,10 +197,24 @@ typedef struct {
 	float mb_max_velocity;
 	int32_t mb_samples;
 	float _pad9;
+
+	/* FXAA */
+	float fxaa_subpix;
+	float fxaa_edge_threshold;
+	float fxaa_edge_threshold_min;
+	float _pad10;
 } PostProcessUBO;
+
+/* Paramètres FXAA */
+typedef struct {
+	float subpix;             /* 0.0 - 1.0 (Défaut: 0.75) */
+	float edge_threshold;     /* 0.063 - 0.333 (Défaut: 0.125) */
+	float edge_threshold_min; /* 0.0312 - 0.0833 (Défaut: 0.063) */
+} FxaaParams;
 
 /* Structure principale du système de post-processing */
 typedef struct PostProcess {
+	/* ... (existing fields) ... */
 	/* FBO principal et textures */
 	GLuint scene_fbo;
 	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
@@ -246,6 +269,10 @@ typedef struct PostProcess {
 	/* Temps pour effets animés (grain) */
 	float time;
 	float delta_time; /* Added needed for time integration */
+
+	/* FXAA Toggle & Params */
+	int enable_fxaa;
+	FxaaParams fxaa;
 } PostProcess;
 
 /* Initialisation et nettoyage */
