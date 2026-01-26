@@ -136,6 +136,10 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
 	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
 
+	/* Enable Multisample & Alpha-to-Coverage for Raytraced Billboards */
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
 	/* Scan & Load HDR Environment */
 	environment_init(&app->env);
 	app->env.brdf_lut_tex =

@@ -44,4 +44,7 @@ To achieve this stability, we applied specific damping to the `shaders/pbr_ibl_b
 
 3.  **Specular Damping**:
     -   Fades out the Specular contribution (`F0`) in the last 5% of the edge to preventing sparking from unstable normals.
-    -   **Tuned Value**: `smoothstep(0.0, 0.05, clampNdotV)`
+4.  **Alpha-to-Coverage (A2C)**:
+    -   We use `GL_SAMPLE_ALPHA_TO_COVERAGE` to convert the shader's computed alpha (distance to edge) into a multisample mask.
+    -   **Requirement**: The OpenGL Context **MUST** be created with MSAA enabled (e.g., `GLFW_SAMPLES = 4`). Without this, A2C is ignored or behaves unpredictably (e.g., solid squares).
+    -   **Shader Logic**: We assume transparency (`alpha`) drives coverage. We explicitly `discard` fully transparent pixels (`alpha <= 0.0`) to avoid rendering the quad corners if coverage generation fails.

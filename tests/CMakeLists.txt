@@ -52,6 +52,7 @@ set(OPENGL_TESTS
     test_ssbo_rendering
     test_app
     test_postprocess
+    test_stability
 )
 
 # Pour chaque fichier test trouvé

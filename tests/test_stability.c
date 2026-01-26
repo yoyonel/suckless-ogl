@@ -22,6 +22,7 @@ void setUp(void)
 	if (!g_app_initialized) {
 		// Initialize headless-like window
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_SAMPLES, 4);  // Enable 4x MSAA for A2C
 		int result =
 		    app_init(&g_app, TEST_WIDTH, TEST_HEIGHT, "Stability Test");
 		TEST_ASSERT_EQUAL_INT(1, result);
@@ -29,7 +30,8 @@ void setUp(void)
 		// Setup reasonable defaults for testing
 		g_app.show_info_overlay = 0;
 		g_app.show_help = 0;
-		g_app.show_envmap = 0;  // Disable skybox to focus on sphere
+		g_app.show_envmap =
+		    1;  // Enabled to test Fresnel/Reflection edge cases
 
 		// Ensure we generated geometry
 		icosphere_generate(&g_app.geometry,

@@ -94,7 +94,7 @@ vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
                  float ao)
 {
 	vec3 R = reflect(-V, N);
-	float NdotV = max(dot(N, V), 0.0);
+	float NdotV = max(dot(N, V), 1e-4);
 	vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
 	// 1. Roughness clamping

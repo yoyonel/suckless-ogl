@@ -27,47 +27,45 @@ uniform mat4 previousViewProj;
 // ----------------------------------------------------------------------------
 // Ray-Sphere Intersection
 // ----------------------------------------------------------------------------
-bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
-                     out vec3 normal)
-{
-	vec3 oc = ro - center;
-	float b = dot(oc, rd);
-	float c = dot(oc, oc) - radius * radius;
-	float h = b * b - c;
-
-	bool isHit = true;
-	if (h < 0.0) {
-		h = 0.0;
-		isHit = false;
-	}
-
-	h = sqrt(h);
-	// Intersection t
-	t = -b - h;
-
-	if (t < 0.0) {
-		isHit = false;
-	}
-
-	vec3 hitPos = ro + t * rd;
-	normal = normalize(hitPos - center);
-	return isHit;
-}
-
 void main()
 {
 	// 1. Calculate Ray direction
-	// In Ortho/Persp generic: normalize(WorldPos - camPos).
-	// Note: WorldPos comes from VS, it's on the billboard plane.
 	vec3 rayDir = normalize(WorldPos - camPos);
 	vec3 rayOrigin = camPos;
 
-	float t;
-	vec3 N;
-	bool hit = intersectSphere(rayOrigin, rayDir, SphereCenter,
-	                           SphereRadius, t, N);
+	// Ray-Sphere Intersection (Analytic w/ Alpha-to-Coverage)
+	vec3 oc = rayOrigin - SphereCenter;
+	float b = dot(oc, rayDir);
+	float c = dot(oc, oc) - SphereRadius * SphereRadius;
+	float h = b * b - c;
 
+	// Alpha-to-Coverage: Compute alpha based on signed distance
+	// discriminant h < 0 (miss), h > 0 (hit). Transition happens over
+	// fwidth(h). We use 0.5 offset so h=0 implies 50% coverage.
+	float alpha = clamp(0.5 + h / fwidth(h), 0.0, 1.0);
+
+	// Note: We DO NOT discard here.
+	// Discarding helper pixels destroys dFdx(N) derivatives for the edge
+	// pixels, causing black artifacts. We let the shader run and let
+	// A2C/Alpha handle visibility.
+
+	// SAFETY: We MUST discard pixels that are completely transparent
+	// (alpha=0) otherwise we see the quad corners if A2C is not perfect or
+	// blending is off. The derivative artifacts (black pixels) at the edge
+	// boundary are hidden by the 'edgeMask' later in the shader.
+	if (alpha <= 0.0) {
+		discard;
+	}
+
+	// For shading, clamp h to valid range (inside sphere)
+	// identifying the "closest point" on the silhouette for the edge
+	// pixels.
+	float effectiveH = max(h, 0.0);
+	float t = -b - sqrt(effectiveH);
+
+	// Calculate Position & Normal
 	vec3 sphereHitPos = rayOrigin + t * rayDir;
+	vec3 N = normalize(sphereHitPos - SphereCenter);
 
 	// 2. Correct Depth
 	vec4 clipPos = projection * view * vec4(sphereHitPos, 1.0);
@@ -79,11 +77,12 @@ void main()
 	// 3. Lighting
 	vec3 V = -rayDir;  // View vector is towards camera
 
-	// Analytic AA: Boost roughness at grazing angles to prevent
-	// fireflies/aliasing The sphere edge produces infinite frequency
-	// changes in R. We force the edge to be diffuse-like.
+	// Analytic AA: Boost roughness at grazing angles
+	// A2C handles geometric aliasing, so we only need a very subtle
+	// roughness boost to prevent specular aliasing (fireflies) inside the
+	// mask.
 	float NdotV = max(dot(N, V), 0.0);
-	float rimRoughness = smoothstep(0.1, 0.01, NdotV);  // Very tight: 0.1
+	float rimRoughness = smoothstep(0.04, 0.005, NdotV);  // Relaxed for A2C
 	float adjustedRoughness = max(Roughness, rimRoughness);
 
 	vec3 color;
@@ -91,75 +90,42 @@ void main()
 		color = compute_debug(N, V, Albedo, Metallic, adjustedRoughness,
 		                      AO, debugMode);
 	} else {
-		// Manual PBR setup to avoid compute_roughness_clamping() which
-		// uses dFdx(N). dFdx(N) is unstable at the sphere adge. We rely
-		// on Analytic AA (rimRoughness) instead. reflect(I, N) expects
-		// Incident vector I (Camera -> Surface), which is rayDir.
 		vec3 R = reflect(rayDir, N);
 		float clampNdotV = max(dot(N, V), 1e-4);
 		vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
 
-		// Geometric AA: Re-introduce roughness clamping based on normal
-		// variance This ensures that small/distant spheres look correct
-		// (not too shiny).
+		// Geometric AA
 		vec3 dNdx = dFdx(N);
 		vec3 dNdy = dFdy(N);
 		float maxVariation = max(dot(dNdx, dNdx), dot(dNdy, dNdy));
-
-		// SAFETY CLAMP: The analytic edge has infinite variation.
-		// Mask out the derivative-based AA at the grazing angle where
-		// it is unstable and let the Analytic AA take over.
-
-		// 1. Clamp FIRST to handle the singularity (infinity).
 		maxVariation = min(maxVariation, 1.0);
 
-		// 2. Strict Mask: Fade out the (now bounded) variation near the
-		// edge. TUNED ZONE: Extremely tight. Instability only tolerated
-		// in last 2%
 		float edgeMask = smoothstep(0.02, 0.1, clampNdotV);
 		maxVariation *= edgeMask;
-		float geometricRoughness = max(
-		    Roughness,
-		    pow(maxVariation, 0.1));  // 0.1 matches pbr_functions.glsl
+		float geometricRoughness =
+		    max(Roughness, pow(maxVariation, 0.1));
 
-		// Note: adjustedRoughness already includes the rim boost
-		// (Analytic AA).
 		float finalRoughness =
 		    max(geometricRoughness, adjustedRoughness);
-
-		// Final safety floor
 		finalRoughness = max(finalRoughness, 0.04);
 
-		// 3. Specular Damping: Fade out F0/Specular at the very edge
-		// to prevent potential "sparkles" from unstable normals.
-		// Consistent with rimRoughness
-		float specularDamping = smoothstep(0.0, 0.05, clampNdotV);
-		vec3 dampedF0 = F0 * specularDamping;
+		// Removed specularDamping: It was causing black halos on
+		// metallic objects by killing the specular contribution (the
+		// only light source) at the edge. A2C handles the geometric
+		// aliasing now.
 
-		color = compute_IBL_PBR_Advanced(N, V, R, dampedF0, clampNdotV,
-		                                 Albedo, Metallic,
-		                                 finalRoughness, AO);
+		color =
+		    compute_IBL_PBR_Advanced(N, V, R, F0, clampNdotV, Albedo,
+		                             Metallic, finalRoughness, AO);
 	}
 
-	if (!hit) {
-		discard;
-	}
-
-	FragColor = vec4(color, 1.0);
+	// Output Color with Weighted Alpha for A2C
+	FragColor = vec4(color, alpha);
 
 	// --- Velocity Calculation ---
-	// We assume the object is static, so WorldPos is the same for previous
-	// frame. Velocity is purely due to camera movement.
-
-	// Current Clip Position
 	vec4 currentClip = projection * view * vec4(sphereHitPos, 1.0);
-
-	// Previous Clip Position
 	vec4 previousClip = previousViewProj * vec4(sphereHitPos, 1.0);
-
 	vec2 currentPosNDC = currentClip.xy / currentClip.w;
 	vec2 previousPosNDC = previousClip.xy / previousClip.w;
-
-	// UV space velocity (NDC -> UV is * 0.5 + 0.5) implies factor 0.5
 	VelocityOut = (currentPosNDC - previousPosNDC) * 0.5;
 }
