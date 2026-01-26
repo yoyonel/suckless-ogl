@@ -2,6 +2,7 @@
 #include "async_loader.h"
 
 #include "log.h"
+#include "perf_timer.h"
 #include "texture.h"
 #include <pthread.h>
 #include <stb_image.h>
@@ -51,8 +52,11 @@ static void* async_worker_func(void* arg)
 			int channels = 0;
 
 			/* Heavy operation triggered here */
+			PerfTimer disk_timer;
+			perf_timer_start(&disk_timer);
 			float* data = texture_load_pixels(path_to_load, &width,
 			                                  &height, &channels);
+			double load_ms = perf_timer_elapsed_ms(&disk_timer);
 
 			pthread_mutex_lock(&request_mutex);
 			if (data) {
@@ -62,7 +66,8 @@ static void* async_worker_func(void* arg)
 				current_request.channels = channels;
 				current_request.state = ASYNC_READY;
 				LOG_INFO("suckless-ogl.async",
-				         "Finished loading: %s", path_to_load);
+				         "Finished loading: %s (%.2f ms)",
+				         path_to_load, load_ms);
 			} else {
 				current_request.state = ASYNC_FAILED;
 				LOG_ERROR("suckless-ogl.async",

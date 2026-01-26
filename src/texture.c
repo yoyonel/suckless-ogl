@@ -2,13 +2,14 @@
 
 #include "glad/glad.h"
 #include "log.h"
+#include <math.h>
 #include <stb_image.h>
 #include <stddef.h>
 
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
-	float* data = stbi_loadf(path, width, height, channels, 0);
+	float* data = stbi_loadf(path, width, height, channels, 4);
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to load HDR image: %s", path);
@@ -31,8 +32,12 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB,
-	             GL_FLOAT, data);
+	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
+
+	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
+	                GL_FLOAT, data);
+
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4); /* Restore default */
 
 	GLenum err = glGetError();
@@ -50,6 +55,7 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	return tex;

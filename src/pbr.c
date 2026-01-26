@@ -71,8 +71,9 @@ GLuint build_prefiltered_specular_map(GLuint env_hdr_tex, int width, int height,
 		glDispatchCompute(groups_x, groups_y, 1);
 		glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-		LOG_INFO("IBL", "Prefiltered level %d (%ux%u) roughness %.2f",
-		         level, mip_w, mip_h, roughness);
+		// LOG_INFO("IBL", "Prefiltered level %d (%ux%u) roughness
+		// %.2f",
+		//          level, mip_w, mip_h, roughness);
 	}
 
 	glUseProgram(0);

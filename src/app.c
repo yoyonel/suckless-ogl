@@ -17,6 +17,7 @@
 #include "log.h"
 #include "material.h"
 #include "pbr.h"
+#include "perf_timer.h"
 #include "postprocess.h"
 #include "postprocess_presets.h"
 #include "shader.h"
@@ -689,8 +690,20 @@ void app_update(App* app)
 		         req.path);
 
 		/* 1. Upload to GPU */
-		GLuint new_hdr_tex =
-		    texture_upload_hdr(req.data, req.width, req.height);
+		GLuint new_hdr_tex = 0;
+		double upload_cpu_ms = 0.0;
+		GPU_MEASURE_MS(upload_gpu_ms)
+		{
+			PerfTimer prof_timer;
+			perf_timer_start(&prof_timer);
+			new_hdr_tex =
+			    texture_upload_hdr(req.data, req.width, req.height);
+			upload_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
+		}
+		LOG_INFO("suckless-ogl.app",
+		         "VRAM Upload: GPU=%.2f ms, CPU (total)=%.2f ms",
+		         upload_gpu_ms, upload_cpu_ms);
+
 		stbi_image_free(req.data); /* We own the data from async
 		                              loader now */
 
@@ -709,9 +722,20 @@ void app_update(App* app)
 				glDeleteTextures(1, &app->irradiance_tex);
 			}
 
-			float auto_threshold = compute_mean_luminance_gpu(
-			    app->hdr_texture, req.width, req.height,
-			    DEFAULT_CLAMP_MULTIPLIER);
+			float auto_threshold = 0.0F;
+			double lum_cpu_ms = 0.0;
+			GPU_MEASURE_MS(lum_gpu_ms)
+			{
+				PerfTimer prof_timer;
+				perf_timer_start(&prof_timer);
+				auto_threshold = compute_mean_luminance_gpu(
+				    app->hdr_texture, req.width, req.height,
+				    DEFAULT_CLAMP_MULTIPLIER);
+				lum_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
+			}
+			LOG_INFO("suckless-ogl.app",
+			         "Luminance Compute: GPU=%.2f ms, CPU=%.2f ms",
+			         lum_gpu_ms, lum_cpu_ms);
 
 			if (auto_threshold < 1.0F || isnan(auto_threshold) ||
 			    isinf(auto_threshold)) {
@@ -719,14 +743,37 @@ void app_update(App* app)
 			}
 			app->auto_threshold = auto_threshold;
 
-			app->spec_prefiltered_tex =
-			    build_prefiltered_specular_map(
-			        app->hdr_texture, PREFILTERED_SPECULAR_MAP_SIZE,
-			        PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
+			double spec_cpu_ms = 0.0;
+			GPU_MEASURE_MS(spec_gpu_ms)
+			{
+				PerfTimer prof_timer;
+				perf_timer_start(&prof_timer);
+				app->spec_prefiltered_tex =
+				    build_prefiltered_specular_map(
+				        app->hdr_texture,
+				        PREFILTERED_SPECULAR_MAP_SIZE,
+				        PREFILTERED_SPECULAR_MAP_SIZE,
+				        auto_threshold);
+				spec_cpu_ms =
+				    perf_timer_elapsed_ms(&prof_timer);
+			}
+			LOG_INFO("suckless-ogl.app",
+			         "Specular Map: GPU=%.2f ms, CPU=%.2f ms",
+			         spec_gpu_ms, spec_cpu_ms);
 
-			app->irradiance_tex = build_irradiance_map(
-			    app->hdr_texture, IRIDIANCE_MAP_SIZE,
-			    auto_threshold);
+			double irr_cpu_ms = 0.0;
+			GPU_MEASURE_MS(irr_gpu_ms)
+			{
+				PerfTimer prof_timer;
+				perf_timer_start(&prof_timer);
+				app->irradiance_tex = build_irradiance_map(
+				    app->hdr_texture, IRIDIANCE_MAP_SIZE,
+				    auto_threshold);
+				irr_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
+			}
+			LOG_INFO("suckless-ogl.app",
+			         "Irradiance Map: GPU=%.2f ms, CPU=%.2f ms",
+			         irr_gpu_ms, irr_cpu_ms);
 
 			postprocess_set_exposure(&app->postprocess,
 			                         auto_threshold);
