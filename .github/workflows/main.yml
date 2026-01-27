@@ -37,6 +37,17 @@ jobs:
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python tools
+        run: pip install ruff pytest pytest-cov
+
+      - name: Run Python Tests
+        run: make test-python
+
       - name: Run Coverage and Tests
         id: run_tests
         continue-on-error: true

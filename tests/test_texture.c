@@ -72,7 +72,8 @@ void test_texture_load_hdr_success(void)
 
 void test_texture_load_hdr_creates_gl_texture(void)
 {
-	int width = 0, height = 0;
+	int width = 0;
+	int height = 0;
 	GLuint tex = texture_load_hdr(
 	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
 
@@ -85,11 +86,12 @@ void test_texture_load_hdr_creates_gl_texture(void)
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT,
 	                         &internal_format);
 
-	// Should be RGB16F format
-	TEST_ASSERT_EQUAL(GL_RGB16F, internal_format);
+	// Should be RGBA16F format
+	TEST_ASSERT_EQUAL(GL_RGBA16F, internal_format);
 
 	// Verify dimensions match what was returned
-	GLint tex_width = 0, tex_height = 0;
+	GLint tex_width = 0;
+	GLint tex_height = 0;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
 	                         &tex_width);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT,
@@ -104,7 +106,8 @@ void test_texture_load_hdr_creates_gl_texture(void)
 
 void test_texture_load_hdr_sets_parameters(void)
 {
-	int width = 0, height = 0;
+	int width = 0;
+	int height = 0;
 	GLuint tex = texture_load_hdr(
 	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
 
@@ -113,8 +116,10 @@ void test_texture_load_hdr_sets_parameters(void)
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	// Verify texture parameters
-	GLint min_filter = 0, mag_filter = 0;
-	GLint wrap_s = 0, wrap_t = 0;
+	GLint min_filter = 0;
+	GLint mag_filter = 0;
+	GLint wrap_s = 0;
+	GLint wrap_t = 0;
 
 	glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &min_filter);
 	glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, &mag_filter);

@@ -142,6 +142,7 @@ int app_init(App* app, int width, int height, const char* title)
 {
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)memset(app, 0, sizeof(App));
+
 	app->width = width;
 	app->height = height;
 	app->subdivisions = INITIAL_SUBDIVISIONS;
@@ -206,6 +207,8 @@ int app_init(App* app, int width, int height, const char* title)
 	glGenBuffers(1, &app->exposure_pbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
 	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
+	glObjectLabel(GL_BUFFER, app->exposure_pbo, -1,
+	              "Exposure Readback PBO");
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	app->current_exposure = 1.0F;
 
@@ -244,7 +247,7 @@ int app_init(App* app, int width, int height, const char* title)
 	                                         "shaders/background.frag");
 
 	if (!app->skybox_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to create shaders");
+		LOG_ERROR("suckless-ogl.app", "Failed to create skybox shader");
 		return 0;
 	}
 
@@ -289,6 +292,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	/* Create OpenGL buffers */
 	glGenVertexArrays(1, &app->sphere_vao);
+	glObjectLabel(GL_VERTEX_ARRAY, app->sphere_vao, -1, "Main Sphere VAO");
 	glGenBuffers(1, &app->sphere_vbo);
 	glGenBuffers(1, &app->sphere_nbo);
 	glGenBuffers(1, &app->sphere_ebo);
@@ -710,6 +714,8 @@ static void app_finalize_environment_load(App* app, AsyncRequest* req)
 	                              loader now */
 
 	if (new_hdr_tex) {
+		GL_DEBUG_PUSH("IBL Generation (Async Load Finish)");
+
 		/* 2. Replace old texture */
 		if (app->hdr_texture) {
 			glDeleteTextures(1, &app->hdr_texture);
@@ -758,6 +764,8 @@ static void app_finalize_environment_load(App* app, AsyncRequest* req)
 		postprocess_set_exposure(&app->postprocess, auto_threshold);
 		LOG_INFO("suckless-ogl.app",
 		         "Environment updated successfully.");
+
+		GL_DEBUG_POP();
 	}
 }
 

@@ -535,6 +535,8 @@ static int create_framebuffer(PostProcess* post_processing)
 	/* Créer la texture de couleur (HDR) */
 	glGenTextures(1, &post_processing->scene_color_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+	glObjectLabel(GL_TEXTURE, post_processing->scene_color_tex, -1,
+	              "Scene Color (HDR)");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, post_processing->width,
 	             post_processing->height, 0, GL_RGBA, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -548,6 +550,8 @@ static int create_framebuffer(PostProcess* post_processing)
 	/* Créer la texture de vélocité (GL_RG16F) */
 	glGenTextures(1, &post_processing->velocity_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glObjectLabel(GL_TEXTURE, post_processing->velocity_tex, -1,
+	              "Velocity Buffer");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, post_processing->width,
 	             post_processing->height, 0, GL_RG, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -567,6 +571,8 @@ static int create_framebuffer(PostProcess* post_processing)
 	/* Créer la texture de profondeur (D32F pour précision max) */
 	glGenTextures(1, &post_processing->scene_depth_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+	glObjectLabel(GL_TEXTURE, post_processing->scene_depth_tex, -1,
+	              "Scene Depth (D32F)");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F,
 	             post_processing->width, post_processing->height, 0,
 	             GL_DEPTH_COMPONENT, GL_FLOAT, NULL);

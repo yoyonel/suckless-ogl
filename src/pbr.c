@@ -1,7 +1,7 @@
 #include "pbr.h"
 
 #include "gl_common.h"
-#include "log.h"
+#include "perf_timer.h"
 #include "shader.h"
 #include <math.h>
 #include <stddef.h>  // Fournit NULL (proprement)
@@ -18,11 +18,17 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 		return 0;
 	}
 
+	GLuint spec_tex = 0;
+	HYBRID_FUNC_TIMER("IBL: Prefiltered Specular Map");
+
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1,
+	                 "IBL: Prefiltered Specular Map");
+
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
 
-	GLuint spec_tex = 0;
 	glGenTextures(1, &spec_tex);
 	glBindTexture(GL_TEXTURE_2D, spec_tex);
+	glObjectLabel(GL_TEXTURE, spec_tex, -1, "Prefiltered Specular Map");
 
 	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
 
@@ -34,11 +40,16 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 
 	glUseProgram(shader);
 
-	/* Explicitly set envMap sampler to unit 0 (fix for Intel/Mesa) */
+	/* Explicitly set envMap sampler to unit 0 (fix for Intel/Mesa)
+	 */
 	GLint u_env_map = glGetUniformLocation(shader, "envMap");
 	if (u_env_map >= 0) {
 		glUniform1i(u_env_map, 0);
 	}
+
+	GLint u_roughness = glGetUniformLocation(shader, "roughnessValue");
+	GLint u_mip = glGetUniformLocation(shader, "currentMipLevel");
+	GLint u_threshold = glGetUniformLocation(shader, "clampThreshold");
 
 	for (int level = 0; level < levels; level++) {
 		uint32_t mip_w = (uint32_t)width >> (uint32_t)level;
@@ -52,8 +63,15 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 		}
 
 		float roughness = (float)level / (float)(levels - 1);
-		glUniform1f(0, roughness);
-		glUniform1f(2, threshold);
+		if (u_roughness >= 0) {
+			glUniform1f(u_roughness, roughness);
+		}
+		if (u_mip >= 0) {
+			glUniform1i(u_mip, level);
+		}
+		if (u_threshold >= 0) {
+			glUniform1f(u_threshold, threshold);
+		}
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
@@ -71,6 +89,8 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 	}
 
 	glUseProgram(0);
+	glPopDebugGroup();
+
 	return spec_tex;
 }
 
@@ -82,8 +102,14 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	}
 
 	GLuint irr_tex = 0;
+	HYBRID_FUNC_TIMER("IBL: Irradiance Map");
+
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1,
+	                 "IBL: Irradiance Map");
+
 	glGenTextures(1, &irr_tex);
 	glBindTexture(GL_TEXTURE_2D, irr_tex);
+	glObjectLabel(GL_TEXTURE, irr_tex, -1, "Irradiance Map");
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, size, size);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -92,7 +118,10 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glUseProgram(shader);
-	glUniform1f(glGetUniformLocation(shader, "clamp_threshold"), threshold);
+	GLint u_threshold = glGetUniformLocation(shader, "clamp_threshold");
+	if (u_threshold >= 0) {
+		glUniform1f(u_threshold, threshold);
+	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
@@ -106,6 +135,8 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	glUseProgram(0);
+	glPopDebugGroup();
+
 	return irr_tex;
 }
 
@@ -116,6 +147,12 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	if (shader_pass1 == 0 || shader_pass2 == 0) {
 		return 0.0F;
 	}
+
+	float mean = 0.0F;
+	HYBRID_FUNC_TIMER("IBL: Luminance Reduction");
+
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1,
+	                 "IBL: Luminance Reduction");
 
 	uint32_t group_x = ((uint32_t)width + (COMPUTE_GROUP_SIZE_LUM - 1)) /
 	                   COMPUTE_GROUP_SIZE_LUM;
@@ -130,13 +167,17 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[0]);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
 	             (GLsizeiptr)(num_groups * sizeof(float)), NULL,
-	             GL_STREAM_DRAW);
+	             GL_STREAM_READ);
+	glObjectLabel(GL_BUFFER, ssbos[0], -1, "Luminance Reduct. (Step 1)");
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, (GLsizeiptr)sizeof(float), NULL,
+	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float), NULL,
 	             GL_STREAM_READ);
+	glObjectLabel(GL_BUFFER, ssbos[1], -1, "Luminance Reduct. (Step 2)");
 
+	/* Pass 1: Initial reduction (no uniforms needed by pass1 shader) */
 	glUseProgram(shader_pass1);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, hdr_tex);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbos[0]);
@@ -144,11 +185,16 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	glDispatchCompute(group_x, group_y, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
+	/* Pass 2: Final reduction to single float */
 	glUseProgram(shader_pass2);
-	glUniform1ui(glGetUniformLocation(shader_pass2, "numGroups"),
-	             num_groups);
-	glUniform1ui(glGetUniformLocation(shader_pass2, "numPixels"),
-	             num_pixels);
+	GLint u_numGroups = glGetUniformLocation(shader_pass2, "numGroups");
+	if (u_numGroups >= 0) {
+		glUniform1ui(u_numGroups, num_groups);
+	}
+	GLint u_numPixels = glGetUniformLocation(shader_pass2, "numPixels");
+	if (u_numPixels >= 0) {
+		glUniform1ui(u_numPixels, num_pixels);
+	}
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbos[0]);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbos[1]);
@@ -156,26 +202,36 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
-	float mean = 0.0F;
+	/* Fetch result */
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
-	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float), &mean);
+	float* ptr = (float*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0,
+	                                      sizeof(float), GL_MAP_READ_BIT);
+	if (ptr != NULL) {
+		mean = *ptr;
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	}
 
 	glDeleteBuffers(2, ssbos);
-	glUseProgram(0);
-
-	if (isinf(mean) || isnan(mean)) {
-		mean = 0.0F;
-	}
+	glPopDebugGroup();
 
 	return mean * clamp_multiplier;
 }
 
 GLuint build_brdf_lut_map(int size)
 {
-	GLuint brdf_tex = 0;
-	glGenTextures(1, &brdf_tex);
-	glBindTexture(GL_TEXTURE_2D, brdf_tex);
+	GLuint shader = shader_load_compute("shaders/IBL/spbrdf.glsl");
+	if (shader == 0) {
+		return 0;
+	}
 
+	GLuint lut_tex = 0;
+	HYBRID_FUNC_TIMER("IBL: BRDF LUT");
+
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: BRDF LUT");
+
+	glGenTextures(1, &lut_tex);
+	glBindTexture(GL_TEXTURE_2D, lut_tex);
+	glObjectLabel(GL_TEXTURE, lut_tex, -1, "BRDF LUT Texture");
 	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RG16F, size, size);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -183,24 +239,18 @@ GLuint build_brdf_lut_map(int size)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	GLuint shader = shader_load_compute("shaders/IBL/spbrdf.glsl");
-	if (shader == 0) {
-		return 0;
-	}
-
 	glUseProgram(shader);
-	glBindImageTexture(0, brdf_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY,
-	                   GL_RG16F);
+	glBindImageTexture(0, lut_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16F);
 
 	uint32_t groups = ((uint32_t)size + (COMPUTE_GROUP_SIZE_PBR - 1)) /
 	                  COMPUTE_GROUP_SIZE_PBR;
 	glDispatchCompute(groups, groups, 1);
-
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-	LOG_INFO("suckless-ogl.ibl", "BRDF LUT generated: %dx%d", size, size);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
 	glUseProgram(0);
+	glPopDebugGroup();
+
 	glDeleteProgram(shader);
 
-	return brdf_tex;
+	return lut_tex;
 }
