@@ -25,9 +25,18 @@ typedef struct {
  * Python/PyOpenGL)
  */
 typedef struct {
-	GLuint query;
+	GLuint query_start;
+	GLuint query_end;
 	int active;
 } GPUTimer;
+
+/**
+ * @brief Hybrid performance timer combining CPU and GPU measurements
+ */
+typedef struct {
+	PerfTimer cpu;
+	GPUTimer gpu;
+} HybridTimer;
 
 // ============================================================================
 // CPU Timer API
@@ -84,6 +93,23 @@ double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result);
  * @param timer Pointeur vers la structure GPUTimer
  */
 void gpu_timer_cleanup(GPUTimer* timer);
+
+// ============================================================================
+// Hybrid Timer API
+// ============================================================================
+
+/**
+ * @brief Initialise et démarre un timer hybride (CPU + GPU)
+ * @return Une structure HybridTimer initialisée et démarrée
+ */
+HybridTimer perf_hybrid_start(void);
+
+/**
+ * @brief Arrête et loggue les résultats d'un timer hybride
+ * @param timer Pointeur vers le timer
+ * @param label Étiquette pour la ligne de log
+ */
+void perf_hybrid_stop(HybridTimer* timer, const char* label);
 
 // ============================================================================
 // Macros helpers
@@ -155,5 +181,21 @@ void gpu_timer_cleanup(GPUTimer* timer);
 	     _gpu_run; LOG_INFO("perf.gpu", "%s: %.2f ms", label,          \
 	                        gpu_timer_elapsed_ms(&_gpu_timer, 1)),     \
 	         gpu_timer_cleanup(&_gpu_timer), _gpu_run = NULL)
+
+/**
+ * @brief Macro helper pour mesurer et logger automatiquement (CPU + GPU)
+ *
+ * Combine les mesures CPU (wall-clock) et GPU pour un aperçu complet.
+ * Utile pour identifier si un bottleneck est CPU-bound (ex: le driver)
+ * ou GPU-bound (ex: la complexité des shaders).
+ *
+ * Usage:
+ *   HYBRID_MEASURE_LOG("Texture Upload") {
+ *       glTexImage2D(...);
+ *   }
+ */
+#define HYBRID_MEASURE_LOG(label)                                             \
+	for (HybridTimer _h = perf_hybrid_start(), *_h_run = (HybridTimer*)1; \
+	     _h_run; perf_hybrid_stop(&_h, label), _h_run = NULL)
 
 #endif  // PERF_TIMER_H

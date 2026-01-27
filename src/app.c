@@ -318,6 +318,14 @@ int app_init(App* app, int width, int height, const char* title)
 	    material_load_presets("assets/materials/pbr_materials.json");
 
 #ifdef USE_SSBO_RENDERING
+	/* Initialize IBL shaders */
+	app->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
+	app->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
+	app->shader_lum_pass1 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
+	app->shader_lum_pass2 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
+
 	app_init_ssbo(app);
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
 	                                   "shaders/pbr_ibl_instanced.frag");
@@ -592,8 +600,12 @@ void app_cleanup(App* app)
 #else
 	instanced_group_cleanup(&app->instanced_group);
 	billboard_group_cleanup(&app->billboard_group);
-	shader_destroy(app->pbr_instanced_shader);
 #endif
+
+	glDeleteProgram(app->shader_spmap);
+	glDeleteProgram(app->shader_irmap);
+	glDeleteProgram(app->shader_lum_pass1);
+	glDeleteProgram(app->shader_lum_pass2);
 
 	postprocess_cleanup(&app->postprocess);
 	adaptive_sampler_cleanup(&app->fps_sampler);
@@ -682,104 +694,78 @@ void app_run(App* app)
 	}
 }
 
+static void app_finalize_environment_load(App* app, AsyncRequest* req)
+{
+	LOG_INFO("suckless-ogl.app", "Async load completed for: %s", req->path);
+
+	/* 1. Upload to GPU */
+	GLuint new_hdr_tex = 0;
+	HYBRID_MEASURE_LOG("VRAM Upload")
+	{
+		new_hdr_tex =
+		    texture_upload_hdr(req->data, req->width, req->height);
+	}
+
+	stbi_image_free(req->data); /* We own the data from async
+	                              loader now */
+
+	if (new_hdr_tex) {
+		/* 2. Replace old texture */
+		if (app->hdr_texture) {
+			glDeleteTextures(1, &app->hdr_texture);
+		}
+		app->hdr_texture = new_hdr_tex;
+
+		/* 3. Re-run generation pipeline */
+		if (app->spec_prefiltered_tex) {
+			glDeleteTextures(1, &app->spec_prefiltered_tex);
+		}
+		if (app->irradiance_tex) {
+			glDeleteTextures(1, &app->irradiance_tex);
+		}
+
+		float auto_threshold = 0.0F;
+		HYBRID_MEASURE_LOG("Luminance Compute")
+		{
+			auto_threshold = compute_mean_luminance_gpu(
+			    app->shader_lum_pass1, app->shader_lum_pass2,
+			    app->hdr_texture, req->width, req->height,
+			    DEFAULT_CLAMP_MULTIPLIER);
+		}
+
+		if (auto_threshold < 1.0F || isnan(auto_threshold) ||
+		    isinf(auto_threshold)) {
+			auto_threshold = DEFAULT_AUTO_THRESHOLD;
+		}
+		app->auto_threshold = auto_threshold;
+
+		HYBRID_MEASURE_LOG("Specular Map")
+		{
+			app->spec_prefiltered_tex =
+			    build_prefiltered_specular_map(
+			        app->shader_spmap, app->hdr_texture,
+			        PREFILTERED_SPECULAR_MAP_SIZE,
+			        PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
+		}
+
+		HYBRID_MEASURE_LOG("Irradiance Map")
+		{
+			app->irradiance_tex = build_irradiance_map(
+			    app->shader_irmap, app->hdr_texture,
+			    IRIDIANCE_MAP_SIZE, auto_threshold);
+		}
+
+		postprocess_set_exposure(&app->postprocess, auto_threshold);
+		LOG_INFO("suckless-ogl.app",
+		         "Environment updated successfully.");
+	}
+}
+
 void app_update(App* app)
 {
 	AsyncRequest req;
 	if (async_loader_poll(&req)) {
-		LOG_INFO("suckless-ogl.app", "Async load completed for: %s",
-		         req.path);
-
-		/* 1. Upload to GPU */
-		GLuint new_hdr_tex = 0;
-		double upload_cpu_ms = 0.0;
-		GPU_MEASURE_MS(upload_gpu_ms)
-		{
-			PerfTimer prof_timer;
-			perf_timer_start(&prof_timer);
-			new_hdr_tex =
-			    texture_upload_hdr(req.data, req.width, req.height);
-			upload_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
-		}
-		LOG_INFO("suckless-ogl.app",
-		         "VRAM Upload: GPU=%.2f ms, CPU (total)=%.2f ms",
-		         upload_gpu_ms, upload_cpu_ms);
-
-		stbi_image_free(req.data); /* We own the data from async
-		                              loader now */
-
-		if (new_hdr_tex) {
-			/* 2. Replace old texture */
-			if (app->hdr_texture) {
-				glDeleteTextures(1, &app->hdr_texture);
-			}
-			app->hdr_texture = new_hdr_tex;
-
-			/* 3. Re-run generation pipeline */
-			if (app->spec_prefiltered_tex) {
-				glDeleteTextures(1, &app->spec_prefiltered_tex);
-			}
-			if (app->irradiance_tex) {
-				glDeleteTextures(1, &app->irradiance_tex);
-			}
-
-			float auto_threshold = 0.0F;
-			double lum_cpu_ms = 0.0;
-			GPU_MEASURE_MS(lum_gpu_ms)
-			{
-				PerfTimer prof_timer;
-				perf_timer_start(&prof_timer);
-				auto_threshold = compute_mean_luminance_gpu(
-				    app->hdr_texture, req.width, req.height,
-				    DEFAULT_CLAMP_MULTIPLIER);
-				lum_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
-			}
-			LOG_INFO("suckless-ogl.app",
-			         "Luminance Compute: GPU=%.2f ms, CPU=%.2f ms",
-			         lum_gpu_ms, lum_cpu_ms);
-
-			if (auto_threshold < 1.0F || isnan(auto_threshold) ||
-			    isinf(auto_threshold)) {
-				auto_threshold = DEFAULT_AUTO_THRESHOLD;
-			}
-			app->auto_threshold = auto_threshold;
-
-			double spec_cpu_ms = 0.0;
-			GPU_MEASURE_MS(spec_gpu_ms)
-			{
-				PerfTimer prof_timer;
-				perf_timer_start(&prof_timer);
-				app->spec_prefiltered_tex =
-				    build_prefiltered_specular_map(
-				        app->hdr_texture,
-				        PREFILTERED_SPECULAR_MAP_SIZE,
-				        PREFILTERED_SPECULAR_MAP_SIZE,
-				        auto_threshold);
-				spec_cpu_ms =
-				    perf_timer_elapsed_ms(&prof_timer);
-			}
-			LOG_INFO("suckless-ogl.app",
-			         "Specular Map: GPU=%.2f ms, CPU=%.2f ms",
-			         spec_gpu_ms, spec_cpu_ms);
-
-			double irr_cpu_ms = 0.0;
-			GPU_MEASURE_MS(irr_gpu_ms)
-			{
-				PerfTimer prof_timer;
-				perf_timer_start(&prof_timer);
-				app->irradiance_tex = build_irradiance_map(
-				    app->hdr_texture, IRIDIANCE_MAP_SIZE,
-				    auto_threshold);
-				irr_cpu_ms = perf_timer_elapsed_ms(&prof_timer);
-			}
-			LOG_INFO("suckless-ogl.app",
-			         "Irradiance Map: GPU=%.2f ms, CPU=%.2f ms",
-			         irr_gpu_ms, irr_cpu_ms);
-
-			postprocess_set_exposure(&app->postprocess,
-			                         auto_threshold);
-			LOG_INFO("suckless-ogl.app",
-			         "Environment updated successfully.");
-		}
+		app_finalize_environment_load(app, &req);
 	}
 }
 
