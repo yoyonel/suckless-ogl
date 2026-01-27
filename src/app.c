@@ -317,7 +317,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
-#ifdef USE_SSBO_RENDERING
 	/* Initialize IBL shaders */
 	app->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
 	app->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
@@ -326,6 +325,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->shader_lum_pass2 =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 
+#ifdef USE_SSBO_RENDERING
 	app_init_ssbo(app);
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
 	                                   "shaders/pbr_ibl_instanced.frag");
