@@ -18,4 +18,9 @@
  * aligned) */
 #define SIMD_ALIGNMENT 64
 
+/* Debug Markers for ApiTrace / RenderDoc */
+#define GL_DEBUG_PUSH(name) \
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name)
+#define GL_DEBUG_POP() glPopDebugGroup()
+
 #endif /* GL_COMMON_H */

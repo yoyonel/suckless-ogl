@@ -66,6 +66,8 @@ run-software: all
 
 format:
 	$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format -i"
+	@echo "Formatting Python scripts..."
+	@ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
 
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
@@ -77,7 +79,11 @@ CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cj
 lint: $(BUILD_DIR)/Makefile
 	@echo "Ensuring dependencies are generated..."
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
+	@echo "Linting C code..."
 	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=200809L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
+	@echo "Linting Python scripts..."
+	@ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: pip install ruff" && exit 1)
+	@echo "✓ All linting passed"
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh
@@ -91,16 +97,23 @@ offline-test:
 	@echo "Running build in a simulated offline environment (using bogus proxy)..."
 	@http_proxy=http://127.0.0.1:0 https_proxy=http://127.0.0.1:0 $(MAKE) rebuild
 
-test: all
+test-python:
+	@echo "Running Python script tests..."
+	@python3 tests/test_trace_analyze.py
+
+test: all test-python
+	@echo "Running C/C++ unit tests..."
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
 # Code Coverage (version améliorée avec résumé)
 BUILD_COV_DIR := build-coverage
 REPORT_DIR := $(BUILD_COV_DIR)/coverage_report
 
-coverage:
-	@echo "Building with coverage instrumentation..."
+$(BUILD_COV_DIR):
 	@mkdir -p $(BUILD_COV_DIR)
+
+coverage: $(BUILD_COV_DIR)
+	@echo "Building with coverage instrumentation..."
 	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
 
@@ -127,14 +140,23 @@ coverage:
 		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
 		-ignore-filename-regex="(generated|deps|tests)" | tee $(BUILD_COV_DIR)/coverage_summary.txt
 
-apitrace:
+	@echo "Running Python coverage..."
+	@pytest tests/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \
+		(echo "⚠️  Install pytest-cov: pip install pytest-cov" && exit 1)
+	@echo "Python coverage report: $(REPORT_DIR)/python_coverage/index.html"
+
+apitrace: profile
 	@echo "Running Apitrace..."
-	LD_PRELOAD=$(APITRACE_WRAPPERS)/egltrace.so \
+	LD_PRELOAD=$(APITRACE_WRAPPERS)/glxtrace.so \
 		$(APITRACE_BIN) \
 			trace \
-			--api egl \
+			--api gl \
 			--output $(BUILD_PROF_DIR)/app.trace \
 			./$(BUILD_PROF_DIR)/app
+
+trace-perf:
+	@echo "Analyzing GPU performance (Advanced Analysis)..."
+	python3 scripts/trace_analyze.py $(BUILD_PROF_DIR)/app.trace $(APITRACE_BIN)
 
 qapitrace:
 	@echo "Running Qapitrace..."

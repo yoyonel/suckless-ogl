@@ -28,6 +28,8 @@ enum { INFO_LOG_SIZE = 512 };
 
 enum { MAX_SHADER_NAME_LEN = 256 };
 
+enum { SHADER_LABEL_BUFFER_SIZE = 512 };
+
 /* -------------------------------------------------------------------------
  * Internal Include Processing (Chunk-List / Single-Pass Allocation)
  * ------------------------------------------------------------------------- */
@@ -424,6 +426,13 @@ GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
+	if (program != 0) {
+		char name[SHADER_LABEL_BUFFER_SIZE];
+		safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
+		              fragment_path);
+		glObjectLabel(GL_PROGRAM, program, -1, name);
+	}
+
 	return program;
 }
 
@@ -450,6 +459,10 @@ GLuint shader_load_compute(const char* compute_path)
 	}
 
 	glDeleteShader(compute_shader);
+
+	if (program != 0) {
+		glObjectLabel(GL_PROGRAM, program, -1, compute_path);
+	}
 
 	return program;
 }
@@ -513,6 +526,8 @@ static Shader* shader_create_from_program(GLuint program, const char* name)
 	shader->program = program;
 	if (name) {
 		shader->name = strdup(name);
+		/* Label the program for profilers (RenderDoc/ApiTrace) */
+		glObjectLabel(GL_PROGRAM, program, -1, name);
 	} else {
 		shader->name = strdup("Unknown Shader");
 	}

@@ -198,4 +198,35 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 	for (HybridTimer _h = perf_hybrid_start(), *_h_run = (HybridTimer*)1; \
 	     _h_run; perf_hybrid_stop(&_h, label), _h_run = NULL)
 
+/**
+ * @brief RAII-style performance measurement for the entire scope/function
+ *
+ * Automatically starts the timer and stops/logs it when the variable goes out
+ * of scope (end of function or end of block).
+ * Use this to avoid extra indentation level.
+ *
+ * NOTE: Requires GCC or Clang (__attribute__((cleanup))).
+ *
+ * Usage:
+ *   void complex_function() {
+ *       HYBRID_FUNC_TIMER("IBL: Specular Map");
+ *
+ *       // ... function body (NO extra indentation) ...
+ *   }
+ */
+typedef struct {
+	HybridTimer timer;
+	const char* label;
+} HybridTimerRAII;
+
+static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii)
+{
+	perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
+}
+
+#define HYBRID_FUNC_TIMER(label)                                    \
+	HybridTimerRAII _h_raii                                     \
+	    __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
+	        perf_hybrid_start(), label}
+
 #endif  // PERF_TIMER_H
