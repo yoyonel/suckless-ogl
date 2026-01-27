@@ -110,6 +110,12 @@ typedef struct {
 
 	MaterialLib* material_lib;
 
+	/* Compute Shaders for IBL */
+	GLuint shader_spmap;
+	GLuint shader_irmap;
+	GLuint shader_lum_pass1;
+	GLuint shader_lum_pass2;
+
 	/* Dynamic HDR Switching */
 	char** hdr_files;      /* Array of filenames */
 	int hdr_count;         /* Total number of HDR files */
