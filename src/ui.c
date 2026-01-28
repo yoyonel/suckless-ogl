@@ -3,11 +3,11 @@
 #include "glad/glad.h"
 #include "log.h"
 #include "shader.h"
-#include <cglm/affine.h>       // NOLINT(misc-include-cleaner)
-#include <cglm/cam.h>          // NOLINT(misc-include-cleaner)
-#include <cglm/cglm.h>         // NOLINT(misc-include-cleaner)
-#include <cglm/struct/mat4.h>  // NOLINT(misc-include-cleaner)
-#include <cglm/types.h>        // NOLINT(misc-include-cleaner)
+#include <cglm/affine.h>  // IWYU pragma: keep
+#include <cglm/cam.h>     // IWYU pragma: keep
+#include <cglm/mat4.h>    // IWYU pragma: keep
+#include <cglm/types.h>   // IWYU pragma: keep
+#include <cglm/vec3.h>    // IWYU pragma: keep
 #include <stb_truetype.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -33,9 +33,11 @@ enum VertexConfig {
 static const float FONT_ATLAS_SIZE_F = 512.0F;
 static const float FONT_BASELINE_OFFSET = 30.0F;
 static const size_t MAX_FONT_FILE_SIZE = 10 * 1024 * 1024;  // 10 MB limit
+static const float UI_QUAD_POS_HALF = 0.5F;
+static const float UI_QUAD_TEX_MAX = 1.0F;
+static const float UI_QUAD_MIN = 0.0F;
 
 // ============================================================================
-// Types
 // ============================================================================
 
 typedef struct {
@@ -255,6 +257,7 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	// Initialize to safe defaults (manual zeroing to avoid memset warning)
 	ui_context->texture = 0;
 	ui_context->shader = NULL;
+	ui_context->spinner_shader = NULL;
 	ui_context->vao = 0;
 	ui_context->vbo = 0;
 	ui_context->font_size = font_size;
@@ -293,6 +296,17 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 		return 0;
 	}
 
+	ui_context->spinner_shader =
+	    shader_load("shaders/ui_spinner.vert", "shaders/ui_spinner.frag");
+	if (ui_context->spinner_shader == NULL) {
+		LOG_ERROR("ui", "Failed to load UI spinner shader");
+		shader_destroy(ui_context->shader);
+		glDeleteTextures(1, &ui_context->texture);
+		glDeleteBuffers(1, &ui_context->vbo);
+		glDeleteVertexArrays(1, &ui_context->vao);
+		return 0;
+	}
+
 	LOG_INFO("ui", "UI system initialized successfully");
 	return 1;
 }
@@ -313,7 +327,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
 	shader_use(ui_context->shader);
 
 	// Setup orthographic projection
-	mat4 projection;  // NOLINT(misc-include-cleaner)
+	mat4 projection;
 	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
 	          1.0F, projection);
 
@@ -386,7 +400,7 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
 	shader_use(ui_context->shader);
 
 	// Setup orthographic projection
-	mat4 projection;  // NOLINT(misc-include-cleaner)
+	mat4 projection;
 	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
 	          1.0F, projection);
 
@@ -448,6 +462,10 @@ void ui_destroy(UIContext* ui_context)
 		shader_destroy(ui_context->shader);
 		ui_context->shader = NULL;
 	}
+	if (ui_context->spinner_shader != 0) {
+		shader_destroy(ui_context->spinner_shader);
+		ui_context->spinner_shader = NULL;
+	}
 
 	LOG_INFO("ui", "UI system destroyed");
 }
@@ -484,4 +502,70 @@ void ui_layout_separator(UILayout* layout, float space)
 		return;
 	}
 	layout->cursor_y += space;
+}
+
+void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
+                     float size, float angle, const vec3 color,
+                     int screen_width, int screen_height)
+{
+	if (ui_context == NULL || ui_context->spinner_shader == NULL) {
+		return;
+	}
+
+	const GLStateBackup saved_state = save_gl_state();
+	setup_ui_render_state();
+
+	shader_use(ui_context->spinner_shader);
+
+	mat4 projection;
+	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
+	          1.0F, projection);
+	shader_set_mat4(ui_context->spinner_shader, "projection",
+	                (float*)projection);
+
+	/* Model Matrix Construction (GPU Rotation) */
+	mat4 model;
+	glm_mat4_identity(model);
+	// NOLINTNEXTLINE(misc-include-cleaner)
+	glm_translate(model, (vec3){center_x, center_y, 0.0F});
+	// NOLINTNEXTLINE(misc-include-cleaner)
+	glm_rotate(model, angle, (vec3){0.0F, 0.0F, 1.0F});
+	// NOLINTNEXTLINE(misc-include-cleaner)
+	glm_scale(model, (vec3){size, size, 1.0F});
+	shader_set_mat4(ui_context->spinner_shader, "model", (float*)model);
+
+	shader_set_vec3(ui_context->spinner_shader, "color", (float*)color);
+
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	/* Unit Quad centered at 0,0 (-0.5 to 0.5) */
+	/* We use the same VBO layout but push a static unit quad */
+	UIQuad quad = {.vertices = {
+	                   /* Triangle 1 */
+	                   {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
+	                    UI_QUAD_TEX_MAX}, /* TL */
+	                   {-UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_MIN,
+	                    UI_QUAD_MIN}, /* BL */
+	                   {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF,
+	                    UI_QUAD_TEX_MAX, UI_QUAD_MIN}, /* BR */
+
+	                   /* Triangle 2 */
+	                   {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
+	                    UI_QUAD_TEX_MAX}, /* TL */
+	                   {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF,
+	                    UI_QUAD_TEX_MAX, UI_QUAD_MIN}, /* BR */
+	                   {UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
+	                    UI_QUAD_TEX_MAX} /* TR */
+	               }};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+
+	/* Cleanup */
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glUseProgram(0);
+
+	restore_gl_state(&saved_state);
 }

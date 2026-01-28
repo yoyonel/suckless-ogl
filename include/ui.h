@@ -17,6 +17,7 @@ typedef struct {
 typedef struct {
 	GLuint texture;
 	Shader* shader;
+	Shader* spinner_shader;
 	GLuint vao, vbo;
 	GlyphInfo
 	    cdata[ASCII_CHAR_COUNT];  // Pour les caractères ASCII 32 à 126
@@ -50,5 +51,8 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height);
+void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
+                     float size, float angle, const vec3 color,
+                     int screen_width, int screen_height);
 
 #endif

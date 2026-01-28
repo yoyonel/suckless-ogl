@@ -11,17 +11,9 @@
 static const uint32_t COMPUTE_GROUP_SIZE_PBR = 32;
 static const uint32_t COMPUTE_GROUP_SIZE_LUM = 16;
 
-GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
-                                      int width, int height, float threshold)
+GLuint pbr_prefilter_init(int width, int height)
 {
-	if (shader == 0) {
-		return 0;
-	}
-
 	GLuint spec_tex = 0;
-	HYBRID_FUNC_TIMER("IBL: Prefiltered Specular Map");
-	GL_SCOPE_DEBUG_GROUP("IBL: Prefiltered Specular Map");
-
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
 
 	glGenTextures(1, &spec_tex);
@@ -36,66 +28,177 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	{
-		GL_SCOPE_USE_PROGRAM(shader);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return spec_tex;
+}
 
-		/* Explicitly set envMap sampler to unit 0 (fix for Intel/Mesa)
-		 */
-		GLint u_env_map = glGetUniformLocation(shader, "envMap");
-		if (u_env_map >= 0) {
-			glUniform1i(u_env_map, 0);
-		}
+void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
+                       int width, int height, int level, int total_levels,
+                       int slice_index, int total_slices, float threshold)
+{
+	if (shader == 0 || dest_tex == 0) {
+		return;
+	}
 
-		GLint u_roughness =
-		    glGetUniformLocation(shader, "roughnessValue");
-		GLint u_mip = glGetUniformLocation(shader, "currentMipLevel");
-		GLint u_threshold =
-		    glGetUniformLocation(shader, "clampThreshold");
+	GL_SCOPE_USE_PROGRAM(shader);
 
-		for (int level = 0; level < levels; level++) {
-			uint32_t mip_w = (uint32_t)width >> (uint32_t)level;
-			uint32_t mip_h = (uint32_t)height >> (uint32_t)level;
+	/* Set uniforms */
+	GLint u_env_map = glGetUniformLocation(shader, "envMap");
+	if (u_env_map >= 0) {
+		glUniform1i(u_env_map, 0);
+	}
 
-			if (mip_w < 1) {
-				mip_w = 1;
-			}
-			if (mip_h < 1) {
-				mip_h = 1;
-			}
+	GLint u_roughness = glGetUniformLocation(shader, "roughnessValue");
+	GLint u_mip = glGetUniformLocation(shader, "currentMipLevel");
+	GLint u_threshold = glGetUniformLocation(shader, "clampThreshold");
+	GLint u_offset_y = glGetUniformLocation(shader, "u_offset_y");
+	GLint u_max_y = glGetUniformLocation(shader, "u_max_y");
 
-			float roughness = (float)level / (float)(levels - 1);
-			if (u_roughness >= 0) {
-				glUniform1f(u_roughness, roughness);
-			}
-			if (u_mip >= 0) {
-				glUniform1i(u_mip, level);
-			}
-			if (u_threshold >= 0) {
-				glUniform1f(u_threshold, threshold);
-			}
+	uint32_t mip_w = (uint32_t)width >> (uint32_t)level;
+	uint32_t mip_h = (uint32_t)height >> (uint32_t)level;
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
+	if (mip_w < 1) {
+		mip_w = 1;
+	}
+	if (mip_h < 1) {
+		mip_h = 1;
+	}
 
-			glBindImageTexture(1, spec_tex, level, GL_FALSE, 0,
-			                   GL_WRITE_ONLY, GL_RGBA16F);
+	float roughness = (float)level / (float)(total_levels - 1);
+	if (u_roughness >= 0) {
+		glUniform1f(u_roughness, roughness);
+	}
+	if (u_mip >= 0) {
+		glUniform1i(u_mip, level);
+	}
+	if (u_threshold >= 0) {
+		glUniform1f(u_threshold, threshold);
+	}
 
-			uint32_t groups_x =
-			    (mip_w + (COMPUTE_GROUP_SIZE_PBR - 1)) /
-			    COMPUTE_GROUP_SIZE_PBR;
-			uint32_t groups_y =
-			    (mip_h + (COMPUTE_GROUP_SIZE_PBR - 1)) /
-			    COMPUTE_GROUP_SIZE_PBR;
+	int lines_per_slice = ((int)mip_h + total_slices - 1) / total_slices;
+	int y_start = slice_index * lines_per_slice;
+	int y_end = y_start + lines_per_slice;
+	if (y_end > (int)mip_h) {
+		y_end = (int)mip_h;
+	}
+	int actual_lines = y_end - y_start;
 
-			glDispatchCompute(groups_x, groups_y, 1);
-			glMemoryBarrier(GL_ALL_BARRIER_BITS);
-		}
+	if (actual_lines <= 0) {
+		return;
+	}
+
+	if (u_offset_y >= 0) {
+		glUniform1i(u_offset_y, y_start);
+	}
+	if (u_max_y >= 0) {
+		glUniform1i(u_max_y, y_end);
 	}
 
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
+
+	glBindImageTexture(1, dest_tex, level, GL_FALSE, 0, GL_WRITE_ONLY,
+	                   GL_RGBA16F);
+
+	uint32_t groups_x =
+	    (mip_w + (COMPUTE_GROUP_SIZE_PBR - 1)) / COMPUTE_GROUP_SIZE_PBR;
+	uint32_t groups_y =
+	    ((uint32_t)actual_lines + (COMPUTE_GROUP_SIZE_PBR - 1)) /
+	    COMPUTE_GROUP_SIZE_PBR;
+
+	glDispatchCompute(groups_x, groups_y, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
+                                      int width, int height, float threshold)
+{
+	if (shader == 0) {
+		return 0;
+	}
+
+	HYBRID_FUNC_TIMER("IBL: Prefiltered Specular Map");
+	GL_SCOPE_DEBUG_GROUP("IBL: Prefiltered Specular Map");
+
+	GLuint spec_tex = pbr_prefilter_init(width, height);
+	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
+
+	for (int level = 0; level < levels; level++) {
+		pbr_prefilter_mip(shader, env_hdr_tex, spec_tex, width, height,
+		                  level, levels, 0, 1, threshold);
+	}
 
 	return spec_tex;
+}
+
+GLuint pbr_irradiance_init(int size)
+{
+	GLuint irr_tex = 0;
+	glGenTextures(1, &irr_tex);
+	glBindTexture(GL_TEXTURE_2D, irr_tex);
+	glObjectLabel(GL_TEXTURE, irr_tex, -1, "Irradiance Map");
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, size, size);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return irr_tex;
+}
+
+void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
+                                  GLuint dest_tex, int size, int slice_index,
+                                  int total_slices, float threshold)
+{
+	if (shader == 0 || dest_tex == 0 || total_slices <= 0) {
+		return;
+	}
+
+	GL_SCOPE_USE_PROGRAM(shader);
+	GLint u_threshold = glGetUniformLocation(shader, "clamp_threshold");
+	if (u_threshold >= 0) {
+		glUniform1f(u_threshold, threshold);
+	}
+
+	GLint u_offset_y = glGetUniformLocation(shader, "u_offset_y");
+	int lines_per_slice = (size + total_slices - 1) / total_slices;
+	int y_start = slice_index * lines_per_slice;
+	int y_end = y_start + lines_per_slice;
+	if (y_end > size) {
+		y_end = size;
+	}
+	int actual_lines = y_end - y_start;
+
+	if (actual_lines <= 0) {
+		return;
+	}
+
+	GLint u_max_y = glGetUniformLocation(shader, "u_max_y");
+	if (u_max_y >= 0) {
+		glUniform1i(u_max_y, y_end);
+	}
+
+	if (u_offset_y >= 0) {
+		glUniform1i(u_offset_y, y_start);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
+	glBindImageTexture(1, dest_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY,
+	                   GL_RGBA16F);
+
+	int groups_x = (size + (int)COMPUTE_GROUP_SIZE_PBR - 1) /
+	               (int)COMPUTE_GROUP_SIZE_PBR;
+	int groups_y = (actual_lines + (int)COMPUTE_GROUP_SIZE_PBR - 1) /
+	               (int)COMPUTE_GROUP_SIZE_PBR;
+
+	glDispatchCompute(groups_x, groups_y, 1);
+	glMemoryBarrier(GL_ALL_BARRIER_BITS);
 }
 
 GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
