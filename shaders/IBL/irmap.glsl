@@ -6,6 +6,8 @@ layout(binding = 0) uniform sampler2D envMap;
 layout(binding = 1, rgba16f) restrict writeonly uniform image2D irradianceMap;
 
 uniform float clamp_threshold;
+uniform int u_offset_y;
+uniform int u_max_y;
 
 const float PI = 3.14159265359;
 const float TWO_PI = 2.0 * PI;
@@ -55,11 +57,13 @@ vec3 soft_clamp_smoothstep(vec3 color)
 void main(void)
 {
 	ivec2 outSize = imageSize(irradianceMap);
-	if (gl_GlobalInvocationID.x >= outSize.x ||
-	    gl_GlobalInvocationID.y >= outSize.y)
+	ivec2 pos = ivec2(gl_GlobalInvocationID.x,
+	                  gl_GlobalInvocationID.y + u_offset_y);
+
+	if (pos.x >= outSize.x || pos.y >= outSize.y || pos.y >= u_max_y)
 		return;
 
-	vec2 uv = vec2(gl_GlobalInvocationID.xy) / vec2(outSize);
+	vec2 uv = vec2(pos) / vec2(outSize);
 	vec3 N = normalize(uvToDir(uv));
 
 	vec3 irradiance = vec3(0.0);
@@ -105,6 +109,5 @@ void main(void)
 		irradiance = vec3(0.0);
 	irradiance = max(irradiance, vec3(0.0));
 
-	imageStore(irradianceMap, ivec2(gl_GlobalInvocationID.xy),
-	           vec4(irradiance, 1.0));
+	imageStore(irradianceMap, pos, vec4(irradiance, 1.0));
 }

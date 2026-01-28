@@ -1,9 +1,15 @@
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE  // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
+#endif
 #include "log.h"
 
 #include "utils.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
 #include <time.h>  // IWYU pragma: keep
+#include <unistd.h>
 
 enum {
 	MILLI_DIVISOR = 1000000,
@@ -42,8 +48,11 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	               tm_info);
 
 	char prefix[PREFIX_BUFFER_SIZE];
-	(void)safe_snprintf(prefix, sizeof(prefix), "%s,%03ld - %s - %-5s - ",
-	                    time_buf, ts_now.tv_nsec / MILLI_DIVISOR, tag,
+	pid_t pid = getpid();
+	long tid = syscall(SYS_gettid);
+	(void)safe_snprintf(prefix, sizeof(prefix),
+	                    "%s,%03ld [%d:%ld] - %s - %-5s - ", time_buf,
+	                    ts_now.tv_nsec / MILLI_DIVISOR, pid, tid, tag,
 	                    level_to_string(level));
 
 	FILE* out = (level == LOG_LEVEL_ERROR) ? stderr : stdout;

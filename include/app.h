@@ -12,11 +12,36 @@
 #include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
+#include "perf_timer.h"
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
 #include "ui.h"
 #include <cglm/cglm.h>
+
+typedef enum {
+	IBL_STATE_IDLE = 0,
+	IBL_STATE_LUMINANCE,
+	IBL_STATE_SPECULAR_INIT,
+	IBL_STATE_SPECULAR_MIPS,
+	IBL_STATE_IRRADIANCE,
+	IBL_STATE_DONE
+} IBLState;
+
+typedef struct {
+	IBLState state;
+	int current_mip;
+	int total_mips;
+	int width;
+	int height;
+	float threshold;
+	GLuint pending_hdr_tex;
+	GLuint pending_spec_tex;
+	GLuint pending_irr_tex;
+	int current_slice;
+	int total_slices;
+	PerfTimer global_timer;
+} IBLContext;
 
 typedef struct {
 	/* 8-byte aligned fields (Pointers, doubles) */
@@ -26,6 +51,7 @@ typedef struct {
 	double last_mouse_y;
 	double last_frame_time;
 	double delta_time;
+	uint64_t frame_count;
 	Shader* pbr_instanced_shader;
 	Shader* pbr_billboard_shader;
 	Shader* debug_shader;
@@ -41,6 +67,7 @@ typedef struct {
 	BillboardGroup billboard_group;
 	Skybox skybox;
 	Camera camera;
+	IBLContext ibl_ctx;
 
 	/* 4-byte fields (int, float, GLuint) */
 	int width;
@@ -63,6 +90,7 @@ typedef struct {
 	int show_debug_tex;
 	int hdr_count;
 	int current_hdr_index;
+	int env_map_loading;
 
 	GLuint sphere_vao;
 	GLuint sphere_vbo;

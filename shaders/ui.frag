@@ -9,13 +9,16 @@ uniform int useTexture;  // 1 = Text (Atlas), 0 = Solid Rect
 
 void main()
 {
-	float alpha = 1.0;
-
 	if (useTexture != 0) {
-		alpha = texture(text, TexCoords).r;
-		if (alpha < 0.1)
-			discard;
+		/* Font Atlas or Image */
+		float a = texture(text, TexCoords).r;
+		/* Simple alpha text */
+		color = vec4(textColor, a);
+	} else {
+		/* Solid Rect */
+		color = vec4(textColor, 1.0);
 	}
 
-	color = vec4(textColor, alpha);
+	if (color.a < 0.1)
+		discard;
 }

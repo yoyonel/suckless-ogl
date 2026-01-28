@@ -14,6 +14,9 @@ layout(location = 0) uniform float roughnessValue;
 layout(location = 1) uniform int currentMipLevel;
 layout(location = 2) uniform float clampThreshold;
 
+layout(location = 3) uniform int u_offset_y;
+layout(location = 4) uniform int u_max_y;
+
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 
 // Convertit un vecteur directionnel en coordonnées UV équirectangulaires
@@ -71,13 +74,15 @@ vec3 tangentToWorld(const vec3 v, const vec3 N, const vec3 S, const vec3 T)
 void main(void)
 {
 	ivec2 outputSize = imageSize(prefilteredEnvMap);
-	if (gl_GlobalInvocationID.x >= outputSize.x ||
-	    gl_GlobalInvocationID.y >= outputSize.y)
+	ivec2 pos = ivec2(gl_GlobalInvocationID.x,
+	                  gl_GlobalInvocationID.y + u_offset_y);
+
+	if (pos.x >= outputSize.x || pos.y >= outputSize.y || pos.y >= u_max_y)
 		return;
 
 	// Calcul de la direction N à partir des coordonnées de l'image de
 	// sortie
-	vec2 st = vec2(gl_GlobalInvocationID.xy) / vec2(outputSize);
+	vec2 st = vec2(pos) / vec2(outputSize);
 	float phi = (st.x - 0.5) * TwoPI;
 	float theta = (st.y - 0.5) * PI;
 
@@ -149,6 +154,5 @@ void main(void)
 	/* Force clamp to prevent INF/MAX_FLOAT issues in the texture */
 	resultColor.rgb = min(resultColor.rgb, vec3(65500.0));
 
-	imageStore(prefilteredEnvMap, ivec2(gl_GlobalInvocationID.xy),
-	           resultColor);
+	imageStore(prefilteredEnvMap, pos, resultColor);
 }

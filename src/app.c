@@ -52,11 +52,28 @@ static const float GRAPH_TEXT_PADDING = 20.0F;
 static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
 static const float LUMINANCE_EPSILON = 0.0001F;
 static const float DEBUG_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 4.0F;
+static const int IBL_LOG_LABEL_SIZE = 128;
 static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
 static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
 static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
+// SLICING constants for IBL loading
+static const int IRRADIANCE_MAP_SLICES = 4;
+static const int SPECULAR_MIP0_SLICES = 4;
+static const int SPECULAR_MIP1_SLICES = 2;
+static const int SPECULAR_MIPS_GROUPING_START = 3;
+
+/* UI Animation Constants */
+static const double UI_SPINNER_SPEED = 10.0;
+static const float UI_LOADING_TEXT_WIDTH_FACTOR =
+    20.0F; /* Font Size 32 * 0.6 ~ 19.2 */
+static const float UI_SPINNER_SIZE = 64.0F;
+static const float UI_CENTER_FACTOR = 0.5F;
+static const float UI_TEXT_OFFSET_FACTOR = 0.8F;
+static const vec3 UI_SPINNER_COLOR = {90.0F / 255.0F, 111.0F / 255.0F,
+                                      185.0F / 255.0F};
+static const size_t UI_LOADING_TEXT_SIZE = 64;
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -70,7 +87,7 @@ static void framebuffer_size_callback(GLFWwindow* window, int width,
 static void app_toggle_fullscreen(App* app, GLFWwindow* window);
 static void app_save_raw_frame(App* app, const char* filename);
 static void app_scan_hdr_files(App* app);
-static int app_load_env_map(const char* filename);
+static int app_load_env_map(App* app, const char* filename);
 static void app_draw_help_overlay(App* app);
 static void app_draw_debug_overlay(App* app);
 static void draw_exposure_debug_text(App* app);
@@ -80,6 +97,7 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum);
 static void app_update_instancing_mode(App* app);
+static void app_process_ibl_state_machine(App* app);
 
 static int compare_strings(const void* string_a, const void* string_b)
 {
@@ -111,19 +129,21 @@ static void app_scan_hdr_files(App* app)
 		}
 		closedir(dir_handle);
 
-		/* Sort files alphabetically for deterministic order */
+		/* Sort files alphabetically for deterministic
+		 * order */
 		if (app->hdr_count > 1) {
 			qsort(app->hdr_files, app->hdr_count, sizeof(char*),
 			      compare_strings);
 		}
 	} else {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open assets/textures/hdr directory!");
+		          "Failed to open assets/textures/hdr "
+		          "directory!");
 	}
 	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
 }
 
-static int app_load_env_map(const char* filename)
+static int app_load_env_map(App* app, const char* filename)
 {
 	char path[MAX_PATH_LENGTH];
 	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
@@ -131,6 +151,7 @@ static int app_load_env_map(const char* filename)
 
 	LOG_INFO("suckless-ogl.app", "Queuing async load for: %s", path);
 	if (async_loader_request(path)) {
+		app->env_map_loading = 1; /* Set loading flag */
 		return 1;
 	}
 	LOG_WARN("suckless-ogl.app",
@@ -222,7 +243,8 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app_scan_hdr_files(app);
 	if (app->hdr_count > 0) {
-		/* Try to find 'env.hdr' as default, otherwise pick first */
+		/* Try to find 'env.hdr' as default, otherwise
+		 * pick first */
 		int default_idx = 0;
 		for (int i = 0; i < app->hdr_count; i++) {
 			if (strcmp(app->hdr_files[i], "env.hdr") == 0) {
@@ -231,10 +253,11 @@ int app_init(App* app, int width, int height, const char* title)
 			}
 		}
 		app->current_hdr_index = default_idx;
-		app_load_env_map(app->hdr_files[default_idx]);
+		app_load_env_map(app, app->hdr_files[default_idx]);
 	} else {
 		LOG_ERROR("suckless-ogl.init",
-		          "No HDR files found in assets/textures/hdr/!");
+		          "No HDR files found in "
+		          "assets/textures/hdr/!");
 	}
 
 	app->u_metallic = DEFAULT_METALLIC;
@@ -417,7 +440,8 @@ void app_init_ssbo(App* app)
 
 	/* Debug : vérifier la première instance */
 	LOG_DEBUG("suckless-ogl.ssbo",
-	          "First instance - pos: (%.2f, %.2f, %.2f), albedo: (%.2f, "
+	          "First instance - pos: (%.2f, %.2f, %.2f), "
+	          "albedo: (%.2f, "
 	          "%.2f, %.2f)",
 	          data[0].model[3][0], data[0].model[3][1], data[0].model[3][2],
 	          data[0].albedo[0], data[0].albedo[1], data[0].albedo[2]);
@@ -442,12 +466,14 @@ void app_init_instancing(App* app)
 	const float grid_w = (float)(cols - 1) * spacing;
 	const float grid_h = (float)(rows - 1) * spacing;
 
-	// 2. Allocation temporaire pour le transfert (alignée pour SIMD/AVX)
+	// 2. Allocation temporaire pour le transfert (alignée
+	// pour SIMD/AVX)
 	SphereInstance* data = NULL;
 	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
 	                   sizeof(SphereInstance) * (size_t)total_count) != 0) {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate aligned memory for instancing");
+		          "Failed to allocate aligned memory "
+		          "for instancing");
 		return;
 	}
 
@@ -455,7 +481,8 @@ void app_init_instancing(App* app)
 		const int grid_x = i % cols;
 		const int grid_y = i / cols;
 
-		// Calcul de la matrice Model (Logique de centrage reproduite)
+		// Calcul de la matrice Model (Logique de
+		// centrage reproduite)
 		glm_mat4_identity(data[i].model);
 
 		const float pos_x = ((float)grid_x * spacing) -
@@ -467,8 +494,8 @@ void app_init_instancing(App* app)
 		// NOLINTNEXTLINE(misc-include-cleaner)
 		glm_translate(data[i].model, position);
 
-		// Récupération des propriétés du matériau depuis la
-		// bibliothèque
+		// Récupération des propriétés du matériau
+		// depuis la bibliothèque
 		PBRMaterial* mat = &app->material_lib->materials[i];
 
 		glm_vec3_copy(mat->albedo, data[i].albedo);
@@ -477,15 +504,18 @@ void app_init_instancing(App* app)
 		data[i].ao = 1.0F;  // Valeur par défaut
 	}
 
-	// 3. Initialisation du groupe (Transfert VBO Instance + Création VAO)
+	// 3. Initialisation du groupe (Transfert VBO Instance +
+	// Création VAO)
 	instanced_group_init(&app->instanced_group, data, total_count);
 
 	// 4. Premier lien avec la géométrie actuelle
-	// Note: on utilise les noms de buffers de ton app.h (sphere_vbo, etc.)
+	// Note: on utilise les noms de buffers de ton app.h
+	// (sphere_vbo, etc.)
 	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
 	                          app->sphere_nbo, app->sphere_ebo);
 
-	/* Initialize Billboard Group as well (shares the same data) */
+	/* Initialize Billboard Group as well (shares the same
+	 * data) */
 	billboard_group_init(&app->billboard_group, data, total_count);
 	billboard_group_prepare(&app->billboard_group, app->quad_vbo);
 
@@ -494,7 +524,8 @@ void app_init_instancing(App* app)
 
 static void app_update_instancing_mode(App* app)
 {
-	/* No longer needed as we have separate groups initialized */
+	/* No longer needed as we have separate groups
+	 * initialized */
 	(void)app;
 }
 
@@ -525,8 +556,8 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 
 	// Draw Quads Instanced
 	// Draw Quads Instanced
-	// 4 vertices per quad (Triangle Strip) is handled inside
-	// billboard_rendering
+	// 4 vertices per quad (Triangle Strip) is handled
+	// inside billboard_rendering
 	billboard_group_draw(&app->billboard_group);
 }
 
@@ -624,6 +655,7 @@ void app_run(App* app)
 	int last_subdiv = -1;
 
 	while (!glfwWindowShouldClose(app->window)) {
+		app->frame_count++;
 		double current_time = glfwGetTime();
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
@@ -639,17 +671,20 @@ void app_run(App* app)
 			size_t count = adaptive_sampler_get_sample_count(
 			    &app->fps_sampler);
 			LOG_INFO("suckless-ogl.sampler",
-			         "Window Finished. Samples: %zu, Avg FPS: %.2f",
+			         "Window Finished. Samples: "
+			         "%zu, Avg FPS: %.2f",
 			         count, avg);
 			adaptive_sampler_reset(&app->fps_sampler, current_time);
 		}
 
-		/* Mettre à jour le temps pour le post-processing (grain animé)
+		/* Mettre à jour le temps pour le
+		 * post-processing (grain animé)
 		 */
 		postprocess_update_time(&app->postprocess,
 		                        (float)app->delta_time);
 
-		// 1. Mise à jour de la physique (clavier) avec fixed timestep
+		// 1. Mise à jour de la physique (clavier) avec
+		// fixed timestep
 		app->camera.physics_accumulator += (float)app->delta_time;
 		while (app->camera.physics_accumulator >=
 		       app->camera.fixed_timestep) {
@@ -670,7 +705,8 @@ void app_run(App* app)
 		// 3. Mise à jour des vecteurs de la caméra
 		camera_update_vectors(&app->camera);
 
-		/* Regenerate icosphere if subdivision level changed */
+		/* Regenerate icosphere if subdivision level
+		 * changed */
 		if (app->subdivisions != last_subdiv) {
 			icosphere_generate(&app->geometry, app->subdivisions);
 
@@ -700,7 +736,11 @@ void app_run(App* app)
 
 static void app_finalize_environment_load(App* app, AsyncRequest* req)
 {
-	LOG_INFO("suckless-ogl.app", "Async load completed for: %s", req->path);
+	LOG_INFO("suckless-ogl.app",
+	         "[Frame %llu] Async load completed for: %s, "
+	         "starting "
+	         "progressive IBL",
+	         (unsigned long long)app->frame_count, req->path);
 
 	/* 1. Upload to GPU */
 	GLuint new_hdr_tex = 0;
@@ -710,60 +750,220 @@ static void app_finalize_environment_load(App* app, AsyncRequest* req)
 		    texture_upload_hdr(req->data, req->width, req->height);
 	}
 
-	stbi_image_free(req->data); /* We own the data from async
-	                              loader now */
+	stbi_image_free(req->data);
 
 	if (new_hdr_tex) {
-		GL_SCOPE_DEBUG_GROUP("IBL Generation (Async Load Finish)");
+		/* Reset Context for Progressive IBL */
+		app->ibl_ctx.state = IBL_STATE_LUMINANCE;
+		app->ibl_ctx.pending_hdr_tex = new_hdr_tex;
+		app->ibl_ctx.width = req->width;
+		app->ibl_ctx.height = req->height;
+		app->ibl_ctx.current_mip = 0;
+		app->ibl_ctx.total_mips = 0;
+		app->ibl_ctx.threshold = 0.0F;
 
-		/* 2. Replace old texture */
-		if (app->hdr_texture) {
-			glDeleteTextures(1, &app->hdr_texture);
-		}
-		app->hdr_texture = new_hdr_tex;
+		/* We don't delete old textures yet to keep the
+		 * scene active */
+	}
+}
 
-		/* 3. Re-run generation pipeline */
-		if (app->spec_prefiltered_tex) {
-			glDeleteTextures(1, &app->spec_prefiltered_tex);
-		}
-		if (app->irradiance_tex) {
-			glDeleteTextures(1, &app->irradiance_tex);
-		}
+// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+static void app_process_ibl_state_machine(App* app)
+{
+	IBLContext* ctx = &app->ibl_ctx;
+	if (ctx->state == IBL_STATE_IDLE) {
+		return;
+	}
 
-		float auto_threshold = 0.0F;
-		HYBRID_MEASURE_LOG("Luminance Compute")
-		{
-			auto_threshold = compute_mean_luminance_gpu(
-			    app->shader_lum_pass1, app->shader_lum_pass2,
-			    app->hdr_texture, req->width, req->height,
-			    DEFAULT_CLAMP_MULTIPLIER);
-		}
+	switch (ctx->state) {
+		case IBL_STATE_LUMINANCE: {
+			perf_timer_start(&ctx->global_timer);
+			HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
+			{
+				LOG_INFO("suckless-ogl.app",
+				         "[Frame %llu] - "
+				         "Luminance...",
+				         (unsigned long long)app->frame_count);
+				ctx->threshold = compute_mean_luminance_gpu(
+				    app->shader_lum_pass1,
+				    app->shader_lum_pass2, ctx->pending_hdr_tex,
+				    ctx->width, ctx->height,
+				    DEFAULT_CLAMP_MULTIPLIER);
+			}
 
-		if (auto_threshold < 1.0F || isnan(auto_threshold) ||
-		    isinf(auto_threshold)) {
-			auto_threshold = DEFAULT_AUTO_THRESHOLD;
-		}
-		app->auto_threshold = auto_threshold;
-
-		HYBRID_MEASURE_LOG("Specular Map")
-		{
-			app->spec_prefiltered_tex =
-			    build_prefiltered_specular_map(
-			        app->shader_spmap, app->hdr_texture,
-			        PREFILTERED_SPECULAR_MAP_SIZE,
-			        PREFILTERED_SPECULAR_MAP_SIZE, auto_threshold);
-		}
-
-		HYBRID_MEASURE_LOG("Irradiance Map")
-		{
-			app->irradiance_tex = build_irradiance_map(
-			    app->shader_irmap, app->hdr_texture,
-			    IRIDIANCE_MAP_SIZE, auto_threshold);
+			if (ctx->threshold < 1.0F || isnan(ctx->threshold) ||
+			    isinf(ctx->threshold)) {
+				ctx->threshold = DEFAULT_AUTO_THRESHOLD;
+			}
+			app->auto_threshold = ctx->threshold;
+			ctx->state = IBL_STATE_SPECULAR_INIT;
+			break;
 		}
 
-		postprocess_set_exposure(&app->postprocess, auto_threshold);
-		LOG_INFO("suckless-ogl.app",
-		         "Environment updated successfully.");
+		case IBL_STATE_SPECULAR_INIT: {
+			LOG_INFO("suckless-ogl.app",
+			         "[Frame %llu] - Specular Init...",
+			         (unsigned long long)app->frame_count);
+			ctx->pending_spec_tex =
+			    pbr_prefilter_init(PREFILTERED_SPECULAR_MAP_SIZE,
+			                       PREFILTERED_SPECULAR_MAP_SIZE);
+			ctx->total_mips =
+			    (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
+			ctx->current_mip = 0;
+			ctx->current_slice = 0;
+			ctx->state = IBL_STATE_SPECULAR_MIPS;
+			break;
+		}
+
+		case IBL_STATE_SPECULAR_MIPS: {
+			if (ctx->current_mip >= SPECULAR_MIPS_GROUPING_START) {
+				// constant
+				/* Group remaining small mips into one frame */
+				char label[IBL_LOG_LABEL_SIZE];
+				safe_snprintf(
+				    label, sizeof(label),
+				    "Progressive IBL: Specular Mips %d-%d",
+				    ctx->current_mip, ctx->total_mips - 1);
+				LOG_INFO("suckless-ogl.app",
+				         "[Frame %llu] - %s...",
+				         (unsigned long long)app->frame_count,
+				         label);
+
+				HYBRID_MEASURE_LOG(label)
+				{
+					for (int mip = ctx->current_mip;
+					     mip < ctx->total_mips; ++mip) {
+						pbr_prefilter_mip(
+						    app->shader_spmap,
+						    ctx->pending_hdr_tex,
+						    ctx->pending_spec_tex,
+						    PREFILTERED_SPECULAR_MAP_SIZE,
+						    PREFILTERED_SPECULAR_MAP_SIZE,
+						    mip, ctx->total_mips, 0, 1,
+						    ctx->threshold);
+					}
+				}
+				/* Jump to next state immediately */
+				ctx->current_mip = ctx->total_mips;
+			} else {
+				/* Standard Sliced/Single Mip Processing */
+				if (ctx->current_mip == 0) {
+					ctx->total_slices =
+					    SPECULAR_MIP0_SLICES;
+				} else if (ctx->current_mip == 1) {
+					ctx->total_slices =
+					    SPECULAR_MIP1_SLICES;
+				} else {
+					ctx->total_slices = 1;
+				}
+
+				char label[IBL_LOG_LABEL_SIZE];
+				safe_snprintf(label, sizeof(label),
+				              "Progressive IBL: Specular Mip "
+				              "%d Slice %d/%d",
+				              ctx->current_mip,
+				              ctx->current_slice + 1,
+				              ctx->total_slices);
+				LOG_INFO("suckless-ogl.app",
+				         "[Frame %llu] - %s...",
+				         (unsigned long long)app->frame_count,
+				         label);
+				HYBRID_MEASURE_LOG(label)
+				{
+					pbr_prefilter_mip(
+					    app->shader_spmap,
+					    ctx->pending_hdr_tex,
+					    ctx->pending_spec_tex,
+					    PREFILTERED_SPECULAR_MAP_SIZE,
+					    PREFILTERED_SPECULAR_MAP_SIZE,
+					    ctx->current_mip, ctx->total_mips,
+					    ctx->current_slice,
+					    ctx->total_slices, ctx->threshold);
+				}
+
+				ctx->current_slice++;
+				if (ctx->current_slice >= ctx->total_slices) {
+					ctx->current_slice = 0;
+					ctx->current_mip++;
+				}
+			}
+
+			if (ctx->current_mip >= ctx->total_mips) {
+				ctx->state = IBL_STATE_IRRADIANCE;
+				ctx->current_slice = 0;
+				ctx->total_slices = IRRADIANCE_MAP_SLICES;
+				ctx->pending_irr_tex =
+				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
+			}
+			break;
+		}
+
+		case IBL_STATE_IRRADIANCE: {
+			char label[IBL_LOG_LABEL_SIZE];
+			safe_snprintf(label, sizeof(label),
+			              "Progressive IBL: "
+			              "Irradiance Slice %d/%d",
+			              ctx->current_slice + 1,
+			              ctx->total_slices);
+
+			LOG_INFO("suckless-ogl.app", "[Frame %llu] - %s...",
+			         (unsigned long long)app->frame_count, label);
+
+			HYBRID_MEASURE_LOG(label)
+			{
+				pbr_irradiance_slice_compute(
+				    app->shader_irmap, ctx->pending_hdr_tex,
+				    ctx->pending_irr_tex, IRIDIANCE_MAP_SIZE,
+				    ctx->current_slice, ctx->total_slices,
+				    ctx->threshold);
+			}
+
+			ctx->current_slice++;
+			if (ctx->current_slice >= ctx->total_slices) {
+				ctx->state = IBL_STATE_DONE;
+			}
+			break;
+		}
+
+		case IBL_STATE_DONE: {
+			postprocess_set_exposure(&app->postprocess,
+			                         ctx->threshold);
+
+			/* Swap Textures */
+			if (app->hdr_texture) {
+				glDeleteTextures(1, &app->hdr_texture);
+			}
+			if (app->spec_prefiltered_tex) {
+				glDeleteTextures(1, &app->spec_prefiltered_tex);
+			}
+			if (app->irradiance_tex) {
+				glDeleteTextures(1, &app->irradiance_tex);
+			}
+
+			app->hdr_texture = ctx->pending_hdr_tex;
+			app->spec_prefiltered_tex = ctx->pending_spec_tex;
+			app->irradiance_tex = ctx->pending_irr_tex;
+
+			ctx->pending_hdr_tex = 0;
+			ctx->pending_spec_tex = 0;
+			ctx->pending_irr_tex = 0;
+			ctx->state = IBL_STATE_IDLE;
+
+			double total_time_ms =
+			    perf_timer_elapsed_ms(&ctx->global_timer);
+
+			LOG_INFO(
+			    "suckless-ogl.app",
+			    "[Frame %llu] Environment updated successfully "
+			    "(progressive). Total Time: %.2f ms (CPU Wall "
+			    "Clock)",
+			    (unsigned long long)app->frame_count,
+			    total_time_ms);
+			break;
+		}
+
+		default:
+			break;
 	}
 }
 
@@ -771,8 +971,11 @@ void app_update(App* app)
 {
 	AsyncRequest req;
 	if (async_loader_poll(&req)) {
+		app->env_map_loading = 0; /* Clear loading flag */
 		app_finalize_environment_load(app, &req);
 	}
+
+	app_process_ibl_state_machine(app);
 }
 
 void app_update_gpu_buffers(App* app)
@@ -804,11 +1007,13 @@ void app_update_gpu_buffers(App* app)
 
 void app_render(App* app)
 {
-	/* Commencer le rendu dans le framebuffer de post-processing */
+	/* Commencer le rendu dans le framebuffer de
+	 * post-processing */
 	postprocess_begin(&app->postprocess);
 
 	/* Explicitly clear color and depth.
-	   Many Intel drivers perform better with color clear than without it.
+	   Many Intel drivers perform better with color clear
+	   than without it.
 	 */
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 	/* glClear handled by postprocess_begin */
@@ -857,8 +1062,8 @@ void app_render(App* app)
 	glm_mat4_mul(proj, view_no_translation, inv_view_proj);
 	glm_mat4_inv(inv_view_proj, inv_view_proj);
 
-	/* 1. Render icosphere or billboards FIRST (populates depth buffer for
-	 * early-Z culling) */
+	/* 1. Render icosphere or billboards FIRST (populates
+	 * depth buffer for early-Z culling) */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
 
 	if (app->billboard_mode) {
@@ -867,16 +1072,17 @@ void app_render(App* app)
 		app_render_instanced(app, view, proj, camera_pos);
 	}
 
-	/* 2. Render skybox LAST (using LEQUAL to fill background) */
+	/* 2. Render skybox LAST (using LEQUAL to fill
+	 * background) */
 	if (app->show_envmap) {
-		/* We always use FILL for the skybox regardless of wireframe
-		 * mode */
+		/* We always use FILL for the skybox regardless
+		 * of wireframe mode */
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		skybox_render(&app->skybox, app->skybox_shader,
 		              app->hdr_texture, inv_view_proj, app->env_lod);
 	}
 
-	/* 3. Post-processing */
+	/* 4. Post-processing */
 	postprocess_end(&app->postprocess);
 
 	/* Update Matrices for next frame (Velocity Buffer) */
@@ -1113,9 +1319,11 @@ void app_render_ui(App* app)
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
-	/* Conditional text overlay rendering based on text_overlay_mode */
-	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2: FPS+Position+Envmap,
-	 * Mode 3: FPS+Position+Envmap+Exposure */
+	/* Conditional text overlay rendering based on
+	 * text_overlay_mode */
+	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2:
+	 * FPS+Position+Envmap, Mode 3:
+	 * FPS+Position+Envmap+Exposure */
 
 	/* 1. FPS - shown in modes 1, 2, 3 */
 	if (app->text_overlay_mode >= 1) {
@@ -1157,15 +1365,18 @@ void app_render_ui(App* app)
 			                    "Sampled Avg: %.2f", sampled_avg);
 			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
 
-			/* Split lines manually to avoid newline issues */
+			/* Split lines manually to avoid newline
+			 * issues */
 			char* newline_ptr = strchr(sampler_buf, '\n');
 			if (newline_ptr) {
 				*newline_ptr = '\0';
-				ui_layout_text(
-				    &layout, sampler_buf,
-				    DEFAULT_FONT_COLOR); /* Timeline markers */
+				ui_layout_text(&layout, sampler_buf,
+				               DEFAULT_FONT_COLOR); /* Timeline
+				                                       markers
+				                                     */
 				ui_layout_text(&layout, newline_ptr + 1,
-				               DEFAULT_FONT_COLOR); /* Graph */
+				               DEFAULT_FONT_COLOR); /* Graph
+				                                     */
 			} else {
 				ui_layout_text(&layout, sampler_buf,
 				               DEFAULT_FONT_COLOR);
@@ -1197,10 +1408,12 @@ void app_render_ui(App* app)
 		float exposure_val = 0.0F;
 		if (postprocess_is_enabled(&app->postprocess,
 		                           POSTFX_AUTO_EXPOSURE)) {
-			/* Async Readback using PBO to avoid pipeline stall */
+			/* Async Readback using PBO to avoid
+			 * pipeline stall */
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
 
-			/* 1. Read PREVIOUS frame's data (if available) */
+			/* 1. Read PREVIOUS frame's data (if
+			 * available) */
 			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
 			                                 GL_READ_ONLY);
 			if (ptr) {
@@ -1208,7 +1421,8 @@ void app_render_ui(App* app)
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			}
 
-			/* 2. Trigger async read for CURRENT frame */
+			/* 2. Trigger async read for CURRENT
+			 * frame */
 			glBindTexture(
 			    GL_TEXTURE_2D,
 			    app->postprocess.auto_exposure_fx.exposure_tex);
@@ -1228,6 +1442,42 @@ void app_render_ui(App* app)
 		                    "Exposure: %.3f", exposure_val);
 
 		ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
+	}
+
+	/* 5. IBL Processing Indicator (Bottom-Right) */
+	/* 5. IBL Processing Indicator (Bottom-Right) */
+	if (app->ibl_ctx.state != IBL_STATE_IDLE || app->env_map_loading) {
+		char loading_text[UI_LOADING_TEXT_SIZE];
+
+		const char* status = (app->env_map_loading != 0)
+		                         ? "Loading HDR"
+		                         : "Generating IBL";
+		safe_snprintf(loading_text, sizeof(loading_text), "%s", status);
+
+		float text_width =
+		    (float)strlen(loading_text) * UI_LOADING_TEXT_WIDTH_FACTOR;
+
+		float spinner_size = UI_SPINNER_SIZE;
+
+		/* Center on screen */
+		float center_x = (float)app->width * UI_CENTER_FACTOR;
+		float center_y = (float)app->height * UI_CENTER_FACTOR;
+
+		/* Text below spinner */
+		float text_x = center_x - (text_width * UI_CENTER_FACTOR);
+		float text_y =
+		    center_y + (spinner_size * UI_TEXT_OFFSET_FACTOR);
+
+		ui_draw_text(&app->ui, loading_text, text_x, text_y,
+		             HISTO_BAR_COLOR_BLUE, app->width, app->height);
+
+		/* 2. Loading Spinner */
+		double current_time = glfwGetTime();
+		float angle = (float)current_time * (float)UI_SPINNER_SPEED;
+
+		ui_draw_spinner(&app->ui, center_x, center_y, spinner_size,
+		                angle, UI_SPINNER_COLOR, app->width,
+		                app->height);
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -1300,7 +1550,8 @@ static void handle_postprocess_input(App* app, int key)
 			}
 			break;
 
-		case GLFW_KEY_M: /* Toggle Motion Blur / Debug */
+		case GLFW_KEY_M: /* Toggle Motion Blur / Debug
+		                  */
 			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
 			        GLFW_PRESS ||
 			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
@@ -1493,7 +1744,7 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 			app->current_hdr_index =
 			    (app->current_hdr_index + 1) % app->hdr_count;
 			app_load_env_map(
-			    app->hdr_files[app->current_hdr_index]);
+			    app, app->hdr_files[app->current_hdr_index]);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
@@ -1509,7 +1760,7 @@ static void app_handle_env_input(App* app, int action, int mods, int key)
 				app->current_hdr_index = app->hdr_count - 1;
 			}
 			app_load_env_map(
-			    app->hdr_files[app->current_hdr_index]);
+			    app, app->hdr_files[app->current_hdr_index]);
 		}
 	}
 }
@@ -1526,12 +1777,16 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			case GLFW_KEY_ESCAPE:
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			case GLFW_KEY_F1: /* Cycle Text Overlays */
+			case GLFW_KEY_F1: /* Cycle Text Overlays
+			                   */
 			{
 				static const char* mode_names[] = {
 				    "Off", "FPS + Position",
-				    "FPS + Position + Envmap",
-				    "FPS + Position + Envmap + ", "Exposure"};
+				    "FPS + Position + "
+				    "Envmap",
+				    "FPS + Position + "
+				    "Envmap + ",
+				    "Exposure"};
 				static const int mode_count =
 				    sizeof(mode_names) / sizeof(mode_names[0]);
 
