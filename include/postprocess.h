@@ -246,11 +246,16 @@ typedef struct PostProcess {
 	/* Temps pour effets animés (grain) */
 	float time;
 	float delta_time; /* Added needed for time integration */
+	/* Dummy textures for clean bindings */
+	GLuint dummy_black_tex;
+
 } PostProcess;
 
 /* Initialisation et nettoyage */
 int postprocess_init(PostProcess* post_processing, int width, int height);
 void postprocess_cleanup(PostProcess* post_processing);
+void postprocess_set_dummy_textures(PostProcess* post_processing,
+                                    GLuint dummy_black);
 
 /* Redimensionnement */
 void postprocess_resize(PostProcess* post_processing, int width, int height);

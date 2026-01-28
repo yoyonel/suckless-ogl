@@ -21,7 +21,8 @@ void skybox_init(Skybox* skybox, GLuint shader_program);
 
 /* Render the skybox */
 void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
-                   const mat4 inv_view_proj, float blur_lod);
+                   GLuint fallback_tex, const mat4 inv_view_proj,
+                   float blur_lod);
 
 /* Cleanup skybox resources */
 void skybox_cleanup(Skybox* skybox);

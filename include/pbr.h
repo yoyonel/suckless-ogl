@@ -25,6 +25,6 @@ GLuint build_brdf_lut_map(int size);
 
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier);
+                                 float clamp_multiplier, GLuint ssbos[2]);
 
 #endif /* PBR_H */

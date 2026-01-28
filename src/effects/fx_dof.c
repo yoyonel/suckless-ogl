@@ -50,6 +50,9 @@ void fx_dof_cleanup(PostProcess* post_processing)
 
 int fx_dof_resize(PostProcess* post_processing)
 {
+	/* Ensure Unit 0 is active for initial texture setup */
+	glActiveTexture(GL_TEXTURE0);
+
 	DoFFX* dof = &post_processing->dof_fx;
 
 	int dof_width = post_processing->width / 4;

@@ -63,16 +63,25 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribDivisor(0, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, nbo);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
+	glVertexAttribDivisor(1, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 
-	// -- INSTANCES (VBO Interne) --
+	/* -- INSTANCES (VBO Interne) -- */
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 	setup_instance_attributes();
+
+	/* CRITICAL: Explicitly disable and reset all higher slots (8-15)
+	 * to ensure a stable global attribute signature on NVIDIA. */
+	for (GLuint i = SYNC_ATTR_START; i < MAX_VERTEX_ATTRIBS_BASELINE; i++) {
+		glDisableVertexAttribArray(i);
+		glVertexAttribDivisor(i, 0);
+	}
 
 	glBindVertexArray(0);
 }
@@ -91,6 +100,10 @@ void instanced_group_bind_billboard(InstancedGroup* group, GLuint vbo)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribDivisor(0, 0);
+
+	/* Ensure unused attribute 1 has divisor 0 */
+	glVertexAttribDivisor(1, 0);
 
 	// Pas de normales (index 1) pour les billboards
 

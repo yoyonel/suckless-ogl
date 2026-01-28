@@ -9,6 +9,9 @@
 
 int fx_bloom_init(PostProcess* post_processing)
 {
+	/* Ensure Unit 0 is active for initial texture setup */
+	glActiveTexture(GL_TEXTURE0);
+
 	BloomFX* bloom = &post_processing->bloom_fx;
 
 	/* Load Shaders */
