@@ -77,6 +77,12 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float mb_maxVelocity;
 	int mb_samples;
 	float _pad9;
+
+	/* FXAA (16 bytes) */
+	float fxaaQualitySubpix;
+	float fxaaQualityEdgeThreshold;
+	float fxaaQualityEdgeThresholdMin;
+	float _pad10;
 };
 
 /* Compatibility Helper Macros */
@@ -92,3 +98,5 @@ layout(std140, binding = 0) uniform PostProcessBlock
 #define enableExposureDebug ((activeEffects & (1u << 9u)) != 0u)
 #define enableMotionBlur ((activeEffects & (1u << 10u)) != 0u)
 #define enableMotionBlurDebug ((activeEffects & (1u << 11u)) != 0u)
+#define enableFXAA ((activeEffects & (1u << 12u)) != 0u)
+#define enableFXAADebug ((activeEffects & (1u << 13u)) != 0u)

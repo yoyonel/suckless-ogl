@@ -1651,16 +1651,17 @@ static void handle_postprocess_input(App* app, int key)
 			}
 			break;
 
-		case GLFW_KEY_X: /* Toggle Chromatic
-		                    Aberration */
-			postprocess_toggle(&app->postprocess,
-			                   POSTFX_CHROM_ABBR);
-			LOG_INFO("suckless-ogl.app", "Chromatic Aberration: %s",
-			         postprocess_is_enabled(&app->postprocess,
-			                                POSTFX_CHROM_ABBR)
-			             ? "ON"
-			             : "OFF");
-			break;
+			// case GLFW_KEY_X: /* Toggle Chromatic
+			//                     Aberration */
+			// 	postprocess_toggle(&app->postprocess,
+			// 	                   POSTFX_CHROM_ABBR);
+			// 	LOG_INFO("suckless-ogl.app", "Chromatic
+			// Aberration: %s",
+			// 	         postprocess_is_enabled(&app->postprocess,
+			// 	                                POSTFX_CHROM_ABBR)
+			// 	             ? "ON"
+			// 	             : "OFF");
+			// 	break;
 
 		case GLFW_KEY_R: /* Reload Shaders */
 			/* TODO: Implement shader reloading
@@ -1857,6 +1858,26 @@ static void handle_app_input(App* app, int key, int mods)
 			app->show_envmap = !app->show_envmap;
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
 			         app->show_envmap ? "ON" : "OFF");
+			break;
+		case GLFW_KEY_X:
+			if (mods & GLFW_MOD_SHIFT) {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_FXAA_DEBUG);
+				LOG_INFO(
+				    "suckless-ogl.app", "FXAA Debug: %s",
+				    postprocess_is_enabled(&app->postprocess,
+				                           POSTFX_FXAA_DEBUG)
+				        ? "ON"
+				        : "OFF");
+			} else {
+				postprocess_toggle(&app->postprocess,
+				                   POSTFX_FXAA);
+				LOG_INFO("suckless-ogl.app", "FXAA: %s",
+				         postprocess_is_enabled(
+				             &app->postprocess, POSTFX_FXAA)
+				             ? "ON"
+				             : "OFF");
+			}
 			break;
 		default:
 			handle_postprocess_input(app, key);
