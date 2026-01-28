@@ -297,8 +297,8 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	return 1;
 }
 
-void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
-                  float y_pos, const vec3 color, int screen_width,
+void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
+                  float pos_y, const vec3 color, int screen_width,
                   int screen_height)
 {
 	if (ui_context == NULL || text == NULL || ui_context->shader == NULL) {
@@ -330,7 +330,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
 	// Render each character
-	float current_x = x_pos;
+	float current_x = pos_x;
 	for (const char* ptr = text; *ptr != '\0'; ptr++) {
 		const unsigned char char_code = (unsigned char)*ptr;
 
@@ -346,7 +346,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float x_pos,
 		// Calculate render position
 		const float render_x = current_x + glyph->x_off;
 		const float render_y =
-		    y_pos + glyph->y_off + FONT_BASELINE_OFFSET;
+		    pos_y + glyph->y_off + FONT_BASELINE_OFFSET;
 
 		// Generate and upload quad
 		const UIQuad quad = make_glyph_quad(glyph, render_x, render_y);
@@ -452,13 +452,13 @@ void ui_destroy(UIContext* ui_context)
 	LOG_INFO("ui", "UI system destroyed");
 }
 
-void ui_layout_init(UILayout* layout, UIContext* ui_ctx, float start_x,
-                    float start_y, float padding, int screen_width,
+void ui_layout_init(UILayout* layout, UIContext* ui_ctx, float pos_x,
+                    float pos_y, float padding, int screen_width,
                     int screen_height)
 {
 	layout->ui = ui_ctx;
-	layout->start_x = start_x;
-	layout->cursor_y = start_y;
+	layout->start_x = pos_x;
+	layout->cursor_y = pos_y;
 	layout->padding = padding;
 	layout->screen_width = screen_width;
 	layout->screen_height = screen_height;

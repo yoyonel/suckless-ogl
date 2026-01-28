@@ -714,7 +714,7 @@ static void app_finalize_environment_load(App* app, AsyncRequest* req)
 	                              loader now */
 
 	if (new_hdr_tex) {
-		GL_DEBUG_PUSH("IBL Generation (Async Load Finish)");
+		GL_SCOPE_DEBUG_GROUP("IBL Generation (Async Load Finish)");
 
 		/* 2. Replace old texture */
 		if (app->hdr_texture) {
@@ -764,8 +764,6 @@ static void app_finalize_environment_load(App* app, AsyncRequest* req)
 		postprocess_set_exposure(&app->postprocess, auto_threshold);
 		LOG_INFO("suckless-ogl.app",
 		         "Environment updated successfully.");
-
-		GL_DEBUG_POP();
 	}
 }
 
