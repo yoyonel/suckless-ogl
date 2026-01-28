@@ -33,12 +33,22 @@ void skybox_init(Skybox* skybox, GLuint shader_program)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
 	                      (void*)0);
+	glVertexAttribDivisor(0, 0);
+
+	/* CRITICAL: Explicitly disable other attributes to avoid
+	 * driver-specific recompilation heuristics */
+	static const GLuint MAX_ATTR_RECONCILE = 7;
+	for (GLuint i = 1; i <= MAX_ATTR_RECONCILE; i++) {
+		glDisableVertexAttribArray(i);
+		glVertexAttribDivisor(i, 0);
+	}
 
 	glBindVertexArray(0);
 }
 
 void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
-                   const mat4 inv_view_proj, float blur_lod)
+                   GLuint fallback_tex, const mat4 inv_view_proj,
+                   float blur_lod)
 {
 	/* Render at the far plane (z=1.0) with LEQUAL depth test */
 	glDepthFunc(GL_LEQUAL);
@@ -54,7 +64,11 @@ void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
 
 	/* Bind environment map (equirectangular) */
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, env_map);
+	if (env_map) {
+		glBindTexture(GL_TEXTURE_2D, env_map);
+	} else {
+		glBindTexture(GL_TEXTURE_2D, fallback_tex);
+	}
 	glUniform1i(skybox->u_env_map, 0);
 
 	/* Draw fullscreen quad */

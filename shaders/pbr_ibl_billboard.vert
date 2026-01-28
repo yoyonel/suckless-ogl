@@ -1,6 +1,7 @@
 #version 450 core
 
 layout(location = 0) in vec3 in_position;  // Quad vertex in local space (+-0.5)
+layout(location = 1) in vec3 in_normal;    // Synchronized slot (unused here)
 
 // Per-instance attributes (same slots as mesh rendering for compatibility)
 layout(location = 2) in mat4 i_model;   // Instance Model Matrix
@@ -8,12 +9,16 @@ layout(location = 6) in vec3 i_albedo;  // Instance Albedo
 layout(location = 7) in vec3 i_pbr;  // Instance PBR (Metallic, Roughness, AO)
 
 out vec3 WorldPos;       // Billboard Fragment World Position
+out vec3 Normal;         // Synchronized (unused, set to cam vector)
 out vec3 SphereCenter;   // Center of the sphere in World Space
 out float SphereRadius;  // Radius of the sphere
 out vec3 Albedo;
 out float Metallic;
 out float Roughness;
 out float AO;
+
+out vec4 CurrentClipPos;
+out vec4 PreviousClipPos;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -75,5 +80,11 @@ void main()
 	Roughness = i_pbr.y;
 	AO = i_pbr.z;
 
-	gl_Position = projection * view * vec4(WorldPos, 1.0);
+	// Synchronize Normal output (arbitrary vector for billboards)
+	Normal = -vec3(view[0][2], view[1][2], view[2][2]);
+
+	CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
+	PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
+
+	gl_Position = CurrentClipPos;
 }

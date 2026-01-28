@@ -108,6 +108,9 @@ typedef struct {
 	GLuint shader_lum_pass1;
 	GLuint shader_lum_pass2;
 	GLuint exposure_pbo;
+	GLuint dummy_black_tex;
+	GLuint dummy_white_tex;
+	GLuint lum_ssbo[2];
 
 	float env_lod;
 	float debug_lod;

@@ -71,9 +71,23 @@ void billboard_group_prepare(BillboardGroup* group, GLuint quad_vbo)
 	/* CRITICAL: Explicitly set divisor to 0 for geometry attributes */
 	glVertexAttribDivisor(0, 0);
 
+	/* Layout 1: Normals (unused in billboards but kept for signature
+	 * consistency) */
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(1, 0);
+
 	/* -- INSTANCES -- */
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 	setup_billboard_instance_attributes();
+
+	/* Explicitly disable and reset any higher slots that might have been
+	 * used by other shaders to keep the state "clean" for the driver.
+	 */
+	for (GLuint i = SYNC_ATTR_START; i < MAX_VERTEX_ATTRIBS_BASELINE; i++) {
+		glDisableVertexAttribArray(i);
+		glVertexAttribDivisor(i, 0);
+	}
 
 	glBindVertexArray(0);
 }

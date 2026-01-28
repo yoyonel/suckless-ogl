@@ -11,6 +11,9 @@
 
 #define BUFFER_OFFSET(offset) \
 	((void*)(uintptr_t)(offset))  // NOLINT(performance-no-int-to-ptr)
+#define MAX_VERTEX_ATTRIBS_BASELINE 16
+#define INSTANCE_ATTR_START 2
+#define SYNC_ATTR_START 8
 
 #define SCREEN_QUAD_VERTEX_COUNT 6
 

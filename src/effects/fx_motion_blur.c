@@ -68,6 +68,9 @@ void fx_motion_blur_cleanup(PostProcess* post_processing)
 
 int fx_motion_blur_resize(PostProcess* post_processing)
 {
+	/* Ensure Unit 0 is active for initial texture setup */
+	glActiveTexture(GL_TEXTURE0);
+
 	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
 
 	int tile_width =
@@ -110,7 +113,6 @@ int fx_motion_blur_resize(PostProcess* post_processing)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
 	return 1;
 }
 

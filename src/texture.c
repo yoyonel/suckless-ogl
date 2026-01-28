@@ -28,25 +28,44 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 		return 0;
 	}
 
+	/* Clear any previous sticky errors to ensure accurate results */
+	(void)glGetError();
+
 	GLuint CLEANUP_TEXTURE tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
+
+	/* Safer levels calculation to avoid edge cases */
+	int levels = 1;
+	if (width > 0 || height > 0) {
+		levels =
+		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
+	}
 
 	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-	                GL_FLOAT, data);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 4); /* Restore default */
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
 		LOG_ERROR("suckless-ogl.texture",
-		          "GL error after texture upload: 0x%x", err);
+		          "GL error after glTexStorage2D: 0x%x (levels: %d, "
+		          "size: %dx%d)",
+		          err, levels, width, height);
 		return 0;
 	}
+
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
+	                GL_FLOAT, data);
+
+	err = glGetError();
+	if (err != GL_NO_ERROR) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after glTexSubImage2D: 0x%x", err);
+		return 0;
+	}
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4); /* Restore default */
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 	                GL_LINEAR_MIPMAP_LINEAR);
@@ -55,6 +74,13 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	err = glGetError();
+	if (err != GL_NO_ERROR) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after mipmap/params: 0x%x", err);
+		return 0;
+	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

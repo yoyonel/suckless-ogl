@@ -19,19 +19,20 @@ static void pcg32_seed(Pcg32* rng, uint64_t initstate, uint64_t initseq)
 {
 	rng->state = 0U;
 	rng->inc = (initseq << 1U) | 1U;
-	rng->state = rng->state * PCG_MULTIPLIER + rng->inc;
+	rng->state = (rng->state * PCG_MULTIPLIER) + rng->inc;
 	rng->state += initstate;
-	rng->state = rng->state * PCG_MULTIPLIER + rng->inc;
+	rng->state = (rng->state * PCG_MULTIPLIER) + rng->inc;
 }
 
 static uint32_t pcg32_random(Pcg32* rng)
 {
 	uint64_t oldstate = rng->state;
-	rng->state = oldstate * PCG_MULTIPLIER + rng->inc;
+	rng->state = (oldstate * PCG_MULTIPLIER) + rng->inc;
 	uint32_t xorshifted =
 	    (uint32_t)(((oldstate >> PCG_SHIFT_1) ^ oldstate) >> PCG_SHIFT_2);
 	uint32_t rot = (uint32_t)(oldstate >> PCG_IS_3);
-	return (xorshifted >> rot) | (xorshifted << ((~rot + 1U) & PCG_IS_4));
+	return ((xorshifted >> rot) |
+	        (xorshifted << (((~rot) + 1U) & PCG_IS_4)));
 }
 
 /* Returns float in [0, 1) */

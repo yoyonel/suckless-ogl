@@ -127,7 +127,8 @@ void test_skybox_render_executes_without_error(void)
 		;
 
 	// Render should not produce GL errors
-	skybox_render(&skybox, test_shader, env_map, inv_view_proj, 0.0f);
+	skybox_render(&skybox, test_shader, env_map, env_map, inv_view_proj,
+	              0.0f);
 
 	GLenum err = glGetError();
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, err);

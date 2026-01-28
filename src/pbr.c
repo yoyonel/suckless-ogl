@@ -10,6 +10,7 @@
 // Constantes pour éviter les "Magic Numbers" et faciliter le linting
 static const uint32_t COMPUTE_GROUP_SIZE_PBR = 32;
 static const uint32_t COMPUTE_GROUP_SIZE_LUM = 16;
+static const uint32_t MAX_HDR_RESOLUTION = 4096;
 
 GLuint pbr_prefilter_init(int width, int height)
 {
@@ -251,7 +252,7 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier)
+                                 float clamp_multiplier, GLuint ssbos[2])
 {
 	if (shader_pass1 == 0 || shader_pass2 == 0) {
 		return 0.0F;
@@ -268,19 +269,33 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	uint32_t num_groups = group_x * group_y;
 	uint32_t num_pixels = (uint32_t)width * (uint32_t)height;
 
-	GLuint ssbos[2] = {0, 0};
-	glGenBuffers(2, ssbos);
+	/* Lazy initialization of SSBOs if not yet created */
+	if (ssbos[0] == 0) {
+		glGenBuffers(2, ssbos);
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[0]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER,
-	             (GLsizeiptr)(num_groups * sizeof(float)), NULL,
-	             GL_STREAM_READ);
-	glObjectLabel(GL_BUFFER, ssbos[0], -1, "Luminance Reduct. (Step 1)");
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[0]);
+		/* Use glBufferStorage for stable memory placement in 4.4+ */
+		GLbitfield flags = GL_DYNAMIC_STORAGE_BIT;
+		uint32_t max_groups =
+		    (MAX_HDR_RESOLUTION / COMPUTE_GROUP_SIZE_LUM) *
+		    (MAX_HDR_RESOLUTION / COMPUTE_GROUP_SIZE_LUM);
+		glBufferStorage(GL_SHADER_STORAGE_BUFFER,
+		                (GLsizeiptr)(max_groups * sizeof(float)), NULL,
+		                flags);
+		glObjectLabel(GL_BUFFER, ssbos[0], -1,
+		              "Luminance Reduct. (Step 1)");
 
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float), NULL,
-	             GL_STREAM_READ);
-	glObjectLabel(GL_BUFFER, ssbos[1], -1, "Luminance Reduct. (Step 2)");
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
+		/* GL_CLIENT_STORAGE_BIT hints to keep it in system memory for
+		 * fast readback */
+		GLbitfield read_flags = GL_MAP_READ_BIT |
+		                        GL_CLIENT_STORAGE_BIT |
+		                        GL_DYNAMIC_STORAGE_BIT;
+		glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(float), NULL,
+		                read_flags);
+		glObjectLabel(GL_BUFFER, ssbos[1], -1,
+		              "Luminance Reduct. (Step 2)");
+	}
 
 	/* Pass 1: Initial reduction (no uniforms needed by pass1 shader) */
 	{
@@ -314,18 +329,12 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 		glDispatchCompute(1, 1, 1);
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
 
-		/* Fetch result */
+		/* Fetch result robustly without mapping overhead for a single
+		 * float */
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
-		float* ptr =
-		    (float*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0,
-		                             sizeof(float), GL_MAP_READ_BIT);
-		if (ptr != NULL) {
-			mean = *ptr;
-			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		}
+		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float),
+		                   &mean);
 	}
-
-	glDeleteBuffers(2, ssbos);
 
 	return mean * clamp_multiplier;
 }

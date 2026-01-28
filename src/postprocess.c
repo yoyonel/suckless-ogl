@@ -167,6 +167,14 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	return 1;
 }
 
+void postprocess_set_dummy_textures(PostProcess* post_processing,
+                                    GLuint dummy_black)
+{
+	post_processing->dummy_black_tex = dummy_black;
+	LOG_INFO("suckless-ogl.postprocess", "Dummy texture set: %u",
+	         dummy_black);
+}
+
 void postprocess_cleanup(PostProcess* post_processing)
 {
 	destroy_framebuffer(post_processing);
@@ -214,6 +222,18 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 
 	fx_dof_resize(post_processing);
 	fx_motion_blur_resize(post_processing);
+
+	/* Final Bridge: Ensure ALL used units are in a valid state.
+	 * NVIDIA driver validates units used by the last shader before resize.
+	 */
+	for (int i = 0; i <= POSTPROCESS_TEX_UNIT_DOF_BLUR; i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
+	}
+
+	/* Reset to Unit 0 for subsequent generic bindings */
+	glActiveTexture(GL_TEXTURE0);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
@@ -412,7 +432,7 @@ void postprocess_end(PostProcess* post_processing)
 		glBindTexture(GL_TEXTURE_2D,
 		              post_processing->bloom_fx.mips[0].texture);
 	} else {
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
 	}
 	shader_set_int(post_processing->postprocess_shader, "bloomTexture",
 	               POSTPROCESS_TEX_UNIT_BLOOM);
@@ -528,6 +548,9 @@ void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
 
 static int create_framebuffer(PostProcess* post_processing)
 {
+	/* Ensure Unit 0 is active for initial texture setup */
+	glActiveTexture(GL_TEXTURE0);
+
 	/* Créer le framebuffer */
 	glGenFramebuffers(1, &post_processing->scene_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
@@ -613,11 +636,13 @@ static int create_screen_quad(PostProcess* post_processing)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
 	                      (void*)0);
+	glVertexAttribDivisor(0, 0);
 
 	/* TexCoords */
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
 	                      BUFFER_OFFSET(2 * sizeof(float)));
+	glVertexAttribDivisor(1, 0);
 
 	glBindVertexArray(0);
 
@@ -642,6 +667,12 @@ static void destroy_framebuffer(PostProcess* post_processing)
 		glDeleteTextures(1, &post_processing->velocity_tex);
 		post_processing->velocity_tex = 0;
 	}
+
+	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
+	 * resize
+	 */
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
 }
 
 static void destroy_screen_quad(PostProcess* post_processing)
