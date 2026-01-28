@@ -51,11 +51,11 @@ void shader_use(Shader* shader);
 GLint shader_get_uniform_location(Shader* shader, const char* name);
 
 /* Convenient setters (using cached locations) */
-void shader_set_int(Shader* shader, const char* name, int v);
-void shader_set_float(Shader* shader, const char* name, float v);
-void shader_set_vec2(Shader* shader, const char* name, const float* v);
-void shader_set_vec3(Shader* shader, const char* name, const float* v);
-void shader_set_vec4(Shader* shader, const char* name, const float* v);
-void shader_set_mat4(Shader* shader, const char* name, const float* v);
+void shader_set_int(Shader* shader, const char* name, int val);
+void shader_set_float(Shader* shader, const char* name, float val);
+void shader_set_vec2(Shader* shader, const char* name, const float* val);
+void shader_set_vec3(Shader* shader, const char* name, const float* val);
+void shader_set_vec4(Shader* shader, const char* name, const float* val);
+void shader_set_mat4(Shader* shader, const char* name, const float* val);
 
 #endif /* SHADER_H */

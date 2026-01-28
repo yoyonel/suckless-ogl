@@ -1,3 +1,8 @@
+#ifndef APP_SETTINGS_H
+#define APP_SETTINGS_H
+
+#include <cglm/types.h>
+
 #define DEFAULT_SAMPLES 4
 
 enum {
@@ -7,9 +12,9 @@ enum {
 	INITIAL_SUBDIVISIONS = 3
 };
 
-static const float DEFAULT_CAMERA_DISTANCE = 20.0f;
-static const float DEFAULT_CAMERA_YAW = -90.0f;  // regarder vers -Z
-static const float DEFAULT_CAMERA_PITCH = 0.0f;  // regarder l'horizon
+static const float DEFAULT_CAMERA_DISTANCE = 20.0F;
+static const float DEFAULT_CAMERA_YAW = -90.0F;  // regarder vers -Z
+static const float DEFAULT_CAMERA_PITCH = 0.0F;  // regarder l'horizon
 static const float DEFAULT_ENV_LOD = 0.0F;
 static const float NEAR_PLANE = 0.1F;
 static const float FAR_PLANE = 1000.0F;
@@ -52,3 +57,5 @@ static const float DEFAULT_EXPOSURE_STEP = 0.1F;
 static const float DEFAULT_MIN_EXPOSURE = 0.1F;
 
 static const float DEFAULT_AUTO_THRESHOLD = 5.0F;
+
+#endif /* APP_SETTINGS_H */

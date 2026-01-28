@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 #include "log.h"
 #include "utils.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,8 @@
  * Excluding them avoids misleading coverage penalties while keeping
  * the legacy ISO C code intact and honest.
  */
+
+#define CLEANUP_CTX __attribute__((cleanup(ctx_free)))
 
 enum { INFO_LOG_SIZE = 512 };
 
@@ -55,7 +58,6 @@ typedef struct {
 
 enum { MAX_INCLUDE_DEPTH = 16 };
 /* 16MB limit for shader source to prevent abuse/taint issues */
-/* 16MB limit for shader source to prevent abuse/taint issues */
 enum { MAX_SHADER_SOURCE_SIZE = 16 * 1024 * 1024 };
 enum { PATH_BUFFER_SIZE = 256 };
 enum { RESOLVED_PATH_BUFFER_SIZE = 512 };
@@ -71,7 +73,7 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
  */
 static char* load_file_into_ram(const char* path)
 {
-	FILE* file_ptr = fopen(path, "rb");
+	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
 	if (!file_ptr) {
 		LOG_ERROR("suckless-ogl.shader", "Failed to open file: %s",
 		          path);
@@ -81,7 +83,7 @@ static char* load_file_into_ram(const char* path)
 	if (fseek(file_ptr, 0, SEEK_END) != 0) {
 		LOG_ERROR("suckless-ogl.shader", "Failed to seek end: %s",
 		          path);
-		(void)fclose(file_ptr);
+		RAII_SATISFY_FILE(file_ptr);
 		return NULL;
 	}
 
@@ -89,36 +91,36 @@ static char* load_file_into_ram(const char* path)
 	if (len < 0) {
 		LOG_ERROR("suckless-ogl.shader", "Failed to tell size: %s",
 		          path);
-		(void)fclose(file_ptr);
+		RAII_SATISFY_FILE(file_ptr);
 		return NULL;
 	}
 
 	size_t size = (size_t)len;
-	char* buf = safe_calloc(size + 1, 1);
+	CLEANUP_FREE char* buf = safe_calloc(size + 1, 1);
 	if (!buf) {
 		LOG_ERROR("suckless-ogl.shader", "Allocation failed: %s", path);
-		(void)fclose(file_ptr);
+		RAII_SATISFY_FILE(file_ptr);
 		return NULL;
 	}
 
 	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
 		LOG_ERROR("suckless-ogl.shader", "Failed to seek set: %s",
 		          path);
-		free(buf);
-		(void)fclose(file_ptr);
+		RAII_SATISFY_FILE(file_ptr);
+		RAII_SATISFY_FREE(buf);
 		return NULL;
 	}
 
 	size_t read_count = fread(buf, 1, size, file_ptr);
 	if (read_count != size) {
 		LOG_ERROR("suckless-ogl.shader", "Incomplete read: %s", path);
-		free(buf);
-		(void)fclose(file_ptr);
+		RAII_SATISFY_FILE(file_ptr);
+		RAII_SATISFY_FREE(buf);
 		return NULL;
 	}
 
-	(void)fclose(file_ptr);
-	return buf;
+	RAII_SATISFY_FILE(file_ptr);
+	return TRANSFER_OWNERSHIP(buf);
 }
 
 static void ctx_add_buffer(IncludeContext* ctx, char* data)
@@ -322,28 +324,27 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 char* shader_read_file(const char* path)
 {
 	/* 1. Load root file */
-	char* root_src = load_file_into_ram(path);
+	CLEANUP_FREE char* root_src = load_file_into_ram(path);
 	if (!root_src) {
 		return NULL;
 	}
 
 	/* 2. Setup Context */
-	IncludeContext ctx = {0};
-	ctx_add_buffer(&ctx, root_src);
+	CLEANUP_CTX IncludeContext ctx = {0};
+	ctx_add_buffer(&ctx, TRANSFER_OWNERSHIP(root_src));
 
 	/* 3. Recursively parse and build chunk list */
-	if (!process_source(&ctx, root_src, path)) {
-		ctx_free(&ctx);
+	if (!process_source(&ctx, ctx.buffers_head->data, path)) {
 		return NULL;
 	}
 
 	/* 4. Single Allocation for final result */
-	char* final_src = safe_calloc(ctx.total_size + 1, 1);
+	CLEANUP_FREE char* final_src =
+	    safe_calloc(ctx.total_size + 1, 1);  // NOLINT
 	if (!final_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Final allocation failed (%lu bytes)",
 		          ctx.total_size);
-		ctx_free(&ctx);
 		return NULL;
 	}
 
@@ -359,10 +360,8 @@ char* shader_read_file(const char* path)
 	}
 	*wptr = '\0'; /* Null terminate */
 
-	/* 6. Cleanup intermediate buffers */
-	ctx_free(&ctx);
-
-	return final_src;
+	/* 6. Return and transfer ownership */
+	return TRANSFER_OWNERSHIP(final_src);
 }
 
 GLuint shader_compile(const char* path, GLenum type)
@@ -608,50 +607,50 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 	return -1;
 }
 
-void shader_set_int(Shader* shader, const char* name, int value)
+void shader_set_int(Shader* shader, const char* name, int val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniform1i(loc, value);
+		glUniform1i(loc, val);
 	}
 }
 
-void shader_set_float(Shader* shader, const char* name, float value)
+void shader_set_float(Shader* shader, const char* name, float val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniform1f(loc, value);
+		glUniform1f(loc, val);
 	}
 }
 
-void shader_set_vec2(Shader* shader, const char* name, const float* value)
+void shader_set_vec2(Shader* shader, const char* name, const float* val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniform2fv(loc, 1, value);
+		glUniform2fv(loc, 1, val);
 	}
 }
 
-void shader_set_vec3(Shader* shader, const char* name, const float* value)
+void shader_set_vec3(Shader* shader, const char* name, const float* val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniform3fv(loc, 1, value);
+		glUniform3fv(loc, 1, val);
 	}
 }
 
-void shader_set_vec4(Shader* shader, const char* name, const float* value)
+void shader_set_vec4(Shader* shader, const char* name, const float* val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniform4fv(loc, 1, value);
+		glUniform4fv(loc, 1, val);
 	}
 }
 
-void shader_set_mat4(Shader* shader, const char* name, const float* value)
+void shader_set_mat4(Shader* shader, const char* name, const float* val)
 {
 	GLint loc = shader_get_uniform_location(shader, name);
 	if (loc != -1) {
-		glUniformMatrix4fv(loc, 1, GL_FALSE, value);
+		glUniformMatrix4fv(loc, 1, GL_FALSE, val);
 	}
 }

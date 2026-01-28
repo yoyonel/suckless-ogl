@@ -1,6 +1,8 @@
 #ifndef UI_H
 #define UI_H
 
+#define ASCII_CHAR_COUNT 96
+
 #include <cglm/cglm.h>
 
 typedef struct {
@@ -16,7 +18,8 @@ typedef struct {
 	GLuint texture;
 	Shader* shader;
 	GLuint vao, vbo;
-	GlyphInfo cdata[96];  // Pour les caractères ASCII 32 à 126
+	GlyphInfo
+	    cdata[ASCII_CHAR_COUNT];  // Pour les caractères ASCII 32 à 126
 	float font_size;
 } UIContext;
 
@@ -34,14 +37,16 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size);
 void ui_destroy(UIContext* ui_context);
 
 /* Layout API */
-void ui_layout_init(UILayout* layout, UIContext* ui, float x, float y,
-                    float padding, int screen_width, int screen_height);
+void ui_layout_init(UILayout* layout, UIContext* ui_ctx, float pos_x,
+                    float pos_y, float padding, int screen_width,
+                    int screen_height);
 void ui_layout_text(UILayout* layout, const char* text, const vec3 color);
 void ui_layout_separator(UILayout* layout, float space);
 
 /* Low-level API */
-void ui_draw_text(UIContext* ui_context, const char* text, float x, float y,
-                  const vec3 color, int screen_width, int screen_height);
+void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
+                  float pos_y, const vec3 color, int screen_width,
+                  int screen_height);
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height);

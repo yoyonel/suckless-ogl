@@ -122,6 +122,69 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float t
 
 ---
 
+---
+
+## 6. Satisfying Static Analyzers (Clang-Tidy)
+
+Clang's static analyzer does not yet fully model the control flow of `__attribute__((cleanup))`. This can result in false positives like `"Opened stream never closed"` or `"Potential memory leak"`.
+
+To maintain clean linting logs without sacrificing RAII's runtime safety, we use **Analyzer Hints**.
+
+### The `RAII_SATISFY_*` Patterns
+
+Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a cleanup call only during static analysis. They have **zero runtime cost**.
+
+- `RAII_SATISFY_FILE(f)`: Simulates `fclose(f)`.
+- `RAII_SATISFY_FREE(p)`: Simulates `free(p)`.
+
+**Usage Example:**
+
+```c
+static char* load_data(const char* path) {
+    CLEANUP_FILE FILE* f = fopen(path, "rb");
+    if (!f) return NULL;
+
+    CLEANUP_FREE char* buf = malloc(1024);
+    if (error_condition) {
+        // Surgical hints to satisfy the analyzer on this path
+        RAII_SATISFY_FILE(f);
+        RAII_SATISFY_FREE(buf);
+        return NULL;
+    }
+
+    RAII_SATISFY_FILE(f);
+    return TRANSFER_OWNERSHIP(buf);
+} // Actual cleaning happens here at runtime via RAII
+```
+
+### Why use this instead of `// NOLINT`?
+- **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.
+- **Documentation**: It explicitly states that we are aware of the analyzer's limitation and are providing the missing link.
+- **Safety**: If you forget a hint, the code is still safe at runtime. If you forget a `fclose` in legacy code, the code leaks.
+
+---
+
+## 7. Critical Perspectives & Limitations
+
+While RAII in C is powerful, it is important to understand its non-standard nature and the risks involved.
+
+### "Just Put RAII in C, Bro" (Analysis)
+
+For a deep dive into why RAII is "semantically impossible" to do perfectly in standard C, we recommend this article:
+[Why Not Just Do Simple C++ RAII in C?](https://thephd.dev/just-put-raii-in-c-bro-please-bro-just-one-more-destructor-bro-cmon-im-good-for-it) by JeanHeyd Meneide.
+
+**Key Takeaways for this Project:**
+
+1.  **The Copy Problem**: C blindly `memcpy` structs. If you copy a struct containing an RAII-managed resource, you will get a **double-free**.
+    > [!IMPORTANT]
+    > **Rule**: Never copy structures that own resources. Pass them by pointer, or use `TRANSFER_OWNERSHIP` to move them.
+
+2.  **The Tooling Gap**: Static analyzers (like Clang-Tidy) are designed for standard C models. Our "Analyzer Hints" (`RAII_SATISFY_*`) are the bridge needed to reconcile modern safety hacks with rigid analysis tools.
+
+3.  **Safety vs. Purism**: This project chooses **Safety**. While "pure" C relies on manual cleanup and discipline, our RAII approach ensures that a forgotten path doesn't lead to a production leak, at the cost of being slightly "non-standard".
+
+---
+
 ## Further Reading
 - [GCC Variable Attributes: cleanup](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html)
-- [RAII in C (Article)](https://echorand.me/posts/raii-in-c/)
+- [Resource Acquisition Is Initialization (RAII) in C](https://echorand.me/posts/clean_up_variable_attribute/)

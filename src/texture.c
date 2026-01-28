@@ -1,7 +1,8 @@
 #include "texture.h"
 
-#include "glad/glad.h"
+#include "gl_common.h"
 #include "log.h"
+#include "utils.h"
 #include <math.h>
 #include <stb_image.h>
 #include <stddef.h>
@@ -27,7 +28,7 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 		return 0;
 	}
 
-	GLuint tex = 0;
+	GLuint CLEANUP_TEXTURE tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
@@ -44,7 +45,6 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	if (err != GL_NO_ERROR) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "GL error after texture upload: 0x%x", err);
-		glDeleteTextures(1, &tex);
 		return 0;
 	}
 
@@ -58,19 +58,17 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	return tex;
+	return TRANSFER_OWNERSHIP(tex);
 }
 
 GLuint texture_load_hdr(const char* path, int* width, int* height)
 {
 	int channels = 0;
-	float* data = texture_load_pixels(path, width, height, &channels);
+	CLEANUP_FREE float* data =
+	    texture_load_pixels(path, width, height, &channels);
 	if (!data) {
 		return 0;
 	}
 
-	GLuint tex = texture_upload_hdr(data, *width, *height);
-	stbi_image_free(data);
-
-	return tex;
+	return texture_upload_hdr(data, *width, *height);
 }

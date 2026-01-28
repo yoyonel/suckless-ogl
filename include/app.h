@@ -19,114 +19,81 @@
 #include <cglm/cglm.h>
 
 typedef struct {
+	/* 8-byte aligned fields (Pointers, doubles) */
+	PostProcess postprocess;
 	GLFWwindow* window;
+	double last_mouse_x;
+	double last_mouse_y;
+	double last_frame_time;
+	double delta_time;
+	Shader* pbr_instanced_shader;
+	Shader* pbr_billboard_shader;
+	Shader* debug_shader;
+	MaterialLib* material_lib;
+	char** hdr_files;
+
+	/* Larger structs (internal alignment) */
+	FpsCounter fps_counter;
+	IcosphereGeometry geometry;
+	AdaptiveSampler fps_sampler;
+	UIContext ui;
+	InstancedGroup instanced_group;
+	BillboardGroup billboard_group;
+	Skybox skybox;
+	Camera camera;
+
+	/* 4-byte fields (int, float, GLuint) */
 	int width;
 	int height;
-
-	/* Window state for fullscreen toggle */
 	int is_fullscreen;
-	/* Debug Flags */
 	int show_exposure_debug;
-	int pbr_debug_mode; /* 0=None, 1=Albedo, 2=Normal... */
+	int pbr_debug_mode;
 	int show_imgui_demo;
-	int show_help; /* Debug/Help overlay */
+	int show_help;
 	int show_info_overlay;
-	int text_overlay_mode; /* 0=Off, 1=FPS+Position, 2=FPS+Position+Envmap,
-	                          3=FPS+Position+Envmap+Exposure */
+	int text_overlay_mode;
 	int saved_x, saved_y;
 	int saved_width, saved_height;
-
-	/* Scene state */
 	int subdivisions;
 	int wireframe;
 	int show_envmap;
+	int first_mouse;
+	int camera_enabled;
+	int billboard_mode;
+	int show_debug_tex;
+	int hdr_count;
+	int current_hdr_index;
 
-	// /* Mouse state */
-	int first_mouse; /* First mouse movement flag */
-	double last_mouse_x;
-	double last_mouse_y;
-
-	// /* Camera state */
-	int camera_enabled; /* Mouse control enabled */
-	Camera camera;
-
-	/* Post-processing */
-	PostProcess postprocess;
-
-	/* Icosphere geometry */
-	IcosphereGeometry geometry;  // CPU side
-	GLuint sphere_vao;           // GPU side
+	GLuint sphere_vao;
 	GLuint sphere_vbo;
 	GLuint sphere_nbo;
 	GLuint sphere_ebo;
+	GLuint quad_vbo;
+	GLuint skybox_shader;
+	GLuint hdr_texture;
+	GLuint spec_prefiltered_tex;
+	GLuint irradiance_tex;
+	GLuint brdf_lut_tex;
+	GLuint empty_vao;
+	GLuint shader_spmap;
+	GLuint shader_irmap;
+	GLuint shader_lum_pass1;
+	GLuint shader_lum_pass2;
+	GLuint exposure_pbo;
+
+	float env_lod;
+	float debug_lod;
+	float u_metallic;
+	float u_roughness;
+	float u_ao;
+	float u_exposure;
+	float auto_threshold;
+	float current_exposure;
 
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group;
 	Shader* pbr_ssbo_shader;
 #endif
-	/* Instanced rendering */
-	InstancedGroup instanced_group;
-	Shader* pbr_instanced_shader;
-
-	/* Billboard rendering */
-	int billboard_mode;
-	BillboardGroup billboard_group;  // Dedicated group
-	GLuint quad_vbo;
-	Shader* pbr_billboard_shader;
-
-	/* Shaders */
-	GLuint skybox_shader; /* Remains GLuint for now (Skybox module) */
-
-	/* Environment mapping (equirectangular) */
-	GLuint hdr_texture;
-	float env_lod; /* Blur level */
-
-	/* Skybox rendering */
-	Skybox skybox;
-
-	/* FPS counter */
-	FpsCounter fps_counter;
-	AdaptiveSampler fps_sampler; /* Adaptive Frame Time Sampler */
-	double last_frame_time;
-	double delta_time;
-
-	/* UI */
-	UIContext ui;
-
-	GLuint spec_prefiltered_tex;  // La texture filtrée
-	GLuint irradiance_tex;
-	GLuint brdf_lut_tex;
-
-	GLuint empty_vao;
-	Shader* debug_shader;
-	float debug_lod;
-	int show_debug_tex;
-
-	/* PBR */
-	float u_metallic;
-	float u_roughness;
-	float u_ao;
-	float u_exposure;
-
-	MaterialLib* material_lib;
-
-	/* Compute Shaders for IBL */
-	GLuint shader_spmap;
-	GLuint shader_irmap;
-	GLuint shader_lum_pass1;
-	GLuint shader_lum_pass2;
-
-	/* Dynamic HDR Switching */
-	char** hdr_files;      /* Array of filenames */
-	int hdr_count;         /* Total number of HDR files */
-	int current_hdr_index; /* Index of currently loaded HDR */
-
-	/* Auto-computed threshold for IBL */
-	float auto_threshold; /* Computed mean luminance for exposure */
-
-	/* Async Exposure Readback */
-	GLuint exposure_pbo;    /* Pixel Buffer Object for async read */
-	float current_exposure; /* CPU-side cached exposure value */
 
 } App;
 
