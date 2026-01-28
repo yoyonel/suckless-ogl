@@ -56,6 +56,8 @@ typedef enum {
 	POSTFX_EXPOSURE_DEBUG = (1U << 9U),     /* 0x200 */
 	POSTFX_MOTION_BLUR = (1U << 10U),       /* 0x400 */
 	POSTFX_MOTION_BLUR_DEBUG = (1U << 11U), /* 0x800 */
+	POSTFX_FXAA = (1U << 12U),              /* 0x1000 */
+	POSTFX_FXAA_DEBUG = (1U << 13U),        /* 0x2000 */
 } PostProcessEffect;
 
 /* Structure pour le Color Grading (Style Unreal Engine) */
