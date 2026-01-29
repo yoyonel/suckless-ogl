@@ -100,11 +100,19 @@ void main()
 	}
 
 	// Apply Edge Smoothing (Darken rim)
+	// This simulates coverage by fading to black/background.
+	// Since we are opaque, we can't blend with BG, but darkening helps
+	// reduce the harsh staircase effect.
 	color *= edgeFactor;
 
-	// Store Luma in Alpha for FXAA (using sqrt approx for Gamma)
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	// Transparent Mode: Alpha = Opacity (edgeFactor) for Blending
+	FragColor = vec4(color, edgeFactor);
+#else
+	// Legacy Opaque Mode: Alpha = Luma for FXAA Optimization
 	float luma = dot(sqrt(color), vec3(0.299, 0.587, 0.114));
 	FragColor = vec4(color, luma);
+#endif
 
 	// --- Velocity Calculation ---
 	// We assume the object is static, so WorldPos is the same for previous

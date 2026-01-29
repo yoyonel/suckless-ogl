@@ -9,6 +9,7 @@
 #include "icosphere.h"
 #include "instanced_rendering.h"
 #include "render_utils.h"
+#include "sphere_sorting.h"
 #include <stb_image.h>
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
@@ -539,6 +540,21 @@ void app_init_instancing(App* app)
 	// Création VAO)
 	instanced_group_init(&app->instanced_group, data, total_count);
 
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	/* Persist data for sorting */
+	app->sphere_instances = malloc(sizeof(SphereInstance) * total_count);
+	if (app->sphere_instances) {
+		safe_memcpy(app->sphere_instances,
+		            sizeof(SphereInstance) * total_count, data,
+		            sizeof(SphereInstance) * total_count);
+		app->sphere_instance_count = total_count;
+		sphere_sorter_init(&app->sphere_sorter, total_count);
+	} else {
+		LOG_ERROR("suckless-ogl.app",
+		          "Failed to allocate memory for sorted instances");
+	}
+#endif
+
 	// 4. Premier lien avec la géométrie actuelle
 	// Note: on utilise les noms de buffers de ton app.h
 	// (sphere_vbo, etc.)
@@ -559,6 +575,8 @@ static void app_update_instancing_mode(App* app)
 	 * initialized */
 	(void)app;
 }
+
+// ... (skipping unchanged code)
 
 void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 {
@@ -637,6 +655,13 @@ void app_cleanup(App* app)
 {
 	icosphere_free(&app->geometry);
 	skybox_cleanup(&app->skybox);
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	if (app->sphere_instances) {
+		free(app->sphere_instances);
+	}
+	sphere_sorter_cleanup(&app->sphere_sorter);
+#endif
 
 	glDeleteVertexArrays(1, &app->sphere_vao);
 	glDeleteVertexArrays(1, &app->empty_vao);
@@ -1061,19 +1086,67 @@ void app_render(App* app)
 	                (float)app->width / (float)app->height, NEAR_PLANE,
 	                FAR_PLANE, proj);
 
-	/* Calculate MVP for icosphere */
+	/* Calculate Inverse View-Projection */
 	glm_mat4_mul(proj, view, view_proj);
+	glm_mat4_inv(view_proj, inv_view_proj);
 
-	/* For skybox: view matrix without translation */
-	mat4 view_no_translation;
-	glm_mat4_copy(view, view_no_translation);
-	view_no_translation[3][0] = 0.0F; /* Remove X translation */
-	view_no_translation[3][1] = 0.0F; /* Remove Y translation */
-	view_no_translation[3][2] = 0.0F; /* Remove Z translation */
+	/* Start Post-Processing (binds FBO) */
+	postprocess_begin(&app->postprocess);
 
-	/* Calculate inverse view-projection for skybox */
-	glm_mat4_mul(proj, view_no_translation, inv_view_proj);
-	glm_mat4_inv(inv_view_proj, inv_view_proj);
+	/* RENDER SCENE */
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	/* TRANSPARENT PIPELINE:
+	 * 1. Skybox First (Background)
+	 * 2. Sort Billboards Back-to-Front
+	 * 3. Render Billboards with Blending
+	 */
+
+	/* 1. Skybox */
+	if (app->show_envmap) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(
+		    GL_DEPTH_TEST); /* Optimization: Draw BG at max depth */
+		skybox_render(&app->skybox, app->skybox_shader,
+		              app->hdr_texture, app->dummy_black_tex,
+		              inv_view_proj, app->env_lod);
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	/* 2. Sort Billboards */
+	if (app->billboard_mode) {
+		sphere_sorter_sort(&app->sphere_sorter, app->sphere_instances,
+		                   app->sphere_instance_count,
+		                   app->camera.position);
+
+		/* Update GPU Buffer */
+		billboard_group_update(&app->billboard_group,
+		                       app->sphere_instances,
+		                       app->sphere_instance_count);
+	}
+
+	/* 3. Render Objects */
+	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+
+	/* Enable Blending for Edge Smoothing */
+	if (app->billboard_mode) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		app_render_billboards(app, view, proj, camera_pos);
+		glDisable(GL_BLEND);
+	} else {
+		/* Instanced Mesh Mode (likely opaque) */
+		app_render_instanced(app, view, proj, camera_pos);
+	}
+
+	/* Reset Polygon Mode to FILL for subsequent passes (PostProcess/UI) */
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+#else
+	/* LEGACY OPAQUE PIPELINE:
+	 * 1. Objects First (Early-Z)
+	 * 2. Skybox Last
+	 */
 
 	/* 1. Render icosphere or billboards FIRST (populates
 	 * depth buffer for early-Z culling) */
@@ -1084,6 +1157,7 @@ void app_render(App* app)
 	} else {
 		app_render_instanced(app, view, proj, camera_pos);
 	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	/* 2. Render skybox LAST (using LEQUAL to fill
 	 * background) */
@@ -1095,13 +1169,15 @@ void app_render(App* app)
 		              app->hdr_texture, app->dummy_black_tex,
 		              inv_view_proj, app->env_lod);
 	}
+#endif
 
-	/* 4. Post-processing */
+	/* End Post-Processing (Lighting -> ToneMapping -> Gamma -> Screen) */
 	postprocess_end(&app->postprocess);
 
 	/* Update Matrices for next frame (Velocity Buffer) */
 	postprocess_update_matrices(&app->postprocess, view_proj);
 
+	/* UI Overlay */
 	app_render_ui(app);
 }
 

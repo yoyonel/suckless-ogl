@@ -1,3 +1,4 @@
+#include "app_settings.h"
 #include "shader.h"
 #include "unity.h"
 #include <stdio.h>
@@ -63,7 +64,12 @@ void test_shader_read_file_success(void)
 	write_file("test_read.txt", "content");
 	char* content = shader_read_file("test_read.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	TEST_ASSERT_EQUAL_STRING("#define USE_TRANSPARENT_BILLBOARDS\ncontent",
+	                         content);
+#else
 	TEST_ASSERT_EQUAL_STRING("content", content);
+#endif
 	free(content);
 	remove("test_read.txt");
 }
@@ -80,7 +86,12 @@ void test_shader_read_file_empty(void)
 	write_file("test_empty.txt", "");
 	char* content = shader_read_file("test_empty.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	TEST_ASSERT_EQUAL_STRING("#define USE_TRANSPARENT_BILLBOARDS\n",
+	                         content);
+#else
 	TEST_ASSERT_EQUAL_STRING("", content);
+#endif
 	free(content);
 	remove("test_empty.txt");
 }
@@ -127,7 +138,16 @@ void test_shader_read_file_large(void)
 	write_file("test_large.txt", large_content);
 	char* content = shader_read_file("test_large.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	const char* expected_start =
+	    "#version 330 core\n#define "
+	    "USE_TRANSPARENT_BILLBOARDS\nlayout(location = 0) in vec3 aPos;";
+	/* Check prefix to verify injection */
+	TEST_ASSERT_EQUAL_STRING_LEN(expected_start, content,
+	                             strlen(expected_start));
+#else
 	TEST_ASSERT_EQUAL_STRING(large_content, content);
+#endif
 	free(content);
 	remove("test_large.txt");
 }

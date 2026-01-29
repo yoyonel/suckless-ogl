@@ -5,6 +5,10 @@
 
 #define DEFAULT_SAMPLES 1
 
+/* Enable for High Quality Sphere Rendering (Sorted + Blended) */
+/* Disable for Optimized Legacy Rendering (Opaque + Luma-in-Alpha) */
+#define USE_TRANSPARENT_BILLBOARDS
+
 enum {
 	MIN_SUBDIV = 0,
 	MAX_SUBDIV = 6,

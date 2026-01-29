@@ -1,5 +1,6 @@
 #include "shader.h"
 
+#include "app_settings.h"
 #include "glad/glad.h"
 #include "log.h"
 #include "utils.h"
@@ -321,6 +322,59 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 	return true;
 }
 
+/*
+ * Helper to inject a macro definition into shader source.
+ * Handles insertion after #version directive if present.
+ * Returns a newly allocated string that must be freed by caller.
+ */
+static char* inject_macro_into_source(const char* buffer, size_t file_size,
+                                      const char* macro, size_t macro_len)
+{
+	size_t new_size = file_size + macro_len + 1;
+	char* modified_source = calloc(1, new_size);
+	if (!modified_source) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Failed to allocate memory for modified shader");
+		return NULL;
+	}
+
+	/* Check for #version directive */
+	const char* version_directive = "#version";
+	const char* version_start = strstr(buffer, version_directive);
+
+	if (version_start && version_start == buffer) {
+		/* Found #version at start. Find end of line. */
+		const char* version_end = strchr(buffer, '\n');
+		if (version_end) {
+			size_t version_len = (size_t)(version_end - buffer) + 1;
+			/* Copy #version line */
+			safe_memcpy(modified_source, new_size, buffer,
+			            version_len);
+			/* Insert Macro */
+			safe_memcpy(modified_source + version_len,
+			            new_size - version_len, macro, macro_len);
+			/* Copy rest of file */
+			safe_memcpy(modified_source + version_len + macro_len,
+			            new_size - (version_len + macro_len),
+			            version_end + 1, file_size - version_len);
+		} else {
+			/* No newline after version? Unlikely but append macro
+			 * at end */
+			safe_memcpy(modified_source, new_size, buffer,
+			            file_size);
+			safe_memcpy(modified_source + file_size,
+			            new_size - file_size, macro, macro_len);
+		}
+	} else {
+		/* No #version or not at start, insert macro at beginning */
+		safe_memcpy(modified_source, new_size, macro, macro_len);
+		safe_memcpy(modified_source + macro_len, new_size - macro_len,
+		            buffer, file_size);
+	}
+
+	return modified_source;
+}
+
 char* shader_read_file(const char* path)
 {
 	/* 1. Load root file */
@@ -328,6 +382,22 @@ char* shader_read_file(const char* path)
 	if (!root_src) {
 		return NULL;
 	}
+
+	/* Inject Compile-Time Defines if active */
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	const char* macro = "#define USE_TRANSPARENT_BILLBOARDS\n";
+	size_t macro_len = strlen(macro);
+	size_t root_src_len = strlen(root_src);
+
+	char* modified_root_src =
+	    inject_macro_into_source(root_src, root_src_len, macro, macro_len);
+	if (!modified_root_src) {
+		free(root_src);
+		return NULL;
+	}
+	free(root_src);  // Free original root_src
+	root_src = modified_root_src;
+#endif
 
 	/* 2. Setup Context */
 	CLEANUP_CTX IncludeContext ctx = {0};
