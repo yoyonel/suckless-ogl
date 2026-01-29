@@ -177,9 +177,9 @@ perf: profile
 	@$(DISTROBOX) perf record --call-graph dwarf ./$(BUILD_PROF_DIR)/app
 	@$(DISTROBOX) perf report
 
-valgrind:
+valgrind: profile
 	@echo "Running Valgrind (very slow to start)..."
-	@$(DISTROBOX) valgrind --leak-check=full --show-leak-kinds=definite --errors-for-leak-kinds=definite ./$(BUILD_PROF_DIR)/app
+	@$(DISTROBOX) valgrind --suppressions=valgrind.supp --leak-check=full --show-leak-kinds=definite --errors-for-leak-kinds=definite ./$(BUILD_PROF_DIR)/app
 
 # Docker Integration
 # Auto-detect container engine (podman or docker)

@@ -75,14 +75,26 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
 
 // ----------------------------------------------------------------------------
 // Roughness Clamping (Anti-Aliasing)
+// TEMPORARILY DISABLED to diagnose NVIDIA vs Intel rendering differences
 // ----------------------------------------------------------------------------
 float compute_roughness_clamping(vec3 N, float roughness)
 {
+	// Disabled: derivatives have different precision on NVIDIA vs Intel
+	// causing visible artifacts on sphere edges
+	/*
 	vec3 dNdx = dFdx(N);
 	vec3 dNdy = dFdy(N);
 	float maxVariation = max(dot(dNdx, dNdx), dot(dNdy, dNdy));
-	float normalThreshold = 0.1;
+
+	// Saturate extreme values to prevent halos on NVIDIA GPUs
+	maxVariation = min(maxVariation, 1.0);
+
+	// Use 0.5 instead of 0.1 to reduce aggressiveness
+	// This prevents white halos on edges while keeping AA benefits
+	float normalThreshold = 0.5;
 	roughness = max(roughness, pow(maxVariation, normalThreshold));
+	*/
+
 	roughness = clamp(roughness, 0.0, 1.0);
 	return roughness;
 }

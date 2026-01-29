@@ -175,11 +175,27 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 
 	for (int i = 0; i < FXAA_QUALITY_PS; i++) {
 		if (!reached1) {
+#ifdef USE_TRANSPARENT_BILLBOARDS
+			// In Transparent mode, we must recalculate Luma from
+			// RGB
 			lumaEnd1 = FxaaLuma(texture(screenTexture, uv1).rgb);
+#else
+			// Use pre-calculated Luma from Alpha for consistency
+			// across GPUs
+			lumaEnd1 = texture(screenTexture, uv1).a;
+#endif
 			lumaEnd1 = lumaEnd1 - lumaLocalAverage;
 		}
 		if (!reached2) {
+#ifdef USE_TRANSPARENT_BILLBOARDS
+			// In Transparent mode, we must recalculate Luma from
+			// RGB
 			lumaEnd2 = FxaaLuma(texture(screenTexture, uv2).rgb);
+#else
+			// Use pre-calculated Luma from Alpha for consistency
+			// across GPUs
+			lumaEnd2 = texture(screenTexture, uv2).a;
+#endif
 			lumaEnd2 = lumaEnd2 - lumaLocalAverage;
 		}
 
