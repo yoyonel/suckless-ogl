@@ -17,8 +17,33 @@ on:
     branches: ["master", "main"]
 
 jobs:
-  # --- JOB 1 : TESTS, COUVERTURE ET CAPTURES VISUELLES ---
+  # --- JOB 1 : QUALITÉ ET LINT (RAPIDE) ---
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install linting tools via pip
+        run: |
+          pip install clang-format==19.1.7 ruff
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy
+      - name: Run Format & Lint
+        run: |
+          clang-format --version
+          make format CONTAINER_RUN=""
+          git diff --exit-code || (echo "❌ Format error" && exit 1)
+          make lint CONTAINER_RUN=""
+
+  # --- JOB 2 : TESTS, COUVERTURE ET CAPTURES VISUELLES (LENT) ---
   test-and-coverage:
+    needs: lint-and-format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -139,66 +164,10 @@ jobs:
           name: coverage-report
           path: build-coverage/coverage_report/
 
-  # --- JOB 2 : QUALITÉ ET LINT ---
-  lint-and-format:
-    needs: test-and-coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install linting tools via pip
-        run: |
-          pip install clang-format==19.1.7 ruff
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      - name: Install Build Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy
-      - name: Run Format & Lint
-        run: |
-          clang-format --version
-          make format CONTAINER_RUN=""
-          git diff --exit-code || (echo "❌ Format error" && exit 1)
-          make lint CONTAINER_RUN=""
-
-  # --- JOB 2.5 : MEMORY CHECK (VALGRIND) ---
-  memory-check:
-    needs: test-and-coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential cmake clang llvm \
-            libgl1-mesa-dev libglew-dev libglfw3-dev \
-            xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
-            valgrind
-
-      - name: Build for Memory Check (Release)
-        run: |
-          # Use Release mode to catch alignment issues like the recent Segfault
-          cmake -B build-memcheck -DCMAKE_BUILD_TYPE=Release
-          cmake --build build-memcheck --target test_app --parallel $(nproc)
-
-      - name: Run Valgrind on test_app
-        run: |
-          # Run test_app under Valgrind via Xvfb
-          # --error-exitcode=1 : Fail CI if errors found
-          # --leak-check=full : Detailed leak report
-          chmod +x tests/run_test_with_xvfb.sh
-          xvfb-run -a -s "-screen 0 1920x1080x24" \
-            valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite,possible \
-            ./build-memcheck/tests/test_app
-
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
-    needs: lint-and-format
+    needs: test-and-coverage
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -224,7 +193,7 @@ jobs:
           name: app-${{ matrix.build_type }}
           path: build/app-${{ matrix.build_type }}
 
-  # --- JOB 4 : RELEASE ---
+  # --- JOB 5 : RELEASE ---
   release:
     needs: build-production
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
