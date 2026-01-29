@@ -49,6 +49,7 @@ set(SOURCES
     src/adaptive_sampler.c
     src/window.c
     src/gl_debug.c
+    src/render_utils.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)

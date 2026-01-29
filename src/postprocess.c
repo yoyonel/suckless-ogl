@@ -6,12 +6,12 @@
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
 #include "log.h"
+#include "render_utils.h"
 #include "shader.h"
 #include <cglm/types.h>
 #include <string.h>
 
 static int create_framebuffer(PostProcess* post_processing);
-static int create_screen_quad(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 
@@ -29,14 +29,7 @@ enum {
 /* Compute Shader Constants */
 enum { POSTPROCESS_COMPUTE_GROUP_SIZE = 16 };
 
-/* Vertices pour un quad plein écran */
-static const float screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] =
-    {/* positions     texCoords */
-     -1.0F, 1.0F, 0.0F, 1.0F,  -1.0F, -1.0F,
-     0.0F,  0.0F, 1.0F, -1.0F, 1.0F,  0.0F,
-
-     -1.0F, 1.0F, 0.0F, 1.0F,  1.0F,  -1.0F,
-     1.0F,  0.0F, 1.0F, 1.0F,  1.0F,  1.0F};
+/* Compute Shader Constants */
 
 int postprocess_init(PostProcess* post_processing, int width, int height)
 {
@@ -121,7 +114,9 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	}
 
 	/* Créer le quad plein écran */
-	if (!create_screen_quad(post_processing)) {
+	render_utils_create_fullscreen_quad(&post_processing->screen_quad_vao,
+	                                    &post_processing->screen_quad_vbo);
+	if (post_processing->screen_quad_vao == 0) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create screen quad");
 		destroy_framebuffer(post_processing);
@@ -226,10 +221,12 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	/* Final Bridge: Ensure ALL used units are in a valid state.
 	 * NVIDIA driver validates units used by the last shader before resize.
 	 */
-	for (int i = 0; i <= POSTPROCESS_TEX_UNIT_DOF_BLUR; i++) {
-		glActiveTexture(GL_TEXTURE0 + i);
-		glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
-	}
+	/* Final Bridge: Ensure ALL used units are in a valid state.
+	 * NVIDIA driver validates units used by the last shader before resize.
+	 */
+	render_utils_reset_texture_units(GL_TEXTURE0,
+	                                 POSTPROCESS_TEX_UNIT_DOF_BLUR + 1,
+	                                 post_processing->dummy_black_tex);
 
 	/* Reset to Unit 0 for subsequent generic bindings */
 	glActiveTexture(GL_TEXTURE0);
@@ -427,13 +424,13 @@ void postprocess_end(PostProcess* post_processing)
 	               POSTPROCESS_TEX_UNIT_SCENE);
 
 	/* Bind la texture de Bloom */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM);
-	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
-		glBindTexture(GL_TEXTURE_2D,
-		              post_processing->bloom_fx.mips[0].texture);
-	} else {
-		glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
-	}
+	render_utils_bind_texture_safe(
+	    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM,
+	    postprocess_is_enabled(post_processing, POSTFX_BLOOM)
+	        ? post_processing->bloom_fx.mips[0].texture
+	        : 0,
+	    post_processing->dummy_black_tex);
+
 	shader_set_int(post_processing->postprocess_shader, "bloomTexture",
 	               POSTPROCESS_TEX_UNIT_BLOOM);
 
@@ -608,44 +605,9 @@ static int create_framebuffer(PostProcess* post_processing)
 	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,
 	                       0);
 
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
-	    GL_FRAMEBUFFER_COMPLETE) {
-		LOG_ERROR("suckless-ogl.postprocess",
-		          "Framebuffer incomplete!");
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		return 0;
-	}
-
-	return 1;
+	return render_utils_check_framebuffer("PostProcess Scene FBO");
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return 1;
-}
-
-static int create_screen_quad(PostProcess* post_processing)
-{
-	glGenVertexArrays(1, &post_processing->screen_quad_vao);
-	glGenBuffers(1, &post_processing->screen_quad_vbo);
-
-	glBindVertexArray(post_processing->screen_quad_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, post_processing->screen_quad_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(screen_quad_vertices),
-	             screen_quad_vertices, GL_STATIC_DRAW);
-
-	/* Position */
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      (void*)0);
-	glVertexAttribDivisor(0, 0);
-
-	/* TexCoords */
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      BUFFER_OFFSET(2 * sizeof(float)));
-	glVertexAttribDivisor(1, 0);
-
-	glBindVertexArray(0);
-
 	return 1;
 }
 
@@ -671,8 +633,8 @@ static void destroy_framebuffer(PostProcess* post_processing)
 	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
 	 * resize
 	 */
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE0, 0,
+	                               post_processing->dummy_black_tex);
 }
 
 static void destroy_screen_quad(PostProcess* post_processing)
