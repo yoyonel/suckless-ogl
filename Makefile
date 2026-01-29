@@ -33,7 +33,7 @@ BUILD_PROF_DIR := build-prof
 BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test coverage release small debug-release
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -273,11 +273,13 @@ help:
 	@echo "  deps-clean - Remove the local dependency cache"
 	@echo "  offline-test - Verify build works without internet (requires unshare)"
 	@echo "  test       - Run unit tests with ctest"
+	@echo "  test-integration - Run full UI integration test under Valgrind"
 	@echo "  coverage   - Generate HTML code coverage report (llvm-cov)"
 	@echo "  docker-build - Build the Docker image"
 	@echo "  profile    - Build with optimizations and debug symbols (for profiling)"
 	@echo "  perf       - Build and run Linux 'perf' profiler"
 	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
+	@echo "  memcheck   - Run Valgrind on Release build to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  help       - Show this help message"
 
@@ -296,6 +298,16 @@ release:
 	@$(DISTROBOX) strip --strip-all $(BUILD_REL_DIR)/app
 	@echo "Done. Binary is at $(BUILD_REL_DIR)/app"
 	@du -h $(BUILD_REL_DIR)/app
+
+# --- Memory Check (Valgrind on Release) ---
+memcheck: release
+	@echo "Running Memory Check on Release Build..."
+	@$(DISTROBOX) valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite ./$(BUILD_REL_DIR)/app
+
+# --- Integration Test (Scenario-based with xdotool) ---
+test-integration:
+	@chmod +x scripts/test_integration_valgrind.sh
+	@bash scripts/test_integration_valgrind.sh
 
 # --- Debug Release Build (For Segfault Hunting) ---
 debug-release:

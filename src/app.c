@@ -670,6 +670,26 @@ void app_cleanup(App* app)
 	sphere_sorter_cleanup(&app->sphere_sorter);
 #endif
 
+	/* Cleanup Render Groups */
+	instanced_group_cleanup(&app->instanced_group);
+	billboard_group_cleanup(&app->billboard_group);
+#ifdef USE_SSBO_RENDERING
+	ssbo_group_cleanup(&app->ssbo_group);
+#endif
+
+	/* Cleanup Material Library */
+	if (app->material_lib) {
+		material_free_lib(app->material_lib);
+	}
+
+	/* Cleanup Shaders */
+	shader_destroy(app->pbr_instanced_shader);
+	shader_destroy(app->pbr_billboard_shader);
+	shader_destroy(app->debug_shader);
+#ifdef USE_SSBO_RENDERING
+	shader_destroy(app->pbr_ssbo_shader);
+#endif
+
 	glDeleteVertexArrays(1, &app->sphere_vao);
 	glDeleteVertexArrays(1, &app->empty_vao);
 	glDeleteBuffers(1, &app->sphere_vbo);
@@ -691,6 +711,14 @@ void app_cleanup(App* app)
 	glDeleteTextures(1, &app->dummy_white_tex);
 
 	async_loader_shutdown();
+
+	if (app->hdr_files) {
+		for (int i = 0; i < app->hdr_count; i++) {
+			free(app->hdr_files[i]);
+		}
+		free(app->hdr_files);
+		app->hdr_files = NULL;
+	}
 
 	window_destroy(app->window);
 }
