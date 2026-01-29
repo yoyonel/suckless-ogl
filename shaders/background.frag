@@ -33,6 +33,8 @@ void main()
 	envColor = min(envColor, vec3(200.0));
 	envColor = max(envColor, vec3(0.0));
 
-	FragColor = vec4(envColor, 1.0);
+	// Store Luma in Alpha for FXAA (using sqrt approx for Gamma)
+	float luma = dot(sqrt(envColor), vec3(0.299, 0.587, 0.114));
+	FragColor = vec4(envColor, luma);
 	VelocityOut = vec2(0.0); /* Skybox has no velocity */
 }

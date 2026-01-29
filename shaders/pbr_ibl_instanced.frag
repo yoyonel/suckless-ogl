@@ -31,7 +31,9 @@ void main()
 	                                 debugMode)
 	                 : compute_pbr(N, V, Albedo, Metallic, Roughness, AO);
 
-	FragColor = vec4(color, 1.0);
+	// Store Luma in Alpha for FXAA (using sqrt approx for Gamma)
+	float luma = dot(sqrt(color), vec3(0.299, 0.587, 0.114));
+	FragColor = vec4(color, luma);
 
 	// Calculate Velocity
 	vec2 currentPosNDC = CurrentClipPos.xy / CurrentClipPos.w;

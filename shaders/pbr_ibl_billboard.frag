@@ -32,12 +32,14 @@ uniform mat4 previousViewProj;
 // Ray-Sphere Intersection
 // ----------------------------------------------------------------------------
 bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
-                     out vec3 normal)
+                     out vec3 normal, out float discriminant)
 {
 	vec3 oc = ro - center;
 	float b = dot(oc, rd);
 	float c = dot(oc, oc) - radius * radius;
 	float h = b * b - c;
+
+	discriminant = h;
 
 	if (h < 0.0)
 		return false;  // No intersection
@@ -65,12 +67,17 @@ void main()
 
 	float t;
 	vec3 N;
+	float h;  // Discriminant
 	bool hit = intersectSphere(rayOrigin, rayDir, SphereCenter,
-	                           SphereRadius, t, N);
+	                           SphereRadius, t, N, h);
 
 	if (!hit) {
 		discard;
 	}
+
+	// Analytic Edge Smoothing (Pseudo-AA)
+	float edgeFactor = clamp(h / fwidth(h), 0.0, 1.0);
+	edgeFactor = smoothstep(0.0, 1.0, edgeFactor);
 
 	vec3 sphereHitPos = rayOrigin + t * rayDir;
 
@@ -92,7 +99,12 @@ void main()
 		color = compute_pbr(N, V, Albedo, Metallic, Roughness, AO);
 	}
 
-	FragColor = vec4(color, 1.0);
+	// Apply Edge Smoothing (Darken rim)
+	color *= edgeFactor;
+
+	// Store Luma in Alpha for FXAA (using sqrt approx for Gamma)
+	float luma = dot(sqrt(color), vec3(0.299, 0.587, 0.114));
+	FragColor = vec4(color, luma);
 
 	// --- Velocity Calculation ---
 	// We assume the object is static, so WorldPos is the same for previous
