@@ -34,12 +34,12 @@ Ce document récapitule les correctifs et analyses effectués pour résoudre les
 ### Recompilation de Shader (0x20092)
 - **Problème** : "Vertex shader in program 3 is being recompiled based on GL state".
 - **Cause** : Mismatch entre le layout du Mesh PBR et le Billboard PBR. Le pilote devait recompiler le shader pour ajuster le "vertex fetch prologue".
-- **Correctif** : 
+- **Correctif** :
     - **Uniformisation des signatures** : Ajout des attributs `in_normal` et des outputs `Current/PreviousClipPos` au shader de Billboard pour matcher exactement le profil du Mesh Shader.
     - **VAO Normalization** : Désactivation explicite et reset des diviseurs pour les slots 8-15 dans tous les VAOs pour garantir une signature d'état stable.
 
 ## 3. Analyse du Warning 0x20092 Résiduel
-Le warning persiste parfois au lancement pour le "PBR Billboard Shader". 
+Le warning persiste parfois au lancement pour le "PBR Billboard Shader".
 - **Analyse** : Ce shader utilise `gl_FragDepth` pour projeter une sphère parfaite sur un quad plat. L'écriture manuelle dans la profondeur force le driver à recompiler le shader pour ajuster les politiques d'optimisation (Early-Z).
 - **Impact** : Négligeable. La recompilation est effectuée une seule fois au démarrage et mise en cache.
 

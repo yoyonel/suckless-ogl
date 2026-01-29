@@ -31,7 +31,7 @@ These changes addressed recurring performance warnings and optimized the renderi
 
 ### 2. VAO State Reconciliation (Shader Recompilation)
 - **Issue**: Frequent "Vertex shader recompiled based on GL state" (0x20092) warnings caused by indeterminate attribute divisor states across different VAOs.
-- **Fix**: 
+- **Fix**:
     - Explicitly called `glVertexAttribDivisor(index, 0)` for all non-instanced attributes in all VAOs.
     - Systematically disabled unused attribute arrays (indices 1-7) in specialized VAOs (Skybox, Billboards).
 - **Result**: Recompilation is now limited to a one-time startup JIT event, eliminating runtime stuttering.

@@ -646,37 +646,17 @@ void app_cleanup(App* app)
 
 	ui_destroy(&app->ui);
 
+	postprocess_cleanup(&app->postprocess);
+	adaptive_sampler_cleanup(&app->fps_sampler);
+
+	/* Delete textures LAST because postprocess_cleanup might use dummy
+	 * textures to reset state */
 	glDeleteTextures(1, &app->hdr_texture);
 	glDeleteTextures(1, &app->brdf_lut_tex);
 	glDeleteTextures(1, &app->spec_prefiltered_tex);
 	glDeleteTextures(1, &app->irradiance_tex);
 	glDeleteTextures(1, &app->dummy_black_tex);
 	glDeleteTextures(1, &app->dummy_white_tex);
-
-	glDeleteProgram(app->skybox_shader);
-	shader_destroy(app->debug_shader);
-	glDeleteBuffers(1, &app->exposure_pbo);
-
-	glDeleteBuffers(1, &app->quad_vbo);
-	shader_destroy(app->pbr_billboard_shader);
-
-	material_free_lib(app->material_lib);
-
-#ifdef USE_SSBO_RENDERING
-	ssbo_group_cleanup(&app->ssbo_group);
-	shader_destroy(app->pbr_ssbo_shader);
-#else
-	instanced_group_cleanup(&app->instanced_group);
-	billboard_group_cleanup(&app->billboard_group);
-#endif
-
-	glDeleteProgram(app->shader_spmap);
-	glDeleteProgram(app->shader_irmap);
-	glDeleteProgram(app->shader_lum_pass1);
-	glDeleteProgram(app->shader_lum_pass2);
-
-	postprocess_cleanup(&app->postprocess);
-	adaptive_sampler_cleanup(&app->fps_sampler);
 
 	async_loader_shutdown();
 
