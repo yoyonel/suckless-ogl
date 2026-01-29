@@ -392,10 +392,13 @@ char* shader_read_file(const char* path)
 	char* modified_root_src =
 	    inject_macro_into_source(root_src, root_src_len, macro, macro_len);
 	if (!modified_root_src) {
-		free(root_src);
+		RAII_SATISFY_FREE(root_src);
 		return NULL;
 	}
-	free(root_src);  // Free original root_src
+	// Transfer ownership before freeing to prevent cleanup_free from
+	// accessing freed memory
+	char* old_root_src = TRANSFER_OWNERSHIP(root_src);
+	free(old_root_src);
 	root_src = modified_root_src;
 #endif
 
