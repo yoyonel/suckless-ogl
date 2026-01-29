@@ -21,6 +21,10 @@ void billboard_group_prepare(BillboardGroup* group, GLuint quad_vbo);
 /* Dessine les billboards (GL_TRIANGLE_STRIP instancié) */
 void billboard_group_draw(BillboardGroup* group);
 
+/* Met à jour les données d'instances sur le GPU (pour le tri) */
+void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
+                            int count);
+
 void billboard_group_cleanup(BillboardGroup* group);
 
 #endif

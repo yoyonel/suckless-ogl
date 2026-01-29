@@ -18,7 +18,7 @@ if(DEBUG_SYNCHRONOUS)
     message(WARNING "OpenGL Synchronous Debug: ENABLED (Expect low performance)")
 endif()
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Source files
@@ -39,6 +39,7 @@ set(SOURCES
     src/perf_timer.c
     src/instanced_rendering.c
     src/billboard_rendering.c
+    src/sphere_sorting.c
     src/ssbo_rendering.c
     src/camera.c
     src/postprocess.c

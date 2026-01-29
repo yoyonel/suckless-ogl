@@ -2,6 +2,7 @@
 #define APP_H
 
 #include "adaptive_sampler.h"
+#include "app_settings.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "icosphere.h"
@@ -16,6 +17,7 @@
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
+#include "sphere_sorting.h"
 #include "ui.h"
 #include <cglm/cglm.h>
 
@@ -65,6 +67,11 @@ typedef struct {
 	UIContext ui;
 	InstancedGroup instanced_group;
 	BillboardGroup billboard_group;
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	SphereSorter sphere_sorter;
+	SphereInstance* sphere_instances; /* Persisted for sorting */
+	int sphere_instance_count;
+#endif
 	Skybox skybox;
 	Camera camera;
 	IBLContext ibl_ctx;

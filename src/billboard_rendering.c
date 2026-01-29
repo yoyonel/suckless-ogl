@@ -20,6 +20,21 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
+                            int count)
+{
+	if (group->instance_vbo == 0) {
+		return;
+	}
+
+	/* Update GPU buffer with new sorted data */
+	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
+	/* Using glBufferSubData is fine for small updates (10-100 instances) */
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	                (GLsizeiptr)(count * sizeof(SphereInstance)), data);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 static void setup_billboard_instance_attributes()
 {
 	GLsizei size_instance = (GLsizei)sizeof(SphereInstance);

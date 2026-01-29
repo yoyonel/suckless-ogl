@@ -43,12 +43,26 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 	float lumaM = FxaaLuma(colorInput);
 
 	// Neighbor Luma: Fetch directly from Alpha channel (Pre-computed in PBR
-	// pass) We use textureOffset for cleaner/faster immediate neighbor
-	// access
+	// pass)
+	// We use textureOffset for cleaner/faster immediate neighbor access
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	// In Transparent mode, Alpha contains Opacity. We must re-calculate
+	// Luma from RGB.
+	float lumaN =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(0, -1)).rgb);
+	float lumaW =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(-1, 0)).rgb);
+	float lumaE =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(1, 0)).rgb);
+	float lumaS =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(0, 1)).rgb);
+#else
+	// In Legacy mode, Alpha contains Luma. Fast path.
 	float lumaN = textureOffset(screenTexture, texCoords, ivec2(0, -1)).a;
 	float lumaW = textureOffset(screenTexture, texCoords, ivec2(-1, 0)).a;
 	float lumaE = textureOffset(screenTexture, texCoords, ivec2(1, 0)).a;
 	float lumaS = textureOffset(screenTexture, texCoords, ivec2(0, 1)).a;
+#endif
 
 	float rangeMin = min(lumaM, min(min(lumaN, lumaW), min(lumaS, lumaE)));
 	float rangeMax = max(lumaM, max(max(lumaN, lumaW), max(lumaS, lumaE)));
@@ -63,10 +77,21 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 	// ------------------------------------------------------------------------
 	// 2. Corner Sampling (Neighbors of neighbors)
 	// ------------------------------------------------------------------------
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	float lumaNW = FxaaLuma(
+	    textureOffset(screenTexture, texCoords, ivec2(-1, -1)).rgb);
+	float lumaNE =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(1, -1)).rgb);
+	float lumaSW =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(-1, 1)).rgb);
+	float lumaSE =
+	    FxaaLuma(textureOffset(screenTexture, texCoords, ivec2(1, 1)).rgb);
+#else
 	float lumaNW = textureOffset(screenTexture, texCoords, ivec2(-1, -1)).a;
 	float lumaNE = textureOffset(screenTexture, texCoords, ivec2(1, -1)).a;
 	float lumaSW = textureOffset(screenTexture, texCoords, ivec2(-1, 1)).a;
 	float lumaSE = textureOffset(screenTexture, texCoords, ivec2(1, 1)).a;
+#endif
 
 	// Filter Direction (Vertical vs Horizontal)
 	float lumaL = (lumaN + lumaS + lumaE + lumaW) * 0.25;
