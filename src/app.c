@@ -8,6 +8,7 @@
 #include "glad/glad.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include "render_utils.h"
 #include <stb_image.h>
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
@@ -236,24 +237,12 @@ int app_init(App* app, int width, int height, const char* title)
 	app->lum_ssbo[1] = 0;
 
 	/* Create Dummy Textures (to avoid Unit 0 warnings) */
-	glGenTextures(1, &app->dummy_black_tex);
-	glBindTexture(GL_TEXTURE_2D, app->dummy_black_tex);
-	float black[4] = {0, 0, 0, 0};
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1, 1, 0, GL_RGBA, GL_FLOAT,
-	             black);
-	glObjectLabel(GL_TEXTURE, app->dummy_black_tex, -1, "Dummy Black");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	/* Create Dummy Textures (to avoid Unit 0 warnings) */
+	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
+	app->dummy_white_tex = render_utils_create_color_texture(1, 1, 1, 1);
 
-	glGenTextures(1, &app->dummy_white_tex);
-	glBindTexture(GL_TEXTURE_2D, app->dummy_white_tex);
-	float white[4] = {1, 1, 1, 1};
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1, 1, 0, GL_RGBA, GL_FLOAT,
-	             white);
-	glObjectLabel(GL_TEXTURE, app->dummy_white_tex, -1, "Dummy White");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	LOG_INFO("suckless-ogl.app", "Dummy textures: black=%u, white=%u",
+	         app->dummy_black_tex, app->dummy_white_tex);
 
 	LOG_INFO("suckless-ogl.app", "Dummy textures: black=%u, white=%u",
 	         app->dummy_black_tex, app->dummy_white_tex);
@@ -307,10 +296,7 @@ int app_init(App* app, int width, int height, const char* title)
 		glObjectLabel(GL_PROGRAM, app->debug_shader->program, -1,
 		              "Debug Shader");
 	}
-	glGenVertexArrays(1, &app->empty_vao);
-	glBindVertexArray(app->empty_vao);
-	glObjectLabel(GL_VERTEX_ARRAY, app->empty_vao, -1, "Empty VAO");
-	glBindVertexArray(0);
+	render_utils_create_empty_vao(&app->empty_vao);
 	app->debug_lod = 0.0F;
 	app->show_debug_tex = false;
 
@@ -333,16 +319,8 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	// Initialize Quad VAO for billboards
-	static const float quadVertices[] = {
-	    -0.5F, 0.5F, 0.0F, -0.5F, -0.5F, 0.0F,
-	    0.5F,  0.5F, 0.0F, 0.5F,  -0.5F, 0.0F,
-	};
-
-	glGenBuffers(1, &app->quad_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, app->quad_vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices,
-	             GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// Initialize Quad VAO for billboards
+	render_utils_create_quad_vbo(&app->quad_vbo);
 
 	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
@@ -587,19 +565,12 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	Shader* current_shader = app->pbr_billboard_shader;
 	shader_use(current_shader);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex
-	                                 ? app->irradiance_tex
-	                                 : app->dummy_black_tex);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex
-	                                 ? app->spec_prefiltered_tex
-	                                 : app->dummy_black_tex);
-
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex ? app->brdf_lut_tex
-	                                               : app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE0, app->irradiance_tex,
+	                               app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE1, app->spec_prefiltered_tex,
+	                               app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
+	                               app->dummy_black_tex);
 
 	shader_set_int(current_shader, "irradianceMap", 0);
 	shader_set_int(current_shader, "prefilterMap", 1);
@@ -632,19 +603,12 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 
 	shader_use(current_shader);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, app->irradiance_tex
-	                                 ? app->irradiance_tex
-	                                 : app->dummy_black_tex);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, app->spec_prefiltered_tex
-	                                 ? app->spec_prefiltered_tex
-	                                 : app->dummy_black_tex);
-
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex ? app->brdf_lut_tex
-	                                               : app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE0, app->irradiance_tex,
+	                               app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE1, app->spec_prefiltered_tex,
+	                               app->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
+	                               app->dummy_black_tex);
 
 	shader_set_int(current_shader, "irradianceMap", 0);
 	shader_set_int(current_shader, "prefilterMap", 1);
