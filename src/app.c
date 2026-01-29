@@ -1860,7 +1860,7 @@ static void handle_app_input(App* app, int key, int mods)
 			         app->show_envmap ? "ON" : "OFF");
 			break;
 		case GLFW_KEY_X:
-			if (mods & GLFW_MOD_SHIFT) {
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				postprocess_toggle(&app->postprocess,
 				                   POSTFX_FXAA_DEBUG);
 				LOG_INFO(

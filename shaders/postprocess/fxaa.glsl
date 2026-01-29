@@ -2,84 +2,76 @@
 // Optimized for Quality/Performance balance
 
 // Settings provided by PostProcessUBO
+// FXAA_MODE: 0 = Performance (Console), 1 = Quality (PC)
+#ifndef FXAA_MODE
+#define FXAA_MODE 1
+#endif
 
+// Quality/Performance Tuning
+#if FXAA_MODE == 1
 #define FXAA_QUALITY_PS 5
+// Steps defined as array-like access or macros
 #define FXAA_QUALITY_P0 1.0
 #define FXAA_QUALITY_P1 1.5
 #define FXAA_QUALITY_P2 2.0
 #define FXAA_QUALITY_P3 2.0
 #define FXAA_QUALITY_P4 2.0
 #define FXAA_QUALITY_P5 8.0
+#else
+// Performance constants
+#define FXAA_QUALITY_PS 0  // No loop
+#endif
 
-/* Simple Luminance Calculation */
+// Helper for Luma calculation on the fly (Center Pixel)
+// We use sqrt to approximate Gamma correction for better perceptual edge
+// detection
 float FxaaLuma(vec3 rgb)
 {
-	return dot(rgb, vec3(0.299, 0.587, 0.114));
+	return dot(sqrt(rgb), vec3(0.299, 0.587, 0.114));
 }
 
 vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 {
 	vec2 inverseScreenSize = 1.0 / textureSize(screenTexture, 0);
 
-	// Sample center and 4 neighbors for edge detection
-	vec3 rgbM = colorInput;  // Center is passed in, or re-sample?
-	// Let's re-sample to be safe and consistent with FXAA logic which needs
-	// exact texel centers Actually, FXAA needs samples around the center.
+	// ------------------------------------------------------------------------
+	// 1. Luma Analysis (Center + 4 Neighbors)
+	// ------------------------------------------------------------------------
 
-	vec3 rgbN = texture(screenTexture,
-	                    texCoords + vec2(0.0, -1.0) * inverseScreenSize)
-	                .rgb;
-	vec3 rgbW = texture(screenTexture,
-	                    texCoords + vec2(-1.0, 0.0) * inverseScreenSize)
-	                .rgb;
-	vec3 rgbE = texture(screenTexture,
-	                    texCoords + vec2(1.0, 0.0) * inverseScreenSize)
-	                .rgb;
-	vec3 rgbS = texture(screenTexture,
-	                    texCoords + vec2(0.0, 1.0) * inverseScreenSize)
-	                .rgb;
+	// Center Luma: Calculate from input color (which might be processed by
+	// other effects)
+	float lumaM = FxaaLuma(colorInput);
 
-	float lumaM = FxaaLuma(rgbM);
-	float lumaN = FxaaLuma(rgbN);
-	float lumaW = FxaaLuma(rgbW);
-	float lumaE = FxaaLuma(rgbE);
-	float lumaS = FxaaLuma(rgbS);
+	// Neighbor Luma: Fetch directly from Alpha channel (Pre-computed in PBR
+	// pass) We use textureOffset for cleaner/faster immediate neighbor
+	// access
+	float lumaN = textureOffset(screenTexture, texCoords, ivec2(0, -1)).a;
+	float lumaW = textureOffset(screenTexture, texCoords, ivec2(-1, 0)).a;
+	float lumaE = textureOffset(screenTexture, texCoords, ivec2(1, 0)).a;
+	float lumaS = textureOffset(screenTexture, texCoords, ivec2(0, 1)).a;
 
 	float rangeMin = min(lumaM, min(min(lumaN, lumaW), min(lumaS, lumaE)));
 	float rangeMax = max(lumaM, max(max(lumaN, lumaW), max(lumaS, lumaE)));
 	float range = rangeMax - rangeMin;
 
-	// 1. Early Exit: No edge detected or contrast too low
-	if (range <
-	    max(0.063, rangeMax * 0.125)) {  // 0.063 = EdgeThresholdMin, 0.125
-		                             // = EdgeThreshold
-		return rgbM;
+	// Early Exit: Contrast too low?
+	// 0.063 = EdgeThresholdMin, 0.125 = EdgeThreshold
+	if (range < max(0.063, rangeMax * 0.125)) {
+		return colorInput;
 	}
 
-	// 2. Luma calculation for corners to refine edge direction
-	vec3 rgbNW = texture(screenTexture,
-	                     texCoords + vec2(-1.0, -1.0) * inverseScreenSize)
-	                 .rgb;
-	vec3 rgbNE = texture(screenTexture,
-	                     texCoords + vec2(1.0, -1.0) * inverseScreenSize)
-	                 .rgb;
-	vec3 rgbSW = texture(screenTexture,
-	                     texCoords + vec2(-1.0, 1.0) * inverseScreenSize)
-	                 .rgb;
-	vec3 rgbSE = texture(screenTexture,
-	                     texCoords + vec2(1.0, 1.0) * inverseScreenSize)
-	                 .rgb;
+	// ------------------------------------------------------------------------
+	// 2. Corner Sampling (Neighbors of neighbors)
+	// ------------------------------------------------------------------------
+	float lumaNW = textureOffset(screenTexture, texCoords, ivec2(-1, -1)).a;
+	float lumaNE = textureOffset(screenTexture, texCoords, ivec2(1, -1)).a;
+	float lumaSW = textureOffset(screenTexture, texCoords, ivec2(-1, 1)).a;
+	float lumaSE = textureOffset(screenTexture, texCoords, ivec2(1, 1)).a;
 
-	float lumaNW = FxaaLuma(rgbNW);
-	float lumaNE = FxaaLuma(rgbNE);
-	float lumaSW = FxaaLuma(rgbSW);
-	float lumaSE = FxaaLuma(rgbSE);
-
-	// 3. Determine Edge Direction (Vertical/Horizontal)
+	// Filter Direction (Vertical vs Horizontal)
 	float lumaL = (lumaN + lumaS + lumaE + lumaW) * 0.25;
 	float rangeL = abs(lumaL - lumaM);
-	float blendL =
-	    max(0.0, (rangeL / range) - 0.0);  // Subpix quality would go here
+	float blendL = max(0.0, (rangeL / range) - 0.0);
 
 	float edgeVert =
 	    abs((0.25 * lumaNW) + (-0.5 * lumaN) + (0.25 * lumaNE)) +
@@ -93,7 +85,19 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 
 	bool isHorz = edgeHorz >= edgeVert;
 
-	// 4. Gradient Calculation
+	// ------------------------------------------------------------------------
+	// 3. Sub-Pixel AA (Common to both modes)
+	// ------------------------------------------------------------------------
+	float subPixelOffset1 = clamp(abs(lumaL - lumaM) / range, 0.0, 1.0);
+	float subPixelOffset2 = (-2.0 * subPixelOffset1) + 3.0;
+	float subPixelOffsetFinal =
+	    subPixelOffset1 * subPixelOffset1 * subPixelOffset2;
+	subPixelOffsetFinal =
+	    subPixelOffsetFinal * subPixelOffsetFinal * 0.75;  // Subpix Quality
+
+	// ------------------------------------------------------------------------
+	// 4. Edge Search (Mode Dependent)
+	// ------------------------------------------------------------------------
 	float luma1 = isHorz ? lumaN : lumaW;
 	float luma2 = isHorz ? lumaS : lumaE;
 	float gradient1 = luma1 - lumaM;
@@ -103,14 +107,12 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 	float gradientScaled = 0.25 * max(abs(gradient1), abs(gradient2));
 
 	float stepLength = isHorz ? inverseScreenSize.y : inverseScreenSize.x;
-	float lumaLocalAverage = 0.0;
 
 	if (is1Steepest) {
 		stepLength = -stepLength;
-		lumaLocalAverage = 0.5 * (luma1 + lumaM);
-	} else {
-		lumaLocalAverage = 0.5 * (luma2 + lumaM);
 	}
+	// Average Luma at the edge border
+	float lumaLocalAverage = 0.5 * ((is1Steepest ? luma1 : luma2) + lumaM);
 
 	vec2 currentUv = texCoords;
 	if (isHorz) {
@@ -119,16 +121,32 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 		currentUv.x += stepLength * 0.5;
 	}
 
-	// 5. End-of-edge Search
+#if FXAA_MODE == 0
+	// --- PERFORMANCE MODE (Console) ---
+	float finalOffset = subPixelOffsetFinal;
+
+#else
+	// --- QUALITY MODE (PC) ---
+	// Iterative loop to find end of edge using Variable Steps
 	vec2 offset = isHorz ? vec2(inverseScreenSize.x, 0.0)
 	                     : vec2(0.0, inverseScreenSize.y);
-	vec2 uv1 = currentUv - offset;
-	vec2 uv2 = currentUv + offset;
+	vec2 uv1 = currentUv - offset * FXAA_QUALITY_P0;
+	vec2 uv2 = currentUv + offset * FXAA_QUALITY_P0;
 
 	float lumaEnd1, lumaEnd2;
 	bool reached1 = false;
 	bool reached2 = false;
 	bool reachedBoth = false;
+
+	// We unroll or use array for steps. Here a manual switch/array is safer
+	// or just if-cascade inside loop if compiler unrolls. Let's use a small
+	// array for step multipliers
+	float quality[5];
+	quality[0] = FXAA_QUALITY_P1;
+	quality[1] = FXAA_QUALITY_P2;
+	quality[2] = FXAA_QUALITY_P3;
+	quality[3] = FXAA_QUALITY_P4;
+	quality[4] = FXAA_QUALITY_P5;
 
 	for (int i = 0; i < FXAA_QUALITY_PS; i++) {
 		if (!reached1) {
@@ -144,18 +162,17 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 		reached2 = abs(lumaEnd2) >= gradientScaled;
 		reachedBoth = reached1 && reached2;
 
-		if (!reached1) {
-			uv1 -= offset;  // * Quality step ?
-		}
-		if (!reached2) {
-			uv2 += offset;
-		}
-
 		if (reachedBoth)
 			break;
+
+		// Advance using variable step
+		if (!reached1)
+			uv1 -= offset * quality[i];
+		if (!reached2)
+			uv2 += offset * quality[i];
 	}
 
-	// 6. Blending
+	// Distance Ratios
 	float distance1 =
 	    isHorz ? (texCoords.x - uv1.x) : (texCoords.y - uv1.y);
 	float distance2 =
@@ -166,25 +183,19 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 	float edgeThickness = (distance1 + distance2);
 	float pixelOffset = -distanceFinal / edgeThickness + 0.5;
 
-	// Check if luma sign mismatch (overshoot)
+	// Check overshoot
 	bool isLumaCenterSmaller = lumaM < lumaLocalAverage;
 	bool correctVariation =
 	    ((isDirection1 ? lumaEnd1 : lumaEnd2) < 0.0) != isLumaCenterSmaller;
 	float finalOffset = correctVariation ? pixelOffset : 0.0;
 
-	// Subpixel anti-aliasing (reduce flicker on single pixels)
-	// Low quality = 0.0, High = 0.75 or 1.0 (fxaaQualitySubpix)
-	float subPixelOffset1 = clamp(abs(lumaL - lumaM) / range, 0.0, 1.0);
-	float subPixelOffset2 =
-	    (-2.0 * subPixelOffset1) + 3.0;  // Smootherstep-ish
-	float subPixelOffsetFinal =
-	    subPixelOffset1 * subPixelOffset1 * subPixelOffset2;
-	subPixelOffsetFinal = subPixelOffsetFinal * subPixelOffsetFinal *
-	                      0.75;  // 0.75 = Default Subpix Quality
-
+	// Blend with subpixel
 	finalOffset = max(finalOffset, subPixelOffsetFinal);
+#endif
 
-	// Final Read
+	// ------------------------------------------------------------------------
+	// 5. Final Read & Output
+	// ------------------------------------------------------------------------
 	vec2 finalUv = texCoords;
 	if (isHorz) {
 		finalUv.y += finalOffset * stepLength;
@@ -192,21 +203,22 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 		finalUv.x += finalOffset * stepLength;
 	}
 
-	/* Debug Visualization */
+	// ------------------------------------------------------------------------
+	// 6. Debug Visualization
+	// ------------------------------------------------------------------------
 	if (enableFXAADebug) {
-		// Darken original image to make debug pop
-		// Red = Affected pixels (Significant displacement)
-		// Blue = Subpixel (Micro-displacement)
-		if (finalOffset > 0.0) {
+		// Red = Edge displacement
+		// Blue = Subpixel displacement
+		if (finalOffset > 0.001) {
 			if (subPixelOffsetFinal > finalOffset * 0.9) {
-				return vec3(0.0, 0.5, 1.0);  // Subpixel (Blue)
+				return vec3(0.1, 0.4, 1.0);  // Blueish (Subpix)
 			}
-			return vec3(1.0, 0.0, 0.0);  // Edge (Red)
+			return vec3(1.0, 0.2, 0.2);  // Reddish (Edge)
 		}
-		// Green tint for searched edges but no displacement?
-		// Just grayscale for unaffected.
+		// Show untouched pixels in grayscale
 		vec3 original = texture(screenTexture, texCoords).rgb;
-		return vec3(dot(original, vec3(0.3, 0.59, 0.11)));
+		float gray = dot(original, vec3(0.3, 0.59, 0.11));
+		return vec3(gray * 0.5);
 	}
 
 	return texture(screenTexture, finalUv).rgb;
