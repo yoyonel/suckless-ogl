@@ -542,7 +542,13 @@ void app_init_instancing(App* app)
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	/* Persist data for sorting */
-	app->sphere_instances = malloc(sizeof(SphereInstance) * total_count);
+	/* MUST use aligned_alloc/posix_memalign because SphereInstance has
+	 * __attribute__((aligned(64))) */
+	/* sizeof(SphereInstance) is a multiple of 64, so total size is safe for
+	 * aligned_alloc */
+	app->sphere_instances = aligned_alloc(
+	    SIMD_ALIGNMENT, sizeof(SphereInstance) * (size_t)total_count);
+
 	if (app->sphere_instances) {
 		safe_memcpy(app->sphere_instances,
 		            sizeof(SphereInstance) * total_count, data,
@@ -551,7 +557,8 @@ void app_init_instancing(App* app)
 		sphere_sorter_init(&app->sphere_sorter, total_count);
 	} else {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for sorted instances");
+		          "Failed to allocate aligned memory for sorted "
+		          "instances");
 	}
 #endif
 
