@@ -4,8 +4,7 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 
-uniform float u_time;
-uniform vec2 u_resolution;
+uniform int u_mode;
 
 const float PI = 3.14159265359;
 
@@ -42,19 +41,71 @@ float rotatedGrid(vec2 uv, float angle, float thickness)
 void main()
 {
 	vec2 uv = TexCoords;
+	vec3 finalColor = vec3(0.0);
 
-	// Split screen: Star on left, Grid on right
-	float color = 0.0;
-	if (uv.x < 0.5) {
-		// Left: Siemens Star
-		vec2 starUV = vec2(uv.x * 2.0, uv.y);
-		color = siemensStar(starUV, 32.0);
-	} else {
-		// Right: Rotated Grid (aliasing-prone angle like 15 degrees)
-		vec2 gridUV = vec2((uv.x - 0.5) * 2.0, uv.y);
-		color = rotatedGrid(gridUV, 15.0 * PI / 180.0, 0.02);
+	if (u_mode == 0) {
+		// Siemens Star - Highly squashed and high frequency
+		vec2 starUV = vec2(uv.x * 4.0, uv.y);
+		finalColor = vec3(siemensStar(starUV, 128.0));
+	} else if (u_mode == 1) {
+		// Rotated Grid
+		finalColor = vec3(rotatedGrid(uv, 15.0 * PI / 180.0, 0.02));
+	} else if (u_mode == 2) {
+		// User-Requested Spheres Alignment (8x8 Overlapping Grid)
+		// Mimicking the overlapping look of the reference image with
+		// high edge density
+		vec3 bg = vec3(0.01, 0.01, 0.02);
+		finalColor = bg;
+
+		// 8 columns and 8 rows of spheres
+		for (int x_idx = 0; x_idx < 8; x_idx++) {
+			for (int y_idx = 0; y_idx < 8; y_idx++) {
+				float tx = float(x_idx) / 7.0;
+				float ty = float(y_idx) / 7.0;
+
+				vec2 center =
+				    vec2(0.1 + tx * 0.8, 0.1 + ty * 0.8);
+				float r = 0.08;
+
+				float dist = distance(uv, center);
+				if (dist < r) {
+					// High-contrast primary colors
+					int color_idx = (x_idx + y_idx) % 4;
+					vec3 base;
+					if (color_idx == 0)
+						base =
+						    vec3(0.9, 0.1, 0.1);  // Red
+					else if (color_idx == 1)
+						base = vec3(0.1, 0.9,
+						            0.1);  // Green
+					else if (color_idx == 2)
+						base = vec3(0.1, 0.1,
+						            0.9);  // Blue
+					else
+						base = vec3(0.9, 0.9,
+						            0.1);  // Yellow
+
+					// Simple 3D shading
+					float z = sqrt(
+					    max(0.0, r * r - dot(uv - center,
+					                         uv - center)));
+					vec3 normal =
+					    normalize(vec3(uv - center, z));
+					float diff = max(
+					    0.4,
+					    dot(normal, normalize(vec3(1.0, 1.0,
+					                               2.0))));
+					finalColor = base * diff;
+				}
+			}
+		}
 	}
 
-	// High contrast Black & White
-	FragColor = vec4(vec3(color), 1.0);
+	// Calculate Luma for Alpha channel (FXAA requirement in legacy mode)
+	// Using sqrt(color) to approximate gamma-space luma for better
+	// detection
+	float luma =
+	    dot(sqrt(clamp(finalColor, 0.0, 1.0)), vec3(0.299, 0.587, 0.114));
+
+	FragColor = vec4(finalColor, luma);
 }

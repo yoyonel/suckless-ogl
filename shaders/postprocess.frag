@@ -53,8 +53,7 @@ void main()
 	// 	vec3 centerColor = texture(screenTexture, TexCoords).rgb;
 	// 	color = applyFXAA(centerColor, TexCoords);
 	// }
-	// /* 2. Pipeline: Motion Blur -> Chromatic Aberration */
-	// else
+	/* 2. Pipeline: Motion Blur -> Chromatic Aberration */
 	if (enableChromAbbr && !isSkybox) {
 		/* CA samples "SceneSource" (which calls MB) */
 		color = applyChromAbbr(TexCoords);
@@ -62,12 +61,10 @@ void main()
 		/* Direct fetch (or MB only) */
 		color = getSceneSource(TexCoords);
 	}
-	// --------------------------------------------------------------------------------
-	// FIXME: en effet en mettant le FXAA ici, ça limite les impacts de
-	// performance.
-	// TODO: faire des shaders dédiés pour chaque combinaison d'effet
-	// post-process
-	color = applyFXAA(color, TexCoords);
+
+	if (enableFXAA) {
+		color = applyFXAA(color, TexCoords);
+	}
 
 	/* 3. Depth of Field */
 	if (enableDoF) {
