@@ -1,7 +1,8 @@
 #include "adaptive_sampler.h"
 
+#include "utils.h"  /* safe_snprintf */
 #include <stdint.h> /* uintptr_t */
-#include <stdio.h>  /* snprintf */
+#include <stdio.h>  /* For FILE* if needed */
 #include <stdlib.h> /* malloc, free */
 #include <string.h> /* memset */
 #include <time.h>   /* time() for seed */
@@ -228,8 +229,7 @@ void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
 
 	/* Format Output: "[0s...5s]\n|timeline|" */
 	/* We try to fit into provided buffer */
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(
+	(void)safe_snprintf(
 	    buffer, buffer_size, "[0s%.*s%.1fs]\n|%s|",
 	    (int)(width > PADDING_Width ? width - PADDING_Width : 0),
 	    "..................................................", /* Padding */

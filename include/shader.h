@@ -39,6 +39,13 @@ Shader* shader_load(const char* vertex_path, const char* fragment_path);
 /* Load and link a compute shader, automatically caching all active uniforms. */
 Shader* shader_load_compute_program(const char* compute_path);
 
+/* Load and link a shader with custom compile-time defines injected.
+ * defines: array of strings "NAME" or "NAME VALUE".
+ * count: number of defines. */
+Shader* shader_load_with_defines(const char* vertex_path,
+                                 const char* fragment_path,
+                                 const char** defines, int count);
+
 /* Destroy the shader wrapper, freeing cached memory. Does NOT delete the GL
  * program if it was created externally, but DOES delete it if created via
  * shader_load. */

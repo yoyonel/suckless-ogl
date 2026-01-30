@@ -251,11 +251,18 @@ typedef struct PostProcess {
 	/* Dummy textures for clean bindings */
 	GLuint dummy_black_tex;
 
+	bool is_optimized; /* true if running with static defines */
 } PostProcess;
 
 /* Initialisation et nettoyage */
 int postprocess_init(PostProcess* post_processing, int width, int height);
 void postprocess_cleanup(PostProcess* post_processing);
+
+/* Shader Optimization */
+void postprocess_compile_optimized(PostProcess* post_processing,
+                                   unsigned int static_flags);
+void postprocess_use_dynamic(PostProcess* post_processing);
+
 void postprocess_set_dummy_textures(PostProcess* post_processing,
                                     GLuint dummy_black);
 

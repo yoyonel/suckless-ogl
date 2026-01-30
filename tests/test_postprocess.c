@@ -185,6 +185,30 @@ void test_postprocess_cleanup(void)
 	TEST_ASSERT_NULL(pp.postprocess_shader);
 }
 
+void test_postprocess_optimization_switch(void)
+{
+	PostProcess pp = {0};
+	postprocess_init(&pp, 100, 100);
+
+	// Default should be dynamic
+	TEST_ASSERT_FALSE(pp.is_optimized);
+	GLuint original_program = pp.postprocess_shader->program;
+
+	// Switch to optimized
+	postprocess_compile_optimized(&pp, POSTFX_VIGNETTE | POSTFX_GRAIN);
+	TEST_ASSERT_TRUE(pp.is_optimized);
+	TEST_ASSERT_NOT_EQUAL(original_program, pp.postprocess_shader->program);
+
+	// Switch back to dynamic
+	GLuint optimized_program = pp.postprocess_shader->program;
+	postprocess_use_dynamic(&pp);
+	TEST_ASSERT_FALSE(pp.is_optimized);
+	TEST_ASSERT_NOT_EQUAL(optimized_program,
+	                      pp.postprocess_shader->program);
+
+	postprocess_cleanup(&pp);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -193,6 +217,7 @@ int main(void)
 	RUN_TEST(test_postprocess_toggle_effects);
 	RUN_TEST(test_postprocess_apply_preset);
 	RUN_TEST(test_postprocess_resize);
+	RUN_TEST(test_postprocess_optimization_switch);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }

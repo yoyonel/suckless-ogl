@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L  // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
 #include "shader.h"
 
 #include "app_settings.h"
@@ -323,15 +324,27 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 }
 
 /*
- * Helper to inject a macro definition into shader source.
+ * Helper to inject multiple macro definitions into shader source.
  * Handles insertion after #version directive if present.
  * Returns a newly allocated string that must be freed by caller.
  */
-static char* inject_macro_into_source(const char* buffer, size_t file_size,
-                                      const char* macro, size_t macro_len)
+static char* inject_defines_into_source(const char* buffer, size_t file_size,
+                                        const char** defines, int count)
 {
-	size_t new_size = file_size + macro_len + 1;
-	char* modified_source = calloc(1, new_size);
+	if (count <= 0 || !defines) {
+		char* copy = safe_calloc(file_size + 1, 1);
+		safe_memcpy(copy, file_size + 1, buffer, file_size);
+		return copy;
+	}
+
+	size_t total_defines_len = 0;
+	for (int i = 0; i < count; i++) {
+		total_defines_len +=
+		    strlen("#define ") + strlen(defines[i]) + strlen("\n");
+	}
+
+	size_t new_size = file_size + total_defines_len + 1;
+	char* modified_source = safe_calloc(new_size, 1);
 	if (!modified_source) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Failed to allocate memory for modified shader");
@@ -342,40 +355,45 @@ static char* inject_macro_into_source(const char* buffer, size_t file_size,
 	const char* version_directive = "#version";
 	const char* version_start = strstr(buffer, version_directive);
 
+	size_t insertion_point = 0;
+
 	if (version_start && version_start == buffer) {
 		/* Found #version at start. Find end of line. */
 		const char* version_end = strchr(buffer, '\n');
 		if (version_end) {
-			size_t version_len = (size_t)(version_end - buffer) + 1;
-			/* Copy #version line */
-			safe_memcpy(modified_source, new_size, buffer,
-			            version_len);
-			/* Insert Macro */
-			safe_memcpy(modified_source + version_len,
-			            new_size - version_len, macro, macro_len);
-			/* Copy rest of file */
-			safe_memcpy(modified_source + version_len + macro_len,
-			            new_size - (version_len + macro_len),
-			            version_end + 1, file_size - version_len);
+			insertion_point = (size_t)(version_end - buffer) + 1;
 		} else {
-			/* No newline after version? Unlikely but append macro
-			 * at end */
-			safe_memcpy(modified_source, new_size, buffer,
-			            file_size);
-			safe_memcpy(modified_source + file_size,
-			            new_size - file_size, macro, macro_len);
+			insertion_point = file_size;
 		}
-	} else {
-		/* No #version or not at start, insert macro at beginning */
-		safe_memcpy(modified_source, new_size, macro, macro_len);
-		safe_memcpy(modified_source + macro_len, new_size - macro_len,
-		            buffer, file_size);
 	}
+
+	/* 1. Copy part before insertion (e.g. #version line) */
+	if (insertion_point > 0) {
+		safe_memcpy(modified_source, new_size, buffer, insertion_point);
+	}
+
+	/* 2. Insert Defines */
+	size_t current_offset = insertion_point;
+	for (int i = 0; i < count; i++) {
+		if (safe_snprintf(modified_source + current_offset,
+		                  new_size - current_offset, "#define %s\n",
+		                  defines[i])) {
+			current_offset +=
+			    strlen(modified_source + current_offset);
+		}
+	}
+
+	/* 3. Copy rest of file */
+	safe_memcpy(modified_source + current_offset, new_size - current_offset,
+	            buffer + insertion_point, file_size - insertion_point);
 
 	return modified_source;
 }
 
-char* shader_read_file(const char* path)
+enum { MAX_DEFINES = 32 };
+
+char* shader_read_file_with_defines(const char* path, const char** defines,
+                                    int count)
 {
 	/* 1. Load root file */
 	CLEANUP_FREE char* root_src = load_file_into_ram(path);
@@ -383,37 +401,45 @@ char* shader_read_file(const char* path)
 		return NULL;
 	}
 
-	/* Inject Compile-Time Defines if active */
-#ifdef USE_TRANSPARENT_BILLBOARDS
-	const char* macro = "#define USE_TRANSPARENT_BILLBOARDS\n";
-	size_t macro_len = strlen(macro);
-	size_t root_src_len = strlen(root_src);
+	/* 2. Inject Defines */
+	const char* all_defines[MAX_DEFINES]; /* Arbitrary safe limit */
+	int total_defines = 0;
 
-	char* modified_root_src =
-	    inject_macro_into_source(root_src, root_src_len, macro, macro_len);
-	if (!modified_root_src) {
-		RAII_SATISFY_FREE(root_src);
-		return NULL;
-	}
-	// Transfer ownership before freeing to prevent cleanup_free from
-	// accessing freed memory
-	char* old_root_src = TRANSFER_OWNERSHIP(root_src);
-	free(old_root_src);
-	root_src = modified_root_src;
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	all_defines[total_defines++] = "USE_TRANSPARENT_BILLBOARDS";
 #endif
 
-	/* 2. Setup Context */
+	if (defines && count > 0) {
+		for (int i = 0; i < count; i++) {
+			if (total_defines < MAX_DEFINES) {
+				all_defines[total_defines++] = defines[i];
+			}
+		}
+	}
+
+	if (total_defines > 0) {
+		char* modified_root = inject_defines_into_source(
+		    root_src, strlen(root_src), all_defines, total_defines);
+		if (!modified_root) {
+			return NULL; /* raii frees root_src */
+		}
+		/* Swap */
+		free(TRANSFER_OWNERSHIP(
+		    root_src)); /* Free original raw buffer */
+		root_src = modified_root;
+	}
+
+	/* 3. Setup Context */
 	CLEANUP_CTX IncludeContext ctx = {0};
 	ctx_add_buffer(&ctx, TRANSFER_OWNERSHIP(root_src));
 
-	/* 3. Recursively parse and build chunk list */
+	/* 4. Recursively parse and build chunk list */
 	if (!process_source(&ctx, ctx.buffers_head->data, path)) {
 		return NULL;
 	}
 
-	/* 4. Single Allocation for final result */
-	CLEANUP_FREE char* final_src =
-	    safe_calloc(ctx.total_size + 1, 1);  // NOLINT
+	/* 5. Single Allocation for final result */
+	CLEANUP_FREE char* final_src = safe_calloc(ctx.total_size + 1, 1);
 	if (!final_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Final allocation failed (%lu bytes)",
@@ -421,7 +447,7 @@ char* shader_read_file(const char* path)
 		return NULL;
 	}
 
-	/* 5. Assemble */
+	/* 6. Assemble */
 	char* wptr = final_src;
 	Chunk* node = ctx.chunks_head;
 	while (node) {
@@ -433,13 +459,18 @@ char* shader_read_file(const char* path)
 	}
 	*wptr = '\0'; /* Null terminate */
 
-	/* 6. Return and transfer ownership */
 	return TRANSFER_OWNERSHIP(final_src);
 }
 
-GLuint shader_compile(const char* path, GLenum type)
+char* shader_read_file(const char* path)
 {
-	char* src = shader_read_file(path);
+	return shader_read_file_with_defines(path, NULL, 0);
+}
+
+GLuint shader_compile_with_defines(const char* path, GLenum type,
+                                   const char** defines, int count)
+{
+	char* src = shader_read_file_with_defines(path, defines, count);
 	if (!src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Failed to read shader file: %s", path);
@@ -465,15 +496,23 @@ GLuint shader_compile(const char* path, GLenum type)
 	return shader;
 }
 
-GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
+GLuint shader_compile(const char* path, GLenum type)
 {
-	GLuint vertex_shader = shader_compile(vertex_path, GL_VERTEX_SHADER);
+	return shader_compile_with_defines(path, type, NULL, 0);
+}
+
+GLuint shader_load_program_with_defines(const char* vertex_path,
+                                        const char* fragment_path,
+                                        const char** defines, int count)
+{
+	GLuint vertex_shader = shader_compile_with_defines(
+	    vertex_path, GL_VERTEX_SHADER, defines, count);
 	if (vertex_shader == 0) {
 		return 0;
 	}
 
-	GLuint fragment_shader =
-	    shader_compile(fragment_path, GL_FRAGMENT_SHADER);
+	GLuint fragment_shader = shader_compile_with_defines(
+	    fragment_path, GL_FRAGMENT_SHADER, defines, count);
 	if (fragment_shader == 0) {
 		glDeleteShader(vertex_shader);
 		return 0;
@@ -506,6 +545,12 @@ GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
 	}
 
 	return program;
+}
+
+GLuint shader_load_program(const char* vertex_path, const char* fragment_path)
+{
+	return shader_load_program_with_defines(vertex_path, fragment_path,
+	                                        NULL, 0);
 }
 
 GLuint shader_load_compute(const char* compute_path)
@@ -610,7 +655,15 @@ static Shader* shader_create_from_program(GLuint program, const char* name)
 
 Shader* shader_load(const char* vertex_path, const char* fragment_path)
 {
-	GLuint program = shader_load_program(vertex_path, fragment_path);
+	return shader_load_with_defines(vertex_path, fragment_path, NULL, 0);
+}
+
+Shader* shader_load_with_defines(const char* vertex_path,
+                                 const char* fragment_path,
+                                 const char** defines, int count)
+{
+	GLuint program = shader_load_program_with_defines(
+	    vertex_path, fragment_path, defines, count);
 
 	/* Construct a name from paths */
 	char name[MAX_SHADER_NAME_LEN];

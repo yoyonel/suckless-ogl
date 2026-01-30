@@ -1,0 +1,38 @@
+# User-friendly Makefile for suckless-ogl
+# This wraps CMake configuration and build commands
+
+.PHONY: debug release clean test help run
+
+# Default target
+all: debug
+
+help:
+	@echo "Available targets:"
+	@echo "  debug       - Build with dynamic shaders (default)"
+	@echo "  release     - Build with optimized static shaders"
+	@echo "  run         - Run the application (uses current build)"
+	@echo "  clean       - Clean build directory"
+	@echo "  test        - Run all tests"
+	@echo "  help        - Show this help message"
+
+debug:
+	@echo "==> Configuring DEBUG build (dynamic shaders)..."
+	@mkdir -p build
+	@cd build && cmake -DENABLE_SHADER_OPTIMIZATION=OFF .. && $(MAKE) -j$$(nproc) app
+
+release:
+	@echo "==> Configuring RELEASE build (optimized shaders)..."
+	@mkdir -p build
+	@cd build && cmake -DENABLE_SHADER_OPTIMIZATION=ON .. && $(MAKE) -j$$(nproc) app
+
+run:
+	@./build/app
+
+clean:
+	@echo "==> Cleaning build directory..."
+	@rm -rf build/*
+
+test:
+	@echo "==> Running tests..."
+	@mkdir -p build
+	@cd build && ctest --output-on-failure

@@ -12,6 +12,7 @@
 - **Minimalisme** : Architecture légère centrée sur la performance et la lisibilité.
 - **Rendu Moderne** : Support des Skyboxes, IcoSpheres, textures et éclairage de Phong.
 - **Shaders Dynamiques** : Chargement et compilation de fichiers GLSL (vertex/fragment).
+- **Optimisation Shader** : Compilation statique (Release) ou dynamique (Debug) pour équilibrer flexibilité et performance. [Voir Documentation](docs/SHADER_OPTIMIZATION.md).
 - **Environnement Isolé** : Support natif de `distrobox` pour garantir un environnement de compilation reproductible.
 - **Qualité & Tests** : Suite de tests unitaires, couverture de code et analyse statique via `clang-tidy`.
 
@@ -30,7 +31,10 @@ Le build est configuré avec les réglages suivants :
 | Commande | Action |
 | :--- | :--- |
 | `make all` | Compile le projet (génère GLAD et le binaire `app`). |
-| `make run` | Compile et lance l'application immédiatement. |
+| `make debug` | Compile en mode DEBUG (shaders dynamiques, idéal pour dev). |
+| `make release` | Compile en mode RELEASE (shaders optimisés statiquement). |
+| `make run` | Lance la version DEBUG. |
+| `make run-release` | Lance la version RELEASE. |
 | `make test` | Exécute la suite de tests unitaires via `ctest`. |
 | `make format` | Applique le formatage `clang-format` sur `src`, `include` et `tests`. |
 | `make lint` | Lance l'analyse statique `clang-tidy` sur les fichiers sources. |
