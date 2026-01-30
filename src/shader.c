@@ -735,7 +735,7 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 	}
 
 	if (!shader->silent_warnings) {
-		LOG_WARN(
+		LOG_WARNING(
 		    "suckless-ogl.shader",
 		    "Uniform '%s' not found or active in shader '%s' (ID %d)",
 		    name, shader->name ? shader->name : "Unknown",

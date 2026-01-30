@@ -158,8 +158,8 @@ static int app_load_env_map(App* app, const char* filename)
 		app->env_map_loading = 1; /* Set loading flag */
 		return 1;
 	}
-	LOG_WARN("suckless-ogl.app",
-	         "Async load request failed/ignored for: %s", path);
+	LOG_WARNING("suckless-ogl.app",
+	            "Async load request failed/ignored for: %s", path);
 	return 0;
 }
 
