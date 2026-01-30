@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_PATH="./build-release/app"
+APP_PATH="./build/app"
 WINDOW_NAME="Icosphere Phong"
 # We'll use this file to capture the report while still logging to terminal
 LOG_FILE="valgrind_integration.log"
@@ -11,9 +11,6 @@ if ! command -v xdotool &> /dev/null; then
     echo "Error: xdotool is required for this test."
     exit 1
 fi
-
-echo "Building Release..."
-make release
 
 echo "Starting Valgrind..."
 # Remove --log-file to let output flow to terminal.

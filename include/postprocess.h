@@ -60,6 +60,11 @@ typedef enum {
 	POSTFX_FXAA_DEBUG = (1U << 13U),        /* 0x2000 */
 } PostProcessEffect;
 
+/* Configuration par défaut des effets actifs */
+#define DEFAULT_ACTIVE_EFFECTS                                                \
+	((unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING | \
+	 (unsigned int)POSTFX_FXAA)
+
 /* Structure pour le Color Grading (Style Unreal Engine) */
 typedef struct {
 	float saturation; /* 0.0 (Gris) - 2.0 (Saturé), Défaut: 1.0 */

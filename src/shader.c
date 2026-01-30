@@ -542,6 +542,14 @@ GLuint shader_load_program_with_defines(const char* vertex_path,
 		safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
 		              fragment_path);
 		glObjectLabel(GL_PROGRAM, program, -1, name);
+
+		GLint binary_length = 0;
+		glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH,
+		               &binary_length);
+		LOG_INFO(
+		    "Shader",
+		    "Linked shader program '%s' (ID %u). Binary size: %d bytes",
+		    name, program, binary_length);
 	}
 
 	return program;
@@ -726,10 +734,13 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 		return res->location;
 	}
 
-	LOG_WARN("suckless-ogl.shader",
-	         "Uniform '%s' not found or active in shader '%s' (ID %d)",
-	         name, shader->name ? shader->name : "Unknown",
-	         shader->program);
+	if (!shader->silent_warnings) {
+		LOG_WARN(
+		    "suckless-ogl.shader",
+		    "Uniform '%s' not found or active in shader '%s' (ID %d)",
+		    name, shader->name ? shader->name : "Unknown",
+		    shader->program);
+	}
 	return -1;
 }
 

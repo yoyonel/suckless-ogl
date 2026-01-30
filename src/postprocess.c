@@ -97,8 +97,8 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		/* On continue quand même */
 	}
 
-	/* Effets désactivés par défaut */
-	post_processing->active_effects = 0;
+	/* Effets par défaut définis dans postprocess.h */
+	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
 
 	/* Créer le framebuffer */
 	if (!create_framebuffer(post_processing)) {
@@ -126,9 +126,11 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
-	/* Charger le shader de post-processing */
+#ifndef ENABLE_SHADER_OPTIMIZATION
+	/* Charger le shader de post-processing (Debug mode uniquement) */
 	post_processing->postprocess_shader =
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
+#endif
 
 	/* Initialize UBO */
 	glGenBuffers(1, &post_processing->settings_ubo);
@@ -238,28 +240,33 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
 }
 
+static void postprocess_on_state_change(PostProcess* post_processing)
+{
+	if (post_processing->is_optimized) {
+		LOG_INFO(
+		    "suckless-ogl.postprocess",
+		    "State changed in optimized mode - recompiling shader...");
+		postprocess_compile_optimized(post_processing,
+		                              post_processing->active_effects);
+	}
+}
+
 void postprocess_enable(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects |= (unsigned int)effect;
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_disable(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects &= ~(unsigned int)effect;
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects ^= (unsigned int)effect;
-
-	/* If in optimized mode, recompile shader with new effect flags */
-	if (post_processing->is_optimized) {
-		LOG_INFO(
-		    "suckless-ogl.postprocess",
-		    "Effect toggled in optimized mode - recompiling shader...");
-		postprocess_compile_optimized(post_processing,
-		                              post_processing->active_effects);
-	}
+	postprocess_on_state_change(post_processing);
 }
 
 int postprocess_is_enabled(PostProcess* post_processing,
@@ -384,6 +391,8 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->tonemapper = preset->tonemapper;
 	post_processing->bloom = preset->bloom;
 	post_processing->dof = preset->dof;
+
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_begin(PostProcess* post_processing)
@@ -761,6 +770,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		}
 		post_processing->postprocess_shader = new_shader;
 		post_processing->is_optimized = true;
+		new_shader->silent_warnings = true;
 
 		log_optimized_effects(static_flags);
 	} else {

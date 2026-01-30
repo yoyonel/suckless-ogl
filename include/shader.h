@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 
 /* Compile a single shader from file (supports @header includes) */
 GLuint shader_compile(const char* path, GLenum type);
@@ -30,6 +31,7 @@ typedef struct {
 	UniformEntry* entries; /* Sorted dynamic array of uniform entries */
 	int entry_count;
 	int entry_capacity;
+	bool silent_warnings; /* Suppress warnings for missing uniforms */
 } Shader;
 
 /* Load and link a shader program (vertex + fragment), automatically caching all
