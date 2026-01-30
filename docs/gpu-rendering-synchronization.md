@@ -1,7 +1,7 @@
 # GPU Rendering Synchronization: Intel vs NVIDIA
 
-**Date**: 2026-01-30  
-**Status**: Resolved  
+**Date**: 2026-01-30
+**Status**: Resolved
 **Impact**: Critical - Visual quality consistency across GPU vendors
 
 ---
@@ -79,7 +79,20 @@ float compute_roughness_clamping(vec3 N, float roughness)
 - ✅ Simplified shader code
 - ✅ Minor performance improvement
 
-**Verdict**: FXAA already provides excellent AA. Loss of roughness clamping is negligible.
+**Verdict**: FXAA already provides excellent AA. Loss of hardware-dependent roughness clamping is compensated by a stable analytic minimum and sphere-specific curvature clamping.
+
+## Derivatives vs Analytic Performance
+
+A key finding during this synchronization effort was the trade-off between using GLSL built-ins and custom analytic math.
+
+| Method | Built-in (`dFdx`, `fwidth`) | Analytic Curvature/Fade |
+| :--- | :--- | :--- |
+| **Vendor Consistency** | ❌ Poor (Driver/Hardware precision) | ✅ 100% (Mathematical) |
+| **Latency** | Medium (Quad-sync required) | Low (Pure ALU) |
+| **Logic Safety** | ❌ Fails in divergent branches | ✅ Branch-safe |
+| **Implementation** | Trivial (1 line) | Complex (Custom math per primitive) |
+
+**Cost Evaluation**: While analytic math uses more ALU cycles (approx. 5-10 more), it avoids the hardware synchronization latency of quads and ensures that regression maps between Intel, NVIDIA, and AMD remain dark (bit-perfect parity).
 
 ## Validation Results
 
