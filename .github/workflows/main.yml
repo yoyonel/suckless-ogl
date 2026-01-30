@@ -75,7 +75,6 @@ jobs:
 
       - name: Run Coverage and Tests
         id: run_tests
-        continue-on-error: true
         run: |
           # Exécution des tests via Xvfb
           xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
@@ -159,6 +158,7 @@ jobs:
           publish_dir: build-coverage/coverage_report/
 
       - name: Upload Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
