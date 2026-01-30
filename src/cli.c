@@ -29,6 +29,7 @@ CliAction cli_handle_args(int argc, char* argv[])
 		}
 
 		/* Unrecognized option */
+		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 		(void)fprintf(stderr, "Error: Unknown option '%.64s'\n\n",
 		              argv[i]);
 		print_help(argv[0]);
