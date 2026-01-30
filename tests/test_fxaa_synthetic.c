@@ -24,6 +24,8 @@
 static GLFWwindow* global_window = NULL;
 static PostProcess post_process_system;
 static Shader* pattern_shader_ptr = NULL;
+static unsigned char* pixels_before = NULL;
+static unsigned char* pixels_after = NULL;
 
 static const float LUMA_R = 0.299F;
 static const float LUMA_G = 0.587F;
@@ -102,6 +104,11 @@ void tearDown(void)
 		glfwDestroyWindow(global_window);
 	}
 	glfwTerminate();
+
+	free(pixels_before);
+	pixels_before = NULL;
+	free(pixels_after);
+	pixels_after = NULL;
 }
 
 /**
@@ -192,9 +199,10 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	postprocess_end(&post_process_system);
 	glFinish();  // Ensure rendering is complete before reading
 
-	unsigned char* pixels_before = malloc(WIDTH * HEIGHT * 3);
+	pixels_before = malloc(WIDTH * HEIGHT * 3);
 	if (!pixels_before) {
 		TEST_FAIL_MESSAGE("Failed to allocate pixels_before");
+		return;
 	}
 	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
 	             pixels_before);
@@ -212,10 +220,10 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	postprocess_end(&post_process_system);
 	glFinish();  // Ensure rendering is complete before reading
 
-	unsigned char* pixels_after = malloc(WIDTH * HEIGHT * 3);
+	pixels_after = malloc(WIDTH * HEIGHT * 3);
 	if (!pixels_after) {
-		free(pixels_before);
 		TEST_FAIL_MESSAGE("Failed to allocate pixels_after");
+		return;
 	}
 	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
 	             pixels_after);
@@ -263,8 +271,6 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	    noise_reduction > MIN_REDUCE_THRESHOLD,
 	    "FXAA should reduce edge noise by at least 10%");
 
-	free(pixels_before);
-	free(pixels_after);
 	fflush(stdout);
 }
 
