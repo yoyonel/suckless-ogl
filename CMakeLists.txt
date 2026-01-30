@@ -18,6 +18,12 @@ if(DEBUG_SYNCHRONOUS)
     message(WARNING "OpenGL Synchronous Debug: ENABLED (Expect low performance)")
 endif()
 
+# Option pour activer l'optimisation des shaders
+option(ENABLE_SHADER_OPTIMIZATION "Enable optimized shader compilation (static defines)" OFF)
+if(ENABLE_SHADER_OPTIMIZATION)
+    message(STATUS "Shader Optimization: ENABLED (Static compile)")
+endif()
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -239,6 +245,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     endif()
 
     add_compile_definitions(_GNU_SOURCE)
+endif()
+
+if(ENABLE_SHADER_OPTIMIZATION)
+    target_compile_definitions(app PRIVATE ENABLE_SHADER_OPTIMIZATION)
 endif()
 
 # Vérification post-build pour s'assurer que tout est statique

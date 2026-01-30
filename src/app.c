@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L  // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
+#define _ISOC11_SOURCE           // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
 #include "app.h"
 
 #include "adaptive_sampler.h"
@@ -423,6 +425,13 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_enable(&app->postprocess, POSTFX_COLOR_GRADING);
 	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
 	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
+
+#ifdef ENABLE_SHADER_OPTIMIZATION
+	LOG_INFO("suckless-ogl.app",
+	         "BUILD OPTION: Compiling OPTIMIZED shader...");
+	postprocess_compile_optimized(&app->postprocess,
+	                              app->postprocess.active_effects);
+#endif
 
 	return 1;
 }

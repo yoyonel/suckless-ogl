@@ -17,7 +17,10 @@ The project is optimized for a container named `clang-dev`. A `Makefile` wrapper
 ### Common Commands
 
 - `make`: Configures and builds the project inside the container.
-- `make run`: Builds and executes the application.
+- `make debug`: Builds with dynamic shaders (Dev mode).
+- `make release`: Builds with optimized static shaders (Production mode).
+- `make run`: Builds and executes the application (Debug).
+- `make run-release`: Builds and executes the application (Release).
 - `make rebuild`: Performs a clean build from scratch (useful when dependencies change).
 - `make format`: Formats all C source and header files using **clang-format**.
 - `make lint`: Performs static analysis across the codebase using **clang-tidy** (Guaranteed **0 warnings**).
