@@ -75,13 +75,15 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
 
 // ----------------------------------------------------------------------------
 // Roughness Clamping (Anti-Aliasing)
-// TEMPORARILY DISABLED to diagnose NVIDIA vs Intel rendering differences
 // ----------------------------------------------------------------------------
-float compute_roughness_clamping(vec3 N, float roughness)
+
+/**
+ * Generic Screen-Space Roughness Clamping (Hardware Dependent)
+ * @note This uses GPU derivatives (dFdx/dFdy) which differ between vendors.
+ * @note Currently disabled to ensure bit-perfect "ISO" rendering across GPUs.
+ */
+float compute_roughness_clamping_screenspace(vec3 N, float roughness)
 {
-	// Disabled: derivatives have different precision on NVIDIA vs Intel
-	// causing visible artifacts on sphere edges
-	/*
 	vec3 dNdx = dFdx(N);
 	vec3 dNdy = dFdy(N);
 	float maxVariation = max(dot(dNdx, dNdx), dot(dNdy, dNdy));
@@ -89,14 +91,30 @@ float compute_roughness_clamping(vec3 N, float roughness)
 	// Saturate extreme values to prevent halos on NVIDIA GPUs
 	maxVariation = min(maxVariation, 1.0);
 
-	// Use 0.5 instead of 0.1 to reduce aggressiveness
-	// This prevents white halos on edges while keeping AA benefits
-	float normalThreshold = 0.5;
-	roughness = max(roughness, pow(maxVariation, normalThreshold));
-	*/
+	// Standard Toksvig-like factor for PBR AA
+	return max(roughness, pow(maxVariation, 0.5));
+}
 
-	roughness = clamp(roughness, 0.0, 1.0);
-	return roughness;
+/**
+ * Analytic Roughness Clamping (Hardware Independent)
+ * @param curvature The geometric curvature (e.g., 1.0 / Radius for spheres)
+ */
+float compute_roughness_clamping_analytic(float roughness, float curvature)
+{
+	// Analytic heuristic: clamping proportional to surface curvature
+	// This avoids vendor-specific derivative spikes on geometric edges.
+	float curvatureBias = clamp(curvature * 0.02, 0.0, 0.1);
+	return max(roughness, curvatureBias);
+}
+
+float compute_roughness_clamping(vec3 N, float roughness)
+{
+	// DEFAULT: Use a conservative constant minimum to prevent most specular
+	// aliasing while maintaining 100% vendor synchronization.
+	// For sphere-specific analytic clamping, use
+	// compute_roughness_clamping_analytic() in the specific shader.
+	const float MIN_ROUGHNESS = 0.03;
+	return max(roughness, MIN_ROUGHNESS);
 }
 
 // ----------------------------------------------------------------------------

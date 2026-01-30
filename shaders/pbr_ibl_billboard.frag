@@ -24,6 +24,7 @@ uniform int debugMode;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 previousViewProj;
+uniform vec2 u_screenSize;
 
 // Include common PBR functions
 @header "pbr_functions.glsl";
@@ -76,7 +77,20 @@ void main()
 	}
 
 	// Analytic Edge Smoothing (Pseudo-AA)
-	float edgeFactor = clamp(h / fwidth(h), 0.0, 1.0);
+	/**
+	 * Analytic ISO Smoothing:
+	 * We estimate the footprint of a pixel in 'h' space.
+	 * h = R^2 - d^2. dh = -2d*dd. Near h=0, d=R.
+	 * So fwidth(h) ~ 2 * R * fwidth(d).
+	 * fwidth(d) is the pixel size in world space.
+	 * fwidth(d) = 2.0 * Z * tan(fov/2) / ScreenHeight
+	 * fwidth(d) = 2.0 * CurrentClipPos.w / (projection[1][1] *
+	 * ScreenHeight)
+	 */
+	float pixelSizeWorld =
+	    (2.0 * CurrentClipPos.w) / (projection[1][1] * u_screenSize.y);
+	float analyticFwidthH = 2.0 * SphereRadius * pixelSizeWorld;
+	float edgeFactor = clamp(h / max(analyticFwidthH, 1e-4), 0.0, 1.0);
 	edgeFactor = smoothstep(0.0, 1.0, edgeFactor);
 
 	vec3 sphereHitPos = rayOrigin + t * rayDir;
@@ -91,12 +105,23 @@ void main()
 	// 3. Lighting
 	vec3 V = -rayDir;  // View vector is towards camera
 
+	// Use analytic roughness clamping for bit-perfect cross-GPU results
+	float analytic_roughness =
+	    compute_roughness_clamping_analytic(Roughness, 1.0 / SphereRadius);
+
 	vec3 color;
 	if (debugMode != 0) {
-		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
-		                      debugMode);
+		color = compute_debug(N, V, Albedo, Metallic,
+		                      analytic_roughness, AO, debugMode);
 	} else {
-		color = compute_pbr(N, V, Albedo, Metallic, Roughness, AO);
+		// We call the underlying PBR function directly to use our
+		// analytic roughness
+		vec3 R_vec = reflect(-V, N);
+		float NdotV = max(dot(N, V), 0.0);
+		vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
+		color = compute_IBL_PBR_Advanced(
+		    N, V, R_vec, F0, NdotV, Albedo, Metallic,
+		    max(analytic_roughness, 0.04), AO);
 	}
 
 	// Apply Edge Smoothing (Darken rim)

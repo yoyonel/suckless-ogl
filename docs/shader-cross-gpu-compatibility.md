@@ -122,14 +122,26 @@ apitrace replay app.trace
 ## When to Use Derivatives
 
 ✅ **Safe uses**:
-- Debug visualization
+- Debug visualization (where exact parity is not required)
 - Non-critical effects (optional grain, etc.)
 - Explicitly documented vendor-specific behavior
 
 ❌ **Avoid for**:
-- Core rendering logic
-- Anti-aliasing (use MSAA/FXAA instead)
-- Material property adjustments
+- Core rendering logic where cross-GPU "Difference Maps" must be clean
+- Anti-aliasing (prefer FXAA or Analytic smoothing)
+- Material property adjustments (use `MIN_ROUGHNESS` constants)
+
+## Implementation Example: Analytic Edge Smoothing
+
+Instead of `fwidth(h)`:
+
+```glsl
+// h = discriminant (0 at edge)
+// analyticFwidth = footprint of pixel in h-space
+float edgeFactor = clamp(h / analyticFwidth, 0.0, 1.0);
+```
+
+See [pbr_ibl_billboard.frag](file:///home/latty/Prog/__PERSO__/suckless-ogl/shaders/pbr_ibl_billboard.frag) for a production example.
 
 ## References
 

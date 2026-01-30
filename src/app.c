@@ -609,6 +609,8 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	shader_set_mat4(
 	    current_shader, "previousViewProj",
 	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
+	float screen_size[2] = {(float)app->width, (float)app->height};
+	shader_set_vec2(current_shader, "u_screenSize", screen_size);
 
 	// Draw Quads Instanced
 	// Draw Quads Instanced
