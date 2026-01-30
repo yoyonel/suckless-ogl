@@ -10,6 +10,7 @@ help-user:
 	@echo "  make debug      - Build with dynamic shaders (development)"
 	@echo "  make release    - Build with optimized static shaders (performance)"
 	@echo "  make run        - Run the application (debug build)"
+	@echo "  make run-debug  - Run the application (debug build)"
 	@echo "  make run-release - Run the application (release build)"
 	@echo "  make rebuild    - Clean and rebuild from scratch"
 	@echo ""
@@ -54,6 +55,9 @@ release:
 run:
 	@./build/app
 
+run-debug: debug
+	@./build/app
+
 run-release: release
 	@./build/app
 
@@ -64,7 +68,7 @@ test-python:
 	@echo "==> Running Python tests..."
 	@pytest tests/ -v
 
-test-integration:
+test-integration: release
 	@echo "==> Running integration tests with Xvfb..."
 	@chmod +x scripts/test_integration_valgrind.sh
 	@./scripts/test_integration_valgrind.sh

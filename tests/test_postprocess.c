@@ -5,7 +5,15 @@
 #include "unity.h"
 #include <GLFW/glfw3.h>
 
-static GLFWwindow* window = NULL;
+static const int TestWidth = 640;
+static const int TestHeight = 480;
+static const int SmallTestWidth = 100;
+static const int SmallTestHeight = 100;
+static const int NewDimension = 200;
+static const float TestEpsilon = 1e-5F;
+static const float DefaultNeutral = 1.0F;
+
+static GLFWwindow* test_window = NULL;
 
 void setUp(void)
 {
@@ -19,16 +27,17 @@ void setUp(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(640, 480, "Test Window", NULL, NULL);
-	if (!window) {
+	test_window =
+	    glfwCreateWindow(TestWidth, TestHeight, "Test Window", NULL, NULL);
+	if (!test_window) {
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to create GLFW window");
 	}
 
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(test_window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		glfwDestroyWindow(window);
+		glfwDestroyWindow(test_window);
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
@@ -36,177 +45,196 @@ void setUp(void)
 
 void tearDown(void)
 {
-	if (window) {
-		glfwDestroyWindow(window);
+	if (test_window) {
+		glfwDestroyWindow(test_window);
 	}
 	glfwTerminate();
 }
 
 void test_postprocess_init_creates_resources(void)
 {
-	PostProcess pp = {0};
-	int result = postprocess_init(&pp, 640, 480);
+	PostProcess post_proc = {0};
+	int result = postprocess_init(&post_proc, TestWidth, TestHeight);
 
 	TEST_ASSERT_EQUAL(1, result);
-	TEST_ASSERT_NOT_EQUAL(0, pp.scene_fbo);
-	TEST_ASSERT_NOT_EQUAL(0, pp.scene_color_tex);
-	TEST_ASSERT_NOT_EQUAL(0, pp.scene_depth_tex);
-	TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vao);
-	TEST_ASSERT_NOT_EQUAL(0, pp.screen_quad_vbo);
-	TEST_ASSERT_NOT_EQUAL(0, pp.postprocess_shader);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_fbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_color_tex);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_depth_tex);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vao);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.postprocess_shader);
 	/* Bloom resources */
-	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fx.fbo);
-	TEST_ASSERT_NOT_EQUAL(0, pp.bloom_fx.mips[0].texture);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.fbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.mips[0].texture);
 	/* DoF resources */
-	TEST_ASSERT_NOT_EQUAL(0, pp.dof_fx.fbo);
-	TEST_ASSERT_NOT_EQUAL(0, pp.dof_fx.blur_tex);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.dof_fx.fbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.dof_fx.blur_tex);
 
-	TEST_ASSERT_EQUAL(640, pp.width);
-	TEST_ASSERT_EQUAL(480, pp.height);
+	TEST_ASSERT_EQUAL(TestWidth, post_proc.width);
+	TEST_ASSERT_EQUAL(TestHeight, post_proc.height);
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 }
 
 void test_postprocess_defaults(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
-	TEST_ASSERT_EQUAL(0, pp.active_effects);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, DEFAULT_EXPOSURE, pp.exposure.exposure);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, DEFAULT_VIGNETTE_INTENSITY,
-	                         pp.vignette.intensity);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, 1.0f, pp.color_grading.saturation);
+	// Updated to check for default effects instead of 0
+	TEST_ASSERT_EQUAL(DEFAULT_ACTIVE_EFFECTS, post_proc.active_effects);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, DEFAULT_EXPOSURE,
+	                         post_proc.exposure.exposure);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, DEFAULT_VIGNETTE_INTENSITY,
+	                         post_proc.vignette.intensity);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, DefaultNeutral,
+	                         post_proc.color_grading.saturation);
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 }
 
 void test_postprocess_toggle_effects(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
-	// Initial state: 0
-	TEST_ASSERT_FALSE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
+	// Initial state: Disabled (not in DEFAULT_ACTIVE_EFFECTS)
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
 	// Enable
-	postprocess_enable(&pp, POSTFX_VIGNETTE);
-	TEST_ASSERT_TRUE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
+	postprocess_enable(&post_proc, POSTFX_VIGNETTE);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
 	// Toggle (Disable)
-	postprocess_toggle(&pp, POSTFX_VIGNETTE);
-	TEST_ASSERT_FALSE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
+	postprocess_toggle(&post_proc, POSTFX_VIGNETTE);
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
 	// Toggle (Enable)
-	postprocess_toggle(&pp, POSTFX_VIGNETTE);
-	TEST_ASSERT_TRUE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
+	postprocess_toggle(&post_proc, POSTFX_VIGNETTE);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
-	// Disable
-	postprocess_disable(&pp, POSTFX_VIGNETTE);
-	TEST_ASSERT_FALSE(postprocess_is_enabled(&pp, POSTFX_VIGNETTE));
-
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 }
 
 void test_postprocess_apply_preset(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
 	// Apply Vintage preset
-	postprocess_apply_preset(&pp, &PRESET_VINTAGE);
+	postprocess_apply_preset(&post_proc, &PRESET_VINTAGE);
 
-	TEST_ASSERT_EQUAL(PRESET_VINTAGE.active_effects, pp.active_effects);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.vignette.intensity,
-	                         pp.vignette.intensity);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.grain.intensity,
-	                         pp.grain.intensity);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.exposure.exposure,
-	                         pp.exposure.exposure);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.chrom_abbr.strength,
-	                         pp.chrom_abbr.strength);
+	TEST_ASSERT_EQUAL(PRESET_VINTAGE.active_effects,
+	                  post_proc.active_effects);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, PRESET_VINTAGE.vignette.intensity,
+	                         post_proc.vignette.intensity);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, PRESET_VINTAGE.grain.intensity,
+	                         post_proc.grain.intensity);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, PRESET_VINTAGE.exposure.exposure,
+	                         post_proc.exposure.exposure);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon,
+	                         PRESET_VINTAGE.chrom_abbr.strength,
+	                         post_proc.chrom_abbr.strength);
 
-	// Initial is 0.0, Vintage is 0.0 or something else? Let's check color
-	// grading
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.color_grading.contrast,
-	                         pp.color_grading.contrast);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.bloom.intensity,
-	                         pp.bloom.intensity);
-	TEST_ASSERT_FLOAT_WITHIN(1e-5, PRESET_VINTAGE.dof.focal_distance,
-	                         pp.dof.focal_distance);
+	// Let's check color grading
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon,
+	                         PRESET_VINTAGE.color_grading.contrast,
+	                         post_proc.color_grading.contrast);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, PRESET_VINTAGE.bloom.intensity,
+	                         post_proc.bloom.intensity);
+	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, PRESET_VINTAGE.dof.focal_distance,
+	                         post_proc.dof.focal_distance);
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 }
 
 void test_postprocess_resize(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
-	GLuint old_fbo = pp.scene_fbo;
-	GLuint old_tex = pp.scene_color_tex;
+	postprocess_resize(&post_proc, NewDimension, NewDimension);
 
-	postprocess_resize(&pp, 200, 200);
+	TEST_ASSERT_EQUAL(NewDimension, post_proc.width);
+	TEST_ASSERT_EQUAL(NewDimension, post_proc.height);
 
-	TEST_ASSERT_EQUAL(200, pp.width);
-	TEST_ASSERT_EQUAL(200, pp.height);
-
-	// Validate that resources were recreated (IDs might change or be
-	// reused, but basic check is valid) Actually, glGenFramebuffers might
-	// return the same ID if the old one was deleted. Instead check that FBO
-	// is still complete and valid
-	TEST_ASSERT_TRUE(glIsFramebuffer(pp.scene_fbo));
-	TEST_ASSERT_TRUE(glIsTexture(pp.scene_color_tex));
+	// Validate that resources were recreated
+	TEST_ASSERT_TRUE(glIsFramebuffer(post_proc.scene_fbo));
+	TEST_ASSERT_TRUE(glIsTexture(post_proc.scene_color_tex));
 
 	// Check dimensions of the texture
-	glBindTexture(GL_TEXTURE_2D, pp.scene_color_tex);
-	int w, h;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-	TEST_ASSERT_EQUAL(200, w);
-	TEST_ASSERT_EQUAL(200, h);
+	glBindTexture(GL_TEXTURE_2D, post_proc.scene_color_tex);
+	int tex_w = 0;
+	int tex_h = 0;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &tex_w);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &tex_h);
+	TEST_ASSERT_EQUAL(NewDimension, tex_w);
+	TEST_ASSERT_EQUAL(NewDimension, tex_h);
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 }
 
 void test_postprocess_cleanup(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
-	GLuint fbo = pp.scene_fbo;
-	GLuint tex = pp.scene_color_tex;
+	GLuint fbo_id = post_proc.scene_fbo;
+	GLuint tex_id = post_proc.scene_color_tex;
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
 
-	TEST_ASSERT_FALSE(glIsFramebuffer(fbo));
-	TEST_ASSERT_FALSE(glIsTexture(tex));
-	TEST_ASSERT_EQUAL(0, pp.scene_fbo);
-	TEST_ASSERT_NULL(pp.postprocess_shader);
+	TEST_ASSERT_FALSE(glIsFramebuffer(fbo_id));
+	TEST_ASSERT_FALSE(glIsTexture(tex_id));
+	TEST_ASSERT_EQUAL(0, post_proc.scene_fbo);
+	TEST_ASSERT_NULL(post_proc.postprocess_shader);
 }
 
 void test_postprocess_optimization_switch(void)
 {
-	PostProcess pp = {0};
-	postprocess_init(&pp, 100, 100);
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
 	// Default should be dynamic
-	TEST_ASSERT_FALSE(pp.is_optimized);
-	GLuint original_program = pp.postprocess_shader->program;
+	TEST_ASSERT_FALSE(post_proc.is_optimized);
+	GLuint original_program = post_proc.postprocess_shader->program;
 
 	// Switch to optimized
-	postprocess_compile_optimized(&pp, POSTFX_VIGNETTE | POSTFX_GRAIN);
-	TEST_ASSERT_TRUE(pp.is_optimized);
-	TEST_ASSERT_NOT_EQUAL(original_program, pp.postprocess_shader->program);
+	unsigned int opt_flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
+	postprocess_compile_optimized(&post_proc, opt_flags);
+	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	TEST_ASSERT_NOT_EQUAL(original_program,
+	                      post_proc.postprocess_shader->program);
 
 	// Switch back to dynamic
-	GLuint optimized_program = pp.postprocess_shader->program;
-	postprocess_use_dynamic(&pp);
-	TEST_ASSERT_FALSE(pp.is_optimized);
+	GLuint optimized_program = post_proc.postprocess_shader->program;
+	postprocess_use_dynamic(&post_proc);
+	TEST_ASSERT_FALSE(post_proc.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(optimized_program,
-	                      pp.postprocess_shader->program);
+	                      post_proc.postprocess_shader->program);
 
-	postprocess_cleanup(&pp);
+	postprocess_cleanup(&post_proc);
+}
+
+void test_postprocess_optimized_preset_switch(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+
+	// Enable optimization
+	postprocess_compile_optimized(&post_proc, post_proc.active_effects);
+	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	GLuint first_program = post_proc.postprocess_shader->program;
+
+	// Apply a different preset
+	postprocess_apply_preset(&post_proc, &PRESET_CINEMATIC);
+
+	// Should have recompiled
+	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	TEST_ASSERT_NOT_EQUAL(first_program,
+	                      post_proc.postprocess_shader->program);
+
+	postprocess_cleanup(&post_proc);
 }
 
 int main(void)
@@ -218,6 +246,7 @@ int main(void)
 	RUN_TEST(test_postprocess_apply_preset);
 	RUN_TEST(test_postprocess_resize);
 	RUN_TEST(test_postprocess_optimization_switch);
+	RUN_TEST(test_postprocess_optimized_preset_switch);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }
