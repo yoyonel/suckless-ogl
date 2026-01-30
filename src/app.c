@@ -219,12 +219,13 @@ int app_init(App* app, int width, int height, const char* title)
 	LOG_INFO("suckless-ogl.init", "Context Version: %d.%d", major, minor);
 	LOG_INFO("suckless-ogl.init", "samples: %d", DEFAULT_SAMPLES);
 
+	GPUInfo gpu_info = render_utils_get_gpu_info();
 	LOG_INFO("suckless_ogl.context.base.window", "vendor: %s",
-	         glGetString(GL_VENDOR));
+	         gpu_info.vendor);
 	LOG_INFO("suckless_ogl.context.base.window", "renderer: %s",
-	         glGetString(GL_RENDERER));
+	         gpu_info.renderer);
 	LOG_INFO("suckless_ogl.context.base.window", "version: %s",
-	         glGetString(GL_VERSION));
+	         gpu_info.version);
 	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
 	/* Async PBO Init */
 	glGenBuffers(1, &app->exposure_pbo);

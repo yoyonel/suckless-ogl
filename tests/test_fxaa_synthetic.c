@@ -1,11 +1,14 @@
 #include <glad/glad.h>
 
 #include "postprocess.h"
+#include "render_utils.h"
 #include "shader.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define WIDTH 1024
 #define HEIGHT 768
@@ -15,9 +18,18 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
+#define PATH_MAX_LEN 256
+
+// Global state (required for GLFW callbacks and simple test structure)
 static GLFWwindow* global_window = NULL;
 static PostProcess post_process_system;
 static Shader* pattern_shader_ptr = NULL;
+
+static const float LUMA_R = 0.299F;
+static const float LUMA_G = 0.587F;
+static const float LUMA_B = 0.114F;
+static const float MIN_REDUCE_THRESHOLD = 0.10F;
+static const float UINT8_MAX_F = 255.0F;
 
 /**
  * Flips the image vertically (OpenGL reads bottom-to-top, PNG needs
@@ -26,19 +38,19 @@ static Shader* pattern_shader_ptr = NULL;
 static void flip_image_vertically(int image_width, int image_height,
                                   unsigned char* image_data)
 {
-	int row_size = image_width * 3;
-	unsigned char* row_tmp = malloc((size_t)row_size);
+	int row_sz = image_width * 3;
+	unsigned char* row_tmp = malloc((size_t)row_sz);
 	if (!row_tmp) {
 		return;
 	}
 
-	for (int y_coord = 0; y_coord < image_height / 2; y_coord++) {
-		unsigned char* top_row = image_data + y_coord * row_size;
+	for (int y_coord = 0; y_coord < (image_height / 2); y_coord++) {
+		unsigned char* top_row = image_data + (y_coord * row_sz);
 		unsigned char* bottom_row =
-		    image_data + (image_height - y_coord - 1) * row_size;
-		memcpy(row_tmp, top_row, (size_t)row_size);
-		memcpy(top_row, bottom_row, (size_t)row_size);
-		memcpy(bottom_row, row_tmp, (size_t)row_size);
+		    image_data + (((image_height - y_coord) - 1) * row_sz);
+		memcpy(row_tmp, top_row, (size_t)row_sz);
+		memcpy(top_row, bottom_row, (size_t)row_sz);
+		memcpy(bottom_row, row_tmp, (size_t)row_sz);
 	}
 	free(row_tmp);
 }
@@ -93,58 +105,93 @@ void tearDown(void)
 }
 
 /**
+ * Calculates the perceptual luminance of an RGB pixel.
+ */
+static float calculate_pixel_luma(const unsigned char* pixel)
+{
+	float r_lin = (float)pixel[0] / UINT8_MAX_F;
+	float g_lin = (float)pixel[1] / UINT8_MAX_F;
+	float b_lin = (float)pixel[2] / UINT8_MAX_F;
+
+	// Perceptual luma (linear to gamma approx) to match FXAA internal logic
+	return sqrtf((r_lin * LUMA_R) + (g_lin * LUMA_G) + (b_lin * LUMA_B));
+}
+
+/**
  * Calculates the average absolute gradient in the image.
  * Aliasing increases local gradients (high-frequency noise).
  * FXAA should reduce this value by smoothing the edges.
+ * Now using perceptual luminance to handle colored patterns correctly.
  */
 static float calculate_edge_noise(int image_width, int image_height,
                                   const unsigned char* image_pixels)
 {
-	float total_grad = 0.0f;
+	float total_grad_sq = 0.0F;
 	int sample_count = 0;
 
-	for (int y_coord = 1; y_coord < image_height - 1; y_coord++) {
-		for (int x_coord = 1; x_coord < image_width - 1; x_coord++) {
-			int pixel_idx = (y_coord * image_width + x_coord) * 3;
-			int pixel_idx_right =
-			    (y_coord * image_width + (x_coord + 1)) * 3;
-			int pixel_idx_down =
-			    ((y_coord + 1) * image_width + x_coord) * 3;
+	for (int y_coord = 1; y_coord < (image_height - 1); y_coord++) {
+		for (int x_coord = 1; x_coord < (image_width - 1); x_coord++) {
+			int idx = (((y_coord * image_width) + x_coord) * 3);
+			int idx_r =
+			    (((y_coord * image_width) + (x_coord + 1)) * 3);
+			int idx_d =
+			    ((((y_coord + 1) * image_width) + x_coord) * 3);
 
-			// Simple gradient: |v(x+1) - v(x)| + |v(y+1) - v(y)|
-			float grad_x =
-			    (float)abs((int)image_pixels[pixel_idx_right] -
-			               (int)image_pixels[pixel_idx]);
-			float grad_y =
-			    (float)abs((int)image_pixels[pixel_idx_down] -
-			               (int)image_pixels[pixel_idx]);
+			float l_m = calculate_pixel_luma(&image_pixels[idx]);
+			float l_r = calculate_pixel_luma(&image_pixels[idx_r]);
+			float l_d = calculate_pixel_luma(&image_pixels[idx_d]);
 
-			total_grad += grad_x + grad_y;
+			float diff_x = l_r - l_m;
+			float diff_y = l_d - l_m;
+
+			// Squaring gradients penalizes high-frequency jumps
+			// (aliasing) more than smoothed transitions.
+			total_grad_sq += (diff_x * diff_x) + (diff_y * diff_y);
 			sample_count++;
 		}
 	}
 
-	return total_grad / (float)sample_count;
+	if (sample_count == 0) {
+		return 0.0F;
+	}
+	return total_grad_sq / (float)sample_count;
 }
 
-void test_fxaa_synthetic_efficiency(void)
+/**
+ * Helper to render the pattern to the scene buffer.
+ */
+static void render_test_pattern(int mode)
 {
-	// 1. Render Pattern to Scene FBO
+	shader_use(pattern_shader_ptr);
+	shader_set_int(pattern_shader_ptr, "u_mode", mode);
+
+	GLuint empty_v = 0;
+	glGenVertexArrays(1, &empty_v);
+	glBindVertexArray(empty_v);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
+	glDeleteVertexArrays(1, &empty_v);
+}
+
+/**
+ * Run the FXAA synthetic test for a specific mode and pattern name.
+ */
+static void run_synthetic_test(int mode, const char* pattern_name)
+{
+	printf("\n--- FXAA Synthetic Test: %s (Mode %d) ---\n", pattern_name,
+	       mode);
+
+	// 1. Capture "Before" (No AA, but processed through tonemapper/gamma)
+	postprocess_disable(&post_process_system, POSTFX_FXAA);
 	postprocess_begin(&post_process_system);
 	glViewport(0, 0, WIDTH, HEIGHT);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
+	        (GLbitfield)GL_DEPTH_BUFFER_BIT);
+	render_test_pattern(mode);
+	postprocess_end(&post_process_system);
+	glFinish();  // Ensure rendering is complete before reading
 
-	shader_use(pattern_shader_ptr);
-	// Bind empty VAO for vertexID-based quad
-	GLuint empty_vao = 0;
-	glGenVertexArrays(1, &empty_vao);
-	glBindVertexArray(empty_vao);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
-	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &empty_vao);
-
-	// 2. Capture "Before" (No AA)
 	unsigned char* pixels_before = malloc(WIDTH * HEIGHT * 3);
 	if (!pixels_before) {
 		TEST_FAIL_MESSAGE("Failed to allocate pixels_before");
@@ -152,14 +199,19 @@ void test_fxaa_synthetic_efficiency(void)
 	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
 	             pixels_before);
 	float noise_before = calculate_edge_noise(WIDTH, HEIGHT, pixels_before);
-	printf("Edge Noise WITHOUT FXAA: %.4f\n", (double)noise_before);
+	printf("  Edge Noise WITHOUT FXAA: %.4f\n", (double)noise_before);
 
-	// 3. Apply FXAA
+	// 2. Capture "After" (FXAA enabled, processed identically)
 	postprocess_enable(&post_process_system, POSTFX_FXAA);
-	// We need to simulate the post-processing pass
+	postprocess_begin(&post_process_system);
+	glViewport(0, 0, WIDTH, HEIGHT);
+	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
+	        (GLbitfield)GL_DEPTH_BUFFER_BIT);
+	render_test_pattern(mode);
 	postprocess_end(&post_process_system);
+	glFinish();  // Ensure rendering is complete before reading
 
-	// 4. Capture "After" (FXAA enabled)
 	unsigned char* pixels_after = malloc(WIDTH * HEIGHT * 3);
 	if (!pixels_after) {
 		free(pixels_before);
@@ -168,38 +220,74 @@ void test_fxaa_synthetic_efficiency(void)
 	glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGB, GL_UNSIGNED_BYTE,
 	             pixels_after);
 	float noise_after = calculate_edge_noise(WIDTH, HEIGHT, pixels_after);
-	printf("Edge Noise WITH FXAA: %.4f\n", (double)noise_after);
+	printf("  Edge Noise WITH FXAA:    %.4f\n", (double)noise_after);
 
-	// 5. Statistics & Validation
+	// 3. Statistics & Validation
 	float noise_reduction = (noise_before - noise_after) / noise_before;
-	printf("FXAA Noise Reduction: %.2f%%\n",
+	printf("  FXAA Noise Reduction:    %.2f%%\n",
 	       (double)(noise_reduction * 100.0F));
 
-	// 6. Visual Export (PNG)
+	// 4. Visual Export (PNG)
 	flip_image_vertically(WIDTH, HEIGHT, pixels_before);
 	flip_image_vertically(WIDTH, HEIGHT, pixels_after);
 
-	if (stbi_write_png("tests/fxaa_test_before.png", WIDTH, HEIGHT, 3,
-	                   pixels_before, WIDTH * 3)) {
-		printf("[VISUAL] Saved tests/fxaa_test_before.png\n");
+	char gpu_id[PATH_MAX_LEN];
+	render_utils_get_gpu_identifier(gpu_id, sizeof(gpu_id));
+
+	char path_b[PATH_MAX_LEN];
+	char path_a[PATH_MAX_LEN];
+	if (snprintf(path_b, sizeof(path_b), "tests/fxaa_test_%s_before_%s.png",
+	             pattern_name, gpu_id) < 0) {
+		TEST_FAIL_MESSAGE("snprintf failed for path_b");
 	}
-	if (stbi_write_png("tests/fxaa_test_after.png", WIDTH, HEIGHT, 3,
-	                   pixels_after, WIDTH * 3)) {
-		printf("[VISUAL] Saved tests/fxaa_test_after.png\n");
+	if (snprintf(path_a, sizeof(path_a), "tests/fxaa_test_%s_after_%s.png",
+	             pattern_name, gpu_id) < 0) {
+		TEST_FAIL_MESSAGE("snprintf failed for path_a");
 	}
 
-	const float MIN_REDUCTION_THRESHOLD = 0.10F;
+	if (stbi_write_png(path_b, WIDTH, HEIGHT, 3, pixels_before,
+	                   WIDTH * 3) == 0) {
+		printf("  [ERROR] Failed to save %s\n", path_b);
+	} else {
+		printf("  [VISUAL] Saved %s\n", path_b);
+	}
+
+	if (stbi_write_png(path_a, WIDTH, HEIGHT, 3, pixels_after, WIDTH * 3) ==
+	    0) {
+		printf("  [ERROR] Failed to save %s\n", path_a);
+	} else {
+		printf("  [VISUAL] Saved %s\n", path_a);
+	}
+
 	TEST_ASSERT_TRUE_MESSAGE(
-	    noise_reduction > MIN_REDUCTION_THRESHOLD,
-	    "FXAA should reduce edge noise by at least 10%%");
+	    noise_reduction > MIN_REDUCE_THRESHOLD,
+	    "FXAA should reduce edge noise by at least 10%");
 
 	free(pixels_before);
 	free(pixels_after);
+	fflush(stdout);
+}
+
+void test_fxaa_star(void)
+{
+	run_synthetic_test(0, "star");
+}
+
+void test_fxaa_grid(void)
+{
+	run_synthetic_test(1, "grid");
+}
+
+void test_fxaa_spheres(void)
+{
+	run_synthetic_test(2, "spheres");
 }
 
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_fxaa_synthetic_efficiency);
-	return UNITY_END();
+	RUN_TEST(test_fxaa_star);
+	RUN_TEST(test_fxaa_grid);
+	RUN_TEST(test_fxaa_spheres);
+	return (UNITY_END() == 0) ? 0 : 1;
 }
