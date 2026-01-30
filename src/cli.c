@@ -29,7 +29,7 @@ CliAction cli_handle_args(int argc, char* argv[])
 		}
 
 		/* Unrecognized option */
-		(void)fprintf(stderr, "Error: Unknown option '%s'\n\n",
+		(void)fprintf(stderr, "Error: Unknown option '%.64s'\n\n",
 		              argv[i]);
 		print_help(argv[0]);
 		return CLI_ACTION_EXIT_FAILURE;
