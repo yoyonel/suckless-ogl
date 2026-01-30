@@ -57,6 +57,7 @@ set(SOURCES
     src/window.c
     src/gl_debug.c
     src/render_utils.c
+    src/cli.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
