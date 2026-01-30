@@ -115,6 +115,11 @@ lint: build/Makefile
 	@echo "==> Running clang-tidy..."
 	@clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $$(find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=199309L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
 
+build/Makefile:
+	@echo "==> Configuring build directory..."
+	@mkdir -p build
+	@cd build && cmake ..
+
 # === Dependency Management ===
 .PHONY: deps-setup deps-clean offline-test
 
