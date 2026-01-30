@@ -1,6 +1,7 @@
 #include "log.h"
 #include "unity.h"
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,12 +12,12 @@
 void setUp(void)
 {
 	// Clean slate for capture file
-	remove(CAPTURE_FILE);
+	(void)remove(CAPTURE_FILE);
 }
 
 void tearDown(void)
 {
-	remove(CAPTURE_FILE);
+	(void)remove(CAPTURE_FILE);
 }
 
 // Helper to read the captured file content
@@ -24,14 +25,15 @@ static void assert_capture_contains(const char* expected_level,
                                     const char* expected_tag,
                                     const char* expected_msg)
 {
-	FILE* f = fopen(CAPTURE_FILE, "r");
-	TEST_ASSERT_NOT_NULL_MESSAGE(f, "Failed to open capture file");
+	FILE* f_ptr = fopen(CAPTURE_FILE, "r");
+	TEST_ASSERT_NOT_NULL_MESSAGE(f_ptr, "Failed to open capture file");
 
 	char buffer[1024];
-	if (fgets(buffer, sizeof(buffer), f) == NULL) {
+	if (fgets(buffer, sizeof(buffer), f_ptr) == NULL) {
+		(void)fclose(f_ptr);
 		TEST_FAIL_MESSAGE("Capture file is empty");
 	}
-	fclose(f);
+	(void)fclose(f_ptr);
 
 	// Check components
 	TEST_ASSERT_NOT_NULL_MESSAGE(strstr(buffer, expected_level),
@@ -48,34 +50,34 @@ int stdout_backup = -1;
 
 void redirect_streams(void)
 {
-	fflush(stderr);
-	fflush(stdout);
+	(void)fflush(stderr);
+	(void)fflush(stdout);
 	stderr_backup = dup(STDERR_FILENO);
 	stdout_backup = dup(STDOUT_FILENO);
 
-	int fd = open(CAPTURE_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0) {
+	int fd_tmp = open(CAPTURE_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_tmp < 0) {
 		perror("Failed to open capture file");
 		return;
 	}
 
 	// Redirect both to the same file
-	dup2(fd, STDERR_FILENO);
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
+	(void)dup2(fd_tmp, STDERR_FILENO);
+	(void)dup2(fd_tmp, STDOUT_FILENO);
+	(void)close(fd_tmp);
 }
 
 void restore_streams(void)
 {
-	fflush(stderr);
-	fflush(stdout);
+	(void)fflush(stderr);
+	(void)fflush(stdout);
 
-	dup2(stderr_backup, STDERR_FILENO);
-	close(stderr_backup);
+	(void)dup2(stderr_backup, STDERR_FILENO);
+	(void)close(stderr_backup);
 	stderr_backup = -1;
 
-	dup2(stdout_backup, STDOUT_FILENO);
-	close(stdout_backup);
+	(void)dup2(stdout_backup, STDOUT_FILENO);
+	(void)close(stdout_backup);
 	stdout_backup = -1;
 }
 
@@ -88,13 +90,13 @@ void test_log_info(void)
 	assert_capture_contains("INFO", "TEST_TAG", "Simple info message");
 }
 
-void test_log_warn(void)
+void test_log_warning(void)
 {
 	redirect_streams();
-	LOG_WARN("TEST_TAG", "Warning content");
+	LOG_WARNING("TEST_TAG", "Warning content");
 	restore_streams();
 
-	assert_capture_contains("WARN", "TEST_TAG", "Warning content");
+	assert_capture_contains("WARNING", "TEST_TAG", "Warning content");
 }
 
 void test_log_error(void)
@@ -108,11 +110,62 @@ void test_log_error(void)
 
 void test_log_debug(void)
 {
+	log_set_level(LOG_LEVEL_DEBUG);
 	redirect_streams();
 	LOG_DEBUG("DBG", "Debug info");
 	restore_streams();
+	log_set_level(LOG_LEVEL_INFO);
 
 	assert_capture_contains("DEBUG", "DBG", "Debug info");
+}
+
+void test_log_critical(void)
+{
+	redirect_streams();
+	LOG_CRITICAL("TEST_TAG", "Critical failure");
+	restore_streams();
+
+	assert_capture_contains("CRITICAL", "TEST_TAG", "Critical failure");
+}
+
+void test_log_filtering(void)
+{
+	log_set_level(LOG_LEVEL_ERROR);
+
+	redirect_streams();
+	LOG_INFO("FILTER", "Should not appear");
+	LOG_WARNING("FILTER", "Should not appear");
+	LOG_ERROR("FILTER", "Should appear");
+	restore_streams();
+
+	FILE* f_ptr = fopen(CAPTURE_FILE, "r");
+	TEST_ASSERT_NOT_NULL(f_ptr);
+	char buffer[1024];
+	bool found_error = false;
+	while (fgets(buffer, sizeof(buffer), f_ptr)) {
+		if (strstr(buffer, "INFO") || strstr(buffer, "WARNING")) {
+			(void)fclose(f_ptr);
+			TEST_FAIL_MESSAGE("Filtered message appeared in log");
+		}
+		if (strstr(buffer, "ERROR")) {
+			found_error = true;
+		}
+	}
+	(void)fclose(f_ptr);
+	TEST_ASSERT_TRUE_MESSAGE(found_error,
+	                         "Expected ERROR message not found");
+
+	// Reset level for other tests
+	log_set_level(LOG_LEVEL_INFO);
+}
+
+void test_log_env_var(void)
+{
+	(void)setenv("OGL_LOG_LEVEL", "DEBUG", 1);
+	log_set_level(LOG_LEVEL_DEBUG);
+	TEST_ASSERT_EQUAL(LOG_LEVEL_DEBUG, log_get_level());
+
+	log_set_level(LOG_LEVEL_INFO);
 }
 
 void test_log_formatting(void)
@@ -128,9 +181,12 @@ int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_log_info);
-	RUN_TEST(test_log_warn);
+	RUN_TEST(test_log_warning);
 	RUN_TEST(test_log_error);
 	RUN_TEST(test_log_debug);
+	RUN_TEST(test_log_critical);
+	RUN_TEST(test_log_filtering);
+	RUN_TEST(test_log_env_var);
 	RUN_TEST(test_log_formatting);
 	return UNITY_END();
 }

@@ -16,7 +16,7 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(count * sizeof(SphereInstance)), data,
-	             GL_STATIC_DRAW);
+	             GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
