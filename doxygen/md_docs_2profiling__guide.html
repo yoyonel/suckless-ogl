@@ -1,0 +1,293 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Profiling Guide: ApiTrace &amp; Trace Analysis</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('md_docs_2profiling__guide.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Profiling Guide: ApiTrace &amp; Trace Analysis</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md210"></a> This guide explains how to use <b>ApiTrace</b> in combination with our custom analysis tool to measure GPU performance, with a focus on overcoming driver-specific profiling limitations for compute shaders.</p>
+<h1><a class="anchor" id="autotoc_md211"></a>
+Why use this workflow?</h1>
+<p>Standard GPU profilers (and even <code>apitrace replay --pgpu</code>) often report <b>0.00ms</b> for <code>glDispatchCompute</code> calls on many drivers/architectures because they rely on driver-internal counters that don't always track compute asynchronously or accurately.</p>
+<p>Our engine injects manual <code>GL_TIMESTAMP</code> queries and <code>glPushDebugGroup</code> markers into the command stream. The <code>trace_analyze.py</code> tool correlates these timestamps with the trace dump to provide a "Source of Truth" for compute shaders.</p>
+<hr  />
+<h1><a class="anchor" id="autotoc_md213"></a>
+1. Prerequisites</h1>
+<p>Ensure you have <b>ApiTrace</b> installed on your system. The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or you can point to a specific binary using <code>APITRACE_BIN</code>.</p>
+<div class="fragment"><div class="line"># Example for a specific location</div>
+<div class="line">export APITRACE_BIN=&quot;/path/to/apitrace&quot;</div>
+</div><!-- fragment --><hr  />
+<h1><a class="anchor" id="autotoc_md215"></a>
+2. Generating a Trace</h1>
+<p>To record the execution of the application:</p>
+<div class="fragment"><div class="line">make apitrace</div>
+</div><!-- fragment --><p>This will:</p><ol type="1">
+<li>Build the application in "Profile" mode (without high-level debug overhead).</li>
+<li>Use <code>apitrace trace</code> to record all OpenGL calls into <code>build-profile/app.trace</code>.</li>
+</ol>
+<hr  />
+<h1><a class="anchor" id="autotoc_md217"></a>
+3. High-Level Performance Analysis</h1>
+<p>The easiest way to see the results is to use the integrated target:</p>
+<div class="fragment"><div class="line">make trace-perf</div>
+</div><!-- fragment --><p>This command runs <code>scripts/trace_analyze.py</code> which produces two tables:</p><ol type="1">
+<li><b>Performance by <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> (Cumulative)</b>: Groups all calls by shader name/label.</li>
+<li><b>Debug Groups (Per Instance)</b>: Shows the chronological execution of marked blocks (e.g., IBL generation steps).</li>
+</ol>
+<h2><a class="anchor" id="autotoc_md218"></a>
+Understanding the Metrics</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Column   </th><th class="markdownTableHeadLeft">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>GPU [ms]</b>   </td><td class="markdownTableBodyLeft">Driver-reported duration (Standard <code>glDraw*</code> calls). Use this for Vertex/Fragment shaders.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><b>Timer [ms]</b>   </td><td class="markdownTableBodyLeft"><b>Manual GL_TIMESTAMP markers</b>. Use this for <b>Compute Shaders</b> and IBL generation blocks.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>Avg/Fr[ms]</b>   </td><td class="markdownTableBodyLeft">Cumulative GPU time divided by the total number of frames in the trace.   </td></tr>
+</table>
+<hr  />
+<h1><a class="anchor" id="autotoc_md220"></a>
+4. Advanced Tool Usage</h1>
+<p>You can run the script manually for more control:</p>
+<div class="fragment"><div class="line"># Usage: python3 scripts/trace_analyze.py &lt;trace_file&gt; [apitrace_bin]</div>
+<div class="line">python3 scripts/trace_analyze.py build-profile/app.trace</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md221"></a>
+Script Logic</h2>
+<ul>
+<li><b>Regex Parsing</b>: The script parses <code>apitrace dump</code> to extract <code>glObjectLabel</code> (to name shaders) and <code>glGetQueryObjectui64v</code> (to get manual timestamps).</li>
+<li><b>Matching</b>: It looks for query result fetches that happen immediately after a debug group ends to measure that group's duration.</li>
+<li><b>Nested Sums</b>: If a parent debug group doesn't have its own timer, the script sums up the durations of its direct children (marked with <code>*</code> in the table).</li>
+</ul>
+<hr  />
+<h1><a class="anchor" id="autotoc_md223"></a>
+5. Coding for Profiling</h1>
+<p>To make a new feature measurable:</p>
+<ol type="1">
+<li><b>Label your shaders</b>: Use <code>shader_set_label(shader, "Description")</code> in C.</li>
+<li><b>Add debug groups</b>: <div class="fragment"><div class="line">GL_PUSH_GROUP(<span class="stringliteral">&quot;My Complex Task&quot;</span>, 0);</div>
+<div class="line"><span class="comment">// ... GPU calls ...</span></div>
+<div class="line">GL_POP_GROUP();</div>
+</div><!-- fragment --></li>
+<li><b>Add fine-grained timers (Optional)</b>: The engine automatically attempts to capture timestamps around critical IBL sections. See <code><a class="el" href="pbr_8c.html">src/pbr.c</a></code> for examples.</li>
+</ol>
+<hr  />
+<h1><a class="anchor" id="autotoc_md225"></a>
+6. Developing the Tool</h1>
+<p>The analysis script is fully tested:</p><ul>
+<li><b>Linting</b>: <code>make lint</code> (uses Ruff).</li>
+<li><b>Formatting</b>: <code>make format</code> (uses Ruff).</li>
+<li><b>Tests</b>: <code>make test-python</code> (uses Pytest).</li>
+<li><b>Coverage</b>: <code>make coverage</code> (generates HTML report for Python logic). </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,1825 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/postprocess.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('postprocess_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">postprocess.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>High-level post-processing pipeline and effects.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="fx__auto__exposure_8h_source.html">effects/fx_auto_exposure.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="fx__bloom_8h_source.html">effects/fx_bloom.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="fx__dof_8h_source.html">effects/fx_dof.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="fx__motion__blur_8h_source.html">effects/fx_motion_blur.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &lt;cglm/cglm.h&gt;</code><br />
+<code>#include &lt;cglm/types.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for postprocess.h:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__dep__incl.svg" width="100%" height="448"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="postprocess_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColorGradingParams.html">ColorGradingParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unreal-style color grading parameters.  <a href="structColorGradingParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVignetteParams.html">VignetteParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Controls for the screen-edge darkening effect.  <a href="structVignetteParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGrainParams.html">GrainParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fine-grained controls for film noise.  <a href="structGrainParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExposureParams.html">ExposureParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manual exposure tuning.  <a href="structExposureParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChromAbberationParams.html">ChromAbberationParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focal-length distortion simulation.  <a href="structChromAbberationParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structWhiteBalanceParams.html">WhiteBalanceParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temperature and tint correction.  <a href="structWhiteBalanceParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTonemapParams.html">TonemapParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ACES-like filmic tonemapping curve parameters.  <a href="structTonemapParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html">PostProcessUBO</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared Uniform Buffer structure for shaders.  <a href="structPostProcessUBO.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html">PostProcess</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main pipeline state for post-processing.  <a href="structPostProcess.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessPreset.html">PostProcessPreset</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Snapshot of every configurable parameter in the pipeline.  <a href="structPostProcessPreset.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a4d5161cecc700143fa60fc6e4f9ca79f" id="r_a4d5161cecc700143fa60fc6e4f9ca79f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4d5161cecc700143fa60fc6e4f9ca79f">DEFAULT_VIGNETTE_INTENSITY</a>&#160;&#160;&#160;0.8F</td></tr>
+<tr class="separator:a4d5161cecc700143fa60fc6e4f9ca79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24987b89075e8bfcef95322a2f55da3a" id="r_a24987b89075e8bfcef95322a2f55da3a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a24987b89075e8bfcef95322a2f55da3a">DEFAULT_VIGNETTE_SMOOTHNESS</a>&#160;&#160;&#160;0.5F</td></tr>
+<tr class="separator:a24987b89075e8bfcef95322a2f55da3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a678aa31207d5058c820d96471b712ff8" id="r_a678aa31207d5058c820d96471b712ff8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a678aa31207d5058c820d96471b712ff8">DEFAULT_VIGNETTE_ROUNDNESS</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a678aa31207d5058c820d96471b712ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61256b363d5eee27d7a269338b5e4c5b" id="r_a61256b363d5eee27d7a269338b5e4c5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a61256b363d5eee27d7a269338b5e4c5b">DEFAULT_GRAIN_INTENSITY</a>&#160;&#160;&#160;0.02F</td></tr>
+<tr class="separator:a61256b363d5eee27d7a269338b5e4c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27c46a0e6b1c3f38980c3fa336cc9b9d" id="r_a27c46a0e6b1c3f38980c3fa336cc9b9d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a27c46a0e6b1c3f38980c3fa336cc9b9d">DEFAULT_GRAIN_SHADOWS_MAX</a>&#160;&#160;&#160;0.09F</td></tr>
+<tr class="separator:a27c46a0e6b1c3f38980c3fa336cc9b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71e99cbd7ef9e6cc79aa31b14a5422cc" id="r_a71e99cbd7ef9e6cc79aa31b14a5422cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a71e99cbd7ef9e6cc79aa31b14a5422cc">DEFAULT_GRAIN_HIGHLIGHTS_MIN</a>&#160;&#160;&#160;0.5F</td></tr>
+<tr class="separator:a71e99cbd7ef9e6cc79aa31b14a5422cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6015b9293bcf3bebdebc87307513cd8" id="r_aa6015b9293bcf3bebdebc87307513cd8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa6015b9293bcf3bebdebc87307513cd8">DEFAULT_GRAIN_TEXEL_SIZE</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:aa6015b9293bcf3bebdebc87307513cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae531cfd777bb448be1f0dd3cfcb8cf" id="r_aaae531cfd777bb448be1f0dd3cfcb8cf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aaae531cfd777bb448be1f0dd3cfcb8cf">DEFAULT_EXPOSURE</a>&#160;&#160;&#160;1.00F</td></tr>
+<tr class="separator:aaae531cfd777bb448be1f0dd3cfcb8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fbed1e09f43ec4d9d0587a2fe982a04" id="r_a5fbed1e09f43ec4d9d0587a2fe982a04"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a5fbed1e09f43ec4d9d0587a2fe982a04">DEFAULT_CHROM_ABBR_STRENGTH</a>&#160;&#160;&#160;0.005F</td></tr>
+<tr class="separator:a5fbed1e09f43ec4d9d0587a2fe982a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64a9e1a6bbe5e74db0f77c17c04ee918" id="r_a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918">DEFAULT_BLOOM_INTENSITY</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdd4a3cba1a04e1866e280b84a064dee" id="r_acdd4a3cba1a04e1866e280b84a064dee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#acdd4a3cba1a04e1866e280b84a064dee">DEFAULT_BLOOM_THRESHOLD</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:acdd4a3cba1a04e1866e280b84a064dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a222b8356f0589002c336b3b47ef99be5" id="r_a222b8356f0589002c336b3b47ef99be5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a222b8356f0589002c336b3b47ef99be5">DEFAULT_BLOOM_SOFT_THRESHOLD</a>&#160;&#160;&#160;0.5F</td></tr>
+<tr class="separator:a222b8356f0589002c336b3b47ef99be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a160badf1723b03fe88e13e84e1410a" id="r_a3a160badf1723b03fe88e13e84e1410a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3a160badf1723b03fe88e13e84e1410a">DEFAULT_BLOOM_RADIUS</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a3a160badf1723b03fe88e13e84e1410a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8704ac8e54f944f1ff3218c4ef5f59e4" id="r_a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8704ac8e54f944f1ff3218c4ef5f59e4">DEFAULT_DOF_FOCAL_DISTANCE</a>&#160;&#160;&#160;20.0F</td></tr>
+<tr class="separator:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63ba03e343f9b5cabd43b1cb6a9839d9" id="r_a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a63ba03e343f9b5cabd43b1cb6a9839d9">DEFAULT_DOF_FOCAL_RANGE</a>&#160;&#160;&#160;5.0F</td></tr>
+<tr class="separator:a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a478a7691189f64138ffea55e94d0be7b" id="r_a478a7691189f64138ffea55e94d0be7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a478a7691189f64138ffea55e94d0be7b">DEFAULT_DOF_BOKEH_SCALE</a>&#160;&#160;&#160;10.0F</td></tr>
+<tr class="separator:a478a7691189f64138ffea55e94d0be7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5ac917a4a0b7f557e0149cd2517d08e" id="r_af5ac917a4a0b7f557e0149cd2517d08e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e">DEFAULT_WB_TEMP</a>&#160;&#160;&#160;6500.0F</td></tr>
+<tr class="separator:af5ac917a4a0b7f557e0149cd2517d08e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad168e611abd1a1d07b4ec631de12c8d2" id="r_ad168e611abd1a1d07b4ec631de12c8d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2">DEFAULT_WB_TINT</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:ad168e611abd1a1d07b4ec631de12c8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24c921857e67d965067a90def2a6d3de" id="r_a24c921857e67d965067a90def2a6d3de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a24c921857e67d965067a90def2a6d3de">DEFAULT_FILMIC_SLOPE</a>&#160;&#160;&#160;1.0F</td></tr>
+<tr class="separator:a24c921857e67d965067a90def2a6d3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af950c3b89015622c6f11daef618bef2d" id="r_af950c3b89015622c6f11daef618bef2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af950c3b89015622c6f11daef618bef2d">DEFAULT_FILMIC_TOE</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:af950c3b89015622c6f11daef618bef2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a074b2000111396e1a6e510adee780e88" id="r_a074b2000111396e1a6e510adee780e88"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a074b2000111396e1a6e510adee780e88">DEFAULT_FILMIC_SHOULDER</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:a074b2000111396e1a6e510adee780e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2730de020cb919591ad08c99d9298a2a" id="r_a2730de020cb919591ad08c99d9298a2a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a2730de020cb919591ad08c99d9298a2a">DEFAULT_FILMIC_BLACK_CLIP</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:a2730de020cb919591ad08c99d9298a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8f4b984f00cf828da892ab2aece57fd" id="r_ad8f4b984f00cf828da892ab2aece57fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ad8f4b984f00cf828da892ab2aece57fd">DEFAULT_FILMIC_WHITE_CLIP</a>&#160;&#160;&#160;0.0F</td></tr>
+<tr class="separator:ad8f4b984f00cf828da892ab2aece57fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c16e8ea94b93cbf379ceca837be3d2d" id="r_a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">DEFAULT_ACTIVE_EFFECTS</a></td></tr>
+<tr class="memdesc:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default mask of active effects.  <br /></td></tr>
+<tr class="separator:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1ede330dd77f97e5c77493de096d504" id="r_aa1ede330dd77f97e5c77493de096d504"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504">BLOOM_MIP_LEVELS</a>&#160;&#160;&#160;5</td></tr>
+<tr class="separator:aa1ede330dd77f97e5c77493de096d504"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a01df437b0efb1a48be039d241c9baf7b" id="r_a01df437b0efb1a48be039d241c9baf7b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> { <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a> = (1U &lt;&lt; 0U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a> = (1U &lt;&lt; 1U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> = (1U &lt;&lt; 2U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a> = (1U &lt;&lt; 3U)
+, <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a> = (1U &lt;&lt; 4U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a>
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a> = (1U &lt;&lt; 6U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a> = (1U &lt;&lt; 7U)
+, <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a>
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a>
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a> = (1U &lt;&lt; 10U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a>
+, <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a> = (1U &lt;&lt; 12U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a> = (1U &lt;&lt; 13U)
+<br />
+ }</td></tr>
+<tr class="memdesc:a01df437b0efb1a48be039d241c9baf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitmask flags for enabling/disabling individual effects.  <a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">More...</a><br /></td></tr>
+<tr class="separator:a01df437b0efb1a48be039d241c9baf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a86cb89e3a63a4ad9487dc629f8cc7790" id="r_a86cb89e3a63a4ad9487dc629f8cc7790"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a86cb89e3a63a4ad9487dc629f8cc7790">postprocess_init</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int width, int height)</td></tr>
+<tr class="memdesc:a86cb89e3a63a4ad9487dc629f8cc7790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the post-processing pipeline.  <br /></td></tr>
+<tr class="separator:a86cb89e3a63a4ad9487dc629f8cc7790"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ad5053871c219c0dd7585fab39c18b0" id="r_a9ad5053871c219c0dd7585fab39c18b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0">postprocess_cleanup</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="memdesc:a9ad5053871c219c0dd7585fab39c18b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all GPU and CPU resources.  <br /></td></tr>
+<tr class="separator:a9ad5053871c219c0dd7585fab39c18b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefd09528f2a616bdde219a7f5683847c" id="r_aefd09528f2a616bdde219a7f5683847c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c">postprocess_compile_optimized</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, unsigned int static_flags)</td></tr>
+<tr class="memdesc:aefd09528f2a616bdde219a7f5683847c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a specialized Uber-shader for maximum performance.  <br /></td></tr>
+<tr class="separator:aefd09528f2a616bdde219a7f5683847c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b10285ebc588a80b81be601659260d5" id="r_a3b10285ebc588a80b81be601659260d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3b10285ebc588a80b81be601659260d5">postprocess_use_dynamic</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="memdesc:a3b10285ebc588a80b81be601659260d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switches back to the dynamic/generic Uber-shader.  <br /></td></tr>
+<tr class="separator:a3b10285ebc588a80b81be601659260d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47114280aafaff716053e0b12be92dca" id="r_a47114280aafaff716053e0b12be92dca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a47114280aafaff716053e0b12be92dca">postprocess_set_dummy_textures</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, GLuint dummy_black)</td></tr>
+<tr class="memdesc:a47114280aafaff716053e0b12be92dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal helper to set fallback textures.  <br /></td></tr>
+<tr class="separator:a47114280aafaff716053e0b12be92dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba49bd333ab21356706ac98f5b180b5" id="r_aeba49bd333ab21356706ac98f5b180b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5">postprocess_resize</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int width, int height)</td></tr>
+<tr class="memdesc:aeba49bd333ab21356706ac98f5b180b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recreates all internal buffers for a new resolution.  <br /></td></tr>
+<tr class="separator:aeba49bd333ab21356706ac98f5b180b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a881dafb2be086301f57008f8c73f545b" id="r_a881dafb2be086301f57008f8c73f545b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a881dafb2be086301f57008f8c73f545b">postprocess_enable</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:a881dafb2be086301f57008f8c73f545b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables a specific effect.  <br /></td></tr>
+<tr class="separator:a881dafb2be086301f57008f8c73f545b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa46668e6882df082d99ef8735eadc8af" id="r_aa46668e6882df082d99ef8735eadc8af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa46668e6882df082d99ef8735eadc8af">postprocess_disable</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:aa46668e6882df082d99ef8735eadc8af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables a specific effect.  <br /></td></tr>
+<tr class="separator:aa46668e6882df082d99ef8735eadc8af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e1be83610a9debc59503b380a0bcd1" id="r_a90e1be83610a9debc59503b380a0bcd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a90e1be83610a9debc59503b380a0bcd1">postprocess_toggle</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:a90e1be83610a9debc59503b380a0bcd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles the current state of an effect.  <br /></td></tr>
+<tr class="separator:a90e1be83610a9debc59503b380a0bcd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9163a0102d9d7b05ae4c091b9358f9f" id="r_af9163a0102d9d7b05ae4c091b9358f9f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af9163a0102d9d7b05ae4c091b9358f9f">postprocess_is_enabled</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:af9163a0102d9d7b05ae4c091b9358f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if an effect is currently active.  <br /></td></tr>
+<tr class="separator:af9163a0102d9d7b05ae4c091b9358f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a311dcc7f7b99bb8af261b080d3bfd3ec" id="r_a311dcc7f7b99bb8af261b080d3bfd3ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a311dcc7f7b99bb8af261b080d3bfd3ec">postprocess_set_white_balance</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float temperature, float tint)</td></tr>
+<tr class="separator:a311dcc7f7b99bb8af261b080d3bfd3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48207c6d8aa856888e235748e309e94c" id="r_a48207c6d8aa856888e235748e309e94c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a48207c6d8aa856888e235748e309e94c">postprocess_set_color_grading</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float saturation, float contrast, float gamma, float gain, float offset)</td></tr>
+<tr class="separator:a48207c6d8aa856888e235748e309e94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dfdbd52fd26553208453d418e3ecca4" id="r_a7dfdbd52fd26553208453d418e3ecca4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a7dfdbd52fd26553208453d418e3ecca4">postprocess_set_tonemapper</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float slope, float toe, float shoulder, float black_clip, float white_clip)</td></tr>
+<tr class="separator:a7dfdbd52fd26553208453d418e3ecca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3a420879557bc5bfc4a57cab113f1dd" id="r_aa3a420879557bc5bfc4a57cab113f1dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa3a420879557bc5bfc4a57cab113f1dd">postprocess_set_grading_ue_default</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:aa3a420879557bc5bfc4a57cab113f1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcef69ea56c03cb233d5e3a9abaeea56" id="r_adcef69ea56c03cb233d5e3a9abaeea56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#adcef69ea56c03cb233d5e3a9abaeea56">postprocess_set_vignette</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float smoothness, float roundness)</td></tr>
+<tr class="separator:adcef69ea56c03cb233d5e3a9abaeea56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f062fb8af9a8119ae2702e3237bfebf" id="r_a3f062fb8af9a8119ae2702e3237bfebf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3f062fb8af9a8119ae2702e3237bfebf">postprocess_set_grain</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity)</td></tr>
+<tr class="separator:a3f062fb8af9a8119ae2702e3237bfebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a791edfadb846c4f16be12dad6e4c2a6a" id="r_a791edfadb846c4f16be12dad6e4c2a6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a791edfadb846c4f16be12dad6e4c2a6a">postprocess_set_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float exposure)</td></tr>
+<tr class="separator:a791edfadb846c4f16be12dad6e4c2a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5066d2f5e623ccd15daa08b67596d555" id="r_a5066d2f5e623ccd15daa08b67596d555"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a5066d2f5e623ccd15daa08b67596d555">postprocess_set_chrom_abbr</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
+<tr class="separator:a5066d2f5e623ccd15daa08b67596d555"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a48d84f2ba23d4a1a5d678618d29e7b" id="r_a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_set_bloom</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>, float soft_threshold)</td></tr>
+<tr class="separator:a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aace03323c05270449d59a40291940736" id="r_aace03323c05270449d59a40291940736"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aace03323c05270449d59a40291940736">postprocess_set_dof</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float focal_distance, float focal_range, float bokeh_scale)</td></tr>
+<tr class="separator:aace03323c05270449d59a40291940736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc341dd9baaf0c15b099d5ad9c076f2b" id="r_abc341dd9baaf0c15b099d5ad9c076f2b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#abc341dd9baaf0c15b099d5ad9c076f2b">postprocess_get_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:abc341dd9baaf0c15b099d5ad9c076f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce07fd263254dd72c5afc8c199f3913" id="r_a6ce07fd263254dd72c5afc8c199f3913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a6ce07fd263254dd72c5afc8c199f3913">postprocess_set_auto_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float min_luminance, float max_luminance, float speed_up, float speed_down, float key_value)</td></tr>
+<tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86ca4160d60435cb54320bbcc68d0d95" id="r_a86ca4160d60435cb54320bbcc68d0d95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_update_matrices</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, mat4 view_proj)</td></tr>
+<tr class="memdesc:a86ca4160d60435cb54320bbcc68d0d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates view-projection matrices for effects requiring depth-reconstruction.  <br /></td></tr>
+<tr class="separator:a86ca4160d60435cb54320bbcc68d0d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bf66ac3a443cdd5f9fdd5cf9d37b409" id="r_a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">postprocess_apply_preset</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, const <a class="el" href="structPostProcessPreset.html">PostProcessPreset</a> *preset)</td></tr>
+<tr class="memdesc:a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies all settings from a preset atomically.  <br /></td></tr>
+<tr class="separator:a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fdad312e138cf7080b4596e127584e5" id="r_a8fdad312e138cf7080b4596e127584e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5">postprocess_begin</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="memdesc:a8fdad312e138cf7080b4596e127584e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop.  <br /></td></tr>
+<tr class="separator:a8fdad312e138cf7080b4596e127584e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa84256eef04459c5acf3b67987da736b" id="r_aa84256eef04459c5acf3b67987da736b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa84256eef04459c5acf3b67987da736b">postprocess_end</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="memdesc:aa84256eef04459c5acf3b67987da736b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main render loop.  <br /></td></tr>
+<tr class="separator:aa84256eef04459c5acf3b67987da736b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae22c24f5c64568dcf1908a579312ed60" id="r_ae22c24f5c64568dcf1908a579312ed60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ae22c24f5c64568dcf1908a579312ed60">postprocess_update_time</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float delta_time)</td></tr>
+<tr class="memdesc:ae22c24f5c64568dcf1908a579312ed60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increments internal clocks.  <br /></td></tr>
+<tr class="separator:ae22c24f5c64568dcf1908a579312ed60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>High-level post-processing pipeline and effects. </p>
+<p>This module manages the multi-pass post-processing pipeline, including blooming, auto-exposure, color grading, motion blur, and tone mapping. It uses a centralized Uniform Buffer Object (UBO) for settings. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="aa1ede330dd77f97e5c77493de096d504" name="aa1ede330dd77f97e5c77493de096d504"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1ede330dd77f97e5c77493de096d504">&#9670;&#160;</a></span>BLOOM_MIP_LEVELS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BLOOM_MIP_LEVELS&#160;&#160;&#160;5</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1c16e8ea94b93cbf379ceca837be3d2d" name="a1c16e8ea94b93cbf379ceca837be3d2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c16e8ea94b93cbf379ceca837be3d2d">&#9670;&#160;</a></span>DEFAULT_ACTIVE_EFFECTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_ACTIVE_EFFECTS</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
+<div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:64</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:75</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:61</div></div>
+</div><!-- fragment -->
+<p>Default mask of active effects. </p>
+
+</div>
+</div>
+<a id="a64a9e1a6bbe5e74db0f77c17c04ee918" name="a64a9e1a6bbe5e74db0f77c17c04ee918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64a9e1a6bbe5e74db0f77c17c04ee918">&#9670;&#160;</a></span>DEFAULT_BLOOM_INTENSITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_INTENSITY&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a160badf1723b03fe88e13e84e1410a" name="a3a160badf1723b03fe88e13e84e1410a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a160badf1723b03fe88e13e84e1410a">&#9670;&#160;</a></span>DEFAULT_BLOOM_RADIUS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_RADIUS&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a222b8356f0589002c336b3b47ef99be5" name="a222b8356f0589002c336b3b47ef99be5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a222b8356f0589002c336b3b47ef99be5">&#9670;&#160;</a></span>DEFAULT_BLOOM_SOFT_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_SOFT_THRESHOLD&#160;&#160;&#160;0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acdd4a3cba1a04e1866e280b84a064dee" name="acdd4a3cba1a04e1866e280b84a064dee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdd4a3cba1a04e1866e280b84a064dee">&#9670;&#160;</a></span>DEFAULT_BLOOM_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BLOOM_THRESHOLD&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fbed1e09f43ec4d9d0587a2fe982a04" name="a5fbed1e09f43ec4d9d0587a2fe982a04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fbed1e09f43ec4d9d0587a2fe982a04">&#9670;&#160;</a></span>DEFAULT_CHROM_ABBR_STRENGTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_CHROM_ABBR_STRENGTH&#160;&#160;&#160;0.005F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a478a7691189f64138ffea55e94d0be7b" name="a478a7691189f64138ffea55e94d0be7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a478a7691189f64138ffea55e94d0be7b">&#9670;&#160;</a></span>DEFAULT_DOF_BOKEH_SCALE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_BOKEH_SCALE&#160;&#160;&#160;10.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8704ac8e54f944f1ff3218c4ef5f59e4" name="a8704ac8e54f944f1ff3218c4ef5f59e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8704ac8e54f944f1ff3218c4ef5f59e4">&#9670;&#160;</a></span>DEFAULT_DOF_FOCAL_DISTANCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_FOCAL_DISTANCE&#160;&#160;&#160;20.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a63ba03e343f9b5cabd43b1cb6a9839d9" name="a63ba03e343f9b5cabd43b1cb6a9839d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63ba03e343f9b5cabd43b1cb6a9839d9">&#9670;&#160;</a></span>DEFAULT_DOF_FOCAL_RANGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_DOF_FOCAL_RANGE&#160;&#160;&#160;5.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaae531cfd777bb448be1f0dd3cfcb8cf" name="aaae531cfd777bb448be1f0dd3cfcb8cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaae531cfd777bb448be1f0dd3cfcb8cf">&#9670;&#160;</a></span>DEFAULT_EXPOSURE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_EXPOSURE&#160;&#160;&#160;1.00F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2730de020cb919591ad08c99d9298a2a" name="a2730de020cb919591ad08c99d9298a2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2730de020cb919591ad08c99d9298a2a">&#9670;&#160;</a></span>DEFAULT_FILMIC_BLACK_CLIP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FILMIC_BLACK_CLIP&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a074b2000111396e1a6e510adee780e88" name="a074b2000111396e1a6e510adee780e88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a074b2000111396e1a6e510adee780e88">&#9670;&#160;</a></span>DEFAULT_FILMIC_SHOULDER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FILMIC_SHOULDER&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a24c921857e67d965067a90def2a6d3de" name="a24c921857e67d965067a90def2a6d3de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24c921857e67d965067a90def2a6d3de">&#9670;&#160;</a></span>DEFAULT_FILMIC_SLOPE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FILMIC_SLOPE&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af950c3b89015622c6f11daef618bef2d" name="af950c3b89015622c6f11daef618bef2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af950c3b89015622c6f11daef618bef2d">&#9670;&#160;</a></span>DEFAULT_FILMIC_TOE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FILMIC_TOE&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad8f4b984f00cf828da892ab2aece57fd" name="ad8f4b984f00cf828da892ab2aece57fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8f4b984f00cf828da892ab2aece57fd">&#9670;&#160;</a></span>DEFAULT_FILMIC_WHITE_CLIP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FILMIC_WHITE_CLIP&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a71e99cbd7ef9e6cc79aa31b14a5422cc" name="a71e99cbd7ef9e6cc79aa31b14a5422cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71e99cbd7ef9e6cc79aa31b14a5422cc">&#9670;&#160;</a></span>DEFAULT_GRAIN_HIGHLIGHTS_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_GRAIN_HIGHLIGHTS_MIN&#160;&#160;&#160;0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a61256b363d5eee27d7a269338b5e4c5b" name="a61256b363d5eee27d7a269338b5e4c5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61256b363d5eee27d7a269338b5e4c5b">&#9670;&#160;</a></span>DEFAULT_GRAIN_INTENSITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_GRAIN_INTENSITY&#160;&#160;&#160;0.02F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default film grain strength. </p>
+
+</div>
+</div>
+<a id="a27c46a0e6b1c3f38980c3fa336cc9b9d" name="a27c46a0e6b1c3f38980c3fa336cc9b9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27c46a0e6b1c3f38980c3fa336cc9b9d">&#9670;&#160;</a></span>DEFAULT_GRAIN_SHADOWS_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_GRAIN_SHADOWS_MAX&#160;&#160;&#160;0.09F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6015b9293bcf3bebdebc87307513cd8" name="aa6015b9293bcf3bebdebc87307513cd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6015b9293bcf3bebdebc87307513cd8">&#9670;&#160;</a></span>DEFAULT_GRAIN_TEXEL_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_GRAIN_TEXEL_SIZE&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4d5161cecc700143fa60fc6e4f9ca79f" name="a4d5161cecc700143fa60fc6e4f9ca79f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d5161cecc700143fa60fc6e4f9ca79f">&#9670;&#160;</a></span>DEFAULT_VIGNETTE_INTENSITY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_VIGNETTE_INTENSITY&#160;&#160;&#160;0.8F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default vignette strength. </p>
+
+</div>
+</div>
+<a id="a678aa31207d5058c820d96471b712ff8" name="a678aa31207d5058c820d96471b712ff8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a678aa31207d5058c820d96471b712ff8">&#9670;&#160;</a></span>DEFAULT_VIGNETTE_ROUNDNESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_VIGNETTE_ROUNDNESS&#160;&#160;&#160;1.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default vignette shape. </p>
+
+</div>
+</div>
+<a id="a24987b89075e8bfcef95322a2f55da3a" name="a24987b89075e8bfcef95322a2f55da3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24987b89075e8bfcef95322a2f55da3a">&#9670;&#160;</a></span>DEFAULT_VIGNETTE_SMOOTHNESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_VIGNETTE_SMOOTHNESS&#160;&#160;&#160;0.5F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default vignette falloff. </p>
+
+</div>
+</div>
+<a id="af5ac917a4a0b7f557e0149cd2517d08e" name="af5ac917a4a0b7f557e0149cd2517d08e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5ac917a4a0b7f557e0149cd2517d08e">&#9670;&#160;</a></span>DEFAULT_WB_TEMP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_WB_TEMP&#160;&#160;&#160;6500.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad168e611abd1a1d07b4ec631de12c8d2" name="ad168e611abd1a1d07b4ec631de12c8d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad168e611abd1a1d07b4ec631de12c8d2">&#9670;&#160;</a></span>DEFAULT_WB_TINT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_WB_TINT&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a01df437b0efb1a48be039d241c9baf7b" name="a01df437b0efb1a48be039d241c9baf7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01df437b0efb1a48be039d241c9baf7b">&#9670;&#160;</a></span>PostProcessEffect</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Bitmask flags for enabling/disabling individual effects. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237" name="a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237"></a>POSTFX_VIGNETTE&#160;</td><td class="fielddoc"><p>Vignette overlay. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c" name="a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c"></a>POSTFX_GRAIN&#160;</td><td class="fielddoc"><p>Film grain noise. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48" name="a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"></a>POSTFX_EXPOSURE&#160;</td><td class="fielddoc"><p>Manual exposure compensation. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589" name="a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589"></a>POSTFX_CHROM_ABBR&#160;</td><td class="fielddoc"><p>Chromatic aberration. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19" name="a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"></a>POSTFX_BLOOM&#160;</td><td class="fielddoc"><p>HDR Bloom. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062" name="a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"></a>POSTFX_COLOR_GRADING&#160;</td><td class="fielddoc"><p>Saturation/Contrast/Gamma adjustment. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef" name="a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef"></a>POSTFX_DOF&#160;</td><td class="fielddoc"><p>Depth of Field. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583" name="a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583"></a>POSTFX_DOF_DEBUG&#160;</td><td class="fielddoc"><p>Focus visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b" name="a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b"></a>POSTFX_AUTO_EXPOSURE&#160;</td><td class="fielddoc"><p>Automatic exposure adaptation. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d" name="a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d"></a>POSTFX_EXPOSURE_DEBUG&#160;</td><td class="fielddoc"><p>Exposure histogram visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd" name="a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd"></a>POSTFX_MOTION_BLUR&#160;</td><td class="fielddoc"><p>Velocity-based motion blur. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe" name="a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe"></a>POSTFX_MOTION_BLUR_DEBUG&#160;</td><td class="fielddoc"><p>Velocity buffer visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075" name="a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"></a>POSTFX_FXAA&#160;</td><td class="fielddoc"><p>Fast Approximate Anti-Aliasing. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f" name="a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"></a>POSTFX_FXAA_DEBUG&#160;</td><td class="fielddoc"><p>Edge detection visualization. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a6bf66ac3a443cdd5f9fdd5cf9d37b409" name="a6bf66ac3a443cdd5f9fdd5cf9d37b409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bf66ac3a443cdd5f9fdd5cf9d37b409">&#9670;&#160;</a></span>postprocess_apply_preset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_apply_preset </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structPostProcessPreset.html">PostProcessPreset</a> *&#160;</td>
+          <td class="paramname"><em>preset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Applies all settings from a preset atomically. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">preset</td><td>Pointer to the preset values. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="postprocess__presets_8h.html" title="Predefined configurations for the post-processing pipeline.">postprocess_presets.h</a> </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a6bf66ac3a443cdd5f9fdd5cf9d37b409_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a8fdad312e138cf7080b4596e127584e5" name="a8fdad312e138cf7080b4596e127584e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fdad312e138cf7080b4596e127584e5">&#9670;&#160;</a></span>postprocess_begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_begin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop. </p>
+
+</div>
+</div>
+<a id="a9ad5053871c219c0dd7585fab39c18b0" name="a9ad5053871c219c0dd7585fab39c18b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ad5053871c219c0dd7585fab39c18b0">&#9670;&#160;</a></span>postprocess_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Releases all GPU and CPU resources. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a9ad5053871c219c0dd7585fab39c18b0_cgraph.svg" width="100%" height="551"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aefd09528f2a616bdde219a7f5683847c" name="aefd09528f2a616bdde219a7f5683847c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefd09528f2a616bdde219a7f5683847c">&#9670;&#160;</a></span>postprocess_compile_optimized()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_compile_optimized </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>static_flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compiles a specialized Uber-shader for maximum performance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">static_flags</td><td>Bitmask of effects to bake into the shader. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aefd09528f2a616bdde219a7f5683847c_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aa46668e6882df082d99ef8735eadc8af" name="aa46668e6882df082d99ef8735eadc8af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa46668e6882df082d99ef8735eadc8af">&#9670;&#160;</a></span>postprocess_disable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_disable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disables a specific effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa46668e6882df082d99ef8735eadc8af_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a881dafb2be086301f57008f8c73f545b" name="a881dafb2be086301f57008f8c73f545b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a881dafb2be086301f57008f8c73f545b">&#9670;&#160;</a></span>postprocess_enable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_enable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enables a specific effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a881dafb2be086301f57008f8c73f545b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aa84256eef04459c5acf3b67987da736b" name="aa84256eef04459c5acf3b67987da736b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84256eef04459c5acf3b67987da736b">&#9670;&#160;</a></span>postprocess_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_end </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main render loop. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="abc341dd9baaf0c15b099d5ad9c076f2b" name="abc341dd9baaf0c15b099d5ad9c076f2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc341dd9baaf0c15b099d5ad9c076f2b">&#9670;&#160;</a></span>postprocess_get_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float postprocess_get_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_abc341dd9baaf0c15b099d5ad9c076f2b_cgraph.svg" width="420" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a86cb89e3a63a4ad9487dc629f8cc7790" name="a86cb89e3a63a4ad9487dc629f8cc7790"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86cb89e3a63a4ad9487dc629f8cc7790">&#9670;&#160;</a></span>postprocess_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int postprocess_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the post-processing pipeline. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">width</td><td>Initial resolution width. </td></tr>
+    <tr><td class="paramname">height</td><td>Initial resolution height. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 on success, negative on error. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a86cb89e3a63a4ad9487dc629f8cc7790_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="af9163a0102d9d7b05ae4c091b9358f9f" name="af9163a0102d9d7b05ae4c091b9358f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9163a0102d9d7b05ae4c091b9358f9f">&#9670;&#160;</a></span>postprocess_is_enabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int postprocess_is_enabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns true if an effect is currently active. </p>
+
+</div>
+</div>
+<a id="aeba49bd333ab21356706ac98f5b180b5" name="aeba49bd333ab21356706ac98f5b180b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba49bd333ab21356706ac98f5b180b5">&#9670;&#160;</a></span>postprocess_resize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_resize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Recreates all internal buffers for a new resolution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">width</td><td>New width. </td></tr>
+    <tr><td class="paramname">height</td><td>New height. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aeba49bd333ab21356706ac98f5b180b5_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a6ce07fd263254dd72c5afc8c199f3913" name="a6ce07fd263254dd72c5afc8c199f3913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce07fd263254dd72c5afc8c199f3913">&#9670;&#160;</a></span>postprocess_set_auto_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_auto_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>min_luminance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max_luminance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>speed_up</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>speed_down</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>key_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a48d84f2ba23d4a1a5d678618d29e7b" name="a8a48d84f2ba23d4a1a5d678618d29e7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a48d84f2ba23d4a1a5d678618d29e7b">&#9670;&#160;</a></span>postprocess_set_bloom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_bloom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>soft_threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5066d2f5e623ccd15daa08b67596d555" name="a5066d2f5e623ccd15daa08b67596d555"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5066d2f5e623ccd15daa08b67596d555">&#9670;&#160;</a></span>postprocess_set_chrom_abbr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_chrom_abbr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>strength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48207c6d8aa856888e235748e309e94c" name="a48207c6d8aa856888e235748e309e94c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48207c6d8aa856888e235748e309e94c">&#9670;&#160;</a></span>postprocess_set_color_grading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_color_grading </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>saturation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>contrast</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gamma</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gain</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aace03323c05270449d59a40291940736" name="aace03323c05270449d59a40291940736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aace03323c05270449d59a40291940736">&#9670;&#160;</a></span>postprocess_set_dof()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_dof </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>focal_distance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>focal_range</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>bokeh_scale</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a47114280aafaff716053e0b12be92dca" name="a47114280aafaff716053e0b12be92dca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47114280aafaff716053e0b12be92dca">&#9670;&#160;</a></span>postprocess_set_dummy_textures()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_dummy_textures </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>dummy_black</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Internal helper to set fallback textures. </p>
+
+</div>
+</div>
+<a id="a791edfadb846c4f16be12dad6e4c2a6a" name="a791edfadb846c4f16be12dad6e4c2a6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a791edfadb846c4f16be12dad6e4c2a6a">&#9670;&#160;</a></span>postprocess_set_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>exposure</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa3a420879557bc5bfc4a57cab113f1dd" name="aa3a420879557bc5bfc4a57cab113f1dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3a420879557bc5bfc4a57cab113f1dd">&#9670;&#160;</a></span>postprocess_set_grading_ue_default()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_grading_ue_default </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa3a420879557bc5bfc4a57cab113f1dd_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a3f062fb8af9a8119ae2702e3237bfebf" name="a3f062fb8af9a8119ae2702e3237bfebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f062fb8af9a8119ae2702e3237bfebf">&#9670;&#160;</a></span>postprocess_set_grain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_grain </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7dfdbd52fd26553208453d418e3ecca4" name="a7dfdbd52fd26553208453d418e3ecca4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dfdbd52fd26553208453d418e3ecca4">&#9670;&#160;</a></span>postprocess_set_tonemapper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_tonemapper </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>slope</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>toe</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>shoulder</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>black_clip</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>white_clip</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adcef69ea56c03cb233d5e3a9abaeea56" name="adcef69ea56c03cb233d5e3a9abaeea56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcef69ea56c03cb233d5e3a9abaeea56">&#9670;&#160;</a></span>postprocess_set_vignette()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_vignette </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>smoothness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>roundness</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a311dcc7f7b99bb8af261b080d3bfd3ec" name="a311dcc7f7b99bb8af261b080d3bfd3ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a311dcc7f7b99bb8af261b080d3bfd3ec">&#9670;&#160;</a></span>postprocess_set_white_balance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_white_balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temperature</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tint</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90e1be83610a9debc59503b380a0bcd1" name="a90e1be83610a9debc59503b380a0bcd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90e1be83610a9debc59503b380a0bcd1">&#9670;&#160;</a></span>postprocess_toggle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_toggle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Toggles the current state of an effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a90e1be83610a9debc59503b380a0bcd1_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a86ca4160d60435cb54320bbcc68d0d95" name="a86ca4160d60435cb54320bbcc68d0d95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86ca4160d60435cb54320bbcc68d0d95">&#9670;&#160;</a></span>postprocess_update_matrices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_update_matrices </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>view_proj</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates view-projection matrices for effects requiring depth-reconstruction. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">view_proj</td><td>The current frame's View-Proj matrix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a86ca4160d60435cb54320bbcc68d0d95_cgraph.svg" width="383" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ae22c24f5c64568dcf1908a579312ed60" name="ae22c24f5c64568dcf1908a579312ed60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae22c24f5c64568dcf1908a579312ed60">&#9670;&#160;</a></span>postprocess_update_time()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_update_time </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>delta_time</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Increments internal clocks. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">delta_time</td><td>SECONDS elapsed since last frame. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3b10285ebc588a80b81be601659260d5" name="a3b10285ebc588a80b81be601659260d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b10285ebc588a80b81be601659260d5">&#9670;&#160;</a></span>postprocess_use_dynamic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_use_dynamic </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Switches back to the dynamic/generic Uber-shader. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a3b10285ebc588a80b81be601659260d5_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="postprocess_8h.html">postprocess.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

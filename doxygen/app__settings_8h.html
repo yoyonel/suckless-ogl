@@ -1,0 +1,359 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/app_settings.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('app__settings_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">app_settings.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Global application constants, configuration macros, and default values.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;cglm/types.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for app_settings.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__settings_8h__incl.svg" width="179" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__settings_8h__dep__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="app__settings_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ga488c62fb8eb8169482e08d0daf83320d" id="r_ga488c62fb8eb8169482e08d0daf83320d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Renderer.html#ga488c62fb8eb8169482e08d0daf83320d">USE_TRANSPARENT_BILLBOARDS</a></td></tr>
+<tr class="memdesc:ga488c62fb8eb8169482e08d0daf83320d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable High Quality Transparent Sphere Rendering.  <br /></td></tr>
+<tr class="separator:ga488c62fb8eb8169482e08d0daf83320d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ga06fc87d81c62e9abb8790b6e5713c55b" id="r_ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group__Renderer.html#gga06fc87d81c62e9abb8790b6e5713c55ba0eabe341475ca6db494069cefa96a48c">DEFAULT_SAMPLES</a> = 1
+ }</td></tr>
+<tr class="memdesc:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multisample Anti-Aliasing (MSAA) sample count.  <a href="group__Renderer.html#ga06fc87d81c62e9abb8790b6e5713c55b">More...</a><br /></td></tr>
+<tr class="separator:ga06fc87d81c62e9abb8790b6e5713c55b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadf764cbdea00d65edcd07bb9953ad2b7" id="r_gadf764cbdea00d65edcd07bb9953ad2b7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a6abbd2a2e390ed49e79692e2cd617e7e">MIN_SUBDIV</a> = 0
+, <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7ac846edb36b9f557d22d6a1166f02f344">MAX_SUBDIV</a> = 6
+, <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a036c97bdde295b409aad7e7ffd60a1ae">CUBEMAP_SIZE</a> = 1024
+, <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a4dcc3f43b13b159296f85b7d6d293a4b">INITIAL_SUBDIVISIONS</a> = 3
+ }</td></tr>
+<tr class="separator:gadf764cbdea00d65edcd07bb9953ad2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga1b7d0d5bcdd523f62ebedf9c8d7a200e" id="r_ga1b7d0d5bcdd523f62ebedf9c8d7a200e"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#ga1b7d0d5bcdd523f62ebedf9c8d7a200e">DEFAULT_CAMERA_DISTANCE</a></td></tr>
+<tr class="separator:ga1b7d0d5bcdd523f62ebedf9c8d7a200e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac0689cefd732f6df975cd500a809a046" id="r_gac0689cefd732f6df975cd500a809a046"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#gac0689cefd732f6df975cd500a809a046">DEFAULT_CAMERA_YAW</a></td></tr>
+<tr class="separator:gac0689cefd732f6df975cd500a809a046"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad9cdfdea2bc7f04575921f665aa3fc69" id="r_gad9cdfdea2bc7f04575921f665aa3fc69"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#gad9cdfdea2bc7f04575921f665aa3fc69">DEFAULT_CAMERA_PITCH</a></td></tr>
+<tr class="separator:gad9cdfdea2bc7f04575921f665aa3fc69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2a12595806a5ae01a44b8d1867f11638" id="r_ga2a12595806a5ae01a44b8d1867f11638"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#ga2a12595806a5ae01a44b8d1867f11638">DEFAULT_ENV_LOD</a></td></tr>
+<tr class="separator:ga2a12595806a5ae01a44b8d1867f11638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad5fa76fb7b0a7fc897818a74135250de" id="r_gad5fa76fb7b0a7fc897818a74135250de"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de">NEAR_PLANE</a></td></tr>
+<tr class="separator:gad5fa76fb7b0a7fc897818a74135250de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2d35f44872925de0fd08ca7b35145af6" id="r_ga2d35f44872925de0fd08ca7b35145af6"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6">FAR_PLANE</a> = 1000.0F</td></tr>
+<tr class="separator:ga2d35f44872925de0fd08ca7b35145af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacb82af743656992de4acd8347d2a55bc" id="r_gacb82af743656992de4acd8347d2a55bc"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#gacb82af743656992de4acd8347d2a55bc">FOV_ANGLE</a></td></tr>
+<tr class="separator:gacb82af743656992de4acd8347d2a55bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga346116c9433e5c84e60ff7d2e92e6640" id="r_ga346116c9433e5c84e60ff7d2e92e6640"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#ga346116c9433e5c84e60ff7d2e92e6640">MIN_CAMERA_DISTANCE</a></td></tr>
+<tr class="separator:ga346116c9433e5c84e60ff7d2e92e6640"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga827bc2ba868d77a659e8ec4736e856ae" id="r_ga827bc2ba868d77a659e8ec4736e856ae"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae">MAX_CAMERA_DISTANCE</a> = 50.0F</td></tr>
+<tr class="separator:ga827bc2ba868d77a659e8ec4736e856ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaca15edfc96188569083e68b587c2e09b" id="r_gaca15edfc96188569083e68b587c2e09b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Camera.html#gaca15edfc96188569083e68b587c2e09b">ZOOM_STEP</a> = 0.2F</td></tr>
+<tr class="separator:gaca15edfc96188569083e68b587c2e09b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga49fb4d7500162560be451c22d8544de5" id="r_ga49fb4d7500162560be451c22d8544de5"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#ga49fb4d7500162560be451c22d8544de5">MAX_ENV_LOD</a></td></tr>
+<tr class="separator:ga49fb4d7500162560be451c22d8544de5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac0e8a7770231166913b3e05f723bafc9" id="r_gac0e8a7770231166913b3e05f723bafc9"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#gac0e8a7770231166913b3e05f723bafc9">MIN_ENV_LOD</a> = 0.0F</td></tr>
+<tr class="separator:gac0e8a7770231166913b3e05f723bafc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab63114353ea52239459c442bbdc2fe2c" id="r_gab63114353ea52239459c442bbdc2fe2c"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#gab63114353ea52239459c442bbdc2fe2c">LOD_STEP</a></td></tr>
+<tr class="separator:gab63114353ea52239459c442bbdc2fe2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafc5895744d3003c6436fdff66c9d80bd" id="r_gafc5895744d3003c6436fdff66c9d80bd"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#gafc5895744d3003c6436fdff66c9d80bd">LIGHT_DIR_X</a> = 0.5F</td></tr>
+<tr class="separator:gafc5895744d3003c6436fdff66c9d80bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1cd90f1a0c032db9767a587528b5be3f" id="r_ga1cd90f1a0c032db9767a587528b5be3f"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#ga1cd90f1a0c032db9767a587528b5be3f">LIGHT_DIR_Y</a> = 1.0F</td></tr>
+<tr class="separator:ga1cd90f1a0c032db9767a587528b5be3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42cce2777f68380c5d6bc70f328d7b86" id="r_ga42cce2777f68380c5d6bc70f328d7b86"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86">LIGHT_DIR_Z</a> = 0.3F</td></tr>
+<tr class="separator:ga42cce2777f68380c5d6bc70f328d7b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac0ba165d3405de365ee4b6af426db7ac" id="r_gac0ba165d3405de365ee4b6af426db7ac"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#gac0ba165d3405de365ee4b6af426db7ac">PREFILTERED_SPECULAR_MAP_SIZE</a></td></tr>
+<tr class="separator:gac0ba165d3405de365ee4b6af426db7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3f6406e55aec288a2d91f065fddf3743" id="r_ga3f6406e55aec288a2d91f065fddf3743"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743">IRIDIANCE_MAP_SIZE</a></td></tr>
+<tr class="separator:ga3f6406e55aec288a2d91f065fddf3743"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47f89c3d7c8c156494fdecaf0b5a33c8" id="r_ga47f89c3d7c8c156494fdecaf0b5a33c8"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8">BRDF_LUT_MAP_SIZE</a></td></tr>
+<tr class="separator:ga47f89c3d7c8c156494fdecaf0b5a33c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaeb0f52b70b232cf017f3490d36896a5c" id="r_gaeb0f52b70b232cf017f3490d36896a5c"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PBR.html#gaeb0f52b70b232cf017f3490d36896a5c">DEFAULT_CLAMP_MULTIPLIER</a></td></tr>
+<tr class="separator:gaeb0f52b70b232cf017f3490d36896a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8efde0fe815222f651ad106814a991d1" id="r_ga8efde0fe815222f651ad106814a991d1"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PBR.html#ga8efde0fe815222f651ad106814a991d1">DEFAULT_METALLIC</a> = 1.0F</td></tr>
+<tr class="separator:ga8efde0fe815222f651ad106814a991d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga24993c1c760aaefd485e66d419bcce3a" id="r_ga24993c1c760aaefd485e66d419bcce3a"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PBR.html#ga24993c1c760aaefd485e66d419bcce3a">DEFAULT_ROUGHNESS</a> = 0.0F</td></tr>
+<tr class="separator:ga24993c1c760aaefd485e66d419bcce3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga333d7e08b7c0e4275823e92f9182c455" id="r_ga333d7e08b7c0e4275823e92f9182c455"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PBR.html#ga333d7e08b7c0e4275823e92f9182c455">DEFAULT_AO</a></td></tr>
+<tr class="separator:ga333d7e08b7c0e4275823e92f9182c455"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga413f094a9d593906551689b49a4ec064" id="r_ga413f094a9d593906551689b49a4ec064"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga413f094a9d593906551689b49a4ec064">DEFAULT_FONT_SIZE</a> = 32.0F</td></tr>
+<tr class="separator:ga413f094a9d593906551689b49a4ec064"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf0ca05071da1b9e491df5baaca3eb73e" id="r_gaf0ca05071da1b9e491df5baaca3eb73e"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gaf0ca05071da1b9e491df5baaca3eb73e">DEFAULT_FPS_SMOOTHING</a></td></tr>
+<tr class="separator:gaf0ca05071da1b9e491df5baaca3eb73e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab9848efe0430294ec2ff6ec8d2659691" id="r_gab9848efe0430294ec2ff6ec8d2659691"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab9848efe0430294ec2ff6ec8d2659691">DEFAULT_FPS_WINDOW</a></td></tr>
+<tr class="separator:gab9848efe0430294ec2ff6ec8d2659691"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga253484bd4e347b0db5053d3abe8df22a" id="r_ga253484bd4e347b0db5053d3abe8df22a"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga253484bd4e347b0db5053d3abe8df22a">DEFAULT_FPS_SAMPLER_SIZE</a> = 200</td></tr>
+<tr class="separator:ga253484bd4e347b0db5053d3abe8df22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47843426246814c211484644236efae2" id="r_ga47843426246814c211484644236efae2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga47843426246814c211484644236efae2">DEFAULT_FPS_TARGET</a> = 60.0F</td></tr>
+<tr class="separator:ga47843426246814c211484644236efae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5fdcccf71b7236c0ea9332f1bdc3cf7a" id="r_ga5fdcccf71b7236c0ea9332f1bdc3cf7a"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga5fdcccf71b7236c0ea9332f1bdc3cf7a">DEFAULT_COLS</a> = 10</td></tr>
+<tr class="separator:ga5fdcccf71b7236c0ea9332f1bdc3cf7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabfa53e97d39b21b0639f934b842101a8" id="r_gabfa53e97d39b21b0639f934b842101a8"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gabfa53e97d39b21b0639f934b842101a8">DEFAULT_SPACING</a> = 2.5F</td></tr>
+<tr class="separator:gabfa53e97d39b21b0639f934b842101a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga07d578ea18451fba46831f6040d5914b" id="r_ga07d578ea18451fba46831f6040d5914b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga07d578ea18451fba46831f6040d5914b">HALF_OFFSET_MULTIPLIER</a> = 0.5F</td></tr>
+<tr class="separator:ga07d578ea18451fba46831f6040d5914b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab0c2612771e8100aa0c566bbe5e43558" id="r_gab0c2612771e8100aa0c566bbe5e43558"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab0c2612771e8100aa0c566bbe5e43558">DEFAULT_FONT_SHADOW_OFFSET_X</a> = 2.0F</td></tr>
+<tr class="separator:gab0c2612771e8100aa0c566bbe5e43558"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga61ad7d74466ad9984eda81fa6ee673f2" id="r_ga61ad7d74466ad9984eda81fa6ee673f2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga61ad7d74466ad9984eda81fa6ee673f2">DEFAULT_FONT_SHADOW_OFFSET_Y</a> = 2.0F</td></tr>
+<tr class="separator:ga61ad7d74466ad9984eda81fa6ee673f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga066967c462f525b9e0c3b9cb583d1871" id="r_ga066967c462f525b9e0c3b9cb583d1871"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga066967c462f525b9e0c3b9cb583d1871">DEFAULT_FONT_OFFSET_X</a> = 0.0F</td></tr>
+<tr class="separator:ga066967c462f525b9e0c3b9cb583d1871"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeb209bdfc3f174542fb8f9be8fab7ad" id="r_gabeb209bdfc3f174542fb8f9be8fab7ad"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gabeb209bdfc3f174542fb8f9be8fab7ad">DEFAULT_FONT_OFFSET_Y</a> = 0.0F</td></tr>
+<tr class="separator:gabeb209bdfc3f174542fb8f9be8fab7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac2e10d99dde9c5629d462d4404ae7003" id="r_gac2e10d99dde9c5629d462d4404ae7003"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gac2e10d99dde9c5629d462d4404ae7003">DEFAULT_FONT_COLOR</a> = {1.0F, 1.0F, 1.0F}</td></tr>
+<tr class="separator:gac2e10d99dde9c5629d462d4404ae7003"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab74ea829a42607b55b37fd0986bf30ab" id="r_gab74ea829a42607b55b37fd0986bf30ab"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab74ea829a42607b55b37fd0986bf30ab">DEFAULT_FONT_SHADOW_COLOR</a></td></tr>
+<tr class="separator:gab74ea829a42607b55b37fd0986bf30ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5ae1ae39c9d24fe3bc2206997ac0564b" id="r_ga5ae1ae39c9d24fe3bc2206997ac0564b"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b">MAX_FPS_TEXT_LENGTH</a> = 64</td></tr>
+<tr class="separator:ga5ae1ae39c9d24fe3bc2206997ac0564b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga549835e9a52efb7bffd35d7eae64484b" id="r_ga549835e9a52efb7bffd35d7eae64484b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PostProcess.html#ga549835e9a52efb7bffd35d7eae64484b">DEFAULT_EXPOSURE_STEP</a></td></tr>
+<tr class="separator:ga549835e9a52efb7bffd35d7eae64484b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga91e3ffaced831fb8bf9736d8a9fc6ef2" id="r_ga91e3ffaced831fb8bf9736d8a9fc6ef2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PostProcess.html#ga91e3ffaced831fb8bf9736d8a9fc6ef2">DEFAULT_MIN_EXPOSURE</a></td></tr>
+<tr class="separator:ga91e3ffaced831fb8bf9736d8a9fc6ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafa325fb5020f368cddf0ab9a216d4e85" id="r_gafa325fb5020f368cddf0ab9a216d4e85"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85">DEFAULT_AUTO_THRESHOLD</a></td></tr>
+<tr class="separator:gafa325fb5020f368cddf0ab9a216d4e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Global application constants, configuration macros, and default values. </p>
+<p>This header serves as the "Control Panel" for the application. It centralizes:</p><ul>
+<li>Feature flags (Compile-time logic switches).</li>
+<li>Render quality settings (MSAA, Resolution).</li>
+<li>Gameplay/Camera constraints.</li>
+<li>Physics and Material default values.</li>
+<li>UI styling conventions.</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>Including this file does not trigger any heavy dependency. It contains only simple scalar constants and macros. </dd></dl>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="app__settings_8h.html">app_settings.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

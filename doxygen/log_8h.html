@@ -1,0 +1,611 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/log.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('log_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">log.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Thread-safe logging utility with timestamps and severity levels.  
+<a href="#details">More...</a></p>
+<div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="log_8h__dep__incl.svg" width="100%" height="393"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="log_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a86952bc1b765abd64f032f9f6fce9fe3" id="r_a86952bc1b765abd64f032f9f6fce9fe3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a86952bc1b765abd64f032f9f6fce9fe3">LOG_DEBUG</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177">LOG_LEVEL_DEBUG</a>, tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:a86952bc1b765abd64f032f9f6fce9fe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a debug message.  <br /></td></tr>
+<tr class="separator:a86952bc1b765abd64f032f9f6fce9fe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ec0b91afc0eca2e85c60b528628b8cc" id="r_a4ec0b91afc0eca2e85c60b528628b8cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc">LOG_INFO</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a>, tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:a4ec0b91afc0eca2e85c60b528628b8cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an info message.  <br /></td></tr>
+<tr class="separator:a4ec0b91afc0eca2e85c60b528628b8cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46831f8b7dcbb3ea18630a8b2af834d" id="r_ac46831f8b7dcbb3ea18630a8b2af834d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#ac46831f8b7dcbb3ea18630a8b2af834d">LOG_WARNING</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef">LOG_LEVEL_WARNING</a>, tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:ac46831f8b7dcbb3ea18630a8b2af834d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a warning message.  <br /></td></tr>
+<tr class="separator:ac46831f8b7dcbb3ea18630a8b2af834d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63330e5e329bed8646b5421a8ef25f75" id="r_a63330e5e329bed8646b5421a8ef25f75"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a63330e5e329bed8646b5421a8ef25f75">LOG_WARN</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#ac46831f8b7dcbb3ea18630a8b2af834d">LOG_WARNING</a>(tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:a63330e5e329bed8646b5421a8ef25f75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for LOG_WARNING.  <br /></td></tr>
+<tr class="separator:a63330e5e329bed8646b5421a8ef25f75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53c554c9625bc6ee2727f52091346c17" id="r_a53c554c9625bc6ee2727f52091346c17"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a53c554c9625bc6ee2727f52091346c17">LOG_ERROR</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f">LOG_LEVEL_ERROR</a>, tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:a53c554c9625bc6ee2727f52091346c17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log an error message.  <br /></td></tr>
+<tr class="separator:a53c554c9625bc6ee2727f52091346c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82cf4fca40fe4a352203d39a075ae721" id="r_a82cf4fca40fe4a352203d39a075ae721"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a82cf4fca40fe4a352203d39a075ae721">LOG_CRITICAL</a>(tag, ...)&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f">LOG_LEVEL_CRITICAL</a>, tag, __VA_ARGS__)</td></tr>
+<tr class="memdesc:a82cf4fca40fe4a352203d39a075ae721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a critical failure message.  <br /></td></tr>
+<tr class="separator:a82cf4fca40fe4a352203d39a075ae721"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aca1fd1d8935433e6ba2e3918214e07f9" id="r_aca1fd1d8935433e6ba2e3918214e07f9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> { <br />
+&#160;&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682">LOG_LEVEL_NOTSET</a> = 0
+, <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177">LOG_LEVEL_DEBUG</a> = 10
+, <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a>
+, <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef">LOG_LEVEL_WARNING</a> = 30
+, <br />
+&#160;&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f">LOG_LEVEL_ERROR</a> = 40
+, <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f">LOG_LEVEL_CRITICAL</a> = 50
+<br />
+ }</td></tr>
+<tr class="memdesc:aca1fd1d8935433e6ba2e3918214e07f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Severity levels for log filtering.  <a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">More...</a><br /></td></tr>
+<tr class="separator:aca1fd1d8935433e6ba2e3918214e07f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a71580585dbb8388e03440751eb26bae7" id="r_a71580585dbb8388e03440751eb26bae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, const char *tag, const char *format,...)</td></tr>
+<tr class="memdesc:a71580585dbb8388e03440751eb26bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a formatted message.  <br /></td></tr>
+<tr class="separator:a71580585dbb8388e03440751eb26bae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20d53fe4929c9f90f83a10c739b02dfa" id="r_a20d53fe4929c9f90f83a10c739b02dfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level)</td></tr>
+<tr class="memdesc:a20d53fe4929c9f90f83a10c739b02dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global minimum log level.  <br /></td></tr>
+<tr class="separator:a20d53fe4929c9f90f83a10c739b02dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5099953981ab6c18721857fd2f8d6fc" id="r_ae5099953981ab6c18721857fd2f8d6fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#ae5099953981ab6c18721857fd2f8d6fc">log_get_level</a> (void)</td></tr>
+<tr class="memdesc:ae5099953981ab6c18721857fd2f8d6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current global log level.  <br /></td></tr>
+<tr class="separator:ae5099953981ab6c18721857fd2f8d6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Thread-safe logging utility with timestamps and severity levels. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a82cf4fca40fe4a352203d39a075ae721" name="a82cf4fca40fe4a352203d39a075ae721"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82cf4fca40fe4a352203d39a075ae721">&#9670;&#160;</a></span>LOG_CRITICAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_CRITICAL</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f">LOG_LEVEL_CRITICAL</a>, tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a critical failure message. </p>
+
+</div>
+</div>
+<a id="a86952bc1b765abd64f032f9f6fce9fe3" name="a86952bc1b765abd64f032f9f6fce9fe3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86952bc1b765abd64f032f9f6fce9fe3">&#9670;&#160;</a></span>LOG_DEBUG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_DEBUG</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177">LOG_LEVEL_DEBUG</a>, tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a debug message. </p>
+
+</div>
+</div>
+<a id="a53c554c9625bc6ee2727f52091346c17" name="a53c554c9625bc6ee2727f52091346c17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53c554c9625bc6ee2727f52091346c17">&#9670;&#160;</a></span>LOG_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_ERROR</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f">LOG_LEVEL_ERROR</a>, tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log an error message. </p>
+
+</div>
+</div>
+<a id="a4ec0b91afc0eca2e85c60b528628b8cc" name="a4ec0b91afc0eca2e85c60b528628b8cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ec0b91afc0eca2e85c60b528628b8cc">&#9670;&#160;</a></span>LOG_INFO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_INFO</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a>, tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log an info message. </p>
+
+</div>
+</div>
+<a id="a63330e5e329bed8646b5421a8ef25f75" name="a63330e5e329bed8646b5421a8ef25f75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63330e5e329bed8646b5421a8ef25f75">&#9670;&#160;</a></span>LOG_WARN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_WARN</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#ac46831f8b7dcbb3ea18630a8b2af834d">LOG_WARNING</a>(tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Alias for LOG_WARNING. </p>
+
+</div>
+</div>
+<a id="ac46831f8b7dcbb3ea18630a8b2af834d" name="ac46831f8b7dcbb3ea18630a8b2af834d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac46831f8b7dcbb3ea18630a8b2af834d">&#9670;&#160;</a></span>LOG_WARNING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_WARNING</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tag, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a>(<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef">LOG_LEVEL_WARNING</a>, tag, __VA_ARGS__)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Log a warning message. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="aca1fd1d8935433e6ba2e3918214e07f9" name="aca1fd1d8935433e6ba2e3918214e07f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca1fd1d8935433e6ba2e3918214e07f9">&#9670;&#160;</a></span>LogLevel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Severity levels for log filtering. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682" name="aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682"></a>LOG_LEVEL_NOTSET&#160;</td><td class="fielddoc"><p>Undefined level. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177" name="aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177"></a>LOG_LEVEL_DEBUG&#160;</td><td class="fielddoc"><p>Fine-grained informational events that are most useful to debug an application. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4" name="aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4"></a>LOG_LEVEL_INFO&#160;</td><td class="fielddoc"><p>Informational messages that highlight the progress of the application at coarse-grained level. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef" name="aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef"></a>LOG_LEVEL_WARNING&#160;</td><td class="fielddoc"><p>Potentially harmful situations. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f" name="aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f"></a>LOG_LEVEL_ERROR&#160;</td><td class="fielddoc"><p>Error events that might still allow the application to continue running. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f" name="aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f"></a>LOG_LEVEL_CRITICAL&#160;</td><td class="fielddoc"><p>Very severe error events that will presumably lead the application to abort. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ae5099953981ab6c18721857fd2f8d6fc" name="ae5099953981ab6c18721857fd2f8d6fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5099953981ab6c18721857fd2f8d6fc">&#9670;&#160;</a></span>log_get_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> log_get_level </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the current global log level. </p>
+<dl class="section return"><dt>Returns</dt><dd>Active LogLevel. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="log_8h_ae5099953981ab6c18721857fd2f8d6fc_cgraph.svg" width="406" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a71580585dbb8388e03440751eb26bae7" name="a71580585dbb8388e03440751eb26bae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71580585dbb8388e03440751eb26bae7">&#9670;&#160;</a></span>log_message()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_message </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Logs a formatted message. </p>
+<p>Format: <code>YYYY-MM-DD HH:MM:SS,mmm - tag - LEVEL - message</code></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>Severity level. </td></tr>
+    <tr><td class="paramname">tag</td><td>Category label (e.g., "RENDER", "INPUT"). </td></tr>
+    <tr><td class="paramname">format</td><td>Printf-style format string. </td></tr>
+    <tr><td class="paramname">...</td><td>Arguments for the format string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="log_8h_a71580585dbb8388e03440751eb26bae7_cgraph.svg" width="452" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a20d53fe4929c9f90f83a10c739b02dfa" name="a20d53fe4929c9f90f83a10c739b02dfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20d53fe4929c9f90f83a10c739b02dfa">&#9670;&#160;</a></span>log_set_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_set_level </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the global minimum log level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>Levels below this will be ignored. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="log_8h.html">log.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

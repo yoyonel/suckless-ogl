@@ -1,0 +1,1744 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/shader.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('shader_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">shader.c File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
+<code>#include &quot;glad/glad.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for shader.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c__incl.svg" width="100%" height="492"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLoadedBuffer.html">LoadedBuffer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChunk.html">Chunk</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIncludeContext.html">IncludeContext</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:af36a2b599facb84c8d6e2a39ea7011d1" id="r_af36a2b599facb84c8d6e2a39ea7011d1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#af36a2b599facb84c8d6e2a39ea7011d1">CLEANUP_CTX</a>&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c">ctx_free</a>)))</td></tr>
+<tr class="separator:af36a2b599facb84c8d6e2a39ea7011d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aae05225933a42f81e7c4a9fb286596f9" id="r_aae05225933a42f81e7c4a9fb286596f9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#aae05225933a42f81e7c4a9fb286596f9a452257118dc4009bf289a99b738d1288">INFO_LOG_SIZE</a> = 512
+ }</td></tr>
+<tr class="separator:aae05225933a42f81e7c4a9fb286596f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39fca1837c5ce7715cbf571669660c13" id="r_a39fca1837c5ce7715cbf571669660c13"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#a39fca1837c5ce7715cbf571669660c13a75751c824ae3bf41e5fe22118a79c341">MAX_SHADER_NAME_LEN</a> = 256
+ }</td></tr>
+<tr class="separator:a39fca1837c5ce7715cbf571669660c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf8fd5f0e57d456151c951e0f3715fc4" id="r_aaf8fd5f0e57d456151c951e0f3715fc4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#aaf8fd5f0e57d456151c951e0f3715fc4a392912e5ab211e28c877a7cc3b56b0f5">SHADER_LABEL_BUFFER_SIZE</a> = 512
+ }</td></tr>
+<tr class="separator:aaf8fd5f0e57d456151c951e0f3715fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94798fdadfbf49a7c658ace669a1d310" id="r_a94798fdadfbf49a7c658ace669a1d310"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#a94798fdadfbf49a7c658ace669a1d310a34143976b450ff92e89581ba34a4debf">MAX_INCLUDE_DEPTH</a> = 16
+ }</td></tr>
+<tr class="separator:a94798fdadfbf49a7c658ace669a1d310"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18" id="r_ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#ae4d5251432e1a9e6803c0240cc492e18ad0b512e0ee8b214855ee8781e7b04c62">MAX_SHADER_SOURCE_SIZE</a> = 16 * 1024 * 1024
+ }</td></tr>
+<tr class="separator:ae4d5251432e1a9e6803c0240cc492e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ff5f2dff38e7639981794c43dc9167b" id="r_a7ff5f2dff38e7639981794c43dc9167b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#a7ff5f2dff38e7639981794c43dc9167bae3e56668acad6b8aed4f818040a24567">PATH_BUFFER_SIZE</a> = 256
+ }</td></tr>
+<tr class="separator:a7ff5f2dff38e7639981794c43dc9167b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabfcbcb5ac86a1edac4035264bc7d2b8" id="r_aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#aabfcbcb5ac86a1edac4035264bc7d2b8a63b1dfadb89175941f78629653841b52">RESOLVED_PATH_BUFFER_SIZE</a> = 512
+ }</td></tr>
+<tr class="separator:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d76b81b0ad4c19007a781d4edb8181f" id="r_a5d76b81b0ad4c19007a781d4edb8181f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#a5d76b81b0ad4c19007a781d4edb8181fabe5494b37698cf2ac85953fb95dee556">HEADER_TAG_LEN</a> = 7
+ }</td></tr>
+<tr class="separator:a5d76b81b0ad4c19007a781d4edb8181f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac34dfe6c6b73b43a4656c9dce041034" id="r_aac34dfe6c6b73b43a4656c9dce041034"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="shader_8c.html#aac34dfe6c6b73b43a4656c9dce041034a91ae2ad4b58ea1f33cd3254403970818">MAX_DEFINES</a> = 32
+ }</td></tr>
+<tr class="separator:aac34dfe6c6b73b43a4656c9dce041034"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a3aeeed571399ca7ff98bc7dc73ca8d05" id="r_a3aeeed571399ca7ff98bc7dc73ca8d05"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a3aeeed571399ca7ff98bc7dc73ca8d05">process_source</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, const char *current_file_src, const char *current_file_path)</td></tr>
+<tr class="separator:a3aeeed571399ca7ff98bc7dc73ca8d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2af39f53b97008c3ca89d9c3d176b321" id="r_a2af39f53b97008c3ca89d9c3d176b321"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a2af39f53b97008c3ca89d9c3d176b321">load_file_into_ram</a> (const char *path)</td></tr>
+<tr class="separator:a2af39f53b97008c3ca89d9c3d176b321"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66f86edf5f10c44d07a691cd2c138f35" id="r_a66f86edf5f10c44d07a691cd2c138f35"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a66f86edf5f10c44d07a691cd2c138f35">ctx_add_buffer</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, char *data)</td></tr>
+<tr class="separator:a66f86edf5f10c44d07a691cd2c138f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a142a88d0fea7ccccd9261c43c7344038" id="r_a142a88d0fea7ccccd9261c43c7344038"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a142a88d0fea7ccccd9261c43c7344038">ctx_add_chunk</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, const char *ptr, size_t len)</td></tr>
+<tr class="separator:a142a88d0fea7ccccd9261c43c7344038"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a576159e7078a0f92b5e3739cd6b9248c" id="r_a576159e7078a0f92b5e3739cd6b9248c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c">ctx_free</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx)</td></tr>
+<tr class="separator:a576159e7078a0f92b5e3739cd6b9248c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10db3d84dde3127f6c6e6fffe20b929c" id="r_a10db3d84dde3127f6c6e6fffe20b929c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a10db3d84dde3127f6c6e6fffe20b929c">get_dir_from_path</a> (const char *path, char *out_dir, size_t size)</td></tr>
+<tr class="separator:a10db3d84dde3127f6c6e6fffe20b929c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac15799adabb256a48435e8b899baae35" id="r_ac15799adabb256a48435e8b899baae35"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#ac15799adabb256a48435e8b899baae35">resolve_and_parse_include</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, const char *path_term, const char *current_file_path)</td></tr>
+<tr class="separator:ac15799adabb256a48435e8b899baae35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adec70256cc2e6f4382eae7f1cd03cfec" id="r_adec70256cc2e6f4382eae7f1cd03cfec"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#adec70256cc2e6f4382eae7f1cd03cfec">parse_include_path</a> (const char *args, char *out_path, size_t size)</td></tr>
+<tr class="separator:adec70256cc2e6f4382eae7f1cd03cfec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accb74d7cb19fd2bdf7d928b84376fc9c" id="r_accb74d7cb19fd2bdf7d928b84376fc9c"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#accb74d7cb19fd2bdf7d928b84376fc9c">inject_defines_into_source</a> (const char *buffer, size_t file_size, const char **defines, int count)</td></tr>
+<tr class="separator:accb74d7cb19fd2bdf7d928b84376fc9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d3db64439dd78569e48580d0b580945" id="r_a7d3db64439dd78569e48580d0b580945"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a7d3db64439dd78569e48580d0b580945">shader_read_file_with_defines</a> (const char *path, const char **defines, int count)</td></tr>
+<tr class="separator:a7d3db64439dd78569e48580d0b580945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d28f24af3b9e87285732052e6f70dc8" id="r_a6d28f24af3b9e87285732052e6f70dc8"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a6d28f24af3b9e87285732052e6f70dc8">shader_read_file</a> (const char *path)</td></tr>
+<tr class="memdesc:a6d28f24af3b9e87285732052e6f70dc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a shader file into RAM, processing all includes.  <br /></td></tr>
+<tr class="separator:a6d28f24af3b9e87285732052e6f70dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b4891ad6e8e695bcad3defa570ac5a9" id="r_a8b4891ad6e8e695bcad3defa570ac5a9"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a8b4891ad6e8e695bcad3defa570ac5a9">shader_compile_with_defines</a> (const char *path, GLenum type, const char **defines, int count)</td></tr>
+<tr class="separator:a8b4891ad6e8e695bcad3defa570ac5a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2f3d3cd026d62964de6bc23968a5cd" id="r_a8e2f3d3cd026d62964de6bc23968a5cd"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a8e2f3d3cd026d62964de6bc23968a5cd">shader_compile</a> (const char *path, GLenum type)</td></tr>
+<tr class="memdesc:a8e2f3d3cd026d62964de6bc23968a5cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a single shader stage from a file.  <br /></td></tr>
+<tr class="separator:a8e2f3d3cd026d62964de6bc23968a5cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a255b28dc6e7026ff72f086d2cee0c302" id="r_a255b28dc6e7026ff72f086d2cee0c302"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a255b28dc6e7026ff72f086d2cee0c302">shader_load_program_with_defines</a> (const char *vertex_path, const char *fragment_path, const char **defines, int count)</td></tr>
+<tr class="separator:a255b28dc6e7026ff72f086d2cee0c302"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae08327f08826fb5e44e6c5a1627433e4" id="r_ae08327f08826fb5e44e6c5a1627433e4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#ae08327f08826fb5e44e6c5a1627433e4">shader_load_program</a> (const char *vertex_path, const char *fragment_path)</td></tr>
+<tr class="memdesc:ae08327f08826fb5e44e6c5a1627433e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to load a classic Vertex+Fragment program from disk.  <br /></td></tr>
+<tr class="separator:ae08327f08826fb5e44e6c5a1627433e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a261eeb4f63e33c6cf31350b32eb97ff9" id="r_a261eeb4f63e33c6cf31350b32eb97ff9"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a261eeb4f63e33c6cf31350b32eb97ff9">shader_load_compute</a> (const char *compute_path)</td></tr>
+<tr class="memdesc:a261eeb4f63e33c6cf31350b32eb97ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to load a compute program from disk.  <br /></td></tr>
+<tr class="separator:a261eeb4f63e33c6cf31350b32eb97ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a377953af1b2ffd8ad74148f72f2bdc8d" id="r_a377953af1b2ffd8ad74148f72f2bdc8d"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d">cmp_uniform_entry</a> (const void *lhs, const void *rhs)</td></tr>
+<tr class="separator:a377953af1b2ffd8ad74148f72f2bdc8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad982609bfce39b3f6ed4b89b9fc360b6" id="r_ad982609bfce39b3f6ed4b89b9fc360b6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6">shader_cache_uniforms</a> (<a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="separator:ad982609bfce39b3f6ed4b89b9fc360b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fe2213bc8202ee87fee6db962bb3cb0" id="r_a4fe2213bc8202ee87fee6db962bb3cb0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a4fe2213bc8202ee87fee6db962bb3cb0">shader_create_from_program</a> (GLuint program, const char *name)</td></tr>
+<tr class="separator:a4fe2213bc8202ee87fee6db962bb3cb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ae59be689516da13853d4be3758f253" id="r_a8ae59be689516da13853d4be3758f253"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a8ae59be689516da13853d4be3758f253">shader_load</a> (const char *vertex_path, const char *fragment_path)</td></tr>
+<tr class="memdesc:a8ae59be689516da13853d4be3758f253"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a linked program and caches all its active uniforms.  <br /></td></tr>
+<tr class="separator:a8ae59be689516da13853d4be3758f253"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ed121856b4a37f0d99085e5bd01dada" id="r_a3ed121856b4a37f0d99085e5bd01dada"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a3ed121856b4a37f0d99085e5bd01dada">shader_load_with_defines</a> (const char *vertex_path, const char *fragment_path, const char **defines, int count)</td></tr>
+<tr class="memdesc:a3ed121856b4a37f0d99085e5bd01dada"><td class="mdescLeft">&#160;</td><td class="mdescRight">Special loader that injects <code>#define</code> directives before compilation.  <br /></td></tr>
+<tr class="separator:a3ed121856b4a37f0d99085e5bd01dada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2697a882efdae3e3ca7f80c816e875cf" id="r_a2697a882efdae3e3ca7f80c816e875cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a2697a882efdae3e3ca7f80c816e875cf">shader_load_compute_program</a> (const char *compute_path)</td></tr>
+<tr class="memdesc:a2697a882efdae3e3ca7f80c816e875cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a compute program and caches its uniforms.  <br /></td></tr>
+<tr class="separator:a2697a882efdae3e3ca7f80c816e875cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54bf3663058663ec7530cd1a0a1af00b" id="r_a54bf3663058663ec7530cd1a0a1af00b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a54bf3663058663ec7530cd1a0a1af00b">shader_destroy</a> (<a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:a54bf3663058663ec7530cd1a0a1af00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the shader wrapper and deletes the GL program.  <br /></td></tr>
+<tr class="separator:a54bf3663058663ec7530cd1a0a1af00b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad80a771bc794ef6b652f13449129b645" id="r_ad80a771bc794ef6b652f13449129b645"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#ad80a771bc794ef6b652f13449129b645">shader_use</a> (<a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:ad80a771bc794ef6b652f13449129b645"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activates the program for subsequent draw calls (<code>glUseProgram</code>).  <br /></td></tr>
+<tr class="separator:ad80a771bc794ef6b652f13449129b645"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82b9361a8e17eeb1635a867b925a1b6c" id="r_a82b9361a8e17eeb1635a867b925a1b6c"><td class="memItemLeft" align="right" valign="top">GLint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c">shader_get_uniform_location</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name)</td></tr>
+<tr class="memdesc:a82b9361a8e17eeb1635a867b925a1b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a uniform location via binary search on the cache.  <br /></td></tr>
+<tr class="separator:a82b9361a8e17eeb1635a867b925a1b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a461b117efc5c86ee8eabf8f80789ec32" id="r_a461b117efc5c86ee8eabf8f80789ec32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a461b117efc5c86ee8eabf8f80789ec32">shader_set_int</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, int val)</td></tr>
+<tr class="separator:a461b117efc5c86ee8eabf8f80789ec32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed5502c74325481ebafdd9dfc49cf8db" id="r_aed5502c74325481ebafdd9dfc49cf8db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#aed5502c74325481ebafdd9dfc49cf8db">shader_set_float</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, float val)</td></tr>
+<tr class="separator:aed5502c74325481ebafdd9dfc49cf8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5efe31c76255dd6965da8b2e1fdfd442" id="r_a5efe31c76255dd6965da8b2e1fdfd442"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a5efe31c76255dd6965da8b2e1fdfd442">shader_set_vec2</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, const float *val)</td></tr>
+<tr class="separator:a5efe31c76255dd6965da8b2e1fdfd442"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7034c467af5884ca4950b6957eb84ff2" id="r_a7034c467af5884ca4950b6957eb84ff2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a7034c467af5884ca4950b6957eb84ff2">shader_set_vec3</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, const float *val)</td></tr>
+<tr class="separator:a7034c467af5884ca4950b6957eb84ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e522e514b294864d7526ee4b2a518c7" id="r_a8e522e514b294864d7526ee4b2a518c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a8e522e514b294864d7526ee4b2a518c7">shader_set_vec4</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, const float *val)</td></tr>
+<tr class="separator:a8e522e514b294864d7526ee4b2a518c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8067eb11f7d8c682b855b9f019e20f69" id="r_a8067eb11f7d8c682b855b9f019e20f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69">shader_set_mat4</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, const float *val)</td></tr>
+<tr class="separator:a8067eb11f7d8c682b855b9f019e20f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="af36a2b599facb84c8d6e2a39ea7011d1" name="af36a2b599facb84c8d6e2a39ea7011d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af36a2b599facb84c8d6e2a39ea7011d1">&#9670;&#160;</a></span>CLEANUP_CTX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CLEANUP_CTX&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c">ctx_free</a>)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="aae05225933a42f81e7c4a9fb286596f9" name="aae05225933a42f81e7c4a9fb286596f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae05225933a42f81e7c4a9fb286596f9">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aae05225933a42f81e7c4a9fb286596f9a452257118dc4009bf289a99b738d1288" name="aae05225933a42f81e7c4a9fb286596f9a452257118dc4009bf289a99b738d1288"></a>INFO_LOG_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a39fca1837c5ce7715cbf571669660c13" name="a39fca1837c5ce7715cbf571669660c13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39fca1837c5ce7715cbf571669660c13">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a39fca1837c5ce7715cbf571669660c13a75751c824ae3bf41e5fe22118a79c341" name="a39fca1837c5ce7715cbf571669660c13a75751c824ae3bf41e5fe22118a79c341"></a>MAX_SHADER_NAME_LEN&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aaf8fd5f0e57d456151c951e0f3715fc4" name="aaf8fd5f0e57d456151c951e0f3715fc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf8fd5f0e57d456151c951e0f3715fc4">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaf8fd5f0e57d456151c951e0f3715fc4a392912e5ab211e28c877a7cc3b56b0f5" name="aaf8fd5f0e57d456151c951e0f3715fc4a392912e5ab211e28c877a7cc3b56b0f5"></a>SHADER_LABEL_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a94798fdadfbf49a7c658ace669a1d310" name="a94798fdadfbf49a7c658ace669a1d310"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94798fdadfbf49a7c658ace669a1d310">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a94798fdadfbf49a7c658ace669a1d310a34143976b450ff92e89581ba34a4debf" name="a94798fdadfbf49a7c658ace669a1d310a34143976b450ff92e89581ba34a4debf"></a>MAX_INCLUDE_DEPTH&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ae4d5251432e1a9e6803c0240cc492e18" name="ae4d5251432e1a9e6803c0240cc492e18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d5251432e1a9e6803c0240cc492e18">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae4d5251432e1a9e6803c0240cc492e18ad0b512e0ee8b214855ee8781e7b04c62" name="ae4d5251432e1a9e6803c0240cc492e18ad0b512e0ee8b214855ee8781e7b04c62"></a>MAX_SHADER_SOURCE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a7ff5f2dff38e7639981794c43dc9167b" name="a7ff5f2dff38e7639981794c43dc9167b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ff5f2dff38e7639981794c43dc9167b">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7ff5f2dff38e7639981794c43dc9167bae3e56668acad6b8aed4f818040a24567" name="a7ff5f2dff38e7639981794c43dc9167bae3e56668acad6b8aed4f818040a24567"></a>PATH_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aabfcbcb5ac86a1edac4035264bc7d2b8" name="aabfcbcb5ac86a1edac4035264bc7d2b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabfcbcb5ac86a1edac4035264bc7d2b8">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aabfcbcb5ac86a1edac4035264bc7d2b8a63b1dfadb89175941f78629653841b52" name="aabfcbcb5ac86a1edac4035264bc7d2b8a63b1dfadb89175941f78629653841b52"></a>RESOLVED_PATH_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a5d76b81b0ad4c19007a781d4edb8181f" name="a5d76b81b0ad4c19007a781d4edb8181f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d76b81b0ad4c19007a781d4edb8181f">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5d76b81b0ad4c19007a781d4edb8181fabe5494b37698cf2ac85953fb95dee556" name="a5d76b81b0ad4c19007a781d4edb8181fabe5494b37698cf2ac85953fb95dee556"></a>HEADER_TAG_LEN&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aac34dfe6c6b73b43a4656c9dce041034" name="aac34dfe6c6b73b43a4656c9dce041034"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac34dfe6c6b73b43a4656c9dce041034">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac34dfe6c6b73b43a4656c9dce041034a91ae2ad4b58ea1f33cd3254403970818" name="aac34dfe6c6b73b43a4656c9dce041034a91ae2ad4b58ea1f33cd3254403970818"></a>MAX_DEFINES&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a377953af1b2ffd8ad74148f72f2bdc8d" name="a377953af1b2ffd8ad74148f72f2bdc8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a377953af1b2ffd8ad74148f72f2bdc8d">&#9670;&#160;</a></span>cmp_uniform_entry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int cmp_uniform_entry </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66f86edf5f10c44d07a691cd2c138f35" name="a66f86edf5f10c44d07a691cd2c138f35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66f86edf5f10c44d07a691cd2c138f35">&#9670;&#160;</a></span>ctx_add_buffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ctx_add_buffer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a142a88d0fea7ccccd9261c43c7344038" name="a142a88d0fea7ccccd9261c43c7344038"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a142a88d0fea7ccccd9261c43c7344038">&#9670;&#160;</a></span>ctx_add_chunk()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ctx_add_chunk </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a576159e7078a0f92b5e3739cd6b9248c" name="a576159e7078a0f92b5e3739cd6b9248c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a576159e7078a0f92b5e3739cd6b9248c">&#9670;&#160;</a></span>ctx_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void ctx_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a10db3d84dde3127f6c6e6fffe20b929c" name="a10db3d84dde3127f6c6e6fffe20b929c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10db3d84dde3127f6c6e6fffe20b929c">&#9670;&#160;</a></span>get_dir_from_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void get_dir_from_path </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>out_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a10db3d84dde3127f6c6e6fffe20b929c_cgraph.svg" width="315" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="accb74d7cb19fd2bdf7d928b84376fc9c" name="accb74d7cb19fd2bdf7d928b84376fc9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accb74d7cb19fd2bdf7d928b84376fc9c">&#9670;&#160;</a></span>inject_defines_into_source()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static char * inject_defines_into_source </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>file_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_accb74d7cb19fd2bdf7d928b84376fc9c_cgraph.svg" width="318" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a2af39f53b97008c3ca89d9c3d176b321" name="a2af39f53b97008c3ca89d9c3d176b321"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2af39f53b97008c3ca89d9c3d176b321">&#9670;&#160;</a></span>load_file_into_ram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static char * load_file_into_ram </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a2af39f53b97008c3ca89d9c3d176b321_cgraph.svg" width="296" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="adec70256cc2e6f4382eae7f1cd03cfec" name="adec70256cc2e6f4382eae7f1cd03cfec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adec70256cc2e6f4382eae7f1cd03cfec">&#9670;&#160;</a></span>parse_include_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char * parse_include_path </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>out_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_adec70256cc2e6f4382eae7f1cd03cfec_cgraph.svg" width="322" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a3aeeed571399ca7ff98bc7dc73ca8d05" name="a3aeeed571399ca7ff98bc7dc73ca8d05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3aeeed571399ca7ff98bc7dc73ca8d05">&#9670;&#160;</a></span>process_source()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool process_source </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>current_file_src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>current_file_path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a3aeeed571399ca7ff98bc7dc73ca8d05_cgraph.svg" width="100%" height="477"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="ac15799adabb256a48435e8b899baae35" name="ac15799adabb256a48435e8b899baae35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac15799adabb256a48435e8b899baae35">&#9670;&#160;</a></span>resolve_and_parse_include()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool resolve_and_parse_include </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path_term</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>current_file_path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_ac15799adabb256a48435e8b899baae35_cgraph.svg" width="100%" height="513"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="ad982609bfce39b3f6ed4b89b9fc360b6" name="ad982609bfce39b3f6ed4b89b9fc360b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad982609bfce39b3f6ed4b89b9fc360b6">&#9670;&#160;</a></span>shader_cache_uniforms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void shader_cache_uniforms </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_ad982609bfce39b3f6ed4b89b9fc360b6_cgraph.svg" width="384" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a8e2f3d3cd026d62964de6bc23968a5cd" name="a8e2f3d3cd026d62964de6bc23968a5cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e2f3d3cd026d62964de6bc23968a5cd">&#9670;&#160;</a></span>shader_compile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint shader_compile </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>type</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Compiles a single shader stage from a file. </p>
+<p>Supports recursive <code>@header</code> inclusion syntax. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path to the shader source file. </td></tr>
+    <tr><td class="paramname">type</td><td>GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, or GL_COMPUTE_SHADER. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint handle of the compiled shader stage. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a8e2f3d3cd026d62964de6bc23968a5cd_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a8b4891ad6e8e695bcad3defa570ac5a9" name="a8b4891ad6e8e695bcad3defa570ac5a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b4891ad6e8e695bcad3defa570ac5a9">&#9670;&#160;</a></span>shader_compile_with_defines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint shader_compile_with_defines </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a8b4891ad6e8e695bcad3defa570ac5a9_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a4fe2213bc8202ee87fee6db962bb3cb0" name="a4fe2213bc8202ee87fee6db962bb3cb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fe2213bc8202ee87fee6db962bb3cb0">&#9670;&#160;</a></span>shader_create_from_program()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structShader.html">Shader</a> * shader_create_from_program </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>program</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a4fe2213bc8202ee87fee6db962bb3cb0_cgraph.svg" width="584" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a54bf3663058663ec7530cd1a0a1af00b" name="a54bf3663058663ec7530cd1a0a1af00b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54bf3663058663ec7530cd1a0a1af00b">&#9670;&#160;</a></span>shader_destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_destroy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destroys the shader wrapper and deletes the GL program. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>Pointer to the object to free. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a82b9361a8e17eeb1635a867b925a1b6c" name="a82b9361a8e17eeb1635a867b925a1b6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82b9361a8e17eeb1635a867b925a1b6c">&#9670;&#160;</a></span>shader_get_uniform_location()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLint shader_get_uniform_location </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves a uniform location via binary search on the cache. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>Pointer to the wrapper. </td></tr>
+    <tr><td class="paramname">name</td><td>Uniform identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GL location, or -1 if not found. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a82b9361a8e17eeb1635a867b925a1b6c_cgraph.svg" width="360" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a8ae59be689516da13853d4be3758f253" name="a8ae59be689516da13853d4be3758f253"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ae59be689516da13853d4be3758f253">&#9670;&#160;</a></span>shader_load()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a> * shader_load </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>vertex_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fragment_path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads a linked program and caches all its active uniforms. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vertex_path</td><td>Path to vertex source. </td></tr>
+    <tr><td class="paramname">fragment_path</td><td>Path to fragment source. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> object. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a8ae59be689516da13853d4be3758f253_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a261eeb4f63e33c6cf31350b32eb97ff9" name="a261eeb4f63e33c6cf31350b32eb97ff9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a261eeb4f63e33c6cf31350b32eb97ff9">&#9670;&#160;</a></span>shader_load_compute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint shader_load_compute </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>compute_path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Helper to load a compute program from disk. </p>
+<dl class="section return"><dt>Returns</dt><dd>GLuint program handle. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a261eeb4f63e33c6cf31350b32eb97ff9_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a2697a882efdae3e3ca7f80c816e875cf" name="a2697a882efdae3e3ca7f80c816e875cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2697a882efdae3e3ca7f80c816e875cf">&#9670;&#160;</a></span>shader_load_compute_program()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a> * shader_load_compute_program </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>compute_path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads a compute program and caches its uniforms. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">compute_path</td><td>Path to compute source. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> object. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a2697a882efdae3e3ca7f80c816e875cf_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="ae08327f08826fb5e44e6c5a1627433e4" name="ae08327f08826fb5e44e6c5a1627433e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae08327f08826fb5e44e6c5a1627433e4">&#9670;&#160;</a></span>shader_load_program()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint shader_load_program </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>vertex_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fragment_path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Helper to load a classic Vertex+Fragment program from disk. </p>
+<dl class="section return"><dt>Returns</dt><dd>GLuint program handle. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_ae08327f08826fb5e44e6c5a1627433e4_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a255b28dc6e7026ff72f086d2cee0c302" name="a255b28dc6e7026ff72f086d2cee0c302"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a255b28dc6e7026ff72f086d2cee0c302">&#9670;&#160;</a></span>shader_load_program_with_defines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint shader_load_program_with_defines </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>vertex_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fragment_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a255b28dc6e7026ff72f086d2cee0c302_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a3ed121856b4a37f0d99085e5bd01dada" name="a3ed121856b4a37f0d99085e5bd01dada"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ed121856b4a37f0d99085e5bd01dada">&#9670;&#160;</a></span>shader_load_with_defines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a> * shader_load_with_defines </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>vertex_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fragment_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Special loader that injects <code>#define</code> directives before compilation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vertex_path</td><td>Vertex source. </td></tr>
+    <tr><td class="paramname">fragment_path</td><td>Fragment source. </td></tr>
+    <tr><td class="paramname">defines</td><td>Array of macro strings (e.g. "BLOOM_ENABLED"). </td></tr>
+    <tr><td class="paramname">count</td><td>Number of macros. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Specialized <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> object. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a3ed121856b4a37f0d99085e5bd01dada_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a6d28f24af3b9e87285732052e6f70dc8" name="a6d28f24af3b9e87285732052e6f70dc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d28f24af3b9e87285732052e6f70dc8">&#9670;&#160;</a></span>shader_read_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char * shader_read_file </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads a shader file into RAM, processing all includes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Absolute or relative path. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Heap-allocated null-terminated string. Result must be freed. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a6d28f24af3b9e87285732052e6f70dc8_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a7d3db64439dd78569e48580d0b580945" name="a7d3db64439dd78569e48580d0b580945"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d3db64439dd78569e48580d0b580945">&#9670;&#160;</a></span>shader_read_file_with_defines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char * shader_read_file_with_defines </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8c_a7d3db64439dd78569e48580d0b580945_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="aed5502c74325481ebafdd9dfc49cf8db" name="aed5502c74325481ebafdd9dfc49cf8db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5502c74325481ebafdd9dfc49cf8db">&#9670;&#160;</a></span>shader_set_float()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_float </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_aed5502c74325481ebafdd9dfc49cf8db_cgraph.svg" width="538" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a461b117efc5c86ee8eabf8f80789ec32" name="a461b117efc5c86ee8eabf8f80789ec32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a461b117efc5c86ee8eabf8f80789ec32">&#9670;&#160;</a></span>shader_set_int()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_int </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a461b117efc5c86ee8eabf8f80789ec32_cgraph.svg" width="526" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a8067eb11f7d8c682b855b9f019e20f69" name="a8067eb11f7d8c682b855b9f019e20f69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8067eb11f7d8c682b855b9f019e20f69">&#9670;&#160;</a></span>shader_set_mat4()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_mat4 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a8067eb11f7d8c682b855b9f019e20f69_cgraph.svg" width="543" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a5efe31c76255dd6965da8b2e1fdfd442" name="a5efe31c76255dd6965da8b2e1fdfd442"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5efe31c76255dd6965da8b2e1fdfd442">&#9670;&#160;</a></span>shader_set_vec2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a5efe31c76255dd6965da8b2e1fdfd442_cgraph.svg" width="539" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a7034c467af5884ca4950b6957eb84ff2" name="a7034c467af5884ca4950b6957eb84ff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7034c467af5884ca4950b6957eb84ff2">&#9670;&#160;</a></span>shader_set_vec3()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec3 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a7034c467af5884ca4950b6957eb84ff2_cgraph.svg" width="539" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a8e522e514b294864d7526ee4b2a518c7" name="a8e522e514b294864d7526ee4b2a518c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e522e514b294864d7526ee4b2a518c7">&#9670;&#160;</a></span>shader_set_vec4()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec4 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="shader_8c_a8e522e514b294864d7526ee4b2a518c7_cgraph.svg" width="539" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ad80a771bc794ef6b652f13449129b645" name="ad80a771bc794ef6b652f13449129b645"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad80a771bc794ef6b652f13449129b645">&#9670;&#160;</a></span>shader_use()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_use </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Activates the program for subsequent draw calls (<code>glUseProgram</code>). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>Pointer to the wrapper. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="shader_8c.html">shader.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

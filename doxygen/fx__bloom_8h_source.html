@@ -1,0 +1,312 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/effects/fx_bloom.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('fx__bloom_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">fx_bloom.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="fx__bloom_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef FX_BLOOM_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define FX_BLOOM_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="shader_8h.html">shader.h</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">/* Forward declaration */</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">struct </span><a class="code hl_struct" href="structPostProcess.html">PostProcess</a>;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="fx__bloom_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a9d6785a4d1dafdb4937c6ba026303698">   10</a></span><span class="keyword">enum</span> { <a class="code hl_enumvalue" href="fx__bloom_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a9d6785a4d1dafdb4937c6ba026303698">BLOOM_MIP_LEVELS</a> = 5 };</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">/* Paramètres pour le Bloom (Physically Based) */</span></div>
+<div class="foldopen" id="foldopen00013" data-start="{" data-end="};">
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structBloomParams.html">   13</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structBloomParams.html#a674260cd7b83cf1fd54b125ecad02cc7">   14</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBloomParams.html#a674260cd7b83cf1fd54b125ecad02cc7">intensity</a>;      <span class="comment">/* Puissance globale (0.0 - 1.0+) */</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structBloomParams.html#a0c7621a4fbcce5cd73065016cb18a0a1">   15</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBloomParams.html#a0c7621a4fbcce5cd73065016cb18a0a1">threshold</a>;      <span class="comment">/* Seuil de luminance (1.0+) */</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="structBloomParams.html#af0384fee62e4f107e5403ae4da269362">   16</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBloomParams.html#af0384fee62e4f107e5403ae4da269362">soft_threshold</a>; <span class="comment">/* Genou de transition (0.0 - 1.0) */</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structBloomParams.html#acab92467aba668d9e1fdf65fada969c3">   17</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structBloomParams.html#acab92467aba668d9e1fdf65fada969c3">radius</a>;         <span class="comment">/* Rayon du bloom (simulé par # mips) */</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>} <a class="code hl_struct" href="structBloomParams.html">BloomParams</a>;</div>
+</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">/* Structure pour un niveau de mip du Bloom */</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structBloomMip.html">   21</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structBloomMip.html#a668a1113771522d5a24041798f0ab8d1">   22</a></span>    GLuint <a class="code hl_variable" href="structBloomMip.html#a668a1113771522d5a24041798f0ab8d1">texture</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structBloomMip.html#aafe56be1ca5f12d0293e70b6d2002236">   23</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBloomMip.html#aafe56be1ca5f12d0293e70b6d2002236">width</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structBloomMip.html#a1b14bda1be714faf22fb96917bf93e71">   24</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structBloomMip.html#a1b14bda1be714faf22fb96917bf93e71">height</a>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>} <a class="code hl_struct" href="structBloomMip.html">BloomMip</a>;</div>
+</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">/* Structure regroupant les ressources graphiques du Bloom */</span></div>
+<div class="foldopen" id="foldopen00028" data-start="{" data-end="};">
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structBloomFX.html">   28</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structBloomFX.html#a9aa07e349af3b4ab84a03835017ecf95">   29</a></span>    <a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_variable" href="structBloomFX.html#a9aa07e349af3b4ab84a03835017ecf95">prefilter_shader</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structBloomFX.html#a7afdd2a74327ca11c072aa537db65163">   30</a></span>    <a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_variable" href="structBloomFX.html#a7afdd2a74327ca11c072aa537db65163">downsample_shader</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structBloomFX.html#adaf510d7a63dce2af0af69646cfa9ef3">   31</a></span>    <a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_variable" href="structBloomFX.html#adaf510d7a63dce2af0af69646cfa9ef3">upsample_shader</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structBloomFX.html#a0de0befa1a8aadcc8ca5d6619fb9b2f9">   32</a></span>    GLuint <a class="code hl_variable" href="structBloomFX.html#a0de0befa1a8aadcc8ca5d6619fb9b2f9">fbo</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structBloomFX.html#a36ec4801eb59f01d4da30293a7fb4f8f">   33</a></span>    <a class="code hl_struct" href="structBloomMip.html">BloomMip</a> mips[<a class="code hl_enumvalue" href="fx__bloom_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a9d6785a4d1dafdb4937c6ba026303698">BLOOM_MIP_LEVELS</a>];</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>} <a class="code hl_struct" href="structBloomFX.html">BloomFX</a>;</div>
+</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">/* Initialisation des ressources Bloom */</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keywordtype">int</span> <a class="code hl_function" href="fx__bloom_8h.html#a950c24738bc163799852121bc1eb1bd0">fx_bloom_init</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="comment">/* Libération des ressources */</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keywordtype">void</span> <a class="code hl_function" href="fx__bloom_8h.html#a9f5dc0ac440e2830428dd79864f84d9a">fx_bloom_cleanup</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment">/* Rendu de l&#39;effet */</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keywordtype">void</span> <a class="code hl_function" href="fx__bloom_8h.html#a25880c0ec966c5e5a4bca870f6d7b45d">fx_bloom_render</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="comment">/* Upload des paramètres vers le shader principal */</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keywordtype">void</span> <a class="code hl_function" href="fx__bloom_8h.html#a904ff5eadc9159178e770b917931ee2f">fx_bloom_upload_params</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <a class="code hl_struct" href="structBloomParams.html">BloomParams</a>* params);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="comment">/* Getters for shared shaders */</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_function" href="fx__bloom_8h.html#af4018b6accd8404d2ccb6f764de8e395">fx_bloom_get_downsample_shader</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_function" href="fx__bloom_8h.html#a8784ee453129d17fdaad1e5ddc8367a1">fx_bloom_get_upsample_shader</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structPostProcess.html">PostProcess</a>* post_processing);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#endif </span><span class="comment">/* FX_BLOOM_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="afx__bloom_8h_html_a25880c0ec966c5e5a4bca870f6d7b45d"><div class="ttname"><a href="fx__bloom_8h.html#a25880c0ec966c5e5a4bca870f6d7b45d">fx_bloom_render</a></div><div class="ttdeci">void fx_bloom_render(struct PostProcess *post_processing)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:100</div></div>
+<div class="ttc" id="afx__bloom_8h_html_a8784ee453129d17fdaad1e5ddc8367a1"><div class="ttname"><a href="fx__bloom_8h.html#a8784ee453129d17fdaad1e5ddc8367a1">fx_bloom_get_upsample_shader</a></div><div class="ttdeci">Shader * fx_bloom_get_upsample_shader(struct PostProcess *post_processing)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:191</div></div>
+<div class="ttc" id="afx__bloom_8h_html_a904ff5eadc9159178e770b917931ee2f"><div class="ttname"><a href="fx__bloom_8h.html#a904ff5eadc9159178e770b917931ee2f">fx_bloom_upload_params</a></div><div class="ttdeci">void fx_bloom_upload_params(Shader *shader, const BloomParams *params)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:181</div></div>
+<div class="ttc" id="afx__bloom_8h_html_a950c24738bc163799852121bc1eb1bd0"><div class="ttname"><a href="fx__bloom_8h.html#a950c24738bc163799852121bc1eb1bd0">fx_bloom_init</a></div><div class="ttdeci">int fx_bloom_init(struct PostProcess *post_processing)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:10</div></div>
+<div class="ttc" id="afx__bloom_8h_html_a9f5dc0ac440e2830428dd79864f84d9a"><div class="ttname"><a href="fx__bloom_8h.html#a9f5dc0ac440e2830428dd79864f84d9a">fx_bloom_cleanup</a></div><div class="ttdeci">void fx_bloom_cleanup(struct PostProcess *post_processing)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:70</div></div>
+<div class="ttc" id="afx__bloom_8h_html_ac36f475ca5b446f4fde4c9b90bec77c8a9d6785a4d1dafdb4937c6ba026303698"><div class="ttname"><a href="fx__bloom_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a9d6785a4d1dafdb4937c6ba026303698">BLOOM_MIP_LEVELS</a></div><div class="ttdeci">@ BLOOM_MIP_LEVELS</div><div class="ttdef"><b>Definition</b> fx_bloom.h:10</div></div>
+<div class="ttc" id="afx__bloom_8h_html_af4018b6accd8404d2ccb6f764de8e395"><div class="ttname"><a href="fx__bloom_8h.html#af4018b6accd8404d2ccb6f764de8e395">fx_bloom_get_downsample_shader</a></div><div class="ttdeci">Shader * fx_bloom_get_downsample_shader(struct PostProcess *post_processing)</div><div class="ttdef"><b>Definition</b> fx_bloom.c:186</div></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="ashader_8h_html"><div class="ttname"><a href="shader_8h.html">shader.h</a></div><div class="ttdoc">High-level OpenGL shader management with metadata and uniform caching.</div></div>
+<div class="ttc" id="astructBloomFX_html"><div class="ttname"><a href="structBloomFX.html">BloomFX</a></div><div class="ttdef"><b>Definition</b> fx_bloom.h:28</div></div>
+<div class="ttc" id="astructBloomFX_html_a0de0befa1a8aadcc8ca5d6619fb9b2f9"><div class="ttname"><a href="structBloomFX.html#a0de0befa1a8aadcc8ca5d6619fb9b2f9">BloomFX::fbo</a></div><div class="ttdeci">GLuint fbo</div><div class="ttdef"><b>Definition</b> fx_bloom.h:32</div></div>
+<div class="ttc" id="astructBloomFX_html_a7afdd2a74327ca11c072aa537db65163"><div class="ttname"><a href="structBloomFX.html#a7afdd2a74327ca11c072aa537db65163">BloomFX::downsample_shader</a></div><div class="ttdeci">Shader * downsample_shader</div><div class="ttdef"><b>Definition</b> fx_bloom.h:30</div></div>
+<div class="ttc" id="astructBloomFX_html_a9aa07e349af3b4ab84a03835017ecf95"><div class="ttname"><a href="structBloomFX.html#a9aa07e349af3b4ab84a03835017ecf95">BloomFX::prefilter_shader</a></div><div class="ttdeci">Shader * prefilter_shader</div><div class="ttdef"><b>Definition</b> fx_bloom.h:29</div></div>
+<div class="ttc" id="astructBloomFX_html_adaf510d7a63dce2af0af69646cfa9ef3"><div class="ttname"><a href="structBloomFX.html#adaf510d7a63dce2af0af69646cfa9ef3">BloomFX::upsample_shader</a></div><div class="ttdeci">Shader * upsample_shader</div><div class="ttdef"><b>Definition</b> fx_bloom.h:31</div></div>
+<div class="ttc" id="astructBloomMip_html"><div class="ttname"><a href="structBloomMip.html">BloomMip</a></div><div class="ttdef"><b>Definition</b> fx_bloom.h:21</div></div>
+<div class="ttc" id="astructBloomMip_html_a1b14bda1be714faf22fb96917bf93e71"><div class="ttname"><a href="structBloomMip.html#a1b14bda1be714faf22fb96917bf93e71">BloomMip::height</a></div><div class="ttdeci">int height</div><div class="ttdef"><b>Definition</b> fx_bloom.h:24</div></div>
+<div class="ttc" id="astructBloomMip_html_a668a1113771522d5a24041798f0ab8d1"><div class="ttname"><a href="structBloomMip.html#a668a1113771522d5a24041798f0ab8d1">BloomMip::texture</a></div><div class="ttdeci">GLuint texture</div><div class="ttdef"><b>Definition</b> fx_bloom.h:22</div></div>
+<div class="ttc" id="astructBloomMip_html_aafe56be1ca5f12d0293e70b6d2002236"><div class="ttname"><a href="structBloomMip.html#aafe56be1ca5f12d0293e70b6d2002236">BloomMip::width</a></div><div class="ttdeci">int width</div><div class="ttdef"><b>Definition</b> fx_bloom.h:23</div></div>
+<div class="ttc" id="astructBloomParams_html"><div class="ttname"><a href="structBloomParams.html">BloomParams</a></div><div class="ttdef"><b>Definition</b> fx_bloom.h:13</div></div>
+<div class="ttc" id="astructBloomParams_html_a0c7621a4fbcce5cd73065016cb18a0a1"><div class="ttname"><a href="structBloomParams.html#a0c7621a4fbcce5cd73065016cb18a0a1">BloomParams::threshold</a></div><div class="ttdeci">float threshold</div><div class="ttdef"><b>Definition</b> fx_bloom.h:15</div></div>
+<div class="ttc" id="astructBloomParams_html_a674260cd7b83cf1fd54b125ecad02cc7"><div class="ttname"><a href="structBloomParams.html#a674260cd7b83cf1fd54b125ecad02cc7">BloomParams::intensity</a></div><div class="ttdeci">float intensity</div><div class="ttdef"><b>Definition</b> fx_bloom.h:14</div></div>
+<div class="ttc" id="astructBloomParams_html_acab92467aba668d9e1fdf65fada969c3"><div class="ttname"><a href="structBloomParams.html#acab92467aba668d9e1fdf65fada969c3">BloomParams::radius</a></div><div class="ttdeci">float radius</div><div class="ttdef"><b>Definition</b> fx_bloom.h:17</div></div>
+<div class="ttc" id="astructBloomParams_html_af0384fee62e4f107e5403ae4da269362"><div class="ttname"><a href="structBloomParams.html#af0384fee62e4f107e5403ae4da269362">BloomParams::soft_threshold</a></div><div class="ttdeci">float soft_threshold</div><div class="ttdef"><b>Definition</b> fx_bloom.h:16</div></div>
+<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition</b> postprocess.h:237</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition</b> shader.h:59</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_191f852b87741474e2df76292b1f55c1.html">effects</a></li><li class="navelem"><a class="el" href="fx__bloom_8h.html">fx_bloom.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

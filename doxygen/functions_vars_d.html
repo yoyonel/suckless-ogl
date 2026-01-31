@@ -1,0 +1,278 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Data Fields - Variables</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li class="current"><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="functions.html"><span>All</span></a></li>
+      <li class="current"><a href="functions_vars.html"><span>Variables</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="functions_vars.html#index__5F"><span>_</span></a></li>
+      <li><a href="functions_vars_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_vars_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_vars_c.html#index_c"><span>c</span></a></li>
+      <li class="current"><a href="functions_vars_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_vars_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_vars_f.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_vars_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_vars_h.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_vars_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_vars_k.html#index_k"><span>k</span></a></li>
+      <li><a href="functions_vars_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_vars_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_vars_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_vars_o.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_vars_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_vars_q.html#index_q"><span>q</span></a></li>
+      <li><a href="functions_vars_r.html#index_r"><span>r</span></a></li>
+      <li><a href="functions_vars_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_vars_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_vars_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_vars_v.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_vars_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_vars_x.html#index_x"><span>x</span></a></li>
+      <li><a href="functions_vars_y.html#index_y"><span>y</span></a></li>
+      <li><a href="functions_vars_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('functions_vars_d.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all variables with links to the structures/unions they belong to:</div>
+
+<h3><a id="index_d" name="index_d"></a>- d -</h3><ul>
+<li>data&#160;:&#160;<a class="el" href="structAsyncRequest.html#ab0ebf43a1f5a8ffed95371eff926e85c">AsyncRequest</a>, <a class="el" href="structLoadedBuffer.html#aab42ed78eb04e97315cb610877f4e0ae">LoadedBuffer</a>, <a class="el" href="structUintArray.html#a5f32c89924c028f47649a51a8a113e05">UintArray</a>, <a class="el" href="structVec3Array.html#abcb4235ab88d08c79c7583c8abaa59e4">Vec3Array</a></li>
+<li>debug_lod&#160;:&#160;<a class="el" href="structApp.html#a97e33fda8910d4325bcb9bb4431e8d82">App</a></li>
+<li>debug_shader&#160;:&#160;<a class="el" href="structApp.html#a593e6f8848c12d61961f9e4e3b3b2a7c">App</a></li>
+<li>decay_factor&#160;:&#160;<a class="el" href="structFpsCounter.html#a34e1065e92b525c81d91b2f58bac1173">FpsCounter</a></li>
+<li>delta_time&#160;:&#160;<a class="el" href="structApp.html#a90dac3c1153b09925cace5205c06889b">App</a>, <a class="el" href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">PostProcess</a></li>
+<li>depth&#160;:&#160;<a class="el" href="structSphereSortEntry.html#aa5ba88dc5fb513dd334809b43f0721a0">SphereSortEntry</a></li>
+<li>depth_enabled&#160;:&#160;<a class="el" href="structGLStateBackup.html#a21546e02dedebbcea470a8ccf81f7ef8">GLStateBackup</a></li>
+<li>dof&#160;:&#160;<a class="el" href="structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b">PostProcess</a>, <a class="el" href="structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21">PostProcessPreset</a></li>
+<li>dof_bokeh_scale&#160;:&#160;<a class="el" href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">PostProcessUBO</a></li>
+<li>dof_focal_distance&#160;:&#160;<a class="el" href="structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f">PostProcessUBO</a></li>
+<li>dof_focal_range&#160;:&#160;<a class="el" href="structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37">PostProcessUBO</a></li>
+<li>dof_fx&#160;:&#160;<a class="el" href="structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9">PostProcess</a></li>
+<li>downsample_fbo&#160;:&#160;<a class="el" href="structAutoExposureFX.html#acb14344cb814ebb1dce40cedfdae1b5b">AutoExposureFX</a></li>
+<li>downsample_shader&#160;:&#160;<a class="el" href="structAutoExposureFX.html#a4631402853be53c1c976a6e9594d43f1">AutoExposureFX</a>, <a class="el" href="structBloomFX.html#a7afdd2a74327ca11c072aa537db65163">BloomFX</a></li>
+<li>downsample_tex&#160;:&#160;<a class="el" href="structAutoExposureFX.html#a7b68ec99ee0d61c55fc1911005e30574">AutoExposureFX</a></li>
+<li>dummy_black_tex&#160;:&#160;<a class="el" href="structApp.html#aa3dbad0c2109393a24a52307083d5cfa">App</a>, <a class="el" href="structPostProcess.html#a6ea1b406d08c336650597d8f17498a50">PostProcess</a></li>
+<li>dummy_white_tex&#160;:&#160;<a class="el" href="structApp.html#a62b2b5b4043ecf44fa494ca7e3af45ad">App</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

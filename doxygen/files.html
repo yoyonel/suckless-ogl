@@ -1,0 +1,343 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: File List</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('files.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">File List</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock">Here is a list of all files with brief descriptions:</div><div class="directory">
+<div class="levels">[detail level <span onclick="javascript:toggleLevel(1);">1</span><span onclick="javascript:toggleLevel(2);">2</span><span onclick="javascript:toggleLevel(3);">3</span>]</div><table class="directory">
+<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="iconfclosed"></span><a class="el" href="dir_49e56c817e5e54854c35e136979f97ca.html" target="_self">docs</a></td><td class="desc"></td></tr>
+<tr id="row_1_" class="odd"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_1_" class="arrow" onclick="toggleFolder('1_')">&#9660;</span><span id="img_1_" class="iconfopen" onclick="toggleFolder('1_')">&#160;</span><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html" target="_self">include</a></td><td class="desc"></td></tr>
+<tr id="row_1_0_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="adaptive__sampler_8h_source.html"><span class="icondoc"></span></a><a class="el" href="adaptive__sampler_8h.html" target="_self">adaptive_sampler.h</a></td><td class="desc">Adaptive sampling utility for performance metrics </td></tr>
+<tr id="row_1_1_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app_8h.html" target="_self">app.h</a></td><td class="desc">Core application module and state container </td></tr>
+<tr id="row_1_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app__env_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app__env_8h.html" target="_self">app_env.h</a></td><td class="desc">Environment and IBL management module </td></tr>
+<tr id="row_1_3_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app__input_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app__input_8h.html" target="_self">app_input.h</a></td><td class="desc">User input orchestration and application state toggles </td></tr>
+<tr id="row_1_4_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app__scene_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app__scene_8h.html" target="_self">app_scene.h</a></td><td class="desc">Scene rendering module for billboards and instanced geometry </td></tr>
+<tr id="row_1_5_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app__settings_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app__settings_8h.html" target="_self">app_settings.h</a></td><td class="desc">Global application constants, configuration macros, and default values </td></tr>
+<tr id="row_1_6_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="app__ui_8h_source.html"><span class="icondoc"></span></a><a class="el" href="app__ui_8h.html" target="_self">app_ui.h</a></td><td class="desc">UI rendering module for the application </td></tr>
+<tr id="row_1_7_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="async__loader_8h_source.html"><span class="icondoc"></span></a><a class="el" href="async__loader_8h.html" target="_self">async_loader.h</a></td><td class="desc">Threaded asynchronous file loader for heavy assets (HDR, textures) </td></tr>
+<tr id="row_1_8_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="billboard__rendering_8h_source.html"><span class="icondoc"></span></a><a class="el" href="billboard__rendering_8h.html" target="_self">billboard_rendering.h</a></td><td class="desc">View-aligned quad rendering (billboarding) for optimized sphere drawing </td></tr>
+<tr id="row_1_9_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="camera_8h_source.html"><span class="icondoc"></span></a><a class="el" href="camera_8h.html" target="_self">camera.h</a></td><td class="desc">First-person camera module with realistic physics and head-bobbing </td></tr>
+<tr id="row_1_10_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="cli_8h_source.html"><span class="icondoc"></span></a><a class="el" href="cli_8h.html" target="_self">cli.h</a></td><td class="desc">Command-line interface and argument parsing </td></tr>
+<tr id="row_1_11_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="fps_8h_source.html"><span class="icondoc"></span></a><a class="el" href="fps_8h.html" target="_self">fps.h</a></td><td class="desc"></td></tr>
+<tr id="row_1_12_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="gl__common_8h_source.html"><span class="icondoc"></span></a><a class="el" href="gl__common_8h.html" target="_self">gl_common.h</a></td><td class="desc">Common OpenGL definitions, RAII helpers, and utilities </td></tr>
+<tr id="row_1_13_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="gl__debug_8h_source.html"><span class="icondoc"></span></a><a class="el" href="gl__debug_8h.html" target="_self">gl_debug.h</a></td><td class="desc"></td></tr>
+<tr id="row_1_14_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="icosphere_8h_source.html"><span class="icondoc"></span></a><a class="el" href="icosphere_8h.html" target="_self">icosphere.h</a></td><td class="desc">Procedural icosphere geometry generation </td></tr>
+<tr id="row_1_15_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="instanced__rendering_8h_source.html"><span class="icondoc"></span></a><a class="el" href="instanced__rendering_8h.html" target="_self">instanced_rendering.h</a></td><td class="desc">Mesh-based instanced rendering for spheres </td></tr>
+<tr id="row_1_16_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="log_8h_source.html"><span class="icondoc"></span></a><a class="el" href="log_8h.html" target="_self">log.h</a></td><td class="desc">Thread-safe logging utility with timestamps and severity levels </td></tr>
+<tr id="row_1_17_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="main_8h_source.html"><span class="icondoc"></span></a><a class="el" href="main_8h.html" target="_self">main.h</a></td><td class="desc">Entry point configuration and global constants </td></tr>
+<tr id="row_1_18_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="material_8h_source.html"><span class="icondoc"></span></a><a class="el" href="material_8h.html" target="_self">material.h</a></td><td class="desc">PBR material definitions and management </td></tr>
+<tr id="row_1_19_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="pbr_8h_source.html"><span class="icondoc"></span></a><a class="el" href="pbr_8h.html" target="_self">pbr.h</a></td><td class="desc">Physically-Based Rendering (PBR) and Image-Based Lighting (IBL) utilities </td></tr>
+<tr id="row_1_20_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="perf__timer_8h_source.html"><span class="icondoc"></span></a><a class="el" href="perf__timer_8h.html" target="_self">perf_timer.h</a></td><td class="desc">High-precision performance measurement (CPU and GPU) </td></tr>
+<tr id="row_1_21_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="postprocess_8h_source.html"><span class="icondoc"></span></a><a class="el" href="postprocess_8h.html" target="_self">postprocess.h</a></td><td class="desc">High-level post-processing pipeline and effects </td></tr>
+<tr id="row_1_22_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="postprocess__presets_8h_source.html"><span class="icondoc"></span></a><a class="el" href="postprocess__presets_8h.html" target="_self">postprocess_presets.h</a></td><td class="desc">Predefined configurations for the post-processing pipeline </td></tr>
+<tr id="row_1_23_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="render__utils_8h_source.html"><span class="icondoc"></span></a><a class="el" href="render__utils_8h.html" target="_self">render_utils.h</a></td><td class="desc">Utilities for OpenGL rendering, focusing on robustness and NVIDIA compatibility </td></tr>
+<tr id="row_1_24_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="shader_8h_source.html"><span class="icondoc"></span></a><a class="el" href="shader_8h.html" target="_self">shader.h</a></td><td class="desc">High-level OpenGL shader management with metadata and uniform caching </td></tr>
+<tr id="row_1_25_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="skybox_8h_source.html"><span class="icondoc"></span></a><a class="el" href="skybox_8h.html" target="_self">skybox.h</a></td><td class="desc">Infinite-distance background rendering (fullscreen quad approach) </td></tr>
+<tr id="row_1_26_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="sphere__sorting_8h_source.html"><span class="icondoc"></span></a><a class="el" href="sphere__sorting_8h.html" target="_self">sphere_sorting.h</a></td><td class="desc">Back-to-front sorting for transparent geometry </td></tr>
+<tr id="row_1_27_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="ssbo__rendering_8h_source.html"><span class="icondoc"></span></a><a class="el" href="ssbo__rendering_8h.html" target="_self">ssbo_rendering.h</a></td><td class="desc">Buffer-backed instancing for ultra-large-scale rendering </td></tr>
+<tr id="row_1_28_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="texture_8h_source.html"><span class="icondoc"></span></a><a class="el" href="texture_8h.html" target="_self">texture.h</a></td><td class="desc">Image loading and GPU texture management </td></tr>
+<tr id="row_1_29_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="ui_8h_source.html"><span class="icondoc"></span></a><a class="el" href="ui_8h.html" target="_self">ui.h</a></td><td class="desc">Minimal immediate-mode User Interface (UI) library </td></tr>
+<tr id="row_1_30_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="utils_8h_source.html"><span class="icondoc"></span></a><a class="el" href="utils_8h.html" target="_self">utils.h</a></td><td class="desc">Zero-overhead utility functions and RAII cleanup helpers </td></tr>
+<tr id="row_1_31_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><a href="window_8h_source.html"><span class="icondoc"></span></a><a class="el" href="window_8h.html" target="_self">window.h</a></td><td class="desc"></td></tr>
+<tr id="row_2_" class="even"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_2_" class="arrow" onclick="toggleFolder('2_')">&#9660;</span><span id="img_2_" class="iconfopen" onclick="toggleFolder('2_')">&#160;</span><a class="el" href="dir_95c752037a97b41030102703686a0a90.html" target="_self">shaders</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_0_" class="arrow" onclick="toggleFolder('2_0_')">&#9658;</span><span id="img_2_0_" class="iconfclosed" onclick="toggleFolder('2_0_')">&#160;</span><a class="el" href="dir_37b24a7cb0c6b372c9233d5927cd28f1.html" target="_self">IBL</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_0_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="irmap_8glsl.html" target="_self">irmap.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_1_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="luminance__reduce__pass1_8glsl.html" target="_self">luminance_reduce_pass1.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_2_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="luminance__reduce__pass2_8glsl.html" target="_self">luminance_reduce_pass2.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_3_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="spbrdf_8glsl.html" target="_self">spbrdf.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_0_4_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="spmap_8glsl.html" target="_self">spmap.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_1_" class="arrow" onclick="toggleFolder('2_1_')">&#9658;</span><span id="img_2_1_" class="iconfclosed" onclick="toggleFolder('2_1_')">&#160;</span><a class="el" href="dir_8ecb54c939721141a0e2a75383393be2.html" target="_self">postprocess</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_0_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom_8glsl.html" target="_self">bloom.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_1_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="chromatic__aberration_8glsl.html" target="_self">chromatic_aberration.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_2_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="color__grading_8glsl.html" target="_self">color_grading.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_3_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="defines_8glsl.html" target="_self">defines.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_4_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="dof_8glsl.html" target="_self">dof.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_5_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="exposure_8glsl.html" target="_self">exposure.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_6_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fxaa_8glsl.html" target="_self">fxaa.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_7_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="grain_8glsl.html" target="_self">grain.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_8_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="motion__blur_8glsl.html" target="_self">motion_blur.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_9_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="tonemap_8glsl.html" target="_self">tonemap.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_10_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ubo_8glsl.html" target="_self">ubo.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_11_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="vignette_8glsl.html" target="_self">vignette.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_2_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_2_" class="arrow" onclick="toggleFolder('2_2_')">&#9658;</span><span id="img_2_2_" class="iconfclosed" onclick="toggleFolder('2_2_')">&#160;</span><a class="el" href="dir_4be25771c4784bbb79d63bf908d9f07f.html" target="_self">test</a></td><td class="desc"></td></tr>
+<tr id="row_2_2_0_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="test__pattern_8frag.html" target="_self">test_pattern.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="background_8frag.html" target="_self">background.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_4_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="background_8vert.html" target="_self">background.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_5_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom__downsample_8frag.html" target="_self">bloom_downsample.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_6_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom__prefilter_8frag.html" target="_self">bloom_prefilter.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_7_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom__upsample_8frag.html" target="_self">bloom_upsample.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_8_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="common_8glsl.html" target="_self">common.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_9_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="debug__tex_8frag.html" target="_self">debug_tex.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_10_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="debug__tex_8vert.html" target="_self">debug_tex.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_11_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="lum__downsample_8frag.html" target="_self">lum_downsample.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_12_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__functions_8glsl.html" target="_self">pbr_functions.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_13_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__ibl__billboard_8frag.html" target="_self">pbr_ibl_billboard.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_14_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__ibl__billboard_8vert.html" target="_self">pbr_ibl_billboard.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_15_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__ibl__instanced_8frag.html" target="_self">pbr_ibl_instanced.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_16_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__ibl__instanced_8vert.html" target="_self">pbr_ibl_instanced.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_17_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr__ibl__ssbo_8vert.html" target="_self">pbr_ibl_ssbo.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_18_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="postprocess_8frag.html" target="_self">postprocess.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_19_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="postprocess_8vert.html" target="_self">postprocess.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_20_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ui_8frag.html" target="_self">ui.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_21_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ui_8vert.html" target="_self">ui.vert</a></td><td class="desc"></td></tr>
+<tr id="row_2_22_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ui__spinner_8frag.html" target="_self">ui_spinner.frag</a></td><td class="desc"></td></tr>
+<tr id="row_2_23_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ui__spinner_8vert.html" target="_self">ui_spinner.vert</a></td><td class="desc"></td></tr>
+<tr id="row_3_" class="odd"><td class="entry"><span style="width:0px;display:inline-block;">&#160;</span><span id="arr_3_" class="arrow" onclick="toggleFolder('3_')">&#9660;</span><span id="img_3_" class="iconfopen" onclick="toggleFolder('3_')">&#160;</span><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" target="_self">src</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_3_0_" class="arrow" onclick="toggleFolder('3_0_')">&#9658;</span><span id="img_3_0_" class="iconfclosed" onclick="toggleFolder('3_0_')">&#160;</span><a class="el" href="dir_191f852b87741474e2df76292b1f55c1.html" target="_self">effects</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_0_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fx__auto__exposure_8c.html" target="_self">fx_auto_exposure.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_1_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><a href="fx__auto__exposure_8h_source.html"><span class="icondoc"></span></a><a class="el" href="fx__auto__exposure_8h.html" target="_self">fx_auto_exposure.h</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_2_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fx__bloom_8c.html" target="_self">fx_bloom.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_3_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><a href="fx__bloom_8h_source.html"><span class="icondoc"></span></a><a class="el" href="fx__bloom_8h.html" target="_self">fx_bloom.h</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_4_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fx__dof_8c.html" target="_self">fx_dof.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_5_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><a href="fx__dof_8h_source.html"><span class="icondoc"></span></a><a class="el" href="fx__dof_8h.html" target="_self">fx_dof.h</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_6_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fx__motion__blur_8c.html" target="_self">fx_motion_blur.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_0_7_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><a href="fx__motion__blur_8h_source.html"><span class="icondoc"></span></a><a class="el" href="fx__motion__blur_8h.html" target="_self">fx_motion_blur.h</a></td><td class="desc"></td></tr>
+<tr id="row_3_1_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="adaptive__sampler_8c.html" target="_self">adaptive_sampler.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_2_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="app_8c.html" target="_self">app.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_3_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="app__env_8c.html" target="_self">app_env.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_4_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="app__input_8c.html" target="_self">app_input.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_5_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="app__scene_8c.html" target="_self">app_scene.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_6_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="app__ui_8c.html" target="_self">app_ui.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_7_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="async__loader_8c.html" target="_self">async_loader.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_8_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="billboard__rendering_8c.html" target="_self">billboard_rendering.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_9_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="camera_8c.html" target="_self">camera.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_10_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="cli_8c.html" target="_self">cli.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_11_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fps_8c.html" target="_self">fps.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_12_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="gl__debug_8c.html" target="_self">gl_debug.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_13_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="icosphere_8c.html" target="_self">icosphere.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_14_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="instanced__rendering_8c.html" target="_self">instanced_rendering.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_15_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="log_8c.html" target="_self">log.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_16_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="main_8c.html" target="_self">main.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_17_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="material_8c.html" target="_self">material.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_18_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="pbr_8c.html" target="_self">pbr.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_19_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="perf__timer_8c.html" target="_self">perf_timer.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_20_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="postprocess_8c.html" target="_self">postprocess.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_21_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="render__utils_8c.html" target="_self">render_utils.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_22_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="shader_8c.html" target="_self">shader.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_23_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="skybox_8c.html" target="_self">skybox.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_24_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="sphere__sorting_8c.html" target="_self">sphere_sorting.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_25_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ssbo__rendering_8c.html" target="_self">ssbo_rendering.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_26_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="stb__image__impl_8c.html" target="_self">stb_image_impl.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_27_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="texture_8c.html" target="_self">texture.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_28_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ui_8c.html" target="_self">ui.c</a></td><td class="desc"></td></tr>
+<tr id="row_3_29_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="window_8c.html" target="_self">window.c</a></td><td class="desc"></td></tr>
+</table>
+</div><!-- directory -->
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

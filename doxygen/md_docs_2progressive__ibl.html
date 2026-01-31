@@ -1,0 +1,296 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Progressive &amp; Asynchronous IBL Architecture</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('md_docs_2progressive__ibl.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Progressive &amp; Asynchronous IBL Architecture</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md226"></a> This document details the implementation of asynchronous loading and progressive generation of IBL (Image Based Lighting) maps to eliminate freezes when changing environments.</p>
+<h1><a class="anchor" id="autotoc_md227"></a>
+1. Overview</h1>
+<p>The goal was to move from a blocking synchronous load (100ms - 800ms freeze) to a fluid approach where computation time is spread over multiple frames (Time Slicing).</p>
+<h2><a class="anchor" id="autotoc_md228"></a>
+The Pipeline</h2>
+<ol type="1">
+<li><b>Disk Load (Separate Thread)</b>: The <code>.hdr</code> file is loaded and decoded (stb_image) in a dedicated thread (<code><a class="el" href="async__loader_8c.html">async_loader.c</a></code>).</li>
+<li><b>GPU Upload (Main Thread)</b>: Once ready, raw data is uploaded to VRAM (HDR texture).</li>
+<li><b>IBL Generation (Progressive)</b>: A state machine (<code>app_process_ibl_state_machine</code>) drives the compute shaders step-by-step to generate:<ul>
+<li>Irradiance Map (Diffuse).</li>
+<li>Specular Prefiltered Map (Reflection).</li>
+</ul>
+</li>
+<li><b>Swap (Double Buffering)</b>: We use "Pending" textures. The old environment remains displayed until the new one is 100% ready.</li>
+</ol>
+<hr  />
+<h1><a class="anchor" id="autotoc_md230"></a>
+2. "Slicing" Strategy</h1>
+<p>PBR Compute Shaders (especially for high-resolution Specular maps) are very expensive. Computing a full 512x512 texture takes ~250ms on an integrated GPU, freezing the application.</p>
+<p><b>Solution</b>: Slice the work horizontally ("Slicing") and only compute one strip of the image per frame.</p>
+<h2><a class="anchor" id="autotoc_md231"></a>
+2.1 Overlap Protection (Crucial)</h2>
+<p>Compute <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> Workgroups have a fixed size (32x32). If we ask to compute a slice <b>1 pixel</b> high, the GPU still launches a block 32 pixels high. Without protection, the 31 excess rows overwrite/recalculate neighboring pixels, massively wasting resources.</p>
+<p>**The Fix (<code>u_max_y</code>)**: We pass a precise limit to the shader: </p><div class="fragment"><div class="line"><span class="comment">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span></div>
+<div class="line">uniform <span class="keywordtype">int</span> <a class="code hl_variable" href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a>; <span class="comment">// Y limit of the current slice</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> <a class="code hl_function" href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a>() {</div>
+<div class="line">    <span class="comment">// ...</span></div>
+<div class="line">    <span class="keywordflow">if</span> (pos.y &gt;= <a class="code hl_variable" href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a>) <span class="keywordflow">return</span>; <span class="comment">// Immediate stop for phantom threads</span></div>
+<div class="line">    <span class="comment">// ...</span></div>
+<div class="line">}</div>
+<div class="ttc" id="abackground_8frag_html_acdef7a1fd863a6d3770c1268cb06add3"><div class="ttname"><a href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a></div><div class="ttdeci">void main()</div><div class="ttdef"><b>Definition</b> background.frag:21</div></div>
+<div class="ttc" id="airmap_8glsl_html_af2be5c640ca7f547b233f2c99e71f530"><div class="ttname"><a href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a></div><div class="ttdeci">uniform int u_max_y</div><div class="ttdef"><b>Definition</b> irmap.glsl:10</div></div>
+</div><!-- fragment --><hr  />
+<h1><a class="anchor" id="autotoc_md233"></a>
+3. Optimized Configuration (Adaptive Slicing)</h1>
+<p>To reconcile <b>fluidity</b> (no freeze) and <b>overall speed</b> (fast loading), we use an adaptive strategy based on the workload weight.</p>
+<h2><a class="anchor" id="autotoc_md234"></a>
+A. Irradiance Map (64x64)</h2>
+<ul>
+<li><b>Strategy</b>: Constant slicing.</li>
+<li><b>Slicing</b>: 4 Slices.</li>
+<li><b>Cost</b>: ~40ms / slice (Total ~160ms).</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md235"></a>
+B. Specular Map (512x512)</h2>
+<p>This is the heaviest part. The cost per mipmap decreases exponentially.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Mip Level   </th><th class="markdownTableHeadLeft">Size   </th><th class="markdownTableHeadLeft">Strategy   </th><th class="markdownTableHeadLeft">Est. Cost / Frame   </th><th class="markdownTableHeadLeft">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>Mip 0</b>   </td><td class="markdownTableBodyLeft">512x512   </td><td class="markdownTableBodyLeft"><b>4 Slices</b>   </td><td class="markdownTableBodyLeft">~30-40ms   </td><td class="markdownTableBodyLeft">Heaviest (High Frequency details).    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><b>Mip 1</b>   </td><td class="markdownTableBodyLeft">256x256   </td><td class="markdownTableBodyLeft"><b>2 Slices</b>   </td><td class="markdownTableBodyLeft">~20-30ms   </td><td class="markdownTableBodyLeft">Medium.    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>Mip 2</b>   </td><td class="markdownTableBodyLeft">128x128   </td><td class="markdownTableBodyLeft"><b>1 Slice</b>   </td><td class="markdownTableBodyLeft">~15ms   </td><td class="markdownTableBodyLeft">Light, computed in one go.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><b>Mip 3-10</b>   </td><td class="markdownTableBodyLeft">64..1   </td><td class="markdownTableBodyLeft"><b>Tail Grouping</b>   </td><td class="markdownTableBodyLeft">~20ms (Total)   </td><td class="markdownTableBodyLeft">All computed in <b>a single frame</b>.   </td></tr>
+</table>
+<p><b>Total "Tail Grouping"</b>: Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (&lt;1ms each).</p>
+<div class="dotgraph">
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_11.svg" width="1283" height="242"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<hr  />
+<h1><a class="anchor" id="autotoc_md237"></a>
+4. Global Performance</h1>
+<p>With this architecture on an integrated GPU (Intel UHD):</p><ul>
+<li><b>FPS</b>: Remains fluid (no brutal drop below 30 FPS).</li>
+<li><b>Total Time</b>: A complete environment transition takes about <b>600ms to 800ms</b>.</li>
+<li><b>Perceived Latency</b>: Near-zero thanks to continuous display of the old environment during computation.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md238"></a>
+5. Key Files</h1>
+<ul>
+<li><code><a class="el" href="app_8c.html">src/app.c</a></code>: Contains the State Machine (<code>app_process_ibl_state_machine</code>).</li>
+<li><code><a class="el" href="pbr_8c.html">src/pbr.c</a></code>: Implements sending slicing uniforms (<code>pbr_prefilter_mip</code>, <code>pbr_irradiance_slice_compute</code>).</li>
+<li><code>shaders/IBL/*.glsl</code>: Shaders modified to support <code>u_offset_y</code> and <code>u_max_y</code>. </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

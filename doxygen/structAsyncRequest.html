@@ -1,0 +1,344 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: AsyncRequest Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structAsyncRequest.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">AsyncRequest Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Container for asynchronous load results and metadata.  
+ <a href="structAsyncRequest.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:a790bd417ab046e08aa8a4bdb945aa995" id="r_a790bd417ab046e08aa8a4bdb945aa995"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995">path</a> [256]</td></tr>
+<tr class="separator:a790bd417ab046e08aa8a4bdb945aa995"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0ebf43a1f5a8ffed95371eff926e85c" id="r_ab0ebf43a1f5a8ffed95371eff926e85c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ab0ebf43a1f5a8ffed95371eff926e85c">data</a></td></tr>
+<tr class="separator:ab0ebf43a1f5a8ffed95371eff926e85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4afdf0552ccb72bacdd3f7710374b51" id="r_ad4afdf0552ccb72bacdd3f7710374b51"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51">width</a></td></tr>
+<tr class="separator:ad4afdf0552ccb72bacdd3f7710374b51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e953655035ef73bf310187cdb1091f" id="r_af4e953655035ef73bf310187cdb1091f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f">height</a></td></tr>
+<tr class="separator:af4e953655035ef73bf310187cdb1091f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d9cb4509d43875ece9e7a5142b37e15" id="r_a0d9cb4509d43875ece9e7a5142b37e15"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">channels</a></td></tr>
+<tr class="separator:a0d9cb4509d43875ece9e7a5142b37e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4cd174106cd4357e69f05d238c753ae" id="r_ac4cd174106cd4357e69f05d238c753ae"><td class="memItemLeft" align="right" valign="top">volatile <a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">state</a></td></tr>
+<tr class="separator:ac4cd174106cd4357e69f05d238c753ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Container for asynchronous load results and metadata. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a0d9cb4509d43875ece9e7a5142b37e15" name="a0d9cb4509d43875ece9e7a5142b37e15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d9cb4509d43875ece9e7a5142b37e15">&#9670;&#160;</a></span>channels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::channels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Number of color channels (e.g., 3 for RGB). </p>
+
+</div>
+</div>
+<a id="ab0ebf43a1f5a8ffed95371eff926e85c" name="ab0ebf43a1f5a8ffed95371eff926e85c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0ebf43a1f5a8ffed95371eff926e85c">&#9670;&#160;</a></span>data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float* AsyncRequest::data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Raw pixel data (must be freed by caller). </p>
+
+</div>
+</div>
+<a id="af4e953655035ef73bf310187cdb1091f" name="af4e953655035ef73bf310187cdb1091f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4e953655035ef73bf310187cdb1091f">&#9670;&#160;</a></span>height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Image height in pixels. </p>
+
+</div>
+</div>
+<a id="a790bd417ab046e08aa8a4bdb945aa995" name="a790bd417ab046e08aa8a4bdb945aa995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a790bd417ab046e08aa8a4bdb945aa995">&#9670;&#160;</a></span>path</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char AsyncRequest::path[256]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Absolute path to the source file. </p>
+
+</div>
+</div>
+<a id="ac4cd174106cd4357e69f05d238c753ae" name="ac4cd174106cd4357e69f05d238c753ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4cd174106cd4357e69f05d238c753ae">&#9670;&#160;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">volatile <a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209">AsyncState</a> AsyncRequest::state</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current state (atomic/volatile for thread-safety). </p>
+
+</div>
+</div>
+<a id="ad4afdf0552ccb72bacdd3f7710374b51" name="ad4afdf0552ccb72bacdd3f7710374b51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4afdf0552ccb72bacdd3f7710374b51">&#9670;&#160;</a></span>width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AsyncRequest::width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Image width in pixels. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="async__loader_8h_source.html">async_loader.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structAsyncRequest.html">AsyncRequest</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

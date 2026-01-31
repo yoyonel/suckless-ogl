@@ -1,0 +1,334 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="doxygen.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="globals.html#index__5F"><span>_</span></a></li>
+      <li><a href="globals_a.html#index_a"><span>a</span></a></li>
+      <li><a href="globals_b.html#index_b"><span>b</span></a></li>
+      <li><a href="globals_c.html#index_c"><span>c</span></a></li>
+      <li><a href="globals_d.html#index_d"><span>d</span></a></li>
+      <li><a href="globals_e.html#index_e"><span>e</span></a></li>
+      <li><a href="globals_f.html#index_f"><span>f</span></a></li>
+      <li><a href="globals_g.html#index_g"><span>g</span></a></li>
+      <li><a href="globals_h.html#index_h"><span>h</span></a></li>
+      <li><a href="globals_i.html#index_i"><span>i</span></a></li>
+      <li><a href="globals_k.html#index_k"><span>k</span></a></li>
+      <li><a href="globals_l.html#index_l"><span>l</span></a></li>
+      <li><a href="globals_m.html#index_m"><span>m</span></a></li>
+      <li><a href="globals_n.html#index_n"><span>n</span></a></li>
+      <li><a href="globals_o.html#index_o"><span>o</span></a></li>
+      <li><a href="globals_p.html#index_p"><span>p</span></a></li>
+      <li><a href="globals_q.html#index_q"><span>q</span></a></li>
+      <li><a href="globals_r.html#index_r"><span>r</span></a></li>
+      <li class="current"><a href="globals_s.html#index_s"><span>s</span></a></li>
+      <li><a href="globals_t.html#index_t"><span>t</span></a></li>
+      <li><a href="globals_u.html#index_u"><span>u</span></a></li>
+      <li><a href="globals_v.html#index_v"><span>v</span></a></li>
+      <li><a href="globals_w.html#index_w"><span>w</span></a></li>
+      <li><a href="globals_x.html#index_x"><span>x</span></a></li>
+      <li><a href="globals_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
+
+<h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
+<li>S_TO_MS&#160;:&#160;<a class="el" href="perf__timer_8c.html#a2e9b0b9ed0a878df07b2f013c5fcbe75">perf_timer.c</a></li>
+<li>S_TO_US&#160;:&#160;<a class="el" href="perf__timer_8c.html#af3cae720fc1135a209f44a3fd29deab9">perf_timer.c</a></li>
+<li>safe_calloc()&#160;:&#160;<a class="el" href="utils_8h.html#adbb98512b516893d07ffb8d439b807ea">utils.h</a></li>
+<li>safe_memcpy()&#160;:&#160;<a class="el" href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee">utils.h</a></li>
+<li>safe_snprintf()&#160;:&#160;<a class="el" href="utils_8h.html#ab1d13540441b5a2f988e0cd57754e625">utils.h</a></li>
+<li>SAMPLE_COUNT&#160;:&#160;<a class="el" href="spbrdf_8glsl.html#af63480c89a929e95b13879677976d560">spbrdf.glsl</a>, <a class="el" href="spmap_8glsl.html#af63480c89a929e95b13879677976d560">spmap.glsl</a></li>
+<li>SampleEquirectangular()&#160;:&#160;<a class="el" href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">background.frag</a></li>
+<li>sampleGGX()&#160;:&#160;<a class="el" href="spmap_8glsl.html#a51df77f928da329d0055bee0a64ff74c">spmap.glsl</a></li>
+<li>sampleHammersley()&#160;:&#160;<a class="el" href="spmap_8glsl.html#a32bdcf964d3908963bd0f4ef0b9204e2">spmap.glsl</a></li>
+<li>save_gl_state()&#160;:&#160;<a class="el" href="ui_8c.html#a1a81b4728d6451c5090b8190bdfd3b80">ui.c</a></li>
+<li>sceneTexture&#160;:&#160;<a class="el" href="lum__downsample_8frag.html#af1e3c30a022bb241c9b591cd919b451e">lum_downsample.frag</a></li>
+<li>SCREEN_QUAD_VERTEX_COUNT&#160;:&#160;<a class="el" href="gl__common_8h.html#a61dadd085c1777f559549e05962b2c9ea726b6f2464109ad63235993e0fd37631">gl_common.h</a></li>
+<li>screenTexture&#160;:&#160;<a class="el" href="postprocess_8frag.html#ab6364d5a7236e49af86d4f2f53611799">postprocess.frag</a></li>
+<li>scroll_callback()&#160;:&#160;<a class="el" href="app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.h</a>, <a class="el" href="app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.c</a></li>
+<li>sdRoundedBox()&#160;:&#160;<a class="el" href="vignette_8glsl.html#a749e21cca769f91882961cfb55ef4a31">vignette.glsl</a></li>
+<li>setup_billboard_instance_attributes()&#160;:&#160;<a class="el" href="billboard__rendering_8c.html#a64bd69f6f3922add2e099fb0fcbe1414">billboard_rendering.c</a></li>
+<li>setup_instance_attributes()&#160;:&#160;<a class="el" href="instanced__rendering_8c.html#adf636ec42d843d902bfc6610d5c31865">instanced_rendering.c</a></li>
+<li>setup_opengl_debug()&#160;:&#160;<a class="el" href="gl__debug_8h.html#a3fdc249a58cdd3053f6090849c2ae38c">gl_debug.h</a>, <a class="el" href="gl__debug_8c.html#a3fdc249a58cdd3053f6090849c2ae38c">gl_debug.c</a></li>
+<li>setup_ui_render_state()&#160;:&#160;<a class="el" href="ui_8c.html#a05f2c5e6678bcb2f958195dcab774062">ui.c</a></li>
+<li>setup_vertex_buffers()&#160;:&#160;<a class="el" href="ui_8c.html#a38379b82fe44d3fc5826c8a9ed606cf5">ui.c</a></li>
+<li>shader_cache_uniforms()&#160;:&#160;<a class="el" href="shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6">shader.c</a></li>
+<li>shader_compile()&#160;:&#160;<a class="el" href="shader_8h.html#a8e2f3d3cd026d62964de6bc23968a5cd">shader.h</a>, <a class="el" href="shader_8c.html#a8e2f3d3cd026d62964de6bc23968a5cd">shader.c</a></li>
+<li>shader_compile_with_defines()&#160;:&#160;<a class="el" href="shader_8c.html#a8b4891ad6e8e695bcad3defa570ac5a9">shader.c</a></li>
+<li>shader_create_from_program()&#160;:&#160;<a class="el" href="shader_8c.html#a4fe2213bc8202ee87fee6db962bb3cb0">shader.c</a></li>
+<li>shader_destroy()&#160;:&#160;<a class="el" href="shader_8c.html#a54bf3663058663ec7530cd1a0a1af00b">shader.c</a>, <a class="el" href="shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b">shader.h</a></li>
+<li>shader_get_uniform_location()&#160;:&#160;<a class="el" href="shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c">shader.h</a>, <a class="el" href="shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c">shader.c</a></li>
+<li>SHADER_LABEL_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#aaf8fd5f0e57d456151c951e0f3715fc4a392912e5ab211e28c877a7cc3b56b0f5">shader.c</a></li>
+<li>shader_load()&#160;:&#160;<a class="el" href="shader_8h.html#a8ae59be689516da13853d4be3758f253">shader.h</a>, <a class="el" href="shader_8c.html#a8ae59be689516da13853d4be3758f253">shader.c</a></li>
+<li>shader_load_compute()&#160;:&#160;<a class="el" href="shader_8h.html#a261eeb4f63e33c6cf31350b32eb97ff9">shader.h</a>, <a class="el" href="shader_8c.html#a261eeb4f63e33c6cf31350b32eb97ff9">shader.c</a></li>
+<li>shader_load_compute_program()&#160;:&#160;<a class="el" href="shader_8h.html#a2697a882efdae3e3ca7f80c816e875cf">shader.h</a>, <a class="el" href="shader_8c.html#a2697a882efdae3e3ca7f80c816e875cf">shader.c</a></li>
+<li>shader_load_program()&#160;:&#160;<a class="el" href="shader_8c.html#ae08327f08826fb5e44e6c5a1627433e4">shader.c</a>, <a class="el" href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader.h</a></li>
+<li>shader_load_program_with_defines()&#160;:&#160;<a class="el" href="shader_8c.html#a255b28dc6e7026ff72f086d2cee0c302">shader.c</a></li>
+<li>shader_load_with_defines()&#160;:&#160;<a class="el" href="shader_8h.html#a3ed121856b4a37f0d99085e5bd01dada">shader.h</a>, <a class="el" href="shader_8c.html#a3ed121856b4a37f0d99085e5bd01dada">shader.c</a></li>
+<li>shader_read_file()&#160;:&#160;<a class="el" href="shader_8h.html#a6d28f24af3b9e87285732052e6f70dc8">shader.h</a>, <a class="el" href="shader_8c.html#a6d28f24af3b9e87285732052e6f70dc8">shader.c</a></li>
+<li>shader_read_file_with_defines()&#160;:&#160;<a class="el" href="shader_8c.html#a7d3db64439dd78569e48580d0b580945">shader.c</a></li>
+<li>shader_set_float()&#160;:&#160;<a class="el" href="shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db">shader.h</a>, <a class="el" href="shader_8c.html#aed5502c74325481ebafdd9dfc49cf8db">shader.c</a></li>
+<li>shader_set_int()&#160;:&#160;<a class="el" href="shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32">shader.h</a>, <a class="el" href="shader_8c.html#a461b117efc5c86ee8eabf8f80789ec32">shader.c</a></li>
+<li>shader_set_mat4()&#160;:&#160;<a class="el" href="shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69">shader.h</a>, <a class="el" href="shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69">shader.c</a></li>
+<li>shader_set_vec2()&#160;:&#160;<a class="el" href="shader_8h.html#a5efe31c76255dd6965da8b2e1fdfd442">shader.h</a>, <a class="el" href="shader_8c.html#a5efe31c76255dd6965da8b2e1fdfd442">shader.c</a></li>
+<li>shader_set_vec3()&#160;:&#160;<a class="el" href="shader_8h.html#a7034c467af5884ca4950b6957eb84ff2">shader.h</a>, <a class="el" href="shader_8c.html#a7034c467af5884ca4950b6957eb84ff2">shader.c</a></li>
+<li>shader_set_vec4()&#160;:&#160;<a class="el" href="shader_8h.html#a8e522e514b294864d7526ee4b2a518c7">shader.h</a>, <a class="el" href="shader_8c.html#a8e522e514b294864d7526ee4b2a518c7">shader.c</a></li>
+<li>shader_use()&#160;:&#160;<a class="el" href="shader_8h.html#ad80a771bc794ef6b652f13449129b645">shader.h</a>, <a class="el" href="shader_8c.html#ad80a771bc794ef6b652f13449129b645">shader.c</a></li>
+<li>sharedLum&#160;:&#160;<a class="el" href="luminance__reduce__pass1_8glsl.html#a054502274635b5e07ddcc8ad640a93af">luminance_reduce_pass1.glsl</a></li>
+<li>sharedSum&#160;:&#160;<a class="el" href="luminance__reduce__pass2_8glsl.html#a0128adf78a5df51fd955c327cb9ab83e">luminance_reduce_pass2.glsl</a></li>
+<li>siemensStar()&#160;:&#160;<a class="el" href="test__pattern_8frag.html#a8f5c02cb588f11612d5bf7d929abb01f">test_pattern.frag</a></li>
+<li>SIMD_ALIGNMENT&#160;:&#160;<a class="el" href="gl__common_8h.html#a726ca809ffd3d67ab4b8476646f26635a7619557dd412e4f5e4416d11b1c40d42">gl_common.h</a></li>
+<li>skybox_cleanup()&#160;:&#160;<a class="el" href="skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0">skybox.h</a>, <a class="el" href="skybox_8c.html#a426022a6fba8e5f57863e91b5ce3a3a0">skybox.c</a></li>
+<li>skybox_init()&#160;:&#160;<a class="el" href="skybox_8h.html#a5aeb3bc51a32578af4246a038de25726">skybox.h</a>, <a class="el" href="skybox_8c.html#a5aeb3bc51a32578af4246a038de25726">skybox.c</a></li>
+<li>skybox_render()&#160;:&#160;<a class="el" href="skybox_8h.html#aa3d250ad666b9495253d3a37140b595c">skybox.h</a>, <a class="el" href="skybox_8c.html#aa3d250ad666b9495253d3a37140b595c">skybox.c</a></li>
+<li>SKYBOX_VERTEX_COUNT&#160;:&#160;<a class="el" href="skybox_8c.html#a0ed680fdb405e7195d9f14032851eebba775921a6634d1ba74a43db63a6443a96">skybox.c</a></li>
+<li>soft_clamp_smoothstep()&#160;:&#160;<a class="el" href="irmap_8glsl.html#af3ce6e9820f477e2289359401b98eaf5">irmap.glsl</a></li>
+<li>SPECULAR_MIP0_SLICES&#160;:&#160;<a class="el" href="app__env_8c.html#a90f2f6ec1243ac536bc3e2f13481e71c">app_env.c</a></li>
+<li>SPECULAR_MIP1_SLICES&#160;:&#160;<a class="el" href="app__env_8c.html#a1c45430a6b7ed7db7a7289c5da249fe6">app_env.c</a></li>
+<li>SPECULAR_MIPS_GROUPING_START&#160;:&#160;<a class="el" href="app__env_8c.html#a09b849d8b3f9d7ba32077f3e1f7762b4">app_env.c</a></li>
+<li>sphere_sorter_cleanup()&#160;:&#160;<a class="el" href="sphere__sorting_8c.html#a159532007839ad93c627f7173c755616">sphere_sorting.c</a>, <a class="el" href="sphere__sorting_8h.html#a159532007839ad93c627f7173c755616">sphere_sorting.h</a></li>
+<li>sphere_sorter_init()&#160;:&#160;<a class="el" href="sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.h</a>, <a class="el" href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.c</a></li>
+<li>sphere_sorter_sort()&#160;:&#160;<a class="el" href="sphere__sorting_8h.html#a7890ccf202ae2cc18cd1ca552d355a2a">sphere_sorting.h</a>, <a class="el" href="sphere__sorting_8c.html#a7890ccf202ae2cc18cd1ca552d355a2a">sphere_sorting.c</a></li>
+<li>SphereCenter&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a77df7899cc33018783192eeb67bb02db">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#a59e046f59624950b0748f12af84d473a">pbr_ibl_billboard.vert</a></li>
+<li>SphereRadius&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a59562bc2b28150dee5fd17039c60d26d">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#a191e67295c7c46dfba76a3c4a3843e98">pbr_ibl_billboard.vert</a></li>
+<li>srcResolution&#160;:&#160;<a class="el" href="bloom__downsample_8frag.html#ab1a9e71d840d278860adf677841c47de">bloom_downsample.frag</a></li>
+<li>srcTexture&#160;:&#160;<a class="el" href="bloom__downsample_8frag.html#a54baa6c59f107ffa02d72d3bb6747231">bloom_downsample.frag</a>, <a class="el" href="bloom__prefilter_8frag.html#a54baa6c59f107ffa02d72d3bb6747231">bloom_prefilter.frag</a>, <a class="el" href="bloom__upsample_8frag.html#a54baa6c59f107ffa02d72d3bb6747231">bloom_upsample.frag</a></li>
+<li>ssbo_group_bind_mesh()&#160;:&#160;<a class="el" href="ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b">ssbo_rendering.h</a>, <a class="el" href="ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b">ssbo_rendering.c</a></li>
+<li>ssbo_group_cleanup()&#160;:&#160;<a class="el" href="ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.h</a>, <a class="el" href="ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.c</a></li>
+<li>ssbo_group_draw()&#160;:&#160;<a class="el" href="ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed">ssbo_rendering.h</a>, <a class="el" href="ssbo__rendering_8c.html#a286490847ce95171c2e25ac6adf3d8ed">ssbo_rendering.c</a></li>
+<li>ssbo_group_init()&#160;:&#160;<a class="el" href="ssbo__rendering_8h.html#a73e2cabf9e00de5334f443463ccee660">ssbo_rendering.h</a>, <a class="el" href="ssbo__rendering_8c.html#a73e2cabf9e00de5334f443463ccee660">ssbo_rendering.c</a></li>
+<li>STB_IMAGE_IMPLEMENTATION&#160;:&#160;<a class="el" href="stb__image__impl_8c.html#a18372412ad2fc3ce1e3240b3cf0efe78">stb_image_impl.c</a></li>
+<li>STB_TRUETYPE_IMPLEMENTATION&#160;:&#160;<a class="el" href="stb__image__impl_8c.html#afaa2f2d0d9d6726cfae6da070e736347">stb_image_impl.c</a></li>
+<li>string_to_level()&#160;:&#160;<a class="el" href="log_8c.html#abe911ea0f3b04836734f53c02bce31f3">log.c</a></li>
+<li>subdivide()&#160;:&#160;<a class="el" href="icosphere_8c.html#a88db60f70d9063d3f5a7c1b1ba8538e8">icosphere.c</a></li>
+<li>SYNC_ATTR_START&#160;:&#160;<a class="el" href="gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06ca8fc307a473aac724f3230b8a1bc02449">gl_common.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
