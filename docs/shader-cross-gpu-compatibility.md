@@ -104,7 +104,7 @@ if (someCondition) {
 ## Testing Workflow
 
 1. **Visual Comparison**: Test on 2+ GPU vendors
-2. **Pixel Diff**: Use image comparison tools
+2. **Pixel Diff**: Use image comparison tools (see [Visual Testing Artifacts](./visual_testing_artifacts.md))
 3. **Frame Capture**: Compare with RenderDoc/ApiTrace
 4. **Driver Versions**: Test with different driver releases
 
@@ -142,6 +142,8 @@ float edgeFactor = clamp(h / analyticFwidth, 0.0, 1.0);
 ```
 
 See [pbr_ibl_billboard.frag](../shaders/pbr_ibl_billboard.frag) for a production example.
+
+More details on why testing artifacts appear in CI can be found in [Visual Testing & Regression Artifacts](./visual_testing_artifacts.md).
 
 ## References
 
