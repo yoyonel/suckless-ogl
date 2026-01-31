@@ -1,9 +1,11 @@
-#define _POSIX_C_SOURCE 200809L  // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
-#define _ISOC11_SOURCE           // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
 #include "app.h"
 
 #include "adaptive_sampler.h"
+#include "app_env.h"
+#include "app_input.h"
+#include "app_scene.h"
 #include "app_settings.h"
+#include "app_ui.h"
 #include "billboard_rendering.h"
 #include "fps.h"
 #include "gl_common.h"
@@ -12,257 +14,86 @@
 #include "instanced_rendering.h"
 #include "render_utils.h"
 #include "sphere_sorting.h"
-#include <stb_image.h>
+#include <cglm/cam.h>
+#include <cglm/mat4.h>
+#include <cglm/types.h>
+#include <cglm/util.h>
+#include <stdlib.h>
+#include <string.h>
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
 #include "async_loader.h"
 #include "camera.h"
-#include "log.h"
 #include "material.h"
 #include "pbr.h"
-#include "perf_timer.h"
 #include "postprocess.h"
-#include "postprocess_presets.h"
 #include "shader.h"
 #include "skybox.h"
-#include "texture.h"
 #include "ui.h"
-#include "utils.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
-#include <cglm/affine.h>  // IWYU pragma: keep
-#include <cglm/cam.h>
-#include <cglm/mat4.h>
-#include <cglm/types.h>
-#include <cglm/util.h>
-#include <cglm/vec3.h>
-#include <dirent.h>
-#include <math.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>  // for malloc
-#include <string.h>
-
-enum { PBR_DEBUG_MODE_COUNT = 9 };
-enum { MAX_PATH_LENGTH = 256 };
-enum {
-	DEBUG_TEXT_BUFFER_SIZE = 128,
-	RANGE_TEXT_BUFFER_SIZE = 64,
-	ENV_TEXT_BUFFER_SIZE = 256,
-	EXPOSURE_TEXT_BUFFER_SIZE = 64
-};
-static const float GRAPH_TEXT_PADDING = 20.0F;
-static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
-static const float LUMINANCE_EPSILON = 0.0001F;
-static const float DEBUG_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 4.0F;
-static const int IBL_LOG_LABEL_SIZE = 128;
-static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
-static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
-static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
-static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
-static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
-// SLICING constants for IBL loading
-static const int IRRADIANCE_MAP_SLICES = 4;
-static const int SPECULAR_MIP0_SLICES = 4;
-static const int SPECULAR_MIP1_SLICES = 2;
-static const int SPECULAR_MIPS_GROUPING_START = 3;
-
-/* UI Animation Constants */
-static const double UI_SPINNER_SPEED = 10.0;
-static const float UI_LOADING_TEXT_WIDTH_FACTOR =
-    20.0F; /* Font Size 32 * 0.6 ~ 19.2 */
-static const float UI_SPINNER_SIZE = 64.0F;
-static const float UI_CENTER_FACTOR = 0.5F;
-static const float UI_TEXT_OFFSET_FACTOR = 0.8F;
-static const vec3 UI_SPINNER_COLOR = {90.0F / 255.0F, 111.0F / 255.0F,
-                                      185.0F / 255.0F};
-static const size_t UI_LOADING_TEXT_SIZE = 64;
-
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods);
-static void camera_process_key_callback(Camera* camera, int key, int action);
-static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-static void framebuffer_size_callback(GLFWwindow* window, int width,
-                                      int height);
-static void app_toggle_fullscreen(App* app, GLFWwindow* window);
-static void app_save_raw_frame(App* app, const char* filename);
-static void app_scan_hdr_files(App* app);
-static int app_load_env_map(App* app, const char* filename);
-static void app_draw_help_overlay(App* app);
-static void app_draw_debug_overlay(App* app);
-static void draw_exposure_debug_text(App* app);
-static int compute_luminance_histogram(App* app, int* buckets, int size,
-                                       float* min_lum, float* max_lum);
-static void draw_luminance_histogram_graph(App* app, const int* buckets,
-                                           int size, float min_lum,
-                                           float max_lum);
-static void app_update_instancing_mode(App* app);
-static void app_process_ibl_state_machine(App* app);
-
-static int compare_strings(const void* string_a, const void* string_b)
-{
-	return strcmp(*(const char**)string_a, *(const char**)string_b);
-}
-
-static void app_scan_hdr_files(App* app)
-{
-	app->hdr_count = 0;
-	app->hdr_files = NULL;
-	app->current_hdr_index = -1;
-
-	app->current_hdr_index = -1;
-
-	DIR* dir_handle = NULL;
-	struct dirent* entry = NULL;
-	dir_handle = opendir("assets/textures/hdr");
-	if (dir_handle) {
-		while ((entry = readdir(dir_handle)) != NULL) {
-			char* dot = strrchr(entry->d_name, '.');
-			if (dot && strcmp(dot, ".hdr") == 0) {
-				app->hdr_count++;
-				app->hdr_files =
-				    realloc(app->hdr_files,
-				            app->hdr_count * sizeof(char*));
-				app->hdr_files[app->hdr_count - 1] =
-				    strdup(entry->d_name);
-			}
-		}
-		closedir(dir_handle);
-
-		/* Sort files alphabetically for deterministic
-		 * order */
-		if (app->hdr_count > 1) {
-			qsort(app->hdr_files, app->hdr_count, sizeof(char*),
-			      compare_strings);
-		}
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open assets/textures/hdr "
-		          "directory!");
-	}
-	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
-}
-
-static int app_load_env_map(App* app, const char* filename)
-{
-	char path[MAX_PATH_LENGTH];
-	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
-	                    filename);
-
-	LOG_INFO("suckless-ogl.app", "Queuing async load for: %s", path);
-	if (async_loader_request(path)) {
-		app->env_map_loading = 1; /* Set loading flag */
-		return 1;
-	}
-	LOG_WARNING("suckless-ogl.app",
-	            "Async load request failed/ignored for: %s", path);
-	return 0;
-}
 
 int app_init(App* app, int width, int height, const char* title)
 {
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)memset(app, 0, sizeof(App));
+	(void)memset(
+	    app, 0,
+	    sizeof(
+	        App));  // NOLINT(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 
 	app->width = width;
 	app->height = height;
 	app->subdivisions = INITIAL_SUBDIVISIONS;
 	app->wireframe = 0;
 
-	/* Camera initial state */
-	app->camera_enabled = 1;        /* Enabled by default */
-	app->env_lod = DEFAULT_ENV_LOD; /* Default blur level */
+	app->camera_enabled = 1;
+	app->env_lod = DEFAULT_ENV_LOD;
 	app->show_info_overlay = 1;
 	app->show_exposure_debug = 0;
-	app->text_overlay_mode = 0; /* Off by default */
+	app->text_overlay_mode = 0;
 	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
-	app->show_help = 0;   /* Hidden by default */
-	app->show_envmap = 1; /* Enabled by default */
+	app->show_help = 0;
+	app->show_envmap = 1;
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
 
-	//
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
 
-	/* Initialize Window & Context via Window Module */
 	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->window) {
-		LOG_ERROR("suckless-ogl.app", "Failed to create window");
 		return 0;
 	}
 
-	/* Disable VSync for performance comparison */
 	glfwSwapInterval(0);
-
-	/* Setup Callbacks */
 	glfwSetWindowUserPointer(app->window, app);
 	glfwSetKeyCallback(app->window, key_callback);
 	glfwSetCursorPosCallback(app->window, mouse_callback);
 	glfwSetScrollCallback(app->window, scroll_callback);
 	glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
 
-	/* Enable mouse capture by default */
 	if (app->camera_enabled) {
 		glfwSetInputMode(app->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
 	}
 
-	int major =
-	    glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MAJOR);
-	int minor =
-	    glfwGetWindowAttrib(app->window, GLFW_CONTEXT_VERSION_MINOR);
-	LOG_INFO("suckless-ogl.init", "Context Version: %d.%d", major, minor);
-	LOG_INFO("suckless-ogl.init", "samples: %d", DEFAULT_SAMPLES);
-
-	GPUInfo gpu_info = render_utils_get_gpu_info();
-	LOG_INFO("suckless_ogl.context.base.window", "vendor: %s",
-	         gpu_info.vendor);
-	LOG_INFO("suckless_ogl.context.base.window", "renderer: %s",
-	         gpu_info.renderer);
-	LOG_INFO("suckless_ogl.context.base.window", "version: %s",
-	         gpu_info.version);
-	LOG_INFO("suckless_ogl.context.base.window", "platform: linux");
-	/* Async PBO Init */
 	glGenBuffers(1, &app->exposure_pbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
 	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
-	glObjectLabel(GL_BUFFER, app->exposure_pbo, -1,
-	              "Exposure Readback PBO");
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-	app->current_exposure = 1.0F;
-	app->lum_ssbo[0] = 0;
-	app->lum_ssbo[1] = 0;
 
-	/* Create Dummy Textures (to avoid Unit 0 warnings) */
-	/* Create Dummy Textures (to avoid Unit 0 warnings) */
+	app->current_exposure = 1.0F;
 	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
 	app->dummy_white_tex = render_utils_create_color_texture(1, 1, 1, 1);
 
-	LOG_INFO("suckless-ogl.app", "Dummy textures: black=%u, white=%u",
-	         app->dummy_black_tex, app->dummy_white_tex);
-
-	LOG_INFO("suckless-ogl.app", "Dummy textures: black=%u, white=%u",
-	         app->dummy_black_tex, app->dummy_white_tex);
-
-	LOG_INFO("suckless_ogl.context.base.window", "code: 450");
-
-	/* Scan & Load HDR Environment */
-	app->brdf_lut_tex =
-	    build_brdf_lut_map(BRDF_LUT_MAP_SIZE); /* BRDF is constant */
-
+	app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	async_loader_init();
 
 	app_scan_hdr_files(app);
 	if (app->hdr_count > 0) {
-		/* Try to find 'env.hdr' as default, otherwise
-		 * pick first */
 		int default_idx = 0;
 		for (int i = 0; i < app->hdr_count; i++) {
 			if (strcmp(app->hdr_files[i], "env.hdr") == 0) {
@@ -272,10 +103,6 @@ int app_init(App* app, int width, int height, const char* title)
 		}
 		app->current_hdr_index = default_idx;
 		app_load_env_map(app, app->hdr_files[default_idx]);
-	} else {
-		LOG_ERROR("suckless-ogl.init",
-		          "No HDR files found in "
-		          "assets/textures/hdr/!");
 	}
 
 	app->u_metallic = DEFAULT_METALLIC;
@@ -283,94 +110,46 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
 
-	/* Load shaders */
 	app->skybox_shader = shader_load_program("shaders/background.vert",
 	                                         "shaders/background.frag");
-	glObjectLabel(GL_PROGRAM, app->skybox_shader, -1, "Skybox Shader");
-
 	if (!app->skybox_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to create skybox shader");
 		return 0;
 	}
 
-	//
 	app->debug_shader =
 	    shader_load("shaders/debug_tex.vert", "shaders/debug_tex.frag");
-	if (app->debug_shader) {
-		glObjectLabel(GL_PROGRAM, app->debug_shader->program, -1,
-		              "Debug Shader");
+	if (!app->debug_shader) {
+		return 0;
 	}
 	render_utils_create_empty_vao(&app->empty_vao);
-	app->debug_lod = 0.0F;
-	app->show_debug_tex = false;
 
-	if (!app->debug_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load debug shader");
-		return 0;
-	}
-
-	app->billboard_mode = 1;
 	app->pbr_billboard_shader = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
-	if (app->pbr_billboard_shader) {
-		glObjectLabel(GL_PROGRAM, app->pbr_billboard_shader->program,
-		              -1, "PBR Billboard Shader");
-	}
 	if (!app->pbr_billboard_shader) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to load billboard shader");
 		return 0;
 	}
 
-	// Initialize Quad VAO for billboards
-	// Initialize Quad VAO for billboards
 	render_utils_create_quad_vbo(&app->quad_vbo);
-
-	/* Initialize skybox */
 	skybox_init(&app->skybox, app->skybox_shader);
-
-	/* Initialize icosphere geometry */
 	icosphere_init(&app->geometry);
 
-	/* Create OpenGL buffers */
 	glGenVertexArrays(1, &app->sphere_vao);
-	glBindVertexArray(app->sphere_vao);
-	glObjectLabel(GL_VERTEX_ARRAY, app->sphere_vao, -1, "Main Sphere VAO");
-	glBindVertexArray(0);
 	glGenBuffers(1, &app->sphere_vbo);
 	glGenBuffers(1, &app->sphere_nbo);
 	glGenBuffers(1, &app->sphere_ebo);
 
-	/* Enable depth testing */
 	glEnable(GL_DEPTH_TEST);
 
-	/* Enable multisampling only if requested by context */
-	if (app->ibl_ctx.width > 0 && app->ibl_ctx.height > 0) {
-		/* We use the actual window attribute instead of a constant */
-		int samples = 0;
-		glGetIntegerv(GL_SAMPLES, &samples);
-		if (samples > 1) {
-			glEnable(GL_MULTISAMPLE);
-		}
-	}
-
-	static const float SAMPLER_WINDOW = 5.0F;
-	static const size_t SAMPLER_TARGET = 200;
-	static const float SAMPLER_INITIAL_GUESS = 60.0F;
-
 	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
-	// 5.0s window, 200 samples
-	adaptive_sampler_init(&app->fps_sampler, SAMPLER_WINDOW, SAMPLER_TARGET,
-	                      SAMPLER_INITIAL_GUESS);
+	adaptive_sampler_init(&app->fps_sampler, DEFAULT_FPS_WINDOW,
+	                      DEFAULT_FPS_SAMPLER_SIZE, DEFAULT_FPS_TARGET);
 	app->last_frame_time = glfwGetTime();
 
 	ui_init(&app->ui, "assets/fonts/FiraCode-Regular.ttf",
 	        DEFAULT_FONT_SIZE);
-
 	app->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
-	/* Initialize IBL shaders */
 	app->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
 	app->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
 	app->shader_lum_pass1 =
@@ -382,47 +161,26 @@ int app_init(App* app, int width, int height, const char* title)
 	app_init_ssbo(app);
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
 	                                   "shaders/pbr_ibl_instanced.frag");
-	if (app->pbr_ssbo_shader) {
-		glObjectLabel(GL_PROGRAM, app->pbr_ssbo_shader->program, -1,
-		              "PBR SSBO Shader");
-	}
 	if (!app->pbr_ssbo_shader) {
-		LOG_ERROR("suckless-ogl.app", "Failed to load pbr_ssbo shader");
 		return 0;
 	}
-	LOG_INFO("suckless-ogl.app", "SSBO rendering mode active");
 #else
 	app_init_instancing(app);
 	app->pbr_instanced_shader = shader_load(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
-	if (app->pbr_instanced_shader) {
-		glObjectLabel(GL_PROGRAM, app->pbr_instanced_shader->program,
-		              -1, "PBR Instanced Shader");
-	}
 	if (!app->pbr_instanced_shader) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to load pbr_instanced shader");
 		return 0;
 	}
-
-	/* Setup initial VAO based on default mode (Mesh) */
 	app_update_instancing_mode(app);
 #endif
 
-	/* Initialize post-processing */
 	if (!postprocess_init(&app->postprocess, width, height)) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to initialize post-processing");
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
-
 	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
-	LOG_INFO("suckless-ogl.app", "Style: Aucun (rendu pur)");
 
 #ifdef ENABLE_SHADER_OPTIMIZATION
-	LOG_INFO("suckless-ogl.app",
-	         "BUILD OPTION: Compiling OPTIMIZED shader...");
 	postprocess_compile_optimized(&app->postprocess,
 	                              app->postprocess.active_effects);
 #endif
@@ -430,265 +188,25 @@ int app_init(App* app, int width, int height, const char* title)
 	return 1;
 }
 
-#ifdef USE_SSBO_RENDERING
-void app_init_ssbo(App* app)
-{
-	const int total_count =
-	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
-	const int cols = DEFAULT_COLS;
-	const int rows = (total_count + cols - 1) / cols;
-	const float spacing = DEFAULT_SPACING;
-
-	const float grid_w = (float)(cols - 1) * spacing;
-	const float grid_h = (float)(rows - 1) * spacing;
-
-	SphereInstanceSSBO* data =
-	    malloc(sizeof(SphereInstanceSSBO) * total_count);
-	if (!data) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for SSBO");
-		return;
-	}
-
-	for (int i = 0; i < total_count; i++) {
-		const int grid_x = i % cols;
-		const int grid_y = i / cols;
-
-		glm_mat4_identity(data[i].model);
-
-		const float pos_x = ((float)grid_x * spacing) -
-		                    (grid_w * HALF_OFFSET_MULTIPLIER);
-		const float pos_y = -(((float)grid_y * spacing) -
-		                      (grid_h * HALF_OFFSET_MULTIPLIER));
-
-		vec3 position = {pos_x, pos_y, 0.0F};
-		glm_translate(data[i].model, position);
-
-		PBRMaterial* mat = &app->material_lib->materials[i];
-
-		glm_vec3_copy(mat->albedo, data[i].albedo);
-		data[i].metallic = mat->metallic;
-		data[i].roughness = mat->roughness;
-		data[i].ao = 1.0F;
-		data[i]._padding[0] = 0.0F;
-		data[i]._padding[1] = 0.0F;
-	}
-
-	/* Debug : vérifier la première instance */
-	LOG_DEBUG("suckless-ogl.ssbo",
-	          "First instance - pos: (%.2f, %.2f, %.2f), "
-	          "albedo: (%.2f, "
-	          "%.2f, %.2f)",
-	          data[0].model[3][0], data[0].model[3][1], data[0].model[3][2],
-	          data[0].albedo[0], data[0].albedo[1], data[0].albedo[2]);
-
-	ssbo_group_init(&app->ssbo_group, data, total_count);
-	ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo, app->sphere_nbo,
-	                     app->sphere_ebo);
-
-	free(data);
-}
-#endif
-
-void app_init_instancing(App* app)
-{
-	// 1. Calcul des dimensions (identique au legacy)
-	const int total_count =
-	    MIN(app->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
-	const int cols = DEFAULT_COLS;
-	const int rows = (total_count + cols - 1) / cols;
-	const float spacing = DEFAULT_SPACING;
-
-	const float grid_w = (float)(cols - 1) * spacing;
-	const float grid_h = (float)(rows - 1) * spacing;
-
-	// 2. Allocation temporaire pour le transfert (alignée
-	// pour SIMD/AVX)
-	SphereInstance* data = NULL;
-	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
-	                   sizeof(SphereInstance) * (size_t)total_count) != 0) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate aligned memory "
-		          "for instancing");
-		return;
-	}
-
-	for (int i = 0; i < total_count; i++) {
-		const int grid_x = i % cols;
-		const int grid_y = i / cols;
-
-		// Calcul de la matrice Model (Logique de
-		// centrage reproduite)
-		glm_mat4_identity(data[i].model);
-
-		const float pos_x = ((float)grid_x * spacing) -
-		                    (grid_w * HALF_OFFSET_MULTIPLIER);
-		const float pos_y = -(((float)grid_y * spacing) -
-		                      (grid_h * HALF_OFFSET_MULTIPLIER));
-
-		vec3 position = {pos_x, pos_y, 0.0F};
-		// NOLINTNEXTLINE(misc-include-cleaner)
-		glm_translate(data[i].model, position);
-
-		// Récupération des propriétés du matériau
-		// depuis la bibliothèque
-		PBRMaterial* mat = &app->material_lib->materials[i];
-
-		glm_vec3_copy(mat->albedo, data[i].albedo);
-		data[i].metallic = mat->metallic;
-		data[i].roughness = mat->roughness;
-		data[i].ao = 1.0F;  // Valeur par défaut
-	}
-
-	// 3. Initialisation du groupe (Transfert VBO Instance +
-	// Création VAO)
-	instanced_group_init(&app->instanced_group, data, total_count);
-
-#ifdef USE_TRANSPARENT_BILLBOARDS
-	/* Persist data for sorting */
-	/* MUST use aligned_alloc/posix_memalign because SphereInstance has
-	 * __attribute__((aligned(64))) */
-	/* sizeof(SphereInstance) is a multiple of 64, so total size is safe for
-	 * aligned_alloc */
-	app->sphere_instances = aligned_alloc(
-	    SIMD_ALIGNMENT, sizeof(SphereInstance) * (size_t)total_count);
-
-	if (app->sphere_instances) {
-		safe_memcpy(app->sphere_instances,
-		            sizeof(SphereInstance) * total_count, data,
-		            sizeof(SphereInstance) * total_count);
-		app->sphere_instance_count = total_count;
-		sphere_sorter_init(&app->sphere_sorter, total_count);
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate aligned memory for sorted "
-		          "instances");
-	}
-#endif
-
-	// 4. Premier lien avec la géométrie actuelle
-	// Note: on utilise les noms de buffers de ton app.h
-	// (sphere_vbo, etc.)
-	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
-	                          app->sphere_nbo, app->sphere_ebo);
-
-	/* Initialize Billboard Group as well (shares the same
-	 * data) */
-	billboard_group_init(&app->billboard_group, data, total_count);
-	billboard_group_prepare(&app->billboard_group, app->quad_vbo);
-
-	free(data);
-}
-
-static void app_update_instancing_mode(App* app)
-{
-	/* No longer needed as we have separate groups
-	 * initialized */
-	(void)app;
-}
-
-// ... (skipping unchanged code)
-
-void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
-{
-	Shader* current_shader = app->pbr_billboard_shader;
-	shader_use(current_shader);
-
-	render_utils_bind_texture_safe(GL_TEXTURE0, app->irradiance_tex,
-	                               app->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE1, app->spec_prefiltered_tex,
-	                               app->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
-	                               app->dummy_black_tex);
-
-	shader_set_int(current_shader, "irradianceMap", 0);
-	shader_set_int(current_shader, "prefilterMap", 1);
-	shader_set_int(current_shader, "brdfLUT", 2);
-
-	shader_set_int(current_shader, "debugMode", app->pbr_debug_mode);
-
-	shader_set_vec3(current_shader, "camPos", camera_pos);
-	shader_set_mat4(current_shader, "projection", (float*)proj);
-	shader_set_mat4(current_shader, "view", (float*)view);
-	shader_set_mat4(
-	    current_shader, "previousViewProj",
-	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
-	float screen_size[2] = {(float)app->width, (float)app->height};
-	shader_set_vec2(current_shader, "u_screenSize", screen_size);
-
-	// Draw Quads Instanced
-	// Draw Quads Instanced
-	// 4 vertices per quad (Triangle Strip) is handled
-	// inside billboard_rendering
-	billboard_group_draw(&app->billboard_group);
-}
-
-void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
-{
-	Shader* current_shader = NULL;
-#ifdef USE_SSBO_RENDERING
-	current_shader = app->pbr_ssbo_shader;
-#else
-	current_shader = app->pbr_instanced_shader;
-#endif
-
-	shader_use(current_shader);
-
-	render_utils_bind_texture_safe(GL_TEXTURE0, app->irradiance_tex,
-	                               app->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE1, app->spec_prefiltered_tex,
-	                               app->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
-	                               app->dummy_black_tex);
-
-	shader_set_int(current_shader, "irradianceMap", 0);
-	shader_set_int(current_shader, "prefilterMap", 1);
-	shader_set_int(current_shader, "brdfLUT", 2);
-
-	/* Pass PBR Debug Mode */
-	shader_set_int(current_shader, "debugMode", app->pbr_debug_mode);
-
-	shader_set_vec3(current_shader, "camPos", camera_pos);
-	shader_set_mat4(current_shader, "projection", (float*)proj);
-	shader_set_mat4(current_shader, "view", (float*)view);
-
-	/* Pass Previous ViewProj for Velocity Buffer */
-	shader_set_mat4(
-	    current_shader, "previousViewProj",
-	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
-
-#ifdef USE_SSBO_RENDERING
-	ssbo_group_draw(&app->ssbo_group, app->geometry.indices.size);
-#else
-	instanced_group_draw(&app->instanced_group, app->geometry.indices.size);
-#endif
-}
-
 void app_cleanup(App* app)
 {
 	icosphere_free(&app->geometry);
 	skybox_cleanup(&app->skybox);
-
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->sphere_instances) {
 		free(app->sphere_instances);
 	}
 	sphere_sorter_cleanup(&app->sphere_sorter);
 #endif
-
-	/* Cleanup Render Groups */
 	instanced_group_cleanup(&app->instanced_group);
 	billboard_group_cleanup(&app->billboard_group);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&app->ssbo_group);
 #endif
-
-	/* Cleanup Material Library */
 	if (app->material_lib) {
 		material_free_lib(app->material_lib);
 	}
 
-	/* Cleanup Shaders */
 	shader_destroy(app->pbr_instanced_shader);
 	shader_destroy(app->pbr_billboard_shader);
 	shader_destroy(app->debug_shader);
@@ -703,12 +221,9 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->sphere_ebo);
 
 	ui_destroy(&app->ui);
-
 	postprocess_cleanup(&app->postprocess);
 	adaptive_sampler_cleanup(&app->fps_sampler);
 
-	/* Delete textures LAST because postprocess_cleanup might use dummy
-	 * textures to reset state */
 	glDeleteTextures(1, &app->hdr_texture);
 	glDeleteTextures(1, &app->brdf_lut_tex);
 	glDeleteTextures(1, &app->spec_prefiltered_tex);
@@ -723,47 +238,30 @@ void app_cleanup(App* app)
 			free(app->hdr_files[i]);
 		}
 		free(app->hdr_files);
-		app->hdr_files = NULL;
 	}
-
 	window_destroy(app->window);
 }
 
 void app_run(App* app)
 {
 	int last_subdiv = -1;
-
 	while (!glfwWindowShouldClose(app->window)) {
 		app->frame_count++;
 		double current_time = glfwGetTime();
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
-		// Adaptive Sampling of Frame Time
 		adaptive_sampler_should_sample(
 		    &app->fps_sampler, (float)app->delta_time, current_time);
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
 		                                 current_time)) {
-			float avg =
-			    adaptive_sampler_get_average(&app->fps_sampler);
-			size_t count = adaptive_sampler_get_sample_count(
-			    &app->fps_sampler);
-			LOG_INFO("suckless-ogl.sampler",
-			         "Window Finished. Samples: "
-			         "%zu, Avg FPS: %.2f",
-			         count, avg);
 			adaptive_sampler_reset(&app->fps_sampler, current_time);
 		}
 
-		/* Mettre à jour le temps pour le
-		 * post-processing (grain animé)
-		 */
 		postprocess_update_time(&app->postprocess,
 		                        (float)app->delta_time);
 
-		// 1. Mise à jour de la physique (clavier) avec
-		// fixed timestep
 		app->camera.physics_accumulator += (float)app->delta_time;
 		while (app->camera.physics_accumulator >=
 		       app->camera.fixed_timestep) {
@@ -772,26 +270,16 @@ void app_run(App* app)
 			    app->camera.fixed_timestep;
 		}
 
-		// 2. Interpolation de la rotation (smoothing)
 		float alpha = app->camera.rotation_smoothing;
-		app->camera.yaw =
-		    app->camera.yaw +
-		    ((app->camera.yaw_target - app->camera.yaw) * alpha);
-		app->camera.pitch =
-		    app->camera.pitch +
-		    ((app->camera.pitch_target - app->camera.pitch) * alpha);
-
-		// 3. Mise à jour des vecteurs de la caméra
+		app->camera.yaw +=
+		    (app->camera.yaw_target - app->camera.yaw) * alpha;
+		app->camera.pitch +=
+		    (app->camera.pitch_target - app->camera.pitch) * alpha;
 		camera_update_vectors(&app->camera);
 
-		/* Regenerate icosphere if subdivision level
-		 * changed */
 		if (app->subdivisions != last_subdiv) {
 			icosphere_generate(&app->geometry, app->subdivisions);
-
-			/* Upload to GPU */
 			app_update_gpu_buffers(app);
-
 #ifdef USE_SSBO_RENDERING
 			ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo,
 			                     app->sphere_nbo, app->sphere_ebo);
@@ -800,249 +288,14 @@ void app_run(App* app)
 			    &app->instanced_group, app->sphere_vbo,
 			    app->sphere_nbo, app->sphere_ebo);
 #endif
-
 			last_subdiv = app->subdivisions;
 		}
 
-		app_render(app);
-
 		app_update(app);
+		app_render(app);
 
 		glfwSwapBuffers(app->window);
 		glfwPollEvents();
-	}
-}
-
-static void app_finalize_environment_load(App* app, AsyncRequest* req)
-{
-	LOG_INFO("suckless-ogl.app",
-	         "[Frame %llu] Async load completed for: %s, "
-	         "starting "
-	         "progressive IBL",
-	         (unsigned long long)app->frame_count, req->path);
-
-	/* 1. Upload to GPU */
-	GLuint new_hdr_tex = 0;
-	HYBRID_MEASURE_LOG("VRAM Upload")
-	{
-		new_hdr_tex =
-		    texture_upload_hdr(req->data, req->width, req->height);
-	}
-
-	stbi_image_free(req->data);
-
-	if (new_hdr_tex) {
-		/* Reset Context for Progressive IBL */
-		app->ibl_ctx.state = IBL_STATE_LUMINANCE;
-		app->ibl_ctx.pending_hdr_tex = new_hdr_tex;
-		app->ibl_ctx.width = req->width;
-		app->ibl_ctx.height = req->height;
-		app->ibl_ctx.current_mip = 0;
-		app->ibl_ctx.total_mips = 0;
-		app->ibl_ctx.threshold = 0.0F;
-
-		/* We don't delete old textures yet to keep the
-		 * scene active */
-	}
-}
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-static void app_process_ibl_state_machine(App* app)
-{
-	IBLContext* ctx = &app->ibl_ctx;
-	if (ctx->state == IBL_STATE_IDLE) {
-		return;
-	}
-
-	switch (ctx->state) {
-		case IBL_STATE_LUMINANCE: {
-			perf_timer_start(&ctx->global_timer);
-			HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
-			{
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - "
-				         "Luminance...",
-				         (unsigned long long)app->frame_count);
-				ctx->threshold = compute_mean_luminance_gpu(
-				    app->shader_lum_pass1,
-				    app->shader_lum_pass2, ctx->pending_hdr_tex,
-				    ctx->width, ctx->height,
-				    DEFAULT_CLAMP_MULTIPLIER, app->lum_ssbo);
-			}
-
-			if (ctx->threshold < 1.0F || isnan(ctx->threshold) ||
-			    isinf(ctx->threshold)) {
-				ctx->threshold = DEFAULT_AUTO_THRESHOLD;
-			}
-			app->auto_threshold = ctx->threshold;
-			ctx->state = IBL_STATE_SPECULAR_INIT;
-			break;
-		}
-
-		case IBL_STATE_SPECULAR_INIT: {
-			LOG_INFO("suckless-ogl.app",
-			         "[Frame %llu] - Specular Init...",
-			         (unsigned long long)app->frame_count);
-			ctx->pending_spec_tex =
-			    pbr_prefilter_init(PREFILTERED_SPECULAR_MAP_SIZE,
-			                       PREFILTERED_SPECULAR_MAP_SIZE);
-			ctx->total_mips =
-			    (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
-			ctx->current_mip = 0;
-			ctx->current_slice = 0;
-			ctx->state = IBL_STATE_SPECULAR_MIPS;
-			break;
-		}
-
-		case IBL_STATE_SPECULAR_MIPS: {
-			if (ctx->current_mip >= SPECULAR_MIPS_GROUPING_START) {
-				// constant
-				/* Group remaining small mips into one frame */
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(
-				    label, sizeof(label),
-				    "Progressive IBL: Specular Mips %d-%d",
-				    ctx->current_mip, ctx->total_mips - 1);
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - %s...",
-				         (unsigned long long)app->frame_count,
-				         label);
-
-				HYBRID_MEASURE_LOG(label)
-				{
-					for (int mip = ctx->current_mip;
-					     mip < ctx->total_mips; ++mip) {
-						pbr_prefilter_mip(
-						    app->shader_spmap,
-						    ctx->pending_hdr_tex,
-						    ctx->pending_spec_tex,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    mip, ctx->total_mips, 0, 1,
-						    ctx->threshold);
-					}
-				}
-				/* Jump to next state immediately */
-				ctx->current_mip = ctx->total_mips;
-			} else {
-				/* Standard Sliced/Single Mip Processing */
-				if (ctx->current_mip == 0) {
-					ctx->total_slices =
-					    SPECULAR_MIP0_SLICES;
-				} else if (ctx->current_mip == 1) {
-					ctx->total_slices =
-					    SPECULAR_MIP1_SLICES;
-				} else {
-					ctx->total_slices = 1;
-				}
-
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(label, sizeof(label),
-				              "Progressive IBL: Specular Mip "
-				              "%d Slice %d/%d",
-				              ctx->current_mip,
-				              ctx->current_slice + 1,
-				              ctx->total_slices);
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - %s...",
-				         (unsigned long long)app->frame_count,
-				         label);
-				HYBRID_MEASURE_LOG(label)
-				{
-					pbr_prefilter_mip(
-					    app->shader_spmap,
-					    ctx->pending_hdr_tex,
-					    ctx->pending_spec_tex,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    ctx->current_mip, ctx->total_mips,
-					    ctx->current_slice,
-					    ctx->total_slices, ctx->threshold);
-				}
-
-				ctx->current_slice++;
-				if (ctx->current_slice >= ctx->total_slices) {
-					ctx->current_slice = 0;
-					ctx->current_mip++;
-				}
-			}
-
-			if (ctx->current_mip >= ctx->total_mips) {
-				ctx->state = IBL_STATE_IRRADIANCE;
-				ctx->current_slice = 0;
-				ctx->total_slices = IRRADIANCE_MAP_SLICES;
-				ctx->pending_irr_tex =
-				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
-			}
-			break;
-		}
-
-		case IBL_STATE_IRRADIANCE: {
-			char label[IBL_LOG_LABEL_SIZE];
-			safe_snprintf(label, sizeof(label),
-			              "Progressive IBL: "
-			              "Irradiance Slice %d/%d",
-			              ctx->current_slice + 1,
-			              ctx->total_slices);
-
-			LOG_INFO("suckless-ogl.app", "[Frame %llu] - %s...",
-			         (unsigned long long)app->frame_count, label);
-
-			HYBRID_MEASURE_LOG(label)
-			{
-				pbr_irradiance_slice_compute(
-				    app->shader_irmap, ctx->pending_hdr_tex,
-				    ctx->pending_irr_tex, IRIDIANCE_MAP_SIZE,
-				    ctx->current_slice, ctx->total_slices,
-				    ctx->threshold);
-			}
-
-			ctx->current_slice++;
-			if (ctx->current_slice >= ctx->total_slices) {
-				ctx->state = IBL_STATE_DONE;
-			}
-			break;
-		}
-
-		case IBL_STATE_DONE: {
-			postprocess_set_exposure(&app->postprocess,
-			                         ctx->threshold);
-
-			/* Swap Textures */
-			if (app->hdr_texture) {
-				glDeleteTextures(1, &app->hdr_texture);
-			}
-			if (app->spec_prefiltered_tex) {
-				glDeleteTextures(1, &app->spec_prefiltered_tex);
-			}
-			if (app->irradiance_tex) {
-				glDeleteTextures(1, &app->irradiance_tex);
-			}
-
-			app->hdr_texture = ctx->pending_hdr_tex;
-			app->spec_prefiltered_tex = ctx->pending_spec_tex;
-			app->irradiance_tex = ctx->pending_irr_tex;
-
-			ctx->pending_hdr_tex = 0;
-			ctx->pending_spec_tex = 0;
-			ctx->pending_irr_tex = 0;
-			ctx->state = IBL_STATE_IDLE;
-
-			double total_time_ms =
-			    perf_timer_elapsed_ms(&ctx->global_timer);
-
-			LOG_INFO(
-			    "suckless-ogl.app",
-			    "[Frame %llu] Environment updated successfully "
-			    "(progressive). Total Time: %.2f ms (CPU Wall "
-			    "Clock)",
-			    (unsigned long long)app->frame_count,
-			    total_time_ms);
-			break;
-		}
-
-		default:
-			break;
 	}
 }
 
@@ -1050,52 +303,19 @@ void app_update(App* app)
 {
 	AsyncRequest req;
 	if (async_loader_poll(&req)) {
-		app->env_map_loading = 0; /* Clear loading flag */
 		app_finalize_environment_load(app, &req);
+		if (req.data) {
+			free(req.data); /* Data was allocated with malloc in
+			                   texture_load_pixels */
+		}
 	}
-
 	app_process_ibl_state_machine(app);
-}
-
-void app_update_gpu_buffers(App* app)
-{
-	glBindVertexArray(app->sphere_vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_vbo);
-	glBufferData(GL_ARRAY_BUFFER,
-	             (GLsizeiptr)(app->geometry.vertices.size * sizeof(vec3)),
-	             app->geometry.vertices.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, app->sphere_nbo);
-	glBufferData(GL_ARRAY_BUFFER,
-	             (GLsizeiptr)(app->geometry.normals.size * sizeof(vec3)),
-	             app->geometry.normals.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
-	glEnableVertexAttribArray(1);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, app->sphere_ebo);
-	glBufferData(
-	    GL_ELEMENT_ARRAY_BUFFER,
-	    (GLsizeiptr)(app->geometry.indices.size * sizeof(unsigned int)),
-	    app->geometry.indices.data, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
 }
 
 void app_render(App* app)
 {
-	/* Commencer le rendu dans le framebuffer de
-	 * post-processing */
 	postprocess_begin(&app->postprocess);
-
-	/* Explicitly clear color and depth.
-	   Many Intel drivers perform better with color clear
-	   than without it.
-	 */
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	/* glClear handled by postprocess_begin */
 
 	if (app->show_debug_tex) {
 		shader_use(app->debug_shader);
@@ -1106,93 +326,54 @@ void app_render(App* app)
 		glBindVertexArray(app->empty_vao);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
-
-		/* Terminer et appliquer le post-processing */
 		postprocess_end(&app->postprocess);
-
 		return;
 	}
 
-	/* Setup camera matrices */
 	mat4 view;
 	mat4 proj;
 	mat4 view_proj;
 	mat4 inv_view_proj;
-
 	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
 	                   app->camera.position[2]};
 	camera_get_view_matrix(&app->camera, view);
-
-	glm_perspective(glm_rad(FOV_ANGLE),
+	glm_perspective(glm_rad(app->camera.zoom),
 	                (float)app->width / (float)app->height, NEAR_PLANE,
 	                FAR_PLANE, proj);
-
-	/* Calculate Inverse View-Projection */
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
-	/* Start Post-Processing (binds FBO) */
-	postprocess_begin(&app->postprocess);
-
-	/* RENDER SCENE */
-
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	/* TRANSPARENT PIPELINE:
-	 * 1. Skybox First (Background)
-	 * 2. Sort Billboards Back-to-Front
-	 * 3. Render Billboards with Blending
-	 */
-
-	/* 1. Skybox */
 	if (app->show_envmap) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDisable(
-		    GL_DEPTH_TEST); /* Optimization: Draw BG at max depth */
+		glDisable(GL_DEPTH_TEST);
 		skybox_render(&app->skybox, app->skybox_shader,
 		              app->hdr_texture, app->dummy_black_tex,
 		              inv_view_proj, app->env_lod);
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	/* 2. Sort Billboards */
 	if (app->billboard_mode) {
 		sphere_sorter_sort(&app->sphere_sorter, app->sphere_instances,
 		                   app->sphere_instance_count,
 		                   app->camera.position);
-
-		/* Update GPU Buffer */
 		billboard_group_update(&app->billboard_group,
 		                       app->sphere_instances,
 		                       app->sphere_instance_count);
 	}
 
-	/* 3. Render Objects */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
-	/* Enable Blending for Edge Smoothing */
 	if (app->billboard_mode) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		app_render_billboards(app, view, proj, camera_pos);
 		glDisable(GL_BLEND);
 	} else {
-		/* Instanced Mesh Mode (likely opaque) */
 		app_render_instanced(app, view, proj, camera_pos);
 	}
-
-	/* Reset Polygon Mode to FILL for subsequent passes (PostProcess/UI) */
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 #else
-	/* LEGACY OPAQUE PIPELINE:
-	 * 1. Objects First (Early-Z)
-	 * 2. Skybox Last
-	 */
-
-	/* 1. Render icosphere or billboards FIRST (populates
-	 * depth buffer for early-Z culling) */
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
 	if (app->billboard_mode) {
 		app_render_billboards(app, view, proj, camera_pos);
 	} else {
@@ -1200,969 +381,14 @@ void app_render(App* app)
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	/* 2. Render skybox LAST (using LEQUAL to fill
-	 * background) */
 	if (app->show_envmap) {
-		/* We always use FILL for the skybox regardless
-		 * of wireframe mode */
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		skybox_render(&app->skybox, app->skybox_shader,
 		              app->hdr_texture, app->dummy_black_tex,
 		              inv_view_proj, app->env_lod);
 	}
 #endif
 
-	/* End Post-Processing (Lighting -> ToneMapping -> Gamma -> Screen) */
 	postprocess_end(&app->postprocess);
-
-	/* Update Matrices for next frame (Velocity Buffer) */
 	postprocess_update_matrices(&app->postprocess, view_proj);
-
-	/* UI Overlay */
 	app_render_ui(app);
-}
-
-static void app_draw_help_overlay(App* app)
-{
-	/* Setup strict 2D state again just in case */
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
-
-	static const float HELP_START_X = 20.0F;
-	static const float HELP_START_Y = 60.0F;
-	static const float HELP_PADDING = 5.0F;
-	static const float HELP_SECTION_PADDING = 10.0F;
-	static const vec3 HELP_COLOR = {0.1F, 1.0F, 0.25F}; /* Yellow-ish */
-
-	UILayout layout;
-	ui_layout_init(&layout, &app->ui, HELP_START_X, HELP_START_Y,
-	               HELP_PADDING, app->width, app->height);
-
-	/* Section: Controls */
-	ui_layout_text(&layout, "--- Controls ---", HELP_COLOR);
-	ui_layout_text(&layout, "[WASD] Move", HELP_COLOR);
-	ui_layout_text(&layout, "[Mouse] Look", HELP_COLOR);
-	ui_layout_text(&layout, "[Scroll] Speed/Zoom", HELP_COLOR);
-	ui_layout_text(&layout, "[Left Click] Capture Mouse", HELP_COLOR);
-	ui_layout_text(&layout, "[ESC] Release Mouse/Exit", HELP_COLOR);
-
-	ui_layout_separator(&layout, HELP_SECTION_PADDING);
-
-	/* Section: Features */
-	ui_layout_text(&layout, "--- Features ---", HELP_COLOR);
-	ui_layout_text(&layout, "[F1] Cycle Text Overlays", HELP_COLOR);
-	ui_layout_text(&layout, "[F2] Toggle Help", HELP_COLOR);
-	ui_layout_text(&layout, "[F] Toggle Flashlight", HELP_COLOR);
-	ui_layout_text(&layout, "[Z] Toggle Wireframe", HELP_COLOR);
-	ui_layout_text(&layout, "[H] Toggle UI/Help", HELP_COLOR);
-	ui_layout_text(&layout, "[J] Toggle Auto-Exposure", HELP_COLOR);
-	ui_layout_text(&layout, "[B] Toggle Bloom", HELP_COLOR);
-	ui_layout_text(&layout, "[M] Toggle Motion Blur", HELP_COLOR);
-	ui_layout_text(&layout, "[L] Toggle Billboard Mode", HELP_COLOR);
-	ui_layout_text(&layout, "[K] Toggle Envmap", HELP_COLOR);
-
-	ui_layout_separator(&layout, HELP_SECTION_PADDING);
-
-	/* Section: Environment */
-	ui_layout_text(&layout, "--- Environment ---", HELP_COLOR);
-	ui_layout_text(&layout, "[PgUp/PgDn] Change HDR", HELP_COLOR);
-	ui_layout_text(&layout, "[Shift + PgUp/PgDn] Blur HDR", HELP_COLOR);
-
-	ui_layout_separator(&layout, HELP_SECTION_PADDING);
-
-	/* Section: Post-Process Styles */
-	ui_layout_text(&layout, "--- Styles (Numpad) ---", HELP_COLOR);
-	ui_layout_text(&layout, "[1] Default (Clean)", HELP_COLOR);
-	ui_layout_text(&layout, "[2] Subtle", HELP_COLOR);
-	ui_layout_text(&layout, "[3] Cinematic", HELP_COLOR);
-	ui_layout_text(&layout, "[4] Vintage", HELP_COLOR);
-	ui_layout_text(&layout, "[5] Matrix", HELP_COLOR);
-	ui_layout_text(&layout, "[6] BW Contrast", HELP_COLOR);
-	ui_layout_text(&layout, "[0] Reset", HELP_COLOR);
-
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
-}
-
-static void draw_exposure_debug_text(App* app)
-{
-	float exposure_val = 0.0F;
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.exposure_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, &exposure_val);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
-	float luminance =
-	    (exposure_val > LUMINANCE_EPSILON) ? (1.0F / exposure_val) : 0.0F;
-	(void)safe_snprintf(debug_text, sizeof(debug_text),
-	                    "Auto Exposure: %.4f | Scene "
-	                    "Lum: %.4f",
-	                    exposure_val, luminance);
-
-	ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
-	             DEFAULT_FONT_OFFSET_Y + DEBUG_TEXT_Y_OFFSET,
-	             (float*)DEBUG_ORANGE_COLOR, app->width, app->height);
-}
-
-static int compute_luminance_histogram(App* app, int* buckets, int size,
-                                       float* min_lum, float* max_lum)
-{
-	const int MAP_SIZE = 64;
-	const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
-	float* lum_data = malloc((size_t)TOTAL_PIXELS * sizeof(float));
-
-	if (!lum_data) {
-		return 0;
-	}
-
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.downsample_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, lum_data);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	for (int i = 0; i < size; i++) {
-		buckets[i] = 0;
-	}
-
-	static const float HISTO_MIN_INIT = 1000.0F;
-	static const float HISTO_MAX_INIT = -1000.0F;
-	*min_lum = HISTO_MIN_INIT;
-	*max_lum = HISTO_MAX_INIT;
-
-	for (int i = 0; i < TOTAL_PIXELS; i++) {
-		float val = lum_data[i];
-		if (val < *min_lum) {
-			*min_lum = val;
-		}
-		if (val > *max_lum) {
-			*max_lum = val;
-		}
-
-		static const float RANGE_OFFSET = 5.0F;
-		static const float RANGE_SCALE = 10.0F;
-		float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
-		int idx = (int)(norm * (float)size);
-		if (idx < 0) {
-			idx = 0;
-		}
-		if (idx >= size) {
-			idx = size - 1;
-		}
-
-		buckets[idx]++;
-	}
-
-	free(lum_data);
-	return 1;
-}
-
-static void draw_luminance_histogram_graph(App* app, const int* buckets,
-                                           int size, float min_lum,
-                                           float max_lum)
-{
-	static const float GRAPH_POS_X = 20.0F;
-	static const float GRAPH_POS_Y_OFF = 200.0F;
-	static const float GRAPH_DIM_W = 300.0F;
-	static const float GRAPH_DIM_H = 100.0F;
-
-	float graph_x = GRAPH_POS_X;
-	float graph_y = (float)app->height - GRAPH_POS_Y_OFF;
-	float graph_w = GRAPH_DIM_W;
-	float graph_h = GRAPH_DIM_H;
-	float bar_w = graph_w / (float)size;
-
-	/* Background */
-	ui_draw_rect(&app->ui, graph_x, graph_y, graph_w, graph_h,
-	             (vec3){0.0F, 0.0F, 0.0F}, app->width, app->height);
-
-	/* Find peak for scaling */
-	int max_bucket = 1;
-	for (int i = 0; i < size; i++) {
-		if (buckets[i] > max_bucket) {
-			max_bucket = buckets[i];
-		}
-	}
-
-	/* Draw Bars */
-	for (int i = 0; i < size; i++) {
-		float h_val = (float)buckets[i] / (float)max_bucket * graph_h;
-		vec3 bar_col;
-		glm_vec3_copy((float*)HISTO_BAR_COLOR_GREEN, bar_col);
-		if (i < size / 2) {
-			glm_vec3_copy((float*)HISTO_BAR_COLOR_BLUE, bar_col);
-		} else {
-			glm_vec3_copy((float*)HISTO_BAR_COLOR_RED, bar_col);
-		}
-
-		ui_draw_rect(&app->ui, graph_x + ((float)i * bar_w),
-		             graph_y + (graph_h - h_val), bar_w, h_val, bar_col,
-		             app->width, app->height);
-	}
-
-	/* Draw Range Info */
-	char range_text[RANGE_TEXT_BUFFER_SIZE];
-	(void)safe_snprintf(range_text, sizeof(range_text),
-	                    "Log Lum Range: [%.2f, %.2f]", min_lum, max_lum);
-	ui_draw_text(&app->ui, range_text, graph_x,
-	             graph_y - GRAPH_TEXT_PADDING, (float*)GRAPH_TEXT_COLOR,
-	             app->width, app->height);
-}
-
-static void app_draw_debug_overlay(App* app)
-{
-	/* Auto Exposure Debug Text */
-	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
-
-		draw_exposure_debug_text(app);
-
-		/* -----------------------
-		   Luminance Histogram
-		   ----------------------- */
-		const int HISTO_SIZE = 64;
-		int buckets[HISTO_SIZE];
-		float min_lum = 0.0F;
-		float max_lum = 0.0F;
-
-		if (compute_luminance_histogram(app, buckets, HISTO_SIZE,
-		                                &min_lum, &max_lum) != 0) {
-			draw_luminance_histogram_graph(app, buckets, HISTO_SIZE,
-			                               min_lum, max_lum);
-		}
-
-		/* Cleanup */
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
-	}
-}
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-void app_render_ui(App* app)
-{
-	/* --- Draw Main Info Overlay --- */
-	UILayout layout;
-	/* Start slightly offset from top-left */
-	ui_layout_init(&layout, &app->ui, DEFAULT_FONT_OFFSET_X,
-	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
-	               app->height);
-
-	/* Conditional text overlay rendering based on
-	 * text_overlay_mode */
-	/* Mode 0: Off, Mode 1: FPS+Position, Mode 2:
-	 * FPS+Position+Envmap, Mode 3:
-	 * FPS+Position+Envmap+Exposure */
-
-	/* 1. FPS - shown in modes 1, 2, 3 */
-	if (app->text_overlay_mode >= 1) {
-		static const float MS_PER_SECOND = 1000.0F;
-		char fps_text[MAX_FPS_TEXT_LENGTH];
-		float current_fps = 0.0F;
-		float frame_time_ms = 0.0F;
-
-		if (app->fps_counter.average_frame_time > 0.0F) {
-			current_fps =
-			    1.0F / (float)app->fps_counter.average_frame_time;
-			frame_time_ms =
-			    (float)app->fps_counter.average_frame_time *
-			    MS_PER_SECOND;
-		}
-
-		(void)safe_snprintf(fps_text, sizeof(fps_text),
-		                    "FPS: %.1f (%.2f ms)", current_fps,
-		                    frame_time_ms);
-
-		ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
-
-		/* Adaptive Sampler Debug */
-		if (app->text_overlay_mode >= 2) {
-			static const size_t SAMPLER_BUF_SIZE = 256;
-			static const size_t SAMPLER_WIDTH = 40;
-			static const size_t AVG_TEXT_SIZE = 64;
-
-			char sampler_buf[SAMPLER_BUF_SIZE];
-			float sampled_avg =
-			    adaptive_sampler_get_average(&app->fps_sampler);
-			adaptive_sampler_ascii_plot(
-			    &app->fps_sampler, sampler_buf, sizeof(sampler_buf),
-			    SAMPLER_WIDTH, sampled_avg);
-
-			/* Show numerical average */
-			char avg_text[AVG_TEXT_SIZE];
-			(void)safe_snprintf(avg_text, sizeof(avg_text),
-			                    "Sampled Avg: %.2f", sampled_avg);
-			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
-
-			/* Split lines manually to avoid newline
-			 * issues */
-			char* newline_ptr = strchr(sampler_buf, '\n');
-			if (newline_ptr) {
-				*newline_ptr = '\0';
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR); /* Timeline
-				                                       markers
-				                                     */
-				ui_layout_text(&layout, newline_ptr + 1,
-				               DEFAULT_FONT_COLOR); /* Graph
-				                                     */
-			} else {
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR);
-			}
-		}
-	}
-
-	/* 2. Position - shown in modes 1, 2, 3 */
-	if (app->text_overlay_mode >= 1) {
-		char pos_text[DEBUG_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(
-		    pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-		    app->camera.position[0], app->camera.position[1],
-		    app->camera.position[2]);
-		ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
-	}
-
-	/* 3. Environment - shown in modes 2, 3 */
-	if (app->text_overlay_mode >= 2 && app->hdr_count > 0 &&
-	    app->current_hdr_index >= 0) {
-		char env_text[ENV_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
-		                    app->hdr_files[app->current_hdr_index]);
-		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
-	}
-
-	/* 4. Exposure - shown in mode 3 only */
-	if (app->text_overlay_mode >= 3) {
-		float exposure_val = 0.0F;
-		if (postprocess_is_enabled(&app->postprocess,
-		                           POSTFX_AUTO_EXPOSURE)) {
-			/* Async Readback using PBO to avoid
-			 * pipeline stall */
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-
-			/* 1. Read PREVIOUS frame's data (if
-			 * available) */
-			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
-			                                 GL_READ_ONLY);
-			if (ptr) {
-				app->current_exposure = *ptr;
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			}
-
-			/* 2. Trigger async read for CURRENT
-			 * frame */
-			glBindTexture(
-			    GL_TEXTURE_2D,
-			    app->postprocess.auto_exposure_fx.exposure_tex);
-			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT,
-			              0); /* Offset 0 */
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-			exposure_val = app->current_exposure;
-		} else {
-			exposure_val = app->postprocess.exposure.exposure;
-		}
-
-		char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(exposure_text, sizeof(exposure_text),
-		                    "Exposure: %.3f", exposure_val);
-
-		ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
-	}
-
-	/* 5. IBL Processing Indicator (Bottom-Right) */
-	/* 5. IBL Processing Indicator (Bottom-Right) */
-	if (app->ibl_ctx.state != IBL_STATE_IDLE || app->env_map_loading) {
-		char loading_text[UI_LOADING_TEXT_SIZE];
-
-		const char* status = (app->env_map_loading != 0)
-		                         ? "Loading HDR"
-		                         : "Generating IBL";
-		safe_snprintf(loading_text, sizeof(loading_text), "%s", status);
-
-		float text_width =
-		    (float)strlen(loading_text) * UI_LOADING_TEXT_WIDTH_FACTOR;
-
-		float spinner_size = UI_SPINNER_SIZE;
-
-		/* Center on screen */
-		float center_x = (float)app->width * UI_CENTER_FACTOR;
-		float center_y = (float)app->height * UI_CENTER_FACTOR;
-
-		/* Text below spinner */
-		float text_x = center_x - (text_width * UI_CENTER_FACTOR);
-		float text_y =
-		    center_y + (spinner_size * UI_TEXT_OFFSET_FACTOR);
-
-		ui_draw_text(&app->ui, loading_text, text_x, text_y,
-		             HISTO_BAR_COLOR_BLUE, app->width, app->height);
-
-		/* 2. Loading Spinner */
-		double current_time = glfwGetTime();
-		float angle = (float)current_time * (float)UI_SPINNER_SPEED;
-
-		ui_draw_spinner(&app->ui, center_x, center_y, spinner_size,
-		                angle, UI_SPINNER_COLOR, app->width,
-		                app->height);
-	}
-
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
-
-	/* Auto Exposure Debug Text */
-	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
-		app_draw_debug_overlay(app);
-	}
-
-	/* Help Screen Overlay */
-	if (app->show_help) {
-		app_draw_help_overlay(app);
-	}
-}
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-static void handle_preset_input(App* app, int key)
-{
-	switch (key) {
-		case GLFW_KEY_1: /* Preset: Aucun */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
-			LOG_INFO("suckless-ogl.app",
-			         "Style: Aucun (rendu pur) - Exposure: %.2f",
-			         app->auto_threshold);
-			break;
-
-		case GLFW_KEY_2: /* Preset: Subtle */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_SUBTLE);
-			LOG_INFO("suckless-ogl.app", "Style: Subtle");
-			break;
-
-		case GLFW_KEY_3: /* Preset: Cinématique */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_CINEMATIC);
-			LOG_INFO("suckless-ogl.app", "Style: Cinématique");
-			break;
-
-		case GLFW_KEY_4: /* Preset: Vintage */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_VINTAGE);
-			LOG_INFO("suckless-ogl.app", "Style: Vintage");
-			break;
-
-		case GLFW_KEY_5: /* Style: "Matrix" */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_MATRIX);
-			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
-			break;
-
-		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_BW_CONTRAST);
-			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
-			break;
-
-		case GLFW_KEY_0:
-		case GLFW_KEY_KP_0:
-			/* Reset complet */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
-			LOG_INFO("suckless-ogl.app",
-			         "Color Grading: Reset to Defaults");
-			break;
-
-		default:
-			break;
-	}
-}
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
-static void handle_postprocess_input(App* app, int key)
-{
-	switch (key) {
-		/* Post-Processing Toggles */
-		case GLFW_KEY_V: /* Toggle Vignette */
-			postprocess_toggle(&app->postprocess, POSTFX_VIGNETTE);
-			LOG_INFO("suckless-ogl.app", "Vignette: %s",
-			         postprocess_is_enabled(&app->postprocess,
-			                                POSTFX_VIGNETTE)
-			             ? "ON"
-			             : "OFF");
-			break;
-
-		case GLFW_KEY_G: /* Toggle Grain */
-			postprocess_toggle(&app->postprocess, POSTFX_GRAIN);
-			LOG_INFO("suckless-ogl.app", "Grain: %s",
-			         postprocess_is_enabled(&app->postprocess,
-			                                POSTFX_GRAIN)
-			             ? "ON"
-			             : "OFF");
-			break;
-
-		case GLFW_KEY_B: /* Toggle Bloom */
-			postprocess_toggle(&app->postprocess, POSTFX_BLOOM);
-			LOG_INFO("suckless-ogl.app", "Bloom: %s",
-			         postprocess_is_enabled(&app->postprocess,
-			                                POSTFX_BLOOM)
-			             ? "ON"
-			             : "OFF");
-			break;
-
-		case GLFW_KEY_H: /* Toggle DOF / Debug */
-			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
-			        GLFW_PRESS ||
-			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
-			        GLFW_PRESS) {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_DOF_DEBUG);
-				LOG_INFO(
-				    "suckless-ogl.app", "DOF DEBUG: %s",
-				    postprocess_is_enabled(&app->postprocess,
-				                           POSTFX_DOF_DEBUG)
-				        ? "ON"
-				        : "OFF");
-			} else {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_DOF);
-				LOG_INFO("suckless-ogl.app", "DOF: %s",
-				         postprocess_is_enabled(
-				             &app->postprocess, POSTFX_DOF)
-				             ? "ON"
-				             : "OFF");
-			}
-			break;
-
-		case GLFW_KEY_M: /* Toggle Motion Blur / Debug
-		                  */
-			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
-			        GLFW_PRESS ||
-			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
-			        GLFW_PRESS) {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_MOTION_BLUR_DEBUG);
-				LOG_INFO("suckless-ogl.app",
-				         "Motion Blur DEBUG: %s",
-				         postprocess_is_enabled(
-				             &app->postprocess,
-				             POSTFX_MOTION_BLUR_DEBUG)
-				             ? "ON"
-				             : "OFF");
-			} else {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_MOTION_BLUR);
-				LOG_INFO(
-				    "suckless-ogl.app", "Motion Blur: %s",
-				    postprocess_is_enabled(&app->postprocess,
-				                           POSTFX_MOTION_BLUR)
-				        ? "ON"
-				        : "OFF");
-			}
-			break;
-
-			// case GLFW_KEY_X: /* Toggle Chromatic
-			//                     Aberration */
-			// 	postprocess_toggle(&app->postprocess,
-			// 	                   POSTFX_CHROM_ABBR);
-			// 	LOG_INFO("suckless-ogl.app", "Chromatic
-			// Aberration: %s",
-			// 	         postprocess_is_enabled(&app->postprocess,
-			// 	                                POSTFX_CHROM_ABBR)
-			// 	             ? "ON"
-			// 	             : "OFF");
-			// 	break;
-
-		case GLFW_KEY_R: /* Reload Shaders */
-			/* TODO: Implement shader reloading
-			 * system */
-			LOG_INFO("suckless-ogl.app",
-			         "Shader reloading not "
-			         "implemented yet");
-			break;
-		case GLFW_KEY_KP_ADD: /* Augmenter
-		                         l'exposition */
-		{
-			float current = app->postprocess.exposure.exposure;
-			postprocess_set_exposure(
-			    &app->postprocess, current + DEFAULT_EXPOSURE_STEP);
-			LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
-			         app->postprocess.exposure.exposure);
-		} break;
-
-		case GLFW_KEY_KP_SUBTRACT: /* Diminuer
-		                              l'exposition
-		                            */
-		{
-			float current = app->postprocess.exposure.exposure;
-			postprocess_set_exposure(
-			    &app->postprocess,
-			    current > DEFAULT_MIN_EXPOSURE
-			        ? current - DEFAULT_EXPOSURE_STEP
-			        : DEFAULT_MIN_EXPOSURE);
-			LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
-			         app->postprocess.exposure.exposure);
-		} break;
-
-		case GLFW_KEY_J: /* Toggle Auto Exposure */
-			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
-			        GLFW_PRESS ||
-			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
-			        GLFW_PRESS) {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_EXPOSURE_DEBUG);
-				LOG_INFO("suckless-ogl.app",
-				         "Auto Exposure Debug: "
-				         "%s",
-				         postprocess_is_enabled(
-				             &app->postprocess,
-				             POSTFX_EXPOSURE_DEBUG)
-				             ? "ON"
-				             : "OFF");
-			} else {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_AUTO_EXPOSURE);
-				LOG_INFO(
-				    "suckless-ogl.app", "Auto Exposure: %s",
-				    postprocess_is_enabled(&app->postprocess,
-				                           POSTFX_AUTO_EXPOSURE)
-				        ? "ON"
-				        : "OFF");
-			}
-			break;
-
-		case GLFW_KEY_F5: /* Cycle PBR Debug Modes
-		                   */
-		{
-			app->pbr_debug_mode = (app->pbr_debug_mode + 1) %
-			                      PBR_DEBUG_MODE_COUNT; /* 0..8
-			                                             */
-			const char* modeNames[] = {"Final PBR",
-			                           "Albedo",
-			                           "Normal",
-			                           "Metallic",
-			                           "Roughness",
-			                           "AO",
-			                           "Irradiance (Diff)",
-			                           "Prefilter (Spec)",
-			                           "BRDF LUT"};
-			LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
-			         modeNames[app->pbr_debug_mode]);
-		} break;
-
-		default:
-			handle_preset_input(app, key);
-			break;
-	}
-}
-
-static void app_handle_env_input(App* app, int action, int mods, int key)
-{
-	if (action != GLFW_PRESS && action != GLFW_REPEAT) {
-		return;
-	}
-
-	if (key == GLFW_KEY_PAGE_UP) {
-		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			app->env_lod += LOD_STEP;
-			if (app->env_lod > MAX_ENV_LOD) {
-				app->env_lod = MAX_ENV_LOD;
-			}
-			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         app->env_lod);
-		} else if (app->hdr_count > 1) {
-			/* Next Environment */
-			app->current_hdr_index =
-			    (app->current_hdr_index + 1) % app->hdr_count;
-			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
-		}
-	} else if (key == GLFW_KEY_PAGE_DOWN) {
-		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			app->env_lod -= LOD_STEP;
-			if (app->env_lod < MIN_ENV_LOD) {
-				app->env_lod = MIN_ENV_LOD;
-			}
-			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         app->env_lod);
-		} else if (app->hdr_count > 1) {
-			app->current_hdr_index--;
-			if (app->current_hdr_index < 0) {
-				app->current_hdr_index = app->hdr_count - 1;
-			}
-			app_load_env_map(
-			    app, app->hdr_files[app->current_hdr_index]);
-		}
-	}
-}
-
-static void handle_app_input(App* app, int key, int mods)
-{
-	switch (key) {
-		case GLFW_KEY_F1: /* Cycle Text Overlays */
-		{
-			static const char* mode_names[] = {
-			    "Off", "FPS + Position", "FPS + Position + Envmap",
-			    "FPS + Position + Envmap + Exposure"};
-			static const int mode_count =
-			    sizeof(mode_names) / sizeof(mode_names[0]);
-
-			app->text_overlay_mode =
-			    (app->text_overlay_mode + 1) % mode_count;
-
-			LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
-			         mode_names[app->text_overlay_mode]);
-		} break;
-		case GLFW_KEY_F2: /* Toggle Help */
-			app->show_help = !app->show_help;
-			break;
-		case GLFW_KEY_P: /* Capture */
-			app_save_raw_frame(app, "capture_frame.raw");
-			break;
-		case GLFW_KEY_Z: /* Wireframe (W on French layout) */
-			app->wireframe = !app->wireframe;
-			break;
-		case GLFW_KEY_UP:
-			if (app->subdivisions < MAX_SUBDIV) {
-				app->subdivisions++;
-			}
-			break;
-		case GLFW_KEY_DOWN:
-			if (app->subdivisions > MIN_SUBDIV) {
-				app->subdivisions--;
-			}
-			break;
-		case GLFW_KEY_C:
-			app->camera_enabled = !app->camera_enabled;
-			if (app->camera_enabled) {
-				glfwSetInputMode(app->window, GLFW_CURSOR,
-				                 GLFW_CURSOR_DISABLED);
-				app->first_mouse = 1;
-			} else {
-				glfwSetInputMode(app->window, GLFW_CURSOR,
-				                 GLFW_CURSOR_NORMAL);
-			}
-			LOG_INFO("suckless-ogl.app", "Camera control: %s",
-			         app->camera_enabled ? "ENABLED" : "DISABLED");
-			break;
-		case GLFW_KEY_SPACE:
-			camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE,
-			            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
-			app->env_lod = DEFAULT_ENV_LOD;
-			LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
-			break;
-		case GLFW_KEY_PAGE_UP:
-		case GLFW_KEY_PAGE_DOWN:
-			app_handle_env_input(app, GLFW_PRESS, mods, key);
-			break;
-		case GLFW_KEY_F:
-			app_toggle_fullscreen(app, app->window);
-			break;
-		case GLFW_KEY_L:
-			app->billboard_mode = !app->billboard_mode;
-			app_update_instancing_mode(app);
-			LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
-			         app->billboard_mode ? "ON" : "OFF");
-			break;
-		case GLFW_KEY_K:
-			app->show_envmap = !app->show_envmap;
-			LOG_INFO("suckless-ogl.app", "Envmap: %s",
-			         app->show_envmap ? "ON" : "OFF");
-			break;
-		case GLFW_KEY_X:
-			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_FXAA_DEBUG);
-				LOG_INFO(
-				    "suckless-ogl.app", "FXAA Debug: %s",
-				    postprocess_is_enabled(&app->postprocess,
-				                           POSTFX_FXAA_DEBUG)
-				        ? "ON"
-				        : "OFF");
-			} else {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_FXAA);
-				LOG_INFO("suckless-ogl.app", "FXAA: %s",
-				         postprocess_is_enabled(
-				             &app->postprocess, POSTFX_FXAA)
-				             ? "ON"
-				             : "OFF");
-			}
-			break;
-		default:
-			handle_postprocess_input(app, key);
-			break;
-	}
-}
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action,
-                         int mods)
-{
-	(void)scancode;
-
-	App* app = (App*)glfwGetWindowUserPointer(window);
-	if (action == GLFW_PRESS) {
-		if (key == GLFW_KEY_ESCAPE) {
-			glfwSetWindowShouldClose(window, GLFW_TRUE);
-		} else {
-			handle_app_input(app, key, mods);
-		}
-	}
-
-	camera_process_key_callback(&app->camera, key, action);
-}
-
-static void camera_process_key_callback(Camera* camera, int key, int action)
-{
-	int pressed = (action != GLFW_RELEASE);
-	if (key == GLFW_KEY_W) {
-		camera->move_forward = pressed;
-	}
-	if (key == GLFW_KEY_S) {
-		camera->move_backward = pressed;
-	}
-	if (key == GLFW_KEY_A) {
-		camera->move_left = pressed;
-	}
-	if (key == GLFW_KEY_D) {
-		camera->move_right = pressed;
-	}
-	if (key == GLFW_KEY_Q) {
-		camera->move_up = pressed;
-	}
-	if (key == GLFW_KEY_E) {
-		camera->move_down = pressed;
-	}
-}
-
-static void app_toggle_fullscreen(App* app, GLFWwindow* window)
-{
-	static const int REFRESH_RATE_WINDOWED = 0;
-
-	if (app->is_fullscreen == 0) {
-		/* Switch to fullscreen */
-		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-		/* Save window geometry */
-		glfwGetWindowPos(window, &app->saved_x, &app->saved_y);
-		glfwGetWindowSize(window, &app->saved_width,
-		                  &app->saved_height);
-
-		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width,
-		                     mode->height, mode->refreshRate);
-		app->is_fullscreen = 1;
-		LOG_INFO("suckless-ogl.app", "Switched to fullscreen (%dx%d)",
-		         mode->width, mode->height);
-	} else {
-		/* Switch back to windowed */
-		glfwSetWindowMonitor(window, NULL, app->saved_x, app->saved_y,
-		                     app->saved_width, app->saved_height,
-		                     REFRESH_RATE_WINDOWED);
-		app->is_fullscreen = 0;
-		LOG_INFO("suckless-ogl.app", "Switched to windowed");
-	}
-}
-
-static void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	App* app = (App*)glfwGetWindowUserPointer(window);
-
-	if (!app->camera_enabled) {
-		return;
-	}
-
-	/* Handle first mouse movement */
-	if (app->first_mouse) {
-		app->last_mouse_x = xpos;
-		app->last_mouse_y = ypos;
-		app->first_mouse = 0;
-		return;
-	}
-
-	/* Calculate mouse delta */
-	double delta_x = xpos - app->last_mouse_x;
-	double delta_y = ypos - app->last_mouse_y;
-	app->last_mouse_x = xpos;
-	app->last_mouse_y = ypos;
-
-	/* Update camera rotation (note: -delta_x for
-	 * natural mouse movement) */
-	camera_process_mouse(&app->camera, (float)delta_x, (float)delta_y);
-}
-
-static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	(void)xoffset;
-	App* app = (App*)glfwGetWindowUserPointer(window);
-
-	// On passe le yoffset directement à la caméra
-	camera_process_scroll(&app->camera, (float)yoffset);
-}
-
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-	App* app = (App*)glfwGetWindowUserPointer(window);
-	app->width = width;
-	app->height = height;
-	glViewport(0, 0, width, height);
-
-	/* Redimensionner le post-processing */
-	postprocess_resize(&app->postprocess, width, height);
-}
-
-static void app_save_raw_frame(App* app, const char* filename)
-{
-	int width = app->width;
-	int height = app->height;
-	size_t size = width * height * 3;
-	unsigned char* pixels = malloc(size);
-
-	if (!pixels) {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for "
-		          "RAW capture");
-		return;
-	}
-
-	// Use 1-byte alignment to handle any window
-	// resolution correctly
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-
-	FILE* file = fopen(filename, "wb");
-	if (file) {
-		size_t result = fwrite(pixels, 1, size, file);
-		if (result != size) {
-			LOG_ERROR("suckless-ogl.app",
-			          "Failed to write RAW "
-			          "frame to file: %s",
-			          filename);
-			return;
-		}
-		result = fclose(file);
-		if (result != 0) {
-			LOG_ERROR("suckless-ogl.app",
-			          "Failed to close file "
-			          "for RAW capture: %s",
-			          filename);
-			return;
-		}
-		LOG_INFO("suckless-ogl.app", "RAW frame captured: %s",
-		         filename);
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open file for RAW capture");
-	}
-
-	free(pixels);
-	// Reset alignment to default for other operations
-	glPixelStorei(GL_PACK_ALIGNMENT, 4);
 }
