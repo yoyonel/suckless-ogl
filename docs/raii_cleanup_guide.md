@@ -13,8 +13,60 @@ In standard C, resources (memory, file handles, timers) must be managed manually
 
 To solve this, we use a technique borrowed from C++ called RAII, made possible in C by a GCC/Clang extension.
 
-### The `__attribute__((cleanup))` Extension
+### The attribute cleanup Extension
 This attribute tells the compiler to automatically call a specific "cleanup function" when a local variable goes out of scope.
+
+\dot
+digraph RAIIScope {
+  rankdir=TD;
+  bgcolor="transparent";
+  dpi=96;
+
+  // Suckless-Modern "Ghost" Design Tokens (Upscaled)
+  node [
+    shape=rect,
+    style="rounded",
+    fontname="Helvetica,Arial,sans-serif",
+    fontsize=16,
+    fillcolor="none",
+    color="#414868",
+    fontcolor="#c0caf5",
+    penwidth=2
+  ];
+
+  edge [
+    color="#565f89",
+    fontname="Helvetica,Arial,sans-serif",
+    fontsize=18,
+    fontcolor="#9aa5ce",
+    arrowsize=0.8,
+    penwidth=1.2
+  ];
+
+  subgraph cluster_scope {
+    label="Function Scope {}";
+    fontname="Helvetica Bold,Arial,sans-serif";
+    fontsize=18;
+    fontcolor="#7aa2f7";
+    style="rounded,dashed";
+    color="#7aa2f7";
+    margin=25;
+
+    Init [label="1. Init Variable\n(Constructor)", color="#9ece6a", fontcolor="#9ece6a", penwidth=3];
+    Work [label="2. Do Work\n(Logic)", color="#7dcfff", fontcolor="#7dcfff"];
+    Exit [label="3. Scope Exit\n(Return/Break/End)", shape=diamond, color="#e0af68", fontcolor="#e0af68"];
+    Cleanup [label="4. Auto-Cleanup\n(Destructor)", color="#f7768e", fontcolor="#f7768e", penwidth=3];
+  }
+
+  Init -> Work [label=" Normal Flow"];
+  Work -> Exit;
+  Exit -> Cleanup [label=" Compiler Magic", color="#7aa2f7", penwidth=2];
+
+  Init -> Exit [label=" Error/Early Return", style=dotted, color="#f7768e"];
+}
+\enddot
+
+---
 
 ---
 
@@ -25,26 +77,29 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 ### The Core Components
 
 1.  **The RAII Container**: A structure that holds the resource and its metadata.
-    ```c
-    typedef struct {
-        HybridTimer timer;
-        const char* label;
-    } HybridTimerRAII;
-    ```
+
+        \code{.c}
+        typedef struct {
+            HybridTimer timer;
+            const char* label;
+        } HybridTimerRAII;
+        \endcode
 
 2.  **The Cleanup Function**: A static function that the compiler will trigger.
-    ```c
-    static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
-        perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
-    }
-    ```
+
+        \code{.c}
+        static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
+            perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
+        }
+        \endcode
 
 3.  **The Macro**: A convenient way to declare the guarded variable.
-    ```c
-    #define HYBRID_FUNC_TIMER(label) \
-        HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
-            perf_hybrid_start(), label }
-    ```
+
+        \code{.c}
+        #define HYBRID_FUNC_TIMER(label) \
+            HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
+                perf_hybrid_start(), label }
+        \endcode
 
 ---
 
@@ -89,7 +144,7 @@ void load_data(const char* path) {
 
 ---
 
-## 4. Real-world Example: `src/pbr.c`
+## 4. Real-world Example: src/pbr.c
 
 In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER` at the start of expensive compute shader dispatches.
 
@@ -130,7 +185,7 @@ Clang's static analyzer does not yet fully model the control flow of `__attribut
 
 To maintain clean linting logs without sacrificing RAII's runtime safety, we use **Analyzer Hints**.
 
-### The `RAII_SATISFY_*` Patterns
+### The RAII_SATISFY_* Patterns
 
 Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a cleanup call only during static analysis. They have **zero runtime cost**.
 
@@ -157,7 +212,7 @@ static char* load_data(const char* path) {
 } // Actual cleaning happens here at runtime via RAII
 ```
 
-### Why use this instead of `// NOLINT`?
+### Why use this instead of // NOLINT?
 - **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.
 - **Documentation**: It explicitly states that we are aware of the analyzer's limitation and are providing the missing link.
 - **Safety**: If you forget a hint, the code is still safe at runtime. If you forget a `fclose` in legacy code, the code leaks.

@@ -1,0 +1,185 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen $doxygenversion" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!--BEGIN PROJECT_NAME-->
+  <title>$projectname: $title</title><!--END PROJECT_NAME-->
+  <!--BEGIN !PROJECT_NAME-->
+  <title>$title</title><!--END !PROJECT_NAME-->
+  <link href="$relpath^tabs.css" rel="stylesheet" type="text/css" />
+  <!--BEGIN DISABLE_INDEX-->
+  <!--BEGIN FULL_SIDEBAR-->
+  <script type="text/javascript">var page_layout = 1;</script>
+  <!--END FULL_SIDEBAR-->
+  <!--END DISABLE_INDEX-->
+  <script type="text/javascript" src="$relpath^jquery.js"></script>
+  <script type="text/javascript" src="$relpath^dynsections.js"></script>
+  $treeview
+  $search
+  $mathjax
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <link href="$relpath^$stylesheet" rel="stylesheet" type="text/css" />
+  $extrastylesheet
+  <script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js"></script>
+  <script type="text/javascript" src="$relpath^doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="$relpath^doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="$relpath^doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="$relpath^doxygen-awesome-tabs.js"></script>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+    window.addEventListener("DOMContentLoaded", (event) => {
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+
+        let text = el.innerText;
+        let isDoxygenMess = false;
+
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+
+        hljs.highlightElement(el);
+      });
+
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <!--BEGIN DISABLE_INDEX-->
+  <!--BEGIN FULL_SIDEBAR-->
+  <div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
+    <!--END FULL_SIDEBAR-->
+    <!--END DISABLE_INDEX-->
+
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+
+      <!--BEGIN TITLEAREA-->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <!--BEGIN PROJECT_LOGO-->
+              <td id="projectlogo"><img alt="Logo" src="$relpath^$projectlogo" /></td>
+              <!--END PROJECT_LOGO-->
+              <!--BEGIN PROJECT_NAME-->
+              <td id="projectalign">
+                <div id="projectname">$projectname<!--BEGIN PROJECT_NUMBER--><span
+                    id="projectnumber">&#160;$projectnumber</span><!--END PROJECT_NUMBER-->
+                </div>
+                <!--BEGIN PROJECT_BRIEF-->
+                <div id="projectbrief">$projectbrief</div><!--END PROJECT_BRIEF-->
+              </td>
+              <!--END PROJECT_NAME-->
+              <!--BEGIN !PROJECT_NAME-->
+              <!--BEGIN PROJECT_BRIEF-->
+              <td>
+                <div id="projectbrief">$projectbrief</div>
+              </td>
+              <!--END PROJECT_BRIEF-->
+              <!--END !PROJECT_NAME-->
+              <!--BEGIN DISABLE_INDEX-->
+              <!--BEGIN SEARCHENGINE-->
+              <!--BEGIN !FULL_SIDEBAR-->
+              <td>$searchbox</td>
+              <!--END !FULL_SIDEBAR-->
+              <!--END SEARCHENGINE-->
+              <!--END DISABLE_INDEX-->
+            </tr>
+            <!--BEGIN SEARCHENGINE-->
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">$searchbox</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+            <!--END SEARCHENGINE-->
+          </tbody>
+        </table>
+      </div>
+      <!--END TITLEAREA-->
+      <!-- end header part -->

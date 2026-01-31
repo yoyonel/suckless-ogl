@@ -141,7 +141,7 @@ Instead of `fwidth(h)`:
 float edgeFactor = clamp(h / analyticFwidth, 0.0, 1.0);
 ```
 
-See [pbr_ibl_billboard.frag](file:///home/latty/Prog/__PERSO__/suckless-ogl/shaders/pbr_ibl_billboard.frag) for a production example.
+See [pbr_ibl_billboard.frag](../shaders/pbr_ibl_billboard.frag) for a production example.
 
 ## References
 

@@ -33,7 +33,7 @@ BUILD_PROF_DIR := build-prof
 BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release docs
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -45,6 +45,12 @@ $(BUILD_DIR)/Makefile:
 clean:
 	@if [ -d $(BUILD_DIR) ]; then $(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target clean; fi
 	@$(DISTROBOX) rm -rf $(BUILD_DIR)
+
+docs:
+	@echo "Generating Doxygen documentation..."
+	@$(DISTROBOX) doxygen Doxyfile
+	@echo "Verifying Documentation Quality..."
+	@$(DISTROBOX) python3 scripts/verify_docs.py
 
 clean-all:
 	@echo "Removing all build directories..."
@@ -105,7 +111,7 @@ test: all test-python
 	@echo "Running C/C++ unit tests..."
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
-# Code Coverage (version améliorée avec résumé)
+# Code Coverage (improved version with summary)
 BUILD_COV_DIR := build-coverage
 REPORT_DIR := $(BUILD_COV_DIR)/coverage_report
 
@@ -281,6 +287,7 @@ help:
 	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
 	@echo "  memcheck   - Run Valgrind on Release build to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
+	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
 	@echo "  help       - Show this help message"
 
 # --- Release Build (Max Speed) ---

@@ -1,42 +1,71 @@
+/**
+ * @file async_loader.h
+ * @brief Threaded asynchronous file loader for heavy assets (HDR, textures).
+ *
+ * This module manages a background worker thread that handles I/O and
+ * image decoding, preventing main-thread stalls during asset transitions.
+ */
+
 #ifndef ASYNC_LOADER_H
 #define ASYNC_LOADER_H
 
 #include <stdbool.h>
 
-/* Max path length for requests */
+/** @brief Maximum path length for an asynchronous load request. */
 #define ASYNC_MAX_PATH 256
 
-/* States for an async request */
+/**
+ * @enum AsyncState
+ * @brief Lifecycle states for an individual asynchronous request.
+ */
 typedef enum {
-	ASYNC_IDLE = 0,
-	ASYNC_PENDING,
-	ASYNC_LOADING,
-	ASYNC_READY,
-	ASYNC_FAILED
+	ASYNC_IDLE = 0, /**< No active request. */
+	ASYNC_PENDING,  /**< Request submitted but not yet picked up by worker.
+	                 */
+	ASYNC_LOADING, /**< Worker is currently reading or decoding the file. */
+	ASYNC_READY, /**< Data is available and ready to be uploaded to GPU. */
+	ASYNC_FAILED /**< Error encountered during load (missing file, etc). */
 } AsyncState;
 
-/* Result structure holding the loaded data */
-typedef struct {
-	char path[ASYNC_MAX_PATH];
-	float* data;
-	int width;
-	int height;
-	int channels;
-	volatile AsyncState state;
+/**
+ * @struct AsyncRequest
+ * @brief Container for asynchronous load results and metadata.
+ */
+typedef struct AsyncRequest {
+	char path[ASYNC_MAX_PATH]; /**< Absolute path to the source file. */
+	float* data;  /**< Raw pixel data (must be freed by caller). */
+	int width;    /**< Image width in pixels. */
+	int height;   /**< Image height in pixels. */
+	int channels; /**< Number of color channels (e.g., 3 for RGB). */
+	volatile AsyncState
+	    state; /**< Current state (atomic/volatile for thread-safety). */
 } AsyncRequest;
 
-/* Initialize the async loader worker thread */
+/**
+ * @brief Spawns the background worker thread.
+ * @note Must be called once during application startup.
+ */
 void async_loader_init(void);
 
-/* Shutdown the async loader worker thread */
+/**
+ * @brief Signals the worker thread to exit and joins it.
+ * @note Clean up all pending requests and free the internal queue.
+ */
 void async_loader_shutdown(void);
 
-/* Request an HDR file to be loaded. Returns true if request accepted. */
+/**
+ * @brief Submits a new file path for background loading.
+ * @param path The absolute path to the HDR/texture file.
+ * @return true if the request was successfully queued, false if queue is full.
+ */
 bool async_loader_request(const char* path);
 
-/* Poll for a completed request. Returns true if a request is ready.
- * The 'out_request' struct is filled with valid data (ensure to free 'data').
- * Should be called from the main thread.
+/**
+ * @brief Polls the loader for any completed requests.
+ *
+ * This should be called from the main (OpenGL) thread once per frame.
+ * @param[out] out_request Pointer to store the successfully loaded data.
+ * @return true if data was retrieved, false otherwise.
  */
 bool async_loader_poll(AsyncRequest* out_request);
 

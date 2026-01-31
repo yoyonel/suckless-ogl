@@ -6,68 +6,70 @@
 [![Latest Release](https://img.shields.io/github/v/release/yoyonel/suckless-ogl?include_prereleases&label=release&color=blue)](https://github.com/yoyonel/suckless-ogl/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Suckless-OGL** est un moteur de rendu 3D minimaliste écrit en C. Fidèle à la philosophie "suckless", il privilégie un code source compact, une gestion rigoureuse des ressources et une absence de dépendances superflues. Il implémente un pipeline moderne basé sur **OpenGL 4.4 Core Profile**.
+![Suckless-OGL Reference Image](docs/reference_image.png)
 
-## 🚀 Fonctionnalités
-- **Minimalisme** : Architecture légère centrée sur la performance et la lisibilité.
-- **Rendu Moderne** : Support des Skyboxes, IcoSpheres, textures et éclairage de Phong.
-- **Shaders Dynamiques** : Chargement et compilation de fichiers GLSL (vertex/fragment).
-- **Optimisation Shader** : Compilation statique (Release) ou dynamique (Debug) pour équilibrer flexibilité et performance. [Voir Documentation](docs/SHADER_OPTIMIZATION.md).
-- **Environnement Isolé** : Support natif de `distrobox` pour garantir un environnement de compilation reproductible.
-- **Qualité & Tests** : Suite de tests unitaires, couverture de code et analyse statique via `clang-tidy`.
+**Suckless-OGL** is a minimalist 3D rendering engine written in C. Faithful to the "suckless" philosophy, it prioritizes a compact codebase, rigorous resource management, and an absence of unnecessary dependencies. It implements a modern pipeline based on **OpenGL 4.4 Core Profile**.
 
-## 🛠️ Compilation et Utilisation
+## 🚀 Features
+- **Minimalism**: Lightweight architecture focused on performance and readability.
+- **Modern Rendering**: Support for Skyboxes, IcoSpheres, textures, and Phong lighting.
+- **Dynamic Shaders**: Loading and compilation of GLSL files (vertex/fragment).
+- **Shader Optimization**: Static (Release) or dynamic (Debug) compilation to balance flexibility and performance. [See Documentation](docs/shader_optimization.md).
+- **Isolated Environment**: Native `distrobox` support to guarantee a reproducible build environment.
+- **Quality & Testing**: Unit testing suite, code coverage, and static analysis via `clang-tidy`.
 
-Le projet utilise un wrapper `Makefile` qui pilote `CMake` pour simplifier les interactions.
+## 🛠️ Compilation and Usage
 
-### Drapeaux de Compilation & Environnement
-Le build est configuré avec les réglages suivants :
-- **Optimisation** : `-Wall -Wextra -O2` pour un code propre et performant.
-- **Standard POSIX** : `-D_POSIX_C_SOURCE=199309L` pour le support de `clock_gettime`.
-- **Analyse Statique** : Intégration de `clang-tidy` avec des filtres d'en-têtes stricts.
-- **Conteneurisation** : Utilisation par défaut de `distrobox` avec l'image `clang-dev` pour isoler les dépendances.
+The project uses a `Makefile` wrapper that drives `CMake` to simplify interactions.
 
-### Commandes principales
-| Commande | Action |
+### Compilation Flags & Environment
+The build is configured with the following settings:
+- **Optimization**: `-Wall -Wextra -O2` for clean and performant code.
+- **POSIX Standard**: `-D_POSIX_C_SOURCE=199309L` for `clock_gettime` support.
+- **Static Analysis**: `clang-tidy` integration with strict header filters.
+- **Containerization**: Default use of `distrobox` with the `clang-dev` image to isolate dependencies.
+
+### Main Commands
+| Command | Action |
 | :--- | :--- |
-| `make all` | Compile le projet (génère GLAD et le binaire `app`). |
-| `make debug` | Compile en mode DEBUG (shaders dynamiques, idéal pour dev). |
-| `make release` | Compile en mode RELEASE (shaders optimisés statiquement). |
-| `make run` | Lance la version DEBUG. |
-| `make run-release` | Lance la version RELEASE. |
-| `make test` | Exécute la suite de tests unitaires via `ctest`. |
-| `make format` | Applique le formatage `clang-format` sur `src`, `include` et `tests`. |
-| `make lint` | Lance l'analyse statique `clang-tidy` sur les fichiers sources. |
-| `make coverage` | Génère un rapport HTML complet via `llvm-cov` dans `build-coverage/`. |
+| `make all` | Compiles the project (generates GLAD and the `app` binary). |
+| `make debug` | Compiles in DEBUG mode (dynamic shaders, ideal for dev). |
+| `make release` | Compiles in RELEASE mode (statically optimized shaders). |
+| `make run` | Launches the DEBUG version. |
+| `make run-release` | Launches the RELEASE version. |
+| `make test` | Runs the unit test suite via `ctest`. |
+| `make format` | Applies `clang-format` formatting on `src`, `include`, and `tests`. |
+| `make lint` | Runs `clang-tidy` static analysis on source files. |
+| `make coverage` | Generates a complete HTML report via `llvm-cov` in `build-coverage/`. |
 
-## 🤖 Workflow CI/CD (GitHub Actions)
+## 🤖 CI/CD Workflow (GitHub Actions)
 
-Le pipeline est structuré pour optimiser le build tout en garantissant une qualité maximale :
+The pipeline is structured to optimize the build while guaranteeing maximum quality:
 
-1. **Test & Coverage** : Compilation instrumentée et exécution des tests sous **Xvfb** (serveur X virtuel). Un rapport de couverture est généré et sauvegardé en artefact.
-2. **Lint & Format Check** :
-   - Vérifie que le code est formaté. Si `make format` modifie un fichier, le CI échoue.
-   - Lance `make lint` pour valider la conformité CERT et la sécurité.
-3. **Build & Release** :
-   - Se déclenche sur `master` ou sur les tags `v*`.
-   - Package le binaire `app` avec les dossiers `assets/` et `shaders/`.
-   - Compresse le tout dans une archive `.tar.gz` et crée une **GitHub Release** automatique.
+1. **Test & Coverage**: Instrumented compilation and test execution under **Xvfb** (virtual X server). A coverage report is generated and saved as an artifact.
+2. **Lint & Format Check**:
+   - Verifies that the code is formatted. If `make format` modifies a file, the CI fails.
+   - Runs `make lint` to validate CERT compliance and security.
+3. **Build & Release**:
+   - Triggers on `master` or `v*` tags.
+   - Packages the `app` binary with `assets/` and `shaders/` directories.
+   - Compresses everything into a `.tar.gz` archive and creates an automatic **GitHub Release**.
 
-## 📁 Structure du Projet
-- `src/` & `include/` : Cœur du moteur (Log, App, Shader, Texture, Icosphere).
-- `shaders/` : Sources GLSL (Phong, Background/Skybox).
-- `assets/` : Ressources HDR et textures.
-- `tests/` : Tests unitaires (Icosphere, Shader, Skybox, Texture, Log).
-- `docs/` : Documentation technique approfondie.
+## 📁 Project Structure
+- `src/` & `include/`: Engine core (Log, App, Shader, Texture, Icosphere).
+- `shaders/`: GLSL sources (Phong, Background/Skybox).
+- `assets/`: HDR resources and textures.
+- `tests/`: Unit tests (Icosphere, Shader, Skybox, Texture, Log).
+- `docs/`: In-depth technical documentation.
 
 ## 📦 Docker / Podman
-Pour tester l'application dans un conteneur avec redirection X11:
+To test the application in a container with X11 forwarding:
 ```bash
 make docker-build
 make docker-run
 ```
-(Nécessite un serveur X local et les permissions xhost configurées).
+(Requires a local X server and configured xhost permissions).
 
-📄 Licence
+📄 License
 
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+This project is licensed under the MIT License. See the LICENSE file for more details.

@@ -97,6 +97,7 @@ float compute_roughness_clamping_screenspace(vec3 N, float roughness)
 
 /**
  * Analytic Roughness Clamping (Hardware Independent)
+ * @param roughness The original perceptual roughness
  * @param curvature The geometric curvature (e.g., 1.0 / Radius for spheres)
  */
 float compute_roughness_clamping_analytic(float roughness, float curvature)

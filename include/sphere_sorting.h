@@ -1,3 +1,11 @@
+/**
+ * @file sphere_sorting.h
+ * @brief Back-to-front sorting for transparent geometry.
+ *
+ * This module provides an efficient sorting mechanism for sphere instances,
+ * which is required for correct alpha blending of billboarded spheres.
+ */
+
 #ifndef SPHERE_SORTING_H
 #define SPHERE_SORTING_H
 
@@ -5,44 +13,49 @@
 #include <cglm/cglm.h>
 
 /**
- * Helper structure to store sort keys (depth) separately from data.
- * This avoids sorting large structs directly and avoids global variables for
- * qsort.
+ * @struct SphereSortEntry
+ * @brief Lightweight proxy for sorting data without moving large structs.
  */
 typedef struct {
-	int original_index;
-	float depth; /* Squared distance from camera */
+	int original_index; /**< Position in the source array. */
+	float depth;        /**< Squared distance from camera. */
 } SphereSortEntry;
 
 /**
- * Manages memory for sorting operations to avoid per-frame allocations.
+ * @struct SphereSorter
+ * @brief Reusable memory context for sorting operations.
  */
 typedef struct {
-	SphereSortEntry* entries;
-	SphereInstance* temp_instances;
-	int capacity;
+	SphereSortEntry* entries;       /**< Key array. */
+	SphereInstance* temp_instances; /**< Scratchpad for reordering. */
+	int capacity;                   /**< Allocated size. */
 } SphereSorter;
 
 /**
- * Initializes the sorter with an initial capacity.
+ * @brief Allocates internal buffers for the sorter.
+ * @param sorter Pointer to the struct.
+ * @param initial_capacity Expected number of instances.
  */
 void sphere_sorter_init(SphereSorter* sorter, int initial_capacity);
 
 /**
- * Frees internal buffers.
+ * @brief Destroys the sorter context.
+ * @param sorter Pointer to the struct.
  */
 void sphere_sorter_cleanup(SphereSorter* sorter);
 
 /**
- * Sorts the array of instances Back-to-Front relative to the camera position.
- * This function Reorders the 'instances' array IN-PLACE.
+ * @brief Sorts the array of instances Back-to-Front (descending depth).
  *
- * @param sorter      Context for memory reuse.
- * @param instances   The array of SphereInstance to sort.
- * @param count       Number of instances.
- * @param camera_pos  World space position of the camera.
+ * This function Reorders the 'instances' array IN-PLACE using a temporary
+ * buffer to avoid extra copies.
+ *
+ * @param sorter      Memory context.
+ * @param instances   The array to sort.
+ * @param count       Active element count.
+ * @param camera_pos  World-space viewer position (for depth calculation).
  */
 void sphere_sorter_sort(SphereSorter* sorter, SphereInstance* instances,
                         int count, vec3 camera_pos);
 
-#endif
+#endif /* SPHERE_SORTING_H */

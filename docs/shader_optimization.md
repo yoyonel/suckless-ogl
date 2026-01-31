@@ -9,12 +9,12 @@ The post-processing pipeline now supports two compilation modes to balance devel
 
 ## Build Modes
 
-### Debug Build (`make debug` / `make run`)
+### Debug Build (make debug / make run)
 - **Flags**: `ENABLE_SHADER_OPTIMIZATION=OFF`
 - **Behavior**: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching).
 - **Use Case**: Development, tweaking parameters, debugging effect interactions.
 
-### Release Build (`make release` / `make run-release`)
+### Release Build (make release / make run-release)
 - **Flags**: `ENABLE_SHADER_OPTIMIZATION=ON`
 - **Behavior**:
     - The application detects active effects at startup.
@@ -26,7 +26,7 @@ The post-processing pipeline now supports two compilation modes to balance devel
 
 ## Technical Implementation
 
-### 1. Shader Code (`postprocess.frag`)
+### 1. Shader Code (postprocess.frag)
 
 We use a hybrid approach where uniforms are converted to `const bool` if the optimization macro is defined:
 
@@ -40,7 +40,7 @@ We use a hybrid approach where uniforms are converted to `const bool` if the opt
 #endif
 ```
 
-### 2. Startup Logic (`src/app.c`)
+### 2. Startup Logic (src/app.c)
 
 When built with `-DENABLE_SHADER_OPTIMIZATION`, the application triggers an immediate compilation of the optimized shader during initialization:
 
@@ -51,7 +51,7 @@ When built with `-DENABLE_SHADER_OPTIMIZATION`, the application triggers an imme
 #endif
 ```
 
-### 3. Conditional Uniforms (`src/postprocess.c`)
+### 3. Conditional Uniforms (src/postprocess.c)
 
 To avoid OpenGL warnings (e.g., "Uniform 'bloomTexture' not found"), we guard uniform assignments. In Release mode, if Bloom is disabled, `bloomTexture` is compiled out, so we must not try to set it:
 

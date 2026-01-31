@@ -1,0 +1,83 @@
+# Doxyfile for suckless-ogl
+
+# Project related configuration options
+PROJECT_NAME           = "Suckless OGL"
+PROJECT_NUMBER         = "1.0.0"
+PROJECT_BRIEF          = "A lean, high-performance C11 PBR Renderer"
+OUTPUT_DIRECTORY       = docs/doxygen
+
+OUTPUT_LANGUAGE        = English
+BRIEF_MEMBER_DESC      = YES
+REPEAT_BRIEF           = YES
+EXTENSION_MAPPING      = glsl=C++ \
+                         vert=C++ \
+                         frag=C++
+
+# Build related configuration options
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
+TYPEDEF_HIDES_STRUCT   = YES
+
+# Configuration options related to the input files
+INPUT                  = include/ \
+                         src/ \
+                         shaders/ \
+                         README.md \
+                         docs/
+IMAGE_PATH             = docs/
+FILE_PATTERNS          = *.c \
+                         *.h \
+                         *.md \
+                         *.vert \
+                         *.frag \
+                         *.glsl
+EXCLUDE                = docs/doxygen-awesome-css
+EXCLUDE_PATTERNS       =
+RECURSIVE              = YES
+
+USE_MDFILE_AS_MAINPAGE = README.md
+
+# Configuration options related to the alphabetical class index
+ALPHABETICAL_INDEX     = YES
+
+# Configuration options related to the HTML output
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+HTML_FILE_EXTENSION    = .html
+HTML_HEADER            = docs/header.html
+HTML_EXTRA_STYLESHEET  = docs/doxygen-awesome-css/doxygen-awesome.css \
+                         docs/doxygen-awesome-css/doxygen-awesome-sidebar-only.css \
+                         docs/doxygen-awesome-css/doxygen-awesome-sidebar-only-darkmode-toggle.css
+HTML_EXTRA_FILES       = docs/doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js \
+                         docs/doxygen-awesome-css/doxygen-awesome-fragment-copy-button.js \
+                         docs/doxygen-awesome-css/doxygen-awesome-paragraph-link.js \
+                         docs/doxygen-awesome-css/doxygen-awesome-interactive-toc.js \
+                         docs/doxygen-awesome-css/doxygen-awesome-tabs.js
+HTML_COLORSTYLE        = LIGHT
+HTML_DYNAMIC_MENUS     = NO
+HTML_DYNAMIC_SECTIONS  = NO
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+
+
+# Configuration options related to the LaTeX output
+GENERATE_LATEX         = NO
+
+# Configuration options related to the macro definition
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+SEARCH_INCLUDES        = YES
+PREDEFINED             = __attribute__(x)=
+
+# Configuration options related to diagrams
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+
+CALL_GRAPH             = YES
+CALLER_GRAPH           = NO
+GRAPHICAL_HIERARCHY    = YES
+DIRECTORY_GRAPH        = YES
+INTERACTIVE_SVG        = YES
