@@ -1,6 +1,5 @@
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // NOLINT(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
-#endif
+// NOLINTNEXTLINE
+#define _GNU_SOURCE
 #include "log.h"
 
 #include "utils.h"
@@ -11,7 +10,7 @@
 #include <strings.h>
 #include <sys/syscall.h>
 #include <sys/types.h>
-#include <time.h>  // IWYU pragma: keep
+#include <time.h>
 #include <unistd.h>
 
 enum {

@@ -80,8 +80,6 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->color_grading.gain = 1.0F;
 	post_processing->color_grading.offset = 0.0F;
 
-	post_processing->color_grading.offset = 0.0F;
-
 	/* Initialisation Auto Exposure (Stabilisé) */
 	post_processing->auto_exposure.min_luminance =
 	    EXPOSURE_MIN_LUM; /* Limite le boost max à x2 (1.0 / 0.5) */
@@ -222,9 +220,6 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	fx_dof_resize(post_processing);
 	fx_motion_blur_resize(post_processing);
 
-	/* Final Bridge: Ensure ALL used units are in a valid state.
-	 * NVIDIA driver validates units used by the last shader before resize.
-	 */
 	/* Final Bridge: Ensure ALL used units are in a valid state.
 	 * NVIDIA driver validates units used by the last shader before resize.
 	 */
@@ -649,9 +644,6 @@ static int create_framebuffer(PostProcess* post_processing)
 	                       0);
 
 	return render_utils_check_framebuffer("PostProcess Scene FBO");
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return 1;
 }
 
 static void destroy_framebuffer(PostProcess* post_processing)

@@ -27,6 +27,8 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+add_compile_definitions(_GNU_SOURCE)
+
 # Source files
 set(SOURCES
     src/main.c
@@ -57,6 +59,10 @@ set(SOURCES
     src/window.c
     src/gl_debug.c
     src/render_utils.c
+    src/app_ui.c
+    src/app_input.c
+    src/app_env.c
+    src/app_scene.c
     src/cli.c
 )
 

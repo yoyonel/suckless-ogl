@@ -87,85 +87,85 @@ layout(std140, binding = 0) uniform PostProcessBlock
 
 /* Compatibility Helper Macros */
 #ifdef OPT_ENABLE_VIGNETTE
-	const bool enableVignette = bool(OPT_ENABLE_VIGNETTE);
+const bool enableVignette = bool(OPT_ENABLE_VIGNETTE);
 #else
-	#define enableVignette ((activeEffects & (1u << 0u)) != 0u)
+#define enableVignette ((activeEffects & (1u << 0u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_GRAIN
-	const bool enableGrain = bool(OPT_ENABLE_GRAIN);
+const bool enableGrain = bool(OPT_ENABLE_GRAIN);
 #else
-	#define enableGrain ((activeEffects & (1u << 1u)) != 0u)
+#define enableGrain ((activeEffects & (1u << 1u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_EXPOSURE
-	const bool enableExposure = bool(OPT_ENABLE_EXPOSURE);
+const bool enableExposure = bool(OPT_ENABLE_EXPOSURE);
 #else
-	#define enableExposure ((activeEffects & (1u << 2u)) != 0u)
+#define enableExposure ((activeEffects & (1u << 2u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_CHROM_ABBR
-	const bool enableChromAbbr = bool(OPT_ENABLE_CHROM_ABBR);
+const bool enableChromAbbr = bool(OPT_ENABLE_CHROM_ABBR);
 #else
-	#define enableChromAbbr ((activeEffects & (1u << 3u)) != 0u)
+#define enableChromAbbr ((activeEffects & (1u << 3u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_BLOOM
-	const bool enableBloom = bool(OPT_ENABLE_BLOOM);
+const bool enableBloom = bool(OPT_ENABLE_BLOOM);
 #else
-	#define enableBloom ((activeEffects & (1u << 4u)) != 0u)
+#define enableBloom ((activeEffects & (1u << 4u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_COLOR_GRADING
-	const bool enableColorGrading = bool(OPT_ENABLE_COLOR_GRADING);
+const bool enableColorGrading = bool(OPT_ENABLE_COLOR_GRADING);
 #else
-	#define enableColorGrading ((activeEffects & (1u << 5u)) != 0u)
+#define enableColorGrading ((activeEffects & (1u << 5u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_DOF
-	const bool enableDoF = bool(OPT_ENABLE_DOF);
+const bool enableDoF = bool(OPT_ENABLE_DOF);
 #else
-	#define enableDoF ((activeEffects & (1u << 6u)) != 0u)
+#define enableDoF ((activeEffects & (1u << 6u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_DOF_DEBUG
-	const bool enableDoFDebug = bool(OPT_ENABLE_DOF_DEBUG);
+const bool enableDoFDebug = bool(OPT_ENABLE_DOF_DEBUG);
 #else
-	#define enableDoFDebug ((activeEffects & (1u << 7u)) != 0u)
+#define enableDoFDebug ((activeEffects & (1u << 7u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_AUTO_EXPOSURE
-	const bool enableAutoExposure = bool(OPT_ENABLE_AUTO_EXPOSURE);
+const bool enableAutoExposure = bool(OPT_ENABLE_AUTO_EXPOSURE);
 #else
-	#define enableAutoExposure ((activeEffects & (1u << 8u)) != 0u)
+#define enableAutoExposure ((activeEffects & (1u << 8u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_EXPOSURE_DEBUG
-	const bool enableExposureDebug = bool(OPT_ENABLE_EXPOSURE_DEBUG);
+const bool enableExposureDebug = bool(OPT_ENABLE_EXPOSURE_DEBUG);
 #else
-	#define enableExposureDebug ((activeEffects & (1u << 9u)) != 0u)
+#define enableExposureDebug ((activeEffects & (1u << 9u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_MOTION_BLUR
-	const bool enableMotionBlur = bool(OPT_ENABLE_MOTION_BLUR);
+const bool enableMotionBlur = bool(OPT_ENABLE_MOTION_BLUR);
 #else
-	#define enableMotionBlur ((activeEffects & (1u << 10u)) != 0u)
+#define enableMotionBlur ((activeEffects & (1u << 10u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_MOTION_BLUR_DEBUG
-	const bool enableMotionBlurDebug = bool(OPT_ENABLE_MOTION_BLUR_DEBUG);
+const bool enableMotionBlurDebug = bool(OPT_ENABLE_MOTION_BLUR_DEBUG);
 #else
-	#define enableMotionBlurDebug ((activeEffects & (1u << 11u)) != 0u)
+#define enableMotionBlurDebug ((activeEffects & (1u << 11u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_FXAA
-	const bool enableFXAA = bool(OPT_ENABLE_FXAA);
+const bool enableFXAA = bool(OPT_ENABLE_FXAA);
 #else
-	#define enableFXAA ((activeEffects & (1u << 12u)) != 0u)
+#define enableFXAA ((activeEffects & (1u << 12u)) != 0u)
 #endif
 
 #ifdef OPT_ENABLE_FXAA_DEBUG
-	const bool enableFXAADebug = bool(OPT_ENABLE_FXAA_DEBUG);
+const bool enableFXAADebug = bool(OPT_ENABLE_FXAA_DEBUG);
 #else
-	#define enableFXAADebug ((activeEffects & (1u << 13u)) != 0u)
+#define enableFXAADebug ((activeEffects & (1u << 13u)) != 0u)
 #endif

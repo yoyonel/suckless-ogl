@@ -4,11 +4,6 @@
 **Status**: Resolved
 **Impact**: Critical - Visual quality consistency across GPU vendors
 
----
-
-> **See also**: [shader-cross-gpu-compatibility.md](./shader-cross-gpu-compatibility.md) for general best practices
-
----
 
 ## Executive Summary
 

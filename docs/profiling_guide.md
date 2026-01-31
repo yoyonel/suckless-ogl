@@ -80,11 +80,11 @@ To make a new feature measurable:
 
 1. **Label your shaders**: Use `shader_set_label(shader, "Description")` in C.
 2. **Add debug groups**:
-   ```c
+   \code{.c}
    GL_PUSH_GROUP("My Complex Task", 0);
    // ... GPU calls ...
    GL_POP_GROUP();
-   ```
+   \endcode
 3. **Add fine-grained timers (Optional)**:
    The engine automatically attempts to capture timestamps around critical IBL sections. See `src/pbr.c` for examples.
 

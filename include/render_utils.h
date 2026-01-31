@@ -31,10 +31,10 @@
  * undefined behavior or warnings from validation layers on some drivers
  * (like NVIDIA) which check that all active samplers have valid textures.
  *
- * @param r Red component (0.0 - 1.0).
- * @param g Green component (0.0 - 1.0).
- * @param b Blue component (0.0 - 1.0).
- * @param a Alpha component (0.0 - 1.0).
+ * @param red Red component (0.0 - 1.0).
+ * @param green Green component (0.0 - 1.0).
+ * @param blue Blue component (0.0 - 1.0).
+ * @param alpha Alpha component (0.0 - 1.0).
  * @return The GLuint handle of the created texture.
  */
 GLuint render_utils_create_color_texture(float red, float green, float blue,
