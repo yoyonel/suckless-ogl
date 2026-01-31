@@ -12,8 +12,8 @@ The project CI (GitHub Actions) uses **Mesa llvmpipe**, a software-based OpenGL 
 
 ### 2. The "Sphere Center" Artifact
 A common finding in our PBR tests is a concentric ring pattern at the center of spheres.
-*   **Cause**: At the center of a sphere, the dot product $N \cdot V$ is exactly $1.0$.
-*   **Sensitivity**: The BRDF LUT (Look-Up Table) is sampled using $(N \cdot V, \text{roughness})$. Any tiny floating-point variation in the calculation of $N \cdot V$ or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.
+*   **Cause**: At the center of a sphere, the dot product **N · V** is exactly `1.0`.
+*   **Sensitivity**: The BRDF LUT (Look-Up Table) is sampled using (**N · V**, **roughness**). Any tiny floating-point variation in the calculation of **N · V** or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.
 *   **Result**: High-contrast deltas in the difference map, even if the visual change is imperceptible to the human eye.
 
 ## PBR Engine Evolution
