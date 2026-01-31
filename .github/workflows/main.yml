@@ -156,6 +156,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build-coverage/coverage_report/
+          destination_dir: coverage
 
       - name: Upload Artifacts
         if: always()
@@ -163,6 +164,44 @@ jobs:
         with:
           name: coverage-report
           path: build-coverage/coverage_report/
+
+  # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
+  documentation:
+    needs: lint-and-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Documentation Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz python3
+      - name: Generate and Verify Docs
+        run: make docs CONTAINER_RUN=""
+      - name: Deploy Documentation to GitHub Pages
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/doxygen/html/
+          destination_dir: doxygen
+      - name: Deploy Landing Page to GitHub Pages
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p public-root
+          cp docs/landing_page.html public-root/index.html
+      - name: Publish Landing Page
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public-root
+          keep_files: true
+          destination_dir: .
+      - name: Upload Docs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-docs
+          path: docs/doxygen/html/
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
