@@ -1,0 +1,63 @@
+# Valgrind suppression file for suckless-ogl
+# Suppresses known false positives from third-party libraries
+
+# GLFW/Wayland initialization leaks
+{
+   GLFW_Wayland_Proxy_Marshal
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   ...
+   obj:*/libwayland-client.so*
+   ...
+   fun:glfwCreateWindow
+}
+
+{
+   GLFW_Wayland_Init
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   ...
+   obj:*/libglfw.so*
+   ...
+   fun:glfwCreateWindow
+}
+
+# Fontconfig cache leaks
+{
+   Fontconfig_Pattern_Cache
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   ...
+   obj:*/libfontconfig.so*
+}
+
+{
+   Fontconfig_Realloc_Cache
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   ...
+   obj:*/libfontconfig.so*
+}
+
+# GTK/Pango font rendering leaks
+{
+   GTK_Pango_Font_Metrics
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:*/libpango*.so*
+   ...
+   obj:*/libgtk-3.so*
+}
+
+{
+   GTK_Widget_Preferred_Size
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:gtk_widget_get_preferred_*
+}

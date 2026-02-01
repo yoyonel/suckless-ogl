@@ -203,7 +203,7 @@ static void subdivide(Vec3Array* vertices, UintArray* indices, int depth)
 	}
 }
 
-static void compute_normals(Vec3Array* vertices, Vec3Array* normals)
+static void compute_normals(const Vec3Array* vertices, Vec3Array* normals)
 {
 	normals->size = 0;
 	for (size_t i = 0; i < vertices->size; i++) {

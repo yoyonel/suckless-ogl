@@ -1,3 +1,12 @@
+/**
+ * @file perf_timer.h
+ * @brief High-precision performance measurement (CPU and GPU).
+ *
+ * This module provides timers for measuring CPU wall-clock time using
+ * clock_gettime and GPU execution time using OpenGL timer queries.
+ * It also includes RAII-style macros for automatic profiling.
+ */
+
 #ifndef PERF_TIMER_H
 #define PERF_TIMER_H
 
@@ -6,123 +15,126 @@
 #include <time.h>
 
 /**
- * @brief High-precision performance timer (équivalent de time.perf_counter() en
- * Python)
+ * @struct PerfTimer
+ * @brief CPU high-precision timer.
  *
- * Utilise clock_gettime(CLOCK_MONOTONIC) pour une mesure précise du temps CPU.
- * Résolution typique : nanosecondes
+ * Uses clock_gettime(CLOCK_MONOTONIC) for accurate CPU timing.
+ * Typical resolution: nanoseconds.
  */
-
 typedef struct {
-	struct timespec start;
-	struct timespec end;
+	struct timespec start; /**< Recording start time. */
+	struct timespec end;   /**< Recording end time. */
 } PerfTimer;
 
 /**
- * @brief GPU performance timer using OpenGL Query Objects
+ * @brief GPU performance timer using OpenGL Query Objects.
  *
- * Mesure le temps réel d'exécution GPU (équivalent GL_TIME_ELAPSED en
- * Python/PyOpenGL)
+ * Measures actual GPU execution time, which can differ significantly
+ * from CPU "wall-clock" time due to driver buffering and parallelism.
  */
 typedef struct {
-	GLuint query_start;
-	GLuint query_end;
-	int active;
+	GLuint query_start; /**< Handle for the start query. */
+	GLuint query_end;   /**< Handle for the end query. */
+	int active; /**< Flag indicating if a measurement is in progress. */
 } GPUTimer;
 
 /**
- * @brief Hybrid performance timer combining CPU and GPU measurements
+ * @struct HybridTimer
+ * @brief Hybrid timer combining CPU and GPU measurements.
  */
 typedef struct {
-	PerfTimer cpu;
-	GPUTimer gpu;
+	PerfTimer cpu; /**< CPU timer. */
+	GPUTimer gpu;  /**< GPU timer. */
 } HybridTimer;
 
-// ============================================================================
-// CPU Timer API
-// ============================================================================
+/* ========================================================================= */
+/* CPU Timer API                                                             */
+/* ========================================================================= */
 
 /**
- * @brief Démarre le timer CPU
- * @param timer Pointeur vers la structure PerfTimer
+ * @brief Starts the CPU timer.
+ * @param timer Pointer to the timer.
  */
 void perf_timer_start(PerfTimer* timer);
 
 /**
- * @brief Arrête le timer et retourne le temps écoulé en millisecondes
- * @param timer Pointeur vers la structure PerfTimer
- * @return Temps écoulé en millisecondes (double précision)
+ * @brief Stops the timer and returns elapsed time in milliseconds.
+ * @param timer Pointer to the timer.
+ * @return Elapsed time (double precision).
  */
 double perf_timer_elapsed_ms(PerfTimer* timer);
 
 /**
- * @brief Arrête le timer et retourne le temps écoulé en microsecondes
- * @param timer Pointeur vers la structure PerfTimer
- * @return Temps écoulé en microsecondes (double précision)
+ * @brief Stops the timer and returns elapsed time in microseconds.
+ * @param timer Pointer to the timer.
+ * @return Elapsed time (double precision).
  */
 double perf_timer_elapsed_us(PerfTimer* timer);
 
 /**
- * @brief Arrête le timer et retourne le temps écoulé en secondes
- * @param timer Pointeur vers la structure PerfTimer
- * @return Temps écoulé en secondes (double précision)
+ * @brief Stops the timer and returns elapsed time in seconds.
+ * @param timer Pointer to the timer.
+ * @return Elapsed time (double precision).
  */
 double perf_timer_elapsed_s(PerfTimer* timer);
 
-// ============================================================================
-// GPU Timer API
-// ============================================================================
+/* ========================================================================= */
+/* GPU Timer API                                                             */
+/* ========================================================================= */
 
 /**
- * @brief Initialise et démarre un timer GPU
- * @param timer Pointeur vers la structure GPUTimer
+ * @brief Initializes and starts a GPU measurement.
+ * @param timer Pointer to the timer.
  */
 void gpu_timer_start(GPUTimer* timer);
 
 /**
- * @brief Arrête le timer GPU et retourne le temps écoulé en millisecondes
- * @param timer Pointeur vers la structure GPUTimer
- * @param wait_for_result Si vrai, bloque jusqu'à ce que le résultat soit
- * disponible
- * @return Temps écoulé GPU en millisecondes, ou -1.0 si non disponible
+ * @brief Stops the GPU timer and retrieves the result.
+ * @param timer Pointer to the timer.
+ * @param wait_for_result If true, blocks until the GPU is finished and result
+ * is ready.
+ * @return Elapsed time in milliseconds, or -1.0 if not ready and
+ * wait_for_result is false.
  */
 double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result);
 
 /**
- * @brief Nettoie les ressources du timer GPU
- * @param timer Pointeur vers la structure GPUTimer
+ * @brief Releases OpenGL resources associated with the GPU timer.
+ * @param timer Pointer to the timer.
  */
 void gpu_timer_cleanup(GPUTimer* timer);
 
-// ============================================================================
-// Hybrid Timer API
-// ============================================================================
+/* ========================================================================= */
+/* Hybrid Timer API                                                          */
+/* ========================================================================= */
 
 /**
- * @brief Initialise et démarre un timer hybride (CPU + GPU)
- * @return Une structure HybridTimer initialisée et démarrée
+ * @brief Starts both CPU and GPU measurement simultaneously.
+ * @return Initialized and started HybridTimer structure.
  */
 HybridTimer perf_hybrid_start(void);
 
 /**
- * @brief Arrête et loggue les résultats d'un timer hybride
- * @param timer Pointeur vers le timer
- * @param label Étiquette pour la ligne de log
+ * @brief Stops both measurements and logs the results to the console.
+ * @param timer Pointer to the timer.
+ * @param label Descriptive string for the log entry.
  */
 void perf_hybrid_stop(HybridTimer* timer, const char* label);
 
-// ============================================================================
-// Macros helpers
-// ============================================================================
+/* ========================================================================= */
+/* Macro Helpers                                                             */
+/* ========================================================================= */
 
 /**
- * @brief Macro helper pour mesurer automatiquement un bloc de code (CPU)
+ * @brief Automatically measures a code block and stores result in `var_name`.
  *
  * Usage:
+ * @code
  *   PERF_MEASURE_MS(load_time) {
- *       // Code à mesurer
+ *       // Code to measure
  *   }
  *   printf("Took %.2f ms\n", load_time);
+ * @endcode
  */
 #define PERF_MEASURE_MS(var_name)                                              \
 	double var_name = 0.0;                                                 \
@@ -133,12 +145,7 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 	     var_name = perf_timer_elapsed_ms(&_timer##var_name), _run = NULL)
 
 /**
- * @brief Macro helper pour mesurer et logger automatiquement (CPU)
- *
- * Usage:
- *   PERF_MEASURE_LOG("Loading HDR") {
- *       texture_load_hdr(...);
- *   }
+ * @brief Automatically measures and logs a code block to the "perf" category.
  */
 #define PERF_MEASURE_LOG(label)                                            \
 	for (PerfTimer _timer = {0},                                       \
@@ -148,13 +155,7 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 	               _run = NULL)
 
 /**
- * @brief Macro helper pour mesurer un bloc de code GPU
- *
- * Usage:
- *   GPU_MEASURE_MS(gpu_time) {
- *       // Commandes OpenGL à mesurer
- *   }
- *   printf("GPU took %.2f ms\n", gpu_time);
+ * @brief Automatically measures a GPU block and stores result in `var_name`.
  */
 #define GPU_MEASURE_MS(var_name)                                           \
 	double var_name = 0.0;                                             \
@@ -167,12 +168,7 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 	              _gpu_run = NULL)
 
 /**
- * @brief Macro helper pour mesurer et logger automatiquement (GPU)
- *
- * Usage:
- *   GPU_MEASURE_LOG("PBR Generation") {
- *       build_pbr_maps(...);
- *   }
+ * @brief Automatically measures and logs a GPU block to "perf.gpu".
  */
 #define GPU_MEASURE_LOG(label)                                             \
 	for (GPUTimer                                                      \
@@ -183,50 +179,42 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 	         gpu_timer_cleanup(&_gpu_timer), _gpu_run = NULL)
 
 /**
- * @brief Macro helper pour mesurer et logger automatiquement (CPU + GPU)
- *
- * Combine les mesures CPU (wall-clock) et GPU pour un aperçu complet.
- * Utile pour identifier si un bottleneck est CPU-bound (ex: le driver)
- * ou GPU-bound (ex: la complexité des shaders).
- *
- * Usage:
- *   HYBRID_MEASURE_LOG("Texture Upload") {
- *       glTexImage2D(...);
- *   }
+ * @brief Hybrid measurement macro. Useful for identifying driver vs GPU
+ * bottlenecks.
  */
 #define HYBRID_MEASURE_LOG(label)                                             \
 	for (HybridTimer _h = perf_hybrid_start(), *_h_run = (HybridTimer*)1; \
 	     _h_run; perf_hybrid_stop(&_h, label), _h_run = NULL)
 
 /**
- * @brief RAII-style performance measurement for the entire scope/function
- *
- * Automatically starts the timer and stops/logs it when the variable goes out
- * of scope (end of function or end of block).
- * Use this to avoid extra indentation level.
- *
- * NOTE: Requires GCC or Clang (__attribute__((cleanup))).
- *
- * Usage:
- *   void complex_function() {
- *       HYBRID_FUNC_TIMER("IBL: Specular Map");
- *
- *       // ... function body (NO extra indentation) ...
- *   }
+ * @struct HybridTimerRAII
+ * @brief Internal helper for scope-based timing.
  */
 typedef struct {
 	HybridTimer timer;
 	const char* label;
 } HybridTimerRAII;
 
+/** @brief Internal cleanup function for HybridTimerRAII. */
 static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii)
 {
 	perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
 }
 
+/**
+ * @brief Scoped hybrid timer. Automatically logs on scope exit.
+ *
+ * Usage:
+ * @code
+ *   void complex_function() {
+ *       HYBRID_FUNC_TIMER("IBL: Specular Map");
+ *       // ... function body ...
+ *   }
+ * @endcode
+ */
 #define HYBRID_FUNC_TIMER(label)                                    \
 	HybridTimerRAII _h_raii                                     \
 	    __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
 	        perf_hybrid_start(), label}
 
-#endif  // PERF_TIMER_H
+#endif /* PERF_TIMER_H */

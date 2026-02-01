@@ -13,7 +13,7 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(count * sizeof(SphereInstance)), data,
-	             GL_STATIC_DRAW);
+	             GL_DYNAMIC_DRAW);
 }
 
 // Helper interne pour configurer les attributs d'instance

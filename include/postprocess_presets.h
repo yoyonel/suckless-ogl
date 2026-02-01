@@ -1,14 +1,17 @@
+/**
+ * @file postprocess_presets.h
+ * @brief Predefined configurations for the post-processing pipeline.
+ *
+ * This file contains static constants representing various artistic styles
+ * (Cinematic, Vintage, Matrix, etc.) for the renderer.
+ */
+
 #ifndef POSTPROCESS_PRESETS_H
 #define POSTPROCESS_PRESETS_H
 
 #include "postprocess.h"
 
-/*
- * Definitions des presets de post-traitement.
- * Ces constantes sont définies ici pour être accessibles via include
- * sans nécessiter de compilation séparée.
- */
-
+/** @brief Default balanced settings with basic exposure. */
 static const PostProcessPreset PRESET_DEFAULT = {
     .active_effects = (unsigned int)POSTFX_EXPOSURE,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
@@ -42,6 +45,7 @@ static const PostProcessPreset PRESET_DEFAULT = {
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
+/** @brief Subtle adjustments for a polished but realistic look. */
 static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
@@ -75,6 +79,7 @@ static const PostProcessPreset PRESET_SUBTLE = {
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
+/** @brief Rich, high-contrast look with auto-exposure and bloom. */
 static const PostProcessPreset PRESET_CINEMATIC = {
     (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_AUTO_EXPOSURE | (unsigned int)POSTFX_BLOOM |
@@ -109,6 +114,7 @@ static const PostProcessPreset PRESET_CINEMATIC = {
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
+/** @brief Warm, grainy look with strong vignette and chromatic aberration. */
 static const PostProcessPreset PRESET_VINTAGE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
@@ -143,6 +149,7 @@ static const PostProcessPreset PRESET_VINTAGE = {
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
+/** @brief Cool, green-tinted high contrast look. */
 static const PostProcessPreset PRESET_MATRIX = {
     .active_effects =
         (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
@@ -177,6 +184,7 @@ static const PostProcessPreset PRESET_MATRIX = {
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
 
+/** @brief Desaturated, high-contrast black and white look. */
 static const PostProcessPreset PRESET_BW_CONTRAST = {
     .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,

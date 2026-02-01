@@ -1,4 +1,5 @@
 #include "app.h"
+#include "app_scene.h"
 #include "main.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>

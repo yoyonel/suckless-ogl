@@ -2,7 +2,11 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "utils.h"
+#include <ctype.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <string.h>
 
 // -----------------------------------------------------------------------------
 // Texture Management
@@ -132,4 +136,73 @@ int render_utils_check_framebuffer(const char* label)
 		return 0;
 	}
 	return 1;
+}
+
+GPUInfo render_utils_get_gpu_info(void)
+{
+	GPUInfo info;
+	info.vendor = (const char*)glGetString(GL_VENDOR);
+	info.renderer = (const char*)glGetString(GL_RENDERER);
+	info.version = (const char*)glGetString(GL_VERSION);
+	return info;
+}
+
+static void append_sanitized_char(char raw_char, char* buffer, size_t* dst_idx,
+                                  size_t size)
+{
+	if (*dst_idx >= (size - 1)) {
+		return;
+	}
+
+	unsigned char unsigned_char = (unsigned char)raw_char;
+	if (isalnum(unsigned_char)) {
+		buffer[(*dst_idx)++] = (char)tolower(unsigned_char);
+		return;
+	}
+
+	// Handle separators: convert to underscore, but avoid leading or
+	// consecutive underscores
+	bool is_sep = (unsigned_char == ' ' || unsigned_char == '_' ||
+	               unsigned_char == '-' || unsigned_char == '.');
+	if (is_sep && *dst_idx > 0 && buffer[*dst_idx - 1] != '_') {
+		buffer[(*dst_idx)++] = '_';
+	}
+}
+
+void render_utils_generate_gpu_identifier(const char* vendor,
+                                          const char* renderer, char* buffer,
+                                          size_t size)
+{
+	if (!buffer || size == 0) {
+		return;
+	}
+
+	const char* v_str = (vendor && vendor[0] != '\0') ? vendor : "unknown";
+	const char* r_str =
+	    (renderer && renderer[0] != '\0') ? renderer : "gpu";
+
+	static const size_t RAW_BUF_SIZE = 512;
+	char raw[RAW_BUF_SIZE];
+	if (!safe_snprintf(raw, RAW_BUF_SIZE, "%s_%s", v_str, r_str)) {
+		safe_snprintf(buffer, size, "%s", "unknown_gpu");
+		return;
+	}
+
+	size_t dst_idx = 0;
+	for (size_t i = 0; raw[i] != '\0'; i++) {
+		append_sanitized_char(raw[i], buffer, &dst_idx, size);
+	}
+
+	// Trim trailing underscore
+	if (dst_idx > 0 && buffer[dst_idx - 1] == '_') {
+		dst_idx--;
+	}
+	buffer[dst_idx] = '\0';
+}
+
+void render_utils_get_gpu_identifier(char* buffer, size_t size)
+{
+	GPUInfo info = render_utils_get_gpu_info();
+	render_utils_generate_gpu_identifier(info.vendor, info.renderer, buffer,
+	                                     size);
 }

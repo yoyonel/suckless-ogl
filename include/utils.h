@@ -1,3 +1,8 @@
+/**
+ * @file utils.h
+ * @brief Zero-overhead utility functions and RAII cleanup helpers.
+ */
+
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -9,20 +14,11 @@
 
 /**
  * @brief Safe wrapper around vsnprintf to format strings with bounds checking.
- *
- * This function wraps vsnprintf to ensure that the formatted string fits within
- * the provided buffer. It returns false if the buffer is null, size is 0, or
- * if truncation occurred.
- *
- * @param buf The destination buffer.
- * @param buf_size The size of the destination buffer.
- * @param format The format string.
- * @param ... variable arguments.
- * @return true if formatting succeeded and fit within the buffer, false
- * otherwise.
+ * @param buf Destination buffer.
+ * @param buf_size Buffer capacity.
+ * @param format Printf-style format string.
+ * @return true if string was fully written, false if truncated or error.
  */
-// L'attribut indique au compilateur que l'argument 3 est le format
-// et l'argument 4 le début des variables (pour les warnings)
 __attribute__((format(printf, 3, 4))) static inline bool safe_snprintf(
     char* buf, size_t buf_size, const char* format, ...)
 {
@@ -39,31 +35,27 @@ __attribute__((format(printf, 3, 4))) static inline bool safe_snprintf(
 	return (result >= 0 && (size_t)result < buf_size);
 }
 
+/**
+ * @brief Bitwise flag check helper.
+ */
 static inline bool check_flag(int value, int flag)
 {
 	return ((unsigned int)value & (unsigned int)flag) != 0;
 }
 
 /**
- * @brief Safe wrapper around calloc.
- *
- * Checks for zero size and returns NULL if num or size are 0.
- * Suppresses common security warnings for verified allocations.
+ * @brief calloc wrapper with zero-size check.
  */
 static inline void* safe_calloc(size_t num, size_t size)
 {
 	if (num == 0 || size == 0) {
 		return NULL;
 	}
-	// NOLINTNEXTLINE
 	return calloc(num, size);
 }
 
 /**
- * @brief Safe wrapper around memcpy.
- *
- * Checks for null pointers and ensures dest_size >= count.
- * Returns false if bounds check fails.
+ * @brief memcpy wrapper with bounds checking.
  */
 static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
                                size_t count)
@@ -71,33 +63,33 @@ static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
 	if (!dest || !src || dest_size < count) {
 		return false;
 	}
-	// NOLINTNEXTLINE
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memcpy(dest, src, count);
 	return true;
 }
 
 /**
- * @brief RAII-style cleanup for FILE*
+ * @brief RAII callback for `FILE*`.
  */
 static inline void cleanup_file(FILE** file_ptr)
 {
 	if (file_ptr && *file_ptr) {
-		fclose(*file_ptr);
+		(void)fclose(*file_ptr);
 	}
 }
 
+/** @brief Macro to define a `FILE*` that closes itself at scope exit. */
 #define CLEANUP_FILE __attribute__((cleanup(cleanup_file)))
 
 /**
- * @brief Transparent hint for Static Analyzers.
- * Satisfies "Resource Leak" warnings by simulating a close only during
- * analysis. Zero runtime cost.
+ * @brief Satisfies Static Analyzers for file resource management.
  */
 #ifdef __clang_analyzer__
-static inline void raii_satisfy_analyzer_file(FILE* f)
+static inline void raii_satisfy_analyzer_file(
+    FILE* f)  // NOLINT(readability-identifier-length)
 {
 	if (f) {
-		fclose(f);
+		(void)fclose(f);
 	}
 }
 #define RAII_SATISFY_FILE(f) raii_satisfy_analyzer_file(f)
@@ -106,7 +98,7 @@ static inline void raii_satisfy_analyzer_file(FILE* f)
 #endif
 
 /**
- * @brief RAII-style cleanup for free()
+ * @brief RAII callback for `free()`.
  */
 static inline void cleanup_free(void* ptr_ptr)
 {
@@ -116,15 +108,15 @@ static inline void cleanup_free(void* ptr_ptr)
 	}
 }
 
+/** @brief Macro to define a pointer that frees itself at scope exit. */
 #define CLEANUP_FREE __attribute__((cleanup(cleanup_free)))
 
 /**
- * @brief Transparent hint for Static Analyzers.
- * Satisfies "Memory Leak" warnings by simulating a free only during analysis.
- * Zero runtime cost.
+ * @brief Satisfies Static Analyzers for memory resource management.
  */
 #ifdef __clang_analyzer__
-static inline void raii_satisfy_analyzer_free(void* p)
+static inline void raii_satisfy_analyzer_free(
+    void* p)  // NOLINT(readability-identifier-length)
 {
 	free(p);
 }
@@ -135,7 +127,9 @@ static inline void raii_satisfy_analyzer_free(void* p)
 
 /**
  * @brief Transfers ownership of an RAII-managed variable to the caller.
- * Sets the local variable to 0 (or NULL) to prevent automatic cleanup.
+ *
+ * Sets the local variable to NULL to prevent the `cleanup` attribute from
+ * triggering.
  */
 #define TRANSFER_OWNERSHIP(ptr)                   \
 	({                                        \
@@ -144,4 +138,4 @@ static inline void raii_satisfy_analyzer_free(void* p)
 		_tmp_ptr;                         \
 	})
 
-#endif  // UTILS_H
+#endif /* UTILS_H */
