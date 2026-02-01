@@ -192,10 +192,11 @@ void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
 	/* We need width chars + 1 null terminator usually, but explicit
 	 * buffer_size passed */
 	/* Let's construct a temporary line buffer */
-	char* line = (char*)malloc(width + 1);
-	if (!line) {
-		return;
+#define MAX_LINE_WIDTH 256
+	if (width >= MAX_LINE_WIDTH) {
+		width = MAX_LINE_WIDTH - 1;
 	}
+	char line[MAX_LINE_WIDTH];
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(line, '.', width);
@@ -235,7 +236,7 @@ void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
 	    "..................................................", /* Padding */
 	    win_secs, line);
 
-	free(line);
+#undef MAX_LINE_WIDTH
 }
 
 int adaptive_sampler_is_finished(const AdaptiveSampler* sampler,
