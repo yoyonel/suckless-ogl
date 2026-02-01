@@ -71,6 +71,7 @@ var NAVTREEINDEX2 =
 "group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85":[28,6,0],
 "group__Renderer.html":[28,0],
 "group__Renderer.html#ga488c62fb8eb8169482e08d0daf83320d":[28,0,0],
+"group__Renderer.html#gaa21ac8099a8b2310e9a42661d676cc51":[28,0,1],
 "group__Renderer.html#gga06fc87d81c62e9abb8790b6e5713c55ba0eabe341475ca6db494069cefa96a48c":[28,0,0,0],
 "group__UI.html":[28,5],
 "group__UI.html#ga066967c462f525b9e0c3b9cb583d1871":[28,5,2],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "md_docs_2async__loader.html#autotoc_md17":[2,1],
 "md_docs_2async__loader.html#autotoc_md18":[2,1,0],
 "md_docs_2build.html":[3],
-"md_docs_2build.html#autotoc_md20":[3,0],
-"md_docs_2build.html#autotoc_md21":[3,1]
+"md_docs_2build.html#autotoc_md20":[3,0]
 };

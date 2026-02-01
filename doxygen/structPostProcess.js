@@ -22,6 +22,7 @@ var structPostProcess =
     [ "scene_color_tex", "structPostProcess.html#ad295fa8bdbe10ab35d122decf9b77ba5", null ],
     [ "scene_depth_tex", "structPostProcess.html#aee637f0f73fa3be5d55847ea7ebed24e", null ],
     [ "scene_fbo", "structPostProcess.html#a525df9aaca19242dd28997f64a72a85f", null ],
+    [ "scene_stencil_view", "structPostProcess.html#a03cb84102cbd20fc99dab6677aa2d43d", null ],
     [ "screen_quad_vao", "structPostProcess.html#aed8a881b891092e31be0394895d9ef0c", null ],
     [ "screen_quad_vbo", "structPostProcess.html#aa60f528b365bd9dcee06a3260de4f1fa", null ],
     [ "settings_ubo", "structPostProcess.html#abb994ffe40318cecd8795b3fcd3594b0", null ],
