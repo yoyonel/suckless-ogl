@@ -635,7 +635,8 @@ static int create_framebuffer(PostProcess* post_processing)
 	GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 	glDrawBuffers(2, drawBuffers);
 
-	/* Créer la texture de profondeur (D32F_S8 pour précision max + stencil) */
+	/* Créer la texture de profondeur (D32F_S8 pour précision max + stencil)
+	 */
 	glGenTextures(1, &post_processing->scene_depth_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
 	glObjectLabel(GL_TEXTURE, post_processing->scene_depth_tex, -1,
@@ -654,15 +655,18 @@ static int create_framebuffer(PostProcess* post_processing)
 
 	/* Créer une vue Texture View pour accéder au Stencil uniquement */
 	glGenTextures(1, &post_processing->scene_stencil_view);
-	/* Utiliser le même format compatible (class 64-bit/32F_S8) mais changer le mode de lecture */
+	/* Utiliser le même format compatible (class 64-bit/32F_S8) mais changer
+	 * le mode de lecture */
 	glTextureView(post_processing->scene_stencil_view, GL_TEXTURE_2D,
-	              post_processing->scene_depth_tex, GL_DEPTH32F_STENCIL8, 0, 1,
-	              0, 1);
+	              post_processing->scene_depth_tex, GL_DEPTH32F_STENCIL8, 0,
+	              1, 0, 1);
 	glObjectLabel(GL_TEXTURE, post_processing->scene_stencil_view, -1,
 	              "Scene Stencil View");
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
-	/* Mode Stencil Index: Permet de lire le canal Stencil (uint) via usampler2D */
-	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_STENCIL_INDEX);
+	/* Mode Stencil Index: Permet de lire le canal Stencil (uint) via
+	 * usampler2D */
+	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE,
+	                GL_STENCIL_INDEX);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
