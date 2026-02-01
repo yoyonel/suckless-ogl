@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"structApp.html#a38ec0f9a02cd8ecbe1f7312cd4d85c38":[29,0,2,60],
 "structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09":[29,0,2,28],
 "structApp.html#a3d5af2228652f4aae50381d4bc55a643":[29,0,2,30],
 "structApp.html#a3d92b6d7427fe49f91737f6bbcae083d":[29,0,2,34],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "structMotionBlurParams.html#a30dc31b6c8bbf42e744e8379ccddb8c8":[29,0,36,1],
 "structMotionBlurParams.html#ac120547abd23e1cd15a1a7ce1eb2741e":[29,0,36,0],
 "structMotionBlurParams.html#ade5e7112883fa4e09b16035d13ebb5c7":[29,0,36,2],
-"structPBRMaterial.html":[29,0,37],
-"structPBRMaterial.html#a080d9fec8ffd04454686d6299176c5a4":[29,0,37,0]
+"structPBRMaterial.html":[29,0,37]
 };

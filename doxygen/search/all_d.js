@@ -40,7 +40,7 @@ var searchData=
   ['environment_20lighting_37',['Environment &amp; Lighting',['../group__Environment.html',1,'']]],
   ['environment_20map_20loader_38',['Asynchronous Environment Map Loader',['../md_docs_2async__loader.html',1,'']]],
   ['environmentmap_39',['environmentMap',['../background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623',1,'background.frag']]],
-  ['epsilon_40',['epsilon',['../spmap_8glsl.html#a8dd262088b947298332462dce5597aab',1,'Epsilon:&#160;spmap.glsl'],['../spbrdf_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'EPSILON:&#160;spbrdf.glsl'],['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'EPSILON:&#160;pbr_functions.glsl']]],
+  ['epsilon_40',['epsilon',['../spbrdf_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'EPSILON:&#160;spbrdf.glsl'],['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'EPSILON:&#160;pbr_functions.glsl'],['../spmap_8glsl.html#a8dd262088b947298332462dce5597aab',1,'Epsilon:&#160;spmap.glsl']]],
   ['equirectangular_41',['equirectangular',['../md_docs_2cubemap__seam__resolution.html#autotoc_md43',1,'Comparison: Cubemap vs Equirectangular'],['../md_docs_2skybox__rendering.html',1,'Skybox Rendering Technique (Equirectangular)']]],
   ['equirectangular_20mapping_42',['🏁 Definitive Solution: Equirectangular Mapping',['../md_docs_2cubemap__seam__resolution.html#autotoc_md40',1,'']]],
   ['equivalence_43',['🔗 Python → C Equivalence',['../md_docs_2skybox__rendering.html#autotoc_md328',1,'']]],

@@ -1,5 +1,6 @@
 var adaptive__sampler_8c =
 [
+    [ "MAX_LINE_WIDTH", "adaptive__sampler_8c.html#a09f908aa6474fe2b1f82b1aaade947f6", null ],
     [ "adaptive_sampler_ascii_plot", "adaptive__sampler_8c.html#adafedd549a30809384ff03da6a693357", null ],
     [ "adaptive_sampler_cleanup", "adaptive__sampler_8c.html#a366c5fb6efce2525a95d122ea847a845", null ],
     [ "adaptive_sampler_get_average", "adaptive__sampler_8c.html#ad25f5a036c070acde9778c555ef01606", null ],
