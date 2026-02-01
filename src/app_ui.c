@@ -132,7 +132,8 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 		return 0;
 	}
 
-	const int TOTAL_PIXELS = LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE;
+	const int TOTAL_PIXELS =
+	    LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE;
 	float* lum_data = app->lum_histogram_buffer;
 
 	glBindTexture(GL_TEXTURE_2D,
