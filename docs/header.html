@@ -45,6 +45,9 @@
     }
   </style>
   <script type="text/javascript">
+    if (localStorage.getItem("theme-mode") === null) {
+      localStorage.setItem("theme-mode", "dark");
+    }
     DoxygenAwesomeDarkModeToggle.init()
     DoxygenAwesomeFragmentCopyButton.init()
     DoxygenAwesomeParagraphLink.init()
