@@ -96,6 +96,15 @@ static char* load_file_into_ram(const char* path)
 		return NULL;
 	}
 
+	/* Check against MAX_SHADER_SOURCE_SIZE to prevent DoS */
+	if (len > MAX_SHADER_SOURCE_SIZE) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "File too large: %s (%ld > %d)", path, len,
+		          MAX_SHADER_SOURCE_SIZE);
+		RAII_SATISFY_FILE(file_ptr);
+		return NULL;
+	}
+
 	size_t size = (size_t)len;
 	CLEANUP_FREE char* buf = safe_calloc(size + 1, 1);
 	if (!buf) {
