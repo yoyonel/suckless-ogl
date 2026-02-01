@@ -150,13 +150,12 @@ jobs:
             > [!TIP]
             > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.raw`.
 
-      - name: Deploy Coverage to GitHub Pages
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload Coverage Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build-coverage/coverage_report/
-          destination_dir: coverage
+          name: coverage-report
+          path: build-coverage/coverage_report/
 
       - name: Upload Artifacts
         if: always()
@@ -179,31 +178,43 @@ jobs:
           sudo apt-get install -y doxygen graphviz python3
       - name: Generate and Verify Docs
         run: make docs CONTAINER_RUN=""
-      - name: Deploy Documentation to GitHub Pages
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/doxygen/html/
-          destination_dir: doxygen
-      - name: Deploy Landing Page to GitHub Pages
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-        run: |
-          mkdir -p public-root
-          cp docs/landing_page.html public-root/index.html
-      - name: Publish Landing Page
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public-root
-          keep_files: true
-          destination_dir: .
-      - name: Upload Docs Artifact
+      - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-docs
           path: docs/doxygen/html/
+
+  # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES ---
+  deploy-pages:
+    needs: [test-and-coverage, documentation]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: public-site/coverage
+
+      - name: Download Documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: doxygen-docs
+          path: public-site/doxygen
+
+      - name: Prepare Landing Page
+        run: |
+          cp docs/landing_page.html public-site/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public-site
+          keep_files: false
+          destination_dir: .
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
