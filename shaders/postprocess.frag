@@ -46,20 +46,21 @@ void main()
 	// le FXAA 	c'est l'effet/impact direct des branchements
 	// conditionnels dans les shaders !
 	// --------------------------------------------------------------------------------
-	// if (enableFXAA) {
-	// 	// FXAA on the HDR source
-	// 	// Fix: Pass the actual center pixel color, otherwise early exit
-	// 	// returns black!
-	// 	vec3 centerColor = texture(screenTexture, TexCoords).rgb;
-	// 	color = applyFXAA(centerColor, TexCoords);
-	// }
-	/* 2. Pipeline: Motion Blur -> Chromatic Aberration */
-	if (enableChromAbbr && !isSkybox) {
-		/* CA samples "SceneSource" (which calls MB) */
-		color = applyChromAbbr(TexCoords);
+	if (enableFXAA) {
+		// FXAA on the HDR source
+		// Fix: Pass the actual center pixel color, otherwise early exit
+		// returns black!
+		vec3 centerColor = texture(screenTexture, TexCoords).rgb;
+		color = applyFXAA(centerColor, TexCoords);
 	} else {
-		/* Direct fetch (or MB only) */
-		color = getSceneSource(TexCoords);
+		/* 2. Pipeline: Motion Blur -> Chromatic Aberration */
+		if (enableChromAbbr && !isSkybox) {
+			/* CA samples "SceneSource" (which calls MB) */
+			color = applyChromAbbr(TexCoords);
+		} else {
+			/* Direct fetch (or MB only) */
+			color = getSceneSource(TexCoords);
+		}
 	}
 
 	if (enableFXAA) {
