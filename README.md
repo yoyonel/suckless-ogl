@@ -23,7 +23,6 @@
 ## 🛠️ Compilation and Usage
 
 The project uses a `Makefile` wrapper that drives `CMake` to simplify interactions.
-
 ### Compilation Flags & Environment
 The build is configured with the following settings:
 - **Optimization**: `-Wall -Wextra -O2` for clean and performant code.
