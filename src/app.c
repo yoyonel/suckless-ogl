@@ -86,6 +86,14 @@ int app_init(App* app, int width, int height, const char* title)
 	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
+	/* Initialize Histogram PBO (64x64 floats) */
+	glGenBuffers(1, &app->histogram_pbo);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo);
+	glBufferData(GL_PIXEL_PACK_BUFFER,
+	             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)), NULL,
+	             GL_STREAM_READ);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
 	app->current_exposure = 1.0F;
 	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
 	app->dummy_white_tex = render_utils_create_color_texture(1, 1, 1, 1);
@@ -239,6 +247,8 @@ void app_cleanup(App* app)
 	glDeleteTextures(1, &app->irradiance_tex);
 	glDeleteTextures(1, &app->dummy_black_tex);
 	glDeleteTextures(1, &app->dummy_white_tex);
+	glDeleteBuffers(1, &app->exposure_pbo);
+	glDeleteBuffers(1, &app->histogram_pbo);
 
 	async_loader_shutdown();
 

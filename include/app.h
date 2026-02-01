@@ -152,6 +152,8 @@ typedef struct App {
 	GLuint shader_lum_pass1;     /**< Luminance downsample pass. */
 	GLuint shader_lum_pass2;     /**< Mean luminance compute pass. */
 	GLuint exposure_pbo; /**< Pixel Buffer Object for mean luma readback. */
+	GLuint histogram_pbo;   /**< Pixel Buffer Object for luminance histogram
+	                           readback. */
 	GLuint dummy_black_tex; /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex; /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */

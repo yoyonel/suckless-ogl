@@ -128,19 +128,7 @@ void draw_exposure_debug_text(App* app)
 int compute_luminance_histogram(App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum)
 {
-	if (!app->lum_histogram_buffer) {
-		return 0;
-	}
-
-	const int TOTAL_PIXELS =
-	    LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE;
-	float* lum_data = app->lum_histogram_buffer;
-
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.downsample_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, lum_data);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
+	/* Initialize buckets */
 	for (int i = 0; i < size; i++) {
 		buckets[i] = 0;
 	}
@@ -150,30 +138,47 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 	*min_lum = HISTO_MIN_INIT;
 	*max_lum = HISTO_MAX_INIT;
 
-	for (int i = 0; i < TOTAL_PIXELS; i++) {
-		float val = lum_data[i];
-		if (val < *min_lum) {
-			*min_lum = val;
-		}
-		if (val > *max_lum) {
-			*max_lum = val;
-		}
+	/* Bind PBO and map buffer (Read Previous Frame) */
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo);
+	float* lum_data =
+	    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
-		static const float RANGE_OFFSET = 5.0F;
-		static const float RANGE_SCALE = 10.0F;
-		float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
-		int idx = (int)(norm * (float)size);
-		if (idx < 0) {
-			idx = 0;
-		}
-		if (idx >= size) {
-			idx = size - 1;
-		}
+	int processed = 0;
+	if (lum_data) {
+		for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
+			float val = lum_data[i];
+			if (val < *min_lum) {
+				*min_lum = val;
+			}
+			if (val > *max_lum) {
+				*max_lum = val;
+			}
 
-		buckets[idx]++;
+			static const float RANGE_OFFSET = 5.0F;
+			static const float RANGE_SCALE = 10.0F;
+			float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
+			int idx = (int)(norm * (float)size);
+			if (idx < 0) {
+				idx = 0;
+			}
+			if (idx >= size) {
+				idx = size - 1;
+			}
+
+			buckets[idx]++;
+		}
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		processed = 1;
 	}
 
-	return 1;
+	/* Trigger Async Transfer (For Next Frame) */
+	glBindTexture(GL_TEXTURE_2D,
+	              app->postprocess.auto_exposure_fx.downsample_tex);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0); /* Offset 0 */
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+	return processed;
 }
 
 void draw_luminance_histogram_graph(App* app, const int* buckets, int size,
