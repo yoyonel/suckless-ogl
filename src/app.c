@@ -385,6 +385,12 @@ void app_render(App* app)
 	}
 
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
 	if (app->billboard_mode) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -393,14 +399,26 @@ void app_render(App* app)
 	} else {
 		app_render_instanced(app, view, proj, camera_pos);
 	}
+
+	glDisable(GL_STENCIL_TEST);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #else
 	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
+
 	if (app->billboard_mode) {
 		app_render_billboards(app, view, proj, camera_pos);
 	} else {
 		app_render_instanced(app, view, proj, camera_pos);
 	}
+
+	glDisable(GL_STENCIL_TEST);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	if (app->show_envmap) {

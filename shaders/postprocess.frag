@@ -6,6 +6,7 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 uniform sampler2D depthTexture;
+uniform usampler2D stencilTexture;
 
 /* Includes for Post-Process Effects */
 @header "postprocess/ubo.glsl";
@@ -37,9 +38,9 @@ void main()
 
 	vec3 color;
 
-	/* Skybox Hack: Depth ~ 1.0 */
-	float depth = texture(depthTexture, TexCoords).r;
-	bool isSkybox = depth >= 0.99999;
+	/* Stencil Check: 0 = Skybox/Background, 1 = Object */
+	uint stencil = texture(stencilTexture, TexCoords).r;
+	bool isSkybox = (stencil == 0u);
 
 	// --------------------------------------------------------------------------------
 	// FIXME: ça semble casser les performances de rajouter un if else pour

@@ -24,7 +24,8 @@ enum {
 	POSTPROCESS_TEX_UNIT_EXPOSURE = 3,
 	POSTPROCESS_TEX_UNIT_VELOCITY = 4,
 	POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX = 5,
-	POSTPROCESS_TEX_UNIT_DOF_BLUR = 6
+	POSTPROCESS_TEX_UNIT_DOF_BLUR = 6,
+	POSTPROCESS_TEX_UNIT_STENCIL = 7
 };
 
 /* Compute Shader Constants */
@@ -394,8 +395,10 @@ void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	glClearStencil(0);
 	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
-	        (GLbitfield)GL_DEPTH_BUFFER_BIT);
+	        (GLbitfield)GL_DEPTH_BUFFER_BIT |
+	        (GLbitfield)GL_STENCIL_BUFFER_BIT);
 }
 
 void postprocess_end(PostProcess* post_processing)
@@ -503,6 +506,12 @@ void postprocess_end(PostProcess* post_processing)
 		shader_set_int(post_processing->postprocess_shader,
 		               "dofBlurTexture", POSTPROCESS_TEX_UNIT_DOF_BLUR);
 	}
+
+	/* Bind Stencil Texture View (Unit 7) */
+	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
+	shader_set_int(post_processing->postprocess_shader, "stencilTexture",
+	               POSTPROCESS_TEX_UNIT_STENCIL);
 
 	/* Upload settings via UBO */
 	PostProcessUBO ubo = {0};
@@ -626,22 +635,36 @@ static int create_framebuffer(PostProcess* post_processing)
 	GLenum drawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 	glDrawBuffers(2, drawBuffers);
 
-	/* Créer la texture de profondeur (D32F pour précision max) */
+	/* Créer la texture de profondeur (D32F_S8 pour précision max + stencil) */
 	glGenTextures(1, &post_processing->scene_depth_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
 	glObjectLabel(GL_TEXTURE, post_processing->scene_depth_tex, -1,
-	              "Scene Depth (D32F)");
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F,
-	             post_processing->width, post_processing->height, 0,
-	             GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	              "Scene Depth (D32F_S8)");
+	/* glTextureView requires immutable storage */
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH32F_STENCIL8,
+	               post_processing->width, post_processing->height);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
 	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,
 	                       0);
+
+	/* Créer une vue Texture View pour accéder au Stencil uniquement */
+	glGenTextures(1, &post_processing->scene_stencil_view);
+	/* Utiliser le même format compatible (class 64-bit/32F_S8) mais changer le mode de lecture */
+	glTextureView(post_processing->scene_stencil_view, GL_TEXTURE_2D,
+	              post_processing->scene_depth_tex, GL_DEPTH32F_STENCIL8, 0, 1,
+	              0, 1);
+	glObjectLabel(GL_TEXTURE, post_processing->scene_stencil_view, -1,
+	              "Scene Stencil View");
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
+	/* Mode Stencil Index: Permet de lire le canal Stencil (uint) via usampler2D */
+	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE, GL_STENCIL_INDEX);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	return render_utils_check_framebuffer("PostProcess Scene FBO");
 }
@@ -659,6 +682,10 @@ static void destroy_framebuffer(PostProcess* post_processing)
 	if (post_processing->scene_depth_tex) {
 		glDeleteTextures(1, &post_processing->scene_depth_tex);
 		post_processing->scene_depth_tex = 0;
+	}
+	if (post_processing->scene_stencil_view) {
+		glDeleteTextures(1, &post_processing->scene_stencil_view);
+		post_processing->scene_stencil_view = 0;
 	}
 	if (post_processing->velocity_tex) {
 		glDeleteTextures(1, &post_processing->velocity_tex);
