@@ -388,8 +388,8 @@ void app_render(App* app)
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+	glStencilMask(DEFAULT_STENCIL_MASK);
 
 	if (app->billboard_mode) {
 		glEnable(GL_BLEND);
@@ -408,8 +408,8 @@ void app_render(App* app)
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+	glStencilMask(DEFAULT_STENCIL_MASK);
 
 	if (app->billboard_mode) {
 		app_render_billboards(app, view, proj, camera_pos);
