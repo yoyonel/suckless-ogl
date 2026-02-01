@@ -1,0 +1,326 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/shader.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('shader_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">shader.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="shader_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#ifndef SHADER_H</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#define SHADER_H</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>GLuint <a class="code hl_function" href="shader_8h.html#a8e2f3d3cd026d62964de6bc23968a5cd">shader_compile</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* path, GLenum type);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keywordtype">char</span>* <a class="code hl_function" href="shader_8h.html#a6d28f24af3b9e87285732052e6f70dc8">shader_read_file</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* path);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>GLuint <a class="code hl_function" href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader_load_program</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertex_path, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragment_path);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>GLuint <a class="code hl_function" href="shader_8h.html#a261eeb4f63e33c6cf31350b32eb97ff9">shader_load_compute</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* compute_path);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">/* -------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="comment"> * NEW GENERIC SHADER API (with automatic Uniform Caching)</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="comment"> * ------------------------------------------------------------------------- */</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="};">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structUniformEntry.html">   49</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de">   50</a></span>    <span class="keywordtype">char</span>* <a class="code hl_variable" href="structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de">name</a>;     </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9">   51</a></span>    GLint <a class="code hl_variable" href="structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9">location</a>; </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>} <a class="code hl_struct" href="structUniformEntry.html">UniformEntry</a>;</div>
+</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="foldopen" id="foldopen00059" data-start="{" data-end="};">
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structShader.html">   59</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="structShader.html#af036f983d35fe0f8f31dedc009b3645e">   60</a></span>    GLuint <a class="code hl_variable" href="structShader.html#af036f983d35fe0f8f31dedc009b3645e">program</a>;        </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structShader.html#a63fc645b9235c69c54c1a5b6a019db69">   61</a></span>    <span class="keywordtype">char</span>* <a class="code hl_variable" href="structShader.html#a63fc645b9235c69c54c1a5b6a019db69">name</a>;            </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="structShader.html#af1d3b12a4abc29af78e033a9b2acc6dd">   62</a></span>    <a class="code hl_struct" href="structUniformEntry.html">UniformEntry</a>* <a class="code hl_variable" href="structShader.html#af1d3b12a4abc29af78e033a9b2acc6dd">entries</a>; </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structShader.html#a40b936cae39a7242aac2814066b966f2">   63</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structShader.html#a40b936cae39a7242aac2814066b966f2">entry_count</a>;       </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structShader.html#af651964a485af25e6f6658fa57e46a38">   64</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structShader.html#af651964a485af25e6f6658fa57e46a38">entry_capacity</a>;    </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">bool</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structShader.html#a3cab8e98d59adca31fc046c28278b697">   66</a></span>        <a class="code hl_variable" href="structShader.html#a3cab8e98d59adca31fc046c28278b697">silent_warnings</a>; </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>} <a class="code hl_struct" href="structShader.html">Shader</a>;</div>
+</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_function" href="shader_8h.html#a8ae59be689516da13853d4be3758f253">shader_load</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertex_path, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragment_path);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_function" href="shader_8h.html#a2697a882efdae3e3ca7f80c816e875cf">shader_load_compute_program</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* compute_path);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_function" href="shader_8h.html#a3ed121856b4a37f0d99085e5bd01dada">shader_load_with_defines</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertex_path,</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                                 <span class="keyword">const</span> <span class="keywordtype">char</span>* fragment_path,</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>                                 <span class="keyword">const</span> <span class="keywordtype">char</span>** defines, <span class="keywordtype">int</span> count);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b">shader_destroy</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#ad80a771bc794ef6b652f13449129b645">shader_use</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader);</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>GLint <a class="code hl_function" href="shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c">shader_get_uniform_location</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="comment">/* --- FAST UNIFORM SETTERS (O(log N)) --- */</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32">shader_set_int</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">int</span> val);</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db">shader_set_float</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">float</span> val);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a5efe31c76255dd6965da8b2e1fdfd442">shader_set_vec2</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">float</span>* val);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a7034c467af5884ca4950b6957eb84ff2">shader_set_vec3</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">float</span>* val);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a8e522e514b294864d7526ee4b2a518c7">shader_set_vec4</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">float</span>* val);</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="keywordtype">void</span> <a class="code hl_function" href="shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69">shader_set_mat4</a>(<a class="code hl_struct" href="structShader.html">Shader</a>* shader, <span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keyword">const</span> <span class="keywordtype">float</span>* val);</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="preprocessor">#endif </span><span class="comment">/* SHADER_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="ashader_8h_html_a261eeb4f63e33c6cf31350b32eb97ff9"><div class="ttname"><a href="shader_8h.html#a261eeb4f63e33c6cf31350b32eb97ff9">shader_load_compute</a></div><div class="ttdeci">GLuint shader_load_compute(const char *compute_path)</div><div class="ttdoc">Helper to load a compute program from disk.</div><div class="ttdef"><b>Definition</b> shader.c:572</div></div>
+<div class="ttc" id="ashader_8h_html_a2697a882efdae3e3ca7f80c816e875cf"><div class="ttname"><a href="shader_8h.html#a2697a882efdae3e3ca7f80c816e875cf">shader_load_compute_program</a></div><div class="ttdeci">Shader * shader_load_compute_program(const char *compute_path)</div><div class="ttdoc">Loads a compute program and caches its uniforms.</div><div class="ttdef"><b>Definition</b> shader.c:692</div></div>
+<div class="ttc" id="ashader_8h_html_a3ed121856b4a37f0d99085e5bd01dada"><div class="ttname"><a href="shader_8h.html#a3ed121856b4a37f0d99085e5bd01dada">shader_load_with_defines</a></div><div class="ttdeci">Shader * shader_load_with_defines(const char *vertex_path, const char *fragment_path, const char **defines, int count)</div><div class="ttdoc">Special loader that injects #define directives before compilation.</div><div class="ttdef"><b>Definition</b> shader.c:677</div></div>
+<div class="ttc" id="ashader_8h_html_a461b117efc5c86ee8eabf8f80789ec32"><div class="ttname"><a href="shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32">shader_set_int</a></div><div class="ttdeci">void shader_set_int(Shader *shader, const char *name, int val)</div><div class="ttdef"><b>Definition</b> shader.c:755</div></div>
+<div class="ttc" id="ashader_8h_html_a54bf3663058663ec7530cd1a0a1af00b"><div class="ttname"><a href="shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b">shader_destroy</a></div><div class="ttdeci">void shader_destroy(Shader *shader)</div><div class="ttdoc">Destroys the shader wrapper and deletes the GL program.</div><div class="ttdef"><b>Definition</b> shader.c:698</div></div>
+<div class="ttc" id="ashader_8h_html_a5efe31c76255dd6965da8b2e1fdfd442"><div class="ttname"><a href="shader_8h.html#a5efe31c76255dd6965da8b2e1fdfd442">shader_set_vec2</a></div><div class="ttdeci">void shader_set_vec2(Shader *shader, const char *name, const float *val)</div><div class="ttdef"><b>Definition</b> shader.c:771</div></div>
+<div class="ttc" id="ashader_8h_html_a6d28f24af3b9e87285732052e6f70dc8"><div class="ttname"><a href="shader_8h.html#a6d28f24af3b9e87285732052e6f70dc8">shader_read_file</a></div><div class="ttdeci">char * shader_read_file(const char *path)</div><div class="ttdoc">Reads a shader file into RAM, processing all includes.</div><div class="ttdef"><b>Definition</b> shader.c:473</div></div>
+<div class="ttc" id="ashader_8h_html_a7034c467af5884ca4950b6957eb84ff2"><div class="ttname"><a href="shader_8h.html#a7034c467af5884ca4950b6957eb84ff2">shader_set_vec3</a></div><div class="ttdeci">void shader_set_vec3(Shader *shader, const char *name, const float *val)</div><div class="ttdef"><b>Definition</b> shader.c:779</div></div>
+<div class="ttc" id="ashader_8h_html_a8067eb11f7d8c682b855b9f019e20f69"><div class="ttname"><a href="shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69">shader_set_mat4</a></div><div class="ttdeci">void shader_set_mat4(Shader *shader, const char *name, const float *val)</div><div class="ttdef"><b>Definition</b> shader.c:795</div></div>
+<div class="ttc" id="ashader_8h_html_a82b9361a8e17eeb1635a867b925a1b6c"><div class="ttname"><a href="shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c">shader_get_uniform_location</a></div><div class="ttdeci">GLint shader_get_uniform_location(Shader *shader, const char *name)</div><div class="ttdoc">Retrieves a uniform location via binary search on the cache.</div><div class="ttdef"><b>Definition</b> shader.c:729</div></div>
+<div class="ttc" id="ashader_8h_html_a8ae59be689516da13853d4be3758f253"><div class="ttname"><a href="shader_8h.html#a8ae59be689516da13853d4be3758f253">shader_load</a></div><div class="ttdeci">Shader * shader_load(const char *vertex_path, const char *fragment_path)</div><div class="ttdoc">Loads a linked program and caches all its active uniforms.</div><div class="ttdef"><b>Definition</b> shader.c:672</div></div>
+<div class="ttc" id="ashader_8h_html_a8e2f3d3cd026d62964de6bc23968a5cd"><div class="ttname"><a href="shader_8h.html#a8e2f3d3cd026d62964de6bc23968a5cd">shader_compile</a></div><div class="ttdeci">GLuint shader_compile(const char *path, GLenum type)</div><div class="ttdoc">Compiles a single shader stage from a file.</div><div class="ttdef"><b>Definition</b> shader.c:507</div></div>
+<div class="ttc" id="ashader_8h_html_a8e522e514b294864d7526ee4b2a518c7"><div class="ttname"><a href="shader_8h.html#a8e522e514b294864d7526ee4b2a518c7">shader_set_vec4</a></div><div class="ttdeci">void shader_set_vec4(Shader *shader, const char *name, const float *val)</div><div class="ttdef"><b>Definition</b> shader.c:787</div></div>
+<div class="ttc" id="ashader_8h_html_ad80a771bc794ef6b652f13449129b645"><div class="ttname"><a href="shader_8h.html#ad80a771bc794ef6b652f13449129b645">shader_use</a></div><div class="ttdeci">void shader_use(Shader *shader)</div><div class="ttdoc">Activates the program for subsequent draw calls (glUseProgram).</div><div class="ttdef"><b>Definition</b> shader.c:722</div></div>
+<div class="ttc" id="ashader_8h_html_ae08327f08826fb5e44e6c5a1627433e4"><div class="ttname"><a href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader_load_program</a></div><div class="ttdeci">GLuint shader_load_program(const char *vertex_path, const char *fragment_path)</div><div class="ttdoc">Helper to load a classic Vertex+Fragment program from disk.</div><div class="ttdef"><b>Definition</b> shader.c:566</div></div>
+<div class="ttc" id="ashader_8h_html_aed5502c74325481ebafdd9dfc49cf8db"><div class="ttname"><a href="shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db">shader_set_float</a></div><div class="ttdeci">void shader_set_float(Shader *shader, const char *name, float val)</div><div class="ttdef"><b>Definition</b> shader.c:763</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition</b> shader.h:59</div></div>
+<div class="ttc" id="astructShader_html_a3cab8e98d59adca31fc046c28278b697"><div class="ttname"><a href="structShader.html#a3cab8e98d59adca31fc046c28278b697">Shader::silent_warnings</a></div><div class="ttdeci">bool silent_warnings</div><div class="ttdef"><b>Definition</b> shader.h:66</div></div>
+<div class="ttc" id="astructShader_html_a40b936cae39a7242aac2814066b966f2"><div class="ttname"><a href="structShader.html#a40b936cae39a7242aac2814066b966f2">Shader::entry_count</a></div><div class="ttdeci">int entry_count</div><div class="ttdef"><b>Definition</b> shader.h:63</div></div>
+<div class="ttc" id="astructShader_html_a63fc645b9235c69c54c1a5b6a019db69"><div class="ttname"><a href="structShader.html#a63fc645b9235c69c54c1a5b6a019db69">Shader::name</a></div><div class="ttdeci">char * name</div><div class="ttdef"><b>Definition</b> shader.h:61</div></div>
+<div class="ttc" id="astructShader_html_af036f983d35fe0f8f31dedc009b3645e"><div class="ttname"><a href="structShader.html#af036f983d35fe0f8f31dedc009b3645e">Shader::program</a></div><div class="ttdeci">GLuint program</div><div class="ttdef"><b>Definition</b> shader.h:60</div></div>
+<div class="ttc" id="astructShader_html_af1d3b12a4abc29af78e033a9b2acc6dd"><div class="ttname"><a href="structShader.html#af1d3b12a4abc29af78e033a9b2acc6dd">Shader::entries</a></div><div class="ttdeci">UniformEntry * entries</div><div class="ttdef"><b>Definition</b> shader.h:62</div></div>
+<div class="ttc" id="astructShader_html_af651964a485af25e6f6658fa57e46a38"><div class="ttname"><a href="structShader.html#af651964a485af25e6f6658fa57e46a38">Shader::entry_capacity</a></div><div class="ttdeci">int entry_capacity</div><div class="ttdef"><b>Definition</b> shader.h:64</div></div>
+<div class="ttc" id="astructUniformEntry_html"><div class="ttname"><a href="structUniformEntry.html">UniformEntry</a></div><div class="ttdoc">Cached uniform metadata for fast lookup.</div><div class="ttdef"><b>Definition</b> shader.h:49</div></div>
+<div class="ttc" id="astructUniformEntry_html_a650cc6f65a739b51dc2644d8c87c95b9"><div class="ttname"><a href="structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9">UniformEntry::location</a></div><div class="ttdeci">GLint location</div><div class="ttdef"><b>Definition</b> shader.h:51</div></div>
+<div class="ttc" id="astructUniformEntry_html_af701efc47c9ae30cf18a5392789c92de"><div class="ttname"><a href="structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de">UniformEntry::name</a></div><div class="ttdeci">char * name</div><div class="ttdef"><b>Definition</b> shader.h:50</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="shader_8h.html">shader.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

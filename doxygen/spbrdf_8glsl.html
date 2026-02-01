@@ -1,0 +1,551 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: shaders/IBL/spbrdf.glsl File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('spbrdf_8glsl.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">spbrdf.glsl File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a6fadfacd5eeeaa103103c5134387ee66" id="r_a6fadfacd5eeeaa103103c5134387ee66"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a6fadfacd5eeeaa103103c5134387ee66">layout</a> (local_size_x=32, local_size_y=32, local_size_z=1) in</td></tr>
+<tr class="separator:a6fadfacd5eeeaa103103c5134387ee66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1479d35442c4117654bdef64989f8b39" id="r_a1479d35442c4117654bdef64989f8b39"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a1479d35442c4117654bdef64989f8b39">layout</a> (binding=0, rg16f) restrict writeonly uniform image2D LUT</td></tr>
+<tr class="separator:a1479d35442c4117654bdef64989f8b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae464a93b6573681c656785d54f8220cf" id="r_ae464a93b6573681c656785d54f8220cf"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#ae464a93b6573681c656785d54f8220cf">radicalInverseVanDerCorput</a> (uint bits)</td></tr>
+<tr class="separator:ae464a93b6573681c656785d54f8220cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56bb66da737c61a3f493d134271074c7" id="r_a56bb66da737c61a3f493d134271074c7"><td class="memItemLeft" align="right" valign="top">vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a56bb66da737c61a3f493d134271074c7">hammersley</a> (uint i)</td></tr>
+<tr class="separator:a56bb66da737c61a3f493d134271074c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f145760e6f0475bd0afad479cd4942f" id="r_a2f145760e6f0475bd0afad479cd4942f"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a2f145760e6f0475bd0afad479cd4942f">importanceSampleGGX</a> (vec2 Xi, vec3 N, float roughness)</td></tr>
+<tr class="separator:a2f145760e6f0475bd0afad479cd4942f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aadbc6897cb11536c2a6c4edf31c1f2d3" id="r_aadbc6897cb11536c2a6c4edf31c1f2d3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#aadbc6897cb11536c2a6c4edf31c1f2d3">geometrySchlickGGX</a> (float NdotX, float k)</td></tr>
+<tr class="separator:aadbc6897cb11536c2a6c4edf31c1f2d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8383a46fbf7ef625e96a99893b1f7cb4" id="r_a8383a46fbf7ef625e96a99893b1f7cb4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a8383a46fbf7ef625e96a99893b1f7cb4">geometrySmith</a> (float NdotV, float NdotL, float roughness)</td></tr>
+<tr class="separator:a8383a46fbf7ef625e96a99893b1f7cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdef7a1fd863a6d3770c1268cb06add3" id="r_acdef7a1fd863a6d3770c1268cb06add3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#acdef7a1fd863a6d3770c1268cb06add3">main</a> ()</td></tr>
+<tr class="separator:acdef7a1fd863a6d3770c1268cb06add3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aa08a577393243b86dfd2a97e61443673" id="r_aa08a577393243b86dfd2a97e61443673"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#aa08a577393243b86dfd2a97e61443673">PI</a> = 3.14159265359</td></tr>
+<tr class="separator:aa08a577393243b86dfd2a97e61443673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af63480c89a929e95b13879677976d560" id="r_af63480c89a929e95b13879677976d560"><td class="memItemLeft" align="right" valign="top">const uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#af63480c89a929e95b13879677976d560">SAMPLE_COUNT</a> = 1024u</td></tr>
+<tr class="separator:af63480c89a929e95b13879677976d560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d9ac2a8b21aad9eb9f6abb94e18af36" id="r_a1d9ac2a8b21aad9eb9f6abb94e18af36"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#a1d9ac2a8b21aad9eb9f6abb94e18af36">INV_SAMPLE_COUNT</a> = 1.0 / float(<a class="el" href="spbrdf_8glsl.html#af63480c89a929e95b13879677976d560">SAMPLE_COUNT</a>)</td></tr>
+<tr class="separator:a1d9ac2a8b21aad9eb9f6abb94e18af36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab84b0a39a5bcd3e4bd1a2d19b015bde9" id="r_ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memItemLeft" align="right" valign="top">const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="spbrdf_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">EPSILON</a> = 1e-4</td></tr>
+<tr class="separator:ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aadbc6897cb11536c2a6c4edf31c1f2d3" name="aadbc6897cb11536c2a6c4edf31c1f2d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadbc6897cb11536c2a6c4edf31c1f2d3">&#9670;&#160;</a></span>geometrySchlickGGX()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float geometrySchlickGGX </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>NdotX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>k</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8383a46fbf7ef625e96a99893b1f7cb4" name="a8383a46fbf7ef625e96a99893b1f7cb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8383a46fbf7ef625e96a99893b1f7cb4">&#9670;&#160;</a></span>geometrySmith()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float geometrySmith </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>NdotV</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>NdotL</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>roughness</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="spbrdf_8glsl_a8383a46fbf7ef625e96a99893b1f7cb4_cgraph.svg" width="342" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a56bb66da737c61a3f493d134271074c7" name="a56bb66da737c61a3f493d134271074c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56bb66da737c61a3f493d134271074c7">&#9670;&#160;</a></span>hammersley()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vec2 hammersley </td>
+          <td>(</td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="spbrdf_8glsl_a56bb66da737c61a3f493d134271074c7_cgraph.svg" width="367" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a2f145760e6f0475bd0afad479cd4942f" name="a2f145760e6f0475bd0afad479cd4942f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f145760e6f0475bd0afad479cd4942f">&#9670;&#160;</a></span>importanceSampleGGX()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vec3 importanceSampleGGX </td>
+          <td>(</td>
+          <td class="paramtype">vec2&#160;</td>
+          <td class="paramname"><em>Xi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>N</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>roughness</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1479d35442c4117654bdef64989f8b39" name="a1479d35442c4117654bdef64989f8b39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1479d35442c4117654bdef64989f8b39">&#9670;&#160;</a></span>layout() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">layout </td>
+          <td>(</td>
+          <td class="paramtype">binding&#160;</td>
+          <td class="paramname"> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">rg16f&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6fadfacd5eeeaa103103c5134387ee66" name="a6fadfacd5eeeaa103103c5134387ee66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fadfacd5eeeaa103103c5134387ee66">&#9670;&#160;</a></span>layout() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">layout </td>
+          <td>(</td>
+          <td class="paramtype">local_size_x&#160;</td>
+          <td class="paramname"> = <code>32</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">local_size_y&#160;</td>
+          <td class="paramname"> = <code>32</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">local_size_z&#160;</td>
+          <td class="paramname"> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acdef7a1fd863a6d3770c1268cb06add3" name="acdef7a1fd863a6d3770c1268cb06add3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdef7a1fd863a6d3770c1268cb06add3">&#9670;&#160;</a></span>main()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void main </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="spbrdf_8glsl_acdef7a1fd863a6d3770c1268cb06add3_cgraph.svg" width="540" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ae464a93b6573681c656785d54f8220cf" name="ae464a93b6573681c656785d54f8220cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae464a93b6573681c656785d54f8220cf">&#9670;&#160;</a></span>radicalInverseVanDerCorput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float radicalInverseVanDerCorput </td>
+          <td>(</td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>bits</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ab84b0a39a5bcd3e4bd1a2d19b015bde9" name="ab84b0a39a5bcd3e4bd1a2d19b015bde9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab84b0a39a5bcd3e4bd1a2d19b015bde9">&#9670;&#160;</a></span>EPSILON</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float EPSILON = 1e-4</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1d9ac2a8b21aad9eb9f6abb94e18af36" name="a1d9ac2a8b21aad9eb9f6abb94e18af36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d9ac2a8b21aad9eb9f6abb94e18af36">&#9670;&#160;</a></span>INV_SAMPLE_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float INV_SAMPLE_COUNT = 1.0 / float(<a class="el" href="spbrdf_8glsl.html#af63480c89a929e95b13879677976d560">SAMPLE_COUNT</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa08a577393243b86dfd2a97e61443673" name="aa08a577393243b86dfd2a97e61443673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa08a577393243b86dfd2a97e61443673">&#9670;&#160;</a></span>PI</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float PI = 3.14159265359</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af63480c89a929e95b13879677976d560" name="af63480c89a929e95b13879677976d560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af63480c89a929e95b13879677976d560">&#9670;&#160;</a></span>SAMPLE_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint SAMPLE_COUNT = 1024u</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_95c752037a97b41030102703686a0a90.html">shaders</a></li><li class="navelem"><a class="el" href="dir_37b24a7cb0c6b372c9233d5927cd28f1.html">IBL</a></li><li class="navelem"><a class="el" href="spbrdf_8glsl.html">spbrdf.glsl</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

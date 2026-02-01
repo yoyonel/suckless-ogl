@@ -1,0 +1,391 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Automatic Resource Management (RAII) in C</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('md_docs_2raii__cleanup__guide.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Automatic Resource Management (RAII) in C</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md260"></a> This document explains the <b>RAII-style</b> (Resource Acquisition Is Initialization) approach used in this project to manage performance timers and other resources automatically, leveraging the <code>__attribute__((cleanup))</code> compiler extension.</p>
+<hr  />
+<h1><a class="anchor" id="autotoc_md262"></a>
+1. The Concept: RAII in C</h1>
+<p>In standard C, resources (memory, file handles, timers) must be managed manually. This often leads to:</p><ol type="1">
+<li><b>Deep indentation</b> when using scope-based macros (like <code>for</code> loops).</li>
+<li><b>Resource leaks</b> when a function returns early due to an error.</li>
+<li><b>Repetitive code</b> (multiple <code>stop_timer()</code> or <code>free()</code> calls before every <code>return</code>).</li>
+</ol>
+<p>To solve this, we use a technique borrowed from C++ called RAII, made possible in C by a GCC/Clang extension.</p>
+<h2><a class="anchor" id="autotoc_md263"></a>
+The attribute cleanup Extension</h2>
+<p>This attribute tells the compiler to automatically call a specific "cleanup function" when a local variable goes out of scope.</p>
+<div class="dotgraph">
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_13.svg" width="512" height="628"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<hr  />
+<hr  />
+<h1><a class="anchor" id="autotoc_md266"></a>
+2. Implementation in this Project</h1>
+<p>We use this primarily for performance monitoring via the <code>HYBRID_FUNC_TIMER</code> macro defined in <code><a class="el" href="perf__timer_8h.html" title="High-precision performance measurement (CPU and GPU).">include/perf_timer.h</a></code>.</p>
+<h2><a class="anchor" id="autotoc_md267"></a>
+The Core Components</h2>
+<ol type="1">
+<li><b>The RAII Container</b>: A structure that holds the resource and its metadata. <pre class="fragment">\code{.c}
+typedef struct {
+    HybridTimer timer;
+    const char* label;
+} HybridTimerRAII;
+\endcode
+</pre></li>
+<li><b>The Cleanup Function</b>: A static function that the compiler will trigger. <pre class="fragment">\code{.c}
+static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
+    perf_hybrid_stop(&amp;timer_raii-&gt;timer, timer_raii-&gt;label);
+}
+\endcode
+</pre></li>
+<li><b>The Macro</b>: A convenient way to declare the guarded variable. <pre class="fragment">\code{.c}
+#define HYBRID_FUNC_TIMER(label) \
+    HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
+        perf_hybrid_start(), label }
+\endcode
+</pre> <hr  />
+</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md268"></a>
+3. Benefits &amp; Usage</h1>
+<h2><a class="anchor" id="autotoc_md269"></a>
+Less Indentation</h2>
+<p>Unlike the older <code>HYBRID_MEASURE_LOG</code> which required a code block <code>{ ... }</code>, the new RAII macro allows for "flat" code.</p>
+<p><b>Old Way (Indented):</b> </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> process() {</div>
+<div class="line">    <a class="code hl_define" href="perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005">HYBRID_MEASURE_LOG</a>(<span class="stringliteral">&quot;Task&quot;</span>) {</div>
+<div class="line">        do_work();</div>
+<div class="line">        do_more_work();</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="aperf__timer_8h_html_a2890bfff296f02d391c9c90a2d8e5005"><div class="ttname"><a href="perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005">HYBRID_MEASURE_LOG</a></div><div class="ttdeci">#define HYBRID_MEASURE_LOG(label)</div><div class="ttdoc">Hybrid measurement macro. Useful for identifying driver vs GPU bottlenecks.</div><div class="ttdef"><b>Definition</b> perf_timer.h:185</div></div>
+</div><!-- fragment --><p><b>New Way (Flat):</b> </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> process() {</div>
+<div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;Task&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    do_work();</div>
+<div class="line">    do_more_work();</div>
+<div class="line">} <span class="comment">// Timer stops here automatically</span></div>
+<div class="ttc" id="aperf__timer_8h_html_aad9c1d6c0afa04bfd26ab833806b67b5"><div class="ttname"><a href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a></div><div class="ttdeci">#define HYBRID_FUNC_TIMER(label)</div><div class="ttdoc">Scoped hybrid timer. Automatically logs on scope exit.</div><div class="ttdef"><b>Definition</b> perf_timer.h:215</div></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md270"></a>
+Safety with Early Returns</h2>
+<p>The cleanup is guaranteed to run even if the function exits early.</p>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> load_data(<span class="keyword">const</span> <span class="keywordtype">char</span>* path) {</div>
+<div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;File Load&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    FILE* f = fopen(path, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (!f) <span class="keywordflow">return</span>; <span class="comment">// Timer STOPS and LOGS here automatically!</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// ... processing ...</span></div>
+<div class="line">} <span class="comment">// Timer STOPS and LOGS here automatically!</span></div>
+</div><!-- fragment --><hr  />
+<h1><a class="anchor" id="autotoc_md272"></a>
+4. Real-world Example: src/pbr.c</h1>
+<p>In the IBL (Image Based Lighting) generation pipeline, we use <code>HYBRID_FUNC_TIMER</code> at the start of expensive compute shader dispatches.</p>
+<div class="fragment"><div class="line">GLuint <a class="code hl_function" href="pbr_8h.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a>(GLuint shader, GLuint env_hdr_tex, <span class="keywordtype">int</span> size, <span class="keywordtype">float</span> <a class="code hl_variable" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>) {</div>
+<div class="line">    <span class="keywordflow">if</span> (shader == 0) <span class="keywordflow">return</span> 0;</div>
+<div class="line"> </div>
+<div class="line">    GLuint irr_tex = 0;</div>
+<div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;IBL: Irradiance Map&quot;</span>); <span class="comment">// Automatic measurement starts</span></div>
+<div class="line"> </div>
+<div class="line">    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, <span class="stringliteral">&quot;IBL: Irradiance Map&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// ... OpenGL Setup ...</span></div>
+<div class="line">    glDispatchCompute(groups, groups, 1);</div>
+<div class="line">    <span class="comment">// ...</span></div>
+<div class="line"> </div>
+<div class="line">    glPopDebugGroup();</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> irr_tex;</div>
+<div class="line">} <span class="comment">// Measurement stops and result is printed to log</span></div>
+<div class="ttc" id="abloom__prefilter_8frag_html_a35dfb7e5bccf3b9aa48afd382d15ddda"><div class="ttname"><a href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a></div><div class="ttdeci">uniform float threshold</div><div class="ttdef"><b>Definition</b> bloom_prefilter.frag:7</div></div>
+<div class="ttc" id="apbr_8h_html_a380eba0f8cc7fc6c292073aa718c7097"><div class="ttname"><a href="pbr_8h.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a></div><div class="ttdeci">GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold)</div><div class="ttdoc">Generates an irradiance map (diffuse IBL) in a single pass.</div><div class="ttdef"><b>Definition</b> pbr.c:205</div></div>
+</div><!-- fragment --><hr  />
+<h1><a class="anchor" id="autotoc_md274"></a>
+5. Compatibility &amp; Requirements</h1>
+<ul>
+<li><b>Compilers</b>: This feature requires <b>GCC</b> or <b>Clang</b>. It is not part of the standard ISO C (C99/C11), but it is a de-facto standard in professional Linux C programming (used extensively in the Linux Kernel and <code>systemd</code>).</li>
+<li><b>Order of Execution</b>: If multiple variables in the same scope have cleanup attributes, they are executed in <b>reverse order</b> of declaration (LIFO).</li>
+<li><b>Caveats</b>: The cleanup function is NOT called if the program terminates via <code>exit()</code> or <code>abort()</code>. It only triggers when leaving a scope normally or via <code>goto</code>, <code>break</code>, <code>continue</code>, or <code>return</code>.</li>
+</ul>
+<hr  />
+<hr  />
+<h1><a class="anchor" id="autotoc_md277"></a>
+6. Satisfying Static Analyzers (Clang-Tidy)</h1>
+<p>Clang's static analyzer does not yet fully model the control flow of <code>__attribute__((cleanup))</code>. This can result in false positives like <code>"Opened stream never closed"</code> or <code>"Potential memory leak"</code>.</p>
+<p>To maintain clean linting logs without sacrificing RAII's runtime safety, we use <b>Analyzer Hints</b>.</p>
+<h2><a class="anchor" id="autotoc_md278"></a>
+The RAII_SATISFY_* Patterns</h2>
+<p>Defined in <code><a class="el" href="utils_8h.html" title="Zero-overhead utility functions and RAII cleanup helpers.">include/utils.h</a></code>, these macros satisfy the analyzer by simulating a cleanup call only during static analysis. They have <b>zero runtime cost</b>.</p>
+<ul>
+<li><code><a class="el" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c" title="Satisfies Static Analyzers for file resource management.">RAII_SATISFY_FILE(f)</a></code>: Simulates <code>fclose(f)</code>.</li>
+<li><code><a class="el" href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857" title="Satisfies Static Analyzers for memory resource management.">RAII_SATISFY_FREE(p)</a></code>: Simulates <code>free(p)</code>.</li>
+</ul>
+<p><b>Usage Example:</b></p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span>* load_data(<span class="keyword">const</span> <span class="keywordtype">char</span>* path) {</div>
+<div class="line">    <a class="code hl_define" href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">CLEANUP_FILE</a> FILE* f = fopen(path, <span class="stringliteral">&quot;rb&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (!f) <span class="keywordflow">return</span> NULL;</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_define" href="utils_8h.html#ac333249d502a536c37149f9397c09060">CLEANUP_FREE</a> <span class="keywordtype">char</span>* buf = malloc(1024);</div>
+<div class="line">    <span class="keywordflow">if</span> (error_condition) {</div>
+<div class="line">        <span class="comment">// Surgical hints to satisfy the analyzer on this path</span></div>
+<div class="line">        <a class="code hl_define" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a>(f);</div>
+<div class="line">        <a class="code hl_define" href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">RAII_SATISFY_FREE</a>(buf);</div>
+<div class="line">        <span class="keywordflow">return</span> NULL;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_define" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a>(f);</div>
+<div class="line">    <span class="keywordflow">return</span> <a class="code hl_define" href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">TRANSFER_OWNERSHIP</a>(buf);</div>
+<div class="line">} <span class="comment">// Actual cleaning happens here at runtime via RAII</span></div>
+<div class="ttc" id="autils_8h_html_a407e52a6dbfea9c852630e98baaa92b7"><div class="ttname"><a href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">CLEANUP_FILE</a></div><div class="ttdeci">#define CLEANUP_FILE</div><div class="ttdoc">Macro to define a FILE* that closes itself at scope exit.</div><div class="ttdef"><b>Definition</b> utils.h:82</div></div>
+<div class="ttc" id="autils_8h_html_a564c7a8df26c5d2ea991c2285332a857"><div class="ttname"><a href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">RAII_SATISFY_FREE</a></div><div class="ttdeci">#define RAII_SATISFY_FREE(p)</div><div class="ttdoc">Satisfies Static Analyzers for memory resource management.</div><div class="ttdef"><b>Definition</b> utils.h:125</div></div>
+<div class="ttc" id="autils_8h_html_a832eee68ae25daaa8503b7ba52acddec"><div class="ttname"><a href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">TRANSFER_OWNERSHIP</a></div><div class="ttdeci">#define TRANSFER_OWNERSHIP(ptr)</div><div class="ttdoc">Transfers ownership of an RAII-managed variable to the caller.</div><div class="ttdef"><b>Definition</b> utils.h:134</div></div>
+<div class="ttc" id="autils_8h_html_ac333249d502a536c37149f9397c09060"><div class="ttname"><a href="utils_8h.html#ac333249d502a536c37149f9397c09060">CLEANUP_FREE</a></div><div class="ttdeci">#define CLEANUP_FREE</div><div class="ttdoc">Macro to define a pointer that frees itself at scope exit.</div><div class="ttdef"><b>Definition</b> utils.h:112</div></div>
+<div class="ttc" id="autils_8h_html_ad97bdfdff8c5dc389611f822f8cabe2c"><div class="ttname"><a href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a></div><div class="ttdeci">#define RAII_SATISFY_FILE(f)</div><div class="ttdoc">Satisfies Static Analyzers for file resource management.</div><div class="ttdef"><b>Definition</b> utils.h:97</div></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md279"></a>
+Why use this instead of // NOLINT?</h2>
+<ul>
+<li><b>Granularity</b>: <code>NOLINT</code> blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.</li>
+<li><b>Documentation</b>: It explicitly states that we are aware of the analyzer's limitation and are providing the missing link.</li>
+<li><b>Safety</b>: If you forget a hint, the code is still safe at runtime. If you forget a <code>fclose</code> in legacy code, the code leaks.</li>
+</ul>
+<hr  />
+<h1><a class="anchor" id="autotoc_md281"></a>
+7. Critical Perspectives &amp; Limitations</h1>
+<p>While RAII in C is powerful, it is important to understand its non-standard nature and the risks involved.</p>
+<h2><a class="anchor" id="autotoc_md282"></a>
+"Just Put RAII in C, Bro" (Analysis)</h2>
+<p>For a deep dive into why RAII is "semantically impossible" to do perfectly in standard C, we recommend this article: <a href="https://thephd.dev/just-put-raii-in-c-bro-please-bro-just-one-more-destructor-bro-cmon-im-good-for-it">Why Not Just Do Simple C++ RAII in C?</a> by JeanHeyd Meneide.</p>
+<p><b>Key Takeaways for this Project:</b></p>
+<ol type="1">
+<li><b>The Copy Problem</b>: C blindly <code>memcpy</code> structs. If you copy a struct containing an RAII-managed resource, you will get a <b>double-free</b>. &gt; [!IMPORTANT] &gt; <b>Rule</b>: Never copy structures that own resources. Pass them by pointer, or use <code>TRANSFER_OWNERSHIP</code> to move them.</li>
+<li><b>The Tooling Gap</b>: Static analyzers (like Clang-Tidy) are designed for standard C models. Our "Analyzer Hints" (<code>RAII_SATISFY_*</code>) are the bridge needed to reconcile modern safety hacks with rigid analysis tools.</li>
+<li><b>Safety vs. Purism</b>: This project chooses <b>Safety</b>. While "pure" C relies on manual cleanup and discipline, our RAII approach ensures that a forgotten path doesn't lead to a production leak, at the cost of being slightly "non-standard".</li>
+</ol>
+<hr  />
+<h1><a class="anchor" id="autotoc_md284"></a>
+Further Reading</h1>
+<ul>
+<li><a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html">GCC Variable Attributes: cleanup</a></li>
+<li><a href="https://echorand.me/posts/clean_up_variable_attribute/">Resource Acquisition Is Initialization (RAII) in C</a> </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

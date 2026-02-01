@@ -1,0 +1,284 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: FXAA 3.11 Implementation &amp; Optimizations</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('md_docs_2FXAA.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">FXAA 3.11 Implementation &amp; Optimizations</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md99"></a> This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementation in Suckless-OGL, specifically focusing on the optimizations tailored for the Deferred/Forward PBR pipeline.</p>
+<h1><a class="anchor" id="autotoc_md100"></a>
+Overview</h1>
+<p>FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).</p>
+<p><b>Version</b>: FXAA 3.11 (PC Quality / Console Performance Hybrid) <b>Location</b>: <code><a class="el" href="fxaa_8glsl.html">shaders/postprocess/fxaa.glsl</a></code></p>
+<h1><a class="anchor" id="autotoc_md101"></a>
+Key Optimizations</h1>
+<h2><a class="anchor" id="autotoc_md102"></a>
+1. Luma-in-Alpha (Bandwidth Optimization)</h2>
+<p>To avoid calculating Luminance (<code>dot(rgb, vec3(0.299...))</code>) multiple times per pixel during the edge detection phase, we pre-calculate it during the rendering pass.</p>
+<ul>
+<li><b>Storage</b>: The Alpha channel of the main Scene Color texture.</li>
+<li><b>Writer</b>: <code><a class="el" href="pbr__ibl__billboard_8frag.html">pbr_ibl_billboard.frag</a></code>, <code><a class="el" href="pbr__ibl__instanced_8frag.html">pbr_ibl_instanced.frag</a></code>, <code><a class="el" href="background_8frag.html">background.frag</a></code>.</li>
+<li><b>Reader</b>: <code><a class="el" href="fxaa_8glsl.html">fxaa.glsl</a></code> uses <code>textureOffset(...).a</code> to fetch neighbor luminance.</li>
+<li><b>Benefit</b>: Saves ~8 dot products per pixel in the FXAA pass and reduces register pressure.</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md103"></a>
+Pipeline Data Flow</h3>
+<div class="dotgraph">
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_6.svg" width="1815" height="256"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h2><a class="anchor" id="autotoc_md104"></a>
+2. sRGB / Gamma Correctness</h2>
+<p>Edge detection must be performed in Perceptual Space (Gamma) to match human vision. Since the rendering pipeline is linear:</p><ul>
+<li><b>Encoding</b>: PBR shaders calculate Luma using <code>sqrt(LinearColor)</code> to approximate the Gamma 2.2 curve before storing it in Alpha.</li>
+<li><b>Center Pixel</b>: If the center pixel was modified by previous post-process effects (e.g., Chromatic Aberration), its Luma is recalculated on-the-fly using <code>dot(sqrt(rgb), ...)</code>.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md105"></a>
+3. Dual Mode (Quality vs. Performance)</h2>
+<p>Defined via preprocessor macro <code>FXAA_MODE</code> in <code><a class="el" href="fxaa_8glsl.html">fxaa.glsl</a></code>.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Mode   </th><th class="markdownTableHeadLeft">ID   </th><th class="markdownTableHeadLeft">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>Quality</b>   </td><td class="markdownTableBodyLeft"><code>1</code>   </td><td class="markdownTableBodyLeft">(Default) Uses iterative edge search with variable steps to find the true end of an edge. Solves long edges accurately.    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><b>Performance</b>   </td><td class="markdownTableBodyLeft"><code>0</code>   </td><td class="markdownTableBodyLeft">"Console" style. Skips iterative search. Relies solely on local gradients and sub-pixel blending. Faster but less accurate on long edges.   </td></tr>
+</table>
+<h2><a class="anchor" id="autotoc_md106"></a>
+4. Non-Linear Search (Quality Mode)</h2>
+<p>Instead of stepping 1 pixel at a time, the search loop uses variable step sizes defined in the <code>quality[]</code> array (1.0, 1.5, 2.0, 2.0, 8.0). This allows covering a larger search radius (up to ~12 pixels) with only 5 texture fetches.</p>
+<h1><a class="anchor" id="autotoc_md107"></a>
+Configuration</h1>
+<p>Settings are controlled via the <code><a class="el" href="structPostProcessUBO.html" title="Shared Uniform Buffer structure for shaders.">PostProcessUBO</a></code>:</p>
+<div class="fragment"><div class="line"><span class="comment">// UBO Layout (std140)</span></div>
+<div class="line"><span class="keywordtype">float</span> fxaaQualitySubpix;           <span class="comment">// Default: 0.75 (Range 0.0 - 1.0)</span></div>
+<div class="line"><span class="keywordtype">float</span> fxaaQualityEdgeThreshold;    <span class="comment">// Default: 0.125 (0.166 for Perf, 0.063 for Quality)</span></div>
+<div class="line"><span class="keywordtype">float</span> fxaaQualityEdgeThresholdMin; <span class="comment">// Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)</span></div>
+</div><!-- fragment --><ul>
+<li><b>Subpix</b>: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.</li>
+<li><b>EdgeThreshold</b>: Minimum contrast required to trigger AA.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md108"></a>
+Debugging</h1>
+<p>Enable <code>enableFXAADebug</code> in <code><a class="el" href="app__settings_8h.html" title="Global application constants, configuration macros, and default values.">app_settings.h</a></code> or via Uniform to visualize:</p><ul>
+<li><b>Red</b>: Pixels affected by Edge AA.</li>
+<li><b>Blue</b>: Pixels affected by Subpixel blend.</li>
+<li><b>Gray</b>: Unaffected pixels. </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+var perf__timer_8h =
+[
+    [ "PerfTimer", "structPerfTimer.html", "structPerfTimer" ],
+    [ "GPUTimer", "structGPUTimer.html", "structGPUTimer" ],
+    [ "HybridTimer", "structHybridTimer.html", "structHybridTimer" ],
+    [ "HybridTimerRAII", "structHybridTimerRAII.html", "structHybridTimerRAII" ],
+    [ "GPU_MEASURE_LOG", "perf__timer_8h.html#abd41b4ab68073a6cbd6723d5899061dc", null ],
+    [ "GPU_MEASURE_MS", "perf__timer_8h.html#a3fb37d4b6578334d733d017b9b8a0673", null ],
+    [ "HYBRID_FUNC_TIMER", "perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5", null ],
+    [ "HYBRID_MEASURE_LOG", "perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005", null ],
+    [ "PERF_MEASURE_LOG", "perf__timer_8h.html#a4f737311402592e9e4f485894f1fb0f3", null ],
+    [ "PERF_MEASURE_MS", "perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f", null ],
+    [ "gpu_timer_cleanup", "perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c", null ],
+    [ "gpu_timer_elapsed_ms", "perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774", null ],
+    [ "gpu_timer_start", "perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab", null ],
+    [ "hybrid_timer_cleanup_raii", "perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce", null ],
+    [ "perf_hybrid_start", "perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b", null ],
+    [ "perf_hybrid_stop", "perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae", null ],
+    [ "perf_timer_elapsed_ms", "perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc", null ],
+    [ "perf_timer_elapsed_s", "perf__timer_8h.html#a17f019ead24431cfe5e5646df73af5d6", null ],
+    [ "perf_timer_elapsed_us", "perf__timer_8h.html#a1e8b0fc011f63d1416ab37899a7dd0c3", null ],
+    [ "perf_timer_start", "perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5", null ]
+];

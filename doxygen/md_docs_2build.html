@@ -1,0 +1,342 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Build System and Dependency Management</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('md_docs_2build.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div><div class="header">
+  <div class="headertitle"><div class="title">Build System and Dependency Management</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md19"></a> This project uses <b>CMake</b> for build automation and dependency management. To facilitate development in atomic OS environments (like Bazzite/Fedora Silverblue), it is designed to run within a <b>Distrobox</b> container.</p>
+<h1><a class="anchor" id="autotoc_md20"></a>
+Build Requirements</h1>
+<ul>
+<li><b>CMake</b> 3.14 or higher</li>
+<li><b>Clang</b> or <b>GCC</b> (C99 support)</li>
+<li><b>Python 3</b> (required by GLAD for code generation)</li>
+<li><b>GLFW 3</b> (system library)</li>
+<li><b>Pkg-config</b></li>
+</ul>
+<h1><a class="anchor" id="autotoc_md21"></a>
+Distrobox Integration</h1>
+<p>The project is optimized for a container named <code>clang-dev</code>. A <code>Makefile</code> wrapper is provided to automatically route commands through <code>distrobox</code>.</p>
+<h2><a class="anchor" id="autotoc_md22"></a>
+Common Commands</h2>
+<ul>
+<li><code>make</code>: Configures and builds the project inside the container.</li>
+<li><code>make debug</code>: Builds with dynamic shaders (Dev mode).</li>
+<li><code>make release</code>: Builds with optimized static shaders (Production mode).</li>
+<li><code>make run</code>: Builds and executes the application (Debug).</li>
+<li><code>make run-release</code>: Builds and executes the application (Release).</li>
+<li><code>make rebuild</code>: Performs a clean build from scratch (useful when dependencies change).</li>
+<li><code>make format</code>: Formats all C source and header files using <b>clang-format</b>.</li>
+<li><code>make lint</code>: Performs static analysis across the codebase using <b>clang-tidy</b> (Guaranteed <b>0 warnings</b>).</li>
+<li><code>make clean-all</code>: Nukes the <code>build/</code> directory.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md23"></a>
+Offline Build Support</h1>
+<p>For development without an internet connection, you can cache dependencies locally.</p>
+<h2><a class="anchor" id="autotoc_md24"></a>
+1. Preparation (Online)</h2>
+<p>Run the following command while you have an active internet connection: </p><div class="fragment"><div class="line">make deps-setup</div>
+</div><!-- fragment --><p> This script will clone <code>cglm</code>, <code>glad</code>, <code>stb</code>, <code>unity</code>, <code>cjson</code> into a local <code>deps/</code> directory (automatically ignored by Git).</p>
+<h2><a class="anchor" id="autotoc_md25"></a>
+2. Building (Offline)</h2>
+<p>Once the <code>deps/</code> directory is populated, CMake will automatically detect it and use the local sources instead of trying to download them. Simply run: </p><div class="fragment"><div class="line">make</div>
+</div><!-- fragment --><p>To remove the local cache, use <code>make deps-clean</code>.</p>
+<h2><a class="anchor" id="autotoc_md26"></a>
+3. Testing the Offline Mode</h2>
+<p>To verify that the build truly doesn't reach the network, you can run it in a simulated offline environment: </p><div class="fragment"><div class="line">make offline-test</div>
+</div><!-- fragment --><p> <em>Note: This command sets <code>http_proxy</code> to a non-existent local address to block network access. This method is used instead of <code>unshare -rn</code> to ensure compatibility with Distrobox/Podman.</em></p>
+<h1><a class="anchor" id="autotoc_md27"></a>
+Dependency Management</h1>
+<p>Dependencies are automatically managed via CMake's <code>FetchContent</code> module. No manual installation or management of <code>deps/</code> is required.</p>
+<h2><a class="anchor" id="autotoc_md28"></a>
+cglm (OpenGL Mathematics for C)</h2>
+<ul>
+<li><b>Source</b>: <a href="https://github.com/recp/cglm">recp/cglm</a></li>
+<li><b>Configuration</b>: Built as a <b>static library</b> (<code>CGLM_STATIC=ON</code>).</li>
+<li><b>Automation</b>: Fetched at configuration time.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md29"></a>
+GLAD (OpenGL Loader Generator)</h2>
+<ul>
+<li><b>Source</b>: <a href="https://github.com/Dav1dde/glad">Dav1dde/glad</a></li>
+<li><b>Configuration</b>: Programmatically generates headers and source for <b>OpenGL 4.4 Core</b>.</li>
+<li><b>Automation</b>: The generator script is fetched and executed during the CMake configuration phase.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md30"></a>
+GLFW</h2>
+<ul>
+<li><b>Source</b>: System library.</li>
+<li><b>Automation</b>: Located using <code>pkg-config</code>. Ensure <code>glfw-devel</code> (or equivalent) is installed in your development container.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md31"></a>
+Unity</h2>
+<ul>
+<li><b>Source</b>: <a href="https://github.com/ThrowTheSwitch/Unity">ThrowTheSwitch/Unity</a></li>
+<li><b>Automation</b>: Fetched at configuration time.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md32"></a>
+cJSON</h2>
+<ul>
+<li><b>Source</b>: <a href="https://github.com/DaveGamble/cJSON">DaveGamble/cJSON</a></li>
+<li><b>Automation</b>: Fetched at configuration time.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md33"></a>
+Folder Structure</h1>
+<h1><a class="anchor" id="autotoc_md34"></a>
+Fast Parallel Builds</h1>
+<p>The build is optimized for speed using parallel compilation:</p>
+<div class="fragment"><div class="line"># Via the Makefile wrapper</div>
+<div class="line">make all  # Executes cmake --build build --parallel</div>
+<div class="line"> </div>
+<div class="line"># Directly via CMake</div>
+<div class="line">cmake --build build -j$(nproc)</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md35"></a>
+Logging System</h1>
+<p>The application uses a structured logging system to facilitate development and monitoring.</p>
+<ul>
+<li><b>INFO Level</b>: Asset loading, GPU info, user state changes.</li>
+<li><b>ERROR Level</b>: <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> compilation failures, allocation errors, window creation failure.</li>
+<li><b>WARN Level</b>: Detects non-critical anomalies.</li>
+</ul>
+<p><b>Format</b>: <code>2026-01-13 10:05:10,133 - module - LEVEL - message</code></p>
+<h1><a class="anchor" id="autotoc_md36"></a>
+Automated Dependencies</h1>
+<p>Thanks to <code>FetchContent</code>, the following libraries are managed without manual intervention:</p>
+<ol type="1">
+<li><b>cglm</b>: Compiled as a static library optimized for your CPU.</li>
+<li><b>GLAD</b>: Generated on the fly to target exactly the OpenGL 4.4 Core profile.</li>
+<li><b>stb_image</b>: Automation via FetchContent. The implementation is isolated in <code><a class="el" href="stb__image__impl_8c.html">src/stb_image_impl.c</a></code> to guarantee perfectly clean linting on the remaining source files.</li>
+<li><b>unity</b>: Automation via FetchContent.</li>
+<li><b>cjson</b>: Automation via FetchContent.</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md37"></a>
+Folder Structure</h1>
+<ul>
+<li><code>CMakeLists.txt</code>: Core of the build system.</li>
+<li><code>Makefile</code>: Shortcuts for Docker/Distrobox and fast builds.</li>
+<li><code>docs/</code>: Full engine documentation.</li>
+<li><code><a class="el" href="log_8c.html">src/log.c</a></code>: Core of the logging system.</li>
+<li><code>assets/</code>: Folder containing assets.</li>
+<li><code>assets/env.hdr</code>: Source environment texture (Equirectangular).</li>
+<li><code>deps/</code>: Folder containing external dependencies. </li>
+</ul>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

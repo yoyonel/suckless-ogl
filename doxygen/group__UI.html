@@ -1,0 +1,612 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: User Interface</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li class="current"><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('group__UI.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">User Interface</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Font, HUD, and Overlay settings.  
+<a href="#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga413f094a9d593906551689b49a4ec064" id="r_ga413f094a9d593906551689b49a4ec064"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga413f094a9d593906551689b49a4ec064">DEFAULT_FONT_SIZE</a> = 32.0F</td></tr>
+<tr class="separator:ga413f094a9d593906551689b49a4ec064"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf0ca05071da1b9e491df5baaca3eb73e" id="r_gaf0ca05071da1b9e491df5baaca3eb73e"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gaf0ca05071da1b9e491df5baaca3eb73e">DEFAULT_FPS_SMOOTHING</a></td></tr>
+<tr class="separator:gaf0ca05071da1b9e491df5baaca3eb73e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab9848efe0430294ec2ff6ec8d2659691" id="r_gab9848efe0430294ec2ff6ec8d2659691"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab9848efe0430294ec2ff6ec8d2659691">DEFAULT_FPS_WINDOW</a></td></tr>
+<tr class="separator:gab9848efe0430294ec2ff6ec8d2659691"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga253484bd4e347b0db5053d3abe8df22a" id="r_ga253484bd4e347b0db5053d3abe8df22a"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga253484bd4e347b0db5053d3abe8df22a">DEFAULT_FPS_SAMPLER_SIZE</a> = 200</td></tr>
+<tr class="separator:ga253484bd4e347b0db5053d3abe8df22a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47843426246814c211484644236efae2" id="r_ga47843426246814c211484644236efae2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga47843426246814c211484644236efae2">DEFAULT_FPS_TARGET</a> = 60.0F</td></tr>
+<tr class="separator:ga47843426246814c211484644236efae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5fdcccf71b7236c0ea9332f1bdc3cf7a" id="r_ga5fdcccf71b7236c0ea9332f1bdc3cf7a"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga5fdcccf71b7236c0ea9332f1bdc3cf7a">DEFAULT_COLS</a> = 10</td></tr>
+<tr class="separator:ga5fdcccf71b7236c0ea9332f1bdc3cf7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabfa53e97d39b21b0639f934b842101a8" id="r_gabfa53e97d39b21b0639f934b842101a8"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gabfa53e97d39b21b0639f934b842101a8">DEFAULT_SPACING</a> = 2.5F</td></tr>
+<tr class="separator:gabfa53e97d39b21b0639f934b842101a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga07d578ea18451fba46831f6040d5914b" id="r_ga07d578ea18451fba46831f6040d5914b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga07d578ea18451fba46831f6040d5914b">HALF_OFFSET_MULTIPLIER</a> = 0.5F</td></tr>
+<tr class="separator:ga07d578ea18451fba46831f6040d5914b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab0c2612771e8100aa0c566bbe5e43558" id="r_gab0c2612771e8100aa0c566bbe5e43558"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab0c2612771e8100aa0c566bbe5e43558">DEFAULT_FONT_SHADOW_OFFSET_X</a> = 2.0F</td></tr>
+<tr class="separator:gab0c2612771e8100aa0c566bbe5e43558"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga61ad7d74466ad9984eda81fa6ee673f2" id="r_ga61ad7d74466ad9984eda81fa6ee673f2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga61ad7d74466ad9984eda81fa6ee673f2">DEFAULT_FONT_SHADOW_OFFSET_Y</a> = 2.0F</td></tr>
+<tr class="separator:ga61ad7d74466ad9984eda81fa6ee673f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga066967c462f525b9e0c3b9cb583d1871" id="r_ga066967c462f525b9e0c3b9cb583d1871"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga066967c462f525b9e0c3b9cb583d1871">DEFAULT_FONT_OFFSET_X</a> = 0.0F</td></tr>
+<tr class="separator:ga066967c462f525b9e0c3b9cb583d1871"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeb209bdfc3f174542fb8f9be8fab7ad" id="r_gabeb209bdfc3f174542fb8f9be8fab7ad"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gabeb209bdfc3f174542fb8f9be8fab7ad">DEFAULT_FONT_OFFSET_Y</a> = 0.0F</td></tr>
+<tr class="separator:gabeb209bdfc3f174542fb8f9be8fab7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac2e10d99dde9c5629d462d4404ae7003" id="r_gac2e10d99dde9c5629d462d4404ae7003"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gac2e10d99dde9c5629d462d4404ae7003">DEFAULT_FONT_COLOR</a> = {1.0F, 1.0F, 1.0F}</td></tr>
+<tr class="separator:gac2e10d99dde9c5629d462d4404ae7003"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab74ea829a42607b55b37fd0986bf30ab" id="r_gab74ea829a42607b55b37fd0986bf30ab"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#gab74ea829a42607b55b37fd0986bf30ab">DEFAULT_FONT_SHADOW_COLOR</a></td></tr>
+<tr class="separator:gab74ea829a42607b55b37fd0986bf30ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5ae1ae39c9d24fe3bc2206997ac0564b" id="r_ga5ae1ae39c9d24fe3bc2206997ac0564b"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b">MAX_FPS_TEXT_LENGTH</a> = 64</td></tr>
+<tr class="separator:ga5ae1ae39c9d24fe3bc2206997ac0564b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>Font, HUD, and Overlay settings. </p>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga5fdcccf71b7236c0ea9332f1bdc3cf7a" name="ga5fdcccf71b7236c0ea9332f1bdc3cf7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5fdcccf71b7236c0ea9332f1bdc3cf7a">&#9670;&#160;</a></span>DEFAULT_COLS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int DEFAULT_COLS = 10</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Grid width (N x N spheres). </p>
+
+</div>
+</div>
+<a id="gac2e10d99dde9c5629d462d4404ae7003" name="gac2e10d99dde9c5629d462d4404ae7003"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gac2e10d99dde9c5629d462d4404ae7003">&#9670;&#160;</a></span>DEFAULT_FONT_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>White text. </p>
+
+</div>
+</div>
+<a id="ga066967c462f525b9e0c3b9cb583d1871" name="ga066967c462f525b9e0c3b9cb583d1871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga066967c462f525b9e0c3b9cb583d1871">&#9670;&#160;</a></span>DEFAULT_FONT_OFFSET_X</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FONT_OFFSET_X = 0.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gabeb209bdfc3f174542fb8f9be8fab7ad" name="gabeb209bdfc3f174542fb8f9be8fab7ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabeb209bdfc3f174542fb8f9be8fab7ad">&#9670;&#160;</a></span>DEFAULT_FONT_OFFSET_Y</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FONT_OFFSET_Y = 0.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="gab74ea829a42607b55b37fd0986bf30ab" name="gab74ea829a42607b55b37fd0986bf30ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab74ea829a42607b55b37fd0986bf30ab">&#9670;&#160;</a></span>DEFAULT_FONT_SHADOW_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 DEFAULT_FONT_SHADOW_COLOR</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {0.0F, 0.0F,</div>
+<div class="line">                                               0.0F}</div>
+</div><!-- fragment --><p>Black shadow. </p>
+
+</div>
+</div>
+<a id="gab0c2612771e8100aa0c566bbe5e43558" name="gab0c2612771e8100aa0c566bbe5e43558"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab0c2612771e8100aa0c566bbe5e43558">&#9670;&#160;</a></span>DEFAULT_FONT_SHADOW_OFFSET_X</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FONT_SHADOW_OFFSET_X = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga61ad7d74466ad9984eda81fa6ee673f2" name="ga61ad7d74466ad9984eda81fa6ee673f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga61ad7d74466ad9984eda81fa6ee673f2">&#9670;&#160;</a></span>DEFAULT_FONT_SHADOW_OFFSET_Y</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FONT_SHADOW_OFFSET_Y = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga413f094a9d593906551689b49a4ec064" name="ga413f094a9d593906551689b49a4ec064"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga413f094a9d593906551689b49a4ec064">&#9670;&#160;</a></span>DEFAULT_FONT_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FONT_SIZE = 32.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Base font size in pixels. </p>
+
+</div>
+</div>
+<a id="ga253484bd4e347b0db5053d3abe8df22a" name="ga253484bd4e347b0db5053d3abe8df22a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga253484bd4e347b0db5053d3abe8df22a">&#9670;&#160;</a></span>DEFAULT_FPS_SAMPLER_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int DEFAULT_FPS_SAMPLER_SIZE = 200</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>History size. </p>
+
+</div>
+</div>
+<a id="gaf0ca05071da1b9e491df5baaca3eb73e" name="gaf0ca05071da1b9e491df5baaca3eb73e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaf0ca05071da1b9e491df5baaca3eb73e">&#9670;&#160;</a></span>DEFAULT_FPS_SMOOTHING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FPS_SMOOTHING</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    0.95F</div>
+</div><!-- fragment --><p>EMA Factor for FPS counter (Higher = Smoother). </p>
+
+</div>
+</div>
+<a id="ga47843426246814c211484644236efae2" name="ga47843426246814c211484644236efae2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga47843426246814c211484644236efae2">&#9670;&#160;</a></span>DEFAULT_FPS_TARGET</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FPS_TARGET = 60.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Target FPS. </p>
+
+</div>
+</div>
+<a id="gab9848efe0430294ec2ff6ec8d2659691" name="gab9848efe0430294ec2ff6ec8d2659691"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gab9848efe0430294ec2ff6ec8d2659691">&#9670;&#160;</a></span>DEFAULT_FPS_WINDOW</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_FPS_WINDOW</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    5.0F</div>
+</div><!-- fragment --><p>Refresh rate of the FPS text (Hz). </p>
+
+</div>
+</div>
+<a id="gabfa53e97d39b21b0639f934b842101a8" name="gabfa53e97d39b21b0639f934b842101a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabfa53e97d39b21b0639f934b842101a8">&#9670;&#160;</a></span>DEFAULT_SPACING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float DEFAULT_SPACING = 2.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>World units between spheres. </p>
+
+</div>
+</div>
+<a id="ga07d578ea18451fba46831f6040d5914b" name="ga07d578ea18451fba46831f6040d5914b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga07d578ea18451fba46831f6040d5914b">&#9670;&#160;</a></span>HALF_OFFSET_MULTIPLIER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float HALF_OFFSET_MULTIPLIER = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ga5ae1ae39c9d24fe3bc2206997ac0564b" name="ga5ae1ae39c9d24fe3bc2206997ac0564b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5ae1ae39c9d24fe3bc2206997ac0564b">&#9670;&#160;</a></span>MAX_FPS_TEXT_LENGTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int MAX_FPS_TEXT_LENGTH = 64</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

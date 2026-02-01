@@ -1,0 +1,436 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: -15px !important;
+      margin-bottom: -15px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const height = svg.getAttribute('height');
+              if (height) {
+                iframe.style.height = (parseInt(height) + 20) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li class="current"><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="#index_a"><span>a</span></a></li>
+      <li><a href="#index_b"><span>b</span></a></li>
+      <li><a href="#index_c"><span>c</span></a></li>
+      <li><a href="#index_d"><span>d</span></a></li>
+      <li><a href="#index_e"><span>e</span></a></li>
+      <li><a href="#index_f"><span>f</span></a></li>
+      <li><a href="#index_h"><span>h</span></a></li>
+      <li><a href="#index_i"><span>i</span></a></li>
+      <li><a href="#index_l"><span>l</span></a></li>
+      <li><a href="#index_m"><span>m</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
+      <li><a href="#index_p"><span>p</span></a></li>
+      <li><a href="#index_q"><span>q</span></a></li>
+      <li><a href="#index_r"><span>r</span></a></li>
+      <li><a href="#index_s"><span>s</span></a></li>
+      <li><a href="#index_t"><span>t</span></a></li>
+      <li><a href="#index_u"><span>u</span></a></li>
+      <li><a href="#index_v"><span>v</span></a></li>
+      <li class="current"><a href="#index_w"><span>w</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_eval.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all enum values with links to the files they belong to:</div>
+
+<h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
+<li>ASYNC_FAILED&#160;:&#160;<a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435">async_loader.h</a></li>
+<li>ASYNC_IDLE&#160;:&#160;<a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324">async_loader.h</a></li>
+<li>ASYNC_LOADING&#160;:&#160;<a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea">async_loader.h</a></li>
+<li>ASYNC_PENDING&#160;:&#160;<a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a140b746f61b307813404ecc0f6bbb6fc">async_loader.h</a></li>
+<li>ASYNC_POLL_INTERVAL_NS&#160;:&#160;<a class="el" href="async__loader_8c.html#a385c44f6fb256e5716a2302a5b940388a44cc350e8192ba14d3ff95e28cb1b442">async_loader.c</a></li>
+<li>ASYNC_READY&#160;:&#160;<a class="el" href="async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a">async_loader.h</a></li>
+</ul>
+
+
+<h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
+<li>BLOOM_MIP_LEVELS&#160;:&#160;<a class="el" href="fx__bloom_8h.html#abc5c98fcc1211af2b80116dd6e0a035da9d6785a4d1dafdb4937c6ba026303698">fx_bloom.h</a></li>
+</ul>
+
+
+<h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
+<li>CLI_ACTION_CONTINUE&#160;:&#160;<a class="el" href="cli_8h.html#ae986a19f06ecc528032ccab118ed8cb2a8383e5922aeb3928b345395c0c603c8d">cli.h</a></li>
+<li>CLI_ACTION_EXIT_FAILURE&#160;:&#160;<a class="el" href="cli_8h.html#ae986a19f06ecc528032ccab118ed8cb2ac9e96eb35574c35dce7c18caf5e95e14">cli.h</a></li>
+<li>CLI_ACTION_EXIT_SUCCESS&#160;:&#160;<a class="el" href="cli_8h.html#ae986a19f06ecc528032ccab118ed8cb2aaa30603451263d0418a956b4fde7bfa1">cli.h</a></li>
+<li>CUBEMAP_SIZE&#160;:&#160;<a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a036c97bdde295b409aad7e7ffd60a1ae">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_d" name="index_d"></a>- d -</h3><ul>
+<li>DEBUG_HASH_SIZE&#160;:&#160;<a class="el" href="gl__debug_8c.html#a05589fbab0657f08285ebdfe93f5ec9eae0387542c5774905de6d1e34ca81cfb6">gl_debug.c</a></li>
+<li>DEBUG_TEXT_BUFFER_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57ae3db8bdcc51e0d388cbd4e5f75acd4ba">app_ui.c</a></li>
+<li>DEFAULT_SAMPLES&#160;:&#160;<a class="el" href="group__Renderer.html#gga06fc87d81c62e9abb8790b6e5713c55ba0eabe341475ca6db494069cefa96a48c">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
+<li>ENV_TEXT_BUFFER_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a654e69613c7186f04e4a268211ffa3be">app_ui.c</a></li>
+<li>EXPOSURE_TEXT_BUFFER_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a4e8447b9e47500d76a84900bca1215d6">app_ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
+<li>FLOATS_PER_VERTEX&#160;:&#160;<a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4">ui.c</a></li>
+<li>FONT_ATLAS_SIZE&#160;:&#160;<a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27aa0f4026de0fe5858c7c8199069825526">ui.c</a></li>
+<li>FONT_CHAR_COUNT&#160;:&#160;<a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27ab9723a8e04cc6ccc232d26c72422c2c1">ui.c</a></li>
+<li>FONT_FIRST_CHAR&#160;:&#160;<a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27a116ff0645ada6fcc090c80ab2fbe527b">ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_h" name="index_h"></a>- h -</h3><ul>
+<li>HEADER_TAG_LEN&#160;:&#160;<a class="el" href="shader_8c.html#aabfcbcb5ac86a1edac4035264bc7d2b8abe5494b37698cf2ac85953fb95dee556">shader.c</a></li>
+</ul>
+
+
+<h3><a id="index_i" name="index_i"></a>- i -</h3><ul>
+<li>IBL_STATE_DONE&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">app.h</a></li>
+<li>IBL_STATE_IDLE&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">app.h</a></li>
+<li>IBL_STATE_IRRADIANCE&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">app.h</a></li>
+<li>IBL_STATE_LUMINANCE&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">app.h</a></li>
+<li>IBL_STATE_SPECULAR_INIT&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">app.h</a></li>
+<li>IBL_STATE_SPECULAR_MIPS&#160;:&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">app.h</a></li>
+<li>ICOSAHEDRON_INDEX_COUNT&#160;:&#160;<a class="el" href="icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4da3e4dd7eb2f4986df933274b70b7a6afd">icosphere.c</a></li>
+<li>ICOSAHEDRON_VERTEX_COUNT&#160;:&#160;<a class="el" href="icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4da6146e19be1ba08d03a7cd419cef6bf22">icosphere.c</a></li>
+<li>INDEX_SHIFT&#160;:&#160;<a class="el" href="icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4daa24be6570a0e4f5604c47521bed974c5">icosphere.c</a></li>
+<li>INFO_LOG_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a452257118dc4009bf289a99b738d1288">shader.c</a></li>
+<li>INITIAL_CAPACITY&#160;:&#160;<a class="el" href="sphere__sorting_8c.html#a0ed680fdb405e7195d9f14032851eebba7824ef724eb0d455d925e585eb107156">sphere_sorting.c</a></li>
+<li>INITIAL_SUBDIVISIONS&#160;:&#160;<a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a4dcc3f43b13b159296f85b7d6d293a4b">app_settings.h</a></li>
+<li>INITIAL_UINT_CAPACITY&#160;:&#160;<a class="el" href="icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4daa2a9070dd99320b9bc4f897c47220926">icosphere.c</a></li>
+<li>INITIAL_VEC3_CAPACITY&#160;:&#160;<a class="el" href="icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4da329acb3ae88741fba4e792489782463e">icosphere.c</a></li>
+<li>INSTANCE_ATTR_START&#160;:&#160;<a class="el" href="gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04ae627525491a141e81f7479d7fffb4038">gl_common.h</a></li>
+</ul>
+
+
+<h3><a id="index_l" name="index_l"></a>- l -</h3><ul>
+<li>LOG_LEVEL_CRITICAL&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f">log.h</a></li>
+<li>LOG_LEVEL_DEBUG&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177">log.h</a></li>
+<li>LOG_LEVEL_ERROR&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b40f003febbc3b535649d63f4b8a44f">log.h</a></li>
+<li>LOG_LEVEL_INFO&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">log.h</a></li>
+<li>LOG_LEVEL_NOTSET&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682">log.h</a></li>
+<li>LOG_LEVEL_WARNING&#160;:&#160;<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef">log.h</a></li>
+</ul>
+
+
+<h3><a id="index_m" name="index_m"></a>- m -</h3><ul>
+<li>MAX_DEFINE_LENGTH&#160;:&#160;<a class="el" href="postprocess_8c.html#af9bdc3014f3d54c426b6d2df10de4960ae2d8bf19c4a749e8099783aff02acd67">postprocess.c</a></li>
+<li>MAX_DEFINES&#160;:&#160;<a class="el" href="shader_8c.html#a5d76b81b0ad4c19007a781d4edb8181fa91ae2ad4b58ea1f33cd3254403970818">shader.c</a></li>
+<li>MAX_INCLUDE_DEPTH&#160;:&#160;<a class="el" href="shader_8c.html#aaf8fd5f0e57d456151c951e0f3715fc4a34143976b450ff92e89581ba34a4debf">shader.c</a></li>
+<li>MAX_MATERIAL_COUNT&#160;:&#160;<a class="el" href="material_8c.html#aaf105ae5beaca1dee30ae54530691fcea791194604c51f810416b76a9035095c8">material.c</a></li>
+<li>MAX_SHADER_DEFINES&#160;:&#160;<a class="el" href="postprocess_8c.html#af9bdc3014f3d54c426b6d2df10de4960a288123cc32f90d11ebff0279deb35e6d">postprocess.c</a></li>
+<li>MAX_SHADER_NAME_LEN&#160;:&#160;<a class="el" href="shader_8c.html#aae05225933a42f81e7c4a9fb286596f9a75751c824ae3bf41e5fe22118a79c341">shader.c</a></li>
+<li>MAX_SHADER_SOURCE_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#a94798fdadfbf49a7c658ace669a1d310ad0b512e0ee8b214855ee8781e7b04c62">shader.c</a></li>
+<li>MAX_SUBDIV&#160;:&#160;<a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7ac846edb36b9f557d22d6a1166f02f344">app_settings.h</a></li>
+<li>MAX_VERTEX_ATTRIBS_BASELINE&#160;:&#160;<a class="el" href="gl__common_8h.html#a99fb83031ce9923c84392b4e92f956b5a0305c7ac38f33f9eebc608633b2fc732">gl_common.h</a></li>
+<li>MB_COMPUTE_GROUP_SIZE&#160;:&#160;<a class="el" href="fx__motion__blur_8c.html#ac36f475ca5b446f4fde4c9b90bec77c8ae0cc9e784a74d6e048d9216031401ce2">fx_motion_blur.c</a></li>
+<li>MILLI_DIVISOR&#160;:&#160;<a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25a490d7b93a43f9c7422bb90f9fdb1556f">log.c</a></li>
+<li>MIN_SUBDIV&#160;:&#160;<a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a6abbd2a2e390ed49e79692e2cd617e7e">app_settings.h</a></li>
+<li>MS_PER_S&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea267b7927f41c268b57b08cdd64cb84ca">perf_timer.c</a></li>
+</ul>
+
+
+<h3><a id="index_n" name="index_n"></a>- n -</h3><ul>
+<li>NS_PER_MS&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeafd57fe7f4eaf46322b94fec775395bcf">perf_timer.c</a></li>
+<li>NS_PER_S&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeac27f89df3cdb20ed1a53d35d3f772a3d">perf_timer.c</a></li>
+<li>NS_PER_US&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea260259317d526f9e0d23af05655c0ca1">perf_timer.c</a></li>
+</ul>
+
+
+<h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
+<li>PATH_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#ae4d5251432e1a9e6803c0240cc492e18ae3e56668acad6b8aed4f818040a24567">shader.c</a></li>
+<li>PBR_DEBUG_MODE_COUNT&#160;:&#160;<a class="el" href="app__input_8c.html#abed82baf7f470b522273a3e37c24c600a46099f3e33a2bfa5892c3e7bffae3321">app_input.c</a></li>
+<li>POSTFX_AUTO_EXPOSURE&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">postprocess.h</a></li>
+<li>POSTFX_BLOOM&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">postprocess.h</a></li>
+<li>POSTFX_CHROM_ABBR&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">postprocess.h</a></li>
+<li>POSTFX_COLOR_GRADING&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">postprocess.h</a></li>
+<li>POSTFX_DOF&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">postprocess.h</a></li>
+<li>POSTFX_DOF_DEBUG&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">postprocess.h</a></li>
+<li>POSTFX_EXPOSURE&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">postprocess.h</a></li>
+<li>POSTFX_EXPOSURE_DEBUG&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">postprocess.h</a></li>
+<li>POSTFX_FXAA&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">postprocess.h</a></li>
+<li>POSTFX_FXAA_DEBUG&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">postprocess.h</a></li>
+<li>POSTFX_GRAIN&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">postprocess.h</a></li>
+<li>POSTFX_MOTION_BLUR&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">postprocess.h</a></li>
+<li>POSTFX_MOTION_BLUR_DEBUG&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">postprocess.h</a></li>
+<li>POSTFX_VIGNETTE&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">postprocess.h</a></li>
+<li>POSTPROCESS_COMPUTE_GROUP_SIZE&#160;:&#160;<a class="el" href="postprocess_8c.html#a6b7b47dd702d9e331586d485013fd1eaa72792e11fc9fe7775fdd433f48f04ea8">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_BLOOM&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaab6618e9fdfdf7789a88005e92bb84dc2">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_DEPTH&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaa57215ee1830aba58fb6da7f967c6b2bb">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_DOF_BLUR&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaa52208723fe78be596e51122ff09e11e1">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_EXPOSURE&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaaf0b77e7be4c1e923a25968ee4c7467f3">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaa7863dbb9a8b92cd5e52d432ec6e37e22">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_SCENE&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaaf0ee1ef93d8f949e7b1de75a547fc375">postprocess.c</a></li>
+<li>POSTPROCESS_TEX_UNIT_VELOCITY&#160;:&#160;<a class="el" href="postprocess_8c.html#a80155586fa275b28773c9b203f52cabaa8de6ad4fd3743301ea00af66f439290b">postprocess.c</a></li>
+<li>PREFIX_BUFFER_SIZE&#160;:&#160;<a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25a3ff11c2ebc27e50d70960f12741444fb">log.c</a></li>
+</ul>
+
+
+<h3><a id="index_q" name="index_q"></a>- q -</h3><ul>
+<li>QUAD_VERTICES_COUNT&#160;:&#160;<a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a8a116a65d8d34b1de85f3a387e5e61de">ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_r" name="index_r"></a>- r -</h3><ul>
+<li>RANGE_TEXT_BUFFER_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57af857797fa834c37834916f6bb3ee3dd4">app_ui.c</a></li>
+<li>RESOLVED_PATH_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#a7ff5f2dff38e7639981794c43dc9167ba63b1dfadb89175941f78629653841b52">shader.c</a></li>
+<li>RGB_COMPONENTS&#160;:&#160;<a class="el" href="material_8c.html#aaf105ae5beaca1dee30ae54530691fcea0c7b6f51af7759eefe1d6ee71bc9a421">material.c</a></li>
+</ul>
+
+
+<h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
+<li>SCREEN_QUAD_VERTEX_COUNT&#160;:&#160;<a class="el" href="gl__common_8h.html#a61dadd085c1777f559549e05962b2c9ea726b6f2464109ad63235993e0fd37631">gl_common.h</a></li>
+<li>SHADER_LABEL_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#a39fca1837c5ce7715cbf571669660c13a392912e5ab211e28c877a7cc3b56b0f5">shader.c</a></li>
+<li>SIMD_ALIGNMENT&#160;:&#160;<a class="el" href="gl__common_8h.html#a726ca809ffd3d67ab4b8476646f26635a7619557dd412e4f5e4416d11b1c40d42">gl_common.h</a></li>
+<li>SKYBOX_VERTEX_COUNT&#160;:&#160;<a class="el" href="skybox_8c.html#aac34dfe6c6b73b43a4656c9dce041034a775921a6634d1ba74a43db63a6443a96">skybox.c</a></li>
+<li>SYNC_ATTR_START&#160;:&#160;<a class="el" href="gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06ca8fc307a473aac724f3230b8a1bc02449">gl_common.h</a></li>
+</ul>
+
+
+<h3><a id="index_t" name="index_t"></a>- t -</h3><ul>
+<li>TIME_BUFFER_SIZE&#160;:&#160;<a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25aa9180b3f0d8722645ebcd8c9ab60fa70">log.c</a></li>
+</ul>
+
+
+<h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
+<li>US_PER_S&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaead5371dfcf90e9eda0600059428f1a985">perf_timer.c</a></li>
+</ul>
+
+
+<h3><a id="index_v" name="index_v"></a>- v -</h3><ul>
+<li>VERTEX_COMPONENTS&#160;:&#160;<a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98">ui.c</a></li>
+<li>VERTICES_PER_QUAD&#160;:&#160;<a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa">ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_w" name="index_w"></a>- w -</h3><ul>
+<li>WINDOW_HEIGHT&#160;:&#160;<a class="el" href="main_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0b6f4c348a85ec0f8fbf9fa683f37a74">main.h</a></li>
+<li>WINDOW_WIDTH&#160;:&#160;<a class="el" href="main_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2daa7523c5c17a6efb6c582e350985cf859">main.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
