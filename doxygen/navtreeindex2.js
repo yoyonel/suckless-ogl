@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"globals_q.html":[30,1,0,16],
 "globals_r.html":[30,1,0,17],
 "globals_s.html":[30,1,0,18],
 "globals_t.html":[30,1,0,19],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "md_docs_2async__loader.html#autotoc_md18":[2,1,0],
 "md_docs_2build.html":[3],
 "md_docs_2build.html#autotoc_md20":[3,0],
-"md_docs_2build.html#autotoc_md21":[3,1],
-"md_docs_2build.html#autotoc_md22":[3,1,0]
+"md_docs_2build.html#autotoc_md21":[3,1]
 };

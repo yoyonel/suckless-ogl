@@ -8,6 +8,7 @@ var async__loader_8c =
     [ "async_worker_func", "async__loader_8c.html#a390839e4ad145609522e9b52a23899c7", null ],
     [ "current_request", "async__loader_8c.html#a2a3dae042485c1c61829ae7f648f957f", null ],
     [ "has_pending_work", "async__loader_8c.html#a209e19c5a1c6b99e7882059c189ad060", null ],
+    [ "request_cond", "async__loader_8c.html#a6a8411c704fa1308cf298a2f688d2c9f", null ],
     [ "request_mutex", "async__loader_8c.html#ad25cf0c57d563e1b24e38b6fa1c711b2", null ],
     [ "running", "async__loader_8c.html#a7c10027ca174fc9d529796f04aca6bd4", null ],
     [ "worker_thread", "async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423", null ]

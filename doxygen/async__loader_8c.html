@@ -218,17 +218,16 @@ $(document).ready(function(){initNavTree('async__loader_8c.html',''); initResiza
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">async_loader.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;stb_image.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
@@ -245,12 +244,6 @@ Include dependency graph for async_loader.c:</div>
 Macros</h2></td></tr>
 <tr class="memitem:a3024ccd4a9af5109d24e6c57565d74a1" id="r_a3024ccd4a9af5109d24e6c57565d74a1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a3024ccd4a9af5109d24e6c57565d74a1">_POSIX_C_SOURCE</a>&#160;&#160;&#160;200809L</td></tr>
 <tr class="separator:a3024ccd4a9af5109d24e6c57565d74a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a385c44f6fb256e5716a2302a5b940388" id="r_a385c44f6fb256e5716a2302a5b940388"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="async__loader_8c.html#a385c44f6fb256e5716a2302a5b940388a44cc350e8192ba14d3ff95e28cb1b442">ASYNC_POLL_INTERVAL_NS</a> = 10000000
- }</td></tr>
-<tr class="separator:a385c44f6fb256e5716a2302a5b940388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -275,6 +268,8 @@ Variables</h2></td></tr>
 <tr class="separator:a2a3dae042485c1c61829ae7f648f957f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad25cf0c57d563e1b24e38b6fa1c711b2" id="r_ad25cf0c57d563e1b24e38b6fa1c711b2"><td class="memItemLeft" align="right" valign="top">static pthread_mutex_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#ad25cf0c57d563e1b24e38b6fa1c711b2">request_mutex</a></td></tr>
 <tr class="separator:ad25cf0c57d563e1b24e38b6fa1c711b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a8411c704fa1308cf298a2f688d2c9f" id="r_a6a8411c704fa1308cf298a2f688d2c9f"><td class="memItemLeft" align="right" valign="top">static pthread_cond_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a6a8411c704fa1308cf298a2f688d2c9f">request_cond</a></td></tr>
+<tr class="separator:a6a8411c704fa1308cf298a2f688d2c9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a5d212dca3603fc56d0b57172722423" id="r_a1a5d212dca3603fc56d0b57172722423"><td class="memItemLeft" align="right" valign="top">static pthread_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423">worker_thread</a></td></tr>
 <tr class="separator:a1a5d212dca3603fc56d0b57172722423"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c10027ca174fc9d529796f04aca6bd4" id="r_a7c10027ca174fc9d529796f04aca6bd4"><td class="memItemLeft" align="right" valign="top">static volatile bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a7c10027ca174fc9d529796f04aca6bd4">running</a> = false</td></tr>
@@ -294,24 +289,6 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a385c44f6fb256e5716a2302a5b940388" name="a385c44f6fb256e5716a2302a5b940388"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a385c44f6fb256e5716a2302a5b940388">&#9670;&#160;</a></span>anonymous enum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388a44cc350e8192ba14d3ff95e28cb1b442" name="a385c44f6fb256e5716a2302a5b940388a44cc350e8192ba14d3ff95e28cb1b442"></a>ASYNC_POLL_INTERVAL_NS&#160;</td><td class="fielddoc"></td></tr>
-</table>
 
 </div>
 </div>
@@ -487,6 +464,28 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">volatile bool has_pending_work = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6a8411c704fa1308cf298a2f688d2c9f" name="a6a8411c704fa1308cf298a2f688d2c9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a8411c704fa1308cf298a2f688d2c9f">&#9670;&#160;</a></span>request_cond</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pthread_cond_t request_cond</td>
         </tr>
       </table>
   </td>
