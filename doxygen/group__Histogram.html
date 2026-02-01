@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=11" />
   <meta name="generator" content="Doxygen 1.9.8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Suckless OGL: Topics</title>
+  <title>Suckless OGL: Luminance Histogram</title>
   <link href="tabs.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="dynsections.js"></script>
@@ -184,7 +184,7 @@ var searchBox = new SearchBox("searchBox", "search/",'.html');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('topics.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('group__Histogram.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -210,21 +210,75 @@ $(document).ready(function(){initNavTree('topics.html',''); initResizable(); });
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">Topics</div></div>
+  <div class="summary">
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle"><div class="title">Luminance Histogram</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all topics with brief descriptions:</div><div class="directory">
-<table class="directory">
-<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__Renderer.html" target="_self">Renderer Configuration</a></td><td class="desc">Core rendering settings (MSAA, Buffers, Feature Flags) </td></tr>
-<tr id="row_1_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__Geometry.html" target="_self">Geometry Generation</a></td><td class="desc">Icosphere generation limits </td></tr>
-<tr id="row_2_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__Camera.html" target="_self">Camera Configuration</a></td><td class="desc">Default starting position and movement constraints </td></tr>
-<tr id="row_3_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__Environment.html" target="_self">Environment &amp; Lighting</a></td><td class="desc">PBR Environment Map settings </td></tr>
-<tr id="row_4_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__PBR.html" target="_self">PBR Defaults</a></td><td class="desc">Fallback material parameters when no texture is present </td></tr>
-<tr id="row_5_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__UI.html" target="_self">User Interface</a></td><td class="desc">Font, HUD, and Overlay settings </td></tr>
-<tr id="row_6_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__PostProcess.html" target="_self">Post-Processing Limits</a></td><td class="desc">Constraints for Tone Mapping and Auto-Exposure </td></tr>
-<tr id="row_7_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><a class="el" href="group__Histogram.html" target="_self">Luminance Histogram</a></td><td class="desc">Configuration for the auto-exposure histogram </td></tr>
+
+<p>Configuration for the auto-exposure histogram.  
+<a href="#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ga5b7733b97b0a83c87d8520332ab513ce" id="r_ga5b7733b97b0a83c87d8520332ab513ce"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce">LUM_HISTOGRAM_MAP_SIZE</a></td></tr>
+<tr class="separator:ga5b7733b97b0a83c87d8520332ab513ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga84ba93c3ecc3ca425398e20ade0f1abc" id="r_ga84ba93c3ecc3ca425398e20ade0f1abc"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc">LUM_HISTOGRAM_SIZE</a></td></tr>
+<tr class="separator:ga84ba93c3ecc3ca425398e20ade0f1abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-</div><!-- directory -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>Configuration for the auto-exposure histogram. </p>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ga5b7733b97b0a83c87d8520332ab513ce" name="ga5b7733b97b0a83c87d8520332ab513ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5b7733b97b0a83c87d8520332ab513ce">&#9670;&#160;</a></span>LUM_HISTOGRAM_MAP_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LUM_HISTOGRAM_MAP_SIZE</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    64</div>
+</div><!-- fragment --><p>Size of the downsampled texture. </p>
+
+</div>
+</div>
+<a id="ga84ba93c3ecc3ca425398e20ade0f1abc" name="ga84ba93c3ecc3ca425398e20ade0f1abc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga84ba93c3ecc3ca425398e20ade0f1abc">&#9670;&#160;</a></span>LUM_HISTOGRAM_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LUM_HISTOGRAM_SIZE</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">    64 * 64</div>
+</div><!-- fragment --><p>Total pixels in the histogram map. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

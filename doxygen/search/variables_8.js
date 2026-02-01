@@ -10,5 +10,6 @@ var searchData=
   ['highlights_5fmin_7',['highlights_min',['../structGrainParams.html#a8643f870d488dbfce3fed2e17131b345',1,'GrainParams']]],
   ['histo_5fbar_5fcolor_5fblue_8',['HISTO_BAR_COLOR_BLUE',['../app__ui_8c.html#a037be618a76f8bc4f34b1eca628ba857',1,'app_ui.c']]],
   ['histo_5fbar_5fcolor_5fgreen_9',['HISTO_BAR_COLOR_GREEN',['../app__ui_8c.html#a5c6370f1e0e7703667c20c0215422723',1,'app_ui.c']]],
-  ['histo_5fbar_5fcolor_5fred_10',['HISTO_BAR_COLOR_RED',['../app__ui_8c.html#a43f540df1811075ee555702865120041',1,'app_ui.c']]]
+  ['histo_5fbar_5fcolor_5fred_10',['HISTO_BAR_COLOR_RED',['../app__ui_8c.html#a43f540df1811075ee555702865120041',1,'app_ui.c']]],
+  ['histogram_5fpbo_11',['histogram_pbo',['../structApp.html#a24598a67c7334e2d8116c4cb3f1a7e5a',1,'App']]]
 ];

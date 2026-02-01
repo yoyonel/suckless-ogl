@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['interface_0',['User Interface',['../group__UI.html',1,'']]]
+  ['histogram_0',['Luminance Histogram',['../group__Histogram.html',1,'']]]
 ];

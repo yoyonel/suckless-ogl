@@ -1,5 +1,7 @@
 var NAVTREEINDEX3 =
 {
+"md_docs_2build.html#autotoc_md23":[3,2],
+"md_docs_2build.html#autotoc_md24":[3,2,0],
 "md_docs_2build.html#autotoc_md25":[3,2,1],
 "md_docs_2build.html#autotoc_md26":[3,2,2],
 "md_docs_2build.html#autotoc_md27":[3,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX3 =
 "md_docs_2shader-cross-gpu-compatibility.html#autotoc_md307":[21,6],
 "md_docs_2shader__optimization.html":[22],
 "md_docs_2shader__optimization.html#autotoc_md309":[22,0],
-"md_docs_2shader__optimization.html#autotoc_md310":[22,1],
-"md_docs_2shader__optimization.html#autotoc_md311":[22,1,0],
-"md_docs_2shader__optimization.html#autotoc_md312":[22,1,1]
+"md_docs_2shader__optimization.html#autotoc_md310":[22,1]
 };

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['pbr_20defaults_0',['PBR Defaults',['../group__PBR.html',1,'']]],
-  ['post_20processing_20limits_1',['Post-Processing Limits',['../group__PostProcess.html',1,'']]],
-  ['processing_20limits_2',['Post-Processing Limits',['../group__PostProcess.html',1,'']]]
+  ['lighting_0',['Environment &amp; Lighting',['../group__Environment.html',1,'']]],
+  ['limits_1',['Post-Processing Limits',['../group__PostProcess.html',1,'']]],
+  ['luminance_20histogram_2',['Luminance Histogram',['../group__Histogram.html',1,'']]]
 ];

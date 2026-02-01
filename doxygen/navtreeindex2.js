@@ -56,6 +56,9 @@ var NAVTREEINDEX2 =
 "group__Environment.html#gac0e8a7770231166913b3e05f723bafc9":[28,3,7],
 "group__Environment.html#gafc5895744d3003c6436fdff66c9d80bd":[28,3,2],
 "group__Geometry.html":[28,1],
+"group__Histogram.html":[28,7],
+"group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce":[28,7,0],
+"group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc":[28,7,1],
 "group__PBR.html":[28,4],
 "group__PBR.html#ga24993c1c760aaefd485e66d419bcce3a":[28,4,3],
 "group__PBR.html#ga333d7e08b7c0e4275823e92f9182c455":[28,4,0],
@@ -63,7 +66,6 @@ var NAVTREEINDEX2 =
 "group__PBR.html#gaeb0f52b70b232cf017f3490d36896a5c":[28,4,1],
 "group__PostProcess.html":[28,6],
 "group__PostProcess.html#ga549835e9a52efb7bffd35d7eae64484b":[28,6,1],
-"group__PostProcess.html#ga5b7733b97b0a83c87d8520332ab513ce":[28,6,3],
 "group__PostProcess.html#ga91e3ffaced831fb8bf9736d8a9fc6ef2":[28,6,2],
 "group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85":[28,6,0],
 "group__Renderer.html":[28,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "md_docs_2build.html":[3],
 "md_docs_2build.html#autotoc_md20":[3,0],
 "md_docs_2build.html#autotoc_md21":[3,1],
-"md_docs_2build.html#autotoc_md22":[3,1,0],
-"md_docs_2build.html#autotoc_md23":[3,2],
-"md_docs_2build.html#autotoc_md24":[3,2,0]
+"md_docs_2build.html#autotoc_md22":[3,1,0]
 };

@@ -6,5 +6,6 @@ var topics =
     [ "Environment & Lighting", "group__Environment.html", "group__Environment" ],
     [ "PBR Defaults", "group__PBR.html", "group__PBR" ],
     [ "User Interface", "group__UI.html", "group__UI" ],
-    [ "Post-Processing Limits", "group__PostProcess.html", "group__PostProcess" ]
+    [ "Post-Processing Limits", "group__PostProcess.html", "group__PostProcess" ],
+    [ "Luminance Histogram", "group__Histogram.html", "group__Histogram" ]
 ];
