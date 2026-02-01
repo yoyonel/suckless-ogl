@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"md_docs_2shader__optimization.html#autotoc_md314":[22,2,0],
 "md_docs_2shader__optimization.html#autotoc_md315":[22,2,1],
 "md_docs_2shader__optimization.html#autotoc_md316":[22,2,2],
 "md_docs_2shader__optimization.html#autotoc_md317":[22,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "postprocess_8h.html":[30,0,1,21],
 "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b":[30,0,1,21,35],
 "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b":[30,0,1,21,35,8],
-"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd":[30,0,1,21,35,10],
-"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583":[30,0,1,21,35,7]
+"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd":[30,0,1,21,35,10]
 };

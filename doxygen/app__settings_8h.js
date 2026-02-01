@@ -34,6 +34,7 @@ var app__settings_8h =
     [ "LIGHT_DIR_Y", "group__Environment.html#ga1cd90f1a0c032db9767a587528b5be3f", null ],
     [ "LIGHT_DIR_Z", "group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86", null ],
     [ "LOD_STEP", "group__Environment.html#gab63114353ea52239459c442bbdc2fe2c", null ],
+    [ "LUM_HISTOGRAM_MAP_SIZE", "group__PostProcess.html#ga5b7733b97b0a83c87d8520332ab513ce", null ],
     [ "MAX_CAMERA_DISTANCE", "group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae", null ],
     [ "MAX_ENV_LOD", "group__Environment.html#ga49fb4d7500162560be451c22d8544de5", null ],
     [ "MAX_FPS_TEXT_LENGTH", "group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b", null ],

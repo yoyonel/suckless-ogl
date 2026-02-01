@@ -33,6 +33,7 @@ var structApp =
     [ "last_frame_time", "structApp.html#a3d5af2228652f4aae50381d4bc55a643", null ],
     [ "last_mouse_x", "structApp.html#a26ede8823204bbe2062a8eccf617fe3f", null ],
     [ "last_mouse_y", "structApp.html#aed8b6e0b080044c29cad0cbfa001e1ac", null ],
+    [ "lum_histogram_buffer", "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a", null ],
     [ "lum_ssbo", "structApp.html#a3d92b6d7427fe49f91737f6bbcae083d", null ],
     [ "material_lib", "structApp.html#a64496c91714395d84b9c6ec831be7ee5", null ],
     [ "pbr_billboard_shader", "structApp.html#a33087ca6b20688c957fbac893920f029", null ],

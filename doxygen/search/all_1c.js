@@ -66,7 +66,7 @@ var searchData=
   ['tiled_20dispatching_63',['D. Tiled Dispatching',['../md_docs_2ibl__architecture__ideas.html#autotoc_md131',1,'']]],
   ['time_64',['time',['../structPostProcess.html#afb71aa02b237fe2666213becfa342d31',1,'PostProcess::time'],['../structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1',1,'PostProcessUBO::time']]],
   ['time_20rendering_65',['Photographic Standards for Real-Time Rendering',['../md_docs_2photographic__standards.html',1,'']]],
-  ['time_5fbuffer_5fsize_66',['TIME_BUFFER_SIZE',['../log_8c.html#aaf105ae5beaca1dee30ae54530691fceaa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
+  ['time_5fbuffer_5fsize_66',['TIME_BUFFER_SIZE',['../log_8c.html#aba01db17f4a2bfbc3db60dc172972a25aa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
   ['timeconversionfactors_67',['TimeConversionFactors',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eae',1,'perf_timer.c']]],
   ['timer_68',['timer',['../structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0',1,'HybridTimerRAII']]],
   ['timestamp_69',['timestamp',['../structAdaptiveSampleItem.html#a7a857915c813957ef237b1ddeb04b1d4',1,'AdaptiveSampleItem']]],
