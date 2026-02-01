@@ -90,6 +90,7 @@ typedef struct App {
 	Shader* debug_shader;      /**< Generic debug/visualization shader. */
 	MaterialLib* material_lib; /**< Loaded material presets. */
 	char** hdr_files;          /**< List of found HDR files in assets. */
+	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
 	/* --- Sub-Modules (RAII/In-Place) --- */
 	FpsCounter fps_counter;      /**< Rolling average FPS manager. */

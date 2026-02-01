@@ -89,6 +89,13 @@ int app_init(App* app, int width, int height, const char* title)
 	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
 	app->dummy_white_tex = render_utils_create_color_texture(1, 1, 1, 1);
 
+	app->lum_histogram_buffer =
+	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
+	           sizeof(float));
+	if (!app->lum_histogram_buffer) {
+		return 0;
+	}
+
 	app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	async_loader_init();
 
@@ -238,6 +245,9 @@ void app_cleanup(App* app)
 			free(app->hdr_files[i]);
 		}
 		free(app->hdr_files);
+	}
+	if (app->lum_histogram_buffer) {
+		free(app->lum_histogram_buffer);
 	}
 	window_destroy(app->window);
 }

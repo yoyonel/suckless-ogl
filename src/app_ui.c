@@ -128,13 +128,12 @@ void draw_exposure_debug_text(App* app)
 int compute_luminance_histogram(App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum)
 {
-	const int MAP_SIZE = 64;
-	const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
-	float* lum_data = malloc((size_t)TOTAL_PIXELS * sizeof(float));
-
-	if (!lum_data) {
+	if (!app->lum_histogram_buffer) {
 		return 0;
 	}
+
+	const int TOTAL_PIXELS = LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE;
+	float* lum_data = app->lum_histogram_buffer;
 
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.downsample_tex);
@@ -173,7 +172,6 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 		buckets[idx]++;
 	}
 
-	free(lum_data);
 	return 1;
 }
 

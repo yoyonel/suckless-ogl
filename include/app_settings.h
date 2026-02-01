@@ -194,6 +194,8 @@ static const float DEFAULT_MIN_EXPOSURE =
     0.1F; /**< Minimum manual exposure value. */
 static const float DEFAULT_AUTO_THRESHOLD =
     5.0F; /**< Threshold for Bloom trigger. */
+static const int LUM_HISTOGRAM_MAP_SIZE =
+    64; /**< Resolution for luminance histogram downsample. */
 /** @} */
 
 #endif /* APP_SETTINGS_H */

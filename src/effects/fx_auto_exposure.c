@@ -1,5 +1,6 @@
 #include "fx_auto_exposure.h"
 
+#include "app_settings.h"
 #include "gl_common.h"
 #include "log.h"
 #include "postprocess.h"
@@ -7,7 +8,6 @@
 #include <stddef.h>
 
 /* Auto Exposure Constants */
-enum { LUM_DOWNSAMPLE_SIZE = 64 };
 static const float EXPOSURE_INITIAL_VAL = 1.20F;
 
 int fx_auto_exposure_init(PostProcess* post_processing)
@@ -20,8 +20,8 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 
 	glGenTextures(1, &auto_exp->downsample_tex);
 	glBindTexture(GL_TEXTURE_2D, auto_exp->downsample_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, LUM_DOWNSAMPLE_SIZE,
-	             LUM_DOWNSAMPLE_SIZE, 0, GL_RED, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, LUM_HISTOGRAM_MAP_SIZE,
+	             LUM_HISTOGRAM_MAP_SIZE, 0, GL_RED, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -99,7 +99,7 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
 	/* 1. Downsample Scene -> 64x64 Log Luminance */
-	glViewport(0, 0, LUM_DOWNSAMPLE_SIZE, LUM_DOWNSAMPLE_SIZE);
+	glViewport(0, 0, LUM_HISTOGRAM_MAP_SIZE, LUM_HISTOGRAM_MAP_SIZE);
 	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
 
 	shader_use(auto_exp->downsample_shader);
