@@ -236,10 +236,11 @@ typedef struct {
  */
 typedef struct PostProcess {
 	/* FBO principal et textures */
-	GLuint scene_fbo;       /**< Main HDR framebuffer. */
-	GLuint scene_color_tex; /**< RGBA16F HDR texture. */
-	GLuint velocity_tex;    /**< RG16F Motion vector texture. */
-	GLuint scene_depth_tex; /**< D32F Depth texture. */
+	GLuint scene_fbo;          /**< Main HDR framebuffer. */
+	GLuint scene_color_tex;    /**< RGBA16F HDR texture. */
+	GLuint velocity_tex;       /**< RG16F Motion vector texture. */
+	GLuint scene_depth_tex;    /**< D32F Depth texture. */
+	GLuint scene_stencil_view; /**< Stencil view of depth texture. */
 
 	/* Module Resources */
 	BloomFX bloom_fx;                /**< Bloom subsystem. */
