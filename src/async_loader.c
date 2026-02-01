@@ -1,6 +1,6 @@
+#include "utils.h"
 #define _POSIX_C_SOURCE 200809L  // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
 #include "async_loader.h"
-
 #include "log.h"
 #include "perf_timer.h"
 #include "texture.h"
@@ -12,13 +12,13 @@
 #include <string.h>
 #include <time.h>
 
-enum { ASYNC_POLL_INTERVAL_NS = 10000000 }; /* 10ms */
-
 /* Single slot for now, as we only load one environment map at a time */
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static AsyncRequest current_request;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,misc-include-cleaner)
 static pthread_mutex_t request_mutex;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,misc-include-cleaner)
+static pthread_cond_t request_cond;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables,misc-include-cleaner)
 static pthread_t worker_thread;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
@@ -30,19 +30,28 @@ static void* async_worker_func(void* arg)
 {
 	(void)arg; /* Unused */
 
+	pthread_mutex_lock(&request_mutex);
 	while (running) {
+		while (running && !has_pending_work) {
+			pthread_cond_wait(&request_cond, &request_mutex);
+		}
+
+		if (!running) {
+			break;
+		}
+
 		char path_to_load[ASYNC_MAX_PATH];
 		bool work_available = false;
 
 		/* 1. Check for work */
-		pthread_mutex_lock(&request_mutex);
-		if (has_pending_work &&
-		    current_request.state == ASYNC_PENDING) {
+		if (current_request.state == ASYNC_PENDING) {
 			(void)safe_snprintf(path_to_load, sizeof(path_to_load),
 			                    "%s", current_request.path);
 			current_request.state = ASYNC_LOADING;
 			work_available = true;
 		}
+
+		/* Unlock during heavy I/O */
 		pthread_mutex_unlock(&request_mutex);
 
 		/* 2. Process work (Disk I/O + Decompression) */
@@ -74,15 +83,14 @@ static void* async_worker_func(void* arg)
 				          "Failed loading: %s", path_to_load);
 			}
 			has_pending_work = false;
-			pthread_mutex_unlock(&request_mutex);
+			/* Loop continues, mutex is locked */
+		} else {
+			/* No work found (shouldn't happen if has_pending_work
+			   was true, but re-lock to wait) */
+			pthread_mutex_lock(&request_mutex);
 		}
-
-		/* 3. Sleep to save CPU */
-		struct timespec sleep_time;
-		sleep_time.tv_sec = 0;
-		sleep_time.tv_nsec = ASYNC_POLL_INTERVAL_NS;
-		nanosleep(&sleep_time, NULL);
 	}
+	pthread_mutex_unlock(&request_mutex);
 	return NULL;
 }
 
@@ -97,11 +105,18 @@ void async_loader_init(void)
 		return;
 	}
 
+	if (pthread_cond_init(&request_cond, NULL) != 0) {
+		LOG_ERROR("suckless-ogl.async", "Cond init failed");
+		pthread_mutex_destroy(&request_mutex);
+		return;
+	}
+
 	running = true;
 	if (pthread_create(&worker_thread, NULL, async_worker_func, NULL) !=
 	    0) {
 		LOG_ERROR("suckless-ogl.async", "Thread creation failed");
 		running = false;
+		pthread_cond_destroy(&request_cond);
 		pthread_mutex_destroy(&request_mutex);
 	} else {
 		LOG_INFO("suckless-ogl.async", "Async loader initialized.");
@@ -114,8 +129,13 @@ void async_loader_shutdown(void)
 		return;
 	}
 
+	pthread_mutex_lock(&request_mutex);
 	running = false;
+	pthread_cond_broadcast(&request_cond);
+	pthread_mutex_unlock(&request_mutex);
+
 	pthread_join(worker_thread, NULL);
+	pthread_cond_destroy(&request_cond);
 	pthread_mutex_destroy(&request_mutex);
 	LOG_INFO("suckless-ogl.async", "Async loader shutdown.");
 }
@@ -143,6 +163,7 @@ bool async_loader_request(const char* path)
 		                    sizeof(current_request.path), "%s", path);
 		current_request.state = ASYNC_PENDING;
 		has_pending_work = true;
+		pthread_cond_signal(&request_cond);
 		accepted = true;
 	}
 
