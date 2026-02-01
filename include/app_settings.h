@@ -41,6 +41,11 @@
 enum { DEFAULT_SAMPLES = 1 };
 
 /**
+ * @brief Value for all bits enabled in a stencil mask.
+ */
+static const unsigned int DEFAULT_STENCIL_MASK = 0xFF;
+
+/**
  * @brief Enable High Quality Transparent Sphere Rendering.
  *
  * **If Defined**:
