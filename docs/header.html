@@ -29,7 +29,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
-  <script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js"></script>
+
+  <script type="text/javascript" src="$relpath^doxygen-awesome-darkmode-toggle.js?v=2"></script>
   <script type="text/javascript" src="$relpath^doxygen-awesome-fragment-copy-button.js"></script>
   <script type="text/javascript" src="$relpath^doxygen-awesome-paragraph-link.js"></script>
   <script type="text/javascript" src="$relpath^doxygen-awesome-interactive-toc.js"></script>
@@ -47,15 +48,17 @@
     }
   </style>
   <script type="text/javascript">
-    if (localStorage.getItem("theme-mode") === null) {
-      localStorage.setItem("theme-mode", "dark");
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
     }
-    DoxygenAwesomeDarkModeToggle.init()
-    DoxygenAwesomeFragmentCopyButton.init()
-    DoxygenAwesomeParagraphLink.init()
-    DoxygenAwesomeInteractiveToc.init()
-    DoxygenAwesomeTabs.init()
+
     window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
       // 1. Highlighting Orchestrator (Aggressive)
       document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
         // Skip if it's an ASCII tree (heuristic)
@@ -133,6 +136,8 @@
 </head>
 
 <body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
   <!--BEGIN DISABLE_INDEX-->
   <!--BEGIN FULL_SIDEBAR-->
   <div id="side-nav" class="ui-resizable side-nav-resizable"><!-- do not remove this div, it is closed by doxygen! -->
@@ -169,8 +174,6 @@
               <!--BEGIN SEARCHENGINE-->
               <!--BEGIN !FULL_SIDEBAR-->
               <td>$searchbox</td>
-              <td><doxygen-awesome-darkmode-toggle title="Toggle Light/Dark Mode"></doxygen-awesome-darkmode-toggle>
-              </td>
               <!--END !FULL_SIDEBAR-->
               <!--END SEARCHENGINE-->
               <!--END DISABLE_INDEX-->
