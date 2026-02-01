@@ -15,7 +15,7 @@ void ssbo_group_init(SSBOGroup* group, const SphereInstanceSSBO* data,
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, group->ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER,
 	             (GLsizeiptr)(count * sizeof(SphereInstanceSSBO)), data,
-	             GL_STATIC_DRAW);
+	             GL_DYNAMIC_DRAW);
 
 	/* IMPORTANT : Binding au point 0 */
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, group->ssbo);

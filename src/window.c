@@ -3,6 +3,7 @@
 #include "gl_debug.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "render_utils.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
@@ -48,9 +49,9 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 	int major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
 	int minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
 	LOG_INFO("suckless-ogl.window", "Context Version: %d.%d", major, minor);
-	LOG_INFO("suckless-ogl.window", "Renderer: %s",
-	         glGetString(GL_RENDERER));
-	LOG_INFO("suckless-ogl.window", "Version: %s", glGetString(GL_VERSION));
+	GPUInfo gpu_info = render_utils_get_gpu_info();
+	LOG_INFO("suckless-ogl.window", "Renderer: %s", gpu_info.renderer);
+	LOG_INFO("suckless-ogl.window", "Version: %s", gpu_info.version);
 
 	return window;
 }

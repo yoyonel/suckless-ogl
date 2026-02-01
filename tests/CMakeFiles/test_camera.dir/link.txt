@@ -1,0 +1,1 @@
+/usr/bin/cc -O2 -g -DNDEBUG -flto=auto -fno-fat-lto-objects -Wl,--dependency-file=CMakeFiles/test_camera.dir/link.d CMakeFiles/test_camera.dir/test_camera.c.o -o test_camera  libapp_testlib.a ../_deps/unity-build/libunity.a ../_deps/cglm-build/libcglm.a ../_deps/glad-build/libglad.a ../_deps/cjson-build/libcjson.a -lglfw -lm -ldl

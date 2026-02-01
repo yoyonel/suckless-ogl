@@ -1,3 +1,12 @@
+/**
+ * @file postprocess.h
+ * @brief High-level post-processing pipeline and effects.
+ *
+ * This module manages the multi-pass post-processing pipeline, including
+ * blooming, auto-exposure, color grading, motion blur, and tone mapping.
+ * It uses a centralized Uniform Buffer Object (UBO) for settings.
+ */
+
 #ifndef POSTPROCESS_H
 #define POSTPROCESS_H
 
@@ -10,25 +19,26 @@
 #include <cglm/cglm.h>
 #include <cglm/types.h>
 
-/* Valeurs par défaut - plus subtiles et cinématiques */
-#define DEFAULT_VIGNETTE_INTENSITY 0.8F  /* 0.0 - 1.0+ */
-#define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /* 0.0 (Hard) - 1.0 (Soft) */
-#define DEFAULT_VIGNETTE_ROUNDNESS 1.0F  /* 0.0 (Rect) - 1.0 (Round) */
-#define DEFAULT_GRAIN_INTENSITY 0.02F    /* 0.05 était trop visible */
+/* --- DEFAULT VALUES --- */
+
+#define DEFAULT_VIGNETTE_INTENSITY 0.8F  /**< Default vignette strength. */
+#define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /**< Default vignette falloff. */
+#define DEFAULT_VIGNETTE_ROUNDNESS 1.0F  /**< Default vignette shape. */
+#define DEFAULT_GRAIN_INTENSITY 0.02F    /**< Default film grain strength. */
 #define DEFAULT_GRAIN_SHADOWS_MAX 0.09F
 #define DEFAULT_GRAIN_HIGHLIGHTS_MIN 0.5F
 #define DEFAULT_GRAIN_TEXEL_SIZE 1.0F
 #define DEFAULT_EXPOSURE 1.00F
-#define DEFAULT_CHROM_ABBR_STRENGTH 0.005F /* x3 pour le rendre visible */
+#define DEFAULT_CHROM_ABBR_STRENGTH 0.005F
 #define DEFAULT_BLOOM_INTENSITY 0.0F
 #define DEFAULT_BLOOM_THRESHOLD 1.0F
 #define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_RADIUS 1.0F
 
 /* DoF defaults */
-#define DEFAULT_DOF_FOCAL_DISTANCE 20.0F /* Match default camera distance */
-#define DEFAULT_DOF_FOCAL_RANGE 5.0F     /* Narrower range */
-#define DEFAULT_DOF_BOKEH_SCALE 10.0F    /* Stronger blur */
+#define DEFAULT_DOF_FOCAL_DISTANCE 20.0F
+#define DEFAULT_DOF_FOCAL_RANGE 5.0F
+#define DEFAULT_DOF_BOKEH_SCALE 10.0F
 
 /* White Balance Defaults */
 #define DEFAULT_WB_TEMP 6500.0F
@@ -41,85 +51,115 @@
 #define DEFAULT_FILMIC_BLACK_CLIP 0.0F
 #define DEFAULT_FILMIC_WHITE_CLIP 0.0F
 
-/* Types d'effets de post-traitement disponibles */
+/**
+ * @enum PostProcessEffect
+ * @brief Bitmask flags for enabling/disabling individual effects.
+ */
 typedef enum {
-	POSTFX_VIGNETTE = (1U << 0U),   /* 0x01 */
-	POSTFX_GRAIN = (1U << 1U),      /* 0x02 */
-	POSTFX_EXPOSURE = (1U << 2U),   /* 0x04 */
-	POSTFX_CHROM_ABBR = (1U << 3U), /* 0x08 */
-	/* Réservé pour futurs effets */
-	POSTFX_BLOOM = (1U << 4U),              /* 0x10 */
-	POSTFX_COLOR_GRADING = (1U << 5U),      /* 0x20 */
-	POSTFX_DOF = (1U << 6U),                /* 0x40 */
-	POSTFX_DOF_DEBUG = (1U << 7U),          /* 0x80 - Debug Visualization */
-	POSTFX_AUTO_EXPOSURE = (1U << 8U),      /* 0x100 */
-	POSTFX_EXPOSURE_DEBUG = (1U << 9U),     /* 0x200 */
-	POSTFX_MOTION_BLUR = (1U << 10U),       /* 0x400 */
-	POSTFX_MOTION_BLUR_DEBUG = (1U << 11U), /* 0x800 */
+	POSTFX_VIGNETTE = (1U << 0U),   /**< Vignette overlay. */
+	POSTFX_GRAIN = (1U << 1U),      /**< Film grain noise. */
+	POSTFX_EXPOSURE = (1U << 2U),   /**< Manual exposure compensation. */
+	POSTFX_CHROM_ABBR = (1U << 3U), /**< Chromatic aberration. */
+	POSTFX_BLOOM = (1U << 4U),      /**< HDR Bloom. */
+	POSTFX_COLOR_GRADING =
+	    (1U << 5U),          /**< Saturation/Contrast/Gamma adjustment. */
+	POSTFX_DOF = (1U << 6U), /**< Depth of Field. */
+	POSTFX_DOF_DEBUG = (1U << 7U), /**< Focus visualization. */
+	POSTFX_AUTO_EXPOSURE =
+	    (1U << 8U), /**< Automatic exposure adaptation. */
+	POSTFX_EXPOSURE_DEBUG =
+	    (1U << 9U), /**< Exposure histogram visualization. */
+	POSTFX_MOTION_BLUR = (1U << 10U), /**< Velocity-based motion blur. */
+	POSTFX_MOTION_BLUR_DEBUG =
+	    (1U << 11U),                 /**< Velocity buffer visualization. */
+	POSTFX_FXAA = (1U << 12U),       /**< Fast Approximate Anti-Aliasing. */
+	POSTFX_FXAA_DEBUG = (1U << 13U), /**< Edge detection visualization. */
 } PostProcessEffect;
 
-/* Structure pour le Color Grading (Style Unreal Engine) */
-typedef struct {
-	float saturation; /* 0.0 (Gris) - 2.0 (Saturé), Défaut: 1.0 */
-	float contrast;   /* 0.0 - 2.0, Défaut: 1.0 */
-	float gamma;      /* 0.0 - 2.0, Défaut: 1.0 */
-	float gain;       /* 0.0 - 2.0, Défaut: 1.0 */
-	float offset;     /* -1.0 - 1.0, Défaut: 0.0 */
-} ColorGradingParams;
+/** @brief Default mask of active effects. */
+#define DEFAULT_ACTIVE_EFFECTS                                                \
+	((unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING | \
+	 (unsigned int)POSTFX_FXAA)
 
-/* Paramètres pour le vignettage */
-typedef struct {
-	float intensity;  /* 0.0 - 1.0+ */
-	float smoothness; /* 0.0 - 1.0 */
-	float roundness;  /* 0.0 - 1.0 */
-} VignetteParams;
-
-/* Paramètres pour le grain */
-typedef struct {
-	float intensity;            /* Global multiplier */
-	float intensity_shadows;    /* Multiplier for dark areas */
-	float intensity_midtones;   /* Multiplier for mid-tone areas */
-	float intensity_highlights; /* Multiplier for bright areas */
-	float shadows_max;          /* Luma threshold for shadows (0.0 - 1.0) */
-	float highlights_min; /* Luma threshold for highlights (0.0 - 1.0) */
-	float texel_size;     /* Grain particle size (scale) */
-} GrainParams;
-
-/* Paramètres pour l'exposition
- * NOTE: When POSTFX_AUTO_EXPOSURE is enabled, this manual exposure is IGNORED.
- * Auto-exposure will calculate and apply exposure automatically.
- * Only use manual exposure when auto-exposure is disabled.
+/**
+ * @struct ColorGradingParams
+ * @brief Unreal-style color grading parameters.
  */
 typedef struct {
-	float exposure; /* 0.5 - 2.0, défaut: 1.0, recommandé: 0.8-1.5 */
+	float saturation; /**< 0.0 (Grayscale) to 2.0. */
+	float contrast;   /**< 0.0 to 2.0. */
+	float gamma;      /**< 0.0 to 2.0. */
+	float gain;       /**< 0.0 to 2.0. */
+	float offset;     /**< -1.0 to 1.0. */
+} ColorGradingParams;
+
+/**
+ * @struct VignetteParams
+ * @brief Controls for the screen-edge darkening effect.
+ */
+typedef struct {
+	float intensity;  /**< Strength of the outer shadow. */
+	float smoothness; /**< Falloff sharpness. */
+	float roundness;  /**< Circle vs Rect shape. */
+} VignetteParams;
+
+/**
+ * @struct GrainParams
+ * @brief Fine-grained controls for film noise.
+ */
+typedef struct {
+	float intensity;            /**< Global grain strength. */
+	float intensity_shadows;    /**< Shadow-area scaling. */
+	float intensity_midtones;   /**< Mid-tone-area scaling. */
+	float intensity_highlights; /**< Highlight-area scaling. */
+	float shadows_max;          /**< Max luma for shadow grain. */
+	float highlights_min;       /**< Min luma for highlight grain. */
+	float texel_size;           /**< Particle scale. */
+} GrainParams;
+
+/**
+ * @struct ExposureParams
+ * @brief Manual exposure tuning.
+ */
+typedef struct {
+	float exposure; /**< Stops of exposure compensation. */
 } ExposureParams;
 
-/* Paramètres pour l'aberration chromatique */
+/**
+ * @struct ChromAbberationParams
+ * @brief Focal-length distortion simulation.
+ */
 typedef struct {
-	float strength; /* 0.0 - 0.05, défaut: 0.01, recommandé: 0.005-0.02
-	                   (visible aux bords) */
+	float strength; /**< Offset distance for color channels. */
 } ChromAbberationParams;
 
-/* Paramètres White Balance */
+/**
+ * @struct WhiteBalanceParams
+ * @brief Temperature and tint correction.
+ */
 typedef struct {
-	float temperature; /* Température de couleur (Kelvin), Défaut: 6500.0 */
-	float tint;        /* Teinte (Vert/Magenta), -1.0 à 1.0, Défaut: 0.0 */
+	float temperature; /**< Target color temperature in Kelvin. */
+	float tint;        /**< Green-Magenta balance. */
 } WhiteBalanceParams;
 
-/* Paramètres Filmic Tonemapper (Custom Curve) */
+/**
+ * @struct TonemapParams
+ * @brief ACES-like filmic tonemapping curve parameters.
+ */
 typedef struct {
-	float slope;      /* Pente (Contraste), Défaut: 0.91 */
-	float toe;        /* Pied (Noirs), Défaut: 0.53 */
-	float shoulder;   /* Épaule (Blancs), Défaut: 0.23 */
-	float black_clip; /* Coupure des noirs, Défaut: 0.0 */
-	float white_clip; /* Coupure des blancs, Défaut: 0.035 */
+	float slope;      /**< Contrast slope. */
+	float toe;        /**< Dark compression. */
+	float shoulder;   /**< Bright compression. */
+	float black_clip; /**< Absolute black cutoff. */
+	float white_clip; /**< Absolute white cutoff. */
 } TonemapParams;
 
 #define BLOOM_MIP_LEVELS 5
 
 /**
- * @brief Uniform Buffer Object structure for post-processing settings.
- * Aligned for std140 layout in GLSL.
+ * @struct PostProcessUBO
+ * @brief Shared Uniform Buffer structure for shaders.
+ * @note Must match `layout(std140)` in GLSL.
  */
 typedef struct {
 	uint32_t active_effects;
@@ -190,84 +230,118 @@ typedef struct {
 	float _pad9;
 } PostProcessUBO;
 
-/* Structure principale du système de post-processing */
+/**
+ * @struct PostProcess
+ * @brief Main pipeline state for post-processing.
+ */
 typedef struct PostProcess {
 	/* FBO principal et textures */
-	GLuint scene_fbo;
-	GLuint scene_color_tex; /* HDr (GL_RGBA16F) */
-	GLuint velocity_tex;    /* Velocity Buffer (GL_RG16F) */
-	GLuint scene_depth_tex; /* Depth (GL_DEPTH_COMPONENT32F) */
+	GLuint scene_fbo;       /**< Main HDR framebuffer. */
+	GLuint scene_color_tex; /**< RGBA16F HDR texture. */
+	GLuint velocity_tex;    /**< RG16F Motion vector texture. */
+	GLuint scene_depth_tex; /**< D32F Depth texture. */
 
-	/* Bloom Resources */
-	BloomFX bloom_fx;
+	/* Module Resources */
+	BloomFX bloom_fx;                /**< Bloom subsystem. */
+	DoFFX dof_fx;                    /**< Depth-of-field subsystem. */
+	AutoExposureFX auto_exposure_fx; /**< Adaptation subsystem. */
+	MotionBlurFX motion_blur_fx;     /**< Blur subsystem. */
 
-	/* DoF Resources */
-	DoFFX dof_fx;
+	/* Render Utilities */
+	GLuint screen_quad_vao; /**< Shared quad for passes. */
+	GLuint screen_quad_vbo; /**< Quad vertices. */
 
-	/* Auto Exposure Resources */
-	AutoExposureFX auto_exposure_fx;
+	GLuint settings_ubo; /**< GPU buffer for parameters. */
 
-	/* Motion Blur Resources */
-	MotionBlurFX motion_blur_fx;
+	/* Core Shaders */
+	Shader* postprocess_shader;  /**< Main Uber-shader. */
+	Shader* tile_max_shader;     /**< Motion blur helper. */
+	Shader* neighbor_max_shader; /**< Motion blur helper. */
 
-	/* Quad plein écran */
-	GLuint screen_quad_vao;
-	GLuint screen_quad_vbo;
+	int width;  /**< Target resolution width. */
+	int height; /**< Target resolution height. */
 
-	/* UBO for settings */
-	GLuint settings_ubo;
+	unsigned int active_effects; /**< Bitfield of enabled effects. */
 
-	/* Shaders */
-	Shader* postprocess_shader;  /* Shader combinant tous les effets */
-	Shader* tile_max_shader;     /* Compute Shader: Tile Max Velocity */
-	Shader* neighbor_max_shader; /* Compute Shader: Neighbor Max
-	                                Velocity */
-
-	/* Dimensions */
-	int width;
-	int height;
-
-	/* Pipeline Settings (Effets actifs) */
-	unsigned int active_effects;
-
-	/* Paramètres Effets */
+	/* Logic Parameters */
 	VignetteParams vignette;
 	GrainParams grain;
 	ExposureParams exposure;
 	ChromAbberationParams chrom_abbr;
-	WhiteBalanceParams white_balance; /* [NEW] */
+	WhiteBalanceParams white_balance;
 	ColorGradingParams color_grading;
-	TonemapParams tonemapper; /* [NEW] */
+	TonemapParams tonemapper;
 	BloomParams bloom;
 	DoFParams dof;
 	AutoExposureParams auto_exposure;
-
 	MotionBlurParams motion_blur;
-	/* Temps pour effets animés (grain) */
-	float time;
-	float delta_time; /* Added needed for time integration */
-	/* Dummy textures for clean bindings */
-	GLuint dummy_black_tex;
 
+	float time;             /**< Accumulated time for noise/animation. */
+	float delta_time;       /**< Last frame delta. */
+	GLuint dummy_black_tex; /**< Fallback texture. */
+
+	bool is_optimized; /**< true if Uber-shader uses static preprocessor
+	                      flags. */
 } PostProcess;
 
-/* Initialisation et nettoyage */
+/* --- Lifecycle --- */
+
+/**
+ * @brief Initializes the post-processing pipeline.
+ * @param post_processing Pointer to the struct.
+ * @param width Initial resolution width.
+ * @param height Initial resolution height.
+ * @return 0 on success, negative on error.
+ */
 int postprocess_init(PostProcess* post_processing, int width, int height);
+
+/**
+ * @brief Releases all GPU and CPU resources.
+ * @param post_processing Pointer to the struct.
+ */
 void postprocess_cleanup(PostProcess* post_processing);
+
+/**
+ * @brief Compiles a specialized Uber-shader for maximum performance.
+ * @param post_processing Pointer to the struct.
+ * @param static_flags Bitmask of effects to bake into the shader.
+ */
+void postprocess_compile_optimized(PostProcess* post_processing,
+                                   unsigned int static_flags);
+
+/**
+ * @brief Switches back to the dynamic/generic Uber-shader.
+ * @param post_processing Pointer to the struct.
+ */
+void postprocess_use_dynamic(PostProcess* post_processing);
+
+/** @brief Internal helper to set fallback textures. */
 void postprocess_set_dummy_textures(PostProcess* post_processing,
                                     GLuint dummy_black);
 
-/* Redimensionnement */
+/**
+ * @brief Recreates all internal buffers for a new resolution.
+ * @param post_processing Pointer to the struct.
+ * @param width New width.
+ * @param height New height.
+ */
 void postprocess_resize(PostProcess* post_processing, int width, int height);
 
-/* Activation/désactivation d'effets */
+/* --- Effect Control --- */
+
+/** @brief Enables a specific effect. */
 void postprocess_enable(PostProcess* post_processing, PostProcessEffect effect);
+/** @brief Disables a specific effect. */
 void postprocess_disable(PostProcess* post_processing,
                          PostProcessEffect effect);
+/** @brief Toggles the current state of an effect. */
 void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect);
+/** @brief Returns true if an effect is currently active. */
 int postprocess_is_enabled(PostProcess* post_processing,
                            PostProcessEffect effect);
-/* Configuration des paramètres de Color Grading */
+
+/* --- Parameter Tuning --- */
+
 void postprocess_set_white_balance(PostProcess* post_processing,
                                    float temperature, float tint);
 void postprocess_set_color_grading(PostProcess* post_processing,
@@ -277,8 +351,6 @@ void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
                                 float toe, float shoulder, float black_clip,
                                 float white_clip);
 void postprocess_set_grading_ue_default(PostProcess* post_processing);
-
-/* Configuration des paramètres */
 void postprocess_set_vignette(PostProcess* post_processing, float intensity,
                               float smoothness, float roundness);
 void postprocess_set_grain(PostProcess* post_processing, float intensity);
@@ -294,9 +366,18 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float speed_up, float speed_down,
                                    float key_value);
 
+/**
+ * @brief Updates view-projection matrices for effects requiring
+ * depth-reconstruction.
+ * @param post_processing Pointer to the struct.
+ * @param view_proj The current frame's View-Proj matrix.
+ */
 void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj);
 
-/* Structure de Preset pour l'application en masse de paramètres */
+/**
+ * @struct PostProcessPreset
+ * @brief Snapshot of every configurable parameter in the pipeline.
+ */
 typedef struct {
 	unsigned int active_effects;
 	VignetteParams vignette;
@@ -310,15 +391,34 @@ typedef struct {
 	DoFParams dof;
 } PostProcessPreset;
 
-/* Application de preset */
+/**
+ * @brief Applies all settings from a preset atomically.
+ * @param post_processing Pointer to the struct.
+ * @param preset Pointer to the preset values.
+ * @see postprocess_presets.h
+ */
 void postprocess_apply_preset(PostProcess* post_processing,
                               const PostProcessPreset* preset);
 
-/* Rendu */
-void postprocess_begin(
-    PostProcess* post_processing); /* Commence le rendu dans le FBO */
-void postprocess_end(
-    PostProcess* post_processing); /* Applique les effets et rend à l'écran */
+/* --- Render Pass Management --- */
+
+/**
+ * @brief Binds the HDR FBO and prepares for scene rendering.
+ * Should be called BEFORE the main render loop.
+ */
+void postprocess_begin(PostProcess* post_processing);
+
+/**
+ * @brief Processes the HDR scene and renders the final LDR result to screen.
+ * Should be called AFTER the main render loop.
+ */
+void postprocess_end(PostProcess* post_processing);
+
+/**
+ * @brief Increments internal clocks.
+ * @param post_processing Pointer to the struct.
+ * @param delta_time SECONDS elapsed since last frame.
+ */
 void postprocess_update_time(PostProcess* post_processing, float delta_time);
 
 #endif /* POSTPROCESS_H */

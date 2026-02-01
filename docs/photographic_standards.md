@@ -1,85 +1,122 @@
-# Standards Photographiques pour le Rendering Temps Réel
 
-Guide complet des valeurs et concepts photographiques utilisés dans les moteurs de jeu modernes et le tone mapping.
+# Photographic Standards for Real-Time Rendering
 
----
+Comprehensive guide to values and photographic concepts used in modern game engines and tone mapping.
 
-## 📸 Le 18% Middle Gray - La Pierre Angulaire
 
-### Origine Photographique
+## 📸 The 18% Middle Gray - The Cornerstone
 
-Le **18% gray** (0.18 en linéaire) est le **standard universel de la photométrie** depuis les années 1940.
+### Photographic Origin
 
-```
-Valeur: 0.18 (linéaire) = 18% de réflectance
+**18% gray** (0.18 in linear space) has been the **universal standard of photometry** since the 1940s.
+
+```plaintext
+Value: 0.18 (linear) = 18% reflectance
 sRGB: ~119/255 = 0.466
 Hex: #777777
 ```
 
-### Pourquoi 18% ?
+### Why 18%?
 
-1. **Perception humaine** : Notre œil perçoit 18% de réflectance comme "middle tone" neutre
-2. **Moyenne statistique** : La majorité des scènes réelles ont une réflectance moyenne de ~12-20%
-3. **Zone System d'Ansel Adams** : Zone V (milieu de l'échelle 0-X) = 18%
+1.  **Human Perception**: Our eye perceives 18% reflectance as a neutral "middle tone".
+2.  **Statistical Average**: The majority of real-world scenes have an average reflectance of ~12-20%.
+3.  **Ansel Adams' Zone System**: Zone V (middle of the 0-X scale) = 18%.
 
 ### Applications
 
-- **Cartes grises** (gray cards) pour calibration caméra
-- **Posemètres** calibrés sur 18% pour calculer l'exposition correcte
-- **Lightroom/Photoshop** : Target pour auto-exposure
-- **Unreal Engine, Unity** : Key value par défaut pour eye adaptation
+-   **Gray cards** for camera calibration.
+-   **Light meters** calibrated to 18% to calculate correct exposure.
+-   **Lightroom/Photoshop**: Target for auto-exposure.
+-   **Unreal Engine, Unity**: Default Key value for eye adaptation.
 
----
 
-## 🎚️ Échelle de Valeurs Photographiques
+## 🎚️ Photographic Values Scale
 
-### Exposition Values (EV)
+### Exposure Values (EV)
 
-L'échelle EV mesure la quantité de lumière :
+The EV scale measures the quantity of light:
 
-| EV | Condition | Luminance (cd/m²) | Usage Rendering |
+| EV | Condition | Luminance (cd/m²) | Rendering Usage |
 |----|-----------|-------------------|-----------------|
-| **-6** | Clair de lune | 0.001 | Scènes très sombres |
-| **-4** | Intérieur faiblement éclairé | 0.01 | Donjons, caves |
-| **0** | Intérieur bien éclairé | 1.0 | Pièces standards |
-| **+4** | Ombre extérieure | 16 | Scènes extérieures ombragées |
-| **+10** | Plein soleil | 1,000 | Journée ensoleillée |
-| **+15** | Neige en plein soleil | 32,000 | Environnements très lumineux |
-| **+20** | Soleil direct (surface) | 1,000,000 | HDR extrême |
+| **-6** | Moonlight | 0.001 | Very dark scenes |
+| **-4** | Dimly lit interior | 0.01 | Dungeons, caves |
+| **0** | Lit interior | 1.0 | Standard rooms |
+| **+4** | Outdoor shadow | 16 | Shaded outdoor scenes |
+| **+10** | Full sunlight | 1,000 | Sunny day |
+| **+15** | Snow in sunlight | 32,000 | Very bright environments |
+| **+20** | Direct Sun (surface) | 1,000,000 | Extreme HDR |
 
-### Formule Auto-Exposure
+### Visual EV Scale
+
+\dot
+digraph EVScale {
+  rankdir=LR;
+  bgcolor="transparent";
+  dpi=72;
+
+  // Suckless-Modern "Ghost" Design Tokens (Upscaled)
+  node [
+    shape=rect,
+    style="rounded",
+    fontname="Helvetica,Arial,sans-serif",
+    fontsize=16,
+    fillcolor="none",
+    color="#414868",
+    fontcolor="#c0caf5",
+    penwidth=2
+  ];
+
+  edge [
+    color="#565f89",
+    fontname="Helvetica,Arial,sans-serif",
+    fontsize=18,
+    fontcolor="#9aa5ce",
+    arrowsize=0.8,
+    penwidth=1.2
+  ];
+
+  Moon [label="Moonlight (-6)", color="#7aa2f7", fontcolor="#7aa2f7"];
+  Dark [label="Dark Interior (-4)", color="#565f89", fontcolor="#565f89"];
+  Room [label="Standard Room (0)", color="#9aa5ce", fontcolor="#9aa5ce"];
+  Shadow [label="Outdoor Shadow (+4)", color="#c0caf5", fontcolor="#c0caf5"];
+  Sun [label="Full Sun (+10)", color="#e0af68", fontcolor="#e0af68"];
+  Snow [label="Snow/Ski (+15)", color="#ffffff", fontcolor="#ffffff", penwidth=3];
+
+  Moon -> Dark -> Room -> Shadow -> Sun -> Snow [arrowhead=none, color="#414868"];
+}
+\enddot
+
+### Auto-Exposure Formula
 
 ```glsl
 targetExposure = keyValue / sceneLuminance
 ```
 
-**Exemples** (avec keyValue = 0.18) :
+**Examples** (with keyValue = 0.18):
 
-- Scène sombre (0.01 cd/m²) → Exposure = 18.0 (boost ×18)
-- Middle gray (0.18 cd/m²) → Exposure = 1.0 (neutre)
-- Scène brillante (10 cd/m²) → Exposure = 0.018 (atténuation)
+-   Dark scene (0.01 cd/m²) → Exposure = 18.0 (boost ×18)
+-   Middle gray (0.18 cd/m²) → Exposure = 1.0 (neutral)
+-   Bright scene (10 cd/m²) → Exposure = 0.018 (attenuation)
 
----
 
-## 🌈 Valeurs de Réflectance Matériaux
+## 🌈 Material Reflectance Values
 
-### Albedo Standards (Physically Based)
+### Standard Albedos (Physically Based)
 
-| Matériau | Réflectance | Linéaire | sRGB (8-bit) |
-|----------|-------------|----------|--------------|
-| **Charbon** | 4% | 0.04 | 61 |
-| **Peau sombre** | 12% | 0.12 | 105 |
+| Material | Reflectance | Linear | sRGB (8-bit) |
+|----------|-------------|--------|--------------|
+| **Charcoal** | 4% | 0.04 | 61 |
+| **Dark Skin** | 12% | 0.12 | 105 |
 | **18% Gray Card** | 18% | 0.18 | 119 |
-| **Peau claire** | 35% | 0.35 | 160 |
-| **Béton** | 50% | 0.50 | 186 |
-| **Neige fraîche** | 90% | 0.90 | 241 |
-| **Maximum (physique)** | 100% | 1.0 | 255 |
+| **Light Skin** | 35% | 0.35 | 160 |
+| **Concrete** | 50% | 0.50 | 186 |
+| **Fresh Snow** | 90% | 0.90 | 241 |
+| **Maximum (Physical)** | 100% | 1.0 | 255 |
 
-> ⚠️ En PBR, les albedos dépassant 0.90 sont non-physiques (sauf matériaux spéciaux)
+> ⚠️ In PBR, albedos exceeding 0.90 are non-physical (except for special materials).
 
----
 
-## 📊 Tone Mapping - Courbes Standards
+## 📊 Tone Mapping - Standard Curves
 
 ### 1. Linear (Naive)
 
@@ -87,7 +124,7 @@ targetExposure = keyValue / sceneLuminance
 output = input * exposure
 ```
 
-**Problème** : Clipping brutal à 1.0, perte de détails HDR.
+**Problem**: Brutal clipping at 1.0, loss of HDR details.
 
 ### 2. Reinhard (Simple)
 
@@ -95,13 +132,13 @@ output = input * exposure
 output = input / (input + 1.0)
 ```
 
-**Avantages** : Compression douce, jamais de clipping.
-**Inconvénient** : Atténue trop les couleurs saturées.
+**Pros**: Soft compression, never clips.
+**Cons**: Desaturates colors too much.
 
 ### 3. Uncharted 2 / Hable (Filmic)
 
 ```glsl
-// Reproduit la réponse des films argentiques
+// Reproduces film response
 vec3 FilmicToneMapping(vec3 x) {
     float A = 0.15; // Shoulder strength
     float B = 0.50; // Linear strength
@@ -115,14 +152,14 @@ vec3 FilmicToneMapping(vec3 x) {
 }
 ```
 
-**Caractéristiques** :
-- **Toe** (pied) : Relève les ombres
-- **Shoulder** (épaule) : Compresse les hautes lumières
-- **Linear section** : Préserve les mid-tones
+**Features**:
+-   **Toe**: Lifts shadows.
+-   **Shoulder**: Compresses highlights.
+-   **Linear section**: Preserves mid-tones.
 
 ### 4. ACES (Academy Color Encoding System)
 
-**LE standard de Hollywood** (utilisé par Unreal Engine par défaut)
+**THE Hollywood Standard** (default in Unreal Engine).
 
 ```glsl
 vec3 ACESFilm(vec3 x) {
@@ -135,84 +172,81 @@ vec3 ACESFilm(vec3 x) {
 }
 ```
 
-**Avantages** :
-- Couleurs saturées préservées
-- Transition douce vers le blanc
-- Standard industriel (films, jeux AAA)
+**Pros**:
+-   Preserves saturated colors.
+-   Smooth transition to white.
+-   Industry standard (Movies, AAA Games).
 
----
 
-## 🎮 Valeurs Recommandées pour Jeux
+## 🎮 Recommended Values for Games
 
 ### Auto-Exposure Settings
 
-| Paramètre | Valeur Conservatrice | Valeur Dynamique | Usage |
-|-----------|---------------------|------------------|-------|
-| **keyValue** | 0.18 | 0.14 - 0.20 | Standard / FPS rapide |
-| **minLuminance** | 1.0 | 0.5 - 2.0 | Pas de boost / Donjons |
-| **maxLuminance** | 5000 | 1000 - 10000 | Journée / HDR extrême |
-| **speedUp** | 2.0 | 1.0 - 3.0 | Adaptation lente / rapide |
-| **speedDown** | 1.0 | 0.5 - 2.0 | Adaptation pupille |
+| Parameter | Conservative Value | Dynamic Value | Usage |
+|-----------|--------------------|---------------|-------|
+| **keyValue** | 0.18 | 0.14 - 0.20 | Standard / Fast FPS |
+| **minLuminance** | 1.0 | 0.5 - 2.0 | No boost / Dungeons |
+| **maxLuminance** | 5000 | 1000 - 10000 | Daylight / Extreme HDR |
+| **speedUp** | 2.0 | 1.0 - 3.0 | Slow / Fast Adaptation |
+| **speedDown** | 1.0 | 0.5 - 2.0 | Pupil Adaptation |
 
-### Exemples par Genre
+### Examples by Genre
 
-**FPS Réaliste** (comme Call of Duty)
+**Realistic FPS** (like Call of Duty)
 ```c
-keyValue = 0.15        // Légèrement plus sombre (tactique)
+keyValue = 0.15        // Slightly darker (tactical)
 minLuminance = 0.8
 maxLuminance = 8000
-speedUp = 3.0          // Adaptation rapide (gameplay)
+speedUp = 3.0          // Fast adaptation (gameplay)
 speedDown = 1.5
 ```
 
-**RPG Fantaisie** (comme Skyrim)
+**Fantasy RPG** (like Skyrim)
 ```c
-keyValue = 0.20        // Plus lumineux (exploration)
-minLuminance = 0.5     // Boost pour donjons
-maxLuminance = 10000   // Ciel magique HDR
-speedUp = 1.5          // Adaptation douce
+keyValue = 0.20        // Brighter (exploration)
+minLuminance = 0.5     // Boost for dungeons
+maxLuminance = 10000   // Magic HDR sky
+speedUp = 1.5          // Soft adaptation
 speedDown = 1.0
 ```
 
-**Horreur** (comme Resident Evil)
+**Horror** (like Resident Evil)
 ```c
-keyValue = 0.12        // Très sombre (atmosphère)
-minLuminance = 2.0     // Pas de boost (oppressant)
+keyValue = 0.12        // Very dark (atmosphere)
+minLuminance = 2.0     // No boost (oppressive)
 maxLuminance = 1000
-speedUp = 0.5          // Adaptation très lente
-speedDown = 2.0        // Retour rapide au noir
+speedUp = 0.5          // Very slow adaptation
+speedDown = 2.0        // Fast return to black
 ```
 
----
 
-## 🔧 Valeurs Alternatives Intéressantes
+## 🔧 Interesting Alternative Values
 
-### Key Value Alternatifs
+### Key Value Alternatives
 
-| Valeur | Nom | Effet | Usage |
-|--------|-----|-------|-------|
-| **0.18** | Standard photographique | Neutre, équilibré | Défaut universel |
-| **0.14** | Unreal Engine (UE4/5) | Légèrement plus sombre | Jeux AAA |
-| **0.12** | Low-Key | Sombre, dramatique | Cinematic, horreur |
-| **0.25** | High-Key | Lumineux, aéré | Cartoon, fantasy léger |
-| **0.50** | Very High-Key | Très clair | Surexposition artistique |
+| Value | Name | Effect | Usage |
+|-------|------|--------|-------|
+| **0.18** | Photographic Standard | Neutral, balanced | Universal default |
+| **0.14** | Unreal Engine (UE4/5) | Slightly darker | AAA Games |
+| **0.12** | Low-Key | Dark, dramatic | Cinematic, Horror |
+| **0.25** | High-Key | Bright, airy | Cartoon, Light Fantasy |
+| **0.50** | Very High-Key | Very bright | Artistic overexposure |
 
-### Middle Gray en sRGB
+### Middle Gray in sRGB
 
-Attention : 18% **linéaire** ≠ 18% **sRGB** !
+Warning: 18% **linear** ≠ 18% **sRGB**!
 
+```plaintext
+Linear 0.18  → sRGB 0.466  (gamma 2.2)
+Linear 0.18  → 8-bit ~119
 ```
-Linéaire 0.18  → sRGB 0.466  (gamma 2.2)
-Linéaire 0.18  → 8-bit 119/255
-```
 
-**Piège courant** : Utiliser directement 0.18 en sRGB donne un gris trop sombre !
+**Common Trap**: Using 0.18 directly in sRGB results in a gray that is too dark!
 
----
 
-## 📐 Formules Utiles
+## 📐 Useful Formulas
 
-### Conversion Luminance
+### Luminance Conversion
 
 ```glsl
 // Rec. 709 (HD TV standard)
@@ -222,14 +256,14 @@ float luminance = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
 float luminance = dot(color.rgb, vec3(0.299, 0.587, 0.114));
 ```
 
-### Conversion EV ↔ Luminance
+### EV ↔ Luminance Conversion
 
 ```glsl
 float ev = log2(luminance);
 float luminance = exp2(ev);
 ```
 
-### Adaptation Temporelle
+### Temporal Adaptation
 
 ```glsl
 float adaptationSpeed = (target > current) ? speedUp : speedDown;
@@ -237,63 +271,60 @@ float factor = 1.0 - exp(-deltaTime * adaptationSpeed);
 float newExposure = mix(current, target, factor);
 ```
 
----
 
-## 🎨 Workflow Pratique
+## 🎨 Practical Workflow
 
-### 1. Calibration Initial
+### 1. Initial Calibration
 
 ```c
-// Démarrer avec valeurs neutres
+// Start with neutral values
 keyValue = 0.18
 minLuminance = 1.0
 maxLuminance = 5000.0
 ```
 
-### 2. Tester avec Scènes Types
+### 2. Test with Type Scenes
 
-- **Intérieur sombre** : Vérifier boost pas excessif
-- **Extérieur jour** : Vérifier pas de sur-exposition
-- **Transition rapide** : Ajuster vitesses adaptation
+-   **Dark Interior**: Check boost isn't excessive.
+-   **Outdoor Day**: Check for no over-exposure.
+-   **Rapid Transition**: Adjust adaptation speeds.
 
-### 3. Tweaking Artistique
+### 3. Artistic Tweaking
 
-- **Trop clair** → Réduire keyValue (0.14 - 0.16)
-- **Trop sombre** → Augmenter keyValue (0.20 - 0.25)
-- **Flashy/instable** → Réduire speedUp/Down
-- **Trop lent** → Augmenter speedUp
+-   **Too bright** → Reduce keyValue (0.14 - 0.16)
+-   **Too dark** → Increase keyValue (0.20 - 0.25)
+-   **Flashy/Unstable** → Reduce speedUp/Down
+-   **Too slow** → Increase speedUp
 
----
 
-## 📚 Ressources Recommandées
+## 📚 Recommended Resources
 
-1. **Film Lighting Simulator** (Unreal Engine docs)
-2. **"Physically Based Rendering"** - Matt Pharr, Greg Humphreys
-3. **Tone Mapping Comparison** - John Hable (Filmic Worlds blog)
-4. **ACES Documentation** - Academy of Motion Picture Arts
-5. **"Real Shading in Unreal Engine 4"** - Brian Karis (SIGGRAPH 2013)
+1.  **Film Lighting Simulator** (Unreal Engine docs)
+2.  **"Physically Based Rendering"** - Matt Pharr, Greg Humphreys
+3.  **Tone Mapping Comparison** - John Hable (Filmic Worlds blog)
+4.  **ACES Documentation** - Academy of Motion Picture Arts
+5.  **"Real Shading in Unreal Engine 4"** - Brian Karis (SIGGRAPH 2013)
 
----
 
-## ✨ Bonus : Valeurs Exotiques
+## ✨ Bonus: Exotic Values
 
-### Scènes Lunaires
+### Lunar Scenes
 
 ```c
-keyValue = 0.09       // Adaptation scotopique (bâtonnets)
-minLuminance = 5.0    // Aucun boost, vision nocturne
+keyValue = 0.09       // Scotopic adaptation (rods)
+minLuminance = 5.0    // No boost, night vision
 ```
 
-### Underwater (Sous-Marin)
+### Underwater
 
 ```c
-keyValue = 0.22       // Compensation diffusion lumière
-speedUp = 0.3         // Adaptation très lente (eau)
+keyValue = 0.22       // Light diffusion compensation
+speedUp = 0.3         // Very slow adaptation (water)
 ```
 
-### Space (Espace)
+### Space
 
 ```c
-minLuminance = 10.0   // Contraste extrême
-maxLuminance = 100000 // Soleil direct sans atmosphère
+minLuminance = 10.0   // Extreme contrast
+maxLuminance = 100000 // Direct sunlight without atmosphere
 ```

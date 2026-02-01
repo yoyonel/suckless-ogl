@@ -1,43 +1,57 @@
+/**
+ * @file camera.h
+ * @brief First-person camera module with realistic physics and head-bobbing.
+ */
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
 #include <cglm/cglm.h>
 
-#define DEFAULT_CAMERA_SPEED 15.0F
-#define DEFAULT_CAMERA_SENSITIVITY 0.15F
-#define DEFAULT_CAMERA_ZOOM 45.0F
-#define DEFAULT_ZOOM_SPEED 1.0F
-#define DEFAULT_SCROLL_SENSITIVITY 50.0F
-#define DEFAULT_MAX_PITCH 89.0F
-#define DEFAULT_MIN_PITCH -89.0F
-#define DEFAULT_MAX_ALPHA 1.0F
-#define DEFAULT_ACCELERATION 10.0F
-#define DEFAULT_FRICTION 0.85F
-#define DEFAULT_ROTATION_SMOOTHING 0.18F
-#define DEFAULT_BOBBING_FREQUENCY 2.2F
-#define DEFAULT_BOBBING_AMPLITUDE 0.0004F
-#define DEFAULT_MIN_VELOCITY_FOR_BOBBING 0.5F
-#define DEFAULT_BOBBING_RESET_SPEED 0.95F
-#define DEFAULT_MIN_VELOCITY 0.01F
-#define DEFAULT_TARGET_FPS 60
-#define DEFAULT_FIXED_TIMESTEP (1.0F / DEFAULT_TARGET_FPS)
-#define DEFAULT_MOUSE_SMOOTHING_FACTOR 0.1F  // Valeur par défaut (0.0f à 0.9f)
+/* --- Camera Defaults --- */
 
-typedef struct {
-	vec3 position;
-	vec3 front;
-	vec3 up;
-	vec3 right;
-	vec3 world_up;
+#define DEFAULT_CAMERA_SPEED 15.0F        /**< Units per second. */
+#define DEFAULT_CAMERA_SENSITIVITY 0.15F  /**< Mouse scaling. */
+#define DEFAULT_CAMERA_ZOOM 60.0F         /**< Default FOV. */
+#define DEFAULT_ZOOM_SPEED 1.0F           /**< FOV adjustment rate. */
+#define DEFAULT_SCROLL_SENSITIVITY 50.0F  /**< Scroll impulsiveness. */
+#define DEFAULT_MAX_PITCH 89.0F           /**< Upward look limit. */
+#define DEFAULT_MIN_PITCH -89.0F          /**< Downward look limit. */
+#define DEFAULT_MAX_ALPHA 1.0F            /**< Unused. */
+#define DEFAULT_ACCELERATION 10.0F        /**< Physical push strength. */
+#define DEFAULT_FRICTION 0.85F            /**< Velocity decay per frame. */
+#define DEFAULT_ROTATION_SMOOTHING 0.18F  /**< Orientation lerp factor. */
+#define DEFAULT_BOBBING_FREQUENCY 2.2F    /**< Waves per meter. */
+#define DEFAULT_BOBBING_AMPLITUDE 0.0004F /**< Height of head-bob. */
+#define DEFAULT_MIN_VELOCITY_FOR_BOBBING \
+	0.5F                              /**< threshold to trigger bobbing. */
+#define DEFAULT_BOBBING_RESET_SPEED 0.95F /**< Decay of bobbing offset. */
+#define DEFAULT_MIN_VELOCITY 0.01F        /**< Cutoff for full stop. */
+#define DEFAULT_TARGET_FPS 60             /**< Reference for fixed updates. */
+#define DEFAULT_FIXED_TIMESTEP \
+	(1.0F / DEFAULT_TARGET_FPS)         /**< Simulation step. */
+#define DEFAULT_MOUSE_SMOOTHING_FACTOR 0.1F /**< Input lag simulation. */
 
-	float yaw;
-	float pitch;
+/**
+ * @struct Camera
+ * @brief Represents a 3D camera with orientation, movement, and physical
+ * properties.
+ */
+typedef struct Camera {
+	vec3 position; /**< World position. */
+	vec3 front;    /**< Front direction vector (normalized). */
+	vec3 up;       /**< Up direction vector (normalized). */
+	vec3 right;    /**< Right direction vector (normalized). */
+	vec3 world_up; /**< World's up direction (usually 0,1,0). */
 
-	float velocity;
-	float sensitivity;
-	float zoom;
+	float yaw;   /**< Horizontal rotation in degrees. */
+	float pitch; /**< Vertical rotation in degrees. */
 
-	// États de mouvement (booléens)
+	float velocity;    /**< Maximum movement speed. */
+	float sensitivity; /**< Mouse sensitivity factor. */
+	float zoom;        /**< Current Field of View (FOV) in degrees. */
+
+	/* Movement states (booleans) */
 	int move_forward;
 	int move_backward;
 	int move_left;
@@ -45,38 +59,84 @@ typedef struct {
 	int move_up;
 	int move_down;
 
-	// === PHYSIQUE RÉALISTE ===
+	/* Realistic physics */
+	vec3 velocity_current; /**< Current 3D velocity vector (momentum). */
+	float acceleration;    /**< Speed increase factor. */
+	float friction;        /**< Decay factor when no input is provided (0.0
+	                          to 1.0). */
 
-	// Option 1: Inertie / Momentum
-	vec3 velocity_current;  // Vitesse actuelle (3D)
-	float acceleration;     // Vitesse d'accélération (ex: 5.0)
-	float friction;         // Coefficient de friction 0-1 (ex: 0.85)
+	/* Smooth rotation */
+	float yaw_target;         /**< Target yaw to lerp towards. */
+	float pitch_target;       /**< Target pitch to lerp towards. */
+	float rotation_smoothing; /**< Interpolation factor for rotation. */
 
-	// Option 2: Rotation smooth
-	float yaw_target;          // Orientation cible (yaw)
-	float pitch_target;        // Orientation cible (pitch)
-	float rotation_smoothing;  // Facteur de lissage rotation (ex: 0.15)
+	/* Head bobbing */
+	float bobbing_time; /**< Accumulated time for the sine-wave oscillation.
+	                     */
+	float bobbing_frequency; /**< Speed of the bobbing motion. */
+	float
+	    bobbing_amplitude; /**< Vertical distance of the bobbing motion. */
+	int bobbing_enabled;   /**< Boolean toggle for head bobbing effect. */
 
-	// Option 3: Head bobbing
-	float bobbing_time;       // Temps accumulé pour l'oscillation
-	float bobbing_frequency;  // Fréquence de balancement (ex: 2.0)
-	float bobbing_amplitude;  // Amplitude verticale (ex: 0.05)
-	int bobbing_enabled;      // Activé/désactivé
+	/* Timing */
+	float physics_accumulator; /**< Residual time for fixed-step physics. */
+	float fixed_timestep; /**< Target duration for one physics update. */
 
-	// Fixed timestep
-	float physics_accumulator;
-	float fixed_timestep;
-
-	// Lissage souris
-	float mouse_smoothing_factor;
+	float mouse_smoothing_factor; /**< Input lag simulation factor for
+	                                 smoother movement. */
 } Camera;
 
+/**
+ * @brief Initializes the camera with default values.
+ * @param cam Pointer to the camera instance.
+ * @param distance Initial forward offset (legacy).
+ * @param yaw Initial horizontal rotation.
+ * @param pitch Initial vertical rotation.
+ */
 void camera_init(Camera* cam, float distance, float yaw, float pitch);
+
+/**
+ * @brief Recalculates front, right, and up vectors from yaw and pitch.
+ * @param cam Pointer to the camera instance.
+ * @note Updates cam->front, cam->right, and cam->up.
+ */
 void camera_update_vectors(Camera* cam);
+
+/**
+ * @brief Legacy keyboard handling (variable timestep movement).
+ * @param cam Pointer to the camera instance.
+ * @param delta_time Time since last frame.
+ */
 void camera_process_keyboard(Camera* cam, float delta_time);
+
+/**
+ * @brief Processes mouse movement to update target orientation.
+ * @param cam Pointer to the camera instance.
+ * @param xoffset Relative horizontal mouse movement.
+ * @param yoffset Relative vertical mouse movement.
+ */
 void camera_process_mouse(Camera* cam, float xoffset, float yoffset);
+
+/**
+ * @brief Generates the 4x4 view matrix for this camera.
+ * @param cam Pointer to the camera instance.
+ * @param[out] view Matrix to populate.
+ */
 void camera_get_view_matrix(Camera* cam, mat4 view);
+
+/**
+ * @brief Processes mouse scroll events to apply physical impulse.
+ * @param cam Pointer to the camera instance.
+ * @param yoffset Scroll amount along the y-axis.
+ */
 void camera_process_scroll(Camera* cam, float yoffset);
+
+/**
+ * @brief Performs one fixed-step physics update.
+ *
+ * Handles momentum, friction, and head-bobbing calculations.
+ * @param cam Pointer to the camera instance.
+ */
 void camera_fixed_update(Camera* cam);
 
-#endif
+#endif /* CAMERA_H */

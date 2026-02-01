@@ -1,56 +1,120 @@
+/**
+ * @file shader.h
+ * @brief High-level OpenGL shader management with metadata and uniform caching.
+ */
+
 #ifndef SHADER_H
 #define SHADER_H
 
 #include "gl_common.h"
+#include <stdbool.h>
 
-/* Compile a single shader from file (supports @header includes) */
+/**
+ * @brief Compiles a single shader stage from a file.
+ *
+ * Supports recursive `@header` inclusion syntax.
+ * @param path Path to the shader source file.
+ * @param type GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, or GL_COMPUTE_SHADER.
+ * @return GLuint handle of the compiled shader stage.
+ */
 GLuint shader_compile(const char* path, GLenum type);
 
-/* Read shader source from file (exposed for testing) */
+/**
+ * @brief Reads a shader file into RAM, processing all includes.
+ * @param path Absolute or relative path.
+ * @return Heap-allocated null-terminated string. Result must be freed.
+ */
 char* shader_read_file(const char* path);
 
-/* Create a shader program from vertex and fragment shader files */
+/**
+ * @brief Helper to load a classic Vertex+Fragment program from disk.
+ * @return GLuint program handle.
+ */
 GLuint shader_load_program(const char* vertex_path, const char* fragment_path);
 
-/* Create a compute shader program */
+/**
+ * @brief Helper to load a compute program from disk.
+ * @return GLuint program handle.
+ */
 GLuint shader_load_compute(const char* compute_path);
 
 /* -------------------------------------------------------------------------
- * New Generic Shader API (with automatic Uniform Caching)
+ * NEW GENERIC SHADER API (with automatic Uniform Caching)
  * ------------------------------------------------------------------------- */
 
+/**
+ * @struct UniformEntry
+ * @brief Cached uniform metadata for fast lookup.
+ */
 typedef struct {
-	char* name;     /* Uniform name (owned) */
-	GLint location; /* Cached OpenGL location */
+	char* name;     /**< Identifier string (owned). */
+	GLint location; /**< Bound GPU location. */
 } UniformEntry;
 
+/**
+ * @struct Shader
+ * @brief Wrapper for an OpenGL program with uniform caching and automatic
+ * cleanup.
+ */
 typedef struct {
-	GLuint program;        /* OpenGL Program ID */
-	char* name;            /* Shader Name/Description (owned) */
-	UniformEntry* entries; /* Sorted dynamic array of uniform entries */
-	int entry_count;
-	int entry_capacity;
+	GLuint program;        /**< OpenGL Program handle. */
+	char* name;            /**< Descriptive name for debugging (owned). */
+	UniformEntry* entries; /**< Sorted array of cached uniforms. */
+	int entry_count;       /**< Number of active uniforms. */
+	int entry_capacity;    /**< Allocation size. */
+	bool
+	    silent_warnings; /**< If true, missing uniforms won't log errors. */
 } Shader;
 
-/* Load and link a shader program (vertex + fragment), automatically caching all
- * active uniforms. */
+/**
+ * @brief Loads a linked program and caches all its active uniforms.
+ * @param vertex_path Path to vertex source.
+ * @param fragment_path Path to fragment source.
+ * @return Pointer to the Shader object.
+ */
 Shader* shader_load(const char* vertex_path, const char* fragment_path);
 
-/* Load and link a compute shader, automatically caching all active uniforms. */
+/**
+ * @brief Loads a compute program and caches its uniforms.
+ * @param compute_path Path to compute source.
+ * @return Pointer to the Shader object.
+ */
 Shader* shader_load_compute_program(const char* compute_path);
 
-/* Destroy the shader wrapper, freeing cached memory. Does NOT delete the GL
- * program if it was created externally, but DOES delete it if created via
- * shader_load. */
+/**
+ * @brief Special loader that injects `#define` directives before compilation.
+ * @param vertex_path Vertex source.
+ * @param fragment_path Fragment source.
+ * @param defines Array of macro strings (e.g. "BLOOM_ENABLED").
+ * @param count Number of macros.
+ * @return Specialized Shader object.
+ */
+Shader* shader_load_with_defines(const char* vertex_path,
+                                 const char* fragment_path,
+                                 const char** defines, int count);
+
+/**
+ * @brief Destroys the shader wrapper and deletes the GL program.
+ * @param shader Pointer to the object to free.
+ */
 void shader_destroy(Shader* shader);
 
-/* Use the shader program */
+/**
+ * @brief Activates the program for subsequent draw calls (`glUseProgram`).
+ * @param shader Pointer to the wrapper.
+ */
 void shader_use(Shader* shader);
 
-/* Get uniform location using cached binary search (O(log n)) */
+/**
+ * @brief Retrieves a uniform location via binary search on the cache.
+ * @param shader Pointer to the wrapper.
+ * @param name Uniform identifier.
+ * @return GL location, or -1 if not found.
+ */
 GLint shader_get_uniform_location(Shader* shader, const char* name);
 
-/* Convenient setters (using cached locations) */
+/* --- FAST UNIFORM SETTERS (O(log N)) --- */
+
 void shader_set_int(Shader* shader, const char* name, int val);
 void shader_set_float(Shader* shader, const char* name, float val);
 void shader_set_vec2(Shader* shader, const char* name, const float* val);

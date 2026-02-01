@@ -31,7 +31,9 @@
 # Executables
 *.exe
 *.out
+*.out
 *.app
+app
 *.i*86
 *.x86_64
 *.hex
@@ -58,6 +60,7 @@ dkms.conf
 build/
 build-coverage/
 build-*/
+_deps/
 bin/
 obj/
 .cache/
@@ -67,12 +70,25 @@ build-prof/
 callgrind.out.*
 *.trace*
 perf.*
+cmake_install.cmake
+CTestTestfile.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+Testing/
 
 !tests/ref_frame.raw
 **/*.raw
+tests/fxaa_test_*.png
+
 # Coverage artifacts
 *.profraw
 *.profdata
+
+# ctest
+Testing/
+
+# valgrind
+valgrind*
 
 # Log files
 *.log
@@ -296,3 +312,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+docs/doxygen/

@@ -1,3 +1,4 @@
+#include "app_settings.h"
 #include "shader.h"
 #include "unity.h"
 #include <stdio.h>
@@ -63,7 +64,12 @@ void test_shader_read_file_success(void)
 	write_file("test_read.txt", "content");
 	char* content = shader_read_file("test_read.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	TEST_ASSERT_EQUAL_STRING("#define USE_TRANSPARENT_BILLBOARDS\ncontent",
+	                         content);
+#else
 	TEST_ASSERT_EQUAL_STRING("content", content);
+#endif
 	free(content);
 	remove("test_read.txt");
 }
@@ -80,7 +86,12 @@ void test_shader_read_file_empty(void)
 	write_file("test_empty.txt", "");
 	char* content = shader_read_file("test_empty.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	TEST_ASSERT_EQUAL_STRING("#define USE_TRANSPARENT_BILLBOARDS\n",
+	                         content);
+#else
 	TEST_ASSERT_EQUAL_STRING("", content);
+#endif
 	free(content);
 	remove("test_empty.txt");
 }
@@ -127,9 +138,51 @@ void test_shader_read_file_large(void)
 	write_file("test_large.txt", large_content);
 	char* content = shader_read_file("test_large.txt");
 	TEST_ASSERT_NOT_NULL(content);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	const char* expected_start =
+	    "#version 330 core\n#define "
+	    "USE_TRANSPARENT_BILLBOARDS\nlayout(location = 0) in vec3 aPos;";
+	/* Check prefix to verify injection */
+	TEST_ASSERT_EQUAL_STRING_LEN(expected_start, content,
+	                             strlen(expected_start));
+#else
 	TEST_ASSERT_EQUAL_STRING(large_content, content);
+#endif
 	free(content);
 	remove("test_large.txt");
+}
+
+void test_shader_read_file_with_defines(void)
+{
+	const char* src = "#version 330 core\nvoid main() {}";
+	write_file("test_defines.vert", src);
+
+	const char* defines[] = {"ENABLE_FOO", "ENABLE_BAR 1"};
+	// External declarations for function not in header (helper test)
+	extern char* shader_read_file_with_defines(
+	    const char* path, const char** defines, int count);
+
+	char* content =
+	    shader_read_file_with_defines("test_defines.vert", defines, 2);
+	TEST_ASSERT_NOT_NULL(content);
+
+	// Constructed expectation
+	// Note: shader_read_file logic inserts AFTER #version line
+	// And if USE_TRANSPARENT_BILLBOARDS is on, it's also inserted.
+	// We assume standard build without that flag for simplicity or handle
+	// it textually.
+
+	/* Function to verify content contains our defines */
+	TEST_ASSERT_NOT_NULL(strstr(content, "#define ENABLE_FOO\n"));
+	TEST_ASSERT_NOT_NULL(strstr(content, "#define ENABLE_BAR 1\n"));
+
+	/* It must start with version */
+	const char* version_line = "#version 330 core\n";
+	TEST_ASSERT_EQUAL_STRING_LEN(version_line, content,
+	                             strlen(version_line));
+
+	free(content);
+	remove("test_defines.vert");
 }
 
 void test_shader_compile_success(void)
@@ -316,6 +369,7 @@ int main(void)
 	RUN_TEST(test_shader_read_file_empty);
 	RUN_TEST(test_shader_read_file_large);
 	RUN_TEST(test_shader_read_file_fread_fail);
+	RUN_TEST(test_shader_read_file_with_defines);
 	RUN_TEST(test_shader_compile_success);
 	RUN_TEST(test_shader_compile_fail_syntax);
 	RUN_TEST(test_shader_compile_fail_io);

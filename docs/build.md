@@ -17,7 +17,10 @@ The project is optimized for a container named `clang-dev`. A `Makefile` wrapper
 ### Common Commands
 
 - `make`: Configures and builds the project inside the container.
-- `make run`: Builds and executes the application.
+- `make debug`: Builds with dynamic shaders (Dev mode).
+- `make release`: Builds with optimized static shaders (Production mode).
+- `make run`: Builds and executes the application (Debug).
+- `make run-release`: Builds and executes the application (Release).
 - `make rebuild`: Performs a clean build from scratch (useful when dependencies change).
 - `make format`: Formats all C source and header files using **clang-format**.
 - `make lint`: Performs static analysis across the codebase using **clang-tidy** (Guaranteed **0 warnings**).
@@ -79,42 +82,42 @@ Dependencies are automatically managed via CMake's `FetchContent` module. No man
 
 ## Fast Parallel Builds
 
-Le build est optimisé pour être rapide en utilisant la compilation parallèle :
+The build is optimized for speed using parallel compilation:
 
 ```bash
-# Via le wrapper Makefile
-make all  # Exécute cmake --build build --parallel
+# Via the Makefile wrapper
+make all  # Executes cmake --build build --parallel
 
-# Directement via CMake
+# Directly via CMake
 cmake --build build -j$(nproc)
 ```
 
 ## Logging System
 
-L'application utilise un système de logs structuré pour faciliter le développement et le monitoring.
+The application uses a structured logging system to facilitate development and monitoring.
 
-- **Niveau INFO** : Chargement des assets, infos GPU, changements d'état utilisateur.
-- **Niveau ERROR** : Échecs de compilation de shader, erreurs d'allocation, échec de création de fenêtre.
-- **Niveau WARN** : Détecte les anomalies non critiques.
+- **INFO Level**: Asset loading, GPU info, user state changes.
+- **ERROR Level**: Shader compilation failures, allocation errors, window creation failure.
+- **WARN Level**: Detects non-critical anomalies.
 
-**Format** : `2026-01-13 10:05:10,133 - module - LEVEL - message`
+**Format**: `2026-01-13 10:05:10,133 - module - LEVEL - message`
 
 ## Automated Dependencies
 
-Grâce à `FetchContent`, les bibliothèques suivantes sont gérées sans intervention manuelle :
+Thanks to `FetchContent`, the following libraries are managed without manual intervention:
 
-1. **cglm** : Compilé en tant que bibliothèque statique optimisée pour votre CPU.
-2. **GLAD** : Généré à la volée pour cibler exactement le profil OpenGL 4.4 Core.
-3. **stb_image** : Automatisation via FetchContent. L'implémentation est isolée dans `src/stb_image_impl.c` pour garantir un linting parfaitement propre sur les fichiers sources restants.
-4. **unity** : Automatisation via FetchContent.
-5. **cjson** : Automatisation via FetchContent.
+1. **cglm**: Compiled as a static library optimized for your CPU.
+2. **GLAD**: Generated on the fly to target exactly the OpenGL 4.4 Core profile.
+3. **stb_image**: Automation via FetchContent. The implementation is isolated in `src/stb_image_impl.c` to guarantee perfectly clean linting on the remaining source files.
+4. **unity**: Automation via FetchContent.
+5. **cjson**: Automation via FetchContent.
 
 ## Folder Structure
 
-- `CMakeLists.txt` : Cœur du système de build.
-- `Makefile` : Raccourcis pour Docker/Distrobox et builds rapides.
-- `docs/` : Documentation complète du moteur.
-- `src/log.c` : Cœur du système de logging.
-- `assets/` : Dossier contenant les assets.
-- `assets/env.hdr` : Texture d'environnement source (Equirectangulaire).
-- `deps/` : Dossier contenant les dépendances externes.
+- `CMakeLists.txt`: Core of the build system.
+- `Makefile`: Shortcuts for Docker/Distrobox and fast builds.
+- `docs/`: Full engine documentation.
+- `src/log.c`: Core of the logging system.
+- `assets/`: Folder containing assets.
+- `assets/env.hdr`: Source environment texture (Equirectangular).
+- `deps/`: Folder containing external dependencies.

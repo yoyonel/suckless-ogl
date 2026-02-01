@@ -1,7 +1,8 @@
 #include "adaptive_sampler.h"
 
+#include "utils.h"  /* safe_snprintf */
 #include <stdint.h> /* uintptr_t */
-#include <stdio.h>  /* snprintf */
+#include <stdio.h>  /* For FILE* if needed */
 #include <stdlib.h> /* malloc, free */
 #include <string.h> /* memset */
 #include <time.h>   /* time() for seed */
@@ -191,10 +192,11 @@ void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
 	/* We need width chars + 1 null terminator usually, but explicit
 	 * buffer_size passed */
 	/* Let's construct a temporary line buffer */
-	char* line = (char*)malloc(width + 1);
-	if (!line) {
-		return;
+#define MAX_LINE_WIDTH 256
+	if (width >= MAX_LINE_WIDTH) {
+		width = MAX_LINE_WIDTH - 1;
 	}
+	char line[MAX_LINE_WIDTH];
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(line, '.', width);
@@ -228,14 +230,13 @@ void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
 
 	/* Format Output: "[0s...5s]\n|timeline|" */
 	/* We try to fit into provided buffer */
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)snprintf(
+	(void)safe_snprintf(
 	    buffer, buffer_size, "[0s%.*s%.1fs]\n|%s|",
 	    (int)(width > PADDING_Width ? width - PADDING_Width : 0),
 	    "..................................................", /* Padding */
 	    win_secs, line);
 
-	free(line);
+#undef MAX_LINE_WIDTH
 }
 
 int adaptive_sampler_is_finished(const AdaptiveSampler* sampler,

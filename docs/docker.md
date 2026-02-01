@@ -32,9 +32,9 @@ Runs the application in a container with X11 forwarding to your host display.
 
 ### Multi-Stage Build
 
-The [`Dockerfile`](file:///var/home/latty/Prog/suckless-ogl/Dockerfile) uses two stages:
+The [`Dockerfile`](../Dockerfile) uses two stages:
 
-#### **Stage 1: Builder** (`fedora:41`)
+#### Stage 1: Builder (fedora:41)
 - Full development toolchain (clang, cmake, ninja, git)
 - **BuildKit cache mount** on `/src/build` for incremental builds
 - Compiles in Release mode with parallel build
@@ -52,7 +52,7 @@ RUN --mount=type=cache,target=/src/build \
 > [!TIP]
 > The cache mount persists CMake's build directory between builds, dramatically speeding up rebuilds by reusing compiled object files and fetched dependencies.
 
-#### **Stage 2: Runtime** (`fedora:41`)
+#### Stage 2: Runtime (fedora:41)
 - Minimal runtime dependencies only:
   - `glfw` - Window and input handling
   - `mesa-*` - OpenGL drivers
@@ -66,7 +66,7 @@ RUN --mount=type=cache,target=/src/build \
 
 ### Headless Rendering with Xvfb
 
-The [`entrypoint.sh`](file:///var/home/latty/Prog/suckless-ogl/entrypoint.sh) script manages virtual display:
+The [`entrypoint.sh`](../scripts/setup_offline_deps.sh) script manages virtual display:
 
 ```bash
 #!/bin/bash
@@ -216,9 +216,9 @@ Example GitHub Actions workflow:
 - name: Run Tests in Container
   run: |
     docker run --rm suckless-ogl /bin/bash -c "
-      export DISPLAY=:99 && 
-      Xvfb :99 & 
-      sleep 2 && 
+      export DISPLAY=:99 &&
+      Xvfb :99 &
+      sleep 2 &&
       ./app --test
     "
 ```

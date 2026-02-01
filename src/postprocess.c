@@ -8,6 +8,7 @@
 #include "log.h"
 #include "render_utils.h"
 #include "shader.h"
+#include "utils.h"
 #include <cglm/types.h>
 #include <string.h>
 
@@ -38,6 +39,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->width = width;
 	post_processing->height = height;
 	post_processing->time = 0.0F;
+	post_processing->is_optimized = false;
 
 	/* Paramètres par défaut */
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;
@@ -78,8 +80,6 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->color_grading.gain = 1.0F;
 	post_processing->color_grading.offset = 0.0F;
 
-	post_processing->color_grading.offset = 0.0F;
-
 	/* Initialisation Auto Exposure (Stabilisé) */
 	post_processing->auto_exposure.min_luminance =
 	    EXPOSURE_MIN_LUM; /* Limite le boost max à x2 (1.0 / 0.5) */
@@ -95,8 +95,8 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		/* On continue quand même */
 	}
 
-	/* Effets désactivés par défaut */
-	post_processing->active_effects = 0;
+	/* Effets par défaut définis dans postprocess.h */
+	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
 
 	/* Créer le framebuffer */
 	if (!create_framebuffer(post_processing)) {
@@ -124,9 +124,11 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
-	/* Charger le shader de post-processing */
+#ifndef ENABLE_SHADER_OPTIMIZATION
+	/* Charger le shader de post-processing (Debug mode uniquement) */
 	post_processing->postprocess_shader =
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
+#endif
 
 	/* Initialize UBO */
 	glGenBuffers(1, &post_processing->settings_ubo);
@@ -221,9 +223,6 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	/* Final Bridge: Ensure ALL used units are in a valid state.
 	 * NVIDIA driver validates units used by the last shader before resize.
 	 */
-	/* Final Bridge: Ensure ALL used units are in a valid state.
-	 * NVIDIA driver validates units used by the last shader before resize.
-	 */
 	render_utils_reset_texture_units(GL_TEXTURE0,
 	                                 POSTPROCESS_TEX_UNIT_DOF_BLUR + 1,
 	                                 post_processing->dummy_black_tex);
@@ -236,19 +235,33 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	LOG_INFO("suckless-ogl.postprocess", "Resized to %dx%d", width, height);
 }
 
+static void postprocess_on_state_change(PostProcess* post_processing)
+{
+	if (post_processing->is_optimized) {
+		LOG_INFO(
+		    "suckless-ogl.postprocess",
+		    "State changed in optimized mode - recompiling shader...");
+		postprocess_compile_optimized(post_processing,
+		                              post_processing->active_effects);
+	}
+}
+
 void postprocess_enable(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects |= (unsigned int)effect;
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_disable(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects &= ~(unsigned int)effect;
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_toggle(PostProcess* post_processing, PostProcessEffect effect)
 {
 	post_processing->active_effects ^= (unsigned int)effect;
+	postprocess_on_state_change(post_processing);
 }
 
 int postprocess_is_enabled(PostProcess* post_processing,
@@ -373,13 +386,16 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->tonemapper = preset->tonemapper;
 	post_processing->bloom = preset->bloom;
 	post_processing->dof = preset->dof;
+
+	postprocess_on_state_change(post_processing);
 }
 
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
+	        (GLbitfield)GL_DEPTH_BUFFER_BIT);
 }
 
 void postprocess_end(PostProcess* post_processing)
@@ -431,40 +447,62 @@ void postprocess_end(PostProcess* post_processing)
 	        : 0,
 	    post_processing->dummy_black_tex);
 
-	shader_set_int(post_processing->postprocess_shader, "bloomTexture",
-	               POSTPROCESS_TEX_UNIT_BLOOM);
+	/* Only set uniform if not optimized or if effect is enabled */
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "bloomTexture", POSTPROCESS_TEX_UNIT_BLOOM);
+	}
 
 	/* Bind la texture de Profondeur (pour le DoF) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
-	shader_set_int(post_processing->postprocess_shader, "depthTexture",
-	               POSTPROCESS_TEX_UNIT_DEPTH);
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_DOF)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "depthTexture", POSTPROCESS_TEX_UNIT_DEPTH);
+	}
 
 	/* Bind Exposure Texture (Unit 3) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->auto_exposure_fx.exposure_tex);
-	shader_set_int(post_processing->postprocess_shader,
-	               "autoExposureTexture", POSTPROCESS_TEX_UNIT_EXPOSURE);
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "autoExposureTexture",
+		               POSTPROCESS_TEX_UNIT_EXPOSURE);
+	}
 
 	/* Bind Velocity Texture (Unit 4) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-	shader_set_int(post_processing->postprocess_shader, "velocityTexture",
-	               POSTPROCESS_TEX_UNIT_VELOCITY);
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "velocityTexture",
+		               POSTPROCESS_TEX_UNIT_VELOCITY);
+	}
 
 	/* Bind Neighbor Max Texture (Unit 5) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->motion_blur_fx.neighbor_max_tex);
-	shader_set_int(post_processing->postprocess_shader,
-	               "neighborMaxTexture", POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "neighborMaxTexture",
+		               POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
+	}
 
 	/* Bind DoF Blurred Texture (Unit 6) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
 	glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
-	shader_set_int(post_processing->postprocess_shader, "dofBlurTexture",
-	               POSTPROCESS_TEX_UNIT_DOF_BLUR);
+	if (!post_processing->is_optimized ||
+	    postprocess_is_enabled(post_processing, POSTFX_DOF)) {
+		shader_set_int(post_processing->postprocess_shader,
+		               "dofBlurTexture", POSTPROCESS_TEX_UNIT_DOF_BLUR);
+	}
 
 	/* Upload settings via UBO */
 	PostProcessUBO ubo = {0};
@@ -606,9 +644,6 @@ static int create_framebuffer(PostProcess* post_processing)
 	                       0);
 
 	return render_utils_check_framebuffer("PostProcess Scene FBO");
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return 1;
 }
 
 static void destroy_framebuffer(PostProcess* post_processing)
@@ -646,5 +681,111 @@ static void destroy_screen_quad(PostProcess* post_processing)
 	if (post_processing->screen_quad_vbo) {
 		glDeleteBuffers(1, &post_processing->screen_quad_vbo);
 		post_processing->screen_quad_vbo = 0;
+	}
+}
+
+enum { MAX_SHADER_DEFINES = 32, MAX_DEFINE_LENGTH = 64 };
+
+static void log_optimized_effects(unsigned int flags)
+{
+	LOG_INFO("suckless-ogl.postprocess",
+	         "Compiled OPTIMIZED shader with effects:");
+
+#define LOG_EFFECT(flag, name)                                        \
+	if ((flags & (unsigned int)(flag)) != 0) {                    \
+		LOG_INFO("suckless-ogl.postprocess", "  ✓ %s", name); \
+	}
+
+	LOG_EFFECT(POSTFX_VIGNETTE, "Vignette");
+	LOG_EFFECT(POSTFX_GRAIN, "Film Grain");
+	LOG_EFFECT(POSTFX_EXPOSURE, "Manual Exposure");
+	LOG_EFFECT(POSTFX_CHROM_ABBR, "Chromatic Aberration");
+	LOG_EFFECT(POSTFX_BLOOM, "Bloom");
+	LOG_EFFECT(POSTFX_COLOR_GRADING, "Color Grading");
+	LOG_EFFECT(POSTFX_DOF, "Depth of Field");
+	LOG_EFFECT(POSTFX_DOF_DEBUG, "DoF Debug View");
+	LOG_EFFECT(POSTFX_AUTO_EXPOSURE, "Auto-Exposure");
+	LOG_EFFECT(POSTFX_EXPOSURE_DEBUG, "Exposure Debug View");
+	LOG_EFFECT(POSTFX_MOTION_BLUR, "Motion Blur");
+	LOG_EFFECT(POSTFX_MOTION_BLUR_DEBUG, "Motion Blur Debug View");
+	LOG_EFFECT(POSTFX_FXAA, "FXAA");
+	LOG_EFFECT(POSTFX_FXAA_DEBUG, "FXAA Debug View");
+
+#undef LOG_EFFECT
+
+	LOG_INFO("suckless-ogl.postprocess",
+	         "Shader optimization complete (Flags: 0x%08X)", flags);
+}
+
+void postprocess_compile_optimized(PostProcess* post_processing,
+                                   unsigned int static_flags)
+{
+	const char* defines[MAX_SHADER_DEFINES];
+	int count = 0;
+	char buffer[MAX_SHADER_DEFINES][MAX_DEFINE_LENGTH];
+
+#define ADD_OPT_DEF(flag_bit, name)                                  \
+	if (!safe_snprintf(                                          \
+	        buffer[count], sizeof(buffer[count]), "%s %d", name, \
+	        ((static_flags & (unsigned int)(flag_bit)) != 0))) { \
+		LOG_ERROR("suckless-ogl.postprocess",                \
+		          "Failed to format shader define");         \
+		return;                                              \
+	}                                                            \
+	defines[count] = buffer[count];                              \
+	count++
+
+	ADD_OPT_DEF(POSTFX_VIGNETTE, "OPT_ENABLE_VIGNETTE");
+	ADD_OPT_DEF(POSTFX_GRAIN, "OPT_ENABLE_GRAIN");
+	ADD_OPT_DEF(POSTFX_EXPOSURE, "OPT_ENABLE_EXPOSURE");
+	ADD_OPT_DEF(POSTFX_CHROM_ABBR, "OPT_ENABLE_CHROM_ABBR");
+	ADD_OPT_DEF(POSTFX_BLOOM, "OPT_ENABLE_BLOOM");
+	ADD_OPT_DEF(POSTFX_COLOR_GRADING, "OPT_ENABLE_COLOR_GRADING");
+	ADD_OPT_DEF(POSTFX_DOF, "OPT_ENABLE_DOF");
+	ADD_OPT_DEF(POSTFX_DOF_DEBUG, "OPT_ENABLE_DOF_DEBUG");
+	ADD_OPT_DEF(POSTFX_AUTO_EXPOSURE, "OPT_ENABLE_AUTO_EXPOSURE");
+	ADD_OPT_DEF(POSTFX_EXPOSURE_DEBUG, "OPT_ENABLE_EXPOSURE_DEBUG");
+	ADD_OPT_DEF(POSTFX_MOTION_BLUR, "OPT_ENABLE_MOTION_BLUR");
+	ADD_OPT_DEF(POSTFX_MOTION_BLUR_DEBUG, "OPT_ENABLE_MOTION_BLUR_DEBUG");
+	ADD_OPT_DEF(POSTFX_FXAA, "OPT_ENABLE_FXAA");
+	ADD_OPT_DEF(POSTFX_FXAA_DEBUG, "OPT_ENABLE_FXAA_DEBUG");
+
+#undef ADD_OPT_DEF
+
+	Shader* new_shader = shader_load_with_defines(
+	    "shaders/postprocess.vert", "shaders/postprocess.frag", defines,
+	    count);
+
+	if (new_shader) {
+		if (post_processing->postprocess_shader) {
+			shader_destroy(post_processing->postprocess_shader);
+		}
+		post_processing->postprocess_shader = new_shader;
+		post_processing->is_optimized = true;
+		new_shader->silent_warnings = true;
+
+		log_optimized_effects(static_flags);
+	} else {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to compile optimized shader");
+	}
+}
+
+void postprocess_use_dynamic(PostProcess* post_processing)
+{
+	Shader* new_shader =
+	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
+
+	if (new_shader) {
+		if (post_processing->postprocess_shader) {
+			shader_destroy(post_processing->postprocess_shader);
+		}
+		post_processing->postprocess_shader = new_shader;
+		post_processing->is_optimized = false;
+		LOG_INFO("suckless-ogl.postprocess",
+		         "Switched to DYNAMIC shader");
+	} else {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to compile dynamic shader");
 	}
 }

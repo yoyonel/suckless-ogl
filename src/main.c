@@ -1,12 +1,21 @@
 #include "main.h"
 
 #include "app.h"
+#include "cli.h"
 #include "gl_common.h"
 #include "log.h"
 #include <stdlib.h>
 
-int main(void)
+int main(int argc, char* argv[])
 {
+	CliAction action = cli_handle_args(argc, argv);
+	if (action == CLI_ACTION_EXIT_SUCCESS) {
+		return EXIT_SUCCESS;
+	}
+	if (action == CLI_ACTION_EXIT_FAILURE) {
+		return EXIT_FAILURE;
+	}
+
 	App* app = NULL;
 	if (posix_memalign((void**)&app, SIMD_ALIGNMENT, sizeof(App)) != 0) {
 		LOG_ERROR("suckless-ogl.main",

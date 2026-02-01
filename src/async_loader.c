@@ -4,6 +4,7 @@
 #include "log.h"
 #include "perf_timer.h"
 #include "texture.h"
+#include "utils.h"
 #include <pthread.h>
 #include <stb_image.h>
 #include <stdbool.h>
@@ -37,9 +38,8 @@ static void* async_worker_func(void* arg)
 		pthread_mutex_lock(&request_mutex);
 		if (has_pending_work &&
 		    current_request.state == ASYNC_PENDING) {
-			// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			(void)snprintf(path_to_load, sizeof(path_to_load), "%s",
-			               current_request.path);
+			(void)safe_snprintf(path_to_load, sizeof(path_to_load),
+			                    "%s", current_request.path);
 			current_request.state = ASYNC_LOADING;
 			work_available = true;
 		}
@@ -139,9 +139,8 @@ bool async_loader_request(const char* path)
 			current_request.data = NULL;
 		}
 
-		// NOLINTNEXTLINE(cert-err33-c,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		(void)snprintf(current_request.path,
-		               sizeof(current_request.path), "%s", path);
+		(void)safe_snprintf(current_request.path,
+		                    sizeof(current_request.path), "%s", path);
 		current_request.state = ASYNC_PENDING;
 		has_pending_work = true;
 		accepted = true;
