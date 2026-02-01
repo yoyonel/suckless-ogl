@@ -157,12 +157,6 @@ jobs:
           name: coverage-report
           path: build-coverage/coverage_report/
 
-      - name: Upload Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: build-coverage/coverage_report/
 
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
   documentation:
