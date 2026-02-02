@@ -71,7 +71,7 @@ digraph SkyboxZ {
 }
 \enddot
 
-```glsl
+\code{.glsl}
 // Inverse Equirectangular Projection
 const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 SampleEquirectangular(vec3 v) {
@@ -82,30 +82,30 @@ vec2 SampleEquirectangular(vec3 v) {
     return uv;
 }
 
-void main() {
+void skybox_main() {
     vec3 dir = normalize(v_direction);
     vec2 uv = SampleEquirectangular(dir);
-    FragColor = textureLod(environmentMap, uv, blur_lod);
+    out_color_val = textureLod(environmentMap, uv, blur_lod);
 }
-```
+\endcode
 
 ### C Implementation (View Matrix)
 
 We remove the **translation** component from the view matrix so the skybox appears infinitely far away (centered on the camera):
 
-```c
-/* Copy view and strip translation */
+\code{.c}
+/* Copy view and strip translation to keep skybox at infinity */
 mat4 view_sky;
 glm_mat4_copy(view, view_sky);
 view_sky[3][0] = 0.0f;
 view_sky[3][1] = 0.0f;
 view_sky[3][2] = 0.0f;
 
-/* Compute inverse view-projection */
+/* Compute inverse view-projection for equirect sampling */
 mat4 inv_vp_sky;
 glm_mat4_mul(proj, view_sky, inv_vp_sky);
 glm_mat4_inv(inv_vp_sky, inv_vp_sky);
-```
+\endcode
 
 ## 🔍 Technical Details
 
@@ -121,8 +121,9 @@ The inversion `uv.y = 0.5 - uv.y` is crucial to map the "top" of the HDR image t
 
 ## 🎨 Full Workflow
 
-```c
-void render_scene(App* app) {
+\code{.c}
+// Main render loop integration
+void render_scene_example(App* app) {
     // 1. View Matrix without translation
     mat4 view_sky;
     glm_mat4_copy(app->view, view_sky);
@@ -138,7 +139,7 @@ void render_scene(App* app) {
     skybox_render(&app->skybox, app->skybox_shader,
                   app->hdr_texture, inv_vp_sky, app->env_lod);
 }
-```
+\endcode
 
 ## 🌟 Advantages
 
@@ -156,25 +157,25 @@ void render_scene(App* app) {
 ## 🔗 Python → C Equivalence
 
 ### Python (moderngl)
-```python
-view = camera.matrix
-view[3][0] = 0
-view[3][1] = 0
-view[3][2] = 0
-inv_view_proj = glm.inverse(projection * view)
-```
+\code{.python}
+view_m = camera.matrix
+view_m[3][0] = 0
+view_m[3][1] = 0
+view_m[3][2] = 0
+inv_view_proj_sky = glm.inverse(projection_matrix * view_m)
+\endcode
 
 ### C (cglm)
-```c
-mat4 view;
-glm_lookat(camera_pos, target, up, view);
-view[3][0] = 0.0f;
-view[3][1] = 0.0f;
-view[3][2] = 0.0f;
+\code{.c}
+mat4 view_m;
+glm_lookat(camera_pos, target, up, view_m);
+view_m[3][0] = 0.0f;
+view_m[3][1] = 0.0f;
+view_m[3][2] = 0.0f;
 
-mat4 inv_view_proj;
-glm_mat4_mul(proj, view, inv_view_proj);
-glm_mat4_inv(inv_view_proj, inv_view_proj);
-```
+mat4 inv_view_proj_sky;
+glm_mat4_mul(proj_matrix, view_m, inv_view_proj_sky);
+glm_mat4_inv(inv_view_proj_sky, inv_view_proj_sky);
+\endcode
 
 **Perfectly equivalent!** ✅

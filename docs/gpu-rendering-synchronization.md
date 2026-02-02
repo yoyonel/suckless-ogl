@@ -26,10 +26,10 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 
 **Fix**: Use pre-calculated luma from alpha channel instead.
 
-```diff
+\code{.diff}
 - lumaEnd1 = FxaaLuma(texture(screenTexture, uv1).rgb);
 + lumaEnd1 = texture(screenTexture, uv1).a;  // Pre-calculated in PBR shader
-```
+\endcode
 
 ### Issue 2: Derivative-Based Roughness Clamping
 
@@ -44,14 +44,14 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 
 **Final Solution**: Disabled roughness clamping entirely.
 
-```glsl
-float compute_roughness_clamping(vec3 N, float roughness)
+\code{.glsl}
+float compute_roughness_clamping(vec3 N_val, float roughness_val)
 {
     // Disabled: derivatives have different precision on NVIDIA vs Intel
-    roughness = clamp(roughness, 0.0, 1.0);
-    return roughness;
+    roughness_val = clamp(roughness_val, 0.0, 1.0);
+    return roughness_val;
 }
-```
+\endcode
 
 ## Why Derivatives Differ
 
@@ -92,10 +92,10 @@ A key finding during this synchronization effort was the trade-off between using
 ## Validation Results
 
 ### Visual Inspection
-```
+\code
 Before:  Intel ✅  |  NVIDIA ❌ (halos, buggy FXAA)
 After:   Intel ✅  |  NVIDIA ✅ (identical rendering)
-```
+\endcode
 
 ### Reference Metrics (FXAA Synthetic Test)
 

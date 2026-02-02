@@ -178,6 +178,28 @@ jobs:
           name: doxygen-docs
           path: docs/doxygen/html/
 
+      - name: Deploy Documentation Preview (Pull Request)
+        if: github.event_name == 'pull_request'
+        env:
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.number }}
+          DEPLOY_DOMAIN="suckless-ogl-pr-$PR_NUMBER.surge.sh"
+          npx surge docs/doxygen/html/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
+          echo "PREVIEW_URL=https://$DEPLOY_DOMAIN" >> $GITHUB_ENV
+
+      - name: Comment Preview Link on PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ## 📚 Documentation Preview
+            The Doxygen documentation for this PR has been generated and is ready for review:
+
+            🔗 **[Preview Link](${{ env.PREVIEW_URL }})**
+
+            *Last updated: ${{ github.event.pull_request.updated_at || 'Just now' }} (commit: ${{ github.sha }})*
+
   # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES ---
   deploy-pages:
     needs: [test-and-coverage, documentation]

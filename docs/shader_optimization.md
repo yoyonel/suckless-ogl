@@ -4,14 +4,14 @@
 
 The post-processing pipeline now supports two compilation modes to balance development flexibility with release performance:
 
-1.  **Debug Mode (Dynamic)**: Features are toggled at runtime using standard uniforms (`if (enableBloom) ...`). This allows instant feedback when modifying settings but incurs a GPU cost for branching.
+1.  **Debug Mode (Dynamic)**: Features are toggled at runtime using standard uniforms (`if (enableBloom_val) ...`). This allows instant feedback when modifying settings but incurs a GPU cost for branching.
 2.  **Release Mode (Static)**: Features are baked into the shader using preprocessor directives (`#define OPT_ENABLE_BLOOM 1`). The driver's GLSL compiler eliminates all unused code (Dead Code Elimination), resulting in a specialized, high-performance shader.
 
 ## Build Modes
 
 ### Debug Build (make debug / make run)
 - **Flags**: `ENABLE_SHADER_OPTIMIZATION=OFF`
-- **Behavior**: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching).
+- **Behavior**: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching, e.g. `if (enableBloom_val) ...`).
 - **Use Case**: Development, tweaking parameters, debugging effect interactions.
 
 ### Release Build (make release / make run-release)
@@ -30,46 +30,48 @@ The post-processing pipeline now supports two compilation modes to balance devel
 
 We use a hybrid approach where uniforms are converted to `const bool` if the optimization macro is defined:
 
-```glsl
+\code{.glsl}
 #ifdef OPT_ENABLE_BLOOM
     // Release Mode: Constant folded by driver -> Code stripped
-    const bool enableBloom = bool(OPT_ENABLE_BLOOM);
+    const bool enableBloom_optimized = bool(OPT_ENABLE_BLOOM);
 #else
     // Debug Mode: Runtime uniform -> Branching
-    uniform bool enableBloom;
+    uniform bool enableBloom_val;
 #endif
-```
+\endcode
 
 ### 2. Startup Logic (src/app.c)
 
 When built with `-DENABLE_SHADER_OPTIMIZATION`, the application triggers an immediate compilation of the optimized shader during initialization:
 
-```c
+\code{.c}
 #ifdef ENABLE_SHADER_OPTIMIZATION
     LOG_INFO("App", "Building specialized shader...");
+    // Specialized wrapper for optimized compilation
     postprocess_compile_optimized(&app->postprocess, initial_flags);
 #endif
-```
+\endcode
 
 ### 3. Conditional Uniforms (src/postprocess.c)
 
 To avoid OpenGL warnings (e.g., "Uniform 'bloomTexture' not found"), we guard uniform assignments. In Release mode, if Bloom is disabled, `bloomTexture` is compiled out, so we must not try to set it:
 
-```c
+\code{.c}
+// Ensure we only set uniforms that exist in the optimized shader
 if (!is_optimized || (static_flags & POSTFX_BLOOM)) {
     shader_set_int(shader, "bloomTexture", UNIT_BLOOM);
 }
-```
+\endcode
 
 ## Verification
 
 To verify the optimization works:
 1.  Run `make release`.
 2.  Check the logs:
-    ```
+    \code
     [INFO] Compiled OPTIMIZED shader with effects:
       ✓ Manual Exposure
       ✓ Color Grading
     [INFO] Shader optimization complete (Flags: 0x...)
-    ```
+    \endcode
 3.  Observe that no "Uniform not found" warnings appear.

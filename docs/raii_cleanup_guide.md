@@ -78,28 +78,28 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 
 1.  **The RAII Container**: A structure that holds the resource and its metadata.
 
-        \code{.c}
-        typedef struct {
-            HybridTimer timer;
-            const char* label;
-        } HybridTimerRAII;
-        \endcode
+    \code{.c}
+    typedef struct {
+        HybridTimer timer;
+        const char* label;
+    } HybridTimerRAII;
+    \endcode
 
 2.  **The Cleanup Function**: A static function that the compiler will trigger.
 
-        \code{.c}
-        static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
-            perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
-        }
-        \endcode
+    \code{.c}
+    static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
+        perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
+    }
+    \endcode
 
 3.  **The Macro**: A convenient way to declare the guarded variable.
 
-        \code{.c}
-        #define HYBRID_FUNC_TIMER(label) \
-            HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
-                perf_hybrid_start(), label }
-        \endcode
+    \code{.c}
+    #define HYBRID_FUNC_TIMER(label) \
+        HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
+            perf_hybrid_start(), label }
+    \endcode
 
 ---
 
@@ -109,38 +109,38 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 Unlike the older `HYBRID_MEASURE_LOG` which required a code block `{ ... }`, the new RAII macro allows for "flat" code.
 
 **Old Way (Indented):**
-```c
+\code{.c}
 void process() {
     HYBRID_MEASURE_LOG("Task") {
         do_work();
         do_more_work();
     }
 }
-```
+\endcode
 
 **New Way (Flat):**
-```c
+\code{.c}
 void process() {
     HYBRID_FUNC_TIMER("Task");
 
     do_work();
     do_more_work();
 } // Timer stops here automatically
-```
+\endcode
 
 ### Safety with Early Returns
 The cleanup is guaranteed to run even if the function exits early.
 
-```c
-void load_data(const char* path) {
+\code{.c}
+void demo_load_data(const char* file_path) {
     HYBRID_FUNC_TIMER("File Load");
 
-    FILE* f = fopen(path, "r");
-    if (!f) return; // Timer STOPS and LOGS here automatically!
+    FILE* file_ptr = fopen(file_path, "r");
+    if (!file_ptr) return; // Timer STOPS and LOGS here automatically!
 
     // ... processing ...
 } // Timer STOPS and LOGS here automatically!
-```
+\endcode
 
 ---
 
@@ -148,24 +148,27 @@ void load_data(const char* path) {
 
 In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER` at the start of expensive compute shader dispatches.
 
-```c
-GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold) {
-    if (shader == 0) return 0;
+    \code{.c}
+    // signature renamed to prevent Doxygen auto-linking info
+    GLuint
+    demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
+    {
+        if (shader_id == 0) return 0;
 
-    GLuint irr_tex = 0;
-    HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
+        GLuint irr_tex = 0;
+        HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
 
-    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: Irradiance Map");
+        glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: Irradiance Map");
 
-    // ... OpenGL Setup ...
-    glDispatchCompute(groups, groups, 1);
-    // ...
+        // ... OpenGL Setup ...
+        glDispatchCompute(groups, groups, 1);
+        // ...
 
-    glPopDebugGroup();
+        glPopDebugGroup();
 
-    return irr_tex;
-} // Measurement stops and result is printed to log
-```
+        return irr_tex;
+    } // Measurement stops and result is printed to log
+\endcode
 
 ---
 
@@ -194,23 +197,26 @@ Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a 
 
 **Usage Example:**
 
-```c
-static char* load_data(const char* path) {
-    CLEANUP_FILE FILE* f = fopen(path, "rb");
-    if (!f) return NULL;
+    \code{.c}
+    // Example of multiple resource management using RAII
+    static char*
+    demo_raii_loader(const char* file_path)
+    {
+        CLEANUP_FILE FILE* file_ptr = fopen(file_path, "rb");
+        if (!file_ptr) return NULL;
 
-    CLEANUP_FREE char* buf = malloc(1024);
-    if (error_condition) {
-        // Surgical hints to satisfy the analyzer on this path
-        RAII_SATISFY_FILE(f);
-        RAII_SATISFY_FREE(buf);
-        return NULL;
-    }
+        CLEANUP_FREE char* data_buffer = malloc(1024);
+        if (error_flag) {
+            // Surgical hints to satisfy the analyzer on this path
+            RAII_SATISFY_FILE(file_ptr);
+            RAII_SATISFY_FREE(data_buffer);
+            return NULL;
+        }
 
-    RAII_SATISFY_FILE(f);
-    return TRANSFER_OWNERSHIP(buf);
-} // Actual cleaning happens here at runtime via RAII
-```
+        RAII_SATISFY_FILE(file_ptr);
+        return TRANSFER_OWNERSHIP(data_buffer);
+    } // Actual cleaning happens here at runtime via RAII
+    \endcode
 
 ### Why use this instead of // NOLINT?
 - **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.

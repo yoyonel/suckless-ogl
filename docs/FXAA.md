@@ -4,6 +4,8 @@ This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementat
 
 ## Overview
 
+![FXAA Technical Process & Action](./images/fxaa_process.jpg)
+
 FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).
 
 **Version**: FXAA 3.11 (PC Quality / Console Performance Hybrid)
@@ -25,7 +27,9 @@ To avoid calculating Luminance (`dot(rgb, vec3(0.299...))`) multiple times per p
 digraph FXAALuma {
   rankdir=LR;
   bgcolor="transparent";
-  dpi=72;
+  pad="0.5";
+  nodesep=0.5;
+  ranksep=0.5;
 
   // Suckless-Modern "Ghost" Design Tokens (Upscaled)
   node [
@@ -103,12 +107,12 @@ Instead of stepping 1 pixel at a time, the search loop uses variable step sizes 
 
 Settings are controlled via the `PostProcessUBO`:
 
-```glsl
+\code{.glsl}
 // UBO Layout (std140)
-float fxaaQualitySubpix;           // Default: 0.75 (Range 0.0 - 1.0)
-float fxaaQualityEdgeThreshold;    // Default: 0.125 (0.166 for Perf, 0.063 for Quality)
-float fxaaQualityEdgeThresholdMin; // Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)
-```
+float subpixel_quality_val;        // Default: 0.75 (Range 0.0 - 1.0)
+float edge_threshold_val;          // Default: 0.125 (0.166 for Perf, 0.063 for Quality)
+float edge_threshold_min_val;      // Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)
+\endcode
 
 - **Subpix**: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.
 - **EdgeThreshold**: Minimum contrast required to trigger AA.
