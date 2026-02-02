@@ -34,19 +34,14 @@ USE_MDFILE_AS_MAINPAGE = doxygen_resources/api_index.md
 
 LAYOUT_FILE            = doxygen_resources/DoxygenLayout.xml
 IMAGE_PATH             = docs/
+
+FILE_PATTERNS          = *.c \
                          *.h \
                          *.vert \
                          *.frag \
                          *.glsl
+
 EXCLUDE                = docs/doxygen-awesome-css
-EXCLUDE_PATTERNS       =
-RECURSIVE              = YES
-
-USE_MDFILE_AS_MAINPAGE = doxygen_resources/api_index.md
-
-# ...
-
-LAYOUT_FILE            = doxygen_resources/DoxygenLayout.xml
 
 # Configuration options related to the alphabetical class index
 ALPHABETICAL_INDEX     = YES
