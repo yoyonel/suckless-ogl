@@ -279,6 +279,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTonemapParams.html">TonemapParams</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ACES-like filmic tonemapping curve parameters.  <a href="structTonemapParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFXAAParams.html">FXAAParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters for Fast Approximate Anti-Aliasing.  <a href="structFXAAParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html">PostProcessUBO</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared Uniform Buffer structure for shaders.  <a href="structPostProcessUBO.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -317,6 +320,12 @@ Macros</h2></td></tr>
 <tr class="separator:a222b8356f0589002c336b3b47ef99be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a160badf1723b03fe88e13e84e1410a" id="r_a3a160badf1723b03fe88e13e84e1410a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3a160badf1723b03fe88e13e84e1410a">DEFAULT_BLOOM_RADIUS</a>&#160;&#160;&#160;1.0F</td></tr>
 <tr class="separator:a3a160badf1723b03fe88e13e84e1410a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf826df7e5a98400decd6c5abaf1b273" id="r_abf826df7e5a98400decd6c5abaf1b273"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#abf826df7e5a98400decd6c5abaf1b273">DEFAULT_FXAA_SUBPIX</a>&#160;&#160;&#160;0.75F</td></tr>
+<tr class="separator:abf826df7e5a98400decd6c5abaf1b273"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c0fe09de30b31265a39842dcf30b994" id="r_a4c0fe09de30b31265a39842dcf30b994"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4c0fe09de30b31265a39842dcf30b994">DEFAULT_FXAA_EDGE_THRESHOLD</a>&#160;&#160;&#160;0.125F</td></tr>
+<tr class="separator:a4c0fe09de30b31265a39842dcf30b994"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b1c10a66d180ff45ebec6829b1a5f1c" id="r_a8b1c10a66d180ff45ebec6829b1a5f1c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8b1c10a66d180ff45ebec6829b1a5f1c">DEFAULT_FXAA_EDGE_THRESHOLD_MIN</a>&#160;&#160;&#160;0.063F</td></tr>
+<tr class="separator:a8b1c10a66d180ff45ebec6829b1a5f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8704ac8e54f944f1ff3218c4ef5f59e4" id="r_a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8704ac8e54f944f1ff3218c4ef5f59e4">DEFAULT_DOF_FOCAL_DISTANCE</a>&#160;&#160;&#160;20.0F</td></tr>
 <tr class="separator:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63ba03e343f9b5cabd43b1cb6a9839d9" id="r_a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a63ba03e343f9b5cabd43b1cb6a9839d9">DEFAULT_DOF_FOCAL_RANGE</a>&#160;&#160;&#160;5.0F</td></tr>
@@ -424,6 +433,8 @@ Functions</h2></td></tr>
 <tr class="separator:abc341dd9baaf0c15b099d5ad9c076f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ce07fd263254dd72c5afc8c199f3913" id="r_a6ce07fd263254dd72c5afc8c199f3913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a6ce07fd263254dd72c5afc8c199f3913">postprocess_set_auto_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float min_luminance, float max_luminance, float speed_up, float speed_down, float key_value)</td></tr>
 <tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebaafeb093d652eb93e6f91a55a60566" id="r_aebaafeb093d652eb93e6f91a55a60566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_set_fxaa</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float subpix, float edge_threshold, float edge_threshold_min)</td></tr>
+<tr class="separator:aebaafeb093d652eb93e6f91a55a60566"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ca4160d60435cb54320bbcc68d0d95" id="r_a86ca4160d60435cb54320bbcc68d0d95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_update_matrices</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, mat4 view_proj)</td></tr>
 <tr class="memdesc:a86ca4160d60435cb54320bbcc68d0d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates view-projection matrices for effects requiring depth-reconstruction.  <br /></td></tr>
 <tr class="separator:a86ca4160d60435cb54320bbcc68d0d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -471,9 +482,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
 <div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:64</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:75</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:61</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:69</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:80</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:66</div></div>
 </div><!-- fragment -->
 <p>Default mask of active effects. </p>
 
@@ -669,6 +680,48 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">#define DEFAULT_FILMIC_WHITE_CLIP&#160;&#160;&#160;0.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4c0fe09de30b31265a39842dcf30b994" name="a4c0fe09de30b31265a39842dcf30b994"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c0fe09de30b31265a39842dcf30b994">&#9670;&#160;</a></span>DEFAULT_FXAA_EDGE_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FXAA_EDGE_THRESHOLD&#160;&#160;&#160;0.125F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b1c10a66d180ff45ebec6829b1a5f1c" name="a8b1c10a66d180ff45ebec6829b1a5f1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b1c10a66d180ff45ebec6829b1a5f1c">&#9670;&#160;</a></span>DEFAULT_FXAA_EDGE_THRESHOLD_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FXAA_EDGE_THRESHOLD_MIN&#160;&#160;&#160;0.063F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abf826df7e5a98400decd6c5abaf1b273" name="abf826df7e5a98400decd6c5abaf1b273"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf826df7e5a98400decd6c5abaf1b273">&#9670;&#160;</a></span>DEFAULT_FXAA_SUBPIX</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_FXAA_SUBPIX&#160;&#160;&#160;0.75F</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1495,6 +1548,46 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>exposure</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aebaafeb093d652eb93e6f91a55a60566" name="aebaafeb093d652eb93e6f91a55a60566"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebaafeb093d652eb93e6f91a55a60566">&#9670;&#160;</a></span>postprocess_set_fxaa()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_fxaa </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>subpix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>edge_threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>edge_threshold_min</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

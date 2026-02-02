@@ -470,10 +470,10 @@ var NAVTREEINDEX =
 "globals_q.html",
 "md_docs_2build.html#autotoc_md21",
 "md_docs_2shader__optimization.html#autotoc_md309",
-"postprocess_8frag.html#acdef7a1fd863a6d3770c1268cb06add3",
-"structApp.html#a2ce8560fb41d73b278518669de8e7e54",
-"structMotionBlurFX.html#ad8265a3339c0360cdb04cf74df7c6476",
-"ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa"
+"postprocess_8frag.html#ab6364d5a7236e49af86d4f2f53611799",
+"structApp.html#a21a8389dbe19e64507b78e3658cb17e6",
+"structLoadedBuffer.html#aab42ed78eb04e97315cb610877f4e0ae",
+"ui_8c.html#a3c924c9b9fc2b783756213d65e6d28d8"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -224,7 +224,7 @@ $(document).ready(function(){initNavTree('md_docs_2postprocess__ubo__architectur
 <div class="textblock"><p><a class="anchor" id="autotoc_md199"></a> This document details the implementation of the <b>Uniform Buffer Object (UBO)</b> used to manage post-processing parameters in the engine. This transition from individual uniforms (<code>glUniform*</code>) was made to improve CPU performance and code clarity.</p>
 <h1><a class="anchor" id="autotoc_md200"></a>
 1. Overview</h1>
-<p>Instead of sending dozens of uniforms (floats, integers) one by one every frame, we bundle all configuration data (Vignette, Bloom, Exposure, etc.) into a single contiguous memory structure.</p>
+<p>Instead of sending dozens of uniforms (floats, integers) one by one every frame, we bundle all configuration data (Vignette, Bloom, Exposure, FXAA, etc.) into a single contiguous memory structure.</p>
 <ul>
 <li><b>C Side</b>: <code>struct <a class="el" href="structPostProcessUBO.html" title="Shared Uniform Buffer structure for shaders.">PostProcessUBO</a></code> (file <code><a class="el" href="postprocess_8h.html" title="High-level post-processing pipeline and effects.">include/postprocess.h</a></code>)</li>
 <li><b>GPU Side</b>: <code>program Block</code> with <code>std140</code> layout (file <code><a class="el" href="ubo_8glsl.html">shaders/postprocess/ubo.glsl</a></code>)</li>
@@ -268,9 +268,15 @@ C Structure (postprocess.h)</h2>
 <div class="line">    <span class="keywordtype">float</span> vignette_roundness;</div>
 <div class="line">    <span class="keywordtype">float</span> _pad1;             <span class="comment">// 4 bytes</span></div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// ... subsequent effects</span></div>
+<div class="line">    <span class="comment">// ... (Grain, Exposure, etc.)</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* FXAA (16 bytes) */</span></div>
+<div class="line">    <span class="keywordtype">float</span> fxaa_quality_subpix;</div>
+<div class="line">    <span class="keywordtype">float</span> fxaa_quality_edge_threshold;</div>
+<div class="line">    <span class="keywordtype">float</span> fxaa_quality_edge_threshold_min;</div>
+<div class="line">    <span class="keywordtype">float</span> _pad10;</div>
 <div class="line">} <a class="code hl_struct" href="structPostProcessUBO.html">PostProcessUBO</a>;</div>
-<div class="ttc" id="astructPostProcessUBO_html"><div class="ttname"><a href="structPostProcessUBO.html">PostProcessUBO</a></div><div class="ttdoc">Shared Uniform Buffer structure for shaders.</div><div class="ttdef"><b>Definition</b> postprocess.h:164</div></div>
+<div class="ttc" id="astructPostProcessUBO_html"><div class="ttname"><a href="structPostProcessUBO.html">PostProcessUBO</a></div><div class="ttdoc">Shared Uniform Buffer structure for shaders.</div><div class="ttdef"><b>Definition</b> postprocess.h:180</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md207"></a>
 GLSL Block (ubo.glsl)</h2>
 <p>The block defines <code>std140</code> layout and binding 0.</p>
@@ -289,7 +295,13 @@ GLSL Block (ubo.glsl)</h2>
 <div class="line">    <span class="keywordtype">float</span> v_roundness;</div>
 <div class="line">    <span class="keywordtype">float</span> _pad1;</div>
 <div class="line"> </div>
-<div class="line">    <span class="comment">// ... subsequent effects</span></div>
+<div class="line">    <span class="comment">// ... (Grain, Exposure, etc.)</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">/* FXAA */</span></div>
+<div class="line">    <span class="keywordtype">float</span> fxaaQualitySubpix;</div>
+<div class="line">    <span class="keywordtype">float</span> fxaaQualityEdgeThreshold;</div>
+<div class="line">    <span class="keywordtype">float</span> fxaaQualityEdgeThresholdMin;</div>
+<div class="line">    <span class="keywordtype">float</span> _pad10;</div>
 <div class="line">};</div>
 <div class="ttc" id="abackground_8frag_html_a06e3867b2ef1f1715391bd55fd702dd5"><div class="ttname"><a href="background_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5">layout</a></div><div class="ttdeci">layout(location=0) out vec4 FragColor</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md208"></a>

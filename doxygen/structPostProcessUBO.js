@@ -2,6 +2,7 @@ var structPostProcessUBO =
 [
     [ "_pad0", "structPostProcessUBO.html#a6c32880525b2f551016d36c0914964b4", null ],
     [ "_pad1", "structPostProcessUBO.html#a8742e99b08d281f70d3a8270240c9f94", null ],
+    [ "_pad10", "structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0", null ],
     [ "_pad2", "structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d", null ],
     [ "_pad3", "structPostProcessUBO.html#a5b24c09724575d011993acc1aed9a649", null ],
     [ "_pad4", "structPostProcessUBO.html#adb8d6417c3e72a29cc49f28cdb01dcc1", null ],
@@ -20,6 +21,9 @@ var structPostProcessUBO =
     [ "dof_focal_distance", "structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f", null ],
     [ "dof_focal_range", "structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37", null ],
     [ "exposure_manual", "structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e", null ],
+    [ "fxaa_quality_edge_threshold", "structPostProcessUBO.html#a7d8fdbdb8b5859a836de2a135ae59a6a", null ],
+    [ "fxaa_quality_edge_threshold_min", "structPostProcessUBO.html#a15d965d04d44d41ace1f1d805bc4efa0", null ],
+    [ "fxaa_quality_subpix", "structPostProcessUBO.html#a4f05d36951eaffa6a4d1a92139ac7896", null ],
     [ "grading_contrast", "structPostProcessUBO.html#a99c0c02fc2f06609b4f4244d62a75a29", null ],
     [ "grading_gain", "structPostProcessUBO.html#aec6743ba4d29c3b5a93681471dc83e44", null ],
     [ "grading_gamma", "structPostProcessUBO.html#a7f721ae1600da1dc33a4697bf0452c2b", null ],

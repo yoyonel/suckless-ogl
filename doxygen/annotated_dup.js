@@ -21,6 +21,7 @@ var annotated_dup =
     [ "EdgeHash", "structEdgeHash.html", "structEdgeHash" ],
     [ "ExposureParams", "structExposureParams.html", "structExposureParams" ],
     [ "FpsCounter", "structFpsCounter.html", "structFpsCounter" ],
+    [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],
     [ "GLStateBackup", "structGLStateBackup.html", "structGLStateBackup" ],
     [ "GlyphInfo", "structGlyphInfo.html", "structGlyphInfo" ],
     [ "GPUInfo", "structGPUInfo.html", "structGPUInfo" ],

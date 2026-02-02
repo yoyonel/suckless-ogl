@@ -68,5 +68,6 @@ var searchData=
   ['state_65',['state',['../structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae',1,'AsyncRequest::state'],['../structIBLContext.html#a25097ff9fd9fe8dc86b21d5784dfbb17',1,'IBLContext::state'],['../structPcg32.html#adb4c215369532bb9846b6f60f30f5c75',1,'Pcg32::state']]],
   ['stenciltexture_66',['stencilTexture',['../postprocess_8frag.html#aaa5ae65cd208a446d710bcddafc41bfc',1,'postprocess.frag']]],
   ['strength_67',['strength',['../structChromAbberationParams.html#ad26bbe4ea7605eb2a107043f11ebfd6b',1,'ChromAbberationParams']]],
-  ['subdivisions_68',['subdivisions',['../structApp.html#a980287b7da82ec2b1a1d2eea913b2caa',1,'App']]]
+  ['subdivisions_68',['subdivisions',['../structApp.html#a980287b7da82ec2b1a1d2eea913b2caa',1,'App']]],
+  ['subpix_69',['subpix',['../structFXAAParams.html#a27035966c0ff561b9a4e9dc7d88e7442',1,'FXAAParams']]]
 ];

@@ -12,6 +12,7 @@ var structPostProcess =
     [ "dof_fx", "structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9", null ],
     [ "dummy_black_tex", "structPostProcess.html#a6ea1b406d08c336650597d8f17498a50", null ],
     [ "exposure", "structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb", null ],
+    [ "fxaa", "structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76", null ],
     [ "grain", "structPostProcess.html#abbcfbc94b0f008cc6d78785d6b4b1ecc", null ],
     [ "height", "structPostProcess.html#a01b97fc45027e3395f825daaa28109ef", null ],
     [ "is_optimized", "structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22", null ],

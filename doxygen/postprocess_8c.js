@@ -25,6 +25,7 @@ var postprocess_8c =
     [ "postprocess_set_dof", "postprocess_8c.html#aace03323c05270449d59a40291940736", null ],
     [ "postprocess_set_dummy_textures", "postprocess_8c.html#a47114280aafaff716053e0b12be92dca", null ],
     [ "postprocess_set_exposure", "postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a", null ],
+    [ "postprocess_set_fxaa", "postprocess_8c.html#aebaafeb093d652eb93e6f91a55a60566", null ],
     [ "postprocess_set_grading_ue_default", "postprocess_8c.html#aa3a420879557bc5bfc4a57cab113f1dd", null ],
     [ "postprocess_set_grain", "postprocess_8c.html#a3f062fb8af9a8119ae2702e3237bfebf", null ],
     [ "postprocess_set_tonemapper", "postprocess_8c.html#a7dfdbd52fd26553208453d418e3ecca4", null ],
