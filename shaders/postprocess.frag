@@ -21,6 +21,7 @@ uniform usampler2D stencilTexture;
 @header "postprocess/vignette.glsl";
 @header "postprocess/grain.glsl";
 @header "postprocess/fxaa.glsl";
+@header "postprocess/banding.glsl";
 
 /* ============================================================================
    MAIN PIPELINE
@@ -102,7 +103,12 @@ void main()
 	/* 9. Gamma Correction */
 	color = pow(color, vec3(1.0 / 2.2));
 
-	/* 10. Grain */
+	/* 10. Banding/Quantization (applied in LDR space) */
+	if (enableBanding) {
+		color = applyBanding(color);
+	}
+
+	/* 11. Grain */
 	if (enableGrain) {
 		color = applyGrain(color, TexCoords);
 	}

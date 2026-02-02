@@ -10,6 +10,8 @@
 #include "shader.h"
 #include "utils.h"
 #include <cglm/types.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 static int create_framebuffer(PostProcess* post_processing);
@@ -43,8 +45,6 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->time = 0.0F;
 	post_processing->is_optimized = false;
 
-	memset(post_processing->shader_cache, 0,
-	       sizeof(post_processing->shader_cache));
 	post_processing->shader_cache_count = 0;
 
 	/* Paramètres par défaut */
@@ -106,6 +106,15 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->fxaa.edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD;
 	post_processing->fxaa.edge_threshold_min =
 	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
+
+	/* Initialisation Banding */
+	post_processing->banding.mode = BANDING_MODE_LINEAR;
+	post_processing->banding.levels = DEFAULT_BANDING_LEVELS;
+	post_processing->banding.dither_strength = 0.0F;
+	post_processing->banding.perceptual_gamma = 1.0F;
+	post_processing->banding.channel_levels[0] = DEFAULT_BANDING_LEVELS;
+	post_processing->banding.channel_levels[1] = DEFAULT_BANDING_LEVELS;
+	post_processing->banding.channel_levels[2] = DEFAULT_BANDING_LEVELS;
 
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
@@ -390,6 +399,33 @@ void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
 	post_processing->fxaa.edge_threshold_min = edge_threshold_min;
 }
 
+void postprocess_set_banding(PostProcess* post_processing, BandingMode mode,
+                             float levels)
+{
+	post_processing->banding.mode = (int32_t)mode;
+	post_processing->banding.levels = levels;
+}
+
+void postprocess_set_banding_dither(PostProcess* post_processing,
+                                    float strength)
+{
+	post_processing->banding.dither_strength = strength;
+}
+
+void postprocess_set_banding_perceptual(PostProcess* post_processing,
+                                        float gamma)
+{
+	post_processing->banding.perceptual_gamma = gamma;
+}
+
+void postprocess_set_banding_channels(PostProcess* post_processing, float red,
+                                      float green, float blue)
+{
+	post_processing->banding.channel_levels[0] = red;
+	post_processing->banding.channel_levels[1] = green;
+	post_processing->banding.channel_levels[2] = blue;
+}
+
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
 {
 	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
@@ -422,6 +458,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->bloom = preset->bloom;
 	post_processing->dof = preset->dof;
 	post_processing->fxaa = preset->fxaa;
+	post_processing->banding = preset->banding;
 
 	postprocess_on_state_change(post_processing);
 }
@@ -602,6 +639,18 @@ void postprocess_end(PostProcess* post_processing)
 	ubo.fxaa_quality_edge_threshold = post_processing->fxaa.edge_threshold;
 	ubo.fxaa_quality_edge_threshold_min =
 	    post_processing->fxaa.edge_threshold_min;
+
+	ubo.banding_mode = post_processing->banding.mode;
+	ubo.banding_levels = post_processing->banding.levels;
+	ubo.banding_dither_strength = post_processing->banding.dither_strength;
+	ubo.banding_perceptual_gamma =
+	    post_processing->banding.perceptual_gamma;
+	ubo.banding_channel_levels[0] =
+	    post_processing->banding.channel_levels[0];
+	ubo.banding_channel_levels[1] =
+	    post_processing->banding.channel_levels[1];
+	ubo.banding_channel_levels[2] =
+	    post_processing->banding.channel_levels[2];
 
 	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO), &ubo);
@@ -794,6 +843,7 @@ static void log_optimized_effects(unsigned int flags)
 	LOG_EFFECT(POSTFX_MOTION_BLUR_DEBUG, "Motion Blur Debug View");
 	LOG_EFFECT(POSTFX_FXAA, "FXAA");
 	LOG_EFFECT(POSTFX_FXAA_DEBUG, "FXAA Debug View");
+	LOG_EFFECT(POSTFX_BANDING, "Banding");
 
 #undef LOG_EFFECT
 
@@ -801,33 +851,44 @@ static void log_optimized_effects(unsigned int flags)
 	         "Shader optimization complete (Flags: 0x%08X)", flags);
 }
 
+static Shader* find_shader_in_cache(PostProcess* post_processing,
+                                    unsigned int static_flags)
+{
+	for (int i = 0; i < post_processing->shader_cache_count; i++) {
+		if (post_processing->shader_cache[i].flags == static_flags) {
+			return post_processing->shader_cache[i].shader;
+		}
+	}
+	return NULL;
+}
+
+static void update_current_shader(PostProcess* post_processing,
+                                  Shader* new_shader, bool is_optimized)
+{
+	/* Destroy previous shader only if it was dynamic (not in cache) */
+	if (post_processing->postprocess_shader &&
+	    !is_shader_in_cache(post_processing,
+	                        post_processing->postprocess_shader)) {
+		shader_destroy(post_processing->postprocess_shader);
+	}
+
+	post_processing->postprocess_shader = new_shader;
+	post_processing->is_optimized = is_optimized;
+}
+
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
 	/* Check cache first */
-	for (int i = 0; i < post_processing->shader_cache_count; i++) {
-		if (post_processing->shader_cache[i].flags == static_flags) {
-			Shader* cached =
-			    post_processing->shader_cache[i].shader;
-			if (post_processing->postprocess_shader != cached) {
-				/* If we are switching from a dynamic shader
-				 * (not in cache), destroy it */
-				if (post_processing->postprocess_shader &&
-				    !is_shader_in_cache(
-				        post_processing,
-				        post_processing->postprocess_shader)) {
-					shader_destroy(
-					    post_processing
-					        ->postprocess_shader);
-				}
-				post_processing->postprocess_shader = cached;
-				post_processing->is_optimized = true;
-				LOG_INFO("suckless-ogl.postprocess",
-				         "Using CACHED shader for flags 0x%08X",
-				         static_flags);
-			}
-			return;
+	Shader* cached = find_shader_in_cache(post_processing, static_flags);
+	if (cached) {
+		if (post_processing->postprocess_shader != cached) {
+			update_current_shader(post_processing, cached, true);
+			LOG_INFO("suckless-ogl.postprocess",
+			         "Using CACHED shader for flags 0x%08X",
+			         static_flags);
 		}
+		return;
 	}
 
 	const char* defines[MAX_SHADER_DEFINES];
@@ -859,6 +920,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	ADD_OPT_DEF(POSTFX_MOTION_BLUR_DEBUG, "OPT_ENABLE_MOTION_BLUR_DEBUG");
 	ADD_OPT_DEF(POSTFX_FXAA, "OPT_ENABLE_FXAA");
 	ADD_OPT_DEF(POSTFX_FXAA_DEBUG, "OPT_ENABLE_FXAA_DEBUG");
+	ADD_OPT_DEF(POSTFX_BANDING, "OPT_ENABLE_BANDING");
 
 #undef ADD_OPT_DEF
 
@@ -867,15 +929,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	    count);
 
 	if (new_shader) {
-		/* Destroy previous shader only if it was dynamic */
-		if (post_processing->postprocess_shader &&
-		    !is_shader_in_cache(post_processing,
-		                        post_processing->postprocess_shader)) {
-			shader_destroy(post_processing->postprocess_shader);
-		}
-
-		post_processing->postprocess_shader = new_shader;
-		post_processing->is_optimized = true;
+		update_current_shader(post_processing, new_shader, true);
 		new_shader->silent_warnings = true;
 
 		/* Add to cache */
@@ -902,14 +956,7 @@ void postprocess_use_dynamic(PostProcess* post_processing)
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
 
 	if (new_shader) {
-		/* Only destroy previous if it was dynamic (not in cache) */
-		if (post_processing->postprocess_shader &&
-		    !is_shader_in_cache(post_processing,
-		                        post_processing->postprocess_shader)) {
-			shader_destroy(post_processing->postprocess_shader);
-		}
-		post_processing->postprocess_shader = new_shader;
-		post_processing->is_optimized = false;
+		update_current_shader(post_processing, new_shader, false);
 		LOG_INFO("suckless-ogl.postprocess",
 		         "Switched to DYNAMIC shader");
 	} else {

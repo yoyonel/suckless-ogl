@@ -1,9 +1,6 @@
 /**
  * @file postprocess_presets.h
  * @brief Predefined configurations for the post-processing pipeline.
- *
- * This file contains static constants representing various artistic styles
- * (Cinematic, Vintage, Matrix, etc.) for the renderer.
  */
 
 #ifndef POSTPROCESS_PRESETS_H
@@ -11,7 +8,41 @@
 
 #include "postprocess.h"
 
-/** @brief Default balanced settings with basic exposure. */
+#define BANDING_COMMON_BASE                                      \
+	.active_effects = (unsigned int)POSTFX_EXPOSURE |        \
+	                  (unsigned int)POSTFX_BANDING |         \
+	                  (unsigned int)POSTFX_FXAA,             \
+	.vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,    \
+	             .smoothness = DEFAULT_VIGNETTE_SMOOTHNESS,  \
+	             .roundness = DEFAULT_VIGNETTE_ROUNDNESS},   \
+	.grain = {.intensity = DEFAULT_GRAIN_INTENSITY,          \
+	          .intensity_shadows = 1.0F,                     \
+	          .intensity_midtones = 1.0F,                    \
+	          .intensity_highlights = 1.0F,                  \
+	          .shadows_max = 0.09F,                          \
+	          .highlights_min = 0.5F,                        \
+	          .texel_size = 1.0F},                           \
+	.exposure = {.exposure = DEFAULT_EXPOSURE},              \
+	.chrom_abbr = {.strength = DEFAULT_CHROM_ABBR_STRENGTH}, \
+	.white_balance = {.temperature = DEFAULT_WB_TEMP,        \
+	                  .tint = DEFAULT_WB_TINT},              \
+	.tonemapper = {.slope = DEFAULT_FILMIC_SLOPE,            \
+	               .toe = DEFAULT_FILMIC_TOE,                \
+	               .shoulder = DEFAULT_FILMIC_SHOULDER,      \
+	               .black_clip = DEFAULT_FILMIC_BLACK_CLIP,  \
+	               .white_clip = DEFAULT_FILMIC_WHITE_CLIP}, \
+	.bloom = {.intensity = 0.0F,                             \
+	          .threshold = 1.0F,                             \
+	          .soft_threshold = 0.5F,                        \
+	          .radius = 1.0F},                               \
+	.dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,    \
+	        .focal_range = DEFAULT_DOF_FOCAL_RANGE,          \
+	        .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},         \
+	.fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,                  \
+	         .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,  \
+	         .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}
+
+/** @brief Default balanced settings. */
 static const PostProcessPreset PRESET_DEFAULT = {
     .active_effects = (unsigned int)POSTFX_EXPOSURE,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
@@ -46,9 +77,16 @@ static const PostProcessPreset PRESET_DEFAULT = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
 
-/** @brief Subtle adjustments for a polished but realistic look. */
+/** @brief Subtle adjustments. */
 static const PostProcessPreset PRESET_SUBTLE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
@@ -83,11 +121,19 @@ static const PostProcessPreset PRESET_SUBTLE = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
 
-/** @brief Rich, high-contrast look with auto-exposure and bloom. */
+/** @brief Rich, high-contrast look. */
 static const PostProcessPreset PRESET_CINEMATIC = {
-    (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
         (unsigned int)POSTFX_AUTO_EXPOSURE | (unsigned int)POSTFX_BLOOM |
         (unsigned int)POSTFX_DOF | (unsigned int)POSTFX_COLOR_GRADING |
         (unsigned int)POSTFX_MOTION_BLUR,
@@ -121,9 +167,16 @@ static const PostProcessPreset PRESET_CINEMATIC = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
 
-/** @brief Warm, grainy look with strong vignette and chromatic aberration. */
+/** @brief Warm, grainy look. */
 static const PostProcessPreset PRESET_VINTAGE = {
     .active_effects =
         (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
@@ -159,9 +212,16 @@ static const PostProcessPreset PRESET_VINTAGE = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
 
-/** @brief Cool, green-tinted high contrast look. */
+/** @brief Cool, green-tinted look. */
 static const PostProcessPreset PRESET_MATRIX = {
     .active_effects =
         (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_BLOOM,
@@ -197,9 +257,16 @@ static const PostProcessPreset PRESET_MATRIX = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
 
-/** @brief Desaturated, high-contrast black and white look. */
+/** @brief High-contrast B&W. */
 static const PostProcessPreset PRESET_BW_CONTRAST = {
     .active_effects = (unsigned int)POSTFX_COLOR_GRADING,
     .vignette = {.intensity = DEFAULT_VIGNETTE_INTENSITY,
@@ -234,6 +301,83 @@ static const PostProcessPreset PRESET_BW_CONTRAST = {
             .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
-             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {
+        .mode = BANDING_MODE_LINEAR,
+        .levels = DEFAULT_BANDING_LEVELS,
+        .dither_strength = 0.0F,
+        .perceptual_gamma = 1.0F,
+        .channel_levels = {DEFAULT_BANDING_LEVELS, DEFAULT_BANDING_LEVELS,
+                           DEFAULT_BANDING_LEVELS}}};
+
+/** @brief Art style: Posterized. */
+static const PostProcessPreset PRESET_POSTERIZED = {
+    BANDING_COMMON_BASE,
+    .color_grading = {.saturation = 1.5F,
+                      .contrast = 1.5F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .banding = {.mode = BANDING_MODE_LINEAR,
+                .levels = 4.0F,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {4.0F, 4.0F, 4.0F}}};
+
+/** @brief Art style: Retro Computing (Dithered). */
+static const PostProcessPreset PRESET_RETRO = {
+    BANDING_COMMON_BASE,
+    .color_grading = {.saturation = 0.5F,
+                      .contrast = 1.3F,
+                      .gamma = 1.1F,
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .banding = {.mode = BANDING_MODE_DITHERED,
+                .levels = 8.0F,
+                .dither_strength = 1.5F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {8.0F, 8.0F, 8.0F}}};
+
+/** @brief Art style: Perceptual (Analog-like). */
+static const PostProcessPreset PRESET_ANALOG = {
+    BANDING_COMMON_BASE,
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .banding = {.mode = BANDING_MODE_PERCEPTUAL,
+                .levels = 12.0F,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 2.2F,
+                .channel_levels = {12.0F, 12.0F, 12.0F}}};
+
+/** @brief Art style: Channel (VGA/CGA-like). */
+static const PostProcessPreset PRESET_CHANNEL_GFX = {
+    BANDING_COMMON_BASE,
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .banding = {.mode = BANDING_MODE_CHANNEL,
+                .levels = 256.0F,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {8.0F, 8.0F, 4.0F}}};
+
+/** @brief Art style: Blueprint / Hologram. */
+static const PostProcessPreset PRESET_BLUEPRINT = {
+    BANDING_COMMON_BASE,
+    .color_grading = {.saturation = 1.0F,
+                      .contrast = 1.0F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F},
+    .banding = {.mode = BANDING_MODE_LUMINANCE,
+                .levels = 6.0F,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {0.1F, 0.4F, 0.9F}}};
 
 #endif /* POSTPROCESS_PRESETS_H */

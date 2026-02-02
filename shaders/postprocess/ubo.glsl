@@ -83,6 +83,14 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float fxaaQualityEdgeThreshold;
 	float fxaaQualityEdgeThresholdMin;
 	float _pad10;
+
+	/* Banding (32 bytes) */
+	int bandingMode;
+	float bandingLevels;
+	float bandingDitherStrength;
+	float bandingPerceptualGamma;
+	vec3 bandingChannelLevels;
+	float _pad11;
 };
 
 /* Compatibility Helper Macros */
@@ -168,4 +176,10 @@ const bool enableFXAA = bool(OPT_ENABLE_FXAA);
 const bool enableFXAADebug = bool(OPT_ENABLE_FXAA_DEBUG);
 #else
 #define enableFXAADebug ((activeEffects & (1u << 13u)) != 0u)
+#endif
+
+#ifdef OPT_ENABLE_BANDING
+const bool enableBanding = bool(OPT_ENABLE_BANDING);
+#else
+#define enableBanding ((activeEffects & (1u << 14u)) != 0u)
 #endif
