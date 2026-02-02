@@ -157,6 +157,17 @@ typedef struct {
 #define BLOOM_MIP_LEVELS 5
 
 /**
+ * @struct ShaderCacheEntry
+ * @brief Cache entry for optimized shaders.
+ */
+typedef struct {
+	unsigned int flags;
+	Shader* shader;
+} ShaderCacheEntry;
+
+#define SHADER_CACHE_SIZE 32
+
+/**
  * @struct PostProcessUBO
  * @brief Shared Uniform Buffer structure for shaders.
  * @note Must match `layout(std140)` in GLSL.
@@ -283,6 +294,9 @@ typedef struct PostProcess {
 
 	bool is_optimized; /**< true if Uber-shader uses static preprocessor
 	                      flags. */
+
+	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
+	int shader_cache_count;
 } PostProcess;
 
 /* --- Lifecycle --- */

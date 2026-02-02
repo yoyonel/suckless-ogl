@@ -15,6 +15,7 @@
 static int create_framebuffer(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
+static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader);
 
 /* Texture Units */
 enum {
@@ -41,6 +42,10 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->height = height;
 	post_processing->time = 0.0F;
 	post_processing->is_optimized = false;
+
+	memset(post_processing->shader_cache, 0,
+	       sizeof(post_processing->shader_cache));
+	post_processing->shader_cache_count = 0;
 
 	/* Paramètres par défaut */
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;
@@ -183,8 +188,23 @@ void postprocess_cleanup(PostProcess* post_processing)
 		post_processing->settings_ubo = 0;
 	}
 
+	/* Destroy cached shaders */
+	bool current_was_cached = false;
+	for (int i = 0; i < post_processing->shader_cache_count; i++) {
+		if (post_processing->shader_cache[i].shader) {
+			if (post_processing->shader_cache[i].shader ==
+			    post_processing->postprocess_shader) {
+				current_was_cached = true;
+			}
+			shader_destroy(post_processing->shader_cache[i].shader);
+		}
+	}
+	post_processing->shader_cache_count = 0;
+
 	if (post_processing->postprocess_shader) {
-		shader_destroy(post_processing->postprocess_shader);
+		if (!current_was_cached) {
+			shader_destroy(post_processing->postprocess_shader);
+		}
 		post_processing->postprocess_shader = NULL;
 	}
 	fx_bloom_cleanup(post_processing);
@@ -590,6 +610,19 @@ void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
 
 /* Fonctions privées */
 
+static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader)
+{
+	if (!shader) {
+		return false;
+	}
+	for (int i = 0; i < post_processing->shader_cache_count; i++) {
+		if (post_processing->shader_cache[i].shader == shader) {
+			return true;
+		}
+	}
+	return false;
+}
+
 static int create_framebuffer(PostProcess* post_processing)
 {
 	/* Ensure Unit 0 is active for initial texture setup */
@@ -751,6 +784,32 @@ static void log_optimized_effects(unsigned int flags)
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
+	/* Check cache first */
+	for (int i = 0; i < post_processing->shader_cache_count; i++) {
+		if (post_processing->shader_cache[i].flags == static_flags) {
+			Shader* cached =
+			    post_processing->shader_cache[i].shader;
+			if (post_processing->postprocess_shader != cached) {
+				/* If we are switching from a dynamic shader
+				 * (not in cache), destroy it */
+				if (post_processing->postprocess_shader &&
+				    !is_shader_in_cache(
+				        post_processing,
+				        post_processing->postprocess_shader)) {
+					shader_destroy(
+					    post_processing
+					        ->postprocess_shader);
+				}
+				post_processing->postprocess_shader = cached;
+				post_processing->is_optimized = true;
+				LOG_INFO("suckless-ogl.postprocess",
+				         "Using CACHED shader for flags 0x%08X",
+				         static_flags);
+			}
+			return;
+		}
+	}
+
 	const char* defines[MAX_SHADER_DEFINES];
 	int count = 0;
 	char buffer[MAX_SHADER_DEFINES][MAX_DEFINE_LENGTH];
@@ -788,12 +847,27 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	    count);
 
 	if (new_shader) {
-		if (post_processing->postprocess_shader) {
+		/* Destroy previous shader only if it was dynamic */
+		if (post_processing->postprocess_shader &&
+		    !is_shader_in_cache(post_processing,
+		                        post_processing->postprocess_shader)) {
 			shader_destroy(post_processing->postprocess_shader);
 		}
+
 		post_processing->postprocess_shader = new_shader;
 		post_processing->is_optimized = true;
 		new_shader->silent_warnings = true;
+
+		/* Add to cache */
+		if (post_processing->shader_cache_count < SHADER_CACHE_SIZE) {
+			int idx = post_processing->shader_cache_count++;
+			post_processing->shader_cache[idx].flags = static_flags;
+			post_processing->shader_cache[idx].shader = new_shader;
+		} else {
+			LOG_WARNING(
+			    "suckless-ogl.postprocess",
+			    "Shader cache full, not caching this variant");
+		}
 
 		log_optimized_effects(static_flags);
 	} else {
@@ -808,7 +882,10 @@ void postprocess_use_dynamic(PostProcess* post_processing)
 	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
 
 	if (new_shader) {
-		if (post_processing->postprocess_shader) {
+		/* Only destroy previous if it was dynamic (not in cache) */
+		if (post_processing->postprocess_shader &&
+		    !is_shader_in_cache(post_processing,
+		                        post_processing->postprocess_shader)) {
 			shader_destroy(post_processing->postprocess_shader);
 		}
 		post_processing->postprocess_shader = new_shader;
