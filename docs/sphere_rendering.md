@@ -97,17 +97,17 @@ The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 To smooth the edge, we use the derivative of the distance function to estimate pixel coverage:
 \code{.glsl}
 // Analytic intersection calculation
-float h = b*b - c; // Discriminant
+float discriminant_val = b*b - c; // Discriminant
 
-// If h < 0, we are outside.
+// If discriminant_val < 0, we are outside.
 // But close to 0, we want a gradient (alpha transition).
 
-// fwidth(h) gives the variation of h across the pixel width.
-// This allows normalizing h to know "what fraction of a pixel" we are from the edge.
-float edgeFactor = smoothstep(0.0, fwidth(h), h);
+// fwidth(discriminant_val) gives the variation across the pixel width.
+// This allows normalizing to know "what fraction of a pixel" we are from the edge.
+float edge_factor_val = smoothstep(0.0, fwidth(discriminant_val), discriminant_val);
 
 // Apply this factor to alpha or final color
-finalColor.a *= edgeFactor;
+out_color.a *= edge_factor_val;
 \endcode
 This `edgeFactor` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
 
