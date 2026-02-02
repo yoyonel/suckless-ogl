@@ -70,7 +70,8 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 
 	// Early Exit: Contrast too low?
 	// 0.063 = EdgeThresholdMin, 0.125 = EdgeThreshold
-	if (range < max(0.063, rangeMax * 0.125)) {
+	if (range < max(fxaaQualityEdgeThresholdMin,
+	                rangeMax * fxaaQualityEdgeThreshold)) {
 		return colorInput;
 	}
 
@@ -117,8 +118,8 @@ vec3 applyFXAA(vec3 colorInput, vec2 texCoords)
 	float subPixelOffset2 = (-2.0 * subPixelOffset1) + 3.0;
 	float subPixelOffsetFinal =
 	    subPixelOffset1 * subPixelOffset1 * subPixelOffset2;
-	subPixelOffsetFinal =
-	    subPixelOffsetFinal * subPixelOffsetFinal * 0.75;  // Subpix Quality
+	subPixelOffsetFinal = subPixelOffsetFinal * subPixelOffsetFinal *
+	                      fxaaQualitySubpix;  // Subpix Quality
 
 	// ------------------------------------------------------------------------
 	// 4. Edge Search (Mode Dependent)

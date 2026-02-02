@@ -96,6 +96,12 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		/* On continue quand même */
 	}
 
+	/* Initialisation FXAA */
+	post_processing->fxaa.subpix = DEFAULT_FXAA_SUBPIX;
+	post_processing->fxaa.edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD;
+	post_processing->fxaa.edge_threshold_min =
+	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
+
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
 
@@ -356,6 +362,14 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
 	post_processing->auto_exposure.key_value = key_value;
 }
 
+void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
+                          float edge_threshold, float edge_threshold_min)
+{
+	post_processing->fxaa.subpix = subpix;
+	post_processing->fxaa.edge_threshold = edge_threshold;
+	post_processing->fxaa.edge_threshold_min = edge_threshold_min;
+}
+
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
 {
 	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
@@ -387,6 +401,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->tonemapper = preset->tonemapper;
 	post_processing->bloom = preset->bloom;
 	post_processing->dof = preset->dof;
+	post_processing->fxaa = preset->fxaa;
 
 	postprocess_on_state_change(post_processing);
 }
@@ -562,6 +577,11 @@ void postprocess_end(PostProcess* post_processing)
 	ubo.mb_intensity = post_processing->motion_blur.intensity;
 	ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
 	ubo.mb_samples = post_processing->motion_blur.samples;
+
+	ubo.fxaa_quality_subpix = post_processing->fxaa.subpix;
+	ubo.fxaa_quality_edge_threshold = post_processing->fxaa.edge_threshold;
+	ubo.fxaa_quality_edge_threshold_min =
+	    post_processing->fxaa.edge_threshold_min;
 
 	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO), &ubo);
