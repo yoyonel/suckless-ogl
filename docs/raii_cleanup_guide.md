@@ -132,11 +132,11 @@ void process() {
 The cleanup is guaranteed to run even if the function exits early.
 
 \code{.c}
-void load_data(const char* path) {
+void demo_load_data(const char* file_path) {
     HYBRID_FUNC_TIMER("File Load");
 
-    FILE* f = fopen(path, "r");
-    if (!f) return; // Timer STOPS and LOGS here automatically!
+    FILE* file_ptr = fopen(file_path, "r");
+    if (!file_ptr) return; // Timer STOPS and LOGS here automatically!
 
     // ... processing ...
 } // Timer STOPS and LOGS here automatically!
@@ -200,21 +200,21 @@ Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a 
     \code{.c}
     // Example of multiple resource management using RAII
     static char*
-    load_data_with_raii(const char* path)
+    demo_raii_loader(const char* file_path)
     {
-        CLEANUP_FILE FILE* f = fopen(path, "rb");
-        if (!f) return NULL;
+        CLEANUP_FILE FILE* file_ptr = fopen(file_path, "rb");
+        if (!file_ptr) return NULL;
 
-        CLEANUP_FREE char* buf = malloc(1024);
-        if (error_condition) {
+        CLEANUP_FREE char* data_buffer = malloc(1024);
+        if (error_flag) {
             // Surgical hints to satisfy the analyzer on this path
-            RAII_SATISFY_FILE(f);
-            RAII_SATISFY_FREE(buf);
+            RAII_SATISFY_FILE(file_ptr);
+            RAII_SATISFY_FREE(data_buffer);
             return NULL;
         }
 
-        RAII_SATISFY_FILE(f);
-        return TRANSFER_OWNERSHIP(buf);
+        RAII_SATISFY_FILE(file_ptr);
+        return TRANSFER_OWNERSHIP(data_buffer);
     } // Actual cleaning happens here at runtime via RAII
     \endcode
 
