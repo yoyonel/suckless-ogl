@@ -10,11 +10,11 @@ Comprehensive guide to values and photographic concepts used in modern game engi
 
 **18% gray** (0.18 in linear space) has been the **universal standard of photometry** since the 1940s.
 
-\code
+```
 Value: 0.18 (linear) = 18% reflectance
 sRGB: ~119/255 = 0.466
 Hex: #777777
-\endcode
+```
 
 ### Why 18%?
 
@@ -48,7 +48,7 @@ The EV scale measures the quantity of light:
 
 ### Visual EV Scale
 
-\dot
+```graphviz
 digraph EVScale {
   rankdir=LR;
   bgcolor="transparent";
@@ -84,13 +84,13 @@ digraph EVScale {
 
   Moon -> Dark -> Room -> Shadow -> Sun -> Snow [arrowhead=none, color="#414868"];
 }
-\enddot
+```
 
 ### Auto-Exposure Formula
 
-\code{.glsl}
+```glsl
 targetExposure = keyValue / sceneLuminance
-\endcode
+```
 
 **Examples** (with keyValue = 0.18):
 
@@ -122,24 +122,24 @@ targetExposure = keyValue / sceneLuminance
 
 ### 1. Linear (Naive)
 
-\code{.glsl}
+```glsl
 output = input * exposure
-\endcode
+```
 
 **Problem**: Brutal clipping at 1.0, loss of HDR details.
 
 ### 2. Reinhard (Simple)
 
-\code{.glsl}
+```glsl
 output = input / (input + 1.0)
-\endcode
+```
 
 **Pros**: Soft compression, never clips.
 **Cons**: Desaturates colors too much.
 
 ### 3. Uncharted 2 / Hable (Filmic)
 
-\code{.glsl}
+```glsl
 // Reproduces film response
 vec3 FilmicToneMapping(vec3 x) {
     float A = 0.15; // Shoulder strength
@@ -152,7 +152,7 @@ vec3 FilmicToneMapping(vec3 x) {
     return ((x * (A * x + C * B) + D * E) /
             (x * (A * x + B) + D * F)) - E / F;
 }
-\endcode
+```
 
 **Features**:
 -   **Toe**: Lifts shadows.
@@ -163,7 +163,7 @@ vec3 FilmicToneMapping(vec3 x) {
 
 **THE Hollywood Standard** (default in Unreal Engine).
 
-\code{.glsl}
+```glsl
 vec3 ACESFilm(vec3 x) {
     float a = 2.51;
     float b = 0.03;
@@ -172,7 +172,7 @@ vec3 ACESFilm(vec3 x) {
     float e = 0.14;
     return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
-\endcode
+```
 
 **Pros**:
 -   Preserves saturated colors.
@@ -199,31 +199,31 @@ vec3 ACESFilm(vec3 x) {
 ![Auto-Exposure Comparison by Genre](./images/exposure_genres.jpg)
 
 **Realistic FPS** (like Call of Duty)
-\code{.c}
+```c
 keyValue = 0.15        // Slightly darker (tactical)
 minLuminance = 0.8
 maxLuminance = 8000
 speedUp = 3.0          // Fast adaptation (gameplay)
 speedDown = 1.5
-\endcode
+```
 
 **Fantasy RPG** (like Skyrim)
-\code{.c}
+```c
 keyValue = 0.20        // Brighter (exploration)
 minLuminance = 0.5     // Boost for dungeons
 maxLuminance = 10000   // Magic HDR sky
 speedUp = 1.5          // Soft adaptation
 speedDown = 1.0
-\endcode
+```
 
 **Horror** (like Resident Evil)
-\code{.c}
+```c
 keyValue = 0.12        // Very dark (atmosphere)
 minLuminance = 2.0     // No boost (oppressive)
 maxLuminance = 1000
 speedUp = 0.5          // Very slow adaptation
 speedDown = 2.0        // Fast return to black
-\endcode
+```
 
 
 ## 🔧 Interesting Alternative Values
@@ -242,10 +242,10 @@ speedDown = 2.0        // Fast return to black
 
 Warning: 18% **linear** ≠ 18% **sRGB**!
 
-\code
+```
 Linear 0.18  → sRGB 0.466  (gamma 2.2)
 Linear 0.18  → 8-bit ~119
-\endcode
+```
 
 **Common Trap**: Using 0.18 directly in sRGB results in a gray that is too dark!
 
@@ -254,40 +254,40 @@ Linear 0.18  → 8-bit ~119
 
 ### Luminance Conversion
 
-\code{.glsl}
+```glsl
 // Rec. 709 (HD TV standard)
 float luminance_709 = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
 
 // Alternative (Rec. 601 - SD TV)
 float luminance_601 = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-\endcode
+```
 
 ### EV ↔ Luminance Conversion
 
-\code{.glsl}
+```glsl
 float ev_val = log2(luminance_val);
 float luminance_res = exp2(ev_val);
-\endcode
+```
 
 ### Temporal Adaptation
 
-\code{.glsl}
+```glsl
 float adaptationSpeed = (target > current) ? speedUp : speedDown;
 float factor = 1.0 - exp(-deltaTime * adaptationSpeed);
 float newExposure = mix(current, target, factor);
-\endcode
+```
 
 
 ## 🎨 Practical Workflow
 
 ### 1. Initial Calibration
 
-\code{.c}
+```c
 // Start with neutral values
 keyValue = 0.18
 minLuminance = 1.0
 maxLuminance = 5000.0
-\endcode
+```
 
 ### 2. Test with Type Scenes
 
@@ -316,21 +316,21 @@ maxLuminance = 5000.0
 
 ### Lunar Scenes
 
-\code{.c}
+```c
 keyValue = 0.09       // Scotopic adaptation (rods)
 minLuminance = 5.0    // No boost, night vision
-\endcode
+```
 
 ### Underwater
 
-\code{.c}
+```c
 keyValue = 0.22       // Light diffusion compensation
 speedUp = 0.3         // Very slow adaptation (water)
-\endcode
+```
 
 ### Space
 
-\code{.c}
+```c
 minLuminance = 10.0   // Extreme contrast
 maxLuminance = 100000 // Direct sunlight without atmosphere
-\endcode
+```

@@ -19,7 +19,7 @@ Since OpenGL 4.2, `glTexStorage2D`:
 
 ### Code (texture.c)
 
-\code{.c}
+```c
 // Old Method (BAD)
 // glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
@@ -35,20 +35,20 @@ glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE
 
 // 4. Generate Mipmaps (Hardware)
 glGenerateMipmap(GL_TEXTURE_2D);
-\endcode
+```
 
 ## 4. Alignment Constraint (Unpack Alignment)
 When `stb_image` loads an image with 3 channels (RGB), the rows may not be aligned to 4 bytes (standard OpenGL default).
 *   **Symptom**: Skewed or slanted image.
 *   **Fix**:
-    \code{.c}
+    ```c
     if (channels == 3) glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     else               glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    \endcode
+    ```
 
 ## 5. Memory Layout Comparison
 
-\dot
+```graphviz
 digraph TextureStorage {
   rankdir=LR;
   bgcolor="transparent";
@@ -112,7 +112,7 @@ digraph TextureStorage {
     Sub1 -> Draw;
   }
 }
-\enddot
+```
 
 ## 6. Performance Gains
 -   Significantly reduced driver overhead.

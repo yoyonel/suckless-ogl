@@ -23,23 +23,23 @@ Best practices for writing OpenGL shaders that produce consistent results across
 **Solution**: Calculate once, store in unused texture channels (e.g., alpha).
 
 **Example**:
-\code{.glsl}
+```glsl
 // Fragment shader (once)
 float luma_val = dot(sqrt(color_val), vec3(0.2126, 0.7152, 0.0722));
 FragColor_out = vec4(color_val, luma_val);  // Store in alpha
 
 // Post-processing (reuse)
 float stored_luma = texture(tex_sampler, uv_coords).a;  // Consistent across vendors
-\endcode
+```
 
 ### 3. Use Explicit Precision Qualifiers (Mobile/WebGL)
 
-\code{.glsl}
+```glsl
 #ifdef GL_ES
 precision highp float;
 precision highp int;
 #endif
-\endcode
+```
 
 **Note**: Desktop OpenGL ignores these, but they're critical for mobile/WebGL.
 
@@ -47,48 +47,48 @@ precision highp int;
 
 Prevent overflow/underflow in calculations:
 
-\code{.glsl}
+```glsl
 // Bad
 float val_bad = pow(someInput, 0.1);
 
 // Good
 float val_good = pow(clamp(someInput, 0.0, 10.0), 0.1);
-\endcode
+```
 
 ### 5. Avoid Fast Math Assumptions
 
 Use explicit parentheses to control floating-point operation order:
 
-\code{.glsl}
+```glsl
 // Order-dependent
 float result_val = ((a * b) + (c * d)) + (e * f);
-\endcode
+```
 
 ## Common Pitfalls
 
 ### Pitfall 1: Texture LOD Calculation
 
-\code{.glsl}
+```glsl
 // Implicit LOD may differ
 vec3 color_res = texture(envMap_tex, direction).rgb;
 
 // Explicit LOD is consistent
 vec3 color_res_fixed = textureLod(envMap_tex, direction, roughness * 4.0).rgb;
-\endcode
+```
 
 ### Pitfall 2: Small Exponents in pow()
 
-\code{.glsl}
+```glsl
 // Very sensitive to input differences
 float bad_pow = pow(variation, 0.1);   // 10th root
 
 // More stable
 float better_sqrt = sqrt(variation);     // Square root
-\endcode
+```
 
 ### Pitfall 3: Derivatives in Divergent Branches
 
-\code{.glsl}
+```glsl
 // BAD: Undefined behavior
 if (someCondition) {
     float dx_val_bad = dFdx(value_val);
@@ -99,7 +99,7 @@ float dx_precomputed = dFdx(value_val);
 if (someCondition) {
     // Use dx_precomputed
 }
-\endcode
+```
 
 ## Testing Workflow
 
@@ -110,14 +110,14 @@ if (someCondition) {
 
 ### Tools
 
-\code{.bash}
+```bash
 # Visual diff
 compare intel.png nvidia.png diff.png
 
 # ApiTrace
 apitrace trace ./app
 apitrace replay app.trace
-\endcode
+```
 
 ## When to Use Derivatives
 
@@ -135,13 +135,13 @@ apitrace replay app.trace
 
 Instead of `fwidth(h)`:
 
-\code{.glsl}
+```glsl
 // h = discriminant (0 at edge)
 // analyticFwidth = footprint of pixel in h-space
 float edgeFactor_val = clamp(h / analyticFwidth, 0.0, 1.0);
-\endcode
+```
 
-See [pbr_ibl_billboard.frag](../shaders/pbr_ibl_billboard.frag) for a production example.
+See [pbr_ibl_billboard.frag](https://github.com/yoyonel/suckless-ogl/blob/main/shaders/pbr_ibl_billboard.frag) for a production example.
 
 More details on why testing artifacts appear in CI can be found in [Visual Testing & Regression Artifacts](./visual_testing_artifacts.md).
 

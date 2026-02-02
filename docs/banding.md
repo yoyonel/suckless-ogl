@@ -6,7 +6,7 @@ L'effet de **Banding** (ou réduction de profondeur de couleur) est un filtre ar
 
 Le système propose **5 modes distincts**, accessibles via un cycle sur la **touche '7'**. Chaque mode utilise une approche mathématique différente pour compresser l'espace colorimétrique.
 
-\dot
+```graphviz
 digraph BandingFlow {
     rankdir=TD;
     bgcolor="transparent";
@@ -27,7 +27,7 @@ digraph BandingFlow {
     B -> C; B -> D; B -> E; B -> F; B -> G;
     C -> H; D -> H; E -> H; F -> H; G -> H;
 }
-\enddot
+```
 
 ---
 
@@ -43,7 +43,7 @@ Le mode le plus simple. Il divise l'espace colorimétrique en paliers égaux.
 Utilise une matrice de **Bayer 4x4** pour simuler des nuances intermédiaires via une grille de seuils.
 - **Usage** : Style Macintosh, GameBoy ou vieux moniteurs CGA.
 - **Principe** :
-\dot
+```graphviz
 digraph DitherFlow {
     rankdir=TD;
     bgcolor="transparent";
@@ -58,7 +58,7 @@ digraph DitherFlow {
 
     P -> Add -> Q -> Out;
 }
-\enddot
+```
 
 ### 3. Analog (Perceptual)
 Applique une courbe de gamma avant la quantisation pour préserver plus de détails dans les zones sombres.
@@ -92,7 +92,7 @@ Quantise la luminance perçue de l'image, puis applique une teinte colorée.
 
 L'effet est implémenté dans le pipeline PBR via un Uber-shader optimisé.
 
-\dot
+```graphviz
 digraph TechnicalFlow {
     rankdir=TD;
     bgcolor="transparent";
@@ -107,4 +107,4 @@ digraph TechnicalFlow {
     C -> U [label="Update"];
     U -> S [label="Uniforms"];
 }
-\enddot
+```

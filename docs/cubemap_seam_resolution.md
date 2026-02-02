@@ -23,7 +23,7 @@ Although previous solutions (Seamless Cubemap, Increased Resolution) improved th
 
 ### Visual Comparison
 
-\dot
+```graphviz
 digraph CubemapVsEqui {
   rankdir=LR;
   bgcolor="transparent";
@@ -79,7 +79,7 @@ digraph CubemapVsEqui {
     Map -> Sample [label="Interpolated"];
   }
 }
-\enddot
+```
 
 ### Comparison: Cubemap vs Equirectangular
 

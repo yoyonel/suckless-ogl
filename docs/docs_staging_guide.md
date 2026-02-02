@@ -17,9 +17,9 @@ To enable automated deployments, you must configure a `SURGE_TOKEN` in your repo
 
 If you haven't used Surge before, you can install it and generate a token via CLI:
 
-\code{.bash}
+```bash
 npx surge token
-\endcode
+```
 
 - If you don't have an account, it will prompt you to create one.
 - Copy the provided token string.
@@ -36,7 +36,7 @@ npx surge token
 
 The staging logic is defined in `.github/workflows/main.yml`. It uses the `mshick/add-pr-comment` action to keep you informed:
 
-\code{.yaml}
+```yaml
 - name: Comment Preview Link on PR
   if: github.event_name == 'pull_request'
   uses: mshick/add-pr-comment@v2
@@ -45,16 +45,16 @@ The staging logic is defined in `.github/workflows/main.yml`. It uses the `mshic
       ## 📚 Documentation Preview
       The Doxygen documentation for this PR has been generated and is ready for review:
       🔗 **[Preview Link](${{ env.PREVIEW_URL }})**
-\endcode
+```
 
 ## Maintenance
 
 ### Clearing Previews
 Surge.sh keeps the deployments indefinitely. Since the domains are reused per PR number, new pushes simply overwrite the previous version. If you need to manually tear down a preview:
 
-\code{.bash}
+```bash
 npx surge teardown suckless-ogl-pr-[NUMBER].surge.sh --token your_token
-\endcode
+```
 
 ### Security
 The `SURGE_TOKEN` allows anyone with access to it to deploy sites to your Surge account. Keep it secret and only store it in GitHub Secrets.

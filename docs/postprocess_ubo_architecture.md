@@ -29,7 +29,7 @@ This is where a subtle error can occur:
 
 ### Memory Visualization (std140)
 
-\dot
+```graphviz
 digraph UBOLayout {
   rankdir=LR;
   bgcolor="transparent";
@@ -57,14 +57,14 @@ digraph UBOLayout {
 
   struct -> gpu [label="Binary Match", fontname="Helvetica", fontsize=12, fontcolor="#9aa5ce"];
 }
-\enddot
+```
 
 ## 3. Data Structure
 
 ### C Structure (postprocess.h)
 We use explicit padding to align logical blocks to 16 bytes, facilitating memory reading and debugging.
 
-\code{.c}
+```c
 typedef struct {
     uint32_t active_effects; // 4 bytes
     float time;              // 4 bytes
@@ -84,14 +84,14 @@ typedef struct {
     float fxaa_quality_edge_threshold_min;
     float _pad10;
 } PostProcessUBO_Layout;
-\endcode
+```
 
 ### GLSL Block (ubo.glsl)
 The block defines `std140` layout and binding 0.
 
 > **IMPORTANT**: Padding fields must be declared individually!
 
-\code{.glsl}
+```glsl
 LAYOUT_CONFIG(std140, binding = 0) uniform PostProcessBlock_Layout {
     uint activeEffects;
     float time;
@@ -112,7 +112,7 @@ LAYOUT_CONFIG(std140, binding = 0) uniform PostProcessBlock_Layout {
     float fxaaQualityEdgeThresholdMin;
     float _pad10;
 };
-\endcode
+```
 
 ## 4. Adding a New Parameter
 
@@ -130,9 +130,9 @@ To add an effect or parameter, meticulously follow these steps:
     -   The file `ubo.glsl` is included via `@header "postprocess/ubo.glsl"`.
     -   Access `my_param` directly (the block makes members global).
     -   For boolean flags, add a macro in `ubo.glsl`:
-    \code{.glsl}
+    ```glsl
     #define enableMyEffect ((activeEffects & (1u << N)) != 0u)
-    \endcode
+    ```
 
 ## 5. Performance
 

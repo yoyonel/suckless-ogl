@@ -11,7 +11,7 @@ The code has been refactored according to the following principles:
 
 ## Folder Structure
 
-\code
+```
 icosphere/
 ├── src/
 │   ├── main.c              # Entry Point
@@ -40,11 +40,11 @@ icosphere/
 │   ├── postprocess/        # FX Shaders (Bloom, DoF, FXAA)
 │   ├── pbr_ibl_*.vert/frag # Physically Based Rendering Shaders
 │   └── ...
-\endcode
+```
 
 ## Architecture Diagram
 
-\dot
+```graphviz
 digraph ProjectStructure {
   rankdir=LR;
   bgcolor="transparent";
@@ -117,7 +117,7 @@ digraph ProjectStructure {
   AppEnv -> PBR [label="Gen Maps"];
   AppScene -> PBR [label="Render"];
 }
-\enddot
+```
 
 ## Modules and Responsibilities
 
@@ -172,7 +172,7 @@ digraph ProjectStructure {
 
 ## Compilation and Execution
 
-\code{.bash}
+```bash
 # Compile the project
 make
 
@@ -187,7 +187,7 @@ make format
 
 # Lint the code (static analysis - Zero Warning Project)
 make lint
-\endcode
+```
 
 ## Controls
 

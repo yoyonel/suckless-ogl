@@ -30,7 +30,7 @@ The system consists of three main components:
 
 ### Data Flow
 
-\dot
+```graphviz
 digraph AsyncSequence {
   rankdir=TB;
   bgcolor="transparent";
@@ -97,4 +97,4 @@ digraph AsyncSequence {
   Upload -> GenIBL [label="Start Progressive\nGeneration"];
   GenIBL [label="PBR compute...", color="#bb9af7", fontcolor="#bb9af7", style="rounded,dashed"];
 }
-\enddot
+```

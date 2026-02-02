@@ -12,7 +12,7 @@ To maximize performance on integrated GPUs, the skybox is rendered **after** the
 
 ### Optimization Diagram
 
-\dot
+```graphviz
 digraph SkyboxZ {
   rankdir=LR;
   bgcolor="transparent";
@@ -69,9 +69,9 @@ digraph SkyboxZ {
   Test -> FS [label="Visible (Sky)"];
   Test -> Discard [label="Hidden (Object)"];
 }
-\enddot
+```
 
-\code{.glsl}
+```glsl
 // Inverse Equirectangular Projection
 const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 SampleEquirectangular(vec3 v) {
@@ -87,13 +87,13 @@ void skybox_main() {
     vec2 uv = SampleEquirectangular(dir);
     out_color_val = textureLod(environmentMap, uv, blur_lod);
 }
-\endcode
+```
 
 ### C Implementation (View Matrix)
 
 We remove the **translation** component from the view matrix so the skybox appears infinitely far away (centered on the camera):
 
-\code{.c}
+```c
 /* Copy view and strip translation to keep skybox at infinity */
 mat4 view_sky;
 glm_mat4_copy(view, view_sky);
@@ -105,7 +105,7 @@ view_sky[3][2] = 0.0f;
 mat4 inv_vp_sky;
 glm_mat4_mul(proj, view_sky, inv_vp_sky);
 glm_mat4_inv(inv_vp_sky, inv_vp_sky);
-\endcode
+```
 
 ## 🔍 Technical Details
 
@@ -121,7 +121,7 @@ The inversion `uv.y = 0.5 - uv.y` is crucial to map the "top" of the HDR image t
 
 ## 🎨 Full Workflow
 
-\code{.c}
+```c
 // Main render loop integration
 void render_scene_example(App* app) {
     // 1. View Matrix without translation
@@ -139,7 +139,7 @@ void render_scene_example(App* app) {
     skybox_render(&app->skybox, app->skybox_shader,
                   app->hdr_texture, inv_vp_sky, app->env_lod);
 }
-\endcode
+```
 
 ## 🌟 Advantages
 
@@ -157,16 +157,16 @@ void render_scene_example(App* app) {
 ## 🔗 Python → C Equivalence
 
 ### Python (moderngl)
-\code{.python}
+```python
 view_m = camera.matrix
 view_m[3][0] = 0
 view_m[3][1] = 0
 view_m[3][2] = 0
 inv_view_proj_sky = glm.inverse(projection_matrix * view_m)
-\endcode
+```
 
 ### C (cglm)
-\code{.c}
+```c
 mat4 view_m;
 glm_lookat(camera_pos, target, up, view_m);
 view_m[3][0] = 0.0f;
@@ -176,6 +176,6 @@ view_m[3][2] = 0.0f;
 mat4 inv_view_proj_sky;
 glm_mat4_mul(proj_matrix, view_m, inv_view_proj_sky);
 glm_mat4_inv(inv_view_proj_sky, inv_view_proj_sky);
-\endcode
+```
 
 **Perfectly equivalent!** ✅
