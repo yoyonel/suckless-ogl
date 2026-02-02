@@ -43,14 +43,18 @@ Utilise une matrice de **Bayer 4x4** pour simuler des nuances intermédiaires vi
 - **Usage** : Style Macintosh, GameBoy ou vieux moniteurs CGA.
 - **Principe** :
 \dot
-graph LR {
+digraph DitherFlow {
+    rankdir=TD;
     bgcolor="transparent";
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
-    P [label="Pixel"];
+    edge [color="#565f89"];
+
+    P [label="Pixel Color"];
     Add [label="Bayer Matrix Noise", fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
     Q [label="Quantization", fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
     Out [label="Retro Look", fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
-    P -- Add -- Q -- Out;
+
+    P -> Add -> Q -> Out;
 }
 \enddot
 
@@ -88,12 +92,15 @@ L'effet est implémenté dans le pipeline PBR via un Uber-shader optimisé.
 
 \dot
 digraph TechnicalFlow {
-    rankdir=LR;
+    rankdir=TD;
     bgcolor="transparent";
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
+    edge [color="#565f89"];
+
     C [label="C Code (App)"];
     U [label="UBO (Settings)", fillcolor="#1a1b26", color="#7aa2f7", fontcolor="#7aa2f7"];
     S [label="GLSL Shader", fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
+
     C -> U [label="Update"];
     U -> S [label="Uniforms"];
 }
