@@ -1,0 +1,108 @@
+site_name: Suckless OGL
+site_description: A lean, high-performance C11 PBR Renderer
+site_author: Latty
+repo_url: https://github.com/yoyonel/suckless-ogl
+repo_name: yoyonel/suckless-ogl
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+  features:
+    # - navigation.tabs # Disabled for vertical sidebar
+    # - navigation.sections # Keep sections if you want groups to expand
+    - navigation.expand
+    - navigation.top
+    - toc.integrate
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - abbr
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+  - kroki:
+      server_url: https://kroki.io
+      fence_prefix: ""
+
+nav:
+  - Home: index.md
+  - Architecture:
+    - Overview: project_structure.md
+    - Core Architecture: architecture.md
+    - Async Loading: async_loader.md
+    - IBL Architecture: ibl_architecture_ideas.md
+    - Post-Process UBO: postprocess_ubo_architecture.md
+  - Rendering:
+    - PBR Sphere Rendering: sphere_rendering.md
+    - Skybox: skybox_rendering.md
+    - Progressive IBL: progressive_ibl.md
+    - Cubemap Seams: cubemap_seam_resolution.md
+    - FXAA: FXAA.md
+    - Banding & Dithering: banding.md
+    - Exposure Analysis: exposure_analysis.md
+    - Photographic Standards: photographic_standards.md
+  - "Controls & Input":
+    - Mouse Control: mouse_camera_control.md
+  - Optimization:
+    - GPU Synchronization: gpu-rendering-synchronization.md
+    - Shader Optimization: shader_optimization.md
+    - Texture Optimization: texture_optimization.md
+    - NVIDIA Optimizations: nvidia_optimizations.md
+    - Cross-GPU Compatibility: shader-cross-gpu-compatibility.md
+  - Guides:
+    - Build Guide: build.md
+    - Docker Guide: docker.md
+    - Profiling: profiling_guide.md
+    - RenderDoc: renderdoc_guide.md
+    - Visual Testing: visual_testing_artifacts.md
+    - OpenGL Cleanup: opengl_cleanup.md
+    - RAII Cleanup: raii_cleanup_guide.md
+    - Docs Staging: docs_staging_guide.md
+    - Doxygen Customization: doxygen_customization.md
+  - API Reference: doxygen/html/index.html
