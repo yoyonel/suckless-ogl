@@ -221,12 +221,12 @@ $(document).ready(function(){initNavTree('md_docs_2exposure__analysis.html','');
   <div class="headertitle"><div class="title">Global Exposure Management Analysis</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md85"></a><b>Date: January 24, 2026</b></p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md94"></a><b>Date: January 24, 2026</b></p>
 <p>This analysis details how exposure is defined, managed, and applied in the application, covering both the CPU (management) and GPU (implementation and auto-exposure).</p>
-<h1><a class="anchor" id="autotoc_md86"></a>
+<h1><a class="anchor" id="autotoc_md95"></a>
 1. Definition and Data Structure</h1>
 <p>Exposure is managed via two distinct, non-overlapping modes: <b>Manual</b> and <b>Automatic</b>.</p>
-<h2><a class="anchor" id="autotoc_md87"></a>
+<h2><a class="anchor" id="autotoc_md96"></a>
 CPU Side (include/postprocess.h, src/postprocess.c)</h2>
 <p>Parameters are stored in the <code><a class="el" href="structPostProcess.html" title="Main pipeline state for post-processing.">PostProcess</a></code> structure:</p>
 <ul>
@@ -249,7 +249,7 @@ CPU Side (include/postprocess.h, src/postprocess.c)</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md88"></a>
+<h2><a class="anchor" id="autotoc_md97"></a>
 GPU Side (Uniforms &amp; Textures)</h2>
 <ul>
 <li><b>Manual</b>: Transmitted via the <code>exposure.exposure</code> uniform.</li>
@@ -260,10 +260,10 @@ GPU Side (Uniforms &amp; Textures)</h2>
 </li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md90"></a>
+<h1><a class="anchor" id="autotoc_md99"></a>
 2. Runpaths and Usage Modes</h1>
 <p>The mode selection occurs in the render loop <code><a class="el" href="postprocess_8h.html#aa84256eef04459c5acf3b67987da736b" title="Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main r...">postprocess_end()</a></code>.</p>
-<h2><a class="anchor" id="autotoc_md91"></a>
+<h2><a class="anchor" id="autotoc_md100"></a>
 Mode A: Automatic Exposure (POSTFX_AUTO_EXPOSURE)</h2>
 <p>If this flag is enabled, a pre-calculation pass is executed <b>before</b> the final render.</p>
 <ol type="1">
@@ -301,7 +301,7 @@ Mode A: Automatic Exposure (POSTFX_AUTO_EXPOSURE)</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md92"></a>
+<h2><a class="anchor" id="autotoc_md101"></a>
 Mode B: Manual Exposure (POSTFX_EXPOSURE)</h2>
 <p>Used if auto-exposure is disabled.</p>
 <ol type="1">
@@ -311,11 +311,11 @@ Mode B: Manual Exposure (POSTFX_EXPOSURE)</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md93"></a>
+<h2><a class="anchor" id="autotoc_md102"></a>
 Mode C: No Exposure</h2>
 <p>If no effect is active, the value <code>1.0</code> is used.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md95"></a>
+<h1><a class="anchor" id="autotoc_md104"></a>
 3. Integration in the Pipeline (postprocess.frag)</h1>
 <p>Exposure is applied at a specific stage in the final fragment shader:</p>
 <ol type="1">
@@ -323,20 +323,20 @@ Mode C: No Exposure</h2>
 <li>Chrom. Aberration / Motion Blur.</li>
 <li>Depth of Field.</li>
 <li>Bloom (Added to color).</li>
-<li>**&gt;&gt;&gt; EXPOSURE &lt;&lt;&lt;**: <code>color *= finalExposure</code>.</li>
+<li>**&gt;&gt;&gt; EXPOSURE &lt;&lt;&lt;**: <code>color_val *= exposure_total</code>.</li>
 <li>Color Grading &amp; White Balance.</li>
 <li>Tone Mapping (HDR to LDR).</li>
 <li>Gamma Correction.</li>
 </ol>
 <p><b>Important Observation</b>: Exposure is applied as a simple scalar multiplier on the linear HDR signal. This is physically consistent (simulation of camera aperture/ISO) and correctly occurs before Tone Mapping.</p>
-<h1><a class="anchor" id="autotoc_md96"></a>
+<h1><a class="anchor" id="autotoc_md105"></a>
 4. Pre-calculation and Optimizations</h1>
 <ul>
 <li><b>Downsample 64x64</b>: Rather than performing a complex parallel reduction of the full 1080p/4k image, the image is drastically reduced via a very fast fragment shader (<code><a class="el" href="lum__downsample_8frag.html">lum_downsample.frag</a></code>) which performs an approximate average (4x4 Box Filter with stride). This massively reduces the load for the Compute <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a>.</li>
 <li><b>Single Compute <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a></b>: Adaptation launches only a single WorkGroup (1,1,1) as it processes only 4096 pixels (64x64). It is extremely lightweight.</li>
 <li><b>Persistent Texture</b>: Using a 1x1 texture as storage allows retaining exposure state from one frame to the next without CPU-GPU roundtrips (no <code>glGetTexImage</code> needed for logic, everything stays on GPU).</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md97"></a>
+<h1><a class="anchor" id="autotoc_md106"></a>
 Synthetic Summary</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -354,10 +354,10 @@ Synthetic Summary</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Conflict</b>   </td><td class="markdownTableBodyLeft">Auto-Exposure overrides Manual Exposure   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md98"></a>
+<h2><a class="anchor" id="autotoc_md107"></a>
 Adaptation Pipeline</h2>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_5.svg" width="478" height="738"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_5.svg" width="643" height="876"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
  </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

@@ -221,11 +221,11 @@ $(document).ready(function(){initNavTree('md_docs_2progressive__ibl.html',''); i
   <div class="headertitle"><div class="title">Progressive &amp; Asynchronous IBL Architecture</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md226"></a> This document details the implementation of asynchronous loading and progressive generation of IBL (Image Based Lighting) maps to eliminate freezes when changing environments.</p>
-<h1><a class="anchor" id="autotoc_md227"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md235"></a> This document details the implementation of asynchronous loading and progressive generation of IBL (Image Based Lighting) maps to eliminate freezes when changing environments.</p>
+<h1><a class="anchor" id="autotoc_md236"></a>
 1. Overview</h1>
 <p>The goal was to move from a blocking synchronous load (100ms - 800ms freeze) to a fluid approach where computation time is spread over multiple frames (Time Slicing).</p>
-<h2><a class="anchor" id="autotoc_md228"></a>
+<h2><a class="anchor" id="autotoc_md237"></a>
 The Pipeline</h2>
 <ol type="1">
 <li><b>Disk Load (Separate Thread)</b>: The <code>.hdr</code> file is loaded and decoded (stb_image) in a dedicated thread (<code><a class="el" href="async__loader_8c.html">async_loader.c</a></code>).</li>
@@ -238,35 +238,34 @@ The Pipeline</h2>
 <li><b>Swap (Double Buffering)</b>: We use "Pending" textures. The old environment remains displayed until the new one is 100% ready.</li>
 </ol>
 <hr  />
-<h1><a class="anchor" id="autotoc_md230"></a>
+<h1><a class="anchor" id="autotoc_md239"></a>
 2. "Slicing" Strategy</h1>
 <p>PBR Compute Shaders (especially for high-resolution Specular maps) are very expensive. Computing a full 512x512 texture takes ~250ms on an integrated GPU, freezing the application.</p>
 <p><b>Solution</b>: Slice the work horizontally ("Slicing") and only compute one strip of the image per frame.</p>
-<h2><a class="anchor" id="autotoc_md231"></a>
+<h2><a class="anchor" id="autotoc_md240"></a>
 2.1 Overlap Protection (Crucial)</h2>
 <p>Compute <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> Workgroups have a fixed size (32x32). If we ask to compute a slice <b>1 pixel</b> high, the GPU still launches a block 32 pixels high. Without protection, the 31 excess rows overwrite/recalculate neighboring pixels, massively wasting resources.</p>
-<p>**The Fix (<code>u_max_y</code>)**: We pass a precise limit to the shader: </p><div class="fragment"><div class="line"><span class="comment">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span></div>
-<div class="line">uniform <span class="keywordtype">int</span> <a class="code hl_variable" href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a>; <span class="comment">// Y limit of the current slice</span></div>
+<p>**The Fix (<code>u_max_y_slice</code>)**: We pass a precise limit to the shader: </p><div class="fragment"><div class="line"><span class="comment">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span></div>
+<div class="line">uniform <span class="keywordtype">int</span> u_max_y_slice; <span class="comment">// Y limit of the current slice</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> <a class="code hl_function" href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a>() {</div>
+<div class="line"><span class="keywordtype">void</span> main_task() {</div>
 <div class="line">    <span class="comment">// ...</span></div>
-<div class="line">    <span class="keywordflow">if</span> (pos.y &gt;= <a class="code hl_variable" href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a>) <span class="keywordflow">return</span>; <span class="comment">// Immediate stop for phantom threads</span></div>
+<div class="line">    <span class="comment">// Surgical stop to avoid wasted workgroups on slice edges</span></div>
+<div class="line">    <span class="keywordflow">if</span> (pixel_pos.y &gt;= u_max_y_slice) <span class="keywordflow">return</span>; <span class="comment">// Immediate stop for phantom threads</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">}</div>
-<div class="ttc" id="abackground_8frag_html_acdef7a1fd863a6d3770c1268cb06add3"><div class="ttname"><a href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a></div><div class="ttdeci">void main()</div><div class="ttdef"><b>Definition</b> background.frag:21</div></div>
-<div class="ttc" id="airmap_8glsl_html_af2be5c640ca7f547b233f2c99e71f530"><div class="ttname"><a href="irmap_8glsl.html#af2be5c640ca7f547b233f2c99e71f530">u_max_y</a></div><div class="ttdeci">uniform int u_max_y</div><div class="ttdef"><b>Definition</b> irmap.glsl:10</div></div>
 </div><!-- fragment --><hr  />
-<h1><a class="anchor" id="autotoc_md233"></a>
+<h1><a class="anchor" id="autotoc_md242"></a>
 3. Optimized Configuration (Adaptive Slicing)</h1>
 <p>To reconcile <b>fluidity</b> (no freeze) and <b>overall speed</b> (fast loading), we use an adaptive strategy based on the workload weight.</p>
-<h2><a class="anchor" id="autotoc_md234"></a>
+<h2><a class="anchor" id="autotoc_md243"></a>
 A. Irradiance Map (64x64)</h2>
 <ul>
 <li><b>Strategy</b>: Constant slicing.</li>
 <li><b>Slicing</b>: 4 Slices.</li>
 <li><b>Cost</b>: ~40ms / slice (Total ~160ms).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md235"></a>
+<h2><a class="anchor" id="autotoc_md244"></a>
 B. Specular Map (512x512)</h2>
 <p>This is the heaviest part. The cost per mipmap decreases exponentially.</p>
 <table class="markdownTable">
@@ -285,14 +284,14 @@ B. Specular Map (512x512)</h2>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_11.svg" width="962" height="182"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <hr  />
-<h1><a class="anchor" id="autotoc_md237"></a>
+<h1><a class="anchor" id="autotoc_md246"></a>
 4. Global Performance</h1>
 <p>With this architecture on an integrated GPU (Intel UHD):</p><ul>
 <li><b>FPS</b>: Remains fluid (no brutal drop below 30 FPS).</li>
 <li><b>Total Time</b>: A complete environment transition takes about <b>600ms to 800ms</b>.</li>
 <li><b>Perceived Latency</b>: Near-zero thanks to continuous display of the old environment during computation.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md238"></a>
+<h1><a class="anchor" id="autotoc_md247"></a>
 5. Key Files</h1>
 <ul>
 <li><code><a class="el" href="app_8c.html">src/app.c</a></code>: Contains the State Machine (<code>app_process_ibl_state_machine</code>).</li>

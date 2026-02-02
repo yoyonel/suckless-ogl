@@ -221,11 +221,11 @@ $(document).ready(function(){initNavTree('md_docs_2mouse__camera__control.html',
   <div class="headertitle"><div class="title">Mouse Camera Control</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md134"></a> </p>
-<h1><a class="anchor" id="autotoc_md135"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md143"></a> </p>
+<h1><a class="anchor" id="autotoc_md144"></a>
 Overview</h1>
 <p>This document explains the implementation of the mouse-controlled camera system (First Person View) in the engine. The system allows orientation control (Pitch/Yaw) via the mouse and movement via the keyboard.</p>
-<h1><a class="anchor" id="autotoc_md136"></a>
+<h1><a class="anchor" id="autotoc_md145"></a>
 Features</h1>
 <ul>
 <li><b>Capture Mode</b>: The cursor is hidden and locked to the window center.</li>
@@ -233,16 +233,16 @@ Features</h1>
 <li><b>Clamping</b>: Pitch is limited to +/- 89 degrees to avoid Gimbal Lock.</li>
 <li><b>Smoothness</b>: Frame-rate independent movement using <code>deltaTime</code>.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md137"></a>
+<h1><a class="anchor" id="autotoc_md146"></a>
 Architecture</h1>
-<h2><a class="anchor" id="autotoc_md138"></a>
+<h2><a class="anchor" id="autotoc_md147"></a>
 Data Flow</h2>
 <p>The input event management is decoupled from the camera update logic.</p>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_7.svg" width="1054" height="70"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h1><a class="anchor" id="autotoc_md139"></a>
+<h1><a class="anchor" id="autotoc_md148"></a>
 Implementation Details</h1>
-<h2><a class="anchor" id="autotoc_md140"></a>
+<h2><a class="anchor" id="autotoc_md149"></a>
 Rotation Calculation (Euler Angles)</h2>
 <p>The camera's direction vector is calculated from the Yaw and Pitch angles:</p>
 <div class="fragment"><div class="line"><span class="comment">// Convert Spherical to Cartesian coordinates</span></div>
@@ -250,7 +250,7 @@ Rotation Calculation (Euler Angles)</h2>
 <div class="line">front.y = sin(glm_rad(pitch));</div>
 <div class="line">front.z = sin(glm_rad(yaw)) * cos(glm_rad(pitch));</div>
 <div class="line">glm_normalize(front);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md141"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md150"></a>
 Input Handling</h2>
 <p>The <code>mouse_callback</code> function handles the raw mouse input:</p>
 <ol type="1">
@@ -262,9 +262,10 @@ Input Handling</h2>
 <blockquote class="doxtable">
 <p>&zwj;[!NOTE] Ensure <code>firstMouse</code> check is implemented to prevent a sudden camera jump on the initial frame where the mouse enters the window. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md142"></a>
+<h1><a class="anchor" id="autotoc_md151"></a>
 Usage</h1>
-<p>To enable mouse capture: </p><div class="fragment"><div class="line">glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</div>
+<p>To enable mouse capture: </p><div class="fragment"><div class="line"><span class="comment">// Enable mouse capture in GLFW</span></div>
+<div class="line">glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</div>
 </div><!-- fragment --><p> To release the mouse (e.g., for UI interaction), switch to <code>GLFW_CURSOR_NORMAL</code>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

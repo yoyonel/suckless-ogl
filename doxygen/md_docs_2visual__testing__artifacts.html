@@ -221,36 +221,36 @@ $(document).ready(function(){initNavTree('md_docs_2visual__testing__artifacts.ht
   <div class="headertitle"><div class="title">Visual Testing &amp; Regression Artifacts</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md350"></a> This document explains the technical reasons behind visual differences observed in automated regression reports, particularly between local hardware rendering and CI software rendering.</p>
-<h1><a class="anchor" id="autotoc_md351"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md360"></a> This document explains the technical reasons behind visual differences observed in automated regression reports, particularly between local hardware rendering and CI software rendering.</p>
+<h1><a class="anchor" id="autotoc_md361"></a>
 The Core Challenge: Software vs. Hardware</h1>
 <p>The project CI (GitHub Actions) uses <b>Mesa llvmpipe</b>, a software-based OpenGL implementation that runs on the CPU. While highly compliant, it differs from hardware GPUs (NVIDIA, Intel, AMD) in several ways:</p>
-<h2><a class="anchor" id="autotoc_md352"></a>
+<h2><a class="anchor" id="autotoc_md362"></a>
 1. Floating Point Precision</h2>
 <ul>
 <li><b>Bit-Level Parity</b>: Even with standard-compliant drivers, transcendental functions like <code>pow()</code>, <code>exp()</code>, <code>sin()</code>, and <code>cos()</code> vary slightly in their low-level implementation.</li>
 <li><b>Accumulated Errors</b>: In complex PBR shaders, these micro-discrepancies accumulate, leading to "salt and pepper" noise in difference maps.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md353"></a>
+<h2><a class="anchor" id="autotoc_md363"></a>
 2. The "Sphere Center" Artifact</h2>
 <p>A common finding in our PBR tests is a concentric ring pattern at the center of spheres.</p><ul>
 <li><b>Cause</b>: At the center of a sphere, the dot product <b>N · V</b> is exactly <code>1.0</code>.</li>
 <li><b>Sensitivity</b>: The BRDF LUT (Look-Up Table) is sampled using (<b>N · V</b>, <b>roughness</b>). Any tiny floating-point variation in the calculation of <b>N · V</b> or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.</li>
 <li><b>Result</b>: High-contrast deltas in the difference map, even if the visual change is imperceptible to the human eye.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md354"></a>
+<h1><a class="anchor" id="autotoc_md364"></a>
 PBR Engine Evolution</h1>
 <p>Recent improvements to the rendering engine also contribute to deltas compared to older "Master" references:</p>
-<h2><a class="anchor" id="autotoc_md355"></a>
+<h2><a class="anchor" id="autotoc_md365"></a>
 1. Multiple Scattering (Kulla-Conty)</h2>
 <p>We implemented a compensation term for energy loss on rough surfaces. This increases the brightness of metallic/rough materials, changing the overall luminance compared to a "Standard" PBR implementation.</p>
-<h2><a class="anchor" id="autotoc_md356"></a>
+<h2><a class="anchor" id="autotoc_md366"></a>
 2. Analytic Roughness Clamping</h2>
 <p>To ensure portability across vendors, we replaced derivative-based smoothing (<code>fwidth</code>) with <b>Analytic Roughness Clamping</b> (<code>MIN_ROUGHNESS = 0.03</code>).</p><ul>
 <li><b>Benefit</b>: Identical results on Intel, NVIDIA, and Mesa.</li>
 <li><b>Delta</b>: Reference images captured with older versions using <code>fwidth</code> will show significant edges deltas.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md357"></a>
+<h1><a class="anchor" id="autotoc_md367"></a>
 Guidelines for Reference Updates</h1>
 <p>When a Visual Regression Report shows failures:</p><ol type="1">
 <li><b>Check the Difference Map</b>: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.</li>

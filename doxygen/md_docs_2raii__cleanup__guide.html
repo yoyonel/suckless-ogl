@@ -221,9 +221,9 @@ $(document).ready(function(){initNavTree('md_docs_2raii__cleanup__guide.html',''
   <div class="headertitle"><div class="title">Automatic Resource Management (RAII) in C</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md260"></a> This document explains the <b>RAII-style</b> (Resource Acquisition Is Initialization) approach used in this project to manage performance timers and other resources automatically, leveraging the <code>__attribute__((cleanup))</code> compiler extension.</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md269"></a> This document explains the <b>RAII-style</b> (Resource Acquisition Is Initialization) approach used in this project to manage performance timers and other resources automatically, leveraging the <code>__attribute__((cleanup))</code> compiler extension.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md262"></a>
+<h1><a class="anchor" id="autotoc_md271"></a>
 1. The Concept: RAII in C</h1>
 <p>In standard C, resources (memory, file handles, timers) must be managed manually. This often leads to:</p><ol type="1">
 <li><b>Deep indentation</b> when using scope-based macros (like <code>for</code> loops).</li>
@@ -231,43 +231,46 @@ $(document).ready(function(){initNavTree('md_docs_2raii__cleanup__guide.html',''
 <li><b>Repetitive code</b> (multiple <code>stop_timer()</code> or <code>free()</code> calls before every <code>return</code>).</li>
 </ol>
 <p>To solve this, we use a technique borrowed from C++ called RAII, made possible in C by a GCC/Clang extension.</p>
-<h2><a class="anchor" id="autotoc_md263"></a>
+<h2><a class="anchor" id="autotoc_md272"></a>
 The attribute cleanup Extension</h2>
 <p>This attribute tells the compiler to automatically call a specific "cleanup function" when a local variable goes out of scope.</p>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_13.svg" width="512" height="628"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <hr  />
 <hr  />
-<h1><a class="anchor" id="autotoc_md266"></a>
+<h1><a class="anchor" id="autotoc_md275"></a>
 2. Implementation in this Project</h1>
 <p>We use this primarily for performance monitoring via the <code>HYBRID_FUNC_TIMER</code> macro defined in <code><a class="el" href="perf__timer_8h.html" title="High-precision performance measurement (CPU and GPU).">include/perf_timer.h</a></code>.</p>
-<h2><a class="anchor" id="autotoc_md267"></a>
+<h2><a class="anchor" id="autotoc_md276"></a>
 The Core Components</h2>
 <ol type="1">
-<li><b>The RAII Container</b>: A structure that holds the resource and its metadata. <pre class="fragment">\code{.c}
-typedef struct {
-    HybridTimer timer;
-    const char* label;
-} HybridTimerRAII;
-\endcode
-</pre></li>
-<li><b>The Cleanup Function</b>: A static function that the compiler will trigger. <pre class="fragment">\code{.c}
-static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
-    perf_hybrid_stop(&amp;timer_raii-&gt;timer, timer_raii-&gt;label);
-}
-\endcode
-</pre></li>
-<li><b>The Macro</b>: A convenient way to declare the guarded variable. <pre class="fragment">\code{.c}
-#define HYBRID_FUNC_TIMER(label) \
-    HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
-        perf_hybrid_start(), label }
-\endcode
-</pre> <hr  />
-</li>
+<li><p class="startli"><b>The RAII Container</b>: A structure that holds the resource and its metadata.</p>
+<div class="fragment"><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line">    <a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a> timer;</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* label;</div>
+<div class="line">} <a class="code hl_struct" href="structHybridTimerRAII.html">HybridTimerRAII</a>;</div>
+<div class="ttc" id="astructHybridTimerRAII_html"><div class="ttname"><a href="structHybridTimerRAII.html">HybridTimerRAII</a></div><div class="ttdoc">Internal helper for scope-based timing.</div><div class="ttdef"><b>Definition</b> perf_timer.h:193</div></div>
+<div class="ttc" id="astructHybridTimer_html"><div class="ttname"><a href="structHybridTimer.html">HybridTimer</a></div><div class="ttdoc">Hybrid timer combining CPU and GPU measurements.</div><div class="ttdef"><b>Definition</b> perf_timer.h:45</div></div>
+</div><!-- fragment --></li>
+<li><p class="startli"><b>The Cleanup Function</b>: A static function that the compiler will trigger.</p>
+<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a>(<a class="code hl_struct" href="structHybridTimerRAII.html">HybridTimerRAII</a>* timer_raii) {</div>
+<div class="line">    <a class="code hl_function" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a>(&amp;timer_raii-&gt;<a class="code hl_variable" href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">timer</a>, timer_raii-&gt;<a class="code hl_variable" href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">label</a>);</div>
+<div class="line">}</div>
+<div class="ttc" id="aperf__timer_8h_html_a144c7bd743c4e27d7738669d549e59ae"><div class="ttname"><a href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a></div><div class="ttdeci">void perf_hybrid_stop(HybridTimer *timer, const char *label)</div><div class="ttdoc">Stops both measurements and logs the results to the console.</div><div class="ttdef"><b>Definition</b> perf_timer.c:191</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a9b01333acd4f8363793592ca8eebe9ce"><div class="ttname"><a href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a></div><div class="ttdeci">static void hybrid_timer_cleanup_raii(HybridTimerRAII *timer_raii)</div><div class="ttdoc">Internal cleanup function for HybridTimerRAII.</div><div class="ttdef"><b>Definition</b> perf_timer.h:199</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html_aa779026977f7085edb6e2c17553bb715"><div class="ttname"><a href="structHybridTimerRAII.html#aa779026977f7085edb6e2c17553bb715">HybridTimerRAII::label</a></div><div class="ttdeci">const char * label</div><div class="ttdef"><b>Definition</b> perf_timer.h:195</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html_afdefbeaf767a13849baf25145b0498c0"><div class="ttname"><a href="structHybridTimerRAII.html#afdefbeaf767a13849baf25145b0498c0">HybridTimerRAII::timer</a></div><div class="ttdeci">HybridTimer timer</div><div class="ttdef"><b>Definition</b> perf_timer.h:194</div></div>
+</div><!-- fragment --></li>
+<li><p class="startli"><b>The Macro</b>: A convenient way to declare the guarded variable.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#define HYBRID_FUNC_TIMER(label) \</span></div>
+<div class="line"><span class="preprocessor">    HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \</span></div>
+<div class="line"><span class="preprocessor">        perf_hybrid_start(), label }</span></div>
+</div><!-- fragment --></li>
 </ol>
-<h1><a class="anchor" id="autotoc_md268"></a>
+<hr  />
+<h1><a class="anchor" id="autotoc_md278"></a>
 3. Benefits &amp; Usage</h1>
-<h2><a class="anchor" id="autotoc_md269"></a>
+<h2><a class="anchor" id="autotoc_md279"></a>
 Less Indentation</h2>
 <p>Unlike the older <code>HYBRID_MEASURE_LOG</code> which required a code block <code>{ ... }</code>, the new RAII macro allows for "flat" code.</p>
 <p><b>Old Way (Indented):</b> </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> process() {</div>
@@ -284,41 +287,42 @@ Less Indentation</h2>
 <div class="line">    do_more_work();</div>
 <div class="line">} <span class="comment">// Timer stops here automatically</span></div>
 <div class="ttc" id="aperf__timer_8h_html_aad9c1d6c0afa04bfd26ab833806b67b5"><div class="ttname"><a href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a></div><div class="ttdeci">#define HYBRID_FUNC_TIMER(label)</div><div class="ttdoc">Scoped hybrid timer. Automatically logs on scope exit.</div><div class="ttdef"><b>Definition</b> perf_timer.h:215</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md270"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md280"></a>
 Safety with Early Returns</h2>
 <p>The cleanup is guaranteed to run even if the function exits early.</p>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> load_data(<span class="keyword">const</span> <span class="keywordtype">char</span>* path) {</div>
+<div class="fragment"><div class="line"><span class="keywordtype">void</span> demo_load_data(<span class="keyword">const</span> <span class="keywordtype">char</span>* file_path) {</div>
 <div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;File Load&quot;</span>);</div>
 <div class="line"> </div>
-<div class="line">    FILE* f = fopen(path, <span class="stringliteral">&quot;r&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span> (!f) <span class="keywordflow">return</span>; <span class="comment">// Timer STOPS and LOGS here automatically!</span></div>
+<div class="line">    FILE* file_ptr = fopen(file_path, <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (!file_ptr) <span class="keywordflow">return</span>; <span class="comment">// Timer STOPS and LOGS here automatically!</span></div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// ... processing ...</span></div>
 <div class="line">} <span class="comment">// Timer STOPS and LOGS here automatically!</span></div>
 </div><!-- fragment --><hr  />
-<h1><a class="anchor" id="autotoc_md272"></a>
+<h1><a class="anchor" id="autotoc_md282"></a>
 4. Real-world Example: src/pbr.c</h1>
-<p>In the IBL (Image Based Lighting) generation pipeline, we use <code>HYBRID_FUNC_TIMER</code> at the start of expensive compute shader dispatches.</p>
-<div class="fragment"><div class="line">GLuint <a class="code hl_function" href="pbr_8h.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a>(GLuint shader, GLuint env_hdr_tex, <span class="keywordtype">int</span> size, <span class="keywordtype">float</span> <a class="code hl_variable" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>) {</div>
-<div class="line">    <span class="keywordflow">if</span> (shader == 0) <span class="keywordflow">return</span> 0;</div>
-<div class="line"> </div>
-<div class="line">    GLuint irr_tex = 0;</div>
-<div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;IBL: Irradiance Map&quot;</span>); <span class="comment">// Automatic measurement starts</span></div>
-<div class="line"> </div>
-<div class="line">    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, <span class="stringliteral">&quot;IBL: Irradiance Map&quot;</span>);</div>
-<div class="line"> </div>
-<div class="line">    <span class="comment">// ... OpenGL Setup ...</span></div>
-<div class="line">    glDispatchCompute(groups, groups, 1);</div>
-<div class="line">    <span class="comment">// ...</span></div>
-<div class="line"> </div>
-<div class="line">    glPopDebugGroup();</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordflow">return</span> irr_tex;</div>
-<div class="line">} <span class="comment">// Measurement stops and result is printed to log</span></div>
-<div class="ttc" id="abloom__prefilter_8frag_html_a35dfb7e5bccf3b9aa48afd382d15ddda"><div class="ttname"><a href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a></div><div class="ttdeci">uniform float threshold</div><div class="ttdef"><b>Definition</b> bloom_prefilter.frag:7</div></div>
-<div class="ttc" id="apbr_8h_html_a380eba0f8cc7fc6c292073aa718c7097"><div class="ttname"><a href="pbr_8h.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a></div><div class="ttdeci">GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold)</div><div class="ttdoc">Generates an irradiance map (diffuse IBL) in a single pass.</div><div class="ttdef"><b>Definition</b> pbr.c:205</div></div>
-</div><!-- fragment --><hr  />
-<h1><a class="anchor" id="autotoc_md274"></a>
+<p>In the IBL (Image Based Lighting) generation pipeline, we use <code>HYBRID_FUNC_TIMER</code> at the start of expensive compute shader dispatches. </p><pre class="fragment">\code{.c}
+// signature renamed to prevent Doxygen auto-linking info
+GLuint
+demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
+{
+    if (shader_id == 0) return 0;
+
+    GLuint irr_tex = 0;
+    HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
+
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: Irradiance Map");
+
+    // ... OpenGL Setup ...
+    glDispatchCompute(groups, groups, 1);
+    // ...
+
+    glPopDebugGroup();
+
+    return irr_tex;
+} // Measurement stops and result is printed to log
+</pre> <hr  />
+<h1><a class="anchor" id="autotoc_md284"></a>
 5. Compatibility &amp; Requirements</h1>
 <ul>
 <li><b>Compilers</b>: This feature requires <b>GCC</b> or <b>Clang</b>. It is not part of the standard ISO C (C99/C11), but it is a de-facto standard in professional Linux C programming (used extensively in the Linux Kernel and <code>systemd</code>).</li>
@@ -327,39 +331,38 @@ Safety with Early Returns</h2>
 </ul>
 <hr  />
 <hr  />
-<h1><a class="anchor" id="autotoc_md277"></a>
+<h1><a class="anchor" id="autotoc_md287"></a>
 6. Satisfying Static Analyzers (Clang-Tidy)</h1>
 <p>Clang's static analyzer does not yet fully model the control flow of <code>__attribute__((cleanup))</code>. This can result in false positives like <code>"Opened stream never closed"</code> or <code>"Potential memory leak"</code>.</p>
 <p>To maintain clean linting logs without sacrificing RAII's runtime safety, we use <b>Analyzer Hints</b>.</p>
-<h2><a class="anchor" id="autotoc_md278"></a>
+<h2><a class="anchor" id="autotoc_md288"></a>
 The RAII_SATISFY_* Patterns</h2>
 <p>Defined in <code><a class="el" href="utils_8h.html" title="Zero-overhead utility functions and RAII cleanup helpers.">include/utils.h</a></code>, these macros satisfy the analyzer by simulating a cleanup call only during static analysis. They have <b>zero runtime cost</b>.</p>
 <ul>
 <li><code><a class="el" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c" title="Satisfies Static Analyzers for file resource management.">RAII_SATISFY_FILE(f)</a></code>: Simulates <code>fclose(f)</code>.</li>
 <li><code><a class="el" href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857" title="Satisfies Static Analyzers for memory resource management.">RAII_SATISFY_FREE(p)</a></code>: Simulates <code>free(p)</code>.</li>
 </ul>
-<p><b>Usage Example:</b></p>
-<div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keywordtype">char</span>* load_data(<span class="keyword">const</span> <span class="keywordtype">char</span>* path) {</div>
-<div class="line">    <a class="code hl_define" href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">CLEANUP_FILE</a> FILE* f = fopen(path, <span class="stringliteral">&quot;rb&quot;</span>);</div>
-<div class="line">    <span class="keywordflow">if</span> (!f) <span class="keywordflow">return</span> NULL;</div>
-<div class="line"> </div>
-<div class="line">    <a class="code hl_define" href="utils_8h.html#ac333249d502a536c37149f9397c09060">CLEANUP_FREE</a> <span class="keywordtype">char</span>* buf = malloc(1024);</div>
-<div class="line">    <span class="keywordflow">if</span> (error_condition) {</div>
-<div class="line">        <span class="comment">// Surgical hints to satisfy the analyzer on this path</span></div>
-<div class="line">        <a class="code hl_define" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a>(f);</div>
-<div class="line">        <a class="code hl_define" href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">RAII_SATISFY_FREE</a>(buf);</div>
-<div class="line">        <span class="keywordflow">return</span> NULL;</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <a class="code hl_define" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a>(f);</div>
-<div class="line">    <span class="keywordflow">return</span> <a class="code hl_define" href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">TRANSFER_OWNERSHIP</a>(buf);</div>
-<div class="line">} <span class="comment">// Actual cleaning happens here at runtime via RAII</span></div>
-<div class="ttc" id="autils_8h_html_a407e52a6dbfea9c852630e98baaa92b7"><div class="ttname"><a href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">CLEANUP_FILE</a></div><div class="ttdeci">#define CLEANUP_FILE</div><div class="ttdoc">Macro to define a FILE* that closes itself at scope exit.</div><div class="ttdef"><b>Definition</b> utils.h:82</div></div>
-<div class="ttc" id="autils_8h_html_a564c7a8df26c5d2ea991c2285332a857"><div class="ttname"><a href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">RAII_SATISFY_FREE</a></div><div class="ttdeci">#define RAII_SATISFY_FREE(p)</div><div class="ttdoc">Satisfies Static Analyzers for memory resource management.</div><div class="ttdef"><b>Definition</b> utils.h:125</div></div>
-<div class="ttc" id="autils_8h_html_a832eee68ae25daaa8503b7ba52acddec"><div class="ttname"><a href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">TRANSFER_OWNERSHIP</a></div><div class="ttdeci">#define TRANSFER_OWNERSHIP(ptr)</div><div class="ttdoc">Transfers ownership of an RAII-managed variable to the caller.</div><div class="ttdef"><b>Definition</b> utils.h:134</div></div>
-<div class="ttc" id="autils_8h_html_ac333249d502a536c37149f9397c09060"><div class="ttname"><a href="utils_8h.html#ac333249d502a536c37149f9397c09060">CLEANUP_FREE</a></div><div class="ttdeci">#define CLEANUP_FREE</div><div class="ttdoc">Macro to define a pointer that frees itself at scope exit.</div><div class="ttdef"><b>Definition</b> utils.h:112</div></div>
-<div class="ttc" id="autils_8h_html_ad97bdfdff8c5dc389611f822f8cabe2c"><div class="ttname"><a href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a></div><div class="ttdeci">#define RAII_SATISFY_FILE(f)</div><div class="ttdoc">Satisfies Static Analyzers for file resource management.</div><div class="ttdef"><b>Definition</b> utils.h:97</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md279"></a>
+<p><b>Usage Example:</b> </p><pre class="fragment">\code{.c}
+// Example of multiple resource management using RAII
+static char*
+demo_raii_loader(const char* file_path)
+{
+    CLEANUP_FILE FILE* file_ptr = fopen(file_path, "rb");
+    if (!file_ptr) return NULL;
+
+    CLEANUP_FREE char* data_buffer = malloc(1024);
+    if (error_flag) {
+        // Surgical hints to satisfy the analyzer on this path
+        RAII_SATISFY_FILE(file_ptr);
+        RAII_SATISFY_FREE(data_buffer);
+        return NULL;
+    }
+
+    RAII_SATISFY_FILE(file_ptr);
+    return TRANSFER_OWNERSHIP(data_buffer);
+} // Actual cleaning happens here at runtime via RAII
+\endcode
+</pre> <h2><a class="anchor" id="autotoc_md289"></a>
 Why use this instead of // NOLINT?</h2>
 <ul>
 <li><b>Granularity</b>: <code>NOLINT</code> blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.</li>
@@ -367,10 +370,10 @@ Why use this instead of // NOLINT?</h2>
 <li><b>Safety</b>: If you forget a hint, the code is still safe at runtime. If you forget a <code>fclose</code> in legacy code, the code leaks.</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md281"></a>
+<h1><a class="anchor" id="autotoc_md291"></a>
 7. Critical Perspectives &amp; Limitations</h1>
 <p>While RAII in C is powerful, it is important to understand its non-standard nature and the risks involved.</p>
-<h2><a class="anchor" id="autotoc_md282"></a>
+<h2><a class="anchor" id="autotoc_md292"></a>
 "Just Put RAII in C, Bro" (Analysis)</h2>
 <p>For a deep dive into why RAII is "semantically impossible" to do perfectly in standard C, we recommend this article: <a href="https://thephd.dev/just-put-raii-in-c-bro-please-bro-just-one-more-destructor-bro-cmon-im-good-for-it">Why Not Just Do Simple C++ RAII in C?</a> by JeanHeyd Meneide.</p>
 <p><b>Key Takeaways for this Project:</b></p>
@@ -380,7 +383,7 @@ Why use this instead of // NOLINT?</h2>
 <li><b>Safety vs. Purism</b>: This project chooses <b>Safety</b>. While "pure" C relies on manual cleanup and discipline, our RAII approach ensures that a forgotten path doesn't lead to a production leak, at the cost of being slightly "non-standard".</li>
 </ol>
 <hr  />
-<h1><a class="anchor" id="autotoc_md284"></a>
+<h1><a class="anchor" id="autotoc_md294"></a>
 Further Reading</h1>
 <ul>
 <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html">GCC Variable Attributes: cleanup</a></li>

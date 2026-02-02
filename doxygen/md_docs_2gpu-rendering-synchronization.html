@@ -221,11 +221,11 @@ $(document).ready(function(){initNavTree('md_docs_2gpu-rendering-synchronization
   <div class="headertitle"><div class="title">GPU Rendering Synchronization: Intel vs NVIDIA</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md109"></a> <b>Date</b>: 2026-01-30 <b>Status</b>: Resolved <b>Impact</b>: Critical - Visual quality consistency across GPU vendors</p>
-<h1><a class="anchor" id="autotoc_md110"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md118"></a> <b>Date</b>: 2026-01-30 <b>Status</b>: Resolved <b>Impact</b>: Critical - Visual quality consistency across GPU vendors</p>
+<h1><a class="anchor" id="autotoc_md119"></a>
 Executive Summary</h1>
 <p>Investigation and resolution of rendering differences between Intel and NVIDIA GPUs in the suckless-ogl PBR renderer. Issues manifested as white halos and incorrect FXAA edge blending on NVIDIA hardware.</p>
-<h1><a class="anchor" id="autotoc_md111"></a>
+<h1><a class="anchor" id="autotoc_md120"></a>
 Visual Comparison</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -235,16 +235,16 @@ Visual Comparison</h1>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><b>NVIDIA</b>   </td><td class="markdownTableBodyNone">❌ White halos, buggy edges   </td><td class="markdownTableBodyNone">✅ Identical to Intel   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md112"></a>
+<h1><a class="anchor" id="autotoc_md121"></a>
 Root Causes Identified</h1>
-<h2><a class="anchor" id="autotoc_md113"></a>
+<h2><a class="anchor" id="autotoc_md122"></a>
 Issue 1: FXAA Luminance Recalculation</h2>
 <p><b>File</b>: <code><a class="el" href="fxaa_8glsl.html">shaders/postprocess/fxaa.glsl</a></code> (Lines 176-198)</p>
 <p><b>Problem</b>: Edge search loop recalculated luma using <code>sqrt()</code>, which has different precision on Intel vs NVIDIA.</p>
 <p><b>Fix</b>: Use pre-calculated luma from alpha channel instead.</p>
 <div class="fragment"><div class="line">- lumaEnd1 = FxaaLuma(texture(screenTexture, uv1).rgb);</div>
 <div class="line">+ lumaEnd1 = texture(screenTexture, uv1).a;  // Pre-calculated in PBR shader</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md114"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md123"></a>
 Issue 2: Derivative-Based Roughness Clamping</h2>
 <p><b>File</b>: <code><a class="el" href="pbr__functions_8glsl.html">shaders/pbr_functions.glsl</a></code> (Lines 76-100)</p>
 <p><b>Problem</b>: <code>dFdx()</code>/<code>dFdy()</code> produce different values on Intel vs NVIDIA, causing extreme roughness values at edges on NVIDIA.</p>
@@ -254,14 +254,14 @@ Issue 2: Derivative-Based Roughness Clamping</h2>
 <li>✅ <b>Complete removal</b>: Achieved visual parity</li>
 </ol>
 <p><b>Final Solution</b>: Disabled roughness clamping entirely.</p>
-<div class="fragment"><div class="line"><span class="keywordtype">float</span> <a class="code hl_function" href="pbr__functions_8glsl.html#ac9ce0a4229648f673fc49510d90878af">compute_roughness_clamping</a>(vec3 N, <span class="keywordtype">float</span> roughness)</div>
+<div class="fragment"><div class="line"><span class="keywordtype">float</span> <a class="code hl_function" href="pbr__functions_8glsl.html#ac9ce0a4229648f673fc49510d90878af">compute_roughness_clamping</a>(vec3 N_val, <span class="keywordtype">float</span> roughness_val)</div>
 <div class="line">{</div>
 <div class="line">    <span class="comment">// Disabled: derivatives have different precision on NVIDIA vs Intel</span></div>
-<div class="line">    roughness = clamp(roughness, 0.0, 1.0);</div>
-<div class="line">    <span class="keywordflow">return</span> roughness;</div>
+<div class="line">    roughness_val = clamp(roughness_val, 0.0, 1.0);</div>
+<div class="line">    <span class="keywordflow">return</span> roughness_val;</div>
 <div class="line">}</div>
 <div class="ttc" id="apbr__functions_8glsl_html_ac9ce0a4229648f673fc49510d90878af"><div class="ttname"><a href="pbr__functions_8glsl.html#ac9ce0a4229648f673fc49510d90878af">compute_roughness_clamping</a></div><div class="ttdeci">float compute_roughness_clamping(vec3 N, float roughness)</div><div class="ttdef"><b>Definition</b> pbr_functions.glsl:111</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md115"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md124"></a>
 Why Derivatives Differ</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -272,15 +272,15 @@ Why Derivatives Differ</h1>
 <td class="markdownTableBodyNone"><b>NVIDIA</b>   </td><td class="markdownTableBodyNone">Optimized hardware units   </td><td class="markdownTableBodyNone">Different rounding, can spike   </td></tr>
 </table>
 <p><b>Result</b>: <code>pow(maxVariation, 0.1)</code> amplified vendor differences → white halos on NVIDIA.</p>
-<h1><a class="anchor" id="autotoc_md116"></a>
+<h1><a class="anchor" id="autotoc_md125"></a>
 Trade-offs</h1>
-<h2><a class="anchor" id="autotoc_md117"></a>
+<h2><a class="anchor" id="autotoc_md126"></a>
 Lost</h2>
 <ul>
 <li>Geometric anti-aliasing on curved surfaces</li>
 <li>Specular aliasing prevention on very smooth metals</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md118"></a>
+<h2><a class="anchor" id="autotoc_md127"></a>
 Gained</h2>
 <ul>
 <li>✅ Cross-vendor consistency</li>
@@ -289,7 +289,7 @@ Gained</h2>
 <li>✅ Minor performance improvement</li>
 </ul>
 <p><b>Verdict</b>: FXAA already provides excellent AA. Loss of hardware-dependent roughness clamping is compensated by a stable analytic minimum and sphere-specific curvature clamping.</p>
-<h1><a class="anchor" id="autotoc_md119"></a>
+<h1><a class="anchor" id="autotoc_md128"></a>
 Derivatives vs Analytic Performance</h1>
 <p>A key finding during this synchronization effort was the trade-off between using GLSL built-ins and custom analytic math.</p>
 <table class="markdownTable">
@@ -305,13 +305,13 @@ Derivatives vs Analytic Performance</h1>
 <td class="markdownTableBodyLeft"><b>Implementation</b>   </td><td class="markdownTableBodyLeft">Trivial (1 line)   </td><td class="markdownTableBodyLeft">Complex (Custom math per primitive)   </td></tr>
 </table>
 <p><b>Cost Evaluation</b>: While analytic math uses more ALU cycles (approx. 5-10 more), it avoids the hardware synchronization latency of quads and ensures that regression maps between Intel, NVIDIA, and AMD remain dark (bit-perfect parity).</p>
-<h1><a class="anchor" id="autotoc_md120"></a>
+<h1><a class="anchor" id="autotoc_md129"></a>
 Validation Results</h1>
-<h2><a class="anchor" id="autotoc_md121"></a>
+<h2><a class="anchor" id="autotoc_md130"></a>
 Visual Inspection</h2>
 <div class="fragment"><div class="line">Before:  Intel ✅  |  NVIDIA ❌ (halos, buggy FXAA)</div>
 <div class="line">After:   Intel ✅  |  NVIDIA ✅ (identical rendering)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md122"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md131"></a>
 Reference Metrics (FXAA Synthetic Test)</h2>
 <p>Target values based on correct Intel HD 4600 behavior (Sphere Pattern):</p>
 <table class="markdownTable">
@@ -327,13 +327,13 @@ Reference Metrics (FXAA Synthetic Test)</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Conclusion</b>: NVIDIA rendering is now mathematically identical to Intel (delta &lt; 0.1%), confirming the precision fix is successful. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md123"></a>
+<h1><a class="anchor" id="autotoc_md132"></a>
 Files Modified</h1>
 <ul>
 <li><code><a class="el" href="fxaa_8glsl.html">shaders/postprocess/fxaa.glsl</a></code></li>
 <li><code><a class="el" href="pbr__functions_8glsl.html">shaders/pbr_functions.glsl</a></code></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md124"></a>
+<h1><a class="anchor" id="autotoc_md133"></a>
 References</h1>
 <ul>
 <li><a class="el" href="md_docs_2shader-cross-gpu-compatibility.html">shader-cross-gpu-compatibility.md</a> - General guidelines</li>

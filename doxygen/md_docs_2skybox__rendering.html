@@ -221,8 +221,8 @@ $(document).ready(function(){initNavTree('md_docs_2skybox__rendering.html',''); 
   <div class="headertitle"><div class="title">Skybox Rendering Technique (Equirectangular)</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md318"></a> The engine uses direct <b>Equirectangular</b> mapping for the environment background. This is more memory-efficient as it avoids converting to and storing a generated cubemap.</p>
-<h2><a class="anchor" id="autotoc_md319"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md328"></a> The engine uses direct <b>Equirectangular</b> mapping for the environment background. This is more memory-efficient as it avoids converting to and storing a generated cubemap.</p>
+<h2><a class="anchor" id="autotoc_md329"></a>
 Early-Z Optimization</h2>
 <p>To maximize performance on integrated GPUs, the skybox is rendered <b>after</b> the scene objects.</p>
 <ol type="1">
@@ -230,7 +230,7 @@ Early-Z Optimization</h2>
 <li><b>Depth Test</b>: By using <code>glDepthFunc(GL_LEQUAL)</code>, the GPU automatically rejects skybox fragments that are occluded by 3D objects (like the icosphere) before launching the fragment shader.</li>
 <li><b>Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a></b>: Performs an inverse spherical projection to sample the 2D HDR texture.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md320"></a>
+<h2><a class="anchor" id="autotoc_md330"></a>
 Optimization Diagram</h2>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_14.svg" width="1162" height="424"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
@@ -244,46 +244,45 @@ Optimization Diagram</h2>
 <div class="line">    <span class="keywordflow">return</span> uv;</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line"><span class="keywordtype">void</span> <a class="code hl_function" href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a>() {</div>
+<div class="line"><span class="keywordtype">void</span> skybox_main() {</div>
 <div class="line">    vec3 dir = normalize(v_direction);</div>
 <div class="line">    vec2 uv = <a class="code hl_function" href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">SampleEquirectangular</a>(dir);</div>
-<div class="line">    <a class="code hl_variable" href="bloom__downsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">FragColor</a> = textureLod(<a class="code hl_variable" href="background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623">environmentMap</a>, uv, <a class="code hl_variable" href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a>);</div>
+<div class="line">    out_color_val = textureLod(<a class="code hl_variable" href="background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623">environmentMap</a>, uv, <a class="code hl_variable" href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a>);</div>
 <div class="line">}</div>
 <div class="ttc" id="abackground_8frag_html_a129ec0b6641bbab43cb32e612d8d0623"><div class="ttname"><a href="background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623">environmentMap</a></div><div class="ttdeci">uniform sampler2D environmentMap</div><div class="ttdef"><b>Definition</b> background.frag:7</div></div>
 <div class="ttc" id="abackground_8frag_html_a4501d7fad1ba623dd0c9b06456c9813c"><div class="ttname"><a href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a></div><div class="ttdeci">uniform float blur_lod</div><div class="ttdef"><b>Definition</b> background.frag:8</div></div>
 <div class="ttc" id="abackground_8frag_html_abfb45c403721e8c71065fd9b5407b39a"><div class="ttname"><a href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">SampleEquirectangular</a></div><div class="ttdeci">vec2 SampleEquirectangular(vec3 v)</div><div class="ttdef"><b>Definition</b> background.frag:11</div></div>
-<div class="ttc" id="abackground_8frag_html_acdef7a1fd863a6d3770c1268cb06add3"><div class="ttname"><a href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a></div><div class="ttdeci">void main()</div><div class="ttdef"><b>Definition</b> background.frag:21</div></div>
 <div class="ttc" id="abackground_8frag_html_ae9a1943fd19907f9c61975876aaa9d80"><div class="ttname"><a href="background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80">invAtan</a></div><div class="ttdeci">const vec2 invAtan</div><div class="ttdef"><b>Definition</b> background.frag:10</div></div>
-<div class="ttc" id="abloom__downsample_8frag_html_a4caec1245a11a388981d2112932ad7b3"><div class="ttname"><a href="bloom__downsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">FragColor</a></div><div class="ttdeci">out vec3 FragColor</div><div class="ttdef"><b>Definition</b> bloom_downsample.frag:10</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md321"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md331"></a>
 C Implementation (View Matrix)</h2>
 <p>We remove the <b>translation</b> component from the view matrix so the skybox appears infinitely far away (centered on the camera):</p>
-<div class="fragment"><div class="line"><span class="comment">/* Copy view and strip translation */</span></div>
+<div class="fragment"><div class="line"><span class="comment">/* Copy view and strip translation to keep skybox at infinity */</span></div>
 <div class="line">mat4 view_sky;</div>
 <div class="line">glm_mat4_copy(<a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>, view_sky);</div>
 <div class="line">view_sky[3][0] = 0.0f;</div>
 <div class="line">view_sky[3][1] = 0.0f;</div>
 <div class="line">view_sky[3][2] = 0.0f;</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">/* Compute inverse view-projection */</span></div>
+<div class="line"><span class="comment">/* Compute inverse view-projection for equirect sampling */</span></div>
 <div class="line">mat4 inv_vp_sky;</div>
 <div class="line">glm_mat4_mul(proj, view_sky, inv_vp_sky);</div>
 <div class="line">glm_mat4_inv(inv_vp_sky, inv_vp_sky);</div>
 <div class="ttc" id="apbr__ibl__billboard_8frag_html_a7ab66495f9aae7ab34147735223f7c6d"><div class="ttname"><a href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a></div><div class="ttdeci">uniform mat4 view</div><div class="ttdef"><b>Definition</b> pbr_ibl_billboard.frag:25</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md322"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md332"></a>
 🔍 Technical Details</h1>
-<h2><a class="anchor" id="autotoc_md323"></a>
+<h2><a class="anchor" id="autotoc_md333"></a>
 Mipmap Sampling</h2>
 <p>Using <code>textureLod</code> with an equirectangular texture allows precise control over bluriness:</p><ul>
 <li><b>LOD 0</b>: Sharp environment.</li>
 <li><b>LOD &gt; 0</b>: Blurred environment (useful for PBR background or debugging).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md324"></a>
+<h2><a class="anchor" id="autotoc_md334"></a>
 Orientation Correction</h2>
 <p>The inversion <code>uv.y = 0.5 - uv.y</code> is crucial to map the "top" of the HDR image to the "top" of the 3D world space.</p>
-<h1><a class="anchor" id="autotoc_md325"></a>
+<h1><a class="anchor" id="autotoc_md335"></a>
 🎨 Full Workflow</h1>
-<div class="fragment"><div class="line"><span class="keywordtype">void</span> render_scene(<a class="code hl_struct" href="structApp.html">App</a>* app) {</div>
+<div class="fragment"><div class="line"><span class="comment">// Main render loop integration</span></div>
+<div class="line"><span class="keywordtype">void</span> render_scene_example(<a class="code hl_struct" href="structApp.html">App</a>* app) {</div>
 <div class="line">    <span class="comment">// 1. View Matrix without translation</span></div>
 <div class="line">    mat4 view_sky;</div>
 <div class="line">    glm_mat4_copy(app-&gt;view, view_sky);</div>
@@ -305,7 +304,7 @@ Orientation Correction</h2>
 <div class="ttc" id="astructApp_html_ab6bf6186f400d8a1ce56212151e2c61b"><div class="ttname"><a href="structApp.html#ab6bf6186f400d8a1ce56212151e2c61b">App::skybox</a></div><div class="ttdeci">Skybox skybox</div><div class="ttdef"><b>Definition</b> app.h:110</div></div>
 <div class="ttc" id="astructApp_html_ac34cc768f96afb050926f49ea56c84ab"><div class="ttname"><a href="structApp.html#ac34cc768f96afb050926f49ea56c84ab">App::skybox_shader</a></div><div class="ttdeci">GLuint skybox_shader</div><div class="ttdef"><b>Definition</b> app.h:144</div></div>
 <div class="ttc" id="astructApp_html_acdf677731e707e8a4bc70d37d9b62c31"><div class="ttname"><a href="structApp.html#acdf677731e707e8a4bc70d37d9b62c31">App::env_lod</a></div><div class="ttdeci">float env_lod</div><div class="ttdef"><b>Definition</b> app.h:162</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md326"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md336"></a>
 🌟 Advantages</h1>
 <ol type="1">
 <li><b>Performance</b>: No complex matrix math, just zeroing 3 floats.</li>
@@ -313,33 +312,33 @@ Orientation Correction</h2>
 <li><b>Robustness</b>: Standard industry technique.</li>
 <li><b>Quality</b>: Seamless infinite background.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md327"></a>
+<h1><a class="anchor" id="autotoc_md337"></a>
 📝 Important Notes</h1>
 <ul>
 <li>Use <code>glDepthFunc(GL_LEQUAL)</code> so the skybox is drawn at the back processing.</li>
 <li>The skybox does not write significant depth.</li>
 <li>The LOD (blur_lod) allows controlling the environment blur.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md328"></a>
+<h1><a class="anchor" id="autotoc_md338"></a>
 🔗 Python → C Equivalence</h1>
-<h2><a class="anchor" id="autotoc_md329"></a>
+<h2><a class="anchor" id="autotoc_md339"></a>
 Python (moderngl)</h2>
-<div class="fragment"><div class="line">view = camera.matrix</div>
-<div class="line">view[3][0] = 0</div>
-<div class="line">view[3][1] = 0</div>
-<div class="line">view[3][2] = 0</div>
-<div class="line">inv_view_proj = glm.inverse(projection * view)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md330"></a>
+<div class="fragment"><div class="line">view_m = camera.matrix</div>
+<div class="line">view_m[3][0] = 0</div>
+<div class="line">view_m[3][1] = 0</div>
+<div class="line">view_m[3][2] = 0</div>
+<div class="line">inv_view_proj_sky = glm.inverse(projection_matrix * view_m)</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md340"></a>
 C (cglm)</h2>
-<div class="fragment"><div class="line">mat4 <a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>;</div>
-<div class="line">glm_lookat(camera_pos, target, up, <a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>);</div>
-<div class="line"><a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>[3][0] = 0.0f;</div>
-<div class="line"><a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>[3][1] = 0.0f;</div>
-<div class="line"><a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>[3][2] = 0.0f;</div>
+<div class="fragment"><div class="line">mat4 view_m;</div>
+<div class="line">glm_lookat(camera_pos, target, up, view_m);</div>
+<div class="line">view_m[3][0] = 0.0f;</div>
+<div class="line">view_m[3][1] = 0.0f;</div>
+<div class="line">view_m[3][2] = 0.0f;</div>
 <div class="line"> </div>
-<div class="line">mat4 inv_view_proj;</div>
-<div class="line">glm_mat4_mul(proj, <a class="code hl_variable" href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>, inv_view_proj);</div>
-<div class="line">glm_mat4_inv(inv_view_proj, inv_view_proj);</div>
+<div class="line">mat4 inv_view_proj_sky;</div>
+<div class="line">glm_mat4_mul(proj_matrix, view_m, inv_view_proj_sky);</div>
+<div class="line">glm_mat4_inv(inv_view_proj_sky, inv_view_proj_sky);</div>
 </div><!-- fragment --><p><b>Perfectly equivalent!</b> ✅ </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

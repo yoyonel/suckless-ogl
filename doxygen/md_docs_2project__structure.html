@@ -221,8 +221,8 @@ $(document).ready(function(){initNavTree('md_docs_2project__structure.html','');
   <div class="headertitle"><div class="title">Project Structure: Refactored Icosphere</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md239"></a> </p>
-<h1><a class="anchor" id="autotoc_md240"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md248"></a> </p>
+<h1><a class="anchor" id="autotoc_md249"></a>
 Modular Architecture</h1>
 <p>The code has been refactored according to the following principles:</p><ul>
 <li><b>Separation of Concerns</b>: Each module has a clear function.</li>
@@ -230,7 +230,7 @@ Modular Architecture</h1>
 <li><b>Reusability</b>: Components can be used independently.</li>
 <li><b>Maintainability</b>: Code that is easier to read, test, and modify.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md241"></a>
+<h1><a class="anchor" id="autotoc_md250"></a>
 Folder Structure</h1>
 <div class="fragment"><div class="line">icosphere/</div>
 <div class="line">├── src/</div>
@@ -260,13 +260,13 @@ Folder Structure</h1>
 <div class="line">│   ├── postprocess/        # FX Shaders (Bloom, DoF, FXAA)</div>
 <div class="line">│   ├── pbr_ibl_*.vert/frag # Physically Based Rendering Shaders</div>
 <div class="line">│   └── ...</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md242"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md251"></a>
 Architecture Diagram</h1>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_12.svg" width="720" height="614"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h1><a class="anchor" id="autotoc_md243"></a>
+<h1><a class="anchor" id="autotoc_md252"></a>
 Modules and Responsibilities</h1>
-<h2><a class="anchor" id="autotoc_md244"></a>
+<h2><a class="anchor" id="autotoc_md253"></a>
 1. Core (App)</h2>
 <ul>
 <li><code><a class="el" href="app_8c.html">app.c</a></code>: Conductor. Initializes, updates, renders.</li>
@@ -275,65 +275,65 @@ Modules and Responsibilities</h1>
 <li><code><a class="el" href="app__env_8c.html">app_env.c</a></code>: Handles asynchronous loading and IBL generation.</li>
 <li><code><a class="el" href="app__scene_8c.html">app_scene.c</a></code>: Handles instance buffers and sphere draw calls.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md245"></a>
+<h2><a class="anchor" id="autotoc_md254"></a>
 2. Post-Processing</h2>
 <ul>
 <li>Complex pipeline managed by <code><a class="el" href="postprocess_8c.html">postprocess.c</a></code>.</li>
 <li>Supports: Auto-Exposure, Bloom, DoF, Motion Blur, FXAA, Vignette...</li>
 <li>Uses a standardized UBO (<code>PostProcessUBODef</code>) for shaders.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md246"></a>
+<h2><a class="anchor" id="autotoc_md255"></a>
 3. Physical Rendering (PBR)</h2>
 <ul>
 <li><code><a class="el" href="pbr_8c.html">pbr.c</a></code>: Configures PBR shaders.</li>
 <li><code><a class="el" href="material_8c.html">material.c</a></code>: Manages the material library.</li>
 <li><code><a class="el" href="sphere__sorting_8c.html">sphere_sorting.c</a></code>: Sorts transparent instances (Back-to-Front).</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md247"></a>
+<h1><a class="anchor" id="autotoc_md256"></a>
 Improvements over Original Code</h1>
-<h2><a class="anchor" id="autotoc_md248"></a>
+<h2><a class="anchor" id="autotoc_md257"></a>
 ✅ Organization</h2>
 <ul>
 <li>Code divided into logical modules.</li>
 <li>Headers separating interface and implementation.</li>
 <li>Easy to find and modify specific features.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md249"></a>
+<h2><a class="anchor" id="autotoc_md258"></a>
 ✅ Reusability</h2>
 <ul>
 <li>Modules can be reused in other projects.</li>
 <li>Clear and documented APIs.</li>
 <li>Encapsulated data structures.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md250"></a>
+<h2><a class="anchor" id="autotoc_md259"></a>
 ✅ Maintainability</h2>
 <ul>
 <li>Clearly defined responsibilities.</li>
 <li>Less coupling between components.</li>
 <li>Easier to debug and test.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md251"></a>
+<h2><a class="anchor" id="autotoc_md260"></a>
 ✅ Extensibility</h2>
 <ul>
 <li>Easy to add new features.</li>
 <li>Example: adding a new geometry type following the icosphere model.</li>
 <li>Modular shader system.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md252"></a>
+<h2><a class="anchor" id="autotoc_md261"></a>
 ✅ Memory Management</h2>
 <ul>
 <li>Clear init/cleanup functions for each module.</li>
 <li>Reduced risk of memory leaks.</li>
 <li>Well-defined resource lifecycle.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md253"></a>
+<h2><a class="anchor" id="autotoc_md262"></a>
 ✅ Readability</h2>
 <ul>
 <li>Descriptive function names with module prefixes.</li>
 <li>Consistent code structure.</li>
 <li>Comments at key locations.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md254"></a>
+<h1><a class="anchor" id="autotoc_md263"></a>
 Compilation and Execution</h1>
 <div class="fragment"><div class="line"># Compile the project</div>
 <div class="line">make</div>
@@ -349,9 +349,9 @@ Compilation and Execution</h1>
 <div class="line"> </div>
 <div class="line"># Lint the code (static analysis - Zero Warning Project)</div>
 <div class="line">make lint</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md255"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md264"></a>
 Controls</h1>
-<h2><a class="anchor" id="autotoc_md256"></a>
+<h2><a class="anchor" id="autotoc_md265"></a>
 🖱️ Mouse Camera Control</h2>
 <p><b><a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> Mode Enabled (Default)</b>:</p><ul>
 <li><b>Move Mouse</b>: Orient camera (yaw/pitch).</li>
@@ -369,7 +369,7 @@ Controls</h1>
 <li>Mouse movements do not affect the camera.</li>
 <li>Useful for interacting with the interface.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md257"></a>
+<h2><a class="anchor" id="autotoc_md266"></a>
 ⌨️ Keyboard Control</h2>
 <p><b>Display</b>:</p><ul>
 <li><b>W</b>: Toggle wireframe/solid.</li>
@@ -379,7 +379,7 @@ Controls</h1>
 <li><b>F</b>: Toggle between Windowed and Fullscreen mode.</li>
 <li><b>ESC</b>: Quit the application.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md258"></a>
+<h1><a class="anchor" id="autotoc_md267"></a>
 Dependencies</h1>
 <ul>
 <li><b>GLFW</b>: Window management and inputs.</li>
@@ -387,7 +387,7 @@ Dependencies</h1>
 <li><b>cglm</b>: Vector/Matrix mathematics.</li>
 <li><b>stb_image</b>: HDR image loading.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md259"></a>
+<h1><a class="anchor" id="autotoc_md268"></a>
 Technical Notes</h1>
 <ul>
 <li>Uses OpenGL 4.4 Core Profile.</li>

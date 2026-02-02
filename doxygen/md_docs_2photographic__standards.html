@@ -221,23 +221,23 @@ $(document).ready(function(){initNavTree('md_docs_2photographic__standards.html'
   <div class="headertitle"><div class="title">Photographic Standards for Real-Time Rendering</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md164"></a> Comprehensive guide to values and photographic concepts used in modern game engines and tone mapping.</p>
-<h1><a class="anchor" id="autotoc_md165"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md173"></a> Comprehensive guide to values and photographic concepts used in modern game engines and tone mapping.</p>
+<h1><a class="anchor" id="autotoc_md174"></a>
 📸 The 18% Middle Gray - The Cornerstone</h1>
-<h2><a class="anchor" id="autotoc_md166"></a>
+<h2><a class="anchor" id="autotoc_md175"></a>
 Photographic Origin</h2>
 <p><b>18% gray</b> (0.18 in linear space) has been the <b>universal standard of photometry</b> since the 1940s.</p>
 <div class="fragment"><div class="line">Value: 0.18 (linear) = 18% reflectance</div>
 <div class="line">sRGB: ~119/255 = 0.466</div>
 <div class="line">Hex: #777777</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md167"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md176"></a>
 Why 18%?</h2>
 <ol type="1">
 <li><b>Human Perception</b>: Our eye perceives 18% reflectance as a neutral "middle tone".</li>
 <li><b>Statistical Average</b>: The majority of real-world scenes have an average reflectance of ~12-20%.</li>
 <li><b>Ansel Adams' Zone System</b>: Zone V (middle of the 0-X scale) = 18%.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md168"></a>
+<h2><a class="anchor" id="autotoc_md177"></a>
 Applications</h2>
 <ul>
 <li><b>Gray cards</b> for camera calibration.</li>
@@ -245,9 +245,9 @@ Applications</h2>
 <li><b>Lightroom/Photoshop</b>: Target for auto-exposure.</li>
 <li><b>Unreal Engine, Unity</b>: Default Key value for eye adaptation.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md169"></a>
+<h1><a class="anchor" id="autotoc_md178"></a>
 🎚️ Photographic Values Scale</h1>
-<h2><a class="anchor" id="autotoc_md170"></a>
+<h2><a class="anchor" id="autotoc_md179"></a>
 Exposure Values (EV)</h2>
 <p>The EV scale measures the quantity of light:</p>
 <table class="markdownTable">
@@ -268,11 +268,11 @@ Exposure Values (EV)</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>+20</b>   </td><td class="markdownTableBodyNone">Direct Sun (surface)   </td><td class="markdownTableBodyNone">1,000,000   </td><td class="markdownTableBodyNone">Extreme HDR   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md171"></a>
+<h2><a class="anchor" id="autotoc_md180"></a>
 Visual EV Scale</h2>
 <div class="dotgraph">
 <iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_9.svg" width="1339" height="59"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h2><a class="anchor" id="autotoc_md172"></a>
+<h2><a class="anchor" id="autotoc_md181"></a>
 Auto-Exposure Formula</h2>
 <div class="fragment"><div class="line">targetExposure = keyValue / sceneLuminance</div>
 </div><!-- fragment --><p><b>Examples</b> (with keyValue = 0.18):</p>
@@ -281,9 +281,9 @@ Auto-Exposure Formula</h2>
 <li>Middle gray (0.18 cd/m²) → Exposure = 1.0 (neutral)</li>
 <li>Bright scene (10 cd/m²) → Exposure = 0.018 (attenuation)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md173"></a>
+<h1><a class="anchor" id="autotoc_md182"></a>
 🌈 Material Reflectance Values</h1>
-<h2><a class="anchor" id="autotoc_md174"></a>
+<h2><a class="anchor" id="autotoc_md183"></a>
 Standard Albedos (Physically Based)</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -306,17 +306,21 @@ Standard Albedos (Physically Based)</h2>
 <blockquote class="doxtable">
 <p>&zwj;⚠️ In PBR, albedos exceeding 0.90 are non-physical (except for special materials). </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md175"></a>
+<h1><a class="anchor" id="autotoc_md184"></a>
 📊 Tone Mapping - Standard Curves</h1>
-<h2><a class="anchor" id="autotoc_md176"></a>
+<div class="image">
+<img src="tonemapping_curves.png" alt=""/>
+<div class="caption">
+Tone Mapping Curves Comparison</div></div>
+    <h2><a class="anchor" id="autotoc_md185"></a>
 1. Linear (Naive)</h2>
 <div class="fragment"><div class="line">output = input * exposure</div>
 </div><!-- fragment --><p><b>Problem</b>: Brutal clipping at 1.0, loss of HDR details.</p>
-<h2><a class="anchor" id="autotoc_md177"></a>
+<h2><a class="anchor" id="autotoc_md186"></a>
 2. Reinhard (Simple)</h2>
 <div class="fragment"><div class="line">output = input / (input + 1.0)</div>
 </div><!-- fragment --><p><b>Pros</b>: Soft compression, never clips. <b>Cons</b>: Desaturates colors too much.</p>
-<h2><a class="anchor" id="autotoc_md178"></a>
+<h2><a class="anchor" id="autotoc_md187"></a>
 3. Uncharted 2 / Hable (Filmic)</h2>
 <div class="fragment"><div class="line"><span class="comment">// Reproduces film response</span></div>
 <div class="line">vec3 FilmicToneMapping(vec3 x) {</div>
@@ -335,7 +339,7 @@ Standard Albedos (Physically Based)</h2>
 <li><b>Shoulder</b>: Compresses highlights.</li>
 <li><b>Linear section</b>: Preserves mid-tones.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md179"></a>
+<h2><a class="anchor" id="autotoc_md188"></a>
 4. ACES (Academy Color Encoding System)</h2>
 <p><b>THE Hollywood Standard</b> (default in Unreal Engine).</p>
 <div class="fragment"><div class="line">vec3 ACESFilm(vec3 x) {</div>
@@ -351,11 +355,15 @@ Standard Albedos (Physically Based)</h2>
 <li>Smooth transition to white.</li>
 <li>Industry standard (Movies, AAA Games).</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md180"></a>
+<h1><a class="anchor" id="autotoc_md189"></a>
 🎮 Recommended Values for Games</h1>
-<h2><a class="anchor" id="autotoc_md181"></a>
+<h2><a class="anchor" id="autotoc_md190"></a>
 Auto-Exposure Settings</h2>
-<table class="markdownTable">
+<div class="image">
+<img src="exposure_adaptation.jpg" alt=""/>
+<div class="caption">
+Temporal Adaptation Curves</div></div>
+    <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Parameter   </th><th class="markdownTableHeadNone">Conservative Value   </th><th class="markdownTableHeadNone">Dynamic Value   </th><th class="markdownTableHeadNone">Usage    </th></tr>
 <tr class="markdownTableRowOdd">
@@ -369,9 +377,13 @@ Auto-Exposure Settings</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>speedDown</b>   </td><td class="markdownTableBodyNone">1.0   </td><td class="markdownTableBodyNone">0.5 - 2.0   </td><td class="markdownTableBodyNone">Pupil Adaptation   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md182"></a>
+<h2><a class="anchor" id="autotoc_md191"></a>
 Examples by Genre</h2>
-<p><b>Realistic FPS</b> (like Call of Duty) </p><div class="fragment"><div class="line">keyValue = 0.15        <span class="comment">// Slightly darker (tactical)</span></div>
+<div class="image">
+<img src="exposure_genres.jpg" alt=""/>
+<div class="caption">
+Auto-Exposure Comparison by Genre</div></div>
+    <p><b>Realistic FPS</b> (like Call of Duty) </p><div class="fragment"><div class="line">keyValue = 0.15        <span class="comment">// Slightly darker (tactical)</span></div>
 <div class="line">minLuminance = 0.8</div>
 <div class="line">maxLuminance = 8000</div>
 <div class="line">speedUp = 3.0          <span class="comment">// Fast adaptation (gameplay)</span></div>
@@ -386,9 +398,9 @@ Examples by Genre</h2>
 <div class="line">maxLuminance = 1000</div>
 <div class="line">speedUp = 0.5          <span class="comment">// Very slow adaptation</span></div>
 <div class="line">speedDown = 2.0        <span class="comment">// Fast return to black</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md183"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md192"></a>
 🔧 Interesting Alternative Values</h1>
-<h2><a class="anchor" id="autotoc_md184"></a>
+<h2><a class="anchor" id="autotoc_md193"></a>
 Key Value Alternatives</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -404,47 +416,47 @@ Key Value Alternatives</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><b>0.50</b>   </td><td class="markdownTableBodyNone">Very High-Key   </td><td class="markdownTableBodyNone">Very bright   </td><td class="markdownTableBodyNone">Artistic overexposure   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md185"></a>
+<h2><a class="anchor" id="autotoc_md194"></a>
 Middle Gray in sRGB</h2>
 <p>Warning: 18% <b>linear</b> ≠ 18% <b>sRGB</b>!</p>
 <div class="fragment"><div class="line">Linear 0.18  → sRGB 0.466  (gamma 2.2)</div>
 <div class="line">Linear 0.18  → 8-bit ~119</div>
 </div><!-- fragment --><p><b>Common Trap</b>: Using 0.18 directly in sRGB results in a gray that is too dark!</p>
-<h1><a class="anchor" id="autotoc_md186"></a>
+<h1><a class="anchor" id="autotoc_md195"></a>
 📐 Useful Formulas</h1>
-<h2><a class="anchor" id="autotoc_md187"></a>
+<h2><a class="anchor" id="autotoc_md196"></a>
 Luminance Conversion</h2>
 <div class="fragment"><div class="line"><span class="comment">// Rec. 709 (HD TV standard)</span></div>
-<div class="line"><span class="keywordtype">float</span> luminance = dot(<a class="code hl_variable" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>.rgb, vec3(0.2126, 0.7152, 0.0722));</div>
+<div class="line"><span class="keywordtype">float</span> luminance_709 = dot(<a class="code hl_variable" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>.rgb, vec3(0.2126, 0.7152, 0.0722));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Alternative (Rec. 601 - SD TV)</span></div>
-<div class="line"><span class="keywordtype">float</span> luminance = dot(<a class="code hl_variable" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>.rgb, vec3(0.299, 0.587, 0.114));</div>
+<div class="line"><span class="keywordtype">float</span> luminance_601 = dot(<a class="code hl_variable" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>.rgb, vec3(0.299, 0.587, 0.114));</div>
 <div class="ttc" id="aui_8frag_html_a0a3e99eab94835ffca469f09cb4a24ef"><div class="ttname"><a href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a></div><div class="ttdeci">out vec4 color</div><div class="ttdef"><b>Definition</b> ui.frag:3</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md188"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md197"></a>
 EV ↔ Luminance Conversion</h2>
-<div class="fragment"><div class="line"><span class="keywordtype">float</span> ev = log2(luminance);</div>
-<div class="line"><span class="keywordtype">float</span> luminance = exp2(ev);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md189"></a>
+<div class="fragment"><div class="line"><span class="keywordtype">float</span> ev_val = log2(luminance_val);</div>
+<div class="line"><span class="keywordtype">float</span> luminance_res = exp2(ev_val);</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md198"></a>
 Temporal Adaptation</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">float</span> adaptationSpeed = (target &gt; current) ? speedUp : speedDown;</div>
 <div class="line"><span class="keywordtype">float</span> factor = 1.0 - exp(-deltaTime * adaptationSpeed);</div>
 <div class="line"><span class="keywordtype">float</span> newExposure = mix(current, target, factor);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md190"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md199"></a>
 🎨 Practical Workflow</h1>
-<h2><a class="anchor" id="autotoc_md191"></a>
+<h2><a class="anchor" id="autotoc_md200"></a>
 1. Initial Calibration</h2>
 <div class="fragment"><div class="line"><span class="comment">// Start with neutral values</span></div>
 <div class="line">keyValue = 0.18</div>
 <div class="line">minLuminance = 1.0</div>
 <div class="line">maxLuminance = 5000.0</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md192"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md201"></a>
 2. Test with Type Scenes</h2>
 <ul>
 <li><b>Dark Interior</b>: Check boost isn't excessive.</li>
 <li><b>Outdoor Day</b>: Check for no over-exposure.</li>
 <li><b>Rapid Transition</b>: Adjust adaptation speeds.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md193"></a>
+<h2><a class="anchor" id="autotoc_md202"></a>
 3. Artistic Tweaking</h2>
 <ul>
 <li><b>Too bright</b> → Reduce keyValue (0.14 - 0.16)</li>
@@ -452,7 +464,7 @@ Temporal Adaptation</h2>
 <li><b>Flashy/Unstable</b> → Reduce speedUp/Down</li>
 <li><b>Too slow</b> → Increase speedUp</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md194"></a>
+<h1><a class="anchor" id="autotoc_md203"></a>
 📚 Recommended Resources</h1>
 <ol type="1">
 <li><b>Film Lighting Simulator</b> (Unreal Engine docs)</li>
@@ -461,17 +473,17 @@ Temporal Adaptation</h2>
 <li><b>ACES Documentation</b> - Academy of Motion Picture Arts</li>
 <li>**"Real Shading in Unreal Engine 4"** - Brian Karis (SIGGRAPH 2013)</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md195"></a>
+<h1><a class="anchor" id="autotoc_md204"></a>
 ✨ Bonus: Exotic Values</h1>
-<h2><a class="anchor" id="autotoc_md196"></a>
+<h2><a class="anchor" id="autotoc_md205"></a>
 Lunar Scenes</h2>
 <div class="fragment"><div class="line">keyValue = 0.09       <span class="comment">// Scotopic adaptation (rods)</span></div>
 <div class="line">minLuminance = 5.0    <span class="comment">// No boost, night vision</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md197"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md206"></a>
 Underwater</h2>
 <div class="fragment"><div class="line">keyValue = 0.22       <span class="comment">// Light diffusion compensation</span></div>
 <div class="line">speedUp = 0.3         <span class="comment">// Very slow adaptation (water)</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md198"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md207"></a>
 Space</h2>
 <div class="fragment"><div class="line">minLuminance = 10.0   <span class="comment">// Extreme contrast</span></div>
 <div class="line">maxLuminance = 100000 <span class="comment">// Direct sunlight without atmosphere</span></div>
