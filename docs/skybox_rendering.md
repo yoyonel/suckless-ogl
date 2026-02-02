@@ -82,7 +82,7 @@ vec2 SampleEquirectangular(vec3 v) {
     return uv;
 }
 
-void main() {
+void skybox_main() {
     vec3 dir = normalize(v_direction);
     vec2 uv = SampleEquirectangular(dir);
     FragColor = textureLod(environmentMap, uv, blur_lod);

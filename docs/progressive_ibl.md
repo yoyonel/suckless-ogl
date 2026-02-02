@@ -35,7 +35,7 @@ We pass a precise limit to the shader:
 // shaders/IBL/spmap.glsl & irmap.glsl
 uniform int u_max_y_slice; // Y limit of the current slice
 
-void main() {
+void main_task() {
     // ...
     // Surgical stop to avoid wasted workgroups on slice edges
     if (pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads

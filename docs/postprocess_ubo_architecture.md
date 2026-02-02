@@ -83,7 +83,7 @@ typedef struct {
     float fxaa_quality_edge_threshold;
     float fxaa_quality_edge_threshold_min;
     float _pad10;
-} PostProcessUBO;
+} PostProcessUBO_Layout;
 \endcode
 
 ### GLSL Block (ubo.glsl)
