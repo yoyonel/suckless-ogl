@@ -11,9 +11,9 @@ This project includes a containerized build and runtime environment for consiste
 
 ### Build the Image
 
-```bash
+\code{.bash}
 make docker-build
-```
+\endcode
 
 This creates an optimized container image with:
 - Multi-stage build (builder + minimal runtime)
@@ -22,9 +22,9 @@ This creates an optimized container image with:
 
 ### Run the Application
 
-```bash
+\code{.bash}
 make docker-run
-```
+\endcode
 
 Runs the application in a container with X11 forwarding to your host display.
 
@@ -40,14 +40,14 @@ The [`Dockerfile`](../Dockerfile) uses two stages:
 - Compiles in Release mode with parallel build
 - Copies only the final binary to `/tmp/app`
 
-```dockerfile
+\code{.dockerfile}
 RUN --mount=type=cache,target=/src/build \
     cmake -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang \
     && cmake --build build --parallel \
     && cp build/app /tmp/app
-```
+\endcode
 
 > [!TIP]
 > The cache mount persists CMake's build directory between builds, dramatically speeding up rebuilds by reusing compiled object files and fetched dependencies.
@@ -68,7 +68,7 @@ RUN --mount=type=cache,target=/src/build \
 
 The [`entrypoint.sh`](../scripts/setup_offline_deps.sh) script manages virtual display:
 
-```bash
+\code{.bash}
 #!/bin/bash
 set -e
 
@@ -87,7 +87,7 @@ export DISPLAY=:99
 
 # Cleanup
 kill $XVFB_PID 2>/dev/null || true
-```
+\endcode
 
 This enables:
 - **CI/CD testing** without physical display
@@ -98,13 +98,13 @@ This enables:
 
 The `.dockerignore` file excludes unnecessary files from the build context:
 
-```
+\code
 build/          # Build artifacts
 build-*/        # Coverage/debug builds
 .git/           # Git history
 docs/           # Documentation
 *.md            # Markdown files
-```
+\endcode
 
 This reduces context size and speeds up `docker build`.
 
@@ -132,34 +132,34 @@ This reduces context size and speeds up `docker build`.
 
 The Makefile auto-detects Docker or Podman:
 
-```makefile
+\code{.makefile}
 CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
-```
+\endcode
 
 To force a specific engine:
 
-```bash
+\code{.bash}
 CONTAINER_ENGINE=podman make docker-build
-```
+\endcode
 
 ### Incremental Builds
 
 Thanks to BuildKit cache mounts, subsequent builds are fast:
 
-```bash
+\code{.bash}
 # First build: ~2-3 minutes (fetch deps, compile everything)
 make docker-build
 
 # Modify src/shader.c
 # Second build: ~10-20 seconds (recompile only changed files)
 make docker-build
-```
+\endcode
 
 ### Running with Host X11
 
 The `docker-run` target forwards X11:
 
-```bash
+\code{.bash}
 make docker-run
 # Equivalent to:
 docker run --rm -it \
@@ -168,7 +168,7 @@ docker run --rm -it \
     -e DISPLAY=$DISPLAY \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     suckless-ogl /bin/bash -c "export DISPLAY=$DISPLAY && ./app"
-```
+\endcode
 
 > [!WARNING]
 > X11 forwarding requires `xhost +local:` which temporarily disables access control. This is handled automatically by the Makefile.
@@ -179,37 +179,37 @@ docker run --rm -it \
 
 Ensure BuildKit is enabled:
 
-```bash
+\code{.bash}
 # Docker
 export DOCKER_BUILDKIT=1
 
 # Podman (enabled by default)
-```
+\endcode
 
 ### Xvfb Fails to Start
 
 Check if port :99 is available:
 
-```bash
+\code{.bash}
 docker run --rm -it suckless-ogl /bin/bash
 # Inside container:
 Xvfb :99 -screen 0 1920x1080x24
-```
+\endcode
 
 ### X11 Permission Denied
 
 Reset xhost permissions:
 
-```bash
+\code{.bash}
 xhost +local:
 make docker-run
-```
+\endcode
 
 ## CI/CD Integration
 
 Example GitHub Actions workflow:
 
-```yaml
+\code{.yaml}
 - name: Build Docker Image
   run: make docker-build
 
@@ -221,4 +221,4 @@ Example GitHub Actions workflow:
       sleep 2 &&
       ./app --test
     "
-```
+\endcode

@@ -60,13 +60,13 @@ digraph CameraInput {
 ### Rotation Calculation (Euler Angles)
 The camera's direction vector is calculated from the Yaw and Pitch angles:
 
-```c
+\code{.c}
 // Convert Spherical to Cartesian coordinates
 front.x = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
 front.y = sin(glm_rad(pitch));
 front.z = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
 glm_normalize(front);
-```
+\endcode
 
 ### Input Handling
 The `mouse_callback` function handles the raw mouse input:
@@ -81,7 +81,8 @@ The `mouse_callback` function handles the raw mouse input:
 
 ## Usage
 To enable mouse capture:
-```c
+\code{.c}
+// Enable mouse capture in GLFW
 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-```
+\endcode
 To release the mouse (e.g., for UI interaction), switch to `GLFW_CURSOR_NORMAL`.

@@ -31,16 +31,17 @@ Without protection, the 31 excess rows overwrite/recalculate neighboring pixels,
 
 **The Fix (`u_max_y`)**:
 We pass a precise limit to the shader:
-```glsl
+\code{.glsl}
 // shaders/IBL/spmap.glsl & irmap.glsl
 uniform int u_max_y; // Y limit of the current slice
 
 void main() {
     // ...
+    // Surgical stop to avoid wasted workgroups on slice edges
     if (pos.y >= u_max_y) return; // Immediate stop for phantom threads
     // ...
 }
-```
+\endcode
 
 ---
 

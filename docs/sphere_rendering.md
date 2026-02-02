@@ -95,7 +95,7 @@ The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 -   h approx 0: Exact sphere edge.
 
 To smooth the edge, we use the derivative of the distance function to estimate pixel coverage:
-```glsl
+\code{.glsl}
 // Analytic intersection calculation
 float h = b*b - c; // Discriminant
 
@@ -108,7 +108,7 @@ float edgeFactor = smoothstep(0.0, fwidth(h), h);
 
 // Apply this factor to alpha or final color
 finalColor.a *= edgeFactor;
-```
+\endcode
 This `edgeFactor` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
 
 ---

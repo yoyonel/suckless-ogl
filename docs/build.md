@@ -32,24 +32,24 @@ For development without an internet connection, you can cache dependencies local
 
 ### 1. Preparation (Online)
 Run the following command while you have an active internet connection:
-```bash
+\code{.bash}
 make deps-setup
-```
+\endcode
 This script will clone `cglm`, `glad`, `stb`, `unity`, `cjson` into a local `deps/` directory (automatically ignored by Git).
 
 ### 2. Building (Offline)
 Once the `deps/` directory is populated, CMake will automatically detect it and use the local sources instead of trying to download them. Simply run:
-```bash
+\code{.bash}
 make
-```
+\endcode
 
 To remove the local cache, use `make deps-clean`.
 
 ### 3. Testing the Offline Mode
 To verify that the build truly doesn't reach the network, you can run it in a simulated offline environment:
-```bash
+\code{.bash}
 make offline-test
-```
+\endcode
 *Note: This command sets `http_proxy` to a non-existent local address to block network access. This method is used instead of `unshare -rn` to ensure compatibility with Distrobox/Podman.*
 
 ## Dependency Management
@@ -84,13 +84,13 @@ Dependencies are automatically managed via CMake's `FetchContent` module. No man
 
 The build is optimized for speed using parallel compilation:
 
-```bash
+\code{.bash}
 # Via the Makefile wrapper
 make all  # Executes cmake --build build --parallel
 
 # Directly via CMake
 cmake --build build -j$(nproc)
-```
+\endcode
 
 ## Logging System
 

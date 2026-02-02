@@ -22,9 +22,9 @@ Doxygen's default highlighting is limited for modern graphics programming. We've
 
 ### 1. Shader Support
 The `Doxyfile` maps graphics-specific extensions to C++ for basic indexing, while `highlight.js` handles the visual coloring:
-```properties
+\code{.properties}
 EXTENSION_MAPPING = glsl=C++ vert=C++ frag=C++ comp=C++
-```
+\endcode
 
 ### 2. Indentation Preservation Fix
 Doxygen encodes code blocks as a series of `<div class="line">` elements, which often breaks standard syntax highlighters. We've added a custom JavaScript orchestrator in `header.html` that:
@@ -53,9 +53,9 @@ Each diagram follows a strict "Ghost" style to ensure it feels like a native par
 - **Edges**: Refined grays (`#565f89`) with subtle arrowheads.
 
 **Example Token usage:**
-```properties
+\code{.properties}
 node [style="rounded", fillcolor="none", color="#414868", fontcolor="#c0caf5", penwidth=2];
-```
+\endcode
 
 ---
 
