@@ -45,11 +45,11 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 **Final Solution**: Disabled roughness clamping entirely.
 
 \code{.glsl}
-float compute_roughness_clamping(vec3 N, float roughness)
+float compute_roughness_clamping(vec3 N_val, float roughness_val)
 {
     // Disabled: derivatives have different precision on NVIDIA vs Intel
-    roughness = clamp(roughness, 0.0, 1.0);
-    return roughness;
+    roughness_val = clamp(roughness_val, 0.0, 1.0);
+    return roughness_val;
 }
 \endcode
 

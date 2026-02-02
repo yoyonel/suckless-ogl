@@ -162,7 +162,7 @@ view_m = camera.matrix
 view_m[3][0] = 0
 view_m[3][1] = 0
 view_m[3][2] = 0
-inv_view_proj_sky = glm.inverse(projection * view_m)
+inv_view_proj_sky = glm.inverse(projection_matrix * view_m)
 \endcode
 
 ### C (cglm)
@@ -174,7 +174,7 @@ view_m[3][1] = 0.0f;
 view_m[3][2] = 0.0f;
 
 mat4 inv_view_proj_sky;
-glm_mat4_mul(proj, view_m, inv_view_proj_sky);
+glm_mat4_mul(proj_matrix, view_m, inv_view_proj_sky);
 glm_mat4_inv(inv_view_proj_sky, inv_view_proj_sky);
 \endcode
 
