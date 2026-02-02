@@ -25,11 +25,11 @@ Best practices for writing OpenGL shaders that produce consistent results across
 **Example**:
 \code{.glsl}
 // Fragment shader (once)
-float luma_val = dot(sqrt(color), vec3(0.2126, 0.7152, 0.0722));
-FragColor = vec4(color_val, luma_val);  // Store in alpha
+float luma_val = dot(sqrt(color_val), vec3(0.2126, 0.7152, 0.0722));
+FragColor_out = vec4(color_val, luma_val);  // Store in alpha
 
 // Post-processing (reuse)
-float stored_luma = texture(tex, uv).a;  // Consistent across vendors
+float stored_luma = texture(tex_sampler, uv_coords).a;  // Consistent across vendors
 \endcode
 
 ### 3. Use Explicit Precision Qualifiers (Mobile/WebGL)
