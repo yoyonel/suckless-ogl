@@ -29,6 +29,8 @@ If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is a
 
 ### Ray-Tracing Diagram
 
+![Ray-Sphere Impostor Intersection (Technical)](./images/sphere_intersection.jpg)
+
 \dot
 digraph SphereLogic {
   rankdir=TD;
@@ -91,6 +93,8 @@ The spheres are not real 3D geometry but **Impostors** (2D Billboards on a Quad)
 If we brutally "cut" the pixel when the ray misses the sphere (`discard` if `discriminant < 0`), we get very visible jagged edges (aliasing). MSAA does not work well here because to the GPU, it's a flat Quad.
 
 ### Solution: Discriminant Smoothing
+
+![Analytic Anti-Aliasing (Smoothing Factor)](./images/sphere_analytic_aa.jpg)
 The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 -   h > 0: Intersection (inside sphere).
 -   h < 0: No intersection (outside sphere).
