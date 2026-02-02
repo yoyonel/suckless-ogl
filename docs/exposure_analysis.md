@@ -86,7 +86,7 @@ Exposure is applied at a specific stage in the final fragment shader:
 2.  Chrom. Aberration / Motion Blur.
 3.  Depth of Field.
 4.  Bloom (Added to color).
-5.  **>>> EXPOSURE <<<**: `color *= finalExposure`.
+5.  **>>> EXPOSURE <<<**: `color_val *= exposure_total`.
 6.  Color Grading & White Balance.
 7.  Tone Mapping (HDR to LDR).
 8.  Gamma Correction.
