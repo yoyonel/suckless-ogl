@@ -182,7 +182,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-docs
-          path: docs/doxygen/html/
+          path: site/
 
       - name: Deploy Documentation Preview (Pull Request)
         if: github.event_name == 'pull_request'
@@ -191,7 +191,7 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.number }}
           DEPLOY_DOMAIN="suckless-ogl-pr-$PR_NUMBER.surge.sh"
-          npx surge docs/doxygen/html/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
+          npx surge site/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
           echo "PREVIEW_URL=https://$DEPLOY_DOMAIN" >> $GITHUB_ENV
 
       - name: Comment Preview Link on PR
