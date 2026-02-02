@@ -24,7 +24,15 @@ TYPEDEF_HIDES_STRUCT   = YES
 INPUT                  = include/ \
                          src/ \
                          shaders/ \
-                         docs/api_index.md
+                         doxygen_resources/api_index.md
+
+# ... (skipping context)
+
+USE_MDFILE_AS_MAINPAGE = doxygen_resources/api_index.md
+
+# ...
+
+LAYOUT_FILE            = doxygen_resources/DoxygenLayout.xml
 IMAGE_PATH             = docs/
                          *.h \
                          *.vert \
@@ -34,7 +42,11 @@ EXCLUDE                = docs/doxygen-awesome-css
 EXCLUDE_PATTERNS       =
 RECURSIVE              = YES
 
-USE_MDFILE_AS_MAINPAGE = docs/api_index.md
+USE_MDFILE_AS_MAINPAGE = doxygen_resources/api_index.md
+
+# ...
+
+LAYOUT_FILE            = doxygen_resources/DoxygenLayout.xml
 
 # Configuration options related to the alphabetical class index
 ALPHABETICAL_INDEX     = YES
@@ -55,7 +67,7 @@ HTML_EXTRA_FILES       = docs/doxygen-awesome-darkmode-toggle.js \
 HTML_COLORSTYLE        = LIGHT
 HTML_DYNAMIC_MENUS     = NO
 HTML_DYNAMIC_SECTIONS  = NO
-LAYOUT_FILE            = docs/DoxygenLayout.xml
+LAYOUT_FILE            = doxygen_resources/DoxygenLayout.xml
 GENERATE_TREEVIEW      = YES
 DISABLE_INDEX          = NO
 FULL_SIDEBAR           = NO
