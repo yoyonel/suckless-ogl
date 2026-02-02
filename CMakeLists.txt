@@ -151,9 +151,28 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-# 4. GLFW (System Package)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLFW3 REQUIRED glfw3)
+# 4. GLFW (System Package or FetchContent)
+find_package(PkgConfig QUIET)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(GLFW3 QUIET glfw3)
+endif()
+
+if(NOT GLFW3_FOUND)
+    message(STATUS "GLFW3 not found via pkg-config, fetching via FetchContent...")
+    FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.3.8
+    )
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(glfw)
+    set(GLFW3_LIBRARIES glfw)
+else()
+    message(STATUS "GLFW3 found via pkg-config")
+endif()
 
 # 5. cJSON (Static Build - CONFIGURATION AMÉLIORÉE)
 message(STATUS "Fetching cJSON...")
