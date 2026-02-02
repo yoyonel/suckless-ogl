@@ -288,6 +288,7 @@ void test_postprocess_cache_overflow_benchmark(void)
 	// We expect this to be fast (cached hits after first 2), not slow
 	// (recompilation every time) Threshold: 0.05s (50ms). Uncached was
 	// ~110ms. Cached was ~10ms.
+	// This proves that the LRU policy is working by keeping the 32 most recent items.
 	TEST_ASSERT_LESS_THAN_FLOAT(0.05f, (float)cpu_time_used);
 
 	postprocess_cleanup(&post_proc);
