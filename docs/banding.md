@@ -10,6 +10,7 @@ Le système propose **5 modes distincts**, accessibles via un cycle sur la **tou
 digraph BandingFlow {
     rankdir=TD;
     bgcolor="transparent";
+    margin=0.1;
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
     edge [color="#565f89", fontcolor="#9aa5ce", fontsize=10];
 
@@ -46,13 +47,14 @@ Utilise une matrice de **Bayer 4x4** pour simuler des nuances intermédiaires vi
 digraph DitherFlow {
     rankdir=TD;
     bgcolor="transparent";
+    margin=0.1;
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
     edge [color="#565f89"];
 
-    P [label="Pixel Color"];
-    Add [label="Bayer Matrix Noise", fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
+    P [label="Scene Color"];
+    Add [label="Bayer 4x4 Noise", fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
     Q [label="Quantization", fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
-    Out [label="Retro Look", fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
+    Out [label="Retro Render", fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
 
     P -> Add -> Q -> Out;
 }
@@ -94,6 +96,7 @@ L'effet est implémenté dans le pipeline PBR via un Uber-shader optimisé.
 digraph TechnicalFlow {
     rankdir=TD;
     bgcolor="transparent";
+    margin=0.1;
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
     edge [color="#565f89"];
 
