@@ -69,6 +69,14 @@ plugins:
   - kroki:
       server_url: https://kroki.io
       fence_prefix: ""
+  - git-revision-date-localized:
+      type: date
+  - redirects:
+      redirect_maps: {}
+  - glightbox
+
+extra_javascript:
+  - https://unpkg.com/mermaid/dist/mermaid.min.js
 
 nav:
   - Home: index.md
