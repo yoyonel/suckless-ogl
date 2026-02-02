@@ -4,6 +4,8 @@
 #include "postprocess_presets.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
+#include <stdio.h>
+#include <time.h>
 
 static const int TestWidth = 640;
 static const int TestHeight = 480;
@@ -237,6 +239,28 @@ void test_postprocess_optimized_preset_switch(void)
 	postprocess_cleanup(&post_proc);
 }
 
+void test_postprocess_recompilation_benchmark(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+
+	unsigned int flags_a = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
+	unsigned int flags_b =
+	    (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN | POSTFX_BLOOM);
+
+	clock_t start = clock();
+	for (int i = 0; i < 20; ++i) {
+		postprocess_compile_optimized(&post_proc, flags_a);
+		postprocess_compile_optimized(&post_proc, flags_b);
+	}
+	clock_t end = clock();
+	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+	printf("Benchmark Time: %f seconds\n", cpu_time_used);
+
+	postprocess_cleanup(&post_proc);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -247,6 +271,7 @@ int main(void)
 	RUN_TEST(test_postprocess_resize);
 	RUN_TEST(test_postprocess_optimization_switch);
 	RUN_TEST(test_postprocess_optimized_preset_switch);
+	RUN_TEST(test_postprocess_recompilation_benchmark);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }
