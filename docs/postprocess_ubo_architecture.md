@@ -76,7 +76,13 @@ typedef struct {
     float vignette_roundness;
     float _pad1;             // 4 bytes
 
-    // ... subsequent effects
+    // ... (Grain, Exposure, etc.)
+
+    /* FXAA (16 bytes) */
+    float fxaa_quality_subpix;
+    float fxaa_quality_edge_threshold;
+    float fxaa_quality_edge_threshold_min;
+    float _pad10;
 } PostProcessUBO;
 ```
 
@@ -98,7 +104,13 @@ layout(std140, binding = 0) uniform PostProcessBlock {
     float v_roundness;
     float _pad1;
 
-    // ... subsequent effects
+    // ... (Grain, Exposure, etc.)
+
+    /* FXAA */
+    float fxaaQualitySubpix;
+    float fxaaQualityEdgeThreshold;
+    float fxaaQualityEdgeThresholdMin;
+    float _pad10;
 };
 ```
 
