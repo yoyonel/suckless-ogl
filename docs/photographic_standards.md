@@ -118,6 +118,8 @@ targetExposure = keyValue / sceneLuminance
 
 ## 📊 Tone Mapping - Standard Curves
 
+![Tone Mapping Curves Comparison](./images/tonemapping_curves.png)
+
 ### 1. Linear (Naive)
 
 \code{.glsl}
