@@ -856,7 +856,16 @@ static Shader* find_shader_in_cache(PostProcess* post_processing,
 {
 	for (int i = 0; i < post_processing->shader_cache_count; i++) {
 		if (post_processing->shader_cache[i].flags == static_flags) {
-			return post_processing->shader_cache[i].shader;
+			/* Found it! Move to front (LRU policy) */
+			if (i > 0) {
+				ShaderCacheEntry entry =
+				    post_processing->shader_cache[i];
+				memmove(&post_processing->shader_cache[1],
+				        &post_processing->shader_cache[0],
+				        (size_t)i * sizeof(ShaderCacheEntry));
+				post_processing->shader_cache[0] = entry;
+			}
+			return post_processing->shader_cache[0].shader;
 		}
 	}
 	return NULL;
@@ -933,15 +942,27 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		new_shader->silent_warnings = true;
 
 		/* Add to cache */
-		if (post_processing->shader_cache_count < SHADER_CACHE_SIZE) {
-			int idx = post_processing->shader_cache_count++;
-			post_processing->shader_cache[idx].flags = static_flags;
-			post_processing->shader_cache[idx].shader = new_shader;
+		/* Move existing entries down to make room at index 0 */
+		int move_count = post_processing->shader_cache_count;
+		if (move_count == SHADER_CACHE_SIZE) {
+			/* Cache full: Evict LRU (last entry) */
+			shader_destroy(
+			    post_processing
+			        ->shader_cache[SHADER_CACHE_SIZE - 1]
+			        .shader);
+			move_count--; /* Only move first 31 items */
 		} else {
-			LOG_WARNING(
-			    "suckless-ogl.postprocess",
-			    "Shader cache full, not caching this variant");
+			post_processing->shader_cache_count++;
 		}
+
+		if (move_count > 0) {
+			memmove(&post_processing->shader_cache[1],
+			        &post_processing->shader_cache[0],
+			        (size_t)move_count * sizeof(ShaderCacheEntry));
+		}
+
+		post_processing->shader_cache[0].flags = static_flags;
+		post_processing->shader_cache[0].shader = new_shader;
 
 		log_optimized_effects(static_flags);
 	} else {

@@ -261,6 +261,40 @@ void test_postprocess_recompilation_benchmark(void)
 	postprocess_cleanup(&post_proc);
 }
 
+void test_postprocess_cache_overflow_benchmark(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+
+	// Fill cache with 32 variants
+	for (unsigned int i = 0; i < 32; ++i) {
+		postprocess_compile_optimized(&post_proc, i);
+	}
+
+	// Now cycle between variant 32 (uncached) and 33 (uncached)
+	// With LRU, they should replace each other but stay cached if we alternate
+	// Wait, if we alternate 32 and 33:
+	// 32 replaces LRU.
+	// 33 replaces LRU.
+	// 32 found (LRU).
+	// 33 found (LRU).
+
+	clock_t start = clock();
+	for (int i = 0; i < 10; ++i) {
+		postprocess_compile_optimized(&post_proc, 32);
+		postprocess_compile_optimized(&post_proc, 33);
+	}
+	clock_t end = clock();
+	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+	printf("Overflow Benchmark Time: %f seconds\n", cpu_time_used);
+	// We expect this to be fast (cached hits after first 2), not slow (recompilation every time)
+	// Threshold: 0.05s (50ms). Uncached was ~110ms. Cached was ~10ms.
+	TEST_ASSERT_LESS_THAN_FLOAT(0.05f, (float)cpu_time_used);
+
+	postprocess_cleanup(&post_proc);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -272,6 +306,7 @@ int main(void)
 	RUN_TEST(test_postprocess_optimization_switch);
 	RUN_TEST(test_postprocess_optimized_preset_switch);
 	RUN_TEST(test_postprocess_recompilation_benchmark);
+	RUN_TEST(test_postprocess_cache_overflow_benchmark);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }
