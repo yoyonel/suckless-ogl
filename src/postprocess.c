@@ -947,8 +947,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		if (move_count == SHADER_CACHE_SIZE) {
 			/* Cache full: Evict LRU (last entry) */
 			shader_destroy(
-			    post_processing
-			        ->shader_cache[SHADER_CACHE_SIZE - 1]
+			    post_processing->shader_cache[SHADER_CACHE_SIZE - 1]
 			        .shader);
 			move_count--; /* Only move first 31 items */
 		} else {
