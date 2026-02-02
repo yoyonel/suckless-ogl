@@ -184,6 +184,8 @@ vec3 ACESFilm(vec3 x) {
 
 ### Auto-Exposure Settings
 
+![Temporal Adaptation Curves](./images/exposure_adaptation.jpg)
+
 | Parameter | Conservative Value | Dynamic Value | Usage |
 |-----------|--------------------|---------------|-------|
 | **keyValue** | 0.18 | 0.14 - 0.20 | Standard / Fast FPS |
@@ -193,6 +195,8 @@ vec3 ACESFilm(vec3 x) {
 | **speedDown** | 1.0 | 0.5 - 2.0 | Pupil Adaptation |
 
 ### Examples by Genre
+
+![Auto-Exposure Comparison by Genre](./images/exposure_genres.jpg)
 
 **Realistic FPS** (like Call of Duty)
 \code{.c}
