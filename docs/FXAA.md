@@ -105,9 +105,9 @@ Settings are controlled via the `PostProcessUBO`:
 
 \code{.glsl}
 // UBO Layout (std140)
-float fxaaQualitySubpix;           // Default: 0.75 (Range 0.0 - 1.0)
-float fxaaQualityEdgeThreshold;    // Default: 0.125 (0.166 for Perf, 0.063 for Quality)
-float fxaaQualityEdgeThresholdMin; // Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)
+float subpixel_quality_val;        // Default: 0.75 (Range 0.0 - 1.0)
+float edge_threshold_val;          // Default: 0.125 (0.166 for Perf, 0.063 for Quality)
+float edge_threshold_min_val;      // Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)
 \endcode
 
 - **Subpix**: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.
