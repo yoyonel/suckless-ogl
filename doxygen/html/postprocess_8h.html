@@ -245,10 +245,10 @@ $(document).ready(function(){initNavTree('postprocess_8h.html',''); initResizabl
 
 <p>High-level post-processing pipeline and effects.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="fx__auto__exposure_8h_source.html">effects/fx_auto_exposure.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fx__bloom_8h_source.html">effects/fx_bloom.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fx__dof_8h_source.html">effects/fx_dof.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fx__motion__blur_8h_source.html">effects/fx_motion_blur.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;effects/fx_auto_exposure.h&quot;</code><br />
+<code>#include &quot;effects/fx_bloom.h&quot;</code><br />
+<code>#include &quot;effects/fx_dof.h&quot;</code><br />
+<code>#include &quot;effects/fx_motion_blur.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
@@ -256,7 +256,7 @@ $(document).ready(function(){initNavTree('postprocess_8h.html',''); initResizabl
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for postprocess.h:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__incl.svg" width="100%" height="492"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -457,7 +457,7 @@ Functions</h2></td></tr>
 <tr class="separator:a791edfadb846c4f16be12dad6e4c2a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5066d2f5e623ccd15daa08b67596d555" id="r_a5066d2f5e623ccd15daa08b67596d555"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a5066d2f5e623ccd15daa08b67596d555">postprocess_set_chrom_abbr</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
 <tr class="separator:a5066d2f5e623ccd15daa08b67596d555"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a48d84f2ba23d4a1a5d678618d29e7b" id="r_a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_set_bloom</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float threshold, float soft_threshold)</td></tr>
+<tr class="memitem:a8a48d84f2ba23d4a1a5d678618d29e7b" id="r_a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_set_bloom</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>, float soft_threshold)</td></tr>
 <tr class="separator:a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aace03323c05270449d59a40291940736" id="r_aace03323c05270449d59a40291940736"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aace03323c05270449d59a40291940736">postprocess_set_dof</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float focal_distance, float focal_range, float bokeh_scale)</td></tr>
 <tr class="separator:aace03323c05270449d59a40291940736"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1094,7 +1094,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a9ad5053871c219c0dd7585fab39c18b0_cgraph.svg" width="100%" height="551"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a9ad5053871c219c0dd7585fab39c18b0_cgraph.svg" width="648" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1231,7 +1231,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="100%" height="438"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -1251,11 +1251,6 @@ Here is the call graph for this function:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_abc341dd9baaf0c15b099d5ad9c076f2b_cgraph.svg" width="420" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -1383,7 +1378,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aeba49bd333ab21356706ac98f5b180b5_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aeba49bd333ab21356706ac98f5b180b5_cgraph.svg" width="631" height="164"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -2074,11 +2069,6 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a86ca4160d60435cb54320bbcc68d0d95_cgraph.svg" width="383" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>

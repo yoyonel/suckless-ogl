@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['perf_5fmeasure_5flog_0',['PERF_MEASURE_LOG',['../perf__timer_8h.html#a4f737311402592e9e4f485894f1fb0f3',1,'perf_timer.h']]],
-  ['perf_5fmeasure_5fms_1',['PERF_MEASURE_MS',['../perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f',1,'perf_timer.h']]]
+  ['raii_5fsatisfy_5ffile_0',['RAII_SATISFY_FILE',['../utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c',1,'utils.h']]],
+  ['raii_5fsatisfy_5ffree_1',['RAII_SATISFY_FREE',['../utils_8h.html#a564c7a8df26c5d2ea991c2285332a857',1,'utils.h']]]
 ];

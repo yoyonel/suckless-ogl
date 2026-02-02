@@ -42,7 +42,7 @@ var NAVTREE =
       [ "Globals", "globals.html", [
         [ "All", "globals.html", "globals_dup" ],
         [ "Functions", "globals_func.html", "globals_func" ],
-        [ "Variables", "globals_vars.html", null ],
+        [ "Variables", "globals_vars.html", "globals_vars" ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
@@ -55,11 +55,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"functions_e.html",
-"icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45",
-"postprocess_8h.html#a86cb89e3a63a4ad9487dc629f8cc7790",
-"structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f",
-"structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0"
+"camera_8h_source.html",
+"icosphere_8c.html#a91438511f35ef99ee0e734ea745ea9ea",
+"perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c",
+"sphere__sorting_8h.html#a7890ccf202ae2cc18cd1ca552d355a2a",
+"structInstanceData.html#a3936ebb68a345bdbd5db631b2584a881",
+"ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['transfer_5fownership_0',['TRANSFER_OWNERSHIP',['../utils_8h.html#a832eee68ae25daaa8503b7ba52acddec',1,'utils.h']]]
+  ['x_0',['X',['../icosphere_8c.html#a207fd5507206d307cd63f95374fcd00d',1,'icosphere.c']]]
 ];

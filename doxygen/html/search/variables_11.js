@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['radius_0',['radius',['../structBloomParams.html#acab92467aba668d9e1fdf65fada969c3',1,'BloomParams']]],
+  ['raydir_0',['raydir',['../background_8vert.html#ae6c75f81aa266aff6589909b29104807',1,'RayDir:&#160;background.vert'],['../background_8frag.html#a2b86b51f120ac686b4c2c542c65fb4c7',1,'RayDir:&#160;background.frag']]],
   ['recursion_5fdepth_1',['recursion_depth',['../structIncludeContext.html#a345b684fcf0fc4c2ffb5f54d27515ec9',1,'IncludeContext']]],
   ['renderer_2',['renderer',['../structGPUInfo.html#a4da36b59d887870f6c2f6aff9c17961c',1,'GPUInfo']]],
   ['request_5fcond_3',['request_cond',['../async__loader_8c.html#a6a8411c704fa1308cf298a2f688d2c9f',1,'async_loader.c']]],
@@ -8,7 +8,7 @@ var searchData=
   ['right_5',['right',['../structCamera.html#ab85197df3b54a775327630d16219922a',1,'Camera']]],
   ['rng_6',['rng',['../structAdaptiveSampler.html#a6faf2d71576af580e879ddb9d815ddef',1,'AdaptiveSampler']]],
   ['rotation_5fsmoothing_7',['rotation_smoothing',['../structCamera.html#a3aab68c9e46b44b0243504089c3227d7',1,'Camera']]],
-  ['roughness_8',['roughness',['../structSphereInstance.html#a92b14b4943403057b8e63eff4f0eb8ab',1,'SphereInstance::roughness'],['../structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e',1,'PBRMaterial::roughness'],['../structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6',1,'SphereInstanceSSBO::roughness']]],
+  ['roughness_8',['roughness',['../structSphereInstance.html#a92b14b4943403057b8e63eff4f0eb8ab',1,'SphereInstance::roughness'],['../structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e',1,'PBRMaterial::roughness'],['../structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6',1,'SphereInstanceSSBO::roughness'],['../structInstanceData.html#a3b0cebd54854de3a98a8a1ec79c3db12',1,'InstanceData::roughness'],['../pbr__ibl__billboard_8frag.html#a4723a541aa1f2375dc4f4e809423ddf4',1,'Roughness:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#ad445e23144ce661d39d5ef7da6966eac',1,'Roughness:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#a4723a541aa1f2375dc4f4e809423ddf4',1,'Roughness:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#ad445e23144ce661d39d5ef7da6966eac',1,'Roughness:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#ad445e23144ce661d39d5ef7da6966eac',1,'Roughness:&#160;pbr_ibl_ssbo.vert']]],
   ['roundness_9',['roundness',['../structVignetteParams.html#a54607f94ed00d6889db34e89839db6b9',1,'VignetteParams']]],
   ['running_10',['running',['../async__loader_8c.html#a7c10027ca174fc9d529796f04aca6bd4',1,'async_loader.c']]]
 ];

@@ -1,6 +1,5 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
-    [ "effects", "dir_191f852b87741474e2df76292b1f55c1.html", "dir_191f852b87741474e2df76292b1f55c1" ],
     [ "adaptive_sampler.c", "adaptive__sampler_8c.html", "adaptive__sampler_8c" ],
     [ "app.c", "app_8c.html", "app_8c" ],
     [ "app_env.c", "app__env_8c.html", "app__env_8c" ],

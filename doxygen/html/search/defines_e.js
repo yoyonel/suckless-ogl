@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['x_0',['X',['../icosphere_8c.html#a207fd5507206d307cd63f95374fcd00d',1,'icosphere.c']]]
+  ['z_0',['Z',['../icosphere_8c.html#a51591cf51bdd6c1f6015532422e7770e',1,'icosphere.c']]]
 ];

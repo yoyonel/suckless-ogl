@@ -17,13 +17,13 @@ var searchData=
   ['bloom_5fradius_14',['bloom_radius',['../structPostProcessUBO.html#a580d1c80c7f5742a4a06bed8c291599d',1,'PostProcessUBO']]],
   ['bloom_5fsoft_5fthreshold_15',['bloom_soft_threshold',['../structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3',1,'PostProcessUBO']]],
   ['bloom_5fthreshold_16',['bloom_threshold',['../structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795',1,'PostProcessUBO']]],
-  ['blur_5ftex_17',['blur_tex',['../structDoFFX.html#af832ed49a0294619b82a2025c6a5d3cd',1,'DoFFX']]],
+  ['blur_5flod_17',['blur_lod',['../background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c',1,'background.frag']]],
   ['bobbing_5famplitude_18',['bobbing_amplitude',['../structCamera.html#a61c5b5a1bf17abeea9ac2cd4a46cc033',1,'Camera']]],
   ['bobbing_5fenabled_19',['bobbing_enabled',['../structCamera.html#ac79eb209d90ee462663db12dc9b005f8',1,'Camera']]],
   ['bobbing_5ffrequency_20',['bobbing_frequency',['../structCamera.html#aa6709aaaf24337db4344dd50e1375d94',1,'Camera']]],
   ['bobbing_5ftime_21',['bobbing_time',['../structCamera.html#a4c8bddeb429c59601ee6de4f20f56390',1,'Camera']]],
-  ['bokeh_5fscale_22',['bokeh_scale',['../structDoFParams.html#aceb71405b5c7d8f07fd3ba99731b8861',1,'DoFParams']]],
-  ['brdf_5flut_5fmap_5fsize_23',['BRDF_LUT_MAP_SIZE',['../group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8',1,'app_settings.h']]],
-  ['brdf_5flut_5ftex_24',['brdf_lut_tex',['../structApp.html#a9bb91840a26f5987c28ef911233d78a5',1,'App']]],
+  ['brdf_5flut_5fmap_5fsize_22',['BRDF_LUT_MAP_SIZE',['../group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8',1,'app_settings.h']]],
+  ['brdf_5flut_5ftex_23',['brdf_lut_tex',['../structApp.html#a9bb91840a26f5987c28ef911233d78a5',1,'App']]],
+  ['brdflut_24',['brdflut',['../pbr__ibl__billboard_8frag.html#a296f5a6ea081e76dc1c8938e00b38cc3',1,'brdfLUT:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a296f5a6ea081e76dc1c8938e00b38cc3',1,'brdfLUT:&#160;pbr_ibl_instanced.frag']]],
   ['buffers_5fhead_25',['buffers_head',['../structIncludeContext.html#a73a98e6ea42120b5df3da42d1a6a04f6',1,'IncludeContext']]]
 ];
