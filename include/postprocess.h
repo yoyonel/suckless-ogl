@@ -45,6 +45,9 @@
 #define DEFAULT_DOF_FOCAL_RANGE 5.0F
 #define DEFAULT_DOF_BOKEH_SCALE 10.0F
 
+/* Banding defaults */
+#define DEFAULT_BANDING_LEVELS 256.0F /**< 8-bit simulation. */
+
 /* White Balance Defaults */
 #define DEFAULT_WB_TEMP 6500.0F
 #define DEFAULT_WB_TINT 0.0F
@@ -79,6 +82,7 @@ typedef enum {
 	    (1U << 11U),                 /**< Velocity buffer visualization. */
 	POSTFX_FXAA = (1U << 12U),       /**< Fast Approximate Anti-Aliasing. */
 	POSTFX_FXAA_DEBUG = (1U << 13U), /**< Edge detection visualization. */
+	POSTFX_BANDING = (1U << 14U),    /**< Color banding/quantization. */
 } PostProcessEffect;
 
 /** @brief Default mask of active effects. */
@@ -169,6 +173,30 @@ typedef struct {
 	float edge_threshold_min; /**< Minimum edge threshold (0.0312 - 0.0833).
 	                           */
 } FXAAParams;
+
+/**
+ * @enum BandingMode
+ * @brief Styles of color quantization.
+ */
+typedef enum {
+	BANDING_MODE_LINEAR = 0,     /**< Standard uniform (Posterization). */
+	BANDING_MODE_DITHERED = 1,   /**< Ordered dithering (Bayer). */
+	BANDING_MODE_PERCEPTUAL = 2, /**< Gamma-weighted. */
+	BANDING_MODE_CHANNEL = 3,    /**< RGB independent. */
+	BANDING_MODE_LUMINANCE = 4   /**< Grayscale quantization + Tint. */
+} BandingMode;
+
+/**
+ * @struct BandingParams
+ * @brief Controls for color banding/quantization.
+ */
+typedef struct {
+	int32_t mode;           /**< Banding algorithm to use. */
+	float levels;           /**< Global quantization levels. */
+	float dither_strength;  /**< Intensity of the dither pattern. */
+	float perceptual_gamma; /**< Gamma curve for perceptual mode. */
+	vec3 channel_levels;    /**< Independent RGB levels. */
+} BandingParams;
 
 #define BLOOM_MIP_LEVELS 5
 
@@ -261,6 +289,14 @@ typedef struct {
 	float fxaa_quality_edge_threshold;
 	float fxaa_quality_edge_threshold_min;
 	float _pad10;
+
+	/* Banding (32 bytes) */
+	int32_t banding_mode;
+	float banding_levels;
+	float banding_dither_strength;
+	float banding_perceptual_gamma;
+	float banding_channel_levels[3];
+	float _pad11;
 } PostProcessUBO;
 
 /**
@@ -310,6 +346,7 @@ typedef struct PostProcess {
 	AutoExposureParams auto_exposure;
 	MotionBlurParams motion_blur;
 	FXAAParams fxaa;
+	BandingParams banding;
 
 	float time;             /**< Accumulated time for noise/animation. */
 	float delta_time;       /**< Last frame delta. */
@@ -405,6 +442,14 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float key_value);
 void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
                           float edge_threshold, float edge_threshold_min);
+void postprocess_set_banding(PostProcess* post_processing, BandingMode mode,
+                             float levels);
+void postprocess_set_banding_dither(PostProcess* post_processing,
+                                    float strength);
+void postprocess_set_banding_perceptual(PostProcess* post_processing,
+                                        float gamma);
+void postprocess_set_banding_channels(PostProcess* post_processing, float red,
+                                      float green, float blue);
 
 /**
  * @brief Updates view-projection matrices for effects requiring
@@ -430,6 +475,7 @@ typedef struct {
 	BloomParams bloom;
 	DoFParams dof;
 	FXAAParams fxaa;
+	BandingParams banding;
 } PostProcessPreset;
 
 /**

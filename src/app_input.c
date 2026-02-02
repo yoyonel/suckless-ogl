@@ -65,6 +65,45 @@ void handle_preset_input(App* app, int key)
 			                         &PRESET_BW_CONTRAST);
 			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
 			break;
+		case GLFW_KEY_7: { /* Style Cycle: All Banding Styles */
+			static int banding_style_idx = 0;
+			const PostProcessPreset* banding_presets[] = {
+			    &PRESET_POSTERIZED,  /* 1. Posterization */
+			    &PRESET_RETRO,       /* 2. Dithered */
+			    &PRESET_ANALOG,      /* 3. Perceptual */
+			    &PRESET_CHANNEL_GFX, /* 4. Channel */
+			    &PRESET_BLUEPRINT    /* 5. Blueprint */
+			};
+			const char* banding_names[] = {
+			    "Posterization (Pop Art)",
+			    "Retro Computing (Dithered)", "Analog (Perceptual)",
+			    "CGA/VGA Style (Channel)", "Blueprint (Luminance)"};
+			int num_styles = sizeof(banding_presets) /
+			                 sizeof(banding_presets[0]);
+
+			/* Check if banding is currently off, if so, start at
+			   idx 0. Else cycle to next. */
+			if (!postprocess_is_enabled(&app->postprocess,
+			                            POSTFX_BANDING)) {
+				banding_style_idx = 0;
+			} else {
+				banding_style_idx =
+				    (banding_style_idx + 1) % num_styles;
+			}
+
+			postprocess_apply_preset(
+			    &app->postprocess,
+			    banding_presets[banding_style_idx]);
+			LOG_INFO("suckless-ogl.app",
+			         "Banding Style [%d/%d]: %s",
+			         banding_style_idx + 1, num_styles,
+			         banding_names[banding_style_idx]);
+			break;
+		}
+		case GLFW_KEY_8:
+			/* Key 8 is now free or can be used for something else,
+			   but let's keep it for another preset if needed. */
+			break;
 		case GLFW_KEY_0:
 		case GLFW_KEY_KP_0:
 			postprocess_apply_preset(&app->postprocess,

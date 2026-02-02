@@ -65,6 +65,10 @@ FULL_SIDEBAR           = NO
 
 # Configuration options related to the LaTeX output
 GENERATE_LATEX         = NO
+USE_MATHJAX            = YES
+MATHJAX_FORMAT         = HTML-CSS
+MATHJAX_RELPATH        = https://cdn.jsdelivr.net/npm/mathjax@2
+MATHJAX_EXTENSIONS     = TeX/AMSmath TeX/AMSsymbols
 
 # Configuration options related to the macro definition
 ENABLE_PREPROCESSING   = YES
@@ -81,3 +85,4 @@ CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 INTERACTIVE_SVG        = YES
+DOT_TRANSPARENT        = YES
