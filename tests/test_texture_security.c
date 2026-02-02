@@ -50,7 +50,8 @@ void test_texture_upload_excessive_dimensions(void)
 
 	GLuint tex = texture_upload_hdr(dummy_data, width, height);
 	TEST_ASSERT_EQUAL_MESSAGE(
-	    0, tex, "Should reject texture with width > MAX_TEXTURE_DIMENSION (8192)");
+	    0, tex,
+	    "Should reject texture with width > MAX_TEXTURE_DIMENSION (8192)");
 
 	width = 16;
 	height = 8193;
