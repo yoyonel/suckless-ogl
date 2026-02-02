@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📝_20important_20notes_0',['📝 Important Notes',['../md_docs_2skybox__rendering.html#autotoc_md337',1,'']]]
+  ['📚_20recommended_20resources_0',['📚 Recommended Resources',['../md_docs_2photographic__standards.html#autotoc_md216',1,'']]]
 ];

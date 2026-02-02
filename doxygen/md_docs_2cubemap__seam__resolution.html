@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2cubemap__seam__resolution.htm
   <div class="headertitle"><div class="title">Cubemap Seam Resolution</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md38"></a> </p>
-<h1><a class="anchor" id="autotoc_md39"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md51"></a> </p>
+<h1><a class="anchor" id="autotoc_md52"></a>
 🔍 Identified Problem</h1>
 <p>The edges of the cubemap are visible as lines or artifacts. This can be caused by several factors:</p>
 <ol type="1">
@@ -231,10 +240,10 @@ $(document).ready(function(){initNavTree('md_docs_2cubemap__seam__resolution.htm
 <li><b>Filtering without seamless</b>: Transitions between faces are not smoothed.</li>
 <li><b>Edge Sampling</b>: Interpolation between faces is poorly handled.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md40"></a>
+<h1><a class="anchor" id="autotoc_md53"></a>
 🏁 Definitive Solution: Equirectangular Mapping</h1>
 <p>Although previous solutions (Seamless Cubemap, Increased Resolution) improved the situation, the most robust solution for this project was to <b>completely remove the cubemap conversion step</b>.</p>
-<h2><a class="anchor" id="autotoc_md41"></a>
+<h2><a class="anchor" id="autotoc_md54"></a>
 Why?</h2>
 <ol type="1">
 <li><b>No more faces</b>: An equirectangular texture is a single continuous 2D rectangle. There are no longer "face edges" where seams can appear.</li>
@@ -242,11 +251,11 @@ Why?</h2>
 <li><b>Less Memory</b>: No need to allocate an additional cubemap texture.</li>
 <li><b>Max Quality</b>: We sample the source data directly.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md42"></a>
+<h2><a class="anchor" id="autotoc_md55"></a>
 Visual Comparison</h2>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_4.svg" width="939" height="326"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h2><a class="anchor" id="autotoc_md43"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_7.svg" width="939" height="326"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h2><a class="anchor" id="autotoc_md56"></a>
 Comparison: Cubemap vs Equirectangular</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -260,14 +269,14 @@ Comparison: Cubemap vs Equirectangular</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Flexibility   </td><td class="markdownTableBodyNone">Industry standard   </td><td class="markdownTableBodyNone">Ideal for HDR visualizers   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md44"></a>
+<h2><a class="anchor" id="autotoc_md57"></a>
 Software Implementation</h2>
 <p>Switching to equirectangular allowed removing:</p><ul>
 <li>The compute shader <code>equirect2cube.glsl</code>.</li>
 <li>The functions <code>texture_create_env_cubemap</code> and <code>texture_build_env_cubemap</code>.</li>
 <li>The complexity of managing 6 faces.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md45"></a>
+<h2><a class="anchor" id="autotoc_md58"></a>
 Conclusion</h2>
 <p>For skybox rendering where the fidelity of the source HDR image is paramount, direct equirectangular mapping is the most "suckless" solution: less code, higher quality. </p>
 </div></div><!-- contents -->

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -270,6 +279,11 @@ $(document).ready(function(){initNavTree('globals_eval.html',''); initResizable(
 
 
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
+<li>BANDING_MODE_CHANNEL&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b">postprocess.h</a></li>
+<li>BANDING_MODE_DITHERED&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc">postprocess.h</a></li>
+<li>BANDING_MODE_LINEAR&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a">postprocess.h</a></li>
+<li>BANDING_MODE_LUMINANCE&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89">postprocess.h</a></li>
+<li>BANDING_MODE_PERCEPTUAL&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da">postprocess.h</a></li>
 <li>BLOOM_MIP_LEVELS&#160;:&#160;<a class="el" href="fx__bloom_8h.html#a385c44f6fb256e5716a2302a5b940388a9d6785a4d1dafdb4937c6ba026303698">fx_bloom.h</a></li>
 </ul>
 
@@ -365,6 +379,7 @@ $(document).ready(function(){initNavTree('globals_eval.html',''); initResizable(
 <li>PATH_BUFFER_SIZE&#160;:&#160;<a class="el" href="shader_8c.html#a94798fdadfbf49a7c658ace669a1d310ae3e56668acad6b8aed4f818040a24567">shader.c</a></li>
 <li>PBR_DEBUG_MODE_COUNT&#160;:&#160;<a class="el" href="app__input_8c.html#abed82baf7f470b522273a3e37c24c600a46099f3e33a2bfa5892c3e7bffae3321">app_input.c</a></li>
 <li>POSTFX_AUTO_EXPOSURE&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">postprocess.h</a></li>
+<li>POSTFX_BANDING&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">postprocess.h</a></li>
 <li>POSTFX_BLOOM&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">postprocess.h</a></li>
 <li>POSTFX_CHROM_ABBR&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">postprocess.h</a></li>
 <li>POSTFX_COLOR_GRADING&#160;:&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">postprocess.h</a></li>

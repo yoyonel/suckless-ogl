@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -271,6 +280,7 @@ $(document).ready(function(){initNavTree('functions_vars_d.html',''); initResiza
 <li>delta_time&#160;:&#160;<a class="el" href="structApp.html#a90dac3c1153b09925cace5205c06889b">App</a>, <a class="el" href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">PostProcess</a></li>
 <li>depth&#160;:&#160;<a class="el" href="structSphereSortEntry.html#aa5ba88dc5fb513dd334809b43f0721a0">SphereSortEntry</a></li>
 <li>depth_enabled&#160;:&#160;<a class="el" href="structGLStateBackup.html#a21546e02dedebbcea470a8ccf81f7ef8">GLStateBackup</a></li>
+<li>dither_strength&#160;:&#160;<a class="el" href="structBandingParams.html#a6f07e58f1087e2b9084a4bd1bd00dfca">BandingParams</a></li>
 <li>dof&#160;:&#160;<a class="el" href="structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b">PostProcess</a>, <a class="el" href="structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21">PostProcessPreset</a></li>
 <li>dof_bokeh_scale&#160;:&#160;<a class="el" href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">PostProcessUBO</a></li>
 <li>dof_focal_distance&#160;:&#160;<a class="el" href="structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f">PostProcessUBO</a></li>

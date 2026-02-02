@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['🔧_20core_20configuration_20doxyfile_0',['🔧 Core Configuration (Doxyfile)',['../md_docs_2doxygen__customization.html#autotoc_md91',1,'']]],
-  ['🔧_20interesting_20alternative_20values_1',['🔧 Interesting Alternative Values',['../md_docs_2photographic__standards.html#autotoc_md192',1,'']]]
+  ['🔗_20python_20→_20c_20equivalence_0',['🔗 Python → C Equivalence',['../md_docs_2skybox__rendering.html#autotoc_md351',1,'']]]
 ];

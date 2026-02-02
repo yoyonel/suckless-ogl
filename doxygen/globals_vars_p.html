@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -272,14 +281,19 @@ $(document).ready(function(){initNavTree('globals_vars_p.html',''); initResizabl
 <li>PI&#160;:&#160;<a class="el" href="irmap_8glsl.html#aa08a577393243b86dfd2a97e61443673">irmap.glsl</a>, <a class="el" href="spbrdf_8glsl.html#aa08a577393243b86dfd2a97e61443673">spbrdf.glsl</a>, <a class="el" href="spmap_8glsl.html#aa08a577393243b86dfd2a97e61443673">spmap.glsl</a>, <a class="el" href="pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673">pbr_functions.glsl</a>, <a class="el" href="test__pattern_8frag.html#aa08a577393243b86dfd2a97e61443673">test_pattern.frag</a></li>
 <li>PREFILTERED_SPECULAR_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#gac0ba165d3405de365ee4b6af426db7ac">app_settings.h</a></li>
 <li>prefilterMap&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#aa1f903d1916d5f054fbd4ed9bc37ef8c">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__instanced_8frag.html#aa1f903d1916d5f054fbd4ed9bc37ef8c">pbr_ibl_instanced.frag</a></li>
+<li>PRESET_ANALOG&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a60fe8e6a1bb6ba06e48ec0b2e86fdc9a">postprocess_presets.h</a></li>
+<li>PRESET_BLUEPRINT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3abfc57b5f619bc3146c177011303082">postprocess_presets.h</a></li>
 <li>PRESET_BW_CONTRAST&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098">postprocess_presets.h</a></li>
+<li>PRESET_CHANNEL_GFX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9a03660d046a5e7929fdcfd9dc3b4ed3">postprocess_presets.h</a></li>
 <li>PRESET_CINEMATIC&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a6867da5e153c31da923bfd57b2563313">postprocess_presets.h</a></li>
 <li>PRESET_DEFAULT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a4b57a0184cd61b5335951aa0e6b30495">postprocess_presets.h</a></li>
 <li>PRESET_MATRIX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3e3533df1a8aace5ebd66546165be922">postprocess_presets.h</a></li>
+<li>PRESET_POSTERIZED&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a632215d24b2cc5d2e1b1a9ad1a8875e2">postprocess_presets.h</a></li>
+<li>PRESET_RETRO&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#afb1c2f382c8e33458959764eaad5e2cf">postprocess_presets.h</a></li>
 <li>PRESET_SUBTLE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9e68acd97f1db2a2eefc2d3cdd9e9af4">postprocess_presets.h</a></li>
 <li>PRESET_VINTAGE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a18fd433e53469b575aacb8dfc72b1334">postprocess_presets.h</a></li>
 <li>PreviousClipPos&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a7e44b7ffd7fe84e7c7a0763d89d594e7">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#a439e84bcf433ed03ce625202a93ee2af">pbr_ibl_billboard.vert</a>, <a class="el" href="pbr__ibl__instanced_8frag.html#a7e44b7ffd7fe84e7c7a0763d89d594e7">pbr_ibl_instanced.frag</a>, <a class="el" href="pbr__ibl__instanced_8vert.html#a439e84bcf433ed03ce625202a93ee2af">pbr_ibl_instanced.vert</a></li>
-<li>previousViewProj&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_billboard.vert</a>, <a class="el" href="pbr__ibl__instanced_8vert.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_instanced.vert</a></li>
+<li>previousViewProj&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__instanced_8vert.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_instanced.vert</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#aa85972450e5bec5caa31b28745bcbe20">pbr_ibl_billboard.vert</a></li>
 <li>projection&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a6f89a4fbf1a53a21ada7ca66387463a1">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__billboard_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">pbr_ibl_billboard.vert</a>, <a class="el" href="pbr__ibl__instanced_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">pbr_ibl_instanced.vert</a>, <a class="el" href="pbr__ibl__ssbo_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">pbr_ibl_ssbo.vert</a>, <a class="el" href="ui_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">ui.vert</a>, <a class="el" href="ui__spinner_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">ui_spinner.vert</a></li>
 </ul>
 </div><!-- contents -->

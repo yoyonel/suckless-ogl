@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -269,6 +278,7 @@ $(document).ready(function(){initNavTree('globals_f.html',''); initResizable(); 
 <h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
 <li>FAR_PLANE&#160;:&#160;<a class="el" href="group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6">app_settings.h</a></li>
 <li>filterRadius&#160;:&#160;<a class="el" href="bloom__upsample_8frag.html#a2d45ac1478cca0b31f3b65fff9cb3530">bloom_upsample.frag</a></li>
+<li>find_shader_in_cache()&#160;:&#160;<a class="el" href="postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0">postprocess.c</a></li>
 <li>FLOATS_PER_VERTEX&#160;:&#160;<a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4">ui.c</a></li>
 <li>FONT_ATLAS_SIZE&#160;:&#160;<a class="el" href="ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27aa0f4026de0fe5858c7c8199069825526">ui.c</a></li>
 <li>FONT_ATLAS_SIZE_F&#160;:&#160;<a class="el" href="ui_8c.html#ac805579cfa3cc9bca0cc4f075612fee8">ui.c</a></li>
@@ -279,7 +289,7 @@ $(document).ready(function(){initNavTree('globals_f.html',''); initResizable(); 
 <li>FOV_ANGLE&#160;:&#160;<a class="el" href="group__Camera.html#gacb82af743656992de4acd8347d2a55bc">app_settings.h</a></li>
 <li>fps_init()&#160;:&#160;<a class="el" href="fps_8h.html#a6502614d8abf01ccea0eacbf993a89c0">fps.h</a>, <a class="el" href="fps_8c.html#a6502614d8abf01ccea0eacbf993a89c0">fps.c</a></li>
 <li>fps_update()&#160;:&#160;<a class="el" href="fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635">fps.h</a>, <a class="el" href="fps_8c.html#a2d1f254700ad6cb8e2e7096a88029635">fps.c</a></li>
-<li>FragColor&#160;:&#160;<a class="el" href="test__pattern_8frag.html#af5639df2ce0dea4170bb8b47a599911e">test_pattern.frag</a>, <a class="el" href="ui__spinner_8frag.html#af5639df2ce0dea4170bb8b47a599911e">ui_spinner.frag</a>, <a class="el" href="postprocess_8frag.html#af5639df2ce0dea4170bb8b47a599911e">postprocess.frag</a>, <a class="el" href="lum__downsample_8frag.html#a9fb9ff60bb02989b1604a64cb2da6094">lum_downsample.frag</a>, <a class="el" href="bloom__upsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_upsample.frag</a>, <a class="el" href="bloom__prefilter_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_prefilter.frag</a>, <a class="el" href="bloom__downsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_downsample.frag</a>, <a class="el" href="debug__tex_8frag.html#af5639df2ce0dea4170bb8b47a599911e">debug_tex.frag</a></li>
+<li>FragColor&#160;:&#160;<a class="el" href="ui__spinner_8frag.html#af5639df2ce0dea4170bb8b47a599911e">ui_spinner.frag</a>, <a class="el" href="test__pattern_8frag.html#af5639df2ce0dea4170bb8b47a599911e">test_pattern.frag</a>, <a class="el" href="postprocess_8frag.html#af5639df2ce0dea4170bb8b47a599911e">postprocess.frag</a>, <a class="el" href="lum__downsample_8frag.html#a9fb9ff60bb02989b1604a64cb2da6094">lum_downsample.frag</a>, <a class="el" href="bloom__upsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_upsample.frag</a>, <a class="el" href="bloom__prefilter_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_prefilter.frag</a>, <a class="el" href="bloom__downsample_8frag.html#a4caec1245a11a388981d2112932ad7b3">bloom_downsample.frag</a>, <a class="el" href="debug__tex_8frag.html#af5639df2ce0dea4170bb8b47a599911e">debug_tex.frag</a></li>
 <li>framebuffer_size_callback()&#160;:&#160;<a class="el" href="app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac">app_input.h</a>, <a class="el" href="app__input_8c.html#a5180f7bf2b71421af837035824a8c8ac">app_input.c</a></li>
 <li>fresnelSchlickRoughness()&#160;:&#160;<a class="el" href="pbr__functions_8glsl.html#a9535dbe6fb313fa2e4c7d615a9c49431">pbr_functions.glsl</a></li>
 <li>fx_auto_exposure_cleanup()&#160;:&#160;<a class="el" href="fx__auto__exposure_8c.html#a4fb4a7f1735856873f87fd6d6440cfb6">fx_auto_exposure.c</a>, <a class="el" href="fx__auto__exposure_8h.html#a781f3f2af8d1bce1e4f3546d7923d338">fx_auto_exposure.h</a></li>
@@ -288,7 +298,7 @@ $(document).ready(function(){initNavTree('globals_f.html',''); initResizable(); 
 <li>fx_auto_exposure_render()&#160;:&#160;<a class="el" href="fx__auto__exposure_8c.html#a88a01e64e4be7ae532f6dbd049c578a5">fx_auto_exposure.c</a>, <a class="el" href="fx__auto__exposure_8h.html#a7ebc02c6b3470e43ccd58c5ca5b4067f">fx_auto_exposure.h</a></li>
 <li>fx_bloom_cleanup()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#a1d0ec085996a1b5a64ef3d5295815ddf">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#a9f5dc0ac440e2830428dd79864f84d9a">fx_bloom.h</a></li>
 <li>fx_bloom_get_downsample_shader()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#aadbbf99233548cfca2dfd96149e0a698">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#af4018b6accd8404d2ccb6f764de8e395">fx_bloom.h</a></li>
-<li>fx_bloom_get_upsample_shader()&#160;:&#160;<a class="el" href="fx__bloom_8h.html#a8784ee453129d17fdaad1e5ddc8367a1">fx_bloom.h</a>, <a class="el" href="fx__bloom_8c.html#ac053b0bd6b6778b33502ee6d26b3de19">fx_bloom.c</a></li>
+<li>fx_bloom_get_upsample_shader()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#ac053b0bd6b6778b33502ee6d26b3de19">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#a8784ee453129d17fdaad1e5ddc8367a1">fx_bloom.h</a></li>
 <li>fx_bloom_init()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#abc1757d07f4c4373382b1222ccc663fd">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#a950c24738bc163799852121bc1eb1bd0">fx_bloom.h</a></li>
 <li>fx_bloom_render()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#a987d5dc0ff510e90cb7082165f533c8c">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#a25880c0ec966c5e5a4bca870f6d7b45d">fx_bloom.h</a></li>
 <li>fx_bloom_upload_params()&#160;:&#160;<a class="el" href="fx__bloom_8c.html#a904ff5eadc9159178e770b917931ee2f">fx_bloom.c</a>, <a class="el" href="fx__bloom_8h.html#a904ff5eadc9159178e770b917931ee2f">fx_bloom.h</a></li>

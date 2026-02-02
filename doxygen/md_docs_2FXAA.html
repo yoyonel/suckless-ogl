@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2FXAA.html',''); initResizable
   <div class="headertitle"><div class="title">FXAA 3.11 Implementation &amp; Optimizations</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md108"></a> This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementation in Suckless-OGL, specifically focusing on the optimizations tailored for the Deferred/Forward PBR pipeline.</p>
-<h1><a class="anchor" id="autotoc_md109"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md121"></a> This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementation in Suckless-OGL, specifically focusing on the optimizations tailored for the Deferred/Forward PBR pipeline.</p>
+<h1><a class="anchor" id="autotoc_md122"></a>
 Overview</h1>
 <div class="image">
 <img src="fxaa_process.jpg" alt=""/>
@@ -230,9 +239,9 @@ Overview</h1>
 FXAA Technical Process &amp; Action</div></div>
     <p>FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).</p>
 <p><b>Version</b>: FXAA 3.11 (PC Quality / Console Performance Hybrid) <b>Location</b>: <code><a class="el" href="fxaa_8glsl.html">shaders/postprocess/fxaa.glsl</a></code></p>
-<h1><a class="anchor" id="autotoc_md110"></a>
+<h1><a class="anchor" id="autotoc_md123"></a>
 Key Optimizations</h1>
-<h2><a class="anchor" id="autotoc_md111"></a>
+<h2><a class="anchor" id="autotoc_md124"></a>
 1. Luma-in-Alpha (Bandwidth Optimization)</h2>
 <p>To avoid calculating Luminance (<code>dot(rgb, vec3(0.299...))</code>) multiple times per pixel during the edge detection phase, we pre-calculate it during the rendering pass.</p>
 <ul>
@@ -241,17 +250,17 @@ Key Optimizations</h1>
 <li><b>Reader</b>: <code><a class="el" href="fxaa_8glsl.html">fxaa.glsl</a></code> uses <code>textureOffset(...).a</code> to fetch neighbor luminance.</li>
 <li><b>Benefit</b>: Saves ~8 dot products per pixel in the FXAA pass and reduces register pressure.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md112"></a>
+<h3><a class="anchor" id="autotoc_md125"></a>
 Pipeline Data Flow</h3>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_6.svg" width="1900" height="390"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h2><a class="anchor" id="autotoc_md113"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_9.svg" width="1900" height="390"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h2><a class="anchor" id="autotoc_md126"></a>
 2. sRGB / Gamma Correctness</h2>
 <p>Edge detection must be performed in Perceptual Space (Gamma) to match human vision. Since the rendering pipeline is linear:</p><ul>
 <li><b>Encoding</b>: PBR shaders calculate Luma using <code>sqrt(LinearColor)</code> to approximate the Gamma 2.2 curve before storing it in Alpha.</li>
 <li><b>Center Pixel</b>: If the center pixel was modified by previous post-process effects (e.g., Chromatic Aberration), its Luma is recalculated on-the-fly using <code>dot(sqrt(rgb), ...)</code>.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md114"></a>
+<h2><a class="anchor" id="autotoc_md127"></a>
 3. Dual Mode (Quality vs. Performance)</h2>
 <p>Defined via preprocessor macro <code>FXAA_MODE</code> in <code><a class="el" href="fxaa_8glsl.html">fxaa.glsl</a></code>.</p>
 <table class="markdownTable">
@@ -262,10 +271,10 @@ Pipeline Data Flow</h3>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Performance</b>   </td><td class="markdownTableBodyLeft"><code>0</code>   </td><td class="markdownTableBodyLeft">"Console" style. Skips iterative search. Relies solely on local gradients and sub-pixel blending. Faster but less accurate on long edges.   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md115"></a>
+<h2><a class="anchor" id="autotoc_md128"></a>
 4. Non-Linear Search (Quality Mode)</h2>
 <p>Instead of stepping 1 pixel at a time, the search loop uses variable step sizes defined in the <code>quality[]</code> array (1.0, 1.5, 2.0, 2.0, 8.0). This allows covering a larger search radius (up to ~12 pixels) with only 5 texture fetches.</p>
-<h1><a class="anchor" id="autotoc_md116"></a>
+<h1><a class="anchor" id="autotoc_md129"></a>
 Configuration</h1>
 <p>Settings are controlled via the <code><a class="el" href="structPostProcessUBO.html" title="Shared Uniform Buffer structure for shaders.">PostProcessUBO</a></code>:</p>
 <div class="fragment"><div class="line"><span class="comment">// UBO Layout (std140)</span></div>
@@ -276,7 +285,7 @@ Configuration</h1>
 <li><b>Subpix</b>: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.</li>
 <li><b>EdgeThreshold</b>: Minimum contrast required to trigger AA.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md117"></a>
+<h1><a class="anchor" id="autotoc_md130"></a>
 Debugging</h1>
 <p>Enable <code>enableFXAADebug</code> in <code><a class="el" href="app__settings_8h.html" title="Global application constants, configuration macros, and default values.">app_settings.h</a></code> or via Uniform to visualize:</p><ul>
 <li><b>Red</b>: Pixels affected by Edge AA.</li>

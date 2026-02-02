@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -242,6 +251,8 @@ $(document).ready(function(){initNavTree('postprocess_8c.html',''); initResizabl
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;cglm/types.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for postprocess.c:</div>
@@ -339,6 +350,14 @@ Functions</h2></td></tr>
 <tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebaafeb093d652eb93e6f91a55a60566" id="r_aebaafeb093d652eb93e6f91a55a60566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_set_fxaa</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float subpix, float edge_threshold, float edge_threshold_min)</td></tr>
 <tr class="separator:aebaafeb093d652eb93e6f91a55a60566"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b604741ce9e478c27bce5bad0255bcf" id="r_a4b604741ce9e478c27bce5bad0255bcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_set_banding</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> mode, float levels)</td></tr>
+<tr class="separator:a4b604741ce9e478c27bce5bad0255bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4459034743ba0085c3687dd0a6c89133" id="r_a4459034743ba0085c3687dd0a6c89133"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a4459034743ba0085c3687dd0a6c89133">postprocess_set_banding_dither</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
+<tr class="separator:a4459034743ba0085c3687dd0a6c89133"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a30e58d88bfa2568ada6fc829dd83b6" id="r_a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a3a30e58d88bfa2568ada6fc829dd83b6">postprocess_set_banding_perceptual</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float gamma)</td></tr>
+<tr class="separator:a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a5f36a8b51d36d743840c7acc4a9e55" id="r_a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a4a5f36a8b51d36d743840c7acc4a9e55">postprocess_set_banding_channels</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float red, float green, float blue)</td></tr>
+<tr class="separator:a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3a420879557bc5bfc4a57cab113f1dd" id="r_aa3a420879557bc5bfc4a57cab113f1dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aa3a420879557bc5bfc4a57cab113f1dd">postprocess_set_grading_ue_default</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="separator:aa3a420879557bc5bfc4a57cab113f1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bf66ac3a443cdd5f9fdd5cf9d37b409" id="r_a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">postprocess_apply_preset</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, const <a class="el" href="structPostProcessPreset.html">PostProcessPreset</a> *preset)</td></tr>
@@ -358,6 +377,10 @@ Functions</h2></td></tr>
 <tr class="separator:a86ca4160d60435cb54320bbcc68d0d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a5221e8b5c9dc0821f1315ee7151933" id="r_a7a5221e8b5c9dc0821f1315ee7151933"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a7a5221e8b5c9dc0821f1315ee7151933">log_optimized_effects</a> (unsigned int flags)</td></tr>
 <tr class="separator:a7a5221e8b5c9dc0821f1315ee7151933"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed006d7906b9c51301116c84de7e3de0" id="r_aed006d7906b9c51301116c84de7e3de0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0">find_shader_in_cache</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, unsigned int static_flags)</td></tr>
+<tr class="separator:aed006d7906b9c51301116c84de7e3de0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8bf3262e6e6564d91b8fb8ba41207d7" id="r_ab8bf3262e6e6564d91b8fb8ba41207d7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7">update_current_shader</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="structShader.html">Shader</a> *new_shader, bool is_optimized)</td></tr>
+<tr class="separator:ab8bf3262e6e6564d91b8fb8ba41207d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefd09528f2a616bdde219a7f5683847c" id="r_aefd09528f2a616bdde219a7f5683847c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aefd09528f2a616bdde219a7f5683847c">postprocess_compile_optimized</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, unsigned int static_flags)</td></tr>
 <tr class="memdesc:aefd09528f2a616bdde219a7f5683847c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a specialized Uber-shader for maximum performance.  <br /></td></tr>
 <tr class="separator:aefd09528f2a616bdde219a7f5683847c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -573,6 +596,42 @@ Here is the call graph for this function:</div>
           <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
           <td class="paramname"><em>post_processing</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aed006d7906b9c51301116c84de7e3de0" name="aed006d7906b9c51301116c84de7e3de0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed006d7906b9c51301116c84de7e3de0">&#9670;&#160;</a></span>find_shader_in_cache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structShader.html">Shader</a> * find_shader_in_cache </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>static_flags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1101,6 +1160,136 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>key_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4b604741ce9e478c27bce5bad0255bcf" name="a4b604741ce9e478c27bce5bad0255bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b604741ce9e478c27bce5bad0255bcf">&#9670;&#160;</a></span>postprocess_set_banding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4a5f36a8b51d36d743840c7acc4a9e55" name="a4a5f36a8b51d36d743840c7acc4a9e55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a5f36a8b51d36d743840c7acc4a9e55">&#9670;&#160;</a></span>postprocess_set_banding_channels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_channels </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>red</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>green</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>blue</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4459034743ba0085c3687dd0a6c89133" name="a4459034743ba0085c3687dd0a6c89133"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4459034743ba0085c3687dd0a6c89133">&#9670;&#160;</a></span>postprocess_set_banding_dither()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_dither </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>strength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a30e58d88bfa2568ada6fc829dd83b6" name="a3a30e58d88bfa2568ada6fc829dd83b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a30e58d88bfa2568ada6fc829dd83b6">&#9670;&#160;</a></span>postprocess_set_banding_perceptual()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_perceptual </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gamma</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1688,6 +1877,53 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8c_a3b10285ebc588a80b81be601659260d5_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="ab8bf3262e6e6564d91b8fb8ba41207d7" name="ab8bf3262e6e6564d91b8fb8ba41207d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8bf3262e6e6564d91b8fb8ba41207d7">&#9670;&#160;</a></span>update_current_shader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void update_current_shader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>new_shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_optimized</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_ab8bf3262e6e6564d91b8fb8ba41207d7_cgraph.svg" width="378" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>

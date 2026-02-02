@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -303,6 +312,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:abd63360f1379962d296fc26d23f0f1f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6dd21a9e441fb05688017da0fdeab76" id="r_ab6dd21a9e441fb05688017da0fdeab76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structFXAAParams.html">FXAAParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76">fxaa</a></td></tr>
 <tr class="separator:ab6dd21a9e441fb05688017da0fdeab76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af411419ec733b3e01c935b9f646d1a82" id="r_af411419ec733b3e01c935b9f646d1a82"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBandingParams.html">BandingParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#af411419ec733b3e01c935b9f646d1a82">banding</a></td></tr>
+<tr class="separator:af411419ec733b3e01c935b9f646d1a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb71aa02b237fe2666213becfa342d31" id="r_afb71aa02b237fe2666213becfa342d31"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#afb71aa02b237fe2666213becfa342d31">time</a></td></tr>
 <tr class="separator:afb71aa02b237fe2666213becfa342d31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af90a6604c8211ecd0d8bfb61854c6c3f" id="r_af90a6604c8211ecd0d8bfb61854c6c3f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f">delta_time</a></td></tr>
@@ -360,6 +371,20 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Adaptation subsystem. </p>
+
+</div>
+</div>
+<a id="af411419ec733b3e01c935b9f646d1a82" name="af411419ec733b3e01c935b9f646d1a82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af411419ec733b3e01c935b9f646d1a82">&#9670;&#160;</a></span>banding</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structBandingParams.html">BandingParams</a> PostProcess::banding</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,24 +230,24 @@ $(document).ready(function(){initNavTree('md_docs_2shader__optimization.html',''
   <div class="headertitle"><div class="title">Post-Processing Shader Optimization</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md318"></a> </p>
-<h1><a class="anchor" id="autotoc_md319"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md331"></a> </p>
+<h1><a class="anchor" id="autotoc_md332"></a>
 Overview</h1>
 <p>The post-processing pipeline now supports two compilation modes to balance development flexibility with release performance:</p>
 <ol type="1">
 <li><b>Debug Mode (Dynamic)</b>: Features are toggled at runtime using standard uniforms (<code>if (enableBloom_val) ...</code>). This allows instant feedback when modifying settings but incurs a GPU cost for branching.</li>
 <li><b>Release Mode (Static)</b>: Features are baked into the shader using preprocessor directives (<code>#define OPT_ENABLE_BLOOM 1</code>). The driver's GLSL compiler eliminates all unused code (Dead Code Elimination), resulting in a specialized, high-performance shader.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md320"></a>
+<h1><a class="anchor" id="autotoc_md333"></a>
 Build Modes</h1>
-<h2><a class="anchor" id="autotoc_md321"></a>
+<h2><a class="anchor" id="autotoc_md334"></a>
 Debug Build (make debug / make run)</h2>
 <ul>
 <li><b>Flags</b>: <code>ENABLE_SHADER_OPTIMIZATION=OFF</code></li>
 <li><b>Behavior</b>: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching, e.g. <code>if (enableBloom_val) ...</code>).</li>
 <li><b>Use Case</b>: Development, tweaking parameters, debugging effect interactions.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md322"></a>
+<h2><a class="anchor" id="autotoc_md335"></a>
 Release Build (make release / make run-release)</h2>
 <ul>
 <li><b>Flags</b>: <code>ENABLE_SHADER_OPTIMIZATION=ON</code></li>
@@ -252,9 +261,9 @@ Release Build (make release / make run-release)</h2>
 <li><b>Runtime Toggling</b>: If you toggle an effect at runtime (e.g., press 'B'), the application <b>recompiles</b> the shader on the fly to generate a new optimized variant.</li>
 <li><b>Use Case</b>: Performance profiling, production deployment.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md323"></a>
+<h1><a class="anchor" id="autotoc_md336"></a>
 Technical Implementation</h1>
-<h2><a class="anchor" id="autotoc_md324"></a>
+<h2><a class="anchor" id="autotoc_md337"></a>
 1. Shader Code (postprocess.frag)</h2>
 <p>We use a hybrid approach where uniforms are converted to <code>const bool</code> if the optimization macro is defined:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#ifdef OPT_ENABLE_BLOOM</span></div>
@@ -264,7 +273,7 @@ Technical Implementation</h1>
 <div class="line">    <span class="comment">// Debug Mode: Runtime uniform -&gt; Branching</span></div>
 <div class="line">    uniform <span class="keywordtype">bool</span> enableBloom_val;</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md325"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md338"></a>
 2. Startup Logic (src/app.c)</h2>
 <p>When built with <code>-DENABLE_SHADER_OPTIMIZATION</code>, the application triggers an immediate compilation of the optimized shader during initialization:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#ifdef ENABLE_SHADER_OPTIMIZATION</span></div>
@@ -273,17 +282,17 @@ Technical Implementation</h1>
 <div class="line">    <a class="code hl_function" href="postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c">postprocess_compile_optimized</a>(&amp;app-&gt;postprocess, initial_flags);</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="alog_8h_html_a4ec0b91afc0eca2e85c60b528628b8cc"><div class="ttname"><a href="log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc">LOG_INFO</a></div><div class="ttdeci">#define LOG_INFO(tag,...)</div><div class="ttdoc">Log an info message.</div><div class="ttdef"><b>Definition</b> log.h:56</div></div>
-<div class="ttc" id="apostprocess_8h_html_aefd09528f2a616bdde219a7f5683847c"><div class="ttname"><a href="postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c">postprocess_compile_optimized</a></div><div class="ttdeci">void postprocess_compile_optimized(PostProcess *post_processing, unsigned int static_flags)</div><div class="ttdoc">Compiles a specialized Uber-shader for maximum performance.</div><div class="ttdef"><b>Definition</b> postprocess.c:804</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md326"></a>
+<div class="ttc" id="apostprocess_8h_html_aefd09528f2a616bdde219a7f5683847c"><div class="ttname"><a href="postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c">postprocess_compile_optimized</a></div><div class="ttdeci">void postprocess_compile_optimized(PostProcess *post_processing, unsigned int static_flags)</div><div class="ttdoc">Compiles a specialized Uber-shader for maximum performance.</div><div class="ttdef"><b>Definition</b> postprocess.c:879</div></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md339"></a>
 3. Conditional Uniforms (src/postprocess.c)</h2>
 <p>To avoid OpenGL warnings (e.g., "Uniform 'bloomTexture' not found"), we guard uniform assignments. In Release mode, if Bloom is disabled, <code>bloomTexture</code> is compiled out, so we must not try to set it:</p>
 <div class="fragment"><div class="line"><span class="comment">// Ensure we only set uniforms that exist in the optimized shader</span></div>
 <div class="line"><span class="keywordflow">if</span> (!is_optimized || (static_flags &amp; <a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a>)) {</div>
 <div class="line">    <a class="code hl_function" href="shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32">shader_set_int</a>(shader, <span class="stringliteral">&quot;bloomTexture&quot;</span>, UNIT_BLOOM);</div>
 <div class="line">}</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a></div><div class="ttdeci">@ POSTFX_BLOOM</div><div class="ttdef"><b>Definition</b> postprocess.h:68</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a></div><div class="ttdeci">@ POSTFX_BLOOM</div><div class="ttdef"><b>Definition</b> postprocess.h:71</div></div>
 <div class="ttc" id="ashader_8h_html_a461b117efc5c86ee8eabf8f80789ec32"><div class="ttname"><a href="shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32">shader_set_int</a></div><div class="ttdeci">void shader_set_int(Shader *shader, const char *name, int val)</div><div class="ttdef"><b>Definition</b> shader.c:755</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md327"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md340"></a>
 Verification</h1>
 <p>To verify the optimization works:</p><ol type="1">
 <li>Run <code>make release</code>.</li>

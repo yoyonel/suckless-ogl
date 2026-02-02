@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2postprocess__ubo__architectur
   <div class="headertitle"><div class="title">Post-Processing UBO Architecture</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md208"></a> This document details the implementation of the <b>Uniform Buffer Object (UBO)</b> used to manage post-processing parameters in the engine. This transition from individual uniforms (<code>glUniform*</code>) was made to improve CPU performance and code clarity.</p>
-<h1><a class="anchor" id="autotoc_md209"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md221"></a> This document details the implementation of the <b>Uniform Buffer Object (UBO)</b> used to manage post-processing parameters in the engine. This transition from individual uniforms (<code>glUniform*</code>) was made to improve CPU performance and code clarity.</p>
+<h1><a class="anchor" id="autotoc_md222"></a>
 1. Overview</h1>
 <p>Instead of sending dozens of uniforms (floats, integers) one by one every frame, we bundle all configuration data (Vignette, Bloom, Exposure, FXAA, etc.) into a single contiguous memory structure.</p>
 <ul>
@@ -230,10 +239,10 @@ $(document).ready(function(){initNavTree('md_docs_2postprocess__ubo__architectur
 <li><b>GPU Side</b>: <code>program Block</code> with <code>std140</code> layout (file <code><a class="el" href="ubo_8glsl.html">shaders/postprocess/ubo.glsl</a></code>)</li>
 <li><b>Transfer</b>: A single <code>glBufferSubData</code> call per frame.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md210"></a>
+<h1><a class="anchor" id="autotoc_md223"></a>
 2. Critical Constraints: std140 Layout</h1>
 <p>The <code>std140</code> layout imposes strict alignment rules in GPU memory. To ensure the driver reads data correctly, the C structure must mimic this alignment <b>byte-for-byte</b>.</p>
-<h2><a class="anchor" id="autotoc_md211"></a>
+<h2><a class="anchor" id="autotoc_md224"></a>
 std140 Alignment Rules (Simplified)</h2>
 <ol type="1">
 <li><b>Scalars (float, int, bool)</b>: Base alignment N (4 bytes).</li>
@@ -242,19 +251,19 @@ std140 Alignment Rules (Simplified)</h2>
 <li><b>Arrays / Structures</b>: Alignment rounded up to 16 bytes (size of a vec4).</li>
 <li><b>Padding</b>: There is <b>no</b> implicit padding between scalars, unless necessary to respect the alignment of the next member.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md212"></a>
+<h2><a class="anchor" id="autotoc_md225"></a>
 The "Array vs Scalar" Padding Trap</h2>
 <p>This is where a subtle error can occur:</p><ul>
 <li>If you declare <code>float padding[3]</code> in GLSL, <code>std140</code> treats this as an array. <b>Every array element must be aligned to 16 bytes</b>. So <code>padding[0]</code> takes 16 bytes (4 useful + 12 empty), <code>padding[1]</code> takes 16 bytes, etc.</li>
 <li><b>Solution</b>: Use individual scalar fields for GLSL padding (<code>float _pad1; float _pad2; ...</code>) so they are packed compactly (4 bytes each), matching exactly the packed <code>float padding[3]</code> in C.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md213"></a>
+<h2><a class="anchor" id="autotoc_md226"></a>
 Memory Visualization (std140)</h2>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_10.svg" width="1380" height="151"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h1><a class="anchor" id="autotoc_md214"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_13.svg" width="1380" height="151"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h1><a class="anchor" id="autotoc_md227"></a>
 3. Data Structure</h1>
-<h2><a class="anchor" id="autotoc_md215"></a>
+<h2><a class="anchor" id="autotoc_md228"></a>
 C Structure (postprocess.h)</h2>
 <p>We use explicit padding to align logical blocks to 16 bytes, facilitating memory reading and debugging.</p>
 <div class="fragment"><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
@@ -276,7 +285,7 @@ C Structure (postprocess.h)</h2>
 <div class="line">    <span class="keywordtype">float</span> fxaa_quality_edge_threshold_min;</div>
 <div class="line">    <span class="keywordtype">float</span> _pad10;</div>
 <div class="line">} PostProcessUBO_Layout;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md216"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md229"></a>
 GLSL Block (ubo.glsl)</h2>
 <p>The block defines <code>std140</code> layout and binding 0.</p>
 <blockquote class="doxtable">
@@ -302,7 +311,7 @@ GLSL Block (ubo.glsl)</h2>
 <div class="line">    <span class="keywordtype">float</span> fxaaQualityEdgeThresholdMin;</div>
 <div class="line">    <span class="keywordtype">float</span> _pad10;</div>
 <div class="line">};</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md217"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md230"></a>
 4. Adding a New Parameter</h1>
 <p>To add an effect or parameter, meticulously follow these steps:</p>
 <ol type="1">
@@ -324,7 +333,7 @@ GLSL Block (ubo.glsl)</h2>
 </ul>
 </li>
 </ol>
-<h1><a class="anchor" id="autotoc_md218"></a>
+<h1><a class="anchor" id="autotoc_md231"></a>
 5. Performance</h1>
 <p>Using the UBO allowed removing the following per-frame calls:</p><ul>
 <li><code>glUseProgram</code> (for uploads)</li>

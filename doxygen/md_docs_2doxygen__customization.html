@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,12 +230,12 @@ $(document).ready(function(){initNavTree('md_docs_2doxygen__customization.html',
   <div class="headertitle"><div class="title">Doxygen Customization &amp; Modernization</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md78"></a> This document details the custom modifications made to the Doxygen setup to achieve a modern, high-performance visual style consistent with the <b>Suckless-OGL</b> philosophy.</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md91"></a> This document details the custom modifications made to the Doxygen setup to achieve a modern, high-performance visual style consistent with the <b>Suckless-OGL</b> philosophy.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md80"></a>
+<h1><a class="anchor" id="autotoc_md93"></a>
 🎨 Theme: Doxygen-Awesome</h1>
 <p>We use the <a href="https://github.com/jothepro/doxygen-awesome-css">Doxygen-Awesome</a> library to replace the legacy Doxygen look with a modern, responsive interface.</p>
-<h2><a class="anchor" id="autotoc_md81"></a>
+<h2><a class="anchor" id="autotoc_md94"></a>
 Integrated Components</h2>
 <ul>
 <li><b>Dark Mode</b>: Toggle situated in the sidebar.</li>
@@ -235,13 +244,13 @@ Integrated Components</h2>
 <li><b>Tabs</b>: Support for tabbed content in documentation.</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md83"></a>
+<h1><a class="anchor" id="autotoc_md96"></a>
 💻 Advanced Syntax Highlighting</h1>
 <p>Doxygen's default highlighting is limited for modern graphics programming. We've integrated <a href="https://highlightjs.org/">highlight.js</a> with specialized logic to handle our shaders and C code.</p>
-<h2><a class="anchor" id="autotoc_md84"></a>
+<h2><a class="anchor" id="autotoc_md97"></a>
 1. Shader Support</h2>
 <p>The <code>Doxyfile</code> maps graphics-specific extensions to C++ for basic indexing, while <code>highlight.js</code> handles the visual coloring: </p><div class="fragment"><div class="line">EXTENSION_MAPPING = glsl=C++ vert=C++ frag=C++ comp=C++</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md85"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md98"></a>
 2. Indentation Preservation Fix</h2>
 <p>Doxygen encodes code blocks as a series of <code>&lt;div class="line"&gt;</code> elements, which often breaks standard syntax highlighters. We've added a custom JavaScript orchestrator in <code>header.html</code> that:</p><ol type="1">
 <li><b>Extracts</b> the raw text from all <code>.line</code> divs.</li>
@@ -251,16 +260,16 @@ Integrated Components</h2>
 </ol>
 <p><b>Theme</b>: <code>Tokyo Night Dark</code> (consistent with the wider project ecosystem).</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md87"></a>
+<h1><a class="anchor" id="autotoc_md100"></a>
 📊 "Suckless-Modern Ghost" Diagrams</h1>
 <p>Our Graphviz (DOT) diagrams have been overhauled to blend seamlessly with the dark mode documentation.</p>
-<h2><a class="anchor" id="autotoc_md88"></a>
+<h2><a class="anchor" id="autotoc_md101"></a>
 1. Engine Configuration</h2>
 <p>Defined in <code>Doxyfile</code>:</p><ul>
 <li><b>Format</b>: <code>svg</code> (for crisp zoom and interactivity).</li>
 <li><b>Transparency</b>: <code>DOT_TRANSPARENT = YES</code> (removes harsh white/gray backgrounds).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md89"></a>
+<h2><a class="anchor" id="autotoc_md102"></a>
 2. Design Tokens</h2>
 <p>Each diagram follows a strict "Ghost" style to ensure it feels like a native part of the page:</p><ul>
 <li><b>Nodes</b>: <code>shape=rect, style="rounded"</code>. No fill color (<code>fillcolor="none"</code>) for a "see-through" aesthetic.</li>
@@ -269,7 +278,7 @@ Integrated Components</h2>
 </ul>
 <p><b>Example Token usage:</b> </p><div class="fragment"><div class="line">node [style=&quot;rounded&quot;, fillcolor=&quot;none&quot;, color=&quot;#414868&quot;, fontcolor=&quot;#c0caf5&quot;, penwidth=2];</div>
 </div><!-- fragment --><hr  />
-<h1><a class="anchor" id="autotoc_md91"></a>
+<h1><a class="anchor" id="autotoc_md104"></a>
 🔧 Core Configuration (Doxyfile)</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -284,7 +293,7 @@ Integrated Components</h2>
 <td class="markdownTableBodyLeft"><code>INTERACTIVE_SVG</code>   </td><td class="markdownTableBodyLeft"><code>YES</code>   </td><td class="markdownTableBodyLeft">Allows panning and zooming in generated diagrams.   </td></tr>
 </table>
 <hr  />
-<h1><a class="anchor" id="autotoc_md93"></a>
+<h1><a class="anchor" id="autotoc_md106"></a>
 🛠️ Maintenance</h1>
 <p>If you need to update the theme:</p><ol type="1">
 <li>Styles are located in <code>docs/doxygen-awesome-css/</code>.</li>

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -267,7 +276,15 @@ $(document).ready(function(){initNavTree('globals_b.html',''); initResizable(); 
 <div class="textblock">Here is a list of all functions, variables, defines, enums, and typedefs with links to the files they belong to:</div>
 
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
-<li>billboard_group_cleanup()&#160;:&#160;<a class="el" href="billboard__rendering_8c.html#afe9bff73b698b1f2017877983fbf3f4c">billboard_rendering.c</a>, <a class="el" href="billboard__rendering_8h.html#afe9bff73b698b1f2017877983fbf3f4c">billboard_rendering.h</a></li>
+<li>BANDING_COMMON_BASE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a22e570c40e5db4b737aea148dc26f222">postprocess_presets.h</a></li>
+<li>BANDING_MODE_CHANNEL&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b">postprocess.h</a></li>
+<li>BANDING_MODE_DITHERED&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc">postprocess.h</a></li>
+<li>BANDING_MODE_LINEAR&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a">postprocess.h</a></li>
+<li>BANDING_MODE_LUMINANCE&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89">postprocess.h</a></li>
+<li>BANDING_MODE_PERCEPTUAL&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da">postprocess.h</a></li>
+<li>BandingMode&#160;:&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">postprocess.h</a></li>
+<li>bayer4x4&#160;:&#160;<a class="el" href="banding_8glsl.html#a062f3a65111b775ae90adb227d6f456f">banding.glsl</a></li>
+<li>billboard_group_cleanup()&#160;:&#160;<a class="el" href="billboard__rendering_8h.html#afe9bff73b698b1f2017877983fbf3f4c">billboard_rendering.h</a>, <a class="el" href="billboard__rendering_8c.html#afe9bff73b698b1f2017877983fbf3f4c">billboard_rendering.c</a></li>
 <li>billboard_group_draw()&#160;:&#160;<a class="el" href="billboard__rendering_8h.html#a5a12a5448656197b1da5248f2787da94">billboard_rendering.h</a>, <a class="el" href="billboard__rendering_8c.html#a5a12a5448656197b1da5248f2787da94">billboard_rendering.c</a></li>
 <li>billboard_group_init()&#160;:&#160;<a class="el" href="billboard__rendering_8h.html#a2e879f800244b637740be72363feeb04">billboard_rendering.h</a>, <a class="el" href="billboard__rendering_8c.html#a2e879f800244b637740be72363feeb04">billboard_rendering.c</a></li>
 <li>billboard_group_prepare()&#160;:&#160;<a class="el" href="billboard__rendering_8h.html#ac7c6dec8f16479b4749eda7cee28fd02">billboard_rendering.h</a>, <a class="el" href="billboard__rendering_8c.html#ac7c6dec8f16479b4749eda7cee28fd02">billboard_rendering.c</a></li>

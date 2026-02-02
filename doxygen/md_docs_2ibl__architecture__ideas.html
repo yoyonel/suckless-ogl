@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,38 +230,38 @@ $(document).ready(function(){initNavTree('md_docs_2ibl__architecture__ideas.html
   <div class="headertitle"><div class="title">IBL Optimization Strategies</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md134"></a> This document outlines architectural ideas for reducing the performance impact of environment map updates, specifically the long GPU stalls during Prefiltered Specular Map generation.</p>
-<h1><a class="anchor" id="autotoc_md135"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md147"></a> This document outlines architectural ideas for reducing the performance impact of environment map updates, specifically the long GPU stalls during Prefiltered Specular Map generation.</p>
+<h1><a class="anchor" id="autotoc_md148"></a>
 1. Problem Analysis</h1>
 <p>Current metrics show that generating the Prefiltered Specular Map for a 4K environment takes ~350ms on integrated graphics. This causes a complete freeze of the rendering loop.</p>
-<h1><a class="anchor" id="autotoc_md136"></a>
+<h1><a class="anchor" id="autotoc_md149"></a>
 2. Proposed Solutions</h1>
-<h2><a class="anchor" id="autotoc_md137"></a>
+<h2><a class="anchor" id="autotoc_md150"></a>
 A. Progressive IBL (Temporal Amortization)</h2>
 <p>Instead of calculating all mipmap levels in a single loop, process them incrementally.</p><ul>
 <li><b>Mechanism</b>: Use a state machine in the <code>AsyncLoader</code> or <code><a class="el" href="structApp.html" title="The central state container for the entire application.">App</a></code> loop.</li>
 <li><b>Workflow</b>: <code>Frame N: Load HDR</code> -&gt; <code>Frame N+1: Mip 0</code> -&gt; <code>Frame N+2: Mip 1</code> ...</li>
 <li><b>Result</b>: Zero freezes. The user sees the environment "sharpen" or "blur" over a few frames.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md138"></a>
+<h2><a class="anchor" id="autotoc_md151"></a>
 B. Adaptive Sample Counting</h2>
 <p>Lower mip levels represent rougher surfaces where high-frequency details are already lost.</p><ul>
 <li><b>Idea</b>: Use 1024 samples for Mip 0, but scale down to 512, 256, 128 for higher mips.</li>
 <li><b>Technique</b>: Pass <code>u_sample_count</code> as a uniform to the compute shader.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md139"></a>
+<h2><a class="anchor" id="autotoc_md152"></a>
 C. Resolution Capping</h2>
 <p>Directly processing a 4K texture for IBL is often overkill as reflexes are rarely pixel-perfect.</p><ul>
 <li><b>Rule</b>: Cap the Prefiltered Specular Map resolution to <b>1024x512</b> regardless of the source HDR size.</li>
 <li><b>Benefit</b>: Quadrant reduction in complexity compared to 4K.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md140"></a>
+<h2><a class="anchor" id="autotoc_md153"></a>
 D. Tiled Dispatching</h2>
 <p>For very large mips, even a single <code>glDispatchCompute</code> can exceed a reasonable frame budget.</p><ul>
 <li><b>Idea</b>: Split a single mipmap level into tiles (e.g., 4x4 grid).</li>
 <li><b>Mechanism</b>: Dispatch only a subset of tiles per frame until the level is complete.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md141"></a>
+<h2><a class="anchor" id="autotoc_md154"></a>
 E. Instant Placeholder (The "Fast Path")</h2>
 <p>Avoid waiting for any compute shader to show the new environment.</p><ul>
 <li><b>Workflow</b>:<ol type="1">
@@ -264,7 +273,7 @@ E. Instant Placeholder (The "Fast Path")</h2>
 </li>
 <li><b>Result</b>: Visual feedback is instantaneous.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md142"></a>
+<h1><a class="anchor" id="autotoc_md155"></a>
 3. Implementation Roadmap</h1>
 <ol type="1">
 <li>[ ] Implement <b>Resolution Capping</b> (Easiest, high ROI).</li>

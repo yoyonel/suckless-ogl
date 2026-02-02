@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🌈_20material_20reflectance_20values_0',['🌈 Material Reflectance Values',['../md_docs_2photographic__standards.html#autotoc_md182',1,'']]]
+  ['✨_20bonus_3a_20exotic_20values_0',['✨ Bonus: Exotic Values',['../md_docs_2photographic__standards.html#autotoc_md217',1,'']]]
 ];

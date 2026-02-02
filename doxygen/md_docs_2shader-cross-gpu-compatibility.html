@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,20 +230,20 @@ $(document).ready(function(){initNavTree('md_docs_2shader-cross-gpu-compatibilit
   <div class="headertitle"><div class="title">Shader Cross-GPU Compatibility Guidelines</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md301"></a> </p><blockquote class="doxtable">
+<div class="textblock"><p><a class="anchor" id="autotoc_md314"></a> </p><blockquote class="doxtable">
 <p>&zwj;<b>Case Study</b>: See <a class="el" href="md_docs_2gpu-rendering-synchronization.html">gpu-rendering-synchronization.md</a> for a real-world example of Intel vs NVIDIA fixes </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md302"></a>
+<h1><a class="anchor" id="autotoc_md315"></a>
 Overview</h1>
 <p>Best practices for writing OpenGL shaders that produce consistent results across GPU vendors (Intel, NVIDIA, AMD).</p>
-<h1><a class="anchor" id="autotoc_md303"></a>
+<h1><a class="anchor" id="autotoc_md316"></a>
 Key Principles</h1>
-<h2><a class="anchor" id="autotoc_md304"></a>
+<h2><a class="anchor" id="autotoc_md317"></a>
 1. Avoid Relying on Derivative Precision</h2>
 <p><b>Problem</b>: <code>dFdx()</code> and <code>dFdy()</code> have vendor-specific implementations.</p>
 <p><b>Recommendation</b>: Use derivatives only for debugging/visualization, not critical rendering logic.</p>
 <p><b>Alternative</b>: Pre-compute values in geometry shaders or use distance-based heuristics.</p>
-<h2><a class="anchor" id="autotoc_md305"></a>
+<h2><a class="anchor" id="autotoc_md318"></a>
 2. Pre-Calculate and Store Values</h2>
 <p><b>Problem</b>: Recalculating the same value multiple times can accumulate precision errors differently.</p>
 <p><b>Solution</b>: Calculate once, store in unused texture channels (e.g., alpha).</p>
@@ -244,14 +253,14 @@ Key Principles</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Post-processing (reuse)</span></div>
 <div class="line"><span class="keywordtype">float</span> stored_luma = texture(tex_sampler, uv_coords).a;  <span class="comment">// Consistent across vendors</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md306"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md319"></a>
 3. Use Explicit Precision Qualifiers (Mobile/WebGL)</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#ifdef GL_ES</span></div>
 <div class="line">precision highp float;</div>
 <div class="line">precision highp int;</div>
 <div class="line"><span class="preprocessor">#endif</span></div>
 </div><!-- fragment --><p><b>Note</b>: Desktop OpenGL ignores these, but they're critical for mobile/WebGL.</p>
-<h2><a class="anchor" id="autotoc_md307"></a>
+<h2><a class="anchor" id="autotoc_md320"></a>
 4. Clamp Intermediate Values</h2>
 <p>Prevent overflow/underflow in calculations:</p>
 <div class="fragment"><div class="line"><span class="comment">// Bad</span></div>
@@ -259,28 +268,28 @@ Key Principles</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Good</span></div>
 <div class="line"><span class="keywordtype">float</span> val_good = pow(clamp(someInput, 0.0, 10.0), 0.1);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md308"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md321"></a>
 5. Avoid Fast Math Assumptions</h2>
 <p>Use explicit parentheses to control floating-point operation order:</p>
 <div class="fragment"><div class="line"><span class="comment">// Order-dependent</span></div>
 <div class="line"><span class="keywordtype">float</span> result_val = ((a * b) + (c * d)) + (e * f);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md309"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md322"></a>
 Common Pitfalls</h1>
-<h2><a class="anchor" id="autotoc_md310"></a>
+<h2><a class="anchor" id="autotoc_md323"></a>
 Pitfall 1: Texture LOD Calculation</h2>
 <div class="fragment"><div class="line"><span class="comment">// Implicit LOD may differ</span></div>
 <div class="line">vec3 color_res = texture(envMap_tex, direction).rgb;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Explicit LOD is consistent</span></div>
 <div class="line">vec3 color_res_fixed = textureLod(envMap_tex, direction, roughness * 4.0).rgb;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md311"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md324"></a>
 Pitfall 2: Small Exponents in pow()</h2>
 <div class="fragment"><div class="line"><span class="comment">// Very sensitive to input differences</span></div>
 <div class="line"><span class="keywordtype">float</span> bad_pow = pow(variation, 0.1);   <span class="comment">// 10th root</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// More stable</span></div>
 <div class="line"><span class="keywordtype">float</span> better_sqrt = sqrt(variation);     <span class="comment">// Square root</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md312"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md325"></a>
 Pitfall 3: Derivatives in Divergent Branches</h2>
 <div class="fragment"><div class="line"><span class="comment">// BAD: Undefined behavior</span></div>
 <div class="line"><span class="keywordflow">if</span> (someCondition) {</div>
@@ -292,7 +301,7 @@ Pitfall 3: Derivatives in Divergent Branches</h2>
 <div class="line"><span class="keywordflow">if</span> (someCondition) {</div>
 <div class="line">    <span class="comment">// Use dx_precomputed</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md313"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md326"></a>
 Testing Workflow</h1>
 <ol type="1">
 <li><b>Visual Comparison</b>: Test on 2+ GPU vendors</li>
@@ -300,7 +309,7 @@ Testing Workflow</h1>
 <li><b>Frame Capture</b>: Compare with RenderDoc/ApiTrace</li>
 <li><b>Driver Versions</b>: Test with different driver releases</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md314"></a>
+<h2><a class="anchor" id="autotoc_md327"></a>
 Tools</h2>
 <div class="fragment"><div class="line"># Visual diff</div>
 <div class="line">compare intel.png nvidia.png diff.png</div>
@@ -308,7 +317,7 @@ Tools</h2>
 <div class="line"># ApiTrace</div>
 <div class="line">apitrace trace ./app</div>
 <div class="line">apitrace replay app.trace</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md315"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md328"></a>
 When to Use Derivatives</h1>
 <p>✅ <b>Safe uses</b>:</p><ul>
 <li>Debug visualization (where exact parity is not required)</li>
@@ -320,7 +329,7 @@ When to Use Derivatives</h1>
 <li>Anti-aliasing (prefer FXAA or Analytic smoothing)</li>
 <li>Material property adjustments (use <code>MIN_ROUGHNESS</code> constants)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md316"></a>
+<h1><a class="anchor" id="autotoc_md329"></a>
 Implementation Example: Analytic Edge Smoothing</h1>
 <p>Instead of <code>fwidth(h)</code>:</p>
 <div class="fragment"><div class="line"><span class="comment">// h = discriminant (0 at edge)</span></div>
@@ -328,7 +337,7 @@ Implementation Example: Analytic Edge Smoothing</h1>
 <div class="line"><span class="keywordtype">float</span> edgeFactor_val = clamp(h / analyticFwidth, 0.0, 1.0);</div>
 </div><!-- fragment --><p>See <a href="../shaders/pbr_ibl_billboard.frag">pbr_ibl_billboard.frag</a> for a production example.</p>
 <p>More details on why testing artifacts appear in CI can be found in <a class="el" href="md_docs_2visual__testing__artifacts.html">Visual Testing &amp; Regression Artifacts</a>.</p>
-<h1><a class="anchor" id="autotoc_md317"></a>
+<h1><a class="anchor" id="autotoc_md330"></a>
 References</h1>
 <ul>
 <li><a href="https://www.khronos.org/opengl/wiki/Derivative">OpenGL Derivative Functions</a></li>

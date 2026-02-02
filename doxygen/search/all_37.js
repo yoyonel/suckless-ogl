@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['🔗_20python_20→_20c_20equivalence_0',['🔗 Python → C Equivalence',['../md_docs_2skybox__rendering.html#autotoc_md338',1,'']]]
+  ['🔍_20identified_20problem_0',['🔍 Identified Problem',['../md_docs_2cubemap__seam__resolution.html#autotoc_md52',1,'']]],
+  ['🔍_20technical_20details_1',['🔍 Technical Details',['../md_docs_2skybox__rendering.html#autotoc_md345',1,'']]]
 ];

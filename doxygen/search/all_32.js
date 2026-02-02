@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📚_20recommended_20resources_0',['📚 Recommended Resources',['../md_docs_2photographic__standards.html#autotoc_md203',1,'']]]
+  ['📐_20useful_20formulas_0',['📐 Useful Formulas',['../md_docs_2photographic__standards.html#autotoc_md208',1,'']]]
 ];

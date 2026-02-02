@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📁_20project_20structure_0',['📁 Project Structure',['../index.html#autotoc_md6',1,'']]]
+  ['💻_20advanced_20syntax_20highlighting_0',['💻 Advanced Syntax Highlighting',['../md_docs_2doxygen__customization.html#autotoc_md96',1,'']]]
 ];

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,11 +230,11 @@ $(document).ready(function(){initNavTree('md_docs_2mouse__camera__control.html',
   <div class="headertitle"><div class="title">Mouse Camera Control</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md143"></a> </p>
-<h1><a class="anchor" id="autotoc_md144"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md156"></a> </p>
+<h1><a class="anchor" id="autotoc_md157"></a>
 Overview</h1>
 <p>This document explains the implementation of the mouse-controlled camera system (First Person View) in the engine. The system allows orientation control (Pitch/Yaw) via the mouse and movement via the keyboard.</p>
-<h1><a class="anchor" id="autotoc_md145"></a>
+<h1><a class="anchor" id="autotoc_md158"></a>
 Features</h1>
 <ul>
 <li><b>Capture Mode</b>: The cursor is hidden and locked to the window center.</li>
@@ -233,16 +242,16 @@ Features</h1>
 <li><b>Clamping</b>: Pitch is limited to +/- 89 degrees to avoid Gimbal Lock.</li>
 <li><b>Smoothness</b>: Frame-rate independent movement using <code>deltaTime</code>.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md146"></a>
+<h1><a class="anchor" id="autotoc_md159"></a>
 Architecture</h1>
-<h2><a class="anchor" id="autotoc_md147"></a>
+<h2><a class="anchor" id="autotoc_md160"></a>
 Data Flow</h2>
 <p>The input event management is decoupled from the camera update logic.</p>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_7.svg" width="1054" height="70"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h1><a class="anchor" id="autotoc_md148"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_10.svg" width="1054" height="70"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h1><a class="anchor" id="autotoc_md161"></a>
 Implementation Details</h1>
-<h2><a class="anchor" id="autotoc_md149"></a>
+<h2><a class="anchor" id="autotoc_md162"></a>
 Rotation Calculation (Euler Angles)</h2>
 <p>The camera's direction vector is calculated from the Yaw and Pitch angles:</p>
 <div class="fragment"><div class="line"><span class="comment">// Convert Spherical to Cartesian coordinates</span></div>
@@ -250,7 +259,7 @@ Rotation Calculation (Euler Angles)</h2>
 <div class="line">front.y = sin(glm_rad(pitch));</div>
 <div class="line">front.z = sin(glm_rad(yaw)) * cos(glm_rad(pitch));</div>
 <div class="line">glm_normalize(front);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md150"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md163"></a>
 Input Handling</h2>
 <p>The <code>mouse_callback</code> function handles the raw mouse input:</p>
 <ol type="1">
@@ -262,7 +271,7 @@ Input Handling</h2>
 <blockquote class="doxtable">
 <p>&zwj;[!NOTE] Ensure <code>firstMouse</code> check is implemented to prevent a sudden camera jump on the initial frame where the mouse enters the window. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md151"></a>
+<h1><a class="anchor" id="autotoc_md164"></a>
 Usage</h1>
 <p>To enable mouse capture: </p><div class="fragment"><div class="line"><span class="comment">// Enable mouse capture in GLFW</span></div>
 <div class="line">glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);</div>

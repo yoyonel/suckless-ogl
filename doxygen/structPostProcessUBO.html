@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -338,6 +347,18 @@ Data Fields</h2></td></tr>
 <tr class="separator:a15d965d04d44d41ace1f1d805bc4efa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9e4407b3914675e10daee43045532e0" id="r_aa9e4407b3914675e10daee43045532e0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0">_pad10</a></td></tr>
 <tr class="separator:aa9e4407b3914675e10daee43045532e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d807fb361fa9afbdfd0654375b1b5f" id="r_a94d807fb361fa9afbdfd0654375b1b5f"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f">banding_mode</a></td></tr>
+<tr class="separator:a94d807fb361fa9afbdfd0654375b1b5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dd03fd01a95936e7a2126f0d89b7f10" id="r_a6dd03fd01a95936e7a2126f0d89b7f10"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10">banding_levels</a></td></tr>
+<tr class="separator:a6dd03fd01a95936e7a2126f0d89b7f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa32f26494de331b477b19ad6efac8243" id="r_aa32f26494de331b477b19ad6efac8243"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#aa32f26494de331b477b19ad6efac8243">banding_dither_strength</a></td></tr>
+<tr class="separator:aa32f26494de331b477b19ad6efac8243"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4737e47adec3865753961e7729a2bc19" id="r_a4737e47adec3865753961e7729a2bc19"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19">banding_perceptual_gamma</a></td></tr>
+<tr class="separator:a4737e47adec3865753961e7729a2bc19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a167c5ae398b9ef7bfcec015323c8505e" id="r_a167c5ae398b9ef7bfcec015323c8505e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a167c5ae398b9ef7bfcec015323c8505e">banding_channel_levels</a> [3]</td></tr>
+<tr class="separator:a167c5ae398b9ef7bfcec015323c8505e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad01e22490be7ed4152e0c8a3c9898f8f" id="r_ad01e22490be7ed4152e0c8a3c9898f8f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f">_pad11</a></td></tr>
+<tr class="separator:ad01e22490be7ed4152e0c8a3c9898f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Shared Uniform Buffer structure for shaders. </p>
@@ -379,6 +400,20 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PostProcessUBO::_pad10</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad01e22490be7ed4152e0c8a3c9898f8f" name="ad01e22490be7ed4152e0c8a3c9898f8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad01e22490be7ed4152e0c8a3c9898f8f">&#9670;&#160;</a></span>_pad11</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::_pad11</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -505,6 +540,76 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">uint32_t PostProcessUBO::active_effects</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a167c5ae398b9ef7bfcec015323c8505e" name="a167c5ae398b9ef7bfcec015323c8505e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a167c5ae398b9ef7bfcec015323c8505e">&#9670;&#160;</a></span>banding_channel_levels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::banding_channel_levels[3]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa32f26494de331b477b19ad6efac8243" name="aa32f26494de331b477b19ad6efac8243"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa32f26494de331b477b19ad6efac8243">&#9670;&#160;</a></span>banding_dither_strength</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::banding_dither_strength</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6dd03fd01a95936e7a2126f0d89b7f10" name="a6dd03fd01a95936e7a2126f0d89b7f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dd03fd01a95936e7a2126f0d89b7f10">&#9670;&#160;</a></span>banding_levels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::banding_levels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a94d807fb361fa9afbdfd0654375b1b5f" name="a94d807fb361fa9afbdfd0654375b1b5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94d807fb361fa9afbdfd0654375b1b5f">&#9670;&#160;</a></span>banding_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int32_t PostProcessUBO::banding_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4737e47adec3865753961e7729a2bc19" name="a4737e47adec3865753961e7729a2bc19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4737e47adec3865753961e7729a2bc19">&#9670;&#160;</a></span>banding_perceptual_gamma</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::banding_perceptual_gamma</td>
         </tr>
       </table>
 </div><div class="memdoc">

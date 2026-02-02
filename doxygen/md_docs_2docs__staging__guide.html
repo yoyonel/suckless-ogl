@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2docs__staging__guide.html',''
   <div class="headertitle"><div class="title">Documentation Staging &amp; Preview Guide</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md69"></a> This project automatically generates and deploys a live preview of the Doxygen documentation for every Pull Request. This allows for functional validation of documentation changes before merging.</p>
-<h1><a class="anchor" id="autotoc_md70"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md82"></a> This project automatically generates and deploys a live preview of the Doxygen documentation for every Pull Request. This allows for functional validation of documentation changes before merging.</p>
+<h1><a class="anchor" id="autotoc_md83"></a>
 How it Works</h1>
 <ol type="1">
 <li><b>Trigger</b>: Every push to a Pull Request triggers the <code>documentation</code> job in GitHub Actions.</li>
@@ -230,10 +239,10 @@ How it Works</h1>
 <li><b>Deployment</b>: The documentation is deployed to <a href="https://surge.sh">Surge.sh</a> using a unique domain per PR: <code>suckless-ogl-pr-[NUMBER].surge.sh</code>.</li>
 <li><b>Feedback</b>: A comment is automatically posted on the Pull Request with a link to the live preview.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md71"></a>
+<h1><a class="anchor" id="autotoc_md84"></a>
 Setup Instructions</h1>
 <p>To enable automated deployments, you must configure a <code>SURGE_TOKEN</code> in your repository secrets.</p>
-<h2><a class="anchor" id="autotoc_md72"></a>
+<h2><a class="anchor" id="autotoc_md85"></a>
 1. Obtain a Surge Token</h2>
 <p>If you haven't used Surge before, you can install it and generate a token via CLI:</p>
 <div class="fragment"><div class="line">npx surge token</div>
@@ -241,7 +250,7 @@ Setup Instructions</h1>
 <li>If you don't have an account, it will prompt you to create one.</li>
 <li>Copy the provided token string.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md73"></a>
+<h2><a class="anchor" id="autotoc_md86"></a>
 2. Configure GitHub Secrets</h2>
 <ol type="1">
 <li>Navigate to your GitHub repository.</li>
@@ -250,7 +259,7 @@ Setup Instructions</h1>
 <li>Set the <b>Name</b> to <code>SURGE_TOKEN</code>.</li>
 <li>Paste your token into the <b>Value</b> field.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md74"></a>
+<h1><a class="anchor" id="autotoc_md87"></a>
 Workflow Integration</h1>
 <p>The staging logic is defined in <code>.github/workflows/main.yml</code>. It uses the <code>mshick/add-pr-comment</code> action to keep you informed:</p>
 <div class="fragment"><div class="line">- name: Comment Preview Link on PR</div>
@@ -261,13 +270,13 @@ Workflow Integration</h1>
 <div class="line">      ## 📚 Documentation Preview</div>
 <div class="line">      The Doxygen documentation for this PR has been generated and is ready for review:</div>
 <div class="line">      🔗 **[Preview Link](${{ env.PREVIEW_URL }})**</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md75"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md88"></a>
 Maintenance</h1>
-<h2><a class="anchor" id="autotoc_md76"></a>
+<h2><a class="anchor" id="autotoc_md89"></a>
 Clearing Previews</h2>
 <p>Surge.sh keeps the deployments indefinitely. Since the domains are reused per PR number, new pushes simply overwrite the previous version. If you need to manually tear down a preview:</p>
 <div class="fragment"><div class="line">npx surge teardown suckless-ogl-pr-[NUMBER].surge.sh --token your_token</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md77"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md90"></a>
 Security</h2>
 <p>The <code>SURGE_TOKEN</code> allows anyone with access to it to deploy sites to your Surge account. Keep it secret and only store it in GitHub Secrets. </p>
 </div></div><!-- contents -->

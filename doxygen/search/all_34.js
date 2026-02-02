@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📦_20docker_20podman_0',['📦 Docker / Podman',['../index.html#autotoc_md7',1,'']]]
+  ['📝_20important_20notes_0',['📝 Important Notes',['../md_docs_2skybox__rendering.html#autotoc_md350',1,'']]]
 ];

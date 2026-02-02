@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2skybox__rendering.html',''); 
   <div class="headertitle"><div class="title">Skybox Rendering Technique (Equirectangular)</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md328"></a> The engine uses direct <b>Equirectangular</b> mapping for the environment background. This is more memory-efficient as it avoids converting to and storing a generated cubemap.</p>
-<h2><a class="anchor" id="autotoc_md329"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md341"></a> The engine uses direct <b>Equirectangular</b> mapping for the environment background. This is more memory-efficient as it avoids converting to and storing a generated cubemap.</p>
+<h2><a class="anchor" id="autotoc_md342"></a>
 Early-Z Optimization</h2>
 <p>To maximize performance on integrated GPUs, the skybox is rendered <b>after</b> the scene objects.</p>
 <ol type="1">
@@ -230,10 +239,10 @@ Early-Z Optimization</h2>
 <li><b>Depth Test</b>: By using <code>glDepthFunc(GL_LEQUAL)</code>, the GPU automatically rejects skybox fragments that are occluded by 3D objects (like the icosphere) before launching the fragment shader.</li>
 <li><b>Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a></b>: Performs an inverse spherical projection to sample the 2D HDR texture.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md330"></a>
+<h2><a class="anchor" id="autotoc_md343"></a>
 Optimization Diagram</h2>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_14.svg" width="1162" height="424"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_17.svg" width="1162" height="424"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <div class="fragment"><div class="line"><span class="comment">// Inverse Equirectangular Projection</span></div>
 <div class="line"><span class="keyword">const</span> vec2 <a class="code hl_variable" href="background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80">invAtan</a> = vec2(0.1591, 0.3183);</div>
 <div class="line">vec2 <a class="code hl_function" href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">SampleEquirectangular</a>(vec3 v) {</div>
@@ -253,7 +262,7 @@ Optimization Diagram</h2>
 <div class="ttc" id="abackground_8frag_html_a4501d7fad1ba623dd0c9b06456c9813c"><div class="ttname"><a href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a></div><div class="ttdeci">uniform float blur_lod</div><div class="ttdef"><b>Definition</b> background.frag:8</div></div>
 <div class="ttc" id="abackground_8frag_html_abfb45c403721e8c71065fd9b5407b39a"><div class="ttname"><a href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">SampleEquirectangular</a></div><div class="ttdeci">vec2 SampleEquirectangular(vec3 v)</div><div class="ttdef"><b>Definition</b> background.frag:11</div></div>
 <div class="ttc" id="abackground_8frag_html_ae9a1943fd19907f9c61975876aaa9d80"><div class="ttname"><a href="background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80">invAtan</a></div><div class="ttdeci">const vec2 invAtan</div><div class="ttdef"><b>Definition</b> background.frag:10</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md331"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md344"></a>
 C Implementation (View Matrix)</h2>
 <p>We remove the <b>translation</b> component from the view matrix so the skybox appears infinitely far away (centered on the camera):</p>
 <div class="fragment"><div class="line"><span class="comment">/* Copy view and strip translation to keep skybox at infinity */</span></div>
@@ -268,18 +277,18 @@ C Implementation (View Matrix)</h2>
 <div class="line">glm_mat4_mul(proj, view_sky, inv_vp_sky);</div>
 <div class="line">glm_mat4_inv(inv_vp_sky, inv_vp_sky);</div>
 <div class="ttc" id="apbr__ibl__billboard_8frag_html_a7ab66495f9aae7ab34147735223f7c6d"><div class="ttname"><a href="pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d">view</a></div><div class="ttdeci">uniform mat4 view</div><div class="ttdef"><b>Definition</b> pbr_ibl_billboard.frag:25</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md332"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md345"></a>
 🔍 Technical Details</h1>
-<h2><a class="anchor" id="autotoc_md333"></a>
+<h2><a class="anchor" id="autotoc_md346"></a>
 Mipmap Sampling</h2>
 <p>Using <code>textureLod</code> with an equirectangular texture allows precise control over bluriness:</p><ul>
 <li><b>LOD 0</b>: Sharp environment.</li>
 <li><b>LOD &gt; 0</b>: Blurred environment (useful for PBR background or debugging).</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md334"></a>
+<h2><a class="anchor" id="autotoc_md347"></a>
 Orientation Correction</h2>
 <p>The inversion <code>uv.y = 0.5 - uv.y</code> is crucial to map the "top" of the HDR image to the "top" of the 3D world space.</p>
-<h1><a class="anchor" id="autotoc_md335"></a>
+<h1><a class="anchor" id="autotoc_md348"></a>
 🎨 Full Workflow</h1>
 <div class="fragment"><div class="line"><span class="comment">// Main render loop integration</span></div>
 <div class="line"><span class="keywordtype">void</span> render_scene_example(<a class="code hl_struct" href="structApp.html">App</a>* app) {</div>
@@ -304,7 +313,7 @@ Orientation Correction</h2>
 <div class="ttc" id="astructApp_html_ab6bf6186f400d8a1ce56212151e2c61b"><div class="ttname"><a href="structApp.html#ab6bf6186f400d8a1ce56212151e2c61b">App::skybox</a></div><div class="ttdeci">Skybox skybox</div><div class="ttdef"><b>Definition</b> app.h:110</div></div>
 <div class="ttc" id="astructApp_html_ac34cc768f96afb050926f49ea56c84ab"><div class="ttname"><a href="structApp.html#ac34cc768f96afb050926f49ea56c84ab">App::skybox_shader</a></div><div class="ttdeci">GLuint skybox_shader</div><div class="ttdef"><b>Definition</b> app.h:144</div></div>
 <div class="ttc" id="astructApp_html_acdf677731e707e8a4bc70d37d9b62c31"><div class="ttname"><a href="structApp.html#acdf677731e707e8a4bc70d37d9b62c31">App::env_lod</a></div><div class="ttdeci">float env_lod</div><div class="ttdef"><b>Definition</b> app.h:162</div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md336"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md349"></a>
 🌟 Advantages</h1>
 <ol type="1">
 <li><b>Performance</b>: No complex matrix math, just zeroing 3 floats.</li>
@@ -312,23 +321,23 @@ Orientation Correction</h2>
 <li><b>Robustness</b>: Standard industry technique.</li>
 <li><b>Quality</b>: Seamless infinite background.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md337"></a>
+<h1><a class="anchor" id="autotoc_md350"></a>
 📝 Important Notes</h1>
 <ul>
 <li>Use <code>glDepthFunc(GL_LEQUAL)</code> so the skybox is drawn at the back processing.</li>
 <li>The skybox does not write significant depth.</li>
 <li>The LOD (blur_lod) allows controlling the environment blur.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md338"></a>
+<h1><a class="anchor" id="autotoc_md351"></a>
 🔗 Python → C Equivalence</h1>
-<h2><a class="anchor" id="autotoc_md339"></a>
+<h2><a class="anchor" id="autotoc_md352"></a>
 Python (moderngl)</h2>
 <div class="fragment"><div class="line">view_m = camera.matrix</div>
 <div class="line">view_m[3][0] = 0</div>
 <div class="line">view_m[3][1] = 0</div>
 <div class="line">view_m[3][2] = 0</div>
 <div class="line">inv_view_proj_sky = glm.inverse(projection_matrix * view_m)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md340"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md353"></a>
 C (cglm)</h2>
 <div class="fragment"><div class="line">mat4 view_m;</div>
 <div class="line">glm_lookat(camera_pos, target, up, view_m);</div>

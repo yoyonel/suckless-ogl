@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🎚️_20photographic_20values_20scale_0',['🎚️ Photographic Values Scale',['../md_docs_2photographic__standards.html#autotoc_md178',1,'']]]
+  ['🌟_20advantages_0',['🌟 Advantages',['../md_docs_2skybox__rendering.html#autotoc_md349',1,'']]]
 ];

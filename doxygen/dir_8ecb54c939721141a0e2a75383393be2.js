@@ -1,5 +1,6 @@
 var dir_8ecb54c939721141a0e2a75383393be2 =
 [
+    [ "banding.glsl", "banding_8glsl.html", "banding_8glsl" ],
     [ "bloom.glsl", "bloom_8glsl.html", "bloom_8glsl" ],
     [ "chromatic_aberration.glsl", "chromatic__aberration_8glsl.html", "chromatic__aberration_8glsl" ],
     [ "color_grading.glsl", "color__grading_8glsl.html", "color__grading_8glsl" ],

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -282,6 +291,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFXAAParams.html">FXAAParams</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters for Fast Approximate Anti-Aliasing.  <a href="structFXAAParams.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBandingParams.html">BandingParams</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Controls for color banding/quantization.  <a href="structBandingParams.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structShaderCacheEntry.html">ShaderCacheEntry</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cache entry for optimized shaders.  <a href="structShaderCacheEntry.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,6 +347,8 @@ Macros</h2></td></tr>
 <tr class="separator:a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a478a7691189f64138ffea55e94d0be7b" id="r_a478a7691189f64138ffea55e94d0be7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a478a7691189f64138ffea55e94d0be7b">DEFAULT_DOF_BOKEH_SCALE</a>&#160;&#160;&#160;10.0F</td></tr>
 <tr class="separator:a478a7691189f64138ffea55e94d0be7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a917e9af207be1811116e495774c4f546" id="r_a917e9af207be1811116e495774c4f546"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a917e9af207be1811116e495774c4f546">DEFAULT_BANDING_LEVELS</a>&#160;&#160;&#160;256.0F</td></tr>
+<tr class="separator:a917e9af207be1811116e495774c4f546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5ac917a4a0b7f557e0149cd2517d08e" id="r_af5ac917a4a0b7f557e0149cd2517d08e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e">DEFAULT_WB_TEMP</a>&#160;&#160;&#160;6500.0F</td></tr>
 <tr class="separator:af5ac917a4a0b7f557e0149cd2517d08e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad168e611abd1a1d07b4ec631de12c8d2" id="r_ad168e611abd1a1d07b4ec631de12c8d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2">DEFAULT_WB_TINT</a>&#160;&#160;&#160;0.0F</td></tr>
@@ -377,10 +391,22 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a> = (1U &lt;&lt; 12U)
 , <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a> = (1U &lt;&lt; 13U)
+, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a> = (1U &lt;&lt; 14U)
 <br />
  }</td></tr>
 <tr class="memdesc:a01df437b0efb1a48be039d241c9baf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitmask flags for enabling/disabling individual effects.  <a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">More...</a><br /></td></tr>
 <tr class="separator:a01df437b0efb1a48be039d241c9baf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d814419b634cf8406ae065aea9a2ad2" id="r_a1d814419b634cf8406ae065aea9a2ad2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> { <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a">BANDING_MODE_LINEAR</a> = 0
+, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc">BANDING_MODE_DITHERED</a> = 1
+, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da">BANDING_MODE_PERCEPTUAL</a> = 2
+, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b">BANDING_MODE_CHANNEL</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89">BANDING_MODE_LUMINANCE</a> = 4
+<br />
+ }</td></tr>
+<tr class="memdesc:a1d814419b634cf8406ae065aea9a2ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Styles of color quantization.  <a href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">More...</a><br /></td></tr>
+<tr class="separator:a1d814419b634cf8406ae065aea9a2ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -440,6 +466,14 @@ Functions</h2></td></tr>
 <tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebaafeb093d652eb93e6f91a55a60566" id="r_aebaafeb093d652eb93e6f91a55a60566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_set_fxaa</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float subpix, float edge_threshold, float edge_threshold_min)</td></tr>
 <tr class="separator:aebaafeb093d652eb93e6f91a55a60566"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b604741ce9e478c27bce5bad0255bcf" id="r_a4b604741ce9e478c27bce5bad0255bcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_set_banding</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> mode, float levels)</td></tr>
+<tr class="separator:a4b604741ce9e478c27bce5bad0255bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4459034743ba0085c3687dd0a6c89133" id="r_a4459034743ba0085c3687dd0a6c89133"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4459034743ba0085c3687dd0a6c89133">postprocess_set_banding_dither</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
+<tr class="separator:a4459034743ba0085c3687dd0a6c89133"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a30e58d88bfa2568ada6fc829dd83b6" id="r_a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3a30e58d88bfa2568ada6fc829dd83b6">postprocess_set_banding_perceptual</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float gamma)</td></tr>
+<tr class="separator:a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a5f36a8b51d36d743840c7acc4a9e55" id="r_a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4a5f36a8b51d36d743840c7acc4a9e55">postprocess_set_banding_channels</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float red, float green, float blue)</td></tr>
+<tr class="separator:a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ca4160d60435cb54320bbcc68d0d95" id="r_a86ca4160d60435cb54320bbcc68d0d95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_update_matrices</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, mat4 view_proj)</td></tr>
 <tr class="memdesc:a86ca4160d60435cb54320bbcc68d0d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates view-projection matrices for effects requiring depth-reconstruction.  <br /></td></tr>
 <tr class="separator:a86ca4160d60435cb54320bbcc68d0d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -487,11 +521,26 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
 <div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:69</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:80</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:66</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:72</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:83</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:69</div></div>
 </div><!-- fragment -->
 <p>Default mask of active effects. </p>
+
+</div>
+</div>
+<a id="a917e9af207be1811116e495774c4f546" name="a917e9af207be1811116e495774c4f546"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a917e9af207be1811116e495774c4f546">&#9670;&#160;</a></span>DEFAULT_BANDING_LEVELS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEFAULT_BANDING_LEVELS&#160;&#160;&#160;256.0F</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>8-bit simulation. </p>
 
 </div>
 </div>
@@ -878,6 +927,34 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a1d814419b634cf8406ae065aea9a2ad2" name="a1d814419b634cf8406ae065aea9a2ad2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d814419b634cf8406ae065aea9a2ad2">&#9670;&#160;</a></span>BandingMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Styles of color quantization. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a" name="a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a"></a>BANDING_MODE_LINEAR&#160;</td><td class="fielddoc"><p>Standard uniform (Posterization). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc" name="a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc"></a>BANDING_MODE_DITHERED&#160;</td><td class="fielddoc"><p>Ordered dithering (Bayer). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da" name="a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da"></a>BANDING_MODE_PERCEPTUAL&#160;</td><td class="fielddoc"><p>Gamma-weighted. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b" name="a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b"></a>BANDING_MODE_CHANNEL&#160;</td><td class="fielddoc"><p>RGB independent. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89" name="a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89"></a>BANDING_MODE_LUMINANCE&#160;</td><td class="fielddoc"><p>Grayscale quantization + Tint. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a id="a01df437b0efb1a48be039d241c9baf7b" name="a01df437b0efb1a48be039d241c9baf7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a01df437b0efb1a48be039d241c9baf7b">&#9670;&#160;</a></span>PostProcessEffect</h2>
 
@@ -919,6 +996,8 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075" name="a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"></a>POSTFX_FXAA&#160;</td><td class="fielddoc"><p>Fast Approximate Anti-Aliasing. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f" name="a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"></a>POSTFX_FXAA_DEBUG&#160;</td><td class="fielddoc"><p>Edge detection visualization. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0" name="a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0"></a>POSTFX_BANDING&#160;</td><td class="fielddoc"><p>Color banding/quantization. </p>
 </td></tr>
 </table>
 
@@ -1349,6 +1428,136 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>key_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4b604741ce9e478c27bce5bad0255bcf" name="a4b604741ce9e478c27bce5bad0255bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b604741ce9e478c27bce5bad0255bcf">&#9670;&#160;</a></span>postprocess_set_banding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4a5f36a8b51d36d743840c7acc4a9e55" name="a4a5f36a8b51d36d743840c7acc4a9e55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a5f36a8b51d36d743840c7acc4a9e55">&#9670;&#160;</a></span>postprocess_set_banding_channels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_channels </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>red</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>green</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>blue</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4459034743ba0085c3687dd0a6c89133" name="a4459034743ba0085c3687dd0a6c89133"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4459034743ba0085c3687dd0a6c89133">&#9670;&#160;</a></span>postprocess_set_banding_dither()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_dither </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>strength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a30e58d88bfa2568ada6fc829dd83b6" name="a3a30e58d88bfa2568ada6fc829dd83b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a30e58d88bfa2568ada6fc829dd83b6">&#9670;&#160;</a></span>postprocess_set_banding_perceptual()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_perceptual </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gamma</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

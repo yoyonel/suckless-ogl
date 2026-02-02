@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['postprocesseffect_0',['PostProcessEffect',['../postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b',1,'postprocess.h']]]
+  ['loglevel_0',['LogLevel',['../log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'log.h']]]
 ];

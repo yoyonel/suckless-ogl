@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -266,8 +275,8 @@ $(document).ready(function(){initNavTree('globals_vars_e.html',''); initResizabl
 <h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
 <li>ENV_TEXT_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#af0b98e622dd47736cd7e777d203a82e7">app_ui.c</a></li>
 <li>environmentMap&#160;:&#160;<a class="el" href="background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623">background.frag</a></li>
-<li>EPSILON&#160;:&#160;<a class="el" href="spbrdf_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">spbrdf.glsl</a>, <a class="el" href="pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">pbr_functions.glsl</a></li>
 <li>Epsilon&#160;:&#160;<a class="el" href="spmap_8glsl.html#a8dd262088b947298332462dce5597aab">spmap.glsl</a></li>
+<li>EPSILON&#160;:&#160;<a class="el" href="spbrdf_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">spbrdf.glsl</a>, <a class="el" href="pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">pbr_functions.glsl</a></li>
 <li>EXPOSURE_INITIAL_VAL&#160;:&#160;<a class="el" href="fx__auto__exposure_8c.html#ab4891ec7eb17395680dfe49d6ccf09db">fx_auto_exposure.c</a></li>
 </ul>
 </div><!-- contents -->

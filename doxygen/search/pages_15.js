@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['visual_20testing_20regression_20artifacts_0',['Visual Testing &amp; Regression Artifacts',['../md_docs_2visual__testing__artifacts.html',1,'']]],
-  ['vs_20nvidia_1',['GPU Rendering Synchronization: Intel vs NVIDIA',['../md_docs_2gpu-rendering-synchronization.html',1,'']]]
+  ['ubo_20architecture_0',['Post-Processing UBO Architecture',['../md_docs_2postprocess__ubo__architecture.html',1,'']]],
+  ['user_20guide_3a_20renderdoc_20on_20debian_2013_20intel_20iris_20xe_1',['User Guide: RenderDoc on Debian 13 (Intel Iris Xe)',['../md_docs_2renderdoc__guide.html',1,'']]]
 ];

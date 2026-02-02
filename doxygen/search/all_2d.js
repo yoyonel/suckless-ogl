@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🏁_20definitive_20solution_3a_20equirectangular_20mapping_0',['🏁 Definitive Solution: Equirectangular Mapping',['../md_docs_2cubemap__seam__resolution.html#autotoc_md40',1,'']]]
+  ['🎮_20recommended_20values_20for_20games_0',['🎮 Recommended Values for Games',['../md_docs_2photographic__standards.html#autotoc_md202',1,'']]]
 ];

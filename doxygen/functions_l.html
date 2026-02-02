@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -270,6 +279,7 @@ $(document).ready(function(){initNavTree('functions_l.html',''); initResizable()
 <li>last_mouse_x&#160;:&#160;<a class="el" href="structApp.html#a26ede8823204bbe2062a8eccf617fe3f">App</a></li>
 <li>last_mouse_y&#160;:&#160;<a class="el" href="structApp.html#aed8b6e0b080044c29cad0cbfa001e1ac">App</a></li>
 <li>len&#160;:&#160;<a class="el" href="structChunk.html#a9b989e3953f9eb69c7ae07ad940babf4">Chunk</a></li>
+<li>levels&#160;:&#160;<a class="el" href="structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a">BandingParams</a></li>
 <li>location&#160;:&#160;<a class="el" href="structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9">UniformEntry</a></li>
 <li>log_interval&#160;:&#160;<a class="el" href="structFpsCounter.html#a2d613eb7c17b1b907ae291c0938a73a2">FpsCounter</a></li>
 <li>lum_histogram_buffer&#160;:&#160;<a class="el" href="structApp.html#a77a8a8df9ae179b73369d99d1b151d9a">App</a></li>

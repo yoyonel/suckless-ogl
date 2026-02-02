@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -264,8 +273,8 @@ $(document).ready(function(){initNavTree('log_8h_source.html',''); initResizable
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="log_8h.html#a82cf4fca40fe4a352203d39a075ae721">   64</a></span><span class="preprocessor">#define LOG_CRITICAL(tag, ...) log_message(LOG_LEVEL_CRITICAL, tag, __VA_ARGS__)</span></div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#endif </span><span class="comment">/* LOG_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="alog_8h_html_a20d53fe4929c9f90f83a10c739b02dfa"><div class="ttname"><a href="log_8h.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a></div><div class="ttdeci">void log_set_level(LogLevel level)</div><div class="ttdoc">Sets the global minimum log level.</div><div class="ttdef"><b>Definition</b> log.c:84</div></div>
-<div class="ttc" id="alog_8h_html_a71580585dbb8388e03440751eb26bae7"><div class="ttname"><a href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a></div><div class="ttdeci">void log_message(LogLevel level, const char *tag, const char *format,...)</div><div class="ttdoc">Logs a formatted message.</div><div class="ttdef"><b>Definition</b> log.c:98</div></div>
+<div class="ttc" id="alog_8h_html_a20d53fe4929c9f90f83a10c739b02dfa"><div class="ttname"><a href="log_8h.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a></div><div class="ttdeci">void log_set_level(LogLevel level)</div><div class="ttdoc">Sets the global minimum log level.</div><div class="ttdef"><b>Definition</b> log.c:85</div></div>
+<div class="ttc" id="alog_8h_html_a71580585dbb8388e03440751eb26bae7"><div class="ttname"><a href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a></div><div class="ttdeci">void log_message(LogLevel level, const char *tag, const char *format,...)</div><div class="ttdoc">Logs a formatted message.</div><div class="ttdef"><b>Definition</b> log.c:99</div></div>
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a></div><div class="ttdeci">LogLevel</div><div class="ttdoc">Severity levels for log filtering.</div><div class="ttdef"><b>Definition</b> log.h:13</div></div>
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a0f747790672fa5c82fd781222463c35f">LOG_LEVEL_CRITICAL</a></div><div class="ttdeci">@ LOG_LEVEL_CRITICAL</div><div class="ttdef"><b>Definition</b> log.h:23</div></div>
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a538b2b6e011479d408ecd2be0f6d6177">LOG_LEVEL_DEBUG</a></div><div class="ttdeci">@ LOG_LEVEL_DEBUG</div><div class="ttdef"><b>Definition</b> log.h:15</div></div>
@@ -273,7 +282,7 @@ $(document).ready(function(){initNavTree('log_8h_source.html',''); initResizable
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a5b4dd81b4dc7eefbc55ba03415c627ef">LOG_LEVEL_WARNING</a></div><div class="ttdeci">@ LOG_LEVEL_WARNING</div><div class="ttdef"><b>Definition</b> log.h:20</div></div>
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682">LOG_LEVEL_NOTSET</a></div><div class="ttdeci">@ LOG_LEVEL_NOTSET</div><div class="ttdef"><b>Definition</b> log.h:14</div></div>
 <div class="ttc" id="alog_8h_html_aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4"><div class="ttname"><a href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9aedee1e3159bfe7d918b6e29873c5aee4">LOG_LEVEL_INFO</a></div><div class="ttdeci">@ LOG_LEVEL_INFO</div><div class="ttdef"><b>Definition</b> log.h:17</div></div>
-<div class="ttc" id="alog_8h_html_ae5099953981ab6c18721857fd2f8d6fc"><div class="ttname"><a href="log_8h.html#ae5099953981ab6c18721857fd2f8d6fc">log_get_level</a></div><div class="ttdeci">LogLevel log_get_level(void)</div><div class="ttdoc">Retrieves the current global log level.</div><div class="ttdef"><b>Definition</b> log.c:90</div></div>
+<div class="ttc" id="alog_8h_html_ae5099953981ab6c18721857fd2f8d6fc"><div class="ttname"><a href="log_8h.html#ae5099953981ab6c18721857fd2f8d6fc">log_get_level</a></div><div class="ttdeci">LogLevel log_get_level(void)</div><div class="ttdoc">Retrieves the current global log level.</div><div class="ttdef"><b>Definition</b> log.c:91</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

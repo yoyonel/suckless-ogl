@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,19 +230,19 @@ $(document).ready(function(){initNavTree('md_docs_2nvidia__optimizations.html','
   <div class="headertitle"><div class="title">NVIDIA OpenGL Support: Launch, Stability &amp; Optimizations</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md152"></a> This document details the issues encountered when running the application on NVIDIA hardware and the solutions implemented to ensure a stable startup and high-performance execution.</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md165"></a> This document details the issues encountered when running the application on NVIDIA hardware and the solutions implemented to ensure a stable startup and high-performance execution.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md154"></a>
+<h1><a class="anchor" id="autotoc_md167"></a>
 I. Startup &amp; Stability Fixes (Critical)</h1>
 <p>These issues prevented the application from launching or caused immediate crashes/invalid states on NVIDIA drivers.</p>
-<h2><a class="anchor" id="autotoc_md155"></a>
+<h2><a class="anchor" id="autotoc_md168"></a>
 1. Robust Texture Mipmap Allocation (Error 0x501)</h2>
 <ul>
 <li><b>Problem</b>: The application could fail or render incorrectly during IBL map generation. NVIDIA drivers are strict about <code>glTexStorage2D</code> parameters. An incorrect <code>levels</code> calculation for high-resolution 4K textures triggered <code>GL_INVALID_VALUE</code> (0x501).</li>
 <li><b>Fix</b>: Implemented a precise mip-level formula: <code>1 + (int)floor(log2(fmax(width, height)))</code> and added defensive range checks.</li>
 <li><b>Result</b>: Immediate resolution of 0x501 errors during the asynchronous loading phase.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md156"></a>
+<h2><a class="anchor" id="autotoc_md169"></a>
 2. Object Labeling &amp; Initialization Sequence (Error 1282)</h2>
 <ul>
 <li><b>Problem</b>: Calling <code>glObjectLabel</code> on objects immediately after <code>glGen*</code> caused "Unknown Object" errors. NVIDIA considers objects "uninitialized" until they are bound.</li>
@@ -241,17 +250,17 @@ I. Startup &amp; Stability Fixes (Critical)</h1>
 <li><b>Result</b>: Clean debug logs and stable startup sequence.</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md158"></a>
+<h1><a class="anchor" id="autotoc_md171"></a>
 II. Performance &amp; Warning Cleanups</h1>
 <p>These changes addressed recurring performance warnings and optimized the rendering pipeline for NVIDIA's driver heuristics.</p>
-<h2><a class="anchor" id="autotoc_md159"></a>
+<h2><a class="anchor" id="autotoc_md172"></a>
 1. Dummy Texture Strategy (Unit Binding Cleanup)</h2>
 <ul>
 <li><b>Issue</b>: Binding <code>0</code> to an active texture unit triggered "undefined base level" warnings and potential driver-side shader recompilations.</li>
 <li><b>Fix</b>: Introduced <code>dummy_black_tex</code> and <code>dummy_white_tex</code> (1x1 pixels). These are bound whenever a real texture (like HDR environment or Bloom) is pending or disabled.</li>
 <li><b>Result</b>: Perfectly clean debug logs even during asynchronous asset loading; stable shader execution.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md160"></a>
+<h2><a class="anchor" id="autotoc_md173"></a>
 2. VAO State Reconciliation (Shader Recompilation)</h2>
 <ul>
 <li><b>Issue</b>: Frequent "Vertex shader recompiled based on GL state" (0x20092) warnings caused by indeterminate attribute divisor states across different VAOs.</li>
@@ -262,7 +271,7 @@ II. Performance &amp; Warning Cleanups</h1>
 </li>
 <li><b>Result</b>: Recompilation is now limited to a one-time startup JIT event, eliminating runtime stuttering.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md161"></a>
+<h2><a class="anchor" id="autotoc_md174"></a>
 3. Efficient Memory Placement (Buffer Movement)</h2>
 <ul>
 <li><b>Issue</b>: Performance warnings (0x20072) regarding buffer migration between VIDEO and HOST memory during luminance reduction transfers.</li>

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -238,7 +247,7 @@ $(document).ready(function(){initNavTree('structPostProcessPreset.html',''); ini
 <div class="dynheader">
 Collaboration diagram for PostProcessPreset:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structPostProcessPreset__coll__graph.svg" width="483" height="480"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structPostProcessPreset__coll__graph.svg" width="483" height="532"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -265,6 +274,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a3ccb7525d0d096c03ab429e0ac16ee21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa95a69dc4a02264eb4e3164d551b50bd" id="r_aa95a69dc4a02264eb4e3164d551b50bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structFXAAParams.html">FXAAParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd">fxaa</a></td></tr>
 <tr class="separator:aa95a69dc4a02264eb4e3164d551b50bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f762dab60d7c55557c3d35f58847a20" id="r_a6f762dab60d7c55557c3d35f58847a20"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBandingParams.html">BandingParams</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20">banding</a></td></tr>
+<tr class="separator:a6f762dab60d7c55557c3d35f58847a20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Snapshot of every configurable parameter in the pipeline. </p>
@@ -277,6 +288,20 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int PostProcessPreset::active_effects</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6f762dab60d7c55557c3d35f58847a20" name="a6f762dab60d7c55557c3d35f58847a20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f762dab60d7c55557c3d35f58847a20">&#9670;&#160;</a></span>banding</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structBandingParams.html">BandingParams</a> PostProcessPreset::banding</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -6,6 +6,7 @@ var annotated_dup =
     [ "AsyncRequest", "structAsyncRequest.html", "structAsyncRequest" ],
     [ "AutoExposureFX", "structAutoExposureFX.html", "structAutoExposureFX" ],
     [ "AutoExposureParams", "structAutoExposureParams.html", "structAutoExposureParams" ],
+    [ "BandingParams", "structBandingParams.html", "structBandingParams" ],
     [ "BillboardGroup", "structBillboardGroup.html", "structBillboardGroup" ],
     [ "BloomFX", "structBloomFX.html", "structBloomFX" ],
     [ "BloomMip", "structBloomMip.html", "structBloomMip" ],

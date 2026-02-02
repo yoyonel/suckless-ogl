@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -272,6 +281,7 @@ $(document).ready(function(){initNavTree('functions_p.html',''); initResizable()
 <li>pending_hdr_tex&#160;:&#160;<a class="el" href="structIBLContext.html#a771880411b270ca78fc71afec2e4d5a5">IBLContext</a></li>
 <li>pending_irr_tex&#160;:&#160;<a class="el" href="structIBLContext.html#abfe050241ff097ac425de3c52d0fe0bf">IBLContext</a></li>
 <li>pending_spec_tex&#160;:&#160;<a class="el" href="structIBLContext.html#ac924906e455a53705f240170d4a289be">IBLContext</a></li>
+<li>perceptual_gamma&#160;:&#160;<a class="el" href="structBandingParams.html#a707399c42e148f4cc80e4fae913a3545">BandingParams</a></li>
 <li>physics_accumulator&#160;:&#160;<a class="el" href="structCamera.html#adf50dca74d27c3fa2dc3ee44d9edc03c">Camera</a></li>
 <li>pitch&#160;:&#160;<a class="el" href="structCamera.html#ab56fcb39f580e8d2159cf2c9c6d9a65a">Camera</a></li>
 <li>pitch_target&#160;:&#160;<a class="el" href="structCamera.html#aaafdfd1f4c57483f840d44cd0fff5db8">Camera</a></li>

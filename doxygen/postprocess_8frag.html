@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -238,8 +247,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a02241d40da69f170bef550cbdfa4c6a8" id="r_a02241d40da69f170bef550cbdfa4c6a8"><td class="memItemLeft" align="right" valign="top">header common&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8frag.html#a02241d40da69f170bef550cbdfa4c6a8">glsl</a></td></tr>
-<tr class="separator:a02241d40da69f170bef550cbdfa4c6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a344f19d22dade43cee42acf63232782e" id="r_a344f19d22dade43cee42acf63232782e"><td class="memItemLeft" align="right" valign="top">header common&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8frag.html#a344f19d22dade43cee42acf63232782e">glsl</a></td></tr>
+<tr class="separator:a344f19d22dade43cee42acf63232782e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5639df2ce0dea4170bb8b47a599911e" id="r_af5639df2ce0dea4170bb8b47a599911e"><td class="memItemLeft" align="right" valign="top">out vec4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8frag.html#af5639df2ce0dea4170bb8b47a599911e">FragColor</a></td></tr>
 <tr class="separator:af5639df2ce0dea4170bb8b47a599911e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58b0e682d807370a92bb4b37474353a5" id="r_a58b0e682d807370a92bb4b37474353a5"><td class="memItemLeft" align="right" valign="top">in vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8frag.html#a58b0e682d807370a92bb4b37474353a5">TexCoords</a></td></tr>
@@ -304,14 +313,14 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a02241d40da69f170bef550cbdfa4c6a8" name="a02241d40da69f170bef550cbdfa4c6a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02241d40da69f170bef550cbdfa4c6a8">&#9670;&#160;</a></span>glsl</h2>
+<a id="a344f19d22dade43cee42acf63232782e" name="a344f19d22dade43cee42acf63232782e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a344f19d22dade43cee42acf63232782e">&#9670;&#160;</a></span>glsl</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">header postprocess fxaa glsl</td>
+          <td class="memname">header postprocess banding glsl</td>
         </tr>
       </table>
 </div><div class="memdoc">

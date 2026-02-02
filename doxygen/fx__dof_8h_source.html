@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -290,7 +299,7 @@ $(document).ready(function(){initNavTree('fx__dof_8h_source.html',''); initResiz
 <div class="ttc" id="astructDoFParams_html_ac85af1f727c33b066fd020da89d8f905"><div class="ttname"><a href="structDoFParams.html#ac85af1f727c33b066fd020da89d8f905">DoFParams::focal_distance</a></div><div class="ttdeci">float focal_distance</div><div class="ttdef"><b>Definition</b> fx_dof.h:12</div></div>
 <div class="ttc" id="astructDoFParams_html_aceb71405b5c7d8f07fd3ba99731b8861"><div class="ttname"><a href="structDoFParams.html#aceb71405b5c7d8f07fd3ba99731b8861">DoFParams::bokeh_scale</a></div><div class="ttdeci">float bokeh_scale</div><div class="ttdef"><b>Definition</b> fx_dof.h:14</div></div>
 <div class="ttc" id="astructDoFParams_html_af31603453f31984353527d5f337f5c0b"><div class="ttname"><a href="structDoFParams.html#af31603453f31984353527d5f337f5c0b">DoFParams::focal_range</a></div><div class="ttdeci">float focal_range</div><div class="ttdef"><b>Definition</b> fx_dof.h:13</div></div>
-<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition</b> postprocess.h:270</div></div>
+<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition</b> postprocess.h:306</div></div>
 <div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition</b> shader.h:59</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

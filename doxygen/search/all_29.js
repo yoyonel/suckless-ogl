@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🌟_20advantages_0',['🌟 Advantages',['../md_docs_2skybox__rendering.html#autotoc_md336',1,'']]]
+  ['🌈_20material_20reflectance_20values_0',['🌈 Material Reflectance Values',['../md_docs_2photographic__standards.html#autotoc_md195',1,'']]]
 ];

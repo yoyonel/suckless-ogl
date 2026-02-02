@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,19 +230,19 @@ $(document).ready(function(){initNavTree('md_docs_2profiling__guide.html',''); i
   <div class="headertitle"><div class="title">Profiling Guide: ApiTrace &amp; Trace Analysis</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md219"></a> This guide explains how to use <b>ApiTrace</b> in combination with our custom analysis tool to measure GPU performance, with a focus on overcoming driver-specific profiling limitations for compute shaders.</p>
-<h1><a class="anchor" id="autotoc_md220"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md232"></a> This guide explains how to use <b>ApiTrace</b> in combination with our custom analysis tool to measure GPU performance, with a focus on overcoming driver-specific profiling limitations for compute shaders.</p>
+<h1><a class="anchor" id="autotoc_md233"></a>
 Why use this workflow?</h1>
 <p>Standard GPU profilers (and even <code>apitrace replay --pgpu</code>) often report <b>0.00ms</b> for <code>glDispatchCompute</code> calls on many drivers/architectures because they rely on driver-internal counters that don't always track compute asynchronously or accurately.</p>
 <p>Our engine injects manual <code>GL_TIMESTAMP</code> queries and <code>glPushDebugGroup</code> markers into the command stream. The <code>trace_analyze.py</code> tool correlates these timestamps with the trace dump to provide a "Source of Truth" for compute shaders.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md222"></a>
+<h1><a class="anchor" id="autotoc_md235"></a>
 1. Prerequisites</h1>
 <p>Ensure you have <b>ApiTrace</b> installed on your system. The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or you can point to a specific binary using <code>APITRACE_BIN</code>.</p>
 <div class="fragment"><div class="line"># Example for a specific location</div>
 <div class="line">export APITRACE_BIN=&quot;/path/to/apitrace&quot;</div>
 </div><!-- fragment --><hr  />
-<h1><a class="anchor" id="autotoc_md224"></a>
+<h1><a class="anchor" id="autotoc_md237"></a>
 2. Generating a Trace</h1>
 <p>To record the execution of the application:</p>
 <div class="fragment"><div class="line">make apitrace</div>
@@ -242,7 +251,7 @@ Why use this workflow?</h1>
 <li>Use <code>apitrace trace</code> to record all OpenGL calls into <code>build-profile/app.trace</code>.</li>
 </ol>
 <hr  />
-<h1><a class="anchor" id="autotoc_md226"></a>
+<h1><a class="anchor" id="autotoc_md239"></a>
 3. High-Level Performance Analysis</h1>
 <p>The easiest way to see the results is to use the integrated target:</p>
 <div class="fragment"><div class="line">make trace-perf</div>
@@ -250,7 +259,7 @@ Why use this workflow?</h1>
 <li><b>Performance by <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> (Cumulative)</b>: Groups all calls by shader name/label.</li>
 <li><b>Debug Groups (Per Instance)</b>: Shows the chronological execution of marked blocks (e.g., IBL generation steps).</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md227"></a>
+<h2><a class="anchor" id="autotoc_md240"></a>
 Understanding the Metrics</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -263,12 +272,12 @@ Understanding the Metrics</h2>
 <td class="markdownTableBodyLeft"><b>Avg/Fr[ms]</b>   </td><td class="markdownTableBodyLeft">Cumulative GPU time divided by the total number of frames in the trace.   </td></tr>
 </table>
 <hr  />
-<h1><a class="anchor" id="autotoc_md229"></a>
+<h1><a class="anchor" id="autotoc_md242"></a>
 4. Advanced Tool Usage</h1>
 <p>You can run the script manually for more control:</p>
 <div class="fragment"><div class="line"># Usage: python3 scripts/trace_analyze.py &lt;trace_file&gt; [apitrace_bin]</div>
 <div class="line">python3 scripts/trace_analyze.py build-profile/app.trace</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md230"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md243"></a>
 Script Logic</h2>
 <ul>
 <li><b>Regex Parsing</b>: The script parses <code>apitrace dump</code> to extract <code>glObjectLabel</code> (to name shaders) and <code>glGetQueryObjectui64v</code> (to get manual timestamps).</li>
@@ -276,7 +285,7 @@ Script Logic</h2>
 <li><b>Nested Sums</b>: If a parent debug group doesn't have its own timer, the script sums up the durations of its direct children (marked with <code>*</code> in the table).</li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md232"></a>
+<h1><a class="anchor" id="autotoc_md245"></a>
 5. Coding for Profiling</h1>
 <p>To make a new feature measurable:</p>
 <ol type="1">
@@ -288,7 +297,7 @@ Script Logic</h2>
 <li><b>Add fine-grained timers (Optional)</b>: The engine automatically attempts to capture timestamps around critical IBL sections. See <code><a class="el" href="pbr_8c.html">src/pbr.c</a></code> for examples.</li>
 </ol>
 <hr  />
-<h1><a class="anchor" id="autotoc_md234"></a>
+<h1><a class="anchor" id="autotoc_md247"></a>
 6. Developing the Tool</h1>
 <p>The analysis script is fully tested:</p><ul>
 <li><b>Linting</b>: <code>make lint</code> (uses Ruff).</li>

@@ -5,6 +5,7 @@ var postprocess_8c =
     [ "create_framebuffer", "postprocess_8c.html#a4bbf34e2aeca9031792cf4c335f77ab6", null ],
     [ "destroy_framebuffer", "postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a", null ],
     [ "destroy_screen_quad", "postprocess_8c.html#a92a070b5127b9df932264982e8a2d455", null ],
+    [ "find_shader_in_cache", "postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0", null ],
     [ "is_shader_in_cache", "postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1", null ],
     [ "log_optimized_effects", "postprocess_8c.html#a7a5221e8b5c9dc0821f1315ee7151933", null ],
     [ "postprocess_apply_preset", "postprocess_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409", null ],
@@ -20,6 +21,10 @@ var postprocess_8c =
     [ "postprocess_on_state_change", "postprocess_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847", null ],
     [ "postprocess_resize", "postprocess_8c.html#aeba49bd333ab21356706ac98f5b180b5", null ],
     [ "postprocess_set_auto_exposure", "postprocess_8c.html#a6ce07fd263254dd72c5afc8c199f3913", null ],
+    [ "postprocess_set_banding", "postprocess_8c.html#a4b604741ce9e478c27bce5bad0255bcf", null ],
+    [ "postprocess_set_banding_channels", "postprocess_8c.html#a4a5f36a8b51d36d743840c7acc4a9e55", null ],
+    [ "postprocess_set_banding_dither", "postprocess_8c.html#a4459034743ba0085c3687dd0a6c89133", null ],
+    [ "postprocess_set_banding_perceptual", "postprocess_8c.html#a3a30e58d88bfa2568ada6fc829dd83b6", null ],
     [ "postprocess_set_bloom", "postprocess_8c.html#a8a48d84f2ba23d4a1a5d678618d29e7b", null ],
     [ "postprocess_set_chrom_abbr", "postprocess_8c.html#a5066d2f5e623ccd15daa08b67596d555", null ],
     [ "postprocess_set_color_grading", "postprocess_8c.html#a48207c6d8aa856888e235748e309e94c", null ],
@@ -35,5 +40,6 @@ var postprocess_8c =
     [ "postprocess_toggle", "postprocess_8c.html#a90e1be83610a9debc59503b380a0bcd1", null ],
     [ "postprocess_update_matrices", "postprocess_8c.html#a86ca4160d60435cb54320bbcc68d0d95", null ],
     [ "postprocess_update_time", "postprocess_8c.html#ae22c24f5c64568dcf1908a579312ed60", null ],
-    [ "postprocess_use_dynamic", "postprocess_8c.html#a3b10285ebc588a80b81be601659260d5", null ]
+    [ "postprocess_use_dynamic", "postprocess_8c.html#a3b10285ebc588a80b81be601659260d5", null ],
+    [ "update_current_shader", "postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7", null ]
 ];

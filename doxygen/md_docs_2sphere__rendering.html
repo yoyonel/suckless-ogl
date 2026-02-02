@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,11 +230,11 @@ $(document).ready(function(){initNavTree('md_docs_2sphere__rendering.html',''); 
   <div class="headertitle"><div class="title">Sphere Rendering: Transparency and Analytic Anti-Aliasing</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md341"></a> This document details the "High Quality" rendering implementation for sphere instances (impostor billboards), including CPU sorting for correct transparency and an analytic anti-aliasing technique for perfect edges.</p>
-<h1><a class="anchor" id="autotoc_md342"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md354"></a> This document details the "High Quality" rendering implementation for sphere instances (impostor billboards), including CPU sorting for correct transparency and an analytic anti-aliasing technique for perfect edges.</p>
+<h1><a class="anchor" id="autotoc_md355"></a>
 1. Sphere Sorting (Transparency)</h1>
 <p>To correctly handle Transparency Alpha Blending (<code>GL_SRC_ALPHA</code>, <code>GL_ONE_MINUS_SRC_ALPHA</code>), objects must be drawn from furthest to closest (Back-to-Front) relative to the camera.</p>
-<h2><a class="anchor" id="autotoc_md343"></a>
+<h2><a class="anchor" id="autotoc_md356"></a>
 SphereSorter Architecture</h2>
 <p>The sorting system is encapsulated in the <code>sphere_sorting</code> module (<code><a class="el" href="sphere__sorting_8c.html">src/sphere_sorting.c</a></code>).</p>
 <ol type="1">
@@ -245,7 +254,7 @@ SphereSorter Architecture</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md344"></a>
+<h2><a class="anchor" id="autotoc_md357"></a>
 Rendering Pipeline</h2>
 <p>If the <code>USE_TRANSPARENT_BILLBOARDS</code> macro is enabled and "Transparent" mode is active (Key <code>T</code>):</p><ol type="1">
 <li><b><a class="el" href="structSkybox.html" title="Persistent state and resource handles for the environment renderer.">Skybox</a> Render</b> (First, depth write).</li>
@@ -253,22 +262,22 @@ Rendering Pipeline</h2>
 <li><b>Upload</b> sorted data via <code>glBufferSubData</code>.</li>
 <li><b>Draw</b> spheres with Blending enabled and Depth Write <b>disabled</b> (Read-Only).</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md345"></a>
+<h2><a class="anchor" id="autotoc_md358"></a>
 Ray-Tracing Diagram</h2>
 <div class="image">
 <img src="sphere_intersection.jpg" alt=""/>
 <div class="caption">
 Ray-Sphere Impostor Intersection (Technical)</div></div>
     <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_15.svg" width="734" height="680"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_18.svg" width="734" height="680"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <hr  />
-<h1><a class="anchor" id="autotoc_md347"></a>
+<h1><a class="anchor" id="autotoc_md360"></a>
 2. Analytic Anti-Aliasing ("Perfect AA")</h1>
 <p>The spheres are not real 3D geometry but <b>Impostors</b> (2D Billboards on a Quad). The exact sphere rendering is calculated mathematically for each pixel in the Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> (<code><a class="el" href="pbr__ibl__billboard_8frag.html">pbr_ibl_billboard.frag</a></code>).</p>
-<h2><a class="anchor" id="autotoc_md348"></a>
+<h2><a class="anchor" id="autotoc_md361"></a>
 The Aliasing Problem</h2>
 <p>If we brutally "cut" the pixel when the ray misses the sphere (<code>discard</code> if <code>discriminant &lt; 0</code>), we get very visible jagged edges (aliasing). MSAA does not work well here because to the GPU, it's a flat Quad.</p>
-<h2><a class="anchor" id="autotoc_md349"></a>
+<h2><a class="anchor" id="autotoc_md362"></a>
 Solution: Discriminant Smoothing</h2>
 <div class="image">
 <img src="sphere_analytic_aa.jpg" alt=""/>
@@ -297,7 +306,7 @@ Perfect AA: Pixel-Level Coverage Analysis</div></div>
 <div class="line">out_color.a *= edge_factor_val;</div>
 </div><!-- fragment --><p> This <code>edge_factor_val</code> darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing <b>analytically perfect</b> anti-aliasing, independent of resolution.</p>
 <hr  />
-<h1><a class="anchor" id="autotoc_md351"></a>
+<h1><a class="anchor" id="autotoc_md364"></a>
 3. Configuration &amp; Macros</h1>
 <p>The behavior is controlled by the <code>USE_TRANSPARENT_BILLBOARDS</code> macro defined in <code><a class="el" href="app__settings_8h.html" title="Global application constants, configuration macros, and default values.">include/app_settings.h</a></code> (automatically injected into shaders).</p>
 <ul>

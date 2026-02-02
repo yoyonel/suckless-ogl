@@ -1,6 +1,7 @@
 var structPostProcessPreset =
 [
     [ "active_effects", "structPostProcessPreset.html#a81fff6e04a4ac67920c56c1071da42c3", null ],
+    [ "banding", "structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20", null ],
     [ "bloom", "structPostProcessPreset.html#a40d0d59ac2cd0abe56c818238ffa52e3", null ],
     [ "chrom_abbr", "structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd", null ],
     [ "color_grading", "structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272", null ],

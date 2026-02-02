@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -271,18 +280,19 @@ $(document).ready(function(){initNavTree('files.html',''); initResizable(); });
 <tr id="row_2_0_3_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="spbrdf_8glsl.html" target="_self">spbrdf.glsl</a></td><td class="desc"></td></tr>
 <tr id="row_2_0_4_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="spmap_8glsl.html" target="_self">spmap.glsl</a></td><td class="desc"></td></tr>
 <tr id="row_2_1_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_1_" class="arrow" onclick="toggleFolder('2_1_')">&#9658;</span><span id="img_2_1_" class="iconfclosed" onclick="toggleFolder('2_1_')">&#160;</span><a class="el" href="dir_8ecb54c939721141a0e2a75383393be2.html" target="_self">postprocess</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_0_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom_8glsl.html" target="_self">bloom.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_1_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="chromatic__aberration_8glsl.html" target="_self">chromatic_aberration.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_2_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="color__grading_8glsl.html" target="_self">color_grading.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_3_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="defines_8glsl.html" target="_self">defines.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_4_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="dof_8glsl.html" target="_self">dof.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_5_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="exposure_8glsl.html" target="_self">exposure.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_6_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fxaa_8glsl.html" target="_self">fxaa.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_7_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="grain_8glsl.html" target="_self">grain.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_8_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="motion__blur_8glsl.html" target="_self">motion_blur.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_9_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="tonemap_8glsl.html" target="_self">tonemap.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_10_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ubo_8glsl.html" target="_self">ubo.glsl</a></td><td class="desc"></td></tr>
-<tr id="row_2_1_11_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="vignette_8glsl.html" target="_self">vignette.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_0_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="banding_8glsl.html" target="_self">banding.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_1_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="bloom_8glsl.html" target="_self">bloom.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_2_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="chromatic__aberration_8glsl.html" target="_self">chromatic_aberration.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_3_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="color__grading_8glsl.html" target="_self">color_grading.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_4_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="defines_8glsl.html" target="_self">defines.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_5_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="dof_8glsl.html" target="_self">dof.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_6_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="exposure_8glsl.html" target="_self">exposure.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_7_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="fxaa_8glsl.html" target="_self">fxaa.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_8_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="grain_8glsl.html" target="_self">grain.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_9_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="motion__blur_8glsl.html" target="_self">motion_blur.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_10_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="tonemap_8glsl.html" target="_self">tonemap.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_11_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="ubo_8glsl.html" target="_self">ubo.glsl</a></td><td class="desc"></td></tr>
+<tr id="row_2_1_12_" class="odd" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="vignette_8glsl.html" target="_self">vignette.glsl</a></td><td class="desc"></td></tr>
 <tr id="row_2_2_" class="odd"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span id="arr_2_2_" class="arrow" onclick="toggleFolder('2_2_')">&#9658;</span><span id="img_2_2_" class="iconfclosed" onclick="toggleFolder('2_2_')">&#160;</span><a class="el" href="dir_4be25771c4784bbb79d63bf908d9f07f.html" target="_self">test</a></td><td class="desc"></td></tr>
 <tr id="row_2_2_0_" class="even" style="display:none;"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="test__pattern_8frag.html" target="_self">test_pattern.frag</a></td><td class="desc"></td></tr>
 <tr id="row_2_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icondoc"></span><a class="el" href="background_8frag.html" target="_self">background.frag</a></td><td class="desc"></td></tr>

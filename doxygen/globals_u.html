@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -275,11 +284,11 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 <li>ui_destroy()&#160;:&#160;<a class="el" href="ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui.h</a>, <a class="el" href="ui_8c.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui.c</a></li>
 <li>ui_draw_rect()&#160;:&#160;<a class="el" href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui.h</a>, <a class="el" href="ui_8c.html#ae939146f2938232fc48f970745ecf26a">ui.c</a></li>
 <li>ui_draw_spinner()&#160;:&#160;<a class="el" href="ui_8h.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui.h</a>, <a class="el" href="ui_8c.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui.c</a></li>
-<li>ui_draw_text()&#160;:&#160;<a class="el" href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui.h</a>, <a class="el" href="ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui.c</a></li>
+<li>ui_draw_text()&#160;:&#160;<a class="el" href="ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui.c</a>, <a class="el" href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui.h</a></li>
 <li>ui_init()&#160;:&#160;<a class="el" href="ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712">ui.h</a>, <a class="el" href="ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712">ui.c</a></li>
 <li>ui_layout_init()&#160;:&#160;<a class="el" href="ui_8h.html#a04ff141f59212601e740294c9159dbe7">ui.h</a>, <a class="el" href="ui_8c.html#a04ff141f59212601e740294c9159dbe7">ui.c</a></li>
 <li>ui_layout_separator()&#160;:&#160;<a class="el" href="ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe">ui.h</a>, <a class="el" href="ui_8c.html#a822ad2f9015dc8e43f609046475a5dfe">ui.c</a></li>
-<li>ui_layout_text()&#160;:&#160;<a class="el" href="ui_8c.html#a741fab59d05880f3bf5362d101833451">ui.c</a>, <a class="el" href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui.h</a></li>
+<li>ui_layout_text()&#160;:&#160;<a class="el" href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui.h</a>, <a class="el" href="ui_8c.html#a741fab59d05880f3bf5362d101833451">ui.c</a></li>
 <li>UI_LOADING_TEXT_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#a8629a551eea895d8570a75c930b67a6e">app_ui.c</a></li>
 <li>UI_LOADING_TEXT_WIDTH_FACTOR&#160;:&#160;<a class="el" href="app__ui_8c.html#a2b4046580b310d59959c6e0aebe6df17">app_ui.c</a></li>
 <li>UI_QUAD_MIN&#160;:&#160;<a class="el" href="ui_8c.html#aa091a07662c10c5d3b8eaaf4774d7ab5">ui.c</a></li>
@@ -293,6 +302,7 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 <li>uintarray_init()&#160;:&#160;<a class="el" href="icosphere_8h.html#a70b42040760df4cb07a39ec7277675b6">icosphere.h</a>, <a class="el" href="icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6">icosphere.c</a></li>
 <li>uintarray_push()&#160;:&#160;<a class="el" href="icosphere_8h.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.h</a>, <a class="el" href="icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.c</a></li>
 <li>unrealTonemap()&#160;:&#160;<a class="el" href="tonemap_8glsl.html#a2419207c24e6ebc6041fcd4d0067ffe5">tonemap.glsl</a></li>
+<li>update_current_shader()&#160;:&#160;<a class="el" href="postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7">postprocess.c</a></li>
 <li>US_PER_S&#160;:&#160;<a class="el" href="perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaead5371dfcf90e9eda0600059428f1a985">perf_timer.c</a></li>
 <li>USE_TRANSPARENT_BILLBOARDS&#160;:&#160;<a class="el" href="group__Renderer.html#ga488c62fb8eb8169482e08d0daf83320d">app_settings.h</a></li>
 <li>useTexture&#160;:&#160;<a class="el" href="ui_8frag.html#a112cda4ce84677f0320d7aa6ddcbd840">ui.frag</a></li>

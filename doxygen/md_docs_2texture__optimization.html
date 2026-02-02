@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,8 +230,8 @@ $(document).ready(function(){initNavTree('md_docs_2texture__optimization.html','
   <div class="headertitle"><div class="title">Texture Pipeline Optimization (Immutable Storage)</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md352"></a> </p>
-<h1><a class="anchor" id="autotoc_md353"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md365"></a> </p>
+<h1><a class="anchor" id="autotoc_md366"></a>
 1. Problem: Mutable Storage</h1>
 <p>The historical function <code>glTexImage2D</code>:</p><ol type="1">
 <li>Allows resizing the texture at any time.</li>
@@ -230,7 +239,7 @@ $(document).ready(function(){initNavTree('md_docs_2texture__optimization.html','
 <li><b>Consequence</b>: The driver must check the "completeness" of the texture <em>at every Draw Call</em>.</li>
 <li><b>Overhead</b>: Validation CPU cost.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md354"></a>
+<h1><a class="anchor" id="autotoc_md367"></a>
 2. Solution: Immutable Storage</h1>
 <p>Since OpenGL 4.2, <code>glTexStorage2D</code>:</p><ol type="1">
 <li>Allocates all mipmap levels in one go.</li>
@@ -238,9 +247,9 @@ $(document).ready(function(){initNavTree('md_docs_2texture__optimization.html','
 <li>Data is uploaded via <code>glTexSubImage2D</code>.</li>
 <li><b>Benefit</b>: The driver knows the texture is valid. No validation at Draw time.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md355"></a>
+<h1><a class="anchor" id="autotoc_md368"></a>
 3. Implementation in Engine</h1>
-<h2><a class="anchor" id="autotoc_md356"></a>
+<h2><a class="anchor" id="autotoc_md369"></a>
 Code (texture.c)</h2>
 <div class="fragment"><div class="line"><span class="comment">// Old Method (BAD)</span></div>
 <div class="line"><span class="comment">// glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);</span></div>
@@ -257,7 +266,7 @@ Code (texture.c)</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// 4. Generate Mipmaps (Hardware)</span></div>
 <div class="line">glGenerateMipmap(GL_TEXTURE_2D);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md357"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md370"></a>
 4. Alignment Constraint (Unpack Alignment)</h1>
 <p>When <code>stb_image</code> loads an image with 3 channels (RGB), the rows may not be aligned to 4 bytes (standard OpenGL default).</p><ul>
 <li><b>Symptom</b>: Skewed or slanted image.</li>
@@ -265,11 +274,11 @@ Code (texture.c)</h2>
 <div class="line"><span class="keywordflow">else</span>               glPixelStorei(GL_UNPACK_ALIGNMENT, 4);</div>
 </div><!-- fragment --></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md358"></a>
+<h1><a class="anchor" id="autotoc_md371"></a>
 5. Memory Layout Comparison</h1>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_16.svg" width="1198" height="462"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h1><a class="anchor" id="autotoc_md359"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_19.svg" width="1198" height="462"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h1><a class="anchor" id="autotoc_md372"></a>
 6. Performance Gains</h1>
 <ul>
 <li>Significantly reduced driver overhead.</li>

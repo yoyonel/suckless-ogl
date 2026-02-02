@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -266,7 +275,7 @@ $(document).ready(function(){initNavTree('globals_vars_g.html',''); initResizabl
 <h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
 <li>g_log_initialized&#160;:&#160;<a class="el" href="log_8c.html#a85e0d2f0365db22b9b91ccf8ee95889b">log.c</a></li>
 <li>g_log_level&#160;:&#160;<a class="el" href="log_8c.html#af9d04d44ddd24cd181c91561df230cee">log.c</a></li>
-<li>glsl&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a02241d40da69f170bef550cbdfa4c6a8">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__instanced_8frag.html#a45bb4c97466db7e116560434ff23499a">pbr_ibl_instanced.frag</a>, <a class="el" href="postprocess_8frag.html#a02241d40da69f170bef550cbdfa4c6a8">postprocess.frag</a></li>
+<li>glsl&#160;:&#160;<a class="el" href="pbr__ibl__billboard_8frag.html#a344f19d22dade43cee42acf63232782e">pbr_ibl_billboard.frag</a>, <a class="el" href="pbr__ibl__instanced_8frag.html#a45bb4c97466db7e116560434ff23499a">pbr_ibl_instanced.frag</a>, <a class="el" href="postprocess_8frag.html#a344f19d22dade43cee42acf63232782e">postprocess.frag</a></li>
 <li>GRAPH_TEXT_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#aaf76e00a44e28d6b60824890cf02af45">app_ui.c</a></li>
 <li>GRAPH_TEXT_PADDING&#160;:&#160;<a class="el" href="app__ui_8c.html#a5a809367fa495c92746f4f0eb3e07880">app_ui.c</a></li>
 </ul>

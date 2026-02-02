@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -273,6 +282,7 @@ $(document).ready(function(){initNavTree('globals_defs.html',''); initResizable(
 
 
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
+<li>BANDING_COMMON_BASE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a22e570c40e5db4b737aea148dc26f222">postprocess_presets.h</a></li>
 <li>BLOOM_MIP_LEVELS&#160;:&#160;<a class="el" href="postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504">postprocess.h</a></li>
 <li>BUFFER_OFFSET&#160;:&#160;<a class="el" href="gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd">gl_common.h</a></li>
 </ul>
@@ -290,6 +300,7 @@ $(document).ready(function(){initNavTree('globals_defs.html',''); initResizable(
 <li>DEFAULT_ACCELERATION&#160;:&#160;<a class="el" href="camera_8h.html#ab1530cd678f8f08a3a9d9e191360a0fb">camera.h</a></li>
 <li>DEFAULT_ACTIVE_EFFECTS&#160;:&#160;<a class="el" href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">postprocess.h</a></li>
 <li>DEFAULT_ALBEDO&#160;:&#160;<a class="el" href="material_8c.html#afce43eef84872858a39ed10116090b7d">material.c</a></li>
+<li>DEFAULT_BANDING_LEVELS&#160;:&#160;<a class="el" href="postprocess_8h.html#a917e9af207be1811116e495774c4f546">postprocess.h</a></li>
 <li>DEFAULT_BLOOM_INTENSITY&#160;:&#160;<a class="el" href="postprocess_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918">postprocess.h</a></li>
 <li>DEFAULT_BLOOM_RADIUS&#160;:&#160;<a class="el" href="postprocess_8h.html#a3a160badf1723b03fe88e13e84e1410a">postprocess.h</a></li>
 <li>DEFAULT_BLOOM_SOFT_THRESHOLD&#160;:&#160;<a class="el" href="postprocess_8h.html#a222b8356f0589002c336b3b47ef99be5">postprocess.h</a></li>
@@ -341,6 +352,7 @@ $(document).ready(function(){initNavTree('globals_defs.html',''); initResizable(
 
 <h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
 <li>enableAutoExposure&#160;:&#160;<a class="el" href="ubo_8glsl.html#a078a3219e01fbcde2a4498f874336c41">ubo.glsl</a></li>
+<li>enableBanding&#160;:&#160;<a class="el" href="ubo_8glsl.html#ae2522ab43b930e7f28781ec3c6a2a3e7">ubo.glsl</a></li>
 <li>enableBloom&#160;:&#160;<a class="el" href="ubo_8glsl.html#af28077df238be6090cf7082019fd0b3e">ubo.glsl</a></li>
 <li>enableChromAbbr&#160;:&#160;<a class="el" href="ubo_8glsl.html#afccfd38ecd62c2618a8a9f19abc80ed6">ubo.glsl</a></li>
 <li>enableColorGrading&#160;:&#160;<a class="el" href="ubo_8glsl.html#aac1030839ab9c3ac696637adbb390dca">ubo.glsl</a></li>

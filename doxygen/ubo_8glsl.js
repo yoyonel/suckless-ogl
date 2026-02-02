@@ -1,6 +1,7 @@
 var ubo_8glsl =
 [
     [ "enableAutoExposure", "ubo_8glsl.html#a078a3219e01fbcde2a4498f874336c41", null ],
+    [ "enableBanding", "ubo_8glsl.html#ae2522ab43b930e7f28781ec3c6a2a3e7", null ],
     [ "enableBloom", "ubo_8glsl.html#af28077df238be6090cf7082019fd0b3e", null ],
     [ "enableChromAbbr", "ubo_8glsl.html#afccfd38ecd62c2618a8a9f19abc80ed6", null ],
     [ "enableColorGrading", "ubo_8glsl.html#aac1030839ab9c3ac696637adbb390dca", null ],

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -268,6 +277,7 @@ $(document).ready(function(){initNavTree('functions_c.html',''); initResizable()
 <li>camera_enabled&#160;:&#160;<a class="el" href="structApp.html#abfeaafb46c8fcf884a5837047997d8bb">App</a></li>
 <li>capacity&#160;:&#160;<a class="el" href="structAdaptiveSampler.html#a1600d195c44ab82f7b28cfd658522d2c">AdaptiveSampler</a>, <a class="el" href="structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff">EdgeHash</a>, <a class="el" href="structSphereSorter.html#afd1607f4459faff5c82b4806d4ab75c9">SphereSorter</a>, <a class="el" href="structUintArray.html#a48205b7ce859c7683dcd24aba8963e06">UintArray</a>, <a class="el" href="structVec3Array.html#a0c1c73aa0db6cfdd245d722b8b13b24c">Vec3Array</a></li>
 <li>cdata&#160;:&#160;<a class="el" href="structUIContext.html#a062dcd89e0d44d274b207da86b1b2d04">UIContext</a></li>
+<li>channel_levels&#160;:&#160;<a class="el" href="structBandingParams.html#aa949d5261987719efd3daba118bdb954">BandingParams</a></li>
 <li>channels&#160;:&#160;<a class="el" href="structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15">AsyncRequest</a></li>
 <li>chrom_abbr&#160;:&#160;<a class="el" href="structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01">PostProcess</a>, <a class="el" href="structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd">PostProcessPreset</a></li>
 <li>chrom_abbr_strength&#160;:&#160;<a class="el" href="structPostProcessUBO.html#af4f5bd0a4cd69d06260bfefeca532408">PostProcessUBO</a></li>

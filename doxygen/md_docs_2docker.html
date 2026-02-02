@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,16 +230,16 @@ $(document).ready(function(){initNavTree('md_docs_2docker.html',''); initResizab
   <div class="headertitle"><div class="title">Docker Support</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md46"></a> This project includes a containerized build and runtime environment for consistent, reproducible builds across different systems. The Docker setup uses a multi-stage architecture with build caching and headless rendering support.</p>
-<h1><a class="anchor" id="autotoc_md47"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md59"></a> This project includes a containerized build and runtime environment for consistent, reproducible builds across different systems. The Docker setup uses a multi-stage architecture with build caching and headless rendering support.</p>
+<h1><a class="anchor" id="autotoc_md60"></a>
 Prerequisites</h1>
 <ul>
 <li><b>Docker</b> or <b>Podman</b> installed (auto-detected by Makefile)</li>
 <li>BuildKit support enabled (default in modern Docker/Podman)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md48"></a>
+<h1><a class="anchor" id="autotoc_md61"></a>
 Quick Start</h1>
-<h2><a class="anchor" id="autotoc_md49"></a>
+<h2><a class="anchor" id="autotoc_md62"></a>
 Build the Image</h2>
 <div class="fragment"><div class="line">make docker-build</div>
 </div><!-- fragment --><p>This creates an optimized container image with:</p><ul>
@@ -238,16 +247,16 @@ Build the Image</h2>
 <li>CMake build cache persistence</li>
 <li>Xvfb for headless OpenGL rendering</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md50"></a>
+<h2><a class="anchor" id="autotoc_md63"></a>
 Run the Application</h2>
 <div class="fragment"><div class="line">make docker-run</div>
 </div><!-- fragment --><p>Runs the application in a container with X11 forwarding to your host display.</p>
-<h1><a class="anchor" id="autotoc_md51"></a>
+<h1><a class="anchor" id="autotoc_md64"></a>
 Architecture</h1>
-<h2><a class="anchor" id="autotoc_md52"></a>
+<h2><a class="anchor" id="autotoc_md65"></a>
 Multi-Stage Build</h2>
 <p>The <a href="../Dockerfile"><code>Dockerfile</code></a> uses two stages:</p>
-<h3><a class="anchor" id="autotoc_md53"></a>
+<h3><a class="anchor" id="autotoc_md66"></a>
 Stage 1: Builder (fedora:41)</h3>
 <ul>
 <li>Full development toolchain (clang, cmake, ninja, git)</li>
@@ -264,7 +273,7 @@ Stage 1: Builder (fedora:41)</h3>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;[!TIP] The cache mount persists CMake's build directory between builds, dramatically speeding up rebuilds by reusing compiled object files and fetched dependencies. </p>
 </blockquote>
-<h3><a class="anchor" id="autotoc_md54"></a>
+<h3><a class="anchor" id="autotoc_md67"></a>
 Stage 2: Runtime (fedora:41)</h3>
 <ul>
 <li>Minimal runtime dependencies only:<ul>
@@ -280,7 +289,7 @@ Stage 2: Runtime (fedora:41)</h3>
 <li>Builder stage: ~1.2 GB (with full toolchain)</li>
 <li>Final runtime image: ~400 MB (minimal dependencies)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md55"></a>
+<h2><a class="anchor" id="autotoc_md68"></a>
 Headless Rendering with Xvfb</h2>
 <p>The <a href="../scripts/setup_offline_deps.sh"><code>entrypoint.sh</code></a> script manages virtual display:</p>
 <div class="fragment"><div class="line">#!/bin/bash</div>
@@ -306,7 +315,7 @@ Headless Rendering with Xvfb</h2>
 <li><b>Headless rendering</b> for automated screenshots/validation</li>
 <li><b>Consistent environment</b> across different systems</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md56"></a>
+<h2><a class="anchor" id="autotoc_md69"></a>
 Build Cache Optimization</h2>
 <p>The <code>.dockerignore</code> file excludes unnecessary files from the build context:</p>
 <div class="fragment"><div class="line">build/          # Build artifacts</div>
@@ -315,9 +324,9 @@ Build Cache Optimization</h2>
 <div class="line">docs/           # Documentation</div>
 <div class="line">*.md            # Markdown files</div>
 </div><!-- fragment --><p>This reduces context size and speeds up <code>docker build</code>.</p>
-<h1><a class="anchor" id="autotoc_md57"></a>
+<h1><a class="anchor" id="autotoc_md70"></a>
 Makefile Targets</h1>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md71"></a>
 Build Targets</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -329,7 +338,7 @@ Build Targets</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>make docker-run</code>   </td><td class="markdownTableBodyNone">Run with X11 forwarding to host   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md59"></a>
+<h2><a class="anchor" id="autotoc_md72"></a>
 Maintenance Targets</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -341,15 +350,15 @@ Maintenance Targets</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>make docker-usage</code>   </td><td class="markdownTableBodyNone">Show disk usage statistics   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md60"></a>
+<h1><a class="anchor" id="autotoc_md73"></a>
 Advanced Usage</h1>
-<h2><a class="anchor" id="autotoc_md61"></a>
+<h2><a class="anchor" id="autotoc_md74"></a>
 Custom Container Engine</h2>
 <p>The Makefile auto-detects Docker or Podman:</p>
 <div class="fragment"><div class="line">CONTAINER_ENGINE := $(shell command -v docker 2&gt; /dev/null || echo podman)</div>
 </div><!-- fragment --><p>To force a specific engine:</p>
 <div class="fragment"><div class="line">CONTAINER_ENGINE=podman make docker-build</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md62"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md75"></a>
 Incremental Builds</h2>
 <p>Thanks to BuildKit cache mounts, subsequent builds are fast:</p>
 <div class="fragment"><div class="line"># First build: ~2-3 minutes (fetch deps, compile everything)</div>
@@ -358,7 +367,7 @@ Incremental Builds</h2>
 <div class="line"># Modify src/shader.c</div>
 <div class="line"># Second build: ~10-20 seconds (recompile only changed files)</div>
 <div class="line">make docker-build</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md63"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md76"></a>
 Running with Host X11</h2>
 <p>The <code>docker-run</code> target forwards X11:</p>
 <div class="fragment"><div class="line">make docker-run</div>
@@ -372,27 +381,27 @@ Running with Host X11</h2>
 </div><!-- fragment --><blockquote class="doxtable">
 <p>&zwj;[!WARNING] X11 forwarding requires <code>xhost +local:</code> which temporarily disables access control. This is handled automatically by the Makefile. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md64"></a>
+<h1><a class="anchor" id="autotoc_md77"></a>
 Troubleshooting</h1>
-<h2><a class="anchor" id="autotoc_md65"></a>
+<h2><a class="anchor" id="autotoc_md78"></a>
 Build Cache Not Working</h2>
 <p>Ensure BuildKit is enabled:</p>
 <div class="fragment"><div class="line"># Docker</div>
 <div class="line">export DOCKER_BUILDKIT=1</div>
 <div class="line"> </div>
 <div class="line"># Podman (enabled by default)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md66"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md79"></a>
 Xvfb Fails to Start</h2>
 <p>Check if port :99 is available:</p>
 <div class="fragment"><div class="line">docker run --rm -it suckless-ogl /bin/bash</div>
 <div class="line"># Inside container:</div>
 <div class="line">Xvfb :99 -screen 0 1920x1080x24</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md67"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md80"></a>
 X11 Permission Denied</h2>
 <p>Reset xhost permissions:</p>
 <div class="fragment"><div class="line">xhost +local:</div>
 <div class="line">make docker-run</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md68"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md81"></a>
 CI/CD Integration</h1>
 <p>Example GitHub Actions workflow:</p>
 <div class="fragment"><div class="line">- name: Build Docker Image</div>

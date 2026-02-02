@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -289,7 +298,7 @@ $(document).ready(function(){initNavTree('globals_a.html',''); initResizable(); 
 <li>app_load_env_map()&#160;:&#160;<a class="el" href="app__env_8h.html#adb532f71626e9898396208f225c364e9">app_env.h</a>, <a class="el" href="app__env_8c.html#adb532f71626e9898396208f225c364e9">app_env.c</a></li>
 <li>app_process_ibl_state_machine()&#160;:&#160;<a class="el" href="app__env_8h.html#a9b671bcba6f5af06cc8408efb65fb0f2">app_env.h</a>, <a class="el" href="app__env_8c.html#a9b671bcba6f5af06cc8408efb65fb0f2">app_env.c</a></li>
 <li>app_render()&#160;:&#160;<a class="el" href="app_8h.html#a296499ce009ce4939c9c75ba738373dd">app.h</a>, <a class="el" href="app_8c.html#a296499ce009ce4939c9c75ba738373dd">app.c</a></li>
-<li>app_render_billboards()&#160;:&#160;<a class="el" href="app__scene_8h.html#a7013f5734aad003a36b2fe228205d0fc">app_scene.h</a>, <a class="el" href="app__scene_8c.html#a7013f5734aad003a36b2fe228205d0fc">app_scene.c</a></li>
+<li>app_render_billboards()&#160;:&#160;<a class="el" href="app__scene_8c.html#a7013f5734aad003a36b2fe228205d0fc">app_scene.c</a>, <a class="el" href="app__scene_8h.html#a7013f5734aad003a36b2fe228205d0fc">app_scene.h</a></li>
 <li>app_render_instanced()&#160;:&#160;<a class="el" href="app__scene_8h.html#a209554c62728d758c228f07a2dd2b5a0">app_scene.h</a>, <a class="el" href="app__scene_8c.html#a209554c62728d758c228f07a2dd2b5a0">app_scene.c</a></li>
 <li>app_render_ui()&#160;:&#160;<a class="el" href="app__ui_8h.html#a102f988d3be9bb61dc41acc4be26df32">app_ui.h</a>, <a class="el" href="app__ui_8c.html#a102f988d3be9bb61dc41acc4be26df32">app_ui.c</a></li>
 <li>app_run()&#160;:&#160;<a class="el" href="app_8h.html#a1d3b9d4294ec4a01762c962902b9063d">app.h</a>, <a class="el" href="app_8c.html#a1d3b9d4294ec4a01762c962902b9063d">app.c</a></li>
@@ -301,6 +310,7 @@ $(document).ready(function(){initNavTree('globals_a.html',''); initResizable(); 
 <li>app_update_instancing_mode()&#160;:&#160;<a class="el" href="app__scene_8h.html#a5284b774e468b86778063e89fd57b5e3">app_scene.h</a>, <a class="el" href="app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3">app_scene.c</a></li>
 <li>append_sanitized_char()&#160;:&#160;<a class="el" href="render__utils_8c.html#a70aa736cd259992d3e2c00abdc459f49">render_utils.c</a></li>
 <li>apply_color_grading()&#160;:&#160;<a class="el" href="color__grading_8glsl.html#a8a241c2680ef657c75dfc28330e75088">color_grading.glsl</a></li>
+<li>applyBanding()&#160;:&#160;<a class="el" href="banding_8glsl.html#a0ae4a42006d8dd6a8a7989526f5fceed">banding.glsl</a></li>
 <li>applyBloom()&#160;:&#160;<a class="el" href="bloom_8glsl.html#ae28ebbda914a52bdd0dc0104d36d1e0c">bloom.glsl</a></li>
 <li>applyChromAbbr()&#160;:&#160;<a class="el" href="chromatic__aberration_8glsl.html#ac91f094744fdf9f309ab7aab8b07d515">chromatic_aberration.glsl</a></li>
 <li>applyDoF()&#160;:&#160;<a class="el" href="dof_8glsl.html#aa4a1462c77eefcdb0e815d19132403e9">dof.glsl</a></li>

@@ -23,6 +23,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
     integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
@@ -47,8 +54,8 @@
   <style>
     /* Reduce vertical spacing for diagrams */
     .dotgraph {
-      margin-top: -15px !important;
-      margin-bottom: -15px !important;
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
     }
     .interactive_dotgraph {
       margin-top: -15px !important;
@@ -121,9 +128,11 @@
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const svg = doc.querySelector('svg');
             if (svg) {
-              const height = svg.getAttribute('height');
-              if (height) {
-                iframe.style.height = (parseInt(height) + 20) + 'px';
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
               }
             }
           } catch (e) { }
@@ -221,17 +230,17 @@ $(document).ready(function(){initNavTree('md_docs_2opengl__cleanup.html',''); in
   <div class="headertitle"><div class="title">OpenGL Stability &amp; Performance Cleanup (2026-01-28)</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md162"></a> This document summarizes the fixes and analyses performed to resolve OpenGL errors and warnings detected on NVIDIA hardware.</p>
-<h1><a class="anchor" id="autotoc_md163"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md175"></a> This document summarizes the fixes and analyses performed to resolve OpenGL errors and warnings detected on NVIDIA hardware.</p>
+<h1><a class="anchor" id="autotoc_md176"></a>
 1. Stability &amp; Rendering Errors</h1>
-<h2><a class="anchor" id="autotoc_md164"></a>
+<h2><a class="anchor" id="autotoc_md177"></a>
 IBL: Mipmap Allocation (0x501)</h2>
 <ul>
 <li><b>Problem</b>: <code>GL_INVALID_VALUE</code> during IBL texture creation.</li>
 <li><b>Cause</b>: <code>glTexStorage2D</code> did not reserve enough levels for a 4K texture (13 levels required).</li>
 <li><b>Fix</b>: Dynamic calculation of the required number of mips based on HDR file size at load time.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md165"></a>
+<h2><a class="anchor" id="autotoc_md178"></a>
 Object Labeling (1282)</h2>
 <ul>
 <li><b>Problem</b>: <code>GL_INVALID_OPERATION</code> when calling <code>glObjectLabel</code>.</li>
@@ -239,31 +248,31 @@ Object Labeling (1282)</h2>
 <li><b>Fix</b>: Moved all <code>glObjectLabel</code> calls after the first <code>glBind[Object]</code>.</li>
 </ul>
 <div class="dotgraph">
-<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_8.svg" width="803" height="152"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<h2><a class="anchor" id="autotoc_md166"></a>
+<iframe scrolling="no" frameborder="0" src="dot_inline_dotgraph_11.svg" width="803" height="152"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h2><a class="anchor" id="autotoc_md179"></a>
 Fallback Protection (0x502)</h2>
 <ul>
 <li><b>Problem</b>: <code>GL_INVALID_OPERATION</code> during cleanup.</li>
 <li><b>Cause</b>: Accidental deletion of global fallback textures (<code>dummy_black_tex</code>) during post-process framebuffer destruction.</li>
 <li><b>Fix</b>: Pointer locking and strict lifecycle management of default textures.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md167"></a>
+<h1><a class="anchor" id="autotoc_md180"></a>
 2. Performance Optimizations (NVIDIA)</h1>
-<h2><a class="anchor" id="autotoc_md168"></a>
+<h2><a class="anchor" id="autotoc_md181"></a>
 Buffer Migration (0x20072)</h2>
 <ul>
 <li><b>Problem</b>: "CPU mapping a GPU-busy buffer" during auto-exposure.</li>
 <li><b>Cause</b>: Synchronous reading of luminance via PBO causing massive stalls.</li>
 <li><b>Fix</b>: Migration to <b>Persistent SSBOs</b> with <code>GL_CLIENT_STORAGE_BIT</code>. Luminance reduction is now zero-stall.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md169"></a>
+<h2><a class="anchor" id="autotoc_md182"></a>
 Resize Bridge (0x20084)</h2>
 <ul>
 <li><b>Problem</b>: "Texture object (0) bound to unit X does not have a defined base level".</li>
 <li><b>Cause</b>: During a resize, textures are destroyed and recreated. The NVIDIA driver validates the texture units used by the last shader. If unit 0 (or others) points to 0 between two frames, a warning is raised.</li>
 <li><b>Fix</b>: Implemented a <b>Systematic Bridge</b> at the end of <code>postprocess_resize</code>. All units used (0-6) are bound to a valid dummy texture before returning control to the engine.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md170"></a>
+<h2><a class="anchor" id="autotoc_md183"></a>
 Shader Recompilation (0x20092)</h2>
 <ul>
 <li><b>Problem</b>: "Vertex shader in program 3 is being recompiled based on GL state".</li>
@@ -274,7 +283,7 @@ Shader Recompilation (0x20092)</h2>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md171"></a>
+<h1><a class="anchor" id="autotoc_md184"></a>
 3. Residual Warning 0x20092 Analysis</h1>
 <p>The warning occasionally persists at launch for the "PBR Billboard Shader".</p><ul>
 <li><b>Analysis</b>: This shader uses <code>gl_FragDepth</code> to project a perfect sphere on a flat quad. Manually writing to depth forces the driver to recompile the shader to adjust optimization policies (Early-Z).</li>
