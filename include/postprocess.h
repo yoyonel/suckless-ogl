@@ -164,9 +164,10 @@ typedef struct {
  * @brief Parameters for Fast Approximate Anti-Aliasing.
  */
 typedef struct {
-	float subpix;             /**< Sub-pixel quality (0.0 - 1.0). */
-	float edge_threshold;     /**< Edge detection threshold (0.063 - 0.333). */
-	float edge_threshold_min; /**< Minimum edge threshold (0.0312 - 0.0833). */
+	float subpix;         /**< Sub-pixel quality (0.0 - 1.0). */
+	float edge_threshold; /**< Edge detection threshold (0.063 - 0.333). */
+	float edge_threshold_min; /**< Minimum edge threshold (0.0312 - 0.0833).
+	                           */
 } FXAAParams;
 
 #define BLOOM_MIP_LEVELS 5

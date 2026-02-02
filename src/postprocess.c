@@ -99,7 +99,8 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	/* Initialisation FXAA */
 	post_processing->fxaa.subpix = DEFAULT_FXAA_SUBPIX;
 	post_processing->fxaa.edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD;
-	post_processing->fxaa.edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
+	post_processing->fxaa.edge_threshold_min =
+	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
 
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
