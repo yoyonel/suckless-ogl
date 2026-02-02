@@ -38,7 +38,7 @@ uniform int u_max_y_slice; // Y limit of the current slice
 void main_task() {
     // ...
     // Surgical stop to avoid wasted workgroups on slice edges
-    if (pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads
+    if (pixel_pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads
     // ...
 }
 \endcode

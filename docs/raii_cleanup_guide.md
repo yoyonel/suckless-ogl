@@ -149,11 +149,11 @@ void load_data(const char* path) {
 In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER` at the start of expensive compute shader dispatches.
 
     \code{.c}
-    // signature slightly modified to prevent Doxygen auto-linking info
+    // signature renamed to prevent Doxygen auto-linking info
     GLuint
-    build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold)
+    demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
     {
-        if (shader == 0) return 0;
+        if (shader_id == 0) return 0;
 
         GLuint irr_tex = 0;
         HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
@@ -168,7 +168,7 @@ In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER
 
         return irr_tex;
     } // Measurement stops and result is printed to log
-    \endcode
+\endcode
 
 ---
 
