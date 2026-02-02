@@ -109,18 +109,18 @@ float edge_factor_val = smoothstep(0.0, fwidth(discriminant_val), discriminant_v
 // Apply this factor to alpha or final color
 out_color.a *= edge_factor_val;
 \endcode
-This `edgeFactor` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
+This `edge_factor_val` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
 
 ---
 
 ## 3. Configuration & Macros
 The behavior is controlled by the `USE_TRANSPARENT_BILLBOARDS` macro defined in `include/app_settings.h` (automatically injected into shaders).
 
--   **"Legacy" Mode (Macro undefined)**:
+-   **"Legacy-Calculation" Mode (Macro undefined)**:
     -   Opaque Rendering (Depth Test/Write ON).
     -   No sorting.
     -   Alpha used to store Luma (FXAA optimization).
--   **"Transparent" Mode (Macro defined + Key T)**:
+-   **"Transparent-Rendering" Mode (Macro defined + Key T)**:
     -   Transparent Rendering (Blend ON, Depth Write OFF).
     -   Back-to-Front sort every frame.
     -   Alpha used for opacity (True Transparency).

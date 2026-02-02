@@ -92,7 +92,7 @@ The block defines `std140` layout and binding 0.
 > **IMPORTANT**: Padding fields must be declared individually!
 
 \code{.glsl}
-layout(std140, binding = 0) uniform PostProcessBlock {
+LAYOUT_CONFIG(std140, binding = 0) uniform PostProcessBlock_Layout {
     uint activeEffects;
     float time;
     float _pad0_0; // Matches _pad0[0] in C
