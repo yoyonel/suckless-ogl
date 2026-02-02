@@ -91,11 +91,11 @@ float better_sqrt = sqrt(variation);     // Square root
 \code{.glsl}
 // BAD: Undefined behavior
 if (someCondition) {
-    float dx_val = dFdx(value);
+    float dx_val_bad = dFdx(value_val);
 }
 
 // GOOD: Compute before branching
-float dx_precomputed = dFdx(value);
+float dx_precomputed = dFdx(value_val);
 if (someCondition) {
     // Use dx_precomputed
 }

@@ -29,16 +29,16 @@ PBR Compute Shaders (especially for high-resolution Specular maps) are very expe
 Compute Shader Workgroups have a fixed size (32x32). If we ask to compute a slice **1 pixel** high, the GPU still launches a block 32 pixels high.
 Without protection, the 31 excess rows overwrite/recalculate neighboring pixels, massively wasting resources.
 
-**The Fix (`u_max_y`)**:
+**The Fix (`u_max_y_slice`)**:
 We pass a precise limit to the shader:
 \code{.glsl}
 // shaders/IBL/spmap.glsl & irmap.glsl
-uniform int u_max_y; // Y limit of the current slice
+uniform int u_max_y_slice; // Y limit of the current slice
 
 void main() {
     // ...
     // Surgical stop to avoid wasted workgroups on slice edges
-    if (pos.y >= u_max_y) return; // Immediate stop for phantom threads
+    if (pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads
     // ...
 }
 \endcode

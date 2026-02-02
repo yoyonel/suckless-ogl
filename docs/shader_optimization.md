@@ -4,14 +4,14 @@
 
 The post-processing pipeline now supports two compilation modes to balance development flexibility with release performance:
 
-1.  **Debug Mode (Dynamic)**: Features are toggled at runtime using standard uniforms (`if (enableBloom) ...`). This allows instant feedback when modifying settings but incurs a GPU cost for branching.
+1.  **Debug Mode (Dynamic)**: Features are toggled at runtime using standard uniforms (`if (enableBloom_val) ...`). This allows instant feedback when modifying settings but incurs a GPU cost for branching.
 2.  **Release Mode (Static)**: Features are baked into the shader using preprocessor directives (`#define OPT_ENABLE_BLOOM 1`). The driver's GLSL compiler eliminates all unused code (Dead Code Elimination), resulting in a specialized, high-performance shader.
 
 ## Build Modes
 
 ### Debug Build (make debug / make run)
 - **Flags**: `ENABLE_SHADER_OPTIMIZATION=OFF`
-- **Behavior**: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching).
+- **Behavior**: Shaders use dynamic uniforms. All effects are compiled, but only active ones are executed (via runtime branching, e.g. `if (enableBloom_val) ...`).
 - **Use Case**: Development, tweaking parameters, debugging effect interactions.
 
 ### Release Build (make release / make run-release)
@@ -36,7 +36,7 @@ We use a hybrid approach where uniforms are converted to `const bool` if the opt
     const bool enableBloom_optimized = bool(OPT_ENABLE_BLOOM);
 #else
     // Debug Mode: Runtime uniform -> Branching
-    uniform bool enableBloom;
+    uniform bool enableBloom_val;
 #endif
 \endcode
 
