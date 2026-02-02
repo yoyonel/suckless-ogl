@@ -23,23 +23,23 @@ Best practices for writing OpenGL shaders that produce consistent results across
 **Solution**: Calculate once, store in unused texture channels (e.g., alpha).
 
 **Example**:
-```glsl
+\code{.glsl}
 // Fragment shader (once)
-float luma = dot(sqrt(color), vec3(0.299, 0.587, 0.114));
-FragColor = vec4(color, luma);  // Store in alpha
+float luma_val = dot(sqrt(color_val), vec3(0.2126, 0.7152, 0.0722));
+FragColor_out = vec4(color_val, luma_val);  // Store in alpha
 
 // Post-processing (reuse)
-float luma = texture(tex, uv).a;  // Consistent across vendors
-```
+float stored_luma = texture(tex_sampler, uv_coords).a;  // Consistent across vendors
+\endcode
 
 ### 3. Use Explicit Precision Qualifiers (Mobile/WebGL)
 
-```glsl
+\code{.glsl}
 #ifdef GL_ES
 precision highp float;
 precision highp int;
 #endif
-```
+\endcode
 
 **Note**: Desktop OpenGL ignores these, but they're critical for mobile/WebGL.
 
@@ -47,59 +47,59 @@ precision highp int;
 
 Prevent overflow/underflow in calculations:
 
-```glsl
+\code{.glsl}
 // Bad
-float value = pow(someInput, 0.1);
+float val_bad = pow(someInput, 0.1);
 
 // Good
-float value = pow(clamp(someInput, 0.0, 10.0), 0.1);
-```
+float val_good = pow(clamp(someInput, 0.0, 10.0), 0.1);
+\endcode
 
 ### 5. Avoid Fast Math Assumptions
 
 Use explicit parentheses to control floating-point operation order:
 
-```glsl
+\code{.glsl}
 // Order-dependent
-float result = ((a * b) + (c * d)) + (e * f);
-```
+float result_val = ((a * b) + (c * d)) + (e * f);
+\endcode
 
 ## Common Pitfalls
 
 ### Pitfall 1: Texture LOD Calculation
 
-```glsl
+\code{.glsl}
 // Implicit LOD may differ
-vec3 color = texture(envMap, direction).rgb;
+vec3 color_res = texture(envMap_tex, direction).rgb;
 
 // Explicit LOD is consistent
-vec3 color = textureLod(envMap, direction, roughness * 4.0).rgb;
-```
+vec3 color_res_fixed = textureLod(envMap_tex, direction, roughness * 4.0).rgb;
+\endcode
 
 ### Pitfall 2: Small Exponents in pow()
 
-```glsl
+\code{.glsl}
 // Very sensitive to input differences
-float bad = pow(variation, 0.1);   // 10th root
+float bad_pow = pow(variation, 0.1);   // 10th root
 
 // More stable
-float better = sqrt(variation);     // Square root
-```
+float better_sqrt = sqrt(variation);     // Square root
+\endcode
 
 ### Pitfall 3: Derivatives in Divergent Branches
 
-```glsl
+\code{.glsl}
 // BAD: Undefined behavior
 if (someCondition) {
-    float dx = dFdx(value);
+    float dx_val_bad = dFdx(value_val);
 }
 
 // GOOD: Compute before branching
-float dx = dFdx(value);
+float dx_precomputed = dFdx(value_val);
 if (someCondition) {
-    // Use dx
+    // Use dx_precomputed
 }
-```
+\endcode
 
 ## Testing Workflow
 
@@ -110,14 +110,14 @@ if (someCondition) {
 
 ### Tools
 
-```bash
+\code{.bash}
 # Visual diff
 compare intel.png nvidia.png diff.png
 
 # ApiTrace
 apitrace trace ./app
 apitrace replay app.trace
-```
+\endcode
 
 ## When to Use Derivatives
 
@@ -135,11 +135,11 @@ apitrace replay app.trace
 
 Instead of `fwidth(h)`:
 
-```glsl
+\code{.glsl}
 // h = discriminant (0 at edge)
 // analyticFwidth = footprint of pixel in h-space
-float edgeFactor = clamp(h / analyticFwidth, 0.0, 1.0);
-```
+float edgeFactor_val = clamp(h / analyticFwidth, 0.0, 1.0);
+\endcode
 
 See [pbr_ibl_billboard.frag](../shaders/pbr_ibl_billboard.frag) for a production example.
 

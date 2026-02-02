@@ -86,7 +86,7 @@ Exposure is applied at a specific stage in the final fragment shader:
 2.  Chrom. Aberration / Motion Blur.
 3.  Depth of Field.
 4.  Bloom (Added to color).
-5.  **>>> EXPOSURE <<<**: `color *= finalExposure`.
+5.  **>>> EXPOSURE <<<**: `color_val *= exposure_total`.
 6.  Color Grading & White Balance.
 7.  Tone Mapping (HDR to LDR).
 8.  Gamma Correction.
@@ -117,7 +117,9 @@ digraph AutoExposure {
   rankdir=TD;
   bgcolor="transparent";
   compound=true;
-  dpi=72;
+  pad="0.5";
+  nodesep=0.5;
+  ranksep=0.5;
 
   // Suckless-Modern "Ghost" Design Tokens (Upscaled)
   node [
@@ -148,7 +150,7 @@ digraph AutoExposure {
     style="rounded";
     color="#7aa2f7";
     penwidth=1.5;
-    margin=20;
+    margin=40;
 
     Scene [label="Scene HDR\n(Full Res)", shape=note, color="#e0af68", fontcolor="#e0af68"];
     Downsample [label="Downsample Shader\n(64x64 Log Avg)", color="#7dcfff", fontcolor="#7dcfff"];

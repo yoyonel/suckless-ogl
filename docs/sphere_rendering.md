@@ -29,11 +29,15 @@ If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is a
 
 ### Ray-Tracing Diagram
 
+![Ray-Sphere Impostor Intersection (Technical)](./images/sphere_intersection.jpg)
+
 \dot
 digraph SphereLogic {
   rankdir=TD;
   bgcolor="transparent";
-  dpi=72;
+  pad="0.5";
+  nodesep=0.5;
+  ranksep=0.5;
 
   // Suckless-Modern "Ghost" Design Tokens (Upscaled)
   node [
@@ -63,7 +67,7 @@ digraph SphereLogic {
     fontcolor="#7aa2f7";
     style="rounded";
     color="#7aa2f7";
-    margin=20;
+    margin=40;
 
     Ray [label="Calculate Ray\n(View space)", color="#e0af68", fontcolor="#e0af68"];
     Hit [label="Ray-Sphere Intersection", shape=diamond, color="#bb9af7", fontcolor="#bb9af7"];
@@ -89,38 +93,43 @@ The spheres are not real 3D geometry but **Impostors** (2D Billboards on a Quad)
 If we brutally "cut" the pixel when the ray misses the sphere (`discard` if `discriminant < 0`), we get very visible jagged edges (aliasing). MSAA does not work well here because to the GPU, it's a flat Quad.
 
 ### Solution: Discriminant Smoothing
+
+![Analytic Anti-Aliasing (Smoothing Factor)](./images/sphere_analytic_aa.jpg)
+
+![Perfect AA: Pixel-Level Coverage Analysis](./images/sphere_perfect_aa_detail.jpg)
+
 The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 -   h > 0: Intersection (inside sphere).
 -   h < 0: No intersection (outside sphere).
 -   h approx 0: Exact sphere edge.
 
 To smooth the edge, we use the derivative of the distance function to estimate pixel coverage:
-```glsl
+\code{.glsl}
 // Analytic intersection calculation
-float h = b*b - c; // Discriminant
+float discriminant_val = b*b - c; // Discriminant
 
-// If h < 0, we are outside.
+// If discriminant_val < 0, we are outside.
 // But close to 0, we want a gradient (alpha transition).
 
-// fwidth(h) gives the variation of h across the pixel width.
-// This allows normalizing h to know "what fraction of a pixel" we are from the edge.
-float edgeFactor = smoothstep(0.0, fwidth(h), h);
+// fwidth(discriminant_val) gives the variation across the pixel width.
+// This allows normalizing to know "what fraction of a pixel" we are from the edge.
+float edge_factor_val = smoothstep(0.0, fwidth(discriminant_val), discriminant_val);
 
 // Apply this factor to alpha or final color
-finalColor.a *= edgeFactor;
-```
-This `edgeFactor` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
+out_color.a *= edge_factor_val;
+\endcode
+This `edge_factor_val` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
 
 ---
 
 ## 3. Configuration & Macros
 The behavior is controlled by the `USE_TRANSPARENT_BILLBOARDS` macro defined in `include/app_settings.h` (automatically injected into shaders).
 
--   **"Legacy" Mode (Macro undefined)**:
+-   **"Legacy-Calculation" Mode (Macro undefined)**:
     -   Opaque Rendering (Depth Test/Write ON).
     -   No sorting.
     -   Alpha used to store Luma (FXAA optimization).
--   **"Transparent" Mode (Macro defined + Key T)**:
+-   **"Transparent-Rendering" Mode (Macro defined + Key T)**:
     -   Transparent Rendering (Blend ON, Depth Write OFF).
     -   Back-to-Front sort every frame.
     -   Alpha used for opacity (True Transparency).
