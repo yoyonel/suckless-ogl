@@ -4,6 +4,8 @@ This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementat
 
 ## Overview
 
+![FXAA Technical Process & Action](./images/fxaa_process.jpg)
+
 FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).
 
 **Version**: FXAA 3.11 (PC Quality / Console Performance Hybrid)
