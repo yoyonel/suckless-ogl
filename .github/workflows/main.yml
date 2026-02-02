@@ -207,37 +207,38 @@ jobs:
 
             *Last updated: ${{ github.event.pull_request.updated_at || 'Just now' }} (commit: ${{ github.sha }})*
 
-  # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES (DISABLED - Handled by docs.yml) ---
-  # deploy-pages:
-  #   needs: [test-and-coverage, documentation]
-  #   if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #
-  #     - name: Download Coverage
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: coverage-report
-  #         path: public-site/coverage
-  #
-  #     - name: Download Documentation
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: doxygen-docs
-  #         path: public-site/doxygen
-  #
-  #     - name: Prepare Landing Page
-  #       run: |
-  #         cp docs/landing_page.html public-site/index.html
-  #
-  #     - name: Deploy to GitHub Pages
-  #       uses: peaceiris/actions-gh-pages@v3
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         publish_dir: ./public-site
-  #         keep_files: false
-  #         destination_dir: .
+  # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES ---
+  deploy-pages:
+    needs: [test-and-coverage, documentation]
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. On récupère le site complet (MkDocs + Doxygen intégrés)
+      # L'artefact 'doxygen-docs' contient désormais le dossier 'site/' complet
+      - name: Download Documentation
+        uses: actions/download-artifact@v4
+        with:
+          name: doxygen-docs
+          path: public-site
+
+      # 2. On ajoute le rapport de couverture dans un sous-dossier
+      - name: Download Coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: public-site/coverage
+
+      # 3. Plus besoin de landing page manuelle, MkDocs s'en charge (index.html à la racine)
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public-site
+          keep_files: false
+          destination_dir: .
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
