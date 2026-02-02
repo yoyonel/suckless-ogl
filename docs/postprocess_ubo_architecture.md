@@ -5,7 +5,7 @@ This document details the implementation of the **Uniform Buffer Object (UBO)** 
 
 ## 1. Overview
 
-Instead of sending dozens of uniforms (floats, integers) one by one every frame, we bundle all configuration data (Vignette, Bloom, Exposure, etc.) into a single contiguous memory structure.
+Instead of sending dozens of uniforms (floats, integers) one by one every frame, we bundle all configuration data (Vignette, Bloom, Exposure, FXAA, etc.) into a single contiguous memory structure.
 
 -   **C Side**: `struct PostProcessUBO` (file `include/postprocess.h`)
 -   **GPU Side**: `program Block` with `std140` layout (file `shaders/postprocess/ubo.glsl`)

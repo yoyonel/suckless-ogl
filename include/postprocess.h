@@ -35,6 +35,11 @@
 #define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_RADIUS 1.0F
 
+/* FXAA Defaults */
+#define DEFAULT_FXAA_SUBPIX 0.75F
+#define DEFAULT_FXAA_EDGE_THRESHOLD 0.125F
+#define DEFAULT_FXAA_EDGE_THRESHOLD_MIN 0.063F
+
 /* DoF defaults */
 #define DEFAULT_DOF_FOCAL_DISTANCE 20.0F
 #define DEFAULT_DOF_FOCAL_RANGE 5.0F
@@ -154,6 +159,16 @@ typedef struct {
 	float white_clip; /**< Absolute white cutoff. */
 } TonemapParams;
 
+/**
+ * @struct FXAAParams
+ * @brief Parameters for Fast Approximate Anti-Aliasing.
+ */
+typedef struct {
+	float subpix;             /**< Sub-pixel quality (0.0 - 1.0). */
+	float edge_threshold;     /**< Edge detection threshold (0.063 - 0.333). */
+	float edge_threshold_min; /**< Minimum edge threshold (0.0312 - 0.0833). */
+} FXAAParams;
+
 #define BLOOM_MIP_LEVELS 5
 
 /**
@@ -228,6 +243,12 @@ typedef struct {
 	float mb_max_velocity;
 	int32_t mb_samples;
 	float _pad9;
+
+	/* FXAA */
+	float fxaa_quality_subpix;
+	float fxaa_quality_edge_threshold;
+	float fxaa_quality_edge_threshold_min;
+	float _pad10;
 } PostProcessUBO;
 
 /**
@@ -276,6 +297,7 @@ typedef struct PostProcess {
 	DoFParams dof;
 	AutoExposureParams auto_exposure;
 	MotionBlurParams motion_blur;
+	FXAAParams fxaa;
 
 	float time;             /**< Accumulated time for noise/animation. */
 	float delta_time;       /**< Last frame delta. */
@@ -366,6 +388,8 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float min_luminance, float max_luminance,
                                    float speed_up, float speed_down,
                                    float key_value);
+void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
+                          float edge_threshold, float edge_threshold_min);
 
 /**
  * @brief Updates view-projection matrices for effects requiring
@@ -390,6 +414,7 @@ typedef struct {
 	TonemapParams tonemapper;
 	BloomParams bloom;
 	DoFParams dof;
+	FXAAParams fxaa;
 } PostProcessPreset;
 
 /**

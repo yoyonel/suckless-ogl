@@ -43,7 +43,10 @@ static const PostProcessPreset PRESET_DEFAULT = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 /** @brief Subtle adjustments for a polished but realistic look. */
 static const PostProcessPreset PRESET_SUBTLE = {
@@ -77,7 +80,10 @@ static const PostProcessPreset PRESET_SUBTLE = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 /** @brief Rich, high-contrast look with auto-exposure and bloom. */
 static const PostProcessPreset PRESET_CINEMATIC = {
@@ -112,7 +118,10 @@ static const PostProcessPreset PRESET_CINEMATIC = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 /** @brief Warm, grainy look with strong vignette and chromatic aberration. */
 static const PostProcessPreset PRESET_VINTAGE = {
@@ -147,7 +156,10 @@ static const PostProcessPreset PRESET_VINTAGE = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 /** @brief Cool, green-tinted high contrast look. */
 static const PostProcessPreset PRESET_MATRIX = {
@@ -182,7 +194,10 @@ static const PostProcessPreset PRESET_MATRIX = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 /** @brief Desaturated, high-contrast black and white look. */
 static const PostProcessPreset PRESET_BW_CONTRAST = {
@@ -216,6 +231,9 @@ static const PostProcessPreset PRESET_BW_CONTRAST = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE}};
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}};
 
 #endif /* POSTPROCESS_PRESETS_H */
