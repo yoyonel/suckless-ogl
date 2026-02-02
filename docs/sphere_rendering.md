@@ -95,6 +95,9 @@ If we brutally "cut" the pixel when the ray misses the sphere (`discard` if `dis
 ### Solution: Discriminant Smoothing
 
 ![Analytic Anti-Aliasing (Smoothing Factor)](./images/sphere_analytic_aa.jpg)
+
+![Perfect AA: Pixel-Level Coverage Analysis](./images/sphere_perfect_aa_detail.jpg)
+
 The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 -   h > 0: Intersection (inside sphere).
 -   h < 0: No intersection (outside sphere).
