@@ -27,6 +27,8 @@ var structPostProcess =
     [ "screen_quad_vao", "structPostProcess.html#aed8a881b891092e31be0394895d9ef0c", null ],
     [ "screen_quad_vbo", "structPostProcess.html#aa60f528b365bd9dcee06a3260de4f1fa", null ],
     [ "settings_ubo", "structPostProcess.html#abb994ffe40318cecd8795b3fcd3594b0", null ],
+    [ "shader_cache", "structPostProcess.html#a2fd98ea5ca4dc568581b57efb1a19cdb", null ],
+    [ "shader_cache_count", "structPostProcess.html#ab5d6b604cebe0d89299e87f3a84313af", null ],
     [ "tile_max_shader", "structPostProcess.html#a530d1645617f13d01c66ce680d8ccad6", null ],
     [ "time", "structPostProcess.html#afb71aa02b237fe2666213becfa342d31", null ],
     [ "tonemapper", "structPostProcess.html#a94be299863c33dd03d91f9e0f5b3fddc", null ],

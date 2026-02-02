@@ -45,6 +45,7 @@ var annotated_dup =
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
     [ "Shader", "structShader.html", "structShader" ],
+    [ "ShaderCacheEntry", "structShaderCacheEntry.html", "structShaderCacheEntry" ],
     [ "Skybox", "structSkybox.html", "structSkybox" ],
     [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ],
     [ "SphereInstanceSSBO", "structSphereInstanceSSBO.html", "structSphereInstanceSSBO" ],

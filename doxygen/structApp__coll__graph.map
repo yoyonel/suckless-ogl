@@ -1,89 +1,92 @@
 <map id="App" name="App">
-<area shape="rect" id="Node000001" title="The central state container for the entire application." alt="" coords="1183,1219,1229,1245"/>
-<area shape="rect" id="Node000002" href="$structPostProcess.html" title="Main pipeline state for post&#45;processing." alt="" coords="897,590,997,615"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="965,626,1056,793,1112,910,1161,1032,1190,1139,1205,1219,1200,1220,1185,1140,1156,1034,1107,912,1051,795,961,628"/>
-<area shape="rect" id="Node000003" href="$structBloomFX.html" title=" " alt="" coords="549,906,630,931"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="644,926,692,929,745,927,799,914,824,903,846,889,876,859,899,823,916,783,928,743,941,668,943,616,949,616,946,668,933,744,921,785,903,825,880,862,850,893,826,908,801,920,746,932,691,934,644,931"/>
-<area shape="rect" id="Node000004" href="$structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup." alt="" coords="223,665,289,690"/>
-<area shape="poly" id="edge24_Node000001_Node000004" title=" " alt="" coords="257,651,273,553,289,486,312,414,343,341,383,270,434,207,463,180,496,156,544,129,588,110,631,100,673,97,715,103,757,117,802,138,849,166,932,227,993,288,1037,351,1068,419,1092,492,1112,573,1134,663,1161,765,1178,832,1191,901,1205,1036,1209,1149,1208,1219,1202,1219,1203,1149,1199,1037,1185,902,1173,833,1156,766,1129,665,1107,574,1087,494,1063,421,1032,354,989,291,928,231,847,170,799,142,755,122,714,108,673,103,632,105,590,115,546,134,499,161,467,184,438,211,388,273,348,343,317,416,295,488,279,554,263,652"/>
-<area shape="poly" id="edge11_Node000002_Node000004" title=" " alt="" coords="281,698,319,733,371,774,432,813,498,841,548,853,588,855,681,841,771,828,806,814,846,786,866,766,883,744,911,695,930,649,940,615,945,616,935,651,916,697,888,747,870,770,850,790,809,819,772,833,682,847,589,860,547,858,497,847,429,818,367,779,316,737,278,702"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="263,703,285,822,303,881,314,903,326,917,342,924,365,929,425,932,490,928,548,922,549,927,491,933,425,937,364,934,340,929,322,921,309,906,298,883,280,823,258,704"/>
-<area shape="rect" id="Node000008" href="$structAutoExposureFX.html" title=" " alt="" coords="525,615,654,641"/>
-<area shape="poly" id="edge8_Node000008_Node000004" title=" " alt="" coords="303,668,524,635,525,640,303,673"/>
-<area shape="rect" id="Node000009" href="$structMotionBlurFX.html" title=" " alt="" coords="534,714,645,739"/>
-<area shape="poly" id="edge10_Node000009_Node000004" title=" " alt="" coords="299,692,325,700,380,710,436,717,534,723,534,729,435,723,379,716,323,705,298,698"/>
-<area shape="rect" id="Node000031" href="$structUIContext.html" title="Persistent state for the UI system." alt="" coords="546,57,633,82"/>
-<area shape="poly" id="edge35_Node000031_Node000004" title=" " alt="" coords="256,651,263,529,277,360,296,203,308,148,322,117,545,75,546,80,326,121,313,149,302,204,282,361,269,529,261,651"/>
-<area shape="rect" id="Node000005" href="$structUniformEntry.html" title="Cached uniform metadata for fast lookup." alt="" coords="5,665,115,690"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="128,675,222,675,222,680,128,680"/>
-<area shape="rect" id="Node000006" href="$structBloomMip.html" title=" " alt="" coords="212,953,300,978"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="314,973,391,977,433,972,472,962,484,952,496,940,522,929,548,922,549,927,524,935,499,945,487,956,475,966,433,978,391,982,314,978"/>
-<area shape="rect" id="Node000007" href="$structDoFFX.html" title=" " alt="" coords="557,955,622,981"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="636,977,684,984,740,986,797,976,823,965,846,950,865,926,883,888,911,788,931,686,942,615,947,616,936,687,916,789,888,890,870,929,850,954,825,970,798,981,740,991,684,989,635,982"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="668,624,848,613,897,608,898,613,848,619,668,629"/>
-<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="658,725,750,717,800,705,847,688,874,672,899,652,934,614,938,617,902,656,877,676,849,693,801,711,751,722,659,731"/>
-<area shape="rect" id="Node000010" href="$structVignetteParams.html" title="Controls for the screen&#45;edge darkening effect." alt="" coords="527,1005,652,1030"/>
-<area shape="poly" id="edge12_Node000002_Node000010" title=" " alt="" coords="646,1031,694,1039,747,1041,800,1032,824,1022,846,1007,868,979,887,934,903,878,916,816,934,696,942,615,948,616,939,697,921,817,908,879,892,936,873,981,850,1011,827,1026,801,1037,747,1046,693,1044,645,1036"/>
-<area shape="rect" id="Node000011" href="$structGrainParams.html" title="Fine&#45;grained controls for film noise." alt="" coords="537,171,642,197"/>
-<area shape="poly" id="edge13_Node000002_Node000011" title=" " alt="" coords="656,182,767,190,817,200,850,215,871,244,889,288,905,341,918,399,938,513,947,589,942,590,932,513,913,400,900,342,884,290,866,247,846,219,815,205,766,195,656,187"/>
-<area shape="rect" id="Node000012" href="$structExposureParams.html" title="Manual exposure tuning." alt="" coords="524,221,655,246"/>
-<area shape="poly" id="edge14_Node000002_Node000012" title=" " alt="" coords="669,232,774,241,819,251,850,266,883,303,909,347,927,394,939,442,949,530,949,590,944,590,944,531,933,443,922,396,904,349,879,306,846,270,817,256,773,247,668,237"/>
-<area shape="rect" id="Node000013" href="$structChromAbberationParams.html" title="Focal&#45;length distortion simulation." alt="" coords="497,270,681,295"/>
-<area shape="poly" id="edge15_Node000002_Node000013" title=" " alt="" coords="695,283,786,293,824,302,850,315,880,346,903,383,920,422,932,463,945,538,949,590,943,590,940,539,927,464,915,424,898,385,875,350,846,319,822,307,785,298,695,288"/>
-<area shape="rect" id="Node000014" href="$structWhiteBalanceParams.html" title="Temperature and tint correction." alt="" coords="509,319,669,345"/>
-<area shape="poly" id="edge16_Node000002_Node000014" title=" " alt="" coords="683,332,780,341,821,350,849,363,876,388,897,418,913,450,926,483,941,545,948,589,942,590,936,546,921,485,908,452,892,420,872,392,847,368,820,355,779,346,683,337"/>
-<area shape="rect" id="Node000015" href="$structColorGradingParams.html" title="Unreal&#45;style color grading parameters." alt="" coords="512,369,667,394"/>
-<area shape="poly" id="edge17_Node000002_Node000015" title=" " alt="" coords="681,380,778,388,820,396,849,408,872,428,891,451,920,502,937,552,946,589,941,590,932,554,915,505,887,454,868,432,847,413,819,401,778,393,681,385"/>
-<area shape="rect" id="Node000016" href="$structTonemapParams.html" title="ACES&#45;like filmic tonemapping curve parameters." alt="" coords="525,418,654,443"/>
-<area shape="poly" id="edge18_Node000002_Node000016" title=" " alt="" coords="668,423,711,425,758,432,806,444,849,464,884,493,911,528,931,562,943,589,939,591,926,564,906,531,880,496,847,469,804,449,757,437,711,431,668,429"/>
-<area shape="rect" id="Node000017" href="$structBloomParams.html" title=" " alt="" coords="533,467,645,493"/>
-<area shape="poly" id="edge19_Node000002_Node000017" title=" " alt="" coords="660,479,752,490,801,501,849,519,876,534,900,553,937,588,933,592,897,557,873,539,847,524,800,507,751,495,659,484"/>
-<area shape="rect" id="Node000018" href="$structDoFParams.html" title=" " alt="" coords="541,517,637,542"/>
-<area shape="poly" id="edge20_Node000002_Node000018" title=" " alt="" coords="652,532,745,544,849,564,917,587,916,593,847,569,744,549,651,537"/>
-<area shape="rect" id="Node000019" href="$structAutoExposureParams.html" title=" " alt="" coords="509,566,669,591"/>
-<area shape="poly" id="edge21_Node000002_Node000019" title=" " alt="" coords="683,582,897,597,897,602,683,588"/>
-<area shape="rect" id="Node000020" href="$structMotionBlurParams.html" title=" " alt="" coords="519,665,660,690"/>
-<area shape="poly" id="edge22_Node000002_Node000020" title=" " alt="" coords="674,670,759,661,847,643,887,629,921,613,923,618,889,634,849,648,759,666,675,676"/>
-<area shape="rect" id="Node000021" href="$structFXAAParams.html" title="Parameters for Fast Approximate Anti&#45;Aliasing." alt="" coords="537,763,642,789"/>
-<area shape="poly" id="edge23_Node000002_Node000021" title=" " alt="" coords="655,780,701,780,750,775,800,764,847,743,881,714,908,678,927,643,939,615,944,617,932,645,912,681,885,718,849,748,802,769,751,781,701,785,655,785"/>
-<area shape="rect" id="Node000022" href="$structMaterialLib.html" title="A collection of material presets loaded from disk or defined at runtime." alt="" coords="900,1046,995,1071"/>
-<area shape="poly" id="edge25_Node000001_Node000022" title=" " alt="" coords="1009,1049,1046,1050,1086,1055,1125,1067,1160,1089,1185,1119,1199,1156,1205,1191,1207,1219,1202,1219,1200,1192,1193,1157,1180,1122,1157,1093,1123,1072,1085,1060,1046,1055,1009,1055"/>
-<area shape="rect" id="Node000023" href="$structPBRMaterial.html" title="Surface properties for the physically&#45;based rendering pipeline." alt="" coords="538,1054,641,1079"/>
-<area shape="poly" id="edge26_Node000022_Node000023" title=" " alt="" coords="654,1063,899,1057,900,1062,654,1068"/>
-<area shape="rect" id="Node000024" href="$structFpsCounter.html" title=" " alt="" coords="899,1095,995,1121"/>
-<area shape="poly" id="edge27_Node000001_Node000024" title=" " alt="" coords="1009,1103,1046,1106,1085,1112,1125,1125,1160,1145,1177,1161,1190,1181,1204,1218,1199,1220,1185,1184,1173,1165,1157,1149,1122,1130,1084,1117,1045,1111,1009,1108"/>
-<area shape="rect" id="Node000025" href="$structIcosphereGeometry.html" title="Container for procedural mesh data." alt="" coords="872,1145,1023,1170"/>
-<area shape="poly" id="edge28_Node000001_Node000025" title=" " alt="" coords="1037,1162,1098,1174,1160,1195,1193,1217,1190,1221,1157,1200,1097,1179,1036,1168"/>
-<area shape="rect" id="Node000026" href="$structVec3Array.html" title="Dynamic array for cglm vec3 types." alt="" coords="545,1105,633,1130"/>
-<area shape="poly" id="edge29_Node000025_Node000026" title=" " alt="" coords="647,1121,872,1146,871,1152,647,1126"/>
-<area shape="rect" id="Node000027" href="$structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices)." alt="" coords="547,1154,631,1179"/>
-<area shape="poly" id="edge30_Node000025_Node000027" title=" " alt="" coords="646,1165,848,1163,872,1161,872,1167,848,1168,646,1170"/>
-<area shape="rect" id="Node000028" href="$structAdaptiveSampler.html" title="Collector for performance samples within a rolling or fixed window." alt="" coords="880,1194,1015,1219"/>
-<area shape="poly" id="edge31_Node000001_Node000028" title=" " alt="" coords="1029,1212,1183,1227,1182,1232,1029,1217"/>
-<area shape="rect" id="Node000029" href="$structPcg32.html" title="State for a Permuted Congruential Generator (PCG) RNG." alt="" coords="559,1203,620,1229"/>
-<area shape="poly" id="edge32_Node000028_Node000029" title=" " alt="" coords="634,1212,880,1206,880,1211,634,1218"/>
-<area shape="rect" id="Node000030" href="$structAdaptiveSampleItem.html" title="Represents a single data point in the sampler." alt="" coords="510,1253,669,1278"/>
-<area shape="poly" id="edge33_Node000028_Node000030" title=" " alt="" coords="682,1254,763,1245,847,1231,904,1217,905,1222,849,1236,764,1250,683,1260"/>
-<area shape="poly" id="edge34_Node000001_Node000031" title=" " alt="" coords="645,50,755,28,823,19,895,17,968,23,1039,39,1072,52,1104,68,1134,88,1161,113,1168,132,1175,169,1185,288,1199,637,1206,1001,1207,1219,1202,1219,1200,1001,1194,637,1180,288,1170,170,1163,133,1156,116,1130,93,1101,73,1070,57,1037,44,967,28,895,22,823,25,756,33,646,56"/>
-<area shape="rect" id="Node000032" href="$structGlyphInfo.html" title="Metrics and texture coordinates for a single font character." alt="" coords="213,17,299,42"/>
-<area shape="poly" id="edge36_Node000031_Node000032" title=" " alt="" coords="313,33,546,62,546,67,312,39"/>
-<area shape="rect" id="Node000033" href="$structInstancedGroup.html" title="Manages mesh&#45;based instanced spheres on the GPU." alt="" coords="885,1243,1009,1269"/>
-<area shape="poly" id="edge37_Node000001_Node000033" title=" " alt="" coords="1023,1259,1089,1258,1158,1249,1181,1241,1183,1246,1159,1255,1090,1264,1023,1264"/>
-<area shape="rect" id="Node000034" href="$structBillboardGroup.html" title="Manages a set of billboarded instances on the GPU." alt="" coords="888,1293,1007,1318"/>
-<area shape="poly" id="edge38_Node000001_Node000034" title=" " alt="" coords="1021,1307,1089,1302,1124,1293,1157,1280,1179,1263,1195,1243,1199,1246,1183,1267,1160,1285,1126,1299,1090,1307,1021,1313"/>
-<area shape="rect" id="Node000035" href="$structSphereSorter.html" title="Reusable memory context for sorting operations." alt="" coords="894,1342,1001,1367"/>
-<area shape="poly" id="edge39_Node000001_Node000035" title=" " alt="" coords="1014,1360,1050,1359,1087,1355,1124,1345,1157,1327,1175,1309,1187,1286,1200,1244,1205,1246,1192,1289,1179,1312,1160,1331,1126,1350,1088,1360,1050,1365,1014,1365"/>
-<area shape="rect" id="Node000036" href="$structSphereSortEntry.html" title="Lightweight proxy for sorting data without moving large structs." alt="" coords="526,1305,653,1330"/>
-<area shape="poly" id="edge40_Node000035_Node000036" title=" " alt="" coords="667,1323,894,1347,893,1352,666,1328"/>
-<area shape="rect" id="Node000037" href="$structSphereInstance.html" title="Per&#45;instance data sent to the shader via an instanced VBO." alt="" coords="528,1374,651,1399"/>
-<area shape="poly" id="edge42_Node000001_Node000037" title=" " alt="" coords="665,1393,790,1403,936,1408,1007,1405,1070,1398,1121,1385,1157,1366,1179,1338,1192,1304,1199,1271,1202,1245,1207,1245,1205,1271,1198,1305,1184,1340,1160,1370,1123,1390,1071,1403,1007,1410,936,1413,789,1408,664,1398"/>
-<area shape="poly" id="edge41_Node000035_Node000037" title=" " alt="" coords="664,1377,893,1357,894,1362,665,1383"/>
-<area shape="rect" id="Node000038" href="$structSkybox.html" title="Persistent state and resource handles for the environment renderer." alt="" coords="913,1455,982,1481"/>
-<area shape="poly" id="edge43_Node000001_Node000038" title=" " alt="" coords="996,1473,1035,1475,1078,1472,1121,1461,1140,1451,1157,1438,1166,1424,1175,1403,1188,1347,1201,1244,1206,1245,1193,1348,1180,1405,1171,1427,1161,1442,1143,1455,1122,1466,1079,1477,1035,1481,996,1479"/>
-<area shape="rect" id="Node000039" href="$structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties." alt="" coords="911,1505,984,1530"/>
-<area shape="poly" id="edge44_Node000001_Node000039" title=" " alt="" coords="998,1526,1037,1530,1079,1528,1121,1518,1140,1509,1157,1497,1169,1479,1179,1450,1193,1377,1199,1300,1202,1245,1207,1245,1205,1300,1198,1377,1184,1452,1174,1481,1161,1501,1143,1514,1123,1524,1080,1534,1037,1535,997,1531"/>
-<area shape="rect" id="Node000040" href="$structIBLContext.html" title="Progressive environment processing state." alt="" coords="901,1554,994,1579"/>
-<area shape="poly" id="edge45_Node000001_Node000040" title=" " alt="" coords="1008,1578,1046,1582,1086,1580,1124,1571,1157,1550,1171,1528,1183,1493,1196,1403,1202,1310,1202,1245,1208,1245,1207,1310,1202,1403,1188,1494,1176,1530,1161,1554,1126,1576,1086,1586,1045,1587,1007,1583"/>
-<area shape="rect" id="Node000041" href="$structPerfTimer.html" title="CPU high&#45;precision timer." alt="" coords="546,1554,633,1579"/>
-<area shape="poly" id="edge46_Node000040_Node000041" title=" " alt="" coords="647,1564,901,1564,901,1569,647,1569"/>
+<area shape="rect" id="Node000001" title="The central state container for the entire application." alt="" coords="1183,1269,1229,1295"/>
+<area shape="rect" id="Node000002" href="$structPostProcess.html" title="Main pipeline state for post&#45;processing." alt="" coords="897,531,997,556"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="966,567,1006,635,1059,735,1115,853,1161,979,1182,1064,1196,1149,1207,1269,1201,1269,1190,1149,1177,1065,1156,980,1110,855,1054,737,1001,638,962,569"/>
+<area shape="rect" id="Node000003" href="$structBloomFX.html" title=" " alt="" coords="549,43,630,68"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="644,50,693,53,748,63,803,83,828,97,850,116,872,149,890,198,906,258,919,323,938,447,947,530,942,531,933,448,914,324,901,259,885,200,867,152,846,120,825,102,801,87,747,68,693,58,644,56"/>
+<area shape="rect" id="Node000004" href="$structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup." alt="" coords="223,295,289,320"/>
+<area shape="poly" id="edge26_Node000001_Node000004" title=" " alt="" coords="260,334,260,452,267,619,275,704,287,783,304,848,314,873,326,892,344,913,362,927,400,942,444,949,498,959,569,973,663,985,881,1002,1073,1014,1160,1022,1173,1041,1184,1069,1197,1141,1204,1215,1207,1269,1202,1269,1199,1215,1192,1142,1179,1071,1169,1044,1157,1027,1072,1019,881,1008,663,990,568,978,497,965,443,954,399,947,360,932,341,917,322,896,310,875,299,849,282,784,270,705,262,619,254,452,254,334"/>
+<area shape="poly" id="edge11_Node000002_Node000004" title=" " alt="" coords="268,281,290,247,322,216,370,192,433,170,507,152,587,139,667,133,741,134,804,145,829,154,850,167,871,194,890,235,906,287,919,344,938,455,947,530,942,531,933,456,914,345,901,288,885,237,867,196,846,171,827,159,802,150,740,140,667,138,588,145,509,157,435,175,372,197,326,220,294,250,272,284"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="256,281,261,244,273,201,292,157,306,137,322,120,341,106,359,99,393,95,429,96,473,90,552,66,553,71,474,95,430,101,393,100,360,104,344,111,326,124,310,141,297,160,278,203,267,245,262,281"/>
+<area shape="rect" id="Node000008" href="$structAutoExposureFX.html" title=" " alt="" coords="525,235,654,260"/>
+<area shape="poly" id="edge8_Node000008_Node000004" title=" " alt="" coords="291,286,323,274,375,262,429,254,524,246,525,251,429,259,376,267,325,279,293,291"/>
+<area shape="rect" id="Node000009" href="$structMotionBlurFX.html" title=" " alt="" coords="534,284,645,309"/>
+<area shape="poly" id="edge10_Node000009_Node000004" title=" " alt="" coords="303,305,473,303,534,299,534,305,473,309,303,311"/>
+<area shape="rect" id="Node000022" href="$structShaderCacheEntry.html" title="Cache entry for optimized shaders." alt="" coords="519,925,660,951"/>
+<area shape="poly" id="edge25_Node000022_Node000004" title=" " alt="" coords="262,333,278,440,294,514,316,596,347,681,387,765,437,843,467,878,499,911,520,924,517,928,496,915,463,882,433,846,382,768,342,683,311,598,288,516,273,441,257,334"/>
+<area shape="rect" id="Node000032" href="$structUIContext.html" title="Persistent state for the UI system." alt="" coords="546,1281,633,1307"/>
+<area shape="poly" id="edge37_Node000032_Node000004" title=" " alt="" coords="260,333,264,474,275,682,294,893,309,980,327,1044,358,1118,391,1173,434,1218,499,1266,522,1278,547,1286,545,1291,520,1283,496,1271,431,1222,387,1176,353,1120,321,1046,304,981,289,894,269,682,259,475,255,334"/>
+<area shape="rect" id="Node000005" href="$structUniformEntry.html" title="Cached uniform metadata for fast lookup." alt="" coords="5,295,115,320"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="128,305,222,305,222,310,128,310"/>
+<area shape="rect" id="Node000006" href="$structBloomMip.html" title=" " alt="" coords="212,5,300,31"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="314,22,549,48,548,53,313,27"/>
+<area shape="rect" id="Node000007" href="$structDoFFX.html" title=" " alt="" coords="557,185,622,211"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="635,188,684,185,741,188,798,202,825,214,850,231,881,265,906,305,923,348,935,392,947,474,949,530,944,530,942,475,930,393,918,350,901,307,877,268,846,235,823,219,797,207,740,193,684,190,636,193"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="668,246,773,256,818,266,850,280,878,308,900,341,917,377,929,414,943,482,948,530,943,531,938,483,924,415,912,379,895,343,873,311,846,284,817,271,772,261,667,252"/>
+<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="659,296,767,305,816,315,849,329,874,351,893,377,922,434,939,490,947,530,942,531,934,491,917,436,889,380,870,355,847,334,815,320,767,311,658,301"/>
+<area shape="rect" id="Node000010" href="$structVignetteParams.html" title="Controls for the screen&#45;edge darkening effect." alt="" coords="527,333,652,359"/>
+<area shape="poly" id="edge12_Node000002_Node000010" title=" " alt="" coords="666,345,771,354,817,363,849,376,870,392,888,411,916,455,934,497,945,529,940,531,929,499,911,457,883,415,866,396,847,380,816,368,770,360,665,351"/>
+<area shape="rect" id="Node000011" href="$structGrainParams.html" title="Fine&#45;grained controls for film noise." alt="" coords="537,383,642,408"/>
+<area shape="poly" id="edge13_Node000002_Node000011" title=" " alt="" coords="656,391,701,394,750,400,801,413,849,433,880,455,906,481,941,529,936,532,902,484,876,459,847,438,800,418,749,406,700,399,656,396"/>
+<area shape="rect" id="Node000012" href="$structExposureParams.html" title="Manual exposure tuning." alt="" coords="524,432,655,457"/>
+<area shape="poly" id="edge14_Node000002_Node000012" title=" " alt="" coords="669,447,756,459,803,470,849,484,894,505,930,528,927,533,891,510,847,488,802,475,755,465,668,452"/>
+<area shape="rect" id="Node000013" href="$structChromAbberationParams.html" title="Focal&#45;length distortion simulation." alt="" coords="497,481,681,507"/>
+<area shape="poly" id="edge15_Node000002_Node000013" title=" " alt="" coords="695,501,848,521,898,530,897,535,848,526,695,506"/>
+<area shape="rect" id="Node000014" href="$structWhiteBalanceParams.html" title="Temperature and tint correction." alt="" coords="509,531,669,556"/>
+<area shape="poly" id="edge16_Node000002_Node000014" title=" " alt="" coords="683,541,897,541,897,546,683,546"/>
+<area shape="rect" id="Node000015" href="$structColorGradingParams.html" title="Unreal&#45;style color grading parameters." alt="" coords="512,580,667,605"/>
+<area shape="poly" id="edge17_Node000002_Node000015" title=" " alt="" coords="680,582,848,561,897,552,898,557,848,566,681,587"/>
+<area shape="rect" id="Node000016" href="$structTonemapParams.html" title="ACES&#45;like filmic tonemapping curve parameters." alt="" coords="525,629,654,655"/>
+<area shape="poly" id="edge18_Node000002_Node000016" title=" " alt="" coords="667,635,755,623,802,613,847,600,892,578,928,554,931,558,894,582,849,604,803,618,756,629,668,640"/>
+<area shape="rect" id="Node000017" href="$structBloomParams.html" title=" " alt="" coords="533,679,645,704"/>
+<area shape="poly" id="edge19_Node000002_Node000017" title=" " alt="" coords="659,691,703,689,752,683,801,671,847,652,877,630,902,604,937,555,941,558,906,607,880,634,849,656,802,676,753,688,704,694,660,697"/>
+<area shape="rect" id="Node000018" href="$structDoFParams.html" title=" " alt="" coords="541,728,637,753"/>
+<area shape="poly" id="edge20_Node000002_Node000018" title=" " alt="" coords="651,746,697,748,748,744,799,732,847,710,867,694,884,675,912,631,930,588,940,555,945,557,935,590,916,634,888,678,870,698,849,715,801,738,749,749,697,753,651,751"/>
+<area shape="rect" id="Node000019" href="$structAutoExposureParams.html" title=" " alt="" coords="509,777,669,803"/>
+<area shape="poly" id="edge21_Node000002_Node000019" title=" " alt="" coords="673,801,716,803,761,800,806,789,846,768,871,745,891,719,908,689,920,658,936,599,942,556,948,557,941,600,925,659,912,691,896,721,875,749,850,772,808,794,762,805,716,809,672,807"/>
+<area shape="rect" id="Node000020" href="$structMotionBlurParams.html" title=" " alt="" coords="519,827,660,852"/>
+<area shape="poly" id="edge22_Node000002_Node000020" title=" " alt="" coords="655,852,702,857,752,857,802,847,825,837,846,824,876,795,899,760,916,722,928,682,941,608,943,556,949,556,946,609,933,684,921,724,904,763,880,799,850,828,827,842,803,852,752,862,701,862,655,857"/>
+<area shape="rect" id="Node000021" href="$structFXAAParams.html" title="Parameters for Fast Approximate Anti&#45;Aliasing." alt="" coords="537,876,642,901"/>
+<area shape="poly" id="edge23_Node000002_Node000021" title=" " alt="" coords="656,892,766,895,815,889,833,884,846,877,865,854,882,818,911,723,931,624,942,556,947,557,936,625,916,724,887,820,869,857,850,881,835,889,816,894,766,900,656,897"/>
+<area shape="poly" id="edge24_Node000002_Node000022" title=" " alt="" coords="674,939,775,936,818,928,846,916,866,890,884,849,900,798,913,741,932,631,942,556,947,557,937,632,918,742,905,799,889,850,871,892,850,920,820,933,776,941,674,944"/>
+<area shape="rect" id="Node000023" href="$structMaterialLib.html" title="A collection of material presets loaded from disk or defined at runtime." alt="" coords="900,1036,995,1061"/>
+<area shape="poly" id="edge27_Node000001_Node000023" title=" " alt="" coords="1008,1040,1046,1041,1087,1047,1126,1061,1161,1084,1170,1098,1179,1119,1192,1172,1206,1269,1201,1269,1187,1173,1174,1121,1166,1101,1157,1088,1124,1066,1085,1052,1046,1046,1008,1046"/>
+<area shape="rect" id="Node000024" href="$structPBRMaterial.html" title="Surface properties for the physically&#45;based rendering pipeline." alt="" coords="538,1035,641,1060"/>
+<area shape="poly" id="edge28_Node000023_Node000024" title=" " alt="" coords="654,1045,899,1046,899,1051,654,1050"/>
+<area shape="rect" id="Node000025" href="$structFpsCounter.html" title=" " alt="" coords="899,1088,995,1113"/>
+<area shape="poly" id="edge29_Node000001_Node000025" title=" " alt="" coords="1010,1099,1096,1107,1135,1116,1160,1128,1175,1143,1186,1162,1200,1201,1206,1239,1208,1269,1202,1269,1201,1240,1195,1202,1181,1164,1171,1147,1157,1132,1133,1121,1096,1113,1009,1105"/>
+<area shape="rect" id="Node000026" href="$structIcosphereGeometry.html" title="Container for procedural mesh data." alt="" coords="872,1137,1023,1163"/>
+<area shape="poly" id="edge30_Node000001_Node000026" title=" " alt="" coords="1037,1143,1101,1153,1132,1164,1160,1181,1179,1201,1192,1225,1205,1268,1200,1270,1187,1227,1175,1204,1157,1185,1130,1169,1099,1158,1036,1148"/>
+<area shape="rect" id="Node000027" href="$structVec3Array.html" title="Dynamic array for cglm vec3 types." alt="" coords="545,1084,633,1109"/>
+<area shape="poly" id="edge31_Node000026_Node000027" title=" " alt="" coords="647,1102,848,1131,872,1135,871,1140,848,1137,646,1107"/>
+<area shape="rect" id="Node000028" href="$structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices)." alt="" coords="547,1133,631,1159"/>
+<area shape="poly" id="edge32_Node000026_Node000028" title=" " alt="" coords="645,1145,705,1146,872,1147,872,1153,705,1151,645,1150"/>
+<area shape="rect" id="Node000029" href="$structAdaptiveSampler.html" title="Collector for performance samples within a rolling or fixed window." alt="" coords="880,1187,1015,1212"/>
+<area shape="poly" id="edge33_Node000001_Node000029" title=" " alt="" coords="1029,1197,1095,1207,1128,1217,1160,1230,1182,1248,1199,1268,1194,1271,1179,1252,1157,1235,1126,1222,1094,1212,1028,1202"/>
+<area shape="rect" id="Node000030" href="$structPcg32.html" title="State for a Permuted Congruential Generator (PCG) RNG." alt="" coords="559,1183,620,1208"/>
+<area shape="poly" id="edge34_Node000029_Node000030" title=" " alt="" coords="634,1193,880,1196,880,1201,634,1198"/>
+<area shape="rect" id="Node000031" href="$structAdaptiveSampleItem.html" title="Represents a single data point in the sampler." alt="" coords="510,1232,669,1257"/>
+<area shape="poly" id="edge35_Node000029_Node000031" title=" " alt="" coords="682,1235,848,1217,888,1209,889,1215,848,1222,683,1241"/>
+<area shape="poly" id="edge36_Node000001_Node000032" title=" " alt="" coords="646,1287,824,1277,1047,1267,1103,1264,1159,1267,1183,1272,1182,1278,1158,1273,1103,1270,1047,1273,825,1282,646,1293"/>
+<area shape="rect" id="Node000033" href="$structGlyphInfo.html" title="Metrics and texture coordinates for a single font character." alt="" coords="213,1281,299,1307"/>
+<area shape="poly" id="edge38_Node000032_Node000033" title=" " alt="" coords="313,1291,546,1291,546,1297,313,1297"/>
+<area shape="rect" id="Node000034" href="$structInstancedGroup.html" title="Manages mesh&#45;based instanced spheres on the GPU." alt="" coords="885,1300,1009,1325"/>
+<area shape="poly" id="edge39_Node000001_Node000034" title=" " alt="" coords="1022,1301,1182,1282,1183,1287,1023,1306"/>
+<area shape="rect" id="Node000035" href="$structBillboardGroup.html" title="Manages a set of billboarded instances on the GPU." alt="" coords="888,1349,1007,1375"/>
+<area shape="poly" id="edge40_Node000001_Node000035" title=" " alt="" coords="1020,1354,1089,1342,1124,1332,1157,1318,1176,1306,1191,1293,1195,1297,1179,1311,1160,1323,1126,1337,1090,1347,1021,1359"/>
+<area shape="rect" id="Node000036" href="$structSphereSorter.html" title="Reusable memory context for sorting operations." alt="" coords="894,1399,1001,1424"/>
+<area shape="poly" id="edge41_Node000001_Node000036" title=" " alt="" coords="1014,1412,1050,1409,1087,1403,1124,1391,1157,1372,1174,1355,1186,1334,1200,1294,1205,1296,1191,1336,1178,1358,1160,1376,1126,1396,1088,1408,1050,1415,1014,1417"/>
+<area shape="rect" id="Node000037" href="$structSphereSortEntry.html" title="Lightweight proxy for sorting data without moving large structs." alt="" coords="526,1361,653,1387"/>
+<area shape="poly" id="edge42_Node000036_Node000037" title=" " alt="" coords="667,1379,894,1403,893,1408,666,1385"/>
+<area shape="rect" id="Node000038" href="$structSphereInstance.html" title="Per&#45;instance data sent to the shader via an instanced VBO." alt="" coords="528,1431,651,1456"/>
+<area shape="poly" id="edge44_Node000001_Node000038" title=" " alt="" coords="665,1448,790,1458,936,1461,1007,1457,1070,1449,1122,1436,1157,1416,1179,1387,1192,1353,1199,1320,1202,1294,1207,1295,1204,1321,1197,1355,1183,1390,1160,1420,1124,1441,1072,1455,1008,1463,937,1466,789,1463,664,1454"/>
+<area shape="poly" id="edge43_Node000036_Node000038" title=" " alt="" coords="664,1434,893,1413,894,1419,665,1439"/>
+<area shape="rect" id="Node000039" href="$structSkybox.html" title="Persistent state and resource handles for the environment renderer." alt="" coords="913,1512,982,1537"/>
+<area shape="poly" id="edge45_Node000001_Node000039" title=" " alt="" coords="996,1530,1035,1532,1078,1529,1120,1518,1140,1508,1157,1495,1167,1481,1175,1459,1189,1401,1201,1295,1206,1296,1194,1402,1180,1460,1171,1483,1161,1499,1142,1512,1122,1522,1079,1534,1035,1537,995,1535"/>
+<area shape="rect" id="Node000040" href="$structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties." alt="" coords="911,1561,984,1587"/>
+<area shape="poly" id="edge46_Node000001_Node000040" title=" " alt="" coords="998,1582,1037,1586,1080,1585,1121,1575,1140,1566,1157,1553,1169,1535,1179,1506,1193,1430,1200,1351,1202,1295,1207,1295,1205,1351,1198,1430,1185,1507,1174,1537,1161,1557,1143,1571,1123,1580,1080,1590,1037,1592,997,1588"/>
+<area shape="rect" id="Node000041" href="$structIBLContext.html" title="Progressive environment processing state." alt="" coords="901,1611,994,1636"/>
+<area shape="poly" id="edge47_Node000001_Node000041" title=" " alt="" coords="1008,1635,1046,1638,1086,1637,1124,1627,1157,1607,1172,1584,1183,1548,1197,1456,1202,1361,1202,1295,1208,1295,1207,1361,1202,1456,1188,1550,1177,1586,1161,1611,1126,1632,1086,1642,1046,1644,1008,1640"/>
+<area shape="rect" id="Node000042" href="$structPerfTimer.html" title="CPU high&#45;precision timer." alt="" coords="546,1611,633,1636"/>
+<area shape="poly" id="edge48_Node000041_Node000042" title=" " alt="" coords="647,1621,901,1621,901,1626,647,1626"/>
 </map>

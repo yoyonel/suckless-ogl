@@ -8,6 +8,7 @@ var postprocess_8h =
     [ "WhiteBalanceParams", "structWhiteBalanceParams.html", "structWhiteBalanceParams" ],
     [ "TonemapParams", "structTonemapParams.html", "structTonemapParams" ],
     [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],
+    [ "ShaderCacheEntry", "structShaderCacheEntry.html", "structShaderCacheEntry" ],
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
     [ "PostProcess", "structPostProcess.html", "structPostProcess" ],
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
@@ -39,6 +40,7 @@ var postprocess_8h =
     [ "DEFAULT_VIGNETTE_SMOOTHNESS", "postprocess_8h.html#a24987b89075e8bfcef95322a2f55da3a", null ],
     [ "DEFAULT_WB_TEMP", "postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e", null ],
     [ "DEFAULT_WB_TINT", "postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2", null ],
+    [ "SHADER_CACHE_SIZE", "postprocess_8h.html#a7916ecb91c4706924f97811382cddd61", null ],
     [ "PostProcessEffect", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b", [
       [ "POSTFX_VIGNETTE", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237", null ],
       [ "POSTFX_GRAIN", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c", null ],

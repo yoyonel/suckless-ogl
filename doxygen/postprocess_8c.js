@@ -5,6 +5,7 @@ var postprocess_8c =
     [ "create_framebuffer", "postprocess_8c.html#a4bbf34e2aeca9031792cf4c335f77ab6", null ],
     [ "destroy_framebuffer", "postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a", null ],
     [ "destroy_screen_quad", "postprocess_8c.html#a92a070b5127b9df932264982e8a2d455", null ],
+    [ "is_shader_in_cache", "postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1", null ],
     [ "log_optimized_effects", "postprocess_8c.html#a7a5221e8b5c9dc0821f1315ee7151933", null ],
     [ "postprocess_apply_preset", "postprocess_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409", null ],
     [ "postprocess_begin", "postprocess_8c.html#a8fdad312e138cf7080b4596e127584e5", null ],
