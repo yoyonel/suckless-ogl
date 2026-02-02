@@ -55,6 +55,7 @@ set(OPENGL_TESTS
     test_fxaa_synthetic
     test_render_utils
     test_benchmark_histogram
+    test_texture_security
 )
 
 # Pour chaque fichier test trouvé
