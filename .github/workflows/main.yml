@@ -140,6 +140,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message-id: visual-regression
           message: |
             ## 🎨 Visual Regression Report (${{ github.sha }})
 
@@ -192,8 +193,9 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
+          message-id: docs-preview
           message: |
-            ## 📚 Documentation Preview
+            ## ⚗️ Documentation Preview
             The Doxygen documentation for this PR has been generated and is ready for review:
 
             🔗 **[Preview Link](${{ env.PREVIEW_URL }})**
