@@ -1,0 +1,354 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/ui.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('ui_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">ui.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ui_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef UI_H</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define UI_H</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">   13</a></span><span class="preprocessor">#define ASCII_CHAR_COUNT 96</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="shader_8h.html">shader.h</a>&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;cglm/cglm.h&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structGlyphInfo.html">   22</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">   23</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">x0</a>, y0, x1, y1; </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">   24</a></span>    <span class="keywordtype">float</span> w, <a class="code hl_variable" href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">h</a>;           </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">   25</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">x_off</a>, y_off;   </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">   26</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">advance</a>;        </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>} <a class="code hl_struct" href="structGlyphInfo.html">GlyphInfo</a>;</div>
+</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structUIContext.html">   33</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">   34</a></span>    GLuint <a class="code hl_variable" href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">texture</a>; </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">   35</a></span>    <a class="code hl_struct" href="structShader.html">Shader</a>* <a class="code hl_variable" href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">shader</a>; </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_struct" href="structShader.html">Shader</a>*</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">   37</a></span>        <a class="code hl_variable" href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">spinner_shader</a>; </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">   38</a></span>    GLuint <a class="code hl_variable" href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">vao</a>, vbo;    </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structUIContext.html#a062dcd89e0d44d274b207da86b1b2d04">   39</a></span>    <a class="code hl_struct" href="structGlyphInfo.html">GlyphInfo</a> cdata[<a class="code hl_define" href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">ASCII_CHAR_COUNT</a>]; </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">   40</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">font_size</a>;                   </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>} <a class="code hl_struct" href="structUIContext.html">UIContext</a>;</div>
+</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="foldopen" id="foldopen00047" data-start="{" data-end="};">
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structUILayout.html">   47</a></span><span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">   48</a></span>    <a class="code hl_struct" href="structUIContext.html">UIContext</a>* <a class="code hl_variable" href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">ui</a>;     </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">   49</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">start_x</a>;     </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">   50</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">cursor_y</a>;    </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">   51</a></span>    <span class="keywordtype">float</span> <a class="code hl_variable" href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">padding</a>;     </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">   52</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">screen_width</a>;  </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">   53</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">screen_height</a>; </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>} <a class="code hl_struct" href="structUILayout.html">UILayout</a>;</div>
+</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="keywordtype">int</span> <a class="code hl_function" href="ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a>(<a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* font_path, <span class="keywordtype">float</span> font_size);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui_destroy</a>(<a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_context);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">/* --- Layout API --- */</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#a04ff141f59212601e740294c9159dbe7">ui_layout_init</a>(<a class="code hl_struct" href="structUILayout.html">UILayout</a>* layout, <a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_ctx, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>                    <span class="keywordtype">float</span> pos_y, <span class="keywordtype">float</span> padding, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>                    <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui_layout_text</a>(<a class="code hl_struct" href="structUILayout.html">UILayout</a>* layout, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keyword">const</span> vec3 color);</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe">ui_layout_separator</a>(<a class="code hl_struct" href="structUILayout.html">UILayout</a>* layout, <span class="keywordtype">float</span> space);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="comment">/* --- Low-level API --- */</span></div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a>(<a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_context, <span class="keyword">const</span> <span class="keywordtype">char</span>* text, <span class="keywordtype">float</span> pos_x,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                  <span class="keywordtype">float</span> pos_y, <span class="keyword">const</span> vec3 color, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                  <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui_draw_rect</a>(<a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> rect_x, <span class="keywordtype">float</span> rect_y,</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                  <span class="keywordtype">float</span> width, <span class="keywordtype">float</span> height, <span class="keyword">const</span> vec3 color, <span class="keywordtype">int</span> screen_width,</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>                  <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keywordtype">void</span> <a class="code hl_function" href="ui_8h.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a>(<a class="code hl_struct" href="structUIContext.html">UIContext</a>* ui_context, <span class="keywordtype">float</span> center_x, <span class="keywordtype">float</span> center_y,</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                     <span class="keywordtype">float</span> size, <span class="keywordtype">float</span> angle, <span class="keyword">const</span> vec3 color,</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                     <span class="keywordtype">int</span> screen_width, <span class="keywordtype">int</span> screen_height);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span><span class="preprocessor">#endif </span><span class="comment">/* UI_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="ashader_8h_html"><div class="ttname"><a href="shader_8h.html">shader.h</a></div><div class="ttdoc">High-level OpenGL shader management with metadata and uniform caching.</div></div>
+<div class="ttc" id="astructGlyphInfo_html"><div class="ttname"><a href="structGlyphInfo.html">GlyphInfo</a></div><div class="ttdoc">Metrics and texture coordinates for a single font character.</div><div class="ttdef"><b>Definition</b> ui.h:22</div></div>
+<div class="ttc" id="astructGlyphInfo_html_a4c29b44f3b642fa0e570f1adc22c2ee5"><div class="ttname"><a href="structGlyphInfo.html#a4c29b44f3b642fa0e570f1adc22c2ee5">GlyphInfo::h</a></div><div class="ttdeci">float h</div><div class="ttdef"><b>Definition</b> ui.h:24</div></div>
+<div class="ttc" id="astructGlyphInfo_html_a53a54f1998a5db100a6fc615a276c85e"><div class="ttname"><a href="structGlyphInfo.html#a53a54f1998a5db100a6fc615a276c85e">GlyphInfo::advance</a></div><div class="ttdeci">float advance</div><div class="ttdef"><b>Definition</b> ui.h:26</div></div>
+<div class="ttc" id="astructGlyphInfo_html_ab8030ae4d33509a98169563a68f4b19d"><div class="ttname"><a href="structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d">GlyphInfo::x_off</a></div><div class="ttdeci">float x_off</div><div class="ttdef"><b>Definition</b> ui.h:25</div></div>
+<div class="ttc" id="astructGlyphInfo_html_aeee917883d36cc9bda1a0bf899a889c9"><div class="ttname"><a href="structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9">GlyphInfo::x0</a></div><div class="ttdeci">float x0</div><div class="ttdef"><b>Definition</b> ui.h:23</div></div>
+<div class="ttc" id="astructShader_html"><div class="ttname"><a href="structShader.html">Shader</a></div><div class="ttdoc">Wrapper for an OpenGL program with uniform caching and automatic cleanup.</div><div class="ttdef"><b>Definition</b> shader.h:59</div></div>
+<div class="ttc" id="astructUIContext_html"><div class="ttname"><a href="structUIContext.html">UIContext</a></div><div class="ttdoc">Persistent state for the UI system.</div><div class="ttdef"><b>Definition</b> ui.h:33</div></div>
+<div class="ttc" id="astructUIContext_html_a4aadf19dd1934f81fa64d66c9a4bfe0f"><div class="ttname"><a href="structUIContext.html#a4aadf19dd1934f81fa64d66c9a4bfe0f">UIContext::vao</a></div><div class="ttdeci">GLuint vao</div><div class="ttdef"><b>Definition</b> ui.h:38</div></div>
+<div class="ttc" id="astructUIContext_html_a6c948d739612b8dfeebc4865f3230347"><div class="ttname"><a href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">UIContext::spinner_shader</a></div><div class="ttdeci">Shader * spinner_shader</div><div class="ttdef"><b>Definition</b> ui.h:37</div></div>
+<div class="ttc" id="astructUIContext_html_a91a4a19720fbcf5908113e8da9eb755a"><div class="ttname"><a href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">UIContext::shader</a></div><div class="ttdeci">Shader * shader</div><div class="ttdef"><b>Definition</b> ui.h:35</div></div>
+<div class="ttc" id="astructUIContext_html_a9edeb95ac4c767d809e6ce2a4e674541"><div class="ttname"><a href="structUIContext.html#a9edeb95ac4c767d809e6ce2a4e674541">UIContext::texture</a></div><div class="ttdeci">GLuint texture</div><div class="ttdef"><b>Definition</b> ui.h:34</div></div>
+<div class="ttc" id="astructUIContext_html_abe9242e20056a2f326d67392255c81a0"><div class="ttname"><a href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">UIContext::font_size</a></div><div class="ttdeci">float font_size</div><div class="ttdef"><b>Definition</b> ui.h:40</div></div>
+<div class="ttc" id="astructUILayout_html"><div class="ttname"><a href="structUILayout.html">UILayout</a></div><div class="ttdoc">Helper for automatic vertical stacking of UI elements.</div><div class="ttdef"><b>Definition</b> ui.h:47</div></div>
+<div class="ttc" id="astructUILayout_html_a692c37340a75ca97fb112f2402e0bd23"><div class="ttname"><a href="structUILayout.html#a692c37340a75ca97fb112f2402e0bd23">UILayout::cursor_y</a></div><div class="ttdeci">float cursor_y</div><div class="ttdef"><b>Definition</b> ui.h:50</div></div>
+<div class="ttc" id="astructUILayout_html_a6c80586815470c2782e7ea1105deeecc"><div class="ttname"><a href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">UILayout::screen_height</a></div><div class="ttdeci">int screen_height</div><div class="ttdef"><b>Definition</b> ui.h:53</div></div>
+<div class="ttc" id="astructUILayout_html_a7b85b790687f2339b78851574fe1ad63"><div class="ttname"><a href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">UILayout::start_x</a></div><div class="ttdeci">float start_x</div><div class="ttdef"><b>Definition</b> ui.h:49</div></div>
+<div class="ttc" id="astructUILayout_html_a951795d8c9d444653b986658057c6cf3"><div class="ttname"><a href="structUILayout.html#a951795d8c9d444653b986658057c6cf3">UILayout::padding</a></div><div class="ttdeci">float padding</div><div class="ttdef"><b>Definition</b> ui.h:51</div></div>
+<div class="ttc" id="astructUILayout_html_abecaeffeb6ae4e65c39d3511e75272e5"><div class="ttname"><a href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">UILayout::screen_width</a></div><div class="ttdeci">int screen_width</div><div class="ttdef"><b>Definition</b> ui.h:52</div></div>
+<div class="ttc" id="astructUILayout_html_ae88f53f3645f9f62eb568d2ab0e0c529"><div class="ttname"><a href="structUILayout.html#ae88f53f3645f9f62eb568d2ab0e0c529">UILayout::ui</a></div><div class="ttdeci">UIContext * ui</div><div class="ttdef"><b>Definition</b> ui.h:48</div></div>
+<div class="ttc" id="aui_8h_html_a04ff141f59212601e740294c9159dbe7"><div class="ttname"><a href="ui_8h.html#a04ff141f59212601e740294c9159dbe7">ui_layout_init</a></div><div class="ttdeci">void ui_layout_init(UILayout *layout, UIContext *ui_ctx, float pos_x, float pos_y, float padding, int screen_width, int screen_height)</div><div class="ttdoc">Initializes a layout helper for a frame.</div><div class="ttdef"><b>Definition</b> ui.c:473</div></div>
+<div class="ttc" id="aui_8h_html_a5c138218fecc5ed14d4ade5e6948d5cb"><div class="ttname"><a href="ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb">ui_destroy</a></div><div class="ttdeci">void ui_destroy(UIContext *ui_context)</div><div class="ttdoc">Releases UI resources.</div><div class="ttdef"><b>Definition</b> ui.c:443</div></div>
+<div class="ttc" id="aui_8h_html_a741fab59d05880f3bf5362d101833451"><div class="ttname"><a href="ui_8h.html#a741fab59d05880f3bf5362d101833451">ui_layout_text</a></div><div class="ttdeci">void ui_layout_text(UILayout *layout, const char *text, const vec3 color)</div><div class="ttdoc">Draws text and advances the layout cursor.</div><div class="ttdef"><b>Definition</b> ui.c:485</div></div>
+<div class="ttc" id="aui_8h_html_a822ad2f9015dc8e43f609046475a5dfe"><div class="ttname"><a href="ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe">ui_layout_separator</a></div><div class="ttdeci">void ui_layout_separator(UILayout *layout, float space)</div><div class="ttdoc">Adds vertical space to the layout.</div><div class="ttdef"><b>Definition</b> ui.c:499</div></div>
+<div class="ttc" id="aui_8h_html_a8eda682933ded96c62fa6f9ddc0097b5"><div class="ttname"><a href="ui_8h.html#a8eda682933ded96c62fa6f9ddc0097b5">ASCII_CHAR_COUNT</a></div><div class="ttdeci">#define ASCII_CHAR_COUNT</div><div class="ttdoc">Number of supported glyphs in the font atlas.</div><div class="ttdef"><b>Definition</b> ui.h:13</div></div>
+<div class="ttc" id="aui_8h_html_aa12b42bbbbca85f3404c48a9534aa7ac"><div class="ttname"><a href="ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a></div><div class="ttdeci">void ui_draw_text(UIContext *ui_context, const char *text, float pos_x, float pos_y, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a single text string at a specific coordinate.</div><div class="ttdef"><b>Definition</b> ui.c:314</div></div>
+<div class="ttc" id="aui_8h_html_ad120cc592f289ed7dd085d8d90b9a712"><div class="ttname"><a href="ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a></div><div class="ttdeci">int ui_init(UIContext *ui_context, const char *font_path, float font_size)</div><div class="ttdoc">Initializes the UI system.</div><div class="ttdef"><b>Definition</b> ui.c:250</div></div>
+<div class="ttc" id="aui_8h_html_ae939146f2938232fc48f970745ecf26a"><div class="ttname"><a href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui_draw_rect</a></div><div class="ttdeci">void ui_draw_rect(UIContext *ui_context, float rect_x, float rect_y, float width, float height, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a solid color rectangle.</div><div class="ttdef"><b>Definition</b> ui.c:387</div></div>
+<div class="ttc" id="aui_8h_html_af0a3c0de038ae56e7e6344cdfdd15bba"><div class="ttname"><a href="ui_8h.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a></div><div class="ttdeci">void ui_draw_spinner(UIContext *ui_context, float center_x, float center_y, float size, float angle, const vec3 color, int screen_width, int screen_height)</div><div class="ttdoc">Draws a rotating loading spinner.</div><div class="ttdef"><b>Definition</b> ui.c:507</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="ui_8h.html">ui.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

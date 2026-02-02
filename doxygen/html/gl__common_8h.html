@@ -1,0 +1,656 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/gl_common.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('gl__common_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle"><div class="title">gl_common.h File Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Common OpenGL definitions, RAII helpers, and utilities.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;glad/glad.h&quot;</code><br />
+<code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for gl_common.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="gl__common_8h__incl.svg" width="435" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="gl__common_8h__dep__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+</div>
+<p><a href="gl__common_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a2789ab28bb84a9a9f553c45e4eedbdfd" id="r_a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd">BUFFER_OFFSET</a>(offset)&#160;&#160;&#160;	((void*)(uintptr_t)(offset))</td></tr>
+<tr class="memdesc:a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to offset a pointer by a byte amount (useful for EBO/VBO offsets).  <br /></td></tr>
+<tr class="separator:a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae94e8ca561d54f3d6e7881b0b2efb812" id="r_ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">GL_DEBUG_PUSH</a>(name)&#160;&#160;&#160;	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name)</td></tr>
+<tr class="memdesc:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a debug group to the OpenGL command stream for debugging tools.  <br /></td></tr>
+<tr class="separator:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d7fc097a36ed065cc4c5813cb63c4a0" id="r_a3d7fc097a36ed065cc4c5813cb63c4a0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a3d7fc097a36ed065cc4c5813cb63c4a0">GL_DEBUG_POP</a>()&#160;&#160;&#160;glPopDebugGroup()</td></tr>
+<tr class="memdesc:a3d7fc097a36ed065cc4c5813cb63c4a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pops the current debug group.  <br /></td></tr>
+<tr class="separator:a3d7fc097a36ed065cc4c5813cb63c4a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f71b6552f5675333cc18677cb881580" id="r_a5f71b6552f5675333cc18677cb881580"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a5f71b6552f5675333cc18677cb881580">GL_SCOPE_DEBUG_GROUP</a>(name)</td></tr>
+<tr class="memdesc:a5f71b6552f5675333cc18677cb881580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scoped OpenGL debug group. Automatically pops when leaving scope.  <br /></td></tr>
+<tr class="separator:a5f71b6552f5675333cc18677cb881580"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dcb3273b1d51b8da3a2a6f3082a799f" id="r_a8dcb3273b1d51b8da3a2a6f3082a799f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a8dcb3273b1d51b8da3a2a6f3082a799f">GL_SCOPE_USE_PROGRAM</a>(prog)</td></tr>
+<tr class="memdesc:a8dcb3273b1d51b8da3a2a6f3082a799f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope.  <br /></td></tr>
+<tr class="separator:a8dcb3273b1d51b8da3a2a6f3082a799f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74a399d3e71315d0d06000c63b41aea9" id="r_a74a399d3e71315d0d06000c63b41aea9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a74a399d3e71315d0d06000c63b41aea9">CLEANUP_TEXTURE</a>&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33">cleanup_gl_texture</a>)))</td></tr>
+<tr class="memdesc:a74a399d3e71315d0d06000c63b41aea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attribute to automatically delete an OpenGL texture on scope exit.  <br /></td></tr>
+<tr class="separator:a74a399d3e71315d0d06000c63b41aea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a99fb83031ce9923c84392b4e92f956b5" id="r_a99fb83031ce9923c84392b4e92f956b5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#a99fb83031ce9923c84392b4e92f956b5a0305c7ac38f33f9eebc608633b2fc732">MAX_VERTEX_ATTRIBS_BASELINE</a> = 16
+ }</td></tr>
+<tr class="memdesc:a99fb83031ce9923c84392b4e92f956b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum number of vertex attributes guaranteed by OpenGL 3.3+.  <a href="gl__common_8h.html#a99fb83031ce9923c84392b4e92f956b5">More...</a><br /></td></tr>
+<tr class="separator:a99fb83031ce9923c84392b4e92f956b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc6126af1d45847bc59afa0aa3216b04" id="r_abc6126af1d45847bc59afa0aa3216b04"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04ae627525491a141e81f7479d7fffb4038">INSTANCE_ATTR_START</a> = 2
+ }</td></tr>
+<tr class="memdesc:abc6126af1d45847bc59afa0aa3216b04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starting index for instanced vertex attributes.  <a href="gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04">More...</a><br /></td></tr>
+<tr class="separator:abc6126af1d45847bc59afa0aa3216b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc29c2ff13d900c2f185ee95427fb06c" id="r_adc29c2ff13d900c2f185ee95427fb06c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06ca8fc307a473aac724f3230b8a1bc02449">SYNC_ATTR_START</a> = 8
+ }</td></tr>
+<tr class="memdesc:adc29c2ff13d900c2f185ee95427fb06c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starting index for synchronization vertex attributes (motion blur).  <a href="gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06c">More...</a><br /></td></tr>
+<tr class="separator:adc29c2ff13d900c2f185ee95427fb06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61dadd085c1777f559549e05962b2c9e" id="r_a61dadd085c1777f559549e05962b2c9e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#a61dadd085c1777f559549e05962b2c9ea726b6f2464109ad63235993e0fd37631">SCREEN_QUAD_VERTEX_COUNT</a> = 6
+ }</td></tr>
+<tr class="memdesc:a61dadd085c1777f559549e05962b2c9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of vertices in a standard screen-filling quad (2 triangles).  <a href="gl__common_8h.html#a61dadd085c1777f559549e05962b2c9e">More...</a><br /></td></tr>
+<tr class="separator:a61dadd085c1777f559549e05962b2c9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a726ca809ffd3d67ab4b8476646f26635" id="r_a726ca809ffd3d67ab4b8476646f26635"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#a726ca809ffd3d67ab4b8476646f26635a7619557dd412e4f5e4416d11b1c40d42">SIMD_ALIGNMENT</a> = 64
+ }</td></tr>
+<tr class="memdesc:a726ca809ffd3d67ab4b8476646f26635"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory alignment for SIMD/AVX (64-byte is AVX-512 safe and L1 cache line aligned).  <a href="gl__common_8h.html#a726ca809ffd3d67ab4b8476646f26635">More...</a><br /></td></tr>
+<tr class="separator:a726ca809ffd3d67ab4b8476646f26635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ac192a54fd8e4a35cb9c5cba07be2b7dc" id="r_ac192a54fd8e4a35cb9c5cba07be2b7dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a> (const char **dummy)</td></tr>
+<tr class="memdesc:ac192a54fd8e4a35cb9c5cba07be2b7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII-style cleanup for OpenGL debug groups.  <br /></td></tr>
+<tr class="separator:ac192a54fd8e4a35cb9c5cba07be2b7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad15b0974fb88bf43476a2ba10cc58447" id="r_ad15b0974fb88bf43476a2ba10cc58447"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a> (const GLuint *dummy)</td></tr>
+<tr class="memdesc:ad15b0974fb88bf43476a2ba10cc58447"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII-style cleanup for OpenGL shader program binding.  <br /></td></tr>
+<tr class="separator:ad15b0974fb88bf43476a2ba10cc58447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24ca9be2bf7f08f4039806dd06ac6a33" id="r_a24ca9be2bf7f08f4039806dd06ac6a33"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33">cleanup_gl_texture</a> (GLuint *tex)</td></tr>
+<tr class="memdesc:a24ca9be2bf7f08f4039806dd06ac6a33"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII-style cleanup for OpenGL textures. Deletes the texture if the handle is non-zero.  <br /></td></tr>
+<tr class="separator:a24ca9be2bf7f08f4039806dd06ac6a33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Common OpenGL definitions, RAII helpers, and utilities. </p>
+<p>This header ensures correct inclusion order for GLAD and GLFW, and provides C-style RAII macros using the <code>__cleanup__</code> attribute. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a2789ab28bb84a9a9f553c45e4eedbdfd" name="a2789ab28bb84a9a9f553c45e4eedbdfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2789ab28bb84a9a9f553c45e4eedbdfd">&#9670;&#160;</a></span>BUFFER_OFFSET</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BUFFER_OFFSET</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">offset</td><td>)</td>
+          <td>&#160;&#160;&#160;	((void*)(uintptr_t)(offset))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Macro to offset a pointer by a byte amount (useful for EBO/VBO offsets). </p>
+
+</div>
+</div>
+<a id="a74a399d3e71315d0d06000c63b41aea9" name="a74a399d3e71315d0d06000c63b41aea9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74a399d3e71315d0d06000c63b41aea9">&#9670;&#160;</a></span>CLEANUP_TEXTURE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CLEANUP_TEXTURE&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33">cleanup_gl_texture</a>)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Attribute to automatically delete an OpenGL texture on scope exit. </p>
+
+</div>
+</div>
+<a id="a3d7fc097a36ed065cc4c5813cb63c4a0" name="a3d7fc097a36ed065cc4c5813cb63c4a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d7fc097a36ed065cc4c5813cb63c4a0">&#9670;&#160;</a></span>GL_DEBUG_POP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_DEBUG_POP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td>&#160;&#160;&#160;glPopDebugGroup()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pops the current debug group. </p>
+
+</div>
+</div>
+<a id="ae94e8ca561d54f3d6e7881b0b2efb812" name="ae94e8ca561d54f3d6e7881b0b2efb812"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae94e8ca561d54f3d6e7881b0b2efb812">&#9670;&#160;</a></span>GL_DEBUG_PUSH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_DEBUG_PUSH</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name</td><td>)</td>
+          <td>&#160;&#160;&#160;	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pushes a debug group to the OpenGL command stream for debugging tools. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>String label for the group. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5f71b6552f5675333cc18677cb881580" name="a5f71b6552f5675333cc18677cb881580"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f71b6552f5675333cc18677cb881580">&#9670;&#160;</a></span>GL_SCOPE_DEBUG_GROUP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SCOPE_DEBUG_GROUP</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name); \</div>
+<div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span>* _gl_dbg_##__LINE__                              \</div>
+<div class="line">        __attribute__((cleanup(<a class="code hl_function" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a>))) = name</div>
+<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition</b> gl_common.h:58</div></div>
+</div><!-- fragment -->
+<p>Scoped OpenGL debug group. Automatically pops when leaving scope. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Group label. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8dcb3273b1d51b8da3a2a6f3082a799f" name="a8dcb3273b1d51b8da3a2a6f3082a799f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dcb3273b1d51b8da3a2a6f3082a799f">&#9670;&#160;</a></span>GL_SCOPE_USE_PROGRAM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SCOPE_USE_PROGRAM</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">prog</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    glUseProgram(prog);        \</div>
+<div class="line">    GLuint _gl_prog_##__LINE__ \</div>
+<div class="line">        __attribute__((cleanup(<a class="code hl_function" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a>))) = prog</div>
+<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition</b> gl_common.h:76</div></div>
+</div><!-- fragment -->
+<p>Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">prog</td><td><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> program handle. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a99fb83031ce9923c84392b4e92f956b5" name="a99fb83031ce9923c84392b4e92f956b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99fb83031ce9923c84392b4e92f956b5">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Minimum number of vertex attributes guaranteed by OpenGL 3.3+. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a99fb83031ce9923c84392b4e92f956b5a0305c7ac38f33f9eebc608633b2fc732" name="a99fb83031ce9923c84392b4e92f956b5a0305c7ac38f33f9eebc608633b2fc732"></a>MAX_VERTEX_ATTRIBS_BASELINE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="abc6126af1d45847bc59afa0aa3216b04" name="abc6126af1d45847bc59afa0aa3216b04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc6126af1d45847bc59afa0aa3216b04">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starting index for instanced vertex attributes. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="abc6126af1d45847bc59afa0aa3216b04ae627525491a141e81f7479d7fffb4038" name="abc6126af1d45847bc59afa0aa3216b04ae627525491a141e81f7479d7fffb4038"></a>INSTANCE_ATTR_START&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="adc29c2ff13d900c2f185ee95427fb06c" name="adc29c2ff13d900c2f185ee95427fb06c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc29c2ff13d900c2f185ee95427fb06c">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Starting index for synchronization vertex attributes (motion blur). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adc29c2ff13d900c2f185ee95427fb06ca8fc307a473aac724f3230b8a1bc02449" name="adc29c2ff13d900c2f185ee95427fb06ca8fc307a473aac724f3230b8a1bc02449"></a>SYNC_ATTR_START&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a61dadd085c1777f559549e05962b2c9e" name="a61dadd085c1777f559549e05962b2c9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61dadd085c1777f559549e05962b2c9e">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Number of vertices in a standard screen-filling quad (2 triangles). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a61dadd085c1777f559549e05962b2c9ea726b6f2464109ad63235993e0fd37631" name="a61dadd085c1777f559549e05962b2c9ea726b6f2464109ad63235993e0fd37631"></a>SCREEN_QUAD_VERTEX_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a726ca809ffd3d67ab4b8476646f26635" name="a726ca809ffd3d67ab4b8476646f26635"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a726ca809ffd3d67ab4b8476646f26635">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Memory alignment for SIMD/AVX (64-byte is AVX-512 safe and L1 cache line aligned). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a7619557dd412e4f5e4416d11b1c40d42" name="a726ca809ffd3d67ab4b8476646f26635a7619557dd412e4f5e4416d11b1c40d42"></a>SIMD_ALIGNMENT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ac192a54fd8e4a35cb9c5cba07be2b7dc" name="ac192a54fd8e4a35cb9c5cba07be2b7dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac192a54fd8e4a35cb9c5cba07be2b7dc">&#9670;&#160;</a></span>cleanup_gl_debug_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cleanup_gl_debug_group </td>
+          <td>(</td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>dummy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>RAII-style cleanup for OpenGL debug groups. </p>
+
+</div>
+</div>
+<a id="a24ca9be2bf7f08f4039806dd06ac6a33" name="a24ca9be2bf7f08f4039806dd06ac6a33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24ca9be2bf7f08f4039806dd06ac6a33">&#9670;&#160;</a></span>cleanup_gl_texture()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cleanup_gl_texture </td>
+          <td>(</td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>tex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>RAII-style cleanup for OpenGL textures. Deletes the texture if the handle is non-zero. </p>
+
+</div>
+</div>
+<a id="ad15b0974fb88bf43476a2ba10cc58447" name="ad15b0974fb88bf43476a2ba10cc58447"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad15b0974fb88bf43476a2ba10cc58447">&#9670;&#160;</a></span>cleanup_gl_use_program()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cleanup_gl_use_program </td>
+          <td>(</td>
+          <td class="paramtype">const GLuint *&#160;</td>
+          <td class="paramname"><em>dummy</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>RAII-style cleanup for OpenGL shader program binding. </p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="gl__common_8h.html">gl_common.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

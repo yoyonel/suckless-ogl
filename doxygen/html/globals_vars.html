@@ -1,0 +1,462 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Globals</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li class="current"><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li><a href="globals.html"><span>All</span></a></li>
+      <li><a href="globals_func.html"><span>Functions</span></a></li>
+      <li class="current"><a href="globals_vars.html"><span>Variables</span></a></li>
+      <li><a href="globals_type.html"><span>Typedefs</span></a></li>
+      <li><a href="globals_enum.html"><span>Enumerations</span></a></li>
+      <li><a href="globals_eval.html"><span>Enumerator</span></a></li>
+      <li><a href="globals_defs.html"><span>Macros</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="#index_b"><span>b</span></a></li>
+      <li><a href="#index_c"><span>c</span></a></li>
+      <li><a href="#index_d"><span>d</span></a></li>
+      <li><a href="#index_e"><span>e</span></a></li>
+      <li><a href="#index_f"><span>f</span></a></li>
+      <li><a href="#index_g"><span>g</span></a></li>
+      <li><a href="#index_h"><span>h</span></a></li>
+      <li><a href="#index_i"><span>i</span></a></li>
+      <li><a href="#index_l"><span>l</span></a></li>
+      <li><a href="#index_m"><span>m</span></a></li>
+      <li><a href="#index_n"><span>n</span></a></li>
+      <li><a href="#index_p"><span>p</span></a></li>
+      <li><a href="#index_q"><span>q</span></a></li>
+      <li><a href="#index_r"><span>r</span></a></li>
+      <li><a href="#index_s"><span>s</span></a></li>
+      <li><a href="#index_u"><span>u</span></a></li>
+      <li><a href="#index_w"><span>w</span></a></li>
+      <li class="current"><a href="#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('globals_vars.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all variables with links to the files they belong to:</div>
+
+<h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
+<li>BRDF_LUT_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_c" name="index_c"></a>- c -</h3><ul>
+<li>COMPUTE_GROUP_SIZE_LUM&#160;:&#160;<a class="el" href="pbr_8c.html#a764e470d5b315a2fc1bfdcad6183545b">pbr.c</a></li>
+<li>COMPUTE_GROUP_SIZE_PBR&#160;:&#160;<a class="el" href="pbr_8c.html#ab465f690f56447171309690f4cbb2601">pbr.c</a></li>
+<li>current_request&#160;:&#160;<a class="el" href="async__loader_8c.html#a2a3dae042485c1c61829ae7f648f957f">async_loader.c</a></li>
+</ul>
+
+
+<h3><a id="index_d" name="index_d"></a>- d -</h3><ul>
+<li>DEBUG_ORANGE_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#ad1f3586315e20b83affb3ed2018dbaef">app_ui.c</a></li>
+<li>DEBUG_TEXT_Y_OFFSET&#160;:&#160;<a class="el" href="app__ui_8c.html#ae527e2f8b8f74a9ae74728cf7e1eef0e">app_ui.c</a></li>
+<li>DEFAULT_AO&#160;:&#160;<a class="el" href="group__PBR.html#ga333d7e08b7c0e4275823e92f9182c455">app_settings.h</a></li>
+<li>DEFAULT_AUTO_THRESHOLD&#160;:&#160;<a class="el" href="group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85">app_settings.h</a></li>
+<li>DEFAULT_CAMERA_DISTANCE&#160;:&#160;<a class="el" href="group__Camera.html#ga1b7d0d5bcdd523f62ebedf9c8d7a200e">app_settings.h</a></li>
+<li>DEFAULT_CAMERA_PITCH&#160;:&#160;<a class="el" href="group__Camera.html#gad9cdfdea2bc7f04575921f665aa3fc69">app_settings.h</a></li>
+<li>DEFAULT_CAMERA_YAW&#160;:&#160;<a class="el" href="group__Camera.html#gac0689cefd732f6df975cd500a809a046">app_settings.h</a></li>
+<li>DEFAULT_CLAMP_MULTIPLIER&#160;:&#160;<a class="el" href="group__PBR.html#gaeb0f52b70b232cf017f3490d36896a5c">app_settings.h</a></li>
+<li>DEFAULT_COLS&#160;:&#160;<a class="el" href="group__UI.html#ga5fdcccf71b7236c0ea9332f1bdc3cf7a">app_settings.h</a></li>
+<li>DEFAULT_ENV_LOD&#160;:&#160;<a class="el" href="group__Camera.html#ga2a12595806a5ae01a44b8d1867f11638">app_settings.h</a></li>
+<li>DEFAULT_EXPOSURE_STEP&#160;:&#160;<a class="el" href="group__PostProcess.html#ga549835e9a52efb7bffd35d7eae64484b">app_settings.h</a></li>
+<li>DEFAULT_FONT_COLOR&#160;:&#160;<a class="el" href="group__UI.html#gac2e10d99dde9c5629d462d4404ae7003">app_settings.h</a></li>
+<li>DEFAULT_FONT_OFFSET_X&#160;:&#160;<a class="el" href="group__UI.html#ga066967c462f525b9e0c3b9cb583d1871">app_settings.h</a></li>
+<li>DEFAULT_FONT_OFFSET_Y&#160;:&#160;<a class="el" href="group__UI.html#gabeb209bdfc3f174542fb8f9be8fab7ad">app_settings.h</a></li>
+<li>DEFAULT_FONT_SHADOW_COLOR&#160;:&#160;<a class="el" href="group__UI.html#gab74ea829a42607b55b37fd0986bf30ab">app_settings.h</a></li>
+<li>DEFAULT_FONT_SHADOW_OFFSET_X&#160;:&#160;<a class="el" href="group__UI.html#gab0c2612771e8100aa0c566bbe5e43558">app_settings.h</a></li>
+<li>DEFAULT_FONT_SHADOW_OFFSET_Y&#160;:&#160;<a class="el" href="group__UI.html#ga61ad7d74466ad9984eda81fa6ee673f2">app_settings.h</a></li>
+<li>DEFAULT_FONT_SIZE&#160;:&#160;<a class="el" href="group__UI.html#ga413f094a9d593906551689b49a4ec064">app_settings.h</a></li>
+<li>DEFAULT_FPS_SAMPLER_SIZE&#160;:&#160;<a class="el" href="group__UI.html#ga253484bd4e347b0db5053d3abe8df22a">app_settings.h</a></li>
+<li>DEFAULT_FPS_SMOOTHING&#160;:&#160;<a class="el" href="group__UI.html#gaf0ca05071da1b9e491df5baaca3eb73e">app_settings.h</a></li>
+<li>DEFAULT_FPS_TARGET&#160;:&#160;<a class="el" href="group__UI.html#ga47843426246814c211484644236efae2">app_settings.h</a></li>
+<li>DEFAULT_FPS_WINDOW&#160;:&#160;<a class="el" href="group__UI.html#gab9848efe0430294ec2ff6ec8d2659691">app_settings.h</a></li>
+<li>DEFAULT_MB_INTENSITY&#160;:&#160;<a class="el" href="fx__motion__blur_8c.html#a53884293246c41b964a95a68e1411549">fx_motion_blur.c</a></li>
+<li>DEFAULT_MB_MAX_VELOCITY&#160;:&#160;<a class="el" href="fx__motion__blur_8c.html#adf21fe305f8499ceda4ef489be8ee708">fx_motion_blur.c</a></li>
+<li>DEFAULT_MB_SAMPLES&#160;:&#160;<a class="el" href="fx__motion__blur_8c.html#a69338389f427a23b47a6432144af7410">fx_motion_blur.c</a></li>
+<li>DEFAULT_METALLIC&#160;:&#160;<a class="el" href="group__PBR.html#ga8efde0fe815222f651ad106814a991d1">app_settings.h</a></li>
+<li>DEFAULT_MIN_EXPOSURE&#160;:&#160;<a class="el" href="group__PostProcess.html#ga91e3ffaced831fb8bf9736d8a9fc6ef2">app_settings.h</a></li>
+<li>DEFAULT_ROUGHNESS&#160;:&#160;<a class="el" href="group__PBR.html#ga24993c1c760aaefd485e66d419bcce3a">app_settings.h</a></li>
+<li>DEFAULT_SPACING&#160;:&#160;<a class="el" href="group__UI.html#gabfa53e97d39b21b0639f934b842101a8">app_settings.h</a></li>
+<li>DEFAULT_STENCIL_MASK&#160;:&#160;<a class="el" href="group__Renderer.html#gaa21ac8099a8b2310e9a42661d676cc51">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
+<li>ENV_TEXT_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#af0b98e622dd47736cd7e777d203a82e7">app_ui.c</a></li>
+<li>EXPOSURE_INITIAL_VAL&#160;:&#160;<a class="el" href="fx__auto__exposure_8c.html#ab4891ec7eb17395680dfe49d6ccf09db">fx_auto_exposure.c</a></li>
+</ul>
+
+
+<h3><a id="index_f" name="index_f"></a>- f -</h3><ul>
+<li>FAR_PLANE&#160;:&#160;<a class="el" href="group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6">app_settings.h</a></li>
+<li>FONT_ATLAS_SIZE_F&#160;:&#160;<a class="el" href="ui_8c.html#ac805579cfa3cc9bca0cc4f075612fee8">ui.c</a></li>
+<li>FONT_BASELINE_OFFSET&#160;:&#160;<a class="el" href="ui_8c.html#a9d2c975bbb987bab349a6efe804a88cc">ui.c</a></li>
+<li>FOV_ANGLE&#160;:&#160;<a class="el" href="group__Camera.html#gacb82af743656992de4acd8347d2a55bc">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
+<li>g_log_initialized&#160;:&#160;<a class="el" href="log_8c.html#a85e0d2f0365db22b9b91ccf8ee95889b">log.c</a></li>
+<li>g_log_level&#160;:&#160;<a class="el" href="log_8c.html#af9d04d44ddd24cd181c91561df230cee">log.c</a></li>
+<li>GRAPH_TEXT_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#aaf76e00a44e28d6b60824890cf02af45">app_ui.c</a></li>
+<li>GRAPH_TEXT_PADDING&#160;:&#160;<a class="el" href="app__ui_8c.html#a5a809367fa495c92746f4f0eb3e07880">app_ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_h" name="index_h"></a>- h -</h3><ul>
+<li>HALF_OFFSET_MULTIPLIER&#160;:&#160;<a class="el" href="group__UI.html#ga07d578ea18451fba46831f6040d5914b">app_settings.h</a></li>
+<li>has_pending_work&#160;:&#160;<a class="el" href="async__loader_8c.html#a209e19c5a1c6b99e7882059c189ad060">async_loader.c</a></li>
+<li>HISTO_BAR_COLOR_BLUE&#160;:&#160;<a class="el" href="app__ui_8c.html#a037be618a76f8bc4f34b1eca628ba857">app_ui.c</a></li>
+<li>HISTO_BAR_COLOR_GREEN&#160;:&#160;<a class="el" href="app__ui_8c.html#a5c6370f1e0e7703667c20c0215422723">app_ui.c</a></li>
+<li>HISTO_BAR_COLOR_RED&#160;:&#160;<a class="el" href="app__ui_8c.html#a43f540df1811075ee555702865120041">app_ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_i" name="index_i"></a>- i -</h3><ul>
+<li>IBL_LOG_LABEL_SIZE&#160;:&#160;<a class="el" href="app__env_8c.html#aa5ac2b4f077bc45d4ea556539a84db38">app_env.c</a></li>
+<li>icosahedron_indices&#160;:&#160;<a class="el" href="icosphere_8c.html#a331322d23a758cda19c33705af0f98dd">icosphere.c</a></li>
+<li>icosahedron_vertices&#160;:&#160;<a class="el" href="icosphere_8c.html#a3a17f248c8cd96628538e037c878860e">icosphere.c</a></li>
+<li>IRIDIANCE_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743">app_settings.h</a></li>
+<li>IRRADIANCE_MAP_SLICES&#160;:&#160;<a class="el" href="app__env_8c.html#a432a23876db6261ec70f4565ca1cce79">app_env.c</a></li>
+</ul>
+
+
+<h3><a id="index_l" name="index_l"></a>- l -</h3><ul>
+<li>LIGHT_DIR_X&#160;:&#160;<a class="el" href="group__Environment.html#gafc5895744d3003c6436fdff66c9d80bd">app_settings.h</a></li>
+<li>LIGHT_DIR_Y&#160;:&#160;<a class="el" href="group__Environment.html#ga1cd90f1a0c032db9767a587528b5be3f">app_settings.h</a></li>
+<li>LIGHT_DIR_Z&#160;:&#160;<a class="el" href="group__Environment.html#ga42cce2777f68380c5d6bc70f328d7b86">app_settings.h</a></li>
+<li>LOD_STEP&#160;:&#160;<a class="el" href="group__Environment.html#gab63114353ea52239459c442bbdc2fe2c">app_settings.h</a></li>
+<li>LUM_HISTOGRAM_MAP_SIZE&#160;:&#160;<a class="el" href="group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce">app_settings.h</a></li>
+<li>LUM_HISTOGRAM_SIZE&#160;:&#160;<a class="el" href="group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc">app_settings.h</a></li>
+<li>LUMINANCE_EPSILON&#160;:&#160;<a class="el" href="app__ui_8c.html#a2f98977b6b578bddebc5e2d078b7baca">app_ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_m" name="index_m"></a>- m -</h3><ul>
+<li>MAX_CAMERA_DISTANCE&#160;:&#160;<a class="el" href="group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae">app_settings.h</a></li>
+<li>MAX_ENV_LOD&#160;:&#160;<a class="el" href="group__Environment.html#ga49fb4d7500162560be451c22d8544de5">app_settings.h</a></li>
+<li>MAX_FONT_FILE_SIZE&#160;:&#160;<a class="el" href="ui_8c.html#a5ef7672ec0be8cbe08dfecd7dad395a7">ui.c</a></li>
+<li>MAX_FPS_TEXT_LENGTH&#160;:&#160;<a class="el" href="group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b">app_settings.h</a></li>
+<li>MAX_HDR_RESOLUTION&#160;:&#160;<a class="el" href="pbr_8c.html#aeec0e4121b2f13da5d4c37deb40952b6">pbr.c</a></li>
+<li>MILLISECONDS&#160;:&#160;<a class="el" href="fps_8c.html#a8758f6ac43d20bbf87f1079fdcef817a">fps.c</a></li>
+<li>MIN_CAMERA_DISTANCE&#160;:&#160;<a class="el" href="group__Camera.html#ga346116c9433e5c84e60ff7d2e92e6640">app_settings.h</a></li>
+<li>MIN_ENV_LOD&#160;:&#160;<a class="el" href="group__Environment.html#gac0e8a7770231166913b3e05f723bafc9">app_settings.h</a></li>
+</ul>
+
+
+<h3><a id="index_n" name="index_n"></a>- n -</h3><ul>
+<li>NEAR_PLANE&#160;:&#160;<a class="el" href="group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de">app_settings.h</a></li>
+<li>NS_TO_MS&#160;:&#160;<a class="el" href="perf__timer_8c.html#ad016cfb60498ffc8dfb74333a226d5e9">perf_timer.c</a></li>
+<li>NS_TO_S&#160;:&#160;<a class="el" href="perf__timer_8c.html#a19325a5f7cca1f4ae6ad9e1804e326fc">perf_timer.c</a></li>
+<li>NS_TO_US&#160;:&#160;<a class="el" href="perf__timer_8c.html#a45450bdee139fc2f8ca3c79c07a922b3">perf_timer.c</a></li>
+</ul>
+
+
+<h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
+<li>PCG_IS_3&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a9b593157303bc36e072573948e65957c">adaptive_sampler.c</a></li>
+<li>PCG_IS_4&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a2975ce69994e59c085f969eda4acfdaa">adaptive_sampler.c</a></li>
+<li>PCG_MULTIPLIER&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a84ae985372316da8c3f40a6a60d5e215">adaptive_sampler.c</a></li>
+<li>PCG_SHIFT_1&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a912d74c93aef842a5214a425191ff0b5">adaptive_sampler.c</a></li>
+<li>PCG_SHIFT_2&#160;:&#160;<a class="el" href="adaptive__sampler_8c.html#a8777c4f2b3891aeb61e15dd959ee6734">adaptive_sampler.c</a></li>
+<li>PREFILTERED_SPECULAR_MAP_SIZE&#160;:&#160;<a class="el" href="group__Environment.html#gac0ba165d3405de365ee4b6af426db7ac">app_settings.h</a></li>
+<li>PRESET_ANALOG&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a60fe8e6a1bb6ba06e48ec0b2e86fdc9a">postprocess_presets.h</a></li>
+<li>PRESET_BLUEPRINT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3abfc57b5f619bc3146c177011303082">postprocess_presets.h</a></li>
+<li>PRESET_BW_CONTRAST&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098">postprocess_presets.h</a></li>
+<li>PRESET_CHANNEL_GFX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9a03660d046a5e7929fdcfd9dc3b4ed3">postprocess_presets.h</a></li>
+<li>PRESET_CINEMATIC&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a6867da5e153c31da923bfd57b2563313">postprocess_presets.h</a></li>
+<li>PRESET_DEFAULT&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a4b57a0184cd61b5335951aa0e6b30495">postprocess_presets.h</a></li>
+<li>PRESET_MATRIX&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a3e3533df1a8aace5ebd66546165be922">postprocess_presets.h</a></li>
+<li>PRESET_POSTERIZED&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a632215d24b2cc5d2e1b1a9ad1a8875e2">postprocess_presets.h</a></li>
+<li>PRESET_RETRO&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#afb1c2f382c8e33458959764eaad5e2cf">postprocess_presets.h</a></li>
+<li>PRESET_SUBTLE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a9e68acd97f1db2a2eefc2d3cdd9e9af4">postprocess_presets.h</a></li>
+<li>PRESET_VINTAGE&#160;:&#160;<a class="el" href="postprocess__presets_8h.html#a18fd433e53469b575aacb8dfc72b1334">postprocess_presets.h</a></li>
+</ul>
+
+
+<h3><a id="index_q" name="index_q"></a>- q -</h3><ul>
+<li>quad_vertices&#160;:&#160;<a class="el" href="skybox_8c.html#a2907a823075f10f1585889243be37889">skybox.c</a></li>
+</ul>
+
+
+<h3><a id="index_r" name="index_r"></a>- r -</h3><ul>
+<li>request_cond&#160;:&#160;<a class="el" href="async__loader_8c.html#a6a8411c704fa1308cf298a2f688d2c9f">async_loader.c</a></li>
+<li>request_mutex&#160;:&#160;<a class="el" href="async__loader_8c.html#ad25cf0c57d563e1b24e38b6fa1c711b2">async_loader.c</a></li>
+<li>running&#160;:&#160;<a class="el" href="async__loader_8c.html#a7c10027ca174fc9d529796f04aca6bd4">async_loader.c</a></li>
+</ul>
+
+
+<h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
+<li>S_TO_MS&#160;:&#160;<a class="el" href="perf__timer_8c.html#a2e9b0b9ed0a878df07b2f013c5fcbe75">perf_timer.c</a></li>
+<li>S_TO_US&#160;:&#160;<a class="el" href="perf__timer_8c.html#af3cae720fc1135a209f44a3fd29deab9">perf_timer.c</a></li>
+<li>SPECULAR_MIP0_SLICES&#160;:&#160;<a class="el" href="app__env_8c.html#a90f2f6ec1243ac536bc3e2f13481e71c">app_env.c</a></li>
+<li>SPECULAR_MIP1_SLICES&#160;:&#160;<a class="el" href="app__env_8c.html#a1c45430a6b7ed7db7a7289c5da249fe6">app_env.c</a></li>
+<li>SPECULAR_MIPS_GROUPING_START&#160;:&#160;<a class="el" href="app__env_8c.html#a09b849d8b3f9d7ba32077f3e1f7762b4">app_env.c</a></li>
+</ul>
+
+
+<h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
+<li>UI_CENTER_FACTOR&#160;:&#160;<a class="el" href="app__ui_8c.html#aa89f5598bad4c30e87b9a26b73c80f6b">app_ui.c</a></li>
+<li>UI_LOADING_TEXT_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#a8629a551eea895d8570a75c930b67a6e">app_ui.c</a></li>
+<li>UI_LOADING_TEXT_WIDTH_FACTOR&#160;:&#160;<a class="el" href="app__ui_8c.html#a2b4046580b310d59959c6e0aebe6df17">app_ui.c</a></li>
+<li>UI_QUAD_MIN&#160;:&#160;<a class="el" href="ui_8c.html#aa091a07662c10c5d3b8eaaf4774d7ab5">ui.c</a></li>
+<li>UI_QUAD_POS_HALF&#160;:&#160;<a class="el" href="ui_8c.html#a895be99a8fe46f071860fd021e113463">ui.c</a></li>
+<li>UI_QUAD_TEX_MAX&#160;:&#160;<a class="el" href="ui_8c.html#a42d60159b1f7fbfbff679ea27494cfdf">ui.c</a></li>
+<li>UI_SPINNER_COLOR&#160;:&#160;<a class="el" href="app__ui_8c.html#ac6cd248610705cb146a492bd8a7da771">app_ui.c</a></li>
+<li>UI_SPINNER_SIZE&#160;:&#160;<a class="el" href="app__ui_8c.html#a7dcd28927e6a58716cdade6859b53449">app_ui.c</a></li>
+<li>UI_SPINNER_SPEED&#160;:&#160;<a class="el" href="app__ui_8c.html#a9641a608a591e3d12b583671f938ea18">app_ui.c</a></li>
+<li>UI_TEXT_OFFSET_FACTOR&#160;:&#160;<a class="el" href="app__ui_8c.html#a1f0fde4e033eb34145d84e32d4a06178">app_ui.c</a></li>
+</ul>
+
+
+<h3><a id="index_w" name="index_w"></a>- w -</h3><ul>
+<li>worker_thread&#160;:&#160;<a class="el" href="async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423">async_loader.c</a></li>
+</ul>
+
+
+<h3><a id="index_z" name="index_z"></a>- z -</h3><ul>
+<li>ZOOM_STEP&#160;:&#160;<a class="el" href="group__Camera.html#gaca15edfc96188569083e68b587c2e09b">app_settings.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

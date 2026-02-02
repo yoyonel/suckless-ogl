@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['camera_0',['camera',['../structApp.html#a07804dc0323b7096e4fb77546c67ec25',1,'App']]],
+  ['camera_5fenabled_1',['camera_enabled',['../structApp.html#abfeaafb46c8fcf884a5837047997d8bb',1,'App']]],
+  ['capacity_2',['capacity',['../structAdaptiveSampler.html#a1600d195c44ab82f7b28cfd658522d2c',1,'AdaptiveSampler::capacity'],['../structVec3Array.html#a0c1c73aa0db6cfdd245d722b8b13b24c',1,'Vec3Array::capacity'],['../structUintArray.html#a48205b7ce859c7683dcd24aba8963e06',1,'UintArray::capacity'],['../structSphereSorter.html#afd1607f4459faff5c82b4806d4ab75c9',1,'SphereSorter::capacity'],['../structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff',1,'EdgeHash::capacity']]],
+  ['cdata_3',['cdata',['../structUIContext.html#a062dcd89e0d44d274b207da86b1b2d04',1,'UIContext']]],
+  ['channel_5flevels_4',['channel_levels',['../structBandingParams.html#aa949d5261987719efd3daba118bdb954',1,'BandingParams']]],
+  ['channels_5',['channels',['../structAsyncRequest.html#a0d9cb4509d43875ece9e7a5142b37e15',1,'AsyncRequest']]],
+  ['chrom_5fabbr_6',['chrom_abbr',['../structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01',1,'PostProcess::chrom_abbr'],['../structPostProcessPreset.html#aa1802cfe2b682a235bbcaef29719c7bd',1,'PostProcessPreset::chrom_abbr']]],
+  ['chrom_5fabbr_5fstrength_7',['chrom_abbr_strength',['../structPostProcessUBO.html#af4f5bd0a4cd69d06260bfefeca532408',1,'PostProcessUBO']]],
+  ['chunks_5fhead_8',['chunks_head',['../structIncludeContext.html#a29f3d363ac094f5696e1d7fd66d1a268',1,'IncludeContext']]],
+  ['chunks_5ftail_9',['chunks_tail',['../structIncludeContext.html#a52cbaa31b3eec4d49894d5721176ede0',1,'IncludeContext']]],
+  ['color_5fgrading_10',['color_grading',['../structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8',1,'PostProcess::color_grading'],['../structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272',1,'PostProcessPreset::color_grading']]],
+  ['compute_5fgroup_5fsize_5flum_11',['COMPUTE_GROUP_SIZE_LUM',['../pbr_8c.html#a764e470d5b315a2fc1bfdcad6183545b',1,'pbr.c']]],
+  ['compute_5fgroup_5fsize_5fpbr_12',['COMPUTE_GROUP_SIZE_PBR',['../pbr_8c.html#ab465f690f56447171309690f4cbb2601',1,'pbr.c']]],
+  ['contrast_13',['contrast',['../structColorGradingParams.html#aa42c4eb30bc506714bf0486dcd1e2e86',1,'ColorGradingParams']]],
+  ['count_14',['count',['../structAdaptiveSampler.html#a9df220ccd008b79b72ebbec675159710',1,'AdaptiveSampler::count'],['../structMaterialLib.html#a8951aab4be6950b1bbf5aac0686e1820',1,'MaterialLib::count'],['../structDebugMessageEntry.html#aa9cbbd92b9bde62d2c474a36f8abf405',1,'DebugMessageEntry::count'],['../structEdgeHash.html#abf74ac823023fa22a196e161bae695ec',1,'EdgeHash::count']]],
+  ['cpu_15',['cpu',['../structHybridTimer.html#a59b948e79a518d1c899cddf21fa0fd67',1,'HybridTimer']]],
+  ['current_5fexposure_16',['current_exposure',['../structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9',1,'App']]],
+  ['current_5fhdr_5findex_17',['current_hdr_index',['../structApp.html#ab1a4d26d5463ca7af068c982243a29c2',1,'App']]],
+  ['current_5fmip_18',['current_mip',['../structIBLContext.html#a614261fc57ac9000f99dc31860706ced',1,'IBLContext']]],
+  ['current_5frequest_19',['current_request',['../async__loader_8c.html#a2a3dae042485c1c61829ae7f648f957f',1,'async_loader.c']]],
+  ['current_5fslice_20',['current_slice',['../structIBLContext.html#a8023e9ef263abc757cfec0a1231926e9',1,'IBLContext']]],
+  ['cursor_5fy_21',['cursor_y',['../structUILayout.html#a692c37340a75ca97fb112f2402e0bd23',1,'UILayout']]]
+];
