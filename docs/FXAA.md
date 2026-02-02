@@ -23,7 +23,7 @@ To avoid calculating Luminance (`dot(rgb, vec3(0.299...))`) multiple times per p
 
 #### Pipeline Data Flow
 
-\dot
+```graphviz
 digraph FXAALuma {
   rankdir=LR;
   bgcolor="transparent";
@@ -85,7 +85,7 @@ digraph FXAALuma {
   Input -> Blend [label="Fetch RGB"];
   EdgeDetect -> Blend [label="Mix Factor", style=dotted];
 }
-\enddot
+```
 
 ### 2. sRGB / Gamma Correctness
 Edge detection must be performed in Perceptual Space (Gamma) to match human vision. Since the rendering pipeline is linear:
@@ -107,12 +107,12 @@ Instead of stepping 1 pixel at a time, the search loop uses variable step sizes 
 
 Settings are controlled via the `PostProcessUBO`:
 
-\code{.glsl}
+```glsl
 // UBO Layout (std140)
 float subpixel_quality_val;        // Default: 0.75 (Range 0.0 - 1.0)
 float edge_threshold_val;          // Default: 0.125 (0.166 for Perf, 0.063 for Quality)
 float edge_threshold_min_val;      // Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)
-\endcode
+```
 
 - **Subpix**: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.
 - **EdgeThreshold**: Minimum contrast required to trigger AA.

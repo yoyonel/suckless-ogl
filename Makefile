@@ -47,10 +47,24 @@ clean:
 	@$(DISTROBOX) rm -rf $(BUILD_DIR)
 
 docs:
-	@echo "Generating Doxygen documentation..."
+	@echo "Building MkDocs documentation..."
+	@$(DISTROBOX) python3 -m mkdocs build
+	@echo "Generating Doxygen API Reference..."
 	@$(DISTROBOX) doxygen Doxyfile
-	@echo "Verifying Documentation Quality..."
-	@$(DISTROBOX) python3 scripts/verify_docs.py
+	@echo "Documentation built in 'site/' directory (API at 'site/doxygen/html')."
+
+docs-serve:
+	@echo "Serving full static site (MkDocs + Doxygen)..."
+	@echo "Open http://localhost:8000"
+	@$(DISTROBOX) python3 -m http.server -d site 8000
+
+docs-dev:
+	@echo "Starting MkDocs Live Preview (No Doxygen integration)..."
+	@$(DISTROBOX) python3 -m mkdocs serve
+
+docs-legacy:
+	@echo "Generating Doxygen documentation (Legacy)..."
+	@$(DISTROBOX) doxygen Doxyfile
 
 clean-all:
 	@echo "Removing all build directories..."

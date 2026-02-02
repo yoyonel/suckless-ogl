@@ -112,7 +112,7 @@ Exposure is applied at a specific stage in the final fragment shader:
 
 ### Adaptation Pipeline
 
-\dot
+```graphviz
 digraph AutoExposure {
   rankdir=TD;
   bgcolor="transparent";
@@ -166,4 +166,4 @@ digraph AutoExposure {
   History -> Final [label="Fetch"];
   Scene -> Final [color="#7aa2f7", penwidth=2.5, label="LDR Path"];
 }
-\enddot
+```

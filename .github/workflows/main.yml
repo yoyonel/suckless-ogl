@@ -170,14 +170,19 @@ jobs:
       - name: Install Documentation Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz python3
+          sudo apt-get install -y doxygen graphviz
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install Python Dependencies
+        run: pip install -r requirements-dev.txt
       - name: Generate and Verify Docs
         run: make docs CONTAINER_RUN=""
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v4
         with:
           name: doxygen-docs
-          path: docs/doxygen/html/
+          path: site/
 
       - name: Deploy Documentation Preview (Pull Request)
         if: github.event_name == 'pull_request'
@@ -186,7 +191,7 @@ jobs:
         run: |
           PR_NUMBER=${{ github.event.number }}
           DEPLOY_DOMAIN="suckless-ogl-pr-$PR_NUMBER.surge.sh"
-          npx surge docs/doxygen/html/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
+          npx surge site/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
           echo "PREVIEW_URL=https://$DEPLOY_DOMAIN" >> $GITHUB_ENV
 
       - name: Comment Preview Link on PR
@@ -202,37 +207,37 @@ jobs:
 
             *Last updated: ${{ github.event.pull_request.updated_at || 'Just now' }} (commit: ${{ github.sha }})*
 
-  # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES ---
-  deploy-pages:
-    needs: [test-and-coverage, documentation]
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: public-site/coverage
-
-      - name: Download Documentation
-        uses: actions/download-artifact@v4
-        with:
-          name: doxygen-docs
-          path: public-site/doxygen
-
-      - name: Prepare Landing Page
-        run: |
-          cp docs/landing_page.html public-site/index.html
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public-site
-          keep_files: false
-          destination_dir: .
+  # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES (DISABLED - Handled by docs.yml) ---
+  # deploy-pages:
+  #   needs: [test-and-coverage, documentation]
+  #   if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Download Coverage
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: coverage-report
+  #         path: public-site/coverage
+  #
+  #     - name: Download Documentation
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: doxygen-docs
+  #         path: public-site/doxygen
+  #
+  #     - name: Prepare Landing Page
+  #       run: |
+  #         cp docs/landing_page.html public-site/index.html
+  #
+  #     - name: Deploy to GitHub Pages
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: ./public-site
+  #         keep_files: false
+  #         destination_dir: .
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:

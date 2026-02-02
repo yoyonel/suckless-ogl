@@ -15,7 +15,7 @@ This document explains the implementation of the mouse-controlled camera system 
 ### Data Flow
 The input event management is decoupled from the camera update logic.
 
-\dot
+```graphviz
 digraph CameraInput {
   rankdir=LR;
   bgcolor="transparent";
@@ -53,20 +53,20 @@ digraph CameraInput {
   Global -> Update;
   Update -> Render [color="#bb9af7", penwidth=2];
 }
-\enddot
+```
 
 ## Implementation Details
 
 ### Rotation Calculation (Euler Angles)
 The camera's direction vector is calculated from the Yaw and Pitch angles:
 
-\code{.c}
+```c
 // Convert Spherical to Cartesian coordinates
 front.x = cos(glm_rad(yaw)) * cos(glm_rad(pitch));
 front.y = sin(glm_rad(pitch));
 front.z = sin(glm_rad(yaw)) * cos(glm_rad(pitch));
 glm_normalize(front);
-\endcode
+```
 
 ### Input Handling
 The `mouse_callback` function handles the raw mouse input:
@@ -81,8 +81,8 @@ The `mouse_callback` function handles the raw mouse input:
 
 ## Usage
 To enable mouse capture:
-\code{.c}
+```c
 // Enable mouse capture in GLFW
 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-\endcode
+```
 To release the mouse (e.g., for UI interaction), switch to `GLFW_CURSOR_NORMAL`.

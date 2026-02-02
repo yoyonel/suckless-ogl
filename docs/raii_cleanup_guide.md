@@ -16,7 +16,7 @@ To solve this, we use a technique borrowed from C++ called RAII, made possible i
 ### The attribute cleanup Extension
 This attribute tells the compiler to automatically call a specific "cleanup function" when a local variable goes out of scope.
 
-\dot
+```graphviz
 digraph RAIIScope {
   rankdir=TD;
   bgcolor="transparent";
@@ -64,7 +64,7 @@ digraph RAIIScope {
 
   Init -> Exit [label=" Error/Early Return", style=dotted, color="#f7768e"];
 }
-\enddot
+```
 
 ---
 
@@ -78,28 +78,28 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 
 1.  **The RAII Container**: A structure that holds the resource and its metadata.
 
-    \code{.c}
+    ```c
     typedef struct {
         HybridTimer timer;
         const char* label;
     } HybridTimerRAII;
-    \endcode
+    ```
 
 2.  **The Cleanup Function**: A static function that the compiler will trigger.
 
-    \code{.c}
+    ```c
     static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
         perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
     }
-    \endcode
+    ```
 
 3.  **The Macro**: A convenient way to declare the guarded variable.
 
-    \code{.c}
+    ```c
     #define HYBRID_FUNC_TIMER(label) \
         HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
             perf_hybrid_start(), label }
-    \endcode
+    ```
 
 ---
 
@@ -109,29 +109,29 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 Unlike the older `HYBRID_MEASURE_LOG` which required a code block `{ ... }`, the new RAII macro allows for "flat" code.
 
 **Old Way (Indented):**
-\code{.c}
+```c
 void process() {
     HYBRID_MEASURE_LOG("Task") {
         do_work();
         do_more_work();
     }
 }
-\endcode
+```
 
 **New Way (Flat):**
-\code{.c}
+```c
 void process() {
     HYBRID_FUNC_TIMER("Task");
 
     do_work();
     do_more_work();
 } // Timer stops here automatically
-\endcode
+```
 
 ### Safety with Early Returns
 The cleanup is guaranteed to run even if the function exits early.
 
-\code{.c}
+```c
 void demo_load_data(const char* file_path) {
     HYBRID_FUNC_TIMER("File Load");
 
@@ -140,7 +140,7 @@ void demo_load_data(const char* file_path) {
 
     // ... processing ...
 } // Timer STOPS and LOGS here automatically!
-\endcode
+```
 
 ---
 
@@ -148,7 +148,7 @@ void demo_load_data(const char* file_path) {
 
 In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER` at the start of expensive compute shader dispatches.
 
-    \code{.c}
+    ```c
     // signature renamed to prevent Doxygen auto-linking info
     GLuint
     demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
@@ -168,7 +168,7 @@ In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER
 
         return irr_tex;
     } // Measurement stops and result is printed to log
-\endcode
+```
 
 ---
 
@@ -197,7 +197,7 @@ Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a 
 
 **Usage Example:**
 
-    \code{.c}
+    ```c
     // Example of multiple resource management using RAII
     static char*
     demo_raii_loader(const char* file_path)
@@ -216,7 +216,7 @@ Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a 
         RAII_SATISFY_FILE(file_ptr);
         return TRANSFER_OWNERSHIP(data_buffer);
     } // Actual cleaning happens here at runtime via RAII
-    \endcode
+    ```
 
 ### Why use this instead of // NOLINT?
 - **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.

@@ -31,7 +31,7 @@ Without protection, the 31 excess rows overwrite/recalculate neighboring pixels,
 
 **The Fix (`u_max_y_slice`)**:
 We pass a precise limit to the shader:
-\code{.glsl}
+```glsl
 // shaders/IBL/spmap.glsl & irmap.glsl
 uniform int u_max_y_slice; // Y limit of the current slice
 
@@ -41,7 +41,7 @@ void main_task() {
     if (pixel_pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads
     // ...
 }
-\endcode
+```
 
 ---
 
@@ -66,7 +66,7 @@ This is the heaviest part. The cost per mipmap decreases exponentially.
 
 **Total "Tail Grouping"**: Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (<1ms each).
 
-\dot
+```graphviz
 digraph IBLPipeline {
   rankdir=LR;
   bgcolor="transparent";
@@ -126,7 +126,7 @@ digraph IBLPipeline {
   Mip2 -> Tail;
   Tail -> End [color="#9ece6a", penwidth=2];
 }
-\enddot
+```
 
 ---
 

@@ -19,7 +19,7 @@ The monolithic `app.c` has been split into several specialized modules to improv
 
 ## Architecture Diagram
 
-\dot
+```graphviz
 digraph Architecture {
   bgcolor="transparent";
   compound=true;
@@ -89,7 +89,7 @@ digraph Architecture {
   AppScene -> PBR [label="Draws"];
   AppScene -> Skybox [label="Draws"];
 }
-\enddot
+```
 
 ## Data Ownership
 

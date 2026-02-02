@@ -14,7 +14,7 @@ This document summarizes the fixes and analyses performed to resolve OpenGL erro
 - **Cause**: Attempting to label an object (Buffer/Texture/VAO) before its first "bind". On some drivers, the ID is not "alive" until it has been bound at least once.
 - **Fix**: Moved all `glObjectLabel` calls after the first `glBind[Object]`.
 
-\dot
+```graphviz
 digraph ObjectLifeycle {
   rankdir=LR;
   bgcolor="transparent";
@@ -50,7 +50,7 @@ digraph ObjectLifeycle {
   Bind -> Label [label="Correct", color="#9ece6a", penwidth=2];
   Gen -> Err [label="Too Early", style=dotted, color="#f7768e"];
 }
-\enddot
+```
 
 ### Fallback Protection (0x502)
 - **Problem**: `GL_INVALID_OPERATION` during cleanup.

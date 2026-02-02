@@ -31,7 +31,7 @@ If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is a
 
 ![Ray-Sphere Impostor Intersection (Technical)](./images/sphere_intersection.jpg)
 
-\dot
+```graphviz
 digraph SphereLogic {
   rankdir=TD;
   bgcolor="transparent";
@@ -81,7 +81,7 @@ digraph SphereLogic {
   Hit -> Normal [label="Hit Found"];
   Normal -> Depth;
 }
-\enddot
+```
 
 ---
 
@@ -104,7 +104,7 @@ The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
 -   h approx 0: Exact sphere edge.
 
 To smooth the edge, we use the derivative of the distance function to estimate pixel coverage:
-\code{.glsl}
+```glsl
 // Analytic intersection calculation
 float discriminant_val = b*b - c; // Discriminant
 
@@ -117,7 +117,7 @@ float edge_factor_val = smoothstep(0.0, fwidth(discriminant_val), discriminant_v
 
 // Apply this factor to alpha or final color
 out_color.a *= edge_factor_val;
-\endcode
+```
 This `edge_factor_val` darkens (or makes transparent) pixels that straddle the mathematical edge of the sphere, producing **analytically perfect** anti-aliasing, independent of resolution.
 
 ---
