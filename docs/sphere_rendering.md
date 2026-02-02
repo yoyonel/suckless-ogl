@@ -33,7 +33,9 @@ If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is a
 digraph SphereLogic {
   rankdir=TD;
   bgcolor="transparent";
-  dpi=72;
+  pad="0.5";
+  nodesep=0.5;
+  ranksep=0.5;
 
   // Suckless-Modern "Ghost" Design Tokens (Upscaled)
   node [
@@ -63,7 +65,7 @@ digraph SphereLogic {
     fontcolor="#7aa2f7";
     style="rounded";
     color="#7aa2f7";
-    margin=20;
+    margin=40;
 
     Ray [label="Calculate Ray\n(View space)", color="#e0af68", fontcolor="#e0af68"];
     Hit [label="Ray-Sphere Intersection", shape=diamond, color="#bb9af7", fontcolor="#bb9af7"];

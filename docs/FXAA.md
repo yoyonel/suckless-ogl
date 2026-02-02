@@ -25,7 +25,9 @@ To avoid calculating Luminance (`dot(rgb, vec3(0.299...))`) multiple times per p
 digraph FXAALuma {
   rankdir=LR;
   bgcolor="transparent";
-  dpi=72;
+  pad="0.5";
+  nodesep=0.5;
+  ranksep=0.5;
 
   // Suckless-Modern "Ghost" Design Tokens (Upscaled)
   node [
