@@ -56,7 +56,9 @@ RUN --mount=type=cache,target=/src/build \
 - Minimal runtime dependencies only:
   - `glfw` - Window and input handling
   - `mesa-*` - OpenGL drivers
+  - `mesa-*` - OpenGL drivers
   - `xorg-x11-server-Xvfb` - Virtual framebuffer for headless rendering
+  - `gamemode` - Runtime library for Performance Mode
 - Non-root user (`appuser`) for security
 - Contains only: binary, assets, shaders, entrypoint script
 
@@ -163,11 +165,25 @@ The `docker-run` target forwards X11:
 make docker-run
 # Equivalent to:
 docker run --rm -it \
+    --cap-add=SYS_NICE \
+    --ulimit rtprio=99 \
     --security-opt label=disable \
     --network host \
     -e DISPLAY=$DISPLAY \
+    -e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
+    -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
+    -v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     suckless-ogl /bin/bash -c "export DISPLAY=$DISPLAY && ./app"
+```
+
+### GameMode & Real-Time Priority
+
+To enable **Performance Mode** (SCHED_FIFO) and GameMode inside the container, specific permissions are required:
+
+- `--cap-add=SYS_NICE`: Allows the container to set real-time scheduling policies.
+- `--ulimit rtprio=99`: Allows the non-root `appuser` to request real-time priority.
+- **D-Bus Mounting**: Essential for `libgamemode` to communicate with the host's GameMode daemon.
 ```
 
 > [!WARNING]

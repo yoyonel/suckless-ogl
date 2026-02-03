@@ -253,9 +253,14 @@ docker-run:
 	@echo "Running Container with X11 forwarding..."
 	xhost +local: > /dev/null 2>&1 || true
 	$(CONTAINER_ENGINE) run --rm -it \
+		--cap-add=SYS_NICE \
+		--ulimit rtprio=99 \
 		--security-opt label=disable \
 		--network host \
 		-e DISPLAY=$(DISPLAY) \
+		-e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(shell id -u)/bus" \
+		-v /run/user/$(shell id -u)/bus:/run/user/$(shell id -u)/bus \
+		-v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix:rw \
 		suckless-ogl /bin/bash -c "export DISPLAY=$(DISPLAY) && ./app"
 

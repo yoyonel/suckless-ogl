@@ -69,6 +69,24 @@ static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
 }
 
 /**
+ * @brief strncpy wrapper with guaranteed null termination and bounds checking.
+ */
+static inline bool safe_strncpy(char* dest, size_t dest_size, const char* src,
+                                size_t count)
+{
+	if (!dest || !src || dest_size == 0) {
+		return false;
+	}
+
+	size_t to_copy = (count < dest_size) ? count : (dest_size - 1);
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	strncpy(dest, src, to_copy);
+	dest[to_copy] = '\0';
+
+	return (count < dest_size);
+}
+
+/**
  * @brief RAII callback for `FILE*`.
  */
 static inline void cleanup_file(FILE** file_ptr)

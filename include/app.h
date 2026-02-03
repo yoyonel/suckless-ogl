@@ -10,6 +10,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include "action_notifier.h"
 #include "adaptive_sampler.h"
 #include "app_settings.h"
 #include "fps.h"
@@ -23,6 +24,7 @@
 #include "camera.h"
 #include "instanced_rendering.h"
 #include "material.h"
+#include "perf_mode.h"
 #include "perf_timer.h"
 #include "postprocess.h"
 #include "shader.h"
@@ -134,6 +136,9 @@ typedef struct App {
 	int hdr_count;         /**< Number of available environment maps. */
 	int current_hdr_index; /**< Index of active HDR in file list. */
 	int env_map_loading;   /**< Async lock for HDR loading. */
+	int perf_mode_active;  /**< Performance/GameMode optimization active. */
+	PerfModeContext perf_context; /**< Performance mode state context. */
+	ActionNotifier notifier;      /**< Temporary user notifications. */
 
 	/* --- Global GPU Resources --- */
 	GLuint sphere_vao;           /**< Shared geometry VAO. */

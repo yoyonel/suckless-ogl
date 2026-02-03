@@ -87,6 +87,9 @@ plugins:
 extra_javascript:
   - https://unpkg.com/mermaid/dist/mermaid.min.js
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 nav:
   - Home: index.md
   - Architecture:
@@ -112,6 +115,7 @@ nav:
     - Texture Optimization: texture_optimization.md
     - NVIDIA Optimizations: nvidia_optimizations.md
     - Cross-GPU Compatibility: shader-cross-gpu-compatibility.md
+    - Performance Mode & Notifs: perf_and_notifications.md
   - Guides:
     - Build Guide: build.md
     - Docker Guide: docker.md

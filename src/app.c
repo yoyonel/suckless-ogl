@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include "action_notifier.h"
 #include "adaptive_sampler.h"
 #include "app_env.h"
 #include "app_input.h"
@@ -27,6 +28,7 @@
 #include "camera.h"
 #include "material.h"
 #include "pbr.h"
+#include "perf_mode.h"
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
@@ -202,6 +204,9 @@ int app_init(App* app, int width, int height, const char* title)
 	                              app->postprocess.active_effects);
 #endif
 
+	perf_mode_init(&app->perf_context);
+	action_notifier_init(&app->notifier);
+
 	return 1;
 }
 
@@ -261,6 +266,9 @@ void app_cleanup(App* app)
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 	}
+
+	perf_mode_cleanup(&app->perf_context);
+
 	window_destroy(app->window);
 }
 
@@ -275,6 +283,7 @@ void app_run(App* app)
 		fps_update(&app->fps_counter, app->delta_time, current_time);
 		adaptive_sampler_should_sample(
 		    &app->fps_sampler, (float)app->delta_time, current_time);
+		action_notifier_update(&app->notifier, (float)app->delta_time);
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
 		                                 current_time)) {

@@ -1,5 +1,6 @@
 #include "app_input.h"
 
+#include "action_notifier.h"
 #include "app.h"
 #include "app_env.h"
 #include "app_scene.h"
@@ -7,6 +8,7 @@
 #include "camera.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "perf_mode.h"
 #include "postprocess.h" /* Explicit include for types */
 #include "postprocess_presets.h"
 #include "utils.h"
@@ -14,8 +16,15 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 enum { PBR_DEBUG_MODE_COUNT = 9 };
+
+/* Notification constants */
+static const float NOTIF_DUR_SHORT = 1.0F;
+static const float NOTIF_DUR_NORMAL = 1.5F;
+static const float NOTIF_DUR_LONG = 2.0F;
+enum { NOTIF_BUF_SIZE = 128 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -39,31 +48,45 @@ void handle_preset_input(App* app, int key)
 			LOG_INFO("suckless-ogl.app",
 			         "Style: Aucun (rendu pur) - Exposure: %.2f",
 			         app->auto_threshold);
+			action_notifier_push(&app->notifier,
+			                     "Style: Pure Render",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_2: /* Preset: Subtle */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_SUBTLE);
 			LOG_INFO("suckless-ogl.app", "Style: Subtle");
+			action_notifier_push(&app->notifier, "Style: Subtle",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_3: /* Preset: Cinématique */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_CINEMATIC);
 			LOG_INFO("suckless-ogl.app", "Style: Cinématique");
+			action_notifier_push(&app->notifier, "Style: Cinematic",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_4: /* Preset: Vintage */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_VINTAGE);
 			LOG_INFO("suckless-ogl.app", "Style: Vintage");
+			action_notifier_push(&app->notifier, "Style: Vintage",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_5: /* Style: "Matrix" */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_MATRIX);
 			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
+			action_notifier_push(&app->notifier, "Style: Matrix",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
 			postprocess_apply_preset(&app->postprocess,
 			                         &PRESET_BW_CONTRAST);
 			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
+			action_notifier_push(&app->notifier,
+			                     "Style: B&W Contrast",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_7: { /* Style Cycle: All Banding Styles */
 			static int banding_style_idx = 0;
@@ -98,6 +121,12 @@ void handle_preset_input(App* app, int key)
 			         "Banding Style [%d/%d]: %s",
 			         banding_style_idx + 1, num_styles,
 			         banding_names[banding_style_idx]);
+
+			char buf[NOTIF_BUF_SIZE];
+			(void)safe_snprintf(buf, sizeof(buf), "Banding: %s",
+			                    banding_names[banding_style_idx]);
+			action_notifier_push(&app->notifier, buf,
+			                     NOTIF_DUR_LONG);
 			break;
 		}
 		case GLFW_KEY_8:
@@ -112,6 +141,9 @@ void handle_preset_input(App* app, int key)
 			                         app->auto_threshold);
 			LOG_INFO("suckless-ogl.app",
 			         "Color Grading: Reset to Defaults");
+			action_notifier_push(&app->notifier,
+			                     "FX: Reset to Defaults",
+			                     NOTIF_DUR_LONG);
 			break;
 		default:
 			break;
@@ -121,9 +153,13 @@ void handle_preset_input(App* app, int key)
 static void toggle_postfx(App* app, PostProcessEffect feature, const char* name)
 {
 	postprocess_toggle(&app->postprocess, feature);
-	LOG_INFO(
-	    "suckless-ogl.app", "%s: %s", name,
-	    postprocess_is_enabled(&app->postprocess, feature) ? "ON" : "OFF");
+	int enabled = postprocess_is_enabled(&app->postprocess, feature);
+	LOG_INFO("suckless-ogl.app", "%s: %s", name, enabled ? "ON" : "OFF");
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "%s: %s", name,
+	                    enabled ? "ON" : "OFF");
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
 }
 
 static void toggle_postfx_complex(App* app, PostProcessEffect feature,
@@ -154,6 +190,11 @@ static void handle_exposure_input(App* app, int key)
 	postprocess_set_exposure(&app->postprocess, next_val);
 	LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
 	         app->postprocess.exposure.exposure);
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Exposure: %.2f",
+	                    app->postprocess.exposure.exposure);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
 }
 
 static void handle_pbr_debug_mode(App* app)
@@ -165,6 +206,11 @@ static void handle_pbr_debug_mode(App* app)
 	    "Irradiance (Diff)", "Prefilter (Spec)", "BRDF LUT"};
 	LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
 	         modeNames[app->pbr_debug_mode]);
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Debug: %s",
+	                    modeNames[app->pbr_debug_mode]);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
 }
 
 void handle_postprocess_input(App* app, int key)
@@ -191,6 +237,9 @@ void handle_postprocess_input(App* app, int key)
 		case GLFW_KEY_R:
 			LOG_INFO("suckless-ogl.app",
 			         "Shader reloading not implemented yet");
+			action_notifier_push(&app->notifier,
+			                     "Hot-Reload: Not Implemented",
+			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_KP_ADD:
 		case GLFW_KEY_KP_SUBTRACT:
@@ -223,11 +272,29 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->env_lod);
+			char lod_buf[NOTIF_BUF_SIZE];
+			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
+			                    "Env LOD: %.1F", app->env_lod);
+			action_notifier_push(&app->notifier, lod_buf,
+			                     NOTIF_DUR_SHORT);
 		} else if (app->hdr_count > 1) {
 			app->current_hdr_index =
 			    (app->current_hdr_index + 1) % app->hdr_count;
 			app_load_env_map(
 			    app, app->hdr_files[app->current_hdr_index]);
+
+			char buf[NOTIF_BUF_SIZE];
+			const char* filename =
+			    app->hdr_files[app->current_hdr_index];
+			/* Try to strip path if possible for cleaner display */
+			const char* last_slash = strrchr(filename, '/');
+			if (last_slash) {
+				filename = last_slash + 1;
+			}
+			(void)safe_snprintf(buf, sizeof(buf), "HDR: %s",
+			                    filename);
+			action_notifier_push(&app->notifier, buf,
+			                     NOTIF_DUR_LONG);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
@@ -237,6 +304,11 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->env_lod);
+			char lod_buf[NOTIF_BUF_SIZE];
+			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
+			                    "Env LOD: %.1F", app->env_lod);
+			action_notifier_push(&app->notifier, lod_buf,
+			                     NOTIF_DUR_SHORT);
 		} else if (app->hdr_count > 1) {
 			app->current_hdr_index--;
 			if (app->current_hdr_index < 0) {
@@ -244,61 +316,139 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			app_load_env_map(
 			    app, app->hdr_files[app->current_hdr_index]);
+
+			char buf[NOTIF_BUF_SIZE];
+			const char* filename =
+			    app->hdr_files[app->current_hdr_index];
+			const char* last_slash = strrchr(filename, '/');
+			if (last_slash) {
+				filename = last_slash + 1;
+			}
+			(void)safe_snprintf(buf, sizeof(buf), "HDR: %s",
+			                    filename);
+			action_notifier_push(&app->notifier, buf,
+			                     NOTIF_DUR_LONG);
 		}
+	}
+}
+
+static void handle_overlay_input(App* app)
+{
+	static const char* mode_names[] = {
+	    "Off", "FPS + Position", "FPS + Position + Envmap",
+	    "FPS + Position + Envmap + Exposure"};
+	static const int mode_count =
+	    sizeof(mode_names) / sizeof(mode_names[0]);
+	app->text_overlay_mode = (app->text_overlay_mode + 1) % mode_count;
+	LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
+	         mode_names[app->text_overlay_mode]);
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Overlay: %s",
+	                    mode_names[app->text_overlay_mode]);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
+}
+
+static void handle_subdiv_input(App* app, int key)
+{
+	int changed = 0;
+	if (key == GLFW_KEY_UP && app->subdivisions < MAX_SUBDIV) {
+		app->subdivisions++;
+		changed = 1;
+	} else if (key == GLFW_KEY_DOWN && app->subdivisions > MIN_SUBDIV) {
+		app->subdivisions--;
+		changed = 1;
+	}
+
+	if (changed) {
+		char buf[NOTIF_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "Subdiv: %d",
+		                    app->subdivisions);
+		action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
+	}
+}
+
+static void handle_camera_toggle(App* app)
+{
+	app->camera_enabled = !app->camera_enabled;
+	if (app->camera_enabled) {
+		glfwSetInputMode(app->window, GLFW_CURSOR,
+		                 GLFW_CURSOR_DISABLED);
+		app->first_mouse = 1;
+	} else {
+		glfwSetInputMode(app->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	LOG_INFO("suckless-ogl.app", "Camera control: %s",
+	         app->camera_enabled ? "ENABLED" : "DISABLED");
+	action_notifier_push(&app->notifier,
+	                     app->camera_enabled ? "Camera: ON" : "Camera: OFF",
+	                     NOTIF_DUR_NORMAL);
+}
+
+static void handle_fxaa_input(App* app, int mods)
+{
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		postprocess_toggle(&app->postprocess, POSTFX_FXAA_DEBUG);
+		int enabled = postprocess_is_enabled(&app->postprocess,
+		                                     POSTFX_FXAA_DEBUG);
+		LOG_INFO("suckless-ogl.app", "FXAA Debug: %s",
+		         enabled ? "ON" : "OFF");
+		action_notifier_push(
+		    &app->notifier,
+		    enabled ? "FXAA Debug: ON" : "FXAA Debug: OFF",
+		    NOTIF_DUR_NORMAL);
+	} else {
+		postprocess_toggle(&app->postprocess, POSTFX_FXAA);
+		int enabled =
+		    postprocess_is_enabled(&app->postprocess, POSTFX_FXAA);
+		LOG_INFO("suckless-ogl.app", "FXAA: %s",
+		         enabled ? "ON" : "OFF");
+		action_notifier_push(&app->notifier,
+		                     enabled ? "FXAA: ON" : "FXAA: OFF",
+		                     NOTIF_DUR_NORMAL);
 	}
 }
 
 void handle_app_input(App* app, int key, int mods)
 {
 	switch (key) {
-		case GLFW_KEY_F1: {
-			static const char* mode_names[] = {
-			    "Off", "FPS + Position", "FPS + Position + Envmap",
-			    "FPS + Position + Envmap + Exposure"};
-			static const int mode_count =
-			    sizeof(mode_names) / sizeof(mode_names[0]);
-			app->text_overlay_mode =
-			    (app->text_overlay_mode + 1) % mode_count;
-			LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
-			         mode_names[app->text_overlay_mode]);
-		} break;
+		case GLFW_KEY_F1:
+			handle_overlay_input(app);
+			break;
 		case GLFW_KEY_F2:
 			app->show_help = !app->show_help;
+			action_notifier_push(
+			    &app->notifier,
+			    app->show_help ? "Help: ON" : "Help: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_P:
 			app_save_raw_frame(app, "capture_frame.raw");
+			action_notifier_push(&app->notifier, "Frame Captured",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_Z:
 			app->wireframe = !app->wireframe;
+			action_notifier_push(
+			    &app->notifier,
+			    app->wireframe ? "Wireframe: ON" : "Wireframe: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_UP:
-			if (app->subdivisions < MAX_SUBDIV) {
-				app->subdivisions++;
-			}
-			break;
 		case GLFW_KEY_DOWN:
-			if (app->subdivisions > MIN_SUBDIV) {
-				app->subdivisions--;
-			}
+			handle_subdiv_input(app, key);
 			break;
 		case GLFW_KEY_C:
-			app->camera_enabled = !app->camera_enabled;
-			if (app->camera_enabled) {
-				glfwSetInputMode(app->window, GLFW_CURSOR,
-				                 GLFW_CURSOR_DISABLED);
-				app->first_mouse = 1;
-			} else {
-				glfwSetInputMode(app->window, GLFW_CURSOR,
-				                 GLFW_CURSOR_NORMAL);
-			}
-			LOG_INFO("suckless-ogl.app", "Camera control: %s",
-			         app->camera_enabled ? "ENABLED" : "DISABLED");
+			handle_camera_toggle(app);
 			break;
 		case GLFW_KEY_SPACE:
 			camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE,
 			            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
 			app->env_lod = DEFAULT_ENV_LOD;
 			LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
+			action_notifier_push(&app->notifier,
+			                     "Camera & LOD Reset",
+			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_PAGE_UP:
 		case GLFW_KEY_PAGE_DOWN:
@@ -309,36 +459,50 @@ void handle_app_input(App* app, int key, int mods)
 			break;
 		case GLFW_KEY_L:
 			app->billboard_mode = !app->billboard_mode;
-			/* Forward declaration or move
-			 * app_update_instancing_mode to scene */
 			app_update_instancing_mode(app);
 			LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
 			         app->billboard_mode ? "ON" : "OFF");
+			action_notifier_push(&app->notifier,
+			                     app->billboard_mode
+			                         ? "Billboards: ON"
+			                         : "Billboards: OFF",
+			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_K:
 			app->show_envmap = !app->show_envmap;
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
 			         app->show_envmap ? "ON" : "OFF");
+			action_notifier_push(
+			    &app->notifier,
+			    app->show_envmap ? "Skybox: ON" : "Skybox: OFF",
+			    NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_X:
-			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_FXAA_DEBUG);
-				LOG_INFO(
-				    "suckless-ogl.app", "FXAA Debug: %s",
-				    postprocess_is_enabled(&app->postprocess,
-				                           POSTFX_FXAA_DEBUG)
-				        ? "ON"
-				        : "OFF");
+			handle_fxaa_input(app, mods);
+			break;
+		case GLFW_KEY_F9:
+			if (app->perf_mode_active) {
+				perf_mode_request_end(&app->perf_context);
+				app->perf_mode_active = 0;
+				action_notifier_push(&app->notifier,
+				                     "Perf Mode: OFF",
+				                     NOTIF_DUR_LONG);
 			} else {
-				postprocess_toggle(&app->postprocess,
-				                   POSTFX_FXAA);
-				LOG_INFO("suckless-ogl.app", "FXAA: %s",
-				         postprocess_is_enabled(
-				             &app->postprocess, POSTFX_FXAA)
-				             ? "ON"
-				             : "OFF");
+				app->perf_mode_active =
+				    (perf_mode_request_start(
+				         &app->perf_context) == 0);
+				char buf[NOTIF_BUF_SIZE];
+				(void)safe_snprintf(buf, sizeof(buf),
+				                    "Perf Mode: ON (%s)",
+				                    perf_mode_get_state_string(
+				                        &app->perf_context));
+				action_notifier_push(&app->notifier, buf,
+				                     NOTIF_DUR_LONG);
 			}
+			LOG_INFO(
+			    "suckless-ogl.app", "Performance Mode: %s (%s)",
+			    app->perf_mode_active ? "ON" : "OFF",
+			    perf_mode_get_state_string(&app->perf_context));
 			break;
 		default:
 			handle_postprocess_input(app, key);
