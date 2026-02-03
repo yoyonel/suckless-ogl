@@ -1,15 +1,24 @@
-/* Fix Mermaid diagrams in Dark Mode (Slate scheme) */
+/* Mermaid Dark Mode Tweaks (Slate scheme) */
+/* Note: We rely on mermaid_init.js to set theme: 'dark'.
+   We only add overrides here if specific elements need contrast boosting. */
+
 [data-md-color-scheme="slate"] .mermaid {
-  filter: invert(1) hue-rotate(180deg);
+  /* No inversion needed anymore */
   background-color: transparent;
 }
 
-/* Ensure text remains readable if inversion messes up specific colors */
-[data-md-color-scheme="slate"] .mermaid text {
-  font-family: inherit !important;
+/* Force text color to be light just in case specific diagrams default to black */
+[data-md-color-scheme="slate"] .mermaid text,
+[data-md-color-scheme="slate"] .mermaid .messageText,
+[data-md-color-scheme="slate"] .mermaid .loopText,
+[data-md-color-scheme="slate"] .mermaid .labelText {
+  fill: #e3e3e3 !important;
+  color: #e3e3e3 !important;
+  stroke: none !important;
 }
 
-/* Specific fix for lines having poor contrast */
-[data-md-color-scheme="slate"] .mermaid .edgePath .path {
-    stroke: #BDC3C7 !important;
+/* Ensure lines are visible */
+[data-md-color-scheme="slate"] .mermaid .edgePath .path,
+[data-md-color-scheme="slate"] .mermaid line {
+  stroke: #BDC3C7 !important;
 }
