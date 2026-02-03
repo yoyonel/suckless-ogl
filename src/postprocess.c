@@ -819,33 +819,44 @@ static void destroy_screen_quad(PostProcess* post_processing)
 
 enum { MAX_SHADER_DEFINES = 32, MAX_DEFINE_LENGTH = 64 };
 
+typedef struct {
+	PostProcessEffect flag;
+	const char* name;
+	const char* define_name;
+} EffectMetadata;
+
+static const EffectMetadata ALL_EFFECTS[] = {
+    {POSTFX_VIGNETTE, "Vignette", "OPT_ENABLE_VIGNETTE"},
+    {POSTFX_GRAIN, "Film Grain", "OPT_ENABLE_GRAIN"},
+    {POSTFX_EXPOSURE, "Manual Exposure", "OPT_ENABLE_EXPOSURE"},
+    {POSTFX_CHROM_ABBR, "Chromatic Aberration", "OPT_ENABLE_CHROM_ABBR"},
+    {POSTFX_BLOOM, "Bloom", "OPT_ENABLE_BLOOM"},
+    {POSTFX_COLOR_GRADING, "Color Grading", "OPT_ENABLE_COLOR_GRADING"},
+    {POSTFX_DOF, "Depth of Field", "OPT_ENABLE_DOF"},
+    {POSTFX_DOF_DEBUG, "DoF Debug View", "OPT_ENABLE_DOF_DEBUG"},
+    {POSTFX_AUTO_EXPOSURE, "Auto-Exposure", "OPT_ENABLE_AUTO_EXPOSURE"},
+    {POSTFX_EXPOSURE_DEBUG, "Exposure Debug View", "OPT_ENABLE_EXPOSURE_DEBUG"},
+    {POSTFX_MOTION_BLUR, "Motion Blur", "OPT_ENABLE_MOTION_BLUR"},
+    {POSTFX_MOTION_BLUR_DEBUG, "Motion Blur Debug View",
+     "OPT_ENABLE_MOTION_BLUR_DEBUG"},
+    {POSTFX_FXAA, "FXAA", "OPT_ENABLE_FXAA"},
+    {POSTFX_FXAA_DEBUG, "FXAA Debug View", "OPT_ENABLE_FXAA_DEBUG"},
+    {POSTFX_BANDING, "Banding", "OPT_ENABLE_BANDING"},
+};
+
+#define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))
+
 static void log_optimized_effects(unsigned int flags)
 {
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Compiled OPTIMIZED shader with effects:");
 
-#define LOG_EFFECT(flag, name)                                        \
-	if ((flags & (unsigned int)(flag)) != 0) {                    \
-		LOG_INFO("suckless-ogl.postprocess", "  ✓ %s", name); \
+	for (size_t i = 0; i < EFFECT_COUNT; i++) {
+		if ((flags & (unsigned int)ALL_EFFECTS[i].flag) != 0) {
+			LOG_INFO("suckless-ogl.postprocess", "  ✓ %s",
+			         ALL_EFFECTS[i].name);
+		}
 	}
-
-	LOG_EFFECT(POSTFX_VIGNETTE, "Vignette");
-	LOG_EFFECT(POSTFX_GRAIN, "Film Grain");
-	LOG_EFFECT(POSTFX_EXPOSURE, "Manual Exposure");
-	LOG_EFFECT(POSTFX_CHROM_ABBR, "Chromatic Aberration");
-	LOG_EFFECT(POSTFX_BLOOM, "Bloom");
-	LOG_EFFECT(POSTFX_COLOR_GRADING, "Color Grading");
-	LOG_EFFECT(POSTFX_DOF, "Depth of Field");
-	LOG_EFFECT(POSTFX_DOF_DEBUG, "DoF Debug View");
-	LOG_EFFECT(POSTFX_AUTO_EXPOSURE, "Auto-Exposure");
-	LOG_EFFECT(POSTFX_EXPOSURE_DEBUG, "Exposure Debug View");
-	LOG_EFFECT(POSTFX_MOTION_BLUR, "Motion Blur");
-	LOG_EFFECT(POSTFX_MOTION_BLUR_DEBUG, "Motion Blur Debug View");
-	LOG_EFFECT(POSTFX_FXAA, "FXAA");
-	LOG_EFFECT(POSTFX_FXAA_DEBUG, "FXAA Debug View");
-	LOG_EFFECT(POSTFX_BANDING, "Banding");
-
-#undef LOG_EFFECT
 
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Shader optimization complete (Flags: 0x%08X)", flags);
@@ -856,7 +867,22 @@ static Shader* find_shader_in_cache(PostProcess* post_processing,
 {
 	for (int i = 0; i < post_processing->shader_cache_count; i++) {
 		if (post_processing->shader_cache[i].flags == static_flags) {
-			return post_processing->shader_cache[i].shader;
+			/* Found it! Move to front (LRU policy) */
+			if (i > 0) {
+				ShaderCacheEntry entry =
+				    post_processing->shader_cache[i];
+
+				/* Manual shift to avoid insecure memmove
+				 * warnings */
+				for (int j = i; j > 0; j--) {
+					post_processing->shader_cache[j] =
+					    post_processing
+					        ->shader_cache[j - 1];
+				}
+
+				post_processing->shader_cache[0] = entry;
+			}
+			return post_processing->shader_cache[0].shader;
 		}
 	}
 	return NULL;
@@ -895,34 +921,19 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	int count = 0;
 	char buffer[MAX_SHADER_DEFINES][MAX_DEFINE_LENGTH];
 
-#define ADD_OPT_DEF(flag_bit, name)                                  \
-	if (!safe_snprintf(                                          \
-	        buffer[count], sizeof(buffer[count]), "%s %d", name, \
-	        ((static_flags & (unsigned int)(flag_bit)) != 0))) { \
-		LOG_ERROR("suckless-ogl.postprocess",                \
-		          "Failed to format shader define");         \
-		return;                                              \
-	}                                                            \
-	defines[count] = buffer[count];                              \
-	count++
-
-	ADD_OPT_DEF(POSTFX_VIGNETTE, "OPT_ENABLE_VIGNETTE");
-	ADD_OPT_DEF(POSTFX_GRAIN, "OPT_ENABLE_GRAIN");
-	ADD_OPT_DEF(POSTFX_EXPOSURE, "OPT_ENABLE_EXPOSURE");
-	ADD_OPT_DEF(POSTFX_CHROM_ABBR, "OPT_ENABLE_CHROM_ABBR");
-	ADD_OPT_DEF(POSTFX_BLOOM, "OPT_ENABLE_BLOOM");
-	ADD_OPT_DEF(POSTFX_COLOR_GRADING, "OPT_ENABLE_COLOR_GRADING");
-	ADD_OPT_DEF(POSTFX_DOF, "OPT_ENABLE_DOF");
-	ADD_OPT_DEF(POSTFX_DOF_DEBUG, "OPT_ENABLE_DOF_DEBUG");
-	ADD_OPT_DEF(POSTFX_AUTO_EXPOSURE, "OPT_ENABLE_AUTO_EXPOSURE");
-	ADD_OPT_DEF(POSTFX_EXPOSURE_DEBUG, "OPT_ENABLE_EXPOSURE_DEBUG");
-	ADD_OPT_DEF(POSTFX_MOTION_BLUR, "OPT_ENABLE_MOTION_BLUR");
-	ADD_OPT_DEF(POSTFX_MOTION_BLUR_DEBUG, "OPT_ENABLE_MOTION_BLUR_DEBUG");
-	ADD_OPT_DEF(POSTFX_FXAA, "OPT_ENABLE_FXAA");
-	ADD_OPT_DEF(POSTFX_FXAA_DEBUG, "OPT_ENABLE_FXAA_DEBUG");
-	ADD_OPT_DEF(POSTFX_BANDING, "OPT_ENABLE_BANDING");
-
-#undef ADD_OPT_DEF
+	for (size_t i = 0; i < EFFECT_COUNT; i++) {
+		if (!safe_snprintf(
+		        buffer[count], sizeof(buffer[count]), "%s %d",
+		        ALL_EFFECTS[i].define_name,
+		        ((static_flags & (unsigned int)ALL_EFFECTS[i].flag) !=
+		         0))) {
+			LOG_ERROR("suckless-ogl.postprocess",
+			          "Failed to format shader define");
+			return;
+		}
+		defines[count] = buffer[count];
+		count++;
+	}
 
 	Shader* new_shader = shader_load_with_defines(
 	    "shaders/postprocess.vert", "shaders/postprocess.frag", defines,
@@ -933,15 +944,28 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		new_shader->silent_warnings = true;
 
 		/* Add to cache */
-		if (post_processing->shader_cache_count < SHADER_CACHE_SIZE) {
-			int idx = post_processing->shader_cache_count++;
-			post_processing->shader_cache[idx].flags = static_flags;
-			post_processing->shader_cache[idx].shader = new_shader;
+		/* Move existing entries down to make room at index 0 */
+		int move_count = post_processing->shader_cache_count;
+		if (move_count == SHADER_CACHE_SIZE) {
+			/* Cache full: Evict LRU (last entry) */
+			shader_destroy(
+			    post_processing->shader_cache[SHADER_CACHE_SIZE - 1]
+			        .shader);
+			move_count--; /* Only move first 31 items */
 		} else {
-			LOG_WARNING(
-			    "suckless-ogl.postprocess",
-			    "Shader cache full, not caching this variant");
+			post_processing->shader_cache_count++;
 		}
+
+		if (move_count > 0) {
+			/* Manual shift to avoid insecure memmove warnings */
+			for (int j = move_count; j > 0; j--) {
+				post_processing->shader_cache[j] =
+				    post_processing->shader_cache[j - 1];
+			}
+		}
+
+		post_processing->shader_cache[0].flags = static_flags;
+		post_processing->shader_cache[0].shader = new_shader;
 
 		log_optimized_effects(static_flags);
 	} else {
