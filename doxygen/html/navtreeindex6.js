@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"structSphereSorter.html#abb545ed2339b758382da58d03ed77484":[4,0,46,2],
 "structSphereSorter.html#afd1607f4459faff5c82b4806d4ab75c9":[4,0,46,0],
 "structTonemapParams.html":[4,0,48],
 "structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a":[4,0,48,4],

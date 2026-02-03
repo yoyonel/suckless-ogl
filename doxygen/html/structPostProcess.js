@@ -8,6 +8,7 @@ var structPostProcess =
     [ "bloom_fx", "structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6", null ],
     [ "chrom_abbr", "structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01", null ],
     [ "color_grading", "structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8", null ],
+    [ "compiled_flags", "structPostProcess.html#ac754f84387246ac8b1b018ac4fc1884b", null ],
     [ "delta_time", "structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f", null ],
     [ "dof", "structPostProcess.html#ab4fd67effb078dbf22ed15cb24dbdc3b", null ],
     [ "dof_fx", "structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9", null ],
