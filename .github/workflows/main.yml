@@ -42,7 +42,7 @@ jobs:
       - name: Install Build Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy gamemode-dev
+          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Run Format & Lint
         run: |
           clang-format --version
@@ -66,7 +66,7 @@ jobs:
             build-essential cmake clang llvm \
             libgl1-mesa-dev libglew-dev libglfw3-dev \
             xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
-            imagemagick gamemode-dev
+            imagemagick gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
 
       - name: Make test wrapper executable
         run: chmod +x tests/run_test_with_xvfb.sh
@@ -260,7 +260,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Deps
-        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Build
         run: |
           FLAGS=""
