@@ -10,10 +10,10 @@
       
       
       
-        <link rel="prev" href="../renderdoc_guide/">
+        <link rel="prev" href="../build/">
       
       
-        <link rel="next" href="../opengl_cleanup/">
+        <link rel="next" href="../docker/">
       
       
         
@@ -24,7 +24,7 @@
     
     
       
-        <title>Visual Testing - Suckless OGL</title>
+        <title>IDE &amp; Env Setup - Suckless OGL</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#visual-testing-regression-artifacts" class="md-skip">
+        <a href="#ide-environment-setup-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Visual Testing
+              IDE &amp; Env Setup
             
           </span>
         </div>
@@ -1156,10 +1156,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ide_setup/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IDE &amp; Env Setup
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1175,6 +1202,182 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#essential-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Essential Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Editor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-setup-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Setup Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Setup Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configuration-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration Steps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration Steps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-generate-compilation-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Generate Compilation Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-vs-code-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: VS Code Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#headers-not-found-red-squiggles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Headers not found (red squiggles)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distrobox-vs-host-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Distrobox vs Host Paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-debian-native-linux-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Debian / Native Linux Compatibility
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1296,37 +1499,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Visual Testing
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../visual_testing_artifacts/" class="md-nav__link">
         
   
   
@@ -1342,115 +1518,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-core-challenge-software-vs-hardware" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Core Challenge: Software vs. Hardware
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Core Challenge: Software vs. Hardware">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-floating-point-precision" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Floating Point Precision
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-the-sphere-center-artifact" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. The "Sphere Center" Artifact
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pbr-engine-evolution" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PBR Engine Evolution
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="PBR Engine Evolution">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-multiple-scattering-kulla-conty" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Multiple Scattering (Kulla-Conty)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-analytic-roughness-clamping" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Analytic Roughness Clamping
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#guidelines-for-reference-updates" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Guidelines for Reference Updates
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1674,7 +1741,7 @@
 
 
   
-    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/visual_testing_artifacts.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/ide_setup.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
     </a>
@@ -1682,35 +1749,79 @@
   
 
 
-<h1 id="visual-testing-regression-artifacts">Visual Testing &amp; Regression Artifacts<a class="headerlink" href="#visual-testing-regression-artifacts" title="Permanent link">¶</a></h1>
-<p>This document explains the technical reasons behind visual differences observed in automated regression reports, particularly between local hardware rendering and CI software rendering.</p>
-<h2 id="the-core-challenge-software-vs-hardware">The Core Challenge: Software vs. Hardware<a class="headerlink" href="#the-core-challenge-software-vs-hardware" title="Permanent link">¶</a></h2>
-<p>The project CI (GitHub Actions) uses <strong>Mesa llvmpipe</strong>, a software-based OpenGL implementation that runs on the CPU. While highly compliant, it differs from hardware GPUs (NVIDIA, Intel, AMD) in several ways:</p>
-<h3 id="1-floating-point-precision">1. Floating Point Precision<a class="headerlink" href="#1-floating-point-precision" title="Permanent link">¶</a></h3>
+<h1 id="ide-environment-setup-guide">IDE &amp; Environment Setup Guide<a class="headerlink" href="#ide-environment-setup-guide" title="Permanent link">¶</a></h1>
+<p>This guide explains how to set up a robust development environment for <strong>Suckless OGL</strong>, focusing on modern C tooling (clangd, CMake) and compatibility with containerized workflows like <strong>Distrobox</strong>.</p>
+<h2 id="1-prerequisites">1. Prerequisites<a class="headerlink" href="#1-prerequisites" title="Permanent link">¶</a></h2>
+<h3 id="essential-tools">Essential Tools<a class="headerlink" href="#essential-tools" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Bit-Level Parity</strong>: Even with standard-compliant drivers, transcendental functions like <code>pow()</code>, <code>exp()</code>, <code>sin()</code>, and <code>cos()</code> vary slightly in their low-level implementation.</li>
-<li><strong>Accumulated Errors</strong>: In complex PBR shaders, these micro-discrepancies accumulate, leading to "salt and pepper" noise in difference maps.</li>
+<li><strong>CMake</strong> (3.14+)</li>
+<li><strong>Clang / GCC</strong> (C11 support)</li>
+<li><strong>Make</strong> or <strong>Ninja</strong></li>
+<li><strong>clangd</strong> (Language Server)</li>
 </ul>
-<h3 id="2-the-sphere-center-artifact">2. The "Sphere Center" Artifact<a class="headerlink" href="#2-the-sphere-center-artifact" title="Permanent link">¶</a></h3>
-<p>A common finding in our PBR tests is a concentric ring pattern at the center of spheres.
-*   <strong>Cause</strong>: At the center of a sphere, the dot product <strong>N · V</strong> is exactly <code>1.0</code>.
-*   <strong>Sensitivity</strong>: The BRDF LUT (Look-Up Table) is sampled using (<strong>N · V</strong>, <strong>roughness</strong>). Any tiny floating-point variation in the calculation of <strong>N · V</strong> or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.
-*   <strong>Result</strong>: High-contrast deltas in the difference map, even if the visual change is imperceptible to the human eye.</p>
-<h2 id="pbr-engine-evolution">PBR Engine Evolution<a class="headerlink" href="#pbr-engine-evolution" title="Permanent link">¶</a></h2>
-<p>Recent improvements to the rendering engine also contribute to deltas compared to older "Master" references:</p>
-<h3 id="1-multiple-scattering-kulla-conty">1. Multiple Scattering (Kulla-Conty)<a class="headerlink" href="#1-multiple-scattering-kulla-conty" title="Permanent link">¶</a></h3>
-<p>We implemented a compensation term for energy loss on rough surfaces. This increases the brightness of metallic/rough materials, changing the overall luminance compared to a "Standard" PBR implementation.</p>
-<h3 id="2-analytic-roughness-clamping">2. Analytic Roughness Clamping<a class="headerlink" href="#2-analytic-roughness-clamping" title="Permanent link">¶</a></h3>
-<p>To ensure portability across vendors, we replaced derivative-based smoothing (<code>fwidth</code>) with <strong>Analytic Roughness Clamping</strong> (<code>MIN_ROUGHNESS = 0.03</code>).
-*   <strong>Benefit</strong>: Identical results on Intel, NVIDIA, and Mesa.
-*   <strong>Delta</strong>: Reference images captured with older versions using <code>fwidth</code> will show significant edges deltas.</p>
-<h2 id="guidelines-for-reference-updates">Guidelines for Reference Updates<a class="headerlink" href="#guidelines-for-reference-updates" title="Permanent link">¶</a></h2>
-<p>When a Visual Regression Report shows failures:
-1.  <strong>Check the Difference Map</strong>: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.
-2.  <strong>Verify PR Intent</strong>: If the PR modified PBR math or synchronization, a delta is expected.
-3.  <strong>Update Reference</strong>: If the PR is visually correct but fails the automated threshold due to the reasons above, update <code>tests/ref_frame.raw</code> by capturing a new frame from the current stable build.</p>
+<h3 id="recommended-editor">Recommended Editor<a class="headerlink" href="#recommended-editor" title="Permanent link">¶</a></h3>
+<p><strong>VS Code</strong> is highly recommended for its excellent <code>clangd</code> integration.
+-   Install the <strong>clangd</strong> extension (<code>llvm-vs-code-extensions.vscode-clangd</code>).
+-   <em>Optional</em>: <strong>CodeLLDB</strong> for debugging (<code>vadimcn.vscode-lldb</code>).</p>
 <hr>
-<p><em>See also: <a href="../shader-cross-gpu-compatibility/">Shader Cross-GPU Compatibility</a></em></p>
+<h2 id="2-the-setup-architecture">2. The Setup Architecture<a class="headerlink" href="#2-the-setup-architecture" title="Permanent link">¶</a></h2>
+<p>This project uses a <strong>hybrid build approach</strong> to ensure headers are visible to both the build system (inside Distrobox/Docker) and your IDE (on the Host).</p>
+<h3 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>CMake FetchContent</strong>: We force <code>FetchContent</code> for third-party libraries (like GLFW) instead of using system packages (<code>pkg-config</code>).<ul>
+<li><em>Why?</em> This downloads sources into <code>build/_deps/</code>, ensuring headers are physically present in the project folder.</li>
+</ul>
+</li>
+<li><strong>Compilation Database</strong>: We generate <code>compile_commands.json</code> which tells <code>clangd</code> exactly where to look for headers.</li>
+</ol>
+<hr>
+<h2 id="3-configuration-steps">3. Configuration Steps<a class="headerlink" href="#3-configuration-steps" title="Permanent link">¶</a></h2>
+<h3 id="step-1-generate-compilation-database">Step 1: Generate Compilation Database<a class="headerlink" href="#step-1-generate-compilation-database" title="Permanent link">¶</a></h3>
+<p>Run this command once (or whenever you add new CMake targets). It works inside Distrobox or on a native Debian/Linux system.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Clean build (optional but recommended for fresh setup)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>rm<span class="w"> </span>-rf<span class="w"> </span>build/
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Configure and generate compile_commands.json</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Note: We configure in 'build/' but link the JSON to root for clangd</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-DCMAKE_EXPORT_COMPILE_COMMANDS<span class="o">=</span>ON
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Create symlink for clangd</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>ln<span class="w"> </span>-sf<span class="w"> </span>build/compile_commands.json<span class="w"> </span>compile_commands.json
+</span></code></pre></div>
+<p><strong>What this does:</strong>
+-   Downloads GLFW, cglm, stb, etc. into <code>build/_deps/</code>.
+-   Generates <code>build/compile_commands.json</code> with absolute paths to those headers.
+-   Links it to the root so your editor finds it.</p>
+<h3 id="step-2-vs-code-configuration">Step 2: VS Code Configuration<a class="headerlink" href="#step-2-vs-code-configuration" title="Permanent link">¶</a></h3>
+<p>If you haven't already, accept the workspace recommendation to install <code>clangd</code>.</p>
+<ol>
+<li>Open the project in VS Code.</li>
+<li>If prompted, <strong>Disable IntelliSense</strong> for the Microsoft C/C++ extension (to allow <code>clangd</code> to take over).</li>
+<li>Open <code>src/main.c</code>. You should be able to Ctrl+Click on functions like <code>glfwInit</code> or <code>app_run</code>.</li>
+</ol>
+<hr>
+<h2 id="4-troubleshooting">4. Troubleshooting<a class="headerlink" href="#4-troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="headers-not-found-red-squiggles">Headers not found (red squiggles)<a class="headerlink" href="#headers-not-found-red-squiggles" title="Permanent link">¶</a></h3>
+<p>If <code>clangd</code> reports missing headers despite the build working:</p>
+<ol>
+<li><strong>Check for <code>compile_commands.json</code></strong>: Ensure the symlink exists in the project root.</li>
+<li><strong>Verify Include Paths</strong>: Open <code>compile_commands.json</code> and search for <code>-I.../build/_deps/glfw-src/include</code>. If it's missing, re-run <code>cmake -B build</code>.</li>
+<li><strong>Reload Window</strong>: VS Code sometimes caches old paths. run <code>Ctrl+Shift+P</code> -&gt; <code>Developer: Reload Window</code>.</li>
+<li><strong>Rebuild</strong>:
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Sometimes generating the headers (glad) requires a build</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>make
+</span></code></pre></div></li>
+</ol>
+<h3 id="distrobox-vs-host-paths">Distrobox vs Host Paths<a class="headerlink" href="#distrobox-vs-host-paths" title="Permanent link">¶</a></h3>
+<p>If you build inside a container but edit on the host:
+-   <strong>The Fix</strong>: Our <code>CMakeLists.txt</code> forces local dependency builds (<code>FetchContent</code>). This avoids the issue where <code>pkg-config</code> points to <code>/usr/include</code> inside the container (which doesn't exist on the host).
+-   <strong>Validation</strong>: Ensure you <strong>DO NOT</strong> use system-installed GLFW dev packages for the <em>build configuration</em> if you want IDE completions to work perfectly on the host.</p>
+<hr>
+<h2 id="5-debian-native-linux-compatibility">5. Debian / Native Linux Compatibility<a class="headerlink" href="#5-debian-native-linux-compatibility" title="Permanent link">¶</a></h2>
+<p>This setup is fully compatible with Debian 13 or any other distro without Distrobox.
+-   <strong>Requirement</strong>: You need X11 development headers installed system-wide, as GLFW compiles from source.
+    </p><div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libx11-dev<span class="w"> </span>libxrandr-dev<span class="w"> </span>libxinerama-dev<span class="w"> </span>libxcursor-dev<span class="w"> </span>libxi-dev
+</span></code></pre></div><p></p>
 
 
 
