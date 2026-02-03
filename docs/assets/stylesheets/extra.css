@@ -1,0 +1,15 @@
+/* Fix Mermaid diagrams in Dark Mode (Slate scheme) */
+[data-md-color-scheme="slate"] .mermaid {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: transparent;
+}
+
+/* Ensure text remains readable if inversion messes up specific colors */
+[data-md-color-scheme="slate"] .mermaid text {
+  font-family: inherit !important;
+}
+
+/* Specific fix for lines having poor contrast */
+[data-md-color-scheme="slate"] .mermaid .edgePath .path {
+    stroke: #BDC3C7 !important;
+}
