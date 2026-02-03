@@ -1,63 +1,70 @@
 /* Mermaid Dark Mode Overrides for 'Slate' theme */
+/* Nuclear Option: targeting potentially every element structure used by Mermaid versions */
 
-/* 1. Reset container background */
 [data-md-color-scheme="slate"] .mermaid {
   background: transparent !important;
 }
 
-/* 2. Sequence Diagram Specific Text Selectors */
-[data-md-color-scheme="slate"] .mermaid .messageText,
-/* Messages over arrows */
-[data-md-color-scheme="slate"] .mermaid .noteText,
-/* Notes */
-[data-md-color-scheme="slate"] .mermaid .loopText,
-/* Loop labels */
-[data-md-color-scheme="slate"] .mermaid .labelText,
-/* General labels */
-[data-md-color-scheme="slate"] .mermaid text.actor>tspan,
-/* Actor names */
-[data-md-color-scheme="slate"] .mermaid text
+/* --- TEXT OVERRIDES --- */
 
-/* Fallback for all text */
-  {
+/* Targets: Sequence Diagram messages, loops, notes, and generic labels */
+[data-md-color-scheme="slate"] .mermaid text,
+[data-md-color-scheme="slate"] .mermaid tspan,
+[data-md-color-scheme="slate"] .mermaid .messageText,
+[data-md-color-scheme="slate"] .mermaid .loopText,
+[data-md-color-scheme="slate"] .mermaid .loopText>tspan,
+[data-md-color-scheme="slate"] .mermaid .noteText,
+[data-md-color-scheme="slate"] .mermaid .labelText,
+[data-md-color-scheme="slate"] .mermaid .actor>tspan,
+[data-md-color-scheme="slate"] .mermaid .label {
   fill: #ffffff !important;
   color: #ffffff !important;
   stroke: none !important;
+  font-family: inherit !important;
 }
 
-/* 3. Sequence Diagram Lines and Arrows */
-[data-md-color-scheme="slate"] .mermaid .actor-line,
-/* Vertical lines */
-[data-md-color-scheme="slate"] .mermaid .messageLine0,
-/* Solid arrows */
-[data-md-color-scheme="slate"] .mermaid .messageLine1,
-/* Dotted arrows */
-[data-md-color-scheme="slate"] .mermaid line,
-/* Generic lines */
-[data-md-color-scheme="slate"] .mermaid path
+/* Targets: Flowcharts and other diagrams using HTML labels via foreignObject */
+[data-md-color-scheme="slate"] .mermaid .node .label {
+  color: #ffffff !important;
+}
 
-/* Generic paths/edges */
-  {
+[data-md-color-scheme="slate"] .mermaid .nodeLabel {
+  color: #ffffff !important;
+}
+
+/* --- LINE & SHAPE OVERRIDES --- */
+
+/* Targets: All lines, paths, arrows */
+[data-md-color-scheme="slate"] .mermaid path,
+[data-md-color-scheme="slate"] .mermaid line,
+[data-md-color-scheme="slate"] .mermaid .edgePath .path,
+[data-md-color-scheme="slate"] .mermaid .flowchart-link {
   stroke: #ffffff !important;
 }
 
-/* 4. Arrowheads (Markers) */
+/* Targets: Arrowheads */
 [data-md-color-scheme="slate"] .mermaid marker,
 [data-md-color-scheme="slate"] .mermaid marker path {
   fill: #ffffff !important;
   stroke: #ffffff !important;
 }
 
-/* 5. Loops and Alt boxes borders */
+/* Targets: Loop boxes (Alt, Opt, Loop) */
 [data-md-color-scheme="slate"] .mermaid rect.labelBox {
   stroke: #ffffff !important;
   fill: #2da1f3 !important;
-  /* Keep loop tag recognizable but readable */
-  fill-opacity: 0.5 !important;
+  fill-opacity: 0.3 !important;
+  /* Semi-transparent to blend */
 }
 
-/* 6. Actor Loops (The self-referencing arrows) */
-[data-md-color-scheme="slate"] .mermaid #arrowhead path {
-  fill: #ffffff !important;
+/* Targets: Note boxes */
+[data-md-color-scheme="slate"] .mermaid .note {
+  fill: #4a4a4a !important;
+  stroke: #ffffff !important;
+}
+
+/* Targets: Actor boxes */
+[data-md-color-scheme="slate"] .mermaid .actor {
+  fill: #4a4a4a !important;
   stroke: #ffffff !important;
 }
