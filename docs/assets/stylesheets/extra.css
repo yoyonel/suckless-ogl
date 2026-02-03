@@ -1,59 +1,63 @@
 /* Mermaid Dark Mode Overrides for 'Slate' theme */
 
-/* 1. Reset container */
+/* 1. Reset container background */
 [data-md-color-scheme="slate"] .mermaid {
   background: transparent !important;
 }
 
-/* 2. Force ALL text to be bright white */
-[data-md-color-scheme="slate"] .mermaid text,
-[data-md-color-scheme="slate"] .mermaid tspan,
-[data-md-color-scheme="slate"] .mermaid .label {
+/* 2. Sequence Diagram Specific Text Selectors */
+[data-md-color-scheme="slate"] .mermaid .messageText,
+/* Messages over arrows */
+[data-md-color-scheme="slate"] .mermaid .noteText,
+/* Notes */
+[data-md-color-scheme="slate"] .mermaid .loopText,
+/* Loop labels */
+[data-md-color-scheme="slate"] .mermaid .labelText,
+/* General labels */
+[data-md-color-scheme="slate"] .mermaid text.actor>tspan,
+/* Actor names */
+[data-md-color-scheme="slate"] .mermaid text
+
+/* Fallback for all text */
+  {
   fill: #ffffff !important;
   color: #ffffff !important;
   stroke: none !important;
-  /* Ensure no stroke makes text bold/fuzzy */
-  font-family: "Roboto", "Helvetica", sans-serif !important;
 }
 
-/* 3. Force lines and edges to be bright */
-[data-md-color-scheme="slate"] .mermaid path,
+/* 3. Sequence Diagram Lines and Arrows */
+[data-md-color-scheme="slate"] .mermaid .actor-line,
+/* Vertical lines */
+[data-md-color-scheme="slate"] .mermaid .messageLine0,
+/* Solid arrows */
+[data-md-color-scheme="slate"] .mermaid .messageLine1,
+/* Dotted arrows */
 [data-md-color-scheme="slate"] .mermaid line,
-[data-md-color-scheme="slate"] .mermaid .edgePath .path {
+/* Generic lines */
+[data-md-color-scheme="slate"] .mermaid path
+
+/* Generic paths/edges */
+  {
   stroke: #ffffff !important;
-  stroke-width: 1.5px !important;
 }
 
-/* 4. Force arrows (markers) to be white */
+/* 4. Arrowheads (Markers) */
 [data-md-color-scheme="slate"] .mermaid marker,
 [data-md-color-scheme="slate"] .mermaid marker path {
   fill: #ffffff !important;
   stroke: #ffffff !important;
 }
 
-/* 5. Improve box/actor contrast */
-[data-md-color-scheme="slate"] .mermaid rect,
-[data-md-color-scheme="slate"] .mermaid circle,
-[data-md-color-scheme="slate"] .mermaid polygon {
+/* 5. Loops and Alt boxes borders */
+[data-md-color-scheme="slate"] .mermaid rect.labelBox {
   stroke: #ffffff !important;
-  /* White border for shapes */
-  fill-opacity: 0.2 !important;
-  /* Semi-transparent fill to blend with dark bg */
-  fill: #ffffff !important;
+  fill: #2da1f3 !important;
+  /* Keep loop tag recognizable but readable */
+  fill-opacity: 0.5 !important;
 }
 
-/* Exception: Actor boxes and Notes usually need solid background */
-[data-md-color-scheme="slate"] .mermaid .actor,
-[data-md-color-scheme="slate"] .mermaid .note,
-[data-md-color-scheme="slate"] .mermaid .labelBox {
-  fill: #2c2c2c !important;
-  /* Dark grey background */
-  fill-opacity: 1 !important;
-  stroke: #ffffff !important;
-}
-
-/* Sequence Diagram specific: Loop text */
-[data-md-color-scheme="slate"] .mermaid .loopText,
-[data-md-color-scheme="slate"] .mermaid .loopText>tspan {
+/* 6. Actor Loops (The self-referencing arrows) */
+[data-md-color-scheme="slate"] .mermaid #arrowhead path {
   fill: #ffffff !important;
+  stroke: #ffffff !important;
 }
