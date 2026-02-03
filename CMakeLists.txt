@@ -187,28 +187,21 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-# 4. GLFW (System Package or FetchContent)
-find_package(PkgConfig QUIET)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(GLFW3 QUIET glfw3)
-endif()
-
-if(NOT GLFW3_FOUND)
-    message(STATUS "GLFW3 not found via pkg-config, fetching via FetchContent...")
-    FetchContent_Declare(
-        glfw
-        GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG        3.3.8
-    )
-    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(glfw)
-    set(GLFW3_LIBRARIES glfw)
-else()
-    message(STATUS "GLFW3 found via pkg-config")
-endif()
+# 4. GLFW (Force FetchContent for Host IDE Support)
+# We deliberately skip pkg-config to ensure headers are available in build/_deps
+# This allows clangd on the host to index them even if they are not installed on the host system.
+message(STATUS "Forcing GLFW3 FetchContent for IDE compatibility...")
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG        3.3.8
+)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(glfw)
+set(GLFW3_LIBRARIES glfw)
 
 # 5. cJSON (Static Build - CONFIGURATION AMÉLIORÉE)
 message(STATUS "Fetching cJSON...")
