@@ -13,7 +13,7 @@
         <link rel="prev" href="../docker/">
       
       
-        <link rel="next" href="../renderdoc_guide/">
+        <link rel="next" href="../perf_profiling/">
       
       
         
@@ -1343,6 +1343,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../perf_profiling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../renderdoc_guide/" class="md-nav__link">
         
   
@@ -1627,13 +1655,13 @@
 <h2 id="1-prerequisites">1. Prerequisites<a class="headerlink" href="#1-prerequisites" title="Permanent link">¶</a></h2>
 <p>Ensure you have <strong>ApiTrace</strong> installed on your system.
 The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or you can point to a specific binary using <code>APITRACE_BIN</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Example for a specific location</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">APITRACE_BIN</span><span class="o">=</span><span class="s2">"/path/to/apitrace"</span>
+<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp"># </span>Example<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>location
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">APITRACE_BIN</span><span class="o">=</span><span class="s2">"/path/to/apitrace"</span>
 </span></code></pre></div>
 <hr>
 <h2 id="2-generating-a-trace">2. Generating a Trace<a class="headerlink" href="#2-generating-a-trace" title="Permanent link">¶</a></h2>
 <p>To record the execution of the application:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>apitrace
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>apitrace
 </span></code></pre></div>
 <p>This will:
 1. Build the application in "Profile" mode (without high-level debug overhead).
@@ -1641,7 +1669,7 @@ The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or y
 <hr>
 <h2 id="3-high-level-performance-analysis">3. High-Level Performance Analysis<a class="headerlink" href="#3-high-level-performance-analysis" title="Permanent link">¶</a></h2>
 <p>The easiest way to see the results is to use the integrated target:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>make<span class="w"> </span>trace-perf
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>make<span class="w"> </span>trace-perf
 </span></code></pre></div>
 <p>This command runs <code>scripts/trace_analyze.py</code> which produces two tables:
 1. <strong>Performance by Shader (Cumulative)</strong>: Groups all calls by shader name/label.
@@ -1672,7 +1700,7 @@ The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or y
 <hr>
 <h2 id="4-advanced-tool-usage">4. Advanced Tool Usage<a class="headerlink" href="#4-advanced-tool-usage" title="Permanent link">¶</a></h2>
 <p>You can run the script manually for more control:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Usage: python3 scripts/trace_analyze.py &lt;trace_file&gt; [apitrace_bin]</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Usage: python3 scripts/trace_analyze.py &lt;trace_file&gt; [apitrace_bin]</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>python3<span class="w"> </span>scripts/trace_analyze.py<span class="w"> </span>build-profile/app.trace
 </span></code></pre></div>
 <h3 id="script-logic">Script Logic<a class="headerlink" href="#script-logic" title="Permanent link">¶</a></h3>
@@ -1721,7 +1749,7 @@ The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or y
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 2, 2026 23:54:29 UTC">February 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 09:50:52 UTC">February 3, 2026</span>
   </span>
 
     
