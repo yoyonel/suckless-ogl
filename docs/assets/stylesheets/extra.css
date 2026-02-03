@@ -1,24 +1,59 @@
-/* Mermaid Dark Mode Tweaks (Slate scheme) */
-/* Note: We rely on mermaid_init.js to set theme: 'dark'.
-   We only add overrides here if specific elements need contrast boosting. */
+/* Mermaid Dark Mode Overrides for 'Slate' theme */
 
+/* 1. Reset container */
 [data-md-color-scheme="slate"] .mermaid {
-  /* No inversion needed anymore */
-  background-color: transparent;
+  background: transparent !important;
 }
 
-/* Force text color to be light just in case specific diagrams default to black */
+/* 2. Force ALL text to be bright white */
 [data-md-color-scheme="slate"] .mermaid text,
-[data-md-color-scheme="slate"] .mermaid .messageText,
-[data-md-color-scheme="slate"] .mermaid .loopText,
-[data-md-color-scheme="slate"] .mermaid .labelText {
-  fill: #e3e3e3 !important;
-  color: #e3e3e3 !important;
+[data-md-color-scheme="slate"] .mermaid tspan,
+[data-md-color-scheme="slate"] .mermaid .label {
+  fill: #ffffff !important;
+  color: #ffffff !important;
   stroke: none !important;
+  /* Ensure no stroke makes text bold/fuzzy */
+  font-family: "Roboto", "Helvetica", sans-serif !important;
 }
 
-/* Ensure lines are visible */
-[data-md-color-scheme="slate"] .mermaid .edgePath .path,
-[data-md-color-scheme="slate"] .mermaid line {
-  stroke: #BDC3C7 !important;
+/* 3. Force lines and edges to be bright */
+[data-md-color-scheme="slate"] .mermaid path,
+[data-md-color-scheme="slate"] .mermaid line,
+[data-md-color-scheme="slate"] .mermaid .edgePath .path {
+  stroke: #ffffff !important;
+  stroke-width: 1.5px !important;
+}
+
+/* 4. Force arrows (markers) to be white */
+[data-md-color-scheme="slate"] .mermaid marker,
+[data-md-color-scheme="slate"] .mermaid marker path {
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* 5. Improve box/actor contrast */
+[data-md-color-scheme="slate"] .mermaid rect,
+[data-md-color-scheme="slate"] .mermaid circle,
+[data-md-color-scheme="slate"] .mermaid polygon {
+  stroke: #ffffff !important;
+  /* White border for shapes */
+  fill-opacity: 0.2 !important;
+  /* Semi-transparent fill to blend with dark bg */
+  fill: #ffffff !important;
+}
+
+/* Exception: Actor boxes and Notes usually need solid background */
+[data-md-color-scheme="slate"] .mermaid .actor,
+[data-md-color-scheme="slate"] .mermaid .note,
+[data-md-color-scheme="slate"] .mermaid .labelBox {
+  fill: #2c2c2c !important;
+  /* Dark grey background */
+  fill-opacity: 1 !important;
+  stroke: #ffffff !important;
+}
+
+/* Sequence Diagram specific: Loop text */
+[data-md-color-scheme="slate"] .mermaid .loopText,
+[data-md-color-scheme="slate"] .mermaid .loopText>tspan {
+  fill: #ffffff !important;
 }
