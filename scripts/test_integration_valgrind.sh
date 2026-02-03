@@ -84,6 +84,13 @@ for i in {1..5}; do
     xdotool key --delay 300 F5
 done
 
+# 6. Performance Mode
+echo "=> Toggling Performance Mode (F9)"
+xdotool key --delay 500 F9
+sleep 2
+xdotool key --delay 500 F9
+sleep 1
+
 echo "=> Test Complete. Exiting..."
 xdotool key Escape
 
