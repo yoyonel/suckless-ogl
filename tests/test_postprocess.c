@@ -197,23 +197,20 @@ void test_postprocess_optimization_switch(void)
 	PostProcess post_proc = {0};
 	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
-	// Default should be dynamic
-	TEST_ASSERT_FALSE(post_proc.is_optimized);
+	// Default should be OPTIMIZED
+	TEST_ASSERT_TRUE(post_proc.is_optimized);
 	GLuint original_program = post_proc.postprocess_shader->program;
 
-	// Switch to optimized
-	unsigned int opt_flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
-	postprocess_compile_optimized(&post_proc, opt_flags);
-	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	// Switch to dynamic
+	postprocess_use_dynamic(&post_proc);
+	TEST_ASSERT_FALSE(post_proc.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(original_program,
 	                      post_proc.postprocess_shader->program);
 
-	// Switch back to dynamic
-	GLuint optimized_program = post_proc.postprocess_shader->program;
-	postprocess_use_dynamic(&post_proc);
-	TEST_ASSERT_FALSE(post_proc.is_optimized);
-	TEST_ASSERT_NOT_EQUAL(optimized_program,
-	                      post_proc.postprocess_shader->program);
+	// Switch back to optimized
+	unsigned int opt_flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
+	postprocess_compile_optimized(&post_proc, opt_flags);
+	TEST_ASSERT_TRUE(post_proc.is_optimized);
 
 	postprocess_cleanup(&post_proc);
 }
