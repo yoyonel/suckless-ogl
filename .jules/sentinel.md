@@ -7,3 +7,8 @@
 **Vulnerability:** Texture loading and upload functions did not validate dimensions against a safe limit, allowing massive allocations or buffer over-reads via crafted images or API misuse.
 **Learning:** GL driver limits are not a security feature. `glTexStorage2D` might succeed for large values that crash `glTexSubImage2D` if source buffer is too small, or simply exhaust VRAM.
 **Prevention:** Define explicit application-level limits (e.g., `MAX_TEXTURE_DIMENSION`) and enforce them before passing data to OpenGL or allocators.
+
+## 2026-02-03 - [Enhancement] Missing Compiler Hardening Flags
+**Vulnerability:** The build configuration lacked standard security hardening flags (Stack Protector, Fortify Source, RELRO), making the binary easier to exploit if memory corruption vulnerabilities were present.
+**Learning:** Default CMake configurations often optimize for compatibility/speed rather than security. Defensive coding in source (e.g., `safe_snprintf`) is good but should be backed by compiler-level protections (Defense in Depth).
+**Prevention:** Explicitly enable hardening flags (`-fstack-protector-strong`, `-D_FORTIFY_SOURCE=2`, `-Wl,-z,relro,-z,now`) in `CMakeLists.txt` for all production targets.

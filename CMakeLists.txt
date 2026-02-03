@@ -283,6 +283,29 @@ target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(app PRIVATE -Wall -Wextra)
 
+    # Sentinel: Security Hardening Flags
+    # -fstack-protector-strong: Protects against stack buffer overflows
+    # -Wformat -Wformat-security: Warns about unsafe format string usage
+    target_compile_options(app PRIVATE
+        -fstack-protector-strong
+        -Wformat
+        -Wformat-security
+    )
+
+    # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
+    # (Requires optimization level -O1 or higher)
+    target_compile_definitions(app PRIVATE _FORTIFY_SOURCE=2)
+
+    # Linker Hardening:
+    # -Wl,-z,relro: Read-only Relocations (protects GOT)
+    # -Wl,-z,now: Immediate Binding (protects PLT)
+    # -Wl,-z,noexecstack: Prevents code execution on the stack
+    target_link_options(app PRIVATE
+        -Wl,-z,relro
+        -Wl,-z,now
+        -Wl,-z,noexecstack
+    )
+
     # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind)
     # puissent reconstruire la pile d'appel (stack trace) correctement.
     if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")

@@ -78,7 +78,15 @@ Dependencies are automatically managed via CMake's `FetchContent` module. No man
 - **Source**: [DaveGamble/cJSON](https://github.com/DaveGamble/cJSON)
 - **Automation**: Fetched at configuration time.
 
-## Folder Structure
+## Security Hardening
+
+The project enforces strict security flags during compilation to mitigate memory corruption vulnerabilities:
+
+- **Stack Protection**: `-fstack-protector-strong` adds stack canaries to detect buffer overflows.
+- **Format Security**: `-Wformat -Wformat-security` prevents format string attacks.
+- **Fortify Source**: `_FORTIFY_SOURCE=2` adds runtime checks for common string/memory functions.
+- **Linker Hardening**: RELRO, NOW, and NoExecStack are enabled to protect the GOT and prevent stack execution.
+
 
 ## Fast Parallel Builds
 
