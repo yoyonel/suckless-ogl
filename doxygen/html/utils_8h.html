@@ -293,6 +293,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abaf40f2826b08aa05ee7ca7c2a4b79ee" id="r_abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee">safe_memcpy</a> (void *dest, size_t dest_size, const void *src, size_t count)</td></tr>
 <tr class="memdesc:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">memcpy wrapper with bounds checking.  <br /></td></tr>
 <tr class="separator:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab955d87e8e6f7a7815b9ccf46155f41d" id="r_ab955d87e8e6f7a7815b9ccf46155f41d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ab955d87e8e6f7a7815b9ccf46155f41d">safe_strncpy</a> (char *dest, size_t dest_size, const char *src, size_t count)</td></tr>
+<tr class="memdesc:ab955d87e8e6f7a7815b9ccf46155f41d"><td class="mdescLeft">&#160;</td><td class="mdescRight">strncpy wrapper with guaranteed null termination and bounds checking.  <br /></td></tr>
+<tr class="separator:ab955d87e8e6f7a7815b9ccf46155f41d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55529722f47ff4c9bc4b65d398008fc4" id="r_a55529722f47ff4c9bc4b65d398008fc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a> (FILE **file_ptr)</td></tr>
 <tr class="memdesc:a55529722f47ff4c9bc4b65d398008fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>FILE*</code>.  <br /></td></tr>
 <tr class="separator:a55529722f47ff4c9bc4b65d398008fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -640,6 +643,56 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if string was fully written, false if truncated or error. </dd></dl>
+
+</div>
+</div>
+<a id="ab955d87e8e6f7a7815b9ccf46155f41d" name="ab955d87e8e6f7a7815b9ccf46155f41d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab955d87e8e6f7a7815b9ccf46155f41d">&#9670;&#160;</a></span>safe_strncpy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool safe_strncpy </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>strncpy wrapper with guaranteed null termination and bounds checking. </p>
 
 </div>
 </div>

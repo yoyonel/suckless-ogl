@@ -242,6 +242,7 @@ $(document).ready(function(){initNavTree('app__ui_8c.html',''); initResizable();
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="app__ui_8h_source.html">app_ui.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="adaptive__sampler_8h_source.html">adaptive_sampler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
@@ -263,12 +264,12 @@ Include dependency graph for app_ui.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ab04a0655cd1e3bcac5e8f48c18df1a57" id="r_ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57ae3db8bdcc51e0d388cbd4e5f75acd4ba">DEBUG_TEXT_BUFFER_SIZE</a> = 128
-, <a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57af857797fa834c37834916f6bb3ee3dd4">RANGE_TEXT_BUFFER_SIZE</a> = 64
-, <a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a654e69613c7186f04e4a268211ffa3be">ENV_TEXT_BUFFER_SIZE</a> = 256
-, <a class="el" href="app__ui_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a4e8447b9e47500d76a84900bca1215d6">EXPOSURE_TEXT_BUFFER_SIZE</a> = 64
+<tr class="memitem:a385c44f6fb256e5716a2302a5b940388" id="r_a385c44f6fb256e5716a2302a5b940388"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388ae3db8bdcc51e0d388cbd4e5f75acd4ba">DEBUG_TEXT_BUFFER_SIZE</a> = 128
+, <a class="el" href="app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388af857797fa834c37834916f6bb3ee3dd4">RANGE_TEXT_BUFFER_SIZE</a> = 64
+, <a class="el" href="app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388a654e69613c7186f04e4a268211ffa3be">ENV_TEXT_BUFFER_SIZE</a> = 256
+, <a class="el" href="app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388a4e8447b9e47500d76a84900bca1215d6">EXPOSURE_TEXT_BUFFER_SIZE</a> = 64
  }</td></tr>
-<tr class="separator:ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a385c44f6fb256e5716a2302a5b940388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -327,8 +328,8 @@ Variables</h2></td></tr>
 <tr class="separator:a8629a551eea895d8570a75c930b67a6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ab04a0655cd1e3bcac5e8f48c18df1a57" name="ab04a0655cd1e3bcac5e8f48c18df1a57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab04a0655cd1e3bcac5e8f48c18df1a57">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="a385c44f6fb256e5716a2302a5b940388" name="a385c44f6fb256e5716a2302a5b940388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a385c44f6fb256e5716a2302a5b940388">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,10 +340,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57ae3db8bdcc51e0d388cbd4e5f75acd4ba" name="ab04a0655cd1e3bcac5e8f48c18df1a57ae3db8bdcc51e0d388cbd4e5f75acd4ba"></a>DEBUG_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57af857797fa834c37834916f6bb3ee3dd4" name="ab04a0655cd1e3bcac5e8f48c18df1a57af857797fa834c37834916f6bb3ee3dd4"></a>RANGE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57a654e69613c7186f04e4a268211ffa3be" name="ab04a0655cd1e3bcac5e8f48c18df1a57a654e69613c7186f04e4a268211ffa3be"></a>ENV_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57a4e8447b9e47500d76a84900bca1215d6" name="ab04a0655cd1e3bcac5e8f48c18df1a57a4e8447b9e47500d76a84900bca1215d6"></a>EXPOSURE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388ae3db8bdcc51e0d388cbd4e5f75acd4ba" name="a385c44f6fb256e5716a2302a5b940388ae3db8bdcc51e0d388cbd4e5f75acd4ba"></a>DEBUG_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388af857797fa834c37834916f6bb3ee3dd4" name="a385c44f6fb256e5716a2302a5b940388af857797fa834c37834916f6bb3ee3dd4"></a>RANGE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388a654e69613c7186f04e4a268211ffa3be" name="a385c44f6fb256e5716a2302a5b940388a654e69613c7186f04e4a268211ffa3be"></a>ENV_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388a4e8447b9e47500d76a84900bca1215d6" name="a385c44f6fb256e5716a2302a5b940388a4e8447b9e47500d76a84900bca1215d6"></a>EXPOSURE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -374,7 +375,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a3a218e676a092e2566c4f7f390dba2ca_cgraph.svg" width="100%" height="586"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a3a218e676a092e2566c4f7f390dba2ca_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -405,7 +406,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a5801625db6cf8bb9015ff624b94e7c6e_cgraph.svg" width="100%" height="586"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_a5801625db6cf8bb9015ff624b94e7c6e_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -527,7 +528,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ac8842e65556e361d640d6eda17040589_cgraph.svg" width="100%" height="586"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_ac8842e65556e361d640d6eda17040589_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -590,7 +591,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_afcd3fa58648be86867e8ac5c9ddb452b_cgraph.svg" width="100%" height="586"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8c_afcd3fa58648be86867e8ac5c9ddb452b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>

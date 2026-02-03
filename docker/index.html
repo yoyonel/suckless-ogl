@@ -50,6 +50,8 @@
       
     
     
+      <link rel="stylesheet" href="../assets/stylesheets/extra.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -1038,6 +1040,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_and_notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Mode &amp; Notifs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1400,28 +1430,11 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Troubleshooting
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Troubleshooting">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
-  <a href="#build-cache-not-working" class="md-nav__link">
+  <a href="#gamemode-real-time-priority" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build Cache Not Working
+        GameMode &amp; Real-Time Priority
       
     </span>
   </a>
@@ -1858,7 +1871,9 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <li>Minimal runtime dependencies only:</li>
 <li><code>glfw</code> - Window and input handling</li>
 <li><code>mesa-*</code> - OpenGL drivers</li>
+<li><code>mesa-*</code> - OpenGL drivers</li>
 <li><code>xorg-x11-server-Xvfb</code> - Virtual framebuffer for headless rendering</li>
+<li><code>gamemode</code> - Runtime library for Performance Mode</li>
 <li>Non-root user (<code>appuser</code>) for security</li>
 <li>Contains only: binary, assets, shaders, entrypoint script</li>
 </ul>
@@ -1968,24 +1983,39 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>make<span class="w"> </span>docker-run
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Equivalent to:</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--network<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span><span class="nv">$DISPLAY</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix:rw<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>suckless-ogl<span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"export DISPLAY=</span><span class="nv">$DISPLAY</span><span class="s2"> &amp;&amp; ./app"</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--cap-add<span class="o">=</span>SYS_NICE<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--ulimit<span class="w"> </span><span class="nv">rtprio</span><span class="o">=</span><span class="m">99</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--network<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span><span class="nv">$DISPLAY</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DBUS_SESSION_BUS_ADDRESS</span><span class="o">=</span><span class="s2">"unix:path=/run/user/</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">/bus"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span>-v<span class="w"> </span>/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus:/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span>-v<span class="w"> </span>/var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix:rw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span>suckless-ogl<span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"export DISPLAY=</span><span class="nv">$DISPLAY</span><span class="s2"> &amp;&amp; ./app"</span>
 </span></code></pre></div>
-<blockquote>
-<p>[!WARNING]
-X11 forwarding requires <code>xhost +local:</code> which temporarily disables access control. This is handled automatically by the Makefile.</p>
-</blockquote>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
-<h3 id="build-cache-not-working">Build Cache Not Working<a class="headerlink" href="#build-cache-not-working" title="Permanent link">¶</a></h3>
-<p>Ensure BuildKit is enabled:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Docker</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span>
+<h3 id="gamemode-real-time-priority">GameMode &amp; Real-Time Priority<a class="headerlink" href="#gamemode-real-time-priority" title="Permanent link">¶</a></h3>
+<p>To enable <strong>Performance Mode</strong> (SCHED_FIFO) and GameMode inside the container, specific permissions are required:</p>
+<ul>
+<li><code>--cap-add=SYS_NICE</code>: Allows the container to set real-time scheduling policies.</li>
+<li><code>--ulimit rtprio=99</code>: Allows the non-root <code>appuser</code> to request real-time priority.</li>
+<li><strong>D-Bus Mounting</strong>: Essential for <code>libgamemode</code> to communicate with the host's GameMode daemon.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>&gt; [!WARNING]
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>&gt; X11 forwarding requires `xhost +local:` which temporarily disables access control. This is handled automatically by the Makefile.
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Podman (enabled by default)</span>
-</span></code></pre></div>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>## Troubleshooting
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>### Build Cache Not Working
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>Ensure BuildKit is enabled:
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>```sh
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a># Docker
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>export DOCKER_BUILDKIT=1
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a># Podman (enabled by default)
+</span></code></pre></div></li>
+</ul>
 <h3 id="xvfb-fails-to-start">Xvfb Fails to Start<a class="headerlink" href="#xvfb-fails-to-start" title="Permanent link">¶</a></h3>
 <p>Check if port :99 is available:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>suckless-ogl<span class="w"> </span>/bin/bash
@@ -2031,7 +2061,7 @@ X11 forwarding requires <code>xhost +local:</code> which temporarily disables ac
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 10:18:49 UTC">February 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 14:05:23 UTC">February 3, 2026</span>
   </span>
 
     

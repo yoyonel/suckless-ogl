@@ -1,5 +1,6 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
+    [ "action_notifier.c", "action__notifier_8c.html", "action__notifier_8c" ],
     [ "adaptive_sampler.c", "adaptive__sampler_8c.html", "adaptive__sampler_8c" ],
     [ "app.c", "app_8c.html", "app_8c" ],
     [ "app_env.c", "app__env_8c.html", "app__env_8c" ],
@@ -18,6 +19,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "main.c", "main_8c.html", "main_8c" ],
     [ "material.c", "material_8c.html", "material_8c" ],
     [ "pbr.c", "pbr_8c.html", "pbr_8c" ],
+    [ "perf_mode.c", "perf__mode_8c.html", "perf__mode_8c" ],
     [ "perf_timer.c", "perf__timer_8c.html", "perf__timer_8c" ],
     [ "postprocess.c", "postprocess_8c.html", "postprocess_8c" ],
     [ "render_utils.c", "render__utils_8c.html", "render__utils_8c" ],

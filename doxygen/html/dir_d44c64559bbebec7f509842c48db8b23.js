@@ -1,5 +1,6 @@
 var dir_d44c64559bbebec7f509842c48db8b23 =
 [
+    [ "action_notifier.h", "action__notifier_8h.html", "action__notifier_8h" ],
     [ "adaptive_sampler.h", "adaptive__sampler_8h.html", "adaptive__sampler_8h" ],
     [ "app.h", "app_8h.html", "app_8h" ],
     [ "app_env.h", "app__env_8h.html", "app__env_8h" ],
@@ -20,6 +21,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "main.h", "main_8h.html", null ],
     [ "material.h", "material_8h.html", "material_8h" ],
     [ "pbr.h", "pbr_8h.html", "pbr_8h" ],
+    [ "perf_mode.h", "perf__mode_8h.html", "perf__mode_8h" ],
     [ "perf_timer.h", "perf__timer_8h.html", "perf__timer_8h" ],
     [ "postprocess.h", "postprocess_8h.html", "postprocess_8h" ],
     [ "postprocess_presets.h", "postprocess__presets_8h.html", "postprocess__presets_8h" ],

@@ -8,10 +8,16 @@ var searchData=
   ['normal_5',['normal',['../pbr__ibl__billboard_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78',1,'Normal:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78',1,'Normal:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_ssbo.vert']]],
   ['normalize_5fvec3_6',['normalize_vec3',['../icosphere_8c.html#af48e051641689a72f684355046f4ff0f',1,'icosphere.c']]],
   ['normals_7',['normals',['../structIcosphereGeometry.html#a2eb01262bd1bba34ac84f192f6c366af',1,'IcosphereGeometry']]],
-  ['ns_5fper_5fms_8',['NS_PER_MS',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeafd57fe7f4eaf46322b94fec775395bcf',1,'perf_timer.c']]],
-  ['ns_5fper_5fs_9',['NS_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeac27f89df3cdb20ed1a53d35d3f772a3d',1,'perf_timer.c']]],
-  ['ns_5fper_5fus_10',['NS_PER_US',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea260259317d526f9e0d23af05655c0ca1',1,'perf_timer.c']]],
-  ['ns_5fto_5fms_11',['NS_TO_MS',['../perf__timer_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'perf_timer.c']]],
-  ['ns_5fto_5fs_12',['NS_TO_S',['../perf__timer_8c.html#a19325a5f7cca1f4ae6ad9e1804e326fc',1,'perf_timer.c']]],
-  ['ns_5fto_5fus_13',['NS_TO_US',['../perf__timer_8c.html#a45450bdee139fc2f8ca3c79c07a922b3',1,'perf_timer.c']]]
+  ['notes_8',['notes',['../structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825',1,'ActionNotifier']]],
+  ['notif_5fbuf_5fsize_9',['NOTIF_BUF_SIZE',['../app__input_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a4a400d8a348b628422a6de4f19fa7bce',1,'app_input.c']]],
+  ['notif_5fdur_5flong_10',['NOTIF_DUR_LONG',['../app__input_8c.html#a4b4e39a3f50218f4a7921923f9da53d4',1,'app_input.c']]],
+  ['notif_5fdur_5fnormal_11',['NOTIF_DUR_NORMAL',['../app__input_8c.html#aeb2e72aba4525106c3b572d68649c36c',1,'app_input.c']]],
+  ['notif_5fdur_5fshort_12',['NOTIF_DUR_SHORT',['../app__input_8c.html#acdede4649212e13a8a7684c1dee6e5a0',1,'app_input.c']]],
+  ['notifier_13',['notifier',['../structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5',1,'App']]],
+  ['ns_5fper_5fms_14',['NS_PER_MS',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeafd57fe7f4eaf46322b94fec775395bcf',1,'perf_timer.c']]],
+  ['ns_5fper_5fs_15',['NS_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeac27f89df3cdb20ed1a53d35d3f772a3d',1,'perf_timer.c']]],
+  ['ns_5fper_5fus_16',['NS_PER_US',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea260259317d526f9e0d23af05655c0ca1',1,'perf_timer.c']]],
+  ['ns_5fto_5fms_17',['NS_TO_MS',['../perf__timer_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'perf_timer.c']]],
+  ['ns_5fto_5fs_18',['NS_TO_S',['../perf__timer_8c.html#a19325a5f7cca1f4ae6ad9e1804e326fc',1,'perf_timer.c']]],
+  ['ns_5fto_5fus_19',['NS_TO_US',['../perf__timer_8c.html#a45450bdee139fc2f8ca3c79c07a922b3',1,'perf_timer.c']]]
 ];

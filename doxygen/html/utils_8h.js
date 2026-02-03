@@ -10,5 +10,6 @@ var utils_8h =
     [ "cleanup_free", "utils_8h.html#a60d756fd34ef42d063535564a151e219", null ],
     [ "safe_calloc", "utils_8h.html#adbb98512b516893d07ffb8d439b807ea", null ],
     [ "safe_memcpy", "utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee", null ],
-    [ "safe_snprintf", "utils_8h.html#ab1d13540441b5a2f988e0cd57754e625", null ]
+    [ "safe_snprintf", "utils_8h.html#ab1d13540441b5a2f988e0cd57754e625", null ],
+    [ "safe_strncpy", "utils_8h.html#ab955d87e8e6f7a7815b9ccf46155f41d", null ]
 ];

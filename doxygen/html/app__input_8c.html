@@ -236,11 +236,13 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <div class="header">
   <div class="summary">
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">app_input.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="app__input_8h_source.html">app_input.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__env_8h_source.html">app_env.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__scene_8h_source.html">app_scene.h</a>&quot;</code><br />
@@ -248,6 +250,7 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__presets_8h_source.html">postprocess_presets.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
@@ -255,6 +258,7 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app_input.c:</div>
 <div class="dyncontent">
@@ -266,6 +270,9 @@ Enumerations</h2></td></tr>
 <tr class="memitem:abed82baf7f470b522273a3e37c24c600" id="r_abed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#abed82baf7f470b522273a3e37c24c600a46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 9
  }</td></tr>
 <tr class="separator:abed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04a0655cd1e3bcac5e8f48c18df1a57" id="r_ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#ab04a0655cd1e3bcac5e8f48c18df1a57a4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
+ }</td></tr>
+<tr class="separator:ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -289,6 +296,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a5bd036fc9913a0b441d5a2121daf0f0e" id="r_a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a5bd036fc9913a0b441d5a2121daf0f0e">app_handle_env_input</a> (<a class="el" href="structApp.html">App</a> *app, int action, int mods, int key)</td></tr>
 <tr class="memdesc:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for cycling environment maps.  <br /></td></tr>
 <tr class="separator:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8794c576ee7a51b3733dc59e8f52f55" id="r_af8794c576ee7a51b3733dc59e8f52f55"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#af8794c576ee7a51b3733dc59e8f52f55">handle_overlay_input</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:af8794c576ee7a51b3733dc59e8f52f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18f4841f6aa0703c4b80ae627bb8bacd" id="r_a18f4841f6aa0703c4b80ae627bb8bacd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a18f4841f6aa0703c4b80ae627bb8bacd">handle_subdiv_input</a> (<a class="el" href="structApp.html">App</a> *app, int key)</td></tr>
+<tr class="separator:a18f4841f6aa0703c4b80ae627bb8bacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f2a339cb07f464d7404ae746b0dc910" id="r_a8f2a339cb07f464d7404ae746b0dc910"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a8f2a339cb07f464d7404ae746b0dc910">handle_camera_toggle</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a8f2a339cb07f464d7404ae746b0dc910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecc117b5009197af82d636741be94d47" id="r_aecc117b5009197af82d636741be94d47"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#aecc117b5009197af82d636741be94d47">handle_fxaa_input</a> (<a class="el" href="structApp.html">App</a> *app, int mods)</td></tr>
+<tr class="separator:aecc117b5009197af82d636741be94d47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a588f02e0bebbc36ff133173dd0392713" id="r_a588f02e0bebbc36ff133173dd0392713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a588f02e0bebbc36ff133173dd0392713">handle_app_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="memdesc:a588f02e0bebbc36ff133173dd0392713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches application-level logic for key inputs.  <br /></td></tr>
 <tr class="separator:a588f02e0bebbc36ff133173dd0392713"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -310,6 +325,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a3c55f01c5eac14ea574fc01767849372" id="r_a3c55f01c5eac14ea574fc01767849372"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a3c55f01c5eac14ea574fc01767849372">app_save_raw_frame</a> (<a class="el" href="structApp.html">App</a> *app, const char *filename)</td></tr>
 <tr class="memdesc:a3c55f01c5eac14ea574fc01767849372"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the current framebuffer and saves it as a raw HDR file.  <br /></td></tr>
 <tr class="separator:a3c55f01c5eac14ea574fc01767849372"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:acdede4649212e13a8a7684c1dee6e5a0" id="r_acdede4649212e13a8a7684c1dee6e5a0"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#acdede4649212e13a8a7684c1dee6e5a0">NOTIF_DUR_SHORT</a> = 1.0F</td></tr>
+<tr class="separator:acdede4649212e13a8a7684c1dee6e5a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb2e72aba4525106c3b572d68649c36c" id="r_aeb2e72aba4525106c3b572d68649c36c"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#aeb2e72aba4525106c3b572d68649c36c">NOTIF_DUR_NORMAL</a> = 1.5F</td></tr>
+<tr class="separator:aeb2e72aba4525106c3b572d68649c36c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4e39a3f50218f4a7921923f9da53d4" id="r_a4b4e39a3f50218f4a7921923f9da53d4"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a4b4e39a3f50218f4a7921923f9da53d4">NOTIF_DUR_LONG</a> = 2.0F</td></tr>
+<tr class="separator:a4b4e39a3f50218f4a7921923f9da53d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="abed82baf7f470b522273a3e37c24c600" name="abed82baf7f470b522273a3e37c24c600"></a>
@@ -325,6 +349,23 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600a46099f3e33a2bfa5892c3e7bffae3321" name="abed82baf7f470b522273a3e37c24c600a46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ab04a0655cd1e3bcac5e8f48c18df1a57" name="ab04a0655cd1e3bcac5e8f48c18df1a57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04a0655cd1e3bcac5e8f48c18df1a57">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57a4a400d8a348b628422a6de4f19fa7bce" name="ab04a0655cd1e3bcac5e8f48c18df1a57a4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -381,7 +422,7 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a5bd036fc9913a0b441d5a2121daf0f0e_cgraph.svg" width="100%" height="383"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a5bd036fc9913a0b441d5a2121daf0f0e_cgraph.svg" width="100%" height="478"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -603,6 +644,37 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a8f2a339cb07f464d7404ae746b0dc910" name="a8f2a339cb07f464d7404ae746b0dc910"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f2a339cb07f464d7404ae746b0dc910">&#9670;&#160;</a></span>handle_camera_toggle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_camera_toggle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a8f2a339cb07f464d7404ae746b0dc910_cgraph.svg" width="536" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
 <a id="a583074ebed862e1123c50cd81d966d30" name="a583074ebed862e1123c50cd81d966d30"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a583074ebed862e1123c50cd81d966d30">&#9670;&#160;</a></span>handle_exposure_input()</h2>
 
@@ -639,7 +711,79 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a583074ebed862e1123c50cd81d966d30_cgraph.svg" width="427" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a583074ebed862e1123c50cd81d966d30_cgraph.svg" width="580" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aecc117b5009197af82d636741be94d47" name="aecc117b5009197af82d636741be94d47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecc117b5009197af82d636741be94d47">&#9670;&#160;</a></span>handle_fxaa_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_fxaa_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_aecc117b5009197af82d636741be94d47_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="af8794c576ee7a51b3733dc59e8f52f55" name="af8794c576ee7a51b3733dc59e8f52f55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8794c576ee7a51b3733dc59e8f52f55">&#9670;&#160;</a></span>handle_overlay_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_overlay_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_af8794c576ee7a51b3733dc59e8f52f55_cgraph.svg" width="528" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -667,6 +811,11 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_afb03f1c912b8d6ee442c51f99cccf89c_cgraph.svg" width="551" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>
@@ -750,6 +899,47 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a0b000326b1ad4008a3c22a3c1800652d_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
+<a id="a18f4841f6aa0703c4b80ae627bb8bacd" name="a18f4841f6aa0703c4b80ae627bb8bacd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18f4841f6aa0703c4b80ae627bb8bacd">&#9670;&#160;</a></span>handle_subdiv_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_subdiv_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>key</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a18f4841f6aa0703c4b80ae627bb8bacd_cgraph.svg" width="522" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1018,6 +1208,73 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_adb3ffbd53fe7c2946b84b2ca396dab33_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a4b4e39a3f50218f4a7921923f9da53d4" name="a4b4e39a3f50218f4a7921923f9da53d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b4e39a3f50218f4a7921923f9da53d4">&#9670;&#160;</a></span>NOTIF_DUR_LONG</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NOTIF_DUR_LONG = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeb2e72aba4525106c3b572d68649c36c" name="aeb2e72aba4525106c3b572d68649c36c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb2e72aba4525106c3b572d68649c36c">&#9670;&#160;</a></span>NOTIF_DUR_NORMAL</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NOTIF_DUR_NORMAL = 1.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acdede4649212e13a8a7684c1dee6e5a0" name="acdede4649212e13a8a7684c1dee6e5a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdede4649212e13a8a7684c1dee6e5a0">&#9670;&#160;</a></span>NOTIF_DUR_SHORT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NOTIF_DUR_SHORT = 1.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

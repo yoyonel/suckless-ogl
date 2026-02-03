@@ -1,44 +1,53 @@
 <map id="include/shader.h" name="include/shader.h">
-<area shape="rect" id="Node000001" title="High&#45;level OpenGL shader management with metadata and uniform caching." alt="" coords="686,5,814,31"/>
-<area shape="rect" id="Node000002" href="$app_8h.html" title="Core application module and state container." alt="" coords="594,159,703,185"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="727,41,691,80,668,123,655,160,650,158,663,121,686,77,723,38"/>
-<area shape="rect" id="Node000003" href="$app_8c.html" title=" " alt="" coords="507,240,587,265"/>
-<area shape="poly" id="edge22_Node000001_Node000003" title=" " alt="" coords="718,40,650,86,614,118,584,154,572,176,562,200,552,240,547,239,557,198,567,174,580,150,611,114,646,82,715,36"/>
-<area shape="rect" id="Node000006" href="$app__scene_8c.html" title=" " alt="" coords="865,240,990,265"/>
-<area shape="poly" id="edge23_Node000001_Node000006" title=" " alt="" coords="787,35,818,55,853,81,885,113,911,151,920,174,926,199,930,239,925,240,921,200,915,176,906,153,881,117,849,85,815,59,784,40"/>
-<area shape="rect" id="Node000009" href="$postprocess_8h.html" title="High&#45;level post&#45;processing pipeline and effects." alt="" coords="239,79,402,104"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="673,35,390,81,389,76,672,30"/>
-<area shape="rect" id="Node000011" href="$postprocess_8c.html" title=" " alt="" coords="384,159,519,185"/>
-<area shape="poly" id="edge25_Node000001_Node000011" title=" " alt="" coords="673,33,606,51,571,64,539,81,514,100,492,121,461,161,457,158,488,118,511,95,537,76,569,60,604,46,672,28"/>
-<area shape="rect" id="Node000012" href="$ui_8h.html" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="701,79,799,104"/>
-<area shape="poly" id="edge17_Node000001_Node000012" title=" " alt="" coords="753,44,753,79,747,79,747,44"/>
-<area shape="rect" id="Node000013" href="$ui_8c.html" title=" " alt="" coords="829,159,897,185"/>
-<area shape="poly" id="edge27_Node000001_Node000013" title=" " alt="" coords="775,38,812,77,841,121,860,158,856,161,836,124,808,80,771,42"/>
-<area shape="rect" id="Node000014" href="$pbr_8c.html" title=" " alt="" coords="973,79,1049,104"/>
-<area shape="poly" id="edge24_Node000001_Node000014" title=" " alt="" coords="806,32,974,77,973,82,804,37"/>
-<area shape="rect" id="Node000015" href="$shader_8c.html" title=" " alt="" coords="1074,79,1173,104"/>
-<area shape="poly" id="edge26_Node000001_Node000015" title=" " alt="" coords="824,31,1074,78,1073,83,823,36"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="624,195,564,242,561,238,621,191"/>
-<area shape="rect" id="Node000004" href="$app__env_8c.html" title=" " alt="" coords="329,240,440,265"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="598,191,424,243,422,237,596,186"/>
-<area shape="rect" id="Node000005" href="$app__input_8c.html" title=" " alt="" coords="134,240,254,265"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="581,188,255,244,254,238,580,182"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="703,186,887,237,886,243,702,191"/>
-<area shape="rect" id="Node000007" href="$app__ui_8c.html" title=" " alt="" coords="726,240,825,265"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="680,190,758,238,755,242,678,194"/>
-<area shape="rect" id="Node000008" href="$main_8c.html" title=" " alt="" coords="612,240,701,265"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="654,198,658,240,653,240,649,199"/>
-<area shape="poly" id="edge9_Node000009_Node000002" title=" " alt="" coords="382,105,602,157,600,162,381,110"/>
-<area shape="poly" id="edge12_Node000009_Node000003" title=" " alt="" coords="318,118,316,155,320,174,329,190,341,200,358,208,405,224,508,243,507,249,404,229,356,213,338,204,325,194,315,176,311,155,312,117"/>
-<area shape="poly" id="edge13_Node000009_Node000004" title=" " alt="" coords="301,116,288,133,278,152,274,172,279,191,292,207,308,219,344,238,342,242,305,224,288,210,274,193,269,172,273,150,284,130,297,113"/>
-<area shape="poly" id="edge14_Node000009_Node000005" title=" " alt="" coords="302,116,269,154,204,241,200,238,265,150,298,112"/>
-<area shape="poly" id="edge15_Node000009_Node000007" title=" " alt="" coords="329,117,344,156,357,174,373,190,402,204,441,214,537,225,636,231,713,237,726,240,725,245,712,243,636,236,537,231,440,219,400,209,370,194,353,178,340,158,324,119"/>
-<area shape="rect" id="Node000010" href="$postprocess__presets_8h.html" title="Predefined configurations for the post&#45;processing pipeline." alt="" coords="5,152,156,192"/>
-<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="274,111,139,154,138,149,272,106"/>
-<area shape="poly" id="edge16_Node000009_Node000011" title=" " alt="" coords="353,109,433,157,431,161,350,113"/>
-<area shape="poly" id="edge11_Node000010_Node000005" title=" " alt="" coords="121,198,179,237,176,242,118,202"/>
-<area shape="poly" id="edge18_Node000012_Node000002" title=" " alt="" coords="726,115,665,161,662,157,722,111"/>
-<area shape="poly" id="edge19_Node000012_Node000003" title=" " alt="" coords="750,118,740,157,731,176,717,194,695,208,662,222,588,244,587,239,660,217,693,203,714,190,726,174,735,155,745,117"/>
-<area shape="poly" id="edge20_Node000012_Node000007" title=" " alt="" coords="757,117,776,239,771,240,751,118"/>
-<area shape="poly" id="edge21_Node000012_Node000013" title=" " alt="" coords="779,110,848,157,845,161,776,114"/>
+<area shape="rect" id="Node000001" title="High&#45;level OpenGL shader management with metadata and uniform caching." alt="" coords="913,5,1041,31"/>
+<area shape="rect" id="Node000002" href="$app_8h.html" title="Core application module and state container." alt="" coords="516,233,625,258"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="917,37,858,55,788,80,717,113,650,154,627,173,608,195,580,234,576,231,604,192,624,170,646,150,714,108,786,75,856,50,915,32"/>
+<area shape="rect" id="Node000003" href="$app_8c.html" title=" " alt="" coords="775,313,855,339"/>
+<area shape="poly" id="edge29_Node000001_Node000003" title=" " alt="" coords="1038,32,1099,54,1156,85,1179,104,1194,126,1200,151,1193,178,1165,221,1127,255,1082,281,1033,300,983,313,935,321,856,327,855,322,935,316,982,307,1032,294,1080,276,1124,251,1161,218,1188,176,1194,151,1189,128,1175,108,1153,89,1096,58,1036,37"/>
+<area shape="rect" id="Node000006" href="$app__scene_8c.html" title=" " alt="" coords="5,313,131,339"/>
+<area shape="poly" id="edge30_Node000001_Node000006" title=" " alt="" coords="900,24,803,30,682,40,550,57,419,81,353,94,293,100,189,112,143,124,100,145,59,178,18,227,13,237,13,248,21,272,38,294,56,311,52,315,34,297,17,274,7,249,8,236,14,224,55,174,97,140,142,119,188,107,293,95,352,88,418,76,549,51,681,35,802,24,900,19"/>
+<area shape="rect" id="Node000009" href="$postprocess_8h.html" title="High&#45;level post&#45;processing pipeline and effects." alt="" coords="361,152,524,177"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="900,22,826,26,740,35,648,53,560,81,528,97,499,117,456,154,453,150,496,113,526,92,558,76,647,48,739,30,826,20,900,17"/>
+<area shape="rect" id="Node000011" href="$postprocess_8c.html" title=" " alt="" coords="29,233,163,258"/>
+<area shape="poly" id="edge32_Node000001_Node000011" title=" " alt="" coords="900,26,720,43,613,59,509,81,391,118,279,162,120,235,117,230,277,157,390,113,507,76,612,53,719,37,899,20"/>
+<area shape="rect" id="Node000012" href="$ui_8h.html" title="Minimal immediate&#45;mode User Interface (UI) library." alt="" coords="929,79,1026,104"/>
+<area shape="poly" id="edge17_Node000001_Node000012" title=" " alt="" coords="980,44,980,79,975,79,975,44"/>
+<area shape="rect" id="Node000015" href="$ui_8c.html" title=" " alt="" coords="1110,152,1178,177"/>
+<area shape="poly" id="edge34_Node000001_Node000015" title=" " alt="" coords="1003,38,1132,150,1129,154,1000,42"/>
+<area shape="rect" id="Node000016" href="$pbr_8c.html" title=" " alt="" coords="1254,79,1330,104"/>
+<area shape="poly" id="edge31_Node000001_Node000016" title=" " alt="" coords="1042,31,1255,79,1253,84,1040,36"/>
+<area shape="rect" id="Node000017" href="$shader_8c.html" title=" " alt="" coords="1355,79,1453,104"/>
+<area shape="poly" id="edge33_Node000001_Node000017" title=" " alt="" coords="1055,29,1343,76,1355,78,1354,83,1342,81,1054,34"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="620,260,780,311,778,316,619,265"/>
+<area shape="rect" id="Node000004" href="$app__env_8c.html" title=" " alt="" coords="189,313,299,339"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="510,264,292,316,291,311,509,259"/>
+<area shape="rect" id="Node000005" href="$app__input_8c.html" title=" " alt="" coords="375,313,495,339"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="540,267,456,315,453,311,537,263"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="503,260,131,318,131,312,502,255"/>
+<area shape="rect" id="Node000007" href="$app__ui_8c.html" title=" " alt="" coords="647,313,745,339"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="602,263,679,311,676,315,599,268"/>
+<area shape="rect" id="Node000008" href="$main_8c.html" title=" " alt="" coords="526,313,615,339"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="573,272,573,313,568,313,568,272"/>
+<area shape="poly" id="edge9_Node000009_Node000002" title=" " alt="" coords="474,182,553,230,550,235,472,187"/>
+<area shape="poly" id="edge12_Node000009_Node000003" title=" " alt="" coords="504,178,569,198,638,223,730,269,799,311,796,315,727,274,636,228,568,203,503,183"/>
+<area shape="poly" id="edge13_Node000009_Node000004" title=" " alt="" coords="352,183,277,201,248,213,230,227,222,248,224,271,231,293,239,312,235,314,226,295,218,272,217,247,226,224,245,209,275,196,351,177"/>
+<area shape="poly" id="edge14_Node000009_Node000005" title=" " alt="" coords="444,191,438,313,433,313,439,191"/>
+<area shape="poly" id="edge15_Node000009_Node000007" title=" " alt="" coords="454,189,474,227,489,247,506,263,530,276,566,289,647,311,646,316,564,294,528,281,502,267,485,250,470,230,449,191"/>
+<area shape="rect" id="Node000010" href="$postprocess__presets_8h.html" title="Predefined configurations for the post&#45;processing pipeline." alt="" coords="239,225,390,265"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="414,187,347,227,344,223,411,182"/>
+<area shape="poly" id="edge16_Node000009_Node000011" title=" " alt="" coords="380,183,147,235,146,230,378,178"/>
+<area shape="poly" id="edge11_Node000010_Node000005" title=" " alt="" coords="356,271,418,311,416,315,354,275"/>
+<area shape="poly" id="edge24_Node000012_Node000002" title=" " alt="" coords="916,101,813,119,756,134,701,154,666,173,634,195,585,234,581,230,630,190,663,168,699,150,754,129,812,114,915,96"/>
+<area shape="poly" id="edge26_Node000012_Node000003" title=" " alt="" coords="1007,111,1026,129,1042,151,1060,181,1073,210,1074,237,1059,267,1046,279,1025,289,971,305,856,323,855,318,970,300,1023,284,1043,274,1055,264,1069,236,1067,211,1055,184,1038,153,1022,132,1003,115"/>
+<area shape="poly" id="edge27_Node000012_Node000007" title=" " alt="" coords="995,115,1013,147,1028,187,1031,229,1026,249,1015,268,911,290,746,319,745,314,910,284,1012,263,1021,247,1026,229,1022,189,1008,150,991,117"/>
+<area shape="rect" id="Node000013" href="$action__notifier_8h.html" title="Temporary on&#45;screen notification system for user actions." alt="" coords="711,152,889,177"/>
+<area shape="poly" id="edge18_Node000012_Node000013" title=" " alt="" coords="937,112,830,154,828,149,935,107"/>
+<area shape="rect" id="Node000014" href="$action__notifier_8c.html" title=" " alt="" coords="853,233,1001,258"/>
+<area shape="poly" id="edge25_Node000012_Node000014" title=" " alt="" coords="972,118,933,233,928,232,967,116"/>
+<area shape="poly" id="edge28_Node000012_Node000015" title=" " alt="" coords="1018,107,1118,149,1116,154,1016,112"/>
+<area shape="poly" id="edge19_Node000013_Node000002" title=" " alt="" coords="754,184,605,235,603,230,753,179"/>
+<area shape="poly" id="edge21_Node000013_Node000003" title=" " alt="" coords="805,191,816,313,811,313,800,191"/>
+<area shape="poly" id="edge22_Node000013_Node000005" title=" " alt="" coords="774,188,714,228,638,268,560,296,488,316,487,311,559,291,636,263,711,223,771,183"/>
+<area shape="poly" id="edge23_Node000013_Node000007" title=" " alt="" coords="787,190,706,314,701,311,783,188"/>
+<area shape="poly" id="edge20_Node000013_Node000014" title=" " alt="" coords="832,182,909,230,907,235,829,187"/>
 </map>

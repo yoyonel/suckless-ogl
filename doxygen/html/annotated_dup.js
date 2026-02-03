@@ -1,5 +1,7 @@
 var annotated_dup =
 [
+    [ "ActionNotification", "structActionNotification.html", "structActionNotification" ],
+    [ "ActionNotifier", "structActionNotifier.html", "structActionNotifier" ],
     [ "AdaptiveSampleItem", "structAdaptiveSampleItem.html", "structAdaptiveSampleItem" ],
     [ "AdaptiveSampler", "structAdaptiveSampler.html", "structAdaptiveSampler" ],
     [ "App", "structApp.html", "structApp" ],
@@ -33,6 +35,7 @@ var annotated_dup =
     [ "MaterialLib", "structMaterialLib.html", "structMaterialLib" ],
     [ "PBRMaterial", "structPBRMaterial.html", "structPBRMaterial" ],
     [ "Pcg32", "structPcg32.html", "structPcg32" ],
+    [ "PerfModeContext", "structPerfModeContext.html", "structPerfModeContext" ],
     [ "PerfTimer", "structPerfTimer.html", "structPerfTimer" ],
     [ "PostProcess", "structPostProcess.html", "structPostProcess" ],
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
