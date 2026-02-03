@@ -253,6 +253,7 @@ docker-run:
 	@echo "Running Container with X11 forwarding..."
 	xhost +local: > /dev/null 2>&1 || true
 	$(CONTAINER_ENGINE) run --rm -it \
+		--cap-add=SYS_NICE \
 		--security-opt label=disable \
 		--network host \
 		-e DISPLAY=$(DISPLAY) \
