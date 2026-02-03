@@ -131,10 +131,11 @@ GLAD_INC := build/_deps/glad-build/include
 CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cjson-src)
 
 lint: $(BUILD_DIR)/Makefile
-	@echo "Ensuring dependencies are generated..."
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad
-	@echo "Linting C code..."
-	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=200809L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
+	@echo "Linting C code (with caching if available)..."
+	@# Reconfigure with clang-tidy enabled
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_DIR) -DENABLE_CLANG_TIDY=ON
+	@# Build just the app target (parallelized) - this triggers the linting
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target app --parallel $(shell nproc)
 	@echo "Linting Python scripts..."
 	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"

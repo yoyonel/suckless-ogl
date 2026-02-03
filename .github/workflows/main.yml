@@ -28,8 +28,17 @@ jobs:
           python-version: '3.x'
       - name: Install linting tools via pip
         run: |
-          pip install clang-format==19.1.7 ruff
+          pip install clang-format==19.1.7 ruff cltcache
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Cache Clang-Tidy Results
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/cltcache
+          key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h') }}
+          restore-keys: |
+            ${{ runner.os }}-cltcache-
+
       - name: Install Build Dependencies
         run: |
           sudo apt-get update
