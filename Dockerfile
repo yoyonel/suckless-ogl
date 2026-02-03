@@ -9,6 +9,7 @@ RUN dnf -y update && dnf -y install \
     ninja-build \
     python3 \
     glfw-devel \
+    gamemode-devel \
     && dnf clean all
 
 WORKDIR /src
@@ -49,6 +50,7 @@ RUN dnf -y update && dnf -y install \
     libglvnd-glx \
     libglvnd-egl \
     xorg-x11-server-Xvfb \
+    gamemode \
     && dnf clean all
 
 RUN useradd -u 1000 -m appuser
