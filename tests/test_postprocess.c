@@ -295,6 +295,36 @@ void test_postprocess_cache_overflow_benchmark(void)
 	postprocess_cleanup(&post_proc);
 }
 
+void test_postprocess_large_working_set(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+
+	// Compile 40 different variants (0..39)
+	for (unsigned int i = 0; i < 40; ++i) {
+		postprocess_compile_optimized(&post_proc, i);
+	}
+
+	// Now access them all again.
+	// With SHADER_CACHE_SIZE 64, all 40 should be hits.
+	// With SHADER_CACHE_SIZE 32, the first 8 (0..7) would be misses.
+
+	clock_t start = clock();
+	for (unsigned int i = 0; i < 40; ++i) {
+		postprocess_compile_optimized(&post_proc, i);
+	}
+	clock_t end = clock();
+	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+	printf("Large Working Set Time: %f seconds\n", cpu_time_used);
+
+	// Threshold: 0.05s.
+	// If it was recompiling 8 shaders, it would take > 0.1s.
+	TEST_ASSERT_LESS_THAN_FLOAT(0.05f, (float)cpu_time_used);
+
+	postprocess_cleanup(&post_proc);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -307,6 +337,7 @@ int main(void)
 	RUN_TEST(test_postprocess_optimized_preset_switch);
 	RUN_TEST(test_postprocess_recompilation_benchmark);
 	RUN_TEST(test_postprocess_cache_overflow_benchmark);
+	RUN_TEST(test_postprocess_large_working_set);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }
