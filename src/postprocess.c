@@ -44,6 +44,7 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 	post_processing->height = height;
 	post_processing->time = 0.0F;
 	post_processing->is_optimized = false;
+	post_processing->compiled_flags = ~0U;
 
 	post_processing->shader_cache_count = 0;
 
@@ -274,6 +275,10 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 static void postprocess_on_state_change(PostProcess* post_processing)
 {
 	if (post_processing->is_optimized) {
+		if (post_processing->active_effects ==
+		    post_processing->compiled_flags) {
+			return;
+		}
 		LOG_INFO(
 		    "suckless-ogl.postprocess",
 		    "State changed in optimized mode - recompiling shader...");
@@ -914,6 +919,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 			         "Using CACHED shader for flags 0x%08X",
 			         static_flags);
 		}
+		post_processing->compiled_flags = static_flags;
 		return;
 	}
 
@@ -941,6 +947,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 
 	if (new_shader) {
 		update_current_shader(post_processing, new_shader, true);
+		post_processing->compiled_flags = static_flags;
 		new_shader->silent_warnings = true;
 
 		/* Add to cache */
