@@ -1,6 +1,40 @@
 cmake_minimum_required(VERSION 3.14)
 project(suckless-ogl C)
 
+# --- Clang-Tidy & Caching ---
+option(ENABLE_CLANG_TIDY "Enable clang-tidy linting during build" OFF)
+option(ENABLE_CLANG_TIDY_CACHE "Use caching for clang-tidy (requires ctcache)" ON)
+
+if(ENABLE_CLANG_TIDY)
+    find_program(CLANG_TIDY_BIN NAMES clang-tidy)
+    if(CLANG_TIDY_BIN)
+        set(CLANG_TIDY_CMD "${CLANG_TIDY_BIN}")
+
+        if(ENABLE_CLANG_TIDY_CACHE)
+            # Try to find cltcache (or cltcache.py)
+            find_program(CTCACHE_BIN NAMES cltcache cltcache.py)
+            if(NOT CTCACHE_BIN)
+                # Fallback: check standard user paths
+                find_program(CTCACHE_BIN NAMES cltcache cltcache.py PATHS "${CMAKE_SOURCE_DIR}/.venv/bin" "$ENV{HOME}/.local/bin")
+            endif()
+
+            if(CTCACHE_BIN)
+                message(STATUS "Clang-Tidy with Cache: ENABLED (using ${CTCACHE_BIN})")
+                set(CLANG_TIDY_CMD "${CTCACHE_BIN}" "${CLANG_TIDY_BIN}")
+            else()
+                 message(WARNING "cltcache not found even though ENABLE_CLANG_TIDY_CACHE is ON. Falling back to uncached clang-tidy.")
+            endif()
+        else()
+            message(STATUS "Clang-Tidy: ENABLED (Uncached)")
+        endif()
+
+        # Do NOT set CMAKE_C_CLANG_TIDY globally to avoid linting dependencies (cglm, glad, etc.)
+        # set(CMAKE_C_CLANG_TIDY "${CLANG_TIDY_CMD}")
+    else()
+        message(WARNING "clang-tidy not found, linting disabled")
+    endif()
+endif()
+
 # Option pour activer le rendu SSBO
 option(USE_SSBO_RENDERING "Use SSBO-based rendering instead of instanced rendering" OFF)
 
@@ -242,6 +276,11 @@ endif()
 
 # App target
 add_executable(app ${SOURCES})
+
+# Apply Clang-Tidy only to this target
+if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
+    set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
+endif()
 
 # Target properties and includes
 target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
