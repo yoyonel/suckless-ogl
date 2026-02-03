@@ -190,9 +190,8 @@ static int deactivate_gamemode(PerfModeContext* ctx)
  */
 static int activate_native(PerfModeContext* ctx)
 {
-	struct sched_param param = {
-	    .sched_priority =
-	        PERF_RT_PRIORITY};  // NOLINT(misc-include-cleaner)
+	struct sched_param param = {// NOLINT(misc-include-cleaner)
+	                            .sched_priority = PERF_RT_PRIORITY};
 
 	/* Try SCHED_FIFO first (real-time) */
 	if (sched_setscheduler(0, SCHED_FIFO, &param) == 0) {
