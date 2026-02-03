@@ -41,7 +41,7 @@ We use the **[Doxygen Awesome CSS](https://github.com/jothepro/doxygen-awesome-c
 ### Local Development
 To preview the full hybrid site locally:
 
-```bash
+```sh
 make docs-serve
 # Opens http://localhost:8000
 ```

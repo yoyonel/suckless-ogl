@@ -4,6 +4,15 @@ site_author: Latty
 repo_url: https://github.com/yoyonel/suckless-ogl
 repo_name: yoyonel/suckless-ogl
 
+# Exclude Doxygen-specific resources from MkDocs build
+exclude_docs: |
+  doxygen-awesome-css/**/*
+
+# Configure validation to ignore generated links that aren't in source docs/
+validation:
+  nav:
+    not_found: ignore
+
 theme:
   name: material
   palette:
@@ -107,6 +116,7 @@ nav:
     - Build Guide: build.md
     - Docker Guide: docker.md
     - Profiling: profiling_guide.md
+    - Perf Troubleshooting: perf_profiling.md
     - RenderDoc: renderdoc_guide.md
     - Visual Testing: visual_testing_artifacts.md
     - OpenGL Cleanup: opengl_cleanup.md

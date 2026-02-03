@@ -67,7 +67,7 @@ The pipeline is structured to optimize the build while guaranteeing maximum qual
 
 ## 📦 Docker / Podman
 To test the application in a container with X11 forwarding:
-```bash
+```sh
 make docker-build
 make docker-run
 ```

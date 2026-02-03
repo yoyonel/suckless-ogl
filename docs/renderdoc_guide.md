@@ -9,12 +9,12 @@ The `renderdoc` package has been removed from Debian Testing (Trixie) repositori
 
 1.  **Download**: Go to [renderdoc.org](https://renderdoc.org/builds) and download the latest stable version for **Linux 64-bit**.
 1.  **Extract**:
-    ```bash
+    ```sh
     tar -xvf renderdoc_*.tar.gz
     cd renderdoc_*
     ```
 2.  **Launch**:
-    ```bash
+    ```sh
     ./bin/qrenderdoc
     ```
     *(Optional) You can add the `bin` folder to your PATH or create a symbolic link to `/usr/local/bin/qrenderdoc`.*

@@ -15,9 +15,9 @@ Our engine injects manual `GL_TIMESTAMP` queries and `glPushDebugGroup` markers 
 Ensure you have **ApiTrace** installed on your system.
 The `Makefile` expects `apitrace` to be in your PATH, or you can point to a specific binary using `APITRACE_BIN`.
 
-```bash
+```console
 # Example for a specific location
-export APITRACE_BIN="/path/to/apitrace"
+$ export APITRACE_BIN="/path/to/apitrace"
 ```
 
 ---
@@ -26,7 +26,7 @@ export APITRACE_BIN="/path/to/apitrace"
 
 To record the execution of the application:
 
-```bash
+```sh
 make apitrace
 ```
 
@@ -40,7 +40,7 @@ This will:
 
 The easiest way to see the results is to use the integrated target:
 
-```bash
+```sh
 make trace-perf
 ```
 
@@ -62,7 +62,7 @@ This command runs `scripts/trace_analyze.py` which produces two tables:
 
 You can run the script manually for more control:
 
-```bash
+```sh
 # Usage: python3 scripts/trace_analyze.py <trace_file> [apitrace_bin]
 python3 scripts/trace_analyze.py build-profile/app.trace
 ```
