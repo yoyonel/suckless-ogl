@@ -90,10 +90,20 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
                   float pos_y, const vec3 color, int screen_width,
                   int screen_height);
 
+/** @brief Draws text with custom alpha transparency. */
+void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
+                     float pos_y, const vec3 color, float alpha,
+                     int screen_width, int screen_height);
+
 /** @brief Draws a solid color rectangle. */
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height);
+
+/** @brief Draws a solid color rectangle with custom alpha transparency. */
+void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
+                     float width, float height, const vec3 color, float alpha,
+                     int screen_width, int screen_height);
 
 /** @brief Draws a rotating loading spinner. */
 void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,

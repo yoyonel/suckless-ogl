@@ -1,5 +1,6 @@
 #include "app_ui.h"
 
+#include "action_notifier.h"
 #include "adaptive_sampler.h"
 #include "app.h"
 #include "app_settings.h"
@@ -99,6 +100,13 @@ void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[5] Matrix", HELP_COLOR);
 	ui_layout_text(&layout, "[6] BW Contrast", HELP_COLOR);
 	ui_layout_text(&layout, "[0] Reset", HELP_COLOR);
+
+	ui_layout_separator(&layout, HELP_SECTION_PADDING);
+
+	/* Section: System */
+	ui_layout_text(&layout, "--- System ---", HELP_COLOR);
+	ui_layout_text(&layout, "[F9] Toggle Performance Mode", HELP_COLOR);
+	ui_layout_text(&layout, "[F12] Take Screenshot", HELP_COLOR);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -413,4 +421,6 @@ void app_render_ui(App* app)
 	if (app->show_help) {
 		app_draw_help_overlay(app);
 	}
+
+	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);
 }

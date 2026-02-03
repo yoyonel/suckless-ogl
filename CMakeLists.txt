@@ -64,6 +64,8 @@ set(SOURCES
     src/app_env.c
     src/app_scene.c
     src/cli.c
+    src/action_notifier.c
+    src/perf_mode.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -256,6 +258,23 @@ target_link_libraries(app PRIVATE
     dl
     Threads::Threads
 )
+
+# Optional GameMode integration for performance optimization
+# Requires both the library AND the header to be installed
+find_library(GAMEMODE_LIB NAMES gamemode)
+find_path(GAMEMODE_INCLUDE_DIR NAMES gamemode_client.h)
+if(GAMEMODE_LIB AND GAMEMODE_INCLUDE_DIR)
+    message(STATUS "GameMode found: ${GAMEMODE_LIB}")
+    message(STATUS "GameMode headers: ${GAMEMODE_INCLUDE_DIR}")
+    target_compile_definitions(app PRIVATE HAVE_GAMEMODE)
+    target_include_directories(app PRIVATE ${GAMEMODE_INCLUDE_DIR})
+    target_link_libraries(app PRIVATE ${GAMEMODE_LIB})
+else()
+    if(GAMEMODE_LIB AND NOT GAMEMODE_INCLUDE_DIR)
+        message(STATUS "GameMode library found but headers missing - install libgamemode-dev")
+    endif()
+    message(STATUS "GameMode not available - using native scheduling fallback")
+endif()
 
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 

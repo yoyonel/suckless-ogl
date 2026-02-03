@@ -7,18 +7,18 @@ uniform vec3 textColor;  // La couleur passée depuis le C
 
 uniform int useTexture;  // 1 = Text (Atlas), 0 = Solid Rect
 
+uniform float globalAlpha;  // Transparence globale (0.0 - 1.0)
+
 void main()
 {
+	float finalAlpha = globalAlpha;
 	if (useTexture != 0) {
 		/* Font Atlas or Image */
-		float a = texture(text, TexCoords).r;
-		/* Simple alpha text */
-		color = vec4(textColor, a);
-	} else {
-		/* Solid Rect */
-		color = vec4(textColor, 1.0);
+		finalAlpha *= texture(text, TexCoords).r;
 	}
 
-	if (color.a < 0.1)
+	color = vec4(textColor, finalAlpha);
+
+	if (color.a < 0.001)
 		discard;
 }

@@ -315,6 +315,14 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
                   float pos_y, const vec3 color, int screen_width,
                   int screen_height)
 {
+	ui_draw_text_ex(ui_context, text, pos_x, pos_y, color, 1.0F,
+	                screen_width, screen_height);
+}
+
+void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
+                     float pos_y, const vec3 color, float alpha,
+                     int screen_width, int screen_height)
+{
 	if (ui_context == NULL || text == NULL || ui_context->shader == NULL) {
 		return;
 	}
@@ -334,6 +342,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
 	// Upload uniforms
 	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
 	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
+	shader_set_float(ui_context->shader, "globalAlpha", alpha);
 	shader_set_int(ui_context->shader, "useTexture",
 	               1); /* Enable Texture for Text */
 
@@ -388,6 +397,14 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height)
 {
+	ui_draw_rect_ex(ui_context, rect_x, rect_y, width, height, color, 1.0F,
+	                screen_width, screen_height);
+}
+
+void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
+                     float width, float height, const vec3 color, float alpha,
+                     int screen_width, int screen_height)
+{
 	if (ui_context == NULL || ui_context->shader == NULL) {
 		return;
 	}
@@ -407,6 +424,7 @@ void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
 	// Upload uniforms
 	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
 	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
+	shader_set_float(ui_context->shader, "globalAlpha", alpha);
 	shader_set_int(ui_context->shader, "useTexture",
 	               0); /* Disable Texture for Rect */
 
