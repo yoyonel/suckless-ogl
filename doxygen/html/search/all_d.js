@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['name_0',['name',['../structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de',1,'UniformEntry::name'],['../structShader.html#a63fc645b9235c69c54c1a5b6a019db69',1,'Shader::name'],['../structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4',1,'PBRMaterial::name']]],
+  ['name_0',['name',['../structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de',1,'UniformEntry::name'],['../structShader.html#a63fc645b9235c69c54c1a5b6a019db69',1,'Shader::name'],['../structEffectMetadata.html#ac6608946101117dc9b73ac112842fc55',1,'EffectMetadata::name'],['../structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4',1,'PBRMaterial::name']]],
   ['navigation_1',['Navigation',['../index.html#autotoc_md1',1,'']]],
   ['near_5fplane_2',['NEAR_PLANE',['../group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de',1,'app_settings.h']]],
   ['neighbor_5fmax_5fshader_3',['neighbor_max_shader',['../structPostProcess.html#a33f165abd3e1ff6e37b8055277097a83',1,'PostProcess']]],

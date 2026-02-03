@@ -235,9 +235,11 @@ $(document).ready(function(){initNavTree('postprocess_8c.html',''); initResizabl
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">postprocess.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -261,12 +263,15 @@ Include dependency graph for postprocess.c:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8c__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectMetadata.html">EffectMetadata</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a8eb4c005c306e4ce5d4e25616d66aba9" id="r_a8eb4c005c306e4ce5d4e25616d66aba9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a8eb4c005c306e4ce5d4e25616d66aba9">LOG_EFFECT</a>(flag,  name)</td></tr>
-<tr class="separator:a8eb4c005c306e4ce5d4e25616d66aba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace3947b68fefda8f62b846645d4ce8ed" id="r_ace3947b68fefda8f62b846645d4ce8ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#ace3947b68fefda8f62b846645d4ce8ed">ADD_OPT_DEF</a>(flag_bit,  name)</td></tr>
-<tr class="separator:ace3947b68fefda8f62b846645d4ce8ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ae0b718558d6f05af131a79c4ada77d" id="r_a1ae0b718558d6f05af131a79c4ada77d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a1ae0b718558d6f05af131a79c4ada77d">EFFECT_COUNT</a>&#160;&#160;&#160;(sizeof(<a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a>) / sizeof(<a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a>[0]))</td></tr>
+<tr class="separator:a1ae0b718558d6f05af131a79c4ada77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -388,75 +393,25 @@ Functions</h2></td></tr>
 <tr class="memitem:a3b10285ebc588a80b81be601659260d5" id="r_a3b10285ebc588a80b81be601659260d5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a3b10285ebc588a80b81be601659260d5">postprocess_use_dynamic</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="memdesc:a3b10285ebc588a80b81be601659260d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switches back to the dynamic/generic Uber-shader.  <br /></td></tr>
 <tr class="separator:a3b10285ebc588a80b81be601659260d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:adfd51418acbfeee92a289eedfdd1ea20" id="r_adfd51418acbfeee92a289eedfdd1ea20"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structEffectMetadata.html">EffectMetadata</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a> []</td></tr>
+<tr class="separator:adfd51418acbfeee92a289eedfdd1ea20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="ace3947b68fefda8f62b846645d4ce8ed" name="ace3947b68fefda8f62b846645d4ce8ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace3947b68fefda8f62b846645d4ce8ed">&#9670;&#160;</a></span>ADD_OPT_DEF</h2>
+<a id="a1ae0b718558d6f05af131a79c4ada77d" name="a1ae0b718558d6f05af131a79c4ada77d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ae0b718558d6f05af131a79c4ada77d">&#9670;&#160;</a></span>EFFECT_COUNT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ADD_OPT_DEF</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">flag_bit, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">#define EFFECT_COUNT&#160;&#160;&#160;(sizeof(<a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a>) / sizeof(<a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a>[0]))</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> (!<a class="code hl_function" href="utils_8h.html#ab1d13540441b5a2f988e0cd57754e625">safe_snprintf</a>(                                          \</div>
-<div class="line">            buffer[count], <span class="keyword">sizeof</span>(buffer[count]), <span class="stringliteral">&quot;%s %d&quot;</span>, name, \</div>
-<div class="line">            ((static_flags &amp; (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)(flag_bit)) != 0))) { \</div>
-<div class="line">        LOG_ERROR(<span class="stringliteral">&quot;suckless-ogl.postprocess&quot;</span>,                \</div>
-<div class="line">                  <span class="stringliteral">&quot;Failed to format shader define&quot;</span>);         \</div>
-<div class="line">        <span class="keywordflow">return</span>;                                              \</div>
-<div class="line">    }                                                            \</div>
-<div class="line">    defines[count] = buffer[count];                              \</div>
-<div class="line">    count++</div>
-<div class="ttc" id="autils_8h_html_ab1d13540441b5a2f988e0cd57754e625"><div class="ttname"><a href="utils_8h.html#ab1d13540441b5a2f988e0cd57754e625">safe_snprintf</a></div><div class="ttdeci">static bool safe_snprintf(char *buf, size_t buf_size, const char *format,...)</div><div class="ttdoc">Safe wrapper around vsnprintf to format strings with bounds checking.</div><div class="ttdef"><b>Definition</b> utils.h:22</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="a8eb4c005c306e4ce5d4e25616d66aba9" name="a8eb4c005c306e4ce5d4e25616d66aba9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eb4c005c306e4ce5d4e25616d66aba9">&#9670;&#160;</a></span>LOG_EFFECT</h2>
 
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define LOG_EFFECT</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">flag, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">if</span> ((flags &amp; (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)(flag)) != 0) {                    \</div>
-<div class="line">        LOG_INFO(<span class="stringliteral">&quot;suckless-ogl.postprocess&quot;</span>, <span class="stringliteral">&quot;  ✓ %s&quot;</span>, name); \</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -1917,6 +1872,62 @@ Here is the call graph for this function:</div>
 <div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_ab8bf3262e6e6564d91b8fb8ba41207d7_cgraph.svg" width="378" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="adfd51418acbfeee92a289eedfdd1ea20" name="adfd51418acbfeee92a289eedfdd1ea20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfd51418acbfeee92a289eedfdd1ea20">&#9670;&#160;</a></span>ALL_EFFECTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structEffectMetadata.html">EffectMetadata</a> ALL_EFFECTS[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a>, <span class="stringliteral">&quot;Vignette&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_VIGNETTE&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a>, <span class="stringliteral">&quot;Film Grain&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_GRAIN&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a>, <span class="stringliteral">&quot;Manual Exposure&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_EXPOSURE&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a>, <span class="stringliteral">&quot;Chromatic Aberration&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_CHROM_ABBR&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a>, <span class="stringliteral">&quot;Bloom&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_BLOOM&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a>, <span class="stringliteral">&quot;Color Grading&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_COLOR_GRADING&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a>, <span class="stringliteral">&quot;Depth of Field&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_DOF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a>, <span class="stringliteral">&quot;DoF Debug View&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_DOF_DEBUG&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a>, <span class="stringliteral">&quot;Auto-Exposure&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_AUTO_EXPOSURE&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a>, <span class="stringliteral">&quot;Exposure Debug View&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_EXPOSURE_DEBUG&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a>, <span class="stringliteral">&quot;Motion Blur&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_MOTION_BLUR&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a>, <span class="stringliteral">&quot;Motion Blur Debug View&quot;</span>,</div>
+<div class="line">     <span class="stringliteral">&quot;OPT_ENABLE_MOTION_BLUR_DEBUG&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>, <span class="stringliteral">&quot;FXAA&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_FXAA&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a>, <span class="stringliteral">&quot;FXAA Debug View&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_FXAA_DEBUG&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a>, <span class="stringliteral">&quot;Banding&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_BANDING&quot;</span>},</div>
+<div class="line">}</div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a></div><div class="ttdeci">@ POSTFX_BANDING</div><div class="ttdef"><b>Definition</b> postprocess.h:85</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_AUTO_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:76</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR</div><div class="ttdef"><b>Definition</b> postprocess.h:80</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a></div><div class="ttdeci">@ POSTFX_DOF_DEBUG</div><div class="ttdef"><b>Definition</b> postprocess.h:75</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:72</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a></div><div class="ttdeci">@ POSTFX_EXPOSURE_DEBUG</div><div class="ttdef"><b>Definition</b> postprocess.h:78</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a></div><div class="ttdeci">@ POSTFX_GRAIN</div><div class="ttdef"><b>Definition</b> postprocess.h:68</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR_DEBUG</div><div class="ttdef"><b>Definition</b> postprocess.h:81</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:83</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a></div><div class="ttdeci">@ POSTFX_DOF</div><div class="ttdef"><b>Definition</b> postprocess.h:74</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a></div><div class="ttdeci">@ POSTFX_BLOOM</div><div class="ttdef"><b>Definition</b> postprocess.h:71</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a></div><div class="ttdeci">@ POSTFX_FXAA_DEBUG</div><div class="ttdef"><b>Definition</b> postprocess.h:84</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:69</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a></div><div class="ttdeci">@ POSTFX_VIGNETTE</div><div class="ttdef"><b>Definition</b> postprocess.h:67</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a></div><div class="ttdeci">@ POSTFX_CHROM_ABBR</div><div class="ttdef"><b>Definition</b> postprocess.h:70</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

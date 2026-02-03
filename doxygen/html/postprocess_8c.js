@@ -1,7 +1,7 @@
 var postprocess_8c =
 [
-    [ "ADD_OPT_DEF", "postprocess_8c.html#ace3947b68fefda8f62b846645d4ce8ed", null ],
-    [ "LOG_EFFECT", "postprocess_8c.html#a8eb4c005c306e4ce5d4e25616d66aba9", null ],
+    [ "EffectMetadata", "structEffectMetadata.html", "structEffectMetadata" ],
+    [ "EFFECT_COUNT", "postprocess_8c.html#a1ae0b718558d6f05af131a79c4ada77d", null ],
     [ "create_framebuffer", "postprocess_8c.html#a4bbf34e2aeca9031792cf4c335f77ab6", null ],
     [ "destroy_framebuffer", "postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a", null ],
     [ "destroy_screen_quad", "postprocess_8c.html#a92a070b5127b9df932264982e8a2d455", null ],
@@ -41,5 +41,6 @@ var postprocess_8c =
     [ "postprocess_update_matrices", "postprocess_8c.html#a86ca4160d60435cb54320bbcc68d0d95", null ],
     [ "postprocess_update_time", "postprocess_8c.html#ae22c24f5c64568dcf1908a579312ed60", null ],
     [ "postprocess_use_dynamic", "postprocess_8c.html#a3b10285ebc588a80b81be601659260d5", null ],
-    [ "update_current_shader", "postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7", null ]
+    [ "update_current_shader", "postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7", null ],
+    [ "ALL_EFFECTS", "postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20", null ]
 ];
