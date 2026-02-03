@@ -355,6 +355,9 @@ typedef struct PostProcess {
 	bool is_optimized; /**< true if Uber-shader uses static preprocessor
 	                      flags. */
 
+	unsigned int
+	    compiled_flags; /**< Flags used for the current optimized shader. */
+
 	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
 	int shader_cache_count;
 } PostProcess;
