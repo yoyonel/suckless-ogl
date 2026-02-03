@@ -17,7 +17,7 @@ To enable automated deployments, you must configure a `SURGE_TOKEN` in your repo
 
 If you haven't used Surge before, you can install it and generate a token via CLI:
 
-```bash
+```sh
 npx surge token
 ```
 
@@ -52,7 +52,7 @@ The staging logic is defined in `.github/workflows/main.yml`. It uses the `mshic
 ### Clearing Previews
 Surge.sh keeps the deployments indefinitely. Since the domains are reused per PR number, new pushes simply overwrite the previous version. If you need to manually tear down a preview:
 
-```bash
+```sh
 npx surge teardown suckless-ogl-pr-[NUMBER].surge.sh --token your_token
 ```
 

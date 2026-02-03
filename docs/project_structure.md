@@ -172,7 +172,7 @@ digraph ProjectStructure {
 
 ## Compilation and Execution
 
-```bash
+```sh
 # Compile the project
 make
 

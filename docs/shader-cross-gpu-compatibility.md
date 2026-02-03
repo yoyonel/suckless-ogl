@@ -110,7 +110,7 @@ if (someCondition) {
 
 ### Tools
 
-```bash
+```sh
 # Visual diff
 compare intel.png nvidia.png diff.png
 

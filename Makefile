@@ -23,6 +23,25 @@ CONTAINER_RUN ?= $(CONTAINER_RUN_DEFAULT)
 # On remplace l'ancienne variable par la nouvelle
 DISTROBOX := $(CONTAINER_RUN)
 
+# Smart detection for Python environment (Host vs Distrobox)
+# Priority: Distrobox > UV (host) > .venv (host) > system
+ifeq ($(DISTROBOX),)
+    UV_CMD := $(shell command -v uv 2> /dev/null)
+    ifneq ($(UV_CMD),)
+        PY_RUN := uv run python3
+        TOOL_RUN := uv run
+    else ifneq ($(wildcard .venv/bin/python3),)
+        PY_RUN := .venv/bin/python3
+        TOOL_RUN := .venv/bin/
+    else
+        PY_RUN := python3
+        TOOL_RUN :=
+    endif
+else
+    PY_RUN := $(DISTROBOX) python3
+    TOOL_RUN := $(DISTROBOX)
+endif
+
 #
 APITRACE_DIR := $(HOME)/Téléchargements/apitrace-latest-Linux
 APITRACE_WRAPPERS := $(APITRACE_DIR)/lib/apitrace/wrappers
@@ -33,7 +52,7 @@ BUILD_PROF_DIR := build-prof
 BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release docs
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release docs docs-clean
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -48,25 +67,40 @@ clean:
 
 docs:
 	@echo "Building MkDocs documentation..."
-	@$(DISTROBOX) python3 -m mkdocs build
+	@$(PY_RUN) -m mkdocs --version > /dev/null 2>&1 || ( \
+		CMD=$$(command -v uv > /dev/null 2>&1 && echo "uv pip" || echo "pip"); \
+		echo "❌ Error: mkdocs not found. Install it with: $$CMD install -r requirements-dev.txt" && exit 1)
+	@$(PY_RUN) -m mkdocs build
 	@echo "Generating Doxygen API Reference..."
+	@$(DISTROBOX) command -v doxygen > /dev/null 2>&1 || ( \
+		PKGMGR=$$(command -v nala > /dev/null 2>&1 && echo "nala" || echo "apt"); \
+		echo "❌ Error: doxygen not found. Install it with: sudo $$PKGMGR install doxygen" && exit 1)
 	@$(DISTROBOX) doxygen Doxyfile
 	@echo "Documentation built in 'site/' directory (API at 'site/doxygen/html')."
+	@echo "Verifying Documentation Quality..."
+	@$(PY_RUN) scripts/verify_docs.py docs site/doxygen/html
 
 docs-serve:
 	@echo "Serving full static site (MkDocs + Doxygen)..."
 	@echo "Open http://localhost:8000"
-	@$(DISTROBOX) python3 -m http.server -d site 8000
+	@$(PY_RUN) -m http.server -d site 8000
 
 docs-dev:
 	@echo "Starting MkDocs Live Preview (No Doxygen integration)..."
-	@$(DISTROBOX) python3 -m mkdocs serve
+	@$(PY_RUN) -m mkdocs serve
 
 docs-legacy:
 	@echo "Generating Doxygen documentation (Legacy)..."
 	@$(DISTROBOX) doxygen Doxyfile
 
-clean-all:
+docs-clean:
+	@echo "Cleaning all documentation build artifacts..."
+	@rm -rf site/
+	@rm -rf docs/doxygen/
+	@rm -rf docs/html/ docs/latex/ docs/xml/
+	@echo "✓ Documentation artifacts removed"
+
+clean-all: docs-clean
 	@echo "Removing all build directories..."
 	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) build-ssbo
 
@@ -87,7 +121,7 @@ run-software: all
 format:
 	$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format -i"
 	@echo "Formatting Python scripts..."
-	@ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
+	@$(TOOL_RUN) ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
 
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
@@ -102,7 +136,7 @@ lint: $(BUILD_DIR)/Makefile
 	@echo "Linting C code..."
 	$(DISTROBOX) clang-tidy -header-filter="^$(CURDIR)/(src|include)/.*" $(shell find src -name "*.c" ! -name "stb_image_impl.c") -- -D_POSIX_C_SOURCE=200809L -Isrc -Iinclude -isystem $(CURDIR)/$(STB_INC) -isystem $(CURDIR)/$(GLAD_INC) -isystem $(CURDIR)/$(CGLM_INC) -isystem $(CURDIR)/$(CJSON_INC)
 	@echo "Linting Python scripts..."
-	@ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: pip install ruff" && exit 1)
+	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
 
 deps-setup:
@@ -119,7 +153,7 @@ offline-test:
 
 test-python:
 	@echo "Running Python script tests..."
-	@python3 tests/test_trace_analyze.py
+	@$(PY_RUN) tests/test_trace_analyze.py
 
 test: all test-python
 	@echo "Running C/C++ unit tests..."
@@ -161,8 +195,8 @@ coverage: $(BUILD_COV_DIR)
 		-ignore-filename-regex="(generated|deps|tests)" | tee $(BUILD_COV_DIR)/coverage_summary.txt
 
 	@echo "Running Python coverage..."
-	@pytest tests/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \
-		(echo "⚠️  Install pytest-cov: pip install pytest-cov" && exit 1)
+	@$(TOOL_RUN) pytest tests/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \
+		(echo "⚠️  Install pytest-cov: $$CMD install pytest-cov" && exit 1)
 	@echo "Python coverage report: $(REPORT_DIR)/python_coverage/index.html"
 
 apitrace: profile

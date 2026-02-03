@@ -11,7 +11,7 @@ This project includes a containerized build and runtime environment for consiste
 
 ### Build the Image
 
-```bash
+```sh
 make docker-build
 ```
 
@@ -22,7 +22,7 @@ This creates an optimized container image with:
 
 ### Run the Application
 
-```bash
+```sh
 make docker-run
 ```
 
@@ -68,7 +68,7 @@ RUN --mount=type=cache,target=/src/build \
 
 The [`entrypoint.sh`](https://github.com/yoyonel/suckless-ogl/blob/main/entrypoint.sh) script manages virtual display:
 
-```bash
+```sh
 #!/bin/bash
 set -e
 
@@ -138,7 +138,7 @@ CONTAINER_ENGINE := $(shell command -v docker 2> /dev/null || echo podman)
 
 To force a specific engine:
 
-```bash
+```sh
 CONTAINER_ENGINE=podman make docker-build
 ```
 
@@ -146,7 +146,7 @@ CONTAINER_ENGINE=podman make docker-build
 
 Thanks to BuildKit cache mounts, subsequent builds are fast:
 
-```bash
+```sh
 # First build: ~2-3 minutes (fetch deps, compile everything)
 make docker-build
 
@@ -159,7 +159,7 @@ make docker-build
 
 The `docker-run` target forwards X11:
 
-```bash
+```sh
 make docker-run
 # Equivalent to:
 docker run --rm -it \
@@ -179,7 +179,7 @@ docker run --rm -it \
 
 Ensure BuildKit is enabled:
 
-```bash
+```sh
 # Docker
 export DOCKER_BUILDKIT=1
 
@@ -190,7 +190,7 @@ export DOCKER_BUILDKIT=1
 
 Check if port :99 is available:
 
-```bash
+```sh
 docker run --rm -it suckless-ogl /bin/bash
 # Inside container:
 Xvfb :99 -screen 0 1920x1080x24
@@ -200,7 +200,7 @@ Xvfb :99 -screen 0 1920x1080x24
 
 Reset xhost permissions:
 
-```bash
+```sh
 xhost +local:
 make docker-run
 ```
