@@ -179,11 +179,12 @@ void billboard_group_draw_debug_quads(BillboardGroup* group, Shader* shader)
 
 	shader_use(shader);
 	glBindVertexArray(group->vao_wire_quad);
-	// 4 vertices for a quad (GL_LINE_LOOP or GL_LINES depending on VBO)
-	// render_utils uses GL_LINE_LOOP implicitly by order? No, it's 4 verts.
-	// If GL_LINE_LOOP, we need glDrawArraysInstanced(GL_LINE_LOOP, ...)
-	// But render_utils_create_wire_quad_vbo puts 4 vertices.
-	// We'll use GL_LINE_LOOP to close it.
+	// 4 vertices for a quad (GL_LINE_LOOP or GL_LINES depending on
+	// VBO) render_utils uses GL_LINE_LOOP implicitly by order? No,
+	// it's 4 verts. If GL_LINE_LOOP, we need
+	// glDrawArraysInstanced(GL_LINE_LOOP, ...) But
+	// render_utils_create_wire_quad_vbo puts 4 vertices. We'll use
+	// GL_LINE_LOOP to close it.
 	glDrawArraysInstanced(GL_LINE_LOOP, 0, 4, group->instance_count);
 	glBindVertexArray(0);
 }
