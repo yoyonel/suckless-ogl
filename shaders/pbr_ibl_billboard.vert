@@ -27,8 +27,39 @@ uniform mat4 previousViewProj;  // Kept for interface compatibility, maybe
 
 // We need to calculate the billboard size to bound the sphere
 // The sphere is at i_model[3].xyz
-// The scale is extracts from i_model columns lengths. Assuming uniform scale
 // for spheres.
+
+// Helper function to calculate 1D projected bounds (NDC)
+void getProjectedBounds(vec2 axis, float radius, float projScale, out float outMin, out float outMax) {
+    float d2 = dot(axis, axis);
+    float r2 = radius * radius;
+    
+    // Check if we are inside or too close, fallback to full range if needed (handled in main usually)
+    if (d2 <= r2) {
+        outMin = -1.0;
+        outMax = 1.0;
+        return;
+    }
+
+    float L = sqrt(d2 - r2); 
+
+    // Tangent logic to find normal of tangent lines
+    // Tangent 1
+    float nx1 = (axis.x * L - axis.y * radius) / d2;
+    float nz1 = (axis.y * L + axis.x * radius) / d2;
+    
+    // Tangent 2
+    float nx2 = (axis.x * L + axis.y * radius) / d2;
+    float nz2 = (axis.y * L - axis.x * radius) / d2;
+    
+    // Project to NDC: x_ndc = (nx / -nz) * projScale
+    // Division by -nz because OpenGL looks down -Z
+    float p1 = projScale * (nx1 / -nz1);
+    float p2 = projScale * (nx2 / -nz2);
+    
+    outMin = min(p1, p2);
+    outMax = max(p1, p2);
+}
 
 void main()
 {
@@ -51,39 +82,79 @@ void main()
 	SphereRadius = maxScale;
 	SphereCenter = vec3(i_model[3]);
 
-	// Billboard calculation
-	// We want the quad to always face the camera, but centered at
-	// SphereCenter. Standard billboard technique: Camera Right =
-	// vec3(view[0][0], view[1][0], view[2][0]) Camera Up    =
-	// vec3(view[0][1], view[1][1], view[2][1])
-
+	// Standard billboard vectors (needed for fallback)
 	vec3 camRight = vec3(view[0][0], view[1][0], view[2][0]);
 	vec3 camUp = vec3(view[0][1], view[1][1], view[2][1]);
 
-	// Calculate world position of this vertex (in_position is like (-0.5,
-	// -0.5) to (0.5, 0.5)) We need to scale the quad to cover the sphere.
-	// Radius * 2.0 covers the diameter. Better specific slightly larger to
-	// avoid precision clipping at edges? Let's stick to exact bounds for
-	// now. A sphere of radius R needs a quad of side 2R. If in_position is
-	// in range [-0.5, 0.5], sides are length 1.0. So we multiply by
-	// SphereRadius * 2.0.
+	// Exact AABB Calculation (Tangent Planes Method)
+	vec3 viewPos = (view * vec4(SphereCenter, 1.0)).xyz;
+	float distSq = dot(viewPos, viewPos);
+	float r2 = SphereRadius * SphereRadius;
+	
+	vec4 clipPos;
+	
+	// Check if camera is inside the sphere
+	if (distSq <= r2 * 1.001) {
+		// Inside: Full screen quad ? Or fallback.
+		// For a billboard, this might clip awkwardly. 
+		// We'll set a massive quad in front of the camera.
+		clipPos = vec4(in_position.xy * 2.0, 0.0, 1.0); // Simple fill NDC
+		
+		// For WorldPos reconstruction, we need something valid.
+		// But if we are inside, standard raytracing logic in frag shader handles it 
+		// if we pass correct SphereCenter. 
+		// Here we just want to ensure rasterization covers the screen.
+		WorldPos = SphereCenter + camRight * in_position.x * SphereRadius * 100.0 + camUp * in_position.y * SphereRadius * 100.0;
+	} else {
+		float sx = projection[0][0];
+		float sy = projection[1][1];
+		
+		float minX, maxX, minY, maxY;
+		getProjectedBounds(vec2(viewPos.x, viewPos.z), SphereRadius, sx, minX, maxX);
+		getProjectedBounds(vec2(viewPos.y, viewPos.z), SphereRadius, sy, minY, maxY);
+		
+		// Select NDC coordinates based on quad vertex sign
+		float ndc_x = (in_position.x < 0.0) ? minX : maxX;
+		float ndc_y = (in_position.y < 0.0) ? minY : maxY;
+		
+		// Reconstruct final clip position
+		// We use the sphere center's depth for Z/W to maintain reasonable depth testing
+		// clip space W is usually -viewPos.z
+		float clipW = -viewPos.z;
+		// clip space Z can be derived from the projection matrix applied to viewPos.z
+		// clipZ = P[2][2] * z + P[3][2]
+		float clipZ = projection[2][2] * viewPos.z + projection[3][2];
+		
+		clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
+		
+		// Reconstruct WorldPos for the Fragment Shader (Ray Origin / Direction)
+		// We need the point in World Space that corresponds to this vertex on the billboard plane (perpendicular to Z)
+		// 1. Calculate vertex position in View Space (on the plane Z = viewPos.z)
+		vec3 vertexViewPos;
+		vertexViewPos.z = viewPos.z;
+		vertexViewPos.x = ndc_x * (-viewPos.z) / sx;
+		vertexViewPos.y = ndc_y * (-viewPos.z) / sy;
+		
+		// 2. Transform offset back to World Space
+		// Offset in View Space
+		vec3 viewOffset = vertexViewPos - viewPos;
+		// Inverse Rotation (Transpose of View Rotation) * ViewOffset
+		// This assumes 'view' is an orthogonal rotation matrix (standard camera)
+		vec3 worldOffset = transpose(mat3(view)) * viewOffset;
+		
+		WorldPos = SphereCenter + worldOffset;
+	}
 
-	// Add a small padding (1.5x) to ensure the quad covers the sphere even
-	// in perspective projection and to avoid harsh clipping at the edges.
-	float quadSize = SphereRadius * 2.0 * 1.5;
-
-	WorldPos = SphereCenter + camRight * in_position.x * quadSize +
-	           camUp * in_position.y * quadSize;
-
+	// Albedo and PBR setup
 	Albedo = i_albedo;
 	Metallic = i_pbr.x;
 	Roughness = i_pbr.y;
 	AO = i_pbr.z;
 
-	// Synchronize Normal output (arbitrary vector for billboards)
+	// Synchronize Normal output
 	Normal = -vec3(view[0][2], view[1][2], view[2][2]);
 
-	CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
+	CurrentClipPos = clipPos;
 	PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
 
 	gl_Position = CurrentClipPos;
