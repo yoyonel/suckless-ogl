@@ -36,7 +36,7 @@ APP_PID=$!
 echo "Searching for Window: $WINDOW_NAME"
 WID=""
 for i in {1..30}; do
-    WID=$(xdotool search --name "$WINDOW_NAME" | head -n 1)
+    WID=$(xdotool search --name "$WINDOW_NAME" 2>/dev/null | head -n 1 || true)
     if [ -n "$WID" ]; then break; fi
     sleep 1
 done
