@@ -15,6 +15,23 @@ The project uses a hybrid Makefile + CMake system for convenience and performanc
 | `make asan`  | Debug          | `-fsanitize=address` | Fast runtime error detection. |
 | `make memcheck` | Release      | Valgrind        | **Default** deep leak analysis. |
 
+### 🔍 Memory & Error Checking
+
+We provide two complementary tools for memory safety:
+
+#### 1. Valgrind (Default / Deep Analysis)
+Recommended for thorough leak hunting and identifying "still reachable" blocks.
+```bash
+make memcheck         # Runs Valgrind on a Release build (Local Default)
+make test-integration # Runs full UI scenario under Valgrind
+```
+
+#### 2. AddressSanitizer (ASan / Performance)
+Best for fast runtime error detection (overflows, use-after-free) and used by **CI** for rapid feedback.
+```bash
+make asan             # Build with ASan instrumentation
+make memcheck-asan    # Run ASan-instrumented binary (CI Default)
+```
 ## The SIMD Segfault Story: A Technical Deep-Dive
 
 When enabling `-march=native` with `-O3`, the application initially suffered from intermittent segfaults. Here is how we diagnosed and fixed it.

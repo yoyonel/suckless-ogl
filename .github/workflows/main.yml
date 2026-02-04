@@ -167,7 +167,7 @@ jobs:
           name: coverage-report
           path: build-coverage/coverage_report/
 
-  # --- JOB 3 : VÉRIFICATION MÉMOIRE (VALGRIND) ---
+  # --- JOB 3 : VÉRIFICATION MÉMOIRE (ASan - Rapide) ---
   memory-check:
     needs: lint-and-format
     runs-on: ubuntu-latest
@@ -181,9 +181,9 @@ jobs:
             libgl1-mesa-dev libglew-dev libglfw3-dev \
             xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
             valgrind gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
-      - name: Run Memory Check (Valgrind)
+      - name: Run Memory Check (ASan)
         run: |
-          xvfb-run -a -s "-screen 0 1024x768x24" make memcheck CONTAINER_RUN=""
+          xvfb-run -a -s "-screen 0 1024x768x24" make memcheck-asan CONTAINER_RUN=""
 
 
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
