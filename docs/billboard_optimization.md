@@ -59,4 +59,16 @@ This method provides a **pixel-perfect bounding box**:
 - **Correct Perspective**: Handles elliptical distortion at screen edges perfectly.
 - **Efficient**: Uses only square roots and basic arithmetic, avoiding expensive trigonometric functions (`acos`, `atan`).
 
+## Robustness Handling
+
+To ensure stability in all scenarios, two special cases are handled:
+
+### 1. Camera Plane Singularity
+When the sphere intersects the camera plane ($Z=0$), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.
+**Solution**: If a tangent point lies behind the camera ($n_z \ge 0$), its projected screen coordinate is clamped to infinity ($\pm 10000.0$) in the correct direction. This ensures the quad extends to the screen edge.
+
+### 2. Back-Projection Culling
+Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can mathematically project to valid screen coordinates (inverted).
+**Solution**: These are explicitly culled in the Vertex Shader by checking if `viewPos.z > 0.0`.
+
 See `shaders/pbr_ibl_billboard.vert` for the GLSL implementation.

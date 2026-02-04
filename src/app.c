@@ -240,7 +240,6 @@ void app_cleanup(App* app)
 
 	shader_destroy(app->pbr_instanced_shader);
 	shader_destroy(app->pbr_billboard_shader);
-	shader_destroy(app->pbr_billboard_shader);
 	shader_destroy(app->debug_shader);
 	shader_destroy(app->debug_line_shader);
 #ifdef USE_SSBO_RENDERING

@@ -30,35 +30,49 @@ uniform mat4 previousViewProj;  // Kept for interface compatibility, maybe
 // for spheres.
 
 // Helper function to calculate 1D projected bounds (NDC)
-void getProjectedBounds(vec2 axis, float radius, float projScale, out float outMin, out float outMax) {
-    float d2 = dot(axis, axis);
-    float r2 = radius * radius;
-    
-    // Check if we are inside or too close, fallback to full range if needed (handled in main usually)
-    if (d2 <= r2) {
-        outMin = -1.0;
-        outMax = 1.0;
-        return;
-    }
+void getProjectedBounds(vec2 axis, float radius, float projScale,
+                        out float outMin, out float outMax)
+{
+	float d2 = dot(axis, axis);
+	float r2 = radius * radius;
 
-    float L = sqrt(d2 - r2); 
+	// Check if we are inside or too close, fallback to full range if needed
+	// (handled in main usually)
+	if (d2 <= r2) {
+		outMin = -1.0;
+		outMax = 1.0;
+		return;
+	}
 
-    // Tangent logic to find normal of tangent lines
-    // Tangent 1
-    float nx1 = (axis.x * L - axis.y * radius) / d2;
-    float nz1 = (axis.y * L + axis.x * radius) / d2;
-    
-    // Tangent 2
-    float nx2 = (axis.x * L + axis.y * radius) / d2;
-    float nz2 = (axis.y * L - axis.x * radius) / d2;
-    
-    // Project to NDC: x_ndc = (nx / -nz) * projScale
-    // Division by -nz because OpenGL looks down -Z
-    float p1 = projScale * (nx1 / -nz1);
-    float p2 = projScale * (nx2 / -nz2);
-    
-    outMin = min(p1, p2);
-    outMax = max(p1, p2);
+	float L = sqrt(max(0.0, d2 - r2));
+
+	// Tangent logic to find normal of tangent lines
+	// Tangent 1
+	float nx1 = (axis.x * L - axis.y * radius) / d2;
+	float nz1 = (axis.y * L + axis.x * radius) / d2;
+
+	// Tangent 2
+	float nx2 = (axis.x * L + axis.y * radius) / d2;
+	float nz2 = (axis.y * L - axis.x * radius) / d2;
+
+	// Project to NDC: x_ndc = (nx / -nz) * projScale
+	// Division by -nz because OpenGL looks down -Z
+	// HANDLE SINGULARITY: If tangent point is behind camera (nz >= 0),
+	// we clamp to infinity in the direction of nx.
+	float p1, p2;
+
+	if (nz1 > -0.001)
+		p1 = sign(nx1) * 10000.0;
+	else
+		p1 = projScale * (nx1 / -nz1);
+
+	if (nz2 > -0.001)
+		p2 = sign(nx2) * 10000.0;
+	else
+		p2 = projScale * (nx2 / -nz2);
+
+	outMin = min(p1, p2);
+	outMax = max(p1, p2);
 }
 
 void main()
@@ -90,58 +104,74 @@ void main()
 	vec3 viewPos = (view * vec4(SphereCenter, 1.0)).xyz;
 	float distSq = dot(viewPos, viewPos);
 	float r2 = SphereRadius * SphereRadius;
-	
+
 	vec4 clipPos;
-	
+
 	// Check if camera is inside the sphere
 	if (distSq <= r2 * 1.001) {
 		// Inside: Full screen quad ? Or fallback.
-		// For a billboard, this might clip awkwardly. 
+		// For a billboard, this might clip awkwardly.
 		// We'll set a massive quad in front of the camera.
-		clipPos = vec4(in_position.xy * 2.0, 0.0, 1.0); // Simple fill NDC
-		
+		clipPos =
+		    vec4(in_position.xy * 2.0, 0.0, 1.0);  // Simple fill NDC
+
 		// For WorldPos reconstruction, we need something valid.
-		// But if we are inside, standard raytracing logic in frag shader handles it 
-		// if we pass correct SphereCenter. 
-		// Here we just want to ensure rasterization covers the screen.
-		WorldPos = SphereCenter + camRight * in_position.x * SphereRadius * 100.0 + camUp * in_position.y * SphereRadius * 100.0;
+		// But if we are inside, standard raytracing logic in frag
+		// shader handles it if we pass correct SphereCenter. Here we
+		// just want to ensure rasterization covers the screen.
+		WorldPos = SphereCenter +
+		           camRight * in_position.x * SphereRadius * 100.0 +
+		           camUp * in_position.y * SphereRadius * 100.0;
+	} else if (viewPos.z > 0.0) {
+		// Optimization: Cull spheres that are fully behind the camera
+		// plane (and don't contain it) If z > 0, the sphere is behind
+		// the eye. Since we are in the 'else' of (dist <= r), we know d
+		// > r, so the sphere does not contain the eye. It is invisible.
+		// We project it to outside clip space.
+		clipPos = vec4(-2.0, -2.0, 0.0, 1.0);
+		WorldPos = SphereCenter;
 	} else {
 		float sx = projection[0][0];
 		float sy = projection[1][1];
-		
+
 		float minX, maxX, minY, maxY;
-		getProjectedBounds(vec2(viewPos.x, viewPos.z), SphereRadius, sx, minX, maxX);
-		getProjectedBounds(vec2(viewPos.y, viewPos.z), SphereRadius, sy, minY, maxY);
-		
+		getProjectedBounds(vec2(viewPos.x, viewPos.z), SphereRadius, sx,
+		                   minX, maxX);
+		getProjectedBounds(vec2(viewPos.y, viewPos.z), SphereRadius, sy,
+		                   minY, maxY);
+
 		// Select NDC coordinates based on quad vertex sign
 		float ndc_x = (in_position.x < 0.0) ? minX : maxX;
 		float ndc_y = (in_position.y < 0.0) ? minY : maxY;
-		
+
 		// Reconstruct final clip position
-		// We use the sphere center's depth for Z/W to maintain reasonable depth testing
-		// clip space W is usually -viewPos.z
+		// We use the sphere center's depth for Z/W to maintain
+		// reasonable depth testing clip space W is usually -viewPos.z
 		float clipW = -viewPos.z;
-		// clip space Z can be derived from the projection matrix applied to viewPos.z
-		// clipZ = P[2][2] * z + P[3][2]
+		// clip space Z can be derived from the projection matrix
+		// applied to viewPos.z clipZ = P[2][2] * z + P[3][2]
 		float clipZ = projection[2][2] * viewPos.z + projection[3][2];
-		
+
 		clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
-		
-		// Reconstruct WorldPos for the Fragment Shader (Ray Origin / Direction)
-		// We need the point in World Space that corresponds to this vertex on the billboard plane (perpendicular to Z)
-		// 1. Calculate vertex position in View Space (on the plane Z = viewPos.z)
+
+		// Reconstruct WorldPos for the Fragment Shader (Ray Origin /
+		// Direction) We need the point in World Space that corresponds
+		// to this vertex on the billboard plane (perpendicular to Z)
+		// 1. Calculate vertex position in View Space (on the plane Z =
+		// viewPos.z)
 		vec3 vertexViewPos;
 		vertexViewPos.z = viewPos.z;
 		vertexViewPos.x = ndc_x * (-viewPos.z) / sx;
 		vertexViewPos.y = ndc_y * (-viewPos.z) / sy;
-		
+
 		// 2. Transform offset back to World Space
 		// Offset in View Space
 		vec3 viewOffset = vertexViewPos - viewPos;
 		// Inverse Rotation (Transpose of View Rotation) * ViewOffset
-		// This assumes 'view' is an orthogonal rotation matrix (standard camera)
+		// This assumes 'view' is an orthogonal rotation matrix
+		// (standard camera)
 		vec3 worldOffset = transpose(mat3(view)) * viewOffset;
-		
+
 		WorldPos = SphereCenter + worldOffset;
 	}
 
