@@ -262,6 +262,13 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	                                 POSTPROCESS_TEX_UNIT_DOF_BLUR + 1,
 	                                 post_processing->dummy_black_tex);
 
+	/* Bind the real velocity texture on unit 4 to prevent sampling errors
+	 */
+	if (post_processing->velocity_tex) {
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
+		glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	}
+
 	/* Reset to Unit 0 for subsequent generic bindings */
 	glActiveTexture(GL_TEXTURE0);
 
@@ -555,9 +562,10 @@ void postprocess_end(PostProcess* post_processing)
 		               POSTPROCESS_TEX_UNIT_EXPOSURE);
 	}
 
-	/* Bind Velocity Texture (Unit 4) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
-	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	/* Bind Velocity Texture (Unit 4) - use safe bind to handle resize */
+	render_utils_bind_texture_safe(
+	    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY,
+	    post_processing->velocity_tex, post_processing->dummy_black_tex);
 	if (!post_processing->is_optimized ||
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) ||
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||

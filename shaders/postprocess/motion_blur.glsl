@@ -116,7 +116,7 @@ vec3 applyVectorFieldDebug(vec2 uv)
 	vec2 velCenter = texture(velocityTexture, uvCenter).xy;
 
 	/* Draw arrow if velocity is significant */
-	if (length(velCenter) > 0.0001) {
+	if (length(velCenter) > 1e-4) {
 		/* Direction and visual length */
 		vec2 dir = normalize(velCenter);
 		float len =
