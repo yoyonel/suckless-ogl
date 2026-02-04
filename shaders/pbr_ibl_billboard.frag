@@ -43,56 +43,39 @@ bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
 	discriminant = h;
 
 	if (h < 0.0)
-		return false;
+		return false;  // No intersection
 
 	h = sqrt(h);
-	t = -b - h;
 
-	if (t < 0.0)
-		return false;
+	float t1 = -b - h;
+	if (t1 >= 0.0) {
+		t = t1;
+		vec3 hitPos = ro + t * rd;
+		normal = normalize(hitPos - center);
+		return true;
+	}
 
-	vec3 hitPos = ro + t * rd;
-	normal = normalize(hitPos - center);
-	return true;
+	float t2 = -b + h;
+	if (t2 >= 0.0) {
+		// Inside the sphere: hit the back face
+		t = t2;
+		vec3 hitPos = ro + t * rd;
+		normal = normalize(hitPos - center);
+		return true;
+	}
+
+	return false;
 }
 
 void main()
 {
+	vec3 color;
+
 	// 1. Calculate Ray direction
 	// In Ortho/Persp generic: normalize(WorldPos - camPos).
 	// Note: WorldPos comes from VS, it's on the billboard plane.
 	vec3 rayDir = normalize(WorldPos - camPos);
 	vec3 rayOrigin = camPos;
-
-	// Early exit if camera is inside the sphere radius: render solid black
-	vec3 oc_vec = rayOrigin - SphereCenter;
-	float distSq = dot(oc_vec, oc_vec);
-	float r2 = SphereRadius * SphereRadius;
-
-	if (distSq < r2) {
-		float b = dot(oc_vec, rayDir);
-		float h = b * b - (distSq - r2);
-		// Ray starts inside, h is guaranteed >= 0. t_exit is the exit
-		// hit.
-		float t_exit = -b + sqrt(max(h, 0.0));
-		vec3 sphereHitPos = rayOrigin + t_exit * rayDir;
-
-		// Correct Depth for back wall
-		vec4 clipPos = projection * view * vec4(sphereHitPos, 1.0);
-		float ndcDepth = clipPos.z / clipPos.w;
-		gl_FragDepth = (gl_DepthRange.diff * ndcDepth +
-		                gl_DepthRange.near + gl_DepthRange.far) *
-		               0.5;
-
-		// Solid Black
-		FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-
-		// Velocity for internal pixels
-		vec4 prevClip = previousViewProj * vec4(sphereHitPos, 1.0);
-		VelocityOut =
-		    (clipPos.xy / clipPos.w - prevClip.xy / prevClip.w) * 0.5;
-		return;
-	}
 
 	float t;
 	vec3 N;
@@ -105,6 +88,16 @@ void main()
 	}
 
 	// Analytic Edge Smoothing (Pseudo-AA)
+	/**
+	 * Analytic ISO Smoothing:
+	 * We estimate the footprint of a pixel in 'h' space.
+	 * h = R^2 - d^2. dh = -2d*dd. Near h=0, d=R.
+	 * So fwidth(h) ~ 2 * R * fwidth(d).
+	 * fwidth(d) is the pixel size in world space.
+	 * fwidth(d) = 2.0 * Z * tan(fov/2) / ScreenHeight
+	 * fwidth(d) = 2.0 * CurrentClipPos.w / (projection[1][1] *
+	 * ScreenHeight)
+	 */
 	float pixelSizeWorld =
 	    (2.0 * CurrentClipPos.w) / (projection[1][1] * u_screenSize.y);
 	float analyticFwidthH = 2.0 * SphereRadius * pixelSizeWorld;
@@ -123,14 +116,9 @@ void main()
 	// 3. Lighting
 	vec3 V = -rayDir;  // View vector is towards camera
 
-	// Use analytic roughness clamping for bit-perfect cross-GPU results
-	float analytic_roughness =
-	    compute_roughness_clamping_analytic(Roughness, 1.0 / SphereRadius);
-
-	vec3 color;
 	if (debugMode != 0) {
-		color = compute_debug(N, V, Albedo, Metallic,
-		                      analytic_roughness, AO, debugMode);
+		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
+		                      debugMode);
 	} else {
 		// We call the underlying PBR function directly to use our
 		// analytic roughness
@@ -138,13 +126,24 @@ void main()
 		float NdotV = max(dot(N, V), 0.0);
 		vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
 
+		// Use analytic roughness clamping for bit-perfect cross-GPU
+		// results
+		float analytic_roughness = compute_roughness_clamping_analytic(
+		    Roughness, 1.0 / SphereRadius);
+
 		color = compute_IBL_PBR_Advanced(
 		    N, V, R_vec, F0, NdotV, Albedo, Metallic,
 		    max(analytic_roughness, 0.04), AO);
 	}
 
 	// Apply Edge Smoothing (Darken rim)
-	color *= edgeFactor;
+	// Only for outer silhouettes (when not inside)
+	// Detect if camera is inside the sphere radius
+	vec3 oc_vec = rayOrigin - SphereCenter;
+	bool isInside = dot(oc_vec, oc_vec) < (SphereRadius * SphereRadius);
+	if (!isInside) {
+		color *= edgeFactor;
+	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	// Transparent Mode: Alpha = Opacity (edgeFactor) for Blending
@@ -156,8 +155,18 @@ void main()
 #endif
 
 	// --- Velocity Calculation ---
-	VelocityOut = (clipPos.xy / clipPos.w -
-	               (previousViewProj * vec4(sphereHitPos, 1.0)).xy /
-	                   (previousViewProj * vec4(sphereHitPos, 1.0)).w) *
-	              0.5;
+	// We assume the object is static, so WorldPos is the same for previous
+	// frame. Velocity is purely due to camera movement.
+
+	// Current Clip Position
+	vec4 currentClip = projection * view * vec4(sphereHitPos, 1.0);
+
+	// Previous Clip Position
+	vec4 previousClip = previousViewProj * vec4(sphereHitPos, 1.0);
+
+	vec2 currentPosNDC = currentClip.xy / currentClip.w;
+	vec2 previousPosNDC = previousClip.xy / previousClip.w;
+
+	// UV space velocity (NDC -> UV is * 0.5 + 0.5) implies factor 0.5
+	VelocityOut = (currentPosNDC - previousPosNDC) * 0.5;
 }
