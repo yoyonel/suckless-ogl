@@ -908,15 +908,26 @@ static void update_current_shader(PostProcess* post_processing,
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
-	/* Check cache first */
-	Shader* cached = find_shader_in_cache(post_processing, static_flags);
+	/* Sanitization: Filter out unused bits from the flags to ensure cache hits
+	 */
+	unsigned int valid_mask = 0;
+	for (size_t i = 0; i < EFFECT_COUNT; i++) {
+		valid_mask |= (unsigned int)ALL_EFFECTS[i].flag;
+	}
+	unsigned int clean_flags = static_flags & valid_mask;
+
+	/* Check cache first using clean flags */
+	Shader* cached = find_shader_in_cache(post_processing, clean_flags);
 	if (cached) {
 		if (post_processing->postprocess_shader != cached) {
 			update_current_shader(post_processing, cached, true);
 			LOG_INFO("suckless-ogl.postprocess",
-			         "Using CACHED shader for flags 0x%08X",
-			         static_flags);
+			         "Using CACHED shader for flags 0x%08X (Clean: "
+			         "0x%08X)",
+			         static_flags, clean_flags);
 		}
+		/* Store ORIGINAL flags to satisfy state change checks in
+		 * postprocess_on_state_change */
 		post_processing->compiled_flags = static_flags;
 		return;
 	}
@@ -929,7 +940,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		if (!safe_snprintf(
 		        buffer[count], sizeof(buffer[count]), "%s %d",
 		        ALL_EFFECTS[i].define_name,
-		        ((static_flags & (unsigned int)ALL_EFFECTS[i].flag) !=
+		        ((clean_flags & (unsigned int)ALL_EFFECTS[i].flag) !=
 		         0))) {
 			LOG_ERROR("suckless-ogl.postprocess",
 			          "Failed to format shader define");
@@ -969,10 +980,10 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 			}
 		}
 
-		post_processing->shader_cache[0].flags = static_flags;
+		post_processing->shader_cache[0].flags = clean_flags;
 		post_processing->shader_cache[0].shader = new_shader;
 
-		log_optimized_effects(static_flags);
+		log_optimized_effects(clean_flags);
 	} else {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to compile optimized shader");
