@@ -131,6 +131,7 @@ void billboard_group_draw(BillboardGroup* group)
 
 	/* Disable Face Culling for billboards to ensure visibility */
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
 
 	/* Draw 4 vertices (Triangle Strip) -> 2 triangles (Quad) */
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, group->instance_count);
