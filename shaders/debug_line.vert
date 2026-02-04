@@ -82,12 +82,16 @@ void main()
 
 			// Conservative Depth
 			float nearestZ = viewPos.z + sphereRadius;
-			nearestZ = min(nearestZ, -0.01);
+			// Clamp to -0.11 (NEAR_PLANE 0.1 + epsilon) to avoid
+			// hardware clipping
+			nearestZ = min(nearestZ, -0.11);
 
 			float clipW = -nearestZ;
-			float clipZ = projection[2][2] * nearestZ + projection[3][2];
-			clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
-			
+			float clipZ =
+			    projection[2][2] * nearestZ + projection[3][2];
+			clipPos =
+			    vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
+
 			// Reconstruct WorldPos
 			vec3 vertexViewPos;
 			vertexViewPos.z = nearestZ;

@@ -144,36 +144,46 @@ void main()
 		float ndc_x = (in_position.x < 0.0) ? minX : maxX;
 		float ndc_y = (in_position.y < 0.0) ? minY : maxY;
 
-		// Conservative Depth: Place quad at the sphere's front surface to prevent incorrect Z-culling
-		// by intersecting geometry (e.g. walls) before the fragment shader runs.
-		// Since we look down -Z, adding radius brings us closer to the camera (0).
+		// Conservative Depth: Place quad at the sphere's front surface
+		// to prevent incorrect Z-culling by intersecting geometry (e.g.
+		// walls) before the fragment shader runs. Since we look down
+		// -Z, adding radius brings us closer to the camera (0).
 		float nearestZ = viewPos.z + SphereRadius;
-		// Clamp to ensure we stay in front of the camera (negative Z) even if sphere grazes the plane
-		nearestZ = min(nearestZ, -0.01);
+
+		// Clamp to ensure we stay visible (beyond Near Plane).
+		// NEAR_PLANE is 0.1. If we are closer (e.g. -0.05), the
+		// hardware clips the quad. We clamp to -0.11 to ensure the quad
+		// is rasterized even if the surface is clipped. This keeps the
+		// "sides" of the sphere visible.
+		nearestZ = min(nearestZ, -0.11);
 
 		float clipW = -nearestZ;
 		float clipZ = projection[2][2] * nearestZ + projection[3][2];
-		
+
 		clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
-		
-		// Reconstruct WorldPos for the Fragment Shader (Ray Origin / Direction)
-		// We need the point in World Space that corresponds to this vertex on the billboard plane.
-		// NOTE: For raycasting, we ideally want the plane to be at the center (viewPos.z)
-		// to minimize distortion, but using nearestZ for the rasterized quad is safer for Z-test.
-		// The ray direction calculation depends on WorldPos.
-		// If we use nearestZ for WorldPos reconstruction, the ray origin is shifted.
-		// Let's stick to the center plane for WorldPos reconstruction to keep the math simple/stable
-		// for the ray intersection logic (which usually assumes rays starting from camera).
-		// Wait, WorldPos IS the point on the quad. If the quad moves, WorldPos must move.
-		
+
+		// Reconstruct WorldPos for the Fragment Shader (Ray Origin /
+		// Direction) We need the point in World Space that corresponds
+		// to this vertex on the billboard plane. NOTE: For raycasting,
+		// we ideally want the plane to be at the center (viewPos.z) to
+		// minimize distortion, but using nearestZ for the rasterized
+		// quad is safer for Z-test. The ray direction calculation
+		// depends on WorldPos. If we use nearestZ for WorldPos
+		// reconstruction, the ray origin is shifted. Let's stick to the
+		// center plane for WorldPos reconstruction to keep the math
+		// simple/stable for the ray intersection logic (which usually
+		// assumes rays starting from camera). Wait, WorldPos IS the
+		// point on the quad. If the quad moves, WorldPos must move.
+
 		vec3 vertexViewPos;
 		vertexViewPos.z = nearestZ;
 		vertexViewPos.x = ndc_x * (-nearestZ) / sx;
 		vertexViewPos.y = ndc_y * (-nearestZ) / sy;
-		
-		vec3 viewOffset = vertexViewPos - viewPos; // viewPos is still center
+
+		vec3 viewOffset =
+		    vertexViewPos - viewPos;  // viewPos is still center
 		vec3 worldOffset = transpose(mat3(view)) * viewOffset;
-		
+
 		WorldPos = SphereCenter + worldOffset;
 	}
 
