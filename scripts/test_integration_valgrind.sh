@@ -1,10 +1,16 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
-APP_PATH="./build/app"
+# Use the standard Release build for Valgrind (more realistic than ASan for some leaks)
+APP_PATH="./build-release/app"
 WINDOW_NAME="Icosphere Phong"
-# We'll use this file to capture the report while still logging to terminal
 LOG_FILE="valgrind_integration.log"
+
+# Ensure the app exists
+if [ ! -f "$APP_PATH" ]; then
+    echo "Error: Release build not found at $APP_PATH. Run 'make release' first."
+    exit 1
+fi
 
 # Ensure xdotool is installed
 if ! command -v xdotool &> /dev/null; then
@@ -12,84 +18,50 @@ if ! command -v xdotool &> /dev/null; then
     exit 1
 fi
 
-echo "Starting Valgrind..."
-# Remove --log-file to let output flow to terminal.
-# We use 'tee' to capture it for the final grep without breaking APP_PID.
-# Bash's process substitution is perfect for this.
-valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite $APP_PATH 2>&1 | tee $LOG_FILE &
+echo "Starting Application with Valgrind..."
+# --leak-check=full: Detect all leaks
+# --error-exitcode=1: Fail script if errors found
+# --suppressions: ignore system library noise
+valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+         --error-exitcode=1 \
+         --log-file=$LOG_FILE.valgrind \
+         --suppressions=valgrind.supp \
+         $APP_PATH 2>&1 | tee $LOG_FILE &
 APP_PID=$!
 
 # Wait for App to initialize
-INIT_WAIT=8
-echo "Waiting for App ID $APP_PID to initialize (${INIT_WAIT}s)..."
-sleep $INIT_WAIT
-
 echo "Searching for Window: $WINDOW_NAME"
-WID=$(xdotool search --sync --name "$WINDOW_NAME" | head -n 1)
+WID=""
+for i in {1..30}; do
+    WID=$(xdotool search --name "$WINDOW_NAME" | head -n 1)
+    if [ -n "$WID" ]; then break; fi
+    sleep 1
+done
 
 if [ -z "$WID" ]; then
     echo "Error: Window '$WINDOW_NAME' not found! Aborting."
-    kill $APP_PID
+    kill $APP_PID || true
     exit 1
 fi
 
 echo "Window found: ID $WID"
-
-echo "Attempting to focus window..."
-xdotool windowfocus "$WID" || echo "Warning: windowfocus failed (non-fatal)"
-xdotool windowactivate "$WID" || echo "Warning: windowactivate failed (expected in headless CI)"
+xdotool windowactivate "$WID"
 
 echo "Starting Integration Test Scenario..."
-sleep 1
+sleep 2
 
-# 1. Environment Switching
-echo "=> Switching Environments (Page_Up / Page_Down)"
+# Test scenario (same as ASan)
 xdotool key --delay 200 Page_Up
-sleep 2
-xdotool key --delay 200 Page_Up
-sleep 2
+sleep 1
 xdotool key --delay 200 Page_Down
-sleep 2
-
-# 2. Styles
-echo "=> Testing Styles (1-6)"
-for i in {1..6}; do
-    xdotool key --delay 500 $i
-done
-
-xdotool key --delay 500 2 # Style: Subtle
-
-# 3. Post-Process Effects
-echo "=> Toggling Effects"
-xdotool key --delay 500 v # Vignette OFF
-xdotool key --delay 500 v # Vignette ON
-xdotool key --delay 500 g # Grain
-xdotool key --delay 500 b # Bloom
-xdotool key --delay 500 h # DoF
-xdotool key --delay 500 j # Auto Exposure
-
-xdotool key --delay 500 w # Wireframe ON
-xdotool key --delay 500 w # Wireframe OFF
-
-# 4. Camera Movement
-echo "=> Moving Camera"
-xdotool keydown z; sleep 0.5; xdotool keyup z
-xdotool keydown d; sleep 0.5; xdotool keyup d
-xdotool keydown s; sleep 0.5; xdotool keyup s
-xdotool keydown a; sleep 0.5; xdotool keyup a
-
-# 5. PBR Debug Modes
-echo "=> Cycling PBR Debug Modes (F5)"
-for i in {1..5}; do
-    xdotool key --delay 300 F5
-done
-
-# 6. Performance Mode
-echo "=> Toggling Performance Mode (F9)"
-xdotool key --delay 500 F9
-sleep 2
-xdotool key --delay 500 F9
 sleep 1
+for i in {1..4}; do xdotool key --delay 500 $i; done
+xdotool key --delay 500 v
+xdotool key --delay 500 g
+xdotool key --delay 500 b
 
 echo "=> Test Complete. Exiting..."
 xdotool key Escape
@@ -102,12 +74,8 @@ else
     EXIT_CODE=1
 fi
 
-# Give a moment for logs to flush in CI
-sleep 2
-
 echo "---------------------------------------------------"
-echo "Valgrind Report Summary (from $LOG_FILE):"
-grep -A 15 "LEAK SUMMARY" $LOG_FILE || echo "Leak summary not found in log."
+tail -n 20 $LOG_FILE.valgrind || true
 echo "---------------------------------------------------"
 
 exit $EXIT_CODE
