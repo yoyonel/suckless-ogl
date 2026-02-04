@@ -193,6 +193,23 @@ static void get_dir_from_path(const char* path, char* out_dir, size_t size)
 	}
 }
 
+static bool is_safe_path(const char* path)
+{
+	if (strstr(path, "..")) {
+		return false;
+	}
+	if (path[0] == '/') {
+		return false;
+	}
+	if (strchr(path, '\\')) {
+		return false;
+	}
+	if (strstr(path, ":")) {
+		return false;
+	}
+	return true;
+}
+
 /*
  * Helper to resolve and parse an included file.
  * Returns true on success, false on error.
@@ -202,6 +219,14 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
                                       const char* path_term,
                                       const char* current_file_path)
 {
+	if (!is_safe_path(path_term)) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Security Violation: Unsafe include path detected: "
+		          "%s (in %s)",
+		          path_term, current_file_path);
+		return false;
+	}
+
 	/* Resolve relative path */
 	char current_dir[PATH_BUFFER_SIZE];
 	get_dir_from_path(current_file_path, current_dir, sizeof(current_dir));

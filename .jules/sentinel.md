@@ -12,3 +12,8 @@
 **Vulnerability:** The build configuration lacked standard security hardening flags (Stack Protector, Fortify Source, RELRO), making the binary easier to exploit if memory corruption vulnerabilities were present.
 **Learning:** Default CMake configurations often optimize for compatibility/speed rather than security. Defensive coding in source (e.g., `safe_snprintf`) is good but should be backed by compiler-level protections (Defense in Depth).
 **Prevention:** Explicitly enable hardening flags (`-fstack-protector-strong`, `-D_FORTIFY_SOURCE=2`, `-Wl,-z,relro,-z,now`) in `CMakeLists.txt` for all production targets.
+
+## 2026-02-04 - [Path Traversal] Shader Include Path Traversal
+**Vulnerability:** The `@header` directive in shaders allowed including files via relative paths containing `..`, enabling reading of arbitrary files (limited by process permissions) into the shader source.
+**Learning:** File inclusion mechanisms (like `@header`) must always sanitize input paths to prevent directory traversal. Concatenating paths is not enough; one must check for `..` or use path canonicalization.
+**Prevention:** Implemented `is_safe_path` to reject `..`, absolute paths, and drive letters in included paths.
