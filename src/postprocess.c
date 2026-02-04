@@ -146,11 +146,9 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
-#ifndef ENABLE_SHADER_OPTIMIZATION
-	/* Charger le shader de post-processing (Debug mode uniquement) */
-	post_processing->postprocess_shader =
-	    shader_load("shaders/postprocess.vert", "shaders/postprocess.frag");
-#endif
+	/* Charger le shader de post-processing (Optimized Mode) */
+	postprocess_compile_optimized(post_processing,
+	                              post_processing->active_effects);
 
 	/* Initialize UBO */
 	glGenBuffers(1, &post_processing->settings_ubo);
