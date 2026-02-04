@@ -14,7 +14,6 @@ var pbr__ibl__billboard_8frag =
     [ "Metallic", "pbr__ibl__billboard_8frag.html#a0a8957af51bf8d3e6ca6b94f408ef8ba", null ],
     [ "Normal", "pbr__ibl__billboard_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78", null ],
     [ "prefilterMap", "pbr__ibl__billboard_8frag.html#aa1f903d1916d5f054fbd4ed9bc37ef8c", null ],
-    [ "PreviousClipPos", "pbr__ibl__billboard_8frag.html#a7e44b7ffd7fe84e7c7a0763d89d594e7", null ],
     [ "previousViewProj", "pbr__ibl__billboard_8frag.html#aa85972450e5bec5caa31b28745bcbe20", null ],
     [ "projection", "pbr__ibl__billboard_8frag.html#a6f89a4fbf1a53a21ada7ca66387463a1", null ],
     [ "Roughness", "pbr__ibl__billboard_8frag.html#a1a53659c825d1c5961a993ec72faa73d", null ],

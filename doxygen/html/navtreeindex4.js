@@ -1,7 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098":[6,0,2,24,3],
-"postprocess__presets_8h.html#afb1c2f382c8e33458959764eaad5e2cf":[6,0,2,24,9],
 "postprocess__presets_8h_source.html":[6,0,2,24],
 "projection__utils_8glsl.html":[6,0,3,19],
 "projection__utils_8glsl.html#a122a5b8a15c87a10ec2c0fbb423d50fd":[6,0,3,19,0],
@@ -249,5 +247,7 @@ var NAVTREEINDEX4 =
 "structCamera.html#a15f112d5a2de5fd7806bcde9bb2d9d76":[5,0,8,0],
 "structCamera.html#a1766e03aadd043503613dd611d84a69e":[5,0,8,27],
 "structCamera.html#a21fc9e142b104d8e94126657abaa075f":[5,0,8,28],
-"structCamera.html#a3aab68c9e46b44b0243504089c3227d7":[5,0,8,20]
+"structCamera.html#a3aab68c9e46b44b0243504089c3227d7":[5,0,8,20],
+"structCamera.html#a4c8bddeb429c59601ee6de4f20f56390":[5,0,8,4],
+"structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71":[5,0,8,23]
 };

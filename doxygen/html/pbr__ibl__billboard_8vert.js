@@ -7,8 +7,6 @@ var pbr__ibl__billboard_8vert =
     [ "CurrentClipPos", "pbr__ibl__billboard_8vert.html#a80ee2f989c0542d4487b3806dfb0a6a1", null ],
     [ "Metallic", "pbr__ibl__billboard_8vert.html#a4a4abc43f0812e74074e73f8b72cdf94", null ],
     [ "Normal", "pbr__ibl__billboard_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd", null ],
-    [ "PreviousClipPos", "pbr__ibl__billboard_8vert.html#a439e84bcf433ed03ce625202a93ee2af", null ],
-    [ "previousViewProj", "pbr__ibl__billboard_8vert.html#aa85972450e5bec5caa31b28745bcbe20", null ],
     [ "projection", "pbr__ibl__billboard_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1", null ],
     [ "Roughness", "pbr__ibl__billboard_8vert.html#a24c2880d39ecb32f2635dcacd09ec6e6", null ],
     [ "SphereCenter", "pbr__ibl__billboard_8vert.html#a640d5f06ef79aa51839a7289cec6fdb6", null ],
