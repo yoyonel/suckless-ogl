@@ -136,8 +136,8 @@ void fx_motion_blur_render(PostProcess* post_processing)
 	                   GL_WRITE_ONLY, GL_RG16F);
 
 	glDispatchCompute((GLuint)groups_x, (GLuint)groups_y, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-	                GL_TEXTURE_FETCH_BARRIER_BIT);
+	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
 
 	/* Pass 2: Neighbor Max Velocity */
 	shader_use(mb_fx->neighbor_max_shader);
