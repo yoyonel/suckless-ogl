@@ -77,3 +77,8 @@ Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can math
   [PDF Reference](https://jcgt.org/published/0002/02/05/)
 
 See `shaders/pbr_ibl_billboard.vert` for the GLSL implementation.
+
+### Visual Illustration
+The following image (from Mara et al.) demonstrates how the spherical projection creates an elliptical footprint on the screen, which our exact AABB calculation perfectly bounds:
+
+![Perspective Projection Grid](images/perspective_projection_grid.png)
