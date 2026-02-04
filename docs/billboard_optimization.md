@@ -78,6 +78,13 @@ Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can math
 To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's **frontmost plane** ($Z_{nearest} = Z_{view} + R$) rather than its center.
 This ensures the quad is drawn *before* any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment Shader then outputs the precise per-pixel depth (`gl_FragDepth`) to carve out the true spherical shape.
 
+### 4. Numerical Stability: Avoiding Silhouette Jitter
+When using ray-casting on billboards, it is critical that attributes constant across the sphere (center, radius, material) are passed using the **`flat`** interpolation qualifier.
+
+By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., $Radius = 1.0$), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., $0.9999999$ or $1.0000001$). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.
+
+Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensures bit-perfect consistency, guaranteeing "ISO" rendering results identical to geometric spheres.
+
 
 ## References
 

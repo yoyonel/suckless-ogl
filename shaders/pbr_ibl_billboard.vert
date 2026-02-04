@@ -10,12 +10,12 @@ layout(location = 7) in vec3 i_pbr;  // Instance PBR (Metallic, Roughness, AO)
 
 out vec3 WorldPos;       // Billboard Fragment World Position
 out vec3 Normal;         // Synchronized (unused, set to cam vector)
-out vec3 SphereCenter;   // Center of the sphere in World Space
-out float SphereRadius;  // Radius of the sphere
-out vec3 Albedo;
-out float Metallic;
-out float Roughness;
-out float AO;
+flat out vec3 SphereCenter;   // Center of the sphere in World Space
+flat out float SphereRadius;  // Radius of the sphere
+flat out vec3 Albedo;
+flat out float Metallic;
+flat out float Roughness;
+flat out float AO;
 
 out vec4 CurrentClipPos;
 out vec4 PreviousClipPos;
