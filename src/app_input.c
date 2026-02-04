@@ -230,9 +230,51 @@ void handle_postprocess_input(App* app, int key)
 			                      "DOF", "DOF DEBUG");
 			break;
 		case GLFW_KEY_M:
-			toggle_postfx_complex(
-			    app, POSTFX_MOTION_BLUR, POSTFX_MOTION_BLUR_DEBUG,
-			    "Motion Blur", "Motion Blur DEBUG");
+			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
+			        GLFW_PRESS ||
+			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
+			        GLFW_PRESS) {
+				/* SHIFT+M: Cycle Debug Views: Off → MB Debug
+				   → Vector Field → Off */
+				int mb_dbg = postprocess_is_enabled(
+				    &app->postprocess,
+				    POSTFX_MOTION_BLUR_DEBUG);
+				int vf_dbg = postprocess_is_enabled(
+				    &app->postprocess,
+				    POSTFX_VECTOR_FIELD_DEBUG);
+
+				const char* mode_name;
+				if (!mb_dbg && !vf_dbg) {
+					/* Off → Motion Blur Debug */
+					postprocess_enable(
+					    &app->postprocess,
+					    POSTFX_MOTION_BLUR_DEBUG);
+					mode_name = "Motion Blur Debug (RG)";
+				} else if (mb_dbg) {
+					/* MB Debug → Vector Field */
+					postprocess_disable(
+					    &app->postprocess,
+					    POSTFX_MOTION_BLUR_DEBUG);
+					postprocess_enable(
+					    &app->postprocess,
+					    POSTFX_VECTOR_FIELD_DEBUG);
+					mode_name = "Vector Field Debug";
+				} else {
+					/* Vector Field → Off */
+					postprocess_disable(
+					    &app->postprocess,
+					    POSTFX_VECTOR_FIELD_DEBUG);
+					mode_name = "Debug: OFF";
+				}
+				LOG_INFO("suckless-ogl.app",
+				         "Velocity Debug: %s", mode_name);
+				action_notifier_push(&app->notifier, mode_name,
+				                     NOTIF_DUR_NORMAL);
+			} else {
+				/* M: Toggle Motion Blur */
+				toggle_postfx(app, POSTFX_MOTION_BLUR,
+				              "Motion Blur");
+			}
 			break;
 		case GLFW_KEY_R:
 			LOG_INFO("suckless-ogl.app",

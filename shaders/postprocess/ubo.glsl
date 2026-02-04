@@ -183,3 +183,9 @@ const bool enableBanding = bool(OPT_ENABLE_BANDING);
 #else
 #define enableBanding ((activeEffects & (1u << 14u)) != 0u)
 #endif
+
+#ifdef OPT_ENABLE_VECTOR_FIELD_DEBUG
+const bool enableVectorFieldDebug = bool(OPT_ENABLE_VECTOR_FIELD_DEBUG);
+#else
+#define enableVectorFieldDebug ((activeEffects & (1u << 15u)) != 0u)
+#endif

@@ -1,6 +1,8 @@
 uniform sampler2D velocityTexture;
 uniform sampler2D neighborMaxTexture;
 
+vec3 applyVectorFieldDebug(vec2 uv);
+
 /* ============================================================================
    EFFECT: MOTION BLUR
    ============================================================================
@@ -14,8 +16,15 @@ vec3 applyMotionBlur(vec2 uv)
 
 	/* Debug Visualization (Early Exit) */
 	if (enableMotionBlurDebug) {
+		/* Mode 2: RG Color Visualization */
 		return vec3(abs(velocity.x) * 20.0, abs(velocity.y) * 20.0,
 		            0.0);
+	}
+
+	/* Mode 3: Vector Field Overlay (toggleable via enableVectorFieldDebug)
+	 */
+	if (enableVectorFieldDebug) {
+		return applyVectorFieldDebug(uv);
 	}
 
 	velocity *= mb_intensity;
@@ -90,4 +99,56 @@ vec3 getSceneSource(vec2 uv)
 		return applyMotionBlur(uv);
 	}
 	return texture(screenTexture, uv).rgb;
+}
+
+vec3 applyVectorFieldDebug(vec2 uv)
+{
+	vec2 screenSize = vec2(textureSize(velocityTexture, 0));
+	vec2 pixelPos = uv * screenSize;
+
+	/* Grid cell size (one arrow every N pixels) - LARGER for visibility */
+	float gridSize = 48.0;
+	vec2 cellCenter =
+	    (floor(pixelPos / gridSize) * gridSize) + (gridSize * 0.5);
+	vec2 uvCenter = cellCenter / screenSize;
+
+	/* Sample velocity at the CENTER of the cell (not at current pixel) */
+	vec2 velCenter = texture(velocityTexture, uvCenter).xy;
+
+	/* Draw arrow if velocity is significant */
+	if (length(velCenter) > 1e-4) {
+		/* Direction and visual length */
+		vec2 dir = normalize(velCenter);
+		float len =
+		    length(velCenter) * 800.0;   /* Increased visual scale */
+		len = min(len, gridSize * 0.45); /* Clamp to stay in cell */
+
+		/* Local position relative to cell center */
+		vec2 localPos = pixelPos - cellCenter;
+
+		/* SDF Point-to-Segment distance for symmetric line (-dir to
+		 * +dir) */
+		float h = clamp(dot(localPos, dir) / len, -1.0, 1.0);
+		float d = length(localPos - dir * len * h);
+
+		/* Line thickness (2.0 pixels for better visibility) */
+		if (d < 2.0) {
+			/* Color based on direction angle (HSV -> RGB) */
+			float angle = atan(dir.y, dir.x); /* -PI to PI */
+			float hue =
+			    (angle + 3.14159) / 6.28318; /* Normalize to 0-1 */
+
+			/* HSV to RGB (S=1, V=1) */
+			vec3 rgb = clamp(
+			    abs(mod(hue * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) -
+			        3.0) -
+			        1.0,
+			    0.0, 1.0);
+			return rgb;
+		}
+	}
+
+	/* Darken the base scene to make arrows visible */
+	vec3 baseColor = texture(screenTexture, uv).rgb;
+	return baseColor * 0.3;
 }
