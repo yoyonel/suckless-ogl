@@ -336,13 +336,14 @@ void test_postprocess_garbage_flags_cache_hit(void)
 	GLuint original_program = post_proc.postprocess_shader->program;
 
 	// Compile with garbage flags
-	// Currently, this should cause a MISS because the cache key is garbage_flags
-	// But the generated shader should be identical.
-	// We want this to be a HIT.
+	// Currently, this should cause a MISS because the cache key is
+	// garbage_flags But the generated shader should be identical. We want
+	// this to be a HIT.
 
 	postprocess_compile_optimized(&post_proc, garbage_flags);
 
-	TEST_ASSERT_EQUAL(original_program, post_proc.postprocess_shader->program);
+	TEST_ASSERT_EQUAL(original_program,
+	                  post_proc.postprocess_shader->program);
 
 	postprocess_cleanup(&post_proc);
 }
