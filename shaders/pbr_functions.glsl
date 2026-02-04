@@ -41,7 +41,7 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
 	// --- DIFFUSE IBL ---
 	vec3 kS = F;
 	vec3 kD = (1.0 - kS) * (1.0 - metallic);
-	vec3 irradiance = texture(irradianceMap, dirToUV(N)).rgb;
+	vec3 irradiance = textureLod(irradianceMap, dirToUV(N), 0.0).rgb;
 	irradiance = max(irradiance, vec3(0.0));
 	vec3 diffuse = irradiance * albedo;
 
@@ -156,7 +156,7 @@ vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 			color = vec3(ao);
 		else if (debugMode == 6) {
 			vec3 irradiance =
-			    texture(irradianceMap, dirToUV(N)).rgb;
+			    textureLod(irradianceMap, dirToUV(N), 0.0).rgb;
 			color = pow(irradiance, vec3(1.0 / 2.2));
 		} else if (debugMode == 7) {
 			vec3 R = reflect(-V, N);
