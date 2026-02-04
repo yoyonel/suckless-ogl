@@ -144,34 +144,36 @@ void main()
 		float ndc_x = (in_position.x < 0.0) ? minX : maxX;
 		float ndc_y = (in_position.y < 0.0) ? minY : maxY;
 
-		// Reconstruct final clip position
-		// We use the sphere center's depth for Z/W to maintain
-		// reasonable depth testing clip space W is usually -viewPos.z
-		float clipW = -viewPos.z;
-		// clip space Z can be derived from the projection matrix
-		// applied to viewPos.z clipZ = P[2][2] * z + P[3][2]
-		float clipZ = projection[2][2] * viewPos.z + projection[3][2];
+		// Conservative Depth: Place quad at the sphere's front surface to prevent incorrect Z-culling
+		// by intersecting geometry (e.g. walls) before the fragment shader runs.
+		// Since we look down -Z, adding radius brings us closer to the camera (0).
+		float nearestZ = viewPos.z + SphereRadius;
+		// Clamp to ensure we stay in front of the camera (negative Z) even if sphere grazes the plane
+		nearestZ = min(nearestZ, -0.01);
 
+		float clipW = -nearestZ;
+		float clipZ = projection[2][2] * nearestZ + projection[3][2];
+		
 		clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
-
-		// Reconstruct WorldPos for the Fragment Shader (Ray Origin /
-		// Direction) We need the point in World Space that corresponds
-		// to this vertex on the billboard plane (perpendicular to Z)
-		// 1. Calculate vertex position in View Space (on the plane Z =
-		// viewPos.z)
+		
+		// Reconstruct WorldPos for the Fragment Shader (Ray Origin / Direction)
+		// We need the point in World Space that corresponds to this vertex on the billboard plane.
+		// NOTE: For raycasting, we ideally want the plane to be at the center (viewPos.z)
+		// to minimize distortion, but using nearestZ for the rasterized quad is safer for Z-test.
+		// The ray direction calculation depends on WorldPos.
+		// If we use nearestZ for WorldPos reconstruction, the ray origin is shifted.
+		// Let's stick to the center plane for WorldPos reconstruction to keep the math simple/stable
+		// for the ray intersection logic (which usually assumes rays starting from camera).
+		// Wait, WorldPos IS the point on the quad. If the quad moves, WorldPos must move.
+		
 		vec3 vertexViewPos;
-		vertexViewPos.z = viewPos.z;
-		vertexViewPos.x = ndc_x * (-viewPos.z) / sx;
-		vertexViewPos.y = ndc_y * (-viewPos.z) / sy;
-
-		// 2. Transform offset back to World Space
-		// Offset in View Space
-		vec3 viewOffset = vertexViewPos - viewPos;
-		// Inverse Rotation (Transpose of View Rotation) * ViewOffset
-		// This assumes 'view' is an orthogonal rotation matrix
-		// (standard camera)
+		vertexViewPos.z = nearestZ;
+		vertexViewPos.x = ndc_x * (-nearestZ) / sx;
+		vertexViewPos.y = ndc_y * (-nearestZ) / sy;
+		
+		vec3 viewOffset = vertexViewPos - viewPos; // viewPos is still center
 		vec3 worldOffset = transpose(mat3(view)) * viewOffset;
-
+		
 		WorldPos = SphereCenter + worldOffset;
 	}
 

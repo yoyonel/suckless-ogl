@@ -80,18 +80,19 @@ void main()
 			float ndc_x = (aPos.x < 0.0) ? minX : maxX;
 			float ndc_y = (aPos.y < 0.0) ? minY : maxY;
 
-			float clipW = -viewPos.z;
-			float clipZ =
-			    projection[2][2] * viewPos.z + projection[3][2];
-			clipPos =
-			    vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
+			// Conservative Depth
+			float nearestZ = viewPos.z + sphereRadius;
+			nearestZ = min(nearestZ, -0.01);
 
-			// Reconstruct WorldPos for consistency (if needed by
-			// frag)
+			float clipW = -nearestZ;
+			float clipZ = projection[2][2] * nearestZ + projection[3][2];
+			clipPos = vec4(ndc_x * clipW, ndc_y * clipW, clipZ, clipW);
+			
+			// Reconstruct WorldPos
 			vec3 vertexViewPos;
-			vertexViewPos.z = viewPos.z;
-			vertexViewPos.x = ndc_x * (-viewPos.z) / sx;
-			vertexViewPos.y = ndc_y * (-viewPos.z) / sy;
+			vertexViewPos.z = nearestZ;
+			vertexViewPos.x = ndc_x * (-nearestZ) / sx;
+			vertexViewPos.y = ndc_y * (-nearestZ) / sy;
 			vec3 worldOffset =
 			    transpose(mat3(view)) * (vertexViewPos - viewPos);
 			worldPos = sphereCenter + worldOffset;

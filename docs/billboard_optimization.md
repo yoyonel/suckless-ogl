@@ -71,6 +71,10 @@ When the sphere intersects the camera plane ($Z=0$), the tangent formulas can pr
 Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can mathematically project to valid screen coordinates (inverted).
 **Solution**: These are explicitly culled in the Vertex Shader by checking if `viewPos.z > 0.0`.
 
+### 3. Conservative Depth
+To ensure correct Z-buffering when the sphere intersects other geometry (e.g. walls), the billboard quad is positioned at the sphere's **frontmost** surface point ($Z_{nearest} = Z_{view} + R$) rather than its center.
+This ensures the quad is drawn *before* any geometry that might be inside the sphere, relying on the Fragment Shader to output the correct per-pixel depth (`gl_FragDepth`).
+
 ## References
 
 - **Mara, M., McGuire, M., & Luebke, D. (2013).** *2D Polyhedral Bounds of a Clipped, Perspective-Projected 3D Sphere*. Journal of Computer Graphics Techniques (JCGT).
