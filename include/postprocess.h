@@ -209,7 +209,7 @@ typedef struct {
 	Shader* shader;
 } ShaderCacheEntry;
 
-#define SHADER_CACHE_SIZE 32
+#define SHADER_CACHE_SIZE 64
 
 /**
  * @struct PostProcessUBO
