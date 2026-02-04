@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
 	}
 
 	app_run(app);
+
 	app_cleanup(app);
 	free(app);
 

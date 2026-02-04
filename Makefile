@@ -51,8 +51,9 @@ APITRACE_BIN := $(APITRACE_DIR)/bin/apitrace
 BUILD_PROF_DIR := build-prof
 BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
+BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release docs docs-clean
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-integration coverage release small debug-release docs docs-clean asan
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -102,7 +103,7 @@ docs-clean:
 
 clean-all: docs-clean
 	@echo "Removing all build directories..."
-	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) build-ssbo
+	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) $(BUILD_ASAN_DIR) build-ssbo
 
 rebuild: clean-all all
 
@@ -239,9 +240,19 @@ perf: profile
 	@$(DISTROBOX) perf record --call-graph dwarf ./$(BUILD_PROF_DIR)/app
 	@$(DISTROBOX) perf report
 
-valgrind: profile
-	@echo "Running Valgrind (very slow to start)..."
-	@$(DISTROBOX) valgrind --suppressions=valgrind.supp --leak-check=full --show-leak-kinds=definite --errors-for-leak-kinds=definite ./$(BUILD_PROF_DIR)/app
+asan:
+	@echo "Building with AddressSanitizer (ASan)..."
+	@mkdir -p $(BUILD_ASAN_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_ASAN_DIR) \
+		-DCMAKE_BUILD_TYPE=Debug \
+		-DENABLE_ASAN=ON \
+		-DENABLE_UNITY_BUILD=OFF \
+		-G "Unix Makefiles"
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_ASAN_DIR) --parallel $(shell nproc)
+
+run-asan: asan
+	@echo "Running with AddressSanitizer..."
+	@$(DISTROBOX) env ASAN_OPTIONS="exitcode=1:detect_leaks=1:symbolize=1:halt_on_error=1" LSAN_OPTIONS="suppressions=lsan.supp" ./$(BUILD_ASAN_DIR)/app
 
 # Docker Integration
 # Auto-detect container engine (podman or docker)
@@ -340,13 +351,15 @@ help:
 	@echo "  deps-clean - Remove the local dependency cache"
 	@echo "  offline-test - Verify build works without internet (requires unshare)"
 	@echo "  test       - Run unit tests with ctest"
-	@echo "  test-integration - Run full UI integration test under Valgrind"
+	@echo "  test-integration - Run full UI integration test under Valgrind (Default)"
+	@echo "  test-integration-asan - Run full UI integration test under ASan"
 	@echo "  coverage   - Generate HTML code coverage report (llvm-cov)"
 	@echo "  docker-build - Build the Docker image"
 	@echo "  profile    - Build with optimizations and debug symbols (for profiling)"
 	@echo "  perf       - Build and run Linux 'perf' profiler"
 	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
-	@echo "  memcheck   - Run Valgrind on Release build to detect leaks/errors"
+	@echo "  memcheck   - Run Valgrind (Default) to detect leaks/errors"
+	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
 	@echo "  help       - Show this help message"
@@ -368,15 +381,26 @@ release:
 	@echo "Done. Binary is at $(BUILD_REL_DIR)/app"
 	@du -h $(BUILD_REL_DIR)/app
 
-# --- Memory Check (Valgrind on Release) ---
-memcheck: release
-	@echo "Running Memory Check on Release Build..."
-	@$(DISTROBOX) valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite ./$(BUILD_REL_DIR)/app
+# --- Memory Check (Valgrind - Default) ---
+valgrind: release
+	@echo "Running Valgrind on Release build..."
+	@$(DISTROBOX) valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=valgrind.supp ./$(BUILD_REL_DIR)/app
+
+memcheck: valgrind
+
+# --- Memory Check (ASan - Optional) ---
+memcheck-asan: asan
+	@echo "Running Memory Check with AddressSanitizer (ASan)..."
+	@$(DISTROBOX) env ASAN_OPTIONS="exitcode=1:detect_leaks=1:symbolize=1:halt_on_error=1" LSAN_OPTIONS="suppressions=lsan.supp" ./$(BUILD_ASAN_DIR)/app
 
 # --- Integration Test (Scenario-based with xdotool) ---
-test-integration:
+test-integration: release
 	@chmod +x scripts/test_integration_valgrind.sh
 	@bash scripts/test_integration_valgrind.sh
+
+test-integration-asan: asan
+	@chmod +x scripts/test_integration_asan.sh
+	@bash scripts/test_integration_asan.sh
 
 # --- Debug Release Build (For Segfault Hunting) ---
 debug-release:

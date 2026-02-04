@@ -136,8 +136,8 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 	glDispatchCompute(1, 1, 1);
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-	                GL_TEXTURE_FETCH_BARRIER_BIT);
+	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
