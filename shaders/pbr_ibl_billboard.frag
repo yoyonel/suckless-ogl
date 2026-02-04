@@ -3,7 +3,7 @@
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec2 VelocityOut;
 
-in vec3 WorldPos;  // Position sur le plan du billboard
+in vec3 WorldPos;  // Position on the billboard plane
 in vec3 Normal;    // (Unused)
 flat in vec3 SphereCenter;
 flat in float SphereRadius;
@@ -22,7 +22,7 @@ uniform int debugMode;
 
 uniform mat4 projection;
 uniform mat4 view;
-uniform mat4 previousViewProj;  // <-- ESSENTIEL : On l'utilise maintenant ici
+uniform mat4 previousViewProj;
 uniform vec2 u_screenSize;
 
 // Include common PBR functions

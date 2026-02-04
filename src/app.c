@@ -407,10 +407,27 @@ void app_render(App* app)
 
 	if (app->billboard_mode) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glEnable(GL_BLEND);
+
+		// 1. Activer le Blending UNIQUEMENT pour la couleur (Attachment
+		// 0) Cela permet à ton 'edgeFactor' de lisser les bords de la
+		// sphère
+		glEnablei(GL_BLEND, 0);
+
+		// 2. Configurer l'équation de blend (toujours globale ou par
+		// index si besoin) Pour l'alpha blending classique (lissage des
+		// bords)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// 3. DÉSACTIVER explicitement le Blending pour la vélocité
+		// (Attachment 1) C'est la clé : le buffer de vélocité recevra
+		// les valeurs brutes du shader sans être multipliées par
+		// l'alpha ou mixées avec le noir du fond.
+		glDisablei(GL_BLEND, 1);
+
 		app_render_billboards(app, view, proj, camera_pos);
-		glDisable(GL_BLEND);
+
+		// Nettoyage après rendu (Optionnel mais propre)
+		glDisablei(GL_BLEND, 0);
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK,
 		              app->wireframe ? GL_LINE : GL_FILL);
