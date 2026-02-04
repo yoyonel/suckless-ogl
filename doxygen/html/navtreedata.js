@@ -78,8 +78,8 @@ var NAVTREEINDEX =
 "group__Environment.html#gac0e8a7770231166913b3e05f723bafc9",
 "pbr__ibl__instanced_8vert.html#a2c98303ba6cfb83d185c0adddfd228f8",
 "postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098",
-"structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71",
-"structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d"
+"structCamera.html#a4c8bddeb429c59601ee6de4f20f56390",
+"structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
