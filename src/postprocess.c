@@ -908,7 +908,8 @@ static void update_current_shader(PostProcess* post_processing,
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
-	/* Sanitization: Filter out unused bits from the flags to ensure cache hits
+	/* Sanitization: Filter out unused bits from the flags to ensure cache
+	 * hits
 	 */
 	unsigned int valid_mask = 0;
 	for (size_t i = 0; i < EFFECT_COUNT; i++) {
