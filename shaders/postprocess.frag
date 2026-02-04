@@ -37,6 +37,13 @@ void main()
 		return;
 	}
 
+	/* 1b. Priority Debug Check for Vector Field Overlay */
+	if (enableVectorFieldDebug) {
+		vec3 debugColor = applyMotionBlur(TexCoords);
+		FragColor = vec4(debugColor, 1.0);
+		return;
+	}
+
 	vec3 color;
 
 	/* Stencil Check: 0 = Skybox/Background, 1 = Object */

@@ -495,8 +495,11 @@ void postprocess_end(PostProcess* post_processing)
 		fx_auto_exposure_render(post_processing);
 	}
 
-	/* Motion Blur Pre-Pass (Compute) */
-	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
+	/* Motion Blur Pre-Pass (Compute) - Also needed for debug modes */
+	if (postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) ||
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||
+	    postprocess_is_enabled(post_processing,
+	                           POSTFX_VECTOR_FIELD_DEBUG)) {
 		fx_motion_blur_render(post_processing);
 	}
 
@@ -556,7 +559,10 @@ void postprocess_end(PostProcess* post_processing)
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
 	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) ||
+	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||
+	    postprocess_is_enabled(post_processing,
+	                           POSTFX_VECTOR_FIELD_DEBUG)) {
 		shader_set_int(post_processing->postprocess_shader,
 		               "velocityTexture",
 		               POSTPROCESS_TEX_UNIT_VELOCITY);
@@ -845,6 +851,8 @@ static const EffectMetadata ALL_EFFECTS[] = {
     {POSTFX_FXAA, "FXAA", "OPT_ENABLE_FXAA"},
     {POSTFX_FXAA_DEBUG, "FXAA Debug View", "OPT_ENABLE_FXAA_DEBUG"},
     {POSTFX_BANDING, "Banding", "OPT_ENABLE_BANDING"},
+    {POSTFX_VECTOR_FIELD_DEBUG, "Vector Field Debug",
+     "OPT_ENABLE_VECTOR_FIELD_DEBUG"},
 };
 
 #define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))

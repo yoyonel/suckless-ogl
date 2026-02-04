@@ -83,6 +83,8 @@ typedef enum {
 	POSTFX_FXAA = (1U << 12U),       /**< Fast Approximate Anti-Aliasing. */
 	POSTFX_FXAA_DEBUG = (1U << 13U), /**< Edge detection visualization. */
 	POSTFX_BANDING = (1U << 14U),    /**< Color banding/quantization. */
+	POSTFX_VECTOR_FIELD_DEBUG =
+	    (1U << 15U), /**< Vector field velocity visualization. */
 } PostProcessEffect;
 
 /** @brief Default mask of active effects. */
