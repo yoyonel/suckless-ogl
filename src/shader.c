@@ -726,14 +726,17 @@ Shader* shader_load(const char* vertex_path, const char* fragment_path)
 	return shader_load_with_defines(vertex_path, fragment_path, NULL, 0);
 }
 
-Shader* shader_create_from_source(const char* vert_src, const char* frag_src, const char* name)
+Shader* shader_create_from_source(const char* vert_src, const char* frag_src,
+                                  const char* name)
 {
-	GLuint vertex_shader = shader_compile_from_source(vert_src, GL_VERTEX_SHADER);
+	GLuint vertex_shader =
+	    shader_compile_from_source(vert_src, GL_VERTEX_SHADER);
 	if (vertex_shader == 0) {
 		return NULL;
 	}
 
-	GLuint fragment_shader = shader_compile_from_source(frag_src, GL_FRAGMENT_SHADER);
+	GLuint fragment_shader =
+	    shader_compile_from_source(frag_src, GL_FRAGMENT_SHADER);
 	if (fragment_shader == 0) {
 		glDeleteShader(vertex_shader);
 		return NULL;
@@ -749,8 +752,8 @@ Shader* shader_create_from_source(const char* vert_src, const char* frag_src, co
 	if (success == 0) {
 		char log[INFO_LOG_SIZE];
 		glGetProgramInfoLog(program, INFO_LOG_SIZE, NULL, log);
-		LOG_ERROR("suckless-ogl.shader", "Shader linking error (from source):\n%s",
-		          log);
+		LOG_ERROR("suckless-ogl.shader",
+		          "Shader linking error (from source):\n%s", log);
 		glDeleteProgram(program);
 		program = 0;
 	}

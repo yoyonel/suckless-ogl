@@ -49,7 +49,8 @@ char* shader_read_resolved_source(const char* path);
  * @param count Number of macros.
  * @return Heap-allocated string with injected defines. Result must be freed.
  */
-char* shader_inject_defines(const char* source, const char** defines, int count);
+char* shader_inject_defines(const char* source, const char** defines,
+                            int count);
 
 /**
  * @brief Helper to load a classic Vertex+Fragment program from disk.
@@ -106,7 +107,8 @@ Shader* shader_load(const char* vertex_path, const char* fragment_path);
  * @param name Descriptive name for the shader.
  * @return Pointer to the Shader object.
  */
-Shader* shader_create_from_source(const char* vert_src, const char* frag_src, const char* name);
+Shader* shader_create_from_source(const char* vert_src, const char* frag_src,
+                                  const char* name);
 
 /**
  * @brief Loads a compute program and caches its uniforms.

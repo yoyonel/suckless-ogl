@@ -979,7 +979,8 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	                                       defines, count);
 
 	Shader* new_shader = shader_create_from_source(
-	    vert_src, frag_src, "shaders/postprocess.vert + shaders/postprocess.frag");
+	    vert_src, frag_src,
+	    "shaders/postprocess.vert + shaders/postprocess.frag");
 
 	free(vert_src);
 	free(frag_src);
