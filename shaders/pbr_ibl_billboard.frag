@@ -67,11 +67,23 @@ bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
 
 void main()
 {
-	// 1. Calculate Ray direction
-	// In Ortho/Persp generic: normalize(WorldPos - camPos).
-	// Note: WorldPos comes from VS, it's on the billboard plane.
-	vec3 rayDir = normalize(WorldPos - camPos);
 	vec3 rayOrigin = camPos;
+	vec3 oc_vec = rayOrigin - SphereCenter;
+	float distSq = dot(oc_vec, oc_vec);
+	float r2 = SphereRadius * SphereRadius;
+
+	// 1. Early Exit for Inside Rendering
+	// If the camera is inside the opaque sphere, everything is black.
+	// We skip all ray-casting and lighting calculations.
+	if (distSq < r2) {
+		FragColor = vec4(0.0, 0.0, 0.0, 0.0);  // Black + 0 luma
+		VelocityOut = vec2(0.0);
+		gl_FragDepth = gl_DepthRange.near;
+		return;
+	}
+
+	// 2. Calculate Ray direction for external hits
+	vec3 rayDir = normalize(WorldPos - camPos);
 
 	float t;
 	vec3 N;
@@ -84,6 +96,16 @@ void main()
 	}
 
 	// Analytic Edge Smoothing (Pseudo-AA)
+	/**
+	 * Analytic ISO Smoothing:
+	 * We estimate the footprint of a pixel in 'h' space.
+	 * h = R^2 - d^2. dh = -2d*dd. Near h=0, d=R.
+	 * So fwidth(h) ~ 2 * R * fwidth(d).
+	 * fwidth(d) is the pixel size in world space.
+	 * fwidth(d) = 2.0 * Z * tan(fov/2) / ScreenHeight
+	 * fwidth(d) = 2.0 * CurrentClipPos.w / (projection[1][1] *
+	 * ScreenHeight)
+	 */
 	float pixelSizeWorld =
 	    (2.0 * CurrentClipPos.w) / (projection[1][1] * u_screenSize.y);
 	float analyticFwidthH = 2.0 * SphereRadius * pixelSizeWorld;
@@ -102,16 +124,11 @@ void main()
 	// 3. Lighting
 	vec3 V = -rayDir;  // View vector is towards camera
 
-	// Detect if camera is inside the sphere radius
-	vec3 oc_vec = rayOrigin - SphereCenter;
-	bool isInside = dot(oc_vec, oc_vec) < (SphereRadius * SphereRadius);
+	// 3. Lighting
+	vec3 V = -rayDir;  // View vector is towards camera
 
 	vec3 color;
-	if (isInside) {
-		// As per user request: inside of an opaque sphere is solid
-		// black.
-		color = vec3(0.0);
-	} else if (debugMode != 0) {
+	if (debugMode != 0) {
 		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
 		                      debugMode);
 	} else {
@@ -132,10 +149,7 @@ void main()
 	}
 
 	// Apply Edge Smoothing (Darken rim)
-	// Only for outer silhouettes (when not inside)
-	if (!isInside) {
-		color *= edgeFactor;
-	}
+	color *= edgeFactor;
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	// Transparent Mode: Alpha = Opacity (edgeFactor) for Blending
