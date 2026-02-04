@@ -52,9 +52,29 @@ void computeBillboardSphere(vec3 quadVertexPos, vec3 sphereCenterWorld,
 	float distSq = dot(viewPos, viewPos);
 	float r2 = sphereRadius * sphereRadius;
 
-	if (distSq <= r2 * 1.001) {
-		// Behind camera OR inside sphere: cull
-		outClipPos = vec4(-2.0, -2.0, 0.0, 1.0);
+	if (distSq <= r2 * 1.005) {
+		// Inside sphere: cover screen with a massive quad for
+		// full-screen ray-casting
+		outClipPos = vec4(quadVertexPos.xy * 2.0, 0.0, 1.0);
+
+		float sx = projection[0][0];
+		float sy = projection[1][1];
+
+		// Reconstruct world pos on a plane in front of the camera
+		// to allow rays to be cast properly using normalize(WorldPos -
+		// camPos).
+		vec3 camRight = vec3(view[0][0], view[1][0], view[2][0]);
+		vec3 camUp = vec3(view[0][1], view[1][1], view[2][1]);
+		vec3 camForward = -vec3(view[0][2], view[1][2], view[2][2]);
+
+		// Extract camera position from view matrix
+		vec3 camPos = -(transpose(mat3(view)) * view[3].xyz);
+
+		// Place a plane at unit distance in front of the camera
+		// quadVertexPos is [-0.5, 0.5], so * 2.0 is [-1, 1] (NDC range)
+		outWorldPos = camPos + camForward +
+		              camRight * (quadVertexPos.x * 2.0 / sx) +
+		              camUp * (quadVertexPos.y * 2.0 / sy);
 	} else if (viewPos.z > 0.0) {
 		// Behind camera: cull
 		outClipPos = vec4(-2.0, -2.0, 0.0, 1.0);

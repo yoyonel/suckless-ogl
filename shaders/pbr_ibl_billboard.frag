@@ -46,15 +46,23 @@ bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
 		return false;  // No intersection
 
 	h = sqrt(h);
-	t = -b - h;
+	float t1 = -b - h;
+	float t2 = -b + h;
 
-	if (t < 0.0) {
-		return false;
+	if (t1 >= 0.0) {
+		t = t1;
+		vec3 hitPos = ro + t * rd;
+		normal = normalize(hitPos - center);
+		return true;
+	} else if (t2 >= 0.0) {
+		// Inside the sphere: hit the back face
+		t = t2;
+		vec3 hitPos = ro + t * rd;
+		normal = normalize(hitPos - center);
+		return true;
 	}
 
-	vec3 hitPos = ro + t * rd;
-	normal = normalize(hitPos - center);
-	return true;
+	return false;
 }
 
 void main()
@@ -76,15 +84,6 @@ void main()
 	}
 
 	// Analytic Edge Smoothing (Pseudo-AA)
-	/**
-	 * Analytic ISO Smoothing:
-	 * We estimate the footprint of a pixel in 'h' space.
-	 * h = R^2 - d^2. dh = -2d*dd. Near h=0, d=R.
-	 * So fwidth(h) ~ 2 * R * fwidth(d).
-	 * fwidth(d) = 2.0 * Z * tan(fov/2) / ScreenHeight
-	 * fwidth(d) = 2.0 * CurrentClipPos.w / (projection[1][1] *
-	 * ScreenHeight)
-	 */
 	float pixelSizeWorld =
 	    (2.0 * CurrentClipPos.w) / (projection[1][1] * u_screenSize.y);
 	float analyticFwidthH = 2.0 * SphereRadius * pixelSizeWorld;
@@ -103,30 +102,40 @@ void main()
 	// 3. Lighting
 	vec3 V = -rayDir;  // View vector is towards camera
 
-	// Use analytic roughness clamping for bit-perfect cross-GPU results
-	float analytic_roughness =
-	    compute_roughness_clamping_analytic(Roughness, 1.0 / SphereRadius);
+	// Detect if camera is inside the sphere radius
+	vec3 oc_vec = rayOrigin - SphereCenter;
+	bool isInside = dot(oc_vec, oc_vec) < (SphereRadius * SphereRadius);
 
 	vec3 color;
-	if (debugMode != 0) {
-		color = compute_debug(N, V, Albedo, Metallic,
-		                      analytic_roughness, AO, debugMode);
+	if (isInside) {
+		// As per user request: inside of an opaque sphere is solid
+		// black.
+		color = vec3(0.0);
+	} else if (debugMode != 0) {
+		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
+		                      debugMode);
 	} else {
 		// We call the underlying PBR function directly to use our
 		// analytic roughness
 		vec3 R_vec = reflect(-V, N);
 		float NdotV = max(dot(N, V), 0.0);
 		vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
+
+		// Use analytic roughness clamping for bit-perfect cross-GPU
+		// results
+		float analytic_roughness = compute_roughness_clamping_analytic(
+		    Roughness, 1.0 / SphereRadius);
+
 		color = compute_IBL_PBR_Advanced(
 		    N, V, R_vec, F0, NdotV, Albedo, Metallic,
 		    max(analytic_roughness, 0.04), AO);
 	}
 
 	// Apply Edge Smoothing (Darken rim)
-	// This simulates coverage by fading to black/background.
-	// Since we are opaque, we can't blend with BG, but darkening helps
-	// reduce the harsh staircase effect.
-	color *= edgeFactor;
+	// Only for outer silhouettes (when not inside)
+	if (!isInside) {
+		color *= edgeFactor;
+	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	// Transparent Mode: Alpha = Opacity (edgeFactor) for Blending
