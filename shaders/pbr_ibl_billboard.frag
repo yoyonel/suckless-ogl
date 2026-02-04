@@ -46,16 +46,24 @@ bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
 		return false;  // No intersection
 
 	h = sqrt(h);
-	// Intersection t
-	t = -b - h;
+	float t1 = -b - h;
+	float t2 = -b + h;
 
-	if (t < 0.0) {
-		return false;
+	if (t1 >= 0.0) {
+		t = t1;
+		vec3 hitPos = ro + t * rd;
+		normal = normalize(hitPos - center);
+		return true;
+	} else if (t2 >= 0.0) {
+		// Inside the sphere: hit the back face
+		t = t2;
+		vec3 hitPos = ro + t * rd;
+		// Flip normal to point inward for the inner surface
+		normal = normalize(center - hitPos);
+		return true;
 	}
 
-	vec3 hitPos = ro + t * rd;
-	normal = normalize(hitPos - center);
-	return true;
+	return false;
 }
 
 void main()
