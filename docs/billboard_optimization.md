@@ -75,6 +75,8 @@ Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can math
 To ensure correct Z-buffering when the sphere intersects other geometry (e.g. walls), the billboard quad is positioned at the sphere's **frontmost** surface point ($Z_{nearest} = Z_{view} + R$) rather than its center.
 This ensures the quad is drawn *before* any geometry that might be inside the sphere, relying on the Fragment Shader to output the correct per-pixel depth (`gl_FragDepth`).
 
+![Conservative Depth Diagram](images/conservative_depth.png)
+
 ## References
 
 - **Mara, M., McGuire, M., & Luebke, D. (2013).** *2D Polyhedral Bounds of a Clipped, Perspective-Projected 3D Sphere*. Journal of Computer Graphics Techniques (JCGT).
