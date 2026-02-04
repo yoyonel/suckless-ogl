@@ -71,4 +71,9 @@ When the sphere intersects the camera plane ($Z=0$), the tangent formulas can pr
 Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can mathematically project to valid screen coordinates (inverted).
 **Solution**: These are explicitly culled in the Vertex Shader by checking if `viewPos.z > 0.0`.
 
+## References
+
+- **Mara, M., McGuire, M., & Luebke, D. (2013).** *2D Polyhedral Bounds of a Clipped, Perspective-Projected 3D Sphere*. Journal of Computer Graphics Techniques (JCGT).
+  [PDF Reference](https://jcgt.org/published/0002/02/05/)
+
 See `shaders/pbr_ibl_billboard.vert` for the GLSL implementation.
