@@ -83,7 +83,9 @@ When using ray-casting on billboards, it is critical that attributes constant ac
 
 By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., $Radius = 1.0$), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., $0.9999999$ or $1.0000001$). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.
 
-Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensures bit-perfect consistency, guaranteeing "ISO" rendering results identical to geometric spheres.
+Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensures bit-perfect consistency by disabling interpolation. Instead, the value is taken from a single vertex (the **Provoking Vertex**), guaranteeing "ISO" rendering results identical to geometric spheres.
+
+- **See also**: [Flat Interpolation (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Interpolation_qualifiers) and [Provoking Vertex (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Primitive#Provoking_vertex).
 
 ### 5. The Mesh vs. Math Paradox (Understanding Diff Maps)
 When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is **expected** and proves the accuracy of the mathematical approach:

@@ -8,8 +8,8 @@ layout(location = 2) in mat4 i_model;   // Instance Model Matrix
 layout(location = 6) in vec3 i_albedo;  // Instance Albedo
 layout(location = 7) in vec3 i_pbr;  // Instance PBR (Metallic, Roughness, AO)
 
-out vec3 WorldPos;       // Billboard Fragment World Position
-out vec3 Normal;         // Synchronized (unused, set to cam vector)
+out vec3 WorldPos;            // Billboard Fragment World Position
+out vec3 Normal;              // Synchronized (unused, set to cam vector)
 flat out vec3 SphereCenter;   // Center of the sphere in World Space
 flat out float SphereRadius;  // Radius of the sphere
 flat out vec3 Albedo;
