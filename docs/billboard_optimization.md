@@ -2,6 +2,8 @@
 
 This document explains the mathematical method used to calculate the optimal screen-space bounding box (AABB) for sphere rendering.
 
+![Projective Geometry Concept](images/sphere_aabb_optimization_projective.png)
+
 ![Exact AABB Geometry](images/billboard_aabb_geometry.png)
 
 ## The Problem
@@ -36,6 +38,7 @@ The tangent lines are rotated relative to the center vector $\vec{C}$ by the ang
 By observing the similar triangles, we can derive the tangent direction vectors directly from $C$, $r$, and $L$:
 
 $$ n_{x1} = \frac{C_x \cdot L - C_z \cdot r}{d^2} $$
+
 $$ n_{z1} = \frac{C_z \cdot L + C_x \cdot r}{d^2} $$
 
 (And symmetrically for the second tangent).
