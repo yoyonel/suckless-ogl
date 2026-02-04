@@ -85,6 +85,13 @@ By default, OpenGL performs perspective-correct interpolation. Even if all four 
 
 Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensures bit-perfect consistency, guaranteeing "ISO" rendering results identical to geometric spheres.
 
+### 5. The Mesh vs. Math Paradox (Understanding Diff Maps)
+When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is **expected** and proves the accuracy of the mathematical approach:
+
+1.  **Perfect Silhouette:** The billboard computes a mathematically perfect curve for every pixel. An icosphere, regardless of subdivision, is an approximation made of flat triangles. The rings represent the areas where the triangle edges deviate from the perfect sphere.
+2.  **Anti-Aliasing Clash:** Our shader uses **Analytical Edge Smoothing** (Soft Edges). Standard mesh rendering uses hardware rasterization. The transition from 100% to 0% opacity differs slightly, producing residuals in difference maps.
+3.  **Normal Continuity:** Ray-casted normals are perfectly continuous, while mesh normals (even when smoothed) depend on the underlying vertex interpolation.
+
 
 ## References
 
