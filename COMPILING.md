@@ -12,6 +12,8 @@ The project uses a hybrid Makefile + CMake system for convenience and performanc
 | `make release` | Release | `-O3 -march=native -ffast-math` | **Ultra Release**. Uses **Unity Build** (compile as single unit). Stripped. |
 | `make debug-release`| RelWithDebInfo | `-O3 -march=native -g` | Release speed + Debug symbols. Not stripped. Use this for debugging performance issues or crashes. |
 | `make small` | MinSizeRel | `-Os` | Focused on binary size (~192K). |
+| `make asan`  | Debug          | `-fsanitize=address` | Fast runtime error detection. |
+| `make memcheck` | Release      | Valgrind        | **Default** deep leak analysis. |
 
 ## The SIMD Segfault Story: A Technical Deep-Dive
 
@@ -22,7 +24,7 @@ The debugging followed a three-step deduction process:
 
 *   **Localization (The "Last Words")**: By adding granular `LOG_INFO` traces, we observed the crash happened immediately after "Starting app_init_instancing" but before any further logs. This narrowed the "crime scene" to the first few lines of that function.
 *   **The `-march=native` Clue**: The crash *only* occurred when the compiler was allowed to use native CPU instructions. This strongly suggested that the compiler was generating specialized high-speed instructions (AVX/AVX2) that the standard build wasn't using.
-*   **Valgrind's Testimony**: Running `valgrind --leak-check=full ./build-release/app` reported `Conditional jump or move depends on uninitialised value(s)` during matrix operations. In the context of highly optimized code, this often indicates that a SIMD instruction (like `VMOVAPS`) tried to access an address it couldn't handle.
+*   **AddressSanitizer's Testimony**: Running the app with `ENABLE_ASAN=ON` reported `Conditional jump or move depends on uninitialised value(s)` (or similar memory access errors) during matrix operations. In the context of highly optimized code, this often indicates that a SIMD instruction (like `VMOVAPS`) tried to access an address it couldn't handle.
 
 ### 2. Root Cause: Alignment Violation
 High-performance SIMD instructions (Single Instruction Multiple Data) like those enabled by AVX process 32 or 64 bytes at a time. To do this safely and at full speed, the hardware requires the memory address to be a **multiple of the data size** (aligned).

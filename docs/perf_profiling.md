@@ -48,4 +48,5 @@ sudo sysctl -w kernel.kptr_restrict=0
 ## Other Tools
 
 -   **Apitrace:** Use `make apitrace` to capture OpenGL calls and `make qapitrace` to inspect them.
--   **Valgrind:** Use `make valgrind` for memory leak detection and basic profiling (though it is significantly slower).
+-   **Valgrind (Primary):** Use `make memcheck` to run a deep analysis for leaks and uninitialized memory. Recommended for thorough verification.
+-   **AddressSanitizer (ASan):** Use `make asan` to build with memory instrumentation and `make memcheck-asan` to run. Much faster, ideal for runtime error hunting.
