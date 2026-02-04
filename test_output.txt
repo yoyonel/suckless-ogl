@@ -1,0 +1,705 @@
+2026-02-04 22:53:39,913 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:39,914 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:39,915 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:39,920 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:39,920 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:39,920 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:39,920 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:39,920 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:39,920 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:39,922 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:39,922 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (640x480)
+2026-02-04 22:53:39,923 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:328:test_postprocess_init_creates_resources:PASS
+2026-02-04 22:53:40,067 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,068 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,069 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,073 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,073 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,073 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,073 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,073 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,073 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,074 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,075 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,075 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:329:test_postprocess_defaults:PASS
+2026-02-04 22:53:40,197 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,197 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,198 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,202 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,202 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,202 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,202 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,202 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,202 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,203 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,203 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,203 [8290:8290] - suckless-ogl.postprocess - INFO     - State changed in optimized mode - recompiling shader...
+2026-02-04 22:53:40,208 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 30573 bytes
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001025)
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - State changed in optimized mode - recompiling shader...
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00001024
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - State changed in optimized mode - recompiling shader...
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00001025
+2026-02-04 22:53:40,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:330:test_postprocess_toggle_effects:PASS
+2026-02-04 22:53:40,328 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,329 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,330 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,333 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,333 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,333 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,333 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,333 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,333 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,335 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,335 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,335 [8290:8290] - suckless-ogl.postprocess - INFO     - State changed in optimized mode - recompiling shader...
+2026-02-04 22:53:40,337 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 25469 bytes
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,337 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000002F)
+2026-02-04 22:53:40,338 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:331:test_postprocess_apply_preset:PASS
+2026-02-04 22:53:40,457 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,458 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,458 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,462 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,462 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,462 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,462 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,462 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,462 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,463 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,464 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,465 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,465 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,466 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,466 [8290:8290] - suckless-ogl.postprocess - INFO     - Resized to 200x200
+2026-02-04 22:53:40,466 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:332:test_postprocess_resize:PASS
+2026-02-04 22:53:40,584 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,585 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,585 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,589 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,589 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,589 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,589 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,589 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,589 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,590 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,590 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,597 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 46165 bytes
+2026-02-04 22:53:40,597 [8290:8290] - suckless-ogl.postprocess - INFO     - Switched to DYNAMIC shader
+2026-02-04 22:53:40,599 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 27). Binary size: 23317 bytes
+2026-02-04 22:53:40,600 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,600 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,600 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,600 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000003)
+2026-02-04 22:53:40,600 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:333:test_postprocess_optimization_switch:PASS
+2026-02-04 22:53:40,719 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,720 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,720 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,724 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,724 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,724 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,724 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,724 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,724 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,725 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,726 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,726 [8290:8290] - suckless-ogl.postprocess - INFO     - State changed in optimized mode - recompiling shader...
+2026-02-04 22:53:40,728 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 28973 bytes
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Depth of Field
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Auto-Exposure
+2026-02-04 22:53:40,728 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Motion Blur
+2026-02-04 22:53:40,729 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000573)
+2026-02-04 22:53:40,729 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:334:test_postprocess_optimized_preset_switch:PASS
+2026-02-04 22:53:40,847 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,848 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,849 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,852 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,852 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,852 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,852 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,852 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,852 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,854 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,854 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,855 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 23317 bytes
+2026-02-04 22:53:40,855 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,856 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,856 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,856 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000003)
+2026-02-04 22:53:40,857 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 27). Binary size: 23621 bytes
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000013)
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:40,857 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+Benchmark Time: 0.003265 seconds
+2026-02-04 22:53:40,858 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:335:test_postprocess_recompilation_benchmark:PASS
+2026-02-04 22:53:40,977 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:40,977 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:40,978 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:40,981 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:40,982 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,982 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,982 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:40,982 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:40,982 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:40,983 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:40,983 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:40,984 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 21493 bytes
+2026-02-04 22:53:40,984 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,984 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000000)
+2026-02-04 22:53:40,985 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 27). Binary size: 22157 bytes
+2026-02-04 22:53:40,985 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,985 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,986 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000001)
+2026-02-04 22:53:40,987 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 30). Binary size: 22669 bytes
+2026-02-04 22:53:40,987 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,987 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,987 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000002)
+2026-02-04 22:53:40,989 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 33). Binary size: 23317 bytes
+2026-02-04 22:53:40,989 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,989 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,989 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,989 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000003)
+2026-02-04 22:53:40,990 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 36). Binary size: 21565 bytes
+2026-02-04 22:53:40,990 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,990 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,990 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000004)
+2026-02-04 22:53:40,992 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 39). Binary size: 22229 bytes
+2026-02-04 22:53:40,992 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,992 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,992 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,992 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000005)
+2026-02-04 22:53:40,994 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 42). Binary size: 22741 bytes
+2026-02-04 22:53:40,994 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,994 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,994 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,994 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000006)
+2026-02-04 22:53:40,996 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 45). Binary size: 23389 bytes
+2026-02-04 22:53:40,996 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,996 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,996 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:40,996 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:40,996 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000007)
+2026-02-04 22:53:40,997 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 48). Binary size: 22157 bytes
+2026-02-04 22:53:40,997 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,997 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:40,997 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000008)
+2026-02-04 22:53:40,999 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 51). Binary size: 22813 bytes
+2026-02-04 22:53:40,999 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:40,999 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:40,999 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:40,999 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000009)
+2026-02-04 22:53:41,001 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 54). Binary size: 23333 bytes
+2026-02-04 22:53:41,001 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,001 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,001 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,001 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000A)
+2026-02-04 22:53:41,003 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 57). Binary size: 23981 bytes
+2026-02-04 22:53:41,003 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,003 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,003 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,003 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,003 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000B)
+2026-02-04 22:53:41,004 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 60). Binary size: 22253 bytes
+2026-02-04 22:53:41,004 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,004 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,004 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,004 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000C)
+2026-02-04 22:53:41,006 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 63). Binary size: 22909 bytes
+2026-02-04 22:53:41,006 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,006 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,006 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,006 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,006 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000D)
+2026-02-04 22:53:41,008 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 66). Binary size: 23429 bytes
+2026-02-04 22:53:41,008 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,008 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,008 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,008 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,008 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000E)
+2026-02-04 22:53:41,010 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 69). Binary size: 24077 bytes
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,010 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000F)
+2026-02-04 22:53:41,012 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 72). Binary size: 21797 bytes
+2026-02-04 22:53:41,012 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,012 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,012 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000010)
+2026-02-04 22:53:41,013 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 75). Binary size: 22461 bytes
+2026-02-04 22:53:41,013 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,013 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,013 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,013 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000011)
+2026-02-04 22:53:41,015 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 78). Binary size: 22973 bytes
+2026-02-04 22:53:41,015 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,015 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,015 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,015 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000012)
+2026-02-04 22:53:41,017 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 81). Binary size: 23621 bytes
+2026-02-04 22:53:41,017 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,017 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,017 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,017 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,017 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000013)
+2026-02-04 22:53:41,019 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 84). Binary size: 21893 bytes
+2026-02-04 22:53:41,019 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,019 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,019 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,019 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000014)
+2026-02-04 22:53:41,020 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 87). Binary size: 22557 bytes
+2026-02-04 22:53:41,020 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,020 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,020 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,020 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,020 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000015)
+2026-02-04 22:53:41,022 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 90). Binary size: 23069 bytes
+2026-02-04 22:53:41,022 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,022 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,022 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,022 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,022 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000016)
+2026-02-04 22:53:41,024 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 93). Binary size: 23717 bytes
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,024 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000017)
+2026-02-04 22:53:41,026 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 96). Binary size: 22477 bytes
+2026-02-04 22:53:41,026 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,026 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,026 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,026 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000018)
+2026-02-04 22:53:41,028 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 99). Binary size: 23141 bytes
+2026-02-04 22:53:41,028 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,028 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,028 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,028 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,028 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000019)
+2026-02-04 22:53:41,030 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 102). Binary size: 23653 bytes
+2026-02-04 22:53:41,030 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,030 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,030 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,030 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,030 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001A)
+2026-02-04 22:53:41,032 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 105). Binary size: 24301 bytes
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,032 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001B)
+2026-02-04 22:53:41,033 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 108). Binary size: 22573 bytes
+2026-02-04 22:53:41,033 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,033 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,033 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,033 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,033 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001C)
+2026-02-04 22:53:41,035 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 111). Binary size: 23237 bytes
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,035 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001D)
+2026-02-04 22:53:41,037 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 114). Binary size: 23749 bytes
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,037 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001E)
+2026-02-04 22:53:41,039 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 117). Binary size: 24397 bytes
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,039 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001F)
+2026-02-04 22:53:41,041 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 120). Binary size: 22909 bytes
+2026-02-04 22:53:41,041 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,041 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,041 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000020)
+2026-02-04 22:53:41,043 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 123). Binary size: 23565 bytes
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000021)
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,043 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+Overflow Benchmark Time: 0.004053 seconds
+2026-02-04 22:53:41,047 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:336:test_postprocess_cache_overflow_benchmark:PASS
+2026-02-04 22:53:41,165 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:41,165 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:41,166 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:41,170 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:41,170 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,170 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,170 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,170 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:41,170 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:41,171 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:41,172 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:41,173 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 24). Binary size: 21493 bytes
+2026-02-04 22:53:41,173 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,173 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000000)
+2026-02-04 22:53:41,174 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 27). Binary size: 22157 bytes
+2026-02-04 22:53:41,175 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,175 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,175 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000001)
+2026-02-04 22:53:41,176 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 30). Binary size: 22669 bytes
+2026-02-04 22:53:41,176 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,176 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,176 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000002)
+2026-02-04 22:53:41,178 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 33). Binary size: 23317 bytes
+2026-02-04 22:53:41,178 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,178 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,178 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,178 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000003)
+2026-02-04 22:53:41,179 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 36). Binary size: 21565 bytes
+2026-02-04 22:53:41,179 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,179 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,179 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000004)
+2026-02-04 22:53:41,181 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 39). Binary size: 22229 bytes
+2026-02-04 22:53:41,181 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,181 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,181 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,181 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000005)
+2026-02-04 22:53:41,182 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 42). Binary size: 22741 bytes
+2026-02-04 22:53:41,182 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,182 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,182 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,182 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000006)
+2026-02-04 22:53:41,183 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 45). Binary size: 23389 bytes
+2026-02-04 22:53:41,184 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,184 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,184 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,184 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,184 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000007)
+2026-02-04 22:53:41,185 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 48). Binary size: 22157 bytes
+2026-02-04 22:53:41,185 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,185 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,185 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000008)
+2026-02-04 22:53:41,186 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 51). Binary size: 22813 bytes
+2026-02-04 22:53:41,186 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,186 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,186 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,186 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000009)
+2026-02-04 22:53:41,187 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 54). Binary size: 23333 bytes
+2026-02-04 22:53:41,187 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,187 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,187 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,187 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000A)
+2026-02-04 22:53:41,189 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 57). Binary size: 23981 bytes
+2026-02-04 22:53:41,189 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,189 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,189 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,189 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,189 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000B)
+2026-02-04 22:53:41,190 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 60). Binary size: 22253 bytes
+2026-02-04 22:53:41,190 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,190 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,190 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,190 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000C)
+2026-02-04 22:53:41,191 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 63). Binary size: 22909 bytes
+2026-02-04 22:53:41,192 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,192 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,192 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,192 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,192 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000D)
+2026-02-04 22:53:41,193 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 66). Binary size: 23429 bytes
+2026-02-04 22:53:41,193 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,193 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,193 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,193 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,193 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000E)
+2026-02-04 22:53:41,195 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 69). Binary size: 24077 bytes
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,195 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000000F)
+2026-02-04 22:53:41,196 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 72). Binary size: 21797 bytes
+2026-02-04 22:53:41,196 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,196 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,196 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000010)
+2026-02-04 22:53:41,197 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 75). Binary size: 22461 bytes
+2026-02-04 22:53:41,197 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,197 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,197 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,197 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000011)
+2026-02-04 22:53:41,199 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 78). Binary size: 22973 bytes
+2026-02-04 22:53:41,199 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,199 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,199 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,199 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000012)
+2026-02-04 22:53:41,201 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 81). Binary size: 23621 bytes
+2026-02-04 22:53:41,201 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,201 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,201 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,201 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,201 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000013)
+2026-02-04 22:53:41,202 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 84). Binary size: 21893 bytes
+2026-02-04 22:53:41,202 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,202 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,202 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,202 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000014)
+2026-02-04 22:53:41,204 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 87). Binary size: 22557 bytes
+2026-02-04 22:53:41,204 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,204 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,204 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,204 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,204 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000015)
+2026-02-04 22:53:41,205 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 90). Binary size: 23069 bytes
+2026-02-04 22:53:41,205 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,205 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,205 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,205 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,205 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000016)
+2026-02-04 22:53:41,207 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 93). Binary size: 23717 bytes
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,207 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000017)
+2026-02-04 22:53:41,208 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 96). Binary size: 22477 bytes
+2026-02-04 22:53:41,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,208 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,208 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000018)
+2026-02-04 22:53:41,210 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 99). Binary size: 23141 bytes
+2026-02-04 22:53:41,210 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,210 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,210 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,210 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,210 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000019)
+2026-02-04 22:53:41,211 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 102). Binary size: 23653 bytes
+2026-02-04 22:53:41,212 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,212 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,212 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,212 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,212 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001A)
+2026-02-04 22:53:41,213 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 105). Binary size: 24301 bytes
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,213 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001B)
+2026-02-04 22:53:41,215 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 108). Binary size: 22573 bytes
+2026-02-04 22:53:41,215 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,215 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,215 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,215 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,215 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001C)
+2026-02-04 22:53:41,216 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 111). Binary size: 23237 bytes
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,216 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001D)
+2026-02-04 22:53:41,218 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 114). Binary size: 23749 bytes
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,218 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001E)
+2026-02-04 22:53:41,220 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 117). Binary size: 24397 bytes
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Chromatic Aberration
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Bloom
+2026-02-04 22:53:41,220 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x0000001F)
+2026-02-04 22:53:41,222 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 120). Binary size: 22909 bytes
+2026-02-04 22:53:41,222 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,222 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,222 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000020)
+2026-02-04 22:53:41,224 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 123). Binary size: 23565 bytes
+2026-02-04 22:53:41,224 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,224 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,224 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,224 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000021)
+2026-02-04 22:53:41,226 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 126). Binary size: 24085 bytes
+2026-02-04 22:53:41,226 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,226 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,226 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,226 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000022)
+2026-02-04 22:53:41,228 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 129). Binary size: 24725 bytes
+2026-02-04 22:53:41,228 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,228 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,228 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,228 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,228 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000023)
+2026-02-04 22:53:41,230 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 132). Binary size: 22965 bytes
+2026-02-04 22:53:41,230 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,230 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,230 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,230 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000024)
+2026-02-04 22:53:41,237 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 135). Binary size: 23621 bytes
+2026-02-04 22:53:41,237 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,237 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,237 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,237 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,237 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000025)
+2026-02-04 22:53:41,242 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 138). Binary size: 24141 bytes
+2026-02-04 22:53:41,242 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,242 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,242 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,242 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,242 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000026)
+2026-02-04 22:53:41,245 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 141). Binary size: 24789 bytes
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Vignette
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Film Grain
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00000027)
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000000
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000001
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000002
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000003
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000004
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000005
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000006
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000007
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000008
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000009
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000A
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000B
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000C
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000D
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000E
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000000F
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000010
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000011
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000012
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000013
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000014
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000015
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000016
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000017
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000018
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000019
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001A
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001B
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001C
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001D
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001E
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x0000001F
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000020
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000021
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000022
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000023
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000024
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000025
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000026
+2026-02-04 22:53:41,245 [8290:8290] - suckless-ogl.postprocess - INFO     - Using CACHED shader for flags 0x00000027
+Large Working Set Time: 0.000335 seconds
+2026-02-04 22:53:41,249 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:337:test_postprocess_large_working_set:PASS
+2026-02-04 22:53:41,369 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_prefilter.frag' (ID 7). Binary size: 5293 bytes
+2026-02-04 22:53:41,370 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_downsample.frag' (ID 10). Binary size: 6369 bytes
+2026-02-04 22:53:41,370 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/bloom_upsample.frag' (ID 13). Binary size: 5685 bytes
+2026-02-04 22:53:41,374 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/postprocess.frag' (ID 16). Binary size: 29925 bytes
+2026-02-04 22:53:41,374 [8290:8290] - suckless-ogl.postprocess - INFO     - Compiled OPTIMIZED shader with effects:
+2026-02-04 22:53:41,374 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Manual Exposure
+2026-02-04 22:53:41,374 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ Color Grading
+2026-02-04 22:53:41,374 [8290:8290] - suckless-ogl.postprocess - INFO     -   ✓ FXAA
+2026-02-04 22:53:41,374 [8290:8290] - suckless-ogl.postprocess - INFO     - Shader optimization complete (Flags: 0x00001024)
+2026-02-04 22:53:41,375 [8290:8290] - Shader - INFO     - Linked shader program 'shaders/postprocess.vert + shaders/lum_downsample.frag' (ID 19). Binary size: 8289 bytes
+2026-02-04 22:53:41,375 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing initialized (100x100)
+2026-02-04 22:53:41,376 [8290:8290] - suckless-ogl.postprocess - INFO     - Post-processing cleaned up
+/app/tests/test_postprocess.c:338:test_postprocess_cleanup:PASS
+
+-----------------------
+11 Tests 0 Failures 0 Ignored
+OK

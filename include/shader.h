@@ -20,11 +20,36 @@
 GLuint shader_compile(const char* path, GLenum type);
 
 /**
+ * @brief Compiles a single shader stage from a source string.
+ * @param source Null-terminated shader source code.
+ * @param type GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, or GL_COMPUTE_SHADER.
+ * @return GLuint handle of the compiled shader stage.
+ */
+GLuint shader_compile_from_source(const char* source, GLenum type);
+
+/**
  * @brief Reads a shader file into RAM, processing all includes.
  * @param path Absolute or relative path.
  * @return Heap-allocated null-terminated string. Result must be freed.
  */
 char* shader_read_file(const char* path);
+
+/**
+ * @brief Reads a shader file into RAM, processing all includes.
+ * @note This is an alias for shader_read_file but explicit about resolution.
+ * @param path Absolute or relative path.
+ * @return Heap-allocated null-terminated string. Result must be freed.
+ */
+char* shader_read_resolved_source(const char* path);
+
+/**
+ * @brief Injects `#define` directives into shader source.
+ * @param source Original source code.
+ * @param defines Array of macro strings (e.g. "BLOOM_ENABLED").
+ * @param count Number of macros.
+ * @return Heap-allocated string with injected defines. Result must be freed.
+ */
+char* shader_inject_defines(const char* source, const char** defines, int count);
 
 /**
  * @brief Helper to load a classic Vertex+Fragment program from disk.
@@ -73,6 +98,15 @@ typedef struct {
  * @return Pointer to the Shader object.
  */
 Shader* shader_load(const char* vertex_path, const char* fragment_path);
+
+/**
+ * @brief Creates a shader object from source strings.
+ * @param vert_src Vertex shader source.
+ * @param frag_src Fragment shader source.
+ * @param name Descriptive name for the shader.
+ * @return Pointer to the Shader object.
+ */
+Shader* shader_create_from_source(const char* vert_src, const char* frag_src, const char* name);
 
 /**
  * @brief Loads a compute program and caches its uniforms.

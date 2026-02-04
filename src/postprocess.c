@@ -1,5 +1,6 @@
 #include "postprocess.h"
 
+#include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
@@ -146,6 +147,22 @@ int postprocess_init(PostProcess* post_processing, int width, int height)
 		return 0;
 	}
 
+	/* Cache shader sources to avoid repeated I/O during recompilation */
+	post_processing->cached_vert_src =
+	    shader_read_resolved_source("shaders/postprocess.vert");
+	post_processing->cached_frag_src =
+	    shader_read_resolved_source("shaders/postprocess.frag");
+
+	if (!post_processing->cached_vert_src ||
+	    !post_processing->cached_frag_src) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to load postprocess shader sources");
+		destroy_framebuffer(post_processing);
+		fx_bloom_cleanup(post_processing);
+		destroy_screen_quad(post_processing);
+		return 0;
+	}
+
 	/* Charger le shader de post-processing (Optimized Mode) */
 	postprocess_compile_optimized(post_processing,
 	                              post_processing->active_effects);
@@ -221,6 +238,16 @@ void postprocess_cleanup(PostProcess* post_processing)
 		}
 		post_processing->postprocess_shader = NULL;
 	}
+
+	if (post_processing->cached_vert_src) {
+		free(post_processing->cached_vert_src);
+		post_processing->cached_vert_src = NULL;
+	}
+	if (post_processing->cached_frag_src) {
+		free(post_processing->cached_frag_src);
+		post_processing->cached_frag_src = NULL;
+	}
+
 	fx_bloom_cleanup(post_processing);
 	fx_dof_cleanup(post_processing);
 	fx_auto_exposure_cleanup(post_processing);
@@ -939,9 +966,23 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		count++;
 	}
 
-	Shader* new_shader = shader_load_with_defines(
-	    "shaders/postprocess.vert", "shaders/postprocess.frag", defines,
-	    count);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	if (count < MAX_SHADER_DEFINES) {
+		defines[count++] = "USE_TRANSPARENT_BILLBOARDS";
+	}
+#endif
+
+	/* Use cached source strings to avoid I/O */
+	char* vert_src = shader_inject_defines(post_processing->cached_vert_src,
+	                                       defines, count);
+	char* frag_src = shader_inject_defines(post_processing->cached_frag_src,
+	                                       defines, count);
+
+	Shader* new_shader = shader_create_from_source(
+	    vert_src, frag_src, "shaders/postprocess.vert + shaders/postprocess.frag");
+
+	free(vert_src);
+	free(frag_src);
 
 	if (new_shader) {
 		update_current_shader(post_processing, new_shader, true);

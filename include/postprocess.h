@@ -358,6 +358,9 @@ typedef struct PostProcess {
 	unsigned int
 	    compiled_flags; /**< Flags used for the current optimized shader. */
 
+	char* cached_vert_src; /**< Pre-resolved vertex shader source. */
+	char* cached_frag_src; /**< Pre-resolved fragment shader source. */
+
 	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
 	int shader_cache_count;
 } PostProcess;

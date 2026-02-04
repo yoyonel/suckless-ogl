@@ -68,6 +68,9 @@ enum { HEADER_TAG_LEN = 7 };
 static bool process_source(IncludeContext* ctx, const char* current_file_src,
                            const char* current_file_path);
 
+char* shader_read_file_with_defines(const char* path, const char** defines,
+                                    int count);
+
 /*
  * Reads an entire file into a null-terminated string.
  * This is the only place doing raw I/O and malloc for file content.
@@ -361,9 +364,10 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
  * Handles insertion after #version directive if present.
  * Returns a newly allocated string that must be freed by caller.
  */
-static char* inject_defines_into_source(const char* buffer, size_t file_size,
-                                        const char** defines, int count)
+char* shader_inject_defines(const char* buffer, const char** defines, int count)
 {
+	size_t file_size = strlen(buffer);
+
 	if (count <= 0 || !defines) {
 		char* copy = safe_calloc(file_size + 1, 1);
 		safe_memcpy(copy, file_size + 1, buffer, file_size);
@@ -425,12 +429,58 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 
 enum { MAX_DEFINES = 32 };
 
-char* shader_read_file_with_defines(const char* path, const char** defines,
-                                    int count)
+char* shader_read_resolved_source(const char* path)
 {
 	/* 1. Load root file */
 	CLEANUP_FREE char* root_src = load_file_into_ram(path);
 	if (!root_src) {
+		return NULL;
+	}
+
+	/* 2. Setup Context */
+	CLEANUP_CTX IncludeContext ctx = {0};
+	ctx_add_buffer(&ctx, TRANSFER_OWNERSHIP(root_src));
+
+	/* 3. Recursively parse and build chunk list */
+	if (!process_source(&ctx, ctx.buffers_head->data, path)) {
+		return NULL;
+	}
+
+	/* 4. Single Allocation for final result */
+	CLEANUP_FREE char* final_src = safe_calloc(ctx.total_size + 1, 1);
+	if (!final_src) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Final allocation failed (%lu bytes)",
+		          ctx.total_size);
+		return NULL;
+	}
+
+	/* 5. Assemble */
+	char* wptr = final_src;
+	Chunk* node = ctx.chunks_head;
+	while (node) {
+		safe_memcpy(wptr,
+		            ctx.total_size + 1 - (size_t)(wptr - final_src),
+		            node->ptr, node->len);
+		wptr += node->len;
+		node = node->next;
+	}
+	*wptr = '\0'; /* Null terminate */
+
+	return TRANSFER_OWNERSHIP(final_src);
+}
+
+char* shader_read_file(const char* path)
+{
+	return shader_read_file_with_defines(path, NULL, 0);
+}
+
+char* shader_read_file_with_defines(const char* path, const char** defines,
+                                    int count)
+{
+	/* 1. Read resolved source (recurse headers) */
+	CLEANUP_FREE char* resolved_src = shader_read_resolved_source(path);
+	if (!resolved_src) {
 		return NULL;
 	}
 
@@ -451,53 +501,39 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
 	}
 
 	if (total_defines > 0) {
-		char* modified_root = inject_defines_into_source(
-		    root_src, strlen(root_src), all_defines, total_defines);
-		if (!modified_root) {
-			return NULL; /* raii frees root_src */
-		}
-		/* Swap */
-		free(TRANSFER_OWNERSHIP(
-		    root_src)); /* Free original raw buffer */
-		root_src = modified_root;
+		return shader_inject_defines(resolved_src, all_defines,
+		                             total_defines);
 	}
 
-	/* 3. Setup Context */
-	CLEANUP_CTX IncludeContext ctx = {0};
-	ctx_add_buffer(&ctx, TRANSFER_OWNERSHIP(root_src));
-
-	/* 4. Recursively parse and build chunk list */
-	if (!process_source(&ctx, ctx.buffers_head->data, path)) {
-		return NULL;
-	}
-
-	/* 5. Single Allocation for final result */
-	CLEANUP_FREE char* final_src = safe_calloc(ctx.total_size + 1, 1);
-	if (!final_src) {
-		LOG_ERROR("suckless-ogl.shader",
-		          "Final allocation failed (%lu bytes)",
-		          ctx.total_size);
-		return NULL;
-	}
-
-	/* 6. Assemble */
-	char* wptr = final_src;
-	Chunk* node = ctx.chunks_head;
-	while (node) {
-		safe_memcpy(wptr,
-		            ctx.total_size + 1 - (size_t)(wptr - final_src),
-		            node->ptr, node->len);
-		wptr += node->len;
-		node = node->next;
-	}
-	*wptr = '\0'; /* Null terminate */
-
-	return TRANSFER_OWNERSHIP(final_src);
+	/* Return copy of resolved src if no defines */
+	size_t len = strlen(resolved_src);
+	char* copy = safe_calloc(len + 1, 1);
+	safe_memcpy(copy, len + 1, resolved_src, len);
+	return copy;
 }
 
-char* shader_read_file(const char* path)
+GLuint shader_compile_from_source(const char* source, GLenum type)
 {
-	return shader_read_file_with_defines(path, NULL, 0);
+	if (!source) {
+		return 0;
+	}
+
+	GLuint shader = glCreateShader(type);
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
+
+	int success = 0;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (success == 0) {
+		char log[INFO_LOG_SIZE];
+		glGetShaderInfoLog(shader, INFO_LOG_SIZE, NULL, log);
+		LOG_ERROR("suckless-ogl.shader",
+		          "Shader compilation error (from source):\n%s", log);
+		glDeleteShader(shader);
+		return 0;
+	}
+
+	return shader;
 }
 
 GLuint shader_compile_with_defines(const char* path, GLenum type,
@@ -510,20 +546,11 @@ GLuint shader_compile_with_defines(const char* path, GLenum type,
 		return 0;
 	}
 
-	GLuint shader = glCreateShader(type);
-	glShaderSource(shader, 1, (const char**)&src, NULL);
-	glCompileShader(shader);
+	GLuint shader = shader_compile_from_source(src, type);
 	free(src);
 
-	int success = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (success == 0) {
-		char log[INFO_LOG_SIZE];
-		glGetShaderInfoLog(shader, INFO_LOG_SIZE, NULL, log);
-		LOG_ERROR("suckless-ogl.shader",
-		          "Shader compilation error (%s):\n%s", path, log);
-		glDeleteShader(shader);
-		return 0;
+	if (shader == 0) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to compile %s", path);
 	}
 
 	return shader;
@@ -697,6 +724,45 @@ static Shader* shader_create_from_program(GLuint program, const char* name)
 Shader* shader_load(const char* vertex_path, const char* fragment_path)
 {
 	return shader_load_with_defines(vertex_path, fragment_path, NULL, 0);
+}
+
+Shader* shader_create_from_source(const char* vert_src, const char* frag_src, const char* name)
+{
+	GLuint vertex_shader = shader_compile_from_source(vert_src, GL_VERTEX_SHADER);
+	if (vertex_shader == 0) {
+		return NULL;
+	}
+
+	GLuint fragment_shader = shader_compile_from_source(frag_src, GL_FRAGMENT_SHADER);
+	if (fragment_shader == 0) {
+		glDeleteShader(vertex_shader);
+		return NULL;
+	}
+
+	GLuint program = glCreateProgram();
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+
+	int success = 0;
+	glGetProgramiv(program, GL_LINK_STATUS, &success);
+	if (success == 0) {
+		char log[INFO_LOG_SIZE];
+		glGetProgramInfoLog(program, INFO_LOG_SIZE, NULL, log);
+		LOG_ERROR("suckless-ogl.shader", "Shader linking error (from source):\n%s",
+		          log);
+		glDeleteProgram(program);
+		program = 0;
+	}
+
+	glDeleteShader(vertex_shader);
+	glDeleteShader(fragment_shader);
+
+	if (program == 0) {
+		return NULL;
+	}
+
+	return shader_create_from_program(program, name);
 }
 
 Shader* shader_load_with_defines(const char* vertex_path,
