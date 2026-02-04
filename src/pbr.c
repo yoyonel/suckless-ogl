@@ -288,9 +288,9 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
 		/* GL_CLIENT_STORAGE_BIT hints to keep it in system memory for
 		 * fast readback */
-		GLbitfield read_flags = GL_MAP_READ_BIT |
-		                        GL_CLIENT_STORAGE_BIT |
-		                        GL_DYNAMIC_STORAGE_BIT;
+		GLbitfield read_flags = (GLbitfield)GL_MAP_READ_BIT |
+		                        (GLbitfield)GL_CLIENT_STORAGE_BIT |
+		                        (GLbitfield)GL_DYNAMIC_STORAGE_BIT;
 		glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(float), NULL,
 		                read_flags);
 		glObjectLabel(GL_BUFFER, ssbos[1], -1,

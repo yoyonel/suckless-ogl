@@ -90,6 +90,7 @@ typedef struct App {
 	Shader*
 	    pbr_billboard_shader;  /**< Shader for volumetric/alpha spheres. */
 	Shader* debug_shader;      /**< Generic debug/visualization shader. */
+	Shader* debug_line_shader; /**< Shader for wireframe lines. */
 	MaterialLib* material_lib; /**< Loaded material presets. */
 	char** hdr_files;          /**< List of found HDR files in assets. */
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
@@ -146,6 +147,8 @@ typedef struct App {
 	GLuint sphere_nbo;           /**< Shared normal buffer. */
 	GLuint sphere_ebo;           /**< Shared index buffer. */
 	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
+	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
+	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
 	GLuint skybox_shader;        /**< Legacy skybox program ID. */
 	GLuint hdr_texture;          /**< Active HDR cubemap. */
 	GLuint spec_prefiltered_tex; /**< Active Specular map. */

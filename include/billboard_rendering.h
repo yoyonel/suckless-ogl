@@ -13,6 +13,7 @@
 
 #include "gl_common.h"
 #include "instanced_rendering.h" /* For SphereInstance */
+#include "shader.h"
 
 /**
  * @struct BillboardGroup
@@ -21,9 +22,11 @@
 typedef struct {
 	GLuint
 	    vao; /**< Dedicated VAO linking quad geometry and instance data. */
-	GLuint instance_vbo; /**< GPU buffer storing per-instance attributes
-	                        (position, color). */
-	int instance_count;  /**< Number of billboards in this group. */
+	GLuint instance_vbo;  /**< GPU buffer storing per-instance attributes
+	                         (position, color). */
+	int instance_count;   /**< Number of billboards in this group. */
+	GLuint vao_wire_quad; /**< VAO for debug wireframe quad. */
+	GLuint vao_wire_box;  /**< VAO for debug wireframe box. */
 } BillboardGroup;
 
 /**
@@ -42,7 +45,8 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
  * @param quad_vbo VBO containing basic quad geometry (usually from
  * render_utils).
  */
-void billboard_group_prepare(BillboardGroup* group, GLuint quad_vbo);
+void billboard_group_prepare(BillboardGroup* group, GLuint quad_vbo,
+                             GLuint wire_quad_vbo, GLuint wire_cube_vbo);
 
 /**
  * @brief Executes the instanced draw call for all billboards in the group.
@@ -66,5 +70,27 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
  * @param group Pointer to the group.
  */
 void billboard_group_cleanup(BillboardGroup* group);
+
+/**
+ * @brief Draws filled quads for each instance (for debug transparency).
+ * @param group Pointer to the group.
+ * @param shader Active debug line shader.
+ */
+void billboard_group_draw_debug_fill(BillboardGroup* group, Shader* shader);
+
+/**
+ * @brief Draws wireframe quads for each instance.
+ * @param group Pointer to the group.
+ * @param shader Active debug line shader.
+ * @param quad_vbo The wireframe quad VBO.
+ */
+void billboard_group_draw_debug_quads(BillboardGroup* group, Shader* shader);
+
+/**
+ * @brief Draws wireframe boxes for each instance.
+ * @param group Pointer to the group.
+ * @param shader Active debug line shader.
+ */
+void billboard_group_draw_debug_boxes(BillboardGroup* group, Shader* shader);
 
 #endif /* BILLBOARD_RENDERING_H */

@@ -139,6 +139,13 @@ int app_init(App* app, int width, int height, const char* title)
 	if (!app->debug_shader) {
 		return 0;
 	}
+
+	app->debug_line_shader =
+	    shader_load("shaders/debug_line.vert", "shaders/debug_line.frag");
+	if (!app->debug_line_shader) {
+		return 0;
+	}
+
 	render_utils_create_empty_vao(&app->empty_vao);
 
 	app->pbr_billboard_shader = shader_load(
@@ -148,6 +155,8 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	render_utils_create_quad_vbo(&app->quad_vbo);
+	render_utils_create_wire_cube_vbo(&app->wire_cube_vbo);
+	render_utils_create_wire_quad_vbo(&app->wire_quad_vbo);
 	skybox_init(&app->skybox, app->skybox_shader);
 	icosphere_init(&app->geometry);
 
@@ -231,7 +240,9 @@ void app_cleanup(App* app)
 
 	shader_destroy(app->pbr_instanced_shader);
 	shader_destroy(app->pbr_billboard_shader);
+	shader_destroy(app->pbr_billboard_shader);
 	shader_destroy(app->debug_shader);
+	shader_destroy(app->debug_line_shader);
 #ifdef USE_SSBO_RENDERING
 	shader_destroy(app->pbr_ssbo_shader);
 #endif
@@ -241,6 +252,8 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->sphere_vbo);
 	glDeleteBuffers(1, &app->sphere_nbo);
 	glDeleteBuffers(1, &app->sphere_ebo);
+	glDeleteBuffers(1, &app->wire_cube_vbo);
+	glDeleteBuffers(1, &app->wire_quad_vbo);
 
 	ui_destroy(&app->ui);
 	postprocess_cleanup(&app->postprocess);
@@ -393,19 +406,15 @@ void app_render(App* app)
 		                       app->sphere_instance_count);
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-
 	if (app->billboard_mode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		app_render_billboards(app, view, proj, camera_pos);
 		glDisable(GL_BLEND);
 	} else {
+		glPolygonMode(GL_FRONT_AND_BACK,
+		              app->wireframe ? GL_LINE : GL_FILL);
 		app_render_instanced(app, view, proj, camera_pos);
 	}
 
@@ -413,16 +422,12 @@ void app_render(App* app)
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #else
-	glPolygonMode(GL_FRONT_AND_BACK, app->wireframe ? GL_LINE : GL_FILL);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-
 	if (app->billboard_mode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		app_render_billboards(app, view, proj, camera_pos);
 	} else {
+		glPolygonMode(GL_FRONT_AND_BACK,
+		              app->wireframe ? GL_LINE : GL_FILL);
 		app_render_instanced(app, view, proj, camera_pos);
 	}
 

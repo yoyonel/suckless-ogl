@@ -124,7 +124,8 @@ void app_init_instancing(App* app)
 	instanced_group_bind_mesh(&app->instanced_group, app->sphere_vbo,
 	                          app->sphere_nbo, app->sphere_ebo);
 	billboard_group_init(&app->billboard_group, data, total_count);
-	billboard_group_prepare(&app->billboard_group, app->quad_vbo);
+	billboard_group_prepare(&app->billboard_group, app->quad_vbo,
+	                        app->wire_quad_vbo, app->wire_cube_vbo);
 	free(data);
 }
 
@@ -159,7 +160,76 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	float screen_size[2] = {(float)app->width, (float)app->height};
 	shader_set_vec2(current_shader, "u_screenSize", screen_size);
 
+	/* Debug Visualization Constants */
+	const float debug_fill_alpha = 0.10F;
+	const float debug_box_alpha = 0.5F;
+	const float debug_offset_fill = 1.0F;
+	const float debug_offset_line = -2.0F;
+
 	billboard_group_draw(&app->billboard_group);
+
+	if (app->pbr_debug_mode == 0 && app->wireframe) {
+		/* Wireframe Overlay */
+		/* Enable Depth Test but disable Depth Write to overlay
+		 * correctly */
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+
+		shader_use(app->debug_line_shader);
+		shader_set_mat4(app->debug_line_shader, "projection",
+		                (float*)proj);
+		shader_set_mat4(app->debug_line_shader, "view", (float*)view);
+
+		/* 0. Transparent Fill (Instance Albedo) */
+		/* Push fill back to avoid z-fighting with outlines */
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(debug_offset_fill, debug_offset_fill);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		/* Disable stipple, Enable Billboard Mode, Enable Instance Color
+		 */
+		shader_set_int(app->debug_line_shader, "u_stippled", 0);
+		shader_set_int(app->debug_line_shader, "u_billboardMode", 1);
+		shader_set_int(app->debug_line_shader, "u_useInstanceColor", 1);
+		/* Alpha 0.10 for transparency */
+		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
+		shader_set_vec4(app->debug_line_shader, "u_color", color_fill);
+		billboard_group_draw_debug_fill(&app->billboard_group,
+		                                app->debug_line_shader);
+		glDisable(GL_BLEND);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+
+		/* 1. Quad Outline (Solid Green/White) */
+		/* Pull outlines forward */
+		glEnable(GL_POLYGON_OFFSET_LINE);
+		glPolygonOffset(debug_offset_line, debug_offset_line);
+
+		/* Disable stipple, Enable Billboard Mode, Disable Instance
+		 * Color */
+		shader_set_int(app->debug_line_shader, "u_stippled", 0);
+		shader_set_int(app->debug_line_shader, "u_billboardMode", 1);
+		shader_set_int(app->debug_line_shader, "u_useInstanceColor", 0);
+		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
+		shader_set_vec4(app->debug_line_shader, "u_color", color_quad);
+		billboard_group_draw_debug_quads(&app->billboard_group,
+		                                 app->debug_line_shader);
+
+		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
+		/* Enable stipple, Disable Billboard Mode */
+		shader_set_int(app->debug_line_shader, "u_stippled", 1);
+		shader_set_int(app->debug_line_shader, "u_billboardMode", 0);
+		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
+		shader_set_vec4(app->debug_line_shader, "u_color", color_box);
+		billboard_group_draw_debug_boxes(&app->billboard_group,
+		                                 app->debug_line_shader);
+
+		glDisable(GL_POLYGON_OFFSET_LINE);
+
+		/* Restore Depth State */
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+	}
 }
 
 void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)

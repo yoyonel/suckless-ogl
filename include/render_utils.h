@@ -103,6 +103,25 @@ void render_utils_create_empty_vao(GLuint* vao);
 void render_utils_create_quad_vbo(GLuint* vbo);
 
 /**
+ * @brief Creates a wireframe Unit Cube VBO (GL_LINES).
+ *
+ * Vertices range from -1.0 to 1.0. 12 edges * 2 vertices = 24 vertices.
+ *
+ * @param[out] vbo Pointer to store the generated VBO handle.
+ */
+void render_utils_create_wire_cube_vbo(GLuint* vbo);
+
+/**
+ * @brief Creates a wireframe Quad VBO (GL_LINE_LOOP).
+ *
+ * Vertices are: (-0.5, 0.5), (0.5, 0.5), (0.5, -0.5), (-0.5, -0.5).
+ * 4 vertices.
+ *
+ * @param[out] vbo Pointer to store the generated VBO handle.
+ */
+void render_utils_create_wire_quad_vbo(GLuint* vbo);
+
+/**
  * @brief Creates a Full-Screen Quad VAO and VBO.
  *
  * Generates a quad covering the entire Normalized Device Coordinates (NDC)
