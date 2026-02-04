@@ -46,24 +46,15 @@ bool intersectSphere(vec3 ro, vec3 rd, vec3 center, float radius, out float t,
 		return false;  // No intersection
 
 	h = sqrt(h);
-	float t1 = -b - h;
-	float t2 = -b + h;
+	t = -b - h;
 
-	if (t1 >= 0.0) {
-		t = t1;
-		vec3 hitPos = ro + t * rd;
-		normal = normalize(hitPos - center);
-		return true;
-	} else if (t2 >= 0.0) {
-		// Inside the sphere: hit the back face
-		t = t2;
-		vec3 hitPos = ro + t * rd;
-		// Flip normal to point inward for the inner surface
-		normal = normalize(center - hitPos);
-		return true;
+	if (t < 0.0) {
+		return false;
 	}
 
-	return false;
+	vec3 hitPos = ro + t * rd;
+	normal = normalize(hitPos - center);
+	return true;
 }
 
 void main()
@@ -90,7 +81,6 @@ void main()
 	 * We estimate the footprint of a pixel in 'h' space.
 	 * h = R^2 - d^2. dh = -2d*dd. Near h=0, d=R.
 	 * So fwidth(h) ~ 2 * R * fwidth(d).
-	 * fwidth(d) is the pixel size in world space.
 	 * fwidth(d) = 2.0 * Z * tan(fov/2) / ScreenHeight
 	 * fwidth(d) = 2.0 * CurrentClipPos.w / (projection[1][1] *
 	 * ScreenHeight)

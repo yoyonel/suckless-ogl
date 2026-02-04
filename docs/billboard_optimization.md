@@ -87,14 +87,7 @@ Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensur
 
 - **See also**: [Flat Interpolation (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Interpolation_qualifiers) and [Provoking Vertex (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Primitive#Provoking_vertex).
 
-### 5. Inside-Sphere Rendering
-To achieve parity with hollow meshes (e.g., viewing an icosphere from the inside), the ray-sphere intersection logic has been enhanced to handle cases where the camera origin is inside the sphere's radius.
-
-- **Exit Hit**: If the first intersection distance ($t_1$) is negative, the shader checks the second intersection ($t_2$). If $t_2 \ge 0$, it represents the exit hit on the inner wall.
-- **Normal Flipping**: When an inner hit is detected, the surface normal is automatically flipped to point toward the sphere's center. This ensures that PBR lighting and IBL mapping behave correctly for the interior surface.
-- **Full Coverage**: In the Vertex Shader, if the camera is inside the sphere, a full-screen quad is rasterized to ensure the entire view is processed by the ray-casting fragment logic.
-
-### 6. The Mesh vs. Math Paradox (Understanding Diff Maps)
+### 5. The Mesh vs. Math Paradox (Understanding Diff Maps)
 When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is **expected** and proves the accuracy of the mathematical approach:
 
 1.  **Perfect Silhouette:** The billboard computes a mathematically perfect curve for every pixel. An icosphere, regardless of subdivision, is an approximation made of flat triangles. The rings represent the areas where the triangle edges deviate from the perfect sphere.
