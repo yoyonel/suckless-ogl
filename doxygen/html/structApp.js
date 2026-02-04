@@ -8,6 +8,7 @@ var structApp =
     [ "camera_enabled", "structApp.html#abfeaafb46c8fcf884a5837047997d8bb", null ],
     [ "current_exposure", "structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9", null ],
     [ "current_hdr_index", "structApp.html#ab1a4d26d5463ca7af068c982243a29c2", null ],
+    [ "debug_line_shader", "structApp.html#a120d6946ca46137fa064117620dce551", null ],
     [ "debug_lod", "structApp.html#a97e33fda8910d4325bcb9bb4431e8d82", null ],
     [ "debug_shader", "structApp.html#a593e6f8848c12d61961f9e4e3b3b2a7c", null ],
     [ "delta_time", "structApp.html#a90dac3c1153b09925cace5205c06889b", null ],
@@ -78,5 +79,7 @@ var structApp =
     [ "ui", "structApp.html#a79339486198010ad85e84500148933bf", null ],
     [ "width", "structApp.html#a2c90198ed2171c619f0f3b9eb49d005a", null ],
     [ "window", "structApp.html#a86cbfdc5598162e909b9f3a25ae1b350", null ],
+    [ "wire_cube_vbo", "structApp.html#aa2e72232f7997109486d4d8653f8e768", null ],
+    [ "wire_quad_vbo", "structApp.html#aa69b6df5e41f231a520a4af094a6411d", null ],
     [ "wireframe", "structApp.html#a66119ddc8fec7b0ff658340bcf2561f0", null ]
 ];

@@ -281,6 +281,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a691eca4a993c57791a056d182eeeda68" id="r_a691eca4a993c57791a056d182eeeda68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a691eca4a993c57791a056d182eeeda68">render_utils_create_quad_vbo</a> (GLuint *vbo)</td></tr>
 <tr class="memdesc:a691eca4a993c57791a056d182eeeda68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a standard centered Quad VBO.  <br /></td></tr>
 <tr class="separator:a691eca4a993c57791a056d182eeeda68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b35229c13299bba83a2d47ed4c1013" id="r_a60b35229c13299bba83a2d47ed4c1013"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a60b35229c13299bba83a2d47ed4c1013">render_utils_create_wire_cube_vbo</a> (GLuint *vbo)</td></tr>
+<tr class="memdesc:a60b35229c13299bba83a2d47ed4c1013"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a wireframe Unit Cube VBO (GL_LINES).  <br /></td></tr>
+<tr class="separator:a60b35229c13299bba83a2d47ed4c1013"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa370bd3e8bd4ca7c706c84d4c5505688" id="r_aa370bd3e8bd4ca7c706c84d4c5505688"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#aa370bd3e8bd4ca7c706c84d4c5505688">render_utils_create_wire_quad_vbo</a> (GLuint *vbo)</td></tr>
+<tr class="memdesc:aa370bd3e8bd4ca7c706c84d4c5505688"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a wireframe Quad VBO (GL_LINE_LOOP).  <br /></td></tr>
+<tr class="separator:aa370bd3e8bd4ca7c706c84d4c5505688"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c76878a56fc26dedd3af3595f12626e" id="r_a7c76878a56fc26dedd3af3595f12626e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a7c76878a56fc26dedd3af3595f12626e">render_utils_create_fullscreen_quad</a> (GLuint *vao, GLuint *vbo)</td></tr>
 <tr class="memdesc:a7c76878a56fc26dedd3af3595f12626e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a Full-Screen Quad VAO and VBO.  <br /></td></tr>
 <tr class="separator:a7c76878a56fc26dedd3af3595f12626e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -520,6 +526,60 @@ Functions</h2></td></tr>
 <p>Creates a standard centered Quad VBO. </p>
 <p>Generates a VBO containing vertices for a quad centered at (0,0) with size 1x1 (-0.5 to 0.5). Useful for billboard rendering or simple sprites.</p>
 <p>Format: 3 floats (x, y, z) per vertex. Vertex count: 6 (2 triangles).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">vbo</td><td>Pointer to store the generated VBO handle. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a60b35229c13299bba83a2d47ed4c1013" name="a60b35229c13299bba83a2d47ed4c1013"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60b35229c13299bba83a2d47ed4c1013">&#9670;&#160;</a></span>render_utils_create_wire_cube_vbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_create_wire_cube_vbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>vbo</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a wireframe Unit Cube VBO (GL_LINES). </p>
+<p>Vertices range from -1.0 to 1.0. 12 edges * 2 vertices = 24 vertices.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">vbo</td><td>Pointer to store the generated VBO handle. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa370bd3e8bd4ca7c706c84d4c5505688" name="aa370bd3e8bd4ca7c706c84d4c5505688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa370bd3e8bd4ca7c706c84d4c5505688">&#9670;&#160;</a></span>render_utils_create_wire_quad_vbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_create_wire_quad_vbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>vbo</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a wireframe Quad VBO (GL_LINE_LOOP). </p>
+<p>Vertices are: (-0.5, 0.5), (0.5, 0.5), (0.5, -0.5), (-0.5, -0.5). 4 vertices.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">vbo</td><td>Pointer to store the generated VBO handle. </td></tr>

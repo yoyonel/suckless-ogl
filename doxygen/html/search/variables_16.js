@@ -9,8 +9,11 @@ var searchData=
   ['window_6',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App']]],
   ['window_5fduration_7',['window_duration',['../structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7',1,'AdaptiveSampler']]],
   ['window_5fstart_5ftime_8',['window_start_time',['../structAdaptiveSampler.html#a0e49d332095e73af87d1859ca8ae0b47',1,'AdaptiveSampler']]],
-  ['wireframe_9',['wireframe',['../structApp.html#a66119ddc8fec7b0ff658340bcf2561f0',1,'App']]],
-  ['worker_5fthread_10',['worker_thread',['../async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423',1,'async_loader.c']]],
-  ['world_5fup_11',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
-  ['worldpos_12',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]]
+  ['wire_5fcube_5fvbo_9',['wire_cube_vbo',['../structApp.html#aa2e72232f7997109486d4d8653f8e768',1,'App']]],
+  ['wire_5fcube_5fvertex_5fcount_10',['WIRE_CUBE_VERTEX_COUNT',['../billboard__rendering_8c.html#a1981a837d663f92043ee566e92f32848',1,'billboard_rendering.c']]],
+  ['wire_5fquad_5fvbo_11',['wire_quad_vbo',['../structApp.html#aa69b6df5e41f231a520a4af094a6411d',1,'App']]],
+  ['wireframe_12',['wireframe',['../structApp.html#a66119ddc8fec7b0ff658340bcf2561f0',1,'App']]],
+  ['worker_5fthread_13',['worker_thread',['../async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423',1,'async_loader.c']]],
+  ['world_5fup_14',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
+  ['worldpos_15',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]]
 ];

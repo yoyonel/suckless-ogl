@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['graphs_0',['API Reference &amp; Graphs',['../index.html',1,'']]]
+  ['exact_20sphere_20aabb_20optimization_0',['Exact Sphere AABB Optimization',['../md_docs_2billboard__optimization.html',1,'']]]
 ];

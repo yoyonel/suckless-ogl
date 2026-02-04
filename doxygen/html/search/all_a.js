@@ -1,6 +1,30 @@
 var searchData=
 [
-  ['key_20modules_0',['Key Modules',['../index.html#autotoc_md2',1,'']]],
-  ['key_5fcallback_1',['key_callback',['../app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718',1,'key_callback(GLFWwindow *window, int key, int scancode, int action, int mods):&#160;app_input.c'],['../app__input_8c.html#a286930f4e8ede059b83ff6eafa2ff718',1,'key_callback(GLFWwindow *window, int key, int scancode, int action, int mods):&#160;app_input.c']]],
-  ['knee_2',['knee',['../bloom__prefilter_8frag.html#a025ab388eefe93d3e62ba0b8faa13ce7',1,'bloom_prefilter.frag']]]
+  ['edge_5fhash_5ffree_0',['edge_hash_free',['../icosphere_8c.html#ae03bb94117c96b3c6b629a914dde98cd',1,'icosphere.c']]],
+  ['edge_5fhash_5finit_1',['edge_hash_init',['../icosphere_8c.html#aa6488726ac1005a991370448ff17cce0',1,'icosphere.c']]],
+  ['edge_5fthreshold_2',['edge_threshold',['../structFXAAParams.html#a209c6ebc3c9fad68bebc654d163d646c',1,'FXAAParams']]],
+  ['edge_5fthreshold_5fmin_3',['edge_threshold_min',['../structFXAAParams.html#a0a67abc60de11de94115d6ed9b134d2a',1,'FXAAParams']]],
+  ['edgeentry_4',['EdgeEntry',['../structEdgeEntry.html',1,'']]],
+  ['edgehash_5',['EdgeHash',['../structEdgeHash.html',1,'']]],
+  ['effect_5fcount_6',['EFFECT_COUNT',['../postprocess_8c.html#a1ae0b718558d6f05af131a79c4ada77d',1,'postprocess.c']]],
+  ['effectmetadata_7',['EffectMetadata',['../structEffectMetadata.html',1,'']]],
+  ['empty_5fvao_8',['empty_vao',['../structApp.html#a9e3b39fc7a01835c8ab21605b6e6da53',1,'App']]],
+  ['end_9',['end',['../structPerfTimer.html#a4a24d10e20b4d1752ae7fe51274b1c4c',1,'PerfTimer']]],
+  ['entries_10',['entries',['../structShader.html#af1d3b12a4abc29af78e033a9b2acc6dd',1,'Shader::entries'],['../structSphereSorter.html#a3eee2a197fa6fcc0d2c6c9d771532906',1,'SphereSorter::entries'],['../structEdgeHash.html#ace0fcc8d2741d15211878c3b837016f4',1,'EdgeHash::entries']]],
+  ['entry_5fcapacity_11',['entry_capacity',['../structShader.html#af651964a485af25e6f6658fa57e46a38',1,'Shader']]],
+  ['entry_5fcount_12',['entry_count',['../structShader.html#a40b936cae39a7242aac2814066b966f2',1,'Shader']]],
+  ['env_5flod_13',['env_lod',['../structApp.html#acdf677731e707e8a4bc70d37d9b62c31',1,'App']]],
+  ['env_5fmap_5floading_14',['env_map_loading',['../structApp.html#a0d1c33bce3c61e2020c4fe4633c7431c',1,'App']]],
+  ['env_5ftext_5fbuffer_5fsize_15',['ENV_TEXT_BUFFER_SIZE',['../app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388a654e69613c7186f04e4a268211ffa3be',1,'app_ui.c']]],
+  ['env_5ftext_5fcolor_16',['ENV_TEXT_COLOR',['../app__ui_8c.html#af0b98e622dd47736cd7e777d203a82e7',1,'app_ui.c']]],
+  ['environment_20lighting_17',['Environment &amp; Lighting',['../group__Environment.html',1,'']]],
+  ['environmentmap_18',['environmentMap',['../background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623',1,'background.frag']]],
+  ['epsilon_19',['EPSILON',['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'pbr_functions.glsl']]],
+  ['exact_20solution_3a_20tangent_20planes_20',['The Exact Solution: Tangent Planes',['../md_docs_2billboard__optimization.html#autotoc_md2',1,'']]],
+  ['exact_20sphere_20aabb_20optimization_21',['Exact Sphere AABB Optimization',['../md_docs_2billboard__optimization.html',1,'']]],
+  ['exposure_22',['exposure',['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure'],['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure']]],
+  ['exposure_5fmanual_23',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
+  ['exposure_5fpbo_24',['exposure_pbo',['../structApp.html#af316b16ec5883e877c1fd57261e0b488',1,'App']]],
+  ['exposure_5ftext_5fbuffer_5fsize_25',['EXPOSURE_TEXT_BUFFER_SIZE',['../app__ui_8c.html#a385c44f6fb256e5716a2302a5b940388a4e8447b9e47500d76a84900bca1215d6',1,'app_ui.c']]],
+  ['exposureparams_26',['ExposureParams',['../structExposureParams.html',1,'']]]
 ];

@@ -273,6 +273,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a33087ca6b20688c957fbac893920f029"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a593e6f8848c12d61961f9e4e3b3b2a7c" id="r_a593e6f8848c12d61961f9e4e3b3b2a7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a593e6f8848c12d61961f9e4e3b3b2a7c">debug_shader</a></td></tr>
 <tr class="separator:a593e6f8848c12d61961f9e4e3b3b2a7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a120d6946ca46137fa064117620dce551" id="r_a120d6946ca46137fa064117620dce551"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a120d6946ca46137fa064117620dce551">debug_line_shader</a></td></tr>
+<tr class="separator:a120d6946ca46137fa064117620dce551"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64496c91714395d84b9c6ec831be7ee5" id="r_a64496c91714395d84b9c6ec831be7ee5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMaterialLib.html">MaterialLib</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a64496c91714395d84b9c6ec831be7ee5">material_lib</a></td></tr>
 <tr class="separator:a64496c91714395d84b9c6ec831be7ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada621b90055c79ec16258d30791087dd" id="r_ada621b90055c79ec16258d30791087dd"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#ada621b90055c79ec16258d30791087dd">hdr_files</a></td></tr>
@@ -365,6 +367,10 @@ Data Fields</h2></td></tr>
 <tr class="separator:a6ffe18f70a8ded2a95b2b81a43be1103"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1dd853575f894ae3ed9a21ab1013f638" id="r_a1dd853575f894ae3ed9a21ab1013f638"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a1dd853575f894ae3ed9a21ab1013f638">quad_vbo</a></td></tr>
 <tr class="separator:a1dd853575f894ae3ed9a21ab1013f638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2e72232f7997109486d4d8653f8e768" id="r_aa2e72232f7997109486d4d8653f8e768"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#aa2e72232f7997109486d4d8653f8e768">wire_cube_vbo</a></td></tr>
+<tr class="separator:aa2e72232f7997109486d4d8653f8e768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa69b6df5e41f231a520a4af094a6411d" id="r_aa69b6df5e41f231a520a4af094a6411d"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#aa69b6df5e41f231a520a4af094a6411d">wire_quad_vbo</a></td></tr>
+<tr class="separator:aa69b6df5e41f231a520a4af094a6411d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac34cc768f96afb050926f49ea56c84ab" id="r_ac34cc768f96afb050926f49ea56c84ab"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#ac34cc768f96afb050926f49ea56c84ab">skybox_shader</a></td></tr>
 <tr class="separator:ac34cc768f96afb050926f49ea56c84ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32f2e626cb5432c707b38a00175d6187" id="r_a32f2e626cb5432c707b38a00175d6187"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a32f2e626cb5432c707b38a00175d6187">hdr_texture</a></td></tr>
@@ -533,6 +539,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Index of active HDR in file list. </p>
+
+</div>
+</div>
+<a id="a120d6946ca46137fa064117620dce551" name="a120d6946ca46137fa064117620dce551"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a120d6946ca46137fa064117620dce551">&#9670;&#160;</a></span>debug_line_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* App::debug_line_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> for wireframe lines. </p>
 
 </div>
 </div>
@@ -1581,6 +1602,36 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>The GLFW window context. </p>
+
+</div>
+</div>
+<a id="aa2e72232f7997109486d4d8653f8e768" name="aa2e72232f7997109486d4d8653f8e768"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2e72232f7997109486d4d8653f8e768">&#9670;&#160;</a></span>wire_cube_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint App::wire_cube_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe cube. </p>
+
+</div>
+</div>
+<a id="aa69b6df5e41f231a520a4af094a6411d" name="aa69b6df5e41f231a520a4af094a6411d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa69b6df5e41f231a520a4af094a6411d">&#9670;&#160;</a></span>wire_quad_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint App::wire_quad_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe quad. </p>
 
 </div>
 </div>

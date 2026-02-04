@@ -27,6 +27,25 @@ var NAVTREE =
   [ "Suckless OGL", "index.html", [
     [ "Back to Docs", "../../index.html", null ],
     [ "API Reference & Graphs", "index.html", "index" ],
+    [ "Exact Sphere AABB Optimization", "md_docs_2billboard__optimization.html", [
+      [ "The Problem", "md_docs_2billboard__optimization.html#autotoc_md1", null ],
+      [ "The Exact Solution: Tangent Planes", "md_docs_2billboard__optimization.html#autotoc_md2", [
+        [ "Geometry (XZ Plane)", "md_docs_2billboard__optimization.html#autotoc_md3", null ],
+        [ "Finding Tangent Normals (Without Trigonometry)", "md_docs_2billboard__optimization.html#autotoc_md4", null ],
+        [ "Projection to NDC", "md_docs_2billboard__optimization.html#autotoc_md5", null ]
+      ] ],
+      [ "Implementation Results", "md_docs_2billboard__optimization.html#autotoc_md6", null ],
+      [ "Robustness Handling", "md_docs_2billboard__optimization.html#autotoc_md7", [
+        [ "1. Camera Plane Singularity", "md_docs_2billboard__optimization.html#autotoc_md8", null ],
+        [ "2. Back-Projection Culling", "md_docs_2billboard__optimization.html#autotoc_md9", null ],
+        [ "3. Conservative Depth", "md_docs_2billboard__optimization.html#autotoc_md10", null ],
+        [ "4. Numerical Stability: Avoiding Silhouette Jitter", "md_docs_2billboard__optimization.html#autotoc_md11", null ],
+        [ "5. The Mesh vs. Math Paradox (Understanding Diff Maps)", "md_docs_2billboard__optimization.html#autotoc_md12", null ]
+      ] ],
+      [ "References", "md_docs_2billboard__optimization.html#autotoc_md13", [
+        [ "Visual Illustration", "md_docs_2billboard__optimization.html#autotoc_md14", null ]
+      ] ]
+    ] ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Topics", "topics.html", "topics" ],
     [ "Data Structures", "annotated.html", [
@@ -55,12 +74,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"camera_8h.html#a2448b5f8820f41c06e72ed2527569b3c",
-"group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b",
-"perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505",
-"shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c",
-"structFXAAParams.html#a0a67abc60de11de94115d6ed9b134d2a",
-"structSphereSorter.html#abb545ed2339b758382da58d03ed77484"
+"camera_8c.html#aa9ec3674fcdecefa4f1f1502def1463c",
+"group__Environment.html#gac0e8a7770231166913b3e05f723bafc9",
+"pbr__ibl__instanced_8vert.html#a2c98303ba6cfb83d185c0adddfd228f8",
+"postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098",
+"structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71",
+"structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

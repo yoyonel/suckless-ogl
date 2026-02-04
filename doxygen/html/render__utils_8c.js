@@ -7,6 +7,8 @@ var render__utils_8c =
     [ "render_utils_create_empty_vao", "render__utils_8c.html#a98a336c2498940402d85cac4b93e71a7", null ],
     [ "render_utils_create_fullscreen_quad", "render__utils_8c.html#a7c76878a56fc26dedd3af3595f12626e", null ],
     [ "render_utils_create_quad_vbo", "render__utils_8c.html#a691eca4a993c57791a056d182eeeda68", null ],
+    [ "render_utils_create_wire_cube_vbo", "render__utils_8c.html#a60b35229c13299bba83a2d47ed4c1013", null ],
+    [ "render_utils_create_wire_quad_vbo", "render__utils_8c.html#aa370bd3e8bd4ca7c706c84d4c5505688", null ],
     [ "render_utils_generate_gpu_identifier", "render__utils_8c.html#a8e822a5ea204deab6cc1dc8fb4846522", null ],
     [ "render_utils_get_gpu_identifier", "render__utils_8c.html#a14b5c2c05c8237ed479c12883a7513e5", null ],
     [ "render_utils_get_gpu_info", "render__utils_8c.html#a36893aa437e6ad9c7fee136de3298763", null ],

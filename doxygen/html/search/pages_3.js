@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['list_0',['Deprecated List',['../deprecated.html',1,'']]]
+  ['graphs_0',['API Reference &amp; Graphs',['../index.html',1,'']]]
 ];

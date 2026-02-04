@@ -245,10 +245,11 @@ $(document).ready(function(){initNavTree('billboard__rendering_8h.html',''); ini
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for billboard_rendering.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h__incl.svg" width="448" height="256"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h__incl.svg" width="435" height="256"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -269,9 +270,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2e879f800244b637740be72363feeb04" id="r_a2e879f800244b637740be72363feeb04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#a2e879f800244b637740be72363feeb04">billboard_group_init</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *data, int count)</td></tr>
 <tr class="memdesc:a2e879f800244b637740be72363feeb04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the billboard group and allocates GPU memory.  <br /></td></tr>
 <tr class="separator:a2e879f800244b637740be72363feeb04"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7c6dec8f16479b4749eda7cee28fd02" id="r_ac7c6dec8f16479b4749eda7cee28fd02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#ac7c6dec8f16479b4749eda7cee28fd02">billboard_group_prepare</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, GLuint quad_vbo)</td></tr>
-<tr class="memdesc:ac7c6dec8f16479b4749eda7cee28fd02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares the VAO by linking a shared quad VBO with internal instance data.  <br /></td></tr>
-<tr class="separator:ac7c6dec8f16479b4749eda7cee28fd02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2460cc8c0b2f53a206ac95146ac5923" id="r_ac2460cc8c0b2f53a206ac95146ac5923"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#ac2460cc8c0b2f53a206ac95146ac5923">billboard_group_prepare</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, GLuint quad_vbo, GLuint wire_quad_vbo, GLuint wire_cube_vbo)</td></tr>
+<tr class="memdesc:ac2460cc8c0b2f53a206ac95146ac5923"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares the VAO by linking a shared quad VBO with internal instance data.  <br /></td></tr>
+<tr class="separator:ac2460cc8c0b2f53a206ac95146ac5923"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a12a5448656197b1da5248f2787da94" id="r_a5a12a5448656197b1da5248f2787da94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#a5a12a5448656197b1da5248f2787da94">billboard_group_draw</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group)</td></tr>
 <tr class="memdesc:a5a12a5448656197b1da5248f2787da94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the instanced draw call for all billboards in the group.  <br /></td></tr>
 <tr class="separator:a5a12a5448656197b1da5248f2787da94"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -281,6 +282,15 @@ Functions</h2></td></tr>
 <tr class="memitem:afe9bff73b698b1f2017877983fbf3f4c" id="r_afe9bff73b698b1f2017877983fbf3f4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#afe9bff73b698b1f2017877983fbf3f4c">billboard_group_cleanup</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group)</td></tr>
 <tr class="memdesc:afe9bff73b698b1f2017877983fbf3f4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all GPU resources allocated for the billboard group.  <br /></td></tr>
 <tr class="separator:afe9bff73b698b1f2017877983fbf3f4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a797698afbb8fc52ed2a0db3fefd5c141" id="r_a797698afbb8fc52ed2a0db3fefd5c141"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#a797698afbb8fc52ed2a0db3fefd5c141">billboard_group_draw_debug_fill</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, <a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:a797698afbb8fc52ed2a0db3fefd5c141"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws filled quads for each instance (for debug transparency).  <br /></td></tr>
+<tr class="separator:a797698afbb8fc52ed2a0db3fefd5c141"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28be7046d958ed7c8cdf19726b61d732" id="r_a28be7046d958ed7c8cdf19726b61d732"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#a28be7046d958ed7c8cdf19726b61d732">billboard_group_draw_debug_quads</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, <a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:a28be7046d958ed7c8cdf19726b61d732"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws wireframe quads for each instance.  <br /></td></tr>
+<tr class="separator:a28be7046d958ed7c8cdf19726b61d732"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ab37c266bf80aff5ea3cadf4671c30a" id="r_a9ab37c266bf80aff5ea3cadf4671c30a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8h.html#a9ab37c266bf80aff5ea3cadf4671c30a">billboard_group_draw_debug_boxes</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, <a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:a9ab37c266bf80aff5ea3cadf4671c30a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws wireframe boxes for each instance.  <br /></td></tr>
+<tr class="separator:a9ab37c266bf80aff5ea3cadf4671c30a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>View-aligned quad rendering (billboarding) for optimized sphere drawing. </p>
@@ -338,6 +348,133 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a9ab37c266bf80aff5ea3cadf4671c30a" name="a9ab37c266bf80aff5ea3cadf4671c30a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ab37c266bf80aff5ea3cadf4671c30a">&#9670;&#160;</a></span>billboard_group_draw_debug_boxes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void billboard_group_draw_debug_boxes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardGroup.html">BillboardGroup</a> *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws wireframe boxes for each instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
+    <tr><td class="paramname">shader</td><td>Active debug line shader. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h_a9ab37c266bf80aff5ea3cadf4671c30a_cgraph.svg" width="318" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a797698afbb8fc52ed2a0db3fefd5c141" name="a797698afbb8fc52ed2a0db3fefd5c141"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a797698afbb8fc52ed2a0db3fefd5c141">&#9670;&#160;</a></span>billboard_group_draw_debug_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void billboard_group_draw_debug_fill </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardGroup.html">BillboardGroup</a> *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws filled quads for each instance (for debug transparency). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
+    <tr><td class="paramname">shader</td><td>Active debug line shader. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h_a797698afbb8fc52ed2a0db3fefd5c141_cgraph.svg" width="318" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a28be7046d958ed7c8cdf19726b61d732" name="a28be7046d958ed7c8cdf19726b61d732"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28be7046d958ed7c8cdf19726b61d732">&#9670;&#160;</a></span>billboard_group_draw_debug_quads()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void billboard_group_draw_debug_quads </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardGroup.html">BillboardGroup</a> *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws wireframe quads for each instance. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
+    <tr><td class="paramname">shader</td><td>Active debug line shader. </td></tr>
+    <tr><td class="paramname">quad_vbo</td><td>The wireframe quad VBO. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h_a28be7046d958ed7c8cdf19726b61d732_cgraph.svg" width="318" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
 <a id="a2e879f800244b637740be72363feeb04" name="a2e879f800244b637740be72363feeb04"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2e879f800244b637740be72363feeb04">&#9670;&#160;</a></span>billboard_group_init()</h2>
 
@@ -382,8 +519,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac7c6dec8f16479b4749eda7cee28fd02" name="ac7c6dec8f16479b4749eda7cee28fd02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7c6dec8f16479b4749eda7cee28fd02">&#9670;&#160;</a></span>billboard_group_prepare()</h2>
+<a id="ac2460cc8c0b2f53a206ac95146ac5923" name="ac2460cc8c0b2f53a206ac95146ac5923"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2460cc8c0b2f53a206ac95146ac5923">&#9670;&#160;</a></span>billboard_group_prepare()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +535,19 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>quad_vbo</em>&#160;</td>
+          <td class="paramname"><em>quad_vbo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>wire_quad_vbo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>wire_cube_vbo</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -419,7 +568,7 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h_ac7c6dec8f16479b4749eda7cee28fd02_cgraph.svg" width="423" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8h_ac2460cc8c0b2f53a206ac95146ac5923_cgraph.svg" width="630" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
