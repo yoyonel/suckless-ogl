@@ -15,9 +15,18 @@ repos:
         description: Run 'make format' to auto-format C code using clang-format.
         entry: make format
         language: system
-        files: \.(c|h)$
+        files: \.(c|h|glsl|vert|frag)$
         pass_filenames: false
         stages: [pre-commit]
+
+    -   id: make-format-check
+        name: make format-check
+        description: Verify formatting without modifying files (dry-run).
+        entry: make format-check
+        language: system
+        files: \.(c|h|glsl|vert|frag|py)$
+        pass_filenames: false
+        stages: [pre-push]
 
     -   id: make-lint
         name: make lint

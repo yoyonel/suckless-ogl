@@ -88,6 +88,46 @@ void render_utils_create_quad_vbo(GLuint* vbo)
 	glObjectLabel(GL_BUFFER, *vbo, -1, "Quad VBO");
 }
 
+void render_utils_create_wire_cube_vbo(GLuint* vbo)
+{
+	static const float cubeVertices[] = {
+	    // Bottom face
+	    -1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F,
+	    -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F, -1.0F, -1.0F,
+	    1.0F, -1.0F, -1.0F, -1.0F,
+
+	    // Top face
+	    -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F,
+	    1.0F, 1.0F, 1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F, -1.0F, 1.0F, 1.0F,
+	    -1.0F, 1.0F, -1.0F,
+
+	    // Connections
+	    -1.0F, -1.0F, -1.0F, -1.0F, 1.0F, -1.0F, 1.0F, -1.0F, -1.0F, 1.0F,
+	    1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, 1.0F, 1.0F, -1.0F, -1.0F,
+	    1.0F, -1.0F, 1.0F, 1.0F};
+
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices,
+	             GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glObjectLabel(GL_BUFFER, *vbo, -1, "Wire Cube VBO");
+}
+
+void render_utils_create_wire_quad_vbo(GLuint* vbo)
+{
+	static const float quadVertices[] = {-0.5F, 0.5F,  0.0F,  0.5F,
+	                                     0.5F,  0.0F,  0.5F,  -0.5F,
+	                                     0.0F,  -0.5F, -0.5F, 0.0F};
+
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices,
+	             GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glObjectLabel(GL_BUFFER, *vbo, -1, "Wire Quad VBO");
+}
+
 void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 {
 	static const float

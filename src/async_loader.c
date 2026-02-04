@@ -8,9 +8,7 @@
 #include <pthread.h>
 #include <stb_image.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
-#include <time.h>
 
 /* Single slot for now, as we only load one environment map at a time */
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

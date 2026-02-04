@@ -26,7 +26,7 @@ GLuint pbr_prefilter_init(int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 	                GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -145,7 +145,7 @@ GLuint pbr_irradiance_init(int size)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -220,7 +220,7 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	{
@@ -288,9 +288,9 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
 		/* GL_CLIENT_STORAGE_BIT hints to keep it in system memory for
 		 * fast readback */
-		GLbitfield read_flags = GL_MAP_READ_BIT |
-		                        GL_CLIENT_STORAGE_BIT |
-		                        GL_DYNAMIC_STORAGE_BIT;
+		GLbitfield read_flags = (GLbitfield)GL_MAP_READ_BIT |
+		                        (GLbitfield)GL_CLIENT_STORAGE_BIT |
+		                        (GLbitfield)GL_DYNAMIC_STORAGE_BIT;
 		glBufferStorage(GL_SHADER_STORAGE_BUFFER, sizeof(float), NULL,
 		                read_flags);
 		glObjectLabel(GL_BUFFER, ssbos[1], -1,
@@ -357,7 +357,7 @@ GLuint build_brdf_lut_map(int size)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	{
