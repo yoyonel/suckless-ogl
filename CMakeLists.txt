@@ -38,6 +38,19 @@ endif()
 # Option pour activer le rendu SSBO
 option(USE_SSBO_RENDERING "Use SSBO-based rendering instead of instanced rendering" OFF)
 
+# Option pour activer AddressSanitizer
+option(ENABLE_ASAN "Enable AddressSanitizer (ASan) for memory checking" OFF)
+
+if(ENABLE_ASAN)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
+        add_link_options(-fsanitize=address)
+        # Force -O0 for ASan to ensure manual leaks are not optimized away
+        set(CMAKE_C_FLAGS_DEBUG "-O0 -g" CACHE STRING "Flags for Debug" FORCE)
+        message(STATUS "AddressSanitizer (ASan): ENABLED (Optimization: OFF)")
+    endif()
+endif()
+
 if(USE_SSBO_RENDERING)
     add_compile_definitions(USE_SSBO_RENDERING)
     message(STATUS "SSBO rendering: ENABLED")
@@ -259,12 +272,18 @@ endif()
 include(CheckIPOSupported)
 check_ipo_supported(RESULT lto_supported OUTPUT lto_error)
 
-if(lto_supported)
+if(lto_supported AND NOT ENABLE_ASAN)
     message(STATUS "LTO (IPO) is supported and enabled for Profiling/Release")
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO ON)
     # On l'active aussi pour notre mode personnalisé
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_PROFILING ON)
+elseif(ENABLE_ASAN)
+    message(STATUS "LTO (IPO) is DISABLED because AddressSanitizer is active")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE OFF)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO OFF)
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_PROFILING OFF)
 endif()
 
 # App target

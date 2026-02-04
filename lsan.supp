@@ -1,0 +1,5 @@
+# LeakSanitizer suppressions for suckless-ogl
+# Ignore known leaks in system libraries
+leak:libX11.so
+leak:libGLX_mesa.so
+leak:libnvidia-glcore.so
