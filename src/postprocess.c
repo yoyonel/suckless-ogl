@@ -18,6 +18,7 @@ static int create_framebuffer(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader);
+static unsigned int get_valid_flags_mask(void);
 
 /* Texture Units */
 enum {
@@ -273,15 +274,17 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 static void postprocess_on_state_change(PostProcess* post_processing)
 {
 	if (post_processing->is_optimized) {
-		if (post_processing->active_effects ==
-		    post_processing->compiled_flags) {
+		unsigned int valid_mask = get_valid_flags_mask();
+		unsigned int clean_active =
+		    post_processing->active_effects & valid_mask;
+
+		if (clean_active == post_processing->compiled_flags) {
 			return;
 		}
 		LOG_INFO(
 		    "suckless-ogl.postprocess",
 		    "State changed in optimized mode - recompiling shader...");
-		postprocess_compile_optimized(post_processing,
-		                              post_processing->active_effects);
+		postprocess_compile_optimized(post_processing, clean_active);
 	}
 }
 
@@ -849,6 +852,15 @@ static const EffectMetadata ALL_EFFECTS[] = {
 
 #define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))
 
+static unsigned int get_valid_flags_mask(void)
+{
+	unsigned int mask = 0;
+	for (size_t i = 0; i < EFFECT_COUNT; i++) {
+		mask |= (unsigned int)ALL_EFFECTS[i].flag;
+	}
+	return mask;
+}
+
 static void log_optimized_effects(unsigned int flags)
 {
 	LOG_INFO("suckless-ogl.postprocess",
@@ -908,6 +920,9 @@ static void update_current_shader(PostProcess* post_processing,
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
+	unsigned int valid_mask = get_valid_flags_mask();
+	static_flags &= valid_mask;
+
 	/* Check cache first */
 	Shader* cached = find_shader_in_cache(post_processing, static_flags);
 	if (cached) {

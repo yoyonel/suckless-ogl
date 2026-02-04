@@ -322,6 +322,31 @@ void test_postprocess_large_working_set(void)
 	postprocess_cleanup(&post_proc);
 }
 
+void test_postprocess_garbage_flags_cache_hit(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+
+	unsigned int flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
+	// Garbage bit: 1 << 31
+	unsigned int garbage_flags = flags | (1U << 31);
+
+	// Compile initial shader
+	postprocess_compile_optimized(&post_proc, flags);
+	GLuint original_program = post_proc.postprocess_shader->program;
+
+	// Compile with garbage flags
+	// Currently, this should cause a MISS because the cache key is garbage_flags
+	// But the generated shader should be identical.
+	// We want this to be a HIT.
+
+	postprocess_compile_optimized(&post_proc, garbage_flags);
+
+	TEST_ASSERT_EQUAL(original_program, post_proc.postprocess_shader->program);
+
+	postprocess_cleanup(&post_proc);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -335,6 +360,7 @@ int main(void)
 	RUN_TEST(test_postprocess_recompilation_benchmark);
 	RUN_TEST(test_postprocess_cache_overflow_benchmark);
 	RUN_TEST(test_postprocess_large_working_set);
+	RUN_TEST(test_postprocess_garbage_flags_cache_hit);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }
