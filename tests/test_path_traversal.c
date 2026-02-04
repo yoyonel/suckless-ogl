@@ -16,7 +16,7 @@ void tearDown(void)
 void test_shader_path_traversal(void)
 {
 	// 1. Create a secret file outside the expected shader dir
-	FILE *f = fopen("secret_data.txt", "w");
+	FILE* f = fopen("secret_data.txt", "w");
 	if (f) {
 		fprintf(f, "THIS_IS_SECRET");
 		fclose(f);
@@ -27,7 +27,7 @@ void test_shader_path_traversal(void)
 	// 2. Create a shader file in a subdir that tries to access the secret
 	// We'll use a subdir "traversal_test"
 	mkdir("traversal_test", 0777);
-	const char *shader_path = "traversal_test/malicious.glsl";
+	const char* shader_path = "traversal_test/malicious.glsl";
 	f = fopen(shader_path, "w");
 	if (f) {
 		// @header "../secret_data.txt"
@@ -40,7 +40,7 @@ void test_shader_path_traversal(void)
 
 	// 3. Try to load the shader
 	// We expect NULL now because of the security check
-	char *source = shader_read_file(shader_path);
+	char* source = shader_read_file(shader_path);
 
 	if (source != NULL) {
 		free(source);
