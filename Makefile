@@ -123,6 +123,13 @@ format:
 	@echo "Formatting Python scripts..."
 	@$(TOOL_RUN) ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
 
+format-check:
+	@echo "Checking C and Shader formatting..."
+	@$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format --dry-run --Werror"
+	@echo "Checking Python scripts formatting..."
+	@$(TOOL_RUN) ruff format --check scripts/trace_analyze.py tests/test_trace_analyze.py
+	@echo "✓ Formatting check passed"
+
 # Resolve dependency paths for linting
 # We check if 'deps' exists (offline mode), otherwise fall back to build/_deps
 STB_INC := $(shell [ -d deps/stb ] && echo deps/stb || echo build/_deps/stb-src)
