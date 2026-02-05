@@ -39,7 +39,6 @@ jobs:
         with:
           path: |
             ~/.cache/cltcache
-            .lint_cache
           key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h', '.clang-tidy', 'Makefile') }}
           restore-keys: |
             ${{ runner.os }}-cltcache-
