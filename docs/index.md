@@ -48,16 +48,18 @@ The build is configured with the following settings:
 
 ## 🤖 CI/CD Workflow (GitHub Actions)
 
-The pipeline is structured to optimize the build while guaranteeing maximum quality:
+## 🤖 CI/CD Workflow (GitHub Actions)
 
-1. **Test & Coverage**: Instrumented compilation and test execution under **Xvfb** (virtual X server). A coverage report is generated and saved as an artifact.
-2. **Lint & Format Check**:
-   - Verifies that the code is formatted. If `make format` modifies a file, the CI fails.
-   - Runs `make lint` to validate CERT compliance and security.
-3. **Build & Release**:
-   - Triggers on `master` or `v*` tags.
-   - Packages the `app` binary with `assets/` and `shaders/` directories.
-   - Compresses everything into a `.tar.gz` archive and creates an automatic **GitHub Release**.
+The pipeline is structured to optimize the build while guaranteeing maximum quality. It handles Testing, Quality Assurance, Documentation, and Automated Releases.
+
+**[> Read the full CI/CD Pipeline Documentation](cicd_pipeline.md)**
+
+### Quick Summary
+1. **Test & Coverage**: Instrumented compilation and test execution under **Xvfb**.
+2. **Lint & Format**: Enforces styling (`clang-format`) and static analysis (`clang-tidy`).
+3. **Automated Releases**:
+   - **Nightly**: Built every night at 01:00 UTC and on every push to master.
+   - **Stable**: Triggered by version tags (`v*`).
 
 ## 📁 Project Structure
 - `src/` & `include/`: Engine core (Log, App, Shader, Texture, Icosphere).
