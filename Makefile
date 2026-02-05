@@ -141,7 +141,7 @@ CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cj
 
 NPROCS := $(shell nproc 2>/dev/null || echo 1)
 LINT_CACHE_DIR := .lint_cache
-C_SRCS := $(shell find src -name "*.c")
+C_SRCS := $(shell find src tests -name "*.c")
 LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
 
 # Incremental linting: only run clang-tidy if .c or .clang-tidy changed

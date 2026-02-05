@@ -1,25 +1,6 @@
 # .clang-tidy
 ---
-Checks: >
-  -*,
-  clang-analyzer-*,
-  cppcoreguidelines-*,
-  hicpp-*,
-  misc-*,
-  performance-*,
-  readability-*,
-  cert-*,
-  portability-*,
-  -readability-identifier-naming,          # LKCS n’impose pas nommage particulier
-  -hicpp-no-array-decay,                   # gênant pour C
-  -cppcoreguidelines-pro-type-vararg,      # possible dans C
-  -clang-analyzer-deadcode.DeadStores,     # trop verbeux
-  -clang-analyzer-security.insecureAPI.vararg,  # varargs en C ok
-  -misc-non-private-member-variables-in-classes, # C only
-  -readability-magic-numbers,              # souvent style kernel tolère chiffres
-  -performance-unnecessary-value-param,     # pas adapté au C
-  -misc-include-cleaner,                   # trop bruyant, n'aime pas les headers communs
-  -misc-unused-parameters                  # souvent intentionnel dans les APIs C
+Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*,misc-*,performance-*,readability-*,cert-*,portability-*,-readability-identifier-naming,-hicpp-no-array-decay,-cppcoreguidelines-pro-type-vararg,-clang-analyzer-deadcode.DeadStores,-clang-analyzer-security.insecureAPI.vararg,-misc-non-private-member-variables-in-classes,-readability-magic-numbers,-performance-unnecessary-value-param,-misc-include-cleaner,-misc-unused-parameters'
 HeaderFilterRegex: '^(src/|include/).*'
 
 WarningsAsErrors: ''
