@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.14)
 project(suckless-ogl C)
 
+# Generate compile_commands.json for generic clang-tidy usage
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # --- Clang-Tidy & Caching ---
 option(ENABLE_CLANG_TIDY "Enable clang-tidy linting during build" OFF)
-option(ENABLE_CLANG_TIDY_CACHE "Use caching for clang-tidy (requires ctcache)" ON)
+option(ENABLE_CLANG_TIDY_CACHE "Use caching for clang-tidy (requires ctcache)" OFF)
 
 if(ENABLE_CLANG_TIDY)
     find_program(CLANG_TIDY_BIN NAMES clang-tidy)
@@ -76,43 +79,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_compile_definitions(_GNU_SOURCE)
 
-# Source files
-set(SOURCES
-    src/main.c
-    src/app.c
-    src/icosphere.c
-    src/shader.c
-    src/texture.c
-    src/skybox.c
-    src/async_loader.c
-    src/log.c
-    src/stb_image_impl.c
-    src/fps.c
-    src/ui.c
-    src/pbr.c
-    src/material.c
-    src/perf_timer.c
-    src/instanced_rendering.c
-    src/billboard_rendering.c
-    src/sphere_sorting.c
-    src/ssbo_rendering.c
-    src/camera.c
-    src/postprocess.c
-    src/effects/fx_bloom.c
-    src/effects/fx_dof.c
-    src/effects/fx_auto_exposure.c
-    src/effects/fx_motion_blur.c
-    src/adaptive_sampler.c
-    src/window.c
-    src/gl_debug.c
-    src/render_utils.c
-    src/app_ui.c
-    src/app_input.c
-    src/app_env.c
-    src/app_scene.c
-    src/cli.c
-    src/action_notifier.c
-    src/perf_mode.c
+file(GLOB_RECURSE SOURCES
+    CONFIGURE_DEPENDS
+    "src/*.c"
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)

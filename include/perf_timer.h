@@ -89,6 +89,12 @@ double perf_timer_elapsed_s(PerfTimer* timer);
 void gpu_timer_start(GPUTimer* timer);
 
 /**
+ * @brief Explicitly stops the GPU timer (records end timestamp).
+ * @param timer Pointer to the timer.
+ */
+void gpu_timer_stop(GPUTimer* timer);
+
+/**
  * @brief Stops the GPU timer and retrieves the result.
  * @param timer Pointer to the timer.
  * @param wait_for_result If true, blocks until the GPU is finished and result

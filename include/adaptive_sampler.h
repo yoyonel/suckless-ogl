@@ -59,6 +59,14 @@ typedef struct {
 } AdaptiveSampler;
 
 /**
+ * @brief Manually adds a sample to the sampler (e.g. from external source like
+ * GPU profiler).
+ * @param sampler Pointer to the sampler.
+ * @param value The value to add.
+ */
+void adaptive_sampler_add(AdaptiveSampler* sampler, float value);
+
+/**
  * @brief Initializes the adaptive sampler.
  * @param sampler Pointer to the sampler.
  * @param window_duration Length of the window in seconds.

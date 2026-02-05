@@ -15,6 +15,7 @@ static const unsigned int PCG_SHIFT_1 = 18U;
 static const unsigned int PCG_SHIFT_2 = 27U;
 static const unsigned int PCG_IS_3 = 59U;
 static const unsigned int PCG_IS_4 = 31U;
+static const size_t DEFAULT_INITIAL_CAPACITY = 64;
 
 static void pcg32_seed(Pcg32* rng, uint64_t initstate, uint64_t initseq)
 {
@@ -174,6 +175,37 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 	}
 
 	return take;
+}
+
+void adaptive_sampler_add(AdaptiveSampler* sampler, float value)
+{
+	if (!sampler) {
+		return;
+	}
+
+	if (sampler->count >= sampler->capacity) {
+		/* Grow buffer */
+		size_t new_cap = sampler->capacity * 2;
+		if (new_cap == 0) {
+			new_cap = DEFAULT_INITIAL_CAPACITY;  // Safety
+		}
+
+		AdaptiveSampleItem* new_buf = (AdaptiveSampleItem*)realloc(
+		    sampler->samples, sizeof(AdaptiveSampleItem) * new_cap);
+		if (new_buf) {
+			sampler->samples = new_buf;
+			sampler->capacity = new_cap;
+		} else {
+			return; /* Allocation failed */
+		}
+	}
+
+	AdaptiveSampleItem* item = &sampler->samples[sampler->count];
+	item->timestamp =
+	    0.0F;  // Placeholder as we don't have relative time here
+	item->value = value;
+	sampler->count++;
+	sampler->samples_taken++;
 }
 
 void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
