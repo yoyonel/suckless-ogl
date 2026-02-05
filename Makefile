@@ -65,6 +65,7 @@ $(BUILD_DIR)/Makefile:
 clean:
 	@if [ -d $(BUILD_DIR) ]; then $(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target clean; fi
 	@$(DISTROBOX) rm -rf $(BUILD_DIR)
+	@rm -rf .lint_cache
 
 docs:
 	@echo "Building MkDocs documentation..."
@@ -159,6 +160,10 @@ lint:
 	@echo "Linting Python scripts..."
 	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
+
+lint-clean:
+	@echo "Cleaning lint cache..."
+	@rm -rf $(LINT_CACHE_DIR)
 
 # Ensure compile_commands.json is up to date before linting
 $(BUILD_DIR)/compile_commands.json: $(BUILD_DIR)/Makefile

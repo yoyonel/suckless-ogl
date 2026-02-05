@@ -47,7 +47,7 @@ Instead of linting every file on every run, we use "Sentinel files" (`.linted`) 
 To clear the cache and force a full re-lint:
 
 ```bash
-rm -rf .lint_cache
+make lint-clean
 make lint
 ```
 
