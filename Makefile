@@ -147,7 +147,7 @@ LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
 # Incremental linting: only run clang-tidy if .c or .clang-tidy changed
 $(LINT_CACHE_DIR)/%.linted: % .clang-tidy $(BUILD_DIR)/compile_commands.json
 	@mkdir -p $(dir $@)
-	@OUT=$$($(DISTROBOX) clang-tidy -p $(BUILD_DIR) --quiet $< 2>&1); \
+	@OUT=$$($(DISTROBOX) clang-tidy -p $(BUILD_DIR) --quiet $< 2>&1) || { echo "  LINT $< (FAILED)"; echo "$$OUT"; exit 1; }; \
 	if [ -n "$$OUT" ]; then \
 		echo "  LINT $<"; \
 		echo "$$OUT"; \
