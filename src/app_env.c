@@ -66,8 +66,12 @@ int app_load_env_map(App* app, const char* filename)
 	char path
 	    [256]; /* NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	            */
-	(void)safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
-	                    filename);
+	if (!safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
+	                   filename)) {
+		LOG_ERROR("suckless-ogl.app", "Filename too long: %s",
+		          filename);
+		return 0;
+	}
 
 	LOG_INFO("suckless-ogl.app", "Queuing async load for: %s", path);
 	if (async_loader_request(path)) {

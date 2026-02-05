@@ -157,12 +157,17 @@ bool async_loader_request(const char* path)
 			current_request.data = NULL;
 		}
 
-		(void)safe_snprintf(current_request.path,
-		                    sizeof(current_request.path), "%s", path);
-		current_request.state = ASYNC_PENDING;
-		has_pending_work = true;
-		pthread_cond_signal(&request_cond);
-		accepted = true;
+		if (!safe_snprintf(current_request.path,
+		                   sizeof(current_request.path), "%s", path)) {
+			LOG_ERROR("suckless-ogl.async", "Path too long: %s",
+			          path);
+			current_request.state = ASYNC_IDLE;
+		} else {
+			current_request.state = ASYNC_PENDING;
+			has_pending_work = true;
+			pthread_cond_signal(&request_cond);
+			accepted = true;
+		}
 	}
 
 	pthread_mutex_unlock(&request_mutex);

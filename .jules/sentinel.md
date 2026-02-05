@@ -17,3 +17,8 @@
 **Vulnerability:** The `@header` directive in shaders allowed including files via relative paths containing `..`, enabling reading of arbitrary files (limited by process permissions) into the shader source.
 **Learning:** File inclusion mechanisms (like `@header`) must always sanitize input paths to prevent directory traversal. Concatenating paths is not enough; one must check for `..` or use path canonicalization.
 **Prevention:** Implemented `is_safe_path` to reject `..`, absolute paths, and drive letters in included paths.
+
+## 2026-02-05 - [Enhancement] Enforce Path Length Limits
+**Vulnerability:** Ignored return values of `safe_snprintf` in `async_loader.c` and `app_env.c` could lead to silent path truncation and potential logic errors or loading of incorrect files.
+**Learning:** Safe wrappers like `safe_snprintf` are only safe if their return values (indicating success/failure/truncation) are actually checked.
+**Prevention:** Always check the return value of string manipulation functions. If a path is truncated, treat it as a hard error/failure rather than proceeding.
