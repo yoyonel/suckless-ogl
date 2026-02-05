@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TEST_CLI_LONG_ARG_SIZE (1024 * 1024)
+static const size_t CLI_LONG_ARG_SIZE = 1024 * 1024;
+static const char FILL_CHAR = 'A';
 
 void setUp(void)
 {
@@ -46,10 +47,11 @@ void test_cli_partial_match(void)
 void test_cli_very_long_arg(void)
 {
 	/* Create a 1MB argument */
-	size_t size = TEST_CLI_LONG_ARG_SIZE;
-	char* long_arg = malloc(size + 1);
+	size_t size = CLI_LONG_ARG_SIZE;
+	char* long_arg = (char*)malloc(size + 1);
 	TEST_ASSERT_NOT_NULL(long_arg);
-	(void)memset(long_arg, 'A', size);
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(long_arg, FILL_CHAR, size);
 	long_arg[size] = '\0';
 
 	char* argv[] = {"app", long_arg};

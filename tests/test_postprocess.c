@@ -1,3 +1,4 @@
+// tests/test_postprocess.c
 #include <glad/glad.h>
 
 #include "postprocess.h"
@@ -14,6 +15,15 @@ static const int SmallTestHeight = 100;
 static const int NewDimension = 200;
 static const float TestEpsilon = 1e-5F;
 static const float DefaultNeutral = 1.0F;
+static const int GL_VER_MAJOR = 3;
+static const int GL_VER_MINOR = 3;
+static const GLuint GL_INVALID = 0;
+static const int TEX_LEVEL_0 = 0;
+static const int LOOP_COUNT_20 = 20;
+static const int LOOP_COUNT_10 = 10;
+static const unsigned int LOOP_COUNT_32 = 32;
+static const unsigned int LOOP_COUNT_40 = 40;
+static const float TIME_THRESHOLD = 0.05F;
 
 static GLFWwindow* test_window = NULL;
 
@@ -25,8 +35,8 @@ void setUp(void)
 
 	// Hidden window for headless testing
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	test_window =
@@ -166,10 +176,12 @@ void test_postprocess_resize(void)
 
 	// Check dimensions of the texture
 	glBindTexture(GL_TEXTURE_2D, post_proc.scene_color_tex);
-	int tex_w = 0;
-	int tex_h = 0;
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &tex_w);
-	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &tex_h);
+	int tex_w = GL_INVALID;
+	int tex_h = GL_INVALID;
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, TEX_LEVEL_0, GL_TEXTURE_WIDTH,
+	                         &tex_w);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, TEX_LEVEL_0, GL_TEXTURE_HEIGHT,
+	                         &tex_h);
 	TEST_ASSERT_EQUAL(NewDimension, tex_w);
 	TEST_ASSERT_EQUAL(NewDimension, tex_h);
 
@@ -188,7 +200,7 @@ void test_postprocess_cleanup(void)
 
 	TEST_ASSERT_FALSE(glIsFramebuffer(fbo_id));
 	TEST_ASSERT_FALSE(glIsTexture(tex_id));
-	TEST_ASSERT_EQUAL(0, post_proc.scene_fbo);
+	TEST_ASSERT_EQUAL(GL_INVALID, post_proc.scene_fbo);
 	TEST_ASSERT_NULL(post_proc.postprocess_shader);
 }
 
@@ -246,7 +258,7 @@ void test_postprocess_recompilation_benchmark(void)
 	    (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN | POSTFX_BLOOM);
 
 	clock_t start = clock();
-	for (int i = 0; i < 20; ++i) {
+	for (int i = 0; i < LOOP_COUNT_20; ++i) {
 		postprocess_compile_optimized(&post_proc, flags_a);
 		postprocess_compile_optimized(&post_proc, flags_b);
 	}
@@ -264,7 +276,7 @@ void test_postprocess_cache_overflow_benchmark(void)
 	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
 	// Fill cache with 32 variants
-	for (unsigned int i = 0; i < 32; ++i) {
+	for (unsigned int i = 0; i < LOOP_COUNT_32; ++i) {
 		postprocess_compile_optimized(&post_proc, i);
 	}
 
@@ -274,7 +286,7 @@ void test_postprocess_cache_overflow_benchmark(void)
 	// replaces LRU. 32 found (LRU). 33 found (LRU).
 
 	clock_t start = clock();
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < LOOP_COUNT_10; ++i) {
 		postprocess_compile_optimized(&post_proc, 32);
 		postprocess_compile_optimized(&post_proc, 33);
 	}
@@ -287,7 +299,7 @@ void test_postprocess_cache_overflow_benchmark(void)
 	// ~110ms. Cached was ~10ms.
 	// This proves that the LRU policy is working by keeping the 32 most
 	// recent items.
-	TEST_ASSERT_LESS_THAN_FLOAT(0.05f, (float)cpu_time_used);
+	TEST_ASSERT_LESS_THAN_FLOAT(TIME_THRESHOLD, (float)cpu_time_used);
 
 	postprocess_cleanup(&post_proc);
 }
@@ -298,7 +310,7 @@ void test_postprocess_large_working_set(void)
 	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
 
 	// Compile 40 different variants (0..39)
-	for (unsigned int i = 0; i < 40; ++i) {
+	for (unsigned int i = 0; i < LOOP_COUNT_40; ++i) {
 		postprocess_compile_optimized(&post_proc, i);
 	}
 
@@ -307,7 +319,7 @@ void test_postprocess_large_working_set(void)
 	// With SHADER_CACHE_SIZE 32, the first 8 (0..7) would be misses.
 
 	clock_t start = clock();
-	for (unsigned int i = 0; i < 40; ++i) {
+	for (unsigned int i = 0; i < LOOP_COUNT_40; ++i) {
 		postprocess_compile_optimized(&post_proc, i);
 	}
 	clock_t end = clock();
@@ -317,7 +329,7 @@ void test_postprocess_large_working_set(void)
 
 	// Threshold: 0.05s.
 	// If it was recompiling 8 shaders, it would take > 0.1s.
-	TEST_ASSERT_LESS_THAN_FLOAT(0.05f, (float)cpu_time_used);
+	TEST_ASSERT_LESS_THAN_FLOAT(TIME_THRESHOLD, (float)cpu_time_used);
 
 	postprocess_cleanup(&post_proc);
 }

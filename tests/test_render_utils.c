@@ -1,9 +1,17 @@
+// tests/test_render_utils.c
 #include "render_utils.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <string.h>
 
 static GLFWwindow* window = NULL;
+
+static const int WIN_WIDTH = 640;
+static const int WIN_HEIGHT = 480;
+static const int GL_VER_MAJOR = 3;
+static const int GL_VER_MINOR = 3;
+static const int TEST_BUF_SIZE = 128;
+static const int SMALL_BUF_SIZE = 10;
 
 void setUp(void)
 {
@@ -12,12 +20,9 @@ void setUp(void)
 	}
 
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#define WIN_WIDTH 640
-#define WIN_HEIGHT 480
 
 	window =
 	    glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, "Test Window", NULL, NULL);
@@ -42,9 +47,6 @@ void tearDown(void)
 	}
 	glfwTerminate();
 }
-
-#define TEST_BUF_SIZE 128
-#define SMALL_BUF_SIZE 10
 
 void test_render_utils_get_gpu_info(void)
 {

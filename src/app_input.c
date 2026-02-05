@@ -243,7 +243,7 @@ void handle_postprocess_input(App* app, int key)
 				    &app->postprocess,
 				    POSTFX_VECTOR_FIELD_DEBUG);
 
-				const char* mode_name;
+				const char* mode_name = NULL;
 				if (!mb_dbg && !vf_dbg) {
 					/* Off → Motion Blur Debug */
 					postprocess_enable(

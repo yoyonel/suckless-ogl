@@ -9,7 +9,14 @@
 #include <string.h>
 #include <time.h>
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
+
+static const int MAP_SIZE = 64;
+static const int HISTO_SIZE = 64;
+static const int ITERATIONS = 1000;
+static const float DATA_DIVISOR = 100.0F;
+static const double MS_MULTIPLIER = 1000.0;
 
 void setUp(void)
 {
@@ -50,18 +57,23 @@ void test_benchmark_histogram(void)
 	}
 
 	// Setup Dummy Texture
-	const int MAP_SIZE = 64;
 	const int TOTAL_PIXELS = MAP_SIZE * MAP_SIZE;
-	GLuint tex;
+	GLuint tex = 0;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, MAP_SIZE, MAP_SIZE, 0, GL_RED,
 	             GL_FLOAT, NULL);
 
 	// Fill with some data
-	float* data = malloc(TOTAL_PIXELS * sizeof(float));
+	float* data = (float*)malloc((size_t)TOTAL_PIXELS * sizeof(float));
+	if (!data) {
+		TEST_FAIL_MESSAGE("Failed to allocate memory for texture data");
+		return;  // Redundant but safe
+	}
+	const int MODULO_VAL = 100;
 	for (int i = 0; i < TOTAL_PIXELS; i++) {
-		data[i] = (float)(i % 100) / 100.0f;  // 0.0 to 0.99
+		data[i] =
+		    (float)(i % MODULO_VAL) / DATA_DIVISOR;  // 0.0 to 0.99
 	}
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, MAP_SIZE, MAP_SIZE, GL_RED,
 	                GL_FLOAT, data);
@@ -75,15 +87,15 @@ void test_benchmark_histogram(void)
 	// Initialize PBO for the test
 	glGenBuffers(1, &app.histogram_pbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, app.histogram_pbo);
-	glBufferData(GL_PIXEL_PACK_BUFFER, 64 * 64 * sizeof(float), NULL,
+	glBufferData(GL_PIXEL_PACK_BUFFER,
+	             MAP_SIZE * MAP_SIZE * (GLsizeiptr)sizeof(float), NULL,
 	             GL_STREAM_READ);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 	// Output buffers
-	const int HISTO_SIZE = 64;
 	int buckets[HISTO_SIZE];
-	float min_lum = 0.0f;
-	float max_lum = 0.0f;
+	float min_lum = 0.0F;
+	float max_lum = 0.0F;
 
 	// Warmup
 	compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
@@ -91,17 +103,16 @@ void test_benchmark_histogram(void)
 
 	// Benchmark
 	clock_t start = clock();
-	int iterations = 1000;
-	for (int i = 0; i < iterations; i++) {
+	for (int i = 0; i < ITERATIONS; i++) {
 		compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
 		                            &max_lum);
 	}
 	clock_t end = clock();
 	double cpu_time_used =
-	    ((double)(end - start)) / CLOCKS_PER_SEC * 1000.0;  // ms
+	    ((double)(end - start)) / CLOCKS_PER_SEC * MS_MULTIPLIER;  // ms
 
 	printf("Benchmark Result: %d iterations took %.2f ms (%.4f ms/call)\n",
-	       iterations, cpu_time_used, cpu_time_used / iterations);
+	       ITERATIONS, cpu_time_used, cpu_time_used / ITERATIONS);
 
 	// Verify
 	int total_buckets = 0;

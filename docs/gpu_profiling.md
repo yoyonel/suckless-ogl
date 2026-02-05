@@ -33,6 +33,7 @@ gpu_profiler_end_event("Bloom");
 ## Visualization
 
 Performance metrics are displayed in the application UI:
+
 * **Real-time Stats**: Current execution time in milliseconds.
 * **ASCII Plots**: Mini-topographic plots showing performance trends over the last few seconds.
 * **Summary**: Toggleable overlay showing a detailed breakdown of the frame budget.

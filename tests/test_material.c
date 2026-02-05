@@ -37,7 +37,8 @@ void test_material_lib_cleanup_null(void)
 void test_material_lib_cleanup_valid(void)
 {
 	// Test avec une structure valide mais vide
-	MaterialLib* lib = (MaterialLib*)calloc(1, sizeof(MaterialLib));
+	const size_t COUNT_ONE = 1;
+	MaterialLib* lib = (MaterialLib*)calloc(COUNT_ONE, sizeof(MaterialLib));
 	if (lib) {
 		lib->materials = NULL;
 		lib->count = 0;
