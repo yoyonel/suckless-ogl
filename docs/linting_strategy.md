@@ -33,7 +33,8 @@ Instead of linting every file on every run, we use "Sentinel files" (`.linted`) 
     - The `compile_commands.json` database.
 2. **Date Comparison**: `make` natively compares the timestamp of the source vs. the sentinel. If the source is older than the sentinel, the file is skipped.
 3. **Updating**: If a file needs linting, `clang-tidy` is executed. On success, the sentinel file is updated using `touch`.
-4. **Parallelization**: The process is parallelized using `make -j$(NPROCS)`, allowing simultaneous analysis of multiple files.
+4. **Dependencies**: Before linting, the system ensures that generated headers (like `glad/glad.h`) are ready by building the necessary targets.
+5. **Parallelization**: The process is parallelized using `make -j$(NPROCS)`, allowing simultaneous analysis of multiple files.
 
 ### Why this approach?
 
