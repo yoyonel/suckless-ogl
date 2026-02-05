@@ -10,10 +10,6 @@
       
       
       
-        <link rel="prev" href="../docker/">
-      
-      
-        <link rel="next" href="../perf_profiling/">
       
       
         
@@ -24,7 +20,7 @@
     
     
       
-        <title>Profiling - Suckless OGL</title>
+        <title>CI/CD Pipeline &amp; Release Process - Suckless OGL</title>
       
     
     
@@ -87,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#profiling-guide-apitrace-trace-analysis" class="md-skip">
+        <a href="#cicd-pipeline-release-process" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Profiling
+              CI/CD Pipeline &amp; Release Process
             
           </span>
         </div>
@@ -1107,20 +1103,20 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -1141,7 +1137,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1240,37 +1236,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Profiling
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../profiling_guide/" class="md-nav__link">
         
   
   
@@ -1286,137 +1255,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why-use-this-workflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why use this workflow?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#1-prerequisites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Prerequisites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-generating-a-trace" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Generating a Trace
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-high-level-performance-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. High-Level Performance Analysis
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="3. High-Level Performance Analysis">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#understanding-the-metrics" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Understanding the Metrics
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-advanced-tool-usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Advanced Tool Usage
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4. Advanced Tool Usage">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#script-logic" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Script Logic
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-coding-for-profiling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Coding for Profiling
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#6-developing-the-tool" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6. Developing the Tool
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1724,7 +1562,7 @@
 
 
   
-    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/profiling_guide.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/cicd_pipeline.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
     </a>
@@ -1732,89 +1570,114 @@
   
 
 
-<h1 id="profiling-guide-apitrace-trace-analysis">Profiling Guide: ApiTrace &amp; Trace Analysis<a class="headerlink" href="#profiling-guide-apitrace-trace-analysis" title="Permanent link">¶</a></h1>
-<p>This guide explains how to use <strong>ApiTrace</strong> in combination with our custom analysis tool to measure GPU performance, with a focus on overcoming driver-specific profiling limitations for compute shaders.</p>
-<h2 id="why-use-this-workflow">Why use this workflow?<a class="headerlink" href="#why-use-this-workflow" title="Permanent link">¶</a></h2>
-<p>Standard GPU profilers (and even <code>apitrace replay --pgpu</code>) often report <strong>0.00ms</strong> for <code>glDispatchCompute</code> calls on many drivers/architectures because they rely on driver-internal counters that don't always track compute asynchronously or accurately.</p>
-<p>Our engine injects manual <code>GL_TIMESTAMP</code> queries and <code>glPushDebugGroup</code> markers into the command stream. The <code>trace_analyze.py</code> tool correlates these timestamps with the trace dump to provide a "Source of Truth" for compute shaders.</p>
-<hr>
-<h2 id="1-prerequisites">1. Prerequisites<a class="headerlink" href="#1-prerequisites" title="Permanent link">¶</a></h2>
-<p>Ensure you have <strong>ApiTrace</strong> installed on your system.
-The <code>Makefile</code> expects <code>apitrace</code> to be in your PATH, or you can point to a specific binary using <code>APITRACE_BIN</code>.</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp"># </span>Example<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>location
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">APITRACE_BIN</span><span class="o">=</span><span class="s2">"/path/to/apitrace"</span>
-</span></code></pre></div>
-<hr>
-<h2 id="2-generating-a-trace">2. Generating a Trace<a class="headerlink" href="#2-generating-a-trace" title="Permanent link">¶</a></h2>
-<p>To record the execution of the application:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>apitrace
-</span></code></pre></div>
-<p>This will:
-1. Build the application in "Profile" mode (without high-level debug overhead).
-2. Use <code>apitrace trace</code> to record all OpenGL calls into <code>build-profile/app.trace</code>.</p>
-<hr>
-<h2 id="3-high-level-performance-analysis">3. High-Level Performance Analysis<a class="headerlink" href="#3-high-level-performance-analysis" title="Permanent link">¶</a></h2>
-<p>The easiest way to see the results is to use the integrated target:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>make<span class="w"> </span>trace-perf
-</span></code></pre></div>
-<p>This command runs <code>scripts/trace_analyze.py</code> which produces two tables:
-1. <strong>Performance by Shader (Cumulative)</strong>: Groups all calls by shader name/label.
-2. <strong>Debug Groups (Per Instance)</strong>: Shows the chronological execution of marked blocks (e.g., IBL generation steps).</p>
-<h3 id="understanding-the-metrics">Understanding the Metrics<a class="headerlink" href="#understanding-the-metrics" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Column</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>GPU [ms]</strong></td>
-<td style="text-align: left;">Driver-reported duration (Standard <code>glDraw*</code> calls). Use this for Vertex/Fragment shaders.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Timer [ms]</strong></td>
-<td style="text-align: left;"><strong>Manual GL_TIMESTAMP markers</strong>. Use this for <strong>Compute Shaders</strong> and IBL generation blocks.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Avg/Fr[ms]</strong></td>
-<td style="text-align: left;">Cumulative GPU time divided by the total number of frames in the trace.</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<h2 id="4-advanced-tool-usage">4. Advanced Tool Usage<a class="headerlink" href="#4-advanced-tool-usage" title="Permanent link">¶</a></h2>
-<p>You can run the script manually for more control:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Usage: python3 scripts/trace_analyze.py &lt;trace_file&gt; [apitrace_bin]</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>python3<span class="w"> </span>scripts/trace_analyze.py<span class="w"> </span>build-profile/app.trace
-</span></code></pre></div>
-<h3 id="script-logic">Script Logic<a class="headerlink" href="#script-logic" title="Permanent link">¶</a></h3>
-<ul>
-<li><strong>Regex Parsing</strong>: The script parses <code>apitrace dump</code> to extract <code>glObjectLabel</code> (to name shaders) and <code>glGetQueryObjectui64v</code> (to get manual timestamps).</li>
-<li><strong>Matching</strong>: It looks for query result fetches that happen immediately after a debug group ends to measure that group's duration.</li>
-<li><strong>Nested Sums</strong>: If a parent debug group doesn't have its own timer, the script sums up the durations of its direct children (marked with <code>*</code> in the table).</li>
-</ul>
-<hr>
-<h2 id="5-coding-for-profiling">5. Coding for Profiling<a class="headerlink" href="#5-coding-for-profiling" title="Permanent link">¶</a></h2>
-<p>To make a new feature measurable:</p>
+<h1 id="cicd-pipeline-release-process">CI/CD Pipeline &amp; Release Process<a class="headerlink" href="#cicd-pipeline-release-process" title="Permanent link">¶</a></h1>
+<p>This document details the automated Continuous Integration and Continuous Deployment (CI/CD) pipeline for <strong>Suckless-OGL</strong>, managed via <strong>GitHub Actions</strong>.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The pipeline is defined in <code>.github/workflows/main.yml</code>. It ensures code quality, runs tests, generates documentation, and handles automated releases.</p>
+<h2 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Permanent link">¶</a></h2>
+<p>The workflow is triggered automatically events:</p>
 <ol>
-<li><strong>Label your shaders</strong>: Use <code>shader_set_label(shader, "Description")</code> in C.</li>
-<li><strong>Add debug groups</strong>:
-   <div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">GL_PUSH_GROUP</span><span class="p">(</span><span class="s">"My Complex Task"</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">// ... GPU calls ...</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">GL_POP_GROUP</span><span class="p">();</span>
-</span></code></pre></div></li>
-<li><strong>Add fine-grained timers (Optional)</strong>:
-   The engine automatically attempts to capture timestamps around critical IBL sections. See <code>src/pbr.c</code> for examples.</li>
+<li><strong>Push to <code>master</code> or <code>main</code></strong>:<ul>
+<li>Triggers the full pipeline (Lint, Test, Docs, Build).</li>
+<li>Updates the <strong>Nightly Release</strong>.</li>
+<li>Deploys the latest documentation to GitHub Pages.</li>
+</ul>
+</li>
+<li><strong>Pull Requests</strong>:<ul>
+<li>Runs quality checks (Lint, Format).</li>
+<li>Runs unit tests and visual regression tests.</li>
+<li>Generates a documentation preview (deployed to Surge.sh).</li>
+</ul>
+</li>
+<li><strong>Tags (<code>v*</code>)</strong>:<ul>
+<li>Triggers a <strong>Stable Release</strong> build.</li>
+<li>Creates a GitHub Release with the corresponding version number.</li>
+</ul>
+</li>
+<li><strong>Schedule (Cron)</strong>:<ul>
+<li>Runs daily at <strong>01:00 UTC</strong>.</li>
+<li>Ensures a fresh <strong>Nightly Build</strong> is generated every day from the latest code.</li>
+</ul>
+</li>
 </ol>
-<hr>
-<h2 id="6-developing-the-tool">6. Developing the Tool<a class="headerlink" href="#6-developing-the-tool" title="Permanent link">¶</a></h2>
-<p>The analysis script is fully tested:
-- <strong>Linting</strong>: <code>make lint</code> (uses Ruff).
-- <strong>Formatting</strong>: <code>make format</code> (uses Ruff).
-- <strong>Tests</strong>: <code>make test-python</code> (uses Pytest).
-- <strong>Coverage</strong>: <code>make coverage</code> (generates HTML report for Python logic).</p>
+<h2 id="workflow-jobs">Workflow Jobs<a class="headerlink" href="#workflow-jobs" title="Permanent link">¶</a></h2>
+<h3 id="1-lint-and-format-quality">1. <code>lint-and-format</code> (Quality)<a class="headerlink" href="#1-lint-and-format-quality" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Ensure code style and quality.</li>
+<li><strong>Tools</strong>: <code>clang-format</code>, <code>clang-tidy</code>, <code>ruff</code> (Python).</li>
+<li><strong>Checks</strong>:<ul>
+<li>Fails if <code>make format</code> results in file changes (enforces code style).</li>
+<li>Runs <code>make lint</code> for static analysis.</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-test-and-coverage-validation">2. <code>test-and-coverage</code> (Validation)<a class="headerlink" href="#2-test-and-coverage-validation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Verify functionality and prevent regressions.</li>
+<li><strong>Environment</strong>: Runs under <strong>Xvfb</strong> (Virtual Framebuffer) to simulate a display server for OpenGL tests.</li>
+<li><strong>Steps</strong>:<ul>
+<li>Runs Python tests (<code>pytest</code>).</li>
+<li>Runs C Unit Tests with Code Coverage (<code>llvm-cov</code>).</li>
+<li><strong>Visual Regression</strong>: Captures rendered frames and compares them against reference images.</li>
+<li>Generates a visual diff report if changes are detected.</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-documentation-docs">3. <code>documentation</code> (Docs)<a class="headerlink" href="#3-documentation-docs" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Generate and publish technical documentation.</li>
+<li><strong>Tools</strong>: Doxygen, Graphviz, MkDocs.</li>
+<li><strong>Outputs</strong>:<ul>
+<li>Combines manual Markdown docs and auto-generated C API docs.</li>
+<li><strong>Pull Requests</strong>: Deploys a preview link to <a href="https://surge.sh">Surge.sh</a>.</li>
+<li><strong>Master/Main</strong>: Prepares artifacts for GitHub Pages deployment.</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-build-production-compilation">4. <code>build-production</code> (Compilation)<a class="headerlink" href="#4-build-production-compilation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Compile optimized binaries for users.</li>
+<li><strong>Configurations</strong>:<ul>
+<li><strong>Release</strong>: Standard optimized build (<code>-O2</code> / <code>-O3</code>).</li>
+<li><strong>Profiling</strong>: Includes symbols and profiling markers.</li>
+<li><strong>UltraRelease</strong>: Aggressive optimizations (<code>-DENABLE_UNITY_BUILD</code>, <code>-march=native</code>, <code>-ffast-math</code>).</li>
+</ul>
+</li>
+<li><strong>Artifacts</strong>: Binaries are saved for the Release step.</li>
+</ul>
+<h3 id="5-deploy-pages-web">5. <code>deploy-pages</code> (Web)<a class="headerlink" href="#5-deploy-pages-web" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Update the official documentation site.</li>
+<li><strong>Trigger</strong>: Only on <code>master</code> or <code>main</code> push.</li>
+<li><strong>Action</strong>: Deploys the content of the <code>documentation</code> job to GitHub Pages.</li>
+</ul>
+<h3 id="6-release-distribution">6. <code>release</code> (Distribution)<a class="headerlink" href="#6-release-distribution" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Goal</strong>: Publish binaries and source code.</li>
+<li><strong>Logic</strong>:<ul>
+<li><strong>Nightly</strong>:<ul>
+<li>Triggered by push to <code>master/main</code> OR daily schedule.</li>
+<li>Updates the <code>nightly</code> git tag to the current commit.</li>
+<li>Overwrites the "Nightly Build" release with new assets.</li>
+<li><strong>NOT a Draft</strong>: Immediately available.</li>
+</ul>
+</li>
+<li><strong>Stable (Tagged)</strong>:<ul>
+<li>Triggered by pushing a tag like <code>v1.0.0</code>.</li>
+<li>Creates a new standard release titled with the version name.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="release-artifacts">Release Artifacts<a class="headerlink" href="#release-artifacts" title="Permanent link">¶</a></h2>
+<p>Each release (Nightly or Stable) contains:</p>
+<ul>
+<li><code>app-Release</code>: The main executable.</li>
+<li><code>app-Profiling</code>: Version for performance analysis.</li>
+<li><code>app-UltraRelease</code>: Experimental high-performance build.</li>
+<li>Source code archives (<code>zip</code>, <code>tar.gz</code>).</li>
+</ul>
 
 
 
