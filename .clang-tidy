@@ -17,7 +17,9 @@ Checks: >
   -clang-analyzer-security.insecureAPI.vararg,  # varargs en C ok
   -misc-non-private-member-variables-in-classes, # C only
   -readability-magic-numbers,              # souvent style kernel tolère chiffres
-  -performance-unnecessary-value-param      # pas adapté au C
+  -performance-unnecessary-value-param,     # pas adapté au C
+  -misc-include-cleaner,                   # trop bruyant, n'aime pas les headers communs
+  -misc-unused-parameters                  # souvent intentionnel dans les APIs C
 HeaderFilterRegex: '^(src/|include/).*'
 
 WarningsAsErrors: ''

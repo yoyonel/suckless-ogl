@@ -154,7 +154,11 @@ $(LINT_CACHE_DIR)/%.linted: % .clang-tidy $(BUILD_DIR)/compile_commands.json
 	fi
 	@touch $@
 
-lint:
+lint-deps: $(BUILD_DIR)/compile_commands.json
+	@echo "Ensuring generated headers are ready..."
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad --parallel $(NPROCS)
+
+lint: lint-deps
 	@echo "Linting C code (Parallelized & Incremental)..."
 	@$(MAKE) -j$(NPROCS) $(LINTED_FILES) --no-print-directory
 	@echo "Linting Python scripts..."
