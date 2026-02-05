@@ -1,0 +1,86 @@
+# CI/CD Pipeline & Release Process
+
+This document details the automated Continuous Integration and Continuous Deployment (CI/CD) pipeline for **Suckless-OGL**, managed via **GitHub Actions**.
+
+## Overview
+
+The pipeline is defined in `.github/workflows/main.yml`. It ensures code quality, runs tests, generates documentation, and handles automated releases.
+
+## Triggers
+
+The workflow is triggered automatically events:
+
+1.  **Push to `master` or `main`**:
+    - Triggers the full pipeline (Lint, Test, Docs, Build).
+    - Updates the **Nightly Release**.
+    - Deploys the latest documentation to GitHub Pages.
+2.  **Pull Requests**:
+    - Runs quality checks (Lint, Format).
+    - Runs unit tests and visual regression tests.
+    - Generates a documentation preview (deployed to Surge.sh).
+3.  **Tags (`v*`)**:
+    - Triggers a **Stable Release** build.
+    - Creates a GitHub Release with the corresponding version number.
+4.  **Schedule (Cron)**:
+    - Runs daily at **01:00 UTC**.
+    - Ensures a fresh **Nightly Build** is generated every day from the latest code.
+
+## Workflow Jobs
+
+### 1. `lint-and-format` (Quality)
+- **Goal**: Ensure code style and quality.
+- **Tools**: `clang-format`, `clang-tidy`, `ruff` (Python).
+- **Checks**:
+    - Fails if `make format` results in file changes (enforces code style).
+    - Runs `make lint` for static analysis.
+
+### 2. `test-and-coverage` (Validation)
+- **Goal**: Verify functionality and prevent regressions.
+- **Environment**: Runs under **Xvfb** (Virtual Framebuffer) to simulate a display server for OpenGL tests.
+- **Steps**:
+    - Runs Python tests (`pytest`).
+    - Runs C Unit Tests with Code Coverage (`llvm-cov`).
+    - **Visual Regression**: Captures rendered frames and compares them against reference images.
+    - Generates a visual diff report if changes are detected.
+
+### 3. `documentation` (Docs)
+- **Goal**: Generate and publish technical documentation.
+- **Tools**: Doxygen, Graphviz, MkDocs.
+- **Outputs**:
+    - Combines manual Markdown docs and auto-generated C API docs.
+    - **Pull Requests**: Deploys a preview link to [Surge.sh](https://surge.sh).
+    - **Master/Main**: Prepares artifacts for GitHub Pages deployment.
+
+### 4. `build-production` (Compilation)
+- **Goal**: Compile optimized binaries for users.
+- **Configurations**:
+    - **Release**: Standard optimized build (`-O2` / `-O3`).
+    - **Profiling**: Includes symbols and profiling markers.
+    - **UltraRelease**: Aggressive optimizations (`-DENABLE_UNITY_BUILD`, `-march=native`, `-ffast-math`).
+- **Artifacts**: Binaries are saved for the Release step.
+
+### 5. `deploy-pages` (Web)
+- **Goal**: Update the official documentation site.
+- **Trigger**: Only on `master` or `main` push.
+- **Action**: Deploys the content of the `documentation` job to GitHub Pages.
+
+### 6. `release` (Distribution)
+- **Goal**: Publish binaries and source code.
+- **Logic**:
+    - **Nightly**:
+        - Triggered by push to `master/main` OR daily schedule.
+        - Updates the `nightly` git tag to the current commit.
+        - Overwrites the "Nightly Build" release with new assets.
+        - **NOT a Draft**: Immediately available.
+    - **Stable (Tagged)**:
+        - Triggered by pushing a tag like `v1.0.0`.
+        - Creates a new standard release titled with the version name.
+
+## Release Artifacts
+
+Each release (Nightly or Stable) contains:
+
+- `app-Release`: The main executable.
+- `app-Profiling`: Version for performance analysis.
+- `app-UltraRelease`: Experimental high-performance build.
+- Source code archives (`zip`, `tar.gz`).
