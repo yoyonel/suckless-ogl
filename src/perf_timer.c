@@ -105,40 +105,19 @@ void gpu_timer_start(GPUTimer* timer)
 	timer->active = 1;
 }
 
-void gpu_timer_stop(GPUTimer* timer)
-{
-	if (timer == NULL || !timer->active) {
-		return;
-	}
-	glQueryCounter(timer->query_end, GL_TIMESTAMP);
-}
-
 double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result)
 {
 	if (timer == NULL || !timer->active) {
 		return -1.0;
 	}
 
-	// Removing glFinish to avoid stalling the CPU.
-	// The user of this function should ensure that they either wait for
-	// result or handle the non-ready state. However, if we are calling
-	// elapsed_ms without calling stop first, we should probably stop it? In
-	// the original code, elapsed_ms did the stopping (glQueryCounter).
-	// Let's keep that behavior but without glFinish.
+	// Forcer la fin des opérations GPU avant de prendre le timestamp de fin
+	// C'est nécessaire pour mesurer le temps réel d'exécution incluant les
+	// compute shaders qui pourraient être asynchrones.
+	glFinish();
 
-	// Check if we need to issue the stop command (if not already stopped
-	// via explicit gpu_timer_stop) The current struct doesn't track
-	// "stopped" state distinct from "active". "active" means "started".
-	// We'll re-issue end query here to be safe, OR assume it was stopped.
-	// Original code: glFinish -> glQueryCounter(end).
-	// We'll replace with just glQueryCounter(end) BUT checking if it's
-	// already done? Typically GL queries overwrite the result. Let's rely
-	// on gpu_timer_stop being called OR call it here if needed. For safety
-	// with existing code using this function to stop AND read:
+	// Enregistrer le timestamp final sur le GPU
 	glQueryCounter(timer->query_end, GL_TIMESTAMP);
-
-	// timer->active = 0; // Don't clear active yet, we might want to poll
-	// again? Actually, original code clears active = 0.
 	timer->active = 0;
 
 	GLuint64 start_time = 0;

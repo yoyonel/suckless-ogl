@@ -1,6 +1,6 @@
-// tests/test_postprocess.c
 #include <glad/glad.h>
 
+#include "gpu_profiler.h"  // INDISPENSABLE: Pour la définition de GPUProfiler
 #include "postprocess.h"
 #include "postprocess_presets.h"
 #include "unity.h"
@@ -26,6 +26,7 @@ static const unsigned int LOOP_COUNT_40 = 40;
 static const float TIME_THRESHOLD = 0.05F;
 
 static GLFWwindow* test_window = NULL;
+// Instance globale pour les tests, initialisée dans setUp
 static GPUProfiler gpu_profiler_system;
 
 void setUp(void)
@@ -34,7 +35,6 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLFW");
 	}
 
-	// Hidden window for headless testing
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
@@ -55,11 +55,13 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
+	// Initialisation du profiler pour ce test
 	gpu_profiler_init(&gpu_profiler_system);
 }
 
 void tearDown(void)
 {
+	// Nettoyage impératif pour éviter les fuites de samplers (ASAN)
 	gpu_profiler_cleanup(&gpu_profiler_system);
 
 	if (test_window) {
@@ -71,20 +73,22 @@ void tearDown(void)
 void test_postprocess_init_creates_resources(void)
 {
 	PostProcess post_proc = {0};
+	// Injection du profiler system
 	int result = postprocess_init(&post_proc, &gpu_profiler_system,
 	                              TestWidth, TestHeight);
 
 	TEST_ASSERT_EQUAL(1, result);
+	// Vérification que le pointeur est bien stocké
+	TEST_ASSERT_EQUAL_PTR(&gpu_profiler_system, post_proc.gpu_profiler);
+
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_fbo);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_color_tex);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_depth_tex);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vao);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vbo);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.postprocess_shader);
-	/* Bloom resources */
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.fbo);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.mips[0].texture);
-	/* DoF resources */
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.dof_fx.fbo);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.dof_fx.blur_tex);
 
@@ -100,7 +104,6 @@ void test_postprocess_defaults(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Updated to check for default effects instead of 0
 	TEST_ASSERT_EQUAL(DEFAULT_ACTIVE_EFFECTS, post_proc.active_effects);
 	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon, DEFAULT_EXPOSURE,
 	                         post_proc.exposure.exposure);
@@ -118,18 +121,14 @@ void test_postprocess_toggle_effects(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Initial state: Disabled (not in DEFAULT_ACTIVE_EFFECTS)
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
-	// Enable
 	postprocess_enable(&post_proc, POSTFX_VIGNETTE);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
-	// Toggle (Disable)
 	postprocess_toggle(&post_proc, POSTFX_VIGNETTE);
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
-	// Toggle (Enable)
 	postprocess_toggle(&post_proc, POSTFX_VIGNETTE);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
 
@@ -142,7 +141,6 @@ void test_postprocess_apply_preset(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Apply Vintage preset
 	postprocess_apply_preset(&post_proc, &PRESET_VINTAGE);
 
 	TEST_ASSERT_EQUAL(PRESET_VINTAGE.active_effects,
@@ -157,7 +155,6 @@ void test_postprocess_apply_preset(void)
 	                         PRESET_VINTAGE.chrom_abbr.strength,
 	                         post_proc.chrom_abbr.strength);
 
-	// Let's check color grading
 	TEST_ASSERT_FLOAT_WITHIN(TestEpsilon,
 	                         PRESET_VINTAGE.color_grading.contrast,
 	                         post_proc.color_grading.contrast);
@@ -180,11 +177,9 @@ void test_postprocess_resize(void)
 	TEST_ASSERT_EQUAL(NewDimension, post_proc.width);
 	TEST_ASSERT_EQUAL(NewDimension, post_proc.height);
 
-	// Validate that resources were recreated
 	TEST_ASSERT_TRUE(glIsFramebuffer(post_proc.scene_fbo));
 	TEST_ASSERT_TRUE(glIsTexture(post_proc.scene_color_tex));
 
-	// Check dimensions of the texture
 	glBindTexture(GL_TEXTURE_2D, post_proc.scene_color_tex);
 	int tex_w = GL_INVALID;
 	int tex_h = GL_INVALID;
@@ -221,17 +216,14 @@ void test_postprocess_optimization_switch(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Default should be OPTIMIZED
 	TEST_ASSERT_TRUE(post_proc.is_optimized);
 	GLuint original_program = post_proc.postprocess_shader->program;
 
-	// Switch to dynamic
 	postprocess_use_dynamic(&post_proc);
 	TEST_ASSERT_FALSE(post_proc.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(original_program,
 	                      post_proc.postprocess_shader->program);
 
-	// Switch back to optimized
 	unsigned int opt_flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
 	postprocess_compile_optimized(&post_proc, opt_flags);
 	TEST_ASSERT_TRUE(post_proc.is_optimized);
@@ -245,15 +237,12 @@ void test_postprocess_optimized_preset_switch(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Enable optimization
 	postprocess_compile_optimized(&post_proc, post_proc.active_effects);
 	TEST_ASSERT_TRUE(post_proc.is_optimized);
 	GLuint first_program = post_proc.postprocess_shader->program;
 
-	// Apply a different preset
 	postprocess_apply_preset(&post_proc, &PRESET_CINEMATIC);
 
-	// Should have recompiled
 	TEST_ASSERT_TRUE(post_proc.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(first_program,
 	                      post_proc.postprocess_shader->program);
@@ -290,15 +279,9 @@ void test_postprocess_cache_overflow_benchmark(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Fill cache with 32 variants
 	for (unsigned int i = 0; i < LOOP_COUNT_32; ++i) {
 		postprocess_compile_optimized(&post_proc, i);
 	}
-
-	// Now cycle between variant 32 (uncached) and 33 (uncached)
-	// With LRU, they should replace each other but stay cached if we
-	// alternate Wait, if we alternate 32 and 33: 32 replaces LRU. 33
-	// replaces LRU. 32 found (LRU). 33 found (LRU).
 
 	clock_t start = clock();
 	for (int i = 0; i < LOOP_COUNT_10; ++i) {
@@ -309,11 +292,6 @@ void test_postprocess_cache_overflow_benchmark(void)
 	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
 	printf("Overflow Benchmark Time: %f seconds\n", cpu_time_used);
-	// We expect this to be fast (cached hits after first 2), not slow
-	// (recompilation every time) Threshold: 0.05s (50ms). Uncached was
-	// ~110ms. Cached was ~10ms.
-	// This proves that the LRU policy is working by keeping the 32 most
-	// recent items.
 	TEST_ASSERT_LESS_THAN_FLOAT(TIME_THRESHOLD, (float)cpu_time_used);
 
 	postprocess_cleanup(&post_proc);
@@ -325,14 +303,9 @@ void test_postprocess_large_working_set(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	// Compile 40 different variants (0..39)
 	for (unsigned int i = 0; i < LOOP_COUNT_40; ++i) {
 		postprocess_compile_optimized(&post_proc, i);
 	}
-
-	// Now access them all again.
-	// With SHADER_CACHE_SIZE 64, all 40 should be hits.
-	// With SHADER_CACHE_SIZE 32, the first 8 (0..7) would be misses.
 
 	clock_t start = clock();
 	for (unsigned int i = 0; i < LOOP_COUNT_40; ++i) {
@@ -343,8 +316,6 @@ void test_postprocess_large_working_set(void)
 
 	printf("Large Working Set Time: %f seconds\n", cpu_time_used);
 
-	// Threshold: 0.05s.
-	// If it was recompiling 8 shaders, it would take > 0.1s.
 	TEST_ASSERT_LESS_THAN_FLOAT(TIME_THRESHOLD, (float)cpu_time_used);
 
 	postprocess_cleanup(&post_proc);

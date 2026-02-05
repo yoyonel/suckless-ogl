@@ -7,14 +7,15 @@
 #include <stdio.h>
 #include <string.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+// Global state
 static GLFWwindow* test_window = NULL;
 
 static const int TEST_WINDOW_WIDTH = 640;
 static const int TEST_WINDOW_HEIGHT = 480;
 static const uint32_t COLOR_RED = 0xFF0000;
 static const uint32_t COLOR_GREEN = 0x00FF00;
-static const int TEST_LOOP_COUNT = 5;
+static const int TEST_LOOP_COUNT =
+    10;  // Augmenté pour garantir le cycle Ping-Pong
 static const float CLEAR_COLOR_VAL = 0.1F;
 
 void setUp(void)
@@ -55,12 +56,7 @@ void tearDown(void)
 
 /**
  * @brief test_gpu_profiler_init
- *
- * Checks the initial state of the profiler.
- * 1. Calls gpu_profiler_init.
- * 2. Verifies that stage_count is 0.
- * 3. Verifies that write_index starts at 0.
- * Ensures the module starts with a clean structure.
+ * Vérifie l'état initial propre (nettoyage des leaks potentiels).
  */
 void test_gpu_profiler_init(void)
 {
@@ -70,37 +66,32 @@ void test_gpu_profiler_init(void)
 	TEST_ASSERT_EQUAL(0, profiler.stage_count);
 	TEST_ASSERT_EQUAL(0, profiler.write_index);
 
+	// Le read_index est initialisé à 1 pour le Ping-Pong
+	TEST_ASSERT_EQUAL(1, profiler.read_index);
+
 	gpu_profiler_cleanup(&profiler);
 }
 
 /**
  * @brief test_gpu_profiler_double_buffering_swap
- *
- * Validates the Double Buffering (Ping-Pong) logic.
- * 1. Manually forces write=0 and read=1.
- * 2. Calls gpu_profiler_begin_frame and checks that indices swap (write=1,
- * read=0).
- * 3. Calls gpu_profiler_begin_frame again and checks they return to initial
- * state (write=0). Critical to ensure we write current frame queries while
- * reading previous frame results.
+ * Vérifie la logique de swap Ping-Pong des buffers de requêtes.
  */
 void test_gpu_profiler_double_buffering_swap(void)
 {
 	GPUProfiler profiler;
 	gpu_profiler_init(&profiler);
 
-	// Manually setup indices to verify swap logic
-	profiler.write_index = 0;
-	profiler.read_index = 1;
+	// Initial State: Write 0, Read 1
+	TEST_ASSERT_EQUAL(0, profiler.write_index);
+	TEST_ASSERT_EQUAL(1, profiler.read_index);
 
-	// This function simulates frame start and should swap buffers
+	// Frame 1 -> Frame 2
 	gpu_profiler_begin_frame(&profiler);
-
 	TEST_ASSERT_EQUAL(1, profiler.write_index);
 	TEST_ASSERT_EQUAL(0, profiler.read_index);
 
+	// Frame 2 -> Frame 3
 	gpu_profiler_begin_frame(&profiler);
-
 	TEST_ASSERT_EQUAL(0, profiler.write_index);
 	TEST_ASSERT_EQUAL(1, profiler.read_index);
 
@@ -109,25 +100,24 @@ void test_gpu_profiler_double_buffering_swap(void)
 
 /**
  * @brief test_gpu_profiler_stage_registration
- *
- * Verifies that start_stage calls correctly register stages in the list.
- * 1. Starts "Stage A", checks stage_count=1 and name "Stage A".
- * 2. Ends stage, starts "Stage B", checks stage_count=2 and name "Stage B".
- * Ensures internal data structure fills up correctly in call order.
+ * Vérifie l'enregistrement des étapes sans appeler OpenGL (juste la structure).
  */
 void test_gpu_profiler_stage_registration(void)
 {
 	GPUProfiler profiler;
 	gpu_profiler_init(&profiler);
 
+	// Start Stage A
 	gpu_profiler_start_stage(&profiler, "Stage A", COLOR_RED);
-
-	// Should have added a stage
 	TEST_ASSERT_EQUAL(1, profiler.stage_count);
 	TEST_ASSERT_EQUAL_STRING("Stage A", profiler.stages[0].name);
+	TEST_ASSERT_EQUAL(1, profiler.active_stage_count);  // Nesting active
 
+	// End Stage A
 	gpu_profiler_end_stage(&profiler);
+	TEST_ASSERT_EQUAL(0, profiler.active_stage_count);  // Nesting finished
 
+	// Start Stage B
 	gpu_profiler_start_stage(&profiler, "Stage B", COLOR_GREEN);
 	TEST_ASSERT_EQUAL(2, profiler.stage_count);
 	TEST_ASSERT_EQUAL_STRING("Stage B", profiler.stages[1].name);
@@ -138,45 +128,48 @@ void test_gpu_profiler_stage_registration(void)
 
 /**
  * @brief test_gpu_profiler_result_retrieval
- *
- * Verifies the complete flow: Registration -> GPU Execution -> Result
- * Retrieval.
- * 1. Runs a loop of 5 simulated frames with real GL work (glClear).
- * 2. Uses glFinish (test only) to ensure GPU completion before reading.
- * 3. Calls begin_frame to trigger query result reading.
- * 4. Verifies that the associated sampler has collected data (count > 0).
- * 5. Verifies calculated time offset is valid (>= 0.0).
- * Proves integration of glBeginQuery/glEndQuery/glGetQueryObject and storage in
- * AdaptiveSampler.
+ * Test d'intégration complet avec le GPU.
+ * Utilise glFinish() DANS LE TEST UNIQUEMENT pour garantir que les données
+ * sont disponibles pour les assertions, simulant un cycle normal de frame.
  */
 void test_gpu_profiler_result_retrieval(void)
 {
 	GPUProfiler profiler;
 	gpu_profiler_init(&profiler);
 
-	// Simulate 5 frames
+	// On boucle suffisamment pour amorcer le buffer circulaire (Ping-Pong)
+	// Frame 0: Write Buffer 0
+	// Frame 1: Read Buffer 1 (Empty), Write Buffer 1
+	// Frame 2: Read Buffer 0 (Has Data), Write Buffer 0
 	for (int i = 0; i < TEST_LOOP_COUNT; ++i) {
+		// 1. Lit les résultats de la frame précédente (si dispo)
 		gpu_profiler_begin_frame(&profiler);
 
+		// 2. Enregistre une nouvelle frame
 		gpu_profiler_start_stage(&profiler, "Render", COLOR_RED);
 
-		// Do some dummy GL work
 		glClearColor(CLEAR_COLOR_VAL, CLEAR_COLOR_VAL, CLEAR_COLOR_VAL,
 		             1.0F);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		gpu_profiler_end_stage(&profiler);
 
+		// 3. FORCE la synchronisation pour ce test unitaire.
+		// Dans l'app réelle, on n'utilise PAS glFinish, on attend la
+		// frame suivante. Ici, on veut garantir que begin_frame() aura
+		// 'available=TRUE' à la prochaine itération.
 		glFinish();
 	}
 
+	// Appel final pour lire les derniers résultats
 	gpu_profiler_begin_frame(&profiler);
 
-	// Check if sample count increased
-	// Use .count, not .sample_count
+	// Vérifications
+	// Le sampler doit avoir accumulé des échantillons
 	TEST_ASSERT_GREATER_THAN(0, profiler.stages[0].sampler.count);
-	// Check offset is valid (>= 0)
-	TEST_ASSERT_GREATER_OR_EQUAL(0.0, profiler.stages[0].start_offset_ms);
+
+	// La durée doit être positive
+	TEST_ASSERT_GREATER_THAN(0.0, profiler.stages[0].duration_ms);
 
 	gpu_profiler_cleanup(&profiler);
 }
