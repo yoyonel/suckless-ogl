@@ -1,5 +1,6 @@
 #include "postprocess.h"
 
+#include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
@@ -36,9 +37,12 @@ enum { POSTPROCESS_COMPUTE_GROUP_SIZE = 16 };
 
 /* Compute Shader Constants */
 
-int postprocess_init(PostProcess* post_processing, int width, int height)
+int postprocess_init(PostProcess* post_processing,
+                     GPUProfiler* external_profiler, int width, int height)
 {
 	*post_processing = (PostProcess){0};
+
+	post_processing->gpu_profiler = external_profiler;
 
 	post_processing->width = width;
 	post_processing->height = height;
@@ -487,7 +491,12 @@ void postprocess_end(PostProcess* post_processing)
 {
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
-	fx_bloom_render(post_processing);
+	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
+		gpu_profiler_start_stage(post_processing->gpu_profiler, "Bloom",
+		                         GPU_PROFILER_BLOOM_COLOR);
+		fx_bloom_render(post_processing);
+		gpu_profiler_end_stage(post_processing->gpu_profiler);
+	}
 
 	/* DoF Blur Pass (if DoF enabled) */
 	/* We reuse bloom_downsample to get a filtered 1/2 res version of the
@@ -499,7 +508,12 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Auto Exposure Pass */
 	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
+		// TODO: use RAII here !
+		gpu_profiler_start_stage(post_processing->gpu_profiler,
+		                         "Auto Exposure",
+		                         GPU_PROFILER_AUTO_EXPOSURE_COLOR);
 		fx_auto_exposure_render(post_processing);
+		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* Motion Blur Pre-Pass (Compute) - Also needed for debug modes */

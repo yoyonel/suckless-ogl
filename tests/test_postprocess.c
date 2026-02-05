@@ -26,6 +26,7 @@ static const unsigned int LOOP_COUNT_40 = 40;
 static const float TIME_THRESHOLD = 0.05F;
 
 static GLFWwindow* test_window = NULL;
+static GPUProfiler gpu_profiler_system;
 
 void setUp(void)
 {
@@ -53,10 +54,14 @@ void setUp(void)
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
+
+	gpu_profiler_init(&gpu_profiler_system);
 }
 
 void tearDown(void)
 {
+	gpu_profiler_cleanup(&gpu_profiler_system);
+
 	if (test_window) {
 		glfwDestroyWindow(test_window);
 	}
@@ -66,7 +71,8 @@ void tearDown(void)
 void test_postprocess_init_creates_resources(void)
 {
 	PostProcess post_proc = {0};
-	int result = postprocess_init(&post_proc, TestWidth, TestHeight);
+	int result = postprocess_init(&post_proc, &gpu_profiler_system,
+	                              TestWidth, TestHeight);
 
 	TEST_ASSERT_EQUAL(1, result);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_fbo);
@@ -91,7 +97,8 @@ void test_postprocess_init_creates_resources(void)
 void test_postprocess_defaults(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Updated to check for default effects instead of 0
 	TEST_ASSERT_EQUAL(DEFAULT_ACTIVE_EFFECTS, post_proc.active_effects);
@@ -108,7 +115,8 @@ void test_postprocess_defaults(void)
 void test_postprocess_toggle_effects(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Initial state: Disabled (not in DEFAULT_ACTIVE_EFFECTS)
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&post_proc, POSTFX_VIGNETTE));
@@ -131,7 +139,8 @@ void test_postprocess_toggle_effects(void)
 void test_postprocess_apply_preset(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Apply Vintage preset
 	postprocess_apply_preset(&post_proc, &PRESET_VINTAGE);
@@ -163,7 +172,8 @@ void test_postprocess_apply_preset(void)
 void test_postprocess_resize(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	postprocess_resize(&post_proc, NewDimension, NewDimension);
 
@@ -191,7 +201,8 @@ void test_postprocess_resize(void)
 void test_postprocess_cleanup(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	GLuint fbo_id = post_proc.scene_fbo;
 	GLuint tex_id = post_proc.scene_color_tex;
@@ -207,7 +218,8 @@ void test_postprocess_cleanup(void)
 void test_postprocess_optimization_switch(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Default should be OPTIMIZED
 	TEST_ASSERT_TRUE(post_proc.is_optimized);
@@ -230,7 +242,8 @@ void test_postprocess_optimization_switch(void)
 void test_postprocess_optimized_preset_switch(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Enable optimization
 	postprocess_compile_optimized(&post_proc, post_proc.active_effects);
@@ -251,7 +264,8 @@ void test_postprocess_optimized_preset_switch(void)
 void test_postprocess_recompilation_benchmark(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	unsigned int flags_a = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
 	unsigned int flags_b =
@@ -273,7 +287,8 @@ void test_postprocess_recompilation_benchmark(void)
 void test_postprocess_cache_overflow_benchmark(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Fill cache with 32 variants
 	for (unsigned int i = 0; i < LOOP_COUNT_32; ++i) {
@@ -307,7 +322,8 @@ void test_postprocess_cache_overflow_benchmark(void)
 void test_postprocess_large_working_set(void)
 {
 	PostProcess post_proc = {0};
-	postprocess_init(&post_proc, SmallTestWidth, SmallTestHeight);
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
 
 	// Compile 40 different variants (0..39)
 	for (unsigned int i = 0; i < LOOP_COUNT_40; ++i) {

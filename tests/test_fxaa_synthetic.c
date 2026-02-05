@@ -32,6 +32,7 @@ static const double PERCENT_100 = 100.0;
 // Global state (required for GLFW callbacks and simple test structure)
 static GLFWwindow* global_window = NULL;
 static PostProcess post_process_system;
+static GPUProfiler gpu_profiler_system;
 static Shader* pattern_shader_ptr = NULL;
 static unsigned char* pixels_before = NULL;
 static unsigned char* pixels_after = NULL;
@@ -94,7 +95,11 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
-	if (!postprocess_init(&post_process_system, WIDTH, HEIGHT)) {
+	// 1. Initialiser le profiler en premier
+	gpu_profiler_init(&gpu_profiler_system);
+
+	if (!postprocess_init(&post_process_system, &gpu_profiler_system, WIDTH,
+	                      HEIGHT)) {
 		TEST_FAIL_MESSAGE("Failed to initialize PostProcess");
 	}
 

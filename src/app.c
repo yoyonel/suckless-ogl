@@ -26,6 +26,7 @@
 #endif
 #include "async_loader.h"
 #include "camera.h"
+#include "log.h"
 #include "material.h"
 #include "pbr.h"
 #include "perf_mode.h"
@@ -201,7 +202,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app_update_instancing_mode(app);
 #endif
 
-	if (!postprocess_init(&app->postprocess, width, height)) {
+	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
+	                      height)) {
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
@@ -215,6 +217,8 @@ int app_init(App* app, int width, int height, const char* title)
 
 	perf_mode_init(&app->perf_context);
 	action_notifier_init(&app->notifier);
+
+	gpu_profiler_init(&app->gpu_profiler);
 
 	return 1;
 }
@@ -288,6 +292,8 @@ void app_cleanup(App* app)
 	}
 
 	perf_mode_cleanup(&app->perf_context);
+
+	gpu_profiler_cleanup(&app->gpu_profiler);
 
 	window_destroy(app->window);
 }
@@ -365,6 +371,16 @@ void app_update(App* app)
 
 void app_render(App* app)
 {
+	// 1. Signaler le début de la frame pour traiter les résultats
+	// précédents
+	gpu_profiler_begin_frame(&app->gpu_profiler);
+
+	// 2. Démarrer la mesure globale de la frame
+	gpu_profiler_start_stage(&app->gpu_profiler, "Total Frame",
+	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
+
+	postprocess_begin(&app->postprocess);
+
 	postprocess_begin(&app->postprocess);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
@@ -385,14 +401,21 @@ void app_render(App* app)
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
+	gpu_profiler_start_stage(&app->gpu_profiler, "Spheres",
+	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->show_envmap) {
+		gpu_profiler_start_stage(&app->gpu_profiler, "EnvMap",
+		                         GPU_PROFILER_TOTAL_FRAME_COLOR);
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		skybox_render(&app->skybox, app->skybox_shader,
 		              app->hdr_texture, app->dummy_black_tex,
 		              inv_view_proj, app->env_lod);
 		glEnable(GL_DEPTH_TEST);
+
+		gpu_profiler_end_stage(&app->gpu_profiler);
 	}
 
 	if (app->billboard_mode) {
@@ -430,6 +453,7 @@ void app_render(App* app)
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK,
 		              app->wireframe ? GL_LINE : GL_FILL);
+
 		app_render_instanced(app, view, proj, camera_pos);
 	}
 
@@ -456,8 +480,69 @@ void app_render(App* app)
 		              inv_view_proj, app->env_lod);
 	}
 #endif
+	gpu_profiler_end_stage(&app->gpu_profiler);
 
 	postprocess_end(&app->postprocess);
+
 	postprocess_update_matrices(&app->postprocess, view_proj);
+
 	app_render_ui(app);
+
+	// 3. Arrêter la mesure de la frame
+	gpu_profiler_end_stage(&app->gpu_profiler);
+
+	// 4. Logique d'affichage toutes les 2 secondes
+	double current_time = glfwGetTime();
+
+	// On boucle sur toutes les étapes enregistrées par le profiler durant
+	// cette frame
+	for (int i = 0; i < app->gpu_profiler.stage_count; i++) {
+		GPUStage* stage = &app->gpu_profiler.stages[i];
+		AdaptiveSampler* sampler = &stage->sampler;
+
+		// On vérifie si la fenêtre de 2 secondes est écoulée pour cette
+		// étape spécifique
+		if (current_time - sampler->window_start_time >=
+		    GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH) {
+			float avg_ms = adaptive_sampler_get_average(sampler);
+
+			if (avg_ms > 0) {
+				// Logique conditionnelle selon le nom de
+				// l'étape
+				if (strcmp(stage->name, "Total Frame") == 0) {
+					LOG_INFO("perf.gpu",
+					         "Average GPU Frame Time (last "
+					         "2s): %.3f ms",
+					         avg_ms);
+				} else if (strcmp(stage->name,
+				                  "Auto Exposure") == 0) {
+					LOG_INFO("perf.gpu",
+					         "Average GPU Auto-Exposure "
+					         "Time (last 2s): %.4f ms",
+					         avg_ms);
+				} else if (strcmp(stage->name, "Bloom") == 0) {
+					LOG_INFO("perf.gpu",
+					         "Average GPU Bloom "
+					         "Time (last 2s): %.4f ms",
+					         avg_ms);
+				} else if (strcmp(stage->name, "EnvMap") == 0) {
+					LOG_INFO("perf.gpu",
+					         "Average GPU EnvMap "
+					         "Time (last 2s): %.4f ms",
+					         avg_ms);
+				} else if (strcmp(stage->name, "Spheres") ==
+				           0) {
+					LOG_INFO(
+					    "perf.gpu",
+					    "Average GPU Spheres Rendering "
+					    "Time (last 2s): %.4f ms",
+					    avg_ms);
+				}
+			}
+
+			// Reset du sampler de l'étape pour la prochaine fenêtre
+			// de 2s
+			adaptive_sampler_reset(sampler, current_time);
+		}
+	}
 }

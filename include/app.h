@@ -22,6 +22,7 @@
 #include "async_loader.h"
 #include "billboard_rendering.h"
 #include "camera.h"
+#include "gpu_profiler.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "perf_mode.h"
@@ -99,7 +100,8 @@ typedef struct App {
 	FpsCounter fps_counter;      /**< Rolling average FPS manager. */
 	IcosphereGeometry geometry;  /**< High-poly sphere mesh data. */
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	UIContext ui;                /**< Overlay and text rendering state. */
+	GPUProfiler gpu_profiler;
+	UIContext ui; /**< Overlay and text rendering state. */
 	InstancedGroup
 	    instanced_group; /**< Managed buffers for opaque spheres. */
 	BillboardGroup billboard_group; /**< Managed buffers for billboards. */

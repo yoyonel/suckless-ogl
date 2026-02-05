@@ -22,11 +22,19 @@ void gpu_profiler_cleanup(GPUProfiler* profiler)
 	if (!profiler) {
 		return;
 	}
-	// Cleanup queries for all buffers and stages
+
+	// 1. Nettoyer les requêtes OpenGL (déjà présent)
 	for (int i = 0; i < GPU_QUERY_BUFFER_COUNT; ++i) {
 		for (int j = 0; j < MAX_GPU_STAGES; ++j) {
 			gpu_timer_cleanup(&profiler->buffers[i].queries[j]);
 		}
+	}
+
+	// 2. AJOUT : Nettoyer les buffers de samples pour CHAQUE étape
+	// C'est ici que la mémoire allouée par realloc/malloc dans
+	// adaptive_sampler_add est libérée
+	for (int i = 0; i < MAX_GPU_STAGES; ++i) {
+		adaptive_sampler_cleanup(&profiler->stages[i].sampler);
 	}
 }
 
