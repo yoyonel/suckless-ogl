@@ -140,6 +140,10 @@ GLAD_INC := build/_deps/glad-build/include
 CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cjson-src)
 
 NPROCS := $(shell nproc 2>/dev/null || echo 1)
+# Static analysis wrapper (handle cltcache if present)
+CLT_CMD := $(shell $(DISTROBOX) command -v cltcache 2>/dev/null)
+CLANG_TIDY := $(if $(CLT_CMD),$(CLT_CMD) clang-tidy,clang-tidy)
+
 LINT_CACHE_DIR := .lint_cache
 C_SRCS := $(shell find src -name "*.c")
 LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
@@ -147,7 +151,7 @@ LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
 # Incremental linting: only run clang-tidy if .c or .clang-tidy changed
 $(LINT_CACHE_DIR)/%.linted: % .clang-tidy $(BUILD_DIR)/compile_commands.json
 	@mkdir -p $(dir $@)
-	@OUT=$$($(DISTROBOX) clang-tidy -p $(BUILD_DIR) --quiet $< 2>&1) || { echo "  LINT $< (FAILED)"; echo "$$OUT"; exit 1; }; \
+	@OUT=$$($(DISTROBOX) $(CLANG_TIDY) -p $(BUILD_DIR) --quiet $< 2>&1) || { echo "  LINT $< (FAILED)"; echo "$$OUT"; exit 1; }; \
 	if [ -n "$$OUT" ]; then \
 		echo "  LINT $<"; \
 		echo "$$OUT"; \
