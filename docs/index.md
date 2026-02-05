@@ -48,8 +48,6 @@ The build is configured with the following settings:
 
 ## 🤖 CI/CD Workflow (GitHub Actions)
 
-## 🤖 CI/CD Workflow (GitHub Actions)
-
 The pipeline is structured to optimize the build while guaranteeing maximum quality. It handles Testing, Quality Assurance, Documentation, and Automated Releases.
 
 **[> Read the full CI/CD Pipeline Documentation](cicd_pipeline.md)**
