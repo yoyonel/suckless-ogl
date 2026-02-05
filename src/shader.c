@@ -232,8 +232,13 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
 	get_dir_from_path(current_file_path, current_dir, sizeof(current_dir));
 
 	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
-	safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s", current_dir,
-	              path_term);
+	if (!safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
+	                   current_dir, path_term)) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Include path too long: %s (dir) + %s (term)",
+		          current_dir, path_term);
+		return false;
+	}
 
 	/* Load the included file */
 	char* inc_src = load_file_into_ram(resolved_path);
