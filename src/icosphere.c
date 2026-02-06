@@ -75,8 +75,8 @@ void uintarray_push(UintArray* array, unsigned int value)
 		size_t new_capacity = (array->capacity == 0)
 		                          ? INITIAL_UINT_CAPACITY
 		                          : array->capacity * 2;
-		unsigned int* new_data = realloc(
-		    array->data, sizeof(unsigned int) * new_capacity);
+		unsigned int* new_data =
+		    realloc(array->data, sizeof(unsigned int) * new_capacity);
 		if (new_data) {
 			array->data = new_data;
 			array->capacity = new_capacity;

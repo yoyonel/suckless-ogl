@@ -122,8 +122,9 @@ void handle_preset_input(App* app, int key)
 			         banding_names[app->banding_style_idx]);
 
 			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(buf, sizeof(buf), "Banding: %s",
-			                    banding_names[app->banding_style_idx]);
+			(void)safe_snprintf(
+			    buf, sizeof(buf), "Banding: %s",
+			    banding_names[app->banding_style_idx]);
 			action_notifier_push(&app->notifier, buf,
 			                     NOTIF_DUR_LONG);
 			break;
