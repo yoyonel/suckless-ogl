@@ -27,6 +27,7 @@ typedef struct {
 typedef struct {
 	GPUTimer queries[MAX_GPU_STAGES];
 	int stage_count;
+	uint64_t frame_index;
 } GPUQueryBuffer;
 
 /**
@@ -65,8 +66,9 @@ void gpu_profiler_cleanup(GPUProfiler* profiler);
  * @brief Marks the beginning of a frame. Swaps buffers and processes previous
  * results.
  * @param profiler Pointer to the profiler.
+ * @param frame_index The current frame index.
  */
-void gpu_profiler_begin_frame(GPUProfiler* profiler);
+void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index);
 
 /**
  * @brief Starts a new profiling stage.

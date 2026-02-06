@@ -307,8 +307,9 @@ void app_run(App* app)
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
-		adaptive_sampler_should_sample(
-		    &app->fps_sampler, (float)app->delta_time, current_time);
+		adaptive_sampler_should_sample(&app->fps_sampler,
+		                               (float)app->delta_time,
+		                               current_time, app->frame_count);
 		action_notifier_update(&app->notifier, (float)app->delta_time);
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
@@ -373,7 +374,7 @@ void app_render(App* app)
 {
 	// 1. Signaler le début de la frame pour traiter les résultats
 	// précédents
-	gpu_profiler_begin_frame(&app->gpu_profiler);
+	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
 
 	// 2. Démarrer la mesure globale de la frame
 	gpu_profiler_start_stage(&app->gpu_profiler, "Total Frame",

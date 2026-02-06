@@ -64,6 +64,8 @@ void adaptive_sampler_init(AdaptiveSampler* sampler, float window_duration,
 	sampler->target_samples = target_samples;
 	sampler->samples_taken = 0;
 	sampler->window_start_time = 0.0; /* Must be set on reset/first use */
+	sampler->window_start_frame = 0;
+	sampler->window_end_frame = 0;
 
 	if (initial_fps_guess < 1.0F) {
 		static const float DEFAULT_FPS_GUESS = 60.0F;
@@ -92,14 +94,18 @@ void adaptive_sampler_reset(AdaptiveSampler* sampler, double current_time)
 	sampler->samples_taken = 0;
 	sampler->count = 0; /* Clear vector */
 	sampler->window_start_time = current_time;
+	// New window - frame index will be set on first sample/should_sample
+	sampler->window_start_frame = 0;
+	sampler->window_end_frame = 0;
 }
 
 int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
-                                   double current_time)
+                                   double current_time, uint64_t frame_index)
 {
 	/* If first call (window start 0), reset */
 	if (sampler->window_start_time == 0.0) {
 		sampler->window_start_time = current_time;
+		sampler->window_start_frame = frame_index;
 	}
 
 	/* EMA Update */
@@ -162,6 +168,13 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 
 		AdaptiveSampleItem* item = &sampler->samples[sampler->count];
 		item->timestamp = (float)elapsed;
+		item->frame_index = frame_index;
+
+		/* Update window end frame */
+		sampler->window_end_frame = frame_index;
+		if (sampler->window_start_frame == 0) {
+			sampler->window_start_frame = frame_index;
+		}
 
 		static const float MIN_SAFE_DT = 0.00001F;
 		float safe_dt = delta_time;
@@ -177,7 +190,8 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 	return take;
 }
 
-void adaptive_sampler_add(AdaptiveSampler* sampler, float value)
+void adaptive_sampler_add(AdaptiveSampler* sampler, float value,
+                          uint64_t frame_index)
 {
 	if (!sampler) {
 		return;
@@ -204,6 +218,13 @@ void adaptive_sampler_add(AdaptiveSampler* sampler, float value)
 	item->timestamp =
 	    0.0F;  // Placeholder as we don't have relative time here
 	item->value = value;
+	item->frame_index = frame_index;
+
+	/* Update window end frame */
+	sampler->window_end_frame = frame_index;
+	if (sampler->window_start_frame == 0) {
+		sampler->window_start_frame = frame_index;
+	}
 	sampler->count++;
 	sampler->samples_taken++;
 }
@@ -296,6 +317,41 @@ float adaptive_sampler_get_average(const AdaptiveSampler* sampler)
 size_t adaptive_sampler_get_sample_count(const AdaptiveSampler* sampler)
 {
 	return sampler->count;
+}
+
+void adaptive_sampler_get_window_range(const AdaptiveSampler* sampler,
+                                       uint64_t* start_frame,
+                                       uint64_t* end_frame)
+{
+	if (!sampler) {
+		return;
+	}
+	if (start_frame) {
+		*start_frame = sampler->window_start_frame;
+	}
+	if (end_frame) {
+		*end_frame = sampler->window_end_frame;
+	}
+}
+
+size_t adaptive_sampler_get_sample_indices(const AdaptiveSampler* sampler,
+                                           uint64_t* out_indices,
+                                           size_t max_count)
+{
+	if (!sampler || !out_indices || max_count == 0) {
+		return 0;
+	}
+
+	size_t count = sampler->count;
+	if (count > max_count) {
+		count = max_count;
+	}
+
+	for (size_t i = 0; i < count; ++i) {
+		out_indices[i] = sampler->samples[i].frame_index;
+	}
+
+	return count;
 }
 
 void adaptive_sampler_cleanup(AdaptiveSampler* sampler)

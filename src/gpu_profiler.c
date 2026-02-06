@@ -69,7 +69,7 @@ void gpu_profiler_cleanup(GPUProfiler* profiler)
 	}
 }
 
-void gpu_profiler_begin_frame(GPUProfiler* profiler)
+void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 {
 	if (!profiler) {
 		return;
@@ -80,9 +80,10 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler)
 	uint64_t frame_start_ns = 0;
 	int frame_start_set = 0;
 
-	/* 0. Save current frame's stage count to the write buffer */
+	/* 0. Save current frame's stage count and index to the write buffer */
 	profiler->buffers[profiler->write_index].stage_count =
 	    profiler->stage_count;
+	profiler->buffers[profiler->write_index].frame_index = frame_index;
 
 	/* 1. Process previous frame results */
 	for (int i = 0; i < read_buf->stage_count; ++i) {
@@ -124,7 +125,7 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler)
 		double offset_ms = (double)offset_ns * NS_TO_MS;
 
 		adaptive_sampler_add(&profiler->stages[i].sampler,
-		                     (float)duration_ms);
+		                     (float)duration_ms, read_buf->frame_index);
 		profiler->stages[i].duration_ms = duration_ms;
 		profiler->stages[i].start_offset_ms = offset_ms;
 	}
