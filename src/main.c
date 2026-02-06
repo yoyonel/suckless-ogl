@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 		          "Failed to allocate memory for application");
 		return EXIT_FAILURE;
 	}
-	memset(app, 0, sizeof(App));
+	*app = (App){0};
 
 	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong")) {
 		LOG_ERROR("suckless-ogl.main",
