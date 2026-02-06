@@ -40,12 +40,19 @@ void app_scan_hdr_files(App* app)
 		while ((entry = readdir(dir_handle)) != NULL) {
 			char* dot = strrchr(entry->d_name, '.');
 			if (dot && strcmp(dot, ".hdr") == 0) {
-				app->hdr_count++;
-				app->hdr_files = realloc(
+				char** new_files = realloc(
 				    app->hdr_files,
-				    (size_t)app->hdr_count * sizeof(char*));
-				app->hdr_files[app->hdr_count - 1] =
-				    strdup(entry->d_name);
+				    (size_t)(app->hdr_count + 1) * sizeof(char*));
+				if (new_files) {
+					app->hdr_files = new_files;
+					app->hdr_count++;
+					app->hdr_files[app->hdr_count - 1] =
+					    strdup(entry->d_name);
+				} else {
+					LOG_ERROR("suckless-ogl.app",
+					          "Failed to realloc memory for "
+					          "HDR files");
+				}
 			}
 		}
 		closedir(dir_handle);

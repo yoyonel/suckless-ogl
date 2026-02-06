@@ -38,10 +38,17 @@ void vec3array_init(Vec3Array* array)
 void vec3array_push(Vec3Array* array, vec3 vertex)
 {
 	if (array->size >= array->capacity) {
-		array->capacity = (array->capacity == 0) ? INITIAL_VEC3_CAPACITY
-		                                         : array->capacity * 2;
-		array->data =
-		    realloc(array->data, sizeof(vec3) * array->capacity);
+		size_t new_capacity = (array->capacity == 0)
+		                          ? INITIAL_VEC3_CAPACITY
+		                          : array->capacity * 2;
+		vec3* new_data =
+		    realloc(array->data, sizeof(vec3) * new_capacity);
+		if (new_data) {
+			array->data = new_data;
+			array->capacity = new_capacity;
+		} else {
+			return;
+		}
 	}
 	glm_vec3_copy(vertex, array->data[array->size++]);
 }
@@ -65,10 +72,17 @@ void uintarray_init(UintArray* array)
 void uintarray_push(UintArray* array, unsigned int value)
 {
 	if (array->size >= array->capacity) {
-		array->capacity = (array->capacity == 0) ? INITIAL_UINT_CAPACITY
-		                                         : array->capacity * 2;
-		array->data = realloc(array->data,
-		                      sizeof(unsigned int) * array->capacity);
+		size_t new_capacity = (array->capacity == 0)
+		                          ? INITIAL_UINT_CAPACITY
+		                          : array->capacity * 2;
+		unsigned int* new_data = realloc(
+		    array->data, sizeof(unsigned int) * new_capacity);
+		if (new_data) {
+			array->data = new_data;
+			array->capacity = new_capacity;
+		} else {
+			return;
+		}
 	}
 	array->data[array->size++] = value;
 }
@@ -123,12 +137,16 @@ static unsigned int get_midpoint(unsigned int point1, unsigned int point2,
 	size_t index = (size_t)(key % hash->capacity);
 
 	/* Open addressing with linear probing */
+	size_t start_index = index;
 	while (hash->entries[index].midpoint != 0) {
 		if (hash->entries[index].a == idx_a &&
 		    hash->entries[index].b == idx_b) {
 			return hash->entries[index].midpoint;
 		}
 		index = (index + 1) % hash->capacity;
+		if (index == start_index) {
+			return 0; /* Table full, shouldn't happen */
+		}
 	}
 
 	/* Not found, create new vertex */

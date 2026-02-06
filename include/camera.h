@@ -69,6 +69,8 @@ typedef struct Camera {
 	float yaw_target;         /**< Target yaw to lerp towards. */
 	float pitch_target;       /**< Target pitch to lerp towards. */
 	float rotation_smoothing; /**< Interpolation factor for rotation. */
+	float smoothed_x;         /**< Input smoothing state X. */
+	float smoothed_y;         /**< Input smoothing state Y. */
 
 	/* Head bobbing */
 	float bobbing_time; /**< Accumulated time for the sine-wave oscillation.
@@ -101,13 +103,6 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch);
  * @note Updates cam->front, cam->right, and cam->up.
  */
 void camera_update_vectors(Camera* cam);
-
-/**
- * @brief Legacy keyboard handling (variable timestep movement).
- * @param cam Pointer to the camera instance.
- * @param delta_time Time since last frame.
- */
-void camera_process_keyboard(Camera* cam, float delta_time);
 
 /**
  * @brief Processes mouse movement to update target orientation.

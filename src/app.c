@@ -260,6 +260,7 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->wire_cube_vbo);
 	glDeleteBuffers(1, &app->wire_quad_vbo);
 	glDeleteBuffers(1, &app->quad_vbo);
+	glDeleteBuffers(2, app->lum_ssbo);
 
 	ui_destroy(&app->ui);
 	postprocess_cleanup(&app->postprocess);
@@ -367,19 +368,6 @@ void app_render(App* app)
 	postprocess_begin(&app->postprocess);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
-	if (app->show_debug_tex) {
-		shader_use(app->debug_shader);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, app->brdf_lut_tex);
-		shader_set_int(app->debug_shader, "tex", 0);
-		shader_set_float(app->debug_shader, "lod", app->debug_lod);
-		glBindVertexArray(app->empty_vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glBindVertexArray(0);
-		postprocess_end(&app->postprocess);
-		return;
-	}
-
 	mat4 view;
 	mat4 proj;
 	mat4 view_proj;
@@ -387,9 +375,13 @@ void app_render(App* app)
 	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
 	                   app->camera.position[2]};
 	camera_get_view_matrix(&app->camera, view);
-	glm_perspective(glm_rad(app->camera.zoom),
-	                (float)app->width / (float)app->height, NEAR_PLANE,
-	                FAR_PLANE, proj);
+	if (app->height > 0) {
+		glm_perspective(glm_rad(app->camera.zoom),
+		                (float)app->width / (float)app->height,
+		                NEAR_PLANE, FAR_PLANE, proj);
+	} else {
+		glm_mat4_identity(proj);
+	}
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
