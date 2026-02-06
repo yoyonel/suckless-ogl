@@ -69,21 +69,47 @@ static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
 }
 
 /**
- * @brief strncpy wrapper with guaranteed null termination and bounds checking.
+ * @brief Safe wrapper around strncpy to ensure null-termination.
+ * @param dest Destination buffer.
+ * @param dest_size Size of destination buffer.
+ * @param src Source string.
+ * @param src_size Max characters to copy (or just use sizeof(dest)).
  */
-static inline bool safe_strncpy(char* dest, size_t dest_size, const char* src,
-                                size_t count)
+static inline void safe_strncpy(char* dest, size_t dest_size, const char* src,
+                                size_t src_size)
 {
-	if (!dest || !src || dest_size == 0) {
-		return false;
+	if (!dest || !dest_size || !src) {
+		return;
 	}
 
-	size_t to_copy = (count < dest_size) ? count : (dest_size - 1);
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	strncpy(dest, src, to_copy);
-	dest[to_copy] = '\0';
+	size_t copy_len = src_size;
+	if (copy_len >= dest_size) {
+		copy_len = dest_size - 1;
+	}
 
-	return (count < dest_size);
+	(void)strncpy(dest, src, copy_len);
+	dest[copy_len] = '\0';
+}
+
+/**
+ * @brief Safe wrapper around strncat to ensure bounds safety.
+ * @param dest Destination buffer.
+ * @param dest_size Total size of destination buffer.
+ * @param src Source string.
+ */
+static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
+{
+	if (!dest || !dest_size || !src) {
+		return;
+	}
+
+	size_t current_len = strnlen(dest, dest_size);
+	if (current_len >= dest_size - 1) {
+		return;  // No space left
+	}
+
+	size_t remaining = dest_size - current_len - 1;
+	(void)strncat(dest, src, remaining);
 }
 
 /**
