@@ -381,8 +381,6 @@ void app_render(App* app)
 	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
 
 	postprocess_begin(&app->postprocess);
-
-	postprocess_begin(&app->postprocess);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
 	mat4 view;
@@ -402,8 +400,6 @@ void app_render(App* app)
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
-	gpu_profiler_start_stage(&app->gpu_profiler, "Spheres",
-	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->show_envmap) {
 		gpu_profiler_start_stage(&app->gpu_profiler, "EnvMap",
@@ -419,6 +415,8 @@ void app_render(App* app)
 		gpu_profiler_end_stage(&app->gpu_profiler);
 	}
 
+	gpu_profiler_start_stage(&app->gpu_profiler, "Spheres",
+	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
 	if (app->billboard_mode) {
 		sphere_sorter_sort(&app->sphere_sorter, app->sphere_instances,
 		                   app->sphere_instance_count,
@@ -462,6 +460,8 @@ void app_render(App* app)
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #else
+	gpu_profiler_start_stage(&app->gpu_profiler, "Spheres",
+	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
 	if (app->billboard_mode) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		app_render_billboards(app, view, proj, camera_pos);

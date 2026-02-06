@@ -489,6 +489,9 @@ void postprocess_begin(PostProcess* post_processing)
 
 void postprocess_end(PostProcess* post_processing)
 {
+	gpu_profiler_start_stage(post_processing->gpu_profiler, "Post-Process",
+	                         GPU_PROFILER_POSTPROCESS_COLOR);
+
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
 	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
@@ -503,7 +506,10 @@ void postprocess_end(PostProcess* post_processing)
 	 * scene */
 	if (postprocess_is_enabled(post_processing, POSTFX_DOF) ||
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
+		gpu_profiler_start_stage(post_processing->gpu_profiler, "DoF",
+		                         GPU_PROFILER_DOF_COLOR);
 		fx_dof_render(post_processing);
+		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* Auto Exposure Pass */
@@ -521,7 +527,11 @@ void postprocess_end(PostProcess* post_processing)
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||
 	    postprocess_is_enabled(post_processing,
 	                           POSTFX_VECTOR_FIELD_DEBUG)) {
+		gpu_profiler_start_stage(post_processing->gpu_profiler,
+		                         "Motion Blur",
+		                         GPU_PROFILER_MOTION_BLUR_COLOR);
 		fx_motion_blur_render(post_processing);
+		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* Retour au framebuffer par défaut */
@@ -694,6 +704,8 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Réactiver le depth test */
 	glEnable(GL_DEPTH_TEST);
+
+	gpu_profiler_end_stage(post_processing->gpu_profiler);
 }
 
 void postprocess_update_time(PostProcess* post_processing, float delta_time)
