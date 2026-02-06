@@ -5,6 +5,7 @@
 #include "gl_common.h"
 #include "log.h"
 #include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char* argv[])
 {
@@ -22,10 +23,12 @@ int main(int argc, char* argv[])
 		          "Failed to allocate memory for application");
 		return EXIT_FAILURE;
 	}
+	memset(app, 0, sizeof(App));
 
 	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong")) {
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to initialize application");
+		app_cleanup(app);
 		free(app);
 		return EXIT_FAILURE;
 	}

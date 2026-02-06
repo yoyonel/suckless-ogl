@@ -121,7 +121,6 @@ typedef struct App {
 	int show_exposure_debug;       /**< Enable auto-exposure histogram. */
 	int pbr_debug_mode;            /**< Swap to wireframe/normal/roughness
 	                                  visualization. */
-	int show_imgui_demo;           /**< Reserved for ImGui integration. */
 	int show_help;                 /**< Overlay help text. */
 	int show_info_overlay;         /**< Show FPS and stats. */
 	int text_overlay_mode;         /**< Verbosity level of text UI. */
@@ -133,9 +132,9 @@ typedef struct App {
 	int first_mouse;               /**< Input initialization flag. */
 	int camera_enabled;            /**< Pause camera movement. */
 	int billboard_mode;    /**< Toggle for billboard rendering path. */
-	int show_debug_tex;    /**< Reserved for texture debugging. */
 	int hdr_count;         /**< Number of available environment maps. */
 	int current_hdr_index; /**< Index of active HDR in file list. */
+	int banding_style_idx; /**< Cycle index for banding styles. */
 	int env_map_loading;   /**< Async lock for HDR loading. */
 	int perf_mode_active;  /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
@@ -168,7 +167,6 @@ typedef struct App {
 
 	/* --- Global Configuration Uniforms --- */
 	float env_lod;          /**< Skybox blurriness. */
-	float debug_lod;        /**< Reserved for texture debugging. */
 	float u_metallic;       /**< Override metallic for all objects. */
 	float u_roughness;      /**< Override roughness for all objects. */
 	float u_ao;             /**< Override AO for all objects. */

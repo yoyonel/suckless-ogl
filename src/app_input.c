@@ -89,7 +89,6 @@ void handle_preset_input(App* app, int key)
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_7: { /* Style Cycle: All Banding Styles */
-			static int banding_style_idx = 0;
 			const PostProcessPreset* banding_presets[] = {
 			    &PRESET_POSTERIZED,  /* 1. Posterization */
 			    &PRESET_RETRO,       /* 2. Dithered */
@@ -108,23 +107,24 @@ void handle_preset_input(App* app, int key)
 			   idx 0. Else cycle to next. */
 			if (!postprocess_is_enabled(&app->postprocess,
 			                            POSTFX_BANDING)) {
-				banding_style_idx = 0;
+				app->banding_style_idx = 0;
 			} else {
-				banding_style_idx =
-				    (banding_style_idx + 1) % num_styles;
+				app->banding_style_idx =
+				    (app->banding_style_idx + 1) % num_styles;
 			}
 
 			postprocess_apply_preset(
 			    &app->postprocess,
-			    banding_presets[banding_style_idx]);
+			    banding_presets[app->banding_style_idx]);
 			LOG_INFO("suckless-ogl.app",
 			         "Banding Style [%d/%d]: %s",
-			         banding_style_idx + 1, num_styles,
-			         banding_names[banding_style_idx]);
+			         app->banding_style_idx + 1, num_styles,
+			         banding_names[app->banding_style_idx]);
 
 			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(buf, sizeof(buf), "Banding: %s",
-			                    banding_names[banding_style_idx]);
+			(void)safe_snprintf(
+			    buf, sizeof(buf), "Banding: %s",
+			    banding_names[app->banding_style_idx]);
 			action_notifier_push(&app->notifier, buf,
 			                     NOTIF_DUR_LONG);
 			break;

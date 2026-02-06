@@ -30,6 +30,8 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	cam->yaw_target = yaw;
 	cam->pitch_target = pitch;
 	cam->rotation_smoothing = DEFAULT_ROTATION_SMOOTHING;
+	cam->smoothed_x = 0.0F;
+	cam->smoothed_y = 0.0F;
 
 	// Head bobbing
 	cam->bobbing_time = 0.0F;
@@ -130,41 +132,18 @@ void camera_fixed_update(Camera* cam)
 	}
 }
 
-// Fonction à appeler dans la boucle de jeu
-void camera_update(Camera* cam, float delta_time)
-{
-	// Accumule le temps pour la physique
-	cam->physics_accumulator += delta_time;
-
-	// Tant qu'il y a assez de temps pour une mise à jour physique
-	while (cam->physics_accumulator >= cam->fixed_timestep) {
-		camera_fixed_update(cam);
-		cam->physics_accumulator -= cam->fixed_timestep;
-	}
-
-	// Interpolation de la rotation (pour un rendu fluide)
-	float alpha = cam->rotation_smoothing;
-	cam->yaw = cam->yaw + ((cam->yaw_target - cam->yaw) * alpha);
-	cam->pitch = cam->pitch + ((cam->pitch_target - cam->pitch) * alpha);
-
-	camera_update_vectors(cam);
-}
-
 // Dans camera_process_mouse :
 void camera_process_mouse(Camera* cam, float xoffset, float yoffset)
 {
-	static float smoothed_x = 0.0F;
-	static float smoothed_y = 0.0F;
-
 	// Lissage des inputs souris (ajustable via cam->mouse_smoothing_factor)
-	smoothed_x = (cam->mouse_smoothing_factor * smoothed_x) +
-	             ((1.0F - cam->mouse_smoothing_factor) * xoffset);
-	smoothed_y = (cam->mouse_smoothing_factor * smoothed_y) +
-	             ((1.0F - cam->mouse_smoothing_factor) * yoffset);
+	cam->smoothed_x = (cam->mouse_smoothing_factor * cam->smoothed_x) +
+	                  ((1.0F - cam->mouse_smoothing_factor) * xoffset);
+	cam->smoothed_y = (cam->mouse_smoothing_factor * cam->smoothed_y) +
+	                  ((1.0F - cam->mouse_smoothing_factor) * yoffset);
 
 	// Application
-	cam->yaw_target += smoothed_x * cam->sensitivity;
-	cam->pitch_target -= smoothed_y * cam->sensitivity;
+	cam->yaw_target += cam->smoothed_x * cam->sensitivity;
+	cam->pitch_target -= cam->smoothed_y * cam->sensitivity;
 
 	// Clamping
 	if (cam->pitch_target > DEFAULT_MAX_PITCH) {
