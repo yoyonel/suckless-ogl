@@ -510,67 +510,42 @@ void app_render(App* app)
 			if (avg_ms > 0) {
 				// Retrieve frame indices
 				// Retrieve frame indices
-				uint64_t indices[32];
-				size_t count =
-				    adaptive_sampler_get_sample_indices(
-				        sampler, indices, 32);
 
 				uint64_t start_frame = 0;
 				uint64_t end_frame = 0;
 				adaptive_sampler_get_window_range(
 				    sampler, &start_frame, &end_frame);
+				size_t count =
+				    adaptive_sampler_get_sample_count(sampler);
 
-				// Format missed indices string
+				// Format string
 				char indices_str[256];
-				indices_str[0] = '\0';
-				char* ptr = indices_str;
-				size_t rem = sizeof(indices_str);
-
-				ptr += snprintf(ptr, rem, "[Missed: ");
-				rem = sizeof(indices_str) -
-				      (size_t)(ptr - indices_str);
 
 				if (start_frame > 0 &&
 				    end_frame >= start_frame) {
-					int first_miss = 1;
-					size_t current_idx = 0;
-					// Assume indices are sorted
-					for (uint64_t f = start_frame;
-					     f <= end_frame; ++f) {
-						int found = 0;
-						while (current_idx < count &&
-						       indices[current_idx] <
-						           f) {
-							current_idx++;
-						}
-						if (current_idx < count &&
-						    indices[current_idx] == f) {
-							found = 1;
-						}
+					uint64_t total_frames =
+					    end_frame - start_frame + 1;
+					size_t missed_count = 0;
+					if (total_frames > count) {
+						missed_count =
+						    total_frames - count;
+					}
 
-						if (!found) {
-							int written = snprintf(
-							    ptr, rem, "%s%lu",
-							    first_miss ? ""
-							               : ", ",
-							    f);
-							if (written < 0 ||
-							    (size_t)written >=
-							        rem) {
-								break;
-							}
-							ptr += written;
-							rem -= (size_t)written;
-							first_miss = 0;
-						}
+					float miss_rate = 0.0f;
+					if (total_frames > 0) {
+						miss_rate =
+						    ((float)missed_count /
+						     (float)total_frames) *
+						    100.0f;
 					}
-					if (first_miss) {
-						snprintf(indices_str,
-						         sizeof(indices_str),
-						         "[No Misses]");
-					} else {
-						snprintf(ptr, rem, "]");
-					}
+
+					snprintf(indices_str,
+					         sizeof(indices_str),
+					         "[Frames: %lu-%lu, Miss: "
+					         "%zu/%lu (%.1f%%)]",
+					         start_frame, end_frame,
+					         missed_count, total_frames,
+					         miss_rate);
 				} else {
 					snprintf(indices_str,
 					         sizeof(indices_str),
