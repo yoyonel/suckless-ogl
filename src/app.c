@@ -509,37 +509,72 @@ void app_render(App* app)
 
 			if (avg_ms > 0) {
 				// Retrieve frame indices
+				// Retrieve frame indices
 				uint64_t indices[32];
 				size_t count =
 				    adaptive_sampler_get_sample_indices(
 				        sampler, indices, 32);
 
-				// Format indices string
+				uint64_t start_frame = 0;
+				uint64_t end_frame = 0;
+				adaptive_sampler_get_window_range(
+				    sampler, &start_frame, &end_frame);
+
+				// Format missed indices string
 				char indices_str[256];
 				indices_str[0] = '\0';
 				char* ptr = indices_str;
 				size_t rem = sizeof(indices_str);
 
-				ptr += snprintf(ptr, rem, "[");
+				ptr += snprintf(ptr, rem, "[Missed: ");
 				rem = sizeof(indices_str) -
 				      (size_t)(ptr - indices_str);
 
-				for (size_t j = 0; j < count; ++j) {
-					int written = snprintf(
-					    ptr, rem, "%lu%s", indices[j],
-					    (j < count - 1) ? ", " : "");
-					if (written < 0 ||
-					    (size_t)written >= rem)
-						break;
-					ptr += written;
-					rem -= (size_t)written;
-				}
+				if (start_frame > 0 &&
+				    end_frame >= start_frame) {
+					int first_miss = 1;
+					size_t current_idx = 0;
+					// Assume indices are sorted
+					for (uint64_t f = start_frame;
+					     f <= end_frame; ++f) {
+						int found = 0;
+						while (current_idx < count &&
+						       indices[current_idx] <
+						           f) {
+							current_idx++;
+						}
+						if (current_idx < count &&
+						    indices[current_idx] == f) {
+							found = 1;
+						}
 
-				if (count < adaptive_sampler_get_sample_count(
-				                sampler)) {
-					snprintf(ptr, rem, ", ...]");
+						if (!found) {
+							int written = snprintf(
+							    ptr, rem, "%s%lu",
+							    first_miss ? ""
+							               : ", ",
+							    f);
+							if (written < 0 ||
+							    (size_t)written >=
+							        rem) {
+								break;
+							}
+							ptr += written;
+							rem -= (size_t)written;
+							first_miss = 0;
+						}
+					}
+					if (first_miss) {
+						snprintf(indices_str,
+						         sizeof(indices_str),
+						         "[No Misses]");
+					} else {
+						snprintf(ptr, rem, "]");
+					}
 				} else {
-					snprintf(ptr, rem, "]");
+					snprintf(indices_str,
+					         sizeof(indices_str),
+					         "[Range Empty]");
 				}
 
 				// Logique conditionnelle selon le nom de
