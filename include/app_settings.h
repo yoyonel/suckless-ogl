@@ -212,7 +212,6 @@ static const int LUM_HISTOGRAM_SIZE =
     64 * 64; /**< Total pixels in the histogram map. */
 /** @} */
 
-static const float GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH = 2.0F;
 //
 static const int GPU_PROFILER_TOTAL_FRAME_COLOR = 0xFFFFFF;
 static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR = 0xFFA500;

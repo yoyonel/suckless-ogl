@@ -7,6 +7,7 @@
 
 #define MAX_GPU_STAGES 32
 #define GPU_QUERY_BUFFER_COUNT 2
+#define GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH 2.0f
 
 /**
  * @struct GPUStage

@@ -4,6 +4,7 @@
 #include "adaptive_sampler.h"
 #include "app_env.h"
 #include "app_input.h"
+#include "app_metrics.h"
 #include "app_scene.h"
 #include "app_settings.h"
 #include "app_ui.h"
@@ -26,7 +27,6 @@
 #endif
 #include "async_loader.h"
 #include "camera.h"
-#include "log.h"
 #include "material.h"
 #include "pbr.h"
 #include "perf_mode.h"
@@ -494,100 +494,5 @@ void app_render(App* app)
 
 	// 4. Logique d'affichage toutes les 2 secondes
 	double current_time = glfwGetTime();
-
-	// On boucle sur toutes les étapes enregistrées par le profiler durant
-	// cette frame
-	for (int i = 0; i < app->gpu_profiler.stage_count; i++) {
-		GPUStage* stage = &app->gpu_profiler.stages[i];
-		AdaptiveSampler* sampler = &stage->sampler;
-
-		// On vérifie si la fenêtre de 2 secondes est écoulée pour cette
-		// étape spécifique
-		if (current_time - sampler->window_start_time >=
-		    GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH) {
-			float avg_ms = adaptive_sampler_get_average(sampler);
-
-			if (avg_ms > 0) {
-				// Retrieve frame indices
-				// Retrieve frame indices
-
-				uint64_t start_frame = 0;
-				uint64_t end_frame = 0;
-				adaptive_sampler_get_window_range(
-				    sampler, &start_frame, &end_frame);
-				size_t count =
-				    adaptive_sampler_get_sample_count(sampler);
-
-				// Format string
-				char indices_str[256];
-
-				if (start_frame > 0 &&
-				    end_frame >= start_frame) {
-					uint64_t total_frames =
-					    end_frame - start_frame + 1;
-					size_t missed_count = 0;
-					if (total_frames > count) {
-						missed_count =
-						    total_frames - count;
-					}
-
-					float miss_rate = 0.0f;
-					if (total_frames > 0) {
-						miss_rate =
-						    ((float)missed_count /
-						     (float)total_frames) *
-						    100.0f;
-					}
-
-					snprintf(indices_str,
-					         sizeof(indices_str),
-					         "[Frames: %lu-%lu, Miss: "
-					         "%zu/%lu (%.1f%%)]",
-					         start_frame, end_frame,
-					         missed_count, total_frames,
-					         miss_rate);
-				} else {
-					snprintf(indices_str,
-					         sizeof(indices_str),
-					         "[Range Empty]");
-				}
-
-				// Logique conditionnelle selon le nom de
-				// l'étape
-				if (strcmp(stage->name, "Total Frame") == 0) {
-					LOG_INFO("perf.gpu",
-					         "Average GPU Frame Time (last "
-					         "2s): %.3f ms %s",
-					         avg_ms, indices_str);
-				} else if (strcmp(stage->name,
-				                  "Auto Exposure") == 0) {
-					LOG_INFO("perf.gpu",
-					         "Average GPU Auto-Exposure "
-					         "Time (last 2s): %.4f ms %s",
-					         avg_ms, indices_str);
-				} else if (strcmp(stage->name, "Bloom") == 0) {
-					LOG_INFO("perf.gpu",
-					         "Average GPU Bloom "
-					         "Time (last 2s): %.4f ms %s",
-					         avg_ms, indices_str);
-				} else if (strcmp(stage->name, "EnvMap") == 0) {
-					LOG_INFO("perf.gpu",
-					         "Average GPU EnvMap "
-					         "Time (last 2s): %.4f ms %s",
-					         avg_ms, indices_str);
-				} else if (strcmp(stage->name, "Spheres") ==
-				           0) {
-					LOG_INFO(
-					    "perf.gpu",
-					    "Average GPU Spheres Rendering "
-					    "Time (last 2s): %.4f ms %s",
-					    avg_ms, indices_str);
-				}
-			}
-
-			// Reset du sampler de l'étape pour la prochaine fenêtre
-			// de 2s
-			adaptive_sampler_reset(sampler, current_time);
-		}
-	}
+	app_metrics_log_gpu_stats(&app->gpu_profiler, current_time);
 }
