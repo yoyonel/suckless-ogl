@@ -246,6 +246,12 @@ void app_cleanup(App* app)
 	shader_destroy(app->pbr_ssbo_shader);
 #endif
 
+	glDeleteProgram(app->skybox_shader);
+	glDeleteProgram(app->shader_spmap);
+	glDeleteProgram(app->shader_irmap);
+	glDeleteProgram(app->shader_lum_pass1);
+	glDeleteProgram(app->shader_lum_pass2);
+
 	glDeleteVertexArrays(1, &app->sphere_vao);
 	glDeleteVertexArrays(1, &app->empty_vao);
 	glDeleteBuffers(1, &app->sphere_vbo);
@@ -253,6 +259,7 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->sphere_ebo);
 	glDeleteBuffers(1, &app->wire_cube_vbo);
 	glDeleteBuffers(1, &app->wire_quad_vbo);
+	glDeleteBuffers(1, &app->quad_vbo);
 
 	ui_destroy(&app->ui);
 	postprocess_cleanup(&app->postprocess);
