@@ -253,6 +253,7 @@ void app_cleanup(App* app)
 	glDeleteBuffers(1, &app->sphere_ebo);
 	glDeleteBuffers(1, &app->wire_cube_vbo);
 	glDeleteBuffers(1, &app->wire_quad_vbo);
+	glDeleteBuffers(1, &app->quad_vbo);
 
 	ui_destroy(&app->ui);
 	postprocess_cleanup(&app->postprocess);
