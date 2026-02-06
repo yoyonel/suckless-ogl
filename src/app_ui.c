@@ -270,6 +270,211 @@ void app_draw_debug_overlay(App* app)
 	}
 }
 
+static void hex_to_vec3(uint32_t color, vec3 out)
+{
+	static const float COLOR_NORM = 255.0F;
+	static const unsigned int MASK_BYTE = 0xFFU;
+	static const unsigned int SHIFT_R = 16U;
+	static const unsigned int SHIFT_G = 8U;
+
+	out[0] = (float)((color >> SHIFT_R) & MASK_BYTE) / COLOR_NORM;
+	out[1] = (float)((color >> SHIFT_G) & MASK_BYTE) / COLOR_NORM;
+	out[2] = (float)(color & MASK_BYTE) / COLOR_NORM;
+}
+
+static void app_draw_gpu_timeline(App* app)
+{
+	/* Use the snapshot profiler data to stay in sync with ASCII log (2s) */
+	if (app->display_profiler.stage_count == 0) {
+		return;
+	}
+
+	const GPUStage* root = &app->display_profiler.stages[0];
+	float total_ms = (float)root->duration_ms;
+	static const float MIN_MS = 0.001F;
+	if (total_ms <= MIN_MS) {
+		return;
+	}
+
+	/* --- Layout Configuration --- */
+	const float ORIGINAL_FONT_SIZE = app->ui.font_size;
+	const float GRAPH_FONT_SIZE = 20.0F;
+	app->ui.font_size = GRAPH_FONT_SIZE;
+
+	static const float ROW_HEIGHT = 28.0F; /* Slightly taller */
+	static const float ROW_PAD = 3.0F;     /* distinct gap between bars */
+	static const float BG_ALPHA =
+	    0.85F; /* Slightly more opaque background */
+
+	/* Split screen: 65% Graph, 35% Text Info */
+	/* We leave some padding on the far left and right */
+	static const float PAD_SIDE = 20.0F;
+	static const float GRAPH_WIDTH_RATIO = 0.65F;
+	static const float TEXT_GAP = 20.0F;
+
+	static const float SCREEN_WIDTH_SPLIT_FACTOR = 2.0F;
+	float total_width =
+	    (float)app->width - (PAD_SIDE * SCREEN_WIDTH_SPLIT_FACTOR);
+	float graph_width = total_width * GRAPH_WIDTH_RATIO;
+	float text_start_x =
+	    PAD_SIDE + graph_width + TEXT_GAP; /* Gap between graph and text */
+
+	/* Calculate total list height */
+	int stage_count = app->display_profiler.stage_count;
+	/* Limit rows to fit screen if necessary (unlikely to exceed 32 with
+	 * 26px = 832px) */
+	/* But we anchor to bottom-left as before or top-left?
+	   ASCII log usually prints top-down. The Graphical timeline was
+	   bottom-anchored. Let's keep it anchored to bottom to avoid
+	   overlapping top UI if possible, OR anchor to a fixed vertical
+	   position. Given "Overlay", typically bottom or top. Previous was
+	   bottom. Let's stick to bottom for now, but stack upwards? Actually, a
+	   list reads better Top-to-Bottom. Let's try drawing Root at the BOTTOM
+	   (index 0) and children above? Wait, the array is strictly ordered.
+	   app->display_profiler.stages[0] is Root. Subsequent items are
+	   children. If we want "ISO Table", usually Header is Top. Let's
+	   calculate Start Y so the block sits at the bottom of the screen, but
+	   the list runs Top-to-Bottom within that block? Or Bottom-to-Top
+	   (stack)? Let's do Top-to-Bottom (List style) anchored at the Bottom
+	   of screen.
+	*/
+
+	float total_list_height = (float)stage_count * ROW_HEIGHT;
+
+	static const float MARGIN_Y = 60.0F;
+
+	/* Position Logic: Top or Bottom */
+	float start_pos_y = 0.0F;
+	if (app->gpu_timeline_position == 0) {
+		/* Top Anchor */
+		start_pos_y = MARGIN_Y; /* Top margin */
+	} else {
+		/* Bottom Anchor */
+		start_pos_y = (float)app->height - total_list_height - MARGIN_Y;
+	}
+
+	/* Draw Background for the whole block */
+	static const float BG_RADIUS = 8.0F; /* Slight rounding for container */
+	static const float BG_PAD = 5.0F;
+	static const float BG_WIDTH_EXT = 10.0F;
+	static const float BG_RGB_VAL = 0.05F;
+	const vec3 bg_col = {BG_RGB_VAL, BG_RGB_VAL, BG_RGB_VAL};
+
+	ui_draw_rounded_rect(&app->ui, PAD_SIDE - BG_PAD, start_pos_y - BG_PAD,
+	                     total_width + BG_WIDTH_EXT,
+	                     total_list_height + BG_WIDTH_EXT, BG_RADIUS,
+	                     bg_col, BG_ALPHA, app->width, app->height);
+
+	for (int i = 0; i < stage_count; ++i) {
+		const GPUStage* stage = &app->display_profiler.stages[i];
+
+		float row_y = start_pos_y + ((float)i * ROW_HEIGHT);
+
+		/* --- 1. Draw Timeline Bar (Left Side) --- */
+		float x_ratio = (float)stage->start_offset_ms / total_ms;
+		float w_ratio = (float)stage->duration_ms / total_ms;
+
+		/* Clamp ratios */
+		if (x_ratio < 0.0F) {
+			x_ratio = 0.0F;
+		}
+		if (x_ratio > 1.0F) {
+			x_ratio = 1.0F;
+		}
+		if (w_ratio < 0.0F) {
+			w_ratio = 0.0F;
+		}
+		if (x_ratio + w_ratio > 1.0F) {
+			w_ratio = 1.0F - x_ratio;
+		}
+
+		float bar_start_x = PAD_SIDE + (x_ratio * graph_width);
+		float bar_width = w_ratio * graph_width;
+
+		static const float MIN_BAR_WIDTH = 1.0F;
+		if (bar_width < MIN_BAR_WIDTH) {
+			bar_width = MIN_BAR_WIDTH;
+		}
+
+		vec3 col;
+		hex_to_vec3(stage->color, col);
+
+		/* Draw Bar */
+		static const float BAR_RADIUS_DIV = 0.5F;
+		static const float BAR_HEIGHT_FACTOR = 2.0F;
+		float bar_h = ROW_HEIGHT - (ROW_PAD * BAR_HEIGHT_FACTOR);
+		float radius = bar_h * BAR_RADIUS_DIV;
+
+		ui_draw_rounded_rect(&app->ui, bar_start_x, row_y + ROW_PAD,
+		                     bar_width, bar_h, radius, col, 1.0F,
+		                     app->width, app->height);
+
+		/* --- 2. Draw Text Info (Right Side) --- */
+		/* Format: Indent Name ...... Time ms */
+		static const int TEXT_BUF_SIZE = 128;
+		char buf[TEXT_BUF_SIZE];
+
+		/* Indentation based on depth */
+		/* We'll just print the name and time, indentation handled by x
+		   offset? Or spaces in string? X offset is cleaner. */
+		static const float INDENT_STEP = 15.0F;
+		float indent_offset = (float)stage->depth * INDENT_STEP;
+
+		(void)safe_snprintf(buf, sizeof(buf), "%s", stage->name);
+
+		/* Draw Name */
+		/* White text for list readability */
+		const vec3 text_col = {1.0F, 1.0F, 1.0F};
+
+		/* Vertical center of the row.
+		   With ROW_HEIGHT 26, Baseline offset 30 needs compensation.
+		   We used -10.0F padding before.
+		   Let's try calculating exact baseline:
+		   Top of row = row_y.
+		   Center = row_y + 13.
+		   Font baseline is ~20px down?
+		   ui_draw_text adds FONT_BASELINE_OFFSET (30) to y.
+		   We want visual text center at row_y + 13.
+		   If we pass row_y - 10, rendered at row_y + 20.
+		   That seems decent for 20px font.
+		*/
+		static const float TEXT_Y_OFF = -5.0F;
+		float text_y = row_y + TEXT_Y_OFF; /* Vertically centered */
+
+		static const float SHADOW_OFF = 1.0F;
+		/* Draw Shadow (Colored) */
+		ui_draw_text(&app->ui, stage->name,
+		             text_start_x + indent_offset + SHADOW_OFF,
+		             text_y + SHADOW_OFF, col, app->width, app->height);
+
+		/* Draw Main Text (White) */
+		ui_draw_text(&app->ui, stage->name,
+		             text_start_x + indent_offset, text_y, text_col,
+		             app->width, app->height);
+
+		/* Draw Time (Right Aligned in the text area?)
+		   Or just after the name? User asked "sur le coté aligné à
+		   droite". Ideally a fixed column for time. Let's put time at
+		   the far right of the block.
+		*/
+		static const int TIME_BUF_SIZE = 32;
+		char time_buf[TIME_BUF_SIZE];
+		(void)safe_snprintf(time_buf, (size_t)TIME_BUF_SIZE, "%.4f ms",
+		                    stage->duration_ms);
+
+		/* Estimate width to right-align?
+		   Or just fix a position. 300px for name section?
+		*/
+		static const float TIME_X_OFF = 250.0F;
+		float time_x =
+		    text_start_x + TIME_X_OFF; /* Fixed column for time */
+		ui_draw_text(&app->ui, time_buf, time_x, text_y, text_col,
+		             app->width, app->height);
+	}
+
+	app->ui.font_size = ORIGINAL_FONT_SIZE;
+}
+
 void app_render_ui(App* app)
 {
 	/* --- Draw Main Info Overlay --- */
@@ -279,7 +484,8 @@ void app_render_ui(App* app)
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
-	/* Conditional text overlay rendering based on text_overlay_mode */
+	/* Conditional text overlay rendering based on text_overlay_mode
+	 */
 	if (app->text_overlay_mode >= 1) {
 		static const float MS_PER_SECOND = 1000.0F;
 		char fps_text[MAX_FPS_TEXT_LENGTH];
@@ -302,35 +508,15 @@ void app_render_ui(App* app)
 
 		/* Adaptive Sampler Debug */
 		if (app->text_overlay_mode >= 2) {
-			static const size_t SAMPLER_BUF_SIZE = 256;
-			static const size_t SAMPLER_WIDTH = 40;
 			static const size_t AVG_TEXT_SIZE = 64;
-
-			char sampler_buf[SAMPLER_BUF_SIZE];
+			char avg_text[AVG_TEXT_SIZE];
 			float sampled_avg =
 			    adaptive_sampler_get_average(&app->fps_sampler);
-			adaptive_sampler_ascii_plot(
-			    &app->fps_sampler, sampler_buf, sizeof(sampler_buf),
-			    SAMPLER_WIDTH, sampled_avg);
 
 			/* Show numerical average */
-			char avg_text[AVG_TEXT_SIZE];
 			(void)safe_snprintf(avg_text, sizeof(avg_text),
 			                    "Sampled Avg: %.2f", sampled_avg);
 			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
-
-			/* Split lines manually to avoid newline issues */
-			char* newline_ptr = strchr(sampler_buf, '\n');
-			if (newline_ptr) {
-				*newline_ptr = '\0';
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR);
-				ui_layout_text(&layout, newline_ptr + 1,
-				               DEFAULT_FONT_COLOR);
-			} else {
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR);
-			}
 		}
 	}
 
@@ -420,6 +606,10 @@ void app_render_ui(App* app)
 
 	if (app->show_help) {
 		app_draw_help_overlay(app);
+	}
+
+	if (app->show_gpu_timeline) {
+		app_draw_gpu_timeline(app);
 	}
 
 	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);

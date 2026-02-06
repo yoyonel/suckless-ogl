@@ -54,20 +54,20 @@ void test_benchmark_ascii_plot(void)
 
 	// Warmup
 	for (int i = 0; i < WARMUP_ITERATIONS; ++i) {
-		adaptive_sampler_ascii_plot(&sampler, buffer, sizeof(buffer),
-		                            width, avg);
+		volatile float res = adaptive_sampler_get_average(&sampler);
+		(void)res;
 	}
 
 	clock_t start = clock();
 	for (int i = 0; i < BENCH_ITERATIONS; ++i) {
-		adaptive_sampler_ascii_plot(&sampler, buffer, sizeof(buffer),
-		                            width, avg);
+		volatile float res = adaptive_sampler_get_average(&sampler);
+		(void)res;
 	}
 	clock_t end = clock();
 	double cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
 	printf(
-	    "Benchmark: adaptive_sampler_ascii_plot %d iterations took %f "
+	    "Benchmark: adaptive_sampler_get_average %d iterations took %f "
 	    "seconds\n",
 	    BENCH_ITERATIONS, cpu_time_used);
 

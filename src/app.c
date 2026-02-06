@@ -58,6 +58,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
 	app->show_help = 0;
+	app->show_gpu_timeline = 0;
 	app->show_envmap = 1;
 	app->billboard_mode = 1;
 	app->first_mouse = 1;
@@ -219,6 +220,7 @@ int app_init(App* app, int width, int height, const char* title)
 	action_notifier_init(&app->notifier);
 
 	gpu_profiler_init(&app->gpu_profiler);
+	app->gpu_timeline_position = 0; /* Default Top */
 
 	return 1;
 }
@@ -403,7 +405,7 @@ void app_render(App* app)
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->show_envmap) {
 		gpu_profiler_start_stage(&app->gpu_profiler, "EnvMap",
-		                         GPU_PROFILER_TOTAL_FRAME_COLOR);
+		                         GPU_PROFILER_ENV_COLOR);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
@@ -416,7 +418,7 @@ void app_render(App* app)
 	}
 
 	gpu_profiler_start_stage(&app->gpu_profiler, "Spheres",
-	                         GPU_PROFILER_TOTAL_FRAME_COLOR);
+	                         GPU_PROFILER_SCENE_COLOR);
 	if (app->billboard_mode) {
 		sphere_sorter_sort(&app->sphere_sorter, app->sphere_instances,
 		                   app->sphere_instance_count,
@@ -494,5 +496,8 @@ void app_render(App* app)
 
 	// 4. Logique d'affichage toutes les 2 secondes
 	double current_time = glfwGetTime();
-	app_metrics_log_gpu_stats(&app->gpu_profiler, current_time);
+	if (app_metrics_log_gpu_stats(&app->gpu_profiler, current_time)) {
+		/* Synchronize the graphical timeline with the ASCII log */
+		app->display_profiler = app->gpu_profiler;
+	}
 }

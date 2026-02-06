@@ -30,6 +30,7 @@ list(FILTER TEST_LIB_SOURCES EXCLUDE REGEX ".*main\\.c$")
 add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
 target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
 target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
+target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
 # =============================================================================
@@ -56,6 +57,7 @@ set(OPENGL_TESTS
     test_render_utils
     test_benchmark_histogram
     test_texture_security
+    test_gpu_profiler
 )
 
 # Pour chaque fichier test trouvé

@@ -174,7 +174,7 @@ void test_gpu_profiler_result_retrieval(void)
 
 	// La durée doit être positive ou nulle (0.0 est possible sur CI
 	// rapide/software)
-	TEST_ASSERT_TRUE(profiler.stages[0].duration_ms >= 0.0);
+	TEST_ASSERT_TRUE(profiler.stages[0].duration_ms >= 0.0F);
 
 	gpu_profiler_cleanup(&profiler);
 }

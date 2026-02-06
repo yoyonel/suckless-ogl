@@ -145,18 +145,6 @@ size_t adaptive_sampler_get_sample_indices(const AdaptiveSampler* sampler,
 void adaptive_sampler_reset(AdaptiveSampler* sampler, double current_time);
 
 /**
- * @brief Renders the sample distribution as an ASCII graph for logs/overlays.
- * @param sampler Pointer to the sampler.
- * @param buffer Output char buffer.
- * @param buffer_size Size of the output buffer.
- * @param width Character width of the timeline graph.
- * @param avg_value Comparison threshold for high/low visualization.
- */
-void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
-                                 size_t buffer_size, size_t width,
-                                 float avg_value);
-
-/**
  * @brief Frees all dynamic memory associated with the sampler.
  * @param sampler Pointer to the sampler.
  */

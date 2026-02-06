@@ -436,14 +436,14 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 	UIQuad quad = {
 	    .vertices = {
 	        // Triangle 1
-	        {rect_x, rect_y + height, 0.0F, 0.0F},  // Bottom-left
+	        {rect_x, rect_y + height, 0.0F, 1.0F},  // Bottom-left
 	        {rect_x, rect_y, 0.0F, 0.0F},           // Top-left
-	        {rect_x + width, rect_y, 0.0F, 0.0F},   // Top-right
+	        {rect_x + width, rect_y, 1.0F, 0.0F},   // Top-right
 
 	        // Triangle 2
-	        {rect_x, rect_y + height, 0.0F, 0.0F},         // Bottom-left
-	        {rect_x + width, rect_y, 0.0F, 0.0F},          // Top-right
-	        {rect_x + width, rect_y + height, 0.0F, 0.0F}  // Bottom-right
+	        {rect_x, rect_y + height, 0.0F, 1.0F},         // Bottom-left
+	        {rect_x + width, rect_y, 1.0F, 0.0F},          // Top-right
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F}  // Bottom-right
 	    }};
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
@@ -581,6 +581,69 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
 
 	/* Cleanup */
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glUseProgram(0);
+
+	restore_gl_state(&saved_state);
+}
+
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
+                          float width, float height, float radius,
+                          const vec3 color, float alpha, int screen_width,
+                          int screen_height)
+{
+	if (ui_context == NULL || ui_context->shader == NULL) {
+		return;
+	}
+
+	// Save and setup OpenGL state
+	const GLStateBackup saved_state = save_gl_state();
+	setup_ui_render_state();
+
+	// Activate shader
+	shader_use(ui_context->shader);
+
+	// Setup orthographic projection
+	mat4 projection;
+	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
+	          1.0F, projection);
+
+	// Upload uniforms
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
+	shader_set_float(ui_context->shader, "globalAlpha", alpha);
+	shader_set_int(ui_context->shader, "useTexture", 2); /* Rounded Mode */
+
+	/* Rounded specific unifiorms */
+	float size[2] = {width, height};
+	shader_set_vec2(ui_context->shader, "rectSize", size);
+
+	shader_set_float(ui_context->shader, "radius", radius);
+
+	// Bind vertex array
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	/* Construct Quad manually */
+	UIQuad quad = {
+	    .vertices = {
+	        // Triangle 1
+	        {rect_x, rect_y + height, 0.0F, 1.0F},  // Bottom-left
+	        {rect_x, rect_y, 0.0F, 0.0F},           // Top-left
+	        {rect_x + width, rect_y, 1.0F, 0.0F},   // Top-right
+
+	        // Triangle 2
+	        {rect_x, rect_y + height, 0.0F, 1.0F},         // Bottom-left
+	        {rect_x + width, rect_y, 1.0F, 0.0F},          // Top-right
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F}  // Bottom-right
+	    }};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+
+	// Cleanup
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);

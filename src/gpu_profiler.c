@@ -129,8 +129,8 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 
 		adaptive_sampler_add(&profiler->stages[i].sampler,
 		                     (float)duration_ms, read_buf->frame_index);
-		profiler->stages[i].duration_ms = duration_ms;
-		profiler->stages[i].start_offset_ms = offset_ms;
+		profiler->stages[i].duration_ms = (float)duration_ms;
+		profiler->stages[i].start_offset_ms = (float)offset_ms;
 	}
 
 	/* 2. Swap Buffers */

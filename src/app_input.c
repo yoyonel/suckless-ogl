@@ -451,7 +451,7 @@ static void handle_fxaa_input(App* app, int mods)
 	}
 }
 
-void handle_app_input(App* app, int key, int mods)
+static void handle_f_key_input(App* app, int key, int mods)
 {
 	switch (key) {
 		case GLFW_KEY_F1:
@@ -464,6 +464,69 @@ void handle_app_input(App* app, int key, int mods)
 			    app->show_help ? "Help: ON" : "Help: OFF",
 			    NOTIF_DUR_NORMAL);
 			break;
+		case GLFW_KEY_F3:
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
+				/* Toggle Position */
+				app->gpu_timeline_position =
+				    !app->gpu_timeline_position;
+
+				const char* pos_str =
+				    (app->gpu_timeline_position == 0)
+				        ? "TOP"
+				        : "BOTTOM";
+				LOG_INFO("suckless-ogl.app",
+				         "Timeline Position: %s", pos_str);
+
+				char msg[NOTIF_BUF_SIZE];
+				(void)safe_snprintf(msg, sizeof(msg),
+				                    "Timeline: %s", pos_str);
+				action_notifier_push(&app->notifier, msg,
+				                     NOTIF_DUR_NORMAL);
+			} else {
+				/* Toggle Visibility */
+				app->show_gpu_timeline =
+				    !app->show_gpu_timeline;
+				LOG_INFO("suckless-ogl.app", "GPU Timeline: %s",
+				         app->show_gpu_timeline ? "ON" : "OFF");
+				action_notifier_push(&app->notifier,
+				                     app->show_gpu_timeline
+				                         ? "Timeline: ON"
+				                         : "Timeline: OFF",
+				                     NOTIF_DUR_NORMAL);
+			}
+			break;
+		case GLFW_KEY_F9:
+			if (app->perf_mode_active) {
+				perf_mode_request_end(&app->perf_context);
+				app->perf_mode_active = 0;
+				action_notifier_push(&app->notifier,
+				                     "Perf Mode: OFF",
+				                     NOTIF_DUR_LONG);
+			} else {
+				app->perf_mode_active =
+				    (perf_mode_request_start(
+				         &app->perf_context) == 0);
+				char buf[NOTIF_BUF_SIZE];
+				(void)safe_snprintf(buf, sizeof(buf),
+				                    "Perf Mode: ON (%s)",
+				                    perf_mode_get_state_string(
+				                        &app->perf_context));
+				action_notifier_push(&app->notifier, buf,
+				                     NOTIF_DUR_LONG);
+			}
+			LOG_INFO(
+			    "suckless-ogl.app", "Performance Mode: %s (%s)",
+			    app->perf_mode_active ? "ON" : "OFF",
+			    perf_mode_get_state_string(&app->perf_context));
+			break;
+		default:
+			break;
+	}
+}
+
+static void handle_system_key_input(App* app, int key, int mods)
+{
+	switch (key) {
 		case GLFW_KEY_P:
 			app_save_raw_frame(app, "capture_frame.raw");
 			action_notifier_push(&app->notifier, "Frame Captured",
@@ -499,6 +562,30 @@ void handle_app_input(App* app, int key, int mods)
 		case GLFW_KEY_F:
 			app_toggle_fullscreen(app, app->window);
 			break;
+		default:
+			break;
+	}
+}
+
+void handle_app_input(App* app, int key, int mods)
+{
+	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
+		handle_f_key_input(app, key, mods);
+		return;
+	}
+
+	switch (key) {
+		case GLFW_KEY_P:
+		case GLFW_KEY_Z:
+		case GLFW_KEY_UP:
+		case GLFW_KEY_DOWN:
+		case GLFW_KEY_C:
+		case GLFW_KEY_SPACE:
+		case GLFW_KEY_PAGE_UP:
+		case GLFW_KEY_PAGE_DOWN:
+		case GLFW_KEY_F:
+			handle_system_key_input(app, key, mods);
+			break;
 		case GLFW_KEY_L:
 			app->billboard_mode = !app->billboard_mode;
 			app_update_instancing_mode(app);
@@ -521,30 +608,6 @@ void handle_app_input(App* app, int key, int mods)
 			break;
 		case GLFW_KEY_X:
 			handle_fxaa_input(app, mods);
-			break;
-		case GLFW_KEY_F9:
-			if (app->perf_mode_active) {
-				perf_mode_request_end(&app->perf_context);
-				app->perf_mode_active = 0;
-				action_notifier_push(&app->notifier,
-				                     "Perf Mode: OFF",
-				                     NOTIF_DUR_LONG);
-			} else {
-				app->perf_mode_active =
-				    (perf_mode_request_start(
-				         &app->perf_context) == 0);
-				char buf[NOTIF_BUF_SIZE];
-				(void)safe_snprintf(buf, sizeof(buf),
-				                    "Perf Mode: ON (%s)",
-				                    perf_mode_get_state_string(
-				                        &app->perf_context));
-				action_notifier_push(&app->notifier, buf,
-				                     NOTIF_DUR_LONG);
-			}
-			LOG_INFO(
-			    "suckless-ogl.app", "Performance Mode: %s (%s)",
-			    app->perf_mode_active ? "ON" : "OFF",
-			    perf_mode_get_state_string(&app->perf_context));
 			break;
 		default:
 			handle_postprocess_input(app, key);

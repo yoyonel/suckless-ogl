@@ -227,16 +227,16 @@ static void log_gpu_stage(const char* stage_name, float avg_ms,
 	         stage_name, avg_ms, details, percentages);
 }
 
-void app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
+bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
 {
 	if (!profiler) {
-		return;
+		return false;
 	}
 
 	// Check if Root (Total Frame) is ready to report
 	// We assume Index 0 is always the Root
 	if (profiler->stage_count == 0) {
-		return;
+		return false;
 	}
 
 	GPUStage* root_stage = &profiler->stages[0];
@@ -244,7 +244,7 @@ void app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
 
 	if (current_time - root_sampler->window_start_time <
 	    GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH) {
-		return;
+		return false;
 	}
 
 	// Pass 1: Logging (All stages at once)
@@ -279,4 +279,6 @@ void app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
 		AdaptiveSampler* sampler = &stage->sampler;
 		adaptive_sampler_reset(sampler, current_time);
 	}
+
+	return true;
 }

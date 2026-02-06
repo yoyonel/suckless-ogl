@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #define MAX_GPU_STAGES 32
+#define MAX_GPU_STAGE_NAME 32
 #define GPU_QUERY_BUFFER_COUNT 2
 #define GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH 2.0f
 
@@ -15,13 +16,13 @@
  * @brief Represents a single profiling stage (e.g., "Shadow Map", "G-Buffer").
  */
 typedef struct {
-	char name[32];
+	char name[MAX_GPU_STAGE_NAME];
 	uint32_t color;
 	AdaptiveSampler sampler; /**< Sliding window sampler for smoothing. */
-	double start_offset_ms; /**< Start time relative to frame start (ms). */
-	double duration_ms;     /**< Last measured duration (ms). */
-	int depth;              /**< Hierarchy depth (0=root). */
-	int parent_index;       /**< Index of parent stage (-1=root). */
+	float start_offset_ms; /**< Start time relative to frame start (ms). */
+	float duration_ms;     /**< Last measured duration (ms). */
+	int depth;             /**< Hierarchy depth (0=root). */
+	int parent_index;      /**< Index of parent stage (-1=root). */
 } GPUStage;
 
 /**

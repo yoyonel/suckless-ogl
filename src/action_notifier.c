@@ -40,8 +40,8 @@ void action_notifier_push(ActionNotifier* notifier, const char* text,
 	}
 
 	ActionNotification* note = &notifier->notes[slot];
-	(void)safe_strncpy(note->text, sizeof(note->text), text,
-	                   MAX_ACTION_TEXT_LENGTH - 1);
+	safe_strncpy(note->text, sizeof(note->text), text,
+	             MAX_ACTION_TEXT_LENGTH - 1);
 	note->lifetime = 0.0F;
 	note->max_lifetime = duration;
 	note->active = 1;

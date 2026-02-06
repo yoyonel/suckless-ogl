@@ -19,7 +19,6 @@
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
-#include "async_loader.h"
 #include "billboard_rendering.h"
 #include "camera.h"
 #include "gpu_profiler.h"
@@ -175,6 +174,10 @@ typedef struct App {
 	float u_exposure;       /**< Manual exposure compensation. */
 	float auto_threshold;   /**< Dynamic exposure target. */
 	float current_exposure; /**< Integrated GPU exposure value. */
+	int show_gpu_timeline;  /**< Toggle for the graphical GPU timeline. */
+	int gpu_timeline_position;    /**< 0 = Top, 1 = Bottom. */
+	GPUProfiler display_profiler; /**< Snapshot of profiler data for syncing
+	                                 UI with ASCII log (2s interval). */
 
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group;    /**< SSBO rendering context. */

@@ -213,11 +213,17 @@ static const int LUM_HISTOGRAM_SIZE =
 /** @} */
 
 //
-static const int GPU_PROFILER_TOTAL_FRAME_COLOR = 0xFFFFFF;
-static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR = 0xFFA500;
-static const int GPU_PROFILER_BLOOM_COLOR = 0xFFFFFF;
-static const int GPU_PROFILER_DOF_COLOR = 0x00FF00;
-static const int GPU_PROFILER_MOTION_BLUR_COLOR = 0x0000FF;
-static const int GPU_PROFILER_POSTPROCESS_COLOR = 0xFF00FF;
+static const int GPU_PROFILER_TOTAL_FRAME_COLOR =
+    0xECEFF4;                                         /* Nord Snow Storm */
+static const int GPU_PROFILER_ENV_COLOR = 0x88C0D0;   /* Nord Frost Blue */
+static const int GPU_PROFILER_SCENE_COLOR = 0xD08770; /* Nord Aurora Orange */
+static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR =
+    0xEBCB8B;                                         /* Nord Aurora Yellow */
+static const int GPU_PROFILER_BLOOM_COLOR = 0x5E81AC; /* Nord Frost Dark Blue */
+static const int GPU_PROFILER_DOF_COLOR = 0xA3BE8C;   /* Nord Aurora Green */
+static const int GPU_PROFILER_MOTION_BLUR_COLOR =
+    0xBF616A; /* Nord Aurora Red */
+static const int GPU_PROFILER_POSTPROCESS_COLOR =
+    0xB48EAD; /* Nord Aurora Purple */
 
 #endif /* APP_SETTINGS_H */

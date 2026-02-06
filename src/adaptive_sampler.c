@@ -229,69 +229,6 @@ void adaptive_sampler_add(AdaptiveSampler* sampler, float value,
 	sampler->samples_taken++;
 }
 
-void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
-                                 size_t buffer_size, size_t width,
-                                 float avg_value)
-{
-	static const float THRESHOLD_PLUS = 1.05F;
-	static const float THRESHOLD_MINUS = 0.95F;
-	static const size_t PADDING_Width = 8;
-
-	if (!buffer || buffer_size == 0 || width == 0) {
-		return;
-	}
-
-	/* Initialize line with dots */
-	/* We need width chars + 1 null terminator usually, but explicit
-	 * buffer_size passed */
-	/* Let's construct a temporary line buffer */
-#define MAX_LINE_WIDTH 256
-	if (width >= MAX_LINE_WIDTH) {
-		width = MAX_LINE_WIDTH - 1;
-	}
-	char line[MAX_LINE_WIDTH];
-
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(line, '.', width);
-	line[width] = '\0';
-
-	float win_secs = sampler->window_duration;
-
-	for (size_t i = 0; i < sampler->count; i++) {
-		float timestamp = sampler->samples[i].timestamp;
-		float val = sampler->samples[i].value;
-
-		/* Map time to 0..width-1 */
-		static const float ROUNDING_OFFSET = 0.5F;
-		size_t pos =
-		    (size_t)(((timestamp / win_secs) * (float)(width - 1)) +
-		             ROUNDING_OFFSET);
-		if (pos >= width) {
-			pos = width - 1;
-		}
-
-		char marker = '#';
-		/* +/- 5% threshold */
-		if (val > avg_value * THRESHOLD_PLUS) {
-			marker = '+';
-		} else if (val < avg_value * THRESHOLD_MINUS) {
-			marker = '-';
-		}
-
-		line[pos] = marker;
-	}
-
-	/* Format Output: "[0s...5s]\n|timeline|" */
-	/* We try to fit into provided buffer */
-	(void)safe_snprintf(
-	    buffer, buffer_size, "[0s%.*s%.1fs]\n|%s|",
-	    (int)(width > PADDING_Width ? width - PADDING_Width : 0),
-	    "..................................................", /* Padding */
-	    win_secs, line);
-
-#undef MAX_LINE_WIDTH
-}
-
 int adaptive_sampler_is_finished(const AdaptiveSampler* sampler,
                                  double current_time)
 {
