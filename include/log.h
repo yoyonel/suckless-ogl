@@ -36,8 +36,7 @@ typedef enum {
  */
 __attribute__((format(printf, 3, 4))) void log_message(LogLevel level,
                                                        const char* tag,
-                                                       const char* format,
-                                                       ...);
+                                                       const char* format, ...);
 
 /**
  * @brief Sets the global minimum log level.
