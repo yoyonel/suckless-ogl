@@ -1,6 +1,7 @@
 var structApp =
 [
     [ "auto_threshold", "structApp.html#ac8b20fbebeaf70dc1997a147f257b9d9", null ],
+    [ "banding_style_idx", "structApp.html#aab91b42730f97499e1457891cc1ffe12", null ],
     [ "billboard_group", "structApp.html#a4d8db3a4c86d8b82f37909123c38aa2f", null ],
     [ "billboard_mode", "structApp.html#a6bc15ff36f21479259ce139ecaab6a05", null ],
     [ "brdf_lut_tex", "structApp.html#a9bb91840a26f5987c28ef911233d78a5", null ],
@@ -9,7 +10,6 @@ var structApp =
     [ "current_exposure", "structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9", null ],
     [ "current_hdr_index", "structApp.html#ab1a4d26d5463ca7af068c982243a29c2", null ],
     [ "debug_line_shader", "structApp.html#a120d6946ca46137fa064117620dce551", null ],
-    [ "debug_lod", "structApp.html#a97e33fda8910d4325bcb9bb4431e8d82", null ],
     [ "debug_shader", "structApp.html#a593e6f8848c12d61961f9e4e3b3b2a7c", null ],
     [ "delta_time", "structApp.html#a90dac3c1153b09925cace5205c06889b", null ],
     [ "dummy_black_tex", "structApp.html#aa3dbad0c2109393a24a52307083d5cfa", null ],
@@ -54,11 +54,9 @@ var structApp =
     [ "shader_lum_pass1", "structApp.html#a445a661d0e3e32e92364d2b8fa231b89", null ],
     [ "shader_lum_pass2", "structApp.html#a9ff02d09a124d2154194d81b65e79113", null ],
     [ "shader_spmap", "structApp.html#a171fd79017f6de488e0faa304844acea", null ],
-    [ "show_debug_tex", "structApp.html#a4968c90ce6f77857cc75c80ad5ce25ed", null ],
     [ "show_envmap", "structApp.html#aac3db2f3db5cbb08c6aa4fe3426a45bd", null ],
     [ "show_exposure_debug", "structApp.html#a2fea4c538b6635e0923852d3c3e01807", null ],
     [ "show_help", "structApp.html#abec7064e9280589c2c42df393c809422", null ],
-    [ "show_imgui_demo", "structApp.html#a9625b6bdfa6edf6af9fcc7955ce4bea5", null ],
     [ "show_info_overlay", "structApp.html#a23dbf2c1412766868a0bde387bcbba99", null ],
     [ "skybox", "structApp.html#ab6bf6186f400d8a1ce56212151e2c61b", null ],
     [ "skybox_shader", "structApp.html#ac34cc768f96afb050926f49ea56c84ab", null ],

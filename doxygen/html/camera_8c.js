@@ -5,6 +5,5 @@ var camera_8c =
     [ "camera_init", "camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018", null ],
     [ "camera_process_mouse", "camera_8c.html#aa9ec3674fcdecefa4f1f1502def1463c", null ],
     [ "camera_process_scroll", "camera_8c.html#a7359946256cd8193b91caa4b82bc20ec", null ],
-    [ "camera_update", "camera_8c.html#a7aac76e80c37b4076c7515f136c5713d", null ],
     [ "camera_update_vectors", "camera_8c.html#aa47646370ef1804643d987edb53fe2f7", null ]
 ];

@@ -22,6 +22,8 @@ var structCamera =
     [ "right", "structCamera.html#ab85197df3b54a775327630d16219922a", null ],
     [ "rotation_smoothing", "structCamera.html#a3aab68c9e46b44b0243504089c3227d7", null ],
     [ "sensitivity", "structCamera.html#a5431c8caefafb42a667ca4c801bef07f", null ],
+    [ "smoothed_x", "structCamera.html#a92ff8aacdacb2a809ec447e3440a7f42", null ],
+    [ "smoothed_y", "structCamera.html#a7e9ca5e6bc696a40c77866f0449fd0f8", null ],
     [ "up", "structCamera.html#aff4fd1aa62994840f7742b698f15313e", null ],
     [ "velocity", "structCamera.html#a50dcacd4119ac1ca77ac8f0ba7c90f71", null ],
     [ "velocity_current", "structCamera.html#a61bf4a7c4d9f83b3217211c75c3684dd", null ],

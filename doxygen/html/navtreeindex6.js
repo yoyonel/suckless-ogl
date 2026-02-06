@@ -1,7 +1,5 @@
 var NAVTREEINDEX6 =
 {
-"structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f":[5,0,39,3],
-"structPostProcessUBO.html#ad625c8ab92aa544d48718c40934bad75":[5,0,39,8],
 "structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795":[5,0,39,21],
 "structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83":[5,0,39,37],
 "structPostProcessUBO.html#adb8d6417c3e72a29cc49f28cdb01dcc1":[5,0,39,6],
