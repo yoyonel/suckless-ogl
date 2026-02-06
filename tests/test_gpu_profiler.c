@@ -111,11 +111,15 @@ void test_gpu_profiler_stage_registration(void)
 	gpu_profiler_start_stage(&profiler, "Stage A", COLOR_RED);
 	TEST_ASSERT_EQUAL(1, profiler.stage_count);
 	TEST_ASSERT_EQUAL_STRING("Stage A", profiler.stages[0].name);
-	TEST_ASSERT_EQUAL(1, profiler.active_stage_count);  // Nesting active
+	TEST_ASSERT_EQUAL(1,
+	                  metric_stack_get_depth(
+	                      &profiler.hierarchy_stack)); /* Nesting active */
 
 	// End Stage A
 	gpu_profiler_end_stage(&profiler);
-	TEST_ASSERT_EQUAL(0, profiler.active_stage_count);  // Nesting finished
+	TEST_ASSERT_EQUAL(
+	    0, metric_stack_get_depth(
+	           &profiler.hierarchy_stack)); /* Nesting finished */
 
 	// Start Stage B
 	gpu_profiler_start_stage(&profiler, "Stage B", COLOR_GREEN);
@@ -170,8 +174,7 @@ void test_gpu_profiler_result_retrieval(void)
 
 	// La durée doit être positive ou nulle (0.0 est possible sur CI
 	// rapide/software)
-	TEST_ASSERT_GREATER_OR_EQUAL_DOUBLE(0.0,
-	                                    profiler.stages[0].duration_ms);
+	TEST_ASSERT_TRUE(profiler.stages[0].duration_ms >= 0.0);
 
 	gpu_profiler_cleanup(&profiler);
 }

@@ -24,6 +24,9 @@ void gpu_profiler_init(GPUProfiler* profiler)
 	profiler->write_index = 0;
 	profiler->read_index = 1;
 
+	/* 2.1 Init Hierarchy Stack */
+	metric_stack_init(&profiler->hierarchy_stack);
+
 	/* 3. Gen Queries */
 	for (int i = 0; i < GPU_QUERY_BUFFER_COUNT; ++i) {
 		for (int j = 0; j < MAX_GPU_STAGES; ++j) {
@@ -137,7 +140,7 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 
 	/* 3. Reset for new frame */
 	profiler->stage_count = 0;
-	profiler->active_stage_count = 0;
+	metric_stack_init(&profiler->hierarchy_stack);
 }
 
 void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
@@ -155,9 +158,13 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 	             name ? name : "Unknown", sizeof(stage->name) - 1);
 	stage->color = color;
 
-	if (profiler->active_stage_count < MAX_GPU_STAGES) {
-		profiler->active_stage_indices[profiler->active_stage_count++] =
-		    idx;
+	/* Hierarchy Management via MetricStack */
+	stage->depth = metric_stack_get_depth(&profiler->hierarchy_stack);
+	stage->parent_index = metric_stack_peek(&profiler->hierarchy_stack);
+
+	if (!metric_stack_push(&profiler->hierarchy_stack, idx)) {
+		/* Stack overflow safety */
+		return;
 	}
 
 	GPUQueryBuffer* buffer = &profiler->buffers[profiler->write_index];
@@ -166,13 +173,15 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
-	if (!profiler || profiler->active_stage_count == 0) {
+	if (!profiler) {
 		return;
 	}
 
-	int idx =
-	    profiler->active_stage_indices[profiler->active_stage_count - 1];
-	profiler->active_stage_count--;
+	int idx = metric_stack_pop(&profiler->hierarchy_stack);
+	if (idx == -1) {
+		/* Stack underflow, or no active stage */
+		return;
+	}
 
 	GPUQueryBuffer* buffer = &profiler->buffers[profiler->write_index];
 	glQueryCounter(buffer->queries[idx].query_end, GL_TIMESTAMP);

@@ -2,6 +2,7 @@
 #define GPU_PROFILER_H
 
 #include "adaptive_sampler.h"
+#include "metric_stack.h"
 #include "perf_timer.h"
 #include <stdint.h>
 
@@ -19,6 +20,8 @@ typedef struct {
 	AdaptiveSampler sampler; /**< Sliding window sampler for smoothing. */
 	double start_offset_ms; /**< Start time relative to frame start (ms). */
 	double duration_ms;     /**< Last measured duration (ms). */
+	int depth;              /**< Hierarchy depth (0=root). */
+	int parent_index;       /**< Index of parent stage (-1=root). */
 } GPUStage;
 
 /**
@@ -47,8 +50,7 @@ typedef struct {
 
 	// State tracking for the current frame
 	int current_stage_index;
-	int active_stage_indices[MAX_GPU_STAGES];
-	int active_stage_count;
+	MetricStack hierarchy_stack; /**< Stack to track hierarchy. */
 } GPUProfiler;
 
 /**
