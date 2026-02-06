@@ -80,8 +80,12 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler)
 	uint64_t frame_start_ns = 0;
 	int frame_start_set = 0;
 
+	/* 0. Save current frame's stage count to the write buffer */
+	profiler->buffers[profiler->write_index].stage_count =
+	    profiler->stage_count;
+
 	/* 1. Process previous frame results */
-	for (int i = 0; i < MAX_GPU_STAGES; ++i) {
+	for (int i = 0; i < read_buf->stage_count; ++i) {
 		GPUTimer* timer = &read_buf->queries[i];
 
 		if (timer->query_end == 0) {

@@ -26,6 +26,7 @@ typedef struct {
  */
 typedef struct {
 	GPUTimer queries[MAX_GPU_STAGES];
+	int stage_count;
 } GPUQueryBuffer;
 
 /**
