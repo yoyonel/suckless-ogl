@@ -508,36 +508,70 @@ void app_render(App* app)
 			float avg_ms = adaptive_sampler_get_average(sampler);
 
 			if (avg_ms > 0) {
+				// Retrieve frame indices
+				uint64_t indices[32];
+				size_t count =
+				    adaptive_sampler_get_sample_indices(
+				        sampler, indices, 32);
+
+				// Format indices string
+				char indices_str[256];
+				indices_str[0] = '\0';
+				char* ptr = indices_str;
+				size_t rem = sizeof(indices_str);
+
+				ptr += snprintf(ptr, rem, "[");
+				rem = sizeof(indices_str) -
+				      (size_t)(ptr - indices_str);
+
+				for (size_t j = 0; j < count; ++j) {
+					int written = snprintf(
+					    ptr, rem, "%lu%s", indices[j],
+					    (j < count - 1) ? ", " : "");
+					if (written < 0 ||
+					    (size_t)written >= rem)
+						break;
+					ptr += written;
+					rem -= (size_t)written;
+				}
+
+				if (count < adaptive_sampler_get_sample_count(
+				                sampler)) {
+					snprintf(ptr, rem, ", ...]");
+				} else {
+					snprintf(ptr, rem, "]");
+				}
+
 				// Logique conditionnelle selon le nom de
 				// l'étape
 				if (strcmp(stage->name, "Total Frame") == 0) {
 					LOG_INFO("perf.gpu",
 					         "Average GPU Frame Time (last "
-					         "2s): %.3f ms",
-					         avg_ms);
+					         "2s): %.3f ms %s",
+					         avg_ms, indices_str);
 				} else if (strcmp(stage->name,
 				                  "Auto Exposure") == 0) {
 					LOG_INFO("perf.gpu",
 					         "Average GPU Auto-Exposure "
-					         "Time (last 2s): %.4f ms",
-					         avg_ms);
+					         "Time (last 2s): %.4f ms %s",
+					         avg_ms, indices_str);
 				} else if (strcmp(stage->name, "Bloom") == 0) {
 					LOG_INFO("perf.gpu",
 					         "Average GPU Bloom "
-					         "Time (last 2s): %.4f ms",
-					         avg_ms);
+					         "Time (last 2s): %.4f ms %s",
+					         avg_ms, indices_str);
 				} else if (strcmp(stage->name, "EnvMap") == 0) {
 					LOG_INFO("perf.gpu",
 					         "Average GPU EnvMap "
-					         "Time (last 2s): %.4f ms",
-					         avg_ms);
+					         "Time (last 2s): %.4f ms %s",
+					         avg_ms, indices_str);
 				} else if (strcmp(stage->name, "Spheres") ==
 				           0) {
 					LOG_INFO(
 					    "perf.gpu",
 					    "Average GPU Spheres Rendering "
-					    "Time (last 2s): %.4f ms",
-					    avg_ms);
+					    "Time (last 2s): %.4f ms %s",
+					    avg_ms, indices_str);
 				}
 			}
 
