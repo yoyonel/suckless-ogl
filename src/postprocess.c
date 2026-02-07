@@ -19,6 +19,7 @@ static int create_framebuffer(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader);
+static void setup_sampler_uniforms(PostProcess* post_processing);
 
 /* Texture Units */
 enum {
@@ -48,6 +49,7 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->height = height;
 	post_processing->time = 0.0F;
 	post_processing->is_optimized = false;
+	post_processing->ubo_dirty = true;
 	post_processing->compiled_flags = ~0U;
 
 	post_processing->shader_cache_count = 0;
@@ -326,21 +328,25 @@ void postprocess_set_vignette(PostProcess* post_processing, float intensity,
 	post_processing->vignette.intensity = intensity;
 	post_processing->vignette.smoothness = smoothness;
 	post_processing->vignette.roundness = roundness;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_grain(PostProcess* post_processing, float intensity)
 {
 	post_processing->grain.intensity = intensity;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_exposure(PostProcess* post_processing, float exposure)
 {
 	post_processing->exposure.exposure = exposure;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength)
 {
 	post_processing->chrom_abbr.strength = strength;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_white_balance(PostProcess* post_processing,
@@ -348,6 +354,7 @@ void postprocess_set_white_balance(PostProcess* post_processing,
 {
 	post_processing->white_balance.temperature = temperature;
 	post_processing->white_balance.tint = tint;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_color_grading(PostProcess* post_processing,
@@ -359,6 +366,7 @@ void postprocess_set_color_grading(PostProcess* post_processing,
 	post_processing->color_grading.gamma = gamma;
 	post_processing->color_grading.gain = gain;
 	post_processing->color_grading.offset = offset;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
@@ -370,6 +378,7 @@ void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
 	post_processing->tonemapper.shoulder = shoulder;
 	post_processing->tonemapper.black_clip = black_clip;
 	post_processing->tonemapper.white_clip = white_clip;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_bloom(PostProcess* post_processing, float intensity,
@@ -378,6 +387,7 @@ void postprocess_set_bloom(PostProcess* post_processing, float intensity,
 	post_processing->bloom.intensity = intensity;
 	post_processing->bloom.threshold = threshold;
 	post_processing->bloom.soft_threshold = soft_threshold;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
@@ -386,6 +396,7 @@ void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
 	post_processing->dof.focal_distance = focal_distance;
 	post_processing->dof.focal_range = focal_range;
 	post_processing->dof.bokeh_scale = bokeh_scale;
+	post_processing->ubo_dirty = true;
 }
 
 float postprocess_get_exposure(PostProcess* post_processing)
@@ -403,6 +414,7 @@ void postprocess_set_auto_exposure(PostProcess* post_processing,
 	post_processing->auto_exposure.speed_up = speed_up;
 	post_processing->auto_exposure.speed_down = speed_down;
 	post_processing->auto_exposure.key_value = key_value;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
@@ -411,6 +423,7 @@ void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
 	post_processing->fxaa.subpix = subpix;
 	post_processing->fxaa.edge_threshold = edge_threshold;
 	post_processing->fxaa.edge_threshold_min = edge_threshold_min;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_banding(PostProcess* post_processing, BandingMode mode,
@@ -418,18 +431,21 @@ void postprocess_set_banding(PostProcess* post_processing, BandingMode mode,
 {
 	post_processing->banding.mode = (int32_t)mode;
 	post_processing->banding.levels = levels;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_banding_dither(PostProcess* post_processing,
                                     float strength)
 {
 	post_processing->banding.dither_strength = strength;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_banding_perceptual(PostProcess* post_processing,
                                         float gamma)
 {
 	post_processing->banding.perceptual_gamma = gamma;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_banding_channels(PostProcess* post_processing, float red,
@@ -438,6 +454,7 @@ void postprocess_set_banding_channels(PostProcess* post_processing, float red,
 	post_processing->banding.channel_levels[0] = red;
 	post_processing->banding.channel_levels[1] = green;
 	post_processing->banding.channel_levels[2] = blue;
+	post_processing->ubo_dirty = true;
 }
 
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
@@ -452,6 +469,7 @@ void postprocess_set_grading_ue_default(PostProcess* post_processing)
 	post_processing->color_grading.gamma = 1.0F;    /* Pas de changement */
 	post_processing->color_grading.gain = 1.0F;     /* Pas de changement */
 	post_processing->color_grading.offset = 0.0F;   /* Pas de changement */
+	post_processing->ubo_dirty = true;
 
 	/* On s'assure que l'effet est activé pour passer dans le pipeline ACES
 	 */
@@ -473,6 +491,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->dof = preset->dof;
 	post_processing->fxaa = preset->fxaa;
 	post_processing->banding = preset->banding;
+	post_processing->ubo_dirty = true;
 
 	postprocess_on_state_change(post_processing);
 }
@@ -491,6 +510,17 @@ void postprocess_end(PostProcess* post_processing)
 {
 	gpu_profiler_start_stage(post_processing->gpu_profiler, "Post-Process",
 	                         GPU_PROFILER_POSTPROCESS_COLOR);
+
+	/* Flush all MRT scene buffer writes (color, velocity, depth/stencil)
+	 * so they are visible to subsequent compute shader texture fetches.
+	 * Without this, compute shaders reading velocity_tex may see stale
+	 * data when intermediate rasterization passes (bloom, DoF, AE)
+	 * change the FBO binding between scene render and MB compute. */
+	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+
+	/* Bind shared screen quad VAO once for all fullscreen passes
+	 * (Bloom, DoF, AE downsample, Final Composite). */
+	glBindVertexArray(post_processing->screen_quad_vao);
 
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
@@ -528,11 +558,19 @@ void postprocess_end(PostProcess* post_processing)
 	    postprocess_is_enabled(post_processing,
 	                           POSTFX_VECTOR_FIELD_DEBUG)) {
 		gpu_profiler_start_stage(post_processing->gpu_profiler,
-		                         "Motion Blur",
+		                         "MB Compute",
 		                         GPU_PROFILER_MOTION_BLUR_COLOR);
 		fx_motion_blur_render(post_processing);
 		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
+
+	/* === Final Composite: fullscreen quad with all fragment effects ===
+	 * This draw call includes MB sampling, CA, DoF mix, Bloom mix,
+	 * Exposure, Tonemapping, FXAA, Vignette, Grain, etc.
+	 * The cost of Motion Blur fragment work is measured HERE. */
+	gpu_profiler_start_stage(post_processing->gpu_profiler,
+	                         "Final Composite",
+	                         GPU_PROFILER_COMPOSITE_COLOR);
 
 	/* Retour au framebuffer par défaut */
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -548,8 +586,6 @@ void postprocess_end(PostProcess* post_processing)
 	/* Bind la texture de la scène */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_SCENE);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(post_processing->postprocess_shader, "screenTexture",
-	               POSTPROCESS_TEX_UNIT_SCENE);
 
 	/* Bind la texture de Bloom */
 	render_utils_bind_texture_safe(
@@ -559,153 +595,138 @@ void postprocess_end(PostProcess* post_processing)
 	        : 0,
 	    post_processing->dummy_black_tex);
 
-	/* Only set uniform if not optimized or if effect is enabled */
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "bloomTexture", POSTPROCESS_TEX_UNIT_BLOOM);
-	}
-
 	/* Bind la texture de Profondeur (pour le DoF) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_DOF)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "depthTexture", POSTPROCESS_TEX_UNIT_DEPTH);
-	}
 
 	/* Bind Exposure Texture (Unit 3) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->auto_exposure_fx.exposure_tex);
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "autoExposureTexture",
-		               POSTPROCESS_TEX_UNIT_EXPOSURE);
-	}
 
 	/* Bind Velocity Texture (Unit 4) - use safe bind to handle resize */
 	render_utils_bind_texture_safe(
 	    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY,
 	    post_processing->velocity_tex, post_processing->dummy_black_tex);
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR) ||
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||
-	    postprocess_is_enabled(post_processing,
-	                           POSTFX_VECTOR_FIELD_DEBUG)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "velocityTexture",
-		               POSTPROCESS_TEX_UNIT_VELOCITY);
-	}
 
 	/* Bind Neighbor Max Texture (Unit 5) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->motion_blur_fx.neighbor_max_tex);
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "neighborMaxTexture",
-		               POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
-	}
 
 	/* Bind DoF Blurred Texture (Unit 6) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
 	glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
-	if (!post_processing->is_optimized ||
-	    postprocess_is_enabled(post_processing, POSTFX_DOF)) {
-		shader_set_int(post_processing->postprocess_shader,
-		               "dofBlurTexture", POSTPROCESS_TEX_UNIT_DOF_BLUR);
-	}
 
 	/* Bind Stencil Texture View (Unit 7) */
 	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
-	shader_set_int(post_processing->postprocess_shader, "stencilTexture",
-	               POSTPROCESS_TEX_UNIT_STENCIL);
 
-	/* Upload settings via UBO */
-	PostProcessUBO ubo = {0};
-	ubo.active_effects = post_processing->active_effects;
-	ubo.time = post_processing->time;
-
-	ubo.vignette_intensity = post_processing->vignette.intensity;
-	ubo.vignette_smoothness = post_processing->vignette.smoothness;
-	ubo.vignette_roundness = post_processing->vignette.roundness;
-
-	ubo.grain_intensity = post_processing->grain.intensity;
-	ubo.grain_intensity_shadows = post_processing->grain.intensity_shadows;
-	ubo.grain_intensity_midtones =
-	    post_processing->grain.intensity_midtones;
-	ubo.grain_intensity_highlights =
-	    post_processing->grain.intensity_highlights;
-	ubo.grain_shadows_max = post_processing->grain.shadows_max;
-	ubo.grain_highlights_min = post_processing->grain.highlights_min;
-	ubo.grain_texel_size = post_processing->grain.texel_size;
-
-	ubo.exposure_manual = post_processing->exposure.exposure;
-	ubo.chrom_abbr_strength = post_processing->chrom_abbr.strength;
-
-	ubo.wb_temperature = post_processing->white_balance.temperature;
-	ubo.wb_tint = post_processing->white_balance.tint;
-
-	ubo.grading_saturation = post_processing->color_grading.saturation;
-	ubo.grading_contrast = post_processing->color_grading.contrast;
-	ubo.grading_gamma = post_processing->color_grading.gamma;
-	ubo.grading_gain = post_processing->color_grading.gain;
-	ubo.grading_offset = post_processing->color_grading.offset;
-
-	ubo.tonemap_slope = post_processing->tonemapper.slope;
-	ubo.tonemap_toe = post_processing->tonemapper.toe;
-	ubo.tonemap_shoulder = post_processing->tonemapper.shoulder;
-	ubo.tonemap_black_clip = post_processing->tonemapper.black_clip;
-	ubo.tonemap_white_clip = post_processing->tonemapper.white_clip;
-
-	ubo.bloom_intensity = post_processing->bloom.intensity;
-	ubo.bloom_threshold = post_processing->bloom.threshold;
-	ubo.bloom_soft_threshold = post_processing->bloom.soft_threshold;
-	ubo.bloom_radius = post_processing->bloom.radius;
-
-	ubo.dof_focal_distance = post_processing->dof.focal_distance;
-	ubo.dof_focal_range = post_processing->dof.focal_range;
-	ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
-
-	ubo.mb_intensity = post_processing->motion_blur.intensity;
-	ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
-	ubo.mb_samples = post_processing->motion_blur.samples;
-
-	ubo.fxaa_quality_subpix = post_processing->fxaa.subpix;
-	ubo.fxaa_quality_edge_threshold = post_processing->fxaa.edge_threshold;
-	ubo.fxaa_quality_edge_threshold_min =
-	    post_processing->fxaa.edge_threshold_min;
-
-	ubo.banding_mode = post_processing->banding.mode;
-	ubo.banding_levels = post_processing->banding.levels;
-	ubo.banding_dither_strength = post_processing->banding.dither_strength;
-	ubo.banding_perceptual_gamma =
-	    post_processing->banding.perceptual_gamma;
-	ubo.banding_channel_levels[0] =
-	    post_processing->banding.channel_levels[0];
-	ubo.banding_channel_levels[1] =
-	    post_processing->banding.channel_levels[1];
-	ubo.banding_channel_levels[2] =
-	    post_processing->banding.channel_levels[2];
-
+	/* Upload UBO: always update time/effects header, full rebuild only
+	 * when parameters changed (ubo_dirty). */
 	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO), &ubo);
+	if (post_processing->ubo_dirty) {
+		PostProcessUBO ubo = {0};
+		ubo.active_effects = post_processing->active_effects;
+		ubo.time = post_processing->time;
+
+		ubo.vignette_intensity = post_processing->vignette.intensity;
+		ubo.vignette_smoothness = post_processing->vignette.smoothness;
+		ubo.vignette_roundness = post_processing->vignette.roundness;
+
+		ubo.grain_intensity = post_processing->grain.intensity;
+		ubo.grain_intensity_shadows =
+		    post_processing->grain.intensity_shadows;
+		ubo.grain_intensity_midtones =
+		    post_processing->grain.intensity_midtones;
+		ubo.grain_intensity_highlights =
+		    post_processing->grain.intensity_highlights;
+		ubo.grain_shadows_max = post_processing->grain.shadows_max;
+		ubo.grain_highlights_min =
+		    post_processing->grain.highlights_min;
+		ubo.grain_texel_size = post_processing->grain.texel_size;
+
+		ubo.exposure_manual = post_processing->exposure.exposure;
+		ubo.chrom_abbr_strength = post_processing->chrom_abbr.strength;
+
+		ubo.wb_temperature = post_processing->white_balance.temperature;
+		ubo.wb_tint = post_processing->white_balance.tint;
+
+		ubo.grading_saturation =
+		    post_processing->color_grading.saturation;
+		ubo.grading_contrast = post_processing->color_grading.contrast;
+		ubo.grading_gamma = post_processing->color_grading.gamma;
+		ubo.grading_gain = post_processing->color_grading.gain;
+		ubo.grading_offset = post_processing->color_grading.offset;
+
+		ubo.tonemap_slope = post_processing->tonemapper.slope;
+		ubo.tonemap_toe = post_processing->tonemapper.toe;
+		ubo.tonemap_shoulder = post_processing->tonemapper.shoulder;
+		ubo.tonemap_black_clip = post_processing->tonemapper.black_clip;
+		ubo.tonemap_white_clip = post_processing->tonemapper.white_clip;
+
+		ubo.bloom_intensity = post_processing->bloom.intensity;
+		ubo.bloom_threshold = post_processing->bloom.threshold;
+		ubo.bloom_soft_threshold =
+		    post_processing->bloom.soft_threshold;
+		ubo.bloom_radius = post_processing->bloom.radius;
+
+		ubo.dof_focal_distance = post_processing->dof.focal_distance;
+		ubo.dof_focal_range = post_processing->dof.focal_range;
+		ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
+
+		ubo.mb_intensity = post_processing->motion_blur.intensity;
+		ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
+		ubo.mb_samples = post_processing->motion_blur.samples;
+
+		ubo.fxaa_quality_subpix = post_processing->fxaa.subpix;
+		ubo.fxaa_quality_edge_threshold =
+		    post_processing->fxaa.edge_threshold;
+		ubo.fxaa_quality_edge_threshold_min =
+		    post_processing->fxaa.edge_threshold_min;
+
+		ubo.banding_mode = post_processing->banding.mode;
+		ubo.banding_levels = post_processing->banding.levels;
+		ubo.banding_dither_strength =
+		    post_processing->banding.dither_strength;
+		ubo.banding_perceptual_gamma =
+		    post_processing->banding.perceptual_gamma;
+		ubo.banding_channel_levels[0] =
+		    post_processing->banding.channel_levels[0];
+		ubo.banding_channel_levels[1] =
+		    post_processing->banding.channel_levels[1];
+		ubo.banding_channel_levels[2] =
+		    post_processing->banding.channel_levels[2];
+
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO),
+		                &ubo);
+		post_processing->ubo_dirty = false;
+	} else {
+		/* Only update time (offset 4 bytes) and active_effects
+		 * (offset 0) which change every frame */
+		struct {
+			uint32_t active_effects;
+			float time;
+		} header = {post_processing->active_effects,
+		            post_processing->time};
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(header), &header);
+	}
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	/* Dessiner le quad */
-	glBindVertexArray(post_processing->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+	gpu_profiler_end_stage(
+	    post_processing->gpu_profiler); /* End Final Composite */
+
+	/* Unbind shared VAO after all fullscreen passes are complete */
 	glBindVertexArray(0);
 
 	/* Réactiver le depth test */
 	glEnable(GL_DEPTH_TEST);
 
-	gpu_profiler_end_stage(post_processing->gpu_profiler);
+	gpu_profiler_end_stage(
+	    post_processing->gpu_profiler); /* End Post-Process */
 }
 
 void postprocess_update_time(PostProcess* post_processing, float delta_time)
@@ -733,6 +754,32 @@ static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader)
 		}
 	}
 	return false;
+}
+
+/**
+ * @brief Sets sampler uniform → texture unit bindings on the postprocess
+ * shader. These are program state (not context state) and only need to be
+ * set once per shader program, not every frame.
+ */
+static void setup_sampler_uniforms(PostProcess* post_processing)
+{
+	Shader* shader = post_processing->postprocess_shader;
+	if (!shader) {
+		return;
+	}
+
+	shader_use(shader);
+	shader_set_int(shader, "screenTexture", POSTPROCESS_TEX_UNIT_SCENE);
+	shader_set_int(shader, "bloomTexture", POSTPROCESS_TEX_UNIT_BLOOM);
+	shader_set_int(shader, "depthTexture", POSTPROCESS_TEX_UNIT_DEPTH);
+	shader_set_int(shader, "autoExposureTexture",
+	               POSTPROCESS_TEX_UNIT_EXPOSURE);
+	shader_set_int(shader, "velocityTexture",
+	               POSTPROCESS_TEX_UNIT_VELOCITY);
+	shader_set_int(shader, "neighborMaxTexture",
+	               POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
+	shader_set_int(shader, "dofBlurTexture", POSTPROCESS_TEX_UNIT_DOF_BLUR);
+	shader_set_int(shader, "stencilTexture", POSTPROCESS_TEX_UNIT_STENCIL);
 }
 
 static int create_framebuffer(PostProcess* post_processing)
@@ -945,6 +992,10 @@ static void update_current_shader(PostProcess* post_processing,
 
 	post_processing->postprocess_shader = new_shader;
 	post_processing->is_optimized = is_optimized;
+
+	/* Sampler→unit bindings are per-program state.
+	 * Set them once when the active shader changes. */
+	setup_sampler_uniforms(post_processing);
 }
 
 void postprocess_compile_optimized(PostProcess* post_processing,
@@ -986,9 +1037,9 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	    count);
 
 	if (new_shader) {
+		new_shader->silent_warnings = true;
 		update_current_shader(post_processing, new_shader, true);
 		post_processing->compiled_flags = static_flags;
-		new_shader->silent_warnings = true;
 
 		/* Add to cache */
 		/* Move existing entries down to make room at index 0 */

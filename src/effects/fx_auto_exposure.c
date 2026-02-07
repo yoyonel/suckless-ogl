@@ -60,6 +60,12 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 		return 0;
 	}
 
+	/* Set sampler uniforms once (they are per-program state) */
+	shader_use(auto_exp->downsample_shader);
+	shader_set_int(auto_exp->downsample_shader, "sceneTexture", 0);
+	shader_use(auto_exp->adapt_shader);
+	shader_set_int(auto_exp->adapt_shader, "lumTexture", 0);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return 1;
 }
@@ -105,18 +111,14 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 	shader_use(auto_exp->downsample_shader);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(auto_exp->downsample_shader, "sceneTexture", 0);
 
-	glBindVertexArray(post_processing->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-	glBindVertexArray(0);
 
 	/* 2. Compute Adaptation */
 	shader_use(auto_exp->adapt_shader);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, auto_exp->downsample_tex);
-	shader_set_int(auto_exp->adapt_shader, "lumTexture", 0);
 
 	glBindImageTexture(1, auto_exp->exposure_tex, 0, GL_FALSE, 0,
 	                   GL_READ_WRITE, GL_RGBA32F);
@@ -134,12 +136,15 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 	shader_set_float(auto_exp->adapt_shader, "keyValue",
 	                 post_processing->auto_exposure.key_value);
 
+	/* Unbind downsample FBO before compute reads downsample_tex.
+	 * This ensures the rasterized luminance data is flushed. */
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
 	glDispatchCompute(1, 1, 1);
 	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
 	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
 }
 

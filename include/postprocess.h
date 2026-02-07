@@ -357,6 +357,7 @@ typedef struct PostProcess {
 
 	bool is_optimized; /**< true if Uber-shader uses static preprocessor
 	                      flags. */
+	bool ubo_dirty;    /**< true when UBO needs re-upload. */
 
 	unsigned int
 	    compiled_flags; /**< Flags used for the current optimized shader. */
