@@ -10,6 +10,7 @@
 #define MAX_GPU_STAGE_NAME 32
 #define GPU_QUERY_BUFFER_COUNT 2
 
+/* --- Capture Settings --- */
 #include "app_settings.h"
 
 /**
@@ -25,8 +26,10 @@ typedef struct {
 	float duration_ms;                /**< Target duration (ms). */
 	float prev_start_offset_ms; /**< Previous window start time (ms). */
 	float prev_duration_ms;     /**< Previous window duration (ms). */
-	int depth;                  /**< Hierarchy depth (0=root). */
-	int parent_index;           /**< Index of parent stage (-1=root). */
+	float alpha;      /**< Current target alpha (1.0=visible, 0.0=gone). */
+	float prev_alpha; /**< Previous window alpha for LERP. */
+	int depth;        /**< Hierarchy depth (0=root). */
+	int parent_index; /**< Index of parent stage (-1=root). */
 } GPUStage;
 
 /**

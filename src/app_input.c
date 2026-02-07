@@ -467,13 +467,12 @@ static void handle_f_key_input(App* app, int key, int mods)
 		case GLFW_KEY_F3:
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				/* Toggle Position */
-				app->gpu_timeline_position =
-				    !app->gpu_timeline_position;
+				gpu_profiler_ui_toggle_position(
+				    &app->timeline_ui);
 
 				const char* pos_str =
-				    (app->gpu_timeline_position == 0)
-				        ? "TOP"
-				        : "BOTTOM";
+				    (app->timeline_ui.position == 0) ? "TOP"
+				                                     : "BOTTOM";
 				LOG_INFO("suckless-ogl.app",
 				         "Timeline Position: %s", pos_str);
 
@@ -484,12 +483,13 @@ static void handle_f_key_input(App* app, int key, int mods)
 				                     NOTIF_DUR_NORMAL);
 			} else {
 				/* Toggle Visibility */
-				app->show_gpu_timeline =
-				    !app->show_gpu_timeline;
-				LOG_INFO("suckless-ogl.app", "GPU Timeline: %s",
-				         app->show_gpu_timeline ? "ON" : "OFF");
+				gpu_profiler_ui_toggle_visibility(
+				    &app->timeline_ui);
+				LOG_INFO(
+				    "suckless-ogl.app", "GPU Timeline: %s",
+				    app->timeline_ui.visible ? "ON" : "OFF");
 				action_notifier_push(&app->notifier,
-				                     app->show_gpu_timeline
+				                     app->timeline_ui.visible
 				                         ? "Timeline: ON"
 				                         : "Timeline: OFF",
 				                     NOTIF_DUR_NORMAL);

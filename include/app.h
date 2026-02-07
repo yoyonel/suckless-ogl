@@ -22,6 +22,7 @@
 #include "billboard_rendering.h"
 #include "camera.h"
 #include "gpu_profiler.h"
+#include "gpu_profiler_ui.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "perf_mode.h"
@@ -100,6 +101,7 @@ typedef struct App {
 	IcosphereGeometry geometry;  /**< High-poly sphere mesh data. */
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
 	GPUProfiler gpu_profiler;
+	GPUProfilerUI timeline_ui;
 	UIContext ui; /**< Overlay and text rendering state. */
 	InstancedGroup
 	    instanced_group; /**< Managed buffers for opaque spheres. */
@@ -175,10 +177,6 @@ typedef struct App {
 	float u_exposure;       /**< Manual exposure compensation. */
 	float auto_threshold;   /**< Dynamic exposure target. */
 	float current_exposure; /**< Integrated GPU exposure value. */
-	int show_gpu_timeline;  /**< Toggle for the graphical GPU timeline. */
-	int gpu_timeline_position;    /**< 0 = Top, 1 = Bottom. */
-	GPUProfiler display_profiler; /**< Snapshot of profiler data for syncing
-	                                 UI with ASCII log (2s interval). */
 
 #ifdef USE_SSBO_RENDERING
 	SSBOGroup ssbo_group;    /**< SSBO rendering context. */

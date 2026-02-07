@@ -231,5 +231,6 @@ static const float GPU_PROFILER_WINDOW_DURATION_S =
     0.5F; /**< Time between ASCII/Timeline refreshes. */
 static const float GPU_PROFILER_WINDOW_TRANSITION_S =
     0.2F; /**< Default transition time. */
+static const float GPU_PROFILER_ROW_HEIGHT = 28.0F; /**< UI row height. */
 
 #endif /* APP_SETTINGS_H */

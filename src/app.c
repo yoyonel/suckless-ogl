@@ -4,7 +4,6 @@
 #include "adaptive_sampler.h"
 #include "app_env.h"
 #include "app_input.h"
-#include "app_metrics.h"
 #include "app_scene.h"
 #include "app_settings.h"
 #include "app_ui.h"
@@ -16,12 +15,10 @@
 #include "instanced_rendering.h"
 #include "render_utils.h"
 #include "sphere_sorting.h"
-#include "utils.h"
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #ifdef USE_SSBO_RENDERING
@@ -60,7 +57,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_debug_mode = 0;
 	app->is_fullscreen = 0;
 	app->show_help = 0;
-	app->show_gpu_timeline = 0;
 	app->show_envmap = 1;
 	app->billboard_mode = 1;
 	app->first_mouse = 1;
@@ -222,8 +218,8 @@ int app_init(App* app, int width, int height, const char* title)
 	action_notifier_init(&app->notifier);
 
 	gpu_profiler_init(&app->gpu_profiler);
-	app->gpu_timeline_position = 0; /* Default Top */
-	app->log_gpu_metrics = 0;       /* Console logging off by default */
+	gpu_profiler_ui_init(&app->timeline_ui);
+	app->log_gpu_metrics = 0; /* Console logging off by default */
 
 	return 1;
 }
@@ -496,66 +492,9 @@ void app_render(App* app)
 
 	// 3. Arrêter la mesure de la frame
 	gpu_profiler_end_stage(&app->gpu_profiler);
-
-	// 4. Logique d'affichage toutes les 2 secondes
+	// 4. Logique d'affichage et animations
 	double current_time = glfwGetTime();
-
-	/* Update animation progress */
-	float transition_duration = fminf(GPU_PROFILER_WINDOW_TRANSITION_S,
-	                                  GPU_PROFILER_WINDOW_DURATION_S);
-	app->display_profiler.transition_progress +=
-	    (float)app->delta_time / transition_duration;
-	if (app->display_profiler.transition_progress > 1.0F) {
-		app->display_profiler.transition_progress = 1.0F;
-	}
-
-	if (app_metrics_log_gpu_stats(&app->gpu_profiler, current_time,
-	                              (bool)app->log_gpu_metrics)) {
-		/* Capture current targets as new start values */
-		for (int i = 0; i < app->gpu_profiler.stage_count; i++) {
-			GPUStage* dest_stage = &app->display_profiler.stages[i];
-			const GPUStage* gpu_stage =
-			    &app->gpu_profiler.stages[i];
-
-			/* Save previous targets for interpolation */
-			float old_start = dest_stage->start_offset_ms;
-			float old_dur = dest_stage->duration_ms;
-
-			/* Copy metadata (Safe copy, avoids samplers) */
-			safe_strncpy(dest_stage->name, sizeof(dest_stage->name),
-			             gpu_stage->name,
-			             sizeof(dest_stage->name) - 1);
-			dest_stage->color = gpu_stage->color;
-			dest_stage->depth = gpu_stage->depth;
-			dest_stage->parent_index = gpu_stage->parent_index;
-
-			/* Snapshot the average for the next window */
-			dest_stage->start_offset_ms =
-			    adaptive_sampler_get_average(
-			        &gpu_stage->offset_sampler);
-			dest_stage->duration_ms = adaptive_sampler_get_average(
-			    &gpu_stage->duration_sampler);
-
-			/* Handle first-time initialization to avoid LERPing
-			 * from zero
-			 */
-			static const float EPSILON_MS = 1e-4F;
-			if (old_dur <= EPSILON_MS) {
-				dest_stage->prev_start_offset_ms =
-				    dest_stage->start_offset_ms;
-				dest_stage->prev_duration_ms =
-				    dest_stage->duration_ms;
-			} else {
-				dest_stage->prev_start_offset_ms = old_start;
-				dest_stage->prev_duration_ms = old_dur;
-			}
-		}
-
-		app->display_profiler.stage_count =
-		    app->gpu_profiler.stage_count;
-		app->display_profiler.transition_progress = 0.0F;
-
-		/* Reset samplers for the next 2s window */
-		gpu_profiler_reset_samplers(&app->gpu_profiler, current_time);
-	}
+	gpu_profiler_ui_update(&app->timeline_ui, &app->gpu_profiler,
+	                       app->delta_time, current_time,
+	                       (bool)app->log_gpu_metrics);
 }
