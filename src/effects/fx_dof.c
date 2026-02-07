@@ -16,6 +16,7 @@ int fx_dof_init(PostProcess* post_processing)
 	glBindFramebuffer(GL_FRAMEBUFFER, dof->fbo);
 
 	if (!fx_dof_resize(post_processing)) {
+		fx_dof_cleanup(post_processing);
 		return 0;
 	}
 
@@ -23,6 +24,7 @@ int fx_dof_init(PostProcess* post_processing)
 	    GL_FRAMEBUFFER_COMPLETE) {
 		LOG_ERROR("suckless-ogl.postprocess.dof",
 		          "Failed to create DoF framebuffer");
+		fx_dof_cleanup(post_processing);
 		return 0;
 	}
 

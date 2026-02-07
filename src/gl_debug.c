@@ -114,10 +114,20 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 		const char* type_str = get_type_str(type);
 		const char* sev_str = get_severity_str(severity);
 
-		LOG_WARNING(
-		    LOG_TAG,
-		    "id: 0x%X, source: %s, type: %s, severity: %s, message: %s",
-		    message_id, src_str, type_str, sev_str, message);
+		if (type == GL_DEBUG_TYPE_ERROR ||
+		    severity == GL_DEBUG_SEVERITY_HIGH) {
+			LOG_ERROR(LOG_TAG,
+			          "id: 0x%X, source: %s, type: %s, severity: "
+			          "%s, message: %s",
+			          message_id, src_str, type_str, sev_str,
+			          message);
+		} else {
+			LOG_WARNING(LOG_TAG,
+			            "id: 0x%X, source: %s, type: %s, severity: "
+			            "%s, message: %s",
+			            message_id, src_str, type_str, sev_str,
+			            message);
+		}
 	}
 }
 
