@@ -222,7 +222,7 @@ typedef struct {
 typedef struct {
 	uint32_t active_effects;
 	float time;
-	float _pad0[2];
+	float screen_texel_size[2]; /**< 1.0 / vec2(width, height) */
 
 	/* Vignette */
 	float vignette_intensity;

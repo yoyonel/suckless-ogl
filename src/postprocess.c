@@ -244,6 +244,7 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 
 	post_processing->width = width;
 	post_processing->height = height;
+	post_processing->ubo_dirty = true;
 
 	/* Recréer le framebuffer avec les nouvelles dimensions */
 	destroy_framebuffer(post_processing);
@@ -629,6 +630,9 @@ void postprocess_end(PostProcess* post_processing)
 		PostProcessUBO ubo = {0};
 		ubo.active_effects = post_processing->active_effects;
 		ubo.time = post_processing->time;
+		ubo.screen_texel_size[0] = 1.0F / (float)post_processing->width;
+		ubo.screen_texel_size[1] =
+		    1.0F / (float)post_processing->height;
 
 		ubo.vignette_intensity = post_processing->vignette.intensity;
 		ubo.vignette_smoothness = post_processing->vignette.smoothness;

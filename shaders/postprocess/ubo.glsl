@@ -3,8 +3,7 @@ layout(std140, binding = 0) uniform PostProcessBlock
 {
 	uint activeEffects;
 	float time;
-	float _pad0_0;
-	float _pad0_1;
+	vec2 screenTexelSize;
 
 	/* Vignette (16 bytes) */
 	float v_intensity;
