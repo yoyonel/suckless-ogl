@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +22,15 @@
  * compilation command should fail (when -Werror=format is enabled).
  */
 
+static const char* BAD_CODE =
+    "#include \"log.h\"\n"
+    "#include <stdio.h>\n"
+    "int main(void) {\n"
+    "    // Deliberate error: %d expects int, but string is passed\n"
+    "    log_message(LOG_LEVEL_INFO, \"TEST\", \"Value: %d\", \"string\");\n"
+    "    return 0;\n"
+    "}\n";
+
 void setUp(void)
 {
 }
@@ -37,23 +47,15 @@ void test_log_format_validation_fails_compilation(void)
 	FILE* f_ptr = fopen("temp_test_log_fmt.c", "w");
 	TEST_ASSERT_NOT_NULL_MESSAGE(f_ptr, "Failed to create temp test file");
 
-	fprintf(f_ptr, "#include \"log.h\"\n");
-	fprintf(f_ptr, "#include <stdio.h>\n");
-	fprintf(f_ptr, "int main(void) {\n");
-	// Deliberate error: %d expects int, but string is passed
-	fprintf(f_ptr,
-	        "    log_message(LOG_LEVEL_INFO, \"TEST\", \"Value: %%d\", "
-	        "\"string\");\n");
-	fprintf(f_ptr, "    return 0;\n");
-	fprintf(f_ptr, "}\n");
+	fprintf(f_ptr, "%s", BAD_CODE);
 	fclose(f_ptr);
 
 	// 2. Construct compilation command dynamically
 	char cmd[2048];
-	snprintf(cmd, sizeof(cmd),
-	         "%s -c temp_test_log_fmt.c -I%s -Wall -Wformat "
-	         "-Werror=format -o temp_test_log_fmt.o > /dev/null 2>&1",
-	         TEST_COMPILER, TEST_INCLUDE_DIR);
+	safe_snprintf(cmd, sizeof(cmd),
+	              "%s -c temp_test_log_fmt.c -I%s -Wall -Wformat "
+	              "-Werror=format -o temp_test_log_fmt.o > /dev/null 2>&1",
+	              TEST_COMPILER, TEST_INCLUDE_DIR);
 
 	// 3. Execute command
 	int status = system(cmd);
