@@ -6,7 +6,7 @@
 #include <stddef.h> /* size_t */
 
 /* Constants to avoid magic numbers */
-static const float SAMPLER_WINDOW_DURATION = 2.0F;
+static const float SAMPLER_WINDOW_DURATION = GPU_PROFILER_WINDOW_DURATION_S;
 static const size_t SAMPLER_TARGET_SAMPLES = 120;
 static const float SAMPLER_INITIAL_GUESS_FPS = 60.0F;
 static const double NS_TO_MS = 1.0 / 1000000.0;
@@ -39,9 +39,15 @@ void gpu_profiler_init(GPUProfiler* profiler)
 
 	/* 4. Init Samplers */
 	for (int i = 0; i < MAX_GPU_STAGES; ++i) {
-		adaptive_sampler_init(
-		    &profiler->stages[i].sampler, SAMPLER_WINDOW_DURATION,
-		    SAMPLER_TARGET_SAMPLES, SAMPLER_INITIAL_GUESS_FPS);
+		adaptive_sampler_init(&profiler->stages[i].duration_sampler,
+		                      SAMPLER_WINDOW_DURATION,
+		                      SAMPLER_TARGET_SAMPLES,
+		                      SAMPLER_INITIAL_GUESS_FPS);
+
+		adaptive_sampler_init(&profiler->stages[i].offset_sampler,
+		                      SAMPLER_WINDOW_DURATION,
+		                      SAMPLER_TARGET_SAMPLES,
+		                      SAMPLER_INITIAL_GUESS_FPS);
 	}
 }
 
@@ -68,7 +74,8 @@ void gpu_profiler_cleanup(GPUProfiler* profiler)
 
 	/* 2. Free Samplers */
 	for (int i = 0; i < MAX_GPU_STAGES; ++i) {
-		adaptive_sampler_cleanup(&profiler->stages[i].sampler);
+		adaptive_sampler_cleanup(&profiler->stages[i].duration_sampler);
+		adaptive_sampler_cleanup(&profiler->stages[i].offset_sampler);
 	}
 }
 
@@ -127,8 +134,10 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 		    (start > frame_start_ns) ? (start - frame_start_ns) : 0;
 		double offset_ms = (double)offset_ns * NS_TO_MS;
 
-		adaptive_sampler_add(&profiler->stages[i].sampler,
+		adaptive_sampler_add(&profiler->stages[i].duration_sampler,
 		                     (float)duration_ms, read_buf->frame_index);
+		adaptive_sampler_add(&profiler->stages[i].offset_sampler,
+		                     (float)offset_ms, read_buf->frame_index);
 		profiler->stages[i].duration_ms = (float)duration_ms;
 		profiler->stages[i].start_offset_ms = (float)offset_ms;
 	}
@@ -185,4 +194,18 @@ void gpu_profiler_end_stage(GPUProfiler* profiler)
 
 	GPUQueryBuffer* buffer = &profiler->buffers[profiler->write_index];
 	glQueryCounter(buffer->queries[idx].query_end, GL_TIMESTAMP);
+}
+
+void gpu_profiler_reset_samplers(GPUProfiler* profiler, double current_time)
+{
+	if (!profiler) {
+		return;
+	}
+
+	for (int i = 0; i < MAX_GPU_STAGES; ++i) {
+		adaptive_sampler_reset(&profiler->stages[i].duration_sampler,
+		                       current_time);
+		adaptive_sampler_reset(&profiler->stages[i].offset_sampler,
+		                       current_time);
+	}
 }

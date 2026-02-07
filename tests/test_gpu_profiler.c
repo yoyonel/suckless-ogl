@@ -170,7 +170,7 @@ void test_gpu_profiler_result_retrieval(void)
 
 	// Vérifications
 	// Le sampler doit avoir accumulé des échantillons
-	TEST_ASSERT_GREATER_THAN(0, profiler.stages[0].sampler.count);
+	TEST_ASSERT_GREATER_THAN(0, profiler.stages[0].duration_sampler.count);
 
 	// La durée doit être positive ou nulle (0.0 est possible sur CI
 	// rapide/software)

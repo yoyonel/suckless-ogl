@@ -284,13 +284,21 @@ static void hex_to_vec3(uint32_t color, vec3 out)
 
 static void app_draw_gpu_timeline(App* app)
 {
-	/* Use the snapshot profiler data to stay in sync with ASCII log (2s) */
+	/* Use the snapshot profiler data to stay in sync with ASCII log */
 	if (app->display_profiler.stage_count == 0) {
 		return;
 	}
 
-	const GPUStage* root = &app->display_profiler.stages[0];
-	float total_ms = (float)root->duration_ms;
+	/* Animation Progress (0.0 to 1.0 during transitions) */
+	float anim_progress = app->display_profiler.transition_progress;
+
+	/* Interpolated total frame time for normalization */
+	const GPUStage* root_stage = &app->display_profiler.stages[0];
+	float total_ms =
+	    root_stage->prev_duration_ms +
+	    ((root_stage->duration_ms - root_stage->prev_duration_ms) *
+	     anim_progress);
+
 	static const float MIN_MS = 0.001F;
 	if (total_ms <= MIN_MS) {
 		return;
@@ -321,23 +329,6 @@ static void app_draw_gpu_timeline(App* app)
 
 	/* Calculate total list height */
 	int stage_count = app->display_profiler.stage_count;
-	/* Limit rows to fit screen if necessary (unlikely to exceed 32 with
-	 * 26px = 832px) */
-	/* But we anchor to bottom-left as before or top-left?
-	   ASCII log usually prints top-down. The Graphical timeline was
-	   bottom-anchored. Let's keep it anchored to bottom to avoid
-	   overlapping top UI if possible, OR anchor to a fixed vertical
-	   position. Given "Overlay", typically bottom or top. Previous was
-	   bottom. Let's stick to bottom for now, but stack upwards? Actually, a
-	   list reads better Top-to-Bottom. Let's try drawing Root at the BOTTOM
-	   (index 0) and children above? Wait, the array is strictly ordered.
-	   app->display_profiler.stages[0] is Root. Subsequent items are
-	   children. If we want "ISO Table", usually Header is Top. Let's
-	   calculate Start Y so the block sits at the bottom of the screen, but
-	   the list runs Top-to-Bottom within that block? Or Bottom-to-Top
-	   (stack)? Let's do Top-to-Bottom (List style) anchored at the Bottom
-	   of screen.
-	*/
 
 	float total_list_height = (float)stage_count * ROW_HEIGHT;
 
@@ -371,8 +362,17 @@ static void app_draw_gpu_timeline(App* app)
 		float row_y = start_pos_y + ((float)i * ROW_HEIGHT);
 
 		/* --- 1. Draw Timeline Bar (Left Side) --- */
-		float x_ratio = (float)stage->start_offset_ms / total_ms;
-		float w_ratio = (float)stage->duration_ms / total_ms;
+		float start_ms =
+		    stage->prev_start_offset_ms +
+		    ((stage->start_offset_ms - stage->prev_start_offset_ms) *
+		     anim_progress);
+		float duration_ms =
+		    stage->prev_duration_ms +
+		    ((stage->duration_ms - stage->prev_duration_ms) *
+		     anim_progress);
+
+		float x_ratio = start_ms / total_ms;
+		float w_ratio = duration_ms / total_ms;
 
 		/* Clamp ratios */
 		if (x_ratio < 0.0F) {
@@ -439,8 +439,7 @@ static void app_draw_gpu_timeline(App* app)
 		   That seems decent for 20px font.
 		*/
 		static const float TEXT_Y_OFF = -5.0F;
-		float text_y = row_y + TEXT_Y_OFF; /* Vertically centered */
-
+		float text_y = row_y + TEXT_Y_OFF;
 		static const float SHADOW_OFF = 1.0F;
 		/* Draw Shadow (Colored) */
 		ui_draw_text(&app->ui, stage->name,
@@ -460,7 +459,7 @@ static void app_draw_gpu_timeline(App* app)
 		static const int TIME_BUF_SIZE = 32;
 		char time_buf[TIME_BUF_SIZE];
 		(void)safe_snprintf(time_buf, (size_t)TIME_BUF_SIZE, "%.4f ms",
-		                    stage->duration_ms);
+		                    (double)duration_ms);
 
 		/* Estimate width to right-align?
 		   Or just fix a position. 300px for name section?
