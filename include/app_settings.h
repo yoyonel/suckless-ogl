@@ -226,4 +226,10 @@ static const int GPU_PROFILER_MOTION_BLUR_COLOR =
 static const int GPU_PROFILER_POSTPROCESS_COLOR =
     0xB48EAD; /* Nord Aurora Purple */
 
+/* --- Capture Settings --- */
+static const float GPU_PROFILER_WINDOW_DURATION_S =
+    0.5F; /**< Time between ASCII/Timeline refreshes. */
+static const float GPU_PROFILER_WINDOW_TRANSITION_S =
+    0.2F; /**< Default transition time. */
+
 #endif /* APP_SETTINGS_H */

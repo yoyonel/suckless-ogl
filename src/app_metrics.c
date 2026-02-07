@@ -52,7 +52,7 @@ static void format_relative_percentages(const GPUProfiler* profiler,
 	while (parent_idx != -1) {
 		const GPUStage* parent = &profiler->stages[parent_idx];
 		float parent_avg_ms =
-		    adaptive_sampler_get_average(&parent->sampler);
+		    adaptive_sampler_get_average(&parent->duration_sampler);
 
 		static const float MIN_DURATION_THRESHOLD_MS = 0.0001F;
 		if (parent_avg_ms > MIN_DURATION_THRESHOLD_MS) {
@@ -223,11 +223,13 @@ static void log_gpu_stage(const char* stage_name, float avg_ms,
 	}
 	indent[indent_level] = '\0';
 
-	LOG_INFO("perf.gpu", "%s%s Time (last 2s): %.4f ms %s%s", indent,
-	         stage_name, avg_ms, details, percentages);
+	LOG_INFO("perf.gpu", "%s%s Time (last %.0fs): %.4f ms %s%s", indent,
+	         stage_name, (double)GPU_PROFILER_WINDOW_DURATION_S, avg_ms,
+	         details, percentages);
 }
 
-bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
+bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time,
+                               bool should_log)
 {
 	if (!profiler) {
 		return false;
@@ -240,44 +242,39 @@ bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time)
 	}
 
 	GPUStage* root_stage = &profiler->stages[0];
-	AdaptiveSampler* root_sampler = &root_stage->sampler;
+	AdaptiveSampler* root_sampler = &root_stage->duration_sampler;
 
 	if (current_time - root_sampler->window_start_time <
-	    GPU_PROFILER_TOTAL_FRAME_WINDOW_LENGTH) {
+	    GPU_PROFILER_WINDOW_DURATION_S) {
 		return false;
 	}
 
-	// Pass 1: Logging (All stages at once)
-	for (int i = 0; i < profiler->stage_count; i++) {
-		GPUStage* stage = &profiler->stages[i];
-		AdaptiveSampler* sampler = &stage->sampler;
+	if (should_log) {
+		// Pass 1: Logging (All stages at once)
+		for (int i = 0; i < profiler->stage_count; i++) {
+			GPUStage* stage = &profiler->stages[i];
+			AdaptiveSampler* sampler = &stage->duration_sampler;
 
-		float avg_ms = adaptive_sampler_get_average(sampler);
+			float avg_ms = adaptive_sampler_get_average(sampler);
 
-		if (avg_ms > 0) {
-			static const size_t LOG_BUFFER_SIZE = 256;
-			char indices_str[LOG_BUFFER_SIZE];
-			format_missed_frames(sampler, indices_str,
-			                     LOG_BUFFER_SIZE);
+			if (avg_ms > 0) {
+				static const size_t LOG_BUFFER_SIZE = 256;
+				char indices_str[LOG_BUFFER_SIZE];
+				format_missed_frames(sampler, indices_str,
+				                     LOG_BUFFER_SIZE);
 
-			char percentages_str[LOG_BUFFER_SIZE];
-			format_relative_percentages(profiler, i, avg_ms,
-			                            percentages_str,
-			                            LOG_BUFFER_SIZE);
+				char percentages_str[LOG_BUFFER_SIZE];
+				format_relative_percentages(profiler, i, avg_ms,
+				                            percentages_str,
+				                            LOG_BUFFER_SIZE);
 
-			log_gpu_stage(stage->name, avg_ms, indices_str,
-			              percentages_str, stage->depth);
+				log_gpu_stage(stage->name, avg_ms, indices_str,
+				              percentages_str, stage->depth);
+			}
 		}
-	}
 
-	// Log ASCII Timeline immediately after text logs
-	log_ascii_timeline(profiler);
-
-	// Pass 2: Resetting (All stages at once)
-	for (int i = 0; i < profiler->stage_count; i++) {
-		GPUStage* stage = &profiler->stages[i];
-		AdaptiveSampler* sampler = &stage->sampler;
-		adaptive_sampler_reset(sampler, current_time);
+		// Log ASCII Timeline immediately after text logs
+		log_ascii_timeline(profiler);
 	}
 
 	return true;
