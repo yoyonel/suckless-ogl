@@ -21,9 +21,6 @@
 enum { PBR_DEBUG_MODE_COUNT = 9 };
 
 /* Notification constants */
-static const float NOTIF_DUR_SHORT = 1.0F;
-static const float NOTIF_DUR_NORMAL = 1.5F;
-static const float NOTIF_DUR_LONG = 2.0F;
 enum { NOTIF_BUF_SIZE = 128 };
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -130,8 +127,17 @@ void handle_preset_input(App* app, int key)
 			break;
 		}
 		case GLFW_KEY_8:
-			/* Key 8 is now free or can be used for something else,
-			   but let's keep it for another preset if needed. */
+			if (!effect_benchmark_is_running(&app->effect_bench)) {
+				effect_benchmark_start(&app->effect_bench);
+				action_notifier_push(&app->notifier,
+				                     "FX Benchmark: Started",
+				                     NOTIF_DUR_LONG);
+			} else {
+				action_notifier_push(
+				    &app->notifier,
+				    "FX Benchmark: Already running",
+				    NOTIF_DUR_NORMAL);
+			}
 			break;
 		case GLFW_KEY_0:
 		case GLFW_KEY_KP_0:

@@ -219,6 +219,8 @@ int app_init(App* app, int width, int height, const char* title)
 
 	gpu_profiler_init(&app->gpu_profiler);
 	gpu_profiler_ui_init(&app->timeline_ui);
+	effect_benchmark_init(&app->effect_bench, &app->postprocess,
+	                      &app->gpu_profiler);
 	app->log_gpu_metrics = 0; /* Console logging off by default */
 
 	return 1;
@@ -376,6 +378,13 @@ void app_render(App* app)
 	// 1. Signaler le début de la frame pour traiter les résultats
 	// précédents
 	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+
+	/* Effect benchmark: read previous frame's profiler results */
+	if (effect_benchmark_update(&app->effect_bench)) {
+		action_notifier_push(&app->notifier,
+		                     "FX Benchmark: Done (see log)",
+		                     NOTIF_DUR_LONG);
+	}
 
 	// 2. Démarrer la mesure globale de la frame
 	gpu_profiler_start_stage(&app->gpu_profiler, "Total Frame",
