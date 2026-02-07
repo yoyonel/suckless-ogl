@@ -140,6 +140,7 @@ typedef struct App {
 	int perf_mode_active;  /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
+	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
 
 	/* --- Global GPU Resources --- */
 	GLuint sphere_vao;           /**< Shared geometry VAO. */

@@ -495,6 +495,16 @@ static void handle_f_key_input(App* app, int key, int mods)
 				                     NOTIF_DUR_NORMAL);
 			}
 			break;
+		case GLFW_KEY_F4:
+			app->log_gpu_metrics = !app->log_gpu_metrics;
+			LOG_INFO("suckless-ogl.app", "Log GPU Metrics: %s",
+			         app->log_gpu_metrics ? "ON" : "OFF");
+			action_notifier_push(&app->notifier,
+			                     app->log_gpu_metrics
+			                         ? "Log Metrics: ON"
+			                         : "Log Metrics: OFF",
+			                     NOTIF_DUR_NORMAL);
+			break;
 		case GLFW_KEY_F9:
 			if (app->perf_mode_active) {
 				perf_mode_request_end(&app->perf_context);

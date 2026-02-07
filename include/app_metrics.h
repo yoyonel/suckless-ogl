@@ -16,6 +16,7 @@
  * @param current_time The current application time (e.g. from glfwGetTime()).
  * @return true if logs were printed (2s interval elapsed), false otherwise.
  */
-bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time);
+bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time,
+                               bool should_log);
 
 #endif /* APP_METRICS_H */
