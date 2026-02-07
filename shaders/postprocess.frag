@@ -50,26 +50,20 @@ void main()
 	uint stencil = texture(stencilTexture, TexCoords).r;
 	bool isSkybox = (stencil == 0u);
 
-	// --------------------------------------------------------------------------------
-	// FIXME: ça semble casser les performances de rajouter un if else pour
-	// le FXAA 	c'est l'effet/impact direct des branchements
-	// conditionnels dans les shaders !
-	// --------------------------------------------------------------------------------
-	if (enableFXAA) {
-		// FXAA on the HDR source
-		// Fix: Pass the actual center pixel color, otherwise early exit
-		// returns black!
-		vec3 centerColor = texture(screenTexture, TexCoords).rgb;
-		color = applyFXAA(centerColor, TexCoords);
+	/* 2. Pipeline: Motion Blur -> Chromatic Aberration -> FXAA
+	   Motion Blur is applied first, then CA, then FXAA on top.
+	   This ensures MB is never bypassed by FXAA. */
+	if (enableChromAbbr && !isSkybox) {
+		/* CA samples "SceneSource" (which calls MB internally) */
+		color = applyChromAbbr(TexCoords);
 	} else {
-		/* 2. Pipeline: Motion Blur -> Chromatic Aberration */
-		if (enableChromAbbr && !isSkybox) {
-			/* CA samples "SceneSource" (which calls MB) */
-			color = applyChromAbbr(TexCoords);
-		} else {
-			/* Direct fetch (or MB only) */
-			color = getSceneSource(TexCoords);
-		}
+		/* Direct fetch (or MB only) */
+		color = getSceneSource(TexCoords);
+	}
+
+	if (enableFXAA) {
+		/* FXAA applied on top of the MB+CA result */
+		color = applyFXAA(color, TexCoords);
 	}
 
 	/* 3. Depth of Field */
