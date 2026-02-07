@@ -84,6 +84,18 @@ foreach(test_file ${TEST_SOURCES})
 endforeach()
 
 # =============================================================================
+# TESTS DE SÉCURITÉ / COMPILATION
+# =============================================================================
+
+# Test de validation des format strings (compile-time check)
+add_test(NAME test_log_format_validation
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/security/verify_log_format_check.sh
+                 "${CMAKE_C_COMPILER}"
+                 "${CMAKE_SOURCE_DIR}/include"
+                 "${CMAKE_CURRENT_SOURCE_DIR}/security/test_format_string_validation.c")
+set_tests_properties(test_log_format_validation PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+# =============================================================================
 # NOTES ET DOCUMENTATION
 # =============================================================================
 # Cette approche offre plusieurs avantages :
