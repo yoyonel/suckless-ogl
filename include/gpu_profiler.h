@@ -33,11 +33,23 @@ typedef struct {
 } GPUStage;
 
 /**
+ * @struct GPUStageInfo
+ * @brief Per-frame stage metadata stored alongside queries.
+ */
+typedef struct {
+	char name[MAX_GPU_STAGE_NAME];
+	uint32_t color;
+	int depth;
+	int parent_index;
+} GPUStageInfo;
+
+/**
  * @struct GPUQueryBuffer
- * @brief Set of GL queries for one frame.
+ * @brief Set of GL queries for one frame, with stage metadata.
  */
 typedef struct {
 	GPUTimer queries[MAX_GPU_STAGES];
+	GPUStageInfo stage_info[MAX_GPU_STAGES];
 	int stage_count;
 	uint64_t frame_index;
 } GPUQueryBuffer;
@@ -48,7 +60,11 @@ typedef struct {
  */
 typedef struct {
 	GPUStage stages[MAX_GPU_STAGES];
-	int stage_count;
+	int stage_count; /**< Number of stages from last completed read-back
+	                    (used by UI for display). */
+
+	int recording_count; /**< Number of stages recorded this frame
+	                        (write-path counter, not for UI). */
 
 	// Double buffering for queries
 	GPUQueryBuffer buffers[GPU_QUERY_BUFFER_COUNT];

@@ -223,6 +223,8 @@ static const int GPU_PROFILER_BLOOM_COLOR = 0x5E81AC; /* Nord Frost Dark Blue */
 static const int GPU_PROFILER_DOF_COLOR = 0xA3BE8C;   /* Nord Aurora Green */
 static const int GPU_PROFILER_MOTION_BLUR_COLOR =
     0xBF616A; /* Nord Aurora Red */
+static const int GPU_PROFILER_COMPOSITE_COLOR =
+    0x81A1C1; /* Nord Frost Medium Blue */
 static const int GPU_PROFILER_POSTPROCESS_COLOR =
     0xB48EAD; /* Nord Aurora Purple */
 

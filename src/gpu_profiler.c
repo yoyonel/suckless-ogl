@@ -27,7 +27,7 @@ void gpu_profiler_init(GPUProfiler* profiler)
 	/* 2.1 Init Hierarchy Stack */
 	metric_stack_init(&profiler->hierarchy_stack);
 
-	/* 3. Gen Queries */
+	/* 3. Gen Queries (GL_TIMESTAMP pairs) */
 	for (int i = 0; i < GPU_QUERY_BUFFER_COUNT; ++i) {
 		for (int j = 0; j < MAX_GPU_STAGES; ++j) {
 			glGenQueries(
@@ -90,12 +90,20 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 	uint64_t frame_start_ns = 0;
 	int frame_start_set = 0;
 
-	/* 0. Save current frame's stage count and index to the write buffer */
+	/* 0. Save current frame's recording count to the write buffer */
 	profiler->buffers[profiler->write_index].stage_count =
-	    profiler->stage_count;
+	    profiler->recording_count;
 	profiler->buffers[profiler->write_index].frame_index = frame_index;
 
-	/* 1. Process previous frame results */
+	/* 1. Process previous frame results using GL_TIMESTAMP pairs.
+	 * Duration = end_timestamp - start_timestamp.
+	 *
+	 * On Intel Iris Xe (Mesa), compute shader stages may show near-zero
+	 * durations because the driver aggressively pipelines compute
+	 * dispatches.  This is expected — it reveals that compute work
+	 * overlaps with preceding/following GPU work rather than blocking
+	 * the pipeline.  The timestamps accurately reflect the driver's
+	 * scheduling behavior. */
 	for (int i = 0; i < read_buf->stage_count; ++i) {
 		GPUTimer* timer = &read_buf->queries[i];
 
@@ -134,6 +142,16 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 		    (start > frame_start_ns) ? (start - frame_start_ns) : 0;
 		double offset_ms = (double)offset_ns * NS_TO_MS;
 
+		/* Restore stage metadata from the buffer that recorded these
+		 * queries, ensuring names/colors match the correct frame */
+		GPUStageInfo* info = &read_buf->stage_info[i];
+		safe_strncpy(profiler->stages[i].name,
+		             sizeof(profiler->stages[i].name) - 1, info->name,
+		             sizeof(profiler->stages[i].name) - 1);
+		profiler->stages[i].color = info->color;
+		profiler->stages[i].depth = info->depth;
+		profiler->stages[i].parent_index = info->parent_index;
+
 		adaptive_sampler_add(&profiler->stages[i].duration_sampler,
 		                     (float)duration_ms, read_buf->frame_index);
 		adaptive_sampler_add(&profiler->stages[i].offset_sampler,
@@ -142,41 +160,50 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 		profiler->stages[i].start_offset_ms = (float)offset_ms;
 	}
 
+	/* Update display stage_count from last completed frame's read-back.
+	 * This is what the UI iterates over — it must NOT be reset to 0. */
+	profiler->stage_count = read_buf->stage_count;
+
 	/* 2. Swap Buffers */
 	int temp = profiler->write_index;
 	profiler->write_index = profiler->read_index;
 	profiler->read_index = temp;
 
-	/* 3. Reset for new frame */
-	profiler->stage_count = 0;
+	/* 3. Reset recording counter for new frame (stage_count stays for UI)
+	 */
+	profiler->recording_count = 0;
 	metric_stack_init(&profiler->hierarchy_stack);
 }
 
 void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
                               uint32_t color)
 {
-	if (!profiler || profiler->stage_count >= MAX_GPU_STAGES) {
+	if (!profiler || profiler->recording_count >= MAX_GPU_STAGES) {
 		return;
 	}
 
-	int idx = profiler->stage_count++;
-	GPUStage* stage = &profiler->stages[idx];
+	int idx = profiler->recording_count++;
 
-	/* Safe manual string copy to replace insecure strncpy */
-	safe_strncpy(stage->name, sizeof(stage->name) - 1,
-	             name ? name : "Unknown", sizeof(stage->name) - 1);
-	stage->color = color;
-
-	/* Hierarchy Management via MetricStack */
-	stage->depth = metric_stack_get_depth(&profiler->hierarchy_stack);
-	stage->parent_index = metric_stack_peek(&profiler->hierarchy_stack);
+	/* Compute hierarchy info from the recording stack */
+	int depth = metric_stack_get_depth(&profiler->hierarchy_stack);
+	int parent_index = metric_stack_peek(&profiler->hierarchy_stack);
 
 	if (!metric_stack_push(&profiler->hierarchy_stack, idx)) {
 		/* Stack overflow safety */
 		return;
 	}
 
+	/* Write metadata ONLY to the per-frame buffer (not to stages[]).
+	 * stages[] is the display array, updated exclusively during
+	 * begin_frame read-back to avoid index conflicts between frames. */
 	GPUQueryBuffer* buffer = &profiler->buffers[profiler->write_index];
+	GPUStageInfo* info = &buffer->stage_info[idx];
+	safe_strncpy(info->name, sizeof(info->name) - 1,
+	             name ? name : "Unknown", sizeof(info->name) - 1);
+	info->color = color;
+	info->depth = depth;
+	info->parent_index = parent_index;
+
 	glQueryCounter(buffer->queries[idx].query_start, GL_TIMESTAMP);
 }
 

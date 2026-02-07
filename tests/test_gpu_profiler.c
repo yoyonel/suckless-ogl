@@ -100,7 +100,8 @@ void test_gpu_profiler_double_buffering_swap(void)
 
 /**
  * @brief test_gpu_profiler_stage_registration
- * Vérifie l'enregistrement des étapes sans appeler OpenGL (juste la structure).
+ * Vérifie l'enregistrement des étapes dans le write buffer (pas dans stages[]).
+ * stages[] est réservé à l'affichage (mis à jour lors du read-back).
  */
 void test_gpu_profiler_stage_registration(void)
 {
@@ -109,8 +110,10 @@ void test_gpu_profiler_stage_registration(void)
 
 	// Start Stage A
 	gpu_profiler_start_stage(&profiler, "Stage A", COLOR_RED);
-	TEST_ASSERT_EQUAL(1, profiler.stage_count);
-	TEST_ASSERT_EQUAL_STRING("Stage A", profiler.stages[0].name);
+	TEST_ASSERT_EQUAL(1, profiler.recording_count);
+	/* Metadata is stored in the write buffer, not in stages[] */
+	GPUQueryBuffer* buf = &profiler.buffers[profiler.write_index];
+	TEST_ASSERT_EQUAL_STRING("Stage A", buf->stage_info[0].name);
 	TEST_ASSERT_EQUAL(1,
 	                  metric_stack_get_depth(
 	                      &profiler.hierarchy_stack)); /* Nesting active */
@@ -123,8 +126,8 @@ void test_gpu_profiler_stage_registration(void)
 
 	// Start Stage B
 	gpu_profiler_start_stage(&profiler, "Stage B", COLOR_GREEN);
-	TEST_ASSERT_EQUAL(2, profiler.stage_count);
-	TEST_ASSERT_EQUAL_STRING("Stage B", profiler.stages[1].name);
+	TEST_ASSERT_EQUAL(2, profiler.recording_count);
+	TEST_ASSERT_EQUAL_STRING("Stage B", buf->stage_info[1].name);
 	gpu_profiler_end_stage(&profiler);
 
 	gpu_profiler_cleanup(&profiler);
