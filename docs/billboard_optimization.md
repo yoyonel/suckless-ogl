@@ -68,15 +68,83 @@ To ensure stability in all scenarios, two special cases are handled:
 
 ### 1. Camera Plane Singularity
 When the sphere intersects the camera plane ($Z=0$), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.
+
 **Solution**: If a tangent point lies behind the camera ($n_z \ge 0$), its projected screen coordinate is clamped to infinity ($\pm 10000.0$) in the correct direction. This ensures the quad extends to the screen edge.
 
+The direction sign uses a ternary expression instead of `sign()` to avoid the GLSL `sign(0.0) = 0.0` edge case, which would collapse the bound to zero and produce a degenerate quad:
+
+```glsl
+// ❌ Before: sign(0.0) == 0.0 → bound collapses
+p1 = sign(nx1) * 10000.0;
+
+// ✅ After: explicit ternary, no zero case
+p1 = (nx1 >= 0.0 ? 1.0 : -1.0) * 10000.0;
+```
+
+This singularity occurs when the tangent line is exactly axis-aligned ($n_x = 0$), which is geometrically possible for a sphere centered on the view axis.
+
 ### 2. Back-Projection Culling
-Spheres located entirely behind the camera ($Z_{view} > 0$ and $d > r$) can mathematically project to valid screen coordinates (inverted).
-**Solution**: These are explicitly culled in the Vertex Shader by checking if `viewPos.z > 0.0`.
+Spheres located entirely behind the camera can mathematically project to valid screen coordinates (inverted).
+
+**Solution**: These are explicitly culled in the Vertex Shader by checking if the sphere's **nearest point** along the view axis is behind the camera:
+
+```glsl
+// ❌ Before: center-only test — misses partially visible spheres
+} else if (viewPos.z > 0.0) {
+
+// ✅ After: volume-aware test — only cull when entirely behind
+} else if (viewPos.z > sphereRadius) {
+```
+
+The previous test `viewPos.z > 0.0` only checked the sphere **center**. A sphere whose center is behind the camera ($z > 0$) but whose volume extends in front (e.g. center at $z = +0.5$, radius $= 2.0$) was incorrectly culled. The corrected test `viewPos.z > sphereRadius` ensures the **nearest point** of the sphere ($z_{center} - r$) is behind the camera before culling.
+
+```
+ Camera
+  ◉──────────────▶ +Z (behind)
+  │
+  │  ┌─────┐
+  │  │  C  │  center behind (z=0.5)
+  │  │  ●  │  but sphere extends in front
+  │  │     │  nearest point = z - r = -1.5
+  │  └─────┘
+```
 
 ### 3. Conservative Depth
 To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's **frontmost plane** ($Z_{nearest} = Z_{view} + R$) rather than its center.
 This ensures the quad is drawn *before* any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment Shader then outputs the precise per-pixel depth (`gl_FragDepth`) to carve out the true spherical shape.
+
+The nearest Z is clamped to stay in front of the near plane. The near plane distance is now **derived dynamically** from the projection matrix instead of being hardcoded:
+
+```glsl
+// ❌ Before: magic number coupled to CPU-side NEAR_PLANE = 0.1
+nearestZ = min(nearestZ, -0.11);
+
+// ✅ After: extracted from the projection matrix
+float zNear = projection[3][2] / (projection[2][2] - 1.0);
+nearestZ = min(nearestZ, -(zNear + 0.01));
+```
+
+For a standard OpenGL perspective matrix:
+
+$$
+P = \begin{pmatrix}
+sx & 0 & 0 & 0 \\
+0 & sy & 0 & 0 \\
+0 & 0 & A & B \\
+0 & 0 & -1 & 0
+\end{pmatrix}
+\quad\text{where}\quad
+A = P_{22} = -\frac{f+n}{f-n},\quad
+B = P_{32} = -\frac{2fn}{f-n}
+$$
+
+Solving for the near plane:
+
+$$
+z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
+$$
+
+This eliminates the coupling between the shader and the CPU-side `NEAR_PLANE` constant, making the code robust to near plane changes.
 
 ### 4. Numerical Stability: Avoiding Silhouette Jitter
 When using ray-casting on billboards, it is critical that attributes constant across the sphere (center, radius, material) are passed using the **`flat`** interpolation qualifier.
@@ -87,7 +155,32 @@ Using `flat out` in the Vertex Shader and `flat in` in the Fragment Shader ensur
 
 - **See also**: [Flat Interpolation (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Interpolation_qualifiers) and [Provoking Vertex (Khronos Wiki)](https://www.khronos.org/opengl/wiki/Primitive#Provoking_vertex).
 
-### 5. The Mesh vs. Math Paradox (Understanding Diff Maps)
+### 5. Inside-Sphere Epsilon Robustness
+
+When the camera is inside or very near the sphere surface, the shader switches to a full-screen quad for ray-casting. The detection threshold uses an **additive + multiplicative** epsilon to handle all sphere scales:
+
+```glsl
+// ❌ Before: purely multiplicative — fails for tiny spheres
+if (distSq <= r2 * 1.005)
+
+// ✅ After: additive floor ensures a minimum absolute margin
+if (distSq <= r2 + max(r2 * 0.005, 1e-4))
+```
+
+| Sphere Radius | Old Margin ($r^2 \times 0.005$) | New Margin ($\max(r^2 \times 0.005,\; 10^{-4})$) |
+|:---:|:---:|:---:|
+| $r = 10.0$ | $0.5$ | $0.5$ |
+| $r = 1.0$ | $0.005$ | $0.005$ |
+| $r = 0.01$ | $5 \times 10^{-7}$ | $10^{-4}$ ✅ |
+| $r = 0.001$ | $5 \times 10^{-9}$ | $10^{-4}$ ✅ |
+
+For large spheres, the multiplicative term dominates. For very small spheres (e.g. particle systems), the additive floor $10^{-4}$ prevents false-negative detection caused by float32 precision limits.
+
+### 6. Code Structure: Shared Projection Scale Factors
+
+The projection matrix diagonal elements `sx = projection[0][0]` and `sy = projection[1][1]` are used in both the inside-sphere and normal projection branches. They are now extracted **once** before the branch chain, eliminating code duplication and making the dependency explicit.
+
+### 7. The Mesh vs. Math Paradox (Understanding Diff Maps)
 When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is **expected** and proves the accuracy of the mathematical approach:
 
 1.  **Perfect Silhouette:** The billboard computes a mathematically perfect curve for every pixel. An icosphere, regardless of subdivision, is an approximation made of flat triangles. The rings represent the areas where the triangle edges deviate from the perfect sphere.
@@ -106,3 +199,19 @@ See `shaders/pbr_ibl_billboard.vert` for the GLSL implementation.
 The following image (from Mara et al.) demonstrates how the spherical projection creates an elliptical footprint on the screen, which our exact AABB calculation perfectly bounds:
 
 ![Perspective Projection Grid](images/perspective_projection_grid.png)
+
+---
+
+## Changelog
+
+### 2026-02-08 — Robustness Audit & Fixes
+
+Five corrections applied to `projection_utils.glsl` following a mathematical audit of `computeBillboardSphere`:
+
+| # | Severity | Fix | Section |
+|---|----------|-----|---------|
+| 1 | **Bug** | Behind-camera cull: `viewPos.z > 0.0` → `viewPos.z > sphereRadius` — spheres straddling the camera plane are no longer incorrectly culled | §2 |
+| 2 | **Robustness** | Near plane clamp derived from projection matrix instead of hardcoded `-0.11` — decoupled from CPU-side `NEAR_PLANE` | §3 |
+| 3 | **Robustness** | `sign(nx)` → `(nx >= 0.0 ? 1.0 : -1.0)` — prevents `sign(0)=0` bound collapse | §1 |
+| 4 | **Quality** | Inside-sphere epsilon: `r² × 1.005` → `r² + max(r² × 0.005, 1e-4)` — robust at all sphere scales | §5 |
+| 5 | **Style** | `sx`/`sy` hoisted before branch chain, removing duplication | §6 |
