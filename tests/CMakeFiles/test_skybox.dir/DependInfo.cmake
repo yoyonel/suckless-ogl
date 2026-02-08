@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_skybox.c" "tests/CMakeFiles/test_skybox.dir/test_skybox.c.o" "gcc" "tests/CMakeFiles/test_skybox.dir/test_skybox.c.o.d"
-  "" "tests/test_skybox" "gcc" "tests/CMakeFiles/test_skybox.dir/link.d"
+  "/app/tests/test_skybox.c" "tests/CMakeFiles/test_skybox.dir/test_skybox.c.o" "gcc" "tests/CMakeFiles/test_skybox.dir/test_skybox.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

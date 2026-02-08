@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_stb_image_impl.dir/link.d"
   "CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o"
   "CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o.d"
   "test_stb_image_impl"

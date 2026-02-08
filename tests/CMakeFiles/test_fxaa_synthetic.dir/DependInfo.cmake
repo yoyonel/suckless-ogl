@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_fxaa_synthetic.c" "tests/CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o" "gcc" "tests/CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o.d"
-  "" "tests/test_fxaa_synthetic" "gcc" "tests/CMakeFiles/test_fxaa_synthetic.dir/link.d"
+  "/app/tests/test_fxaa_synthetic.c" "tests/CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o" "gcc" "tests/CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

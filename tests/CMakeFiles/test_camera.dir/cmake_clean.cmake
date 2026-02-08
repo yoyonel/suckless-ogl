@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_camera.dir/link.d"
   "CMakeFiles/test_camera.dir/test_camera.c.o"
   "CMakeFiles/test_camera.dir/test_camera.c.o.d"
   "test_camera"

@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_shader_include_manual.dir/link.d"
   "CMakeFiles/test_shader_include_manual.dir/test_shader_include_manual.c.o"
   "CMakeFiles/test_shader_include_manual.dir/test_shader_include_manual.c.o.d"
   "test_shader_include_manual"

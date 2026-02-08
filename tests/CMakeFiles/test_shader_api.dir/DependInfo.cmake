@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_shader_api.c" "tests/CMakeFiles/test_shader_api.dir/test_shader_api.c.o" "gcc" "tests/CMakeFiles/test_shader_api.dir/test_shader_api.c.o.d"
-  "" "tests/test_shader_api" "gcc" "tests/CMakeFiles/test_shader_api.dir/link.d"
+  "/app/tests/test_shader_api.c" "tests/CMakeFiles/test_shader_api.dir/test_shader_api.c.o" "gcc" "tests/CMakeFiles/test_shader_api.dir/test_shader_api.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
