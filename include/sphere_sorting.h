@@ -28,7 +28,9 @@ typedef struct {
 typedef struct {
 	SphereSortEntry* entries;       /**< Key array. */
 	SphereInstance* temp_instances; /**< Scratchpad for reordering. */
-	int capacity;                   /**< Allocated size. */
+	int capacity;     /**< Current allocated size of temp_instances. */
+	int min_capacity; /**< Minimum capacity to maintain (from
+	                     initialization). */
 } SphereSorter;
 
 /**
@@ -47,15 +49,21 @@ void sphere_sorter_cleanup(SphereSorter* sorter);
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth).
  *
- * This function Reorders the 'instances' array IN-PLACE using a temporary
- * buffer to avoid extra copies.
+ * This function Reorders the 'instances' array using a temporary
+ * buffer to avoid extra copies. It swaps the pointer provided by
+ * `instances_ptr` with its internal buffer.
+ *
+ * The provided `instances_ptr` will point to a buffer that is at least
+ * as large as the `initial_capacity` passed to `sphere_sorter_init`, or
+ * large enough for `count` instances, whichever is greater.
  *
  * @param sorter      Memory context.
- * @param instances   The array to sort.
+ * @param instances_ptr Pointer to the array pointer to sort. The pointer
+ * *instances_ptr will be updated to point to the sorted array.
  * @param count       Active element count.
  * @param camera_pos  World-space viewer position (for depth calculation).
  */
-void sphere_sorter_sort(SphereSorter* sorter, SphereInstance* instances,
+void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
                         int count, vec3 camera_pos);
 
 #endif /* SPHERE_SORTING_H */
