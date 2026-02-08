@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_render_utils.c" "tests/CMakeFiles/test_render_utils.dir/test_render_utils.c.o" "gcc" "tests/CMakeFiles/test_render_utils.dir/test_render_utils.c.o.d"
-  "" "tests/test_render_utils" "gcc" "tests/CMakeFiles/test_render_utils.dir/link.d"
+  "/app/tests/test_render_utils.c" "tests/CMakeFiles/test_render_utils.dir/test_render_utils.c.o" "gcc" "tests/CMakeFiles/test_render_utils.dir/test_render_utils.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

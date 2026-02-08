@@ -73,26 +73,24 @@ void billboard_group_cleanup(BillboardGroup* group);
 
 /**
  * @brief Draws filled quads for each instance (for debug transparency).
- *
- * Assumes the correct shader is already bound.
  * @param group Pointer to the group.
+ * @param shader Active debug line shader.
  */
-void billboard_group_draw_debug_fill(BillboardGroup* group);
+void billboard_group_draw_debug_fill(BillboardGroup* group, Shader* shader);
 
 /**
  * @brief Draws wireframe quads for each instance.
- *
- * Assumes the correct shader is already bound.
  * @param group Pointer to the group.
+ * @param shader Active debug line shader.
+ * @param quad_vbo The wireframe quad VBO.
  */
-void billboard_group_draw_debug_quads(BillboardGroup* group);
+void billboard_group_draw_debug_quads(BillboardGroup* group, Shader* shader);
 
 /**
  * @brief Draws wireframe boxes for each instance.
- *
- * Assumes the correct shader is already bound.
  * @param group Pointer to the group.
+ * @param shader Active debug line shader.
  */
-void billboard_group_draw_debug_boxes(BillboardGroup* group);
+void billboard_group_draw_debug_boxes(BillboardGroup* group, Shader* shader);
 
 #endif /* BILLBOARD_RENDERING_H */

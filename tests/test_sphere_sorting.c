@@ -1,10 +1,8 @@
 // tests/test_sphere_sorting.c
-#define _POSIX_C_SOURCE 200809L /* For posix_memalign */
 #include "sphere_sorting.h"
 #include "unity.h"
 #include <cglm/cglm.h>
 #include <stdlib.h>
-#include <string.h> /* For memset */
 
 static const int INIT_CAPACITY = 10;
 static const int TEST_COUNT_3 = 3;
@@ -27,22 +25,11 @@ void tearDown(void)
 {
 }
 
-/* Helper to generate dummy instances. Ensures allocation respects min_capacity
- * contract. */
-static SphereInstance* create_dummy_instances(int count, int min_capacity)
+/* Helper to generate dummy instances */
+static SphereInstance* create_dummy_instances(int count)
 {
-	int alloc_count = (count > min_capacity) ? count : min_capacity;
-	SphereInstance* instances = NULL;
-	/* Use posix_memalign to match sorter allocation strategy (safe for
-	 * swapping) */
-	/* SIMD_ALIGNMENT is available via sphere_sorting.h ->
-	 * instanced_rendering.h -> gl_common.h */
-	if (posix_memalign((void**)&instances, SIMD_ALIGNMENT,
-	                   (size_t)alloc_count * sizeof(SphereInstance)) != 0) {
-		return NULL;
-	}
-	memset(instances, 0, (size_t)alloc_count * sizeof(SphereInstance));
-
+	SphereInstance* instances =
+	    (SphereInstance*)calloc((size_t)count, sizeof(SphereInstance));
 	for (int i = 0; i < count; ++i) {
 		glm_mat4_identity(instances[i].model);
 	}
@@ -71,7 +58,6 @@ void test_SphereSorter_Init_ShouldAllocateBuffers(void)
 	TEST_ASSERT_NOT_NULL(sorter.entries);
 	TEST_ASSERT_NOT_NULL(sorter.temp_instances);
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.capacity);
-	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.min_capacity);
 
 	sphere_sorter_cleanup(&sorter);
 }
@@ -85,7 +71,6 @@ void test_SphereSorter_Cleanup_ShouldFreeBuffers(void)
 	TEST_ASSERT_NULL(sorter.entries);
 	TEST_ASSERT_NULL(sorter.temp_instances);
 	TEST_ASSERT_EQUAL_INT(0, sorter.capacity);
-	TEST_ASSERT_EQUAL_INT(0, sorter.min_capacity);
 }
 
 void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
@@ -94,10 +79,7 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	sphere_sorter_init(&sorter, TEST_COUNT_4);
 
 	int count = TEST_COUNT_3;
-	/* Ensure allocated buffer is at least min_capacity (4) even if count is
-	 * 3 */
-	SphereInstance* instances =
-	    create_dummy_instances(count, sorter.min_capacity);
+	SphereInstance* instances = create_dummy_instances(count);
 
 	/* Camera at (0,0,0) looking down -Z */
 	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
@@ -118,7 +100,7 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	/* Expected Order: Far (-20), Middle (-10), Near (-5) */
 	/* Indices should become: 1, 2, 0 */
 
-	sphere_sorter_sort(&sorter, &instances, count, camera_pos);
+	sphere_sorter_sort(&sorter, instances, count, camera_pos);
 
 	/* Check First (Furthest) */
 	const int MAT_Z_INDEX = 3;
@@ -147,18 +129,15 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 void test_SphereSorter_Resize_ShouldHandleMoreThanCapacity(void)
 {
 	SphereSorter sorter;
-	sphere_sorter_init(&sorter, SMALL_CAPACITY); /* Small capacity (2) */
+	sphere_sorter_init(&sorter, SMALL_CAPACITY); /* Small capacity */
 
-	int count = TEST_COUNT_5; /* 5 */
-	/* Allocates max(5, 2) = 5 */
-	SphereInstance* instances =
-	    create_dummy_instances(count, sorter.min_capacity);
+	int count = TEST_COUNT_5;
+	SphereInstance* instances = create_dummy_instances(count);
 	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
 
 	/* Just check it doesn't crash and resizes */
-	sphere_sorter_sort(&sorter, &instances, count, camera_pos);
+	sphere_sorter_sort(&sorter, instances, count, camera_pos);
 
-	/* Check that capacity grew */
 	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.capacity);
 
 	free(instances);

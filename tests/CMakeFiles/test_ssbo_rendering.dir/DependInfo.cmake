@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_ssbo_rendering.c" "tests/CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o" "gcc" "tests/CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o.d"
-  "" "tests/test_ssbo_rendering" "gcc" "tests/CMakeFiles/test_ssbo_rendering.dir/link.d"
+  "/app/tests/test_ssbo_rendering.c" "tests/CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o" "gcc" "tests/CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

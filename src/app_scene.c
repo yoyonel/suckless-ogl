@@ -195,7 +195,8 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 		/* Alpha 0.10 for transparency */
 		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
 		shader_set_vec4(app->debug_line_shader, "u_color", color_fill);
-		billboard_group_draw_debug_fill(&app->billboard_group);
+		billboard_group_draw_debug_fill(&app->billboard_group,
+		                                app->debug_line_shader);
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
@@ -211,7 +212,8 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 		shader_set_int(app->debug_line_shader, "u_useInstanceColor", 0);
 		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
 		shader_set_vec4(app->debug_line_shader, "u_color", color_quad);
-		billboard_group_draw_debug_quads(&app->billboard_group);
+		billboard_group_draw_debug_quads(&app->billboard_group,
+		                                 app->debug_line_shader);
 
 		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
 		/* Enable stipple, Disable Billboard Mode */
@@ -219,7 +221,8 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 		shader_set_int(app->debug_line_shader, "u_billboardMode", 0);
 		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
 		shader_set_vec4(app->debug_line_shader, "u_color", color_box);
-		billboard_group_draw_debug_boxes(&app->billboard_group);
+		billboard_group_draw_debug_boxes(&app->billboard_group,
+		                                 app->debug_line_shader);
 
 		glDisable(GL_POLYGON_OFFSET_LINE);
 

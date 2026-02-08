@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_instanced_rendering.dir/link.d"
   "CMakeFiles/test_instanced_rendering.dir/test_instanced_rendering.c.o"
   "CMakeFiles/test_instanced_rendering.dir/test_instanced_rendering.c.o.d"
   "test_instanced_rendering"

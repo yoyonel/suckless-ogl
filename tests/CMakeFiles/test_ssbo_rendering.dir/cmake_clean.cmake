@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_ssbo_rendering.dir/link.d"
   "CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o"
   "CMakeFiles/test_ssbo_rendering.dir/test_ssbo_rendering.c.o.d"
   "test_ssbo_rendering"

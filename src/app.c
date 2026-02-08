@@ -434,7 +434,7 @@ void app_render(App* app)
 		                   GPU_PROFILER_SCENE_COLOR);
 		if (app->billboard_mode) {
 			sphere_sorter_sort(
-			    &app->sphere_sorter, &app->sphere_instances,
+			    &app->sphere_sorter, app->sphere_instances,
 			    app->sphere_instance_count, app->camera.position);
 			billboard_group_update(&app->billboard_group,
 			                       app->sphere_instances,
@@ -470,13 +470,11 @@ void app_render(App* app)
 			              app->wireframe ? GL_LINE : GL_FILL);
 
 			app_render_instanced(app, view, proj, camera_pos);
-
-			if (app->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
 		}
 
 		glDisable(GL_STENCIL_TEST);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 #else
 	{
@@ -489,13 +487,11 @@ void app_render(App* app)
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              app->wireframe ? GL_LINE : GL_FILL);
 			app_render_instanced(app, view, proj, camera_pos);
-
-			if (app->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
 		}
 
 		glDisable(GL_STENCIL_TEST);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		if (app->show_envmap) {
 			skybox_render(&app->skybox, app->skybox_shader,

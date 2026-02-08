@@ -12,41 +12,18 @@ enum { MAX_TEXTURE_DIMENSION = 8192 };
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
-	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
-	if (!file_ptr) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to open HDR image: %s", path);
-		return NULL;
-	}
-
-	int img_width = 0;
-	int img_height = 0;
-	int comp = 0;
-	if (!stbi_info_from_file(file_ptr, &img_width, &img_height, &comp)) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to read HDR image header: %s", path);
-		return NULL;
-	}
-
-	if (img_width > MAX_TEXTURE_DIMENSION ||
-	    img_height > MAX_TEXTURE_DIMENSION) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "HDR image exceeds max dimensions: %s (%dx%d > %d)",
-		          path, img_width, img_height, MAX_TEXTURE_DIMENSION);
-		return NULL;
-	}
-
-	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to rewind HDR image file: %s", path);
-		return NULL;
-	}
-
-	float* data =
-	    stbi_loadf_from_file(file_ptr, width, height, channels, 4);
+	float* data = stbi_loadf(path, width, height, channels, 4);
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to load HDR image: %s", path);
+		return NULL;
+	}
+
+	if (*width > MAX_TEXTURE_DIMENSION || *height > MAX_TEXTURE_DIMENSION) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "HDR image exceeds max dimensions: %s (%dx%d > %d)",
+		          path, *width, *height, MAX_TEXTURE_DIMENSION);
+		stbi_image_free(data);
 		return NULL;
 	}
 
@@ -142,20 +119,15 @@ GLuint texture_load_hdr(const char* path, int* width, int* height)
 
 GLuint texture_load(const char* path)
 {
-	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
-	if (!file_ptr) {
-		LOG_ERROR("suckless-ogl.texture", "Failed to open image: %s",
-		          path);
-		return 0;
-	}
-
 	int width = 0;
 	int height = 0;
 	int channels = 0;
 
-	if (!stbi_info_from_file(file_ptr, &width, &height, &channels)) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to read image header: %s", path);
+	/* Force 4 channels (RGBA) */
+	unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
+	if (!data) {
+		LOG_ERROR("suckless-ogl.texture", "Failed to load image: %s",
+		          path);
 		return 0;
 	}
 
@@ -163,21 +135,7 @@ GLuint texture_load(const char* path)
 		LOG_ERROR("suckless-ogl.texture",
 		          "Image exceeds max dimensions: %s (%dx%d > %d)", path,
 		          width, height, MAX_TEXTURE_DIMENSION);
-		return 0;
-	}
-
-	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to rewind image file: %s", path);
-		return 0;
-	}
-
-	/* Force 4 channels (RGBA) */
-	unsigned char* data =
-	    stbi_load_from_file(file_ptr, &width, &height, &channels, 4);
-	if (!data) {
-		LOG_ERROR("suckless-ogl.texture", "Failed to load image: %s",
-		          path);
+		stbi_image_free(data);
 		return 0;
 	}
 

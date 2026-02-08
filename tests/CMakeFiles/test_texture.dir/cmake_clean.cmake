@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test_texture.dir/link.d"
   "CMakeFiles/test_texture.dir/test_texture.c.o"
   "CMakeFiles/test_texture.dir/test_texture.c.o.d"
   "test_texture"

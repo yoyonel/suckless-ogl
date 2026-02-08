@@ -8,8 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_icosphere.c" "tests/CMakeFiles/test_icosphere.dir/test_icosphere.c.o" "gcc" "tests/CMakeFiles/test_icosphere.dir/test_icosphere.c.o.d"
-  "" "tests/test_icosphere" "gcc" "tests/CMakeFiles/test_icosphere.dir/link.d"
+  "/app/tests/test_icosphere.c" "tests/CMakeFiles/test_icosphere.dir/test_icosphere.c.o" "gcc" "tests/CMakeFiles/test_icosphere.dir/test_icosphere.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

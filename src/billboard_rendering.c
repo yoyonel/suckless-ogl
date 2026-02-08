@@ -159,23 +159,25 @@ void billboard_group_cleanup(BillboardGroup* group)
 	}
 }
 
-void billboard_group_draw_debug_fill(BillboardGroup* group)
+void billboard_group_draw_debug_fill(BillboardGroup* group, Shader* shader)
 {
 	if (group->vao == 0) {
 		return;
 	}
 
+	shader_use(shader);
 	glBindVertexArray(group->vao);
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, group->instance_count);
 	glBindVertexArray(0);
 }
 
-void billboard_group_draw_debug_quads(BillboardGroup* group)
+void billboard_group_draw_debug_quads(BillboardGroup* group, Shader* shader)
 {
 	if (group->vao_wire_quad == 0) {
 		return;
 	}
 
+	shader_use(shader);
 	glBindVertexArray(group->vao_wire_quad);
 	// 4 vertices for a quad (GL_LINE_LOOP or GL_LINES depending on
 	// VBO) render_utils uses GL_LINE_LOOP implicitly by order? No,
@@ -187,12 +189,13 @@ void billboard_group_draw_debug_quads(BillboardGroup* group)
 	glBindVertexArray(0);
 }
 
-void billboard_group_draw_debug_boxes(BillboardGroup* group)
+void billboard_group_draw_debug_boxes(BillboardGroup* group, Shader* shader)
 {
 	if (group->vao_wire_box == 0) {
 		return;
 	}
 
+	shader_use(shader);
 	glBindVertexArray(group->vao_wire_box);
 	// Cube VBO has 24 vertices (GL_LINES)
 	glDrawArraysInstanced(GL_LINES, 0, WIRE_CUBE_VERTEX_COUNT,
