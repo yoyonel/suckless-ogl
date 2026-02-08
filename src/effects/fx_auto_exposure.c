@@ -34,6 +34,7 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	    GL_FRAMEBUFFER_COMPLETE) {
 		LOG_ERROR("suckless-ogl.postprocess.ae",
 		          "Lum Downsample FBO incomplete!");
+		fx_auto_exposure_cleanup(post_processing);
 		return 0;
 	}
 
@@ -57,6 +58,7 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	if (!auto_exp->downsample_shader || !auto_exp->adapt_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.ae",
 		          "Failed to load auto-exposure shaders");
+		fx_auto_exposure_cleanup(post_processing);
 		return 0;
 	}
 
