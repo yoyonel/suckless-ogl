@@ -17,7 +17,8 @@
 enum {
 	MILLI_DIVISOR = 1000000,
 	PREFIX_BUFFER_SIZE = 128,
-	TIME_BUFFER_SIZE = 24
+	TIME_BUFFER_SIZE = 24,
+	MSG_BUFFER_SIZE = 1024
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
@@ -142,8 +143,8 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	if (g_log_callback) {
 		va_list args_copy;
 		va_copy(args_copy, args);
-		char msg_buf[1024];
-		// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
+		char msg_buf[MSG_BUFFER_SIZE];
+		// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 		(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args_copy);
 		g_log_callback(level, tag, msg_buf);
 		va_end(args_copy);

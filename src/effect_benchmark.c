@@ -13,6 +13,7 @@
 #include <string.h>
 
 #define BENCH_TAG "suckless-ogl.bench"
+#define MS_PER_SEC 1000.0F
 
 /* ---- Effect table (only toggleable fragment-shader effects) ---- */
 
@@ -34,8 +35,9 @@ typedef struct {
  * with a debug visualisation and makes cost measurements meaningless.
  * Excluded bits: POSTFX_MOTION_BLUR_DEBUG, POSTFX_VECTOR_FIELD_DEBUG */
 static const unsigned int DEBUG_VIEW_BITS =
-    POSTFX_MOTION_BLUR_DEBUG | POSTFX_VECTOR_FIELD_DEBUG | POSTFX_DOF_DEBUG |
-    POSTFX_EXPOSURE_DEBUG | POSTFX_FXAA_DEBUG;
+    (unsigned int)POSTFX_MOTION_BLUR_DEBUG |
+    (unsigned int)POSTFX_VECTOR_FIELD_DEBUG | (unsigned int)POSTFX_DOF_DEBUG |
+    (unsigned int)POSTFX_EXPOSURE_DEBUG | (unsigned int)POSTFX_FXAA_DEBUG;
 
 static const EffectEntry BENCHMARKABLE_EFFECTS[] = {
     /* Scene source: Motion Blur → Chromatic Aberration → FXAA */
@@ -219,7 +221,7 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 	if (composite_ms < 0.0F) {
 		/* Profiler hasn't produced results yet */
 		bench->timeout_timer +=
-		    bench->postprocess->delta_time * 1000.0F;
+		    bench->postprocess->delta_time * MS_PER_SEC;
 
 		if (bench->timeout_timer > BENCH_TIMEOUT_MS) {
 			LOG_ERROR(
