@@ -22,18 +22,37 @@ typedef struct {
 } EffectEntry;
 
 /**
- * Effects that run inside the "Final Composite" draw call.
- * Multi-pass effects (Bloom, DoF, AutoExposure, MotionBlur) already have
- * their own profiler stages — no need to A/B them.
+ * All toggleable effects executed in the "Final Composite" fullscreen pass
+ * (postprocess.frag). This includes multi-pass effects like Bloom, DoF, and
+ * Motion Blur whose setup runs in separate profiler stages but whose final
+ * compositing/sampling cost is paid here.
+ *
+ * Order follows the pipeline stages in postprocess.frag main().
  */
+/* Early-exit debug views that short-circuit the entire pipeline.
+ * These are NOT benchmarkable — enabling them replaces all output
+ * with a debug visualisation and makes cost measurements meaningless.
+ * Excluded bits: POSTFX_MOTION_BLUR_DEBUG, POSTFX_VECTOR_FIELD_DEBUG */
+static const unsigned int DEBUG_VIEW_BITS =
+    POSTFX_MOTION_BLUR_DEBUG | POSTFX_VECTOR_FIELD_DEBUG | POSTFX_DOF_DEBUG |
+    POSTFX_EXPOSURE_DEBUG | POSTFX_FXAA_DEBUG;
+
 static const EffectEntry BENCHMARKABLE_EFFECTS[] = {
-    {"FXAA", POSTFX_FXAA},
+    /* Scene source: Motion Blur → Chromatic Aberration → FXAA */
+    {"Motion Blur", POSTFX_MOTION_BLUR},
     {"Chromatic Aberration", POSTFX_CHROM_ABBR},
-    {"Vignette", POSTFX_VIGNETTE},
-    {"Grain", POSTFX_GRAIN},
-    {"Color Grading", POSTFX_COLOR_GRADING},
-    {"Banding", POSTFX_BANDING},
+    {"FXAA", POSTFX_FXAA},
+    /* Depth of Field */
+    {"DOF", POSTFX_DOF},
+    /* HDR pipeline */
+    {"Bloom", POSTFX_BLOOM},
     {"Exposure", POSTFX_EXPOSURE},
+    {"Auto Exposure", POSTFX_AUTO_EXPOSURE},
+    {"Color Grading", POSTFX_COLOR_GRADING},
+    /* LDR pipeline (post-tonemap) */
+    {"Vignette", POSTFX_VIGNETTE},
+    {"Banding", POSTFX_BANDING},
+    {"Grain", POSTFX_GRAIN},
 };
 
 static const int BENCHMARKABLE_COUNT =
@@ -61,6 +80,23 @@ static void reset_accumulator(EffectBenchmark* bench)
 	bench->sum_sq_ms = 0.0;
 	bench->sample_count = 0;
 	bench->frame_counter = 0;
+}
+
+/**
+ * @brief Atomically apply a new effect bitmask.
+ *
+ * Sets active_effects, marks the UBO dirty, AND recompiles the
+ * uber-shader if running in optimized mode (release builds bake
+ * effect toggles as compile-time #defines — without recompilation
+ * the shader ignores the UBO activeEffects field).
+ */
+static void apply_effects(EffectBenchmark* bench, unsigned int effects)
+{
+	bench->postprocess->active_effects = effects;
+	bench->postprocess->ubo_dirty = true;
+	if (bench->postprocess->is_optimized) {
+		postprocess_compile_optimized(bench->postprocess, effects);
+	}
 }
 
 static void compute_stats(const EffectBenchmark* bench, float* out_mean,
@@ -112,14 +148,29 @@ bool effect_benchmark_start(EffectBenchmark* bench)
 
 	LOG_INFO(BENCH_TAG,
 	         "=== Effect Benchmark: Starting sweep (%d effects, "
-	         "%d+%d frames/phase) ===",
+	         "%d+%d frames/phase, all effects forced ON) ===",
 	         bench->effect_count, BENCH_WARMUP_FRAMES,
 	         BENCH_MEASURE_FRAMES);
 
 	bench->saved_effects = bench->postprocess->active_effects;
+
+	/* Force ALL benchmarkable effects ON, but keep debug views OFF
+	 * (they do early-return and would shadow the whole pipeline). */
+	unsigned int all_bits = bench->saved_effects;
+	for (int i = 0; i < bench->effect_count; ++i) {
+		all_bits |= bench->effects[i].bit;
+	}
+	all_bits &= ~DEBUG_VIEW_BITS;
+	bench->benchmark_effects = all_bits;
+	apply_effects(bench, all_bits);
+
 	bench->result_count = 0;
 	bench->current_effect_idx = -1; /* -1 = baseline */
 	bench->phase = BENCH_BASELINE;
+	bench->frame_counter = 0;
+	bench->timeout_timer = 0.0F;
+
+	/* Accumulation */
 	reset_accumulator(bench);
 
 	return true;
@@ -128,6 +179,7 @@ bool effect_benchmark_start(EffectBenchmark* bench)
 bool effect_benchmark_is_running(const EffectBenchmark* bench)
 {
 	return bench->phase == BENCH_BASELINE ||
+	       bench->phase == BENCH_STABILIZE ||
 	       bench->phase == BENCH_EFFECT_TEST;
 }
 
@@ -139,17 +191,52 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 
 	bench->frame_counter++;
 
-	/* Skip warmup frames */
+	/* ---- STABILIZE phase: baseline restored, just wait for warmup ---- */
+	if (bench->phase == BENCH_STABILIZE) {
+		if (bench->frame_counter < BENCH_WARMUP_FRAMES) {
+			return false;
+		}
+		/* Warmup done — disable next effect and start measuring */
+		apply_effects(
+		    bench, bench->benchmark_effects &
+		               ~bench->effects[bench->current_effect_idx].bit);
+		reset_accumulator(bench);
+		bench->phase = BENCH_EFFECT_TEST;
+
+		LOG_INFO(BENCH_TAG, "Testing: %s OFF...",
+		         bench->effects[bench->current_effect_idx].name);
+		return false;
+	}
+
+	/* Skip warmup frames for BASELINE and EFFECT_TEST */
 	if (bench->frame_counter <= BENCH_WARMUP_FRAMES) {
 		return false;
 	}
 
+	/* Read the \"Final Composite\" timing from the previous frame */
 	/* Read the "Final Composite" timing from the previous frame */
 	float composite_ms = find_composite_duration(bench->profiler);
 	if (composite_ms < 0.0F) {
-		/* Profiler hasn't produced results yet, skip */
+		/* Profiler hasn't produced results yet */
+		bench->timeout_timer +=
+		    bench->postprocess->delta_time * 1000.0F;
+
+		if (bench->timeout_timer > BENCH_TIMEOUT_MS) {
+			LOG_ERROR(
+			    BENCH_TAG,
+			    "Benchmark Timed Out! No data from GPU Profiler "
+			    "for %.1f ms.",
+			    bench->timeout_timer);
+			/* Abort: restore original state */
+			apply_effects(bench, bench->saved_effects);
+			bench->phase = BENCH_DONE;
+			return true;
+		}
 		return false;
 	}
+
+	/* Data received — reset timeout */
+	bench->timeout_timer = 0.0F;
 
 	/* Accumulate */
 	bench->sum_ms += (double)composite_ms;
@@ -172,47 +259,19 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 
 		/* Move to first effect */
 		bench->current_effect_idx = 0;
-		bench->phase = BENCH_EFFECT_TEST;
-
-		/* Skip effects that are not currently active */
-		while (bench->current_effect_idx < bench->effect_count) {
-			unsigned int bit =
-			    bench->effects[bench->current_effect_idx].bit;
-			if (bench->saved_effects & bit) {
-				break; /* This effect is active, test it */
-			}
-			/* Record as "not tested" */
-			EffectBenchResult* res =
-			    &bench->results[bench->result_count++];
-			res->name =
-			    bench->effects[bench->current_effect_idx].name;
-			res->effect_bit = bit;
-			res->was_active = false;
-			res->mean_ms = 0.0F;
-			res->stddev_ms = 0.0F;
-			res->cost_ms = 0.0F;
-			bench->current_effect_idx++;
-		}
 
 		if (bench->current_effect_idx >= bench->effect_count) {
-			/* No active effects to test */
-			bench->postprocess->active_effects =
-			    bench->saved_effects;
-			bench->postprocess->ubo_dirty = true;
+			apply_effects(bench, bench->saved_effects);
 			bench->phase = BENCH_DONE;
 			effect_benchmark_log_results(bench);
 			return true;
 		}
 
-		/* Disable the first testable effect */
-		bench->postprocess->active_effects =
-		    bench->saved_effects &
-		    ~bench->effects[bench->current_effect_idx].bit;
-		bench->postprocess->ubo_dirty = true;
-		reset_accumulator(bench);
-
-		LOG_INFO(BENCH_TAG, "Testing: %s OFF...",
-		         bench->effects[bench->current_effect_idx].name);
+		/* Go through stabilize before first test to ensure
+		 * identical conditions as subsequent tests. */
+		apply_effects(bench, bench->benchmark_effects);
+		bench->frame_counter = 0;
+		bench->phase = BENCH_STABILIZE;
 		return false;
 	}
 
@@ -221,7 +280,6 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 		EffectBenchResult* res = &bench->results[bench->result_count++];
 		res->name = bench->effects[bench->current_effect_idx].name;
 		res->effect_bit = bench->effects[bench->current_effect_idx].bit;
-		res->was_active = true;
 		compute_stats(bench, &res->mean_ms, &res->stddev_ms);
 		res->cost_ms = bench->baseline_mean_ms - res->mean_ms;
 
@@ -229,43 +287,21 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 		         res->name, res->mean_ms, res->stddev_ms, res->cost_ms);
 	}
 
-	/* Advance to next active effect */
+	/* Advance to next effect */
 	bench->current_effect_idx++;
-	while (bench->current_effect_idx < bench->effect_count) {
-		unsigned int bit =
-		    bench->effects[bench->current_effect_idx].bit;
-		if (bench->saved_effects & bit) {
-			break; /* Active, test it */
-		}
-		/* Skip inactive effects */
-		EffectBenchResult* res = &bench->results[bench->result_count++];
-		res->name = bench->effects[bench->current_effect_idx].name;
-		res->effect_bit = bit;
-		res->was_active = false;
-		res->mean_ms = 0.0F;
-		res->stddev_ms = 0.0F;
-		res->cost_ms = 0.0F;
-		bench->current_effect_idx++;
-	}
 
 	if (bench->current_effect_idx >= bench->effect_count) {
 		/* All done — restore original state */
-		bench->postprocess->active_effects = bench->saved_effects;
-		bench->postprocess->ubo_dirty = true;
+		apply_effects(bench, bench->saved_effects);
 		bench->phase = BENCH_DONE;
 		effect_benchmark_log_results(bench);
 		return true;
 	}
 
-	/* Set up next effect test */
-	bench->postprocess->active_effects =
-	    bench->saved_effects &
-	    ~bench->effects[bench->current_effect_idx].bit;
-	bench->postprocess->ubo_dirty = true;
-	reset_accumulator(bench);
-
-	LOG_INFO(BENCH_TAG, "Testing: %s OFF...",
-	         bench->effects[bench->current_effect_idx].name);
+	/* Restore baseline (all ON) and stabilize before next test */
+	apply_effects(bench, bench->benchmark_effects);
+	bench->frame_counter = 0;
+	bench->phase = BENCH_STABILIZE;
 	return false;
 }
 
@@ -291,16 +327,9 @@ void effect_benchmark_log_results(const EffectBenchmark* bench)
 
 	for (int i = 0; i < bench->result_count; ++i) {
 		const EffectBenchResult* res = &bench->results[i];
-		if (res->was_active) {
-			LOG_INFO(BENCH_TAG,
-			         "║ %-18s ║ %+8.4f ║   ±%.4f ║   ON   ║",
-			         res->name, res->cost_ms, res->stddev_ms);
-			total_cost += res->cost_ms;
-		} else {
-			LOG_INFO(BENCH_TAG,
-			         "║ %-18s ║     —    ║     —    ║  OFF   ║",
-			         res->name);
-		}
+		LOG_INFO(BENCH_TAG, "║ %-18s ║ %+8.4f ║   ±%.4f ║   ON   ║",
+		         res->name, res->cost_ms, res->stddev_ms);
+		total_cost += res->cost_ms;
 	}
 
 	LOG_INFO(BENCH_TAG,

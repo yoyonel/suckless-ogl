@@ -30,13 +30,17 @@
 /** @brief Maximum number of effects that can be benchmarked. */
 #define BENCH_MAX_EFFECTS 16
 
+/** @brief Timeout in milliseconds to abort benchmark if no profiler data. */
+#define BENCH_TIMEOUT_MS 2000.0F
+
 /**
  * @enum BenchPhase
  * @brief State machine phases for the benchmark sweep.
  */
 typedef enum {
-	BENCH_IDLE = 0,    /**< No benchmark running. */
-	BENCH_BASELINE,    /**< Measuring with all effects at original state. */
+	BENCH_IDLE = 0,  /**< No benchmark running. */
+	BENCH_BASELINE,  /**< Measuring with all effects at original state. */
+	BENCH_STABILIZE, /**< Restoring baseline between tests (warmup only). */
 	BENCH_EFFECT_TEST, /**< Measuring with one effect disabled. */
 	BENCH_DONE         /**< All phases complete, results ready. */
 } BenchPhase;
@@ -51,7 +55,6 @@ typedef struct {
 	float mean_ms;           /**< Mean composite time with effect OFF. */
 	float stddev_ms;         /**< Standard deviation. */
 	float cost_ms;           /**< Estimated cost = baseline - this mean. */
-	bool was_active;         /**< true if effect was ON during baseline. */
 } EffectBenchResult;
 
 /**
@@ -66,6 +69,9 @@ typedef struct {
 	/* Original state (restored at end) */
 	unsigned int saved_effects;
 
+	/* Benchmark mask: all benchmarkable effects forced ON */
+	unsigned int benchmark_effects;
+
 	/* Effect table */
 	struct {
 		const char* name;
@@ -76,6 +82,7 @@ typedef struct {
 	/* Current sweep position */
 	int current_effect_idx; /**< -1 = baseline, 0..N = effect test. */
 	int frame_counter;      /**< Frames elapsed in current phase. */
+	float timeout_timer; /**< Ms elapsed since last valid profile data. */
 
 	/* Accumulation */
 	double sum_ms;

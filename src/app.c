@@ -380,7 +380,8 @@ void app_render(App* app)
 	// 1. Signaler le début de la frame pour traiter les résultats
 	// précédents
 	bool profiling_enabled =
-	    app->timeline_ui.visible || app->log_gpu_metrics;
+	    app->timeline_ui.visible || app->log_gpu_metrics ||
+	    effect_benchmark_is_running(&app->effect_bench);
 	gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
 	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
 
