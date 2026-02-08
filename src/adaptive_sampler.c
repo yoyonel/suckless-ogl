@@ -15,6 +15,7 @@ static const unsigned int PCG_SHIFT_1 = 18U;
 static const unsigned int PCG_SHIFT_2 = 27U;
 static const unsigned int PCG_IS_3 = 59U;
 static const unsigned int PCG_IS_4 = 31U;
+static const size_t DEFAULT_INITIAL_CAPACITY = 64;
 
 static void pcg32_seed(Pcg32* rng, uint64_t initstate, uint64_t initseq)
 {
@@ -63,6 +64,8 @@ void adaptive_sampler_init(AdaptiveSampler* sampler, float window_duration,
 	sampler->target_samples = target_samples;
 	sampler->samples_taken = 0;
 	sampler->window_start_time = 0.0; /* Must be set on reset/first use */
+	sampler->window_start_frame = 0;
+	sampler->window_end_frame = 0;
 
 	if (initial_fps_guess < 1.0F) {
 		static const float DEFAULT_FPS_GUESS = 60.0F;
@@ -91,14 +94,18 @@ void adaptive_sampler_reset(AdaptiveSampler* sampler, double current_time)
 	sampler->samples_taken = 0;
 	sampler->count = 0; /* Clear vector */
 	sampler->window_start_time = current_time;
+	// New window - frame index will be set on first sample/should_sample
+	sampler->window_start_frame = 0;
+	sampler->window_end_frame = 0;
 }
 
 int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
-                                   double current_time)
+                                   double current_time, uint64_t frame_index)
 {
 	/* If first call (window start 0), reset */
 	if (sampler->window_start_time == 0.0) {
 		sampler->window_start_time = current_time;
+		sampler->window_start_frame = frame_index;
 	}
 
 	/* EMA Update */
@@ -161,6 +168,13 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 
 		AdaptiveSampleItem* item = &sampler->samples[sampler->count];
 		item->timestamp = (float)elapsed;
+		item->frame_index = frame_index;
+
+		/* Update window end frame */
+		sampler->window_end_frame = frame_index;
+		if (sampler->window_start_frame == 0) {
+			sampler->window_start_frame = frame_index;
+		}
 
 		static const float MIN_SAFE_DT = 0.00001F;
 		float safe_dt = delta_time;
@@ -176,67 +190,43 @@ int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
 	return take;
 }
 
-void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
-                                 size_t buffer_size, size_t width,
-                                 float avg_value)
+void adaptive_sampler_add(AdaptiveSampler* sampler, float value,
+                          uint64_t frame_index)
 {
-	static const float THRESHOLD_PLUS = 1.05F;
-	static const float THRESHOLD_MINUS = 0.95F;
-	static const size_t PADDING_Width = 8;
-
-	if (!buffer || buffer_size == 0 || width == 0) {
+	if (!sampler) {
 		return;
 	}
 
-	/* Initialize line with dots */
-	/* We need width chars + 1 null terminator usually, but explicit
-	 * buffer_size passed */
-	/* Let's construct a temporary line buffer */
-#define MAX_LINE_WIDTH 256
-	if (width >= MAX_LINE_WIDTH) {
-		width = MAX_LINE_WIDTH - 1;
-	}
-	char line[MAX_LINE_WIDTH];
-
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(line, '.', width);
-	line[width] = '\0';
-
-	float win_secs = sampler->window_duration;
-
-	for (size_t i = 0; i < sampler->count; i++) {
-		float timestamp = sampler->samples[i].timestamp;
-		float val = sampler->samples[i].value;
-
-		/* Map time to 0..width-1 */
-		static const float ROUNDING_OFFSET = 0.5F;
-		size_t pos =
-		    (size_t)(((timestamp / win_secs) * (float)(width - 1)) +
-		             ROUNDING_OFFSET);
-		if (pos >= width) {
-			pos = width - 1;
+	if (sampler->count >= sampler->capacity) {
+		/* Grow buffer */
+		size_t new_cap = sampler->capacity * 2;
+		if (new_cap == 0) {
+			new_cap = DEFAULT_INITIAL_CAPACITY;  // Safety
 		}
 
-		char marker = '#';
-		/* +/- 5% threshold */
-		if (val > avg_value * THRESHOLD_PLUS) {
-			marker = '+';
-		} else if (val < avg_value * THRESHOLD_MINUS) {
-			marker = '-';
+		AdaptiveSampleItem* new_buf = (AdaptiveSampleItem*)realloc(
+		    sampler->samples, sizeof(AdaptiveSampleItem) * new_cap);
+		if (new_buf) {
+			sampler->samples = new_buf;
+			sampler->capacity = new_cap;
+		} else {
+			return; /* Allocation failed */
 		}
-
-		line[pos] = marker;
 	}
 
-	/* Format Output: "[0s...5s]\n|timeline|" */
-	/* We try to fit into provided buffer */
-	(void)safe_snprintf(
-	    buffer, buffer_size, "[0s%.*s%.1fs]\n|%s|",
-	    (int)(width > PADDING_Width ? width - PADDING_Width : 0),
-	    "..................................................", /* Padding */
-	    win_secs, line);
+	AdaptiveSampleItem* item = &sampler->samples[sampler->count];
+	item->timestamp =
+	    0.0F;  // Placeholder as we don't have relative time here
+	item->value = value;
+	item->frame_index = frame_index;
 
-#undef MAX_LINE_WIDTH
+	/* Update window end frame */
+	sampler->window_end_frame = frame_index;
+	if (sampler->window_start_frame == 0) {
+		sampler->window_start_frame = frame_index;
+	}
+	sampler->count++;
+	sampler->samples_taken++;
 }
 
 int adaptive_sampler_is_finished(const AdaptiveSampler* sampler,
@@ -264,6 +254,41 @@ float adaptive_sampler_get_average(const AdaptiveSampler* sampler)
 size_t adaptive_sampler_get_sample_count(const AdaptiveSampler* sampler)
 {
 	return sampler->count;
+}
+
+void adaptive_sampler_get_window_range(const AdaptiveSampler* sampler,
+                                       uint64_t* start_frame,
+                                       uint64_t* end_frame)
+{
+	if (!sampler) {
+		return;
+	}
+	if (start_frame) {
+		*start_frame = sampler->window_start_frame;
+	}
+	if (end_frame) {
+		*end_frame = sampler->window_end_frame;
+	}
+}
+
+size_t adaptive_sampler_get_sample_indices(const AdaptiveSampler* sampler,
+                                           uint64_t* out_indices,
+                                           size_t max_count)
+{
+	if (!sampler || !out_indices || max_count == 0) {
+		return 0;
+	}
+
+	size_t count = sampler->count;
+	if (count > max_count) {
+		count = max_count;
+	}
+
+	for (size_t i = 0; i < count; ++i) {
+		out_indices[i] = sampler->samples[i].frame_index;
+	}
+
+	return count;
 }
 
 void adaptive_sampler_cleanup(AdaptiveSampler* sampler)

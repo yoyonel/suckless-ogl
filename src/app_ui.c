@@ -279,7 +279,8 @@ void app_render_ui(App* app)
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
-	/* Conditional text overlay rendering based on text_overlay_mode */
+	/* Conditional text overlay rendering based on text_overlay_mode
+	 */
 	if (app->text_overlay_mode >= 1) {
 		static const float MS_PER_SECOND = 1000.0F;
 		char fps_text[MAX_FPS_TEXT_LENGTH];
@@ -302,35 +303,15 @@ void app_render_ui(App* app)
 
 		/* Adaptive Sampler Debug */
 		if (app->text_overlay_mode >= 2) {
-			static const size_t SAMPLER_BUF_SIZE = 256;
-			static const size_t SAMPLER_WIDTH = 40;
 			static const size_t AVG_TEXT_SIZE = 64;
-
-			char sampler_buf[SAMPLER_BUF_SIZE];
+			char avg_text[AVG_TEXT_SIZE];
 			float sampled_avg =
 			    adaptive_sampler_get_average(&app->fps_sampler);
-			adaptive_sampler_ascii_plot(
-			    &app->fps_sampler, sampler_buf, sizeof(sampler_buf),
-			    SAMPLER_WIDTH, sampled_avg);
 
 			/* Show numerical average */
-			char avg_text[AVG_TEXT_SIZE];
 			(void)safe_snprintf(avg_text, sizeof(avg_text),
 			                    "Sampled Avg: %.2f", sampled_avg);
 			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
-
-			/* Split lines manually to avoid newline issues */
-			char* newline_ptr = strchr(sampler_buf, '\n');
-			if (newline_ptr) {
-				*newline_ptr = '\0';
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR);
-				ui_layout_text(&layout, newline_ptr + 1,
-				               DEFAULT_FONT_COLOR);
-			} else {
-				ui_layout_text(&layout, sampler_buf,
-				               DEFAULT_FONT_COLOR);
-			}
 		}
 	}
 
@@ -421,6 +402,9 @@ void app_render_ui(App* app)
 	if (app->show_help) {
 		app_draw_help_overlay(app);
 	}
+
+	gpu_profiler_ui_draw(&app->timeline_ui, &app->ui, app->width,
+	                     app->height);
 
 	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);
 }

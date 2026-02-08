@@ -19,9 +19,11 @@
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
-#include "async_loader.h"
 #include "billboard_rendering.h"
 #include "camera.h"
+#include "effect_benchmark.h"
+#include "gpu_profiler.h"
+#include "gpu_profiler_ui.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "perf_mode.h"
@@ -99,7 +101,9 @@ typedef struct App {
 	FpsCounter fps_counter;      /**< Rolling average FPS manager. */
 	IcosphereGeometry geometry;  /**< High-poly sphere mesh data. */
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	UIContext ui;                /**< Overlay and text rendering state. */
+	GPUProfiler gpu_profiler;
+	GPUProfilerUI timeline_ui;
+	UIContext ui; /**< Overlay and text rendering state. */
 	InstancedGroup
 	    instanced_group; /**< Managed buffers for opaque spheres. */
 	BillboardGroup billboard_group; /**< Managed buffers for billboards. */
@@ -139,6 +143,8 @@ typedef struct App {
 	int perf_mode_active;  /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
+	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
+	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
 
 	/* --- Global GPU Resources --- */
 	GLuint sphere_vao;           /**< Shared geometry VAO. */

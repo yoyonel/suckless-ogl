@@ -1,3 +1,4 @@
+// tests/test_shader_security.c
 #include "shader.h"
 #include "unity.h"
 #include <stdio.h>
@@ -12,38 +13,43 @@ void tearDown(void)
 }
 
 /* MAX_SHADER_SOURCE_SIZE is defined as 16 * 1024 * 1024 in src/shader.c */
-#define MAX_SIZE (16 * 1024 * 1024)
+static const size_t KB_SIZE = 1024;
+static const size_t MB_SIZE_16 = 16 * 1024 * 1024;
+static const size_t SIZE_INCREMENT = 1;
+static const int SEEK_SUCCESS = 0;
+static const char TEST_BYTE = 'A';
 
 static void create_large_file(const char* filename, size_t size)
 {
-	FILE* f = fopen(filename, "wb");
-	if (!f) {
+	FILE* file = fopen(filename, "wb");
+	if (!file) {
 		TEST_FAIL_MESSAGE("Failed to create test file");
 	}
 
 	/* Write one byte at the end to set size */
-	if (fseek(f, (long)(size - 1), SEEK_SET) != 0) {
-		fclose(f);
+	if (fseek(file, (long)(size - SIZE_INCREMENT), SEEK_SET) !=
+	    SEEK_SUCCESS) {
+		(void)fclose(file);
 		TEST_FAIL_MESSAGE("Failed to seek in test file");
 	}
-	if (fputc('A', f) == EOF) {
-		fclose(f);
+	if (fputc(TEST_BYTE, file) == EOF) {
+		(void)fclose(file);
 		TEST_FAIL_MESSAGE("Failed to write to test file");
 	}
-	fclose(f);
+	(void)fclose(file);
 }
 
 void test_shader_read_too_large(void)
 {
 	const char* filename = "too_large.glsl";
-	create_large_file(filename, MAX_SIZE + 1);
+	create_large_file(filename, MB_SIZE_16 + SIZE_INCREMENT);
 
 	char* result = shader_read_file(filename);
 	/* Expect NULL because we want to enforce the limit */
 	TEST_ASSERT_NULL_MESSAGE(
 	    result, "Should fail for files larger than MAX_SHADER_SOURCE_SIZE");
 
-	remove(filename);
+	(void)remove(filename);
 	if (result)
 		free(result);
 }
@@ -51,14 +57,14 @@ void test_shader_read_too_large(void)
 void test_shader_read_limit(void)
 {
 	const char* filename = "limit.glsl";
-	create_large_file(filename, MAX_SIZE);
+	create_large_file(filename, MB_SIZE_16);
 
 	char* result = shader_read_file(filename);
 	/* Expect non-NULL because it's within limit */
 	TEST_ASSERT_NOT_NULL_MESSAGE(
 	    result, "Should succeed for files equal to MAX_SHADER_SOURCE_SIZE");
 
-	remove(filename);
+	(void)remove(filename);
 	free(result);
 }
 

@@ -25,6 +25,15 @@ typedef enum {
 } LogLevel;
 
 /**
+ * @brief Callback type for log message interception.
+ * @param level Sensitivity level.
+ * @param tag Category label.
+ * @param message The full formatted log message.
+ */
+typedef void (*LogCallback)(LogLevel level, const char* tag,
+                            const char* message);
+
+/**
  * @brief Logs a formatted message.
  *
  * Format: `YYYY-MM-DD HH:MM:SS,mmm - tag - LEVEL - message`
@@ -35,6 +44,12 @@ typedef enum {
  * @param ... Arguments for the format string.
  */
 void log_message(LogLevel level, const char* tag, const char* format, ...);
+
+/**
+ * @brief Sets a custom callback for log messages.
+ * @param callback Function to call for each log message, or NULL to disable.
+ */
+void log_set_callback(LogCallback callback);
 
 /**
  * @brief Sets the global minimum log level.

@@ -17,8 +17,9 @@
  * @brief Represents a single data point in the sampler.
  */
 typedef struct {
-	float timestamp; /**< Time elapsed since window start. */
-	float value;     /**< Measured value (e.g. FPS). */
+	float timestamp;      /**< Time elapsed since window start. */
+	float value;          /**< Measured value (e.g. FPS). */
+	uint64_t frame_index; /**< Frame index when sampled. */
 } AdaptiveSampleItem;
 
 /**
@@ -46,8 +47,10 @@ typedef struct {
 
 	/* State */
 	size_t samples_taken;
-	double window_start_time; /**< Absolute time when the current window
-	                             started. */
+	double window_start_time;    /**< Absolute time when the current window
+	                                started. */
+	uint64_t window_start_frame; /**< Frame index when window started. */
+	uint64_t window_end_frame;   /**< Frame index of most recent sample. */
 	float avg_dt; /**< Exponential Moving Average of frame deltas. */
 	float alpha;  /**< EMA smoothing factor. */
 
@@ -57,6 +60,16 @@ typedef struct {
 	size_t count;                /**< Number of samples currently stored. */
 
 } AdaptiveSampler;
+
+/**
+ * @brief Manually adds a sample to the sampler (e.g. from external source like
+ * GPU profiler).
+ * @param sampler Pointer to the sampler.
+ * @param value The value to add.
+ * @param frame_index The frame index associated with this value.
+ */
+void adaptive_sampler_add(AdaptiveSampler* sampler, float value,
+                          uint64_t frame_index);
 
 /**
  * @brief Initializes the adaptive sampler.
@@ -74,10 +87,11 @@ void adaptive_sampler_init(AdaptiveSampler* sampler, float window_duration,
  * @param sampler Pointer to the sampler.
  * @param delta_time Current frame duration.
  * @param current_time Absolute time in seconds.
+ * @param frame_index Current frame index.
  * @return 1 if a sample should be recorded, 0 otherwise.
  */
 int adaptive_sampler_should_sample(AdaptiveSampler* sampler, float delta_time,
-                                   double current_time);
+                                   double current_time, uint64_t frame_index);
 
 /**
  * @brief Checks if the current sampling window has concluded.
@@ -103,23 +117,32 @@ float adaptive_sampler_get_average(const AdaptiveSampler* sampler);
 size_t adaptive_sampler_get_sample_count(const AdaptiveSampler* sampler);
 
 /**
+ * @brief Retrieves the frame index range covered by the current window.
+ * @param sampler Pointer to the sampler.
+ * @param start_frame Output for start frame index (can be NULL).
+ * @param end_frame Output for end frame index (can be NULL).
+ */
+void adaptive_sampler_get_window_range(const AdaptiveSampler* sampler,
+                                       uint64_t* start_frame,
+                                       uint64_t* end_frame);
+
+/**
+ * @brief Retrieves the list of frame indices for all collected samples.
+ * @param sampler Pointer to the sampler.
+ * @param out_indices Buffer to store the frame indices.
+ * @param max_count Size of the output buffer.
+ * @return Number of indices written to the buffer.
+ */
+size_t adaptive_sampler_get_sample_indices(const AdaptiveSampler* sampler,
+                                           uint64_t* out_indices,
+                                           size_t max_count);
+
+/**
  * @brief Resets the sampler state for a new window.
  * @param sampler Pointer to the sampler.
  * @param current_time New window start time.
  */
 void adaptive_sampler_reset(AdaptiveSampler* sampler, double current_time);
-
-/**
- * @brief Renders the sample distribution as an ASCII graph for logs/overlays.
- * @param sampler Pointer to the sampler.
- * @param buffer Output char buffer.
- * @param buffer_size Size of the output buffer.
- * @param width Character width of the timeline graph.
- * @param avg_value Comparison threshold for high/low visualization.
- */
-void adaptive_sampler_ascii_plot(const AdaptiveSampler* sampler, char* buffer,
-                                 size_t buffer_size, size_t width,
-                                 float avg_value);
 
 /**
  * @brief Frees all dynamic memory associated with the sampler.

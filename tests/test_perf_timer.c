@@ -3,6 +3,9 @@
 #include "unity.h"
 #include <string.h>
 
+static const int LOOP_ITERATIONS = 10000;
+static const double ZERO_THRESHOLD = 0.0;
+
 void setUp(void)
 {
 }
@@ -13,7 +16,8 @@ void tearDown(void)
 void test_perf_timer_module_exists(void)
 {
 	PerfTimer timer;
-	memset(&timer, 0, sizeof(PerfTimer));
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(&timer, 0, sizeof(PerfTimer));
 	perf_timer_start(&timer);
 	TEST_PASS();
 }
@@ -21,7 +25,8 @@ void test_perf_timer_module_exists(void)
 void test_perf_timer_start(void)
 {
 	PerfTimer timer;
-	memset(&timer, 0, sizeof(PerfTimer));
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(&timer, 0, sizeof(PerfTimer));
 	perf_timer_start(&timer);
 	TEST_PASS();
 }
@@ -29,35 +34,39 @@ void test_perf_timer_start(void)
 void test_perf_timer_elapsed_ms(void)
 {
 	PerfTimer timer;
-	memset(&timer, 0, sizeof(PerfTimer));
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(&timer, 0, sizeof(PerfTimer));
 	perf_timer_start(&timer);
 
 	// Simuler du travail
-	for (volatile int i = 0; i < 10000; i++)
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	for (volatile int i = 0; i < LOOP_ITERATIONS; i++)
 		;
 
 	double elapsed = perf_timer_elapsed_ms(&timer);
-	TEST_ASSERT_GREATER_OR_EQUAL(0.0, elapsed);
+	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
 }
 
 void test_perf_timer_elapsed_us(void)
 {
 	PerfTimer timer;
-	memset(&timer, 0, sizeof(PerfTimer));
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(&timer, 0, sizeof(PerfTimer));
 	perf_timer_start(&timer);
 
 	double elapsed = perf_timer_elapsed_us(&timer);
-	TEST_ASSERT_GREATER_OR_EQUAL(0.0, elapsed);
+	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
 }
 
 void test_perf_timer_elapsed_s(void)
 {
 	PerfTimer timer;
-	memset(&timer, 0, sizeof(PerfTimer));
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(&timer, 0, sizeof(PerfTimer));
 	perf_timer_start(&timer);
 
 	double elapsed = perf_timer_elapsed_s(&timer);
-	TEST_ASSERT_GREATER_OR_EQUAL(0.0, elapsed);
+	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
 }
 
 int main(void)

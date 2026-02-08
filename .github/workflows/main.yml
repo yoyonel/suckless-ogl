@@ -37,8 +37,9 @@ jobs:
       - name: Cache Clang-Tidy Results
         uses: actions/cache@v4
         with:
-          path: ~/.cache/cltcache
-          key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h') }}
+          path: |
+            ~/.cache/cltcache
+          key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h', '.clang-tidy', 'Makefile') }}
           restore-keys: |
             ${{ runner.os }}-cltcache-
 

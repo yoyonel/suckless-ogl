@@ -101,6 +101,15 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
             perf_hybrid_start(), label }
     ```
 
+4.  **The GPU Profiler RAII**: Used for automatic management of GPU profiling stages.
+
+    ```c
+    #define GPU_STAGE_PROFILER(profiler_ptr, name, color) \
+        GPUStageRAII _stage_raii##__LINE__ \
+            __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
+        gpu_profiler_start_stage(profiler_ptr, name, color)
+    ```
+
 ---
 
 ## 3. Benefits & Usage

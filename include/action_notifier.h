@@ -14,6 +14,15 @@
 /** @brief Maximum length of a notification message. */
 #define MAX_ACTION_TEXT_LENGTH 128
 
+/** @brief Short notification duration (seconds). */
+#define NOTIF_DUR_SHORT 1.0F
+
+/** @brief Normal notification duration (seconds). */
+#define NOTIF_DUR_NORMAL 1.5F
+
+/** @brief Long notification duration (seconds). */
+#define NOTIF_DUR_LONG 2.0F
+
 /**
  * @struct ActionNotification
  * @brief Represents a single active notification.

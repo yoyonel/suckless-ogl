@@ -29,6 +29,14 @@ int fx_bloom_init(PostProcess* post_processing)
 		return 0;
 	}
 
+	/* Set sampler uniforms once (they are per-program state) */
+	shader_use(bloom->prefilter_shader);
+	shader_set_int(bloom->prefilter_shader, "srcTexture", 0);
+	shader_use(bloom->downsample_shader);
+	shader_set_int(bloom->downsample_shader, "srcTexture", 0);
+	shader_use(bloom->upsample_shader);
+	shader_set_int(bloom->upsample_shader, "srcTexture", 0);
+
 	/* Create Resources */
 	glGenFramebuffers(1, &bloom->fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
@@ -116,18 +124,15 @@ void fx_bloom_render(PostProcess* post_processing)
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(bloom->prefilter_shader, "srcTexture", 0);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, bloom->mips[0].texture, 0);
 	glViewport(0, 0, bloom->mips[0].width, bloom->mips[0].height);
 
-	glBindVertexArray(post_processing->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
 	/* 2. Downsample */
 	shader_use(bloom->downsample_shader);
-	shader_set_int(bloom->downsample_shader, "srcTexture", 0);
 
 	for (int i = 0; i < BLOOM_MIP_LEVELS - 1; i++) {
 		const BloomMip* mip_src = &bloom->mips[i];
@@ -150,7 +155,6 @@ void fx_bloom_render(PostProcess* post_processing)
 
 	/* 3. Upsample with Blending */
 	shader_use(bloom->upsample_shader);
-	shader_set_int(bloom->upsample_shader, "srcTexture", 0);
 	shader_set_float(bloom->upsample_shader, "filterRadius",
 	                 post_processing->bloom.radius);
 
@@ -173,7 +177,6 @@ void fx_bloom_render(PostProcess* post_processing)
 	}
 
 	glDisable(GL_BLEND);
-	glBindVertexArray(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
 }

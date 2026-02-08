@@ -90,6 +90,14 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
                   float pos_y, const vec3 color, int screen_width,
                   int screen_height);
 
+/**
+ * @brief Measures the width of a text string in pixels.
+ * @param ui_context Pointer to the context.
+ * @param text The text to measure.
+ * @return Width in pixels.
+ */
+float ui_measure_text(UIContext* ui_context, const char* text);
+
 /** @brief Draws text with custom alpha transparency. */
 void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
                      float pos_y, const vec3 color, float alpha,
@@ -109,5 +117,11 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
                      float size, float angle, const vec3 color,
                      int screen_width, int screen_height);
+
+/** @brief Draws a rounded rectangle with custom alpha. */
+void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
+                          float width, float height, float radius,
+                          const vec3 color, float alpha, int screen_width,
+                          int screen_height);
 
 #endif /* UI_H */

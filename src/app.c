@@ -201,7 +201,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app_update_instancing_mode(app);
 #endif
 
-	if (!postprocess_init(&app->postprocess, width, height)) {
+	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
+	                      height)) {
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
@@ -215,6 +216,12 @@ int app_init(App* app, int width, int height, const char* title)
 
 	perf_mode_init(&app->perf_context);
 	action_notifier_init(&app->notifier);
+
+	gpu_profiler_init(&app->gpu_profiler);
+	gpu_profiler_ui_init(&app->timeline_ui);
+	effect_benchmark_init(&app->effect_bench, &app->postprocess,
+	                      &app->gpu_profiler);
+	app->log_gpu_metrics = 0; /* Console logging off by default */
 
 	return 1;
 }
@@ -289,6 +296,8 @@ void app_cleanup(App* app)
 
 	perf_mode_cleanup(&app->perf_context);
 
+	gpu_profiler_cleanup(&app->gpu_profiler);
+
 	window_destroy(app->window);
 }
 
@@ -301,8 +310,9 @@ void app_run(App* app)
 		app->delta_time = current_time - app->last_frame_time;
 		app->last_frame_time = current_time;
 		fps_update(&app->fps_counter, app->delta_time, current_time);
-		adaptive_sampler_should_sample(
-		    &app->fps_sampler, (float)app->delta_time, current_time);
+		adaptive_sampler_should_sample(&app->fps_sampler,
+		                               (float)app->delta_time,
+		                               current_time, app->frame_count);
 		action_notifier_update(&app->notifier, (float)app->delta_time);
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
@@ -365,6 +375,27 @@ void app_update(App* app)
 
 void app_render(App* app)
 {
+	// 1. Signaler le début de la frame pour traiter les résultats
+	// précédents
+	// 1. Signaler le début de la frame pour traiter les résultats
+	// précédents
+	bool profiling_enabled =
+	    app->timeline_ui.visible || app->log_gpu_metrics ||
+	    effect_benchmark_is_running(&app->effect_bench);
+	gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
+	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+
+	/* Effect benchmark: read previous frame's profiler results */
+	if (effect_benchmark_update(&app->effect_bench)) {
+		action_notifier_push(&app->notifier,
+		                     "FX Benchmark: Done (see log)",
+		                     NOTIF_DUR_LONG);
+	}
+
+	// 2. Démarrer la mesure globale de la frame
+	GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
+	                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+
 	postprocess_begin(&app->postprocess);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
@@ -387,6 +418,9 @@ void app_render(App* app)
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->show_envmap) {
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "EnvMap",
+		                   GPU_PROFILER_ENV_COLOR);
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		skybox_render(&app->skybox, app->skybox_shader,
@@ -395,69 +429,91 @@ void app_render(App* app)
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	if (app->billboard_mode) {
-		sphere_sorter_sort(&app->sphere_sorter, app->sphere_instances,
-		                   app->sphere_instance_count,
-		                   app->camera.position);
-		billboard_group_update(&app->billboard_group,
-		                       app->sphere_instances,
-		                       app->sphere_instance_count);
-	}
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
+		                   GPU_PROFILER_SCENE_COLOR);
+		if (app->billboard_mode) {
+			sphere_sorter_sort(
+			    &app->sphere_sorter, app->sphere_instances,
+			    app->sphere_instance_count, app->camera.position);
+			billboard_group_update(&app->billboard_group,
+			                       app->sphere_instances,
+			                       app->sphere_instance_count);
+		}
 
-	if (app->billboard_mode) {
+		if (app->billboard_mode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			// 1. Activer le Blending UNIQUEMENT pour la couleur
+			// (Attachment 0) Cela permet à ton 'edgeFactor' de
+			// lisser les bords de la sphère
+			glEnablei(GL_BLEND, 0);
+
+			// 2. Configurer l'équation de blend (toujours globale
+			// ou par index si besoin) Pour l'alpha blending
+			// classique (lissage des bords)
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			// 3. DÉSACTIVER explicitement le Blending pour la
+			// vélocité (Attachment 1) C'est la clé : le buffer de
+			// vélocité recevra les valeurs brutes du shader sans
+			// être multipliées par l'alpha ou mixées avec le noir
+			// du fond.
+			glDisablei(GL_BLEND, 1);
+
+			app_render_billboards(app, view, proj, camera_pos);
+
+			// Nettoyage après rendu (Optionnel mais propre)
+			glDisablei(GL_BLEND, 0);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK,
+			              app->wireframe ? GL_LINE : GL_FILL);
+
+			app_render_instanced(app, view, proj, camera_pos);
+		}
+
+		glDisable(GL_STENCIL_TEST);
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		// 1. Activer le Blending UNIQUEMENT pour la couleur (Attachment
-		// 0) Cela permet à ton 'edgeFactor' de lisser les bords de la
-		// sphère
-		glEnablei(GL_BLEND, 0);
-
-		// 2. Configurer l'équation de blend (toujours globale ou par
-		// index si besoin) Pour l'alpha blending classique (lissage des
-		// bords)
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		// 3. DÉSACTIVER explicitement le Blending pour la vélocité
-		// (Attachment 1) C'est la clé : le buffer de vélocité recevra
-		// les valeurs brutes du shader sans être multipliées par
-		// l'alpha ou mixées avec le noir du fond.
-		glDisablei(GL_BLEND, 1);
-
-		app_render_billboards(app, view, proj, camera_pos);
-
-		// Nettoyage après rendu (Optionnel mais propre)
-		glDisablei(GL_BLEND, 0);
-	} else {
-		glPolygonMode(GL_FRONT_AND_BACK,
-		              app->wireframe ? GL_LINE : GL_FILL);
-		app_render_instanced(app, view, proj, camera_pos);
 	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 #else
-	if (app->billboard_mode) {
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
+		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+		if (app->billboard_mode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			app_render_billboards(app, view, proj, camera_pos);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK,
+			              app->wireframe ? GL_LINE : GL_FILL);
+			app_render_instanced(app, view, proj, camera_pos);
+		}
+
+		glDisable(GL_STENCIL_TEST);
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		app_render_billboards(app, view, proj, camera_pos);
-	} else {
-		glPolygonMode(GL_FRONT_AND_BACK,
-		              app->wireframe ? GL_LINE : GL_FILL);
-		app_render_instanced(app, view, proj, camera_pos);
-	}
 
-	glDisable(GL_STENCIL_TEST);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	if (app->show_envmap) {
-		skybox_render(&app->skybox, app->skybox_shader,
-		              app->hdr_texture, app->dummy_black_tex,
-		              inv_view_proj, app->env_lod);
+		if (app->show_envmap) {
+			skybox_render(&app->skybox, app->skybox_shader,
+			              app->hdr_texture, app->dummy_black_tex,
+			              inv_view_proj, app->env_lod);
+		}
 	}
 #endif
 
 	postprocess_end(&app->postprocess);
+
 	postprocess_update_matrices(&app->postprocess, view_proj);
-	app_render_ui(app);
+
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "UI Overlay",
+		                   GPU_PROFILER_UI_COLOR);
+		app_render_ui(app);
+	}
+
+	// 4. Logique d'affichage et animations
+	double current_time = glfwGetTime();
+	gpu_profiler_ui_update(&app->timeline_ui, &app->gpu_profiler,
+	                       app->delta_time, current_time,
+	                       (bool)app->log_gpu_metrics);
 }

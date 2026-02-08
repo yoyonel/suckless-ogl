@@ -1,3 +1,4 @@
+// tests/test_log.c
 #include "log.h"
 #include "unity.h"
 #include <fcntl.h>
@@ -8,6 +9,10 @@
 #include <unistd.h>
 
 #define CAPTURE_FILE "test_log_capture.txt"
+
+static const int BUFFER_SIZE = 1024;
+static const mode_t FILE_PERMS = 0644;
+static const int TEST_INT_VAL = 42;
 
 void setUp(void)
 {
@@ -28,8 +33,8 @@ static void assert_capture_contains(const char* expected_level,
 	FILE* f_ptr = fopen(CAPTURE_FILE, "r");
 	TEST_ASSERT_NOT_NULL_MESSAGE(f_ptr, "Failed to open capture file");
 
-	char buffer[1024];
-	if (fgets(buffer, sizeof(buffer), f_ptr) == NULL) {
+	char buffer[BUFFER_SIZE];
+	if (fgets(buffer, (int)sizeof(buffer), f_ptr) == NULL) {
 		(void)fclose(f_ptr);
 		TEST_FAIL_MESSAGE("Capture file is empty");
 	}
@@ -45,7 +50,9 @@ static void assert_capture_contains(const char* expected_level,
 }
 
 // Global backup for stderr/stdout
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 int stderr_backup = -1;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 int stdout_backup = -1;
 
 void redirect_streams(void)
@@ -55,7 +62,8 @@ void redirect_streams(void)
 	stderr_backup = dup(STDERR_FILENO);
 	stdout_backup = dup(STDOUT_FILENO);
 
-	int fd_tmp = open(CAPTURE_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	int fd_tmp =
+	    open(CAPTURE_FILE, O_WRONLY | O_CREAT | O_TRUNC, FILE_PERMS);
 	if (fd_tmp < 0) {
 		perror("Failed to open capture file");
 		return;
@@ -140,9 +148,9 @@ void test_log_filtering(void)
 
 	FILE* f_ptr = fopen(CAPTURE_FILE, "r");
 	TEST_ASSERT_NOT_NULL(f_ptr);
-	char buffer[1024];
+	char buffer[BUFFER_SIZE];
 	bool found_error = false;
-	while (fgets(buffer, sizeof(buffer), f_ptr)) {
+	while (fgets(buffer, (int)sizeof(buffer), f_ptr)) {
 		if (strstr(buffer, "INFO") || strstr(buffer, "WARNING")) {
 			(void)fclose(f_ptr);
 			TEST_FAIL_MESSAGE("Filtered message appeared in log");
@@ -171,7 +179,7 @@ void test_log_env_var(void)
 void test_log_formatting(void)
 {
 	redirect_streams();
-	LOG_INFO("FMT", "Value is %d", 42);
+	LOG_INFO("FMT", "Value is %d", TEST_INT_VAL);
 	restore_streams();
 
 	assert_capture_contains("INFO", "FMT", "Value is 42");

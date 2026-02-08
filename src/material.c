@@ -15,9 +15,9 @@
 enum { MAX_MATERIAL_COUNT = 10000, RGB_COMPONENTS = 3 };
 
 // Constantes float (doivent rester en define)
-#define DEFAULT_ROUGHNESS 0.5F
-#define DEFAULT_ALBEDO 0.0F
-#define DEFAULT_METALLIC 0.0F
+#define MAT_DEFAULT_ROUGHNESS 0.5F
+#define MAT_DEFAULT_ALBEDO 0.0F
+#define MAT_DEFAULT_METALLIC 0.0F
 
 static char* read_file_to_buffer(const char* path, size_t* out_size)
 {
@@ -99,7 +99,7 @@ static void parse_albedo_array(cJSON* element, PBRMaterial* mat)
 	cJSON* albedo_item = cJSON_GetObjectItem(element, "albedo");
 	if (albedo_item == NULL || !cJSON_IsArray(albedo_item)) {
 		for (int j = 0; j < RGB_COMPONENTS; j++) {
-			mat->albedo[j] = DEFAULT_ALBEDO;
+			mat->albedo[j] = MAT_DEFAULT_ALBEDO;
 		}
 		return;
 	}
@@ -111,7 +111,7 @@ static void parse_albedo_array(cJSON* element, PBRMaterial* mat)
 		    cJSON_IsNumber(color_component)) {
 			mat->albedo[j] = (float)color_component->valuedouble;
 		} else {
-			mat->albedo[j] = DEFAULT_ALBEDO;
+			mat->albedo[j] = MAT_DEFAULT_ALBEDO;
 		}
 	}
 }
@@ -122,14 +122,14 @@ static void parse_material_properties(cJSON* element, PBRMaterial* mat)
 	if (metallic_item != NULL && cJSON_IsNumber(metallic_item)) {
 		mat->metallic = (float)metallic_item->valuedouble;
 	} else {
-		mat->metallic = DEFAULT_METALLIC;
+		mat->metallic = MAT_DEFAULT_METALLIC;
 	}
 
 	cJSON* roughness_item = cJSON_GetObjectItem(element, "roughness");
 	if (roughness_item != NULL && cJSON_IsNumber(roughness_item)) {
 		mat->roughness = (float)roughness_item->valuedouble;
 	} else {
-		mat->roughness = DEFAULT_ROUGHNESS;
+		mat->roughness = MAT_DEFAULT_ROUGHNESS;
 	}
 }
 
@@ -156,10 +156,10 @@ static PBRMaterial* allocate_materials(int count)
 	// Initialisation explicite pour éviter le warning memset_s
 	for (int i = 0; i < count; i++) {
 		materials[i].name[0] = '\0';
-		materials[i].metallic = DEFAULT_METALLIC;
-		materials[i].roughness = DEFAULT_ROUGHNESS;
+		materials[i].metallic = MAT_DEFAULT_METALLIC;
+		materials[i].roughness = MAT_DEFAULT_ROUGHNESS;
 		for (int j = 0; j < RGB_COMPONENTS; j++) {
-			materials[i].albedo[j] = DEFAULT_ALBEDO;
+			materials[i].albedo[j] = MAT_DEFAULT_ALBEDO;
 		}
 	}
 

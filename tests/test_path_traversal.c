@@ -1,8 +1,8 @@
+// tests/test_path_traversal.c
 #include "shader.h"
 #include "unity.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -16,24 +16,32 @@ void tearDown(void)
 void test_shader_path_traversal(void)
 {
 	// 1. Create a secret file outside the expected shader dir
-	FILE* f = fopen("secret_data.txt", "w");
-	if (f) {
-		fprintf(f, "THIS_IS_SECRET");
-		fclose(f);
+	FILE* file = fopen("secret_data.txt", "w");
+	if (file) {
+		if (fprintf(file, "THIS_IS_SECRET") < 0) {
+			// Handle write error if strictly needed, or just ignore
+			// for test setup
+		}
+		(void)fclose(file);
 	} else {
 		TEST_FAIL_MESSAGE("Could not create secret file");
 	}
 
 	// 2. Create a shader file in a subdir that tries to access the secret
 	// We'll use a subdir "traversal_test"
-	mkdir("traversal_test", 0777);
+	const mode_t DIR_PERMS = 0777;
+	// NOLINTNEXTLINE(concurrency-mt-unsafe)
+	if (mkdir("traversal_test", DIR_PERMS) != 0) {
+		// Might already exist, ignore
+	}
+
 	const char* shader_path = "traversal_test/malicious.glsl";
-	f = fopen(shader_path, "w");
-	if (f) {
+	file = fopen(shader_path, "w");
+	if (file) {
 		// @header "../secret_data.txt"
-		fprintf(f, "@header \"../secret_data.txt\"\n");
-		fprintf(f, "void main() {}\n");
-		fclose(f);
+		(void)fprintf(file, "@header \"../secret_data.txt\"\n");
+		(void)fprintf(file, "void main() {}\n");
+		(void)fclose(file);
 	} else {
 		TEST_FAIL_MESSAGE("Could not create malicious shader file");
 	}
@@ -45,18 +53,18 @@ void test_shader_path_traversal(void)
 	if (source != NULL) {
 		free(source);
 		// Cleanup before failing
-		remove(shader_path);
-		rmdir("traversal_test");
-		remove("secret_data.txt");
+		(void)remove(shader_path);
+		(void)rmdir("traversal_test");
+		(void)remove("secret_data.txt");
 		TEST_FAIL_MESSAGE(
 		    "Security check failed: Shader with traversal path was "
 		    "loaded!");
 	}
 
 	// Cleanup
-	remove(shader_path);
-	rmdir("traversal_test");
-	remove("secret_data.txt");
+	(void)remove(shader_path);
+	(void)rmdir("traversal_test");
+	(void)remove("secret_data.txt");
 }
 
 int main(void)

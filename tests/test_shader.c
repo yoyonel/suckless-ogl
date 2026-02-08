@@ -1,3 +1,4 @@
+// tests/test_shader.c
 #include "app_settings.h"
 #include "shader.h"
 #include "unity.h"
@@ -8,6 +9,16 @@
 
 static GLFWwindow* window = NULL;
 
+static const int WINDOW_WIDTH = 640;
+static const int WINDOW_HEIGHT = 480;
+static const int GL_VER_MAJOR = 3;
+static const int GL_VER_MINOR = 3;
+static const GLuint SHADER_INVALID = 0;
+static const GLuint PROGRAM_INVALID = 0;
+static const int DEFINES_COUNT = 2;
+static const mode_t PERM_NONE = 0000;
+static const mode_t PERM_READ_WRITE = 0644;
+
 void setUp(void)
 {
 	if (!glfwInit()) {
@@ -17,11 +28,12 @@ void setUp(void)
 	// Hidden window for headless-like testing
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 	// Request a reasonable core profile
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(640, 480, "Test Window", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Test Window",
+	                          NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to create GLFW window");
@@ -44,18 +56,18 @@ void tearDown(void)
 	glfwTerminate();
 
 	// Cleanup files
-	remove("test_valid.vert");
-	remove("test_valid.frag");
-	remove("test_invalid.vert");
+	(void)remove("test_valid.vert");
+	(void)remove("test_valid.frag");
+	(void)remove("test_invalid.vert");
 }
 
 // Helper to write string to file
 static void write_file(const char* path, const char* content)
 {
-	FILE* f = fopen(path, "w");
-	if (f) {
-		fputs(content, f);
-		fclose(f);
+	FILE* file = fopen(path, "w");
+	if (file) {
+		(void)fputs(content, file);
+		(void)fclose(file);
 	}
 }
 
@@ -71,7 +83,7 @@ void test_shader_read_file_success(void)
 	TEST_ASSERT_EQUAL_STRING("content", content);
 #endif
 	free(content);
-	remove("test_read.txt");
+	(void)remove("test_read.txt");
 }
 
 void test_shader_read_file_missing(void)
@@ -93,7 +105,7 @@ void test_shader_read_file_empty(void)
 	TEST_ASSERT_EQUAL_STRING("", content);
 #endif
 	free(content);
-	remove("test_empty.txt");
+	(void)remove("test_empty.txt");
 }
 
 void test_shader_read_file_fread_fail(void)
@@ -105,7 +117,7 @@ void test_shader_read_file_fread_fail(void)
 	write_file(path, content);
 
 	/* Make file unreadable: fopen succeeds, fread fails */
-	chmod(path, 0000);
+	(void)chmod(path, PERM_NONE);
 
 	char* src = shader_read_file(path);
 
@@ -113,8 +125,8 @@ void test_shader_read_file_fread_fail(void)
 	TEST_ASSERT_NULL(src);
 
 	/* Restore permissions for cleanup */
-	chmod(path, 0644);
-	remove(path);
+	(void)chmod(path, PERM_READ_WRITE);
+	(void)remove(path);
 }
 
 void test_shader_read_file_large(void)
@@ -149,7 +161,7 @@ void test_shader_read_file_large(void)
 	TEST_ASSERT_EQUAL_STRING(large_content, content);
 #endif
 	free(content);
-	remove("test_large.txt");
+	(void)remove("test_large.txt");
 }
 
 void test_shader_read_file_with_defines(void)
@@ -162,8 +174,8 @@ void test_shader_read_file_with_defines(void)
 	extern char* shader_read_file_with_defines(
 	    const char* path, const char** defines, int count);
 
-	char* content =
-	    shader_read_file_with_defines("test_defines.vert", defines, 2);
+	char* content = shader_read_file_with_defines("test_defines.vert",
+	                                              defines, DEFINES_COUNT);
 	TEST_ASSERT_NOT_NULL(content);
 
 	// Constructed expectation
@@ -182,7 +194,7 @@ void test_shader_read_file_with_defines(void)
 	                             strlen(version_line));
 
 	free(content);
-	remove("test_defines.vert");
+	(void)remove("test_defines.vert");
 }
 
 void test_shader_compile_success(void)
@@ -193,9 +205,9 @@ void test_shader_compile_success(void)
 	write_file("test_valid.vert", vert_src);
 
 	GLuint shader = shader_compile("test_valid.vert", GL_VERTEX_SHADER);
-	TEST_ASSERT_NOT_EQUAL(0, shader);
+	TEST_ASSERT_NOT_EQUAL(SHADER_INVALID, shader);
 
-	GLint type = 0;
+	GLint type = SHADER_INVALID;
 	glGetShaderiv(shader, GL_SHADER_TYPE, &type);
 	TEST_ASSERT_EQUAL(GL_VERTEX_SHADER, type);
 
@@ -212,13 +224,13 @@ void test_shader_compile_fail_syntax(void)
 	// This should print an error to stderr (tested via log module usually,
 	// but here we just check return 0)
 	GLuint shader = shader_compile("test_invalid.vert", GL_VERTEX_SHADER);
-	TEST_ASSERT_EQUAL(0, shader);
+	TEST_ASSERT_EQUAL(SHADER_INVALID, shader);
 }
 
 void test_shader_compile_fail_io(void)
 {
 	GLuint shader = shader_compile("does_not_exist.vert", GL_VERTEX_SHADER);
-	TEST_ASSERT_EQUAL(0, shader);
+	TEST_ASSERT_EQUAL(SHADER_INVALID, shader);
 }
 
 void test_shader_load_program_success(void)
@@ -235,7 +247,7 @@ void test_shader_load_program_success(void)
 	write_file("test_valid.frag", frag_src);
 
 	GLuint prog = shader_load_program("test_valid.vert", "test_valid.frag");
-	TEST_ASSERT_NOT_EQUAL(0, prog);
+	TEST_ASSERT_NOT_EQUAL(PROGRAM_INVALID, prog);
 
 	glDeleteProgram(prog);
 }
@@ -254,9 +266,9 @@ void test_shader_load_program_fragment_fail(void)
 
 	GLuint prog =
 	    shader_load_program("test_valid.vert", "test_invalid.frag");
-	TEST_ASSERT_EQUAL(0, prog);
+	TEST_ASSERT_EQUAL(PROGRAM_INVALID, prog);
 
-	remove("test_invalid.frag");
+	(void)remove("test_invalid.frag");
 }
 
 void test_shader_load_compute_success(void)
@@ -268,10 +280,10 @@ void test_shader_load_compute_success(void)
 	write_file("test_valid.comp", comp_src);
 
 	GLuint prog = shader_load_compute("test_valid.comp");
-	TEST_ASSERT_NOT_EQUAL(0, prog);
+	TEST_ASSERT_NOT_EQUAL(PROGRAM_INVALID, prog);
 
 	glDeleteProgram(prog);
-	remove("test_valid.comp");
+	(void)remove("test_valid.comp");
 }
 
 void test_shader_load_compute_compile_fail(void)
@@ -283,9 +295,9 @@ void test_shader_load_compute_compile_fail(void)
 	write_file("test_invalid.comp", bad_comp);
 
 	GLuint prog = shader_load_compute("test_invalid.comp");
-	TEST_ASSERT_EQUAL(0, prog);
+	TEST_ASSERT_EQUAL(PROGRAM_INVALID, prog);
 
-	remove("test_invalid.comp");
+	(void)remove("test_invalid.comp");
 }
 
 void test_shader_load_program_vertex_fail(void)
@@ -303,9 +315,9 @@ void test_shader_load_program_vertex_fail(void)
 
 	GLuint prog =
 	    shader_load_program("test_invalid.vert", "test_valid.frag");
-	TEST_ASSERT_EQUAL(0, prog);
+	TEST_ASSERT_EQUAL(PROGRAM_INVALID, prog);
 
-	remove("test_invalid.vert");
+	(void)remove("test_invalid.vert");
 }
 
 void test_shader_load_program_link_fail(void)
@@ -332,12 +344,12 @@ void test_shader_load_program_link_fail(void)
 	    shader_load_program("test_link_vert.vert", "test_link_frag.frag");
 
 	// Clean up regardless of result
-	if (prog != 0) {
+	if (prog != PROGRAM_INVALID) {
 		glDeleteProgram(prog);
 	}
 
-	remove("test_link_vert.vert");
-	remove("test_link_frag.frag");
+	(void)remove("test_link_vert.vert");
+	(void)remove("test_link_frag.frag");
 }
 
 void test_shader_load_compute_link_fail(void)
@@ -354,11 +366,11 @@ void test_shader_load_compute_link_fail(void)
 	GLuint prog = shader_load_compute("test_comp_link.comp");
 
 	// This should succeed on most implementations, but tests the code path
-	if (prog != 0) {
+	if (prog != PROGRAM_INVALID) {
 		glDeleteProgram(prog);
 	}
 
-	remove("test_comp_link.comp");
+	(void)remove("test_comp_link.comp");
 }
 
 int main(void)

@@ -127,13 +127,11 @@ void fx_dof_render(PostProcess* post_processing)
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	shader_set_int(ds_shader, "srcTexture", 0);
 
 	vec2 src_res = {(float)post_processing->width,
 	                (float)post_processing->height};
 	shader_set_vec2(ds_shader, "srcResolution", (float*)&src_res);
 
-	glBindVertexArray(post_processing->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
 	/* Pass 2: Extra Blur (Tent Filter) Temp -> Blur (Final) */
@@ -145,12 +143,10 @@ void fx_dof_render(PostProcess* post_processing)
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, dof->temp_tex);
-	shader_set_int(us_shader, "srcTexture", 0);
 	shader_set_float(us_shader, "filterRadius", 1.0F);
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
-	glBindVertexArray(0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
 }

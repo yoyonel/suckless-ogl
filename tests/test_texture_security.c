@@ -1,9 +1,23 @@
+// tests/test_texture_security.c
 #include "texture.h"
 #include "unity.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 static GLFWwindow* window = NULL;
+
+enum {
+	WINDOW_WIDTH = 640,
+	WINDOW_HEIGHT = 480,
+	GL_VERSION_MAJOR = 3,
+	GL_VERSION_MINOR = 3,
+	MAX_DIMENSION = 8192,
+	EXCESSIVE_DIMENSION = 8193,
+	SMALL_DIMENSION = 16,
+	TEST_DIMENSION_4 = 4,
+	DUMMY_DATA_SIZE = 64
+};
+static const GLuint INVALID_TEXTURE = 0;
 
 void setUp(void)
 {
@@ -13,11 +27,12 @@ void setUp(void)
 
 	// Hidden window for headless testing
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(640, 480, "Test Window", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Test Window",
+	                          NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to create GLFW window");
@@ -44,32 +59,32 @@ void test_texture_upload_excessive_dimensions(void)
 {
 	// The implementation enforces a limit of 8192.
 	// We test 8193 to ensure it is rejected.
-	int width = 8193;
-	int height = 16;
-	float dummy_data[64] = {0};
+	int width = EXCESSIVE_DIMENSION;
+	int height = SMALL_DIMENSION;
+	float dummy_data[DUMMY_DATA_SIZE] = {0};
 
 	GLuint tex = texture_upload_hdr(dummy_data, width, height);
 	TEST_ASSERT_EQUAL_MESSAGE(
-	    0, tex,
+	    INVALID_TEXTURE, tex,
 	    "Should reject texture with width > MAX_TEXTURE_DIMENSION (8192)");
 
-	width = 16;
-	height = 8193;
+	width = SMALL_DIMENSION;
+	height = EXCESSIVE_DIMENSION;
 	tex = texture_upload_hdr(dummy_data, width, height);
 	TEST_ASSERT_EQUAL_MESSAGE(
-	    0, tex,
+	    INVALID_TEXTURE, tex,
 	    "Should reject texture with height > MAX_TEXTURE_DIMENSION (8192)");
 }
 
 void test_texture_upload_valid_dimensions(void)
 {
-	int width = 4;
-	int height = 4;
+	int width = TEST_DIMENSION_4;
+	int height = TEST_DIMENSION_4;
 	// 4x4 * 4 floats * sizeof(float) = 64 bytes
-	float dummy_data[64] = {0};
+	float dummy_data[DUMMY_DATA_SIZE] = {0};
 
 	GLuint tex = texture_upload_hdr(dummy_data, width, height);
-	TEST_ASSERT_NOT_EQUAL(0, tex);
+	TEST_ASSERT_NOT_EQUAL(INVALID_TEXTURE, tex);
 
 	glDeleteTextures(1, &tex);
 }

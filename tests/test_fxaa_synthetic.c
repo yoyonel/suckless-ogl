@@ -1,3 +1,4 @@
+// tests/test_fxaa_synthetic.c
 #include <glad/glad.h>
 
 #include "postprocess.h"
@@ -10,19 +11,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define WIDTH 1024
-#define HEIGHT 768
-#define GL_VERSION_MAJOR 4
-#define GL_VERSION_MINOR 5
+static const int WIDTH = 1024;
+static const int HEIGHT = 768;
+static const int GL_VER_MAJOR = 4;
+static const int GL_VER_MINOR = 5;
+static const int PATH_MAX_LEN = 256;
+static const int RGB_CHANNELS = 3;
+static const int GEN_COUNT = 1;
+static const int DRAW_VERT_COUNT = 3;
+static const int FACTOR_DIV2 = 2;
+static const int COORD_DEC = 1;
+static const int SNPRINTF_ERROR = 0;
+static const float ZERO_VAL = 0.0F;
+static const float ONE_VAL = 1.0F;
+static const double PERCENT_100 = 100.0;
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
-#define PATH_MAX_LEN 256
-
 // Global state (required for GLFW callbacks and simple test structure)
 static GLFWwindow* global_window = NULL;
 static PostProcess post_process_system;
+static GPUProfiler gpu_profiler_system;
 static Shader* pattern_shader_ptr = NULL;
 static unsigned char* pixels_before = NULL;
 static unsigned char* pixels_after = NULL;
@@ -40,19 +50,21 @@ static const float UINT8_MAX_F = 255.0F;
 static void flip_image_vertically(int image_width, int image_height,
                                   unsigned char* image_data)
 {
-	int row_sz = image_width * 3;
-	unsigned char* row_tmp = malloc((size_t)row_sz);
+	int row_sz = image_width * RGB_CHANNELS;
+	unsigned char* row_tmp = (unsigned char*)malloc((size_t)row_sz);
 	if (!row_tmp) {
 		return;
 	}
 
-	for (int y_coord = 0; y_coord < (image_height / 2); y_coord++) {
+	for (int y_coord = 0; y_coord < (image_height / FACTOR_DIV2);
+	     y_coord++) {
 		unsigned char* top_row = image_data + (y_coord * row_sz);
 		unsigned char* bottom_row =
-		    image_data + (((image_height - y_coord) - 1) * row_sz);
-		memcpy(row_tmp, top_row, (size_t)row_sz);
-		memcpy(top_row, bottom_row, (size_t)row_sz);
-		memcpy(bottom_row, row_tmp, (size_t)row_sz);
+		    image_data +
+		    (((image_height - y_coord) - COORD_DEC) * row_sz);
+		(void)memcpy(row_tmp, top_row, (size_t)row_sz);
+		(void)memcpy(top_row, bottom_row, (size_t)row_sz);
+		(void)memcpy(bottom_row, row_tmp, (size_t)row_sz);
 	}
 	free(row_tmp);
 }
@@ -64,8 +76,8 @@ void setUp(void)
 	}
 
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VERSION_MAJOR);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VERSION_MINOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	global_window =
@@ -83,7 +95,11 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
-	if (!postprocess_init(&post_process_system, WIDTH, HEIGHT)) {
+	// 1. Initialiser le profiler en premier
+	gpu_profiler_init(&gpu_profiler_system);
+
+	if (!postprocess_init(&post_process_system, &gpu_profiler_system, WIDTH,
+	                      HEIGHT)) {
 		TEST_FAIL_MESSAGE("Failed to initialize PostProcess");
 	}
 

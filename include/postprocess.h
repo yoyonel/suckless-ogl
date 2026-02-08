@@ -15,6 +15,7 @@
 #include "effects/fx_dof.h"
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
+#include "gpu_profiler.h"
 #include "shader.h"
 #include <cglm/cglm.h>
 #include <cglm/types.h>
@@ -221,7 +222,7 @@ typedef struct {
 typedef struct {
 	uint32_t active_effects;
 	float time;
-	float _pad0[2];
+	float screen_texel_size[2]; /**< 1.0 / vec2(width, height) */
 
 	/* Vignette */
 	float vignette_intensity;
@@ -356,12 +357,15 @@ typedef struct PostProcess {
 
 	bool is_optimized; /**< true if Uber-shader uses static preprocessor
 	                      flags. */
+	bool ubo_dirty;    /**< true when UBO needs re-upload. */
 
 	unsigned int
 	    compiled_flags; /**< Flags used for the current optimized shader. */
 
 	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
 	int shader_cache_count;
+
+	GPUProfiler* gpu_profiler;
 } PostProcess;
 
 /* --- Lifecycle --- */
@@ -373,7 +377,8 @@ typedef struct PostProcess {
  * @param height Initial resolution height.
  * @return 0 on success, negative on error.
  */
-int postprocess_init(PostProcess* post_processing, int width, int height);
+int postprocess_init(PostProcess* post_processing,
+                     GPUProfiler* external_profiler, int width, int height);
 
 /**
  * @brief Releases all GPU and CPU resources.

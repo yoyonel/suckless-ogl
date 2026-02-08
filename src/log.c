@@ -17,13 +17,16 @@
 enum {
 	MILLI_DIVISOR = 1000000,
 	PREFIX_BUFFER_SIZE = 128,
-	TIME_BUFFER_SIZE = 24
+	TIME_BUFFER_SIZE = 24,
+	MSG_BUFFER_SIZE = 1024
 };
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static LogLevel g_log_level = LOG_LEVEL_INFO;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static bool g_log_initialized = false;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static LogCallback g_log_callback = NULL;
 
 static LogLevel string_to_level(const char* str)
 {
@@ -88,6 +91,11 @@ void log_set_level(LogLevel level)
 	g_log_initialized = true;  // Manual override bypasses env init
 }
 
+void log_set_callback(LogCallback callback)
+{
+	g_log_callback = callback;
+}
+
 LogLevel log_get_level(void)
 {
 	if (!g_log_initialized) {
@@ -131,6 +139,17 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
+
+	if (g_log_callback) {
+		va_list args_copy;
+		va_copy(args_copy, args);
+		char msg_buf[MSG_BUFFER_SIZE];
+		// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+		(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args_copy);
+		g_log_callback(level, tag, msg_buf);
+		va_end(args_copy);
+	}
+
 	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
 	(void)vfprintf(out, format, args);
 	va_end(args);

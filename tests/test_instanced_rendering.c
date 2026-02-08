@@ -1,9 +1,12 @@
-// tests/test_instanced_rendering.c
 #include "gl_common.h"
 #include "instanced_rendering.h"
 #include "unity.h"
+#include <string.h>
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
+
+static const int INSTANCE_COUNT = 2;
 
 void setUp(void)
 {
@@ -47,9 +50,12 @@ void test_instanced_rendering_init_cleanup(void)
 	}
 
 	InstancedGroup group;
-	SphereInstance instances[2] = {0};
+	SphereInstance instances[INSTANCE_COUNT];
+	// clear memory
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
+	(void)memset(instances, 0, sizeof(instances));
 
-	instanced_group_init(&group, instances, 2);
+	instanced_group_init(&group, instances, INSTANCE_COUNT);
 	instanced_group_cleanup(&group);
 
 	TEST_PASS();

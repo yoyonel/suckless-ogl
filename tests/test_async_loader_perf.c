@@ -1,10 +1,26 @@
+// tests/test_async_loader_perf.c
+#define _POSIX_C_SOURCE 199309L
 #include "async_loader.h"
+#include <stdbool.h>
 #include <stdio.h>
-#include <string.h>
 #include <sys/resource.h>
 #include <sys/time.h>
-#include <unistd.h>
+#include <time.h>
 #include <unity.h>
+
+static const long US_MULTIPLIER = 1000000L;
+static const long MS_MULTIPLIER = 1000L;
+static const long WARMUP_MS = 100L;
+static const long MEASURE_MS = 1000L;
+
+static void sleep_ms(long milliseconds)
+{
+	struct timespec req;
+	req.tv_sec = milliseconds / MS_MULTIPLIER;
+	req.tv_nsec =
+	    (milliseconds % MS_MULTIPLIER) * MS_MULTIPLIER * MS_MULTIPLIER;
+	nanosleep(&req, NULL);
+}
 
 void setUp(void)
 {
@@ -16,22 +32,23 @@ void tearDown(void)
 	async_loader_shutdown();
 }
 
-static long timeval_to_us(struct timeval* tv)
+static long timeval_to_us(struct timeval* time_val)
 {
-	return tv->tv_sec * 1000000L + tv->tv_usec;
+	return (time_val->tv_sec * US_MULTIPLIER) + time_val->tv_usec;
 }
 
 void test_idle_cpu_usage(void)
 {
-	struct rusage start, end;
+	struct rusage start;
+	struct rusage end;
 
 	// Warmup
-	usleep(100000);  // 100ms
+	sleep_ms(WARMUP_MS);
 
 	getrusage(RUSAGE_SELF, &start);
 
 	// Sleep for 1 second
-	usleep(1000000);
+	sleep_ms(MEASURE_MS);
 
 	getrusage(RUSAGE_SELF, &end);
 
@@ -55,8 +72,10 @@ void test_load_request(void)
 	// Poll until finished (by checking if we can submit again)
 	int attempts = 0;
 	bool finished = false;
+	const int MAX_ATTEMPTS = 100;
+	const int POLL_INTERVAL_MS = 10;
 
-	while (attempts < 100) {  // Wait up to 1 second
+	while (attempts < MAX_ATTEMPTS) {  // Wait up to 1 second
 		AsyncRequest req = {0};
 		if (async_loader_poll(&req)) {
 			// It actually loaded something? (Should not happen for
@@ -72,7 +91,7 @@ void test_load_request(void)
 			break;
 		}
 
-		usleep(10000);
+		sleep_ms(POLL_INTERVAL_MS);
 		attempts++;
 	}
 

@@ -26,16 +26,17 @@ void getProjectedBounds(vec2 axis, float radius, float projScale,
 	// Project to NDC: x_ndc = (nx / -nz) * projScale
 	// Division by -nz because OpenGL looks down -Z
 	// HANDLE SINGULARITY: If tangent point is behind camera (nz >= 0),
-	// we clamp to infinity in the direction of nx.
+	// we clamp to NDC edge in the direction of nx.
+	// Use (nx >= 0 ? 1 : -1) instead of sign() to avoid sign(0)=0 collapse.
 	float p1, p2;
 
 	if (nz1 > -0.001)
-		p1 = sign(nx1) * 10000.0;
+		p1 = (nx1 >= 0.0 ? 1.0 : -1.0) * 10000.0;
 	else
 		p1 = projScale * (nx1 / -nz1);
 
 	if (nz2 > -0.001)
-		p2 = sign(nx2) * 10000.0;
+		p2 = (nx2 >= 0.0 ? 1.0 : -1.0) * 10000.0;
 	else
 		p2 = projScale * (nx2 / -nz2);
 
@@ -52,13 +53,16 @@ void computeBillboardSphere(vec3 quadVertexPos, vec3 sphereCenterWorld,
 	float distSq = dot(viewPos, viewPos);
 	float r2 = sphereRadius * sphereRadius;
 
-	if (distSq <= r2 * 1.005) {
+	// Extract projection scale factors once (used in multiple branches)
+	float sx = projection[0][0];
+	float sy = projection[1][1];
+
+	// Additive + multiplicative epsilon for float32 robustness at all
+	// scales
+	if (distSq <= r2 + max(r2 * 0.005, 1e-4)) {
 		// Inside sphere: cover screen with a massive quad for
 		// full-screen ray-casting
 		outClipPos = vec4(quadVertexPos.xy * 2.0, 0.0, 1.0);
-
-		float sx = projection[0][0];
-		float sy = projection[1][1];
 
 		// Reconstruct world pos on a plane in front of the camera
 		// to allow rays to be cast properly using normalize(WorldPos -
@@ -75,14 +79,11 @@ void computeBillboardSphere(vec3 quadVertexPos, vec3 sphereCenterWorld,
 		outWorldPos = camPos + camForward +
 		              camRight * (quadVertexPos.x * 2.0 / sx) +
 		              camUp * (quadVertexPos.y * 2.0 / sy);
-	} else if (viewPos.z > 0.0) {
-		// Behind camera: cull
+	} else if (viewPos.z > sphereRadius) {
+		// Sphere entirely behind camera (nearest point z > 0): cull
 		outClipPos = vec4(-2.0, -2.0, 0.0, 1.0);
 		outWorldPos = sphereCenterWorld;
 	} else {
-		float sx = projection[0][0];
-		float sy = projection[1][1];
-
 		float minX, maxX, minY, maxY;
 		getProjectedBounds(vec2(viewPos.x, viewPos.z), sphereRadius, sx,
 		                   minX, maxX);
@@ -92,9 +93,13 @@ void computeBillboardSphere(vec3 quadVertexPos, vec3 sphereCenterWorld,
 		float ndc_x = (quadVertexPos.x < 0.0) ? minX : maxX;
 		float ndc_y = (quadVertexPos.y < 0.0) ? minY : maxY;
 
-		// Conservative Depth
+		// Conservative Depth: use nearest sphere point along view axis.
+		// Derive near plane from the projection matrix to avoid
+		// hardcoded magic number coupling with the CPU-side NEAR_PLANE
+		// constant.
+		float zNear = projection[3][2] / (projection[2][2] - 1.0);
 		float nearestZ = viewPos.z + sphereRadius;
-		nearestZ = min(nearestZ, -0.11);
+		nearestZ = min(nearestZ, -(zNear + 0.01));
 
 		float clipW = -nearestZ;
 		float clipZ = projection[2][2] * nearestZ + projection[3][2];

@@ -33,8 +33,8 @@ typedef struct {
  * from CPU "wall-clock" time due to driver buffering and parallelism.
  */
 typedef struct {
-	GLuint query_start; /**< Handle for the start query. */
-	GLuint query_end;   /**< Handle for the end query. */
+	GLuint query_start; /**< Handle for the start timestamp query. */
+	GLuint query_end;   /**< Handle for the end timestamp query. */
 	int active; /**< Flag indicating if a measurement is in progress. */
 } GPUTimer;
 
@@ -87,6 +87,12 @@ double perf_timer_elapsed_s(PerfTimer* timer);
  * @param timer Pointer to the timer.
  */
 void gpu_timer_start(GPUTimer* timer);
+
+/**
+ * @brief Explicitly stops the GPU timer (records end timestamp).
+ * @param timer Pointer to the timer.
+ */
+void gpu_timer_stop(GPUTimer* timer);
 
 /**
  * @brief Stops the GPU timer and retrieves the result.

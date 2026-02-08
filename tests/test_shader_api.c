@@ -1,3 +1,4 @@
+// tests/test_shader_api.c
 #include <glad/glad.h>
 
 #include "shader.h"
@@ -10,6 +11,31 @@
 /* Minimal stub for window/context */
 static GLFWwindow* window = NULL;
 
+enum {
+	WINDOW_WIDTH = 640,
+	WINDOW_HEIGHT = 480,
+	GL_VER_MAJOR = 3,
+	GL_VER_MINOR = 3,
+	MIN_UNIFORM_COUNT = 4,
+	VEC2_SIZE = 2,
+	VEC3_SIZE = 3,
+	VEC4_SIZE = 4,
+	MAT4_SIZE = 16,
+	TEST_INT_VAL = 123,
+	GL_COMPUTE_MIN_MAJOR = 4,
+	GL_COMPUTE_MIN_MINOR = 3
+};
+static const GLint UNIFORM_NOT_FOUND = -1;
+static const GLuint PROGRAM_INVALID = 0;
+static const float TEST_INTENSITY = 0.5F;
+static const float COLOR_R = 1.0F;
+static const float COLOR_G = 0.0F;
+static const float COLOR_B = 0.0F;
+static const float FLOAT_ONE = 1.0F;
+static const float FLOAT_TWO = 2.0F;
+static const float FLOAT_THREE = 3.0F;
+static const float FLOAT_FOUR = 4.0F;
+
 void setUp(void)
 {
 	/* Initialize GL context if needed */
@@ -20,12 +46,12 @@ void setUp(void)
 
 		/* Offscreen context */
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_VER_MAJOR);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_VER_MINOR);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		window =
-		    glfwCreateWindow(640, 480, "TestShaderAPI", NULL, NULL);
+		window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
+		                          "TestShaderAPI", NULL, NULL);
 		if (!window) {
 			TEST_FAIL_MESSAGE("Failed to create GLFW window");
 		}
@@ -87,10 +113,10 @@ static const char* c_shader_src =
 /* Helpers to write temp files */
 static void write_temp_file(const char* name, const char* content)
 {
-	FILE* f = fopen(name, "w");
-	if (f) {
-		fputs(content, f);
-		fclose(f);
+	FILE* file = fopen(name, "w");
+	if (file) {
+		(void)fputs(content, file);
+		(void)fclose(file);
 	}
 }
 
@@ -99,35 +125,37 @@ void test_Shader_Load_And_Cache(void)
 	write_temp_file("test_api.vert", v_shader_src);
 	write_temp_file("test_api.frag", f_shader_src);
 
-	Shader* s = shader_load("test_api.vert", "test_api.frag");
-	TEST_ASSERT_NOT_NULL_MESSAGE(s, "Shader load failed");
-	TEST_ASSERT_NOT_EQUAL(0, s->program);
+	Shader* shader_ptr = shader_load("test_api.vert", "test_api.frag");
+	TEST_ASSERT_NOT_NULL_MESSAGE(shader_ptr, "Shader load failed");
+	TEST_ASSERT_NOT_EQUAL(PROGRAM_INVALID, shader_ptr->program);
 
 	/* Verify Cache Content */
 	/* We expect: uModel, uViewProj, uColor, uIntensity */
-	TEST_ASSERT_NOT_NULL(s->entries);
-	TEST_ASSERT_GREATER_OR_EQUAL_INT(4, s->entry_count);
+	TEST_ASSERT_NOT_NULL(shader_ptr->entries);
+	TEST_ASSERT_GREATER_OR_EQUAL_INT(MIN_UNIFORM_COUNT,
+	                                 shader_ptr->entry_count);
 
 	/* Verify Locations via new API */
-	GLint loc_model = shader_get_uniform_location(s, "uModel");
-	TEST_ASSERT_NOT_EQUAL(-1, loc_model);
+	GLint loc_model = shader_get_uniform_location(shader_ptr, "uModel");
+	TEST_ASSERT_NOT_EQUAL(UNIFORM_NOT_FOUND, loc_model);
 
-	GLint loc_view = shader_get_uniform_location(s, "uViewProj");
-	TEST_ASSERT_NOT_EQUAL(-1, loc_view);
+	GLint loc_view = shader_get_uniform_location(shader_ptr, "uViewProj");
+	TEST_ASSERT_NOT_EQUAL(UNIFORM_NOT_FOUND, loc_view);
 
-	GLint loc_color = shader_get_uniform_location(s, "uColor");
-	TEST_ASSERT_NOT_EQUAL(-1, loc_color);
+	GLint loc_color = shader_get_uniform_location(shader_ptr, "uColor");
+	TEST_ASSERT_NOT_EQUAL(UNIFORM_NOT_FOUND, loc_color);
 
-	GLint loc_int = shader_get_uniform_location(s, "uIntensity");
-	TEST_ASSERT_NOT_EQUAL(-1, loc_int);
+	GLint loc_int = shader_get_uniform_location(shader_ptr, "uIntensity");
+	TEST_ASSERT_NOT_EQUAL(UNIFORM_NOT_FOUND, loc_int);
 
 	/* Verify Non-Existent Uniform */
-	GLint loc_fake = shader_get_uniform_location(s, "uNonExistent");
-	TEST_ASSERT_EQUAL(-1, loc_fake);
+	GLint loc_fake =
+	    shader_get_uniform_location(shader_ptr, "uNonExistent");
+	TEST_ASSERT_EQUAL(UNIFORM_NOT_FOUND, loc_fake);
 
-	shader_destroy(s);
-	unlink("test_api.vert");
-	unlink("test_api.frag");
+	shader_destroy(shader_ptr);
+	(void)unlink("test_api.vert");
+	(void)unlink("test_api.frag");
 }
 
 void test_Shader_Setters(void)
@@ -135,26 +163,26 @@ void test_Shader_Setters(void)
 	write_temp_file("test_api.vert", v_shader_src);
 	write_temp_file("test_api.frag", f_shader_src);
 
-	Shader* s = shader_load("test_api.vert", "test_api.frag");
-	TEST_ASSERT_NOT_NULL(s);
+	Shader* shader_ptr = shader_load("test_api.vert", "test_api.frag");
+	TEST_ASSERT_NOT_NULL(shader_ptr);
 
-	shader_use(s);
+	shader_use(shader_ptr);
 
 	/* Call setters */
-	shader_set_float(s, "uIntensity", 0.5f);
+	shader_set_float(shader_ptr, "uIntensity", TEST_INTENSITY);
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
-	float color[3] = {1.0f, 0.0f, 0.0f};
-	shader_set_vec3(s, "uColor", color);
+	float color[VEC3_SIZE] = {COLOR_R, COLOR_G, COLOR_B};
+	shader_set_vec3(shader_ptr, "uColor", color);
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
 	/* Set non-existent - should be no-op/log warning but no crash */
-	shader_set_int(s, "uFake", 123);
+	shader_set_int(shader_ptr, "uFake", TEST_INT_VAL);
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
-	shader_destroy(s);
-	unlink("test_api.vert");
-	unlink("test_api.frag");
+	shader_destroy(shader_ptr);
+	(void)unlink("test_api.vert");
+	(void)unlink("test_api.frag");
 }
 
 /* Covers shader_load_compute_program AND all setter variants */
@@ -164,42 +192,48 @@ void test_Shader_Complex_Types_And_Compute(void)
 	write_temp_file("complex.vert", complex_v_shader_src);
 	write_temp_file("complex.frag", f_shader_src); /* Reuse simple frag */
 
-	Shader* s = shader_load("complex.vert", "complex.frag");
-	TEST_ASSERT_NOT_NULL(s);
-	shader_use(s);
+	Shader* shader_ptr = shader_load("complex.vert", "complex.frag");
+	TEST_ASSERT_NOT_NULL(shader_ptr);
+	shader_use(shader_ptr);
 
-	float vec2[2] = {1.0f, 2.0f};
-	float vec3[3] = {1.0f, 2.0f, 3.0f};
-	float vec4[4] = {1.0f, 2.0f, 3.0f, 4.0f};
-	float mat4[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+	float vec2[VEC2_SIZE] = {FLOAT_ONE, FLOAT_TWO};
+	float vec3[VEC3_SIZE] = {FLOAT_ONE, FLOAT_TWO, FLOAT_THREE};
+	float vec4[VEC4_SIZE] = {FLOAT_ONE, FLOAT_TWO, FLOAT_THREE, FLOAT_FOUR};
+	float mat4[MAT4_SIZE] = {FLOAT_ONE, COLOR_G,   COLOR_G,   COLOR_G,
+	                         COLOR_G,   FLOAT_ONE, COLOR_G,   COLOR_G,
+	                         COLOR_G,   COLOR_G,   FLOAT_ONE, COLOR_G,
+	                         COLOR_G,   COLOR_G,   COLOR_G,   FLOAT_ONE};
 
 	/* Test all setters with valid uniforms */
-	shader_set_vec2(s, "uVec2", vec2);
-	shader_set_vec3(s, "uVec3", vec3);
-	shader_set_vec4(s, "uVec4", vec4);
-	shader_set_mat4(s, "uMat4", mat4);
-	shader_set_float(s, "uFloat", 1.0f);
-	shader_set_int(s, "uInt", 1);
+	shader_set_vec2(shader_ptr, "uVec2", vec2);
+	shader_set_vec3(shader_ptr, "uVec3", vec3);
+	shader_set_vec4(shader_ptr, "uVec4", vec4);
+	shader_set_mat4(shader_ptr, "uMat4", mat4);
+	shader_set_float(shader_ptr, "uFloat", FLOAT_ONE);
+	shader_set_int(shader_ptr, "uInt", 1);
 
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
-	shader_destroy(s);
-	unlink("complex.vert");
-	unlink("complex.frag");
+	shader_destroy(shader_ptr);
+	(void)unlink("complex.vert");
+	(void)unlink("complex.frag");
 
 	/* 2. Test Compute Shader Loading (Coverage for
 	 * shader_load_compute_program) */
-	GLint major, minor;
+	GLint major = 0;
+	GLint minor = 0;
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-	if (major >= 4 && (major > 4 || minor >= 3)) {
+	if (major >= GL_COMPUTE_MIN_MAJOR &&
+	    (major > GL_COMPUTE_MIN_MAJOR || minor >= GL_COMPUTE_MIN_MINOR)) {
 		write_temp_file("test_api.comp", c_shader_src);
-		Shader* cs = shader_load_compute_program("test_api.comp");
-		if (cs) {
-			shader_destroy(cs);
+		Shader* compute_shader =
+		    shader_load_compute_program("test_api.comp");
+		if (compute_shader) {
+			shader_destroy(compute_shader);
 		}
-		unlink("test_api.comp");
+		(void)unlink("test_api.comp");
 	}
 }
 

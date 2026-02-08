@@ -65,6 +65,7 @@ $(BUILD_DIR)/Makefile:
 clean:
 	@if [ -d $(BUILD_DIR) ]; then $(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target clean; fi
 	@$(DISTROBOX) rm -rf $(BUILD_DIR)
+	@rm -rf .lint_cache
 
 docs:
 	@echo "Building MkDocs documentation..."
@@ -138,15 +139,43 @@ CGLM_INC := $(shell [ -d deps/cglm ] && echo deps/cglm/include || echo build/_de
 GLAD_INC := build/_deps/glad-build/include
 CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cjson-src)
 
-lint: $(BUILD_DIR)/Makefile
-	@echo "Linting C code (with caching if available)..."
-	@# Reconfigure with clang-tidy enabled
-	@$(DISTROBOX) $(CMAKE) -B $(BUILD_DIR) -DENABLE_CLANG_TIDY=ON
-	@# Build just the app target (parallelized) - this triggers the linting
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target app --parallel $(shell nproc)
+NPROCS := $(shell nproc 2>/dev/null || echo 1)
+# Static analysis wrapper (handle cltcache if present)
+CLT_CMD := $(shell $(DISTROBOX) command -v cltcache 2>/dev/null)
+CLANG_TIDY := $(if $(CLT_CMD),$(CLT_CMD) clang-tidy,clang-tidy)
+
+LINT_CACHE_DIR := .lint_cache
+C_SRCS := $(shell find src -name "*.c")
+LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
+
+# Incremental linting: only run clang-tidy if .c or .clang-tidy changed
+$(LINT_CACHE_DIR)/%.linted: % .clang-tidy $(BUILD_DIR)/compile_commands.json
+	@mkdir -p $(dir $@)
+	@OUT=$$($(DISTROBOX) $(CLANG_TIDY) -p $(BUILD_DIR) --quiet $< 2>&1) || { echo "  LINT $< (FAILED)"; echo "$$OUT"; exit 1; }; \
+	if [ -n "$$OUT" ]; then \
+		echo "  LINT $<"; \
+		echo "$$OUT"; \
+	fi
+	@touch $@
+
+lint-deps: $(BUILD_DIR)/compile_commands.json
+	@echo "Ensuring generated headers are ready..."
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad --parallel $(NPROCS)
+
+lint: lint-deps
+	@echo "Linting C code (Parallelized & Incremental)..."
+	@$(MAKE) -j$(NPROCS) $(LINTED_FILES) --no-print-directory
 	@echo "Linting Python scripts..."
 	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
+
+lint-clean:
+	@echo "Cleaning lint cache..."
+	@rm -rf $(LINT_CACHE_DIR)
+
+# Ensure compile_commands.json is up to date before linting
+$(BUILD_DIR)/compile_commands.json: $(BUILD_DIR)/Makefile
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_DIR) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh

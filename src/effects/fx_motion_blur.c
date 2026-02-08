@@ -37,6 +37,12 @@ int fx_motion_blur_init(PostProcess* post_processing)
 		return 0;
 	}
 
+	/* Set sampler uniforms once (they are per-program state) */
+	shader_use(mb_fx->tile_max_shader);
+	shader_set_int(mb_fx->tile_max_shader, "velocityTexture", 0);
+	shader_use(mb_fx->neighbor_max_shader);
+	shader_set_int(mb_fx->neighbor_max_shader, "tileMaxTexture", 0);
+
 	/* 3. Initialiser les matrices */
 	glm_mat4_identity(mb_fx->previous_view_proj);
 
@@ -120,37 +126,58 @@ void fx_motion_blur_render(PostProcess* post_processing)
 {
 	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
 
-	int groups_x = (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	               MB_COMPUTE_GROUP_SIZE;
-	int groups_y = (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	               MB_COMPUTE_GROUP_SIZE;
+	/* Tile dimensions (one tile per 16x16 pixel block) */
+	int tile_count_x =
+	    (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	    MB_COMPUTE_GROUP_SIZE;
+	int tile_count_y =
+	    (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	    MB_COMPUTE_GROUP_SIZE;
 
-	/* Pass 1: Tile Max Velocity */
+	/* Pass 1: Tile Max Velocity
+	 * Each workgroup (16x16 threads) processes one 16x16 pixel tile,
+	 * reducing to a single max velocity per tile via shared memory.
+	 * Dispatch: one group per tile. */
 	shader_use(mb_fx->tile_max_shader);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
-	shader_set_int(mb_fx->tile_max_shader, "velocityTexture", 0);
 
 	glBindImageTexture(1, mb_fx->tile_max_tex, 0, GL_FALSE, 0,
 	                   GL_WRITE_ONLY, GL_RG16F);
 
-	glDispatchCompute((GLuint)groups_x, (GLuint)groups_y, 1);
+	glDispatchCompute((GLuint)tile_count_x, (GLuint)tile_count_y, 1);
 	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
 	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
 
-	/* Pass 2: Neighbor Max Velocity */
+	/* Pass 2: Neighbor Max Velocity
+	 * Each thread processes one tile (not one pixel).
+	 * Input is tile_max_tex of size tile_count_x × tile_count_y.
+	 * Each workgroup (16x16 threads) covers 16x16 tiles.
+	 * Dispatch: ceil(tile_count / 16) groups. */
 	shader_use(mb_fx->neighbor_max_shader);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mb_fx->tile_max_tex);
-	shader_set_int(mb_fx->neighbor_max_shader, "tileMaxTexture", 0);
 
 	glBindImageTexture(1, mb_fx->neighbor_max_tex, 0, GL_FALSE, 0,
 	                   GL_WRITE_ONLY, GL_RG16F);
 
-	glDispatchCompute((GLuint)groups_x, (GLuint)groups_y, 1);
+	int neighbor_groups_x = (tile_count_x + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	                        MB_COMPUTE_GROUP_SIZE;
+	int neighbor_groups_y = (tile_count_y + (MB_COMPUTE_GROUP_SIZE - 1)) /
+	                        MB_COMPUTE_GROUP_SIZE;
+
+	glDispatchCompute((GLuint)neighbor_groups_x, (GLuint)neighbor_groups_y,
+	                  1);
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+
+	/* NOTE: On Mesa/Intel Iris Xe, GPU profiler queries
+	 * (GL_TIMESTAMP and GL_TIME_ELAPSED) report near-zero timings
+	 * for compute dispatches.  This is a known driver limitation —
+	 * the compute work executes correctly but the queries complete
+	 * before the dispatch finishes.  The profiled duration shown
+	 * for this stage is therefore unreliable on this driver. */
 }
 
 void fx_motion_blur_update_matrices(PostProcess* post_processing,
