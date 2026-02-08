@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/app/tests/test_stb_image_impl.c" "tests/CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o" "gcc" "tests/CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o.d"
+  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_stb_image_impl.c" "tests/CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o" "gcc" "tests/CMakeFiles/test_stb_image_impl.dir/test_stb_image_impl.c.o.d"
+  "" "tests/test_stb_image_impl" "gcc" "tests/CMakeFiles/test_stb_image_impl.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

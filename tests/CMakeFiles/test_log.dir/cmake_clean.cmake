@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_log.dir/link.d"
   "CMakeFiles/test_log.dir/test_log.c.o"
   "CMakeFiles/test_log.dir/test_log.c.o.d"
   "test_log"

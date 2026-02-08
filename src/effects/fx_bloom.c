@@ -35,8 +35,8 @@ int fx_bloom_init(PostProcess* post_processing)
 	shader_set_int(bloom->prefilter_shader, "srcTexture", 0);
 	shader_use(bloom->downsample_shader);
 	shader_set_int(bloom->downsample_shader, "srcTexture", 0);
-	bloom->src_resolution_loc =
-	    shader_get_uniform_location(bloom->downsample_shader, "srcResolution");
+	bloom->src_resolution_loc = shader_get_uniform_location(
+	    bloom->downsample_shader, "srcResolution");
 	shader_use(bloom->upsample_shader);
 	shader_set_int(bloom->upsample_shader, "srcTexture", 0);
 

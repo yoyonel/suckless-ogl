@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/app/tests/test_ui.c" "tests/CMakeFiles/test_ui.dir/test_ui.c.o" "gcc" "tests/CMakeFiles/test_ui.dir/test_ui.c.o.d"
+  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_ui.c" "tests/CMakeFiles/test_ui.dir/test_ui.c.o" "gcc" "tests/CMakeFiles/test_ui.dir/test_ui.c.o.d"
+  "" "tests/test_ui" "gcc" "tests/CMakeFiles/test_ui.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

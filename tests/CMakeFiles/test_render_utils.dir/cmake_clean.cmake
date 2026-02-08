@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_render_utils.dir/link.d"
   "CMakeFiles/test_render_utils.dir/test_render_utils.c.o"
   "CMakeFiles/test_render_utils.dir/test_render_utils.c.o.d"
   "test_render_utils"

@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_icosphere.dir/link.d"
   "CMakeFiles/test_icosphere.dir/test_icosphere.c.o"
   "CMakeFiles/test_icosphere.dir/test_icosphere.c.o.d"
   "test_icosphere"

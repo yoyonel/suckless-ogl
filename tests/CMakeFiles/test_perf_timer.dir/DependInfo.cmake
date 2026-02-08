@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/app/tests/test_perf_timer.c" "tests/CMakeFiles/test_perf_timer.dir/test_perf_timer.c.o" "gcc" "tests/CMakeFiles/test_perf_timer.dir/test_perf_timer.c.o.d"
+  "/home/latty/Prog/__PERSO__/suckless-ogl/tests/test_perf_timer.c" "tests/CMakeFiles/test_perf_timer.dir/test_perf_timer.c.o" "gcc" "tests/CMakeFiles/test_perf_timer.dir/test_perf_timer.c.o.d"
+  "" "tests/test_perf_timer" "gcc" "tests/CMakeFiles/test_perf_timer.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

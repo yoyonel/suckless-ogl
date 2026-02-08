@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_skybox.dir/link.d"
   "CMakeFiles/test_skybox.dir/test_skybox.c.o"
   "CMakeFiles/test_skybox.dir/test_skybox.c.o.d"
   "test_skybox"

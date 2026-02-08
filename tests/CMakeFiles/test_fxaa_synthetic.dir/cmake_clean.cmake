@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_fxaa_synthetic.dir/link.d"
   "CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o"
   "CMakeFiles/test_fxaa_synthetic.dir/test_fxaa_synthetic.c.o.d"
   "test_fxaa_synthetic"

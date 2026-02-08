@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_sphere_sorting.dir/link.d"
   "CMakeFiles/test_sphere_sorting.dir/test_sphere_sorting.c.o"
   "CMakeFiles/test_sphere_sorting.dir/test_sphere_sorting.c.o.d"
   "test_sphere_sorting"
