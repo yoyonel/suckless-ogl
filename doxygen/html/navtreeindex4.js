@@ -244,10 +244,10 @@ var NAVTREEINDEX4 =
 "sphere__sorting_8c.html":[6,0,4,30],
 "sphere__sorting_8c.html#a08dfce9fe777760c2f33cbb3d71ee2bd":[6,0,4,30,0],
 "sphere__sorting_8c.html#a159532007839ad93c627f7173c755616":[6,0,4,30,1],
-"sphere__sorting_8c.html#a7890ccf202ae2cc18cd1ca552d355a2a":[6,0,4,30,3],
 "sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,4,30,2],
+"sphere__sorting_8c.html#af67b8aec8040d3efd46de936313aeb2d":[6,0,4,30,3],
 "sphere__sorting_8h.html":[6,0,2,33],
 "sphere__sorting_8h.html#a159532007839ad93c627f7173c755616":[6,0,2,33,2],
-"sphere__sorting_8h.html#a7890ccf202ae2cc18cd1ca552d355a2a":[6,0,2,33,4],
-"sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,2,33,3]
+"sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,2,33,3],
+"sphere__sorting_8h.html#af67b8aec8040d3efd46de936313aeb2d":[6,0,2,33,4]
 };
