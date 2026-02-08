@@ -77,6 +77,7 @@ typedef struct {
 	MetricStack hierarchy_stack; /**< Stack to track hierarchy. */
 
 	float transition_progress; /**< 0.0 to 1.0 animation timer. */
+	bool enabled; /**< Whether profiling is currently active. */
 } GPUProfiler;
 
 /**
@@ -100,6 +101,13 @@ void gpu_profiler_cleanup(GPUProfiler* profiler);
 void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index);
 
 /**
+ * @brief Enables or disables the profiler.
+ * @param profiler Pointer to the profiler.
+ * @param enabled Whether to enable profiling.
+ */
+void gpu_profiler_set_enabled(GPUProfiler* profiler, bool enabled);
+
+/**
  * @brief Starts a new profiling stage.
  * @param profiler Pointer to the profiler.
  * @param name Name of the stage (must be persistent or copied).
@@ -118,5 +126,27 @@ void gpu_profiler_end_stage(GPUProfiler* profiler);
  * @brief Resets all samplers for a new capture window.
  */
 void gpu_profiler_reset_samplers(GPUProfiler* profiler, double current_time);
+
+/**
+ * @struct GPUStageRAII
+ * @brief RAII container for automatic GPU stage management.
+ */
+typedef struct {
+	GPUProfiler* profiler;
+} GPUStageRAII;
+
+/** @brief Internal cleanup function for GPUStageRAII. */
+static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
+{
+	gpu_profiler_end_stage(stage_raii->profiler);
+}
+
+/**
+ * @brief Scoped GPU profiling stage. Automatically ends on scope exit.
+ */
+#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
+	GPUStageRAII _stage_raii##__LINE__                                     \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
+	gpu_profiler_start_stage(profiler_ptr, name, color)
 
 #endif  // GPU_PROFILER_H

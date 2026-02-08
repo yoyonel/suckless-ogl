@@ -4,7 +4,6 @@
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 
 // Global state
@@ -86,6 +85,7 @@ void test_gpu_profiler_double_buffering_swap(void)
 	TEST_ASSERT_EQUAL(1, profiler.read_index);
 
 	// Frame 1 -> Frame 2
+	gpu_profiler_set_enabled(&profiler, true);
 	gpu_profiler_begin_frame(&profiler, 0);
 	TEST_ASSERT_EQUAL(1, profiler.write_index);
 	TEST_ASSERT_EQUAL(0, profiler.read_index);
@@ -107,6 +107,7 @@ void test_gpu_profiler_stage_registration(void)
 {
 	GPUProfiler profiler;
 	gpu_profiler_init(&profiler);
+	gpu_profiler_set_enabled(&profiler, true);
 
 	// Start Stage A
 	gpu_profiler_start_stage(&profiler, "Stage A", COLOR_RED);
@@ -150,6 +151,7 @@ void test_gpu_profiler_result_retrieval(void)
 	// Frame 2: Read Buffer 0 (Has Data), Write Buffer 0
 	for (int i = 0; i < TEST_LOOP_COUNT; ++i) {
 		// 1. Lit les résultats de la frame précédente (si dispo)
+		gpu_profiler_set_enabled(&profiler, true);
 		gpu_profiler_begin_frame(&profiler, i);
 
 		// 2. Enregistre une nouvelle frame

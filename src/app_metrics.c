@@ -249,6 +249,13 @@ bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time,
 		return false;
 	}
 
+	/* If no samples were collected (e.g., during window resize or heavy
+	 * lag), do NOT update the UI with "0 ms". Instead, keep the previous
+	 * valid state visible indefinitely until we get new samples. */
+	if (root_sampler->count == 0) {
+		return false;
+	}
+
 	if (should_log) {
 		// Pass 1: Logging (All stages at once)
 		for (int i = 0; i < profiler->stage_count; i++) {

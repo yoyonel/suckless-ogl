@@ -509,8 +509,8 @@ void postprocess_begin(PostProcess* post_processing)
 
 void postprocess_end(PostProcess* post_processing)
 {
-	gpu_profiler_start_stage(post_processing->gpu_profiler, "Post-Process",
-	                         GPU_PROFILER_POSTPROCESS_COLOR);
+	GPU_STAGE_PROFILER(post_processing->gpu_profiler, "Post-Process",
+	                   GPU_PROFILER_POSTPROCESS_COLOR);
 
 	/* Flush all MRT scene buffer writes (color, velocity, depth/stencil)
 	 * so they are visible to subsequent compute shader texture fetches.
@@ -526,10 +526,9 @@ void postprocess_end(PostProcess* post_processing)
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
 	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
-		gpu_profiler_start_stage(post_processing->gpu_profiler, "Bloom",
-		                         GPU_PROFILER_BLOOM_COLOR);
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "Bloom",
+		                   GPU_PROFILER_BLOOM_COLOR);
 		fx_bloom_render(post_processing);
-		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* DoF Blur Pass (if DoF enabled) */
@@ -537,20 +536,18 @@ void postprocess_end(PostProcess* post_processing)
 	 * scene */
 	if (postprocess_is_enabled(post_processing, POSTFX_DOF) ||
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
-		gpu_profiler_start_stage(post_processing->gpu_profiler, "DoF",
-		                         GPU_PROFILER_DOF_COLOR);
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "DoF",
+		                   GPU_PROFILER_DOF_COLOR);
 		fx_dof_render(post_processing);
-		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* Auto Exposure Pass */
 	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
 		// TODO: use RAII here !
-		gpu_profiler_start_stage(post_processing->gpu_profiler,
-		                         "Auto Exposure",
-		                         GPU_PROFILER_AUTO_EXPOSURE_COLOR);
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
+		                   "Auto Exposure",
+		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
 		fx_auto_exposure_render(post_processing);
-		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* Motion Blur Pre-Pass (Compute) - Also needed for debug modes */
@@ -558,179 +555,197 @@ void postprocess_end(PostProcess* post_processing)
 	    postprocess_is_enabled(post_processing, POSTFX_MOTION_BLUR_DEBUG) ||
 	    postprocess_is_enabled(post_processing,
 	                           POSTFX_VECTOR_FIELD_DEBUG)) {
-		gpu_profiler_start_stage(post_processing->gpu_profiler,
-		                         "MB Compute",
-		                         GPU_PROFILER_MOTION_BLUR_COLOR);
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "MB Compute",
+		                   GPU_PROFILER_MOTION_BLUR_COLOR);
 		fx_motion_blur_render(post_processing);
-		gpu_profiler_end_stage(post_processing->gpu_profiler);
 	}
 
 	/* === Final Composite: fullscreen quad with all fragment effects ===
 	 * This draw call includes MB sampling, CA, DoF mix, Bloom mix,
 	 * Exposure, Tonemapping, FXAA, Vignette, Grain, etc.
 	 * The cost of Motion Blur fragment work is measured HERE. */
-	gpu_profiler_start_stage(post_processing->gpu_profiler,
-	                         "Final Composite",
-	                         GPU_PROFILER_COMPOSITE_COLOR);
+	{
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
+		                   "Final Composite",
+		                   GPU_PROFILER_COMPOSITE_COLOR);
 
-	/* Retour au framebuffer par défaut */
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, post_processing->width, post_processing->height);
-	glClear(GL_COLOR_BUFFER_BIT);
+		/* Retour au framebuffer par défaut */
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, post_processing->width,
+		           post_processing->height);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-	/* Désactiver le depth test pour le quad */
-	glDisable(GL_DEPTH_TEST);
+		/* Désactiver le depth test pour le quad */
+		glDisable(GL_DEPTH_TEST);
 
-	/* Utiliser le shader de post-processing */
-	shader_use(post_processing->postprocess_shader);
+		/* Utiliser le shader de post-processing */
+		shader_use(post_processing->postprocess_shader);
 
-	/* Bind la texture de la scène */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_SCENE);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+		/* Bind la texture de la scène */
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_SCENE);
+		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
 
-	/* Bind la texture de Bloom */
-	render_utils_bind_texture_safe(
-	    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM,
-	    postprocess_is_enabled(post_processing, POSTFX_BLOOM)
-	        ? post_processing->bloom_fx.mips[0].texture
-	        : 0,
-	    post_processing->dummy_black_tex);
+		/* Bind la texture de Bloom */
+		render_utils_bind_texture_safe(
+		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM,
+		    postprocess_is_enabled(post_processing, POSTFX_BLOOM)
+		        ? post_processing->bloom_fx.mips[0].texture
+		        : 0,
+		    post_processing->dummy_black_tex);
 
-	/* Bind la texture de Profondeur (pour le DoF) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+		/* Bind la texture de Profondeur (pour le DoF) */
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
+		glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
 
-	/* Bind Exposure Texture (Unit 3) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
-	glBindTexture(GL_TEXTURE_2D,
-	              post_processing->auto_exposure_fx.exposure_tex);
+		/* Bind Exposure Texture (Unit 3) */
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->auto_exposure_fx.exposure_tex);
 
-	/* Bind Velocity Texture (Unit 4) - use safe bind to handle resize */
-	render_utils_bind_texture_safe(
-	    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY,
-	    post_processing->velocity_tex, post_processing->dummy_black_tex);
+		/* Bind Velocity Texture (Unit 4) - use safe bind to handle
+		 * resize */
+		render_utils_bind_texture_safe(
+		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY,
+		    post_processing->velocity_tex,
+		    post_processing->dummy_black_tex);
 
-	/* Bind Neighbor Max Texture (Unit 5) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
-	glBindTexture(GL_TEXTURE_2D,
-	              post_processing->motion_blur_fx.neighbor_max_tex);
+		/* Bind Neighbor Max Texture (Unit 5) */
+		glActiveTexture(GL_TEXTURE0 +
+		                POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->motion_blur_fx.neighbor_max_tex);
 
-	/* Bind DoF Blurred Texture (Unit 6) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
+		/* Bind DoF Blurred Texture (Unit 6) */
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DOF_BLUR);
+		glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
 
-	/* Bind Stencil Texture View (Unit 7) */
-	glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
+		/* Bind Stencil Texture View (Unit 7) */
+		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->scene_stencil_view);
 
-	/* Upload UBO: always update time/effects header, full rebuild only
-	 * when parameters changed (ubo_dirty). */
-	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
-	if (post_processing->ubo_dirty) {
-		PostProcessUBO ubo = {0};
-		ubo.active_effects = post_processing->active_effects;
-		ubo.time = post_processing->time;
-		ubo.screen_texel_size[0] = 1.0F / (float)post_processing->width;
-		ubo.screen_texel_size[1] =
-		    1.0F / (float)post_processing->height;
+		/* Upload UBO: always update time/effects header, full rebuild
+		 * only when parameters changed (ubo_dirty). */
+		glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
+		if (post_processing->ubo_dirty) {
+			PostProcessUBO ubo = {0};
+			ubo.active_effects = post_processing->active_effects;
+			ubo.time = post_processing->time;
+			ubo.screen_texel_size[0] =
+			    1.0F / (float)post_processing->width;
+			ubo.screen_texel_size[1] =
+			    1.0F / (float)post_processing->height;
 
-		ubo.vignette_intensity = post_processing->vignette.intensity;
-		ubo.vignette_smoothness = post_processing->vignette.smoothness;
-		ubo.vignette_roundness = post_processing->vignette.roundness;
+			ubo.vignette_intensity =
+			    post_processing->vignette.intensity;
+			ubo.vignette_smoothness =
+			    post_processing->vignette.smoothness;
+			ubo.vignette_roundness =
+			    post_processing->vignette.roundness;
 
-		ubo.grain_intensity = post_processing->grain.intensity;
-		ubo.grain_intensity_shadows =
-		    post_processing->grain.intensity_shadows;
-		ubo.grain_intensity_midtones =
-		    post_processing->grain.intensity_midtones;
-		ubo.grain_intensity_highlights =
-		    post_processing->grain.intensity_highlights;
-		ubo.grain_shadows_max = post_processing->grain.shadows_max;
-		ubo.grain_highlights_min =
-		    post_processing->grain.highlights_min;
-		ubo.grain_texel_size = post_processing->grain.texel_size;
+			ubo.grain_intensity = post_processing->grain.intensity;
+			ubo.grain_intensity_shadows =
+			    post_processing->grain.intensity_shadows;
+			ubo.grain_intensity_midtones =
+			    post_processing->grain.intensity_midtones;
+			ubo.grain_intensity_highlights =
+			    post_processing->grain.intensity_highlights;
+			ubo.grain_shadows_max =
+			    post_processing->grain.shadows_max;
+			ubo.grain_highlights_min =
+			    post_processing->grain.highlights_min;
+			ubo.grain_texel_size =
+			    post_processing->grain.texel_size;
 
-		ubo.exposure_manual = post_processing->exposure.exposure;
-		ubo.chrom_abbr_strength = post_processing->chrom_abbr.strength;
+			ubo.exposure_manual =
+			    post_processing->exposure.exposure;
+			ubo.chrom_abbr_strength =
+			    post_processing->chrom_abbr.strength;
 
-		ubo.wb_temperature = post_processing->white_balance.temperature;
-		ubo.wb_tint = post_processing->white_balance.tint;
+			ubo.wb_temperature =
+			    post_processing->white_balance.temperature;
+			ubo.wb_tint = post_processing->white_balance.tint;
 
-		ubo.grading_saturation =
-		    post_processing->color_grading.saturation;
-		ubo.grading_contrast = post_processing->color_grading.contrast;
-		ubo.grading_gamma = post_processing->color_grading.gamma;
-		ubo.grading_gain = post_processing->color_grading.gain;
-		ubo.grading_offset = post_processing->color_grading.offset;
+			ubo.grading_saturation =
+			    post_processing->color_grading.saturation;
+			ubo.grading_contrast =
+			    post_processing->color_grading.contrast;
+			ubo.grading_gamma =
+			    post_processing->color_grading.gamma;
+			ubo.grading_gain = post_processing->color_grading.gain;
+			ubo.grading_offset =
+			    post_processing->color_grading.offset;
 
-		ubo.tonemap_slope = post_processing->tonemapper.slope;
-		ubo.tonemap_toe = post_processing->tonemapper.toe;
-		ubo.tonemap_shoulder = post_processing->tonemapper.shoulder;
-		ubo.tonemap_black_clip = post_processing->tonemapper.black_clip;
-		ubo.tonemap_white_clip = post_processing->tonemapper.white_clip;
+			ubo.tonemap_slope = post_processing->tonemapper.slope;
+			ubo.tonemap_toe = post_processing->tonemapper.toe;
+			ubo.tonemap_shoulder =
+			    post_processing->tonemapper.shoulder;
+			ubo.tonemap_black_clip =
+			    post_processing->tonemapper.black_clip;
+			ubo.tonemap_white_clip =
+			    post_processing->tonemapper.white_clip;
 
-		ubo.bloom_intensity = post_processing->bloom.intensity;
-		ubo.bloom_threshold = post_processing->bloom.threshold;
-		ubo.bloom_soft_threshold =
-		    post_processing->bloom.soft_threshold;
-		ubo.bloom_radius = post_processing->bloom.radius;
+			ubo.bloom_intensity = post_processing->bloom.intensity;
+			ubo.bloom_threshold = post_processing->bloom.threshold;
+			ubo.bloom_soft_threshold =
+			    post_processing->bloom.soft_threshold;
+			ubo.bloom_radius = post_processing->bloom.radius;
 
-		ubo.dof_focal_distance = post_processing->dof.focal_distance;
-		ubo.dof_focal_range = post_processing->dof.focal_range;
-		ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
+			ubo.dof_focal_distance =
+			    post_processing->dof.focal_distance;
+			ubo.dof_focal_range = post_processing->dof.focal_range;
+			ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
 
-		ubo.mb_intensity = post_processing->motion_blur.intensity;
-		ubo.mb_max_velocity = post_processing->motion_blur.max_velocity;
-		ubo.mb_samples = post_processing->motion_blur.samples;
+			ubo.mb_intensity =
+			    post_processing->motion_blur.intensity;
+			ubo.mb_max_velocity =
+			    post_processing->motion_blur.max_velocity;
+			ubo.mb_samples = post_processing->motion_blur.samples;
 
-		ubo.fxaa_quality_subpix = post_processing->fxaa.subpix;
-		ubo.fxaa_quality_edge_threshold =
-		    post_processing->fxaa.edge_threshold;
-		ubo.fxaa_quality_edge_threshold_min =
-		    post_processing->fxaa.edge_threshold_min;
+			ubo.fxaa_quality_subpix = post_processing->fxaa.subpix;
+			ubo.fxaa_quality_edge_threshold =
+			    post_processing->fxaa.edge_threshold;
+			ubo.fxaa_quality_edge_threshold_min =
+			    post_processing->fxaa.edge_threshold_min;
 
-		ubo.banding_mode = post_processing->banding.mode;
-		ubo.banding_levels = post_processing->banding.levels;
-		ubo.banding_dither_strength =
-		    post_processing->banding.dither_strength;
-		ubo.banding_perceptual_gamma =
-		    post_processing->banding.perceptual_gamma;
-		ubo.banding_channel_levels[0] =
-		    post_processing->banding.channel_levels[0];
-		ubo.banding_channel_levels[1] =
-		    post_processing->banding.channel_levels[1];
-		ubo.banding_channel_levels[2] =
-		    post_processing->banding.channel_levels[2];
+			ubo.banding_mode = post_processing->banding.mode;
+			ubo.banding_levels = post_processing->banding.levels;
+			ubo.banding_dither_strength =
+			    post_processing->banding.dither_strength;
+			ubo.banding_perceptual_gamma =
+			    post_processing->banding.perceptual_gamma;
+			ubo.banding_channel_levels[0] =
+			    post_processing->banding.channel_levels[0];
+			ubo.banding_channel_levels[1] =
+			    post_processing->banding.channel_levels[1];
+			ubo.banding_channel_levels[2] =
+			    post_processing->banding.channel_levels[2];
 
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(PostProcessUBO),
-		                &ubo);
-		post_processing->ubo_dirty = false;
-	} else {
-		/* Only update time (offset 4 bytes) and active_effects
-		 * (offset 0) which change every frame */
-		struct {
-			uint32_t active_effects;
-			float time;
-		} header = {post_processing->active_effects,
-		            post_processing->time};
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(header), &header);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0,
+			                sizeof(PostProcessUBO), &ubo);
+			post_processing->ubo_dirty = false;
+		} else {
+			/* Only update time (offset 4 bytes) and active_effects
+			 * (offset 0) which change every frame */
+			struct {
+				uint32_t active_effects;
+				float time;
+			} header = {post_processing->active_effects,
+			            post_processing->time};
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(header),
+			                &header);
+		}
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		/* Dessiner le quad */
+		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 	}
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	/* Dessiner le quad */
-	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-
-	gpu_profiler_end_stage(
-	    post_processing->gpu_profiler); /* End Final Composite */
 
 	/* Unbind shared VAO after all fullscreen passes are complete */
 	glBindVertexArray(0);
 
 	/* Réactiver le depth test */
 	glEnable(GL_DEPTH_TEST);
-
-	gpu_profiler_end_stage(
-	    post_processing->gpu_profiler); /* End Post-Process */
 }
 
 void postprocess_update_time(PostProcess* post_processing, float delta_time)

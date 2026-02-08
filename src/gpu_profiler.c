@@ -79,9 +79,26 @@ void gpu_profiler_cleanup(GPUProfiler* profiler)
 	}
 }
 
+void gpu_profiler_set_enabled(GPUProfiler* profiler, bool enabled)
+{
+	if (profiler) {
+		profiler->enabled = enabled;
+	}
+}
+
 void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 {
 	if (!profiler) {
+		return;
+	}
+
+	/* If disabled, just reset the recording counter so we don't overflow
+	 * if start_stage is called (though start_stage should also check
+	 * enabled). We do NOT swap buffers because we aren't generating new
+	 * data. */
+	if (!profiler->enabled) {
+		profiler->recording_count = 0;
+		metric_stack_init(&profiler->hierarchy_stack);
 		return;
 	}
 
@@ -111,17 +128,13 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 			continue;
 		}
 
-		GLint available = 0;
-		glGetQueryObjectiv(timer->query_end, GL_QUERY_RESULT_AVAILABLE,
-		                   &available);
-
-		if (!available) {
-			continue;
-		}
-
 		uint64_t start = 0;
 		uint64_t end = 0;
 
+		/* Force wait for result to avoid dropping frames/overlay
+		 * flickering. If the GPU is lagging, we stall here, which is
+		 * better than losing profiling data and overwriting the buffer.
+		 */
 		glGetQueryObjectui64v(timer->query_start, GL_QUERY_RESULT,
 		                      &start);
 		glGetQueryObjectui64v(timer->query_end, GL_QUERY_RESULT, &end);
@@ -178,7 +191,8 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
                               uint32_t color)
 {
-	if (!profiler || profiler->recording_count >= MAX_GPU_STAGES) {
+	if (!profiler || !profiler->enabled ||
+	    profiler->recording_count >= MAX_GPU_STAGES) {
 		return;
 	}
 
@@ -209,7 +223,7 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
-	if (!profiler) {
+	if (!profiler || !profiler->enabled) {
 		return;
 	}
 
