@@ -71,6 +71,14 @@ foreach(test_file ${TEST_SOURCES})
     add_executable(${test_name} ${test_file})
     target_link_libraries(${test_name} PRIVATE app_testlib)
 
+    # Injecter les variables pour le test de sécurité du log
+    if(${test_name} STREQUAL "test_log_security")
+        target_compile_definitions(${test_name} PRIVATE
+            TEST_COMPILER=\"${CMAKE_C_COMPILER}\"
+            TEST_INCLUDE_DIR=\"${CMAKE_SOURCE_DIR}/include\"
+        )
+    endif()
+
     # Déterminer si c'est un test OpenGL
     if(${test_name} IN_LIST OPENGL_TESTS)
         # Test avec Xvfb
