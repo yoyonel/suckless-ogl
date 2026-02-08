@@ -29,7 +29,6 @@ static const float ROW_PAD_DOUBLE = 2.0F;
 static const float INDENT_STEP = 15.0F;
 static const float TEXT_Y_OFFSET = -5.0F;
 static const float TEXT_SHADOW_OFFSET = 1.0F;
-static const float TIME_COLUMN_X_OFFSET = 250.0F;
 enum { TIME_BUF_SIZE = 32 };
 
 /* --- Local Helpers --- */
@@ -322,7 +321,12 @@ void gpu_profiler_ui_draw(GPUProfilerUI* profiler_ui, UIContext* ctx,
 		char time_buf[TIME_BUF_SIZE];
 		(void)safe_snprintf(time_buf, sizeof(time_buf), "%.4f ms",
 		                    (double)duration_ms);
-		float time_x = text_start_x + TIME_COLUMN_X_OFFSET;
+
+		/* Right-align timings to the far right of the background box */
+		float text_width = ui_measure_text(ctx, time_buf);
+		float right_boundary_x = PAD_SIDE + total_width - BG_PAD;
+		float time_x = right_boundary_x - text_width;
+
 		ui_draw_text_ex(ctx, time_buf, time_x, text_y, text_col,
 		                anim_alpha, screen_width, screen_height);
 	}

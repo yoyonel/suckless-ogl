@@ -319,6 +319,29 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
 	                screen_width, screen_height);
 }
 
+float ui_measure_text(UIContext* ui_context, const char* text)
+{
+	if (ui_context == NULL || text == NULL) {
+		return 0.0F;
+	}
+
+	float width = 0.0F;
+	for (const char* ptr = text; *ptr != '\0'; ptr++) {
+		const unsigned char char_code = (unsigned char)*ptr;
+
+		if (char_code < FONT_FIRST_CHAR ||
+		    char_code >= (FONT_FIRST_CHAR + FONT_CHAR_COUNT)) {
+			continue;
+		}
+
+		const GlyphInfo* glyph =
+		    &ui_context->cdata[char_code - FONT_FIRST_CHAR];
+		width += glyph->advance;
+	}
+
+	return width;
+}
+
 void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
                      float pos_y, const vec3 color, float alpha,
                      int screen_width, int screen_height)
@@ -429,6 +452,10 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 	               0); /* Disable Texture for Rect */
 
 	// Bind vertex array (No texture binding needed, but VAO is required)
+	// We bind texture even if ignored to silence driver warnings about Unit
+	// 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
 	glBindVertexArray(ui_context->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
@@ -623,6 +650,8 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 	shader_set_float(ui_context->shader, "radius", radius);
 
 	// Bind vertex array
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
 	glBindVertexArray(ui_context->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
