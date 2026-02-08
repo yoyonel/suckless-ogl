@@ -13,6 +13,7 @@ The GPU profiling system in `suckless-ogl` provides high-precision timing for va
 ### Synchronized Timing (Blocking Wait)
 
 To ensure **no data is lost** (even when the GPU is heavily loaded or lagging), the profiler uses a **blocking wait** when retrieving results:
+
 1. At the start of Frame N, standard double-buffering would check if Frame N-1 results are ready.
 2. If not ready, standard approaches skip the data (causing gaps).
 3. **Our Approach**: We explicitly wait (`glGetQueryObjectui64v`), forcing the CPU to sync with the previous frame's completion. This guarantees a continuous, gap-free timeline even during performance spikes.
@@ -20,8 +21,9 @@ To ensure **no data is lost** (even when the GPU is heavily loaded or lagging), 
 ### Conditional Profiling (Zero Overhead)
 
 Since blocking waits impact performance, the system is **completely conditional**:
-- **Enabled**: When the Timeline UI is visible or Metrics Logging is active (F4).
-- **Disabled**: Zero OpenGL queries are issued, and no synchronization checks are performed. The performance impact is effectively zero.
+
+* **Enabled**: When the Timeline UI is visible (F3), Metrics Logging is active (F4), or **Effect Benchmark** is running.
+* **Disabled**: Zero OpenGL queries are issued, and no synchronization checks are performed. The performance impact is effectively zero.
 
 ## Integration
 
@@ -56,22 +58,25 @@ gpu_profiler_end_stage(&app->gpu_profiler);
 ## Visualization
 
 Performance metrics are displayed in the application UI (Timeline Overlay):
-- **Bars**: Visual representation of execution duration relative to the total frame time.
-- **Hierarchy**: Nested stages are indented.
-- **Text**: Exact duration in milliseconds (right-aligned for readability).
+
+* **Bars**: Visual representation of execution duration relative to the total frame time.
+* **Hierarchy**: Nested stages are indented.
+* **Text**: Exact duration in milliseconds (right-aligned for readability).
 
 Controls:
-- **F3**: Toggle Timeline Visibility.
-- **SHIFT+F3**: Toggle Timeline Position (Top/Bottom).
-- **F4**: Toggle Console Metrics Logging.
+
+* **F3**: Toggle Timeline Visibility.
+* **SHIFT+F3**: Toggle Timeline Position (Top/Bottom).
+* **F4**: Toggle Console Metrics Logging.
 
 ## Changelog
 
 * **2026-02-08**:
-    * **RAII Support**: Added `GPU_STAGE_PROFILER` macro for automatic stage management (cleaner code, safer early returns).
-    * **Instrumentation**: Instrumented the **UI Overlay** stage to fill the last gap in the GPU timeline.
-    * **Robustness**: Fixed overlay disappearance during resize/stalls by indefinitely holding the last valid frame state.
-    * **Data Integrity**: Switched to **blocking** query retrieval for 100% data reliability even under load.
-    * **Performance**: Implemented **Conditional Profiling** to achieve zero overhead when hidden.
-    * **UI UX**: Right-aligned timing metrics in the timeline overlay for easier comparison.
-    * **Fixes**: Resolved OpenGL texture state warnings in the UI rendering backend.
+  * **RAII Support**: Added `GPU_STAGE_PROFILER` macro for automatic stage management (cleaner code, safer early returns).
+  * **Instrumentation**: Instrumented the **UI Overlay** stage to fill the last gap in the GPU timeline.
+  * **Robustness**: Fixed overlay disappearance during resize/stalls by indefinitely holding the last valid frame state.
+  * **Data Integrity**: Switched to **blocking** query retrieval for 100% data reliability even under load.
+  * **Performance**: Implemented **Conditional Profiling** to achieve zero overhead when hidden.
+  * **UI UX**: Right-aligned timing metrics in the timeline overlay for easier comparison.
+  * **Fixes**: Resolved OpenGL texture state warnings in the UI rendering backend.
+  * **Benchmark Integration**: Profiler now automatically enables itself when `effect_benchmark` is running to prevent stalls.

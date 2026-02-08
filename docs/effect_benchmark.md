@@ -101,7 +101,7 @@ Le sweep dure environ **22 secondes** à 60 fps (8 phases × (30 + 120) frames �
 
 Exemple de sortie réelle (Intel Iris Xe, 1920×1080, scène IBL + 20 sphères) :
 
-```
+```text
 ╔══════════════════════════════════════════════════════╗
 ║       POSTPROCESS EFFECT BENCHMARK RESULTS         ║
 ╠══════════════════════════════════════════════════════╣
@@ -207,7 +207,7 @@ quad draw call ("Final Composite"). Il est impossible de placer des timers
 
 La méthode A/B contourne cette limitation :
 
-```
+```text
 Coût(effet) = T(tous ON) − T(effet OFF)
 ```
 
@@ -229,14 +229,17 @@ digraph BenchStateMachine {
     IDLE [label="BENCH_IDLE\n(attente)", fillcolor="#1a1b26", color="#565f89", fontcolor="#565f89"];
     BASELINE [label="BENCH_BASELINE\ntous effets ON\n30+120 frames",
               fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
+    STABILIZE [label="BENCH_STABILIZE\ntous ON (reset)\n30 frames",
+               fillcolor="#1a1b26", color="#7aa2f7", fontcolor="#7aa2f7"];
     EFFECT [label="BENCH_EFFECT_TEST\n1 effet OFF\n30+120 frames",
             fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
     DONE [label="BENCH_DONE\nrésultats loggés",
           fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
 
     IDLE -> BASELINE [label="start()", color="#7dcfff", fontcolor="#7dcfff"];
-    BASELINE -> EFFECT [label="120 samples\ncollectés"];
-    EFFECT -> EFFECT [label="effet suivant\n(skip si OFF)", style=dashed, color="#bb9af7", fontcolor="#bb9af7"];
+    BASELINE -> STABILIZE [label="120 samples"];
+    STABILIZE -> EFFECT [label="warmup fini"];
+    EFFECT -> STABILIZE [label="effet suivant\n(reset)", style=dashed, color="#7aa2f7", fontcolor="#7aa2f7"];
     EFFECT -> DONE [label="tous testés\nrestaure state", color="#9ece6a", fontcolor="#9ece6a"];
     DONE -> IDLE [label="start()\n(nouveau sweep)", style=dashed];
 }
@@ -257,7 +260,7 @@ $$
 \bar{x} = \frac{\sum x_i}{N}, \qquad \sigma = \sqrt{\frac{\sum x_i^2}{N} - \bar{x}^2}
 $$
 
-3. **Transition** — Calcule les stats, stocke le résultat, désactive l'effet
+1. **Transition** — Calcule les stats, stocke le résultat, désactive l'effet
    suivant, remet le compteur à zéro.
 
 ### Fichiers
@@ -322,3 +325,4 @@ void effect_benchmark_log_results(const EffectBenchmark* bench);
 | Date | Changement |
 |------|-----------|
 | 2026-02-07 | Création du module `effect_benchmark` (header, implémentation, intégration) |
+| 2026-02-08 | Ajout de la phase `BENCH_STABILIZE` et du Timeout (2s) pour la fiabilité |
