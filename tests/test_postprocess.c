@@ -321,6 +321,54 @@ void test_postprocess_large_working_set(void)
 	postprocess_cleanup(&post_proc);
 }
 
+void test_postprocess_render_pipeline(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
+
+	/* Enable all effects to cover more branches in postprocess_end */
+	post_proc.active_effects = 0xFFFFFFFFU;
+	post_proc.ubo_dirty = true;
+
+	postprocess_begin(&post_proc);
+	/* Simulate drawing */
+	postprocess_end(&post_proc);
+
+	/* Cover many setters and state changes (correcting signatures) */
+	postprocess_set_exposure(&post_proc, 1.5F);
+	postprocess_set_tonemapper(&post_proc, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+	postprocess_set_vignette(&post_proc, 0.5F, 0.5F, 1.0F);
+	postprocess_set_bloom(&post_proc, 1.0F, 0.8F, 0.5F);
+	postprocess_set_dof(&post_proc, 10.0F, 5.0F, 1.0F);
+	postprocess_set_grain(&post_proc, 0.1F);
+	postprocess_set_chrom_abbr(&post_proc, 0.05F);
+	postprocess_set_color_grading(&post_proc, 1.1F, 1.1F, 1.0F, 1.0F, 0.0F);
+	postprocess_set_white_balance(&post_proc, 6500.00F, 0.1F);
+	postprocess_set_fxaa(&post_proc, 0.75F, 0.125F, 0.063F);
+	postprocess_set_banding(&post_proc, BANDING_MODE_LINEAR, 256.0F);
+	postprocess_set_auto_exposure(&post_proc, 0.1F, 10.0F, 1.0F, 1.0F,
+	                              1.0F);
+
+	/* Check some internal state */
+	TEST_ASSERT_TRUE(post_proc.ubo_dirty);
+
+	postprocess_cleanup(&post_proc);
+}
+
+void test_postprocess_banding_variants(void)
+{
+	PostProcess post_proc = {0};
+	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
+	                 SmallTestHeight);
+
+	postprocess_set_banding_dither(&post_proc, 0.5F);
+	postprocess_set_banding_perceptual(&post_proc, 2.2F);
+	postprocess_set_banding_channels(&post_proc, 128.0F, 128.0F, 128.0F);
+
+	postprocess_cleanup(&post_proc);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -334,6 +382,8 @@ int main(void)
 	RUN_TEST(test_postprocess_recompilation_benchmark);
 	RUN_TEST(test_postprocess_cache_overflow_benchmark);
 	RUN_TEST(test_postprocess_large_working_set);
+	RUN_TEST(test_postprocess_render_pipeline);
+	RUN_TEST(test_postprocess_banding_variants);
 	RUN_TEST(test_postprocess_cleanup);
 	return UNITY_END();
 }

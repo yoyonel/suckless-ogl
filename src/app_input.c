@@ -298,9 +298,6 @@ void handle_postprocess_input(App* app, int key)
 			    app, POSTFX_AUTO_EXPOSURE, POSTFX_EXPOSURE_DEBUG,
 			    "Auto Exposure", "Auto Exposure Debug");
 			break;
-		case GLFW_KEY_F5:
-			handle_pbr_debug_mode(app);
-			break;
 		default:
 			handle_preset_input(app, key);
 			break;
@@ -510,6 +507,9 @@ static void handle_f_key_input(App* app, int key, int mods)
 			                         ? "Log Metrics: ON"
 			                         : "Log Metrics: OFF",
 			                     NOTIF_DUR_NORMAL);
+			break;
+		case GLFW_KEY_F5:
+			handle_pbr_debug_mode(app);
 			break;
 		case GLFW_KEY_F9:
 			if (app->perf_mode_active) {
