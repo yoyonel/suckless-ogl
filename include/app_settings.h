@@ -226,7 +226,8 @@ static const int GPU_PROFILER_MOTION_BLUR_COLOR =
 static const int GPU_PROFILER_COMPOSITE_COLOR =
     0x81A1C1; /* Nord Frost Medium Blue */
 static const int GPU_PROFILER_POSTPROCESS_COLOR =
-    0xB48EAD; /* Nord Aurora Purple */
+    0xB48EAD;                                      /* Nord Aurora Purple */
+static const int GPU_PROFILER_UI_COLOR = 0x4C566A; /* Nord Polar Night Gray */
 
 /* --- Capture Settings --- */
 static const float GPU_PROFILER_WINDOW_DURATION_S =

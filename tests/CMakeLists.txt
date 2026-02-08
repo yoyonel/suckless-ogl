@@ -58,6 +58,8 @@ set(OPENGL_TESTS
     test_benchmark_histogram
     test_texture_security
     test_gpu_profiler
+    test_app_input
+    test_app_metrics
 )
 
 # Pour chaque fichier test trouvé
