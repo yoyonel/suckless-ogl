@@ -60,6 +60,7 @@ set(OPENGL_TESTS
     test_gpu_profiler
     test_app_input
     test_app_metrics
+    test_gpu_timer_blocking
 )
 
 # Pour chaque fichier test trouvé
