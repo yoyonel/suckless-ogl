@@ -26,6 +26,7 @@ int fx_bloom_init(PostProcess* post_processing)
 	    !bloom->upsample_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.bloom",
 		          "Failed to load bloom shaders");
+		fx_bloom_cleanup(post_processing);
 		return 0;
 	}
 

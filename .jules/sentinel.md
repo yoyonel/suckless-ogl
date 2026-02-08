@@ -22,3 +22,8 @@
 **Vulnerability:** Ignored return values of `safe_snprintf` in `async_loader.c` and `app_env.c` could lead to silent path truncation and potential logic errors or loading of incorrect files.
 **Learning:** Safe wrappers like `safe_snprintf` are only safe if their return values (indicating success/failure/truncation) are actually checked.
 **Prevention:** Always check the return value of string manipulation functions. If a path is truncated, treat it as a hard error/failure rather than proceeding.
+
+## 2026-02-06 - [Enhancement] Compile-Time Format String Validation
+**Vulnerability:** `log_message` accepted a format string and arguments but lacked the compiler attribute to validate them, creating a risk of format string vulnerabilities if developers made a mistake.
+**Learning:** `__attribute__((format(printf, X, Y)))` is a zero-cost, high-value defense that catches format string mismatches at compile time. It should be standard for all variadic formatting functions.
+**Prevention:** Added `__attribute__((format(printf, 3, 4)))` to `log_message` in `include/log.h`.

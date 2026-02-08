@@ -43,7 +43,9 @@ typedef void (*LogCallback)(LogLevel level, const char* tag,
  * @param format Printf-style format string.
  * @param ... Arguments for the format string.
  */
-void log_message(LogLevel level, const char* tag, const char* format, ...);
+__attribute__((format(printf, 3, 4))) void log_message(LogLevel level,
+                                                       const char* tag,
+                                                       const char* format, ...);
 
 /**
  * @brief Sets a custom callback for log messages.
