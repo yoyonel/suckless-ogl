@@ -89,10 +89,28 @@ void test_texture_upload_valid_dimensions(void)
 	glDeleteTextures(1, &tex);
 }
 
+void test_texture_load_excessive_dimensions_dos(void)
+{
+	const char* filename = "test_dos_9000x1.ppm";
+	FILE* f = fopen(filename, "wb");
+	TEST_ASSERT_NOT_NULL_MESSAGE(f, "Failed to create test file");
+	fprintf(f, "P6\n9000 1\n255\n");
+	fclose(f);
+
+	/* Should return 0 (NULL) because dimensions exceed limit */
+	GLuint tex = texture_load(filename);
+	TEST_ASSERT_EQUAL_MESSAGE(0, tex,
+	                          "Should reject texture with width > "
+	                          "MAX_TEXTURE_DIMENSION (8192) during load");
+
+	remove(filename);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_texture_upload_excessive_dimensions);
 	RUN_TEST(test_texture_upload_valid_dimensions);
+	RUN_TEST(test_texture_load_excessive_dimensions_dos);
 	return UNITY_END();
 }
