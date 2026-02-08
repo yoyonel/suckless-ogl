@@ -434,7 +434,7 @@ void app_render(App* app)
 		                   GPU_PROFILER_SCENE_COLOR);
 		if (app->billboard_mode) {
 			sphere_sorter_sort(
-			    &app->sphere_sorter, &app->sphere_instances,
+			    &app->sphere_sorter, app->sphere_instances,
 			    app->sphere_instance_count, app->camera.position);
 			billboard_group_update(&app->billboard_group,
 			                       app->sphere_instances,

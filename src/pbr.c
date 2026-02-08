@@ -132,6 +132,9 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 		                  level, levels, 0, 1, threshold);
 	}
 
+	/* Ensure all compute operations are finished before using the texture
+	 */
+	glFinish();
 	return spec_tex;
 }
 
@@ -247,6 +250,9 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	/* Ensure all compute operations are finished before using the texture
+	 */
+	glFinish();
 	return irr_tex;
 }
 
@@ -374,5 +380,8 @@ GLuint build_brdf_lut_map(int size)
 
 	glDeleteProgram(shader);
 
+	/* Ensure all compute operations are finished before using the texture
+	 */
+	glFinish();
 	return lut_tex;
 }

@@ -35,7 +35,6 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 		initial_capacity = INITIAL_CAPACITY;
 	}
 	sorter->capacity = initial_capacity;
-	sorter->min_capacity = initial_capacity;
 	sorter->entries = calloc(initial_capacity, sizeof(SphereSortEntry));
 
 	size_t size = initial_capacity * sizeof(SphereInstance);
@@ -61,36 +60,18 @@ void sphere_sorter_cleanup(SphereSorter* sorter)
 		sorter->temp_instances = NULL;
 	}
 	sorter->capacity = 0;
-	sorter->min_capacity = 0;
 }
 
-void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
+void sphere_sorter_sort(SphereSorter* sorter, SphereInstance* instances,
                         int count, vec3 camera_pos)
 {
-	if (count <= 0 || !instances_ptr || !*instances_ptr) {
+	if (count <= 0 || !instances) {
 		return;
 	}
 
-	SphereInstance* instances = *instances_ptr;
-
-	/*
-	 * Determine required capacity.
-	 * We must maintain at least min_capacity to ensure the App receives
-	 * a buffer large enough for its max usage (assuming max <=
-	 * min_capacity). If count exceeds min_capacity, we grow.
-	 */
-	int required_capacity =
-	    (count > sorter->min_capacity) ? count : sorter->min_capacity;
-
 	/* 1. Ensure Capacity */
-	if (required_capacity > sorter->capacity) {
-		/* If growing beyond min_capacity, double for amortized O(1).
-		   Otherwise, just restore to min_capacity. */
-		int new_cap = required_capacity;
-		if (required_capacity > sorter->min_capacity) {
-			new_cap = required_capacity * 2;
-		}
-
+	if (count > sorter->capacity) {
+		int new_cap = count * 2;
 		SphereSortEntry* new_entries =
 		    realloc(sorter->entries, new_cap * sizeof(SphereSortEntry));
 
@@ -145,17 +126,7 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 		sorter->temp_instances[i] = instances[old_idx];
 	}
 
-	/* 5. Swap pointers instead of copying back */
-	*instances_ptr = sorter->temp_instances;
-	sorter->temp_instances = instances;
-
-	/*
-	 * We've swapped buffers. The buffer we now hold (old 'instances')
-	 * has an unknown capacity (at least 'count').
-	 * However, we enforce that the external buffer MUST be at least
-	 * 'min_capacity' in size. We rely on this contract to avoid
-	 * unnecessary reallocations when count < min_capacity.
-	 */
-	sorter->capacity =
-	    (count > sorter->min_capacity) ? count : sorter->min_capacity;
+	/* 5. Copy back to original array */
+	safe_memcpy(instances, count * sizeof(SphereInstance),
+	            sorter->temp_instances, count * sizeof(SphereInstance));
 }
