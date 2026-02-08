@@ -89,6 +89,7 @@ void test_texture_upload_valid_dimensions(void)
 	glDeleteTextures(1, &tex);
 }
 
+<<<<<<< HEAD
 void test_texture_load_excessive_dimensions_dos(void)
 {
 	const char* filename = "test_dos_9000x1.ppm";
@@ -104,6 +105,27 @@ void test_texture_load_excessive_dimensions_dos(void)
 	                          "MAX_TEXTURE_DIMENSION (8192) during load");
 
 	remove(filename);
+=======
+void test_texture_load_huge_header_dos(void)
+{
+	const char* bomb_path = "bomb.ppm";
+	FILE* f = fopen(bomb_path, "wb");
+	TEST_ASSERT_NOT_NULL(f);
+	// P6 (binary PPM), 20000 width, 20000 height, 255 max val
+	// No data follows (or minimal data)
+	// This declares a 20000x20000 image which would require ~1.6GB RGBA
+	// if allocated before checking dimensions.
+	fprintf(f, "P6\n20000 20000\n255\n");
+	fclose(f);
+
+	// Try to load it. It should fail fast and return 0 because of dimension check.
+	// If it tries to allocate first, it might succeed (if memory available)
+	// or crash/DoS. But we expect 0 returned due to check.
+	GLuint tex = texture_load(bomb_path);
+	TEST_ASSERT_EQUAL(0, tex);
+
+	remove(bomb_path);
+>>>>>>> 0d24754f (Fix(texture): Prevent memory exhaustion via image header validation (CWE-400))
 }
 
 int main(void)
@@ -111,6 +133,10 @@ int main(void)
 	UNITY_BEGIN();
 	RUN_TEST(test_texture_upload_excessive_dimensions);
 	RUN_TEST(test_texture_upload_valid_dimensions);
+<<<<<<< HEAD
 	RUN_TEST(test_texture_load_excessive_dimensions_dos);
+=======
+	RUN_TEST(test_texture_load_huge_header_dos);
+>>>>>>> 0d24754f (Fix(texture): Prevent memory exhaustion via image header validation (CWE-400))
 	return UNITY_END();
 }
