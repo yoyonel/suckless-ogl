@@ -11,11 +11,13 @@ var searchData=
   ['app_5fenv_2eh_8',['app_env.h',['../app__env_8h.html',1,'']]],
   ['app_5finput_2ec_9',['app_input.c',['../app__input_8c.html',1,'']]],
   ['app_5finput_2eh_10',['app_input.h',['../app__input_8h.html',1,'']]],
-  ['app_5fscene_2ec_11',['app_scene.c',['../app__scene_8c.html',1,'']]],
-  ['app_5fscene_2eh_12',['app_scene.h',['../app__scene_8h.html',1,'']]],
-  ['app_5fsettings_2eh_13',['app_settings.h',['../app__settings_8h.html',1,'']]],
-  ['app_5fui_2ec_14',['app_ui.c',['../app__ui_8c.html',1,'']]],
-  ['app_5fui_2eh_15',['app_ui.h',['../app__ui_8h.html',1,'']]],
-  ['async_5floader_2ec_16',['async_loader.c',['../async__loader_8c.html',1,'']]],
-  ['async_5floader_2eh_17',['async_loader.h',['../async__loader_8h.html',1,'']]]
+  ['app_5fmetrics_2ec_11',['app_metrics.c',['../app__metrics_8c.html',1,'']]],
+  ['app_5fmetrics_2eh_12',['app_metrics.h',['../app__metrics_8h.html',1,'']]],
+  ['app_5fscene_2ec_13',['app_scene.c',['../app__scene_8c.html',1,'']]],
+  ['app_5fscene_2eh_14',['app_scene.h',['../app__scene_8h.html',1,'']]],
+  ['app_5fsettings_2eh_15',['app_settings.h',['../app__settings_8h.html',1,'']]],
+  ['app_5fui_2ec_16',['app_ui.c',['../app__ui_8c.html',1,'']]],
+  ['app_5fui_2eh_17',['app_ui.h',['../app__ui_8h.html',1,'']]],
+  ['async_5floader_2ec_18',['async_loader.c',['../async__loader_8c.html',1,'']]],
+  ['async_5floader_2eh_19',['async_loader.h',['../async__loader_8h.html',1,'']]]
 ];

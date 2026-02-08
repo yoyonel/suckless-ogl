@@ -76,7 +76,7 @@ var postprocess_8h =
     [ "postprocess_enable", "postprocess_8h.html#a881dafb2be086301f57008f8c73f545b", null ],
     [ "postprocess_end", "postprocess_8h.html#aa84256eef04459c5acf3b67987da736b", null ],
     [ "postprocess_get_exposure", "postprocess_8h.html#abc341dd9baaf0c15b099d5ad9c076f2b", null ],
-    [ "postprocess_init", "postprocess_8h.html#a86cb89e3a63a4ad9487dc629f8cc7790", null ],
+    [ "postprocess_init", "postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b", null ],
     [ "postprocess_is_enabled", "postprocess_8h.html#af9163a0102d9d7b05ae4c091b9358f9f", null ],
     [ "postprocess_resize", "postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5", null ],
     [ "postprocess_set_auto_exposure", "postprocess_8h.html#a6ce07fd263254dd72c5afc8c199f3913", null ],

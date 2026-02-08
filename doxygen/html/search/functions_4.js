@@ -1,5 +1,10 @@
 var searchData=
 [
   ['edge_5fhash_5ffree_0',['edge_hash_free',['../icosphere_8c.html#ae03bb94117c96b3c6b629a914dde98cd',1,'icosphere.c']]],
-  ['edge_5fhash_5finit_1',['edge_hash_init',['../icosphere_8c.html#aa6488726ac1005a991370448ff17cce0',1,'icosphere.c']]]
+  ['edge_5fhash_5finit_1',['edge_hash_init',['../icosphere_8c.html#aa6488726ac1005a991370448ff17cce0',1,'icosphere.c']]],
+  ['effect_5fbenchmark_5finit_2',['effect_benchmark_init',['../effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153',1,'effect_benchmark_init(EffectBenchmark *bench, PostProcess *postprocess, GPUProfiler *profiler):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153',1,'effect_benchmark_init(EffectBenchmark *bench, PostProcess *postprocess, GPUProfiler *profiler):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fis_5frunning_3',['effect_benchmark_is_running',['../effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0',1,'effect_benchmark_is_running(const EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#a464b97790ca4fcafceaf5aeb93e5f1e0',1,'effect_benchmark_is_running(const EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5flog_5fresults_4',['effect_benchmark_log_results',['../effect__benchmark_8h.html#a392e325c2453fe315ac40f4f4a1194a3',1,'effect_benchmark_log_results(const EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#a392e325c2453fe315ac40f4f4a1194a3',1,'effect_benchmark_log_results(const EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fstart_5',['effect_benchmark_start',['../effect__benchmark_8h.html#aa2cc8b49697d1f8554bc69ce6c5a77d2',1,'effect_benchmark_start(EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#aa2cc8b49697d1f8554bc69ce6c5a77d2',1,'effect_benchmark_start(EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fupdate_6',['effect_benchmark_update',['../effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb',1,'effect_benchmark_update(EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#ace04d12739b82c375dbef5ebc4a6c4eb',1,'effect_benchmark_update(EffectBenchmark *bench):&#160;effect_benchmark.c']]]
 ];

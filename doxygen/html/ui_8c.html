@@ -306,6 +306,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa12b42bbbbca85f3404c48a9534aa7ac" id="r_aa12b42bbbbca85f3404c48a9534aa7ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, float pos_x, float pos_y, const vec3 <a class="el" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:aa12b42bbbbca85f3404c48a9534aa7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a single text string at a specific coordinate.  <br /></td></tr>
 <tr class="separator:aa12b42bbbbca85f3404c48a9534aa7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26db48bb6063f3f76fd3a3227b3acb4b" id="r_a26db48bb6063f3f76fd3a3227b3acb4b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a26db48bb6063f3f76fd3a3227b3acb4b">ui_measure_text</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>)</td></tr>
+<tr class="memdesc:a26db48bb6063f3f76fd3a3227b3acb4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measures the width of a text string in pixels.  <br /></td></tr>
+<tr class="separator:a26db48bb6063f3f76fd3a3227b3acb4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74067bc67d31c6d82fa3b548a3729670" id="r_a74067bc67d31c6d82fa3b548a3729670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a74067bc67d31c6d82fa3b548a3729670">ui_draw_text_ex</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, float pos_x, float pos_y, const vec3 <a class="el" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>, float alpha, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:a74067bc67d31c6d82fa3b548a3729670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws text with custom alpha transparency.  <br /></td></tr>
 <tr class="separator:a74067bc67d31c6d82fa3b548a3729670"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -330,6 +333,9 @@ Functions</h2></td></tr>
 <tr class="memitem:af0a3c0de038ae56e7e6344cdfdd15bba" id="r_af0a3c0de038ae56e7e6344cdfdd15bba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, float center_x, float center_y, float size, float angle, const vec3 <a class="el" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:af0a3c0de038ae56e7e6344cdfdd15bba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a rotating loading spinner.  <br /></td></tr>
 <tr class="separator:af0a3c0de038ae56e7e6344cdfdd15bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4b8d38bd43df2b9b59611b054408f74" id="r_af4b8d38bd43df2b9b59611b054408f74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af4b8d38bd43df2b9b59611b054408f74">ui_draw_rounded_rect</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, float rect_x, float rect_y, float width, float height, float <a class="el" href="ui_8frag.html#af4e95f531207631a73d76280e9c80e94">radius</a>, const vec3 <a class="el" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>, float alpha, int screen_width, int screen_height)</td></tr>
+<tr class="memdesc:af4b8d38bd43df2b9b59611b054408f74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a rounded rectangle with custom alpha.  <br /></td></tr>
+<tr class="separator:af4b8d38bd43df2b9b59611b054408f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -790,6 +796,89 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="af4b8d38bd43df2b9b59611b054408f74" name="af4b8d38bd43df2b9b59611b054408f74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4b8d38bd43df2b9b59611b054408f74">&#9670;&#160;</a></span>ui_draw_rounded_rect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ui_draw_rounded_rect </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>rect_x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>rect_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>radius</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws a rounded rectangle with custom alpha. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af4b8d38bd43df2b9b59611b054408f74_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
+
+</div>
+</div>
 <a id="af0a3c0de038ae56e7e6344cdfdd15bba" name="af0a3c0de038ae56e7e6344cdfdd15bba"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0a3c0de038ae56e7e6344cdfdd15bba">&#9670;&#160;</a></span>ui_draw_spinner()</h2>
 
@@ -1185,6 +1274,44 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a741fab59d05880f3bf5362d101833451_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+
+</div>
+</div>
+<a id="a26db48bb6063f3f76fd3a3227b3acb4b" name="a26db48bb6063f3f76fd3a3227b3acb4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26db48bb6063f3f76fd3a3227b3acb4b">&#9670;&#160;</a></span>ui_measure_text()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ui_measure_text </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Measures the width of a text string in pixels. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ui_context</td><td>Pointer to the context. </td></tr>
+    <tr><td class="paramname">text</td><td>The text to measure. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Width in pixels. </dd></dl>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['5_20the_20mesh_20vs_20math_20paradox_20understanding_20diff_20maps_0',['5. The Mesh vs. Math Paradox (Understanding Diff Maps)',['../md_docs_2billboard__optimization.html#autotoc_md12',1,'']]]
+  ['4_20numerical_20stability_3a_20avoiding_20silhouette_20jitter_0',['4. Numerical Stability: Avoiding Silhouette Jitter',['../md_docs_2billboard__optimization.html#autotoc_md11',1,'']]]
 ];

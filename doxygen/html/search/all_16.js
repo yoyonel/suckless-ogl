@@ -1,8 +1,26 @@
 var searchData=
 [
-  ['quad_5fvbo_0',['quad_vbo',['../structApp.html#a1dd853575f894ae3ed9a21ab1013f638',1,'App']]],
-  ['quad_5fvertices_1',['quad_vertices',['../skybox_8c.html#a2907a823075f10f1585889243be37889',1,'skybox.c']]],
-  ['quad_5fvertices_5fcount_2',['QUAD_VERTICES_COUNT',['../ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a8a116a65d8d34b1de85f3a387e5e61de',1,'ui.c']]],
-  ['query_5fend_3',['query_end',['../structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6',1,'GPUTimer']]],
-  ['query_5fstart_4',['query_start',['../structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c',1,'GPUTimer']]]
+  ['name_0',['name',['../structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c',1,'EffectBenchmark::name'],['../structGPUStage.html#ab9b6b9fe3b834a439e410227914d9d93',1,'GPUStage::name'],['../structGPUStageInfo.html#a9bbc68e1f582821561d3b0a6da3d5908',1,'GPUStageInfo::name'],['../structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4',1,'PBRMaterial::name'],['../structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de',1,'UniformEntry::name'],['../structShader.html#a63fc645b9235c69c54c1a5b6a019db69',1,'Shader::name'],['../structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6',1,'EffectEntry::name'],['../structEffectMetadata.html#ac6608946101117dc9b73ac112842fc55',1,'EffectMetadata::name'],['../structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4',1,'EffectBenchResult::name']]],
+  ['navigation_1',['Navigation',['../index.html#autotoc_md21',1,'']]],
+  ['ndc_2',['Projection to NDC',['../md_docs_2billboard__optimization.html#autotoc_md5',1,'']]],
+  ['near_5fplane_3',['NEAR_PLANE',['../group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de',1,'app_settings.h']]],
+  ['neighbor_5fmax_5fshader_4',['neighbor_max_shader',['../structPostProcess.html#a33f165abd3e1ff6e37b8055277097a83',1,'PostProcess']]],
+  ['next_5',['next',['../structChunk.html#a18bb30292f0e37772147fc4811534522',1,'Chunk::next'],['../structLoadedBuffer.html#a08de67c79ace27f48143223f9a423078',1,'LoadedBuffer::next']]],
+  ['normal_6',['normal',['../pbr__ibl__billboard_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78',1,'Normal:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78',1,'Normal:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a08e557a66ed99db8f20a778d7c34d2bd',1,'Normal:&#160;pbr_ibl_ssbo.vert']]],
+  ['normalize_5fvec3_7',['normalize_vec3',['../icosphere_8c.html#af48e051641689a72f684355046f4ff0f',1,'icosphere.c']]],
+  ['normals_8',['normals',['../structIcosphereGeometry.html#a2eb01262bd1bba34ac84f192f6c366af',1,'IcosphereGeometry']]],
+  ['normals_20without_20trigonometry_9',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
+  ['notes_10',['notes',['../structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825',1,'ActionNotifier']]],
+  ['notif_5fbuf_5fsize_11',['NOTIF_BUF_SIZE',['../app__input_8c.html#a385c44f6fb256e5716a2302a5b940388a4a400d8a348b628422a6de4f19fa7bce',1,'app_input.c']]],
+  ['notif_5fdur_5flong_12',['NOTIF_DUR_LONG',['../action__notifier_8h.html#a2df5e972f20728e414eb034ef37568c7',1,'action_notifier.h']]],
+  ['notif_5fdur_5fnormal_13',['NOTIF_DUR_NORMAL',['../action__notifier_8h.html#a6b53ef71bab360389505ecb4ea5b8fa5',1,'action_notifier.h']]],
+  ['notif_5fdur_5fshort_14',['NOTIF_DUR_SHORT',['../action__notifier_8h.html#ae69a8ebf842b2eda8841d6b341583253',1,'action_notifier.h']]],
+  ['notifier_15',['notifier',['../structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5',1,'App']]],
+  ['ns_5fper_5fms_16',['NS_PER_MS',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeafd57fe7f4eaf46322b94fec775395bcf',1,'perf_timer.c']]],
+  ['ns_5fper_5fs_17',['NS_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeac27f89df3cdb20ed1a53d35d3f772a3d',1,'perf_timer.c']]],
+  ['ns_5fper_5fus_18',['NS_PER_US',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea260259317d526f9e0d23af05655c0ca1',1,'perf_timer.c']]],
+  ['ns_5fto_5fms_19',['ns_to_ms',['../gpu__profiler_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'NS_TO_MS:&#160;gpu_profiler.c'],['../perf__timer_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'NS_TO_MS:&#160;perf_timer.c']]],
+  ['ns_5fto_5fs_20',['NS_TO_S',['../perf__timer_8c.html#a19325a5f7cca1f4ae6ad9e1804e326fc',1,'perf_timer.c']]],
+  ['ns_5fto_5fus_21',['NS_TO_US',['../perf__timer_8c.html#a45450bdee139fc2f8ca3c79c07a922b3',1,'perf_timer.c']]],
+  ['numerical_20stability_3a_20avoiding_20silhouette_20jitter_22',['4. Numerical Stability: Avoiding Silhouette Jitter',['../md_docs_2billboard__optimization.html#autotoc_md11',1,'']]]
 ];

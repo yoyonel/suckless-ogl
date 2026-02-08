@@ -12,11 +12,13 @@ var searchData=
   ['velocity_5ftex_9',['velocity_tex',['../structPostProcess.html#a77c758df89ff635daa16973a0de626be',1,'PostProcess']]],
   ['vendor_10',['vendor',['../structGPUInfo.html#a048d0d93456bee48c8fbd1bb5d097b87',1,'GPUInfo']]],
   ['version_11',['version',['../structGPUInfo.html#a37429509d1c32afd41d67c49a93e5688',1,'GPUInfo']]],
-  ['vertices_12',['vertices',['../structIcosphereGeometry.html#afb2289f736fe4b146cfa99a06411e99f',1,'IcosphereGeometry::vertices'],['../structUIQuad.html#ad40bd73c68d4a1978b088ffff64e7716',1,'UIQuad::vertices']]],
+  ['vertices_12',['vertices',['../structUIQuad.html#ad40bd73c68d4a1978b088ffff64e7716',1,'UIQuad::vertices'],['../structIcosphereGeometry.html#afb2289f736fe4b146cfa99a06411e99f',1,'IcosphereGeometry::vertices']]],
   ['view_13',['view',['../debug__line_8vert.html#a7ab66495f9aae7ab34147735223f7c6d',1,'view:&#160;debug_line.vert'],['../pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d',1,'view:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a7ab66495f9aae7ab34147735223f7c6d',1,'view:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8vert.html#a7ab66495f9aae7ab34147735223f7c6d',1,'view:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a7ab66495f9aae7ab34147735223f7c6d',1,'view:&#160;pbr_ibl_ssbo.vert']]],
   ['vignette_14',['vignette',['../structPostProcessPreset.html#a92dbacc225792a6e1cf041cd9599379c',1,'PostProcessPreset::vignette'],['../structPostProcess.html#ae49ebd9e9dd9845b9c781c534530998d',1,'PostProcess::vignette']]],
   ['vignette_5fintensity_15',['vignette_intensity',['../structPostProcessUBO.html#a2484a2fc1ee249fbf5d8b7a4533800bd',1,'PostProcessUBO']]],
   ['vignette_5froundness_16',['vignette_roundness',['../structPostProcessUBO.html#af1479d005dd0e49ac717e94e94f57af5',1,'PostProcessUBO']]],
   ['vignette_5fsmoothness_17',['vignette_smoothness',['../structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17',1,'PostProcessUBO']]],
-  ['vworldpos_18',['vworldpos',['../debug__line_8frag.html#aad4ecce6e5477094186a17d0f4f4b080',1,'vWorldPos:&#160;debug_line.frag'],['../debug__line_8vert.html#aa0905669d58534b2ee4deea9c55717a2',1,'vWorldPos:&#160;debug_line.vert']]]
+  ['visibility_5fthreshold_18',['VISIBILITY_THRESHOLD',['../gpu__profiler__ui_8c.html#add190d66a5136e9b1893c6346f3bd8fd',1,'gpu_profiler_ui.c']]],
+  ['visible_19',['visible',['../structGPUProfilerUI.html#aa87fc5730d3e0b7ceeb0cd4ac4e99076',1,'GPUProfilerUI']]],
+  ['vworldpos_20',['vworldpos',['../debug__line_8frag.html#aad4ecce6e5477094186a17d0f4f4b080',1,'vWorldPos:&#160;debug_line.frag'],['../debug__line_8vert.html#aa0905669d58534b2ee4deea9c55717a2',1,'vWorldPos:&#160;debug_line.vert']]]
 ];

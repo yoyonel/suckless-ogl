@@ -16,7 +16,7 @@ var postprocess_8c =
     [ "postprocess_enable", "postprocess_8c.html#a881dafb2be086301f57008f8c73f545b", null ],
     [ "postprocess_end", "postprocess_8c.html#aa84256eef04459c5acf3b67987da736b", null ],
     [ "postprocess_get_exposure", "postprocess_8c.html#abc341dd9baaf0c15b099d5ad9c076f2b", null ],
-    [ "postprocess_init", "postprocess_8c.html#a86cb89e3a63a4ad9487dc629f8cc7790", null ],
+    [ "postprocess_init", "postprocess_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b", null ],
     [ "postprocess_is_enabled", "postprocess_8c.html#af9163a0102d9d7b05ae4c091b9358f9f", null ],
     [ "postprocess_on_state_change", "postprocess_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847", null ],
     [ "postprocess_resize", "postprocess_8c.html#aeba49bd333ab21356706ac98f5b180b5", null ],
@@ -41,6 +41,7 @@ var postprocess_8c =
     [ "postprocess_update_matrices", "postprocess_8c.html#a86ca4160d60435cb54320bbcc68d0d95", null ],
     [ "postprocess_update_time", "postprocess_8c.html#ae22c24f5c64568dcf1908a579312ed60", null ],
     [ "postprocess_use_dynamic", "postprocess_8c.html#a3b10285ebc588a80b81be601659260d5", null ],
+    [ "setup_sampler_uniforms", "postprocess_8c.html#ad37e66750c245e76eacbbfacfdfa2464", null ],
     [ "update_current_shader", "postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7", null ],
     [ "ALL_EFFECTS", "postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20", null ]
 ];

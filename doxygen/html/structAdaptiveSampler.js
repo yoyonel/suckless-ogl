@@ -9,5 +9,7 @@ var structAdaptiveSampler =
     [ "samples_taken", "structAdaptiveSampler.html#acb9bc43ec19184ff441d1c8bbdf8bc1d", null ],
     [ "target_samples", "structAdaptiveSampler.html#a887143ccaca7573351f1ab4ede4fad40", null ],
     [ "window_duration", "structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7", null ],
+    [ "window_end_frame", "structAdaptiveSampler.html#a5c5722c6a15025f2d559a5ed359a9804", null ],
+    [ "window_start_frame", "structAdaptiveSampler.html#a3cbc132e731af568472de68a8015c637", null ],
     [ "window_start_time", "structAdaptiveSampler.html#a0e49d332095e73af87d1859ca8ae0b47", null ]
 ];

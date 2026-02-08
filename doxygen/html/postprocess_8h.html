@@ -250,6 +250,7 @@ $(document).ready(function(){initNavTree('postprocess_8h.html',''); initResizabl
 <code>#include &quot;effects/fx_dof.h&quot;</code><br />
 <code>#include &quot;effects/fx_motion_blur.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
 <code>#include &lt;cglm/types.h&gt;</code><br />
@@ -261,7 +262,7 @@ Include dependency graph for postprocess.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__dep__incl.svg" width="100%" height="448"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h__dep__incl.svg" width="100%" height="503"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div>
 <p><a href="postprocess_8h_source.html">Go to the source code of this file.</a></p>
@@ -412,9 +413,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a86cb89e3a63a4ad9487dc629f8cc7790" id="r_a86cb89e3a63a4ad9487dc629f8cc7790"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a86cb89e3a63a4ad9487dc629f8cc7790">postprocess_init</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int width, int height)</td></tr>
-<tr class="memdesc:a86cb89e3a63a4ad9487dc629f8cc7790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the post-processing pipeline.  <br /></td></tr>
-<tr class="separator:a86cb89e3a63a4ad9487dc629f8cc7790"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bc2aa1dea945700e2e0ce539fffd53b" id="r_a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b">postprocess_init</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="structGPUProfiler.html">GPUProfiler</a> *external_profiler, int width, int height)</td></tr>
+<tr class="memdesc:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the post-processing pipeline.  <br /></td></tr>
+<tr class="separator:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ad5053871c219c0dd7585fab39c18b0" id="r_a9ad5053871c219c0dd7585fab39c18b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0">postprocess_cleanup</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="memdesc:a9ad5053871c219c0dd7585fab39c18b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all GPU and CPU resources.  <br /></td></tr>
 <tr class="separator:a9ad5053871c219c0dd7585fab39c18b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -523,9 +524,9 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
 <div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code hl_enumvalue" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:72</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:83</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:69</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition</b> postprocess.h:73</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition</b> postprocess.h:84</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition</b> postprocess.h:70</div></div>
 </div><!-- fragment -->
 <p>Default mask of active effects. </p>
 
@@ -1234,7 +1235,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="100%" height="438"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8h_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="412" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -1257,8 +1258,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a86cb89e3a63a4ad9487dc629f8cc7790" name="a86cb89e3a63a4ad9487dc629f8cc7790"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86cb89e3a63a4ad9487dc629f8cc7790">&#9670;&#160;</a></span>postprocess_init()</h2>
+<a id="a2bc2aa1dea945700e2e0ce539fffd53b" name="a2bc2aa1dea945700e2e0ce539fffd53b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bc2aa1dea945700e2e0ce539fffd53b">&#9670;&#160;</a></span>postprocess_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1268,6 +1269,12 @@ Here is the call graph for this function:</div>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
           <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>external_profiler</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1302,7 +1309,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a86cb89e3a63a4ad9487dc629f8cc7790_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8h_a2bc2aa1dea945700e2e0ce539fffd53b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>

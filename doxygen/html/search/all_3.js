@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['4_20numerical_20stability_3a_20avoiding_20silhouette_20jitter_0',['4. Numerical Stability: Avoiding Silhouette Jitter',['../md_docs_2billboard__optimization.html#autotoc_md11',1,'']]]
+  ['3_20conservative_20depth_0',['3. Conservative Depth',['../md_docs_2billboard__optimization.html#autotoc_md10',1,'']]]
 ];

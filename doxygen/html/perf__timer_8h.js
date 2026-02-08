@@ -13,6 +13,7 @@ var perf__timer_8h =
     [ "gpu_timer_cleanup", "perf__timer_8h.html#ab77f03ea3adbd1c7e38aad5e9c51a48c", null ],
     [ "gpu_timer_elapsed_ms", "perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774", null ],
     [ "gpu_timer_start", "perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab", null ],
+    [ "gpu_timer_stop", "perf__timer_8h.html#a93662ba9f40c64c41997e746d07f135e", null ],
     [ "hybrid_timer_cleanup_raii", "perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce", null ],
     [ "perf_hybrid_start", "perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b", null ],
     [ "perf_hybrid_stop", "perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae", null ],

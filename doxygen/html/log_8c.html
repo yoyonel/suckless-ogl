@@ -266,11 +266,12 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a05589fbab0657f08285ebdfe93f5ec9e" id="r_a05589fbab0657f08285ebdfe93f5ec9e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="log_8c.html#a05589fbab0657f08285ebdfe93f5ec9ea490d7b93a43f9c7422bb90f9fdb1556f">MILLI_DIVISOR</a> = 1000000
-, <a class="el" href="log_8c.html#a05589fbab0657f08285ebdfe93f5ec9ea3ff11c2ebc27e50d70960f12741444fb">PREFIX_BUFFER_SIZE</a> = 128
-, <a class="el" href="log_8c.html#a05589fbab0657f08285ebdfe93f5ec9eaa9180b3f0d8722645ebcd8c9ab60fa70">TIME_BUFFER_SIZE</a> = 24
+<tr class="memitem:aba01db17f4a2bfbc3db60dc172972a25" id="r_aba01db17f4a2bfbc3db60dc172972a25"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25a490d7b93a43f9c7422bb90f9fdb1556f">MILLI_DIVISOR</a> = 1000000
+, <a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25a3ff11c2ebc27e50d70960f12741444fb">PREFIX_BUFFER_SIZE</a> = 128
+, <a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25aa9180b3f0d8722645ebcd8c9ab60fa70">TIME_BUFFER_SIZE</a> = 24
+, <a class="el" href="log_8c.html#aba01db17f4a2bfbc3db60dc172972a25a6a5dd49e581491233eb9ddb60aca3b2d">MSG_BUFFER_SIZE</a> = 1024
  }</td></tr>
-<tr class="separator:a05589fbab0657f08285ebdfe93f5ec9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:aba01db17f4a2bfbc3db60dc172972a25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -283,6 +284,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a20d53fe4929c9f90f83a10c739b02dfa" id="r_a20d53fe4929c9f90f83a10c739b02dfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level)</td></tr>
 <tr class="memdesc:a20d53fe4929c9f90f83a10c739b02dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global minimum log level.  <br /></td></tr>
 <tr class="separator:a20d53fe4929c9f90f83a10c739b02dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a204bd0fe448c6083705de7232cea8102" id="r_a204bd0fe448c6083705de7232cea8102"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a204bd0fe448c6083705de7232cea8102">log_set_callback</a> (<a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a> callback)</td></tr>
+<tr class="memdesc:a204bd0fe448c6083705de7232cea8102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a custom callback for log messages.  <br /></td></tr>
+<tr class="separator:a204bd0fe448c6083705de7232cea8102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5099953981ab6c18721857fd2f8d6fc" id="r_ae5099953981ab6c18721857fd2f8d6fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#ae5099953981ab6c18721857fd2f8d6fc">log_get_level</a> (void)</td></tr>
 <tr class="memdesc:ae5099953981ab6c18721857fd2f8d6fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the current global log level.  <br /></td></tr>
 <tr class="separator:ae5099953981ab6c18721857fd2f8d6fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -296,6 +300,8 @@ Variables</h2></td></tr>
 <tr class="separator:af9d04d44ddd24cd181c91561df230cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85e0d2f0365db22b9b91ccf8ee95889b" id="r_a85e0d2f0365db22b9b91ccf8ee95889b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a85e0d2f0365db22b9b91ccf8ee95889b">g_log_initialized</a> = false</td></tr>
 <tr class="separator:a85e0d2f0365db22b9b91ccf8ee95889b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3614ab5bdd1c64935cb35097746a5338" id="r_a3614ab5bdd1c64935cb35097746a5338"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8c.html#a3614ab5bdd1c64935cb35097746a5338">g_log_callback</a> = NULL</td></tr>
+<tr class="separator:a3614ab5bdd1c64935cb35097746a5338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a369266c24eacffb87046522897a570d5" name="a369266c24eacffb87046522897a570d5"></a>
@@ -313,8 +319,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a05589fbab0657f08285ebdfe93f5ec9e" name="a05589fbab0657f08285ebdfe93f5ec9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05589fbab0657f08285ebdfe93f5ec9e">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="aba01db17f4a2bfbc3db60dc172972a25" name="aba01db17f4a2bfbc3db60dc172972a25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba01db17f4a2bfbc3db60dc172972a25">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -325,9 +331,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a05589fbab0657f08285ebdfe93f5ec9ea490d7b93a43f9c7422bb90f9fdb1556f" name="a05589fbab0657f08285ebdfe93f5ec9ea490d7b93a43f9c7422bb90f9fdb1556f"></a>MILLI_DIVISOR&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a05589fbab0657f08285ebdfe93f5ec9ea3ff11c2ebc27e50d70960f12741444fb" name="a05589fbab0657f08285ebdfe93f5ec9ea3ff11c2ebc27e50d70960f12741444fb"></a>PREFIX_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a05589fbab0657f08285ebdfe93f5ec9eaa9180b3f0d8722645ebcd8c9ab60fa70" name="a05589fbab0657f08285ebdfe93f5ec9eaa9180b3f0d8722645ebcd8c9ab60fa70"></a>TIME_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aba01db17f4a2bfbc3db60dc172972a25a490d7b93a43f9c7422bb90f9fdb1556f" name="aba01db17f4a2bfbc3db60dc172972a25a490d7b93a43f9c7422bb90f9fdb1556f"></a>MILLI_DIVISOR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aba01db17f4a2bfbc3db60dc172972a25a3ff11c2ebc27e50d70960f12741444fb" name="aba01db17f4a2bfbc3db60dc172972a25a3ff11c2ebc27e50d70960f12741444fb"></a>PREFIX_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aba01db17f4a2bfbc3db60dc172972a25aa9180b3f0d8722645ebcd8c9ab60fa70" name="aba01db17f4a2bfbc3db60dc172972a25aa9180b3f0d8722645ebcd8c9ab60fa70"></a>TIME_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aba01db17f4a2bfbc3db60dc172972a25a6a5dd49e581491233eb9ddb60aca3b2d" name="aba01db17f4a2bfbc3db60dc172972a25a6a5dd49e581491233eb9ddb60aca3b2d"></a>MSG_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -473,6 +480,32 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a204bd0fe448c6083705de7232cea8102" name="a204bd0fe448c6083705de7232cea8102"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a204bd0fe448c6083705de7232cea8102">&#9670;&#160;</a></span>log_set_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_set_callback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a custom callback for log messages. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Function to call for each log message, or NULL to disable. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a20d53fe4929c9f90f83a10c739b02dfa" name="a20d53fe4929c9f90f83a10c739b02dfa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a20d53fe4929c9f90f83a10c739b02dfa">&#9670;&#160;</a></span>log_set_level()</h2>
 
@@ -526,6 +559,28 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a3614ab5bdd1c64935cb35097746a5338" name="a3614ab5bdd1c64935cb35097746a5338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3614ab5bdd1c64935cb35097746a5338">&#9670;&#160;</a></span>g_log_callback</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a> g_log_callback = NULL</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a85e0d2f0365db22b9b91ccf8ee95889b" name="a85e0d2f0365db22b9b91ccf8ee95889b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a85e0d2f0365db22b9b91ccf8ee95889b">&#9670;&#160;</a></span>g_log_initialized</h2>
 

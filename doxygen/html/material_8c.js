@@ -1,8 +1,8 @@
 var material_8c =
 [
-    [ "DEFAULT_ALBEDO", "material_8c.html#afce43eef84872858a39ed10116090b7d", null ],
-    [ "DEFAULT_METALLIC", "material_8c.html#aa42495644b3a8c5702d6a3accfabeff4", null ],
-    [ "DEFAULT_ROUGHNESS", "material_8c.html#a9eb4432a8c21cea1d94a2c8232df585a", null ],
+    [ "MAT_DEFAULT_ALBEDO", "material_8c.html#ab718c0f3f47b49dc37c40edb75621e49", null ],
+    [ "MAT_DEFAULT_METALLIC", "material_8c.html#a3428033f6d41718d8be7d89959893ec8", null ],
+    [ "MAT_DEFAULT_ROUGHNESS", "material_8c.html#a42ca186adca245bf3a05a495dfbc8a37", null ],
     [ "MAX_FILE_SIZE", "material_8c.html#a649ad5274d988d17a275a3cead056746", null ],
     [ "allocate_materials", "material_8c.html#a5b1693d35a6bad2849e402fafd2ad136", null ],
     [ "material_free_lib", "material_8c.html#aa231f444b37b3b2f771ad22b78b2acb3", null ],

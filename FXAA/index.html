@@ -726,27 +726,38 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-optimizations" class="md-nav__link">
+  <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Optimizations
+        Architecture
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Key Optimizations">
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-luma-in-alpha-bandwidth-optimization" class="md-nav__link">
+  <a href="#uber-shader-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Luma-in-Alpha (Bandwidth Optimization)
+        Uber-shader Integration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Luma-in-Alpha (Bandwidth Optimization)">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luma-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Luma Modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Luma Modes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -765,11 +776,28 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#2-srgb-gamma-correctness" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-optimizations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. sRGB / Gamma Correctness
+        Key Optimizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Optimizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-linear-luma-alu-savings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Linear Luma (ALU Savings)
       
     </span>
   </a>
@@ -777,10 +805,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-dual-mode-quality-vs-performance" class="md-nav__link">
+  <a href="#2-inverse-screen-size-via-ubo" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Dual Mode (Quality vs. Performance)
+        2. Inverse Screen Size via UBO
       
     </span>
   </a>
@@ -788,10 +816,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-non-linear-search-quality-mode" class="md-nav__link">
+  <a href="#3-non-linear-edge-search" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Non-Linear Search (Quality Mode)
+        3. Non-Linear Edge Search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-luma-coherence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Luma Coherence
       
     </span>
   </a>
@@ -800,6 +839,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algorithm-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Algorithm Steps
+      
+    </span>
+  </a>
   
 </li>
       
@@ -822,6 +872,34 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changelog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changelog
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changelog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2026-02-07-performance-correctness-audit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2026-02-07 — Performance &amp; Correctness Audit
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1429,6 +1507,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../effect_benchmark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Effect Benchmark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../perf_profiling/" class="md-nav__link">
         
   
@@ -1735,66 +1841,144 @@
 <h1 id="fxaa-311-implementation-optimizations">FXAA 3.11 Implementation &amp; Optimizations<a class="headerlink" href="#fxaa-311-implementation-optimizations" title="Permanent link">¶</a></h1>
 <p>This document details the Fast Approximate Anti-Aliasing (FXAA 3.11) implementation in Suckless-OGL, specifically focusing on the optimizations tailored for the Deferred/Forward PBR pipeline.</p>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../images/fxaa_process.jpg" data-desc-position="bottom"><img alt="FXAA Technical Process &amp; Action" src="../images/fxaa_process.jpg"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNqtV91u2zYUvs9TEN5NAiiG7diOM08rsjZtBwzNsGQ_QB0MlERJRGVSICnH6VJgV8N2uWLAbvf7AHuF7U38JDv8kSzHshsj1Y3MQ_Lo4_m-c3gc0UTgPEVPvzk9PZ8RMaPkGn23h-ARmL2KqPAvn4zNOEhCnnHhtxTMyBwLwlTLTk2xSCjzO-2eHTMeEUlyMPTHlS9rGFpDyKc5L1jkK1GQ8V61C72UKc6JL0ioPCTVTUb8VkyzjESe0BtI1PJQzJlieApTz0k2I4qG2FklfU387pFnHNpH73bIP-j1e6OjANaWhn63PxqO3ObSGHZCHA_AmBN2TSOV-r0rC5tECUAs1w2Gg3h0cg88nVX_JxgPQtKqg8RC8GuzuNMe1T7cbQ-uXHhkEViuwqyQiohvKcsL5cjST4YDkvmtxc-_oc-KKUYXeJpnlCWOJBOLdaDoE55FrXENbX-8gvY4CuM4rjlxrDg6vAjLlGgPdzeUsugO3Qn08xhUQwR66cC64ed0TrIJ_JyrQpB9GQpC2KUdeaiYHawEa53XLu4GvWGNV4fBazrJ1fIoj7GIKMOZrAD1Kxt6QWiSBlzICth5HEui0L__dBvwvAdIbzYwTbDIbpqY_h2dmamzOVUPpJl0cAyZcH-ayw3NNINngaVaEl0afFg_389AoAdo8eNbNKXMjhpDujWiDoHXdI4ayTo4FQ6oRJDCHyGVCiJTiAl6NGFfEGCXWb-f6qxaw2KrUkTxlLPI2w4rPj4ejsgdWM74DqJDLhgRsonqP9CZLj6noMwbSeUD2Q6CExwf78B2uWED2xb2MomeUJzwdyWRtyGRtkbXAfGajlMj_YIDkgqQHT0TOKJQcCbsOZpJ9JUt51xoG1aUs3Uw7wVKEUB9W2IpgkNT75CNxITJKecqBQHk-7d4lpjirVMjNMVRD293LoD3wLZJhBLKTZg2afBPq8ELu2B_gDRmif77FfUQtApwZ0MQ5cEDtXlCQjLEO2iz3NCoza9x9qqKvRngjLPEcA-h1wf4EHXbHbT44S28B-bdc-O-e4_anTUCtobfQfKaDlYvTSy6JLUqeYt0KQSr4b_Uwu2ELX76GyVOvhchhnYIPWpKnV3q1D0wbpIIL9SG3uMvdG7mHtp0YNzbqT6VGxo14EpOGeXV7NPXkRaDHXv6sLDAjnbvOywMr-kwNd6fmgajxLOh7Yn1oi9nBxN2yhQ9xBnFEniHe6vI1I6lahuuWrt5tMq7684OP67uczu9bJvWp8p7Hmb0xWut5go2a1cvihQuB8Bot-wmzdIVeDXV3Vptodc2w-Ido05_Z7I1GWylNqzArK68Us-ghZzOy0-a6qHPZbPWHc2lsHNfHY1xtPj-F4SjGWa62b9X11L-5bEwrta-cEfIN0Saj0RUKv0V-J8FFXi3ODqX4NyIcrz3Zu9_SFVHvQ==?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNqtV91u2zYUvs9TEN5NAiiG7diOM08rsjZtBwzNsGQ_QB0MlERJRGVSICnH6VJgV8N2uWLAbvf7AHuF7U38JDv8kSzHshsj1Y3MQ_Lo4_m-c3gc0UTgPEVPvzk9PZ8RMaPkGn23h-ARmL2KqPAvn4zNOEhCnnHhtxTMyBwLwlTLTk2xSCjzO-2eHTMeEUlyMPTHlS9rGFpDyKc5L1jkK1GQ8V61C72UKc6JL0ioPCTVTUb8VkyzjESe0BtI1PJQzJlieApTz0k2I4qG2FklfU387pFnHNpH73bIP-j1e6OjANaWhn63PxqO3ObSGHZCHA_AmBN2TSOV-r0rC5tECUAs1w2Gg3h0cg88nVX_JxgPQtKqg8RC8GuzuNMe1T7cbQ-uXHhkEViuwqyQiohvKcsL5cjST4YDkvmtxc-_oc-KKUYXeJpnlCWOJBOLdaDoE55FrXENbX-8gvY4CuM4rjlxrDg6vAjLlGgPdzeUsugO3Qn08xhUQwR66cC64ed0TrIJ_JyrQpB9GQpC2KUdeaiYHawEa53XLu4GvWGNV4fBazrJ1fIoj7GIKMOZrAD1Kxt6QWiSBlzICth5HEui0L__dBvwvAdIbzYwTbDIbpqY_h2dmamzOVUPpJl0cAyZcH-ayw3NNINngaVaEl0afFg_389AoAdo8eNbNKXMjhpDujWiDoHXdI4ayTo4FQ6oRJDCHyGVCiJTiAl6NGFfEGCXWb-f6qxaw2KrUkTxlLPI2w4rPj4ejsgdWM74DqJDLhgRsonqP9CZLj6noMwbSeUD2Q6CExwf78B2uWED2xb2MomeUJzwdyWRtyGRtkbXAfGajlMj_YIDkgqQHT0TOKJQcCbsOZpJ9JUt51xoG1aUs3Uw7wVKEUB9W2IpgkNT75CNxITJKecqBQHk-7d4lpjirVMjNMVRD293LoD3wLZJhBLKTZg2afBPq8ELu2B_gDRmif77FfUQtApwZ0MQ5cEDtXlCQjLEO2iz3NCoza9x9qqKvRngjLPEcA-h1wf4EHXbHbT44S28B-bdc-O-e4_anTUCtobfQfKaDlYvTSy6JLUqeYt0KQSr4b_Uwu2ELX76GyVOvhchhnYIPWpKnV3q1D0wbpIIL9SG3uMvdG7mHtp0YNzbqT6VGxo14EpOGeXV7NPXkRaDHXv6sLDAjnbvOywMr-kwNd6fmgajxLOh7Yn1oi9nBxN2yhQ9xBnFEniHe6vI1I6lahuuWrt5tMq7684OP67uczu9bJvWp8p7Hmb0xWut5go2a1cvihQuB8Bot-wmzdIVeDXV3Vptodc2w-Ido05_Z7I1GWylNqzArK68Us-ghZzOy0-a6qHPZbPWHc2lsHNfHY1xtPj-F4SjGWa62b9X11L-5bEwrta-cEfIN0Saj0RUKv0V-J8FFXi3ODqX4NyIcrz3Zu9_SFVHvQ==?"></a></p>
 <p>FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).</p>
-<p><strong>Version</strong>: FXAA 3.11 (PC Quality / Console Performance Hybrid)
+<p><strong>Version</strong>: FXAA 3.11 Quality
 <strong>Location</strong>: <code>shaders/postprocess/fxaa.glsl</code></p>
-<h2 id="key-optimizations">Key Optimizations<a class="headerlink" href="#key-optimizations" title="Permanent link">¶</a></h2>
-<h3 id="1-luma-in-alpha-bandwidth-optimization">1. Luma-in-Alpha (Bandwidth Optimization)<a class="headerlink" href="#1-luma-in-alpha-bandwidth-optimization" title="Permanent link">¶</a></h3>
-<p>To avoid calculating Luminance (<code>dot(rgb, vec3(0.299...))</code>) multiple times per pixel during the edge detection phase, we pre-calculate it during the rendering pass.</p>
-<ul>
-<li><strong>Storage</strong>: The Alpha channel of the main Scene Color texture.</li>
-<li><strong>Writer</strong>: <code>pbr_ibl_billboard.frag</code>, <code>pbr_ibl_instanced.frag</code>, <code>background.frag</code>.</li>
-<li><strong>Reader</strong>: <code>fxaa.glsl</code> uses <code>textureOffset(...).a</code> to fetch neighbor luminance.</li>
-<li><strong>Benefit</strong>: Saves ~8 dot products per pixel in the FXAA pass and reduces register pressure.</li>
-</ul>
-<h4 id="pipeline-data-flow">Pipeline Data Flow<a class="headerlink" href="#pipeline-data-flow" title="Permanent link">¶</a></h4>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNq1VFFP2zAQfudXWNlL0UIpjJZWVSa1sMIkEKjdpEmApot9aTJcJ7Od0W3iv89JnDRJ8zBp2kvV-3z-7ru7L2bRWkISksWX2ewm3QD5fUCIBPHMIundLKcm8tc05rH0HG1wlYBEoZ3sIAHmOYP-MA9EzFBh4pl4aimq0MTHx2SV0meOSh3dmlQpiHMVxko75BJVtBbkU_yMQpHe50RR4MgOLSl5MH8IUSEk6Emk2i1i_ZOj58g4FQyZU4BBLLSAjcGvkf9AHVFwZzIC7ioj_UihjIJaqop-oXcyskDEuW1UxAJtmkXenJ2cjUfj2t3ygA4oBEN7kKB4iZgOvVMTPuWNI1uXLZRXhqNhMJ78i-Txvo4JwJCWqkHK-CVPHfTHLWkn_Z04lfrF-ilPlUb5NfFl7gBCOPjIPed-viT3oFS-4061ZB5zti952pY83ZN8zmgQlJmtfU4bE2tkbkCuI-GdDopwIWG9CsFYijxY0Rm0MS4lBf4oelkbd_434x516LhtXrdL1lNBfwGcVsT5F-IR9V3q3k0kEORFdunQVLiCjTmbJYmMt39bwm117TJQoWnelr5LdZLqqngRPorl1XxGeuaXvCWZoEY1gNPgvF2tBCsPvMsrvHZaINgCND2QvQ3_zQS-PwEjrssE5TiaXmhcaHnho6gPbAWbhOfrX1GJaJ4Y3OpUYn1gls3t0mTX8MF8wZeojXcq5gwiBWbYlwiMzHgSNlYxQYojaDFb0DLPOQpWkeZRSWfWWyfDAQTZ89Mgs-Bul7VP4eh97tzsKHewiQv_ZIg1lsGaA7Pz6fLT7mXLyxX3DEHHcBaoaVjMw2kmN_st8kyjRVaNaS_1NtqSBVAdy-qbYbHWyMzN14M_SqYSUA==?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNq1VFFP2zAQfudXWNlL0UIpjJZWVSa1sMIkEKjdpEmApot9aTJcJ7Od0W3iv89JnDRJ8zBp2kvV-3z-7ru7L2bRWkISksWX2ewm3QD5fUCIBPHMIundLKcm8tc05rH0HG1wlYBEoZ3sIAHmOYP-MA9EzFBh4pl4aimq0MTHx2SV0meOSh3dmlQpiHMVxko75BJVtBbkU_yMQpHe50RR4MgOLSl5MH8IUSEk6Emk2i1i_ZOj58g4FQyZU4BBLLSAjcGvkf9AHVFwZzIC7ioj_UihjIJaqop-oXcyskDEuW1UxAJtmkXenJ2cjUfj2t3ygA4oBEN7kKB4iZgOvVMTPuWNI1uXLZRXhqNhMJ78i-Txvo4JwJCWqkHK-CVPHfTHLWkn_Z04lfrF-ilPlUb5NfFl7gBCOPjIPed-viT3oFS-4061ZB5zti952pY83ZN8zmgQlJmtfU4bE2tkbkCuI-GdDopwIWG9CsFYijxY0Rm0MS4lBf4oelkbd_434x516LhtXrdL1lNBfwGcVsT5F-IR9V3q3k0kEORFdunQVLiCjTmbJYmMt39bwm117TJQoWnelr5LdZLqqngRPorl1XxGeuaXvCWZoEY1gNPgvF2tBCsPvMsrvHZaINgCND2QvQ3_zQS-PwEjrssE5TiaXmhcaHnho6gPbAWbhOfrX1GJaJ4Y3OpUYn1gls3t0mTX8MF8wZeojXcq5gwiBWbYlwiMzHgSNlYxQYojaDFb0DLPOQpWkeZRSWfWWyfDAQTZ89Mgs-Bul7VP4eh97tzsKHewiQv_ZIg1lsGaA7Pz6fLT7mXLyxX3DEHHcBaoaVjMw2kmN_st8kyjRVaNaS_1NtqSBVAdy-qbYbHWyMzN14M_SqYSUA==?"></a></p>
-<h3 id="2-srgb-gamma-correctness">2. sRGB / Gamma Correctness<a class="headerlink" href="#2-srgb-gamma-correctness" title="Permanent link">¶</a></h3>
-<p>Edge detection must be performed in Perceptual Space (Gamma) to match human vision. Since the rendering pipeline is linear:
-- <strong>Encoding</strong>: PBR shaders calculate Luma using <code>sqrt(LinearColor)</code> to approximate the Gamma 2.2 curve before storing it in Alpha.
-- <strong>Center Pixel</strong>: If the center pixel was modified by previous post-process effects (e.g., Chromatic Aberration), its Luma is recalculated on-the-fly using <code>dot(sqrt(rgb), ...)</code>.</p>
-<h3 id="3-dual-mode-quality-vs-performance">3. Dual Mode (Quality vs. Performance)<a class="headerlink" href="#3-dual-mode-quality-vs-performance" title="Permanent link">¶</a></h3>
-<p>Defined via preprocessor macro <code>FXAA_MODE</code> in <code>fxaa.glsl</code>.</p>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
+<h3 id="uber-shader-integration">Uber-shader Integration<a class="headerlink" href="#uber-shader-integration" title="Permanent link">¶</a></h3>
+<p>FXAA runs inside the single-pass postprocess uber-shader (<code>postprocess.frag</code>). The pipeline order within the fragment shader is:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Motion Blur → Chromatic Aberration → FXAA → DoF → Bloom → Tone mapping → ...
+</span></code></pre></div>
+<p>Because MB and CA are applied before FXAA in the same draw call, there is <strong>no intermediate texture</strong> containing the MB/CA result — only the raw scene texture (<code>screenTexture</code>) is available for neighbor sampling. FXAA therefore operates on the raw scene for all luma comparisons and final color reads. The <code>colorInput</code> parameter (post-MB/CA) is only used for the <strong>early exit</strong> path (no edge detected → return the processed color as-is).</p>
+<h3 id="luma-modes">Luma Modes<a class="headerlink" href="#luma-modes" title="Permanent link">¶</a></h3>
+<p>Two paths exist, selected at compile time via <code>#ifdef USE_TRANSPARENT_BILLBOARDS</code>:</p>
 <table>
 <thead>
 <tr>
 <th style="text-align: left;">Mode</th>
-<th style="text-align: left;">ID</th>
-<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Alpha channel</th>
+<th style="text-align: left;">Luma computation</th>
+<th style="text-align: left;">Cost</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Quality</strong></td>
-<td style="text-align: left;"><code>1</code></td>
-<td style="text-align: left;">(Default) Uses iterative edge search with variable steps to find the true end of an edge. Solves long edges accurately.</td>
+<td style="text-align: left;"><strong>Legacy</strong> (<code>!USE_TRANSPARENT_BILLBOARDS</code>)</td>
+<td style="text-align: left;">Pre-computed luma</td>
+<td style="text-align: left;"><code>texture(...).a</code></td>
+<td style="text-align: left;">Fastest — 0 ALU for luma</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Performance</strong></td>
-<td style="text-align: left;"><code>0</code></td>
-<td style="text-align: left;">"Console" style. Skips iterative search. Relies solely on local gradients and sub-pixel blending. Faster but less accurate on long edges.</td>
+<td style="text-align: left;"><strong>Transparent</strong> (<code>USE_TRANSPARENT_BILLBOARDS</code>)</td>
+<td style="text-align: left;">Opacity data</td>
+<td style="text-align: left;"><code>dot(rgb, vec3(0.299, 0.587, 0.114))</code> per sample</td>
+<td style="text-align: left;">~1 dot product per sample</td>
 </tr>
 </tbody>
 </table>
-<h3 id="4-non-linear-search-quality-mode">4. Non-Linear Search (Quality Mode)<a class="headerlink" href="#4-non-linear-search-quality-mode" title="Permanent link">¶</a></h3>
-<p>Instead of stepping 1 pixel at a time, the search loop uses variable step sizes defined in the <code>quality[]</code> array (1.0, 1.5, 2.0, 2.0, 8.0). This allows covering a larger search radius (up to ~12 pixels) with only 5 texture fetches.</p>
+<p>The current build defines <code>USE_TRANSPARENT_BILLBOARDS</code> (see <code>app_settings.h</code>), so the transparent path is active.</p>
+<h4 id="pipeline-data-flow">Pipeline Data Flow<a class="headerlink" href="#pipeline-data-flow" title="Permanent link">¶</a></h4>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNqtVdtO20AQfc9XrNKXIExIAglBkSslUGglEIiLVImgamyPY6vrXWt3zaUVUr-m733qez-gH9Ev6dpeJ3ZiKBXsgyWfmd05e8547IUzAXFADj6Ox_ug4IDyW_K1QfQSwD57obCPzkbZuzNzOeXCbiodkTEIZKqZh2Lw7Gan3TevjHsoMbY1MpoflQM7OeDyKOYJ82wlEhw15rvIlQwgRlugqywi1T1Fu-mHlKJniXQDek2L-JwpBpEOvUd6gyp0waAy_IJ2d8vKDsxXutsQf9Pb7g23HJ1bANvd7eFgaDYXoNtxwe9rMEZ2G3oqsHvXOW30Zppikdcf9P3h7jP4dKrn7wL0XWyWSYIQ_DZL7rSHpcLddv_ayCMTJ7fKpYlUKD5JFxkar9JFwUFqN88zuHW4MUl8H8Wa8SSTYpUnmXDqNUclstujCtkdz_V9v3SIMaVwY0SWM0kEYhYyuzswzNOVsbrAO3JlaEpXIDKNqETglJ0dTsakpZ9knfz-sVYRp87JLnSd3qDkpKlu1ZEvCbplnHx4RNTE4auSnnKpTgV3UcrLyckLBcUO-LrlniFokVkrqFYO6bkusKpojk9ZdzO7s0W6mwGGs0DVqvq0rIaDVXeF68UdTkFAJBdUEicO78ivn9kXcxEIlIGWZcoqr8chq2H0UjqPO4ti1dpLjW7omePpYCvWPse5z21fwOyl347j7IK_86jVlgcyqDhebCgc73VKjh9P5voecxVyRiY0EakWTylWGVJLYMnAvfH88L1A8Aj0BadsrNURkNZ6pTLpb2ZeCOKY3qdIa23K3qWjdR-VHvy63JStk3ME4QbkiPN4pU2e5GJUtOq8qBkF6TpDqea89vlB2roTynk0ZRecYQRxivz59v0VdDANepKoOFkUPdD9tpfm_6vCLro4gKUKc7Byu0Zl8m68LbeQyidva62gpWM6o9QH2dlFVOM6WrEvi39g-hJT1tJe0XuCd6EinNF7PcBNs-c9_l9fcJlxtWEoJTSJgEiIYooy7RI_ZECJQPDKPwOA3koHzMGV3_pili5XDNkNConn2WhNM5buZQ4w4295tyomnazfliXrTZXuq8ieRXRG3iyjxkPjL1HK6uA=?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNqtVdtO20AQfc9XrNKXIExIAglBkSslUGglEIiLVImgamyPY6vrXWt3zaUVUr-m733qez-gH9Ev6dpeJ3ZiKBXsgyWfmd05e8547IUzAXFADj6Ox_ug4IDyW_K1QfQSwD57obCPzkbZuzNzOeXCbiodkTEIZKqZh2Lw7Gan3TevjHsoMbY1MpoflQM7OeDyKOYJ82wlEhw15rvIlQwgRlugqywi1T1Fu-mHlKJniXQDek2L-JwpBpEOvUd6gyp0waAy_IJ2d8vKDsxXutsQf9Pb7g23HJ1bANvd7eFgaDYXoNtxwe9rMEZ2G3oqsHvXOW30Zppikdcf9P3h7jP4dKrn7wL0XWyWSYIQ_DZL7rSHpcLddv_ayCMTJ7fKpYlUKD5JFxkar9JFwUFqN88zuHW4MUl8H8Wa8SSTYpUnmXDqNUclstujCtkdz_V9v3SIMaVwY0SWM0kEYhYyuzswzNOVsbrAO3JlaEpXIDKNqETglJ0dTsakpZ9knfz-sVYRp87JLnSd3qDkpKlu1ZEvCbplnHx4RNTE4auSnnKpTgV3UcrLyckLBcUO-LrlniFokVkrqFYO6bkusKpojk9ZdzO7s0W6mwGGs0DVqvq0rIaDVXeF68UdTkFAJBdUEicO78ivn9kXcxEIlIGWZcoqr8chq2H0UjqPO4ti1dpLjW7omePpYCvWPse5z21fwOyl347j7IK_86jVlgcyqDhebCgc73VKjh9P5voecxVyRiY0EakWTylWGVJLYMnAvfH88L1A8Aj0BadsrNURkNZ6pTLpb2ZeCOKY3qdIa23K3qWjdR-VHvy63JStk3ME4QbkiPN4pU2e5GJUtOq8qBkF6TpDqea89vlB2roTynk0ZRecYQRxivz59v0VdDANepKoOFkUPdD9tpfm_6vCLro4gKUKc7Byu0Zl8m68LbeQyidva62gpWM6o9QH2dlFVOM6WrEvi39g-hJT1tJe0XuCd6EinNF7PcBNs-c9_l9fcJlxtWEoJTSJgEiIYooy7RI_ZECJQPDKPwOA3koHzMGV3_pili5XDNkNConn2WhNM5buZQ4w4295tyomnazfliXrTZXuq8ieRXRG3iyjxkPjL1HK6uA=?"></a></p>
+<h2 id="key-optimizations">Key Optimizations<a class="headerlink" href="#key-optimizations" title="Permanent link">¶</a></h2>
+<h3 id="1-linear-luma-alu-savings">1. Linear Luma (ALU Savings)<a class="headerlink" href="#1-linear-luma-alu-savings" title="Permanent link">¶</a></h3>
+<p><code>FxaaLuma()</code> uses a simple linear dot product:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">FxaaLuma</span><span class="p">(</span><span class="kt">vec3</span><span class="w"> </span><span class="n">rgb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.299</span><span class="p">,</span><span class="w"> </span><span class="mf">0.587</span><span class="p">,</span><span class="w"> </span><span class="mf">0.114</span><span class="p">));</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This is the standard FXAA 3.11 approach. A previous implementation used <code>dot(sqrt(rgb), ...)</code> to approximate perceptual (gamma) luma, but this added <strong>up to 18 <code>sqrt</code> calls per pixel</strong> (8 neighbors + up to 10 in the search loop) with no measurable quality improvement. The linear luma is sufficient for edge detection contrast ratios.</p>
+<h3 id="2-inverse-screen-size-via-ubo">2. Inverse Screen Size via UBO<a class="headerlink" href="#2-inverse-screen-size-via-ubo" title="Permanent link">¶</a></h3>
+<p>Instead of calling <code>textureSize(screenTexture, 0)</code> per fragment (a GPU intrinsic query), the inverse screen size is passed through the <code>PostProcessUBO</code> as <code>screenTexelSize</code>:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// In UBO (shaders/postprocess/ubo.glsl)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">vec2</span><span class="w"> </span><span class="n">screenTexelSize</span><span class="p">;</span><span class="w">  </span><span class="c1">// = 1.0 / vec2(width, height)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1">// In FXAA</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kt">vec2</span><span class="w"> </span><span class="n">inverseScreenSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">screenTexelSize</span><span class="p">;</span><span class="w">  </span><span class="c1">// Free — just a UBO read</span>
+</span></code></pre></div>
+<p>Updated on resize only (<code>postprocess_resize()</code> sets <code>ubo_dirty = true</code>).</p>
+<h3 id="3-non-linear-edge-search">3. Non-Linear Edge Search<a class="headerlink" href="#3-non-linear-edge-search" title="Permanent link">¶</a></h3>
+<p>Instead of stepping 1 pixel at a time, the search loop uses variable step sizes (<code>1.0, 1.5, 2.0, 4.0, 8.0</code>). This covers a search radius of <strong>~16.5 pixels</strong> with only 5 texture fetches per direction. The first sample at <code>±P0</code> is done before the loop; the loop advances from <code>P1</code> onward.</p>
+<h3 id="4-luma-coherence">4. Luma Coherence<a class="headerlink" href="#4-luma-coherence" title="Permanent link">¶</a></h3>
+<p>All luma comparisons (center, cardinal neighbors, corners, search loop endpoints) are sampled from the <strong>same source</strong> (<code>screenTexture</code>). This prevents phantom edge detection that would occur if the center pixel came from a different processing stage than its neighbors.</p>
+<h2 id="algorithm-steps">Algorithm Steps<a class="headerlink" href="#algorithm-steps" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Center + 4 cardinal lumas</strong> — <code>textureOffset()</code> for N/S/E/W, <code>texture()</code> for center</li>
+<li><strong>Early exit</strong> — If contrast <code>range &lt; max(thresholdMin, rangeMax × threshold)</code>, return <code>colorInput</code> (post-MB/CA)</li>
+<li><strong>4 corner lumas</strong> — <code>textureOffset()</code> for NW/NE/SW/SE</li>
+<li><strong>Edge orientation</strong> — Sobel-like gradient to determine horizontal vs vertical edge</li>
+<li><strong>Sub-pixel offset</strong> — Smoothstep-based blending for single-pixel artifacts</li>
+<li><strong>Iterative search</strong> — Walk along the edge in both directions with variable steps until contrast exceeds <code>gradientScaled</code></li>
+<li><strong>Final blend</strong> — Read <code>screenTexture</code> at the offset UV; take the maximum of edge offset and sub-pixel offset</li>
+</ol>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <p>Settings are controlled via the <code>PostProcessUBO</code>:</p>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// UBO Layout (std140)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">subpixel_quality_val</span><span class="p">;</span><span class="w">        </span><span class="c1">// Default: 0.75 (Range 0.0 - 1.0)</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">edge_threshold_val</span><span class="p">;</span><span class="w">          </span><span class="c1">// Default: 0.125 (0.166 for Perf, 0.063 for Quality)</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">float</span><span class="w"> </span><span class="n">edge_threshold_min_val</span><span class="p">;</span><span class="w">      </span><span class="c1">// Default: 0.063 (0.0833 for Perf, 0.0312 for Quality)</span>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// UBO Layout (std140)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">fxaaQualitySubpix</span><span class="p">;</span><span class="w">            </span><span class="c1">// Default: 0.75 (Range 0.0 - 1.0)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">fxaaQualityEdgeThreshold</span><span class="p">;</span><span class="w">     </span><span class="c1">// Default: 0.125</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kt">float</span><span class="w"> </span><span class="n">fxaaQualityEdgeThresholdMin</span><span class="p">;</span><span class="w">  </span><span class="c1">// Default: 0.063</span>
 </span></code></pre></div>
-<ul>
-<li><strong>Subpix</strong>: Controls the removal of single-pixel artifacts (fireflies/noise). Higher values = blurrier but less noise.</li>
-<li><strong>EdgeThreshold</strong>: Minimum contrast required to trigger AA.</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Effect</th>
+<th style="text-align: left;">Lower</th>
+<th style="text-align: left;">Higher</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>subpix</code></td>
+<td style="text-align: left;">Sub-pixel AA strength</td>
+<td style="text-align: left;">Sharper, more noise</td>
+<td style="text-align: left;">Blurrier, less noise</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>edgeThreshold</code></td>
+<td style="text-align: left;">Minimum contrast for AA</td>
+<td style="text-align: left;">More edges processed</td>
+<td style="text-align: left;">Only strong edges</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>edgeThresholdMin</code></td>
+<td style="text-align: left;">Absolute minimum contrast</td>
+<td style="text-align: left;">Catches subtle edges</td>
+<td style="text-align: left;">Skips low-contrast areas</td>
+</tr>
+</tbody>
+</table>
 <h2 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">¶</a></h2>
-<p>Enable <code>enableFXAADebug</code> in <code>app_settings.h</code> or via Uniform to visualize:
-- <strong>Red</strong>: Pixels affected by Edge AA.
-- <strong>Blue</strong>: Pixels affected by Subpixel blend.
-- <strong>Gray</strong>: Unaffected pixels.</p>
+<p>Enable <code>enableFXAADebug</code> via the UI or <code>app_settings.h</code> to visualize:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Color</th>
+<th style="text-align: left;">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Red</strong></td>
+<td style="text-align: left;">Pixels displaced by edge AA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Blue</strong></td>
+<td style="text-align: left;">Pixels displaced by sub-pixel blending</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dark gray</strong></td>
+<td style="text-align: left;">Unaffected pixels (no edge detected)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">¶</a></h2>
+<h3 id="2026-02-07-performance-correctness-audit">2026-02-07 — Performance &amp; Correctness Audit<a class="headerlink" href="#2026-02-07-performance-correctness-audit" title="Permanent link">¶</a></h3>
+<p><strong>Bug fix — Luma coherence</strong>: Center luma was computed from <code>colorInput</code> (post-MB/CA result) while all neighbor lumas came from <code>screenTexture</code> (raw scene). This caused phantom edge detection wherever MB or CA modified the center pixel differently from its neighbors. Fixed: center now also sampled from <code>screenTexture</code>.</p>
+<p><strong>Perf — Remove <code>sqrt</code> from <code>FxaaLuma</code></strong>: Replaced <code>dot(sqrt(rgb), vec3(...))</code> with <code>dot(rgb, vec3(...))</code>. Eliminates up to 18 <code>sqrt</code> calls per pixel in worst case (8 neighbor samples + 10 search loop samples).</p>
+<p><strong>Perf — <code>screenTexelSize</code> via UBO</strong>: Replaced per-fragment <code>textureSize()</code> call with a <code>vec2 screenTexelSize</code> field in the UBO header, updated only on resize.</p>
+<p><strong>Cleanup — Remove dead <code>FXAA_MODE</code> dual-mode code</strong>: The unused "Console Performance" mode (<code>FXAA_MODE == 0</code>) has been removed. Only the Quality path (5-step iterative search) remains.</p>
+<p><strong>Fix — Quality step array</strong>: Corrected off-by-one in the search step array (was 6 values for 5 steps). Adjusted step sizes to <code>{1.0, 1.5, 2.0, 4.0, 8.0}</code> for wider coverage.</p>
 
 
 
@@ -1815,7 +1999,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 6, 2026 17:02:35 UTC">February 6, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 8, 2026 19:10:52 UTC">February 8, 2026</span>
   </span>
 
     

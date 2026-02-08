@@ -14,10 +14,11 @@ var searchData=
   ['location_11',['location',['../structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9',1,'UniformEntry']]],
   ['lod_12',['lod',['../debug__tex_8frag.html#a068c3f354e0a6a166659bcbfcb0053b4',1,'debug_tex.frag']]],
   ['lod_5fstep_13',['LOD_STEP',['../group__Environment.html#gab63114353ea52239459c442bbdc2fe2c',1,'app_settings.h']]],
-  ['log_5finterval_14',['log_interval',['../structFpsCounter.html#a2d613eb7c17b1b907ae291c0938a73a2',1,'FpsCounter']]],
-  ['lum_5fhistogram_5fbuffer_15',['lum_histogram_buffer',['../structApp.html#a77a8a8df9ae179b73369d99d1b151d9a',1,'App']]],
-  ['lum_5fhistogram_5fmap_5fsize_16',['LUM_HISTOGRAM_MAP_SIZE',['../group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce',1,'app_settings.h']]],
-  ['lum_5fhistogram_5fsize_17',['LUM_HISTOGRAM_SIZE',['../group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc',1,'app_settings.h']]],
-  ['lum_5fssbo_18',['lum_ssbo',['../structApp.html#a3d92b6d7427fe49f91737f6bbcae083d',1,'App']]],
-  ['luminance_5fepsilon_19',['LUMINANCE_EPSILON',['../app__ui_8c.html#a2f98977b6b578bddebc5e2d078b7baca',1,'app_ui.c']]]
+  ['log_5fgpu_5fmetrics_14',['log_gpu_metrics',['../structApp.html#a1fb3f218f58f4bf0d7d00fc59745b8b0',1,'App']]],
+  ['log_5finterval_15',['log_interval',['../structFpsCounter.html#a2d613eb7c17b1b907ae291c0938a73a2',1,'FpsCounter']]],
+  ['lum_5fhistogram_5fbuffer_16',['lum_histogram_buffer',['../structApp.html#a77a8a8df9ae179b73369d99d1b151d9a',1,'App']]],
+  ['lum_5fhistogram_5fmap_5fsize_17',['LUM_HISTOGRAM_MAP_SIZE',['../group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce',1,'app_settings.h']]],
+  ['lum_5fhistogram_5fsize_18',['LUM_HISTOGRAM_SIZE',['../group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc',1,'app_settings.h']]],
+  ['lum_5fssbo_19',['lum_ssbo',['../structApp.html#a3d92b6d7427fe49f91737f6bbcae083d',1,'App']]],
+  ['luminance_5fepsilon_20',['LUMINANCE_EPSILON',['../app__ui_8c.html#a2f98977b6b578bddebc5e2d078b7baca',1,'app_ui.c']]]
 ];

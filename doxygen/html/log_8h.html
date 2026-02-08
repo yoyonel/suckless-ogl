@@ -236,6 +236,7 @@ $(document).ready(function(){initNavTree('log_8h.html',''); initResizable(); });
 <div class="header">
   <div class="summary">
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">log.h File Reference</div></div>
@@ -273,6 +274,12 @@ Macros</h2></td></tr>
 <tr class="memdesc:a82cf4fca40fe4a352203d39a075ae721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a critical failure message.  <br /></td></tr>
 <tr class="separator:a82cf4fca40fe4a352203d39a075ae721"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a7b6c4c78b6ec5944eadb107800c39ead" id="r_a7b6c4c78b6ec5944eadb107800c39ead"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>) (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, const char *tag, const char *message)</td></tr>
+<tr class="memdesc:a7b6c4c78b6ec5944eadb107800c39ead"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callback type for log message interception.  <br /></td></tr>
+<tr class="separator:a7b6c4c78b6ec5944eadb107800c39ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:aca1fd1d8935433e6ba2e3918214e07f9" id="r_aca1fd1d8935433e6ba2e3918214e07f9"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> { <br />
@@ -293,6 +300,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a71580585dbb8388e03440751eb26bae7" id="r_a71580585dbb8388e03440751eb26bae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a71580585dbb8388e03440751eb26bae7">log_message</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, const char *tag, const char *format,...)</td></tr>
 <tr class="memdesc:a71580585dbb8388e03440751eb26bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logs a formatted message.  <br /></td></tr>
 <tr class="separator:a71580585dbb8388e03440751eb26bae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a204bd0fe448c6083705de7232cea8102" id="r_a204bd0fe448c6083705de7232cea8102"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a204bd0fe448c6083705de7232cea8102">log_set_callback</a> (<a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a> callback)</td></tr>
+<tr class="memdesc:a204bd0fe448c6083705de7232cea8102"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a custom callback for log messages.  <br /></td></tr>
+<tr class="separator:a204bd0fe448c6083705de7232cea8102"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20d53fe4929c9f90f83a10c739b02dfa" id="r_a20d53fe4929c9f90f83a10c739b02dfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="log_8h.html#a20d53fe4929c9f90f83a10c739b02dfa">log_set_level</a> (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level)</td></tr>
 <tr class="memdesc:a20d53fe4929c9f90f83a10c739b02dfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the global minimum log level.  <br /></td></tr>
 <tr class="separator:a20d53fe4929c9f90f83a10c739b02dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -483,6 +493,31 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a7b6c4c78b6ec5944eadb107800c39ead" name="a7b6c4c78b6ec5944eadb107800c39ead"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b6c4c78b6ec5944eadb107800c39ead">&#9670;&#160;</a></span>LogCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* LogCallback) (<a class="el" href="log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, const char *tag, const char *message)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Callback type for log message interception. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>Sensitivity level. </td></tr>
+    <tr><td class="paramname">tag</td><td>Category label. </td></tr>
+    <tr><td class="paramname">message</td><td>The full formatted log message. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="aca1fd1d8935433e6ba2e3918214e07f9" name="aca1fd1d8935433e6ba2e3918214e07f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aca1fd1d8935433e6ba2e3918214e07f9">&#9670;&#160;</a></span>LogLevel</h2>
@@ -595,6 +630,32 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="log_8h_a71580585dbb8388e03440751eb26bae7_cgraph.svg" width="452" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
+
+</div>
+</div>
+<a id="a204bd0fe448c6083705de7232cea8102" name="a204bd0fe448c6083705de7232cea8102"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a204bd0fe448c6083705de7232cea8102">&#9670;&#160;</a></span>log_set_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void log_set_callback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="log_8h.html#a7b6c4c78b6ec5944eadb107800c39ead">LogCallback</a>&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a custom callback for log messages. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>Function to call for each log message, or NULL to disable. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

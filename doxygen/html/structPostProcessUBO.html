@@ -252,8 +252,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a775f7afa7348f5b96c8f199cf0cfe433"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed1bd38c048bc6ec7b3a761f39d2f4f1" id="r_aed1bd38c048bc6ec7b3a761f39d2f4f1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1">time</a></td></tr>
 <tr class="separator:aed1bd38c048bc6ec7b3a761f39d2f4f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c32880525b2f551016d36c0914964b4" id="r_a6c32880525b2f551016d36c0914964b4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a6c32880525b2f551016d36c0914964b4">_pad0</a> [2]</td></tr>
-<tr class="separator:a6c32880525b2f551016d36c0914964b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9338c978ff5e60f94297a6c68ed6ae73" id="r_a9338c978ff5e60f94297a6c68ed6ae73"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a9338c978ff5e60f94297a6c68ed6ae73">screen_texel_size</a> [2]</td></tr>
+<tr class="separator:a9338c978ff5e60f94297a6c68ed6ae73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2484a2fc1ee249fbf5d8b7a4533800bd" id="r_a2484a2fc1ee249fbf5d8b7a4533800bd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a2484a2fc1ee249fbf5d8b7a4533800bd">vignette_intensity</a></td></tr>
 <tr class="separator:a2484a2fc1ee249fbf5d8b7a4533800bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5d417564b872204f7b9634c584c0b17" id="r_aa5d417564b872204f7b9634c584c0b17"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17">vignette_smoothness</a></td></tr>
@@ -365,20 +365,6 @@ Data Fields</h2></td></tr>
 <div class="textblock"><p>Shared Uniform Buffer structure for shaders. </p>
 <dl class="section note"><dt>Note</dt><dd>Must match <code>layout(std140)</code> in GLSL. </dd></dl>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a id="a6c32880525b2f551016d36c0914964b4" name="a6c32880525b2f551016d36c0914964b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c32880525b2f551016d36c0914964b4">&#9670;&#160;</a></span>_pad0</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float PostProcessUBO::_pad0[2]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a8742e99b08d281f70d3a8270240c9f94" name="a8742e99b08d281f70d3a8270240c9f94"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8742e99b08d281f70d3a8270240c9f94">&#9670;&#160;</a></span>_pad1</h2>
 
@@ -992,6 +978,21 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9338c978ff5e60f94297a6c68ed6ae73" name="a9338c978ff5e60f94297a6c68ed6ae73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9338c978ff5e60f94297a6c68ed6ae73">&#9670;&#160;</a></span>screen_texel_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::screen_texel_size[2]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>1.0 / vec2(width, height) </p>
 
 </div>
 </div>

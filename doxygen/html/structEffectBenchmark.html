@@ -1,0 +1,582 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: EffectBenchmark Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structEffectBenchmark.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">EffectBenchmark Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>State for the automated benchmark sweep.  
+ <a href="structEffectBenchmark.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for EffectBenchmark:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="structEffectBenchmark__coll__graph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:ab96ea8c286a3c1811c352ceb8a4e7943" id="r_ab96ea8c286a3c1811c352ceb8a4e7943"><td class="memItemLeft" align="right" valign="top"><a class="el" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">BenchPhase</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943">phase</a></td></tr>
+<tr class="separator:ab96ea8c286a3c1811c352ceb8a4e7943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a256387ce14cec3d9507b0a5d717076dd" id="r_a256387ce14cec3d9507b0a5d717076dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd">postprocess</a></td></tr>
+<tr class="separator:a256387ce14cec3d9507b0a5d717076dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0e95ac0a2ce63de9f51ca9abc0b8782" id="r_ac0e95ac0a2ce63de9f51ca9abc0b8782"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782">profiler</a></td></tr>
+<tr class="separator:ac0e95ac0a2ce63de9f51ca9abc0b8782"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeb7d4e1e13086effefd6254cd790bb8" id="r_aaeb7d4e1e13086effefd6254cd790bb8"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8">saved_effects</a></td></tr>
+<tr class="separator:aaeb7d4e1e13086effefd6254cd790bb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f3a198ad214843cee8d2458d870977c" id="r_a4f3a198ad214843cee8d2458d870977c"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c">benchmark_effects</a></td></tr>
+<tr class="separator:a4f3a198ad214843cee8d2458d870977c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeab2d353d3589ed0f1262e7c4585446" id="r_aaeab2d353d3589ed0f1262e7c4585446"><td class="memItemLeft" >struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae251d7969cbeeb3a32fe5f41b3c383f2" id="r_ae251d7969cbeeb3a32fe5f41b3c383f2"><td class="memItemLeft" >&#160;&#160;&#160;const char *&#160;&#160;&#160;<a class="el" href="structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c">name</a>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:ae251d7969cbeeb3a32fe5f41b3c383f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd858fee6b918aaff5fd7d7be77c69b5" id="r_afd858fee6b918aaff5fd7d7be77c69b5"><td class="memItemLeft" >&#160;&#160;&#160;unsigned int&#160;&#160;&#160;<a class="el" href="structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb">bit</a>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:afd858fee6b918aaff5fd7d7be77c69b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeab2d353d3589ed0f1262e7c4585446" id="r_aaeab2d353d3589ed0f1262e7c4585446"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aaeab2d353d3589ed0f1262e7c4585446">effects</a> [16]&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:aaeab2d353d3589ed0f1262e7c4585446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef1bfcff17f53693a66e9ce6cb8562b6" id="r_aef1bfcff17f53693a66e9ce6cb8562b6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6">effect_count</a></td></tr>
+<tr class="separator:aef1bfcff17f53693a66e9ce6cb8562b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae970b279f6912cc14a3dce048011f0d" id="r_aae970b279f6912cc14a3dce048011f0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d">current_effect_idx</a></td></tr>
+<tr class="separator:aae970b279f6912cc14a3dce048011f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79d97bd733308bb7ec220e6c011318ca" id="r_a79d97bd733308bb7ec220e6c011318ca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca">frame_counter</a></td></tr>
+<tr class="separator:a79d97bd733308bb7ec220e6c011318ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefb6fe128a0dfff07ce6791fcae87c6e" id="r_aefb6fe128a0dfff07ce6791fcae87c6e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e">timeout_timer</a></td></tr>
+<tr class="separator:aefb6fe128a0dfff07ce6791fcae87c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2e12f9a4587d05fc8b598815c9d4018" id="r_aa2e12f9a4587d05fc8b598815c9d4018"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018">sum_ms</a></td></tr>
+<tr class="separator:aa2e12f9a4587d05fc8b598815c9d4018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03558a74825fb72dfabd3b335cd65c4d" id="r_a03558a74825fb72dfabd3b335cd65c4d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a03558a74825fb72dfabd3b335cd65c4d">sum_sq_ms</a></td></tr>
+<tr class="separator:a03558a74825fb72dfabd3b335cd65c4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac929acca947fc6775e56639c3cba2b62" id="r_ac929acca947fc6775e56639c3cba2b62"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62">sample_count</a></td></tr>
+<tr class="separator:ac929acca947fc6775e56639c3cba2b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe73eb09d4305ea49e23f77df6598d3" id="r_abfe73eb09d4305ea49e23f77df6598d3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3">baseline_mean_ms</a></td></tr>
+<tr class="separator:abfe73eb09d4305ea49e23f77df6598d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a715afb88af5ee0ad035d6efd85d7b6" id="r_a7a715afb88af5ee0ad035d6efd85d7b6"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6">baseline_stddev_ms</a></td></tr>
+<tr class="separator:a7a715afb88af5ee0ad035d6efd85d7b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d18f4caa8f8f7e6364064c34cd06855" id="r_a0d18f4caa8f8f7e6364064c34cd06855"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEffectBenchResult.html">EffectBenchResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855">results</a> [16]</td></tr>
+<tr class="separator:a0d18f4caa8f8f7e6364064c34cd06855"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5570067e4d3fcfef5b15f03c479043bf" id="r_a5570067e4d3fcfef5b15f03c479043bf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf">result_count</a></td></tr>
+<tr class="separator:a5570067e4d3fcfef5b15f03c479043bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>State for the automated benchmark sweep. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="abfe73eb09d4305ea49e23f77df6598d3" name="abfe73eb09d4305ea49e23f77df6598d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfe73eb09d4305ea49e23f77df6598d3">&#9670;&#160;</a></span>baseline_mean_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float EffectBenchmark::baseline_mean_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7a715afb88af5ee0ad035d6efd85d7b6" name="a7a715afb88af5ee0ad035d6efd85d7b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a715afb88af5ee0ad035d6efd85d7b6">&#9670;&#160;</a></span>baseline_stddev_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float EffectBenchmark::baseline_stddev_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f3a198ad214843cee8d2458d870977c" name="a4f3a198ad214843cee8d2458d870977c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f3a198ad214843cee8d2458d870977c">&#9670;&#160;</a></span>benchmark_effects</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int EffectBenchmark::benchmark_effects</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2737f49891ffbe714746a32cf11b61eb" name="a2737f49891ffbe714746a32cf11b61eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2737f49891ffbe714746a32cf11b61eb">&#9670;&#160;</a></span>bit</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int EffectBenchmark::bit</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae970b279f6912cc14a3dce048011f0d" name="aae970b279f6912cc14a3dce048011f0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae970b279f6912cc14a3dce048011f0d">&#9670;&#160;</a></span>current_effect_idx</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EffectBenchmark::current_effect_idx</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>-1 = baseline, 0..N = effect test. </p>
+
+</div>
+</div>
+<a id="aef1bfcff17f53693a66e9ce6cb8562b6" name="aef1bfcff17f53693a66e9ce6cb8562b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef1bfcff17f53693a66e9ce6cb8562b6">&#9670;&#160;</a></span>effect_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EffectBenchmark::effect_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaeab2d353d3589ed0f1262e7c4585446" name="aaeab2d353d3589ed0f1262e7c4585446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeab2d353d3589ed0f1262e7c4585446">&#9670;&#160;</a></span>[struct]</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct  { ... }  EffectBenchmark::effects[ 16 ]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a79d97bd733308bb7ec220e6c011318ca" name="a79d97bd733308bb7ec220e6c011318ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79d97bd733308bb7ec220e6c011318ca">&#9670;&#160;</a></span>frame_counter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EffectBenchmark::frame_counter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Frames elapsed in current phase. </p>
+
+</div>
+</div>
+<a id="a815f87d6736220fc45aba683e7db368c" name="a815f87d6736220fc45aba683e7db368c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a815f87d6736220fc45aba683e7db368c">&#9670;&#160;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* EffectBenchmark::name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab96ea8c286a3c1811c352ceb8a4e7943" name="ab96ea8c286a3c1811c352ceb8a4e7943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab96ea8c286a3c1811c352ceb8a4e7943">&#9670;&#160;</a></span>phase</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">BenchPhase</a> EffectBenchmark::phase</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a256387ce14cec3d9507b0a5d717076dd" name="a256387ce14cec3d9507b0a5d717076dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a256387ce14cec3d9507b0a5d717076dd">&#9670;&#160;</a></span>postprocess</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPostProcess.html">PostProcess</a>* EffectBenchmark::postprocess</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac0e95ac0a2ce63de9f51ca9abc0b8782" name="ac0e95ac0a2ce63de9f51ca9abc0b8782"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e95ac0a2ce63de9f51ca9abc0b8782">&#9670;&#160;</a></span>profiler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGPUProfiler.html">GPUProfiler</a>* EffectBenchmark::profiler</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5570067e4d3fcfef5b15f03c479043bf" name="a5570067e4d3fcfef5b15f03c479043bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5570067e4d3fcfef5b15f03c479043bf">&#9670;&#160;</a></span>result_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EffectBenchmark::result_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0d18f4caa8f8f7e6364064c34cd06855" name="a0d18f4caa8f8f7e6364064c34cd06855"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d18f4caa8f8f7e6364064c34cd06855">&#9670;&#160;</a></span>results</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structEffectBenchResult.html">EffectBenchResult</a> EffectBenchmark::results[16]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac929acca947fc6775e56639c3cba2b62" name="ac929acca947fc6775e56639c3cba2b62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac929acca947fc6775e56639c3cba2b62">&#9670;&#160;</a></span>sample_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int EffectBenchmark::sample_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaeb7d4e1e13086effefd6254cd790bb8" name="aaeb7d4e1e13086effefd6254cd790bb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeb7d4e1e13086effefd6254cd790bb8">&#9670;&#160;</a></span>saved_effects</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int EffectBenchmark::saved_effects</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa2e12f9a4587d05fc8b598815c9d4018" name="aa2e12f9a4587d05fc8b598815c9d4018"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2e12f9a4587d05fc8b598815c9d4018">&#9670;&#160;</a></span>sum_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double EffectBenchmark::sum_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03558a74825fb72dfabd3b335cd65c4d" name="a03558a74825fb72dfabd3b335cd65c4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03558a74825fb72dfabd3b335cd65c4d">&#9670;&#160;</a></span>sum_sq_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double EffectBenchmark::sum_sq_ms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aefb6fe128a0dfff07ce6791fcae87c6e" name="aefb6fe128a0dfff07ce6791fcae87c6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefb6fe128a0dfff07ce6791fcae87c6e">&#9670;&#160;</a></span>timeout_timer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float EffectBenchmark::timeout_timer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Ms elapsed since last valid profile data. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structEffectBenchmark.html">EffectBenchmark</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

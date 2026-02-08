@@ -40,10 +40,15 @@ var NAVTREE =
         [ "2. Back-Projection Culling", "md_docs_2billboard__optimization.html#autotoc_md9", null ],
         [ "3. Conservative Depth", "md_docs_2billboard__optimization.html#autotoc_md10", null ],
         [ "4. Numerical Stability: Avoiding Silhouette Jitter", "md_docs_2billboard__optimization.html#autotoc_md11", null ],
-        [ "5. The Mesh vs. Math Paradox (Understanding Diff Maps)", "md_docs_2billboard__optimization.html#autotoc_md12", null ]
+        [ "5. Inside-Sphere Epsilon Robustness", "md_docs_2billboard__optimization.html#autotoc_md12", null ],
+        [ "6. Code Structure: Shared Projection Scale Factors", "md_docs_2billboard__optimization.html#autotoc_md13", null ],
+        [ "7. The Mesh vs. Math Paradox (Understanding Diff Maps)", "md_docs_2billboard__optimization.html#autotoc_md14", null ]
       ] ],
-      [ "References", "md_docs_2billboard__optimization.html#autotoc_md13", [
-        [ "Visual Illustration", "md_docs_2billboard__optimization.html#autotoc_md14", null ]
+      [ "References", "md_docs_2billboard__optimization.html#autotoc_md15", [
+        [ "Visual Illustration", "md_docs_2billboard__optimization.html#autotoc_md16", null ]
+      ] ],
+      [ "Changelog", "md_docs_2billboard__optimization.html#autotoc_md18", [
+        [ "2026-02-08 — Robustness Audit & Fixes", "md_docs_2billboard__optimization.html#autotoc_md19", null ]
       ] ]
     ] ],
     [ "Deprecated List", "deprecated.html", null ],
@@ -74,12 +79,13 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"camera_8h.html",
-"group__Geometry.html",
-"pbr__ibl__instanced_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1",
-"projection__utils_8glsl.html#a122a5b8a15c87a10ec2c0fbb423d50fd",
-"structCamera.html#a63e30b404a845c654ac4da0e6dfea836",
-"structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795"
+"billboard__rendering_8h.html#aecab702995b02efd4da86127c5c34d08",
+"globals_h.html",
+"material_8c.html",
+"postprocess_8c.html#a47114280aafaff716053e0b12be92dca",
+"sphere__sorting_8h_source.html",
+"structGPUProfiler.html",
+"structShader.html#a63fc645b9235c69c54c1a5b6a019db69"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

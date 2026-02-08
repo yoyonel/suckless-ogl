@@ -323,12 +323,16 @@ Data Fields</h2></td></tr>
 <tr class="separator:a6ea1b406d08c336650597d8f17498a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeec30b0b35a67ee1d2492b5cc2202c22" id="r_aeec30b0b35a67ee1d2492b5cc2202c22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22">is_optimized</a></td></tr>
 <tr class="separator:aeec30b0b35a67ee1d2492b5cc2202c22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66656d6950a7540d140bd93c19c73d55" id="r_a66656d6950a7540d140bd93c19c73d55"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#a66656d6950a7540d140bd93c19c73d55">ubo_dirty</a></td></tr>
+<tr class="separator:a66656d6950a7540d140bd93c19c73d55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac754f84387246ac8b1b018ac4fc1884b" id="r_ac754f84387246ac8b1b018ac4fc1884b"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#ac754f84387246ac8b1b018ac4fc1884b">compiled_flags</a></td></tr>
 <tr class="separator:ac754f84387246ac8b1b018ac4fc1884b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff22ef6e948aaca5d016f2db72839bd9" id="r_aff22ef6e948aaca5d016f2db72839bd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShaderCacheEntry.html">ShaderCacheEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#aff22ef6e948aaca5d016f2db72839bd9">shader_cache</a> [64]</td></tr>
 <tr class="separator:aff22ef6e948aaca5d016f2db72839bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5d6b604cebe0d89299e87f3a84313af" id="r_ab5d6b604cebe0d89299e87f3a84313af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#ab5d6b604cebe0d89299e87f3a84313af">shader_cache_count</a></td></tr>
 <tr class="separator:ab5d6b604cebe0d89299e87f3a84313af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb108231128817d5e9f495a70df22f1b" id="r_acb108231128817d5e9f495a70df22f1b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html#acb108231128817d5e9f495a70df22f1b">gpu_profiler</a></td></tr>
+<tr class="separator:acb108231128817d5e9f495a70df22f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main pipeline state for post-processing. </p>
@@ -544,6 +548,20 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structFXAAParams.html">FXAAParams</a> PostProcess::fxaa</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb108231128817d5e9f495a70df22f1b" name="acb108231128817d5e9f495a70df22f1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb108231128817d5e9f495a70df22f1b">&#9670;&#160;</a></span>gpu_profiler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGPUProfiler.html">GPUProfiler</a>* PostProcess::gpu_profiler</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -827,6 +845,21 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66656d6950a7540d140bd93c19c73d55" name="a66656d6950a7540d140bd93c19c73d55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66656d6950a7540d140bd93c19c73d55">&#9670;&#160;</a></span>ubo_dirty</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PostProcess::ubo_dirty</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>true when UBO needs re-upload. </p>
 
 </div>
 </div>

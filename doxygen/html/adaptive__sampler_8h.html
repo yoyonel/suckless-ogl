@@ -253,7 +253,7 @@ Include dependency graph for adaptive_sampler.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="adaptive__sampler_8h__dep__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="adaptive__sampler_8h__dep__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div>
 <p><a href="adaptive__sampler_8h_source.html">Go to the source code of this file.</a></p>
@@ -272,12 +272,15 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ab853a173e8dae6bd06ce8bb03982e1a8" id="r_ab853a173e8dae6bd06ce8bb03982e1a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#ab853a173e8dae6bd06ce8bb03982e1a8">adaptive_sampler_add</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, float value, uint64_t frame_index)</td></tr>
+<tr class="memdesc:ab853a173e8dae6bd06ce8bb03982e1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manually adds a sample to the sampler (e.g. from external source like GPU profiler).  <br /></td></tr>
+<tr class="separator:ab853a173e8dae6bd06ce8bb03982e1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479da41e7acc65d784109c444eed40e7" id="r_a479da41e7acc65d784109c444eed40e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a479da41e7acc65d784109c444eed40e7">adaptive_sampler_init</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, float window_duration, size_t target_samples, float initial_fps_guess)</td></tr>
 <tr class="memdesc:a479da41e7acc65d784109c444eed40e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the adaptive sampler.  <br /></td></tr>
 <tr class="separator:a479da41e7acc65d784109c444eed40e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39482aeaaf7835d2dcc30051b1471f3f" id="r_a39482aeaaf7835d2dcc30051b1471f3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a39482aeaaf7835d2dcc30051b1471f3f">adaptive_sampler_should_sample</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, float delta_time, double current_time)</td></tr>
-<tr class="memdesc:a39482aeaaf7835d2dcc30051b1471f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a sample should be taken this frame based on probability.  <br /></td></tr>
-<tr class="separator:a39482aeaaf7835d2dcc30051b1471f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2f0f93f086b9307988505e079a65e3f" id="r_ad2f0f93f086b9307988505e079a65e3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#ad2f0f93f086b9307988505e079a65e3f">adaptive_sampler_should_sample</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, float delta_time, double current_time, uint64_t frame_index)</td></tr>
+<tr class="memdesc:ad2f0f93f086b9307988505e079a65e3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a sample should be taken this frame based on probability.  <br /></td></tr>
+<tr class="separator:ad2f0f93f086b9307988505e079a65e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92cd04e246adba77f07ca2f80ea011b2" id="r_a92cd04e246adba77f07ca2f80ea011b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a92cd04e246adba77f07ca2f80ea011b2">adaptive_sampler_is_finished</a> (const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, double current_time)</td></tr>
 <tr class="memdesc:a92cd04e246adba77f07ca2f80ea011b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current sampling window has concluded.  <br /></td></tr>
 <tr class="separator:a92cd04e246adba77f07ca2f80ea011b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -287,12 +290,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a0aaef2ee3c6027d67a894c765895b945" id="r_a0aaef2ee3c6027d67a894c765895b945"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a0aaef2ee3c6027d67a894c765895b945">adaptive_sampler_get_sample_count</a> (const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler)</td></tr>
 <tr class="memdesc:a0aaef2ee3c6027d67a894c765895b945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of samples currently in the buffer.  <br /></td></tr>
 <tr class="separator:a0aaef2ee3c6027d67a894c765895b945"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a29e31acaf802177acf283696d3be1a" id="r_a5a29e31acaf802177acf283696d3be1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a5a29e31acaf802177acf283696d3be1a">adaptive_sampler_get_window_range</a> (const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, uint64_t *start_frame, uint64_t *end_frame)</td></tr>
+<tr class="memdesc:a5a29e31acaf802177acf283696d3be1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the frame index range covered by the current window.  <br /></td></tr>
+<tr class="separator:a5a29e31acaf802177acf283696d3be1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cf686ee6fb9ad99881690463d8b31ff" id="r_a8cf686ee6fb9ad99881690463d8b31ff"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a8cf686ee6fb9ad99881690463d8b31ff">adaptive_sampler_get_sample_indices</a> (const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, uint64_t *out_indices, size_t max_count)</td></tr>
+<tr class="memdesc:a8cf686ee6fb9ad99881690463d8b31ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the list of frame indices for all collected samples.  <br /></td></tr>
+<tr class="separator:a8cf686ee6fb9ad99881690463d8b31ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80236a4368c7457d556fd3c4efb8862c" id="r_a80236a4368c7457d556fd3c4efb8862c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a80236a4368c7457d556fd3c4efb8862c">adaptive_sampler_reset</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, double current_time)</td></tr>
 <tr class="memdesc:a80236a4368c7457d556fd3c4efb8862c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the sampler state for a new window.  <br /></td></tr>
 <tr class="separator:a80236a4368c7457d556fd3c4efb8862c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adafedd549a30809384ff03da6a693357" id="r_adafedd549a30809384ff03da6a693357"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#adafedd549a30809384ff03da6a693357">adaptive_sampler_ascii_plot</a> (const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler, char *buffer, size_t buffer_size, size_t width, float avg_value)</td></tr>
-<tr class="memdesc:adafedd549a30809384ff03da6a693357"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the sample distribution as an ASCII graph for logs/overlays.  <br /></td></tr>
-<tr class="separator:adafedd549a30809384ff03da6a693357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a366c5fb6efce2525a95d122ea847a845" id="r_a366c5fb6efce2525a95d122ea847a845"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="adaptive__sampler_8h.html#a366c5fb6efce2525a95d122ea847a845">adaptive_sampler_cleanup</a> (<a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *sampler)</td></tr>
 <tr class="memdesc:a366c5fb6efce2525a95d122ea847a845"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees all dynamic memory associated with the sampler.  <br /></td></tr>
 <tr class="separator:a366c5fb6efce2525a95d122ea847a845"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -301,41 +307,29 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Adaptive sampling utility for performance metrics. </p>
 <p>This module provides a mechanism to sample values (like FPS) adaptively over a time window, using a PRNG to avoid aliasing artifacts. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="adafedd549a30809384ff03da6a693357" name="adafedd549a30809384ff03da6a693357"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adafedd549a30809384ff03da6a693357">&#9670;&#160;</a></span>adaptive_sampler_ascii_plot()</h2>
+<a id="ab853a173e8dae6bd06ce8bb03982e1a8" name="ab853a173e8dae6bd06ce8bb03982e1a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab853a173e8dae6bd06ce8bb03982e1a8">&#9670;&#160;</a></span>adaptive_sampler_add()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void adaptive_sampler_ascii_plot </td>
+          <td class="memname">void adaptive_sampler_add </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *&#160;</td>
           <td class="paramname"><em>sampler</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>buffer_size</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>avg_value</em>&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_index</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -345,22 +339,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Renders the sample distribution as an ASCII graph for logs/overlays. </p>
+<p>Manually adds a sample to the sampler (e.g. from external source like GPU profiler). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sampler</td><td>Pointer to the sampler. </td></tr>
-    <tr><td class="paramname">buffer</td><td>Output char buffer. </td></tr>
-    <tr><td class="paramname">buffer_size</td><td>Size of the output buffer. </td></tr>
-    <tr><td class="paramname">width</td><td>Character width of the timeline graph. </td></tr>
-    <tr><td class="paramname">avg_value</td><td>Comparison threshold for high/low visualization. </td></tr>
+    <tr><td class="paramname">value</td><td>The value to add. </td></tr>
+    <tr><td class="paramname">frame_index</td><td>The frame index associated with this value. </td></tr>
   </table>
   </dd>
 </dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="adaptive__sampler_8h_adafedd549a30809384ff03da6a693357_cgraph.svg" width="374" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
@@ -441,6 +428,95 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Sample count. </dd></dl>
+
+</div>
+</div>
+<a id="a8cf686ee6fb9ad99881690463d8b31ff" name="a8cf686ee6fb9ad99881690463d8b31ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cf686ee6fb9ad99881690463d8b31ff">&#9670;&#160;</a></span>adaptive_sampler_get_sample_indices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t adaptive_sampler_get_sample_indices </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *&#160;</td>
+          <td class="paramname"><em>sampler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t *&#160;</td>
+          <td class="paramname"><em>out_indices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the list of frame indices for all collected samples. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sampler</td><td>Pointer to the sampler. </td></tr>
+    <tr><td class="paramname">out_indices</td><td>Buffer to store the frame indices. </td></tr>
+    <tr><td class="paramname">max_count</td><td>Size of the output buffer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of indices written to the buffer. </dd></dl>
+
+</div>
+</div>
+<a id="a5a29e31acaf802177acf283696d3be1a" name="a5a29e31acaf802177acf283696d3be1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a29e31acaf802177acf283696d3be1a">&#9670;&#160;</a></span>adaptive_sampler_get_window_range()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void adaptive_sampler_get_window_range </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structAdaptiveSampler.html">AdaptiveSampler</a> *&#160;</td>
+          <td class="paramname"><em>sampler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t *&#160;</td>
+          <td class="paramname"><em>start_frame</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t *&#160;</td>
+          <td class="paramname"><em>end_frame</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves the frame index range covered by the current window. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sampler</td><td>Pointer to the sampler. </td></tr>
+    <tr><td class="paramname">start_frame</td><td>Output for start frame index (can be NULL). </td></tr>
+    <tr><td class="paramname">end_frame</td><td>Output for end frame index (can be NULL). </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -575,8 +651,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a39482aeaaf7835d2dcc30051b1471f3f" name="a39482aeaaf7835d2dcc30051b1471f3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39482aeaaf7835d2dcc30051b1471f3f">&#9670;&#160;</a></span>adaptive_sampler_should_sample()</h2>
+<a id="ad2f0f93f086b9307988505e079a65e3f" name="ad2f0f93f086b9307988505e079a65e3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2f0f93f086b9307988505e079a65e3f">&#9670;&#160;</a></span>adaptive_sampler_should_sample()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -597,7 +673,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>current_time</em>&#160;</td>
+          <td class="paramname"><em>current_time</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_index</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -613,6 +695,7 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">sampler</td><td>Pointer to the sampler. </td></tr>
     <tr><td class="paramname">delta_time</td><td>Current frame duration. </td></tr>
     <tr><td class="paramname">current_time</td><td>Absolute time in seconds. </td></tr>
+    <tr><td class="paramname">frame_index</td><td>Current frame index. </td></tr>
   </table>
   </dd>
 </dl>
@@ -620,7 +703,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="adaptive__sampler_8h_a39482aeaaf7835d2dcc30051b1471f3f_cgraph.svg" width="570" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="adaptive__sampler_8h_ad2f0f93f086b9307988505e079a65e3f_cgraph.svg" width="570" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>

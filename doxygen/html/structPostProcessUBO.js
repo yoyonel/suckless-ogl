@@ -1,6 +1,5 @@
 var structPostProcessUBO =
 [
-    [ "_pad0", "structPostProcessUBO.html#a6c32880525b2f551016d36c0914964b4", null ],
     [ "_pad1", "structPostProcessUBO.html#a8742e99b08d281f70d3a8270240c9f94", null ],
     [ "_pad10", "structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0", null ],
     [ "_pad11", "structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f", null ],
@@ -45,6 +44,7 @@ var structPostProcessUBO =
     [ "mb_intensity", "structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183", null ],
     [ "mb_max_velocity", "structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496", null ],
     [ "mb_samples", "structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1", null ],
+    [ "screen_texel_size", "structPostProcessUBO.html#a9338c978ff5e60f94297a6c68ed6ae73", null ],
     [ "time", "structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1", null ],
     [ "tonemap_black_clip", "structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e", null ],
     [ "tonemap_shoulder", "structPostProcessUBO.html#aa5c84316b3a06f9b6f42ef177ad05d3c", null ],

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['fps_2ec_0',['fps.c',['../fps_8c.html',1,'']]],
-  ['fps_2eh_1',['fps.h',['../fps_8h.html',1,'']]]
+  ['effect_5fbenchmark_2ec_0',['effect_benchmark.c',['../effect__benchmark_8c.html',1,'']]],
+  ['effect_5fbenchmark_2eh_1',['effect_benchmark.h',['../effect__benchmark_8h.html',1,'']]]
 ];

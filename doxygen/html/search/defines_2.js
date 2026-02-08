@@ -1,6 +1,11 @@
 var searchData=
 [
   ['banding_5fcommon_5fbase_0',['BANDING_COMMON_BASE',['../postprocess__presets_8h.html#a22e570c40e5db4b737aea148dc26f222',1,'postprocess_presets.h']]],
-  ['bloom_5fmip_5flevels_1',['BLOOM_MIP_LEVELS',['../postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504',1,'postprocess.h']]],
-  ['buffer_5foffset_2',['BUFFER_OFFSET',['../gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd',1,'gl_common.h']]]
+  ['bench_5fmax_5feffects_1',['BENCH_MAX_EFFECTS',['../effect__benchmark_8h.html#a680de61ceb066f9d9fcc08841e207189',1,'effect_benchmark.h']]],
+  ['bench_5fmeasure_5fframes_2',['BENCH_MEASURE_FRAMES',['../effect__benchmark_8h.html#a88278dde776540885581da0ccc334688',1,'effect_benchmark.h']]],
+  ['bench_5ftag_3',['BENCH_TAG',['../effect__benchmark_8c.html#a75b4a3d2676f2f12c38cae07de9d215d',1,'effect_benchmark.c']]],
+  ['bench_5ftimeout_5fms_4',['BENCH_TIMEOUT_MS',['../effect__benchmark_8h.html#a48057cafce182b9a4c978453fe4edf25',1,'effect_benchmark.h']]],
+  ['bench_5fwarmup_5fframes_5',['BENCH_WARMUP_FRAMES',['../effect__benchmark_8h.html#a32364a6ecc95da5700c972dd897ce7ce',1,'effect_benchmark.h']]],
+  ['bloom_5fmip_5flevels_6',['BLOOM_MIP_LEVELS',['../postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504',1,'postprocess.h']]],
+  ['buffer_5foffset_7',['BUFFER_OFFSET',['../gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd',1,'gl_common.h']]]
 ];
