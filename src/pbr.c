@@ -16,8 +16,8 @@ static const uint32_t MAX_HDR_RESOLUTION = 4096;
 GLuint pbr_prefilter_init(int width, int height)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	GLuint tex = render_utils_create_texture_2d(width, height, GL_RGBA16F,
-	                                            levels, "Prefiltered Specular Map");
+	GLuint tex = render_utils_create_texture_2d(
+	    width, height, GL_RGBA16F, levels, "Prefiltered Specular Map");
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glBindTexture(GL_TEXTURE_2D, 0);
