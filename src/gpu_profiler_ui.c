@@ -101,7 +101,9 @@ static void gpu_profiler_ui_sync_stage(GPUProfilerUI* profiler_ui,
 		dest_idx = profiler_ui->display_profiler.stage_count++;
 		GPUStage* new_stage =
 		    &profiler_ui->display_profiler.stages[dest_idx];
-		*new_stage = (GPUStage){0};
+
+		/* Fix: Do NOT zero-init the whole struct, it overwrites
+		 * AdaptiveSamplers */
 		safe_strncpy(new_stage->name, sizeof(new_stage->name),
 		             live_stage->name, sizeof(new_stage->name) - 1);
 		new_stage->alpha = 0.0F;
@@ -342,4 +344,11 @@ void gpu_profiler_ui_toggle_visibility(GPUProfilerUI* profiler_ui)
 void gpu_profiler_ui_toggle_position(GPUProfilerUI* profiler_ui)
 {
 	profiler_ui->position = (profiler_ui->position == 0) ? 1 : 0;
+}
+
+void gpu_profiler_ui_cleanup(GPUProfilerUI* profiler_ui)
+{
+	if (profiler_ui) {
+		gpu_profiler_cleanup(&profiler_ui->display_profiler);
+	}
 }

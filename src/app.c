@@ -297,6 +297,7 @@ void app_cleanup(App* app)
 	perf_mode_cleanup(&app->perf_context);
 
 	gpu_profiler_cleanup(&app->gpu_profiler);
+	gpu_profiler_ui_cleanup(&app->timeline_ui);
 
 	window_destroy(app->window);
 }
