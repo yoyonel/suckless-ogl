@@ -2,7 +2,6 @@
 
 #include "gl_common.h"
 #include "log.h"
-#include "render_utils.h"
 #include "utils.h"
 #include <math.h>
 #include <stb_image.h>
@@ -73,25 +72,34 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	/* Clear any previous sticky errors to ensure accurate results */
 	(void)glGetError();
 
+	GLuint CLEANUP_TEXTURE tex = 0;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	/* Safer levels calculation to avoid edge cases */
 	int levels = 1;
 	if (width > 0 || height > 0) {
 		levels =
 		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
 	}
 
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	GLuint CLEANUP_TEXTURE tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA16F, levels, "HDR Texture");
+	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after glTexStorage2D: 0x%x (levels: %d, "
+		          "size: %dx%d)",
+		          err, levels, width, height);
+		return 0;
+	}
 
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
 	                GL_FLOAT, data);
 
-	GLenum err = glGetError();
+	err = glGetError();
 	if (err != GL_NO_ERROR) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "GL error after glTexSubImage2D: 0x%x", err);
@@ -99,6 +107,12 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4); /* Restore default */
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+	                GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -167,20 +181,19 @@ GLuint texture_load(const char* path)
 		return 0;
 	}
 
-	int levels = 1;
-	if (width > 0 || height > 0) {
-		levels =
-		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	}
-
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	GLuint CLEANUP_TEXTURE tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA8, levels, path);
+	GLuint CLEANUP_TEXTURE tex = 0;
+	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
 
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-	                GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+	             GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+	                GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	stbi_image_free(data);
 

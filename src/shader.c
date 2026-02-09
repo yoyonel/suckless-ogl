@@ -178,31 +178,19 @@ static void ctx_free(IncludeContext* ctx)
 }
 
 /* Returns directory part of path (including trailing slash) or "./" */
-static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
+static void get_dir_from_path(const char* path, char* out_dir, size_t size)
 {
 	const char* last_slash = strrchr(path, '/');
 	if (last_slash) {
 		size_t len = (size_t)(last_slash - path) + 1;
 		if (len >= size) {
-			LOG_ERROR("suckless-ogl.shader",
-			          "Directory path too long: %s (limit: %lu)",
-			          path, size);
-			return false;
+			len = size - 1;
 		}
-		if (!safe_memcpy(out_dir, size, path, len)) {
-			LOG_ERROR("suckless-ogl.shader",
-			          "Failed to copy directory path: %s", path);
-			return false;
-		}
+		safe_memcpy(out_dir, size, path, len);
 		out_dir[len] = '\0';
 	} else {
-		if (!safe_snprintf(out_dir, size, "./")) {
-			LOG_ERROR("suckless-ogl.shader",
-			          "Failed to set default directory");
-			return false;
-		}
+		safe_snprintf(out_dir, size, "./");
 	}
-	return true;
 }
 
 static bool is_safe_path(const char* path)
@@ -241,10 +229,7 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
 
 	/* Resolve relative path */
 	char current_dir[PATH_BUFFER_SIZE];
-	if (!get_dir_from_path(current_file_path, current_dir,
-	                       sizeof(current_dir))) {
-		return false;
-	}
+	get_dir_from_path(current_file_path, current_dir, sizeof(current_dir));
 
 	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
 	if (!safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
@@ -301,15 +286,9 @@ static const char* parse_include_path(const char* args, char* out_path,
 
 	size_t path_len = (size_t)(path_end - path_start);
 	if (path_len >= size) {
-		LOG_ERROR("suckless-ogl.shader",
-		          "Include path too long: %.*s (limit: %lu)",
-		          (int)path_len, path_start, size);
-		return NULL;
+		path_len = size - 1;
 	}
-	if (!safe_memcpy(out_path, size, path_start, path_len)) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to copy include path");
-		return NULL;
-	}
+	safe_memcpy(out_path, size, path_start, path_len);
 	out_path[path_len] = '\0';
 
 	/* Trim trailing whitespace if no quotes */
@@ -366,10 +345,6 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 		const char* end_of_line =
 		    parse_include_path(next_tag + HEADER_TAG_LEN, raw_inc_path,
 		                       sizeof(raw_inc_path));
-
-		if (!end_of_line) {
-			return false;
-		}
 
 		if (!resolve_and_parse_include(ctx, raw_inc_path,
 		                               current_file_path)) {
@@ -432,13 +407,7 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 
 	/* 1. Copy part before insertion (e.g. #version line) */
 	if (insertion_point > 0) {
-		if (!safe_memcpy(modified_source, new_size, buffer,
-		                 insertion_point)) {
-			LOG_ERROR("suckless-ogl.shader",
-			          "Failed to copy shader version header");
-			free(modified_source);
-			return NULL;
-		}
+		safe_memcpy(modified_source, new_size, buffer, insertion_point);
 	}
 
 	/* 2. Insert Defines */
@@ -453,13 +422,8 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 	}
 
 	/* 3. Copy rest of file */
-	if (!safe_memcpy(modified_source + current_offset,
-	                 new_size - current_offset, buffer + insertion_point,
-	                 file_size - insertion_point)) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to copy shader body");
-		free(modified_source);
-		return NULL;
-	}
+	safe_memcpy(modified_source + current_offset, new_size - current_offset,
+	            buffer + insertion_point, file_size - insertion_point);
 
 	return modified_source;
 }

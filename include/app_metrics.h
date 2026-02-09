@@ -14,7 +14,6 @@
  * @param profiler Pointer to the GPUProfiler containing the stages and
  * samplers.
  * @param current_time The current application time (e.g. from glfwGetTime()).
- * @param should_log If true, force printing even if interval not elapsed.
  * @return true if logs were printed (2s interval elapsed), false otherwise.
  */
 bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time,

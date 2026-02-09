@@ -1,7 +1,6 @@
 #include "instanced_rendering.h"
 
 #include "gl_common.h"
-#include "render_utils.h"
 #include <stddef.h>
 
 void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
@@ -18,11 +17,34 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
 }
 
 // Helper interne pour configurer les attributs d'instance
-static void setup_instance_attributes(void)
+static void setup_instance_attributes()
 {
-	render_utils_setup_sphere_instance_attributes(
-	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic));
+	GLsizei size_instance = (GLsizei)sizeof(SphereInstance);
+	GLuint index_vattrib = 2;  // Start at 2 (0=Pos, 1=Norm usually)
+
+	// mat4 model (Locations 2, 3, 4, 5)
+	for (int i = 0; i < 4; i++) {
+		glEnableVertexAttribArray(index_vattrib);
+		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
+		                      size_instance,
+		                      // NOLINTNEXTLINE(misc-include-cleaner)
+		                      BUFFER_OFFSET(i * sizeof(vec4)));
+		glVertexAttribDivisor(index_vattrib, 1);
+		index_vattrib++;
+	}
+	// Albedo (6) + PBR (7)
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                      size_instance,
+	                      BUFFER_OFFSET(offsetof(SphereInstance, albedo)));
+	glVertexAttribDivisor(index_vattrib, 1);
+	index_vattrib++;
+
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(
+	    index_vattrib, 3, GL_FLOAT, GL_FALSE, size_instance,
+	    BUFFER_OFFSET(offsetof(SphereInstance, metallic)));
+	glVertexAttribDivisor(index_vattrib, 1);
 }
 
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,

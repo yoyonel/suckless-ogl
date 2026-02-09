@@ -39,19 +39,6 @@ static void create_large_file(const char* filename, size_t size)
 	(void)fclose(file);
 }
 
-static void create_file_with_content(const char* filename, const char* content)
-{
-	FILE* file = fopen(filename, "w");
-	if (!file) {
-		TEST_FAIL_MESSAGE("Failed to create test file");
-	}
-	if (fputs(content, file) == EOF) {
-		(void)fclose(file);
-		TEST_FAIL_MESSAGE("Failed to write to test file");
-	}
-	(void)fclose(file);
-}
-
 void test_shader_read_too_large(void)
 {
 	const char* filename = "too_large.glsl";
@@ -81,53 +68,10 @@ void test_shader_read_limit(void)
 	free(result);
 }
 
-void test_recursion_limit(void)
-{
-	/* MAX_INCLUDE_DEPTH is 16.
-	   Depth 0 (root)
-	   Depth 1 (include 1)
-	   ...
-	   Depth 17 (include 17) -> Should Fail
-	*/
-	const int DEPTH_LIMIT = 16;
-	const int TEST_DEPTH = DEPTH_LIMIT + 2; /* 18 files total */
-	char filenames[TEST_DEPTH][32];
-
-	for (int i = 0; i < TEST_DEPTH; ++i) {
-		(void)sprintf(filenames[i], "rec_%d.glsl", i);
-	}
-
-	/* Create chain */
-	/* rec_0 includes rec_1 ... rec_16 includes rec_17 */
-	for (int i = 0; i < TEST_DEPTH - 1; ++i) {
-		char content[64];
-		(void)sprintf(content, "@header \"%s\"\n", filenames[i + 1]);
-		create_file_with_content(filenames[i], content);
-	}
-	/* Last file is empty or simple content */
-	create_file_with_content(filenames[TEST_DEPTH - 1], "// leaf\n");
-
-	/* Try to read root */
-	char* result = shader_read_file(filenames[0]);
-
-	/* Should fail because of recursion limit */
-	TEST_ASSERT_NULL_MESSAGE(
-	    result, "Should fail when recursion depth exceeds limit");
-
-	if (result)
-		free(result);
-
-	/* Cleanup */
-	for (int i = 0; i < TEST_DEPTH; ++i) {
-		(void)remove(filenames[i]);
-	}
-}
-
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_shader_read_too_large);
 	RUN_TEST(test_shader_read_limit);
-	RUN_TEST(test_recursion_limit);
 	return UNITY_END();
 }

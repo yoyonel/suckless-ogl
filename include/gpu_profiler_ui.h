@@ -46,9 +46,4 @@ void gpu_profiler_ui_toggle_visibility(GPUProfilerUI* profiler_ui);
  */
 void gpu_profiler_ui_toggle_position(GPUProfilerUI* profiler_ui);
 
-/**
- * @brief Cleans up GPU resources used by the UI.
- */
-void gpu_profiler_ui_cleanup(GPUProfilerUI* profiler_ui);
-
 #endif /* GPU_PROFILER_UI_H */

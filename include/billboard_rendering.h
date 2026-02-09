@@ -44,8 +44,6 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
  * @param group Pointer to the group.
  * @param quad_vbo VBO containing basic quad geometry (usually from
  * render_utils).
- * @param wire_quad_vbo VBO for debug wireframe quad.
- * @param wire_cube_vbo VBO for debug wireframe unit box.
  */
 void billboard_group_prepare(BillboardGroup* group, GLuint quad_vbo,
                              GLuint wire_quad_vbo, GLuint wire_cube_vbo);

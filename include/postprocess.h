@@ -373,7 +373,6 @@ typedef struct PostProcess {
 /**
  * @brief Initializes the post-processing pipeline.
  * @param post_processing Pointer to the struct.
- * @param external_profiler Pointer to the GPU profiler for timing stages.
  * @param width Initial resolution width.
  * @param height Initial resolution height.
  * @return 0 on success, negative on error.

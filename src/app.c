@@ -128,8 +128,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
 
-	app->skybox_shader =
-	    shader_load("shaders/background.vert", "shaders/background.frag");
+	app->skybox_shader = shader_load_program("shaders/background.vert",
+	                                         "shaders/background.frag");
 	if (!app->skybox_shader) {
 		return 0;
 	}
@@ -253,7 +253,7 @@ void app_cleanup(App* app)
 	shader_destroy(app->pbr_ssbo_shader);
 #endif
 
-	shader_destroy(app->skybox_shader);
+	glDeleteProgram(app->skybox_shader);
 	glDeleteProgram(app->shader_spmap);
 	glDeleteProgram(app->shader_irmap);
 	glDeleteProgram(app->shader_lum_pass1);
@@ -297,7 +297,6 @@ void app_cleanup(App* app)
 	perf_mode_cleanup(&app->perf_context);
 
 	gpu_profiler_cleanup(&app->gpu_profiler);
-	gpu_profiler_ui_cleanup(&app->timeline_ui);
 
 	window_destroy(app->window);
 }

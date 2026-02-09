@@ -194,36 +194,4 @@ void render_utils_get_gpu_identifier(char* buffer, size_t size);
  */
 int render_utils_check_framebuffer(const char* label);
 
-/**
- * @brief Creates a 2D texture with specified parameters.
- *
- * Encapsulates glGenTextures, glBindTexture, glTexStorage2D (or equivalent),
- * and basic parameter setup (MIN/MAG filters, WRAP S/T).
- *
- * @param width Texture width.
- * @param height Texture height.
- * @param internal_format Internal GPU format (e.g., GL_RGBA16F).
- * @param levels Number of mipmap levels.
- * @param label Debug label for the texture.
- * @return The GLuint handle of the created texture.
- */
-GLuint render_utils_create_texture_2d(int width, int height,
-                                      GLenum internal_format, GLint levels,
-                                      const char* label);
-
-/**
- * @brief Sets up instance attributes for sphere rendering (Model, Albedo, PBR).
- *
- * Configures vertex attribute pointers for instanced arrays.
- * Assumes the instance VBO is already bound.
- *
- * @param stride Stride of the instance structure (sizeof(SphereInstance)).
- * @param offset_albedo Byte offset of the albedo field.
- * @param offset_metallic Byte offset of the metallic field (start of PBR
- * block).
- */
-void render_utils_setup_sphere_instance_attributes(GLsizei stride,
-                                                   size_t offset_albedo,
-                                                   size_t offset_metallic);
-
 #endif  // RENDER_UTILS_H

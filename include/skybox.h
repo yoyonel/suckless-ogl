@@ -11,7 +11,6 @@
 #define SKYBOX_H
 
 #include "gl_common.h"
-#include "shader.h"
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
@@ -34,20 +33,20 @@ typedef struct {
 /**
  * @brief Initializes skybox geometry and caches uniform locations.
  * @param skybox Pointer to the struct.
- * @param shader The compiled skybox shader wrapper.
+ * @param shader_program The compiled skybox shader program.
  */
-void skybox_init(Skybox* skybox, Shader* shader);
+void skybox_init(Skybox* skybox, GLuint shader_program);
 
 /**
  * @brief Renders the skybox to the current framebuffer.
  * @param skybox Pointer to the struct.
- * @param shader Shader to use.
+ * @param shader_program Shader to use.
  * @param env_map Primary HDR cubemap texture.
  * @param fallback_tex Dummy texture if env_map is invalid.
  * @param inv_view_proj Inverse of the current View-Proj matrix.
  * @param blur_lod Level of mip-map detail (0.0 for sharp, higher for blurry).
  */
-void skybox_render(Skybox* skybox, Shader* shader, GLuint env_map,
+void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
                    GLuint fallback_tex, const mat4 inv_view_proj,
                    float blur_lod);
 

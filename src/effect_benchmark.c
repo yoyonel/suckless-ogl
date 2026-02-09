@@ -89,7 +89,7 @@ static void reset_accumulator(EffectBenchmark* bench)
  *
  * Sets active_effects, marks the UBO dirty, AND recompiles the
  * uber-shader if running in optimized mode (release builds bake
- * effect toggles as compile-time \#defines — without recompilation
+ * effect toggles as compile-time #defines — without recompilation
  * the shader ignores the UBO activeEffects field).
  */
 static void apply_effects(EffectBenchmark* bench, unsigned int effects)

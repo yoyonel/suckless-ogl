@@ -154,7 +154,7 @@ typedef struct App {
 	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
 	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
 	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
-	Shader* skybox_shader;       /**< Skybox shader wrapper. */
+	GLuint skybox_shader;        /**< Legacy skybox program ID. */
 	GLuint hdr_texture;          /**< Active HDR cubemap. */
 	GLuint spec_prefiltered_tex; /**< Active Specular map. */
 	GLuint irradiance_tex;       /**< Active Irradiance map. */

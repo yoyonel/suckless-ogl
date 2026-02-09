@@ -811,22 +811,32 @@ static int create_framebuffer(PostProcess* post_processing)
 	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
 
 	/* Créer la texture de couleur (HDR) */
-	post_processing->scene_color_tex = render_utils_create_texture_2d(
-	    post_processing->width, post_processing->height, GL_RGBA16F, 1,
-	    "Scene Color (HDR)");
+	glGenTextures(1, &post_processing->scene_color_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-	// render_utils sets LINEAR/LINEAR by default for levels=1
+	glObjectLabel(GL_TEXTURE, post_processing->scene_color_tex, -1,
+	              "Scene Color (HDR)");
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, post_processing->width,
+	             post_processing->height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, post_processing->scene_color_tex,
 	                       0);
 
 	/* Créer la texture de vélocité (GL_RG16F) */
-	post_processing->velocity_tex = render_utils_create_texture_2d(
-	    post_processing->width, post_processing->height, GL_RG16F, 1,
-	    "Velocity Buffer");
+	glGenTextures(1, &post_processing->velocity_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glObjectLabel(GL_TEXTURE, post_processing->velocity_tex, -1,
+	              "Velocity Buffer");
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, post_processing->width,
+	             post_processing->height, 0, GL_RG, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
 	                       GL_TEXTURE_2D, post_processing->velocity_tex, 0);
 
@@ -838,12 +848,17 @@ static int create_framebuffer(PostProcess* post_processing)
 
 	/* Créer la texture de profondeur (D32F_S8 pour précision max + stencil)
 	 */
-	post_processing->scene_depth_tex = render_utils_create_texture_2d(
-	    post_processing->width, post_processing->height,
-	    GL_DEPTH32F_STENCIL8, 1, "Scene Depth (D32F_S8)");
+	glGenTextures(1, &post_processing->scene_depth_tex);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+	glObjectLabel(GL_TEXTURE, post_processing->scene_depth_tex, -1,
+	              "Scene Depth (D32F_S8)");
+	/* glTextureView requires immutable storage */
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH32F_STENCIL8,
+	               post_processing->width, post_processing->height);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
 	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,

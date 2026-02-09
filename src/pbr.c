@@ -2,7 +2,6 @@
 
 #include "gl_common.h"
 #include "perf_timer.h"
-#include "render_utils.h"
 #include "shader.h"
 #include <math.h>
 #include <stddef.h>  // Fournit NULL (proprement)
@@ -15,13 +14,23 @@ static const uint32_t MAX_HDR_RESOLUTION = 4096;
 
 GLuint pbr_prefilter_init(int width, int height)
 {
+	GLuint spec_tex = 0;
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	GLuint tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA16F, levels, "Prefiltered Specular Map");
-	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glGenTextures(1, &spec_tex);
+	glBindTexture(GL_TEXTURE_2D, spec_tex);
+	glObjectLabel(GL_TEXTURE, spec_tex, -1, "Prefiltered Specular Map");
+
+	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+	                GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
-	return tex;
+	return spec_tex;
 }
 
 void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
@@ -128,12 +137,19 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 
 GLuint pbr_irradiance_init(int size)
 {
-	GLuint tex = render_utils_create_texture_2d(size, size, GL_RGBA16F, 1,
-	                                            "Irradiance Map");
-	glBindTexture(GL_TEXTURE_2D, tex);
+	GLuint irr_tex = 0;
+	glGenTextures(1, &irr_tex);
+	glBindTexture(GL_TEXTURE_2D, irr_tex);
+	glObjectLabel(GL_TEXTURE, irr_tex, -1, "Irradiance Map");
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, size, size);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
-	return tex;
+	return irr_tex;
 }
 
 void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
@@ -193,14 +209,19 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 		return 0;
 	}
 
+	GLuint irr_tex = 0;
 	HYBRID_FUNC_TIMER("IBL: Irradiance Map");
 	GL_SCOPE_DEBUG_GROUP("IBL: Irradiance Map");
 
-	GLuint irr_tex = render_utils_create_texture_2d(size, size, GL_RGBA16F,
-	                                                1, "Irradiance Map");
+	glGenTextures(1, &irr_tex);
 	glBindTexture(GL_TEXTURE_2D, irr_tex);
+	glObjectLabel(GL_TEXTURE, irr_tex, -1, "Irradiance Map");
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA16F, size, size);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	{
 		GL_SCOPE_USE_PROGRAM(shader);
@@ -325,14 +346,19 @@ GLuint build_brdf_lut_map(int size)
 		return 0;
 	}
 
+	GLuint lut_tex = 0;
 	HYBRID_FUNC_TIMER("IBL: BRDF LUT");
 	GL_SCOPE_DEBUG_GROUP("IBL: BRDF LUT");
 
-	GLuint lut_tex = render_utils_create_texture_2d(size, size, GL_RG16F, 1,
-	                                                "BRDF LUT Texture");
+	glGenTextures(1, &lut_tex);
 	glBindTexture(GL_TEXTURE_2D, lut_tex);
+	glObjectLabel(GL_TEXTURE, lut_tex, -1, "BRDF LUT Texture");
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RG16F, size, size);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	{
 		GL_SCOPE_USE_PROGRAM(shader);

@@ -2,7 +2,6 @@
 
 #include "gl_common.h"
 #include "instanced_rendering.h"
-#include "render_utils.h"
 #include "shader.h"
 #include <cglm/types.h>
 #include <stddef.h>
@@ -41,11 +40,35 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-static void setup_billboard_instance_attributes(void)
+static void setup_billboard_instance_attributes()
 {
-	render_utils_setup_sphere_instance_attributes(
-	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic));
+	GLsizei size_instance = (GLsizei)sizeof(SphereInstance);
+	GLuint index_vattrib = 2; /* Start at 2 (0=Pos, 1=unused/Normal) */
+
+	/* mat4 model (Locations 2, 3, 4, 5) */
+	for (int i = 0; i < 4; i++) {
+		glEnableVertexAttribArray(index_vattrib);
+		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
+		                      size_instance,
+		                      BUFFER_OFFSET(i * sizeof(vec4)));
+		glVertexAttribDivisor(index_vattrib, 1);
+		index_vattrib++;
+	}
+
+	/* Albedo (6) */
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE,
+	                      size_instance,
+	                      BUFFER_OFFSET(offsetof(SphereInstance, albedo)));
+	glVertexAttribDivisor(index_vattrib, 1);
+	index_vattrib++;
+
+	/* PBR (7) */
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(
+	    index_vattrib, 3, GL_FLOAT, GL_FALSE, size_instance,
+	    BUFFER_OFFSET(offsetof(SphereInstance, metallic)));
+	glVertexAttribDivisor(index_vattrib, 1);
 }
 
 static void create_billboard_vao(GLuint* vao, GLuint geometry_vbo,

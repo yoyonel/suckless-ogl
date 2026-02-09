@@ -60,7 +60,7 @@ void action_notifier_push(ActionNotifier* notifier, const char* text,
 /**
  * @brief Updates notification timers.
  * @param notifier Pointer to the notifier.
- * @param delta_time Delta time since last update (seconds).
+ * @param dt Delta time since last update (seconds).
  */
 void action_notifier_update(ActionNotifier* notifier, float delta_time);
 
