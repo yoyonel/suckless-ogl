@@ -158,16 +158,16 @@ int app_init(App* app, int width, int height, const char* title)
 	    app->pbr_billboard_shader, "irradianceMap");
 	app->billboard_uniforms.prefilter_map = shader_get_uniform_location(
 	    app->pbr_billboard_shader, "prefilterMap");
-	app->billboard_uniforms.brdf_lut = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "brdfLUT");
-	app->billboard_uniforms.debug_mode = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "debugMode");
-	app->billboard_uniforms.cam_pos = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "camPos");
+	app->billboard_uniforms.brdf_lut =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "brdfLUT");
+	app->billboard_uniforms.debug_mode =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "debugMode");
+	app->billboard_uniforms.cam_pos =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "camPos");
 	app->billboard_uniforms.projection = shader_get_uniform_location(
 	    app->pbr_billboard_shader, "projection");
-	app->billboard_uniforms.view = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "view");
+	app->billboard_uniforms.view =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "view");
 	app->billboard_uniforms.previous_view_proj =
 	    shader_get_uniform_location(app->pbr_billboard_shader,
 	                                "previousViewProj");
