@@ -106,7 +106,7 @@ endforeach()
 # être lié à app_testlib ou glad (pour éviter les conflits de symboles).
 
 add_executable(test_shader_path_security_standalone
-    tests/test_shader_path_security_standalone.c
+    test_shader_path_security_standalone.c
 )
 
 # On inclut d'abord les mocks pour qu'ils soient prioritaires
