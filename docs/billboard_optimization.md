@@ -21,6 +21,7 @@ We solve this problem in 2D, independently for the X (width) and Y (height) axes
 ### Geometry (XZ Plane)
 
 Consider the top-down view (XZ plane) shown in the diagram above:
+
 - **O**: Camera Origin at $(0,0)$.
 - **C**: Sphere Center at $(C_x, C_z)$.
 - **r**: Sphere Radius.
@@ -48,6 +49,7 @@ $$ n_{z1} = \frac{C_z \cdot L + C_x \cdot r}{d^2} $$
 Once we have the normal vector $(n_x, n_z)$ of a tangent line (which represents a ray from the camera), we project it to Normalized Device Coordinates (NDC) using the projection matrix elements.
 
 For a standard perspective projection matrix $P$:
+
 - $P_{00}$ scales X (based on Field of View).
 - We project by dividing $x$ by $-z$ (since OpenGL looks down -Z).
 
@@ -58,6 +60,7 @@ This gives us the exact screen-space coordinate of the edge of the sphere. We ca
 ## Implementation Results
 
 This method provides a **pixel-perfect bounding box**:
+
 - **0% Overdraw** outside the sphere's actual screen footprint (excluding the corner areas of the quad).
 - **Correct Perspective**: Handles elliptical distortion at screen edges perfectly.
 - **Efficient**: Uses only square roots and basic arithmetic, avoiding expensive trigonometric functions (`acos`, `atan`).
@@ -67,6 +70,7 @@ This method provides a **pixel-perfect bounding box**:
 To ensure stability in all scenarios, two special cases are handled:
 
 ### 1. Camera Plane Singularity
+
 When the sphere intersects the camera plane ($Z=0$), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.
 
 **Solution**: If a tangent point lies behind the camera ($n_z \ge 0$), its projected screen coordinate is clamped to infinity ($\pm 10000.0$) in the correct direction. This ensures the quad extends to the screen edge.
@@ -84,6 +88,7 @@ p1 = (nx1 >= 0.0 ? 1.0 : -1.0) * 10000.0;
 This singularity occurs when the tangent line is exactly axis-aligned ($n_x = 0$), which is geometrically possible for a sphere centered on the view axis.
 
 ### 2. Back-Projection Culling
+
 Spheres located entirely behind the camera can mathematically project to valid screen coordinates (inverted).
 
 **Solution**: These are explicitly culled in the Vertex Shader by checking if the sphere's **nearest point** along the view axis is behind the camera:
@@ -98,7 +103,7 @@ Spheres located entirely behind the camera can mathematically project to valid s
 
 The previous test `viewPos.z > 0.0` only checked the sphere **center**. A sphere whose center is behind the camera ($z > 0$) but whose volume extends in front (e.g. center at $z = +0.5$, radius $= 2.0$) was incorrectly culled. The corrected test `viewPos.z > sphereRadius` ensures the **nearest point** of the sphere ($z_{center} - r$) is behind the camera before culling.
 
-```
+```text
  Camera
   ◉──────────────▶ +Z (behind)
   │
@@ -110,6 +115,7 @@ The previous test `viewPos.z > 0.0` only checked the sphere **center**. A sphere
 ```
 
 ### 3. Conservative Depth
+
 To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's **frontmost plane** ($Z_{nearest} = Z_{view} + R$) rather than its center.
 This ensures the quad is drawn *before* any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment Shader then outputs the precise per-pixel depth (`gl_FragDepth`) to carve out the true spherical shape.
 
@@ -147,6 +153,7 @@ $$
 This eliminates the coupling between the shader and the CPU-side `NEAR_PLANE` constant, making the code robust to near plane changes.
 
 ### 4. Numerical Stability: Avoiding Silhouette Jitter
+
 When using ray-casting on billboards, it is critical that attributes constant across the sphere (center, radius, material) are passed using the **`flat`** interpolation qualifier.
 
 By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., $Radius = 1.0$), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., $0.9999999$ or $1.0000001$). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.
@@ -168,7 +175,7 @@ if (distSq <= r2 + max(r2 * 0.005, 1e-4))
 ```
 
 | Sphere Radius | Old Margin ($r^2 \times 0.005$) | New Margin ($\max(r^2 \times 0.005,\; 10^{-4})$) |
-|:---:|:---:|:---:|
+| :---: | :---: | :---: |
 | $r = 10.0$ | $0.5$ | $0.5$ |
 | $r = 1.0$ | $0.005$ | $0.005$ |
 | $r = 0.01$ | $5 \times 10^{-7}$ | $10^{-4}$ ✅ |
@@ -181,12 +188,12 @@ For large spheres, the multiplicative term dominates. For very small spheres (e.
 The projection matrix diagonal elements `sx = projection[0][0]` and `sy = projection[1][1]` are used in both the inside-sphere and normal projection branches. They are now extracted **once** before the branch chain, eliminating code duplication and making the dependency explicit.
 
 ### 7. The Mesh vs. Math Paradox (Understanding Diff Maps)
+
 When comparing this optimized billboard rendering to a traditional triangle-based sphere (Reference), a "diff map" will often show persistent colored rings around the silhouettes. This is **expected** and proves the accuracy of the mathematical approach:
 
-1.  **Perfect Silhouette:** The billboard computes a mathematically perfect curve for every pixel. An icosphere, regardless of subdivision, is an approximation made of flat triangles. The rings represent the areas where the triangle edges deviate from the perfect sphere.
-2.  **Anti-Aliasing Clash:** Our shader uses **Analytical Edge Smoothing** (Soft Edges). Standard mesh rendering uses hardware rasterization. The transition from 100% to 0% opacity differs slightly, producing residuals in difference maps.
-3.  **Normal Continuity:** Ray-casted normals are perfectly continuous, while mesh normals (even when smoothed) depend on the underlying vertex interpolation.
-
+1. **Perfect Silhouette:** The billboard computes a mathematically perfect curve for every pixel. An icosphere, regardless of subdivision, is an approximation made of flat triangles. The rings represent the areas where the triangle edges deviate from the perfect sphere.
+2. **Anti-Aliasing Clash:** Our shader uses **Analytical Edge Smoothing** (Soft Edges). Standard mesh rendering uses hardware rasterization. The transition from 100% to 0% opacity differs slightly, producing residuals in difference maps.
+3. **Normal Continuity:** Ray-casted normals are perfectly continuous, while mesh normals (even when smoothed) depend on the underlying vertex interpolation.
 
 ## References
 
@@ -196,6 +203,7 @@ When comparing this optimized billboard rendering to a traditional triangle-base
 See `shaders/pbr_ibl_billboard.vert` for the GLSL implementation.
 
 ### Visual Illustration
+
 The following image (from Mara et al.) demonstrates how the spherical projection creates an elliptical footprint on the screen, which our exact AABB calculation perfectly bounds:
 
 ![Perspective Projection Grid](images/perspective_projection_grid.png)
@@ -209,7 +217,7 @@ The following image (from Mara et al.) demonstrates how the spherical projection
 Five corrections applied to `projection_utils.glsl` following a mathematical audit of `computeBillboardSphere`:
 
 | # | Severity | Fix | Section |
-|---|----------|-----|---------|
+| --- | ---------- | ----- | --------- |
 | 1 | **Bug** | Behind-camera cull: `viewPos.z > 0.0` → `viewPos.z > sphereRadius` — spheres straddling the camera plane are no longer incorrectly culled | §2 |
 | 2 | **Robustness** | Near plane clamp derived from projection matrix instead of hardcoded `-0.11` — decoupled from CPU-side `NEAR_PLANE` | §3 |
 | 3 | **Robustness** | `sign(nx)` → `(nx >= 0.0 ? 1.0 : -1.0)` — prevents `sign(0)=0` bound collapse | §1 |

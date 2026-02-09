@@ -43,6 +43,7 @@ FILE_PATTERNS          = *.c \
                          *.glsl
 
 EXCLUDE                = docs/doxygen-awesome-css
+FILTER_PATTERNS        = "*.md=python3 doxygen_resources/math_filter.py"
 
 # Configuration options related to the alphabetical class index
 ALPHABETICAL_INDEX     = YES
