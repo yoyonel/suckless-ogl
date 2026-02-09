@@ -1,6 +1,9 @@
 var app_8h =
 [
     [ "IBLContext", "structIBLContext.html", "structIBLContext" ],
+    [ "InstancedUniforms", "structInstancedUniforms.html", "structInstancedUniforms" ],
+    [ "DebugUniforms", "structDebugUniforms.html", "structDebugUniforms" ],
+    [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
     [ "App", "structApp.html", "structApp" ],
     [ "IBLState", "app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea", [
       [ "IBL_STATE_IDLE", "app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3", null ],

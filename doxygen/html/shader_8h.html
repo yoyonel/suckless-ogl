@@ -311,6 +311,18 @@ Functions</h2></td></tr>
 <tr class="separator:a8e522e514b294864d7526ee4b2a518c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8067eb11f7d8c682b855b9f019e20f69" id="r_a8067eb11f7d8c682b855b9f019e20f69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69">shader_set_mat4</a> (<a class="el" href="structShader.html">Shader</a> *shader, const char *name, const float *val)</td></tr>
 <tr class="separator:a8067eb11f7d8c682b855b9f019e20f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52a09bf0e2b9843dffb619da33cce191" id="r_a52a09bf0e2b9843dffb619da33cce191"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a52a09bf0e2b9843dffb619da33cce191">shader_set_int_loc</a> (GLint loc, int val)</td></tr>
+<tr class="separator:a52a09bf0e2b9843dffb619da33cce191"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dbb432c3ea627138ba521cf748b7f18" id="r_a6dbb432c3ea627138ba521cf748b7f18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a6dbb432c3ea627138ba521cf748b7f18">shader_set_float_loc</a> (GLint loc, float val)</td></tr>
+<tr class="separator:a6dbb432c3ea627138ba521cf748b7f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a943266649f093c843f87fcfd86a9872f" id="r_a943266649f093c843f87fcfd86a9872f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a943266649f093c843f87fcfd86a9872f">shader_set_vec2_loc</a> (GLint loc, const float *val)</td></tr>
+<tr class="separator:a943266649f093c843f87fcfd86a9872f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a768d1f5ad9d92eb365f9f9c9dd050b7a" id="r_a768d1f5ad9d92eb365f9f9c9dd050b7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a768d1f5ad9d92eb365f9f9c9dd050b7a">shader_set_vec3_loc</a> (GLint loc, const float *val)</td></tr>
+<tr class="separator:a768d1f5ad9d92eb365f9f9c9dd050b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f165d2eafe768b4471f297b05b8db37" id="r_a3f165d2eafe768b4471f297b05b8db37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a3f165d2eafe768b4471f297b05b8db37">shader_set_vec4_loc</a> (GLint loc, const float *val)</td></tr>
+<tr class="separator:a3f165d2eafe768b4471f297b05b8db37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3dae1b87c4546baa4d8a15731aeb11d" id="r_ae3dae1b87c4546baa4d8a15731aeb11d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#ae3dae1b87c4546baa4d8a15731aeb11d">shader_set_mat4_loc</a> (GLint loc, const float *val)</td></tr>
+<tr class="separator:ae3dae1b87c4546baa4d8a15731aeb11d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>High-level OpenGL shader management with metadata and uniform caching. </p>
@@ -692,6 +704,34 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a6dbb432c3ea627138ba521cf748b7f18" name="a6dbb432c3ea627138ba521cf748b7f18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dbb432c3ea627138ba521cf748b7f18">&#9670;&#160;</a></span>shader_set_float_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_float_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a461b117efc5c86ee8eabf8f80789ec32" name="a461b117efc5c86ee8eabf8f80789ec32"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a461b117efc5c86ee8eabf8f80789ec32">&#9670;&#160;</a></span>shader_set_int()</h2>
 
@@ -728,6 +768,34 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="shader_8h_a461b117efc5c86ee8eabf8f80789ec32_cgraph.svg" width="526" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
+
+</div>
+</div>
+<a id="a52a09bf0e2b9843dffb619da33cce191" name="a52a09bf0e2b9843dffb619da33cce191"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52a09bf0e2b9843dffb619da33cce191">&#9670;&#160;</a></span>shader_set_int_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_int_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -770,6 +838,34 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="ae3dae1b87c4546baa4d8a15731aeb11d" name="ae3dae1b87c4546baa4d8a15731aeb11d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3dae1b87c4546baa4d8a15731aeb11d">&#9670;&#160;</a></span>shader_set_mat4_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_mat4_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a5efe31c76255dd6965da8b2e1fdfd442" name="a5efe31c76255dd6965da8b2e1fdfd442"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5efe31c76255dd6965da8b2e1fdfd442">&#9670;&#160;</a></span>shader_set_vec2()</h2>
 
@@ -806,6 +902,34 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="shader_8h_a5efe31c76255dd6965da8b2e1fdfd442_cgraph.svg" width="539" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
+
+</div>
+</div>
+<a id="a943266649f093c843f87fcfd86a9872f" name="a943266649f093c843f87fcfd86a9872f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a943266649f093c843f87fcfd86a9872f">&#9670;&#160;</a></span>shader_set_vec2_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec2_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -848,6 +972,34 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a768d1f5ad9d92eb365f9f9c9dd050b7a" name="a768d1f5ad9d92eb365f9f9c9dd050b7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a768d1f5ad9d92eb365f9f9c9dd050b7a">&#9670;&#160;</a></span>shader_set_vec3_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec3_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a8e522e514b294864d7526ee4b2a518c7" name="a8e522e514b294864d7526ee4b2a518c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e522e514b294864d7526ee4b2a518c7">&#9670;&#160;</a></span>shader_set_vec4()</h2>
 
@@ -884,6 +1036,34 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="shader_8h_a8e522e514b294864d7526ee4b2a518c7_cgraph.svg" width="539" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
+
+</div>
+</div>
+<a id="a3f165d2eafe768b4471f297b05b8db37" name="a3f165d2eafe768b4471f297b05b8db37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f165d2eafe768b4471f297b05b8db37">&#9670;&#160;</a></span>shader_set_vec4_loc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void shader_set_vec4_loc </td>
+          <td>(</td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>loc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

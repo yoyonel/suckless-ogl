@@ -30,10 +30,16 @@ var shader_8c =
     [ "shader_read_file", "shader_8c.html#a6d28f24af3b9e87285732052e6f70dc8", null ],
     [ "shader_read_file_with_defines", "shader_8c.html#a7d3db64439dd78569e48580d0b580945", null ],
     [ "shader_set_float", "shader_8c.html#aed5502c74325481ebafdd9dfc49cf8db", null ],
+    [ "shader_set_float_loc", "shader_8c.html#a6dbb432c3ea627138ba521cf748b7f18", null ],
     [ "shader_set_int", "shader_8c.html#a461b117efc5c86ee8eabf8f80789ec32", null ],
+    [ "shader_set_int_loc", "shader_8c.html#a52a09bf0e2b9843dffb619da33cce191", null ],
     [ "shader_set_mat4", "shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69", null ],
+    [ "shader_set_mat4_loc", "shader_8c.html#ae3dae1b87c4546baa4d8a15731aeb11d", null ],
     [ "shader_set_vec2", "shader_8c.html#a5efe31c76255dd6965da8b2e1fdfd442", null ],
+    [ "shader_set_vec2_loc", "shader_8c.html#a943266649f093c843f87fcfd86a9872f", null ],
     [ "shader_set_vec3", "shader_8c.html#a7034c467af5884ca4950b6957eb84ff2", null ],
+    [ "shader_set_vec3_loc", "shader_8c.html#a768d1f5ad9d92eb365f9f9c9dd050b7a", null ],
     [ "shader_set_vec4", "shader_8c.html#a8e522e514b294864d7526ee4b2a518c7", null ],
+    [ "shader_set_vec4_loc", "shader_8c.html#a3f165d2eafe768b4471f297b05b8db37", null ],
     [ "shader_use", "shader_8c.html#ad80a771bc794ef6b652f13449129b645", null ]
 ];
