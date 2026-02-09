@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"structGPUInfo.html#a37429509d1c32afd41d67c49a93e5688":[5,0,24,2],
+"structGPUInfo.html#a4da36b59d887870f6c2f6aff9c17961c":[5,0,24,0],
 "structGPUProfiler.html":[5,0,25],
 "structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a":[5,0,25,6],
 "structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e":[5,0,25,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX6 =
 "structSSBOGroup.html#a9ecc6353d561eeb1c521d0fca1260d32":[5,0,57,0],
 "structSSBOGroup.html#ab2a439d9863247c019588a0c140ce56a":[5,0,57,2],
 "structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc":[5,0,57,1],
-"structShader.html":[5,0,50],
-"structShader.html#a3cab8e98d59adca31fc046c28278b697":[5,0,50,5],
-"structShader.html#a40b936cae39a7242aac2814066b966f2":[5,0,50,2]
+"structShader.html":[5,0,50]
 };

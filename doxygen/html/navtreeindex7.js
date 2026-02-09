@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"structShader.html#a3cab8e98d59adca31fc046c28278b697":[5,0,50,5],
+"structShader.html#a40b936cae39a7242aac2814066b966f2":[5,0,50,2],
 "structShader.html#a63fc645b9235c69c54c1a5b6a019db69":[5,0,50,3],
 "structShader.html#af036f983d35fe0f8f31dedc009b3645e":[5,0,50,4],
 "structShader.html#af1d3b12a4abc29af78e033a9b2acc6dd":[5,0,50,0],

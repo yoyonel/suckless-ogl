@@ -1,5 +1,6 @@
 var gpu__profiler__ui_8c =
 [
+    [ "gpu_profiler_ui_cleanup", "gpu__profiler__ui_8c.html#aa5843b14190f472881eb53b6aa0cb4f0", null ],
     [ "gpu_profiler_ui_compact_stages", "gpu__profiler__ui_8c.html#a791c884d99ce17538fa4fd8d17a877c8", null ],
     [ "gpu_profiler_ui_draw", "gpu__profiler__ui_8c.html#aa22e51dc6232ffd2f5740fc7ed56180a", null ],
     [ "gpu_profiler_ui_init", "gpu__profiler__ui_8c.html#aed68b1cca30d6c8812275e6756233fa8", null ],

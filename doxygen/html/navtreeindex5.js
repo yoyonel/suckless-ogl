@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,2,33,3],
+"sphere__sorting_8h.html#af67b8aec8040d3efd46de936313aeb2d":[6,0,2,33,4],
 "sphere__sorting_8h_source.html":[6,0,2,33],
 "ssbo__rendering_8c.html":[6,0,4,31],
 "ssbo__rendering_8c.html#a286490847ce95171c2e25ac6adf3d8ed":[6,0,4,31,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "structGLStateBackup.html#aa72b34ad29bf4465618484e53f16590d":[5,0,22,2],
 "structGLStateBackup.html#aed82c3c83c0f8247b63ce94a25ceca44":[5,0,22,0],
 "structGPUInfo.html":[5,0,24],
-"structGPUInfo.html#a048d0d93456bee48c8fbd1bb5d097b87":[5,0,24,1],
-"structGPUInfo.html#a37429509d1c32afd41d67c49a93e5688":[5,0,24,2],
-"structGPUInfo.html#a4da36b59d887870f6c2f6aff9c17961c":[5,0,24,0]
+"structGPUInfo.html#a048d0d93456bee48c8fbd1bb5d097b87":[5,0,24,1]
 };
