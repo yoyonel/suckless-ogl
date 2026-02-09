@@ -246,6 +246,43 @@ void test_parse_include_path_success(void)
 	            "parse_include_path output correct");
 }
 
+void test_is_safe_path_cases(void)
+{
+	/* 1. Valid Paths */
+	ASSERT_TRUE(is_safe_path("shader.glsl"),
+	            "Simple filename should be safe");
+	ASSERT_TRUE(is_safe_path("dir/shader.glsl"),
+	            "Relative path in subdir should be safe");
+	ASSERT_TRUE(is_safe_path("./shader.glsl"),
+	            "Explicit current dir should be safe");
+
+	/* 2. Parent Directory Traversal */
+	ASSERT_FALSE(is_safe_path("../shader.glsl"),
+	             "Parent directory traversal (start) should be unsafe");
+	ASSERT_FALSE(is_safe_path("dir/../shader.glsl"),
+	             "Parent directory traversal (middle) should be unsafe");
+	ASSERT_FALSE(is_safe_path(".."), "Just parent dir should be unsafe");
+
+	/* 3. Absolute Paths */
+	ASSERT_FALSE(is_safe_path("/etc/passwd"),
+	             "Absolute path (start) should be unsafe");
+	ASSERT_FALSE(is_safe_path("/shader.glsl"),
+	             "Absolute path (root) should be unsafe");
+
+	/* 4. Windows Separators (Backslashes) */
+	ASSERT_FALSE(is_safe_path("..\\shader.glsl"),
+	             "Windows backslash traversal should be unsafe");
+	ASSERT_FALSE(
+	    is_safe_path("dir\\shader.glsl"),
+	    "Windows backslash separator should be unsafe (linux-only app)");
+
+	/* 5. URL Schemes / Protocol handlers */
+	ASSERT_FALSE(is_safe_path("http://example.com/shader.glsl"),
+	             "URL with protocol should be unsafe");
+	ASSERT_FALSE(is_safe_path("file:///shader.glsl"),
+	             "File protocol should be unsafe");
+}
+
 int main(void)
 {
 	printf("Running Shader Path Security Tests...\n");
@@ -254,6 +291,7 @@ int main(void)
 	test_get_dir_from_path_success();
 	test_parse_include_path_truncation();
 	test_parse_include_path_success();
+	test_is_safe_path_cases();
 
 	printf("All tests passed!\n");
 	return 0;

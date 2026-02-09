@@ -1,42 +1,29 @@
 #include "skybox.h"
 
 #include "glad/glad.h"
+#include "render_utils.h"
+#include "shader.h"
 #include <cglm/types.h>
 
-enum { SKYBOX_VERTEX_COUNT = 6 };
-
-/* Fullscreen quad vertices (NDC space) */
-static const float quad_vertices[] = {
-    -1.0F, 1.0F, 0.0F, -1.0F, -1.0F, 0.0F, 1.0F, -1.0F, 0.0F,
-    -1.0F, 1.0F, 0.0F, 1.0F,  -1.0F, 0.0F, 1.0F, 1.0F,  0.0F,
-};
-
-void skybox_init(Skybox* skybox, GLuint shader_program)
+void skybox_init(Skybox* skybox, Shader* shader)
 {
-	glGenVertexArrays(1, &skybox->vao);
-	glGenBuffers(1, &skybox->vbo);
-
-	/* Cache uniform locations */
+	/* Cache uniform locations using robust shader API */
 	skybox->u_inv_view_proj =
-	    glGetUniformLocation(shader_program, "m_inv_view_proj");
-	skybox->u_blur_lod = glGetUniformLocation(shader_program, "blur_lod");
+	    shader_get_uniform_location(shader, "m_inv_view_proj");
+	skybox->u_blur_lod = shader_get_uniform_location(shader, "blur_lod");
 	skybox->u_env_map =
-	    glGetUniformLocation(shader_program, "environmentMap");
+	    shader_get_uniform_location(shader, "environmentMap");
+
+	/* Use shared fullscreen quad creation */
+	/* Note: This creates a VBO with (Pos: vec2, Tex: vec2) */
+	/* Shader expects (Pos: vec3), but only reads xy. Z defaults to 0. */
+	render_utils_create_fullscreen_quad(&skybox->vao, &skybox->vbo);
 
 	glBindVertexArray(skybox->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, skybox->vbo);
-
-	glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)sizeof(quad_vertices),
-	             quad_vertices, GL_STATIC_DRAW);
-
-	/* Position attribute */
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-	                      (void*)0);
-	glVertexAttribDivisor(0, 0);
 
 	/* CRITICAL: Explicitly disable other attributes to avoid
-	 * driver-specific recompilation heuristics */
+	 * driver-specific recompilation heuristics.
+	 * render_utils enables 0 (Pos) and 1 (Tex). We disable 1 and others. */
 	static const GLuint MAX_ATTR_RECONCILE = 7;
 	for (GLuint i = 1; i <= MAX_ATTR_RECONCILE; i++) {
 		glDisableVertexAttribArray(i);
@@ -46,14 +33,14 @@ void skybox_init(Skybox* skybox, GLuint shader_program)
 	glBindVertexArray(0);
 }
 
-void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
+void skybox_render(Skybox* skybox, Shader* shader, GLuint env_map,
                    GLuint fallback_tex, const mat4 inv_view_proj,
                    float blur_lod)
 {
 	/* Render at the far plane (z=1.0) with LEQUAL depth test */
 	glDepthFunc(GL_LEQUAL);
 
-	glUseProgram(shader_program);
+	shader_use(shader);
 
 	/* Set inverse view-projection matrix */
 	glUniformMatrix4fv(skybox->u_inv_view_proj, 1, GL_FALSE,
@@ -73,7 +60,7 @@ void skybox_render(Skybox* skybox, GLuint shader_program, GLuint env_map,
 
 	/* Draw fullscreen quad */
 	glBindVertexArray(skybox->vao);
-	glDrawArrays(GL_TRIANGLES, 0, SKYBOX_VERTEX_COUNT);
+	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 	glBindVertexArray(0);
 
 	/* Restore default depth test */
