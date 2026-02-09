@@ -38,7 +38,7 @@ var searchData=
   ['max_5fshader_5fname_5flen_35',['MAX_SHADER_NAME_LEN',['../shader_8c.html#aaf8fd5f0e57d456151c951e0f3715fc4a75751c824ae3bf41e5fe22118a79c341',1,'shader.c']]],
   ['max_5fshader_5fsource_5fsize_36',['MAX_SHADER_SOURCE_SIZE',['../shader_8c.html#a7ff5f2dff38e7639981794c43dc9167bad0b512e0ee8b214855ee8781e7b04c62',1,'shader.c']]],
   ['max_5fsubdiv_37',['MAX_SUBDIV',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7ac846edb36b9f557d22d6a1166f02f344',1,'app_settings.h']]],
-  ['max_5ftexture_5fdimension_38',['MAX_TEXTURE_DIMENSION',['../texture_8c.html#a4caf8d8f829279fba122163d961608a4a554cc0f6069d6004d10af477e1507957',1,'texture.c']]],
+  ['max_5ftexture_5fdimension_38',['MAX_TEXTURE_DIMENSION',['../texture_8c.html#a4790f45dcc812c1b00184a2edccdddf5a554cc0f6069d6004d10af477e1507957',1,'texture.c']]],
   ['max_5fvertex_5fattribs_5fbaseline_39',['MAX_VERTEX_ATTRIBS_BASELINE',['../gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04a0305c7ac38f33f9eebc608633b2fc732',1,'gl_common.h']]],
   ['mb_5fintensity_40',['mb_intensity',['../structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183',1,'PostProcessUBO']]],
   ['mb_5fmax_5fvelocity_41',['mb_max_velocity',['../structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496',1,'PostProcessUBO']]],

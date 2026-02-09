@@ -243,13 +243,14 @@ $(document).ready(function(){initNavTree('billboard__rendering_8c.html',''); ini
 <div class="textblock"><code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &lt;cglm/types.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for billboard_rendering.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c__incl.svg" width="567" height="330"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -260,8 +261,8 @@ Functions</h2></td></tr>
 <tr class="memitem:aecab702995b02efd4da86127c5c34d08" id="r_aecab702995b02efd4da86127c5c34d08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8c.html#aecab702995b02efd4da86127c5c34d08">billboard_group_update</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *data, int count)</td></tr>
 <tr class="memdesc:aecab702995b02efd4da86127c5c34d08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates instance data on the GPU.  <br /></td></tr>
 <tr class="separator:aecab702995b02efd4da86127c5c34d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64bd69f6f3922add2e099fb0fcbe1414" id="r_a64bd69f6f3922add2e099fb0fcbe1414"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8c.html#a64bd69f6f3922add2e099fb0fcbe1414">setup_billboard_instance_attributes</a> ()</td></tr>
-<tr class="separator:a64bd69f6f3922add2e099fb0fcbe1414"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2658bd993dee45baaf17c77d45bc0d29" id="r_a2658bd993dee45baaf17c77d45bc0d29"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8c.html#a2658bd993dee45baaf17c77d45bc0d29">setup_billboard_instance_attributes</a> (void)</td></tr>
+<tr class="separator:a2658bd993dee45baaf17c77d45bc0d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f624d29c68684f0b1cf6f3627e6b1a4" id="r_a6f624d29c68684f0b1cf6f3627e6b1a4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8c.html#a6f624d29c68684f0b1cf6f3627e6b1a4">create_billboard_vao</a> (GLuint *vao, GLuint geometry_vbo, GLuint instance_vbo)</td></tr>
 <tr class="separator:a6f624d29c68684f0b1cf6f3627e6b1a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2460cc8c0b2f53a206ac95146ac5923" id="r_ac2460cc8c0b2f53a206ac95146ac5923"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__rendering_8c.html#ac2460cc8c0b2f53a206ac95146ac5923">billboard_group_prepare</a> (<a class="el" href="structBillboardGroup.html">BillboardGroup</a> *group, GLuint quad_vbo, GLuint wire_quad_vbo, GLuint wire_cube_vbo)</td></tr>
@@ -514,7 +515,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c_ac2460cc8c0b2f53a206ac95146ac5923_cgraph.svg" width="630" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c_ac2460cc8c0b2f53a206ac95146ac5923_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>
@@ -605,13 +606,13 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c_a6f624d29c68684f0b1cf6f3627e6b1a4_cgraph.svg" width="402" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c_a6f624d29c68684f0b1cf6f3627e6b1a4_cgraph.svg" width="655" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
 </div>
-<a id="a64bd69f6f3922add2e099fb0fcbe1414" name="a64bd69f6f3922add2e099fb0fcbe1414"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64bd69f6f3922add2e099fb0fcbe1414">&#9670;&#160;</a></span>setup_billboard_instance_attributes()</h2>
+<a id="a2658bd993dee45baaf17c77d45bc0d29" name="a2658bd993dee45baaf17c77d45bc0d29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2658bd993dee45baaf17c77d45bc0d29">&#9670;&#160;</a></span>setup_billboard_instance_attributes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -622,6 +623,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">static void setup_billboard_instance_attributes </td>
           <td>(</td>
+          <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
@@ -632,6 +634,11 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__rendering_8c_a2658bd993dee45baaf17c77d45bc0d29_cgraph.svg" width="448" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>

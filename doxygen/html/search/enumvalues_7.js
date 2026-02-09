@@ -10,7 +10,7 @@ var searchData=
   ['icosahedron_5fvertex_5fcount_7',['ICOSAHEDRON_VERTEX_COUNT',['../icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4da6146e19be1ba08d03a7cd419cef6bf22',1,'icosphere.c']]],
   ['index_5fshift_8',['INDEX_SHIFT',['../icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4daa24be6570a0e4f5604c47521bed974c5',1,'icosphere.c']]],
   ['info_5flog_5fsize_9',['INFO_LOG_SIZE',['../shader_8c.html#a39fca1837c5ce7715cbf571669660c13a452257118dc4009bf289a99b738d1288',1,'shader.c']]],
-  ['initial_5fcapacity_10',['INITIAL_CAPACITY',['../sphere__sorting_8c.html#a4790f45dcc812c1b00184a2edccdddf5a7824ef724eb0d455d925e585eb107156',1,'sphere_sorting.c']]],
+  ['initial_5fcapacity_10',['INITIAL_CAPACITY',['../sphere__sorting_8c.html#a0944a4353780132eeab7b06e3e42291da7824ef724eb0d455d925e585eb107156',1,'sphere_sorting.c']]],
   ['initial_5fsubdivisions_11',['INITIAL_SUBDIVISIONS',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a4dcc3f43b13b159296f85b7d6d293a4b',1,'app_settings.h']]],
   ['initial_5fuint_5fcapacity_12',['INITIAL_UINT_CAPACITY',['../icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4daa2a9070dd99320b9bc4f897c47220926',1,'icosphere.c']]],
   ['initial_5fvec3_5fcapacity_13',['INITIAL_VEC3_CAPACITY',['../icosphere_8c.html#a16af7b253440dadd46a80a4b9fddba4da329acb3ae88741fba4e792489782463e',1,'icosphere.c']]],

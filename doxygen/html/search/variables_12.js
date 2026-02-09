@@ -43,7 +43,7 @@ var searchData=
   ['silent_5fwarnings_40',['silent_warnings',['../structShader.html#a3cab8e98d59adca31fc046c28278b697',1,'Shader']]],
   ['size_41',['size',['../structMetricStack.html#a1efbff4d0974864c6e07fe75e13eeb7d',1,'MetricStack::size'],['../structUintArray.html#a3db59ce72483af21815e000173042687',1,'UintArray::size'],['../structVec3Array.html#a4bc9c8d7aba0505c26fac3df7be1f54a',1,'Vec3Array::size']]],
   ['skybox_42',['skybox',['../structApp.html#ab6bf6186f400d8a1ce56212151e2c61b',1,'App']]],
-  ['skybox_5fshader_43',['skybox_shader',['../structApp.html#ac34cc768f96afb050926f49ea56c84ab',1,'App']]],
+  ['skybox_5fshader_43',['skybox_shader',['../structApp.html#aff3231d35523cbafc1418da9c08a9423',1,'App']]],
   ['slope_44',['slope',['../structTonemapParams.html#a9d17bdf5c9ffa45b65a9d9014d7d94a3',1,'TonemapParams']]],
   ['smoothed_5fx_45',['smoothed_x',['../structCamera.html#a92ff8aacdacb2a809ec447e3440a7f42',1,'Camera']]],
   ['smoothed_5fy_46',['smoothed_y',['../structCamera.html#a7e9ca5e6bc696a40c77866f0449fd0f8',1,'Camera']]],

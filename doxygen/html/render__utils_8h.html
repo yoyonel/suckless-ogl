@@ -302,6 +302,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ace7798af7f607d9b719f08e4dedf2d9a" id="r_ace7798af7f607d9b719f08e4dedf2d9a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#ace7798af7f607d9b719f08e4dedf2d9a">render_utils_check_framebuffer</a> (const char *label)</td></tr>
 <tr class="memdesc:ace7798af7f607d9b719f08e4dedf2d9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks the completeness of the currently bound framebuffer.  <br /></td></tr>
 <tr class="separator:ace7798af7f607d9b719f08e4dedf2d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90d078a815893bfeb3fab9a551942916" id="r_a90d078a815893bfeb3fab9a551942916"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a90d078a815893bfeb3fab9a551942916">render_utils_create_texture_2d</a> (int width, int height, GLenum internal_format, GLint levels, const char *label)</td></tr>
+<tr class="memdesc:a90d078a815893bfeb3fab9a551942916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a 2D texture with specified parameters.  <br /></td></tr>
+<tr class="separator:a90d078a815893bfeb3fab9a551942916"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bfd4e31069d2594b6b21ef1970bb578" id="r_a5bfd4e31069d2594b6b21ef1970bb578"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578">render_utils_setup_sphere_instance_attributes</a> (GLsizei stride, size_t offset_albedo, size_t offset_metallic)</td></tr>
+<tr class="memdesc:a5bfd4e31069d2594b6b21ef1970bb578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up instance attributes for sphere rendering (Model, Albedo, PBR).  <br /></td></tr>
+<tr class="separator:a5bfd4e31069d2594b6b21ef1970bb578"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Utilities for OpenGL rendering, focusing on robustness and NVIDIA compatibility. </p>
@@ -435,6 +441,11 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The GLuint handle of the created texture. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="render__utils_8h_acb93c5e9986da209ae59c3e07e9c1bf4_cgraph.svg" width="352" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>
@@ -532,6 +543,66 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a90d078a815893bfeb3fab9a551942916" name="a90d078a815893bfeb3fab9a551942916"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90d078a815893bfeb3fab9a551942916">&#9670;&#160;</a></span>render_utils_create_texture_2d()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint render_utils_create_texture_2d </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLenum&#160;</td>
+          <td class="paramname"><em>internal_format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLint&#160;</td>
+          <td class="paramname"><em>levels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>label</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a 2D texture with specified parameters. </p>
+<p>Encapsulates glGenTextures, glBindTexture, glTexStorage2D (or equivalent), and basic parameter setup (MIN/MAG filters, WRAP S/T).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
+    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
+    <tr><td class="paramname">internal_format</td><td>Internal GPU format (e.g., GL_RGBA16F). </td></tr>
+    <tr><td class="paramname">levels</td><td>Number of mipmap levels. </td></tr>
+    <tr><td class="paramname">label</td><td>Debug label for the texture. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The GLuint handle of the created texture. </dd></dl>
 
 </div>
 </div>
@@ -750,6 +821,51 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">start_unit</td><td>The starting texture unit index (0 for GL_TEXTURE0). </td></tr>
     <tr><td class="paramname">end_unit</td><td>The ending texture unit index (exclusive). </td></tr>
     <tr><td class="paramname">fallback_tex</td><td>The safe texture to bind. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5bfd4e31069d2594b6b21ef1970bb578" name="a5bfd4e31069d2594b6b21ef1970bb578"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bfd4e31069d2594b6b21ef1970bb578">&#9670;&#160;</a></span>render_utils_setup_sphere_instance_attributes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_setup_sphere_instance_attributes </td>
+          <td>(</td>
+          <td class="paramtype">GLsizei&#160;</td>
+          <td class="paramname"><em>stride</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset_albedo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset_metallic</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets up instance attributes for sphere rendering (Model, Albedo, PBR). </p>
+<p>Configures vertex attribute pointers for instanced arrays. Assumes the instance VBO is already bound.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stride</td><td>Stride of the instance structure (sizeof(SphereInstance)). </td></tr>
+    <tr><td class="paramname">offset_albedo</td><td>Byte offset of the albedo field. </td></tr>
+    <tr><td class="paramname">offset_metallic</td><td>Byte offset of the metallic field (start of PBR block). </td></tr>
   </table>
   </dd>
 </dl>

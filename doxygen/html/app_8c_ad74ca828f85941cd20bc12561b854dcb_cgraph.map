@@ -2,28 +2,32 @@
 <area shape="rect" id="Node000001" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="5,244,104,269"/>
 <area shape="rect" id="Node000002" href="$app__env_8c.html#a2a1c34e50280775f9d66d3052b54b5ff" title="Finalizes the HDR texture upload once the async loader is ready." alt="" coords="152,84,377,109"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,242,234,116,238,120,74,246"/>
-<area shape="rect" id="Node000004" href="$app__env_8c.html#a9b671bcba6f5af06cc8408efb65fb0f2" title="Processes the current state of the IBL generation state machine." alt="" coords="181,237,348,277"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="104,254,167,254,167,259,104,259"/>
-<area shape="rect" id="Node000014" href="$async__loader_8c.html#ac06ef09a193c5fa10770fe2f64d9df9a" title="Polls the loader for any completed requests." alt="" coords="195,301,334,327"/>
-<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="92,267,153,286,190,296,188,301,151,291,90,272"/>
+<area shape="rect" id="Node000005" href="$app__env_8c.html#a9b671bcba6f5af06cc8408efb65fb0f2" title="Processes the current state of the IBL generation state machine." alt="" coords="181,237,348,277"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="104,254,167,254,167,259,104,259"/>
+<area shape="rect" id="Node000015" href="$async__loader_8c.html#ac06ef09a193c5fa10770fe2f64d9df9a" title="Polls the loader for any completed requests." alt="" coords="195,301,334,327"/>
+<area shape="poly" id="edge16_Node000001_Node000015" title=" " alt="" coords="92,267,153,286,190,296,188,301,151,291,90,272"/>
 <area shape="rect" id="Node000003" href="$texture_8c.html#a01e129653227bd752f57379613c96b3c" title="Uploads raw floating&#45;point RGB data to an OpenGL texture." alt="" coords="466,5,614,31"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="298,81,425,39,458,31,459,36,426,45,300,86"/>
-<area shape="rect" id="Node000005" href="$pbr_8c.html#a140101db4510256465465aa1cda511eb" title="Computes the average luminance of an HDR texture on the GPU." alt="" coords="425,55,655,80"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="277,235,301,202,335,162,376,122,424,89,438,82,440,87,427,94,380,126,339,166,305,205,282,238"/>
-<area shape="rect" id="Node000006" href="$pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7" title="Initializes a texture for progressive irradiance computation." alt="" coords="469,104,611,129"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="286,234,346,186,384,161,424,140,454,129,456,134,426,144,387,166,349,191,290,238"/>
-<area shape="rect" id="Node000007" href="$pbr_8c.html#a1360d7bdc52318d5925e02496a2220a8" title="Computes one face/slice of the irradiance map." alt="" coords="464,154,616,194"/>
-<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="327,234,425,203,452,195,453,201,426,209,328,239"/>
-<area shape="rect" id="Node000008" href="$pbr_8c.html#a71941da15aee302848216a21ec1cc846" title="Initializes a texture for progressive specular pre&#45;filtering." alt="" coords="475,219,605,244"/>
-<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="348,246,461,236,462,241,348,252"/>
-<area shape="rect" id="Node000009" href="$pbr_8c.html#a3565e3f9822026deb79279a47a6a5973" title="Computes a single slice or mip&#45;level for progressive pre&#45;filtering." alt="" coords="473,268,607,293"/>
-<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="348,261,460,271,459,276,348,267"/>
-<area shape="rect" id="Node000010" href="$perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="453,317,627,343"/>
-<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="338,274,378,286,426,302,464,312,463,317,425,307,377,291,337,279"/>
-<area shape="rect" id="Node000011" href="$perf__timer_8c.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="477,367,603,392"/>
-<area shape="poly" id="edge10_Node000004_Node000011" title=" " alt="" coords="350,271,379,287,395,303,404,321,411,337,427,352,464,368,462,373,424,356,407,340,399,323,391,306,376,291,347,276"/>
-<area shape="rect" id="Node000012" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="443,416,637,441"/>
-<area shape="poly" id="edge11_Node000004_Node000012" title=" " alt="" coords="350,269,379,287,392,301,399,316,404,346,408,375,415,388,427,401,435,407,432,412,424,405,411,391,403,376,398,347,394,318,387,304,376,291,347,273"/>
-<area shape="rect" id="Node000013" href="$utils_8h.html#ab1d13540441b5a2f988e0cd57754e625" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="487,465,593,491"/>
-<area shape="poly" id="edge12_Node000004_Node000013" title=" " alt="" coords="350,268,379,287,395,308,402,330,403,372,404,413,412,433,427,452,449,466,474,474,473,479,447,471,424,456,407,435,399,414,398,372,397,330,390,310,376,291,347,272"/>
+<area shape="rect" id="Node000004" href="$render__utils_8c.html#a90d078a815893bfeb3fab9a551942916" title="Creates a 2D texture with specified parameters." alt="" coords="703,97,849,137"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="615,27,656,40,700,62,739,86,736,91,697,66,654,44,614,32"/>
+<area shape="rect" id="Node000006" href="$pbr_8c.html#a140101db4510256465465aa1cda511eb" title="Computes the average luminance of an HDR texture on the GPU." alt="" coords="425,55,655,80"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="277,235,301,202,335,162,376,122,424,89,438,82,440,87,427,94,380,126,339,166,305,205,282,238"/>
+<area shape="rect" id="Node000007" href="$pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7" title="Initializes a texture for progressive irradiance computation." alt="" coords="469,104,611,129"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="286,234,346,186,384,161,424,140,454,129,456,134,426,144,387,166,349,191,290,238"/>
+<area shape="rect" id="Node000008" href="$pbr_8c.html#a1360d7bdc52318d5925e02496a2220a8" title="Computes one face/slice of the irradiance map." alt="" coords="464,154,616,194"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="327,234,425,203,452,195,453,201,426,209,328,239"/>
+<area shape="rect" id="Node000009" href="$pbr_8c.html#a71941da15aee302848216a21ec1cc846" title="Initializes a texture for progressive specular pre&#45;filtering." alt="" coords="475,219,605,244"/>
+<area shape="poly" id="edge9_Node000005_Node000009" title=" " alt="" coords="348,246,461,236,462,241,348,252"/>
+<area shape="rect" id="Node000010" href="$pbr_8c.html#a3565e3f9822026deb79279a47a6a5973" title="Computes a single slice or mip&#45;level for progressive pre&#45;filtering." alt="" coords="473,268,607,293"/>
+<area shape="poly" id="edge11_Node000005_Node000010" title=" " alt="" coords="348,261,460,271,459,276,348,267"/>
+<area shape="rect" id="Node000011" href="$perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="453,317,627,343"/>
+<area shape="poly" id="edge12_Node000005_Node000011" title=" " alt="" coords="338,274,378,286,426,302,464,312,463,317,425,307,377,291,337,279"/>
+<area shape="rect" id="Node000012" href="$perf__timer_8c.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="477,367,603,392"/>
+<area shape="poly" id="edge13_Node000005_Node000012" title=" " alt="" coords="350,271,379,287,395,303,404,321,411,337,427,352,464,368,462,373,424,356,407,340,399,323,391,306,376,291,347,276"/>
+<area shape="rect" id="Node000013" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="443,416,637,441"/>
+<area shape="poly" id="edge14_Node000005_Node000013" title=" " alt="" coords="350,269,379,287,392,301,399,316,404,346,408,375,415,388,427,401,435,407,432,412,424,405,411,391,403,376,398,347,394,318,387,304,376,291,347,273"/>
+<area shape="rect" id="Node000014" href="$utils_8h.html#ab1d13540441b5a2f988e0cd57754e625" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="487,465,593,491"/>
+<area shape="poly" id="edge15_Node000005_Node000014" title=" " alt="" coords="350,268,379,287,395,308,402,329,403,371,405,412,412,432,427,451,449,465,474,473,472,478,447,470,424,455,407,434,399,413,398,371,397,330,390,310,376,291,347,272"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="611,114,689,114,689,119,611,119"/>
+<area shape="poly" id="edge10_Node000009_Node000004" title=" " alt="" coords="604,219,654,204,701,176,741,144,745,148,704,180,656,208,606,224"/>
 </map>

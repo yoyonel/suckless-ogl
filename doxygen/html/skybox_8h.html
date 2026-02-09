@@ -244,13 +244,14 @@ $(document).ready(function(){initNavTree('skybox_8h.html',''); initResizable(); 
 <p>Infinite-distance background rendering (fullscreen quad approach).  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cam.h&gt;</code><br />
 <code>#include &lt;cglm/mat4.h&gt;</code><br />
 <code>#include &lt;cglm/types.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for skybox.h:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="skybox_8h__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="skybox_8h__incl.svg" width="100%" height="492"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -268,12 +269,12 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5aeb3bc51a32578af4246a038de25726" id="r_a5aeb3bc51a32578af4246a038de25726"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html#a5aeb3bc51a32578af4246a038de25726">skybox_init</a> (<a class="el" href="structSkybox.html">Skybox</a> *skybox, GLuint shader_program)</td></tr>
-<tr class="memdesc:a5aeb3bc51a32578af4246a038de25726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes skybox geometry and caches uniform locations.  <br /></td></tr>
-<tr class="separator:a5aeb3bc51a32578af4246a038de25726"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3d250ad666b9495253d3a37140b595c" id="r_aa3d250ad666b9495253d3a37140b595c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html#aa3d250ad666b9495253d3a37140b595c">skybox_render</a> (<a class="el" href="structSkybox.html">Skybox</a> *skybox, GLuint shader_program, GLuint env_map, GLuint fallback_tex, const mat4 inv_view_proj, float <a class="el" href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a>)</td></tr>
-<tr class="memdesc:aa3d250ad666b9495253d3a37140b595c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the skybox to the current framebuffer.  <br /></td></tr>
-<tr class="separator:aa3d250ad666b9495253d3a37140b595c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8084984d6dafbe33c871117733efacf" id="r_ad8084984d6dafbe33c871117733efacf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html#ad8084984d6dafbe33c871117733efacf">skybox_init</a> (<a class="el" href="structSkybox.html">Skybox</a> *skybox, <a class="el" href="structShader.html">Shader</a> *shader)</td></tr>
+<tr class="memdesc:ad8084984d6dafbe33c871117733efacf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes skybox geometry and caches uniform locations.  <br /></td></tr>
+<tr class="separator:ad8084984d6dafbe33c871117733efacf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a536ba7358b462e00242dcee43f6483c4" id="r_a536ba7358b462e00242dcee43f6483c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html#a536ba7358b462e00242dcee43f6483c4">skybox_render</a> (<a class="el" href="structSkybox.html">Skybox</a> *skybox, <a class="el" href="structShader.html">Shader</a> *shader, GLuint env_map, GLuint fallback_tex, const mat4 inv_view_proj, float <a class="el" href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a>)</td></tr>
+<tr class="memdesc:a536ba7358b462e00242dcee43f6483c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the skybox to the current framebuffer.  <br /></td></tr>
+<tr class="separator:a536ba7358b462e00242dcee43f6483c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a426022a6fba8e5f57863e91b5ce3a3a0" id="r_a426022a6fba8e5f57863e91b5ce3a3a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0">skybox_cleanup</a> (<a class="el" href="structSkybox.html">Skybox</a> *skybox)</td></tr>
 <tr class="memdesc:a426022a6fba8e5f57863e91b5ce3a3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up GPU resources.  <br /></td></tr>
 <tr class="separator:a426022a6fba8e5f57863e91b5ce3a3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,8 +309,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5aeb3bc51a32578af4246a038de25726" name="a5aeb3bc51a32578af4246a038de25726"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5aeb3bc51a32578af4246a038de25726">&#9670;&#160;</a></span>skybox_init()</h2>
+<a id="ad8084984d6dafbe33c871117733efacf" name="ad8084984d6dafbe33c871117733efacf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8084984d6dafbe33c871117733efacf">&#9670;&#160;</a></span>skybox_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -323,8 +324,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_program</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -338,15 +339,20 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">skybox</td><td>Pointer to the struct. </td></tr>
-    <tr><td class="paramname">shader_program</td><td>The compiled skybox shader program. </td></tr>
+    <tr><td class="paramname">shader</td><td>The compiled skybox shader wrapper. </td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="skybox_8h_ad8084984d6dafbe33c871117733efacf_cgraph.svg" width="504" height="115"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>
-<a id="aa3d250ad666b9495253d3a37140b595c" name="aa3d250ad666b9495253d3a37140b595c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3d250ad666b9495253d3a37140b595c">&#9670;&#160;</a></span>skybox_render()</h2>
+<a id="a536ba7358b462e00242dcee43f6483c4" name="a536ba7358b462e00242dcee43f6483c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a536ba7358b462e00242dcee43f6483c4">&#9670;&#160;</a></span>skybox_render()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -360,8 +366,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_program</em>, </td>
+          <td class="paramtype"><a class="el" href="structShader.html">Shader</a> *&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -399,7 +405,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">skybox</td><td>Pointer to the struct. </td></tr>
-    <tr><td class="paramname">shader_program</td><td><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> to use. </td></tr>
+    <tr><td class="paramname">shader</td><td><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> to use. </td></tr>
     <tr><td class="paramname">env_map</td><td>Primary HDR cubemap texture. </td></tr>
     <tr><td class="paramname">fallback_tex</td><td>Dummy texture if env_map is invalid. </td></tr>
     <tr><td class="paramname">inv_view_proj</td><td>Inverse of the current View-Proj matrix. </td></tr>
@@ -407,6 +413,11 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="skybox_8h_a536ba7358b462e00242dcee43f6483c4_cgraph.svg" width="272" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>

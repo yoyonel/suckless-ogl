@@ -62,7 +62,7 @@ var structApp =
     [ "show_help", "structApp.html#abec7064e9280589c2c42df393c809422", null ],
     [ "show_info_overlay", "structApp.html#a23dbf2c1412766868a0bde387bcbba99", null ],
     [ "skybox", "structApp.html#ab6bf6186f400d8a1ce56212151e2c61b", null ],
-    [ "skybox_shader", "structApp.html#ac34cc768f96afb050926f49ea56c84ab", null ],
+    [ "skybox_shader", "structApp.html#aff3231d35523cbafc1418da9c08a9423", null ],
     [ "spec_prefiltered_tex", "structApp.html#a8c6cf68c46efaf0ab7de9800ea0b3dbc", null ],
     [ "sphere_ebo", "structApp.html#a6ffe18f70a8ded2a95b2b81a43be1103", null ],
     [ "sphere_instance_count", "structApp.html#ad923ed5ddabbbf4ccc1322cd5aa3a960", null ],

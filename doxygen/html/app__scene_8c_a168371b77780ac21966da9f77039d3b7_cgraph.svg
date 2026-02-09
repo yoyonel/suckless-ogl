@@ -46,7 +46,7 @@
   </g>
 </defs>
 <script type="application/ecmascript">
-var viewWidth = 663;
+var viewWidth = 834;
 var viewHeight = 212;
 var sectionId = 'dynsection-1';
 </script>
@@ -99,73 +99,73 @@ var sectionId = 'dynsection-1';
 </a>
 </g>
 </g>
-<!-- Node6 -->
-<g id="Node000006" class="node">
-<title>Node6</title>
-<g id="a_Node000006"><a xlink:href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4" target="_top" xlink:title="Binds a procedural mesh (e.g., icosphere) to the instanced group.">
+<!-- Node7 -->
+<g id="Node000007" class="node">
+<title>Node7</title>
+<g id="a_Node000007"><a xlink:href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4" target="_top" xlink:title="Binds a procedural mesh (e.g., icosphere) to the instanced group.">
 <polygon fill="white" stroke="#666666" points="302,-130 147,-130 147,-111 302,-111 302,-130"/>
 <text text-anchor="middle" x="224.5" y="-118" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_bind_mesh</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node6 -->
-<g id="edge5_Node000001_Node000006" class="edge">
-<title>Node1&#45;&gt;Node6</title>
-<g id="a_edge5_Node000001_Node000006"><a xlink:title=" ">
+<!-- Node1&#45;&gt;Node7 -->
+<g id="edge6_Node000001_Node000007" class="edge">
+<title>Node1&#45;&gt;Node7</title>
+<g id="a_edge6_Node000001_Node000007"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M111.18,-107.72C119.39,-108.65 128.01,-109.64 136.69,-110.62"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="136.54,-114.13 146.87,-111.78 137.33,-107.17 136.54,-114.13"/>
-</a>
-</g>
-</g>
-<!-- Node8 -->
-<g id="Node000008" class="node">
-<title>Node8</title>
-<g id="a_Node000008"><a xlink:href="instanced__rendering_8c.html#aaf6a9f5495e335b448587e24c56c2a77" target="_top" xlink:title="Allocates the instance VBO on the GPU.">
-<polygon fill="white" stroke="#666666" points="283.5,-93 165.5,-93 165.5,-74 283.5,-74 283.5,-93"/>
-<text text-anchor="middle" x="224.5" y="-81" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_init</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node8 -->
-<g id="edge7_Node000001_Node000008" class="edge">
-<title>Node1&#45;&gt;Node8</title>
-<g id="a_edge7_Node000001_Node000008"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M111.18,-95.61C125.25,-94.09 140.56,-92.44 155.22,-90.86"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="155.68,-94.33 165.25,-89.78 154.93,-87.37 155.68,-94.33"/>
 </a>
 </g>
 </g>
 <!-- Node9 -->
 <g id="Node000009" class="node">
 <title>Node9</title>
-<g id="a_Node000009"><a xlink:href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee" target="_top" xlink:title="memcpy wrapper with bounds checking.">
-<polygon fill="white" stroke="#666666" points="267.5,-56 181.5,-56 181.5,-37 267.5,-37 267.5,-56"/>
-<text text-anchor="middle" x="224.5" y="-44" font-family="Helvetica,sans-Serif" font-size="10.00">safe_memcpy</text>
+<g id="a_Node000009"><a xlink:href="instanced__rendering_8c.html#aaf6a9f5495e335b448587e24c56c2a77" target="_top" xlink:title="Allocates the instance VBO on the GPU.">
+<polygon fill="white" stroke="#666666" points="283.5,-93 165.5,-93 165.5,-74 283.5,-74 283.5,-93"/>
+<text text-anchor="middle" x="224.5" y="-81" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_init</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node9 -->
-<g id="edge8_Node000001_Node000009" class="edge">
+<g id="edge9_Node000001_Node000009" class="edge">
 <title>Node1&#45;&gt;Node9</title>
-<g id="a_edge8_Node000001_Node000009"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M77.36,-91.87C95.49,-83.78 122.59,-72.31 147,-64.5 154.85,-61.99 163.26,-59.66 171.52,-57.57"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="172.6,-60.91 181.49,-55.13 170.94,-54.11 172.6,-60.91"/>
+<g id="a_edge9_Node000001_Node000009"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M111.18,-95.61C125.25,-94.09 140.56,-92.44 155.22,-90.86"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="155.68,-94.33 165.25,-89.78 154.93,-87.37 155.68,-94.33"/>
 </a>
 </g>
 </g>
 <!-- Node10 -->
 <g id="Node000010" class="node">
 <title>Node10</title>
-<g id="a_Node000010"><a xlink:href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946" target="_top" xlink:title="Allocates internal buffers for the sorter.">
+<g id="a_Node000010"><a xlink:href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee" target="_top" xlink:title="memcpy wrapper with bounds checking.">
+<polygon fill="white" stroke="#666666" points="267.5,-56 181.5,-56 181.5,-37 267.5,-37 267.5,-56"/>
+<text text-anchor="middle" x="224.5" y="-44" font-family="Helvetica,sans-Serif" font-size="10.00">safe_memcpy</text>
+</a>
+</g>
+</g>
+<!-- Node1&#45;&gt;Node10 -->
+<g id="edge10_Node000001_Node000010" class="edge">
+<title>Node1&#45;&gt;Node10</title>
+<g id="a_edge10_Node000001_Node000010"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M77.36,-91.87C95.49,-83.78 122.59,-72.31 147,-64.5 154.85,-61.99 163.26,-59.66 171.52,-57.57"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="172.6,-60.91 181.49,-55.13 170.94,-54.11 172.6,-60.91"/>
+</a>
+</g>
+</g>
+<!-- Node11 -->
+<g id="Node000011" class="node">
+<title>Node11</title>
+<g id="a_Node000011"><a xlink:href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946" target="_top" xlink:title="Allocates internal buffers for the sorter.">
 <polygon fill="white" stroke="#666666" points="276.5,-19 172.5,-19 172.5,0 276.5,0 276.5,-19"/>
 <text text-anchor="middle" x="224.5" y="-7" font-family="Helvetica,sans-Serif" font-size="10.00">sphere_sorter_init</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node10 -->
-<g id="edge9_Node000001_Node000010" class="edge">
-<title>Node1&#45;&gt;Node10</title>
-<g id="a_edge9_Node000001_Node000010"><a xlink:title=" ">
+<!-- Node1&#45;&gt;Node11 -->
+<g id="edge11_Node000001_Node000011" class="edge">
+<title>Node1&#45;&gt;Node11</title>
+<g id="a_edge11_Node000001_Node000011"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M65.26,-91.93C80.36,-76.04 112.96,-44.29 147,-27.5 151.89,-25.09 157.13,-22.99 162.47,-21.16"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="163.65,-24.46 172.17,-18.17 161.58,-17.77 163.65,-24.46"/>
 </a>
@@ -175,8 +175,8 @@ var sectionId = 'dynsection-1';
 <g id="Node000004" class="node">
 <title>Node4</title>
 <g id="a_Node000004"><a xlink:href="billboard__rendering_8c.html#a6f624d29c68684f0b1cf6f3627e6b1a4" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="469,-167 350,-167 350,-148 469,-148 469,-167"/>
-<text text-anchor="middle" x="409.5" y="-155" font-family="Helvetica,sans-Serif" font-size="10.00">create_billboard_vao</text>
+<polygon fill="white" stroke="#666666" points="457,-168 338,-168 338,-149 457,-149 457,-168"/>
+<text text-anchor="middle" x="397.5" y="-156" font-family="Helvetica,sans-Serif" font-size="10.00">create_billboard_vao</text>
 </a>
 </g>
 </g>
@@ -184,18 +184,18 @@ var sectionId = 'dynsection-1';
 <g id="edge3_Node000003_Node000004" class="edge">
 <title>Node3&#45;&gt;Node4</title>
 <g id="a_edge3_Node000003_Node000004"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M292.08,-157.5C307.59,-157.5 324.14,-157.5 339.74,-157.5"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="339.83,-161 349.83,-157.5 339.83,-154 339.83,-161"/>
+<path fill="none" stroke="#63b8ff" d="M292.1,-157.89C303.78,-157.96 315.95,-158.03 327.69,-158.1"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="327.85,-161.6 337.87,-158.16 327.89,-154.6 327.85,-161.6"/>
 </a>
 </g>
 </g>
 <!-- Node5 -->
 <g id="Node000005" class="node">
 <title>Node5</title>
-<g id="a_Node000005"><a xlink:href="billboard__rendering_8c.html#a64bd69f6f3922add2e099fb0fcbe1414" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="655,-172.5 517,-172.5 517,-142.5 655,-142.5 655,-172.5"/>
-<text text-anchor="start" x="525" y="-160.5" font-family="Helvetica,sans-Serif" font-size="10.00">setup_billboard_instance</text>
-<text text-anchor="middle" x="586" y="-149.5" font-family="Helvetica,sans-Serif" font-size="10.00">_attributes</text>
+<g id="a_Node000005"><a xlink:href="billboard__rendering_8c.html#a2658bd993dee45baaf17c77d45bc0d29" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="633.5,-175.5 495.5,-175.5 495.5,-145.5 633.5,-145.5 633.5,-175.5"/>
+<text text-anchor="start" x="503.5" y="-163.5" font-family="Helvetica,sans-Serif" font-size="10.00">setup_billboard_instance</text>
+<text text-anchor="middle" x="564.5" y="-152.5" font-family="Helvetica,sans-Serif" font-size="10.00">_attributes</text>
 </a>
 </g>
 </g>
@@ -203,26 +203,54 @@ var sectionId = 'dynsection-1';
 <g id="edge4_Node000004_Node000005" class="edge">
 <title>Node4&#45;&gt;Node5</title>
 <g id="a_edge4_Node000004_Node000005"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M469.09,-157.5C481.2,-157.5 494.14,-157.5 506.82,-157.5"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="506.91,-161 516.91,-157.5 506.91,-154 506.91,-161"/>
+<path fill="none" stroke="#63b8ff" d="M457.14,-159.21C466.25,-159.32 475.79,-159.44 485.26,-159.55"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="485.43,-163.05 495.48,-159.68 485.52,-156.05 485.43,-163.05"/>
 </a>
 </g>
 </g>
-<!-- Node7 -->
-<g id="Node000007" class="node">
-<title>Node7</title>
-<g id="a_Node000007"><a xlink:href="instanced__rendering_8c.html#adf636ec42d843d902bfc6610d5c31865" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="481,-130 338,-130 338,-111 481,-111 481,-130"/>
-<text text-anchor="middle" x="409.5" y="-118" font-family="Helvetica,sans-Serif" font-size="10.00">setup_instance_attributes</text>
+<!-- Node6 -->
+<g id="Node000006" class="node">
+<title>Node6</title>
+<g id="a_Node000006"><a xlink:href="render__utils_8c.html#a5bfd4e31069d2594b6b21ef1970bb578" target="_top" xlink:title="Sets up instance attributes for sphere rendering (Model, Albedo, PBR).">
+<polygon fill="white" stroke="#666666" points="826,-153.5 672,-153.5 672,-123.5 826,-123.5 826,-153.5"/>
+<text text-anchor="start" x="680" y="-141.5" font-family="Helvetica,sans-Serif" font-size="10.00">render_utils_setup</text>
+<text text-anchor="middle" x="749" y="-130.5" font-family="Helvetica,sans-Serif" font-size="10.00">_sphere_instance_attributes</text>
 </a>
 </g>
 </g>
-<!-- Node6&#45;&gt;Node7 -->
-<g id="edge6_Node000006_Node000007" class="edge">
-<title>Node6&#45;&gt;Node7</title>
-<g id="a_edge6_Node000006_Node000007"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M302.05,-120.5C310.47,-120.5 319.07,-120.5 327.55,-120.5"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="327.81,-124 337.81,-120.5 327.81,-117 327.81,-124"/>
+<!-- Node5&#45;&gt;Node6 -->
+<g id="edge5_Node000005_Node000006" class="edge">
+<title>Node5&#45;&gt;Node6</title>
+<g id="a_edge5_Node000005_Node000006"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M633.72,-152.28C642.86,-151.17 652.34,-150.03 661.74,-148.9"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="662.39,-152.35 671.9,-147.67 661.55,-145.4 662.39,-152.35"/>
+</a>
+</g>
+</g>
+<!-- Node8 -->
+<g id="Node000008" class="node">
+<title>Node8</title>
+<g id="a_Node000008"><a xlink:href="instanced__rendering_8c.html#aa88eb21789dac1f6d953aa3ebc40b21f" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="636,-127 493,-127 493,-108 636,-108 636,-127"/>
+<text text-anchor="middle" x="564.5" y="-115" font-family="Helvetica,sans-Serif" font-size="10.00">setup_instance_attributes</text>
+</a>
+</g>
+</g>
+<!-- Node7&#45;&gt;Node8 -->
+<g id="edge7_Node000007_Node000008" class="edge">
+<title>Node7&#45;&gt;Node8</title>
+<g id="a_edge7_Node000007_Node000008"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M302.2,-119.82C356.11,-119.34 428.09,-118.7 482.85,-118.22"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="482.9,-121.72 492.87,-118.13 482.84,-114.72 482.9,-121.72"/>
+</a>
+</g>
+</g>
+<!-- Node8&#45;&gt;Node6 -->
+<g id="edge8_Node000008_Node000006" class="edge">
+<title>Node8&#45;&gt;Node6</title>
+<g id="a_edge8_Node000008_Node000006"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M636.06,-125.62C644.49,-126.59 653.18,-127.59 661.8,-128.58"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="661.54,-132.07 671.88,-129.74 662.34,-125.12 661.54,-132.07"/>
 </a>
 </g>
 </g>
