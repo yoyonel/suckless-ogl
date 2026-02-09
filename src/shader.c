@@ -868,42 +868,30 @@ void shader_set_mat4(Shader* shader, const char* name, const float* val)
 
 void shader_set_int_loc(GLint loc, int val)
 {
-	if (loc != -1) {
-		glUniform1i(loc, val);
-	}
+	glUniform1i(loc, val);
 }
 
 void shader_set_float_loc(GLint loc, float val)
 {
-	if (loc != -1) {
-		glUniform1f(loc, val);
-	}
+	glUniform1f(loc, val);
 }
 
 void shader_set_vec2_loc(GLint loc, const float* val)
 {
-	if (loc != -1) {
-		glUniform2fv(loc, 1, val);
-	}
+	glUniform2fv(loc, 1, val);
 }
 
 void shader_set_vec3_loc(GLint loc, const float* val)
 {
-	if (loc != -1) {
-		glUniform3fv(loc, 1, val);
-	}
+	glUniform3fv(loc, 1, val);
 }
 
 void shader_set_vec4_loc(GLint loc, const float* val)
 {
-	if (loc != -1) {
-		glUniform4fv(loc, 1, val);
-	}
+	glUniform4fv(loc, 1, val);
 }
 
 void shader_set_mat4_loc(GLint loc, const float* val)
 {
-	if (loc != -1) {
-		glUniformMatrix4fv(loc, 1, GL_FALSE, val);
-	}
+	glUniformMatrix4fv(loc, 1, GL_FALSE, val);
 }

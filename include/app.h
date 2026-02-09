@@ -72,6 +72,34 @@ typedef struct {
 } IBLContext;
 
 /**
+ * @struct InstancedUniforms
+ * @brief Cached uniform locations for PBR instanced rendering.
+ */
+typedef struct {
+	GLint irradiance_map;     /**< Location of 'irradianceMap' */
+	GLint prefilter_map;      /**< Location of 'prefilterMap' */
+	GLint brdf_lut;           /**< Location of 'brdfLUT' */
+	GLint debug_mode;         /**< Location of 'debugMode' */
+	GLint cam_pos;            /**< Location of 'camPos' */
+	GLint projection;         /**< Location of 'projection' */
+	GLint view;               /**< Location of 'view' */
+	GLint previous_view_proj; /**< Location of 'previousViewProj' */
+} InstancedUniforms;
+
+/**
+ * @struct DebugUniforms
+ * @brief Cached uniform locations for debug line rendering.
+ */
+typedef struct {
+	GLint projection;         /**< Location of 'projection' */
+	GLint view;               /**< Location of 'view' */
+	GLint u_stippled;         /**< Location of 'u_stippled' */
+	GLint u_billboard_mode;   /**< Location of 'u_billboardMode' */
+	GLint u_use_instance_col; /**< Location of 'u_useInstanceColor' */
+	GLint u_color;            /**< Location of 'u_color' */
+} DebugUniforms;
+
+/**
  * @struct BillboardUniforms
  * @brief Cached uniform locations for billboard rendering.
  */
@@ -123,6 +151,8 @@ typedef struct App {
 	InstancedGroup
 	    instanced_group; /**< Managed buffers for opaque spheres. */
 	BillboardGroup billboard_group; /**< Managed buffers for billboards. */
+
+	/* --- Sub-Modules (RAII/In-Place) --- */
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	SphereSorter sphere_sorter;       /**< Sorter for alpha blending. */
@@ -202,7 +232,8 @@ typedef struct App {
 #endif
 
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
-
+	InstancedUniforms instanced_uniforms; /**< Cached locations. */
+	DebugUniforms debug_uniforms;         /**< Cached locations. */
 } App;
 
 /* --- Core Control Flow --- */

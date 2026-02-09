@@ -177,9 +177,9 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 		glDepthMask(GL_FALSE);
 
 		shader_use(app->debug_line_shader);
-		shader_set_mat4(app->debug_line_shader, "projection",
-		                (float*)proj);
-		shader_set_mat4(app->debug_line_shader, "view", (float*)view);
+		shader_set_mat4_loc(app->debug_uniforms.projection,
+		                    (float*)proj);
+		shader_set_mat4_loc(app->debug_uniforms.view, (float*)view);
 
 		/* 0. Transparent Fill (Instance Albedo) */
 		/* Push fill back to avoid z-fighting with outlines */
@@ -190,12 +190,12 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		/* Disable stipple, Enable Billboard Mode, Enable Instance Color
 		 */
-		shader_set_int(app->debug_line_shader, "u_stippled", 0);
-		shader_set_int(app->debug_line_shader, "u_billboardMode", 1);
-		shader_set_int(app->debug_line_shader, "u_useInstanceColor", 1);
+		shader_set_int_loc(app->debug_uniforms.u_stippled, 0);
+		shader_set_int_loc(app->debug_uniforms.u_billboard_mode, 1);
+		shader_set_int_loc(app->debug_uniforms.u_use_instance_col, 1);
 		/* Alpha 0.10 for transparency */
 		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
-		shader_set_vec4(app->debug_line_shader, "u_color", color_fill);
+		shader_set_vec4_loc(app->debug_uniforms.u_color, color_fill);
 		billboard_group_draw_debug_fill(&app->billboard_group);
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_OFFSET_FILL);
@@ -207,19 +207,19 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 
 		/* Disable stipple, Enable Billboard Mode, Disable Instance
 		 * Color */
-		shader_set_int(app->debug_line_shader, "u_stippled", 0);
-		shader_set_int(app->debug_line_shader, "u_billboardMode", 1);
-		shader_set_int(app->debug_line_shader, "u_useInstanceColor", 0);
+		shader_set_int_loc(app->debug_uniforms.u_stippled, 0);
+		shader_set_int_loc(app->debug_uniforms.u_billboard_mode, 1);
+		shader_set_int_loc(app->debug_uniforms.u_use_instance_col, 0);
 		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
-		shader_set_vec4(app->debug_line_shader, "u_color", color_quad);
+		shader_set_vec4_loc(app->debug_uniforms.u_color, color_quad);
 		billboard_group_draw_debug_quads(&app->billboard_group);
 
 		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
 		/* Enable stipple, Disable Billboard Mode */
-		shader_set_int(app->debug_line_shader, "u_stippled", 1);
-		shader_set_int(app->debug_line_shader, "u_billboardMode", 0);
+		shader_set_int_loc(app->debug_uniforms.u_stippled, 1);
+		shader_set_int_loc(app->debug_uniforms.u_billboard_mode, 0);
 		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
-		shader_set_vec4(app->debug_line_shader, "u_color", color_box);
+		shader_set_vec4_loc(app->debug_uniforms.u_color, color_box);
 		billboard_group_draw_debug_boxes(&app->billboard_group);
 
 		glDisable(GL_POLYGON_OFFSET_LINE);
@@ -248,15 +248,16 @@ void app_render_instanced(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
 	                               app->dummy_black_tex);
 
-	shader_set_int(current_shader, "irradianceMap", 0);
-	shader_set_int(current_shader, "prefilterMap", 1);
-	shader_set_int(current_shader, "brdfLUT", 2);
-	shader_set_int(current_shader, "debugMode", app->pbr_debug_mode);
-	shader_set_vec3(current_shader, "camPos", camera_pos);
-	shader_set_mat4(current_shader, "projection", (float*)proj);
-	shader_set_mat4(current_shader, "view", (float*)view);
-	shader_set_mat4(
-	    current_shader, "previousViewProj",
+	shader_set_int_loc(app->instanced_uniforms.irradiance_map, 0);
+	shader_set_int_loc(app->instanced_uniforms.prefilter_map, 1);
+	shader_set_int_loc(app->instanced_uniforms.brdf_lut, 2);
+	shader_set_int_loc(app->instanced_uniforms.debug_mode,
+	                   app->pbr_debug_mode);
+	shader_set_vec3_loc(app->instanced_uniforms.cam_pos, camera_pos);
+	shader_set_mat4_loc(app->instanced_uniforms.projection, (float*)proj);
+	shader_set_mat4_loc(app->instanced_uniforms.view, (float*)view);
+	shader_set_mat4_loc(
+	    app->instanced_uniforms.previous_view_proj,
 	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
 
 #ifdef USE_SSBO_RENDERING
