@@ -495,8 +495,6 @@ void app_render(App* app)
 		}
 
 		if (app->billboard_mode) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 			// 1. Activer le Blending UNIQUEMENT pour la couleur
 			// (Attachment 0) Cela permet à ton 'edgeFactor' de
 			// lisser les bords de la sphère
@@ -536,7 +534,6 @@ void app_render(App* app)
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 		if (app->billboard_mode) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			app_render_billboards(app, view, proj, camera_pos);
 		} else {
 			glPolygonMode(GL_FRONT_AND_BACK,
