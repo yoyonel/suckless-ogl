@@ -38,6 +38,10 @@ int fx_bloom_init(PostProcess* post_processing)
 	shader_use(bloom->upsample_shader);
 	shader_set_int(bloom->upsample_shader, "srcTexture", 0);
 
+	/* Cache Uniform Locations */
+	bloom->src_resolution_loc = shader_get_uniform_location(
+	    bloom->downsample_shader, "srcResolution");
+
 	/* Create Resources */
 	glGenFramebuffers(1, &bloom->fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
@@ -144,8 +148,7 @@ void fx_bloom_render(PostProcess* post_processing)
 
 		vec2 resolution = {(float)mip_src->width,
 		                   (float)mip_src->height};
-		shader_set_vec2(bloom->downsample_shader, "srcResolution",
-		                resolution);
+		glUniform2fv(bloom->src_resolution_loc, 1, resolution);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 		                       GL_TEXTURE_2D, mip_dst->texture, 0);

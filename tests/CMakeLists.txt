@@ -61,6 +61,7 @@ set(OPENGL_TESTS
     test_app_input
     test_app_metrics
     test_billboard_perf
+    test_benchmark_bloom_perf
 )
 
 # Pour chaque fichier test trouvé

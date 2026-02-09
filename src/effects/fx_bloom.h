@@ -31,6 +31,7 @@ typedef struct {
 	Shader* upsample_shader;
 	GLuint fbo;
 	BloomMip mips[BLOOM_MIP_LEVELS];
+	GLint src_resolution_loc;
 } BloomFX;
 
 /* Initialisation des ressources Bloom */
