@@ -5,7 +5,8 @@
 #include <cglm/mat4.h>
 
 static GLFWwindow* window = NULL;
-static GLuint test_shader = 0;
+static GLuint test_shader_program = 0;
+static Shader test_shader_struct = {0};
 
 static const int WINDOW_WIDTH = 640;
 static const int WINDOW_HEIGHT = 480;
@@ -69,20 +70,22 @@ void setUp(void)
 	glShaderSource(frag, SHADER_COUNT_1, &frag_src, NULL);
 	glCompileShader(frag);
 
-	test_shader = glCreateProgram();
-	glAttachShader(test_shader, vert);
-	glAttachShader(test_shader, frag);
-	glLinkProgram(test_shader);
+	test_shader_program = glCreateProgram();
+	glAttachShader(test_shader_program, vert);
+	glAttachShader(test_shader_program, frag);
+	glLinkProgram(test_shader_program);
 
 	glDeleteShader(vert);
 	glDeleteShader(frag);
+
+	test_shader_struct.program = test_shader_program;
 }
 
 void tearDown(void)
 {
-	if (test_shader != SHADER_ZERO) {
-		glDeleteProgram(test_shader);
-		test_shader = SHADER_ZERO;
+	if (test_shader_program != SHADER_ZERO) {
+		glDeleteProgram(test_shader_program);
+		test_shader_program = SHADER_ZERO;
 	}
 	if (window) {
 		glfwDestroyWindow(window);
@@ -93,7 +96,7 @@ void tearDown(void)
 void test_skybox_init_creates_vao_vbo(void)
 {
 	Skybox skybox = {0};
-	skybox_init(&skybox, test_shader);
+	skybox_init(&skybox, &test_shader_struct);
 
 	// Verify VAO and VBO were created (non-zero IDs)
 	TEST_ASSERT_NOT_EQUAL(SHADER_ZERO, skybox.vao);
@@ -109,7 +112,7 @@ void test_skybox_init_creates_vao_vbo(void)
 void test_skybox_init_caches_uniforms(void)
 {
 	Skybox skybox = {0};
-	skybox_init(&skybox, test_shader);
+	skybox_init(&skybox, &test_shader_struct);
 
 	// Verify uniform locations were cached
 	// Note: -1 is valid for inactive/optimized-out uniforms in minimal test
@@ -124,7 +127,7 @@ void test_skybox_init_caches_uniforms(void)
 void test_skybox_render_executes_without_error(void)
 {
 	Skybox skybox = {0};
-	skybox_init(&skybox, test_shader);
+	skybox_init(&skybox, &test_shader_struct);
 
 	// Create a dummy texture
 	GLuint env_map = SHADER_ZERO;
@@ -143,8 +146,8 @@ void test_skybox_render_executes_without_error(void)
 	}
 
 	// Render should not produce GL errors
-	skybox_render(&skybox, test_shader, env_map, env_map, inv_view_proj,
-	              BLUR_LOD_ZERO);
+	skybox_render(&skybox, &test_shader_struct, env_map, env_map,
+	              inv_view_proj, BLUR_LOD_ZERO);
 
 	GLenum err = glGetError();
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, err);
@@ -156,7 +159,7 @@ void test_skybox_render_executes_without_error(void)
 void test_skybox_cleanup_deletes_resources(void)
 {
 	Skybox skybox = {0};
-	skybox_init(&skybox, test_shader);
+	skybox_init(&skybox, &test_shader_struct);
 
 	GLuint vao = skybox.vao;
 	GLuint vbo = skybox.vbo;
