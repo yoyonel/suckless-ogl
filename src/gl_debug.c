@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define DEBUG_SYNCHRONOUS
 #define LOG_TAG "OpenGL Debug"
 
 enum {
@@ -97,6 +98,20 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 		return;
 	}
 
+	/* Always log errors and high severity messages immediately, bypassing
+	 * cache */
+	if (type == GL_DEBUG_TYPE_ERROR || severity == GL_DEBUG_SEVERITY_HIGH) {
+		const char* src_str = get_source_str(source);
+		const char* type_str = get_type_str(type);
+		const char* sev_str = get_severity_str(severity);
+
+		LOG_ERROR(LOG_TAG,
+		          "id: 0x%X, source: %s, type: %s, severity: "
+		          "%s, message: %s",
+		          message_id, src_str, type_str, sev_str, message);
+		return;
+	}
+
 	uint32_t hash_idx = hash_id(message_id);
 	DebugMessageEntry* entry = &debug_cache[hash_idx];
 
@@ -114,19 +129,10 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 		const char* type_str = get_type_str(type);
 		const char* sev_str = get_severity_str(severity);
 
-		if (type == GL_DEBUG_TYPE_ERROR) {
-			LOG_ERROR(LOG_TAG,
-			          "id: 0x%X, source: %s, type: %s, severity: "
-			          "%s, message: %s",
-			          message_id, src_str, type_str, sev_str,
-			          message);
-		} else {
-			LOG_WARNING(LOG_TAG,
-			            "id: 0x%X, source: %s, type: %s, severity: "
-			            "%s, message: %s",
-			            message_id, src_str, type_str, sev_str,
-			            message);
-		}
+		LOG_WARNING(LOG_TAG,
+		            "id: 0x%X, source: %s, type: %s, severity: "
+		            "%s, message: %s",
+		            message_id, src_str, type_str, sev_str, message);
 	}
 }
 

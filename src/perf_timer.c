@@ -111,12 +111,10 @@ double gpu_timer_elapsed_ms(GPUTimer* timer, int wait_for_result)
 		return -1.0;
 	}
 
-	// Forcer la fin des opérations GPU avant de prendre le timestamp de fin
-	// C'est nécessaire pour mesurer le temps réel d'exécution incluant les
-	// compute shaders qui pourraient être asynchrones.
-	glFinish();
-
 	// Enregistrer le timestamp final sur le GPU
+	// Note: glFinish() supprimé pour éviter le blocage CPU, conformément
+	// aux directives de performance. La synchronisation est gérée par
+	// glGetQueryObject si nécessaire.
 	glQueryCounter(timer->query_end, GL_TIMESTAMP);
 	timer->active = 0;
 
