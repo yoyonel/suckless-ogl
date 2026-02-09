@@ -15,25 +15,30 @@
 **Suckless-OGL** is a minimalist 3D rendering engine written in C. Faithful to the "suckless" philosophy, it prioritizes a compact codebase, rigorous resource management, and an absence of unnecessary dependencies. It implements a modern pipeline based on **OpenGL 4.4 Core Profile**.
 
 ## 🚀 Features
+
 - **Minimalism**: Lightweight architecture focused on performance and readability.
 - **Modern Rendering**: Support for Skyboxes, IcoSpheres, textures, and Phong lighting.
 - **Dynamic Shaders**: Loading and compilation of GLSL files (vertex/fragment).
 - **Shader Optimization**: Static (Release) or dynamic (Debug) compilation to balance flexibility and performance. [See Documentation](shader_optimization.md).
 - **Performance Mode**: Adaptive optimization (GameMode/Native) for maximum frame stability. [See Documentation](perf_and_notifications.md).
 - **Isolated Environment**: Native `distrobox` support to guarantee a reproducible build environment.
-- **Quality & Testing**: Unit testing suite, code coverage, and static analysis via `clang-tidy`.
+- **Quality & Testing**: Unit testing suite, code coverage, static analysis, and [Standalone Mocking](standalone_testing_mocking.md).
 
 ## 🛠️ Compilation and Usage
 
 The project uses a `Makefile` wrapper that drives `CMake` to simplify interactions.
+
 ### Compilation Flags & Environment
+
 The build is configured with the following settings:
+
 - **Optimization**: `-Wall -Wextra -O2` for clean and performant code.
 - **POSIX Standard**: `-D_POSIX_C_SOURCE=199309L` for `clock_gettime` support.
 - **Static Analysis**: `clang-tidy` integration with strict header filters.
 - **Containerization**: Default use of `distrobox` with the `clang-dev` image to isolate dependencies.
 
 ### Main Commands
+
 | Command | Action |
 | :--- | :--- |
 | `make all` | Compiles the project (generates GLAD and the `app` binary). |
@@ -53,6 +58,7 @@ The pipeline is structured to optimize the build while guaranteeing maximum qual
 **[> Read the full CI/CD Pipeline Documentation](cicd_pipeline.md)**
 
 ### Quick Summary
+
 1. **Test & Coverage**: Instrumented compilation and test execution under **Xvfb**.
 2. **Lint & Format**: Enforces styling (`clang-format`) and static analysis (`clang-tidy`).
 3. **Automated Releases**:
@@ -60,6 +66,7 @@ The pipeline is structured to optimize the build while guaranteeing maximum qual
    - **Stable**: Triggered by version tags (`v*`).
 
 ## 📁 Project Structure
+
 - `src/` & `include/`: Engine core (Log, App, Shader, Texture, Icosphere).
 - `shaders/`: GLSL sources (Phong, Background/Skybox).
 - `assets/`: HDR resources and textures.
@@ -67,11 +74,14 @@ The pipeline is structured to optimize the build while guaranteeing maximum qual
 - `docs/`: In-depth technical documentation.
 
 ## 📦 Docker / Podman
+
 To test the application in a container with X11 forwarding:
+
 ```sh
 make docker-build
 make docker-run
 ```
+
 (Requires a local X server and configured xhost permissions).
 
 📄 License
