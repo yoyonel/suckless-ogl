@@ -244,32 +244,44 @@ The Exact Solution: Tangent Planes</h1>
 <p>We solve this problem in 2D, independently for the X (width) and Y (height) axes.</p>
 <h2><a class="anchor" id="autotoc_md3"></a>
 Geometry (XZ Plane)</h2>
-<p>Consider the top-down view (XZ plane) shown in the diagram above:</p><ul>
-<li><b>O</b>: <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> Origin at $(0,0)$.</li>
-<li><b>C</b>: Sphere Center at $(C_x, C_z)$.</li>
+<p>Consider the top-down view (XZ plane) shown in the diagram above:</p>
+<ul>
+<li><b>O</b>: <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> Origin at \((0,0)\).</li>
+<li><b>C</b>: Sphere Center at \((C_x, C_z)\).</li>
 <li><b>r</b>: Sphere Radius.</li>
-<li><b>d</b>: Distance from Origin to Center ($d = |C|$).</li>
+<li><b>d</b>: Distance from Origin to Center ( \(d = \|C\|\)).</li>
 </ul>
-<p>We want to find the tangent lines $T_1$ and $T_2$. The distance $L$ from the origin to the tangent points is given by Pythagoras in the right-angled triangle $\Delta OTC$:</p>
-<p>$$ L = \sqrt{d^2 - r^2} $$</p>
+<p>We want to find the tangent lines \(T_1\) and \(T_2\). The distance \(L\) from the origin to the tangent points is given by Pythagoras in the right-angled triangle \(\Delta OTC\):</p>
+<p class="formulaDsp">
+\[ L = \sqrt{d^2 - r^2} \]
+</p>
 <h2><a class="anchor" id="autotoc_md4"></a>
 Finding Tangent Normals (Without Trigonometry)</h2>
-<p>We can find the normal vectors of the tangent lines using simple 2D vector rotation. The tangent lines are rotated relative to the center vector $\vec{C}$ by the angle $\alpha$. By observing the similar triangles, we can derive the tangent direction vectors directly from $C$, $r$, and $L$:</p>
-<p>$$ n_{x1} = \frac{C_x \cdot L - C_z \cdot r}{d^2} $$</p>
-<p>$$ n_{z1} = \frac{C_z \cdot L + C_x \cdot r}{d^2} $$</p>
+<p>We can find the normal vectors of the tangent lines using simple 2D vector rotation. The tangent lines are rotated relative to the center vector \(\vec{C}\) by the angle \(\alpha\). By observing the similar triangles, we can derive the tangent direction vectors directly from \(C\), \(r\), and \(L\):</p>
+<p class="formulaDsp">
+\[ n_{x1} = \frac{C_x \cdot L - C_z \cdot r}{d^2} \]
+</p>
+<p class="formulaDsp">
+\[ n_{z1} = \frac{C_z \cdot L + C_x \cdot r}{d^2} \]
+</p>
 <p>(And symmetrically for the second tangent).</p>
 <h2><a class="anchor" id="autotoc_md5"></a>
 Projection to NDC</h2>
-<p>Once we have the normal vector $(n_x, n_z)$ of a tangent line (which represents a ray from the camera), we project it to Normalized Device Coordinates (NDC) using the projection matrix elements.</p>
-<p>For a standard perspective projection matrix $P$:</p><ul>
-<li>$P_{00}$ scales X (based on Field of View).</li>
-<li>We project by dividing $x$ by $-z$ (since OpenGL looks down -Z).</li>
+<p>Once we have the normal vector \((n_x, n_z)\) of a tangent line (which represents a ray from the camera), we project it to Normalized Device Coordinates (NDC) using the projection matrix elements.</p>
+<p>For a standard perspective projection matrix \(P\):</p>
+<ul>
+<li>\(P_{00}\) scales X (based on Field of View).</li>
+<li><p class="startli">We project by dividing \(x\) by \(-z\) (since OpenGL looks down -Z).</p>
+<p class="formulaDsp">
+\[ x_{ndc} = P_{00} \cdot \frac{n_x}{-n_z} \]
+</p>
+</li>
 </ul>
-<p>$$ x_{ndc} = P_{00} \cdot \frac{n_x}{-n_z} $$</p>
 <p>This gives us the exact screen-space coordinate of the edge of the sphere. We calculate the min/max of both tangents to find the AABB width. The same logic applies to the Y axis.</p>
 <h1><a class="anchor" id="autotoc_md6"></a>
 Implementation Results</h1>
-<p>This method provides a <b>pixel-perfect bounding box</b>:</p><ul>
+<p>This method provides a <b>pixel-perfect bounding box</b>:</p>
+<ul>
 <li><b>0% Overdraw</b> outside the sphere's actual screen footprint (excluding the corner areas of the quad).</li>
 <li><b>Correct Perspective</b>: Handles elliptical distortion at screen edges perfectly.</li>
 <li><b>Efficient</b>: Uses only square roots and basic arithmetic, avoiding expensive trigonometric functions (<code>acos</code>, <code>atan</code>).</li>
@@ -279,15 +291,15 @@ Robustness Handling</h1>
 <p>To ensure stability in all scenarios, two special cases are handled:</p>
 <h2><a class="anchor" id="autotoc_md8"></a>
 1. Camera Plane Singularity</h2>
-<p>When the sphere intersects the camera plane ($Z=0$), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.</p>
-<p><b>Solution</b>: If a tangent point lies behind the camera ($n_z \ge 0$), its projected screen coordinate is clamped to infinity ($\pm 10000.0$) in the correct direction. This ensures the quad extends to the screen edge.</p>
+<p>When the sphere intersects the camera plane ( \(Z=0\)), the tangent formulas can produce singularities or "wrap-around" artifacts where points behind the camera are projected inverted onto the screen.</p>
+<p><b>Solution</b>: If a tangent point lies behind the camera ( \(n_z \ge 0\)), its projected screen coordinate is clamped to infinity ( \(\pm 10000.0\)) in the correct direction. This ensures the quad extends to the screen edge.</p>
 <p>The direction sign uses a ternary expression instead of <code>sign()</code> to avoid the GLSL <code>sign(0.0) = 0.0</code> edge case, which would collapse the bound to zero and produce a degenerate quad:</p>
 <div class="fragment"><div class="line"><span class="comment">// ❌ Before: sign(0.0) == 0.0 → bound collapses</span></div>
 <div class="line">p1 = sign(nx1) * 10000.0;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ✅ After: explicit ternary, no zero case</span></div>
 <div class="line">p1 = (nx1 &gt;= 0.0 ? 1.0 : -1.0) * 10000.0;</div>
-</div><!-- fragment --><p>This singularity occurs when the tangent line is exactly axis-aligned ($n_x = 0$), which is geometrically possible for a sphere centered on the view axis.</p>
+</div><!-- fragment --><p>This singularity occurs when the tangent line is exactly axis-aligned ( \(n_x = 0\)), which is geometrically possible for a sphere centered on the view axis.</p>
 <h2><a class="anchor" id="autotoc_md9"></a>
 2. Back-Projection Culling</h2>
 <p>Spheres located entirely behind the camera can mathematically project to valid screen coordinates (inverted).</p>
@@ -297,7 +309,7 @@ Robustness Handling</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ✅ After: volume-aware test — only cull when entirely behind</span></div>
 <div class="line">} <span class="keywordflow">else</span> <span class="keywordflow">if</span> (viewPos.z &gt; sphereRadius) {</div>
-</div><!-- fragment --><p>The previous test <code>viewPos.z &gt; 0.0</code> only checked the sphere <b>center</b>. A sphere whose center is behind the camera ($z &gt; 0$) but whose volume extends in front (e.g. center at $z = +0.5$, radius $= 2.0$) was incorrectly culled. The corrected test <code>viewPos.z &gt; sphereRadius</code> ensures the <b>nearest point</b> of the sphere ($z_{center} - r$) is behind the camera before culling.</p>
+</div><!-- fragment --><p>The previous test <code>viewPos.z &gt; 0.0</code> only checked the sphere <b>center</b>. A sphere whose center is behind the camera ( \(z &gt; 0\)) but whose volume extends in front (e.g. center at \(z = +0.5\), radius \(= 2.0\)) was incorrectly culled. The corrected test <code>viewPos.z &gt; sphereRadius</code> ensures the <b>nearest point</b> of the sphere ( \(z_{center} - r\)) is behind the camera before culling.</p>
 <div class="fragment"><div class="line">Camera</div>
 <div class="line"> ◉──────────────▶ +Z (behind)</div>
 <div class="line"> │</div>
@@ -308,7 +320,7 @@ Robustness Handling</h1>
 <div class="line"> │  └─────┘</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 3. Conservative Depth</h2>
-<p>To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's <b>frontmost plane</b> ($Z_{nearest} = Z_{view} + R$) rather than its center. This ensures the quad is drawn <em>before</em> any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> then outputs the precise per-pixel depth (<code>gl_FragDepth</code>) to carve out the true spherical shape.</p>
+<p>To ensure correct Z-buffering when the sphere intersects other geometry (e.g. a wall or floor passing through it), the billboard quad is positioned at the sphere's <b>frontmost plane</b> ( \(Z_{nearest} = Z_{view} + R\)) rather than its center. This ensures the quad is drawn <em>before</em> any intersecting geometry that might be inside the sphere, safeguarding against incorrect occlusion. The Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> then outputs the precise per-pixel depth (<code>gl_FragDepth</code>) to carve out the true spherical shape.</p>
 <p>The nearest Z is clamped to stay in front of the near plane. The near plane distance is now <b>derived dynamically</b> from the projection matrix instead of being hardcoded:</p>
 <div class="fragment"><div class="line"><span class="comment">// ❌ Before: magic number coupled to CPU-side NEAR_PLANE = 0.1</span></div>
 <div class="line">nearestZ = min(nearestZ, -0.11);</div>
@@ -318,14 +330,30 @@ Robustness Handling</h1>
 <div class="line">nearestZ = min(nearestZ, -(zNear + 0.01));</div>
 <div class="ttc" id="adebug__line_8vert_html_a6f89a4fbf1a53a21ada7ca66387463a1"><div class="ttname"><a href="debug__line_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">projection</a></div><div class="ttdeci">uniform mat4 projection</div><div class="ttdef"><b>Definition</b> debug_line.vert:9</div></div>
 </div><!-- fragment --><p>For a standard OpenGL perspective matrix:</p>
-<p>$$ P = \begin{pmatrix} sx &amp; 0 &amp; 0 &amp; 0 \ 0 &amp; sy &amp; 0 &amp; 0 \ 0 &amp; 0 &amp; A &amp; B \ 0 &amp; 0 &amp; -1 &amp; 0 \end{pmatrix} \quad\text{where}\quad A = P_{22} = -\frac{f+n}{f-n},\quad B = P_{32} = -\frac{2fn}{f-n} $$</p>
+<p class="formulaDsp">
+\[
+P = \begin{pmatrix}
+sx &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; sy &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; A &amp; B \\
+0 &amp; 0 &amp; -1 &amp; 0
+\end{pmatrix}
+\quad\text{where}\quad
+A = P_{22} = -\frac{f+n}{f-n},\quad
+B = P_{32} = -\frac{2fn}{f-n}
+\]
+</p>
 <p>Solving for the near plane:</p>
-<p>$$ z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1} $$</p>
+<p class="formulaDsp">
+\[
+z_{near} = \frac{B}{A - 1} = \frac{P_{32}}{P_{22} - 1}
+\]
+</p>
 <p>This eliminates the coupling between the shader and the CPU-side <code>NEAR_PLANE</code> constant, making the code robust to near plane changes.</p>
 <h2><a class="anchor" id="autotoc_md11"></a>
 4. Numerical Stability: Avoiding Silhouette Jitter</h2>
 <p>When using ray-casting on billboards, it is critical that attributes constant across the sphere (center, radius, material) are passed using the **<code>flat</code>** interpolation qualifier.</p>
-<p>By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., $Radius = 1.0$), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., $0.9999999$ or $1.0000001$). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.</p>
+<p>By default, OpenGL performs perspective-correct interpolation. Even if all four vertices of a billboard share the same value (e.g., \(Radius = 1.0\)), floating-point precision errors during interpolation can cause values to fluctuate slightly across the quad (e.g., \(0.9999999\) or \(1.0000001\)). At the sphere's silhouette, where the intersection test is highly sensitive (discriminant near zero), these micro-variations produce **"rainbow dots"** or noise artifacts.</p>
 <p>Using <code>flat out</code> in the Vertex <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> and <code>flat in</code> in the Fragment <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> ensures bit-perfect consistency by disabling interpolation. Instead, the value is taken from a single vertex (the <b>Provoking Vertex</b>), guaranteeing "ISO" rendering results identical to geometric spheres.</p>
 <ul>
 <li><b>See also</b>: <a href="https://www.khronos.org/opengl/wiki/Type_Qualifier_(GLSL)#Interpolation_qualifiers">Flat Interpolation (Khronos Wiki)</a> and <a href="https://www.khronos.org/opengl/wiki/Primitive#Provoking_vertex">Provoking Vertex (Khronos Wiki)</a>.</li>
@@ -340,17 +368,17 @@ Robustness Handling</h1>
 <div class="line"><span class="keywordflow">if</span> (distSq &lt;= r2 + max(r2 * 0.005, 1e-4))</div>
 </div><!-- fragment --><table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadCenter">Sphere Radius   </th><th class="markdownTableHeadCenter">Old Margin ($r^2 \times 0.005$)   </th><th class="markdownTableHeadCenter">New Margin ($\max(r^2 \times 0.005,\; 10^{-4})$)    </th></tr>
+<th class="markdownTableHeadCenter">Sphere Radius   </th><th class="markdownTableHeadCenter">Old Margin ( \(r^2 \times 0.005\))   </th><th class="markdownTableHeadCenter">New Margin ( \(\max(r^2 \times 0.005,\; 10^{-4})\))    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter">$r = 10.0$   </td><td class="markdownTableBodyCenter">$0.5$   </td><td class="markdownTableBodyCenter">$0.5$    </td></tr>
+<td class="markdownTableBodyCenter">\(r = 10.0\)   </td><td class="markdownTableBodyCenter">\(0.5\)   </td><td class="markdownTableBodyCenter">\(0.5\)    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter">$r = 1.0$   </td><td class="markdownTableBodyCenter">$0.005$   </td><td class="markdownTableBodyCenter">$0.005$    </td></tr>
+<td class="markdownTableBodyCenter">\(r = 1.0\)   </td><td class="markdownTableBodyCenter">\(0.005\)   </td><td class="markdownTableBodyCenter">\(0.005\)    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter">$r = 0.01$   </td><td class="markdownTableBodyCenter">$5 \times 10^{-7}$   </td><td class="markdownTableBodyCenter">$10^{-4}$ ✅    </td></tr>
+<td class="markdownTableBodyCenter">\(r = 0.01\)   </td><td class="markdownTableBodyCenter">\(5 \times 10^{-7}\)   </td><td class="markdownTableBodyCenter">\(10^{-4}\) ✅    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter">$r = 0.001$   </td><td class="markdownTableBodyCenter">$5 \times 10^{-9}$   </td><td class="markdownTableBodyCenter">$10^{-4}$ ✅   </td></tr>
+<td class="markdownTableBodyCenter">\(r = 0.001\)   </td><td class="markdownTableBodyCenter">\(5 \times 10^{-9}\)   </td><td class="markdownTableBodyCenter">\(10^{-4}\) ✅   </td></tr>
 </table>
-<p>For large spheres, the multiplicative term dominates. For very small spheres (e.g. particle systems), the additive floor $10^{-4}$ prevents false-negative detection caused by float32 precision limits.</p>
+<p>For large spheres, the multiplicative term dominates. For very small spheres (e.g. particle systems), the additive floor \(10^{-4}\) prevents false-negative detection caused by float32 precision limits.</p>
 <h2><a class="anchor" id="autotoc_md13"></a>
 6. Code Structure: Shared Projection Scale Factors</h2>
 <p>The projection matrix diagonal elements <code>sx = projection[0][0]</code> and <code>sy = projection[1][1]</code> are used in both the inside-sphere and normal projection branches. They are now extracted <b>once</b> before the branch chain, eliminating code duplication and making the dependency explicit.</p>

@@ -1439,6 +1439,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Standalone Mocking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../docs_staging_guide/" class="md-nav__link">
         
   
@@ -1795,9 +1823,11 @@
 
 
 <h1 id="documentation-system-architecture">Documentation System Architecture<a class="headerlink" href="#documentation-system-architecture" title="Permanent link">¶</a></h1>
-<p>This project uses a <strong>Hybrid Documentation Model</strong> that combines the best of both worlds:
-1.  <strong>MkDocs</strong>: For narrative documentation, guides, and tutorials.
-2.  <strong>Doxygen</strong>: For auto-generated API reference, dependency graphs, and call hierarchies.</p>
+<p>This project uses a <strong>Hybrid Documentation Model</strong> that combines the best of both worlds:</p>
+<ol>
+<li><strong>MkDocs</strong>: For narrative documentation, guides, and tutorials.</li>
+<li><strong>Doxygen</strong>: For auto-generated API reference, dependency graphs, and call hierarchies.</li>
+</ol>
 <h2 id="architecture">🏗️ Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <p>The build system (<code>make docs</code>) generates both sites and merges them into a single static <code>site/</code> directory.</p>
 <table>
@@ -1835,21 +1865,18 @@
 <p>We use the <strong><a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a></strong> theme for its modern aesthetics and mobile responsiveness.</p>
 <ul>
 <li><strong>Configuration</strong>: <code>mkdocs.yml</code></li>
-<li><strong>Key Plugins</strong>:<ul>
+<li><strong>Key Plugins</strong>:</li>
 <li><code>mkdocs-kroki-plugin</code>: Renders diagrams (GraphViz, Mermaid, etc.).</li>
 <li><code>pymdown-extensions</code>: Adds advanced Markdown features (Admonitions, Tabbed code blocks).</li>
-</ul>
-</li>
 </ul>
 <h3 id="2-doxygen-the-api">2. Doxygen (The API)<a class="headerlink" href="#2-doxygen-the-api" title="Permanent link">¶</a></h3>
 <p>We use the <strong><a href="https://github.com/jothepro/doxygen-awesome-css">Doxygen Awesome CSS</a></strong> theme to make standard Doxygen output look modern and match the MkDocs style.</p>
 <ul>
 <li><strong>Configuration</strong>: <code>Doxyfile</code></li>
-<li><strong>Customization</strong>:<ul>
+<li><strong>Customization</strong>:</li>
 <li><code>HTML_EXTRA_STYLESHEET</code> points to the <code>doxygen-awesome-css</code> files in <code>docs/doxygen-awesome-css/</code>.</li>
 <li><code>USE_MDFILE_AS_MAINPAGE</code> is set to <code>docs/api_index.md</code> to provide a clean landing page.</li>
-</ul>
-</li>
+<li><strong>Math Compatibility</strong>: A Python input filter (<code>math_filter.py</code>) automatically translates standard Markdown math for Doxygen. See <a href="../doxygen_customization/">Doxygen Customization</a> for details.</li>
 </ul>
 <h2 id="workflow">🚀 Workflow<a class="headerlink" href="#workflow" title="Permanent link">¶</a></h2>
 <h3 id="local-development">Local Development<a class="headerlink" href="#local-development" title="Permanent link">¶</a></h3>
@@ -1877,15 +1904,21 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">primary</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">indigo</span><span class="w"> </span><span class="c1"># Change this to 'red', 'blue', 'teal', etc.</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">accent</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">deep purple</span>
 </span></code></pre></div>
-<p>To switch to a completely different MkDocs theme (e.g., <code>readthedocs</code>):
-1.  Install the theme (e.g., <code>pip install mkdocs-readthedocs-theme</code>).
-2.  Change <code>name: material</code> to <code>name: readthedocs</code> in <code>mkdocs.yml</code>.</p>
+<p>To switch to a completely different MkDocs theme (e.g., <code>readthedocs</code>):</p>
+<ol>
+<li>Install the theme (e.g., <code>pip install mkdocs-readthedocs-theme</code>).</li>
+<li>Change <code>name: material</code> to <code>name: readthedocs</code> in <code>mkdocs.yml</code>.</li>
+</ol>
 <h3 id="updating-the-doxygen-theme">Updating the Doxygen Theme<a class="headerlink" href="#updating-the-doxygen-theme" title="Permanent link">¶</a></h3>
-<p>To change the Doxygen look, you generally need to replace the CSS files.
-1.  <strong>Doxygen Awesome</strong>: We include this as a git submodule (or vendored files) in <code>docs/doxygen-awesome-css</code>. To update it, <code>git pull</code> in that directory.
-2.  <strong>Switching Themes</strong>:
-    - Comment out the <code>HTML_EXTRA_STYLESHEET</code> lines in <code>Doxyfile</code> to revert to default Doxygen style.
-    - Or download a new theme CSS, place it in <code>docs/</code>, and update <code>HTML_EXTRA_STYLESHEET</code>.</p>
+<p>To change the Doxygen look, you generally need to replace the CSS files.</p>
+<ol>
+<li><strong>Doxygen Awesome</strong>: We include this as a git submodule (or vendored files) in <code>docs/doxygen-awesome-css</code>. To update it, <code>git pull</code> in that directory.</li>
+<li><strong>Switching Themes</strong>:<ul>
+<li>Comment out the <code>HTML_EXTRA_STYLESHEET</code> lines in <code>Doxyfile</code> to revert to default Doxygen style.</li>
+<li>Or download a new theme CSS, place it in <code>docs/</code>, and update <code>HTML_EXTRA_STYLESHEET</code>.</li>
+</ul>
+</li>
+</ol>
 
 
 
@@ -1906,7 +1939,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 8, 2026 21:31:35 UTC">February 8, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 9, 2026 14:27:52 UTC">February 9, 2026</span>
   </span>
 
     
