@@ -23,8 +23,7 @@ GLuint render_utils_create_color_texture(float red, float green, float blue,
 		label = "Dummy White";
 	}
 
-	GLuint tex =
-	    render_utils_create_texture_2d(1, 1, GL_RGBA16F, 1, label);
+	GLuint tex = render_utils_create_texture_2d(1, 1, GL_RGBA16F, 1, label);
 
 	glBindTexture(GL_TEXTURE_2D, tex);
 	float color[4] = {red, green, blue, alpha};

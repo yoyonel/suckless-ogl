@@ -128,8 +128,8 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
 
-	app->skybox_shader = shader_load("shaders/background.vert",
-	                                 "shaders/background.frag");
+	app->skybox_shader =
+	    shader_load("shaders/background.vert", "shaders/background.frag");
 	if (!app->skybox_shader) {
 		return 0;
 	}

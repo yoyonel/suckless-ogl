@@ -16,8 +16,8 @@ static const uint32_t MAX_HDR_RESOLUTION = 4096;
 GLuint pbr_prefilter_init(int width, int height)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	GLuint tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA16F, levels, "Prefiltered Specular Map");
+	GLuint tex = render_utils_create_texture_2d(width, height, GL_RGBA16F,
+	                                            levels, "Prefiltered Specular Map");
 	glBindTexture(GL_TEXTURE_2D, tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -196,8 +196,8 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	HYBRID_FUNC_TIMER("IBL: Irradiance Map");
 	GL_SCOPE_DEBUG_GROUP("IBL: Irradiance Map");
 
-	GLuint irr_tex = render_utils_create_texture_2d(
-	    size, size, GL_RGBA16F, 1, "Irradiance Map");
+	GLuint irr_tex = render_utils_create_texture_2d(size, size, GL_RGBA16F,
+	                                                1, "Irradiance Map");
 	glBindTexture(GL_TEXTURE_2D, irr_tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -328,8 +328,8 @@ GLuint build_brdf_lut_map(int size)
 	HYBRID_FUNC_TIMER("IBL: BRDF LUT");
 	GL_SCOPE_DEBUG_GROUP("IBL: BRDF LUT");
 
-	GLuint lut_tex = render_utils_create_texture_2d(
-	    size, size, GL_RG16F, 1, "BRDF LUT Texture");
+	GLuint lut_tex = render_utils_create_texture_2d(size, size, GL_RG16F, 1,
+	                                                "BRDF LUT Texture");
 	glBindTexture(GL_TEXTURE_2D, lut_tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glBindTexture(GL_TEXTURE_2D, 0);
