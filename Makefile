@@ -121,13 +121,13 @@ run-software: all
 	LIBGL_ALWAYS_SOFTWARE=1 ./$(BUILD_DIR)/app
 
 format:
-	$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format -i"
+	$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format -i"
 	@echo "Formatting Python scripts..."
 	@$(TOOL_RUN) ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
 
 format-check:
 	@echo "Checking C and Shader formatting..."
-	@$(DISTROBOX) sh -c "find src include tests shaders -name \"*.c\" -o -name \"*.h\" -o -name \"*.glsl\" -o -name \"*.vert\" -o -name \"*.frag\" | xargs clang-format --dry-run --Werror"
+	@$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format --dry-run --Werror"
 	@echo "Checking Python scripts formatting..."
 	@$(TOOL_RUN) ruff format --check scripts/trace_analyze.py tests/test_trace_analyze.py
 	@echo "✓ Formatting check passed"

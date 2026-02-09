@@ -154,6 +154,26 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
+	app->billboard_uniforms.irradiance_map = shader_get_uniform_location(
+	    app->pbr_billboard_shader, "irradianceMap");
+	app->billboard_uniforms.prefilter_map = shader_get_uniform_location(
+	    app->pbr_billboard_shader, "prefilterMap");
+	app->billboard_uniforms.brdf_lut =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "brdfLUT");
+	app->billboard_uniforms.debug_mode =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "debugMode");
+	app->billboard_uniforms.cam_pos =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "camPos");
+	app->billboard_uniforms.projection = shader_get_uniform_location(
+	    app->pbr_billboard_shader, "projection");
+	app->billboard_uniforms.view =
+	    shader_get_uniform_location(app->pbr_billboard_shader, "view");
+	app->billboard_uniforms.previous_view_proj =
+	    shader_get_uniform_location(app->pbr_billboard_shader,
+	                                "previousViewProj");
+	app->billboard_uniforms.u_screen_size = shader_get_uniform_location(
+	    app->pbr_billboard_shader, "u_screenSize");
+
 	render_utils_create_quad_vbo(&app->quad_vbo);
 	render_utils_create_wire_cube_vbo(&app->wire_cube_vbo);
 	render_utils_create_wire_quad_vbo(&app->wire_quad_vbo);
@@ -191,6 +211,7 @@ int app_init(App* app, int width, int height, const char* title)
 	if (!app->pbr_ssbo_shader) {
 		return 0;
 	}
+	Shader* inst_shader = app->pbr_ssbo_shader;
 #else
 	app_init_instancing(app);
 	app->pbr_instanced_shader = shader_load(
@@ -199,7 +220,38 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 	app_update_instancing_mode(app);
+	Shader* inst_shader = app->pbr_instanced_shader;
 #endif
+
+	app->instanced_uniforms.irradiance_map =
+	    shader_get_uniform_location(inst_shader, "irradianceMap");
+	app->instanced_uniforms.prefilter_map =
+	    shader_get_uniform_location(inst_shader, "prefilterMap");
+	app->instanced_uniforms.brdf_lut =
+	    shader_get_uniform_location(inst_shader, "brdfLUT");
+	app->instanced_uniforms.debug_mode =
+	    shader_get_uniform_location(inst_shader, "debugMode");
+	app->instanced_uniforms.cam_pos =
+	    shader_get_uniform_location(inst_shader, "camPos");
+	app->instanced_uniforms.projection =
+	    shader_get_uniform_location(inst_shader, "projection");
+	app->instanced_uniforms.view =
+	    shader_get_uniform_location(inst_shader, "view");
+	app->instanced_uniforms.previous_view_proj =
+	    shader_get_uniform_location(inst_shader, "previousViewProj");
+
+	app->debug_uniforms.projection =
+	    shader_get_uniform_location(app->debug_line_shader, "projection");
+	app->debug_uniforms.view =
+	    shader_get_uniform_location(app->debug_line_shader, "view");
+	app->debug_uniforms.u_stippled =
+	    shader_get_uniform_location(app->debug_line_shader, "u_stippled");
+	app->debug_uniforms.u_billboard_mode = shader_get_uniform_location(
+	    app->debug_line_shader, "u_billboardMode");
+	app->debug_uniforms.u_use_instance_col = shader_get_uniform_location(
+	    app->debug_line_shader, "u_useInstanceColor");
+	app->debug_uniforms.u_color =
+	    shader_get_uniform_location(app->debug_line_shader, "u_color");
 
 	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
 	                      height)) {
