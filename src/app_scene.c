@@ -146,19 +146,20 @@ void app_render_billboards(App* app, mat4 view, mat4 proj, vec3 camera_pos)
 	render_utils_bind_texture_safe(GL_TEXTURE2, app->brdf_lut_tex,
 	                               app->dummy_black_tex);
 
-	shader_set_int(current_shader, "irradianceMap", 0);
-	shader_set_int(current_shader, "prefilterMap", 1);
-	shader_set_int(current_shader, "brdfLUT", 2);
-	shader_set_int(current_shader, "debugMode", app->pbr_debug_mode);
-	shader_set_vec3(current_shader, "camPos", camera_pos);
-	shader_set_mat4(current_shader, "projection", (float*)proj);
-	shader_set_mat4(current_shader, "view", (float*)view);
-	shader_set_mat4(
-	    current_shader, "previousViewProj",
+	shader_set_int_loc(app->billboard_uniforms.irradiance_map, 0);
+	shader_set_int_loc(app->billboard_uniforms.prefilter_map, 1);
+	shader_set_int_loc(app->billboard_uniforms.brdf_lut, 2);
+	shader_set_int_loc(app->billboard_uniforms.debug_mode,
+	                   app->pbr_debug_mode);
+	shader_set_vec3_loc(app->billboard_uniforms.cam_pos, camera_pos);
+	shader_set_mat4_loc(app->billboard_uniforms.projection, (float*)proj);
+	shader_set_mat4_loc(app->billboard_uniforms.view, (float*)view);
+	shader_set_mat4_loc(
+	    app->billboard_uniforms.previous_view_proj,
 	    (float*)app->postprocess.motion_blur_fx.previous_view_proj);
 
 	float screen_size[2] = {(float)app->width, (float)app->height};
-	shader_set_vec2(current_shader, "u_screenSize", screen_size);
+	shader_set_vec2_loc(app->billboard_uniforms.u_screen_size, screen_size);
 
 	/* Debug Visualization Constants */
 	const float debug_fill_alpha = 0.10F;

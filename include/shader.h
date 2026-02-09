@@ -122,4 +122,13 @@ void shader_set_vec3(Shader* shader, const char* name, const float* val);
 void shader_set_vec4(Shader* shader, const char* name, const float* val);
 void shader_set_mat4(Shader* shader, const char* name, const float* val);
 
+/* --- FASTER UNIFORM SETTERS (O(1) - Cached Location) --- */
+
+void shader_set_int_loc(GLint loc, int val);
+void shader_set_float_loc(GLint loc, float val);
+void shader_set_vec2_loc(GLint loc, const float* val);
+void shader_set_vec3_loc(GLint loc, const float* val);
+void shader_set_vec4_loc(GLint loc, const float* val);
+void shader_set_mat4_loc(GLint loc, const float* val);
+
 #endif /* SHADER_H */

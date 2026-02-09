@@ -72,6 +72,22 @@ typedef struct {
 } IBLContext;
 
 /**
+ * @struct BillboardUniforms
+ * @brief Cached uniform locations for billboard rendering.
+ */
+typedef struct {
+	GLint irradiance_map;     /**< Location of 'irradianceMap' */
+	GLint prefilter_map;      /**< Location of 'prefilterMap' */
+	GLint brdf_lut;           /**< Location of 'brdfLUT' */
+	GLint debug_mode;         /**< Location of 'debugMode' */
+	GLint cam_pos;            /**< Location of 'camPos' */
+	GLint projection;         /**< Location of 'projection' */
+	GLint view;               /**< Location of 'view' */
+	GLint previous_view_proj; /**< Location of 'previousViewProj' */
+	GLint u_screen_size;      /**< Location of 'u_screenSize' */
+} BillboardUniforms;
+
+/**
  * @struct App
  * @brief The central state container for the entire application.
  *
@@ -184,6 +200,8 @@ typedef struct App {
 	SSBOGroup ssbo_group;    /**< SSBO rendering context. */
 	Shader* pbr_ssbo_shader; /**< Optimized SSBO shader. */
 #endif
+
+	BillboardUniforms billboard_uniforms; /**< Cached locations. */
 
 } App;
 
