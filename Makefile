@@ -53,7 +53,7 @@ BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-integration coverage release small debug-release docs docs-clean asan
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -197,8 +197,29 @@ test: all test-python
 	@echo "Running C/C++ unit tests..."
 	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) --output-on-failure
 
-test-one: all
-	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) -R $(TEST) --output-on-failure --verbose
+test-list:
+	@$(DISTROBOX) ctest --test-dir $(BUILD_DIR) -N 2>/dev/null | grep "Test #" | sed "s/.*: //"
+
+test-one:
+	@$(MAKE) --no-print-directory all > /dev/null 2>&1
+ifndef TEST
+	@echo "Usage: make test-one TEST=<name>  (or: make test/<name>)"
+	@echo ""
+	@echo "Available tests:"
+	@$(MAKE) --no-print-directory test-list
+else
+	@$(MAKE) --no-print-directory test/$(TEST)
+endif
+
+test/%:
+	@$(MAKE) --no-print-directory all > /dev/null 2>&1
+	@$(DISTROBOX) sh -c '\
+		OUTPUT=$$(ctest --test-dir $(BUILD_DIR) -R $* --output-on-failure --verbose 2>&1); \
+		echo "$$OUTPUT"; \
+		if echo "$$OUTPUT" | grep -q "No tests were found"; then \
+			echo ""; echo "Available tests:"; \
+			exit 1; \
+		fi' || $(MAKE) --no-print-directory test-list
 
 # Code Coverage (improved version with summary)
 BUILD_COV_DIR := build-coverage
@@ -383,7 +404,8 @@ help:
 	@echo "  deps-clean - Remove the local dependency cache"
 	@echo "  offline-test - Verify build works without internet (requires unshare)"
 	@echo "  test       - Run unit tests with ctest"
-	@echo "  test-one   - Run a single test (e.g. make test-one TEST=test_stencil_masking)"
+	@echo "  test-one   - Run a single test (make test-one TEST=name or make test/name)"
+	@echo "  test-list  - List all available test names"
 	@echo "  test-integration - Run full UI integration test under Valgrind (Default)"
 	@echo "  test-integration-asan - Run full UI integration test under ASan"
 	@echo "  coverage   - Generate HTML code coverage report (llvm-cov)"
