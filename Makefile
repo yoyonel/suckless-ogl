@@ -166,8 +166,12 @@ lint: lint-deps
 	@echo "Linting C code (Parallelized & Incremental)..."
 	@$(MAKE) -j$(NPROCS) $(LINTED_FILES) --no-print-directory
 	@echo "Linting Python scripts..."
-	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
+	@$(TOOL_RUN) ruff check scripts/trace_analyze.py scripts/analyze_gl_state.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
+
+check-gl:
+	@echo "Analyzing OpenGL State Integrity..."
+	@$(PY_RUN) scripts/analyze_gl_state.py src
 
 lint-clean:
 	@echo "Cleaning lint cache..."
@@ -389,6 +393,7 @@ help:
 	@echo "  release    - Build for Maximum Speed (-O3, Native, FastMath, Stripped)"
 	@echo "  memcheck   - Run Valgrind (Default) to detect leaks/errors"
 	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
+	@echo "  check-gl   - Run static analysis for OpenGL state consistency"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
 	@echo "  help       - Show this help message"
