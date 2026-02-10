@@ -20,6 +20,7 @@
 - **Modern Rendering**: Support for Skyboxes, IcoSpheres, textures, and Phong lighting.
 - **Dynamic Shaders**: Loading and compilation of GLSL files (vertex/fragment).
 - **Shader Optimization**: Static (Release) or dynamic (Debug) compilation to balance flexibility and performance. [See Documentation](shader_optimization.md).
+- **Stencil Buffer Masking**: Post-processing optimization to differentiate skybox from objects. [See Documentation](stencil_masking.md).
 - **Performance Mode**: Adaptive optimization (GameMode/Native) for maximum frame stability. [See Documentation](perf_and_notifications.md).
 - **Isolated Environment**: Native `distrobox` support to guarantee a reproducible build environment.
 - **Quality & Testing**: Unit testing suite, code coverage, static analysis, and [Standalone Mocking](standalone_testing_mocking.md).
