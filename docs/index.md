@@ -28,6 +28,7 @@
 ## 🛠️ Compilation and Usage
 
 The project uses a `Makefile` wrapper that drives `CMake` to simplify interactions.
+For a modern alternative, seeing [Justfile Documentation](justfile.md).
 
 ### Compilation Flags & Environment
 

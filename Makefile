@@ -218,14 +218,12 @@ test/%:
 		if [ -f "$$TEST_BIN" ]; then \
 			.github/workflows/scripts/run_test_with_xvfb.sh "$$TEST_BIN"; \
 		else \
-			OUTPUT=$$(ctest --test-dir $(BUILD_DIR) -R $* --output-on-failure --verbose 2>&1); \
-			RET=$$?; \
-			echo "$$OUTPUT"; \
-			if echo "$$OUTPUT" | grep -q "No tests were found"; then \
-				echo ""; echo "Available tests:"; \
+			if ctest --test-dir $(BUILD_DIR) -N -R "$*" 2>/dev/null | grep -q "Total Tests: 0"; then \
+				echo "No tests found matching pattern: $*"; \
 				exit 1; \
+			else \
+				ctest --test-dir $(BUILD_DIR) -R "$*" --output-on-failure --verbose; \
 			fi; \
-			exit $$RET; \
 		fi' || $(MAKE) --no-print-directory test-list
 
 # Code Coverage (improved version with summary)
