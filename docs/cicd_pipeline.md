@@ -65,7 +65,7 @@ The workflow is triggered automatically events:
 
 ### 5. Script Organization
 
-- **Location**: [.github/workflows/scripts/](file:///home/latty/Prog/__PERSO__/suckless-ogl/.github/workflows/scripts/)
+- **Location**: `.github/workflows/scripts/`
 - **Core Scripts**:
   - `generate_visual_report.py`: Handles dynamic report generation.
   - `run_test_with_xvfb.sh`: Wrapper for OpenGL tests in headless environments.
