@@ -11,7 +11,7 @@ var searchData=
   ['normals_8',['normals',['../structIcosphereGeometry.html#a2eb01262bd1bba34ac84f192f6c366af',1,'IcosphereGeometry']]],
   ['normals_20without_20trigonometry_9',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
   ['notes_10',['notes',['../structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825',1,'ActionNotifier']]],
-  ['notif_5fbuf_5fsize_11',['NOTIF_BUF_SIZE',['../app__input_8c.html#a385c44f6fb256e5716a2302a5b940388a4a400d8a348b628422a6de4f19fa7bce',1,'app_input.c']]],
+  ['notif_5fbuf_5fsize_11',['NOTIF_BUF_SIZE',['../app__input_8c.html#abc5c98fcc1211af2b80116dd6e0a035da4a400d8a348b628422a6de4f19fa7bce',1,'app_input.c']]],
   ['notif_5fdur_5flong_12',['NOTIF_DUR_LONG',['../action__notifier_8h.html#a2df5e972f20728e414eb034ef37568c7',1,'action_notifier.h']]],
   ['notif_5fdur_5fnormal_13',['NOTIF_DUR_NORMAL',['../action__notifier_8h.html#a6b53ef71bab360389505ecb4ea5b8fa5',1,'action_notifier.h']]],
   ['notif_5fdur_5fshort_14',['NOTIF_DUR_SHORT',['../action__notifier_8h.html#ae69a8ebf842b2eda8841d6b341583253',1,'action_notifier.h']]],

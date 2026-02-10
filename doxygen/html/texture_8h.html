@@ -235,6 +235,7 @@ $(document).ready(function(){initNavTree('texture_8h.html',''); initResizable();
 
 <div class="header">
   <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">texture.h File Reference</div></div>
 </div><!--header-->
@@ -256,106 +257,42 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="texture_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ab04a0655cd1e3bcac5e8f48c18df1a57" id="r_ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="texture_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a554cc0f6069d6004d10af477e1507957">MAX_TEXTURE_DIMENSION</a> = 8192
+ }</td></tr>
+<tr class="separator:ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a69394256fc61053774a563e717bea97c" id="r_a69394256fc61053774a563e717bea97c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a69394256fc61053774a563e717bea97c">texture_load_hdr</a> (const char *path, int *width, int *height)</td></tr>
-<tr class="memdesc:a69394256fc61053774a563e717bea97c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads an HDR (radiance) image and uploads it to the GPU.  <br /></td></tr>
-<tr class="separator:a69394256fc61053774a563e717bea97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01e129653227bd752f57379613c96b3c" id="r_a01e129653227bd752f57379613c96b3c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a01e129653227bd752f57379613c96b3c">texture_upload_hdr</a> (float *data, int width, int height)</td></tr>
-<tr class="memdesc:a01e129653227bd752f57379613c96b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uploads raw floating-point RGB data to an OpenGL texture.  <br /></td></tr>
+<tr class="memdesc:a01e129653227bd752f57379613c96b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uploads raw floating-point RGB data to an OpenGL texture. height.  <br /></td></tr>
 <tr class="separator:a01e129653227bd752f57379613c96b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41f1cc25a31515ef140a4efefb23e750" id="r_a41f1cc25a31515ef140a4efefb23e750"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a41f1cc25a31515ef140a4efefb23e750">texture_load</a> (const char *path)</td></tr>
-<tr class="memdesc:a41f1cc25a31515ef140a4efefb23e750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a standard 8-bit image (PNG, JPG) and uploads it to the GPU.  <br /></td></tr>
-<tr class="separator:a41f1cc25a31515ef140a4efefb23e750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c821497ea20a5b74199e3080c0f4a1c" id="r_a4c821497ea20a5b74199e3080c0f4a1c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a4c821497ea20a5b74199e3080c0f4a1c">texture_load_pixels</a> (const char *path, int *width, int *height, int *channels)</td></tr>
 <tr class="memdesc:a4c821497ea20a5b74199e3080c0f4a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes an HDR image into RAM without uploading to GPU.  <br /></td></tr>
 <tr class="separator:a4c821497ea20a5b74199e3080c0f4a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Image loading and GPU texture management. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="a41f1cc25a31515ef140a4efefb23e750" name="a41f1cc25a31515ef140a4efefb23e750"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41f1cc25a31515ef140a4efefb23e750">&#9670;&#160;</a></span>texture_load()</h2>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="ab04a0655cd1e3bcac5e8f48c18df1a57" name="ab04a0655cd1e3bcac5e8f48c18df1a57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04a0655cd1e3bcac5e8f48c18df1a57">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">GLuint texture_load </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
+          <td class="memname">anonymous enum</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Loads a standard 8-bit image (PNG, JPG) and uploads it to the GPU. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>File system path. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>GLuint handle. </dd></dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h_a41f1cc25a31515ef140a4efefb23e750_cgraph.svg" width="310" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57a554cc0f6069d6004d10af477e1507957" name="ab04a0655cd1e3bcac5e8f48c18df1a57a554cc0f6069d6004d10af477e1507957"></a>MAX_TEXTURE_DIMENSION&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>
-<a id="a69394256fc61053774a563e717bea97c" name="a69394256fc61053774a563e717bea97c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69394256fc61053774a563e717bea97c">&#9670;&#160;</a></span>texture_load_hdr()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint texture_load_hdr </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Loads an HDR (radiance) image and uploads it to the GPU. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">path</td><td>File system path. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">width</td><td>Pointer to store image width. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">height</td><td>Pointer to store image height. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>GLuint handle of the allocated HDR texture. </dd></dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h_a69394256fc61053774a563e717bea97c_cgraph.svg" width="535" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a4c821497ea20a5b74199e3080c0f4a1c" name="a4c821497ea20a5b74199e3080c0f4a1c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c821497ea20a5b74199e3080c0f4a1c">&#9670;&#160;</a></span>texture_load_pixels()</h2>
 
@@ -440,21 +377,8 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Uploads raw floating-point RGB data to an OpenGL texture. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">data</td><td>Array of floats (RGB). </td></tr>
-    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
-    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Uploads raw floating-point RGB data to an OpenGL texture. height. </p>
 <dl class="section return"><dt>Returns</dt><dd>GLuint handle. </dd></dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h_a01e129653227bd752f57379613c96b3c_cgraph.svg" width="354" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
 
 </div>
 </div>
