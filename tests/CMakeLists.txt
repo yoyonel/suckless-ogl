@@ -88,7 +88,7 @@ foreach(test_file ${TEST_SOURCES})
     if(${test_name} IN_LIST OPENGL_TESTS)
         # Test avec Xvfb
         add_test(NAME ${test_name}
-                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
+                 COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
         message(STATUS "Test OpenGL découvert: ${test_name} (avec Xvfb)")
     else()
         # Test simple
