@@ -1,0 +1,101 @@
+# Using Just (Command Runner)
+
+The project now supports [Just](https://github.com/casey/just) as a modern alternative to `make`. `Just` provides a command runner for project-specific tasks, offering cleaner syntax, better argument handling, and robust cross-platform capabilities.
+
+## Installation
+
+To use `just`, you need to install it. Checks [Just Installation Guide](https://github.com/casey/just#installation) for details.
+
+On most Linux distributions:
+
+```bash
+# Ubuntu/Debian
+sudo apt install just
+
+# Fedora
+sudo dnf install just
+
+# Arch
+sudo pacman -S just
+```
+
+## Quick Start
+
+To see all available commands, simply run:
+
+```bash
+just
+# or
+just --list
+```
+
+This will output a formatted list of all recipes with descriptions.
+
+## Common Commands
+
+Here is a mapping of common `make` commands to their `just` equivalents:
+
+| Task | Makefile | Justfile | Notes |
+|------|----------|----------|-------|
+| **Build** | `make` | `just build` | Builds debug version by default |
+| **Run** | `make run` | `just run` | Builds and runs the app |
+| **Clean** | `make clean` | `just clean` | CMake clean |
+| **Clean All** | `make clean-all` | `just clean-all` | Removes build directory completely |
+| **Test All** | `make test` | `just test` | Runs all tests |
+| **Test Specific** | `make test/<name>` | `just test <name>` | Runs matching tests (pattern supported) |
+| **Coverage** | `make coverage` | `just coverage` | Generates HTML report |
+| **Lint** | `make lint` | `just lint` | Runs clang-tidy and ruff |
+| **Format** | `make format` | `just format` | Runs clang-format and ruff |
+| **Docs** | `make docs` | `just docs` | Builds MkDocs + Doxygen |
+
+## Advanced Usage
+
+### Testing
+
+Run a specific test interactively with real-time logs:
+
+```bash
+just test test_app
+```
+
+Run a group of tests matching a pattern:
+
+```bash
+just test shader
+```
+
+This command automatically:
+
+1. Builds the test binary.
+2. If binary exists, runs it directly (via `xvfb` wrapper) for immediate output.
+3. If not found, falls back to `ctest` pattern matching.
+
+### Build Variants
+
+- **Release**: `just release` / `just run-release`
+- **Small**: `just small` / `just run-small` (MinSizeRel)
+- **SSBO**: `just build-ssbo` / `just run-ssbo` (Shader Storage Buffer Objects)
+- **Sync Debug**: `just build-sync` / `just run-sync` (Check for GL errors synchronously)
+- **ASan**: `just asan` / `just memcheck-asan` (AddressSanitizer)
+
+### Analysis & Tools
+
+- **Coverage**: `just coverage` - Builds with instrumentation and generates a report in `build-coverage/coverage_report/index.html`.
+- **Valgrind**: `just memcheck` - Runs the app under Valgrind.
+- **Perf**: `just perf` - Runs Linux `perf` profiler (requires privileges).
+- **ApiTrace**: `just trace-perf` - Analyzes GPU trace.
+
+### Dependency Management & Environment
+
+The `Justfile` automatically detects your environment:
+
+- **Distrobox**: If you have `distrobox` and the `clang-dev` container, commands run inside it automatically.
+- **Python**: It detects `uv`, `.venv`, or system `python3` automatically (ISO Makefile logic).
+- **Deps**: `just deps-setup` downloads offline dependencies using the script.
+
+## Why Just?
+
+- **Arguments**: Passing arguments is native (`just test pattern` vs `make test/pattern` or `make test-one TEST=pattern`).
+- **Variables**: Logic for variables like python runtime is cleaner.
+- **Shell**: Recipes are executed in `bash` by default, but can use others (e.g. `python`).
+- **Discovery**: `just --list` provides a self-documenting interface.

@@ -65,6 +65,7 @@ set(OPENGL_TESTS
     test_app_metrics
     test_billboard_perf
     test_shader_uniforms_loc
+    test_stencil_masking
 )
 
 # Pour chaque fichier test trouvé

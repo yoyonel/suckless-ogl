@@ -426,6 +426,14 @@ void app_update(App* app)
 	app_process_ibl_state_machine(app);
 }
 
+static inline void stencil_begin_object_pass(void)
+{
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+	glStencilMask(DEFAULT_STENCIL_MASK);
+}
+
 void app_render(App* app)
 {
 	// 1. Signaler le début de la frame pour traiter les résultats
@@ -485,6 +493,9 @@ void app_render(App* app)
 	{
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
 		                   GPU_PROFILER_SCENE_COLOR);
+
+		stencil_begin_object_pass();
+
 		if (app->billboard_mode) {
 			sphere_sorter_sort(
 			    &app->sphere_sorter, &app->sphere_instances,
@@ -533,6 +544,9 @@ void app_render(App* app)
 	{
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+
+		stencil_begin_object_pass();
+
 		if (app->billboard_mode) {
 			app_render_billboards(app, view, proj, camera_pos);
 		} else {

@@ -512,6 +512,10 @@ static void handle_f_key_input(App* app, int key, int mods)
 		case GLFW_KEY_F5:
 			handle_pbr_debug_mode(app);
 			break;
+		case GLFW_KEY_F6:
+			toggle_postfx(app, POSTFX_STENCIL_DEBUG,
+			              "Stencil Debug");
+			break;
 		case GLFW_KEY_F9:
 			if (app->perf_mode_active) {
 				perf_mode_request_end(&app->perf_context);
