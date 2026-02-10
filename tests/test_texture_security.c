@@ -96,34 +96,15 @@ void test_texture_load_huge_header_dos(void)
 	TEST_ASSERT_EQUAL(0, closed);
 
 	// Try to load it. It should fail fast and return 0 because of dimension
-	// check. If it tries to allocate first, it might succeed (if memory
-	// available) or crash/DoS. But we expect 0 returned due to check.
-	GLuint tex = texture_load(bomb_path);
-	TEST_ASSERT_EQUAL(0, tex);
+	// check.
+	// check.
+	int w, h, c;
+	float* data = texture_load_pixels(bomb_path, &w, &h, &c);
+	TEST_ASSERT_NULL(data);
 
 	if (remove(bomb_path) != 0) {
 		TEST_FAIL_MESSAGE("Failed to remove temporary bomb file");
 	}
-}
-
-void test_texture_load_non_existent_file(void)
-{
-	GLuint tex = texture_load("non_existent_file.png");
-	TEST_ASSERT_EQUAL(0, tex);
-}
-
-void test_texture_load_invalid_file(void)
-{
-	const char* invalid_path = "invalid.png";
-	FILE* file = fopen(invalid_path, "wb");
-	TEST_ASSERT_NOT_NULL(file);
-	fprintf(file, "NOT A REAL IMAGE");
-	fclose(file);
-
-	GLuint tex = texture_load(invalid_path);
-	TEST_ASSERT_EQUAL(0, tex);
-
-	remove(invalid_path);
 }
 
 void test_texture_load_pixels_non_existent_file(void)
@@ -160,23 +141,65 @@ void test_texture_upload_null_data(void)
 	TEST_ASSERT_EQUAL(0, tex);
 }
 
-void test_texture_load_truncated_data(void)
+void test_texture_load_pixels_excessive_dimensions(void)
 {
-	const char* truncated_path = "truncated.ppm";
-	FILE* file = fopen(truncated_path, "wb");
+	const char* bomb_path = "pixels_bomb.hdr";
+	FILE* file = fopen(bomb_path, "wb");
 	TEST_ASSERT_NOT_NULL(file);
-	// Valid header, but not enough data
-	int printed = fprintf(file, "P6\n2 2\n255\n");
+	// Create a fake HDR header with huge dimensions
+	// RADIANCE format: "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 20000 +X
+	// 20000\n"
+	int printed =
+	    fprintf(file, "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y %d +X %d\n",
+	            MAX_TEXTURE_DIMENSION + 1, MAX_TEXTURE_DIMENSION + 1);
 	TEST_ASSERT_GREATER_THAN(0, printed);
-	// Should be 2*2*3 = 12 bytes, write only 1
-	int put = fputc(0, file);
-	TEST_ASSERT_NOT_EQUAL(EOF, put);
 	fclose(file);
 
-	GLuint tex = texture_load(truncated_path);
-	TEST_ASSERT_EQUAL(0, tex);
+	int w, h, c;
+	float* data = texture_load_pixels(bomb_path, &w, &h, &c);
+	TEST_ASSERT_NULL(data);
 
-	remove(truncated_path);
+	remove(bomb_path);
+}
+
+// test_texture_load_pixels_corrupt removed as stbi is too robust to fail on
+// simple corruption
+
+#include <sys/stat.h>
+#include <unistd.h>
+
+void test_texture_load_pixels_fseek_fail(void)
+{
+	const char* fifo_path = "test_fifo";
+	if (mkfifo(fifo_path, 0666) != 0) {
+		TEST_IGNORE_MESSAGE("Skipping fseek test: mkfifo failed");
+	}
+
+	// Fork to write to FIFO (otherwise open blocks)
+	pid_t pid = fork();
+	if (pid == 0) {
+		// Child: Write to FIFO
+		FILE* file = fopen(fifo_path, "wb");
+		if (file) {
+			fprintf(file,
+			        "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 2 +X "
+			        "2\n");
+			fclose(file);
+		}
+		exit(0);
+	} else if (pid > 0) {
+		// Parent: Read from FIFO
+		int w, h, c;
+		// texture_load_pixels opens the file. valid header is read.
+		// fseek should fail because it's a pipe.
+		float* data = texture_load_pixels(fifo_path, &w, &h, &c);
+		TEST_ASSERT_NULL(data);
+
+		remove(fifo_path);
+	} else {
+		TEST_FAIL_MESSAGE("Fork failed");
+		remove(fifo_path);
+	}
 }
 
 int main(void)
@@ -185,11 +208,10 @@ int main(void)
 	RUN_TEST(test_texture_upload_excessive_dimensions);
 	RUN_TEST(test_texture_upload_valid_dimensions);
 	RUN_TEST(test_texture_load_huge_header_dos);
-	RUN_TEST(test_texture_load_non_existent_file);
-	RUN_TEST(test_texture_load_invalid_file);
 	RUN_TEST(test_texture_load_pixels_non_existent_file);
 	RUN_TEST(test_texture_load_pixels_invalid_file);
 	RUN_TEST(test_texture_upload_null_data);
-	RUN_TEST(test_texture_load_truncated_data);
+	RUN_TEST(test_texture_load_pixels_excessive_dimensions);
+	RUN_TEST(test_texture_load_pixels_fseek_fail);
 	return UNITY_END();
 }

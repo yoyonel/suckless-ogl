@@ -11,29 +11,10 @@
 enum { MAX_TEXTURE_DIMENSION = 8192 };
 
 /**
- * @brief Loads an HDR (radiance) image and uploads it to the GPU.
- * @param path File system path.
- * @param[out] width Pointer to store image width.
- * @param[out] height Pointer to store image height.
- * @return GLuint handle of the allocated HDR texture.
- */
-GLuint texture_load_hdr(const char* path, int* width, int* height);
-
-/**
- * @brief Uploads raw floating-point RGB data to an OpenGL texture.
- * @param data Array of floats (RGB).
- * @param width Texture width.
- * @param height Texture height.
+ * @brief Uploads raw floating-point RGB data to an OpenGL texture. height.
  * @return GLuint handle.
  */
 GLuint texture_upload_hdr(float* data, int width, int height);
-
-/**
- * @brief Loads a standard 8-bit image (PNG, JPG) and uploads it to the GPU.
- * @param path File system path.
- * @return GLuint handle.
- */
-GLuint texture_load(const char* path);
 
 /**
  * @brief Decodes an HDR image into RAM without uploading to GPU.
