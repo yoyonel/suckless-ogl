@@ -27,3 +27,8 @@
 **Vulnerability:** `log_message` accepted a format string and arguments but lacked the compiler attribute to validate them, creating a risk of format string vulnerabilities if developers made a mistake.
 **Learning:** `__attribute__((format(printf, X, Y)))` is a zero-cost, high-value defense that catches format string mismatches at compile time. It should be standard for all variadic formatting functions.
 **Prevention:** Added `__attribute__((format(printf, 3, 4)))` to `log_message` in `include/log.h`.
+
+## 2026-02-07 - [DoS] Unbounded Texture Allocation (TOCTOU)
+**Vulnerability:** `texture_load` verified dimensions with `stbi_info` but then called `stbi_load` and used the returned dimensions blindly to allocate VRAM, allowing a TOCTOU or library inconsistency to bypass limits.
+**Learning:** Never trust that a "load" function returns the same metadata as an "info" function called previously. Always validate data *after* loading before using it for resource allocation.
+**Prevention:** Added explicit checks for `MAX_TEXTURE_DIMENSION` immediately after `stbi_load` and `stbi_loadf`, freeing the buffer if invalid.

@@ -51,6 +51,16 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		return NULL;
 	}
 
+	if (*width > MAX_TEXTURE_DIMENSION ||
+	    *height > MAX_TEXTURE_DIMENSION) {
+		LOG_ERROR(
+		    "suckless-ogl.texture",
+		    "HDR image exceeds max dimensions after load: %s (%dx%d > %d)",
+		    path, *width, *height, MAX_TEXTURE_DIMENSION);
+		stbi_image_free(data);
+		return NULL;
+	}
+
 	LOG_INFO("suckless-ogl.texture",
 	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
 	         *channels);
@@ -164,6 +174,15 @@ GLuint texture_load(const char* path)
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture", "Failed to load image: %s",
 		          path);
+		return 0;
+	}
+
+	if (width > MAX_TEXTURE_DIMENSION || height > MAX_TEXTURE_DIMENSION) {
+		LOG_ERROR(
+		    "suckless-ogl.texture",
+		    "Image exceeds max dimensions after load: %s (%dx%d > %d)",
+		    path, width, height, MAX_TEXTURE_DIMENSION);
+		stbi_image_free(data);
 		return 0;
 	}
 
