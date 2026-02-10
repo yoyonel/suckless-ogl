@@ -193,6 +193,21 @@ static void render_test_pattern(int mode)
 }
 
 /**
+ * Prepare the FBO for a clean capture: clear color, depth, and stencil.
+ * Stencil is set to 1 so the test pattern is treated as "object" by FXAA.
+ */
+static void prepare_fbo_for_capture(void)
+{
+	glViewport(0, 0, WIDTH, HEIGHT);
+	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+	glStencilMask(DEFAULT_STENCIL_MASK);
+	glClearStencil(1);
+	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
+	        (GLbitfield)GL_DEPTH_BUFFER_BIT |
+	        (GLbitfield)GL_STENCIL_BUFFER_BIT);
+}
+
+/**
  * Run the FXAA synthetic test for a specific mode and pattern name.
  */
 static void run_synthetic_test(int mode, const char* pattern_name)
@@ -203,13 +218,7 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	// 1. Capture "Before" (No AA, but processed through tonemapper/gamma)
 	postprocess_disable(&post_process_system, POSTFX_FXAA);
 	postprocess_begin(&post_process_system);
-	glViewport(0, 0, WIDTH, HEIGHT);
-	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-	glClearStencil(1);
-	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
-	        (GLbitfield)GL_DEPTH_BUFFER_BIT |
-	        (GLbitfield)GL_STENCIL_BUFFER_BIT);
+	prepare_fbo_for_capture();
 	render_test_pattern(mode);
 	postprocess_end(&post_process_system);
 
@@ -226,16 +235,9 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	// 2. Capture "After" (FXAA enabled, processed identically)
 	postprocess_enable(&post_process_system, POSTFX_FXAA);
 	postprocess_begin(&post_process_system);
-	glViewport(0, 0, WIDTH, HEIGHT);
-	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-	glClearStencil(1);
-	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
-	        (GLbitfield)GL_DEPTH_BUFFER_BIT |
-	        (GLbitfield)GL_STENCIL_BUFFER_BIT);
+	prepare_fbo_for_capture();
 	render_test_pattern(mode);
 	postprocess_end(&post_process_system);
-	glFinish();  // Ensure rendering is complete before reading
 
 	pixels_after = malloc(WIDTH * HEIGHT * 3);
 	if (!pixels_after) {

@@ -47,7 +47,7 @@ void main()
 	/* 1c. Priority Debug Check for Stencil Buffer */
 	if (enableStencilDebug) {
 		uint sVal = texture(stencilTexture, TexCoords).r;
-		FragColor = vec4(vec3(float(sVal)), 1.0);
+		FragColor = vec4(vec3(sVal > 0u ? 1.0 : 0.0), 1.0);
 		return;
 	}
 
