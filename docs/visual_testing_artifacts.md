@@ -40,7 +40,17 @@ When a Visual Regression Report shows failures:
 
 1. **Check the Difference Map**: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.
 2. **Verify PR Intent**: If the PR modified PBR math or synchronization, a delta is expected.
-3. **Update Reference**: If the PR is visually correct but fails the automated threshold due to the reasons above, update `tests/ref_frame.png` by capturing a new frame from the current stable build.
+3. **Update Reference**: If the PR is visually correct but fails the automated threshold due to the reasons above, update the references in `tests/ref_*.png`.
+    * Run `GEN_REFS=1 tests/run_test_with_xvfb.sh build/tests/test_app` to regenerate all 6 faces locally.
+    * Commit the updated PNG files.
+
+## Multi-View (Cube) Regression
+
+To ensure full scene consistency, the engine captures 6 viewpoints around the origin `(0,0,0)`:
+
+* **Faces**: `front`, `back`, `left`, `right`, `top`, `bottom`.
+* **Camera Distance**: Fixed at `25.0` to cover the entire setup.
+* **Bootstrapping**: The system uses a specialized loop in `test_app.c` that can either compare frames (test mode) or write them (generation mode).
 
 ---
 *See also: [Shader Cross-GPU Compatibility](./shader-cross-gpu-compatibility.md)*
