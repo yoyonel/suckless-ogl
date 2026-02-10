@@ -8,6 +8,8 @@
 
 #include "gl_common.h"
 
+enum { MAX_TEXTURE_DIMENSION = 8192 };
+
 /**
  * @brief Loads an HDR (radiance) image and uploads it to the GPU.
  * @param path File system path.
