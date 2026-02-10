@@ -22,6 +22,8 @@ static const float TEST_CAMERA_Z = 50.0F;
 static const float TEST_CAMERA_YAW = -90.0F;
 static const float TEST_CAMERA_PITCH = 0.0F;
 static const int POLL_TIMEOUT = 100;
+static const float DEPTH_SKYBOX_THRESHOLD = 1e-6F;
+static const int MAX_MISMATCH_LOG = 5;
 
 void setUp(void)
 {
@@ -93,18 +95,19 @@ void test_stencil_depth_consistency(void)
 	int mismatches = 0;
 
 	for (size_t i = 0; i < pixel_count; i++) {
-		bool is_skybox = (fabsf(depth_buf[i] - 1.0F) < 1e-6F);
+		bool is_skybox =
+		    (fabsf(depth_buf[i] - 1.0F) < DEPTH_SKYBOX_THRESHOLD);
 		unsigned char expected_stencil =
 		    is_skybox ? (unsigned char)0 : (unsigned char)1;
 
 		if (stencil_buf[i] != expected_stencil) {
-			if (mismatches < 5) {
-				int px = (int)(i % (size_t)TEST_WIDTH);
-				int py = (int)(i / (size_t)TEST_WIDTH);
+			if (mismatches < MAX_MISMATCH_LOG) {
+				int col = (int)(i % (size_t)TEST_WIDTH);
+				int row = (int)(i / (size_t)TEST_WIDTH);
 				printf(
 				    "  MISMATCH at (%d,%d): depth=%.6f "
 				    "stencil=%u expected=%u\n",
-				    px, py, (double)depth_buf[i],
+				    col, row, (double)depth_buf[i],
 				    stencil_buf[i], expected_stencil);
 			}
 			mismatches++;
