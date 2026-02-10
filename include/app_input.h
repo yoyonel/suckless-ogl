@@ -107,10 +107,10 @@ void camera_process_key_callback(Camera* camera, int key, int action);
 void app_toggle_fullscreen(App* app, GLFWwindow* window);
 
 /**
- * @brief Captures the current framebuffer and saves it as a raw HDR file.
+ * @brief Captures the current framebuffer and saves it as a PNG file.
  * @param app Pointer to the application state.
- * @param filename Output file path.
+ * @param filename Output file path (should end in .png).
  */
-void app_save_raw_frame(App* app, const char* filename);
+void app_save_png_frame(App* app, const char* filename);
 
 #endif /* APP_INPUT_H */

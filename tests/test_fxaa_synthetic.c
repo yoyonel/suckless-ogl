@@ -26,7 +26,6 @@ static const float ZERO_VAL = 0.0F;
 static const float ONE_VAL = 1.0F;
 static const double PERCENT_100 = 100.0;
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
 // Global state (required for GLFW callbacks and simple test structure)

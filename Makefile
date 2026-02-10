@@ -123,13 +123,13 @@ run-software: all
 format:
 	$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format -i"
 	@echo "Formatting Python scripts..."
-	@$(TOOL_RUN) ruff format scripts/trace_analyze.py tests/test_trace_analyze.py
+	@$(TOOL_RUN) ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
 format-check:
 	@echo "Checking C and Shader formatting..."
 	@$(DISTROBOX) sh -c "find src include tests shaders -name \"_deps\" -prune -o -name \"*.c\" -print -o -name \"*.h\" -print -o -name \"*.glsl\" -print -o -name \"*.vert\" -print -o -name \"*.frag\" -print | xargs clang-format --dry-run --Werror"
 	@echo "Checking Python scripts formatting..."
-	@$(TOOL_RUN) ruff format --check scripts/trace_analyze.py tests/test_trace_analyze.py
+	@$(TOOL_RUN) ruff format --check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 	@echo "✓ Formatting check passed"
 
 # Resolve dependency paths for linting
@@ -166,7 +166,7 @@ lint: lint-deps
 	@echo "Linting C code (Parallelized & Incremental)..."
 	@$(MAKE) -j$(NPROCS) $(LINTED_FILES) --no-print-directory
 	@echo "Linting Python scripts..."
-	@$(TOOL_RUN) ruff check scripts/trace_analyze.py tests/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
+	@$(TOOL_RUN) ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
 
 lint-clean:
@@ -191,7 +191,7 @@ offline-test:
 
 test-python:
 	@echo "Running Python script tests..."
-	@$(PY_RUN) tests/test_trace_analyze.py
+	@$(PY_RUN) .github/workflows/scripts/test_trace_analyze.py
 
 test: all test-python
 	@echo "Running C/C++ unit tests..."
@@ -233,7 +233,7 @@ coverage: $(BUILD_COV_DIR)
 		-ignore-filename-regex="(generated|deps|tests)" | tee $(BUILD_COV_DIR)/coverage_summary.txt
 
 	@echo "Running Python coverage..."
-	@$(TOOL_RUN) pytest tests/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \
+	@$(TOOL_RUN) pytest .github/workflows/scripts/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \
 		(echo "⚠️  Install pytest-cov: $$CMD install pytest-cov" && exit 1)
 	@echo "Python coverage report: $(REPORT_DIR)/python_coverage/index.html"
 
