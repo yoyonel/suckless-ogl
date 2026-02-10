@@ -122,6 +122,10 @@ void billboard_group_draw(BillboardGroup* group)
 
 void billboard_group_cleanup(BillboardGroup* group)
 {
+	if (group->instance_vbo) {
+		glDeleteBuffers(1, &group->instance_vbo);
+		group->instance_vbo = 0;
+	}
 	if (group->vao) {
 		glDeleteVertexArrays(1, &group->vao);
 		group->vao = 0;
