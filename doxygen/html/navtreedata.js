@@ -84,8 +84,8 @@ var NAVTREEINDEX =
 "main_8h_source.html",
 "postprocess_8c.html#a4459034743ba0085c3687dd0a6c89133",
 "skybox_8c.html#a536ba7358b462e00242dcee43f6483c4",
-"structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018",
-"structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3"
+"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c",
+"structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

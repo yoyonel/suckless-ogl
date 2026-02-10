@@ -13,7 +13,7 @@
         <link rel="prev" href="../renderdoc_guide/">
       
       
-        <link rel="next" href="../opengl_cleanup/">
+        <link rel="next" href="../cicd_pipeline/">
       
       
         
@@ -1503,10 +1503,49 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#multi-view-cube-regression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-View (Cube) Regression
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1776,23 +1815,40 @@
 <li><strong>Accumulated Errors</strong>: In complex PBR shaders, these micro-discrepancies accumulate, leading to "salt and pepper" noise in difference maps.</li>
 </ul>
 <h3 id="2-the-sphere-center-artifact">2. The "Sphere Center" Artifact<a class="headerlink" href="#2-the-sphere-center-artifact" title="Permanent link">¶</a></h3>
-<p>A common finding in our PBR tests is a concentric ring pattern at the center of spheres.
-*   <strong>Cause</strong>: At the center of a sphere, the dot product <strong>N · V</strong> is exactly <code>1.0</code>.
-*   <strong>Sensitivity</strong>: The BRDF LUT (Look-Up Table) is sampled using (<strong>N · V</strong>, <strong>roughness</strong>). Any tiny floating-point variation in the calculation of <strong>N · V</strong> or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.
-*   <strong>Result</strong>: High-contrast deltas in the difference map, even if the visual change is imperceptible to the human eye.</p>
+<p>A common finding in our PBR tests is a concentric ring pattern at the center of spheres.</p>
+<ul>
+<li><strong>Cause</strong>: At the center of a sphere, the dot product <strong>N · V</strong> is exactly <code>1.0</code>.</li>
+<li><strong>Sensitivity</strong>: The BRDF LUT (Look-Up Table) is sampled using (<strong>N · V</strong>, <strong>roughness</strong>). Any tiny floating-point variation in the calculation of <strong>N · V</strong> or the texture sampling coordinates causes the hardware to pick a different pixel in the LUT than the software renderer.</li>
+<li><strong>Result</strong>: High-contrast deltas in the difference map, even if the visual change is imperceptible to the human eye.</li>
+</ul>
 <h2 id="pbr-engine-evolution">PBR Engine Evolution<a class="headerlink" href="#pbr-engine-evolution" title="Permanent link">¶</a></h2>
 <p>Recent improvements to the rendering engine also contribute to deltas compared to older "Master" references:</p>
 <h3 id="1-multiple-scattering-kulla-conty">1. Multiple Scattering (Kulla-Conty)<a class="headerlink" href="#1-multiple-scattering-kulla-conty" title="Permanent link">¶</a></h3>
 <p>We implemented a compensation term for energy loss on rough surfaces. This increases the brightness of metallic/rough materials, changing the overall luminance compared to a "Standard" PBR implementation.</p>
 <h3 id="2-analytic-roughness-clamping">2. Analytic Roughness Clamping<a class="headerlink" href="#2-analytic-roughness-clamping" title="Permanent link">¶</a></h3>
-<p>To ensure portability across vendors, we replaced derivative-based smoothing (<code>fwidth</code>) with <strong>Analytic Roughness Clamping</strong> (<code>MIN_ROUGHNESS = 0.03</code>).
-*   <strong>Benefit</strong>: Identical results on Intel, NVIDIA, and Mesa.
-*   <strong>Delta</strong>: Reference images captured with older versions using <code>fwidth</code> will show significant edges deltas.</p>
+<p>To ensure portability across vendors, we replaced derivative-based smoothing (<code>fwidth</code>) with <strong>Analytic Roughness Clamping</strong> (<code>MIN_ROUGHNESS = 0.03</code>).</p>
+<ul>
+<li><strong>Benefit</strong>: Identical results on Intel, NVIDIA, and Mesa.</li>
+<li><strong>Delta</strong>: Reference images captured with older versions using <code>fwidth</code> will show significant edges deltas.</li>
+</ul>
 <h2 id="guidelines-for-reference-updates">Guidelines for Reference Updates<a class="headerlink" href="#guidelines-for-reference-updates" title="Permanent link">¶</a></h2>
-<p>When a Visual Regression Report shows failures:
-1.  <strong>Check the Difference Map</strong>: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.
-2.  <strong>Verify PR Intent</strong>: If the PR modified PBR math or synchronization, a delta is expected.
-3.  <strong>Update Reference</strong>: If the PR is visually correct but fails the automated threshold due to the reasons above, update <code>tests/ref_frame.raw</code> by capturing a new frame from the current stable build.</p>
+<p>When a Visual Regression Report shows failures:</p>
+<ol>
+<li><strong>Check the Difference Map</strong>: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.</li>
+<li><strong>Verify PR Intent</strong>: If the PR modified PBR math or synchronization, a delta is expected.</li>
+<li><strong>Update Reference</strong>: If the PR is visually correct but fails the automated threshold due to the reasons above, update the references in <code>tests/ref_*.png</code>.<ul>
+<li>Run <code>GEN_REFS=1 tests/run_test_with_xvfb.sh build/tests/test_app</code> to regenerate all 6 faces locally.</li>
+<li>Commit the updated PNG files.</li>
+</ul>
+</li>
+</ol>
+<h2 id="multi-view-cube-regression">Multi-View (Cube) Regression<a class="headerlink" href="#multi-view-cube-regression" title="Permanent link">¶</a></h2>
+<p>To ensure full scene consistency, the engine captures 6 viewpoints around the origin <code>(0,0,0)</code>:</p>
+<ul>
+<li><strong>Faces</strong>: <code>front</code>, <code>back</code>, <code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code>.</li>
+<li><strong>Camera Distance</strong>: Fixed at <code>25.0</code> to cover the entire setup.</li>
+<li><strong>Bootstrapping</strong>: The system uses a specialized loop in <code>test_app.c</code> that can either compare frames (test mode) or write them (generation mode).</li>
+</ul>
 <hr>
 <p><em>See also: <a href="../shader-cross-gpu-compatibility/">Shader Cross-GPU Compatibility</a></em></p>
 
@@ -1815,7 +1871,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 10, 2026 11:06:27 UTC">February 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 10, 2026 14:18:29 UTC">February 10, 2026</span>
   </span>
 
     

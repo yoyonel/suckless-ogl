@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,17,8],
 "structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018":[5,0,17,16],
 "structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d":[5,0,17,4],
 "structEffectBenchmark.html#aaeab2d353d3589ed0f1262e7c4585446":[5,0,17,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "structPostProcessUBO.html#a5ad040a5b5b0c91803774d33010190af":[5,0,52,8],
 "structPostProcessUBO.html#a5b24c09724575d011993acc1aed9a649":[5,0,52,4],
 "structPostProcessUBO.html#a63a5f01e15533e2ba3a3a43263973121":[5,0,52,49],
-"structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5":[5,0,52,34],
-"structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10":[5,0,52,14]
+"structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5":[5,0,52,34]
 };

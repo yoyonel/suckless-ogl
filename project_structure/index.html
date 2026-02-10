@@ -1668,6 +1668,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../cicd_pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../opengl_cleanup/" class="md-nav__link">
         
   
@@ -1917,40 +1945,44 @@
 
 <h1 id="project-structure-refactored-icosphere">Project Structure: Refactored Icosphere<a class="headerlink" href="#project-structure-refactored-icosphere" title="Permanent link">¶</a></h1>
 <h2 id="modular-architecture">Modular Architecture<a class="headerlink" href="#modular-architecture" title="Permanent link">¶</a></h2>
-<p>The code has been refactored according to the following principles:
--   <strong>Separation of Concerns</strong>: Each module has a clear function.
--   <strong>Encapsulation</strong>: Data structures are managed by their own modules.
--   <strong>Reusability</strong>: Components can be used independently.
--   <strong>Maintainability</strong>: Code that is easier to read, test, and modify.</p>
+<p>The code has been refactored according to the following principles:</p>
+<ul>
+<li><strong>Separation of Concerns</strong>: Each module has a clear function.</li>
+<li><strong>Encapsulation</strong>: Data structures are managed by their own modules.</li>
+<li><strong>Reusability</strong>: Components can be used independently.</li>
+<li><strong>Maintainability</strong>: Code that is easier to read, test, and modify.</li>
+</ul>
 <h2 id="folder-structure">Folder Structure<a class="headerlink" href="#folder-structure" title="Permanent link">¶</a></h2>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>icosphere/
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── src/
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   ├── main.c              # Entry Point
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│   ├── app.c               # Orchestration &amp; Loop
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── app_env.c           # IBL Management (Async/Progressive)
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── app_input.c         # Callbacks &amp; Input State
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── app_scene.c         # Scene Rendering (Instanced/Billboards)
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── app_ui.c            # Overlay UI &amp; Debug
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├── effects/            # Post-Process Effects (Bloom, DoF, Manual, ...)
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── camera.c            # Camera Physics
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── async_loader.c      # Thread Loading
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── postprocess.c       # FXAA/ToneMapping Pipeline
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── pbr.c               # PBR Functions
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   └── ... (utils, log, shader, texture)
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>├── include/
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   ├── app.h               # Main App Structure
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   ├── app_env.h
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   ├── app_input.h
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   ├── app_scene.h
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   ├── app_ui.h
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   └── ...
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>├── shaders/
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│   ├── IBL/                # IBL Compute Shaders
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>│   ├── postprocess/        # FX Shaders (Bloom, DoF, FXAA)
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   ├── pbr_ibl_*.vert/frag # Physically Based Rendering Shaders
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   └── ...
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── .github/workflows/  # CI/CD Workflows
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│   └── scripts/        # CI-specific scripts (Xvfb wrapper, reporting, ...)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── src/
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── main.c              # Entry Point
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   ├── app.c               # Orchestration &amp; Loop
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│   ├── app_env.c           # IBL Management (Async/Progressive)
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── app_input.c         # Callbacks &amp; Input State
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   ├── app_scene.c         # Scene Rendering (Instanced/Billboards)
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── app_ui.c            # Overlay UI &amp; Debug
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   ├── effects/            # Post-Process Effects (Bloom, DoF, Manual, ...)
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── camera.c            # Camera Physics
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   ├── async_loader.c      # Thread Loading
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├── postprocess.c       # FXAA/ToneMapping Pipeline
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   ├── pbr.c               # PBR Functions
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   └── ... (utils, log, shader, texture)
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>├── include/
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   ├── app.h               # Main App Structure
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   ├── app_env.h
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│   ├── app_input.h
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│   ├── app_scene.h
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│   ├── app_ui.h
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│   └── ...
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>│
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>├── shaders/
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   ├── IBL/                # IBL Compute Shaders
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   ├── postprocess/        # FX Shaders (Bloom, DoF, FXAA)
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   ├── pbr_ibl_*.vert/frag # Physically Based Rendering Shaders
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   └── ...
 </span></code></pre></div>
 <h2 id="architecture-diagram">Architecture Diagram<a class="headerlink" href="#architecture-diagram" title="Permanent link">¶</a></h2>
 <p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNq1VNtOGzEQfc9XWNsXQIFASm6KthLhGgmkKGmeKEIT72ziYuyV7QUB4t_r3fVekz6gqm-e45nj8ZlLwNYKog2ZKfkbqVkYFVMTKyQfLUIUiKeAKf92PrbWak0ll8r3jMV1BAqF8ZKLIGL-oDtu2WOnQxYxfeKo9eGdDFAJ4l1vpDYeuUDN1oL8lE8oNNlbRpoCx2DfRgnrSe7tgRC9gQh9ZVNpZ7Z54-h7SsYiwMDLwFAKI-DZ4jfIX9AwCu0zxYC3tc3sUKNiYcVVs3f0T_oOYJy7fwgp0Lk55NvpyemwP6zE5hf0mELYcxcRilcWmI3fteZD-nEM1vkX8pBevxcOR_-S8nA7jxFAj-ZZg1LyNXU9Pho2Ujs5KpPrHJBzaWt60LHGWRSRew4r5L5nz7_EHkTREd332kXmeAxhokLt5QIsnvhesC_iVVLu2NY9e0THq6yvKI-1QfX47G4_0izd81exoIZJAZy46LSfdqpFJpIH25KNm5KNtyQbAHTDgfOs91M7AL2xbTWuFa4W8AxqzYTf7WWmVWw5LfRbTjP5HmNW1W-1GoElqOvnwIeCZyqi2BRUqeXYWHKuEoaDQX-IDUIHloSX4qWgs-fOdHLrCFG8VOkGAQ3DsEHnwJJuQVFgQZhajk4n5yrhCCn2oUHowJTw0zXK0jCuO5fCSvrXVsH0tt4p14kHo5pkof-jTdxk7W4TacxWm7hdsbNNZnbl2ZVK7R4sFKxgFenyLbFr2-S10G-C3kqw67Sc3BL7Gtm51UtBwZOZX6OYTeblpybzrwTnfTBHDsnk63InHf7Ihmtcs9OxqEO2tetA2prpKnLYLvWvWLJmZlAT3036Q4Wvoc8yCsCkQ9YqZix5dUdJEpPcXMwLOudblesaBbmDSBc-2ZA1vOYokrpan8_WH5XlTg0=?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNq1VNtOGzEQfc9XWNsXQIFASm6KthLhGgmkKGmeKEIT72ziYuyV7QUB4t_r3fVekz6gqm-e45nj8ZlLwNYKog2ZKfkbqVkYFVMTKyQfLUIUiKeAKf92PrbWak0ll8r3jMV1BAqF8ZKLIGL-oDtu2WOnQxYxfeKo9eGdDFAJ4l1vpDYeuUDN1oL8lE8oNNlbRpoCx2DfRgnrSe7tgRC9gQh9ZVNpZ7Z54-h7SsYiwMDLwFAKI-DZ4jfIX9AwCu0zxYC3tc3sUKNiYcVVs3f0T_oOYJy7fwgp0Lk55NvpyemwP6zE5hf0mELYcxcRilcWmI3fteZD-nEM1vkX8pBevxcOR_-S8nA7jxFAj-ZZg1LyNXU9Pho2Ujs5KpPrHJBzaWt60LHGWRSRew4r5L5nz7_EHkTREd332kXmeAxhokLt5QIsnvhesC_iVVLu2NY9e0THq6yvKI-1QfX47G4_0izd81exoIZJAZy46LSfdqpFJpIH25KNm5KNtyQbAHTDgfOs91M7AL2xbTWuFa4W8AxqzYTf7WWmVWw5LfRbTjP5HmNW1W-1GoElqOvnwIeCZyqi2BRUqeXYWHKuEoaDQX-IDUIHloSX4qWgs-fOdHLrCFG8VOkGAQ3DsEHnwJJuQVFgQZhajk4n5yrhCCn2oUHowJTw0zXK0jCuO5fCSvrXVsH0tt4p14kHo5pkof-jTdxk7W4TacxWm7hdsbNNZnbl2ZVK7R4sFKxgFenyLbFr2-S10G-C3kqw67Sc3BL7Gtm51UtBwZOZX6OYTeblpybzrwTnfTBHDsnk63InHf7Ihmtcs9OxqEO2tetA2prpKnLYLvWvWLJmZlAT3036Q4Wvoc8yCsCkQ9YqZix5dUdJEpPcXMwLOudblesaBbmDSBc-2ZA1vOYokrpan8_WH5XlTg0=?"></a></p>
@@ -2030,27 +2062,35 @@
 </span></code></pre></div>
 <h2 id="controls">Controls<a class="headerlink" href="#controls" title="Permanent link">¶</a></h2>
 <h3 id="mouse-camera-control">🖱️ Mouse Camera Control<a class="headerlink" href="#mouse-camera-control" title="Permanent link">¶</a></h3>
-<p><strong>Camera Mode Enabled (Default)</strong>:
--   <strong>Move Mouse</strong>: Orient camera (yaw/pitch).
--   <strong>Mouse Wheel</strong>: Zoom in/out.
--   <strong>C</strong>: Toggle camera control activation/deactivation.
--   <strong>SPACE</strong>: Reset camera position.</p>
-<p>When camera mode is <strong>enabled</strong>:
--   The cursor is hidden and captured.
--   Mouse movements control orientation.
--   Pitch is limited to avoid gimbal lock.</p>
-<p>When camera mode is <strong>disabled</strong> (press <strong>C</strong>):
--   The cursor becomes visible.
--   Mouse movements do not affect the camera.
--   Useful for interacting with the interface.</p>
+<p><strong>Camera Mode Enabled (Default)</strong>:</p>
+<ul>
+<li><strong>Move Mouse</strong>: Orient camera (yaw/pitch).</li>
+<li><strong>Mouse Wheel</strong>: Zoom in/out.</li>
+<li><strong>C</strong>: Toggle camera control activation/deactivation.</li>
+<li><strong>SPACE</strong>: Reset camera position.</li>
+</ul>
+<p>When camera mode is <strong>enabled</strong>:</p>
+<ul>
+<li>The cursor is hidden and captured.</li>
+<li>Mouse movements control orientation.</li>
+<li>Pitch is limited to avoid gimbal lock.</li>
+</ul>
+<p>When camera mode is <strong>disabled</strong> (press <strong>C</strong>):</p>
+<ul>
+<li>The cursor becomes visible.</li>
+<li>Mouse movements do not affect the camera.</li>
+<li>Useful for interacting with the interface.</li>
+</ul>
 <h3 id="keyboard-control">⌨️ Keyboard Control<a class="headerlink" href="#keyboard-control" title="Permanent link">¶</a></h3>
-<p><strong>Display</strong>:
--   <strong>W</strong>: Toggle wireframe/solid.
--   <strong>↑</strong>: Increase subdivisions (max 6).
--   <strong>↓</strong>: Decrease subdivisions (min 0).
--   <strong>PAGE_UP / PAGE_DOWN</strong>: Increase/Decrease environment blur (LOD).
--   <strong>F</strong>: Toggle between Windowed and Fullscreen mode.
--   <strong>ESC</strong>: Quit the application.</p>
+<p><strong>Display</strong>:</p>
+<ul>
+<li><strong>W</strong>: Toggle wireframe/solid.</li>
+<li><strong>↑</strong>: Increase subdivisions (max 6).</li>
+<li><strong>↓</strong>: Decrease subdivisions (min 0).</li>
+<li><strong>PAGE_UP / PAGE_DOWN</strong>: Increase/Decrease environment blur (LOD).</li>
+<li><strong>F</strong>: Toggle between Windowed and Fullscreen mode.</li>
+<li><strong>ESC</strong>: Quit the application.</li>
+</ul>
 <h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>GLFW</strong>: Window management and inputs.</li>
@@ -2090,7 +2130,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 10, 2026 11:06:27 UTC">February 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 10, 2026 14:18:29 UTC">February 10, 2026</span>
   </span>
 
     

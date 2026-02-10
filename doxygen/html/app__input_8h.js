@@ -1,7 +1,7 @@
 var app__input_8h =
 [
     [ "app_handle_env_input", "app__input_8h.html#a5bd036fc9913a0b441d5a2121daf0f0e", null ],
-    [ "app_save_raw_frame", "app__input_8h.html#a3c55f01c5eac14ea574fc01767849372", null ],
+    [ "app_save_png_frame", "app__input_8h.html#a9ad0dce8449731259f77702aeba8e457", null ],
     [ "app_toggle_fullscreen", "app__input_8h.html#a479d0af6d3acd4e6dc4e13cd29b9b63d", null ],
     [ "camera_process_key_callback", "app__input_8h.html#a3070b445bac4fb12dc3494a9e6746038", null ],
     [ "framebuffer_size_callback", "app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac", null ],

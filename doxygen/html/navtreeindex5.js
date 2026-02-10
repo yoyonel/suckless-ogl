@@ -30,7 +30,8 @@ var NAVTREEINDEX5 =
 "ssbo__rendering_8h_source.html":[6,0,2,34],
 "stb__image__impl_8c.html":[6,0,4,32],
 "stb__image__impl_8c.html#a18372412ad2fc3ce1e3240b3cf0efe78":[6,0,4,32,0],
-"stb__image__impl_8c.html#afaa2f2d0d9d6726cfae6da070e736347":[6,0,4,32,1],
+"stb__image__impl_8c.html#aefe397a94e8feddc652f92ef40ce9597":[6,0,4,32,1],
+"stb__image__impl_8c.html#afaa2f2d0d9d6726cfae6da070e736347":[6,0,4,32,2],
 "structActionNotification.html":[5,0,0],
 "structActionNotification.html#a5e58db6c629676dfd931706f39204f56":[5,0,0,2],
 "structActionNotification.html#a81ae26ad59c9628b29e363594b84fc24":[5,0,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c":[5,0,17,2],
 "structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf":[5,0,17,12],
 "structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca":[5,0,17,7],
-"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,17,1],
-"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,17,8]
+"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,17,1]
 };
