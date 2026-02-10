@@ -60,29 +60,11 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo);
 
 /**
- * @brief Binds a quad mesh to the instanced group (fallback or specialized
- * use).
- * @param group Pointer to the group.
- * @param vbo Quad VBO.
- */
-void instanced_group_bind_billboard(InstancedGroup* group, GLuint vbo);
-
-/**
  * @brief Executes an indexed instanced draw call.
  * @param group Pointer to the group.
  * @param index_count Number of indices in the base mesh.
  */
 void instanced_group_draw(InstancedGroup* group, size_t index_count);
-
-/**
- * @brief Executes a non-indexed instanced draw call.
- * @param group Pointer to the group.
- * @param mode GL primitive mode (e.g., GL_TRIANGLES).
- * @param first Starting vertex index.
- * @param count Number of vertices per instance.
- */
-void instanced_group_draw_arrays(InstancedGroup* group, GLenum mode, int first,
-                                 int count);
 
 /**
  * @brief Releases all GPU resources for the instanced group.

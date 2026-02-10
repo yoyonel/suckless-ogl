@@ -47,6 +47,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\
 set(OPENGL_TESTS
     test_shader
     test_shader_api
+    test_texture
     test_skybox
     test_pbr
     test_material

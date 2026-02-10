@@ -8,11 +8,10 @@
 
 #include "gl_common.h"
 
+enum { MAX_TEXTURE_DIMENSION = 8192 };
+
 /**
- * @brief Uploads raw floating-point RGB data to an OpenGL texture.
- * @param data Array of floats (RGB).
- * @param width Texture width.
- * @param height Texture height.
+ * @brief Uploads raw floating-point RGB data to an OpenGL texture. height.
  * @return GLuint handle.
  */
 GLuint texture_upload_hdr(float* data, int width, int height);
