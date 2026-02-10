@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
+#include <stb_image_write.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -544,7 +545,7 @@ static void handle_system_key_input(App* app, int key, int mods)
 {
 	switch (key) {
 		case GLFW_KEY_P:
-			app_save_raw_frame(app, "capture_frame.raw");
+			app_save_png_frame(app, "capture_frame.png");
 			action_notifier_push(&app->notifier, "Frame Captured",
 			                     NOTIF_DUR_LONG);
 			break;
@@ -718,32 +719,40 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera_process_scroll(&app->camera, (float)yoffset);
 }
 
-void app_save_raw_frame(App* app, const char* filename)
+void app_save_png_frame(App* app, const char* filename)
 {
 	int width = app->width;
 	int height = app->height;
-	size_t size = (size_t)width * (size_t)height * 3;
+	int channels = 3;
+	size_t size = (size_t)width * (size_t)height * (size_t)channels;
 	unsigned char* pixels = malloc(size);
 	if (!pixels) {
 		LOG_ERROR("suckless-ogl.app",
-		          "Failed to allocate memory for RAW capture");
+		          "Failed to allocate memory for PNG capture");
 		return;
 	}
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-	FILE* file = fopen(filename, "wb");
-	if (file) {
-		if (fwrite(pixels, 1, size, file) != size) {
-			LOG_ERROR("suckless-ogl.app",
-			          "Failed to write RAW frame to file: %s",
-			          filename);
+
+	/* Flip vertically: OpenGL reads bottom-to-top, PNG is top-to-bottom */
+	int row_sz = width * channels;
+	for (int yr = 0; yr < height / 2; yr++) {
+		unsigned char* top = pixels + (yr * row_sz);
+		unsigned char* bot = pixels + (((height - yr) - 1) * row_sz);
+		for (int xi = 0; xi < row_sz; xi++) {
+			unsigned char tmp = top[xi];
+			top[xi] = bot[xi];
+			bot[xi] = tmp;
 		}
-		(void)fclose(file);
-		LOG_INFO("suckless-ogl.app", "RAW frame captured: %s",
+	}
+
+	if (stbi_write_png(filename, width, height, channels, pixels,
+	                   width * channels) != 0) {
+		LOG_INFO("suckless-ogl.app", "PNG frame captured: %s",
 		         filename);
 	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open file for RAW capture");
+		LOG_ERROR("suckless-ogl.app", "Failed to write PNG frame: %s",
+		          filename);
 	}
 	free(pixels);
 	glPixelStorei(GL_PACK_ALIGNMENT, 4);

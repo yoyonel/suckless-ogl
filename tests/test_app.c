@@ -5,9 +5,12 @@
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <stb_image.h>
+#include <stb_image_write.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 // Instance App partagée entre tous les tests
@@ -23,6 +26,8 @@ static const float PIXEL_TOLERANCE = 5.0F;
 static const float DIFF_PERCENTAGE_TOLERANCE = 0.02F;
 static const int DIFF_MAP_VALUE = 255;
 static const float PERCENTAGE_FACTOR = 100.0F;
+static const int FACTOR_DIV2 = 2;
+static const int COORD_DEC = 1;
 
 void setUp(void)
 {
@@ -40,34 +45,58 @@ void tearDown(void)
 	// Ne rien faire ici, on cleanup dans main()
 }
 
+/**
+ * Flips the image vertically (OpenGL reads bottom-to-top, PNG needs
+ * top-to-bottom).
+ */
+static void flip_image_vertically(int image_width, int image_height,
+                                  unsigned char* image_data)
+{
+	int row_sz = image_width * BYTES_PER_PIXEL;
+	unsigned char* row_tmp = (unsigned char*)malloc((size_t)row_sz);
+	if (!row_tmp) {
+		return;
+	}
+
+	for (int y_coord = 0; y_coord < (image_height / FACTOR_DIV2);
+	     y_coord++) {
+		unsigned char* top_row = image_data + (y_coord * row_sz);
+		unsigned char* bottom_row =
+		    image_data +
+		    (((image_height - y_coord) - COORD_DEC) * row_sz);
+		(void)memcpy(row_tmp, top_row, (size_t)row_sz);
+		(void)memcpy(top_row, bottom_row, (size_t)row_sz);
+		(void)memcpy(bottom_row, row_tmp, (size_t)row_sz);
+	}
+	free(row_tmp);
+}
+
 static void verify_reference_image(int width, int height,
                                    unsigned char* current_pixels)
 {
 	size_t pixel_data_size = (size_t)(width * height * BYTES_PER_PIXEL);
 
-	// Load reference frame
-	FILE* fref = fopen("tests/ref_frame.raw", "rb");
-	if (fref == NULL) {
+	// Load reference frame (PNG)
+	int ref_w = 0;
+	int ref_h = 0;
+	int ref_channels = 0;
+	unsigned char* ref_pixels =
+	    stbi_load("tests/ref_frame.png", &ref_w, &ref_h, &ref_channels,
+	              BYTES_PER_PIXEL);
+	if (ref_pixels == NULL) {
 		TEST_FAIL_MESSAGE(
-		    "Reference image tests/ref_frame.raw not found.");
+		    "Reference image tests/ref_frame.png not found.");
 		return;  // Redundant if fail aborts, but safe
 	}
 
-	unsigned char* ref_pixels = (unsigned char*)malloc(pixel_data_size);
-	if (ref_pixels == NULL) {
-		fclose(fref);
-		TEST_FAIL_MESSAGE("Failed to allocate memory for ref_pixels");
+	if (ref_w != width || ref_h != height) {
+		stbi_image_free(ref_pixels);
+		TEST_FAIL_MESSAGE("Reference image dimensions mismatch");
 		return;
 	}
 
-	size_t read_bytes = fread(ref_pixels, 1, pixel_data_size, fref);
-	fclose(fref);
-	if (read_bytes != pixel_data_size) {
-		free(ref_pixels);
-		TEST_ASSERT_EQUAL_UINT_MESSAGE(pixel_data_size, read_bytes,
-		                               "Reference file size mismatch");
-		return;
-	}
+	// Flip current pixels for comparison (ref PNG is already top-to-bottom)
+	flip_image_vertically(width, height, current_pixels);
 
 	// Compare with tolerance
 	int diff_count = 0;
@@ -97,28 +126,24 @@ static void verify_reference_image(int width, int height,
 			    (delta > (int)PIXEL_TOLERANCE) ? DIFF_MAP_VALUE : 0;
 		}
 
-		FILE* fdiff = fopen("tests/failed_diff_map.raw", "wb");
-		if (fdiff) {
-			(void)fwrite(diff_map, 1, pixel_data_size, fdiff);
-			(void)fclose(fdiff);
-		}
+		(void)stbi_write_png("tests/failed_diff_map.png", width, height,
+		                     BYTES_PER_PIXEL, diff_map,
+		                     width * BYTES_PER_PIXEL);
 		free(diff_map);
 	}
 
-	FILE* fcur = fopen("tests/failed_frame_actual.raw", "wb");
-	if (fcur) {
-		(void)fwrite(current_pixels, 1, pixel_data_size, fcur);
-		(void)fclose(fcur);
-	}
+	(void)stbi_write_png("tests/failed_frame_actual.png", width, height,
+	                     BYTES_PER_PIXEL, current_pixels,
+	                     width * BYTES_PER_PIXEL);
 
 	if (diff_percentage > 0.00F) {
 		printf(
 		    "\n[VISUAL] Regression detected! Diff: %.2f%% (saved to "
-		    "tests/failed_diff_map.raw)\n",
+		    "tests/failed_diff_map.png)\n",
 		    (double)(diff_percentage * PERCENTAGE_FACTOR));
 	}
 
-	free(ref_pixels);
+	stbi_image_free(ref_pixels);
 
 	// Allow up to 2% difference for MSAA/driver noise
 	TEST_ASSERT_FLOAT_WITHIN(DIFF_PERCENTAGE_TOLERANCE, 0.0F,

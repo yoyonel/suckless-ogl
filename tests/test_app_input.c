@@ -250,6 +250,7 @@ void test_misc_system_input(void)
 
 	/* Screenshot */
 	handle_app_input(test_app, GLFW_KEY_P, 0);
+	remove("capture_frame.png");
 
 	/* Reset */
 	handle_app_input(test_app, GLFW_KEY_SPACE, 0);
