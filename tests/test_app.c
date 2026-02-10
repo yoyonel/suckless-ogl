@@ -28,6 +28,27 @@ static const int DIFF_MAP_VALUE = 255;
 static const float PERCENTAGE_FACTOR = 100.0F;
 static const int FACTOR_DIV2 = 2;
 static const int COORD_DEC = 1;
+static const float CAMERA_DIST = 15.0F;
+static const int PATH_BUF_SIZE = 256;
+static const int ERR_BUF_SIZE = 512;
+
+typedef struct {
+	const char* name;
+	vec3 pos;
+	float yaw;
+	float pitch;
+	vec3 world_up;
+} ViewPoint;
+
+static const ViewPoint G_VIEWPOINTS[] = {
+    {"front", {0, 0, CAMERA_DIST}, -90.0F, 0.0F, {0, 1, 0}},
+    {"back", {0, 0, -CAMERA_DIST}, 90.0F, 0.0F, {0, 1, 0}},
+    {"left", {-CAMERA_DIST, 0, 0}, 0.0F, 0.0F, {0, 1, 0}},
+    {"right", {CAMERA_DIST, 0, 0}, 180.0F, 0.0F, {0, 1, 0}},
+    {"top", {0, CAMERA_DIST, 0}, -90.0F, -90.0F, {0, 0, -1}},
+    {"bottom", {0, -CAMERA_DIST, 0}, -90.0F, 90.0F, {0, 0, 1}}};
+
+static const int NUM_VIEWPOINTS = sizeof(G_VIEWPOINTS) / sizeof(ViewPoint);
 
 void setUp(void)
 {
@@ -72,21 +93,27 @@ static void flip_image_vertically(int image_width, int image_height,
 }
 
 static void verify_reference_image(int width, int height,
-                                   unsigned char* current_pixels)
+                                   unsigned char* current_pixels,
+                                   const char* face_name)
 {
 	size_t pixel_data_size = (size_t)(width * height * BYTES_PER_PIXEL);
+
+	char ref_path[PATH_BUF_SIZE];
+	(void)snprintf(ref_path, sizeof(ref_path), "tests/ref_%s.png",
+	               face_name);
 
 	// Load reference frame (PNG)
 	int ref_w = 0;
 	int ref_h = 0;
 	int ref_channels = 0;
 	unsigned char* ref_pixels =
-	    stbi_load("tests/ref_frame.png", &ref_w, &ref_h, &ref_channels,
-	              BYTES_PER_PIXEL);
+	    stbi_load(ref_path, &ref_w, &ref_h, &ref_channels, BYTES_PER_PIXEL);
 	if (ref_pixels == NULL) {
-		TEST_FAIL_MESSAGE(
-		    "Reference image tests/ref_frame.png not found.");
-		return;  // Redundant if fail aborts, but safe
+		char err_msg[ERR_BUF_SIZE];
+		(void)snprintf(err_msg, sizeof(err_msg),
+		               "Reference image %s not found.", ref_path);
+		TEST_FAIL_MESSAGE(err_msg);
+		return;
 	}
 
 	if (ref_w != width || ref_h != height) {
@@ -94,9 +121,6 @@ static void verify_reference_image(int width, int height,
 		TEST_FAIL_MESSAGE("Reference image dimensions mismatch");
 		return;
 	}
-
-	// Flip current pixels for comparison (ref PNG is already top-to-bottom)
-	flip_image_vertically(width, height, current_pixels);
 
 	// Compare with tolerance
 	int diff_count = 0;
@@ -116,31 +140,38 @@ static void verify_reference_image(int width, int height,
 	}
 	float diff_percentage = (float)diff_count / (float)(width * height);
 
-	// Visual debug output
-	unsigned char* diff_map = (unsigned char*)malloc(pixel_data_size);
-	if (diff_map) {
-		for (size_t i = 0; i < pixel_data_size; i++) {
-			int delta =
-			    abs((int)current_pixels[i] - (int)ref_pixels[i]);
-			diff_map[i] =
-			    (delta > (int)PIXEL_TOLERANCE) ? DIFF_MAP_VALUE : 0;
+	if (diff_percentage > DIFF_PERCENTAGE_TOLERANCE) {
+		// Visual debug output only on failure
+		unsigned char* diff_map =
+		    (unsigned char*)malloc(pixel_data_size);
+		if (diff_map) {
+			for (size_t i = 0; i < pixel_data_size; i++) {
+				int delta = abs((int)current_pixels[i] -
+				                (int)ref_pixels[i]);
+				diff_map[i] = (delta > (int)PIXEL_TOLERANCE)
+				                  ? DIFF_MAP_VALUE
+				                  : 0;
+			}
+
+			char diff_path[PATH_BUF_SIZE];
+			(void)snprintf(diff_path, sizeof(diff_path),
+			               "tests/failed_diff_%s.png", face_name);
+			(void)stbi_write_png(diff_path, width, height,
+			                     BYTES_PER_PIXEL, diff_map,
+			                     width * BYTES_PER_PIXEL);
+			free(diff_map);
 		}
 
-		(void)stbi_write_png("tests/failed_diff_map.png", width, height,
-		                     BYTES_PER_PIXEL, diff_map,
+		char actual_path[PATH_BUF_SIZE];
+		(void)snprintf(actual_path, sizeof(actual_path),
+		               "tests/failed_actual_%s.png", face_name);
+		(void)stbi_write_png(actual_path, width, height,
+		                     BYTES_PER_PIXEL, current_pixels,
 		                     width * BYTES_PER_PIXEL);
-		free(diff_map);
-	}
 
-	(void)stbi_write_png("tests/failed_frame_actual.png", width, height,
-	                     BYTES_PER_PIXEL, current_pixels,
-	                     width * BYTES_PER_PIXEL);
-
-	if (diff_percentage > 0.00F) {
 		printf(
-		    "\n[VISUAL] Regression detected! Diff: %.2f%% (saved to "
-		    "tests/failed_diff_map.png)\n",
-		    (double)(diff_percentage * PERCENTAGE_FACTOR));
+		    "\n[VISUAL] Regression detected on face %s! Diff: %.2f%%\n",
+		    face_name, (double)(diff_percentage * PERCENTAGE_FACTOR));
 	}
 
 	stbi_image_free(ref_pixels);
@@ -153,7 +184,7 @@ static void verify_reference_image(int width, int height,
 /**
  * Integration Test: Full lifecycle and single frame rendering validation
  */
-void test_app_render_single_frame(void)
+void test_app_render_multi_view(void)
 {
 	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
 	                         "App should be initialized");
@@ -162,41 +193,69 @@ void test_app_render_single_frame(void)
 	int fb_width = 0;
 	int fb_height = 0;
 	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
-	printf("Resolution: %dx%d\n", fb_width, fb_height);
 
 	// Wait for async load to complete
-	printf("Waiting for async HDR load...\n");
-	int timeout =
-	    POLL_TIMEOUT_ITERATIONS;  // 10s approximately (100 * 100ms)
-	                              // -- wait, no loop sleep here, just
-	                              // yield
+	int timeout = POLL_TIMEOUT_ITERATIONS;
 	while (g_test_app.hdr_texture == 0 && timeout-- > 0) {
 		app_update(&g_test_app);
 		glfwPollEvents();
-		struct timespec req = {0, NANOSLEEP_DURATION};  // 10ms
+		struct timespec req = {0, NANOSLEEP_DURATION};
 		nanosleep(&req, NULL);
 	}
 	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.hdr_texture,
 	                              "HDR texture never loaded");
-	printf("HDR Load completed.\n");
 
-	// Generate geometry and render
+	// Generate geometry
 	icosphere_generate(&g_test_app.geometry, g_test_app.subdivisions);
 	app_update_gpu_buffers(&g_test_app);
-	app_render(&g_test_app);
 
-	// Capture current frame pixels
 	size_t pixel_data_size =
 	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
 	unsigned char* current_pixels = (unsigned char*)malloc(pixel_data_size);
 	TEST_ASSERT_NOT_NULL(current_pixels);
 
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glReadPixels(0, 0, fb_width, fb_height, GL_RGB, GL_UNSIGNED_BYTE,
-	             current_pixels);
+	int capture_mode = (getenv("GEN_REFS") != NULL);
 
-	// Verify against ref
-	verify_reference_image(fb_width, fb_height, current_pixels);
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing viewpoint: %s\n", vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Render
+		app_render(&g_test_app);
+
+		// Capture
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, current_pixels);
+
+		// Flip for PNG/comparison
+		flip_image_vertically(fb_width, fb_height, current_pixels);
+
+		if (capture_mode) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", vpoint->name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, current_pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			// Verify
+			verify_reference_image(fb_width, fb_height,
+			                       current_pixels, vpoint->name);
+		}
+	}
 
 	free(current_pixels);
 }
@@ -216,7 +275,7 @@ void test_app_camera_initialization(void)
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_app_render_single_frame);
+	RUN_TEST(test_app_render_multi_view);
 	RUN_TEST(test_app_camera_initialization);
 
 	// Cleanup APRÈS tous les tests

@@ -99,10 +99,9 @@ jobs:
           mkdir -p visual_artifacts/${{ github.sha }}
           mkdir -p build-coverage/coverage_report/visual_tests
 
-          # Copie des captures (désormais en PNG directement via stb)
-          [ -f tests/ref_frame.png ] && cp tests/ref_frame.png visual_artifacts/${{ github.sha }}/ref.png || echo "No ref"
-          [ -f tests/failed_frame_actual.png ] && cp tests/failed_frame_actual.png visual_artifacts/${{ github.sha }}/actual.png || echo "No actual"
-          [ -f tests/failed_diff_map.png ] && cp tests/failed_diff_map.png visual_artifacts/${{ github.sha }}/diff.png || echo "No diff"
+          # Copie des références et des échecs (6 vues)
+          cp tests/ref_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
+          cp tests/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
 
           # Génération de l'index HTML interactif (Comparaison par survol)
           cat <<EOF > build-coverage/coverage_report/visual_tests/index.html
@@ -161,7 +160,7 @@ jobs:
             | ![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref.png?raw=true) | ![Actual](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/actual.png?raw=true) | ![Diff](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/diff.png?raw=true) |
 
             > [!TIP]
-            > Si ces changements visuels sont attendus, mettez à jour `tests/ref_frame.png`.
+            > Si ces changements visuels sont attendus, mettez à jour les fichiers `tests/ref_*.png`.
 
       - name: Upload Coverage Artifact
         if: always()
