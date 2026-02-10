@@ -2,19 +2,17 @@
 
 #include "gl_common.h"
 #include "log.h"
-#include "render_utils.h"
 #include "utils.h"
 #include <math.h>
 #include <stb_image.h>
 #include <stddef.h>
-
-enum { MAX_TEXTURE_DIMENSION = 8192 };
+#include <stdio.h>
 
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
-	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
-	if (!file_ptr) {
+	CLEANUP_FILE FILE* file = fopen(path, "rb");
+	if (!file) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to open HDR image: %s", path);
 		return NULL;
@@ -22,10 +20,11 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 
 	int img_width = 0;
 	int img_height = 0;
-	int comp = 0;
-	if (!stbi_info_from_file(file_ptr, &img_width, &img_height, &comp)) {
+	int img_channels = 0;
+	if (!stbi_info_from_file(file, &img_width, &img_height,
+	                         &img_channels)) {
 		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to read HDR image header: %s", path);
+		          "Failed to parse HDR image info: %s", path);
 		return NULL;
 	}
 
@@ -37,23 +36,24 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		return NULL;
 	}
 
-	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
+	if (fseek(file, 0, SEEK_SET) != 0) {
 		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to rewind HDR image file: %s", path);
+		          "Failed to reset file cursor: %s", path);
 		return NULL;
 	}
 
-	float* data =
-	    stbi_loadf_from_file(file_ptr, width, height, channels, 4);
+	float* data = stbi_loadf_from_file(file, width, height, channels, 4);
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to load HDR image: %s", path);
+		          "Failed to load HDR pixels: %s", path);
 		return NULL;
 	}
 
 	LOG_INFO("suckless-ogl.texture",
 	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
 	         *channels);
+
+	/* File is automatically closed by CLEANUP_FILE */
 	return data;
 }
 
@@ -73,25 +73,34 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	/* Clear any previous sticky errors to ensure accurate results */
 	(void)glGetError();
 
+	GLuint CLEANUP_TEXTURE tex = 0;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	/* Safer levels calculation to avoid edge cases */
 	int levels = 1;
 	if (width > 0 || height > 0) {
 		levels =
 		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
 	}
 
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	GLuint CLEANUP_TEXTURE tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA16F, levels, "HDR Texture");
+	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after glTexStorage2D: 0x%x (levels: %d, "
+		          "size: %dx%d)",
+		          err, levels, width, height);
+		return 0;
+	}
 
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
 	                GL_FLOAT, data);
 
-	GLenum err = glGetError();
+	err = glGetError();
 	if (err != GL_NO_ERROR) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "GL error after glTexSubImage2D: 0x%x", err);
@@ -99,6 +108,12 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4); /* Restore default */
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+	                GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -110,82 +125,6 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	return TRANSFER_OWNERSHIP(tex);
-}
-
-GLuint texture_load_hdr(const char* path, int* width, int* height)
-{
-	int channels = 0;
-	CLEANUP_FREE float* data =
-	    texture_load_pixels(path, width, height, &channels);
-	if (!data) {
-		return 0;
-	}
-
-	return texture_upload_hdr(data, *width, *height);
-}
-
-GLuint texture_load(const char* path)
-{
-	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
-	if (!file_ptr) {
-		LOG_ERROR("suckless-ogl.texture", "Failed to open image: %s",
-		          path);
-		return 0;
-	}
-
-	int width = 0;
-	int height = 0;
-	int channels = 0;
-
-	if (!stbi_info_from_file(file_ptr, &width, &height, &channels)) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to read image header: %s", path);
-		return 0;
-	}
-
-	if (width > MAX_TEXTURE_DIMENSION || height > MAX_TEXTURE_DIMENSION) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Image exceeds max dimensions: %s (%dx%d > %d)", path,
-		          width, height, MAX_TEXTURE_DIMENSION);
-		return 0;
-	}
-
-	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to rewind image file: %s", path);
-		return 0;
-	}
-
-	/* Force 4 channels (RGBA) */
-	unsigned char* data =
-	    stbi_load_from_file(file_ptr, &width, &height, &channels, 4);
-	if (!data) {
-		LOG_ERROR("suckless-ogl.texture", "Failed to load image: %s",
-		          path);
-		return 0;
-	}
-
-	int levels = 1;
-	if (width > 0 || height > 0) {
-		levels =
-		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	}
-
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	GLuint CLEANUP_TEXTURE tex = render_utils_create_texture_2d(
-	    width, height, GL_RGBA8, levels, path);
-	glBindTexture(GL_TEXTURE_2D, tex);
-
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-	                GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	stbi_image_free(data);
-
-	LOG_INFO("suckless-ogl.texture", "Loaded texture: %s (%dx%d)", path,
-	         width, height);
 
 	return TRANSFER_OWNERSHIP(tex);
 }

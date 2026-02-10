@@ -51,31 +51,39 @@ void tearDown(void)
 	glfwTerminate();
 }
 
-void test_texture_load_hdr_invalid_path(void)
+void test_texture_load_pixels_invalid_path(void)
 {
 	int width = INITIAL_DIMENSION;
 	int height = INITIAL_DIMENSION;
-	GLuint tex = texture_load_hdr("non_existent_file.hdr", &width, &height);
+	int channels = 0;
+	float* data = texture_load_pixels("non_existent_file.hdr", &width,
+	                                  &height, &channels);
 
-	// Should return 0 for invalid file
-	TEST_ASSERT_EQUAL(INVALID_TEX, tex);
+	// Should return NULL for invalid file
+	TEST_ASSERT_NULL(data);
 }
 
-void test_texture_load_hdr_success(void)
+void test_texture_integration_success(void)
 {
 	int width = INITIAL_DIMENSION;
 	int height = INITIAL_DIMENSION;
+	int channels = 0;
 
 	// Use the actual HDR file from assets (relative to build/tests)
-	GLuint tex = texture_load_hdr(
-	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
+	float* data =
+	    texture_load_pixels("assets/textures/hdr/abandoned_garage_4k.hdr",
+	                        &width, &height, &channels);
 
-	// Should return non-zero texture ID
-	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
-
+	TEST_ASSERT_NOT_NULL(data);
 	// Should have valid dimensions
 	TEST_ASSERT_GREATER_THAN(INITIAL_DIMENSION, width);
 	TEST_ASSERT_GREATER_THAN(INITIAL_DIMENSION, height);
+
+	GLuint tex = texture_upload_hdr(data, width, height);
+	free(data);
+
+	// Should return non-zero texture ID
+	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
 
 	// Verify it's a valid OpenGL texture
 	TEST_ASSERT_TRUE(glIsTexture(tex));
@@ -83,13 +91,18 @@ void test_texture_load_hdr_success(void)
 	glDeleteTextures(DELETE_COUNT, &tex);
 }
 
-void test_texture_load_hdr_creates_gl_texture(void)
+void test_texture_upload_hdr_properties(void)
 {
 	int width = INITIAL_DIMENSION;
 	int height = INITIAL_DIMENSION;
-	GLuint tex = texture_load_hdr(
-	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
+	int channels = 0;
+	float* data =
+	    texture_load_pixels("assets/textures/hdr/abandoned_garage_4k.hdr",
+	                        &width, &height, &channels);
+	TEST_ASSERT_NOT_NULL(data);
 
+	GLuint tex = texture_upload_hdr(data, width, height);
+	free(data);
 	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
 
 	// Bind and verify texture properties
@@ -112,21 +125,6 @@ void test_texture_load_hdr_creates_gl_texture(void)
 
 	TEST_ASSERT_EQUAL(width, tex_width);
 	TEST_ASSERT_EQUAL(height, tex_height);
-
-	glBindTexture(GL_TEXTURE_2D, INVALID_TEX);
-	glDeleteTextures(DELETE_COUNT, &tex);
-}
-
-void test_texture_load_hdr_sets_parameters(void)
-{
-	int width = INITIAL_DIMENSION;
-	int height = INITIAL_DIMENSION;
-	GLuint tex = texture_load_hdr(
-	    "assets/textures/hdr/abandoned_garage_4k.hdr", &width, &height);
-
-	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
-
-	glBindTexture(GL_TEXTURE_2D, tex);
 
 	// Verify texture parameters
 	GLint min_filter = INITIAL_DIMENSION;
@@ -151,9 +149,8 @@ void test_texture_load_hdr_sets_parameters(void)
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_texture_load_hdr_invalid_path);
-	RUN_TEST(test_texture_load_hdr_success);
-	RUN_TEST(test_texture_load_hdr_creates_gl_texture);
-	RUN_TEST(test_texture_load_hdr_sets_parameters);
+	RUN_TEST(test_texture_load_pixels_invalid_path);
+	RUN_TEST(test_texture_integration_success);
+	RUN_TEST(test_texture_upload_hdr_properties);
 	return UNITY_END();
 }
