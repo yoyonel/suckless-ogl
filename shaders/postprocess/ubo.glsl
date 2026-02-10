@@ -188,3 +188,9 @@ const bool enableVectorFieldDebug = bool(OPT_ENABLE_VECTOR_FIELD_DEBUG);
 #else
 #define enableVectorFieldDebug ((activeEffects & (1u << 15u)) != 0u)
 #endif
+
+#ifdef OPT_ENABLE_STENCIL_DEBUG
+const bool enableStencilDebug = bool(OPT_ENABLE_STENCIL_DEBUG);
+#else
+#define enableStencilDebug ((activeEffects & (1u << 16u)) != 0u)
+#endif

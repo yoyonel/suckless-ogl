@@ -938,6 +938,7 @@ static const EffectMetadata ALL_EFFECTS[] = {
     {POSTFX_BANDING, "Banding", "OPT_ENABLE_BANDING"},
     {POSTFX_VECTOR_FIELD_DEBUG, "Vector Field Debug",
      "OPT_ENABLE_VECTOR_FIELD_DEBUG"},
+    {POSTFX_STENCIL_DEBUG, "Stencil Debug View", "OPT_ENABLE_STENCIL_DEBUG"},
 };
 
 #define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))

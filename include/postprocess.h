@@ -86,6 +86,7 @@ typedef enum {
 	POSTFX_BANDING = (1U << 14U),    /**< Color banding/quantization. */
 	POSTFX_VECTOR_FIELD_DEBUG =
 	    (1U << 15U), /**< Vector field velocity visualization. */
+	POSTFX_STENCIL_DEBUG = (1U << 16U), /**< Stencil mask visualization. */
 } PostProcessEffect;
 
 /** @brief Default mask of active effects. */

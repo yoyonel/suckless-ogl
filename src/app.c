@@ -485,6 +485,13 @@ void app_render(App* app)
 	{
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
 		                   GPU_PROFILER_SCENE_COLOR);
+
+		/* Stencil Setup: mark sphere pixels with 1 */
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+		glStencilMask(DEFAULT_STENCIL_MASK);
+
 		if (app->billboard_mode) {
 			sphere_sorter_sort(
 			    &app->sphere_sorter, &app->sphere_instances,
@@ -533,6 +540,13 @@ void app_render(App* app)
 	{
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+
+		/* Stencil Setup: mark sphere pixels with 1 */
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+		glStencilMask(DEFAULT_STENCIL_MASK);
+
 		if (app->billboard_mode) {
 			app_render_billboards(app, view, proj, camera_pos);
 		} else {

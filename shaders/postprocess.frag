@@ -44,10 +44,17 @@ void main()
 		return;
 	}
 
-	vec3 color;
+	/* 1c. Priority Debug Check for Stencil Buffer */
+	if (enableStencilDebug) {
+		uint sVal = texture(stencilTexture, TexCoords).r;
+		FragColor = vec4(vec3(float(sVal)), 1.0);
+		return;
+	}
 
+	vec3 color;
 	/* Stencil Check: 0 = Skybox/Background, 1 = Object */
 	uint stencil = texture(stencilTexture, TexCoords).r;
+
 	bool isSkybox = (stencil == 0u);
 
 	/* 2. Pipeline: Motion Blur -> Chromatic Aberration -> FXAA
@@ -62,8 +69,12 @@ void main()
 	}
 
 	if (enableFXAA) {
-		/* FXAA applied on top of the MB+CA result */
-		color = applyFXAA(color, TexCoords);
+		if (isSkybox) {
+			/* Skip FXAA on skybox to preserve star sharpness */
+		} else {
+			/* FXAA applied on top of the MB+CA result */
+			color = applyFXAA(color, TexCoords);
+		}
 	}
 
 	/* 3. Depth of Field */
