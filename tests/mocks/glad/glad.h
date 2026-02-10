@@ -10,6 +10,8 @@ typedef int GLsizei;
 typedef char GLchar;
 typedef unsigned char GLboolean;
 typedef float GLfloat;
+typedef ptrdiff_t GLsizeiptr;
+typedef ptrdiff_t GLintptr;
 
 #define GL_FALSE 0
 #define GL_TRUE 1
@@ -41,6 +43,16 @@ typedef float GLfloat;
 #define GL_LINEAR_MIPMAP_LINEAR 0x2703
 #define GL_UNPACK_ALIGNMENT 0x0CF5
 #define GL_NO_ERROR 0
+
+#define GL_ARRAY_BUFFER 0x8892
+#define GL_ELEMENT_ARRAY_BUFFER 0x8893
+#define GL_DYNAMIC_DRAW 0x88E8
+#define GL_STATIC_DRAW 0x88E4
+#define GL_TRIANGLES 0x0004
+#define GL_TRIANGLE_STRIP 0x0005
+#define GL_LINES 0x0001
+#define GL_LINE_LOOP 0x0002
+#define GL_CULL_FACE 0x0B44
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -84,5 +96,23 @@ void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      const void* pixels);
 GLenum glGetError(void);
 void glGenerateMipmap(GLenum target);
+
+/* Added for billboard tests */
+void glGenBuffers(GLsizei n, GLuint* buffers);
+void glBindBuffer(GLenum target, GLuint buffer);
+void glBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
+void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
+void glGenVertexArrays(GLsizei n, GLuint* arrays);
+void glBindVertexArray(GLuint array);
+void glDeleteVertexArrays(GLsizei n, const GLuint* arrays);
+void glEnableVertexAttribArray(GLuint index);
+void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer);
+void glVertexAttribDivisor(GLuint index, GLuint divisor);
+void glDisableVertexAttribArray(GLuint index);
+void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
+void glDeleteBuffers(GLsizei n, const GLuint* buffers);
+GLboolean glIsEnabled(GLenum cap);
+void glDisable(GLenum cap);
+void glEnable(GLenum cap);
 
 #endif

@@ -13,6 +13,7 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
                           int count)
 {
 	group->instance_count = count;
+	group->capacity = count;
 	group->vao = 0;
 	group->vao_wire_quad = 0;
 	group->vao_wire_box = 0;
@@ -32,6 +33,15 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
 	if (group->instance_vbo == 0) {
 		return;
 	}
+
+	if (count > group->capacity) {
+		LOG_ERROR("suckless-ogl.billboard",
+		          "Instance count %d exceeds capacity %d. Truncating.",
+		          count, group->capacity);
+		count = group->capacity;
+	}
+
+	group->instance_count = count;
 
 	/* Update GPU buffer with new sorted data */
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);

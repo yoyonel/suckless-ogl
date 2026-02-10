@@ -42,7 +42,7 @@ file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
 
 # Exclure le test standalone de la boucle générique
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\.c$")
-list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_safety\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_safety\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -132,23 +132,22 @@ add_test(NAME test_shader_path_security_standalone
          COMMAND test_shader_path_security_standalone)
 
 # =============================================================================
-# TEST TEXTURE SAFETY (MOCKED)
+# TEST BILLBOARD SAFETY (MOCKED)
 # =============================================================================
-add_executable(test_texture_safety
-    test_texture_safety.c
+add_executable(test_billboard_safety
+    test_billboard_safety.c
 )
 
-target_include_directories(test_texture_safety PRIVATE
+target_include_directories(test_billboard_safety PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
-    ${stb_SOURCE_DIR}
 )
 
-target_link_libraries(test_texture_safety PRIVATE cglm)
+target_link_libraries(test_billboard_safety PRIVATE cglm)
 
-add_test(NAME test_texture_safety
-         COMMAND test_texture_safety)
+add_test(NAME test_billboard_safety
+         COMMAND test_billboard_safety)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION
