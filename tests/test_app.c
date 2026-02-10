@@ -28,7 +28,7 @@ static const int DIFF_MAP_VALUE = 255;
 static const float PERCENTAGE_FACTOR = 100.0F;
 static const int FACTOR_DIV2 = 2;
 static const int COORD_DEC = 1;
-static const float CAMERA_DIST = 15.0F;
+static const float CAMERA_DIST = 25.0F;
 static const int PATH_BUF_SIZE = 256;
 static const int ERR_BUF_SIZE = 512;
 
