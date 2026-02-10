@@ -4,5 +4,6 @@ var app_8c =
     [ "app_init", "app_8c.html#a3fba3cd076f4d3741e107df1f4d69c39", null ],
     [ "app_render", "app_8c.html#a296499ce009ce4939c9c75ba738373dd", null ],
     [ "app_run", "app_8c.html#a1d3b9d4294ec4a01762c962902b9063d", null ],
-    [ "app_update", "app_8c.html#ad74ca828f85941cd20bc12561b854dcb", null ]
+    [ "app_update", "app_8c.html#ad74ca828f85941cd20bc12561b854dcb", null ],
+    [ "stencil_begin_object_pass", "app_8c.html#a07d33cc6833b19b823bb6ecc235cdd54", null ]
 ];

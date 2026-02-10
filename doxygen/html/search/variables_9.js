@@ -20,9 +20,8 @@ var searchData=
   ['invatan_17',['invAtan',['../background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80',1,'background.frag']]],
   ['iridiance_5fmap_5fsize_18',['IRIDIANCE_MAP_SIZE',['../group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743',1,'app_settings.h']]],
   ['irradiance_5fmap_19',['irradiance_map',['../structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed',1,'BillboardUniforms::irradiance_map'],['../structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b',1,'InstancedUniforms::irradiance_map']]],
-  ['irradiance_5fmap_5fslices_20',['IRRADIANCE_MAP_SLICES',['../app__env_8c.html#a432a23876db6261ec70f4565ca1cce79',1,'app_env.c']]],
-  ['irradiance_5ftex_21',['irradiance_tex',['../structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09',1,'App']]],
-  ['irradiancemap_22',['irradiancemap',['../pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_instanced.frag']]],
-  ['is_5ffullscreen_23',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],
-  ['is_5foptimized_24',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]]
+  ['irradiance_5ftex_20',['irradiance_tex',['../structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09',1,'App']]],
+  ['irradiancemap_21',['irradiancemap',['../pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_instanced.frag']]],
+  ['is_5ffullscreen_22',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],
+  ['is_5foptimized_23',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]]
 ];

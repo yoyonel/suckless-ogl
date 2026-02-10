@@ -1,135 +1,136 @@
 <map id="key_callback" name="key_callback">
-<area shape="rect" id="Node000001" title="Primary GLFW key callback." alt="" coords="5,524,112,549"/>
-<area shape="rect" id="Node000002" href="$app__input_8c.html#a3070b445bac4fb12dc3494a9e6746038" title="Bridges GLFW key actions to the camera movement state machine." alt="" coords="160,487,319,527"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,525,146,520,146,525,113,531"/>
-<area shape="rect" id="Node000003" href="$app__input_8c.html#a588f02e0bebbc36ff133173dd0392713" title="Dispatches application&#45;level logic for key inputs." alt="" coords="171,552,308,577"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="113,542,157,549,156,554,112,547"/>
-<area shape="rect" id="Node000004" href="$action__notifier_8c.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="1123,577,1277,603"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="308,561,630,562,841,566,1055,574,1110,578,1109,583,1055,579,841,571,630,567,308,566"/>
-<area shape="rect" id="Node000006" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="367,679,583,704"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="256,575,303,615,368,657,406,672,404,677,365,662,300,620,253,579"/>
-<area shape="rect" id="Node000007" href="$app__input_8c.html#a9a2123d651d35286740d81fd3867de3e" title=" " alt="" coords="652,813,800,839"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="309,558,371,560,442,569,516,587,551,602,584,620,609,638,632,660,670,710,698,759,717,800,712,802,694,761,666,713,628,664,606,642,581,624,549,606,514,593,441,574,370,565,308,564"/>
-<area shape="rect" id="Node000021" href="$app__input_8c.html#aecc117b5009197af82d636741be94d47" title=" " alt="" coords="891,425,1033,451"/>
-<area shape="poly" id="edge25_Node000003_Node000021" title=" " alt="" coords="280,549,318,537,366,518,505,488,645,465,773,450,877,441,878,446,774,455,646,471,506,493,367,523,320,542,282,554"/>
-<area shape="rect" id="Node000053" href="$app__input_8c.html#a23cc3bda145f0197aef87ff97a54cf8f" title="Handles input for toggling individual effects (Vignette, Bloom, etc.)." alt="" coords="399,266,550,306"/>
-<area shape="poly" id="edge35_Node000003_Node000053" title=" " alt="" coords="298,550,317,537,337,510,345,483,350,453,364,418,403,361,443,314,447,318,408,365,369,421,355,454,350,484,342,512,320,541,301,554"/>
-<area shape="rect" id="Node000066" href="$app__input_8c.html#a626b17296c88e804d1a3e4c6c702d526" title=" " alt="" coords="631,1223,821,1248"/>
-<area shape="poly" id="edge65_Node000003_Node000066" title=" " alt="" coords="266,575,312,598,367,619,400,627,430,629,483,627,508,628,533,632,558,644,585,664,721,1208,716,1210,580,667,556,648,531,637,508,633,483,633,430,635,399,632,366,624,310,602,263,580"/>
-<area shape="rect" id="Node000005" href="$utils_8h.html#a823bc487fbd1a8980dc7a3e5e2277179" title="Safe wrapper around strncpy to ensure null&#45;termination." alt="" coords="1374,577,1479,603"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1277,587,1360,587,1360,593,1277,593"/>
-<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="729,812,745,772,773,716,814,659,839,634,868,613,927,588,990,575,1053,572,1110,574,1109,579,1053,577,991,581,928,593,871,618,843,638,818,662,777,719,750,774,734,814"/>
-<area shape="rect" id="Node000008" href="$utils_8h.html#abe907a059a85eecc3b288d41b903d5e7" title="Bitwise flag check helper." alt="" coords="1155,921,1245,947"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="745,837,799,873,833,891,870,906,942,923,1015,932,1083,935,1141,935,1141,940,1083,940,1014,937,941,928,869,911,831,896,796,877,742,841"/>
-<area shape="rect" id="Node000009" href="$gpu__profiler__ui_8c.html#a5fc61f55cf3d2919113ecdcbc53ea5a3" title="Toggles the timeline position (Top/Bottom)." alt="" coords="879,742,1045,782"/>
-<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="773,811,873,783,875,788,775,816"/>
-<area shape="rect" id="Node000010" href="$gpu__profiler__ui_8c.html#a887925b2aff08e85f6c5028edc30ef98" title="Toggles the timeline visibility (with animation)." alt="" coords="879,806,1045,846"/>
-<area shape="poly" id="edge10_Node000007_Node000010" title=" " alt="" coords="801,823,865,823,865,829,801,829"/>
-<area shape="rect" id="Node000011" href="$app__input_8c.html#af8794c576ee7a51b3733dc59e8f52f55" title=" " alt="" coords="881,871,1043,896"/>
-<area shape="poly" id="edge11_Node000007_Node000011" title=" " alt="" coords="780,836,897,865,895,870,778,841"/>
-<area shape="rect" id="Node000012" href="$utils_8h.html#ab1d13540441b5a2f988e0cd57754e625" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="1797,871,1904,896"/>
-<area shape="poly" id="edge24_Node000007_Node000012" title=" " alt="" coords="730,838,735,906,742,955,754,1009,772,1064,796,1118,829,1167,871,1208,912,1234,950,1249,986,1254,1023,1253,1101,1241,1147,1235,1199,1233,1428,1233,1465,1230,1502,1222,1537,1209,1570,1193,1633,1151,1690,1100,1739,1045,1779,991,1834,907,1838,909,1784,994,1743,1048,1693,1104,1637,1155,1573,1198,1539,1214,1503,1227,1466,1235,1428,1238,1199,1238,1147,1240,1102,1246,1023,1258,986,1259,949,1254,910,1239,868,1212,825,1171,792,1121,767,1066,749,1010,737,956,730,907,725,839"/>
-<area shape="rect" id="Node000013" href="$app__input_8c.html#afb03f1c912b8d6ee442c51f99cccf89c" title=" " alt="" coords="869,692,1055,717"/>
-<area shape="poly" id="edge14_Node000007_Node000013" title=" " alt="" coords="741,811,795,770,831,748,868,728,890,719,891,724,870,732,833,752,798,775,744,815"/>
-<area shape="rect" id="Node000014" href="$perf__mode_8c.html#aa6e7d34f198b807e5319bd33ed97aaa2" title="Get a human&#45;readable string for the current state." alt="" coords="882,627,1042,667"/>
-<area shape="poly" id="edge17_Node000007_Node000014" title=" " alt="" coords="734,811,787,749,825,711,868,678,881,671,884,675,871,683,828,715,791,753,739,815"/>
-<area shape="rect" id="Node000015" href="$perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a" title="Request deactivation of performance mode." alt="" coords="873,1073,1051,1099"/>
-<area shape="poly" id="edge18_Node000007_Node000015" title=" " alt="" coords="738,837,791,912,829,961,871,1008,934,1063,931,1067,867,1012,825,964,787,915,734,840"/>
-<area shape="rect" id="Node000018" href="$perf__mode_8c.html#a24bb58cfa7928d93310def4391d3394e" title="Request activation of performance mode." alt="" coords="869,1123,1055,1148"/>
-<area shape="poly" id="edge21_Node000007_Node000018" title=" " alt="" coords="732,838,745,889,771,963,789,1003,812,1042,839,1078,871,1109,877,1114,874,1118,868,1113,835,1082,808,1045,785,1005,766,965,740,891,727,840"/>
-<area shape="poly" id="edge12_Node000011_Node000004" title=" " alt="" coords="1032,868,1053,856,1081,829,1106,799,1146,732,1173,667,1190,615,1195,617,1178,668,1151,734,1110,802,1085,833,1056,860,1034,873"/>
-<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="1044,881,1783,881,1783,886,1044,886"/>
-<area shape="poly" id="edge15_Node000013_Node000004" title=" " alt="" coords="1018,689,1054,677,1117,643,1169,608,1172,613,1120,648,1056,682,1020,694"/>
-<area shape="poly" id="edge16_Node000013_Node000012" title=" " alt="" coords="1027,715,1784,867,1783,873,1026,720"/>
-<area shape="rect" id="Node000016" href="$perf__mode_8c.html#aceef0f4621470222733f17aba42c69b0" title="Deactivate GameMode backend." alt="" coords="1114,973,1286,999"/>
-<area shape="poly" id="edge19_Node000015_Node000016" title=" " alt="" coords="1010,1071,1053,1052,1067,1041,1076,1030,1086,1020,1101,1009,1120,1001,1122,1006,1104,1014,1090,1024,1080,1034,1071,1045,1056,1056,1012,1076"/>
-<area shape="rect" id="Node000017" href="$perf__mode_8c.html#ae7d534a6d1e90285fdd2cb6f262ebbec" title="Deactivate native Linux scheduler." alt="" coords="1131,1023,1269,1048"/>
-<area shape="poly" id="edge20_Node000015_Node000017" title=" " alt="" coords="1022,1071,1126,1048,1127,1053,1023,1076"/>
-<area shape="rect" id="Node000019" href="$perf__mode_8c.html#a14e32f8e0379a6b587c9c163912ef738" title="Activate using GameMode backend." alt="" coords="1122,1072,1278,1097"/>
-<area shape="poly" id="edge22_Node000018_Node000019" title=" " alt="" coords="1022,1120,1126,1098,1127,1103,1023,1125"/>
-<area shape="rect" id="Node000020" href="$perf__mode_8c.html#a3248ef5884dfcaa4a23445e299cdc5b4" title="Activate using native Linux scheduler." alt="" coords="1139,1121,1261,1147"/>
-<area shape="poly" id="edge23_Node000018_Node000020" title=" " alt="" coords="1055,1132,1125,1132,1125,1137,1055,1137"/>
-<area shape="poly" id="edge26_Node000021_Node000004" title=" " alt="" coords="1013,448,1056,468,1082,488,1104,512,1172,567,1169,571,1101,516,1078,492,1053,472,1010,453"/>
-<area shape="poly" id="edge27_Node000021_Node000008" title=" " alt="" coords="973,449,1057,614,1134,781,1190,908,1185,910,1130,783,1052,616,968,452"/>
-<area shape="rect" id="Node000022" href="$postprocess_8c.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="1111,376,1289,401"/>
-<area shape="poly" id="edge28_Node000021_Node000022" title=" " alt="" coords="1023,423,1124,401,1125,407,1024,428"/>
-<area shape="rect" id="Node000023" href="$postprocess_8c.html#a90e1be83610a9debc59503b380a0bcd1" title="Toggles the current state of an effect." alt="" coords="1126,477,1274,503"/>
-<area shape="poly" id="edge29_Node000021_Node000023" title=" " alt="" coords="1021,448,1129,472,1127,477,1020,453"/>
-<area shape="rect" id="Node000024" href="$postprocess_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847" title=" " alt="" coords="1345,51,1508,91"/>
-<area shape="poly" id="edge30_Node000023_Node000024" title=" " alt="" coords="1224,475,1262,449,1280,431,1295,411,1313,370,1320,331,1319,295,1314,259,1310,224,1311,188,1321,150,1343,110,1355,98,1359,101,1347,113,1326,152,1316,188,1316,224,1319,259,1324,294,1325,332,1318,371,1300,414,1284,435,1265,453,1227,479"/>
-<area shape="rect" id="Node000025" href="$postprocess_8c.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="1559,159,1717,199"/>
-<area shape="poly" id="edge31_Node000024_Node000025" title=" " alt="" coords="1470,89,1509,109,1588,150,1586,155,1507,114,1468,94"/>
-<area shape="poly" id="edge34_Node000025_Node000012" title=" " alt="" coords="1700,197,1722,216,1737,240,1751,270,1775,345,1796,436,1813,534,1838,724,1850,856,1845,857,1832,725,1808,535,1790,437,1770,346,1746,271,1732,242,1718,220,1697,201"/>
-<area shape="rect" id="Node000026" href="$postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0" title=" " alt="" coords="1770,143,1931,168"/>
-<area shape="poly" id="edge32_Node000025_Node000026" title=" " alt="" coords="1717,168,1756,163,1757,169,1718,173"/>
-<area shape="rect" id="Node000027" href="$postprocess_8c.html#a7a5221e8b5c9dc0821f1315ee7151933" title=" " alt="" coords="1768,192,1933,217"/>
-<area shape="poly" id="edge33_Node000025_Node000027" title=" " alt="" coords="1718,186,1755,191,1754,196,1717,191"/>
-<area shape="poly" id="edge36_Node000053_Node000004" title=" " alt="" coords="497,304,554,357,592,385,632,409,692,436,745,453,793,464,840,471,936,485,992,498,1056,518,1114,543,1165,568,1163,573,1112,548,1054,523,990,503,935,490,839,476,793,469,744,458,690,441,629,414,589,389,551,361,493,308"/>
-<area shape="poly" id="edge57_Node000053_Node000022" title=" " alt="" coords="551,289,677,301,822,318,984,344,1124,371,1123,376,983,349,821,323,677,306,550,294"/>
-<area shape="rect" id="Node000054" href="$app__input_8c.html#a583074ebed862e1123c50cd81d966d30" title=" " alt="" coords="875,223,1049,248"/>
-<area shape="poly" id="edge37_Node000053_Node000054" title=" " alt="" coords="550,274,630,265,861,242,862,247,631,270,551,279"/>
-<area shape="rect" id="Node000056" href="$app__input_8c.html#a0b000326b1ad4008a3c22a3c1800652d" title="Handles input for switching post&#45;processing presets." alt="" coords="885,173,1039,199"/>
-<area shape="poly" id="edge41_Node000053_Node000056" title=" " alt="" coords="535,263,630,237,755,212,870,195,871,200,756,217,631,242,536,268"/>
-<area shape="rect" id="Node000062" href="$postprocess_8c.html#aa46668e6882df082d99ef8735eadc8af" title="Disables a specific effect." alt="" coords="649,15,803,40"/>
-<area shape="poly" id="edge53_Node000053_Node000062" title=" " alt="" coords="481,265,500,220,532,161,574,101,600,73,629,49,638,43,641,48,632,53,604,77,579,104,536,164,505,222,486,267"/>
-<area shape="rect" id="Node000063" href="$postprocess_8c.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="651,64,801,89"/>
-<area shape="poly" id="edge55_Node000053_Node000063" title=" " alt="" coords="498,264,697,96,700,100,502,268"/>
-<area shape="rect" id="Node000064" href="$app__input_8c.html#aa8e01475685f4c3126c6937d1dd96e53" title=" " alt="" coords="907,376,1017,401"/>
-<area shape="poly" id="edge58_Node000053_Node000064" title=" " alt="" coords="551,299,894,372,893,377,550,304"/>
-<area shape="rect" id="Node000065" href="$app__input_8c.html#adb3ffbd53fe7c2946b84b2ca396dab33" title=" " alt="" coords="639,375,813,400"/>
-<area shape="poly" id="edge63_Node000053_Node000065" title=" " alt="" coords="519,304,632,353,672,368,671,373,630,358,517,309"/>
-<area shape="poly" id="edge38_Node000054_Node000004" title=" " alt="" coords="977,247,1015,295,1057,362,1072,405,1078,440,1085,474,1105,512,1134,544,1166,568,1163,572,1130,548,1100,515,1080,476,1073,441,1067,406,1052,364,1011,298,973,250"/>
-<area shape="poly" id="edge40_Node000054_Node000012" title=" " alt="" coords="985,246,1037,277,1104,309,1157,326,1201,333,1245,342,1298,361,1431,422,1531,478,1575,510,1620,548,1722,652,1763,705,1797,761,1842,856,1837,858,1792,764,1758,708,1718,656,1617,552,1572,515,1528,483,1428,427,1296,366,1244,347,1200,338,1156,331,1102,314,1035,282,982,250"/>
-<area shape="rect" id="Node000055" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="1103,275,1297,300"/>
-<area shape="poly" id="edge39_Node000054_Node000055" title=" " alt="" coords="1021,245,1129,269,1127,274,1020,251"/>
-<area shape="poly" id="edge42_Node000056_Node000004" title=" " alt="" coords="1041,196,1057,208,1083,246,1094,283,1095,320,1090,356,1084,393,1082,431,1087,470,1105,513,1131,544,1163,568,1160,572,1128,548,1100,515,1082,472,1076,431,1079,392,1085,355,1089,319,1089,284,1078,248,1053,212,1038,200"/>
-<area shape="poly" id="edge52_Node000056_Node000012" title=" " alt="" coords="1034,196,1180,226,1249,243,1298,259,1433,320,1487,347,1536,375,1581,408,1625,448,1672,497,1722,558,1749,596,1772,636,1808,721,1833,798,1847,856,1842,857,1827,800,1803,723,1767,639,1744,598,1718,561,1668,500,1622,452,1578,412,1533,380,1485,352,1431,325,1296,264,1247,248,1179,231,1033,201"/>
-<area shape="poly" id="edge50_Node000056_Node000022" title=" " alt="" coords="1038,196,1056,208,1076,232,1084,257,1090,282,1105,310,1135,341,1168,366,1165,370,1132,345,1101,313,1085,284,1079,259,1072,235,1053,212,1035,201"/>
-<area shape="poly" id="edge51_Node000056_Node000055" title=" " alt="" coords="1029,196,1056,208,1071,219,1081,231,1090,242,1104,253,1135,268,1133,273,1101,258,1086,246,1077,234,1068,223,1053,212,1027,201"/>
-<area shape="rect" id="Node000057" href="$effect__benchmark_8c.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="1121,109,1279,149"/>
-<area shape="poly" id="edge43_Node000056_Node000057" title=" " alt="" coords="1015,171,1107,148,1109,153,1016,176"/>
-<area shape="rect" id="Node000058" href="$effect__benchmark_8c.html#aa2cc8b49697d1f8554bc69ce6c5a77d2" title="Starts a new benchmark sweep." alt="" coords="1112,173,1288,199"/>
-<area shape="poly" id="edge44_Node000056_Node000058" title=" " alt="" coords="1040,183,1098,183,1098,189,1040,189"/>
-<area shape="rect" id="Node000061" href="$postprocess_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409" title="Applies all settings from a preset atomically." alt="" coords="1105,59,1295,84"/>
-<area shape="poly" id="edge48_Node000056_Node000061" title=" " alt="" coords="978,171,1031,133,1102,94,1125,85,1127,90,1104,99,1034,138,981,175"/>
-<area shape="rect" id="Node000059" href="$effect__benchmark_8c.html#a24534e9b42a963dfb6019f99c41a2514" title="Atomically apply a new effect bitmask." alt="" coords="1372,173,1481,199"/>
-<area shape="poly" id="edge45_Node000058_Node000059" title=" " alt="" coords="1289,183,1358,183,1358,189,1289,189"/>
-<area shape="rect" id="Node000060" href="$effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01" title=" " alt="" coords="1355,124,1498,149"/>
-<area shape="poly" id="edge47_Node000058_Node000060" title=" " alt="" coords="1258,171,1354,150,1355,155,1260,176"/>
-<area shape="poly" id="edge46_Node000059_Node000025" title=" " alt="" coords="1482,182,1545,180,1545,185,1482,187"/>
-<area shape="poly" id="edge49_Node000061_Node000024" title=" " alt="" coords="1296,69,1332,69,1332,74,1296,74"/>
-<area shape="poly" id="edge54_Node000062_Node000024" title=" " alt="" coords="803,16,903,8,1026,3,1162,6,1231,12,1298,22,1335,31,1370,44,1369,49,1334,36,1297,27,1230,18,1162,12,1026,8,903,13,804,21"/>
-<area shape="poly" id="edge56_Node000063_Node000024" title=" " alt="" coords="801,63,900,51,1024,41,1160,37,1298,43,1332,48,1331,53,1297,49,1160,42,1024,46,900,56,802,68"/>
-<area shape="poly" id="edge59_Node000064_Node000004" title=" " alt="" coords="1019,392,1038,399,1056,411,1076,435,1084,460,1090,485,1105,512,1135,543,1168,568,1164,572,1132,547,1101,516,1085,487,1079,461,1072,438,1053,415,1036,404,1017,397"/>
-<area shape="poly" id="edge62_Node000064_Node000012" title=" " alt="" coords="1018,395,1147,420,1223,439,1298,462,1408,503,1454,527,1510,562,1610,640,1703,724,1779,801,1831,858,1827,862,1775,805,1699,728,1607,644,1506,567,1451,531,1406,508,1296,467,1222,444,1146,425,1017,400"/>
-<area shape="poly" id="edge60_Node000064_Node000022" title=" " alt="" coords="1018,386,1098,386,1098,391,1018,391"/>
-<area shape="poly" id="edge61_Node000064_Node000023" title=" " alt="" coords="1019,396,1056,410,1071,422,1081,433,1090,445,1104,456,1135,470,1133,475,1101,460,1086,448,1077,437,1068,425,1053,415,1017,401"/>
-<area shape="poly" id="edge64_Node000065_Node000064" title=" " alt="" coords="814,385,893,386,893,391,814,390"/>
-<area shape="poly" id="edge66_Node000066_Node000004" title=" " alt="" coords="732,1221,751,1189,781,1145,821,1099,868,1060,894,1046,919,1040,965,1038,1009,1034,1030,1025,1053,1008,1066,987,1083,948,1122,834,1189,615,1194,617,1127,836,1088,950,1071,990,1057,1012,1033,1029,1010,1039,966,1043,920,1045,896,1051,871,1064,824,1103,785,1148,755,1191,736,1224"/>
-<area shape="rect" id="Node000067" href="$app__input_8c.html#a5bd036fc9913a0b441d5a2121daf0f0e" title="Handles input for cycling environment maps." alt="" coords="878,1273,1046,1299"/>
-<area shape="poly" id="edge67_Node000066_Node000067" title=" " alt="" coords="787,1245,890,1268,888,1273,786,1251"/>
-<area shape="rect" id="Node000070" href="$app__input_8c.html#a9ad0dce8449731259f77702aeba8e457" title="Captures the current framebuffer and saves it as a PNG file." alt="" coords="881,1372,1043,1397"/>
-<area shape="poly" id="edge75_Node000066_Node000070" title=" " alt="" coords="740,1246,793,1301,830,1332,871,1358,885,1365,883,1370,868,1363,826,1336,789,1304,736,1250"/>
-<area shape="rect" id="Node000071" href="$app__input_8c.html#a479d0af6d3acd4e6dc4e13cd29b9b63d" title="Toggles the application window between Windowed and Fullscreen." alt="" coords="879,1421,1045,1447"/>
-<area shape="poly" id="edge76_Node000066_Node000071" title=" " alt="" coords="736,1247,755,1280,785,1323,824,1369,871,1408,881,1413,878,1418,868,1412,820,1373,781,1327,751,1282,732,1249"/>
-<area shape="rect" id="Node000072" href="$camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="913,1323,1011,1348"/>
-<area shape="poly" id="edge77_Node000066_Node000072" title=" " alt="" coords="749,1246,803,1277,870,1309,900,1319,899,1324,868,1314,800,1282,746,1250"/>
-<area shape="rect" id="Node000074" href="$app__input_8c.html#a8f2a339cb07f464d7404ae746b0dc910" title=" " alt="" coords="877,972,1047,997"/>
-<area shape="poly" id="edge79_Node000066_Node000074" title=" " alt="" coords="730,1221,747,1181,776,1126,816,1067,841,1039,868,1014,892,1000,894,1005,871,1019,844,1043,821,1070,781,1129,752,1184,735,1223"/>
-<area shape="rect" id="Node000075" href="$app__input_8c.html#a18f4841f6aa0703c4b80ae627bb8bacd" title=" " alt="" coords="884,1172,1040,1197"/>
-<area shape="poly" id="edge81_Node000066_Node000075" title=" " alt="" coords="786,1220,888,1198,890,1203,787,1225"/>
-<area shape="poly" id="edge68_Node000067_Node000004" title=" " alt="" coords="985,1271,1021,1245,1038,1228,1052,1209,1072,1168,1084,1131,1089,1098,1090,1065,1089,996,1092,955,1100,909,1146,741,1187,615,1192,617,1151,742,1105,911,1097,956,1095,996,1095,1065,1094,1098,1089,1133,1077,1170,1057,1211,1042,1232,1024,1249,988,1275"/>
-<area shape="poly" id="edge73_Node000067_Node000008" title=" " alt="" coords="985,1271,1021,1245,1038,1228,1052,1209,1067,1174,1073,1142,1069,1081,1067,1051,1069,1022,1079,991,1101,960,1119,946,1140,937,1142,942,1122,951,1105,964,1084,994,1074,1023,1072,1051,1074,1081,1078,1142,1073,1176,1057,1211,1042,1231,1024,1249,988,1275"/>
-<area shape="poly" id="edge74_Node000067_Node000012" title=" " alt="" coords="1046,1285,1222,1286,1433,1284,1618,1274,1683,1264,1719,1252,1756,1216,1785,1173,1808,1126,1824,1076,1835,1027,1842,981,1847,910,1852,910,1847,981,1840,1028,1829,1077,1813,1127,1790,1176,1760,1220,1721,1256,1684,1269,1619,1279,1433,1289,1222,1292,1046,1290"/>
-<area shape="rect" id="Node000068" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="1353,1324,1501,1349"/>
-<area shape="poly" id="edge69_Node000067_Node000068" title=" " alt="" coords="1046,1295,1103,1302,1339,1326,1338,1331,1102,1307,1046,1300"/>
-<area shape="poly" id="edge72_Node000068_Node000012" title=" " alt="" coords="1455,1347,1508,1368,1578,1385,1615,1389,1652,1387,1687,1378,1718,1360,1744,1329,1767,1279,1787,1218,1804,1149,1830,1011,1844,910,1849,910,1835,1012,1809,1150,1792,1219,1772,1281,1748,1331,1722,1364,1689,1382,1653,1392,1615,1394,1577,1391,1507,1373,1453,1352"/>
-<area shape="rect" id="Node000069" href="$async__loader_8c.html#a739e2fd90d57a917fff50e6f09a7ffc0" title="Submits a new file path for background loading." alt="" coords="1556,1324,1720,1349"/>
-<area shape="poly" id="edge70_Node000068_Node000069" title=" " alt="" coords="1501,1334,1542,1334,1542,1339,1501,1339"/>
-<area shape="poly" id="edge71_Node000069_Node000012" title=" " alt="" coords="1690,1322,1718,1303,1754,1256,1783,1203,1805,1146,1821,1090,1840,985,1846,909,1851,910,1845,986,1826,1091,1810,1148,1788,1205,1759,1258,1722,1307,1693,1326"/>
-<area shape="rect" id="Node000073" href="$camera_8c.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="1111,1375,1289,1400"/>
-<area shape="poly" id="edge78_Node000072_Node000073" title=" " alt="" coords="1012,1343,1128,1369,1127,1374,1011,1349"/>
-<area shape="poly" id="edge80_Node000074_Node000004" title=" " alt="" coords="982,970,1017,943,1053,907,1102,829,1141,747,1170,672,1189,615,1194,617,1175,674,1146,749,1107,832,1057,910,1021,947,985,974"/>
-<area shape="poly" id="edge82_Node000075_Node000004" title=" " alt="" coords="1038,1170,1053,1159,1076,1129,1089,1101,1094,1074,1095,1046,1092,984,1093,949,1100,909,1147,741,1187,615,1193,616,1152,742,1105,911,1099,949,1097,984,1100,1045,1099,1074,1094,1103,1080,1132,1057,1162,1042,1174"/>
-<area shape="poly" id="edge83_Node000075_Node000012" title=" " alt="" coords="1040,1184,1162,1180,1230,1171,1297,1157,1377,1131,1456,1100,1607,1027,1732,956,1818,901,1821,906,1735,960,1609,1032,1459,1104,1379,1136,1298,1162,1231,1176,1162,1185,1040,1190"/>
+<area shape="rect" id="Node000001" title="Primary GLFW key callback." alt="" coords="5,798,112,823"/>
+<area shape="rect" id="Node000002" href="$app__input_8c.html#a3070b445bac4fb12dc3494a9e6746038" title="Bridges GLFW key actions to the camera movement state machine." alt="" coords="160,761,319,801"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,799,146,794,146,799,113,805"/>
+<area shape="rect" id="Node000003" href="$app__input_8c.html#a588f02e0bebbc36ff133173dd0392713" title="Dispatches application&#45;level logic for key inputs." alt="" coords="171,826,308,851"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="113,816,157,823,156,828,112,822"/>
+<area shape="rect" id="Node000004" href="$action__notifier_8c.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="1123,849,1277,874"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="308,838,1109,857,1109,862,308,843"/>
+<area shape="rect" id="Node000006" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="367,750,583,775"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="280,823,318,811,366,792,414,777,416,782,368,797,320,816,282,828"/>
+<area shape="rect" id="Node000007" href="$app__input_8c.html#a9a2123d651d35286740d81fd3867de3e" title=" " alt="" coords="652,325,800,350"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="295,824,317,811,334,794,343,778,351,759,364,737,458,622,554,513,700,358,704,362,558,516,462,625,369,740,356,761,348,780,338,798,320,815,298,828"/>
+<area shape="rect" id="Node000053" href="$app__input_8c.html#aecc117b5009197af82d636741be94d47" title=" " alt="" coords="891,1002,1033,1027"/>
+<area shape="poly" id="edge35_Node000003_Node000053" title=" " alt="" coords="275,849,367,880,507,917,647,949,878,997,877,1002,646,955,506,922,366,885,273,854"/>
+<area shape="rect" id="Node000054" href="$app__input_8c.html#a23cc3bda145f0197aef87ff97a54cf8f" title="Handles input for toggling individual effects (Vignette, Bloom, etc.)." alt="" coords="399,1097,550,1137"/>
+<area shape="poly" id="edge40_Node000003_Node000054" title=" " alt="" coords="253,850,450,1085,446,1088,249,853"/>
+<area shape="rect" id="Node000066" href="$app__input_8c.html#a626b17296c88e804d1a3e4c6c702d526" title=" " alt="" coords="631,725,821,750"/>
+<area shape="poly" id="edge66_Node000003_Node000066" title=" " alt="" coords="308,830,436,814,582,785,681,753,683,758,583,791,437,819,309,835"/>
+<area shape="rect" id="Node000005" href="$utils_8h.html#a823bc487fbd1a8980dc7a3e5e2277179" title="Safe wrapper around strncpy to ensure null&#45;termination." alt="" coords="1374,849,1479,874"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1277,859,1360,859,1360,864,1277,864"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="733,349,748,394,775,458,816,527,842,559,871,586,895,601,918,609,962,612,1007,615,1031,623,1056,638,1089,673,1125,727,1188,835,1183,838,1121,730,1084,676,1053,642,1029,628,1006,621,961,617,916,614,893,606,868,590,838,562,812,530,770,461,743,396,728,351"/>
+<area shape="rect" id="Node000008" href="$utils_8h.html#abe907a059a85eecc3b288d41b903d5e7" title="Bitwise flag check helper." alt="" coords="1155,603,1245,629"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="738,349,789,414,827,452,871,484,896,497,919,505,962,511,1005,516,1029,524,1056,536,1071,548,1081,559,1090,571,1104,582,1142,599,1140,604,1101,586,1086,574,1077,563,1068,552,1053,541,1027,529,1004,522,961,516,918,510,894,502,868,489,824,456,785,417,734,352"/>
+<area shape="rect" id="Node000009" href="$gpu__profiler__ui_8c.html#a5fc61f55cf3d2919113ecdcbc53ea5a3" title="Toggles the timeline position (Top/Bottom)." alt="" coords="879,120,1045,160"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="733,323,783,251,822,208,868,170,877,164,880,168,871,174,826,212,787,255,737,326"/>
+<area shape="rect" id="Node000010" href="$gpu__profiler__ui_8c.html#a887925b2aff08e85f6c5028edc30ef98" title="Toggles the timeline visibility (with animation)." alt="" coords="879,184,1045,224"/>
+<area shape="poly" id="edge10_Node000007_Node000010" title=" " alt="" coords="741,322,795,281,868,235,885,227,887,232,871,240,798,285,744,327"/>
+<area shape="rect" id="Node000011" href="$app__input_8c.html#af8794c576ee7a51b3733dc59e8f52f55" title=" " alt="" coords="881,399,1043,425"/>
+<area shape="poly" id="edge11_Node000007_Node000011" title=" " alt="" coords="761,348,870,385,897,393,895,398,869,391,759,353"/>
+<area shape="rect" id="Node000012" href="$utils_8h.html#ab1d13540441b5a2f988e0cd57754e625" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="1797,553,1904,578"/>
+<area shape="poly" id="edge24_Node000007_Node000012" title=" " alt="" coords="800,328,981,316,1199,309,1428,309,1514,309,1583,313,1615,321,1648,332,1683,350,1722,374,1764,411,1798,457,1824,501,1842,539,1837,541,1820,504,1794,459,1760,415,1718,378,1680,354,1646,337,1614,326,1582,319,1514,314,1428,315,1199,315,981,321,801,334"/>
+<area shape="rect" id="Node000013" href="$app__input_8c.html#afb03f1c912b8d6ee442c51f99cccf89c" title=" " alt="" coords="869,350,1055,375"/>
+<area shape="poly" id="edge14_Node000007_Node000013" title=" " alt="" coords="801,343,856,349,855,354,800,348"/>
+<area shape="rect" id="Node000014" href="$perf__mode_8c.html#aa6e7d34f198b807e5319bd33ed97aaa2" title="Get a human&#45;readable string for the current state." alt="" coords="882,5,1042,45"/>
+<area shape="poly" id="edge17_Node000007_Node000014" title=" " alt="" coords="728,323,742,274,769,203,810,125,837,89,868,57,876,50,879,54,871,61,841,92,815,128,774,205,747,276,733,325"/>
+<area shape="rect" id="Node000015" href="$perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a" title="Request deactivation of performance mode." alt="" coords="873,70,1051,95"/>
+<area shape="poly" id="edge18_Node000007_Node000015" title=" " alt="" coords="729,324,745,282,773,223,814,160,839,131,868,106,878,99,881,103,871,110,843,135,818,163,778,225,750,284,734,326"/>
+<area shape="rect" id="Node000018" href="$perf__mode_8c.html#a24bb58cfa7928d93310def4391d3394e" title="Request activation of performance mode." alt="" coords="869,249,1055,274"/>
+<area shape="poly" id="edge21_Node000007_Node000018" title=" " alt="" coords="766,322,908,276,910,281,767,327"/>
+<area shape="rect" id="Node000021" href="$app__input_8c.html#aa8e01475685f4c3126c6937d1dd96e53" title=" " alt="" coords="907,1051,1017,1077"/>
+<area shape="poly" id="edge25_Node000007_Node000021" title=" " alt="" coords="734,350,773,495,824,713,831,787,835,883,846,975,856,1012,871,1038,895,1054,892,1058,867,1042,851,1014,841,977,830,883,825,787,819,714,768,496,728,351"/>
+<area shape="poly" id="edge12_Node000011_Node000004" title=" " alt="" coords="1040,423,1057,435,1080,467,1092,497,1096,526,1096,555,1092,617,1095,652,1105,690,1123,731,1144,771,1184,836,1179,838,1139,774,1118,734,1100,692,1090,653,1087,618,1090,555,1091,526,1087,498,1075,469,1053,439,1037,427"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="1044,398,1177,386,1260,383,1349,384,1443,391,1538,404,1631,425,1721,455,1754,473,1785,495,1832,540,1828,544,1781,499,1752,477,1719,460,1630,430,1537,409,1442,396,1349,390,1260,389,1177,391,1044,403"/>
+<area shape="poly" id="edge15_Node000013_Node000004" title=" " alt="" coords="1040,373,1057,386,1083,424,1097,459,1101,494,1099,529,1092,603,1094,644,1105,690,1122,731,1143,772,1184,836,1179,839,1139,774,1118,734,1100,691,1089,645,1086,603,1093,529,1095,495,1092,461,1079,426,1053,390,1037,377"/>
+<area shape="poly" id="edge16_Node000013_Node000012" title=" " alt="" coords="1055,357,1217,355,1411,359,1507,366,1594,376,1667,392,1721,412,1760,440,1793,474,1819,509,1838,539,1834,542,1815,512,1789,478,1756,444,1719,417,1666,397,1593,382,1506,371,1411,365,1217,360,1055,362"/>
+<area shape="rect" id="Node000016" href="$perf__mode_8c.html#aceef0f4621470222733f17aba42c69b0" title="Deactivate GameMode backend." alt="" coords="1114,95,1286,121"/>
+<area shape="poly" id="edge19_Node000015_Node000016" title=" " alt="" coords="1052,90,1101,95,1100,100,1051,95"/>
+<area shape="rect" id="Node000017" href="$perf__mode_8c.html#ae7d534a6d1e90285fdd2cb6f262ebbec" title="Deactivate native Linux scheduler." alt="" coords="1131,46,1269,71"/>
+<area shape="poly" id="edge20_Node000015_Node000017" title=" " alt="" coords="1051,71,1117,64,1117,70,1052,76"/>
+<area shape="rect" id="Node000019" href="$perf__mode_8c.html#a14e32f8e0379a6b587c9c163912ef738" title="Activate using GameMode backend." alt="" coords="1122,249,1278,274"/>
+<area shape="poly" id="edge22_Node000018_Node000019" title=" " alt="" coords="1055,259,1108,259,1108,264,1055,264"/>
+<area shape="rect" id="Node000020" href="$perf__mode_8c.html#a3248ef5884dfcaa4a23445e299cdc5b4" title="Activate using native Linux scheduler." alt="" coords="1139,199,1261,225"/>
+<area shape="poly" id="edge23_Node000018_Node000020" title=" " alt="" coords="1023,246,1125,225,1126,230,1024,251"/>
+<area shape="poly" id="edge26_Node000021_Node000004" title=" " alt="" coords="1017,1055,1036,1048,1053,1038,1072,1015,1079,991,1085,966,1101,937,1132,905,1165,880,1168,884,1135,909,1105,940,1090,967,1084,993,1076,1018,1056,1042,1038,1053,1019,1060"/>
+<area shape="poly" id="edge34_Node000021_Node000012" title=" " alt="" coords="1017,1050,1188,1013,1410,961,1610,907,1680,882,1718,862,1747,831,1771,796,1791,758,1807,720,1831,647,1843,591,1848,592,1836,649,1812,722,1796,761,1775,799,1751,834,1722,866,1682,887,1612,912,1411,966,1190,1018,1018,1055"/>
+<area shape="rect" id="Node000022" href="$postprocess_8c.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="1111,1051,1289,1077"/>
+<area shape="poly" id="edge27_Node000021_Node000022" title=" " alt="" coords="1018,1061,1098,1061,1098,1067,1018,1067"/>
+<area shape="rect" id="Node000023" href="$postprocess_8c.html#a90e1be83610a9debc59503b380a0bcd1" title="Toggles the current state of an effect." alt="" coords="1126,950,1274,975"/>
+<area shape="poly" id="edge28_Node000021_Node000023" title=" " alt="" coords="1017,1052,1053,1038,1068,1027,1077,1016,1086,1004,1101,992,1133,977,1135,982,1104,997,1090,1008,1081,1019,1071,1031,1056,1042,1019,1057"/>
+<area shape="rect" id="Node000024" href="$postprocess_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847" title=" " alt="" coords="1345,1353,1508,1393"/>
+<area shape="poly" id="edge29_Node000023_Node000024" title=" " alt="" coords="1227,973,1265,1000,1284,1018,1300,1039,1318,1082,1324,1122,1323,1159,1318,1195,1314,1230,1314,1266,1324,1302,1347,1340,1350,1342,1346,1346,1343,1343,1319,1304,1309,1266,1308,1230,1312,1195,1317,1159,1319,1122,1313,1083,1295,1041,1280,1021,1262,1004,1224,978"/>
+<area shape="rect" id="Node000025" href="$postprocess_8c.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="1559,1253,1717,1293"/>
+<area shape="poly" id="edge30_Node000024_Node000025" title=" " alt="" coords="1479,1351,1507,1339,1588,1298,1590,1302,1509,1344,1481,1356"/>
+<area shape="poly" id="edge33_Node000025_Node000012" title=" " alt="" coords="1697,1251,1718,1233,1732,1210,1746,1181,1770,1105,1791,1014,1808,916,1832,725,1845,592,1850,592,1838,725,1813,917,1796,1016,1775,1107,1751,1183,1737,1213,1722,1236,1700,1255"/>
+<area shape="rect" id="Node000026" href="$postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0" title=" " alt="" coords="1770,1285,1931,1310"/>
+<area shape="poly" id="edge31_Node000025_Node000026" title=" " alt="" coords="1718,1280,1757,1284,1756,1289,1717,1285"/>
+<area shape="rect" id="Node000027" href="$postprocess_8c.html#a7a5221e8b5c9dc0821f1315ee7151933" title=" " alt="" coords="1768,1235,1933,1261"/>
+<area shape="poly" id="edge32_Node000025_Node000027" title=" " alt="" coords="1717,1261,1754,1257,1755,1262,1718,1267"/>
+<area shape="poly" id="edge36_Node000053_Node000004" title=" " alt="" coords="1029,1000,1053,988,1068,977,1078,965,1101,937,1169,880,1172,884,1105,941,1082,968,1072,981,1056,993,1031,1004"/>
+<area shape="poly" id="edge37_Node000053_Node000008" title=" " alt="" coords="1032,1003,1053,989,1069,967,1080,946,1086,924,1089,903,1086,860,1076,817,1067,773,1063,729,1066,707,1073,684,1084,662,1101,639,1119,626,1140,617,1142,622,1122,630,1105,643,1088,665,1078,686,1071,708,1069,729,1072,772,1081,815,1091,859,1094,903,1091,925,1085,948,1073,970,1057,993,1035,1008"/>
+<area shape="poly" id="edge38_Node000053_Node000022" title=" " alt="" coords="1024,1025,1125,1046,1124,1051,1023,1030"/>
+<area shape="poly" id="edge39_Node000053_Node000023" title=" " alt="" coords="1020,999,1127,976,1129,981,1021,1005"/>
+<area shape="poly" id="edge41_Node000054_Node000004" title=" " alt="" coords="493,1095,551,1042,588,1014,629,990,669,974,721,958,851,925,1111,874,1112,879,852,931,723,963,671,979,632,994,591,1018,554,1046,497,1099"/>
+<area shape="poly" id="edge63_Node000054_Node000021" title=" " alt="" coords="550,1105,630,1096,892,1068,893,1073,631,1101,551,1111"/>
+<area shape="poly" id="edge62_Node000054_Node000022" title=" " alt="" coords="550,1114,776,1107,915,1099,1054,1087,1123,1076,1124,1082,1055,1092,915,1105,776,1113,550,1119"/>
+<area shape="rect" id="Node000055" href="$app__input_8c.html#a583074ebed862e1123c50cd81d966d30" title=" " alt="" coords="875,1155,1049,1181"/>
+<area shape="poly" id="edge42_Node000054_Node000055" title=" " alt="" coords="551,1124,631,1133,862,1156,861,1162,630,1139,550,1129"/>
+<area shape="rect" id="Node000057" href="$app__input_8c.html#a0b000326b1ad4008a3c22a3c1800652d" title="Handles input for switching post&#45;processing presets." alt="" coords="885,1205,1039,1230"/>
+<area shape="poly" id="edge46_Node000054_Node000057" title=" " alt="" coords="544,1135,631,1157,757,1182,871,1202,870,1207,756,1188,630,1163,542,1140"/>
+<area shape="rect" id="Node000063" href="$postprocess_8c.html#aa46668e6882df082d99ef8735eadc8af" title="Disables a specific effect." alt="" coords="649,1297,803,1322"/>
+<area shape="poly" id="edge58_Node000054_Node000063" title=" " alt="" coords="503,1135,632,1235,699,1286,696,1291,629,1239,500,1139"/>
+<area shape="rect" id="Node000064" href="$postprocess_8c.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="651,1427,801,1453"/>
+<area shape="poly" id="edge60_Node000054_Node000064" title=" " alt="" coords="492,1136,551,1223,633,1333,705,1415,701,1419,629,1336,547,1226,487,1139"/>
+<area shape="rect" id="Node000065" href="$app__input_8c.html#adb3ffbd53fe7c2946b84b2ca396dab33" title=" " alt="" coords="639,1003,813,1029"/>
+<area shape="poly" id="edge64_Node000054_Node000065" title=" " alt="" coords="517,1095,630,1046,671,1031,672,1036,632,1050,519,1100"/>
+<area shape="poly" id="edge43_Node000055_Node000004" title=" " alt="" coords="982,1153,1018,1126,1052,1088,1064,1067,1070,1049,1076,1013,1081,978,1088,958,1101,937,1130,904,1163,879,1166,884,1134,908,1105,940,1093,961,1086,979,1081,1014,1076,1050,1069,1069,1057,1091,1022,1130,986,1157"/>
+<area shape="poly" id="edge45_Node000055_Node000012" title=" " alt="" coords="1030,1153,1194,1118,1400,1065,1501,1034,1593,1000,1668,964,1696,946,1718,927,1751,888,1777,843,1798,796,1815,748,1836,658,1845,591,1850,592,1841,659,1820,749,1803,798,1782,846,1755,891,1722,931,1699,950,1670,969,1595,1005,1503,1039,1401,1070,1195,1123,1031,1158"/>
+<area shape="rect" id="Node000056" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="1103,1153,1297,1178"/>
+<area shape="poly" id="edge44_Node000055_Node000056" title=" " alt="" coords="1049,1164,1089,1164,1089,1169,1049,1170"/>
+<area shape="poly" id="edge47_Node000057_Node000004" title=" " alt="" coords="1038,1203,1053,1191,1074,1161,1084,1131,1086,1102,1083,1072,1080,1041,1079,1008,1084,974,1100,937,1128,904,1161,879,1164,883,1132,908,1105,940,1089,975,1084,1008,1085,1040,1089,1071,1091,1102,1090,1132,1079,1163,1057,1195,1041,1207"/>
+<area shape="poly" id="edge57_Node000057_Node000012" title=" " alt="" coords="1040,1220,1106,1221,1186,1218,1276,1210,1371,1194,1467,1169,1559,1132,1603,1109,1645,1082,1683,1052,1718,1017,1756,965,1786,908,1809,847,1825,785,1842,672,1847,591,1852,592,1848,673,1830,786,1814,848,1791,910,1761,968,1722,1020,1687,1056,1648,1087,1606,1114,1562,1137,1468,1174,1372,1199,1276,1215,1186,1223,1106,1226,1040,1225"/>
+<area shape="poly" id="edge55_Node000057_Node000022" title=" " alt="" coords="1029,1202,1053,1191,1068,1179,1078,1168,1101,1139,1169,1083,1172,1087,1105,1143,1082,1171,1072,1183,1056,1196,1031,1207"/>
+<area shape="poly" id="edge56_Node000057_Node000056" title=" " alt="" coords="1020,1202,1127,1178,1129,1184,1021,1207"/>
+<area shape="rect" id="Node000058" href="$effect__benchmark_8c.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="1121,1353,1279,1393"/>
+<area shape="poly" id="edge48_Node000057_Node000058" title=" " alt="" coords="976,1228,1028,1281,1064,1312,1104,1339,1116,1346,1114,1350,1101,1344,1061,1316,1025,1285,972,1232"/>
+<area shape="rect" id="Node000059" href="$effect__benchmark_8c.html#aa2cc8b49697d1f8554bc69ce6c5a77d2" title="Starts a new benchmark sweep." alt="" coords="1112,1254,1288,1279"/>
+<area shape="poly" id="edge49_Node000057_Node000059" title=" " alt="" coords="1024,1227,1125,1249,1124,1254,1023,1233"/>
+<area shape="rect" id="Node000062" href="$postprocess_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409" title="Applies all settings from a preset atomically." alt="" coords="1105,1303,1295,1329"/>
+<area shape="poly" id="edge53_Node000057_Node000062" title=" " alt="" coords="985,1228,1037,1258,1104,1290,1126,1297,1124,1302,1102,1294,1035,1263,982,1232"/>
+<area shape="rect" id="Node000060" href="$effect__benchmark_8c.html#a24534e9b42a963dfb6019f99c41a2514" title="Atomically apply a new effect bitmask." alt="" coords="1372,1254,1481,1279"/>
+<area shape="poly" id="edge50_Node000059_Node000060" title=" " alt="" coords="1289,1264,1358,1264,1358,1269,1289,1269"/>
+<area shape="rect" id="Node000061" href="$effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01" title=" " alt="" coords="1355,1303,1498,1329"/>
+<area shape="poly" id="edge52_Node000059_Node000061" title=" " alt="" coords="1260,1277,1355,1298,1354,1303,1258,1282"/>
+<area shape="poly" id="edge51_Node000060_Node000025" title=" " alt="" coords="1482,1266,1545,1268,1545,1273,1482,1271"/>
+<area shape="poly" id="edge54_Node000062_Node000024" title=" " alt="" coords="1252,1326,1335,1347,1333,1353,1250,1331"/>
+<area shape="poly" id="edge59_Node000063_Node000024" title=" " alt="" coords="765,1319,911,1363,1006,1386,1103,1403,1200,1411,1297,1403,1345,1394,1346,1399,1298,1408,1200,1416,1102,1408,1005,1391,910,1369,763,1325"/>
+<area shape="poly" id="edge61_Node000064_Node000024" title=" " alt="" coords="802,1442,901,1444,1025,1443,1161,1435,1297,1416,1366,1396,1367,1401,1298,1421,1162,1440,1025,1449,900,1450,801,1447"/>
+<area shape="poly" id="edge65_Node000065_Node000021" title=" " alt="" coords="790,1026,894,1048,893,1053,789,1031"/>
+<area shape="poly" id="edge67_Node000066_Node000004" title=" " alt="" coords="761,748,870,785,1000,818,1117,843,1116,849,998,824,869,791,759,753"/>
+<area shape="rect" id="Node000067" href="$app__input_8c.html#a5bd036fc9913a0b441d5a2121daf0f0e" title="Handles input for cycling environment maps." alt="" coords="878,449,1046,474"/>
+<area shape="poly" id="edge68_Node000066_Node000067" title=" " alt="" coords="733,723,785,642,824,588,867,537,899,506,930,480,934,485,903,510,871,540,828,592,790,645,737,726"/>
+<area shape="rect" id="Node000070" href="$app__input_8c.html#a9ad0dce8449731259f77702aeba8e457" title="Captures the current framebuffer and saves it as a PNG file." alt="" coords="881,651,1043,677"/>
+<area shape="poly" id="edge76_Node000066_Node000070" title=" " alt="" coords="762,722,869,687,899,678,900,683,870,692,764,727"/>
+<area shape="rect" id="Node000071" href="$app__input_8c.html#a479d0af6d3acd4e6dc4e13cd29b9b63d" title="Toggles the application window between Windowed and Fullscreen." alt="" coords="879,701,1045,726"/>
+<area shape="poly" id="edge77_Node000066_Node000071" title=" " alt="" coords="821,725,866,720,866,726,822,730"/>
+<area shape="rect" id="Node000072" href="$camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="913,550,1011,575"/>
+<area shape="poly" id="edge78_Node000066_Node000072" title=" " alt="" coords="743,722,931,581,934,586,746,727"/>
+<area shape="rect" id="Node000074" href="$app__input_8c.html#a8f2a339cb07f464d7404ae746b0dc910" title=" " alt="" coords="877,750,1047,775"/>
+<area shape="poly" id="edge80_Node000066_Node000074" title=" " alt="" coords="822,745,863,749,863,755,821,750"/>
+<area shape="rect" id="Node000075" href="$app__input_8c.html#a18f4841f6aa0703c4b80ae627bb8bacd" title=" " alt="" coords="884,953,1040,978"/>
+<area shape="poly" id="edge82_Node000066_Node000075" title=" " alt="" coords="742,748,940,941,936,945,739,752"/>
+<area shape="poly" id="edge69_Node000067_Node000004" title=" " alt="" coords="986,472,1022,499,1057,537,1077,577,1085,612,1091,647,1105,690,1146,771,1185,836,1181,839,1142,774,1100,692,1086,648,1080,613,1072,579,1052,540,1019,503,983,476"/>
+<area shape="poly" id="edge74_Node000067_Node000008" title=" " alt="" coords="1022,472,1056,491,1074,515,1081,538,1088,560,1104,582,1122,594,1142,602,1140,607,1120,598,1101,586,1083,563,1076,540,1069,517,1053,495,1019,476"/>
+<area shape="poly" id="edge75_Node000067_Node000012" title=" " alt="" coords="1046,471,1276,503,1556,537,1784,558,1783,563,1556,543,1275,508,1046,476"/>
+<area shape="rect" id="Node000068" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="1353,451,1501,477"/>
+<area shape="poly" id="edge70_Node000067_Node000068" title=" " alt="" coords="1046,459,1339,461,1339,466,1046,464"/>
+<area shape="poly" id="edge73_Node000068_Node000012" title=" " alt="" coords="1501,459,1606,465,1664,474,1721,488,1777,513,1823,543,1821,547,1775,518,1719,493,1663,479,1606,471,1501,465"/>
+<area shape="rect" id="Node000069" href="$async__loader_8c.html#a739e2fd90d57a917fff50e6f09a7ffc0" title="Submits a new file path for background loading." alt="" coords="1556,502,1720,527"/>
+<area shape="poly" id="edge71_Node000068_Node000069" title=" " alt="" coords="1481,474,1572,496,1571,501,1480,479"/>
+<area shape="poly" id="edge72_Node000069_Node000012" title=" " alt="" coords="1693,525,1785,547,1783,552,1692,530"/>
+<area shape="rect" id="Node000073" href="$camera_8c.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="1111,653,1289,678"/>
+<area shape="poly" id="edge79_Node000072_Node000073" title=" " alt="" coords="1013,573,1056,592,1071,605,1081,617,1090,628,1104,639,1117,645,1115,650,1101,644,1086,632,1076,620,1067,608,1053,597,1010,578"/>
+<area shape="poly" id="edge81_Node000074_Node000004" title=" " alt="" coords="1003,773,1056,792,1162,840,1160,845,1054,797,1001,778"/>
+<area shape="poly" id="edge83_Node000075_Node000004" title=" " alt="" coords="1009,950,1053,931,1077,911,1101,891,1135,876,1137,881,1104,896,1080,915,1056,936,1011,955"/>
+<area shape="poly" id="edge84_Node000075_Node000012" title=" " alt="" coords="1025,950,1102,936,1165,929,1219,927,1311,928,1355,927,1400,921,1450,907,1507,884,1562,854,1615,817,1664,775,1708,732,1782,650,1830,588,1835,591,1786,653,1712,736,1667,779,1618,821,1565,858,1509,889,1452,913,1401,926,1355,932,1311,934,1219,932,1165,934,1103,941,1026,955"/>
 </map>

@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"globals_func_w.html":[6,1,1,19],
+"globals_g.html":[6,1,0,7],
 "globals_h.html":[6,1,0,8],
 "globals_i.html":[6,1,0,9],
 "globals_k.html":[6,1,0,10],
@@ -190,8 +192,8 @@ var NAVTREEINDEX2 =
 "icosphere_8h.html#ad4ff3644bfe858f66d74316bbf80c39a":[6,0,2,19,9],
 "icosphere_8h.html#aeabbf4b8c74fefac0070104ad779cd62":[6,0,2,19,6],
 "icosphere_8h_source.html":[6,0,2,19],
-"index.html":[1],
 "index.html":[],
+"index.html":[1],
 "index.html#autotoc_md21":[1,0],
 "index.html#autotoc_md22":[1,1],
 "instanced__rendering_8c.html":[6,0,4,18],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "lum__downsample_8frag.html#a9fb9ff60bb02989b1604a64cb2da6094":[6,0,3,10,1],
 "lum__downsample_8frag.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,10,0],
 "lum__downsample_8frag.html#af1e3c30a022bb241c9b591cd919b451e":[6,0,3,10,2],
-"main_8c.html":[6,0,4,20],
-"main_8c.html#a0ddf1224851353fc92bfbff6f499fa97":[6,0,4,20,0],
-"main_8h.html":[6,0,2,22]
+"main_8c.html":[6,0,4,20]
 };
