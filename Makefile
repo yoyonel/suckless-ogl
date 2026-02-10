@@ -214,11 +214,18 @@ endif
 test/%:
 	@$(MAKE) --no-print-directory all > /dev/null 2>&1
 	@$(DISTROBOX) sh -c '\
-		OUTPUT=$$(ctest --test-dir $(BUILD_DIR) -R $* --output-on-failure --verbose 2>&1); \
-		echo "$$OUTPUT"; \
-		if echo "$$OUTPUT" | grep -q "No tests were found"; then \
-			echo ""; echo "Available tests:"; \
-			exit 1; \
+		TEST_BIN="$(BUILD_DIR)/tests/$*"; \
+		if [ -f "$$TEST_BIN" ]; then \
+			.github/workflows/scripts/run_test_with_xvfb.sh "$$TEST_BIN"; \
+		else \
+			OUTPUT=$$(ctest --test-dir $(BUILD_DIR) -R $* --output-on-failure --verbose 2>&1); \
+			RET=$$?; \
+			echo "$$OUTPUT"; \
+			if echo "$$OUTPUT" | grep -q "No tests were found"; then \
+				echo ""; echo "Available tests:"; \
+				exit 1; \
+			fi; \
+			exit $$RET; \
 		fi' || $(MAKE) --no-print-directory test-list
 
 # Code Coverage (improved version with summary)
