@@ -41,7 +41,10 @@ static int ibl_specular_mip1_slices(void)
 {
 	return is_software_renderer() ? 1 : 2;
 }
-static const int SPECULAR_MIPS_GROUPING_START = 3;
+static int ibl_specular_mips_grouping_start(void)
+{
+	return is_software_renderer() ? 0 : 3;
+}
 
 static const int IBL_LOG_LABEL_SIZE = 128;
 
@@ -187,7 +190,8 @@ void app_process_ibl_state_machine(App* app)
 		}
 
 		case IBL_STATE_SPECULAR_MIPS: {
-			if (ctx->current_mip >= SPECULAR_MIPS_GROUPING_START) {
+			if (ctx->current_mip >=
+			    ibl_specular_mips_grouping_start()) {
 				char label[IBL_LOG_LABEL_SIZE];
 				safe_snprintf(
 				    label, sizeof(label),
