@@ -92,48 +92,84 @@ jobs:
           # Exécution des tests via Xvfb
           xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
 
+
       - name: Generate Visual Artifacts
         if: always()
         run: |
-          # Préparation des dossiers
           mkdir -p visual_artifacts/${{ github.sha }}
           mkdir -p build-coverage/coverage_report/visual_tests
 
-          # Copie des références et des échecs (6 vues)
+          # Collect results
           cp tests/ref_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
           cp tests/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
+          cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
 
-          # Génération de l'index HTML interactif (Comparaison par survol)
-          cat <<EOF > build-coverage/coverage_report/visual_tests/index.html
+          # Create HTML index
+          cat <<'EOF' > build-coverage/coverage_report/visual_tests/index.html
           <!DOCTYPE html>
           <html>
           <head>
-            <title>Visual Regression Report</title>
+            <title>Visual Regression Report (6 Views)</title>
             <style>
               body { font-family: sans-serif; background: #121212; color: #eee; padding: 20px; text-align: center; }
-              .compare-container { position: relative; width: 1024px; height: 768px; margin: 0 auto; border: 2px solid #444; cursor: crosshair; }
+              .face-section { margin-bottom: 60px; border-bottom: 1px solid #333; padding-bottom: 40px; }
+              .compare-container { position: relative; width: 1024px; height: 768px; margin: 20px auto; border: 2px solid #444; cursor: crosshair; }
               .compare-container img { position: absolute; top: 0; left: 0; width: 100%; opacity: 0; transition: opacity 0.2s; }
               .compare-container .img-ref { opacity: 1; }
               .compare-container:hover .img-actual { opacity: 1; }
-              .diff-map { margin-top: 20px; border: 2px solid #f00; width: 1024px; }
+              .diff-map { margin-top: 20px; border: 2px solid #500; width: 1024px; }
+              h2 { color: #00ff95; text-transform: capitalize; }
             </style>
           </head>
           <body>
-            <h1>Visual Regression Analysis</h1>
-            <p>Passez la souris sur l'image pour comparer : <b>Référence</b> vs <b>Rendu PR</b></p>
-            <div class="compare-container">
-              <img src="ref.png" class="img-ref">
-              <img src="actual.png" class="img-actual">
-            </div>
-            <h3>Carte des différences (Diff Map)</h3>
-            <img src="diff.png" class="diff-map">
-            <br><a href="../index.html" style="color: #00ff95;">Retour au Rapport de Couverture</a>
-          </body>
-          </html>
+            <h1>Visual Regression Analysis (6 Views)</h1>
+            <p>Passez la souris sur une vue pour comparer : <b>Référence</b> vs <b>Rendu PR</b></p>
           EOF
 
-          # Copie des PNG pour le rapport statique
-          cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
+          FACES="front back left right top bottom"
+          for face in $FACES; do
+            echo "<div class='face-section'><h2>Face: $face</h2>" >> build-coverage/coverage_report/visual_tests/index.html
+            echo "<div class='compare-container'><img src='ref_$face.png' class='img-ref'><img src='failed_actual_$face.png' class='img-actual' onerror='this.style.opacity=0'></div>" >> build-coverage/coverage_report/visual_tests/index.html
+            if [ -f tests/failed_diff_$face.png ]; then
+              echo "<h3>Difference Map</h3><img src='failed_diff_$face.png' class='diff-map'>" >> build-coverage/coverage_report/visual_tests/index.html
+            else
+              echo "<p style='color: #00ff00;'>✅ All pixels matching for this view.</p>" >> build-coverage/coverage_report/visual_tests/index.html
+            fi
+            echo "</div>" >> build-coverage/coverage_report/visual_tests/index.html
+          done
+
+          echo "<br><a href='../index.html' style='color: #00ff95;'>Retour au Rapport de Couverture</a></body></html>" >> build-coverage/coverage_report/visual_tests/index.html
+
+          # Build PR Comment Markdown
+          echo "## 🎨 Visual Regression Report (${{ github.sha }})" > comment.md
+          echo "" >> comment.md
+          echo "| Face | Comparison | Diff Map |" >> comment.md
+          echo "|:---:|:---:|:---:|" >> comment.md
+
+          for face in $FACES; do
+            REF="![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref_$face.png?raw=true)"
+            ACTUAL_URL="https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/failed_actual_$face.png?raw=true"
+            DIFF_URL="https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/failed_diff_$face.png?raw=true"
+
+            if [ -f tests/failed_actual_$face.png ]; then
+              ACTUAL="![Actual]($ACTUAL_URL)"
+              DIFF="![Diff]($DIFF_URL)"
+              STATUS="❌ **FAIL**"
+            else
+              ACTUAL="✅ Same as ref"
+              DIFF="-"
+              STATUS="✅ **PASS**"
+            fi
+            echo "| **$face** ($STATUS) | $REF <br> $ACTUAL | $DIFF |" >> comment.md
+          done
+
+          echo "" >> comment.md
+          echo "> [!TIP]" >> comment.md
+          echo "> Si ces changements visuels sont attendus, mettez à jour les fichiers \`tests/ref_*.png\`." >> comment.md
+
+          echo "VISUAL_COMMENT<<EOF" >> $GITHUB_ENV
+          cat comment.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Upload Images to Visual Storage Branch
         if: always()
@@ -148,19 +184,11 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VISUAL_COMMENT: ${{ env.VISUAL_COMMENT }}
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           message-id: visual-regression
-          message: |
-            ## 🎨 Visual Regression Report (${{ github.sha }})
-
-            | Reference | Actual (PR) | Difference Map |
-            |:---:|:---:|:---:|
-            | ![Ref](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/ref.png?raw=true) | ![Actual](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/actual.png?raw=true) | ![Diff](https://github.com/${{ github.repository }}/blob/visual-artifacts/${{ github.sha }}/diff.png?raw=true) |
-
-            > [!TIP]
-            > Si ces changements visuels sont attendus, mettez à jour les fichiers `tests/ref_*.png`.
+          message: ${{ env.VISUAL_COMMENT }}
 
       - name: Upload Coverage Artifact
         if: always()
