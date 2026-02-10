@@ -178,19 +178,31 @@ static void ctx_free(IncludeContext* ctx)
 }
 
 /* Returns directory part of path (including trailing slash) or "./" */
-static void get_dir_from_path(const char* path, char* out_dir, size_t size)
+static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
 {
 	const char* last_slash = strrchr(path, '/');
 	if (last_slash) {
 		size_t len = (size_t)(last_slash - path) + 1;
 		if (len >= size) {
-			len = size - 1;
+			LOG_ERROR("suckless-ogl.shader",
+			          "Directory path too long: %s (limit: %lu)",
+			          path, size);
+			return false;
 		}
-		safe_memcpy(out_dir, size, path, len);
+		if (!safe_memcpy(out_dir, size, path, len)) {
+			LOG_ERROR("suckless-ogl.shader",
+			          "Failed to copy directory path: %s", path);
+			return false;
+		}
 		out_dir[len] = '\0';
 	} else {
-		safe_snprintf(out_dir, size, "./");
+		if (!safe_snprintf(out_dir, size, "./")) {
+			LOG_ERROR("suckless-ogl.shader",
+			          "Failed to set default directory");
+			return false;
+		}
 	}
+	return true;
 }
 
 static bool is_safe_path(const char* path)
@@ -229,7 +241,10 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
 
 	/* Resolve relative path */
 	char current_dir[PATH_BUFFER_SIZE];
-	get_dir_from_path(current_file_path, current_dir, sizeof(current_dir));
+	if (!get_dir_from_path(current_file_path, current_dir,
+	                       sizeof(current_dir))) {
+		return false;
+	}
 
 	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
 	if (!safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
@@ -286,9 +301,15 @@ static const char* parse_include_path(const char* args, char* out_path,
 
 	size_t path_len = (size_t)(path_end - path_start);
 	if (path_len >= size) {
-		path_len = size - 1;
+		LOG_ERROR("suckless-ogl.shader",
+		          "Include path too long: %.*s (limit: %lu)",
+		          (int)path_len, path_start, size);
+		return NULL;
 	}
-	safe_memcpy(out_path, size, path_start, path_len);
+	if (!safe_memcpy(out_path, size, path_start, path_len)) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to copy include path");
+		return NULL;
+	}
 	out_path[path_len] = '\0';
 
 	/* Trim trailing whitespace if no quotes */
@@ -345,6 +366,10 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 		const char* end_of_line =
 		    parse_include_path(next_tag + HEADER_TAG_LEN, raw_inc_path,
 		                       sizeof(raw_inc_path));
+
+		if (!end_of_line) {
+			return false;
+		}
 
 		if (!resolve_and_parse_include(ctx, raw_inc_path,
 		                               current_file_path)) {
@@ -407,7 +432,13 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 
 	/* 1. Copy part before insertion (e.g. #version line) */
 	if (insertion_point > 0) {
-		safe_memcpy(modified_source, new_size, buffer, insertion_point);
+		if (!safe_memcpy(modified_source, new_size, buffer,
+		                 insertion_point)) {
+			LOG_ERROR("suckless-ogl.shader",
+			          "Failed to copy shader version header");
+			free(modified_source);
+			return NULL;
+		}
 	}
 
 	/* 2. Insert Defines */
@@ -422,8 +453,13 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 	}
 
 	/* 3. Copy rest of file */
-	safe_memcpy(modified_source + current_offset, new_size - current_offset,
-	            buffer + insertion_point, file_size - insertion_point);
+	if (!safe_memcpy(modified_source + current_offset,
+	                 new_size - current_offset, buffer + insertion_point,
+	                 file_size - insertion_point)) {
+		LOG_ERROR("suckless-ogl.shader", "Failed to copy shader body");
+		free(modified_source);
+		return NULL;
+	}
 
 	return modified_source;
 }
@@ -828,4 +864,34 @@ void shader_set_mat4(Shader* shader, const char* name, const float* val)
 	if (loc != -1) {
 		glUniformMatrix4fv(loc, 1, GL_FALSE, val);
 	}
+}
+
+void shader_set_int_loc(GLint loc, int val)
+{
+	glUniform1i(loc, val);
+}
+
+void shader_set_float_loc(GLint loc, float val)
+{
+	glUniform1f(loc, val);
+}
+
+void shader_set_vec2_loc(GLint loc, const float* val)
+{
+	glUniform2fv(loc, 1, val);
+}
+
+void shader_set_vec3_loc(GLint loc, const float* val)
+{
+	glUniform3fv(loc, 1, val);
+}
+
+void shader_set_vec4_loc(GLint loc, const float* val)
+{
+	glUniform4fv(loc, 1, val);
+}
+
+void shader_set_mat4_loc(GLint loc, const float* val)
+{
+	glUniformMatrix4fv(loc, 1, GL_FALSE, val);
 }

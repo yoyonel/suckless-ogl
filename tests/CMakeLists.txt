@@ -40,6 +40,9 @@ target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 # Lister tous les fichiers test_*.c dans le répertoire tests/
 file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
 
+# Exclure le test standalone de la boucle générique
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\.c$")
+
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
     test_shader
@@ -61,7 +64,11 @@ set(OPENGL_TESTS
     test_app_input
     test_app_metrics
     test_billboard_perf
+<<<<<<< HEAD
+    test_shader_uniforms_loc
+=======
     test_benchmark_bloom_perf
+>>>>>>> cc1ef6e (temp commit for rebase)
 )
 
 # Pour chaque fichier test trouvé
@@ -96,6 +103,36 @@ foreach(test_file ${TEST_SOURCES})
     # Working directory = racine du projet
     set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 endforeach()
+
+# =============================================================================
+# TEST STANDALONE (MOCKED)
+# =============================================================================
+# Ce test a besoin de ses propres mocks pour GLAD et GLFW, et ne doit PAS
+# être lié à app_testlib ou glad (pour éviter les conflits de symboles).
+
+add_executable(test_shader_path_security_standalone
+    test_shader_path_security_standalone.c
+)
+
+# On inclut d'abord les mocks pour qu'ils soient prioritaires
+target_include_directories(test_shader_path_security_standalone PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+)
+
+# On ne link PAS contre app_testlib, seulement libc/libm si besoin
+# (Mais on a besoin des headers de cglm pour shader.c s'il est inclus ?)
+# shader.c n'utilise pas cglm directement, mais inclut shader.h qui peut l'utiliser via app_settings.h?
+# Vérifions : shader.h -> app_settings.h -> cglm/types.h
+# Donc on a besoin de cglm.
+
+# Si cglm est header-only ou statique:
+target_link_libraries(test_shader_path_security_standalone PRIVATE cglm)
+
+add_test(NAME test_shader_path_security_standalone
+         COMMAND test_shader_path_security_standalone)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION
