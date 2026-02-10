@@ -64,7 +64,6 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 	glBindVertexArray(0);
 }
 
-
 void instanced_group_draw(InstancedGroup* group, size_t index_count)
 {
 	glBindVertexArray(group->vao);
