@@ -14,10 +14,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* SLICING constants for IBL loading */
-static const int IRRADIANCE_MAP_SLICES = 4;
-static const int SPECULAR_MIP0_SLICES = 4;
-static const int SPECULAR_MIP1_SLICES = 2;
+/*
+ * SLICING constants for progressive IBL loading.
+ * In software-rendering mode (llvmpipe, swrast), slicing is disabled
+ * (1 slice per step) to avoid the massive overhead of split dispatches.
+ */
+static bool is_software_renderer(void)
+{
+	const char* renderer = (const char*)glGetString(GL_RENDERER);
+	if (!renderer) {
+		return false;
+	}
+	return strstr(renderer, "llvmpipe") != NULL ||
+	       strstr(renderer, "softpipe") != NULL ||
+	       strstr(renderer, "swrast") != NULL;
+}
+static int ibl_irradiance_slices(void)
+{
+	return is_software_renderer() ? 1 : 4;
+}
+static int ibl_specular_mip0_slices(void)
+{
+	return is_software_renderer() ? 1 : 4;
+}
+static int ibl_specular_mip1_slices(void)
+{
+	return is_software_renderer() ? 1 : 2;
+}
 static const int SPECULAR_MIPS_GROUPING_START = 3;
 
 static const int IBL_LOG_LABEL_SIZE = 128;
@@ -193,10 +216,10 @@ void app_process_ibl_state_machine(App* app)
 			} else {
 				if (ctx->current_mip == 0) {
 					ctx->total_slices =
-					    SPECULAR_MIP0_SLICES;
+					    ibl_specular_mip0_slices();
 				} else if (ctx->current_mip == 1) {
 					ctx->total_slices =
-					    SPECULAR_MIP1_SLICES;
+					    ibl_specular_mip1_slices();
 				} else {
 					ctx->total_slices = 1;
 				}
@@ -235,7 +258,7 @@ void app_process_ibl_state_machine(App* app)
 			if (ctx->current_mip >= ctx->total_mips) {
 				ctx->state = IBL_STATE_IRRADIANCE;
 				ctx->current_slice = 0;
-				ctx->total_slices = IRRADIANCE_MAP_SLICES;
+				ctx->total_slices = ibl_irradiance_slices();
 				ctx->pending_irr_tex =
 				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
 			}
