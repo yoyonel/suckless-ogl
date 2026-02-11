@@ -31,7 +31,13 @@ typedef struct {
 
 /**
  * @brief Initializes the billboard group and allocates GPU memory.
- * @param group Pointer to the group.
+ *
+ * RESOURCE MANAGEMENT:
+ * - This function creates OpenGL resources (VBO).
+ * - MUST be paired with billboard_group_cleanup() to avoid memory leaks.
+ * - Do NOT call init twice on the same group without cleanup in between.
+ *
+ * @param group Pointer to the group (must be zero-initialized).
  * @param data Initial instance data (can be NULL if only allocating).
  * @param count Number of instances to allocate for.
  */
