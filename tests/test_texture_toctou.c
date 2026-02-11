@@ -32,7 +32,8 @@ LogLevel log_get_level(void)
 void glGenTextures(GLsizei n, GLuint* textures)
 {
 	(void)n;
-	if (textures) *textures = 1;
+	if (textures)
+		*textures = 1;
 }
 void glBindTexture(GLenum target, GLuint texture)
 {
