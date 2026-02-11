@@ -49,6 +49,16 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		return NULL;
 	}
 
+	/* Double-check dimensions after full load to prevent TOCTOU attacks */
+	if (*width > MAX_TEXTURE_DIMENSION || *height > MAX_TEXTURE_DIMENSION) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "HDR image exceeds max dimensions after load: %s (%dx%d "
+		          "> %d)",
+		          path, *width, *height, MAX_TEXTURE_DIMENSION);
+		stbi_image_free(data);
+		return NULL;
+	}
+
 	LOG_INFO("suckless-ogl.texture",
 	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
 	         *channels);

@@ -10,7 +10,16 @@ typedef int GLsizei;
 typedef char GLchar;
 typedef unsigned char GLboolean;
 typedef float GLfloat;
+typedef long GLsizeiptr;
+typedef long GLintptr;
 
+#define GL_ARRAY_BUFFER 0
+#define GL_DYNAMIC_DRAW 0
+#define GL_FLOAT 0
+#define GL_CULL_FACE 0
+#define GL_TRIANGLE_STRIP 0
+#define GL_LINE_LOOP 0
+#define GL_LINES 0
 #define GL_FALSE 0
 #define GL_TRUE 1
 #define GL_COMPILE_STATUS 0
@@ -24,6 +33,19 @@ typedef float GLfloat;
 #define GL_ACTIVE_UNIFORM_MAX_LENGTH 0
 #define GL_PROGRAM_BINARY_LENGTH 0
 #define APIENTRY
+#define GL_TEXTURE_2D 0x0DE1
+#define GL_RGBA16F 0x881A
+#define GL_RGBA 0x1908
+#define GL_UNPACK_ALIGNMENT 0x0CF5
+#define GL_TEXTURE_MIN_FILTER 0x2801
+#define GL_TEXTURE_MAG_FILTER 0x2800
+#define GL_LINEAR_MIPMAP_LINEAR 0x2703
+#define GL_LINEAR 0x2601
+#define GL_TEXTURE_WRAP_S 0x2802
+#define GL_TEXTURE_WRAP_T 0x2803
+#define GL_REPEAT 0x2901
+#define GL_CLAMP_TO_EDGE 0x812F
+#define GL_NO_ERROR 0
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -57,16 +79,17 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 void glPopDebugGroup(void);
 void glDeleteTextures(GLsizei n, const GLuint* textures);
 
-typedef long GLsizeiptr;
-typedef long GLintptr;
-
-#define GL_ARRAY_BUFFER 0
-#define GL_DYNAMIC_DRAW 0
-#define GL_FLOAT 0
-#define GL_CULL_FACE 0
-#define GL_TRIANGLE_STRIP 0
-#define GL_LINE_LOOP 0
-#define GL_LINES 0
+void glGenTextures(GLsizei n, GLuint* textures);
+void glBindTexture(GLenum target, GLuint texture);
+void glPixelStorei(GLenum pname, GLint param);
+void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
+                    GLsizei width, GLsizei height);
+void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
+                     GLsizei width, GLsizei height, GLenum format, GLenum type,
+                     const void* pixels);
+void glTexParameteri(GLenum target, GLenum pname, GLint param);
+void glGenerateMipmap(GLenum target);
+GLenum glGetError(void);
 
 void glGenBuffers(GLsizei n, GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);
