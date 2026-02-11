@@ -6,6 +6,8 @@
 /* Include headers from the project */
 #include "glad/glad.h"
 #include "log.h"
+#include "mock_gl_standalone.h"
+#include "unity.h"
 
 /* Mock Logging Implementation */
 void log_message(LogLevel level, const char* tag, const char* format, ...)
@@ -28,170 +30,19 @@ LogLevel log_get_level(void)
 	return LOG_LEVEL_INFO;
 }
 
-/* Mock OpenGL Types and Functions */
-/* Since glad.h only declares them, we must define them here */
-GLuint glCreateShader(GLenum type)
-{
-	(void)type;
-	return 1;
-}
-void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
-                    const GLint* length)
-{
-	(void)shader;
-	(void)count;
-	(void)string;
-	(void)length;
-}
-void glCompileShader(GLuint shader)
-{
-	(void)shader;
-}
-void glGetShaderiv(GLuint shader, GLenum pname, GLint* params)
-{
-	(void)shader;
-	(void)pname;
-	*params = GL_TRUE;
-}
-void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei* length,
-                        GLchar* infoLog)
-{
-	(void)shader;
-	(void)bufSize;
-	(void)length;
-	(void)infoLog;
-}
-void glDeleteShader(GLuint shader)
-{
-	(void)shader;
-}
-GLuint glCreateProgram(void)
-{
-	return 1;
-}
-void glAttachShader(GLuint program, GLuint shader)
-{
-	(void)program;
-	(void)shader;
-}
-void glLinkProgram(GLuint program)
-{
-	(void)program;
-}
-void glGetProgramiv(GLuint program, GLenum pname, GLint* params)
-{
-	(void)program;
-	(void)pname;
-	*params = GL_TRUE;
-}
-void glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei* length,
-                         GLchar* infoLog)
-{
-	(void)program;
-	(void)bufSize;
-	(void)length;
-	(void)infoLog;
-}
-void glDeleteProgram(GLuint program)
-{
-	(void)program;
-}
-void glObjectLabel(GLenum identifier, GLuint name, GLsizei length,
-                   const GLchar* label)
-{
-	(void)identifier;
-	(void)name;
-	(void)length;
-	(void)label;
-}
-void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize,
-                        GLsizei* length, GLint* size, GLenum* type,
-                        GLchar* name)
-{
-	(void)program;
-	(void)index;
-	(void)bufSize;
-	(void)length;
-	(void)size;
-	(void)type;
-	(void)name;
-}
-GLint glGetUniformLocation(GLuint program, const GLchar* name)
-{
-	(void)program;
-	(void)name;
-	return 0;
-}
-void glUseProgram(GLuint program)
-{
-	(void)program;
-}
-void glUniform1i(GLint location, GLint v0)
-{
-	(void)location;
-	(void)v0;
-}
-void glUniform1f(GLint location, float v0)
-{
-	(void)location;
-	(void)v0;
-}
-void glUniform2fv(GLint location, GLsizei count, const float* value)
-{
-	(void)location;
-	(void)count;
-	(void)value;
-}
-void glUniform3fv(GLint location, GLsizei count, const float* value)
-{
-	(void)location;
-	(void)count;
-	(void)value;
-}
-void glUniform4fv(GLint location, GLsizei count, const float* value)
-{
-	(void)location;
-	(void)count;
-	(void)value;
-}
-void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
-                        const float* value)
-{
-	(void)location;
-	(void)count;
-	(void)transpose;
-	(void)value;
-}
-void glPopDebugGroup(void)
-{
-}
-void glDeleteTextures(GLsizei n, const GLuint* textures)
-{
-	(void)n;
-	(void)textures;
-}
-
 /* Include implementation to test internal static functions */
 #include "shader.c"
 
-/* Test Helpers */
-#define ASSERT_TRUE(cond, msg)                      \
-	if (!(cond)) {                              \
-		fprintf(stderr, "FAIL: %s\n", msg); \
-		exit(1);                            \
-	} else {                                    \
-		printf("PASS: %s\n", msg);          \
-	}
-
-#define ASSERT_FALSE(cond, msg)                     \
-	if (cond) {                                 \
-		fprintf(stderr, "FAIL: %s\n", msg); \
-		exit(1);                            \
-	} else {                                    \
-		printf("PASS: %s\n", msg);          \
-	}
-
 /* Test Cases */
+
+void setUp(void)
+{
+	mock_gl_reset_calls();
+}
+
+void tearDown(void)
+{
+}
 
 void test_get_dir_from_path_truncation(void)
 {
@@ -202,7 +53,8 @@ void test_get_dir_from_path_truncation(void)
 	// Expected: Failure (return false)
 
 	bool result = get_dir_from_path(long_path, out_buf, sizeof(out_buf));
-	ASSERT_FALSE(result, "get_dir_from_path should fail on truncation");
+	TEST_ASSERT_FALSE_MESSAGE(
+	    result, "get_dir_from_path should fail on truncation");
 }
 
 void test_get_dir_from_path_success(void)
@@ -214,9 +66,9 @@ void test_get_dir_from_path_success(void)
 	// Expected: Success (return true), buffer contains "/tmp/"
 
 	bool result = get_dir_from_path(path, out_buf, sizeof(out_buf));
-	ASSERT_TRUE(result, "get_dir_from_path should succeed");
-	ASSERT_TRUE(strcmp(out_buf, "/tmp/") == 0,
-	            "get_dir_from_path output correct");
+	TEST_ASSERT_TRUE_MESSAGE(result, "get_dir_from_path should succeed");
+	TEST_ASSERT_EQUAL_STRING_MESSAGE("/tmp/", out_buf,
+	                                 "get_dir_from_path output correct");
 }
 
 void test_parse_include_path_truncation(void)
@@ -228,8 +80,8 @@ void test_parse_include_path_truncation(void)
 
 	const char* result =
 	    parse_include_path(input, out_buf, sizeof(out_buf));
-	ASSERT_TRUE(result == NULL,
-	            "parse_include_path should fail on truncation");
+	TEST_ASSERT_NULL_MESSAGE(
+	    result, "parse_include_path should fail on truncation");
 }
 
 void test_parse_include_path_success(void)
@@ -241,58 +93,61 @@ void test_parse_include_path_success(void)
 
 	const char* result =
 	    parse_include_path(input, out_buf, sizeof(out_buf));
-	ASSERT_TRUE(result != NULL, "parse_include_path should succeed");
-	ASSERT_TRUE(strcmp(out_buf, "header.glsl") == 0,
-	            "parse_include_path output correct");
+	TEST_ASSERT_NOT_NULL_MESSAGE(result,
+	                             "parse_include_path should succeed");
+	TEST_ASSERT_EQUAL_STRING_MESSAGE("header.glsl", out_buf,
+	                                 "parse_include_path output correct");
 }
 
 void test_is_safe_path_cases(void)
 {
 	/* 1. Valid Paths */
-	ASSERT_TRUE(is_safe_path("shader.glsl"),
-	            "Simple filename should be safe");
-	ASSERT_TRUE(is_safe_path("dir/shader.glsl"),
-	            "Relative path in subdir should be safe");
-	ASSERT_TRUE(is_safe_path("./shader.glsl"),
-	            "Explicit current dir should be safe");
+	TEST_ASSERT_TRUE_MESSAGE(is_safe_path("shader.glsl"),
+	                         "Simple filename should be safe");
+	TEST_ASSERT_TRUE_MESSAGE(is_safe_path("dir/shader.glsl"),
+	                         "Relative path in subdir should be safe");
+	TEST_ASSERT_TRUE_MESSAGE(is_safe_path("./shader.glsl"),
+	                         "Explicit current dir should be safe");
 
 	/* 2. Parent Directory Traversal */
-	ASSERT_FALSE(is_safe_path("../shader.glsl"),
-	             "Parent directory traversal (start) should be unsafe");
-	ASSERT_FALSE(is_safe_path("dir/../shader.glsl"),
-	             "Parent directory traversal (middle) should be unsafe");
-	ASSERT_FALSE(is_safe_path(".."), "Just parent dir should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(
+	    is_safe_path("../shader.glsl"),
+	    "Parent directory traversal (start) should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(
+	    is_safe_path("dir/../shader.glsl"),
+	    "Parent directory traversal (middle) should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(is_safe_path(".."),
+	                          "Just parent dir should be unsafe");
 
 	/* 3. Absolute Paths */
-	ASSERT_FALSE(is_safe_path("/etc/passwd"),
-	             "Absolute path (start) should be unsafe");
-	ASSERT_FALSE(is_safe_path("/shader.glsl"),
-	             "Absolute path (root) should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(is_safe_path("/etc/passwd"),
+	                          "Absolute path (start) should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(is_safe_path("/shader.glsl"),
+	                          "Absolute path (root) should be unsafe");
 
 	/* 4. Windows Separators (Backslashes) */
-	ASSERT_FALSE(is_safe_path("..\\shader.glsl"),
-	             "Windows backslash traversal should be unsafe");
-	ASSERT_FALSE(
+	TEST_ASSERT_FALSE_MESSAGE(
+	    is_safe_path("..\\shader.glsl"),
+	    "Windows backslash traversal should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(
 	    is_safe_path("dir\\shader.glsl"),
 	    "Windows backslash separator should be unsafe (linux-only app)");
 
 	/* 5. URL Schemes / Protocol handlers */
-	ASSERT_FALSE(is_safe_path("http://example.com/shader.glsl"),
-	             "URL with protocol should be unsafe");
-	ASSERT_FALSE(is_safe_path("file:///shader.glsl"),
-	             "File protocol should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(
+	    is_safe_path("http://example.com/shader.glsl"),
+	    "URL with protocol should be unsafe");
+	TEST_ASSERT_FALSE_MESSAGE(is_safe_path("file:///shader.glsl"),
+	                          "File protocol should be unsafe");
 }
 
 int main(void)
 {
-	printf("Running Shader Path Security Tests...\n");
-
-	test_get_dir_from_path_truncation();
-	test_get_dir_from_path_success();
-	test_parse_include_path_truncation();
-	test_parse_include_path_success();
-	test_is_safe_path_cases();
-
-	printf("All tests passed!\n");
-	return 0;
+	UNITY_BEGIN();
+	RUN_TEST(test_get_dir_from_path_truncation);
+	RUN_TEST(test_get_dir_from_path_success);
+	RUN_TEST(test_parse_include_path_truncation);
+	RUN_TEST(test_parse_include_path_success);
+	RUN_TEST(test_is_safe_path_cases);
+	return UNITY_END();
 }

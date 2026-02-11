@@ -40,9 +40,10 @@ target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 # Lister tous les fichiers test_*.c dans le répertoire tests/
 file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
 
-# Exclure le test standalone de la boucle générique
+# Exclure les tests standalone de la boucle générique
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -108,16 +109,26 @@ endforeach()
 # Ce test a besoin de ses propres mocks pour GLAD et GLFW, et ne doit PAS
 # être lié à app_testlib ou glad (pour éviter les conflits de symboles).
 
+# =============================================================================
+# TEST STANDALONE (MOCKED)
+# =============================================================================
+# Ce test a besoin de ses propres mocks pour GLAD et GLFW, et ne doit PAS
+# être lié à app_testlib ou glad (pour éviter les conflits de symboles).
+
 add_executable(test_shader_path_security_standalone
     test_shader_path_security_standalone.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
 
 # On inclut d'abord les mocks pour qu'ils soient prioritaires
 target_include_directories(test_shader_path_security_standalone PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
 )
 
 # On ne link PAS contre app_testlib, seulement libc/libm si besoin
@@ -132,18 +143,40 @@ target_link_libraries(test_shader_path_security_standalone PRIVATE cglm)
 add_test(NAME test_shader_path_security_standalone
          COMMAND test_shader_path_security_standalone)
 
+add_executable(test_texture_toctou
+    test_texture_toctou.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
+)
+target_include_directories(test_texture_toctou PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+target_link_libraries(test_texture_toctou PRIVATE cglm)
+add_test(NAME test_texture_toctou
+         COMMAND test_texture_toctou)
+
 # =============================================================================
 # TEST BILLBOARD CLEANUP (MOCKED)
 # =============================================================================
 add_executable(test_billboard_cleanup
     test_billboard_cleanup.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
 
 target_include_directories(test_billboard_cleanup PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
 )
 
 target_link_libraries(test_billboard_cleanup PRIVATE cglm)
