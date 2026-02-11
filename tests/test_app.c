@@ -1,6 +1,8 @@
 #define _POSIX_C_SOURCE 199309L
 #include "app.h"
 #include "app_scene.h"
+#include "camera.h"
+#include "icosphere.h"
 #include "main.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
@@ -18,6 +20,14 @@
 static App g_test_app;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static bool g_app_initialized = false;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static GLuint g_cached_hdr_texture = 0;
+
+// PBO for async glReadPixels (double buffering)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static GLuint g_pbo[2] = {0, 0};
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static int g_pbo_index = 0;
 
 static const int POLL_TIMEOUT_ITERATIONS = 1000;
 static const long NANOSLEEP_DURATION = 10000000L;
@@ -58,6 +68,40 @@ void setUp(void)
 		                      "Integration Test");
 		TEST_ASSERT_EQUAL_INT(1, result);
 		g_app_initialized = true;
+
+		// Wait for async HDR texture load and cache it
+		int timeout = POLL_TIMEOUT_ITERATIONS;
+		while (g_test_app.hdr_texture == 0 && timeout-- > 0) {
+			app_update(&g_test_app);
+			glfwPollEvents();
+			struct timespec req = {0, NANOSLEEP_DURATION};
+			nanosleep(&req, NULL);
+		}
+
+		// Cache the loaded texture for subsequent tests
+		if (g_test_app.hdr_texture != 0) {
+			g_cached_hdr_texture = g_test_app.hdr_texture;
+		}
+
+		// Initialize PBOs for async pixel readback (optimization#2)
+		int fb_width = 0;
+		int fb_height = 0;
+		glfwGetFramebufferSize(g_test_app.window, &fb_width,
+		                       &fb_height);
+		size_t pixel_data_size =
+		    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+
+		glGenBuffers(2, g_pbo);
+		for (int i = 0; i < 2; i++) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[i]);
+			glBufferData(GL_PIXEL_PACK_BUFFER,
+			             (GLsizeiptr)pixel_data_size, NULL,
+			             GL_STREAM_READ);
+		}
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	} else if (g_cached_hdr_texture != 0) {
+		// Reuse cached texture for subsequent tests
+		g_test_app.hdr_texture = g_cached_hdr_texture;
 	}
 }
 
@@ -194,14 +238,7 @@ void test_app_render_multi_view(void)
 	int fb_height = 0;
 	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
 
-	// Wait for async load to complete
-	int timeout = POLL_TIMEOUT_ITERATIONS;
-	while (g_test_app.hdr_texture == 0 && timeout-- > 0) {
-		app_update(&g_test_app);
-		glfwPollEvents();
-		struct timespec req = {0, NANOSLEEP_DURATION};
-		nanosleep(&req, NULL);
-	}
+	// Texture should already be loaded and cached from setUp()
 	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.hdr_texture,
 	                              "HDR texture never loaded");
 
@@ -234,27 +271,129 @@ void test_app_render_multi_view(void)
 		// Render
 		app_render(&g_test_app);
 
-		// Capture
+		// Async capture using PBO (optimization#2)
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+		// Bind PBO for async DMA transfer
+		int current_pbo = g_pbo_index;
+		int next_pbo = (g_pbo_index + 1) % 2;
+
+		// Start async read to PBO
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[current_pbo]);
 		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, current_pixels);
+		             GL_UNSIGNED_BYTE, 0);
 
-		// Flip for PNG/comparison
-		flip_image_vertically(fb_width, fb_height, current_pixels);
+		// Process first frame immediately (no previous frame)
+		if (i == 0) {
+			void* mapped =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (mapped) {
+				(void)memcpy(current_pixels, mapped,
+				             pixel_data_size);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 
-		if (capture_mode) {
-			char ref_path[PATH_BUF_SIZE];
-			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", vpoint->name);
-			(void)stbi_write_png(ref_path, fb_width, fb_height,
-			                     BYTES_PER_PIXEL, current_pixels,
-			                     fb_width * BYTES_PER_PIXEL);
-			printf("[INFO] Reference generated: %s\n", ref_path);
-		} else {
-			// Verify
-			verify_reference_image(fb_width, fb_height,
-			                       current_pixels, vpoint->name);
+				// Flip for PNG/comparison
+				flip_image_vertically(fb_width, fb_height,
+				                      current_pixels);
+
+				if (capture_mode) {
+					char ref_path[PATH_BUF_SIZE];
+					(void)snprintf(
+					    ref_path, sizeof(ref_path),
+					    "tests/ref_%s.png", vpoint->name);
+					(void)stbi_write_png(
+					    ref_path, fb_width, fb_height,
+					    BYTES_PER_PIXEL, current_pixels,
+					    fb_width * BYTES_PER_PIXEL);
+					printf(
+					    "[INFO] Reference generated: %s\n",
+					    ref_path);
+				} else {
+					verify_reference_image(
+					    fb_width, fb_height, current_pixels,
+					    vpoint->name);
+				}
+			}
 		}
+
+		// Map previous frame's PBO (which should now be ready)
+		if (i > 0) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[next_pbo]);
+			void* mapped =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (mapped) {
+				(void)memcpy(current_pixels, mapped,
+				             pixel_data_size);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+
+				// Flip for PNG/comparison
+				flip_image_vertically(fb_width, fb_height,
+				                      current_pixels);
+
+				// Verify/generate for the PREVIOUS viewpoint
+				// (i-1)
+				const ViewPoint* prev_vpoint =
+				    &G_VIEWPOINTS[i - 1];
+				if (capture_mode) {
+					char ref_path[PATH_BUF_SIZE];
+					(void)snprintf(ref_path,
+					               sizeof(ref_path),
+					               "tests/ref_%s.png",
+					               prev_vpoint->name);
+					(void)stbi_write_png(
+					    ref_path, fb_width, fb_height,
+					    BYTES_PER_PIXEL, current_pixels,
+					    fb_width * BYTES_PER_PIXEL);
+					printf(
+					    "[INFO] Reference generated: %s\n",
+					    ref_path);
+				} else {
+					// Verify previous viewpoint
+					verify_reference_image(
+					    fb_width, fb_height, current_pixels,
+					    prev_vpoint->name);
+				}
+			}
+		}
+
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+		g_pbo_index = next_pbo;
+	}
+
+	// Read the last frame from the PBO (we're one frame behind)
+	if (NUM_VIEWPOINTS > 0) {
+		int last_pbo = (g_pbo_index + 1) % 2;
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[last_pbo]);
+		void* mapped = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		if (mapped) {
+			(void)memcpy(current_pixels, mapped, pixel_data_size);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+
+			// Flip for PNG/comparison
+			flip_image_vertically(fb_width, fb_height,
+			                      current_pixels);
+
+			const ViewPoint* last_vpoint =
+			    &G_VIEWPOINTS[NUM_VIEWPOINTS - 1];
+			if (capture_mode) {
+				char ref_path[PATH_BUF_SIZE];
+				(void)snprintf(ref_path, sizeof(ref_path),
+				               "tests/ref_%s.png",
+				               last_vpoint->name);
+				(void)stbi_write_png(
+				    ref_path, fb_width, fb_height,
+				    BYTES_PER_PIXEL, current_pixels,
+				    fb_width * BYTES_PER_PIXEL);
+				printf("[INFO] Reference generated: %s\n",
+				       ref_path);
+			} else {
+				// Verify last viewpoint
+				verify_reference_image(fb_width, fb_height,
+				                       current_pixels,
+				                       last_vpoint->name);
+			}
+		}
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	}
 
 	free(current_pixels);
@@ -280,6 +419,12 @@ int main(void)
 
 	// Cleanup APRÈS tous les tests
 	if (g_app_initialized) {
+		// Cleanup PBOs
+		if (g_pbo[0] != 0) {
+			glDeleteBuffers(2, g_pbo);
+			g_pbo[0] = 0;
+			g_pbo[1] = 0;
+		}
 		app_cleanup(&g_test_app);
 	}
 
