@@ -459,9 +459,14 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initializes the billboard group and allocates GPU memory. </p>
+<p>RESOURCE MANAGEMENT:</p><ul>
+<li>This function creates OpenGL resources (VBO).</li>
+<li>MUST be paired with <a class="el" href="billboard__rendering_8h.html#afe9bff73b698b1f2017877983fbf3f4c" title="Releases all GPU resources allocated for the billboard group.">billboard_group_cleanup()</a> to avoid memory leaks.</li>
+<li>Do NOT call init twice on the same group without cleanup in between.</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
+    <tr><td class="paramname">group</td><td>Pointer to the group (must be zero-initialized). </td></tr>
     <tr><td class="paramname">data</td><td>Initial instance data (can be NULL if only allocating). </td></tr>
     <tr><td class="paramname">count</td><td>Number of instances to allocate for. </td></tr>
   </table>
