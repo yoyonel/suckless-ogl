@@ -4,6 +4,7 @@
 #include "instanced_rendering.h"
 #include "render_utils.h"
 #include "shader.h"
+#include <assert.h>
 #include <cglm/types.h>
 #include <stddef.h>
 
@@ -12,6 +13,9 @@ static const int WIRE_CUBE_VERTEX_COUNT = 24;
 void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
                           int count)
 {
+	/* Ensure group is in clean state (no double-init without cleanup) */
+	assert(group->instance_vbo == 0 && "Double initialization detected");
+
 	group->instance_count = count;
 	group->vao = 0;
 	group->vao_wire_quad = 0;
@@ -135,7 +139,7 @@ void billboard_group_cleanup(BillboardGroup* group)
 		group->vao_wire_box = 0;
 	}
 
-	if (group->instance_vbo) {
+	if (group->instance_vbo != 0) {
 		glDeleteBuffers(1, &group->instance_vbo);
 		group->instance_vbo = 0;
 	}
