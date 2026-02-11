@@ -4,7 +4,6 @@
 #include "log.h"
 #include "perf_timer.h"
 #include "texture.h"
-#include "utils.h"
 #include <pthread.h>
 #include <stb_image.h>
 #include <stdbool.h>
@@ -133,6 +132,13 @@ void async_loader_shutdown(void)
 	pthread_mutex_unlock(&request_mutex);
 
 	pthread_join(worker_thread, NULL);
+
+	/* Cleanup any pending request data that wasn't consumed */
+	if (current_request.data) {
+		stbi_image_free(current_request.data);
+		current_request.data = NULL;
+	}
+
 	pthread_cond_destroy(&request_cond);
 	pthread_mutex_destroy(&request_mutex);
 	LOG_INFO("suckless-ogl.async", "Async loader shutdown.");
