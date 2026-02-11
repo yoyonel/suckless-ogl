@@ -57,4 +57,34 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 void glPopDebugGroup(void);
 void glDeleteTextures(GLsizei n, const GLuint* textures);
 
+typedef long GLsizeiptr;
+typedef long GLintptr;
+
+#define GL_ARRAY_BUFFER 0
+#define GL_DYNAMIC_DRAW 0
+#define GL_FLOAT 0
+#define GL_CULL_FACE 0
+#define GL_TRIANGLE_STRIP 0
+#define GL_LINE_LOOP 0
+#define GL_LINES 0
+
+void glGenBuffers(GLsizei n, GLuint* buffers);
+void glBindBuffer(GLenum target, GLuint buffer);
+void glBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
+void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
+void glDeleteBuffers(GLsizei n, const GLuint* buffers);
+
+void glGenVertexArrays(GLsizei n, GLuint* arrays);
+void glBindVertexArray(GLuint array);
+void glDeleteVertexArrays(GLsizei n, const GLuint* arrays);
+void glEnableVertexAttribArray(GLuint index);
+void glDisableVertexAttribArray(GLuint index);
+void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer);
+void glVertexAttribDivisor(GLuint index, GLuint divisor);
+
+void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
+void glEnable(GLenum cap);
+void glDisable(GLenum cap);
+GLboolean glIsEnabled(GLenum cap);
+
 #endif

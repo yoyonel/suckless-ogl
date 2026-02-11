@@ -134,6 +134,11 @@ void billboard_group_cleanup(BillboardGroup* group)
 		glDeleteVertexArrays(1, &group->vao_wire_box);
 		group->vao_wire_box = 0;
 	}
+
+	if (group->instance_vbo) {
+		glDeleteBuffers(1, &group->instance_vbo);
+		group->instance_vbo = 0;
+	}
 }
 
 void billboard_group_draw_debug_fill(BillboardGroup* group)
