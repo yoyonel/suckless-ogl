@@ -70,8 +70,10 @@ typedef long GLintptr;
 
 void glGenBuffers(GLsizei n, GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);
-void glBufferData(GLenum target, GLsizeiptr size, const void* data, GLenum usage);
-void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
+void glBufferData(GLenum target, GLsizeiptr size, const void* data,
+                  GLenum usage);
+void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
+                     const void* data);
 void glDeleteBuffers(GLsizei n, const GLuint* buffers);
 
 void glGenVertexArrays(GLsizei n, GLuint* arrays);
@@ -79,10 +81,13 @@ void glBindVertexArray(GLuint array);
 void glDeleteVertexArrays(GLsizei n, const GLuint* arrays);
 void glEnableVertexAttribArray(GLuint index);
 void glDisableVertexAttribArray(GLuint index);
-void glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer);
+void glVertexAttribPointer(GLuint index, GLint size, GLenum type,
+                           GLboolean normalized, GLsizei stride,
+                           const void* pointer);
 void glVertexAttribDivisor(GLuint index, GLuint divisor);
 
-void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
+void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
+                           GLsizei instancecount);
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
