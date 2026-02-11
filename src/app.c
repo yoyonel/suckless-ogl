@@ -19,6 +19,7 @@
 #include <cglm/mat4.h>
 #include <cglm/types.h>
 #include <cglm/util.h>
+#include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>
 #ifdef USE_SSBO_RENDERING
@@ -104,6 +105,7 @@ int app_init(App* app, int width, int height, const char* title)
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
 	           sizeof(float));
 	if (!app->lum_histogram_buffer) {
+		app_cleanup(app);
 		return 0;
 	}
 
@@ -131,18 +133,21 @@ int app_init(App* app, int width, int height, const char* title)
 	app->skybox_shader =
 	    shader_load("shaders/background.vert", "shaders/background.frag");
 	if (!app->skybox_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 
 	app->debug_shader =
 	    shader_load("shaders/debug_tex.vert", "shaders/debug_tex.frag");
 	if (!app->debug_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 
 	app->debug_line_shader =
 	    shader_load("shaders/debug_line.vert", "shaders/debug_line.frag");
 	if (!app->debug_line_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 
@@ -151,6 +156,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_billboard_shader = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
 	if (!app->pbr_billboard_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 
@@ -209,6 +215,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
 	                                   "shaders/pbr_ibl_instanced.frag");
 	if (!app->pbr_ssbo_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 	Shader* inst_shader = app->pbr_ssbo_shader;
@@ -217,6 +224,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_instanced_shader = shader_load(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
 	if (!app->pbr_instanced_shader) {
+		app_cleanup(app);
 		return 0;
 	}
 	app_update_instancing_mode(app);
@@ -255,6 +263,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
 	                      height)) {
+		app_cleanup(app);
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
@@ -419,8 +428,8 @@ void app_update(App* app)
 	if (async_loader_poll(&req)) {
 		app_finalize_environment_load(app, &req);
 		if (req.data) {
-			free(req.data); /* Data was allocated with malloc in
-			                   texture_load_pixels */
+			stbi_image_free(req.data); /* Data was allocated with
+			                   malloc in texture_load_pixels */
 		}
 	}
 	app_process_ibl_state_machine(app);
