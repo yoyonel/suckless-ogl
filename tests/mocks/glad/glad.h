@@ -14,9 +14,12 @@ typedef long GLsizeiptr;
 typedef long GLintptr;
 
 #define GL_ARRAY_BUFFER 0
+#define GL_ELEMENT_ARRAY_BUFFER 0
 #define GL_DYNAMIC_DRAW 0
 #define GL_FLOAT 0
+#define GL_UNSIGNED_INT 0
 #define GL_CULL_FACE 0
+#define GL_TRIANGLES 0
 #define GL_TRIANGLE_STRIP 0
 #define GL_LINE_LOOP 0
 #define GL_LINES 0
@@ -111,6 +114,8 @@ void glVertexAttribDivisor(GLuint index, GLuint divisor);
 
 void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
                            GLsizei instancecount);
+void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
+                             const void* indices, GLsizei instancecount);
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
