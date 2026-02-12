@@ -157,11 +157,12 @@ var NAVTREEINDEX5 =
 "structBandingParams.html#abe1b9fd9ce235a12d724975d876064e8":[5,0,6,3],
 "structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a":[5,0,6,2],
 "structBillboardGroup.html":[5,0,7],
-"structBillboardGroup.html#a0f1ee45eb564eb4deb4aafb5d533b1b8":[5,0,7,4],
-"structBillboardGroup.html#a3b991938c07080e0bf4ad67480aef9ec":[5,0,7,2],
-"structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77":[5,0,7,1],
-"structBillboardGroup.html#a8f89d6fd42c03ce1bf1f7b4c1b2e9aab":[5,0,7,0],
-"structBillboardGroup.html#a9a5065cb19c4d496b0fbf88da82ee25d":[5,0,7,3],
+"structBillboardGroup.html#a0f1ee45eb564eb4deb4aafb5d533b1b8":[5,0,7,5],
+"structBillboardGroup.html#a3b991938c07080e0bf4ad67480aef9ec":[5,0,7,3],
+"structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77":[5,0,7,2],
+"structBillboardGroup.html#a8f89d6fd42c03ce1bf1f7b4c1b2e9aab":[5,0,7,1],
+"structBillboardGroup.html#a9a5065cb19c4d496b0fbf88da82ee25d":[5,0,7,4],
+"structBillboardGroup.html#aa249756fbb8d7f4a12aa499595a3c5a5":[5,0,7,0],
 "structBillboardUniforms.html":[5,0,8],
 "structBillboardUniforms.html#a088a5ced5fbd09a16aec9d0ca7447fe2":[5,0,8,7],
 "structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed":[5,0,8,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c":[5,0,17,2],
 "structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf":[5,0,17,12],
 "structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca":[5,0,17,7],
-"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,17,1],
-"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,17,8]
+"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,17,1]
 };

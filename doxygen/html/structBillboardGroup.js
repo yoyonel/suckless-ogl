@@ -1,5 +1,6 @@
 var structBillboardGroup =
 [
+    [ "capacity", "structBillboardGroup.html#aa249756fbb8d7f4a12aa499595a3c5a5", null ],
     [ "instance_count", "structBillboardGroup.html#a8f89d6fd42c03ce1bf1f7b4c1b2e9aab", null ],
     [ "instance_vbo", "structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77", null ],
     [ "vao", "structBillboardGroup.html#a3b991938c07080e0bf4ad67480aef9ec", null ],
