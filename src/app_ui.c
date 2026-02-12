@@ -81,6 +81,7 @@ void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[M] Toggle Motion Blur", HELP_COLOR);
 	ui_layout_text(&layout, "[L] Toggle Billboard Mode", HELP_COLOR);
 	ui_layout_text(&layout, "[K] Toggle Envmap", HELP_COLOR);
+	ui_layout_text(&layout, "[T] Toggle Transition Mode", HELP_COLOR);
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 

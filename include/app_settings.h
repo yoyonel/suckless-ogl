@@ -144,6 +144,14 @@ static const int IRIDIANCE_MAP_SIZE =
     64; /**< Size of the diffuse irradiance map. */
 static const int BRDF_LUT_MAP_SIZE =
     512; /**< Size of the BRDF Lookup Texture (Generated once). */
+/* Environment Transition Mode */
+typedef enum {
+	ENV_TRANSITION_CROSSFADE = 0,
+	ENV_TRANSITION_BLACK_SCREEN
+} EnvTransitionMode;
+
+static const float DEFAULT_ENV_TRANSITION_DURATION = 0.25F;
+static const int DEFAULT_ENV_TRANSITION_MODE = ENV_TRANSITION_CROSSFADE;
 /** @} */
 
 /**

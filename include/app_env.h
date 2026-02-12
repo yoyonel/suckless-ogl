@@ -72,4 +72,18 @@ void app_process_ibl_state_machine(App* app);
  */
 void app_finalize_environment_load(App* app, AsyncRequest* req);
 
+/**
+ * @brief Updates the environment transition.
+ * @param app Pointer to the application state.
+ */
+void app_update_transition(App* app);
+
+/**
+ * @brief Triggers a new environment transition.
+ * @param app Pointer to the application state.
+ * @param filename HDR file to load.
+ * @return 1 on success.
+ */
+int app_trigger_env_transition(App* app, const char* filename);
+
 #endif /* APP_ENV_H */

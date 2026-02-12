@@ -809,11 +809,24 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 	}
 
 	if (!shader->silent_warnings) {
-		LOG_WARNING(
-		    "suckless-ogl.shader",
-		    "Uniform '%s' not found or active in shader '%s' (ID %d)",
-		    name, shader->name ? shader->name : "Unknown",
-		    shader->program);
+		if (shader->warning_count < SHADER_WARNING_THROTTLE_LIMIT) {
+			LOG_WARNING(
+			    "suckless-ogl.shader",
+			    "Uniform '%s' not found or active in shader '%s' "
+			    "(ID %d)",
+			    name, shader->name ? shader->name : "Unknown",
+			    shader->program);
+			shader->warning_count++;
+			if (shader->warning_count ==
+			    SHADER_WARNING_THROTTLE_LIMIT) {
+				LOG_WARNING(
+				    "suckless-ogl.shader",
+				    "Too many uniform warnings for shader "
+				    "'%s'. "
+				    "Throttling future warnings.",
+				    shader->name ? shader->name : "Unknown");
+			}
+		}
 	}
 	return -1;
 }
