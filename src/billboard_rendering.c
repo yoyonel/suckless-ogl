@@ -17,6 +17,7 @@ void billboard_group_init(BillboardGroup* group, const SphereInstance* data,
 	assert(group->instance_vbo == 0 && "Double initialization detected");
 
 	group->instance_count = count;
+	group->capacity = count;
 	group->vao = 0;
 	group->vao_wire_quad = 0;
 	group->vao_wire_box = 0;
@@ -37,11 +38,26 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
 		return;
 	}
 
-	/* Update GPU buffer with new sorted data */
-	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
-	/* Using glBufferSubData is fine for small updates (10-100 instances) */
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	                (GLsizeiptr)(count * sizeof(SphereInstance)), data);
+	/* Update active count */
+	group->instance_count = count;
+
+	/* Check for overflow */
+	if (count > group->capacity) {
+		/* Reallocate buffer */
+		glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
+		glBufferData(GL_ARRAY_BUFFER,
+		             (GLsizeiptr)(count * sizeof(SphereInstance)), data,
+		             GL_DYNAMIC_DRAW);
+		group->capacity = count;
+	} else {
+		/* Update GPU buffer with new sorted data */
+		glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
+		/* Using glBufferSubData is fine for small updates (10-100
+		 * instances) */
+		glBufferSubData(GL_ARRAY_BUFFER, 0,
+		                (GLsizeiptr)(count * sizeof(SphereInstance)),
+		                data);
+	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
