@@ -44,6 +44,7 @@ file(GLOB TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -183,6 +184,29 @@ target_link_libraries(test_billboard_cleanup PRIVATE cglm)
 
 add_test(NAME test_billboard_cleanup
          COMMAND test_billboard_cleanup)
+
+# =============================================================================
+# TEST BILLBOARD OVERFLOW (MOCKED)
+# =============================================================================
+add_executable(test_billboard_overflow
+    test_billboard_overflow.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+)
+
+target_include_directories(test_billboard_overflow PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_billboard_overflow PRIVATE cglm)
+
+add_test(NAME test_billboard_overflow
+         COMMAND test_billboard_overflow)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

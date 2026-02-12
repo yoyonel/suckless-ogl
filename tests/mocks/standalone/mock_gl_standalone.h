@@ -59,5 +59,9 @@ GLuint mock_gl_get_generated_buffer_id(void);
 GLuint mock_gl_get_generated_vao_id(void);
 GLuint mock_gl_get_last_deleted_buffer(void);
 int mock_gl_get_delete_buffer_call_count(void);
+int mock_gl_get_buffer_data_call_count(void);
+int mock_gl_get_buffer_sub_data_call_count(void);
+GLsizeiptr mock_gl_get_last_buffer_data_size(void);
+GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void);
 
 #endif /* MOCK_GL_STANDALONE_H */

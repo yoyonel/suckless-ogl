@@ -6,12 +6,20 @@
 static GLuint g_generated_buffer_id = DEFAULT_BUFFER_ID;
 static GLuint g_last_deleted_buffer = 0;
 static int g_delete_buffer_call_count = 0;
+static int g_buffer_data_call_count = 0;
+static int g_buffer_sub_data_call_count = 0;
+static GLsizeiptr g_last_buffer_data_size = 0;
+static GLsizeiptr g_last_buffer_sub_data_size = 0;
 
 void mock_gl_reset_calls(void)
 {
 	g_generated_buffer_id = DEFAULT_BUFFER_ID;
 	g_last_deleted_buffer = 0;
 	g_delete_buffer_call_count = 0;
+	g_buffer_data_call_count = 0;
+	g_buffer_sub_data_call_count = 0;
+	g_last_buffer_data_size = 0;
+	g_last_buffer_sub_data_size = 0;
 }
 
 GLuint mock_gl_get_generated_buffer_id(void)
@@ -32,6 +40,26 @@ GLuint mock_gl_get_last_deleted_buffer(void)
 int mock_gl_get_delete_buffer_call_count(void)
 {
 	return g_delete_buffer_call_count;
+}
+
+int mock_gl_get_buffer_data_call_count(void)
+{
+	return g_buffer_data_call_count;
+}
+
+int mock_gl_get_buffer_sub_data_call_count(void)
+{
+	return g_buffer_sub_data_call_count;
+}
+
+GLsizeiptr mock_gl_get_last_buffer_data_size(void)
+{
+	return g_last_buffer_data_size;
+}
+
+GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
+{
+	return g_last_buffer_sub_data_size;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -56,9 +84,10 @@ void glBufferData(GLenum target, GLsizeiptr size, const void* data,
                   GLenum usage)
 {
 	(void)target;
-	(void)size;
 	(void)data;
 	(void)usage;
+	g_buffer_data_call_count++;
+	g_last_buffer_data_size = size;
 }
 
 void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
@@ -66,8 +95,9 @@ void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
 {
 	(void)target;
 	(void)offset;
-	(void)size;
 	(void)data;
+	g_buffer_sub_data_call_count++;
+	g_last_buffer_sub_data_size = size;
 }
 
 void glDeleteBuffers(GLsizei n, const GLuint* buffers)

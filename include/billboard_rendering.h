@@ -25,6 +25,7 @@ typedef struct {
 	GLuint instance_vbo;  /**< GPU buffer storing per-instance attributes
 	                         (position, color). */
 	int instance_count;   /**< Number of billboards in this group. */
+	int capacity;         /**< Maximum number of instances allocated in VBO. */
 	GLuint vao_wire_quad; /**< VAO for debug wireframe quad. */
 	GLuint vao_wire_box;  /**< VAO for debug wireframe box. */
 } BillboardGroup;
