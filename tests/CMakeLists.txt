@@ -138,7 +138,7 @@ target_include_directories(test_shader_path_security_standalone PRIVATE
 # Donc on a besoin de cglm.
 
 # Si cglm est header-only ou statique:
-target_link_libraries(test_shader_path_security_standalone PRIVATE cglm)
+target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
 
 add_test(NAME test_shader_path_security_standalone
          COMMAND test_shader_path_security_standalone)
@@ -157,7 +157,7 @@ target_include_directories(test_texture_toctou PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
-target_link_libraries(test_texture_toctou PRIVATE cglm)
+target_link_libraries(test_texture_toctou PRIVATE cglm m)
 add_test(NAME test_texture_toctou
          COMMAND test_texture_toctou)
 
@@ -179,7 +179,7 @@ target_include_directories(test_billboard_cleanup PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 
-target_link_libraries(test_billboard_cleanup PRIVATE cglm)
+target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
 
 add_test(NAME test_billboard_cleanup
          COMMAND test_billboard_cleanup)
