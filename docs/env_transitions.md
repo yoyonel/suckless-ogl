@@ -30,19 +30,20 @@ Transitions are governed by a state machine in `src/app_env.c`.
 
 ```mermaid
 stateDiagram-v2
-    IDLE --> LOADING: app_trigger_env_transition
-    LOADING --> FADE_OUT: IBL Done (Black Screen Mode)
-    LOADING --> FADE_IN: IBL Done (Crossfade Mode)
-    FADE_OUT --> FADE_IN: Alpha >= 1.0 (Swap Textures)
-    FADE_IN --> IDLE: Alpha <= 0.0
+    IDLE --> " LOADING ": " app_trigger_env_transition "
+    " LOADING " --> " FADE_OUT ": " IBL Done (Black Screen Mode) "
+    " LOADING " --> " FADE_IN ": " IBL Done (Crossfade Mode) "
+    " FADE_OUT " --> " FADE_IN ": " Alpha >= 1.0 (Swap Textures) "
+    " FADE_IN " --> IDLE: " Alpha <= 0.0 "
 
-    IDLE --> WAIT_IBL: Initial Startup
-    WAIT_IBL --> FADE_IN: IBL Done (Initial Load)
+    IDLE --> " WAIT_IBL ": " Initial Startup "
+    " WAIT_IBL " --> " FADE_IN ": " IBL Done (Initial Load) "
 ```
 
 ### Transition States (`TransitionState`)
 
-- `TRANSITION_IDLE`: No transition active.
+* `TRANSITION_IDLE`: No transition active.
+
 * `TRANSITION_LOADING`: Background loading of HDR/IBL textures while the old scene is visible.
 * `TRANSITION_WAIT_IBL`: Used during initial startup to keep the screen black until the first environment is ready.
 * `TRANSITION_FADE_OUT`: Scene is fading to black or snapshot.
@@ -64,12 +65,13 @@ Transitions can be configured via `include/app_settings.h` or controlled at runt
 
 ### Constants
 
-- `DEFAULT_ENV_TRANSITION_DURATION`: The time in seconds for a full fade.
+* `DEFAULT_ENV_TRANSITION_DURATION`: The time in seconds for a full fade.
+
 * `DEFAULT_ENV_TRANSITION_MODE`: The default mode (`ENV_TRANSITION_CROSSFADE` or `ENV_TRANSITION_BLACK_SCREEN`).
 
 ### Runtime Controls
 
-- **`T` Key**: Toggles between Crossfade and Black Screen modes.
+* **`T` Key**: Toggles between Crossfade and Black Screen modes.
 
 ## Extending the Transition System
 
