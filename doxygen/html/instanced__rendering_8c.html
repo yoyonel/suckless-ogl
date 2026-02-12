@@ -259,12 +259,6 @@ Functions</h2></td></tr>
 <tr class="memitem:aefe48e60e9fa48c4ac3a7badb718bec4" id="r_aefe48e60e9fa48c4ac3a7badb718bec4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4">instanced_group_bind_mesh</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, GLuint vbo, GLuint nbo, GLuint ebo)</td></tr>
 <tr class="memdesc:aefe48e60e9fa48c4ac3a7badb718bec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds a procedural mesh (e.g., icosphere) to the instanced group.  <br /></td></tr>
 <tr class="separator:aefe48e60e9fa48c4ac3a7badb718bec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a964e73627ae8d42b064189ce70b76fba" id="r_a964e73627ae8d42b064189ce70b76fba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#a964e73627ae8d42b064189ce70b76fba">instanced_group_bind_billboard</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, GLuint vbo)</td></tr>
-<tr class="memdesc:a964e73627ae8d42b064189ce70b76fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds a quad mesh to the instanced group (fallback or specialized use).  <br /></td></tr>
-<tr class="separator:a964e73627ae8d42b064189ce70b76fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a823a52a71704eb119883c26ead3cb820" id="r_a823a52a71704eb119883c26ead3cb820"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#a823a52a71704eb119883c26ead3cb820">instanced_group_draw_arrays</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, GLenum mode, int first, int count)</td></tr>
-<tr class="memdesc:a823a52a71704eb119883c26ead3cb820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes a non-indexed instanced draw call.  <br /></td></tr>
-<tr class="separator:a823a52a71704eb119883c26ead3cb820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af70d42b318f921586735530dc3a533e5" id="r_af70d42b318f921586735530dc3a533e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#af70d42b318f921586735530dc3a533e5">instanced_group_draw</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, size_t index_count)</td></tr>
 <tr class="memdesc:af70d42b318f921586735530dc3a533e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes an indexed instanced draw call.  <br /></td></tr>
 <tr class="separator:af70d42b318f921586735530dc3a533e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -273,48 +267,6 @@ Functions</h2></td></tr>
 <tr class="separator:a1c3f138d496ea038ba38d988c71d6884"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a964e73627ae8d42b064189ce70b76fba" name="a964e73627ae8d42b064189ce70b76fba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a964e73627ae8d42b064189ce70b76fba">&#9670;&#160;</a></span>instanced_group_bind_billboard()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void instanced_group_bind_billboard </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structInstancedGroup.html">InstancedGroup</a> *&#160;</td>
-          <td class="paramname"><em>group</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>vbo</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Binds a quad mesh to the instanced group (fallback or specialized use). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
-    <tr><td class="paramname">vbo</td><td>Quad VBO. </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="instanced__rendering_8c_a964e73627ae8d42b064189ce70b76fba_cgraph.svg" width="667" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
 <a id="aefe48e60e9fa48c4ac3a7badb718bec4" name="aefe48e60e9fa48c4ac3a7badb718bec4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aefe48e60e9fa48c4ac3a7badb718bec4">&#9670;&#160;</a></span>instanced_group_bind_mesh()</h2>
 
@@ -428,57 +380,6 @@ Here is the call graph for this function:</div>
   <table class="params">
     <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
     <tr><td class="paramname">index_count</td><td>Number of indices in the base mesh. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a823a52a71704eb119883c26ead3cb820" name="a823a52a71704eb119883c26ead3cb820"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a823a52a71704eb119883c26ead3cb820">&#9670;&#160;</a></span>instanced_group_draw_arrays()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void instanced_group_draw_arrays </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structInstancedGroup.html">InstancedGroup</a> *&#160;</td>
-          <td class="paramname"><em>group</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">GLenum&#160;</td>
-          <td class="paramname"><em>mode</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>first</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>count</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Executes a non-indexed instanced draw call. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
-    <tr><td class="paramname">mode</td><td>GL primitive mode (e.g., GL_TRIANGLES). </td></tr>
-    <tr><td class="paramname">first</td><td>Starting vertex index. </td></tr>
-    <tr><td class="paramname">count</td><td>Number of vertices per instance. </td></tr>
   </table>
   </dd>
 </dl>

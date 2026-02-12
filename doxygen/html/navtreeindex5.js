@@ -1,9 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"shader_8h_source.html":[6,0,2,31],
-"skybox_8c.html":[6,0,4,29],
-"skybox_8c.html#a426022a6fba8e5f57863e91b5ce3a3a0":[6,0,4,29,0],
-"skybox_8c.html#a536ba7358b462e00242dcee43f6483c4":[6,0,4,29,2],
 "skybox_8c.html#ad8084984d6dafbe33c871117733efacf":[6,0,4,29,1],
 "skybox_8h.html":[6,0,2,32],
 "skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0":[6,0,2,32,1],
@@ -249,5 +245,9 @@ var NAVTREEINDEX5 =
 "structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855":[5,0,17,13],
 "structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd":[5,0,17,10],
 "structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb":[5,0,17,3],
-"structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c":[5,0,17,2]
+"structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c":[5,0,17,2],
+"structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf":[5,0,17,12],
+"structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca":[5,0,17,7],
+"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,17,1],
+"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,17,8]
 };
