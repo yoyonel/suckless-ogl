@@ -2,6 +2,7 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "utils.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -93,10 +94,6 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 
 	static DebugMessageEntry debug_cache[DEBUG_HASH_SIZE] = {0};
 
-	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
-		return;
-	}
-
 	uint32_t hash_idx = hash_id(message_id);
 	DebugMessageEntry* entry = &debug_cache[hash_idx];
 
@@ -132,15 +129,18 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 
 void setup_opengl_debug(void)
 {
-	glEnable(GL_DEBUG_OUTPUT);
-#ifdef DEBUG_SYNCHRONOUS
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-#endif
-
-	glDebugMessageCallback(gl_debug_callback, NULL);
-
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL,
-	                      GL_TRUE);
-
-	LOG_INFO(LOG_TAG, "OpenGL Debug Callback initialized");
+	GLint flags = 0;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (check_flag(flags, GL_CONTEXT_FLAG_DEBUG_BIT)) {
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(gl_debug_callback, NULL);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE,
+		                      0, NULL, GL_TRUE);
+		LOG_INFO(LOG_TAG, "OpenGL Debug Callback initialized "
+		                  "(High Sensitivity)");
+	} else {
+		LOG_WARNING(LOG_TAG, "Debug Context NOT active - "
+		                     "glDebugMessageCallback disabled");
+	}
 }
