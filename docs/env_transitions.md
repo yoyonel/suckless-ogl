@@ -30,14 +30,20 @@ Transitions are governed by a state machine in `src/app_env.c`.
 
 ```mermaid
 stateDiagram-v2
-    IDLE --> " LOADING ": " app_trigger_env_transition "
-    " LOADING " --> " FADE_OUT ": " IBL Done (Black Screen Mode) "
-    " LOADING " --> " FADE_IN ": " IBL Done (Crossfade Mode) "
-    " FADE_OUT " --> " FADE_IN ": " Alpha >= 1.0 (Swap Textures) "
-    " FADE_IN " --> IDLE: " Alpha <= 0.0 "
+    state "  IDLE  " as idle
+    state "  LOADING  " as loading
+    state "  FADE_OUT  " as fade_out
+    state "  FADE_IN  " as fade_in
+    state "  WAIT_IBL  " as wait_ibl
 
-    IDLE --> " WAIT_IBL ": " Initial Startup "
-    " WAIT_IBL " --> " FADE_IN ": " IBL Done (Initial Load) "
+    idle --> loading : app_trigger_env_transition
+    loading --> fade_out : IBL Done (Black Screen Mode)
+    loading --> fade_in : IBL Done (Crossfade Mode)
+    fade_out --> fade_in : Alpha >= 1.0 (Swap Textures)
+    fade_in --> idle : Alpha <= 0.0
+
+    idle --> wait_ibl : Initial Startup
+    wait_ibl --> fade_in : IBL Done (Initial Load)
 ```
 
 ### Transition States (`TransitionState`)
