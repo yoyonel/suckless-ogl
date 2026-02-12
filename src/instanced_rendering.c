@@ -64,42 +64,6 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 	glBindVertexArray(0);
 }
 
-void instanced_group_bind_billboard(InstancedGroup* group, GLuint vbo)
-{
-	if (group->vao != 0) {
-		glDeleteVertexArrays(1, &group->vao);
-		group->vao = 0;
-	}
-
-	glGenVertexArrays(1, &group->vao);
-	glBindVertexArray(group->vao);
-
-	// -- GÉOMÉTRIE (Quad) --
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribDivisor(0, 0);
-
-	/* Ensure unused attribute 1 has divisor 0 */
-	glVertexAttribDivisor(1, 0);
-
-	// Pas de normales (index 1) pour les billboards
-
-	// -- INSTANCES --
-	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
-	setup_instance_attributes();
-
-	glBindVertexArray(0);
-}
-
-void instanced_group_draw_arrays(InstancedGroup* group, GLenum mode, int first,
-                                 int count)
-{
-	glBindVertexArray(group->vao);
-	glDrawArraysInstanced(mode, first, count, group->instance_count);
-	glBindVertexArray(0);
-}
-
 void instanced_group_draw(InstancedGroup* group, size_t index_count)
 {
 	glBindVertexArray(group->vao);
