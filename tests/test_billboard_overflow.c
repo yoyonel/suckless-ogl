@@ -1,11 +1,10 @@
+#include "billboard_rendering.h"
+#include "mock_gl_standalone.h"
+#include "unity.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "billboard_rendering.h"
-#include "mock_gl_standalone.h"
-#include "unity.h"
 
 /* Mock render_utils function */
 void render_utils_setup_sphere_instance_attributes(GLsizei stride,
@@ -39,7 +38,7 @@ void tearDown(void)
 void test_billboard_group_update_handles_overflow(void)
 {
 	BillboardGroup group = {0};
-	SphereInstance instances[2]; /* Initial capacity 2 */
+	SphereInstance instances[2];       /* Initial capacity 2 */
 	SphereInstance large_instances[4]; /* New count 4 */
 
 	/* Initialize the group with 2 instances */
@@ -53,8 +52,9 @@ void test_billboard_group_update_handles_overflow(void)
 
 	/* Verify reallocation happened */
 	/* glBufferData should be called once (reallocation) */
-	TEST_ASSERT_EQUAL_MESSAGE(1, mock_gl_get_buffer_data_call_count(),
-	                          "Expected glBufferData (reallocation) to be called");
+	TEST_ASSERT_EQUAL_MESSAGE(
+	    1, mock_gl_get_buffer_data_call_count(),
+	    "Expected glBufferData (reallocation) to be called");
 
 	/* glBufferSubData should NOT be called */
 	TEST_ASSERT_EQUAL_MESSAGE(0, mock_gl_get_buffer_sub_data_call_count(),
