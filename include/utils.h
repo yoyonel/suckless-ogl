@@ -128,6 +128,37 @@ static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
 }
 
 /**
+ * @brief Validates a filename to prevent path traversal and shell injection.
+ *
+ * Rejects strings containing path separators ('/', '\\') or directory
+ * traversal sequences ("..") or current directory (".").
+ *
+ * @param filename The filename to check.
+ * @return true if the filename is safe, false otherwise.
+ */
+static inline bool is_safe_filename(const char* filename)
+{
+	if (!filename) {
+		return false;
+	}
+	/* Check for directory traversal (..) */
+	if (strstr(filename, "..") != NULL) {
+		return false;
+	}
+	if (strcmp(filename, ".") == 0) {
+		return false;
+	}
+	/* Check for path separators (Linux/Windows) */
+	if (strchr(filename, '/') != NULL) {
+		return false;
+	}
+	if (strchr(filename, '\\') != NULL) {
+		return false;
+	}
+	return true;
+}
+
+/**
  * @brief RAII callback for `FILE*`.
  */
 static inline void cleanup_file(FILE** file_ptr)
