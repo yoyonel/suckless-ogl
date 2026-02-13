@@ -4,7 +4,7 @@
 # CONFIGURATION COMMUNE
 # =============================================================================
 
-set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl Threads::Threads)
 set(TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
 # =============================================================================

@@ -86,7 +86,7 @@ file(GLOB_RECURSE SOURCES
 
 if(ENABLE_TRACY)
     list(APPEND SOURCES
-        "${tracy_SOURCE_DIR}/public/TracyClient.cpp"
+        "${TRACY_DIR}/public/TracyClient.cpp"
         "src/tracy_ogl_bridge.cpp"
     )
 endif()
@@ -105,15 +105,13 @@ if(ENABLE_TRACY)
     message(STATUS "Tracy Profiling: ENABLED (Tag v0.10)")
 
     FetchContent_Declare(
-        tracy
+        Tracy
         GIT_REPOSITORY https://github.com/wolfpld/tracy.git
         GIT_TAG        v0.10
     )
-    FetchContent_MakeAvailable(tracy)
-    FetchContent_GetProperties(tracy)
-    if(NOT tracy_POPULATED)
-        FetchContent_Populate(tracy)
-    endif()
+    FetchContent_MakeAvailable(Tracy)
+    FetchContent_GetProperties(Tracy SOURCE_DIR TRACY_DIR)
+    message(STATUS "Tracy Source Dir: ${TRACY_DIR}")
 
     add_compile_definitions(TRACY_ENABLE)
 endif()
@@ -308,7 +306,7 @@ target_link_libraries(app PRIVATE
 )
 
 if(ENABLE_TRACY)
-    target_include_directories(app PRIVATE "${tracy_SOURCE_DIR}/public")
+    target_include_directories(app PRIVATE "${TRACY_DIR}/public")
     target_link_libraries(app PRIVATE dl)
     set_target_properties(app PROPERTIES LINKER_LANGUAGE CXX)
 endif()
