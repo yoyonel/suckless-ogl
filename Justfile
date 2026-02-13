@@ -140,7 +140,11 @@ tracy-server:
         git clone https://github.com/wolfpld/tracy.git tools/tracy; \
     fi
     @cd tools/tracy && git fetch && git checkout v0.10
-    @cd tools/tracy/profiler/build/unix && {{distrobox}} make -j$(nproc) release
+    @if [ -f "patches/tracy-v0.10-compiler-fix.patch" ]; then \
+        echo "Applying compiler fix patch..."; \
+        cd tools/tracy && git apply ../../patches/tracy-v0.10-compiler-fix.patch; \
+    fi
+    @cd tools/tracy/profiler/build/unix && {{distrobox}} make -j$(nproc) LEGACY=1 release
     @echo "Tracy Profiler built at: tools/tracy/profiler/build/unix/Tracy-release"
     @echo "Run it with: ./tools/tracy/profiler/build/unix/Tracy-release"
 

@@ -12,6 +12,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef TRACY_ENABLE
+#include "tracy_memory.h"
+#endif
+
 /**
  * @brief Safe wrapper around vsnprintf to format strings with bounds checking.
  * @param buf Destination buffer.
@@ -43,9 +47,6 @@ static inline bool check_flag(int value, int flag)
 	return ((unsigned int)value & (unsigned int)flag) != 0;
 }
 
-/**
- * @brief calloc wrapper with zero-size check.
- */
 static inline void* safe_calloc(size_t num, size_t size)
 {
 	if (num == 0 || size == 0) {
@@ -141,9 +142,6 @@ static inline void raii_satisfy_analyzer_file(
 #define RAII_SATISFY_FILE(f) (void)0
 #endif
 
-/**
- * @brief RAII callback for `free()`.
- */
 static inline void cleanup_free(void* ptr_ptr)
 {
 	void** ptr = (void**)ptr_ptr;

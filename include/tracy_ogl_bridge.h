@@ -21,6 +21,7 @@ void TracyOGL_Destroy(void);
 void TracyOGL_ZoneBegin(const TracySourceLocationData* srcloc);
 void TracyOGL_ZoneEnd(void);
 void TracyOGL_Collect(void);
+void Profiler_SendScreenCapture(int width, int height);
 #endif
 
 #ifdef __cplusplus

@@ -44,6 +44,23 @@ int stbi_info_from_file(FILE* f, int* x, int* y, int* comp)
 	return 1; /* Success */
 }
 
+int stbi_info_from_memory(unsigned char const* buffer, int len, int* x, int* y,
+                          int* comp)
+{
+	(void)buffer;
+	(void)len;
+	if (x) {
+		*x = g_info_width;
+	}
+	if (y) {
+		*y = g_info_height;
+	}
+	if (comp) {
+		*comp = g_info_channels;
+	}
+	return 1; /* Success */
+}
+
 float* stbi_loadf_from_file(FILE* f, int* x, int* y, int* channels_in_file,
                             int desired_channels)
 {
@@ -62,6 +79,36 @@ float* stbi_loadf_from_file(FILE* f, int* x, int* y, int* channels_in_file,
 		}
 	} else {
 		/* Return consistent dimensions */
+		if (x) {
+			*x = g_info_width;
+		}
+		if (y) {
+			*y = g_info_height;
+		}
+	}
+
+	/* Allocate dummy data */
+	float* data = (float*)malloc(sizeof(float) * 4);
+	return data;
+}
+
+float* stbi_loadf_from_memory(unsigned char const* buffer, int len, int* x,
+                              int* y, int* channels_in_file,
+                              int desired_channels)
+{
+	(void)buffer;
+	(void)len;
+	(void)channels_in_file;
+	(void)desired_channels;
+
+	if (g_simulate_toctou) {
+		if (x) {
+			*x = HUGE_DIMENSION;
+		}
+		if (y) {
+			*y = HUGE_DIMENSION;
+		}
+	} else {
 		if (x) {
 			*x = g_info_width;
 		}

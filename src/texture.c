@@ -8,63 +8,145 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#ifdef TRACY_ENABLE
+#include "tracy/TracyC.h"
+#endif
+
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
-	CLEANUP_FILE FILE* file = fopen(path, "rb");
+#ifdef TRACY_ENABLE
+	TracyCZoneNC(io_ctx, "Disk Read", 0x3498db, 1);
+#endif
+	size_t file_size = 0;
+	void* file_data = 0;
+	FILE* file = fopen(path, "rb");
 	if (!file) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to open HDR image: %s", path);
+		LOG_ERROR("suckless-ogl.texture", "Failed to open image: %s",
+		          path);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
 		return NULL;
 	}
+
+	if (fseek(file, 0, SEEK_END) != 0) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Failed to seek end of image: %s", path);
+		fclose(file);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
+		return NULL;
+	}
+
+	long ftell_pos = ftell(file);
+	if (ftell_pos < 0) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Failed to tell image size: %s", path);
+		fclose(file);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
+		return NULL;
+	}
+	file_size = (size_t)ftell_pos;
+
+	if (fseek(file, 0, SEEK_SET) != 0) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Failed to reset image cursor: %s", path);
+		fclose(file);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
+		return NULL;
+	}
+
+	file_data = malloc(file_size);
+	if (!file_data) {
+		fclose(file);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
+		return NULL;
+	}
+
+	if (fread(file_data, 1, file_size, file) != file_size) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Failed to read image data: %s", path);
+		free(file_data);
+		fclose(file);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(io_ctx);
+#endif
+		return NULL;
+	}
+
+	if (fclose(file) != 0) {
+		LOG_WARNING("suckless-ogl.texture",
+		            "Failed to close image file: %s", path);
+	}
+
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(io_ctx);
+#endif
 
 	int img_width = 0;
 	int img_height = 0;
 	int img_channels = 0;
-	if (!stbi_info_from_file(file, &img_width, &img_height,
-	                         &img_channels)) {
+
+#ifdef TRACY_ENABLE
+	TracyCZoneNC(ctx_info, "STBI Info", 0x2ecc71, 1);
+#endif
+	if (!stbi_info_from_memory(file_data, (int)file_size, &img_width,
+	                           &img_height, &img_channels)) {
+		free(file_data);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(ctx_info);
+#endif
 		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to parse HDR image info: %s", path);
+		          "Failed to parse image info: %s", path);
 		return NULL;
 	}
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(ctx_info);
+#endif
 
 	if (img_width > MAX_TEXTURE_DIMENSION ||
 	    img_height > MAX_TEXTURE_DIMENSION) {
+		free(file_data);
 		LOG_ERROR("suckless-ogl.texture",
-		          "HDR image exceeds max dimensions: %s (%dx%d > %d)",
-		          path, img_width, img_height, MAX_TEXTURE_DIMENSION);
+		          "Image exceeds max dimensions: %s (%dx%d > %d)", path,
+		          img_width, img_height, MAX_TEXTURE_DIMENSION);
 		return NULL;
 	}
 
-	if (fseek(file, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to reset file cursor: %s", path);
-		return NULL;
-	}
+#ifdef TRACY_ENABLE
+	TracyCZoneNC(ctx_load, "STBI Decode HDR", 0xe67e22, 1);
+	TracyCZoneText(ctx_load, path, strlen(path));
+#endif
+	float* data = stbi_loadf_from_memory(file_data, (int)file_size, width,
+	                                     height, channels, 4);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(ctx_load);
+#endif
+	free(file_data);
 
-	float* data = stbi_loadf_from_file(file, width, height, channels, 4);
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to load HDR pixels: %s", path);
+		          "Failed to decode HDR pixels: %s", path);
 		return NULL;
 	}
 
-	/* Double-check dimensions after full load to prevent TOCTOU attacks */
+	/* Double-check dimensions after full load */
 	if (*width > MAX_TEXTURE_DIMENSION || *height > MAX_TEXTURE_DIMENSION) {
-		LOG_ERROR(
-		    "suckless-ogl.texture",
-		    "HDR image exceeds max dimensions after load: %s (%dx%d "
-		    "> %d)",
-		    path, *width, *height, MAX_TEXTURE_DIMENSION);
+		LOG_ERROR("suckless-ogl.texture",
+		          "Image exceeds max dimensions after decode: %s",
+		          path);
 		stbi_image_free(data);
 		return NULL;
 	}
 
-	LOG_INFO("suckless-ogl.texture",
-	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
-	         *channels);
-
-	/* File is automatically closed by CLEANUP_FILE */
 	return data;
 }
 

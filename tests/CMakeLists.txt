@@ -33,8 +33,8 @@ target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
 target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 
 if(ENABLE_TRACY)
-    target_include_directories(app_testlib PRIVATE "${TRACY_DIR}/public")
-    target_compile_definitions(app_testlib PRIVATE TRACY_ENABLE)
+    target_include_directories(app_testlib PUBLIC "${TRACY_DIR}/public")
+    target_compile_definitions(app_testlib PUBLIC TRACY_ENABLE)
 endif()
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
@@ -117,12 +117,6 @@ endforeach()
 # Ce test a besoin de ses propres mocks pour GLAD et GLFW, et ne doit PAS
 # être lié à app_testlib ou glad (pour éviter les conflits de symboles).
 
-# =============================================================================
-# TEST STANDALONE (MOCKED)
-# =============================================================================
-# Ce test a besoin de ses propres mocks pour GLAD et GLFW, et ne doit PAS
-# être lié à app_testlib ou glad (pour éviter les conflits de symboles).
-
 add_executable(test_shader_path_security_standalone
     test_shader_path_security_standalone.c
     ${unity_SOURCE_DIR}/src/unity.c
@@ -139,14 +133,17 @@ target_include_directories(test_shader_path_security_standalone PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 
-# On ne link PAS contre app_testlib, seulement libc/libm si besoin
-# (Mais on a besoin des headers de cglm pour shader.c s'il est inclus ?)
-# shader.c n'utilise pas cglm directement, mais inclut shader.h qui peut l'utiliser via app_settings.h?
-# Vérifions : shader.h -> app_settings.h -> cglm/types.h
-# Donc on a besoin de cglm.
+if(ENABLE_TRACY)
+    target_compile_definitions(test_shader_path_security_standalone PRIVATE TRACY_ENABLE)
+    target_include_directories(test_shader_path_security_standalone PRIVATE "${TRACY_DIR}/public")
+endif()
 
 # Si cglm est header-only ou statique:
-target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
+if(ENABLE_TRACY)
+    target_link_libraries(test_shader_path_security_standalone PRIVATE TracyClient cglm m)
+else()
+    target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
+endif()
 
 add_test(NAME test_shader_path_security_standalone
          COMMAND test_shader_path_security_standalone)
@@ -157,6 +154,7 @@ add_executable(test_texture_toctou
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
 )
+
 target_include_directories(test_texture_toctou PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
@@ -165,7 +163,17 @@ target_include_directories(test_texture_toctou PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
-target_link_libraries(test_texture_toctou PRIVATE cglm m)
+
+if(ENABLE_TRACY)
+    target_compile_definitions(test_texture_toctou PRIVATE TRACY_ENABLE)
+    target_include_directories(test_texture_toctou PRIVATE "${TRACY_DIR}/public")
+endif()
+
+if(ENABLE_TRACY)
+    target_link_libraries(test_texture_toctou PRIVATE TracyClient cglm m)
+else()
+    target_link_libraries(test_texture_toctou PRIVATE cglm m)
+endif()
 add_test(NAME test_texture_toctou
          COMMAND test_texture_toctou)
 
@@ -187,7 +195,16 @@ target_include_directories(test_billboard_cleanup PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 
-target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
+if(ENABLE_TRACY)
+    target_compile_definitions(test_billboard_cleanup PRIVATE TRACY_ENABLE)
+    target_include_directories(test_billboard_cleanup PRIVATE "${TRACY_DIR}/public")
+endif()
+
+if(ENABLE_TRACY)
+    target_link_libraries(test_billboard_cleanup PRIVATE TracyClient cglm m)
+else()
+    target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
+endif()
 
 add_test(NAME test_billboard_cleanup
          COMMAND test_billboard_cleanup)
@@ -210,7 +227,16 @@ target_include_directories(test_billboard_overflow PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 
-target_link_libraries(test_billboard_overflow PRIVATE cglm)
+if(ENABLE_TRACY)
+    target_compile_definitions(test_billboard_overflow PRIVATE TRACY_ENABLE)
+    target_include_directories(test_billboard_overflow PRIVATE "${TRACY_DIR}/public")
+endif()
+
+if(ENABLE_TRACY)
+    target_link_libraries(test_billboard_overflow PRIVATE TracyClient cglm)
+else()
+    target_link_libraries(test_billboard_overflow PRIVATE cglm)
+endif()
 
 add_test(NAME test_billboard_overflow
          COMMAND test_billboard_overflow)

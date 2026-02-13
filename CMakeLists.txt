@@ -107,6 +107,7 @@ if(ENABLE_TRACY)
     message(STATUS "Tracy Source Dir: ${TRACY_DIR}")
 
     add_compile_definitions(TRACY_ENABLE)
+    add_compile_definitions(TRACY_CALLSTACK=10)
 endif()
 
 if(ENABLE_TRACY)

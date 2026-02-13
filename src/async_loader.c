@@ -9,6 +9,10 @@
 #include <stdbool.h>
 #include <string.h>
 
+#ifdef TRACY_ENABLE
+#include "tracy/TracyC.h"
+#endif
+
 /* Single slot for now, as we only load one environment map at a time */
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static AsyncRequest current_request;
@@ -27,10 +31,21 @@ static void* async_worker_func(void* arg)
 {
 	(void)arg; /* Unused */
 
+#ifdef TRACY_ENABLE
+	TracyCSetThreadName("Async Loader");
+#endif
+
 	pthread_mutex_lock(&request_mutex);
 	while (running) {
 		while (running && !has_pending_work) {
+#ifdef TRACY_ENABLE
+			TracyCZoneNC(wait_ctx, "Waiting for Request", 0x444444,
+			             1);
+#endif
 			pthread_cond_wait(&request_cond, &request_mutex);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(wait_ctx);
+#endif
 		}
 
 		if (!running) {
@@ -58,11 +73,18 @@ static void* async_worker_func(void* arg)
 			int channels = 0;
 
 			/* Heavy operation triggered here */
+#ifdef TRACY_ENABLE
+			TracyCZoneN(ctx, "Async Load HDR", 1);
+			TracyCZoneText(ctx, path_to_load, strlen(path_to_load));
+#endif
 			PerfTimer disk_timer;
 			perf_timer_start(&disk_timer);
 			float* data = texture_load_pixels(path_to_load, &width,
 			                                  &height, &channels);
 			double load_ms = perf_timer_elapsed_ms(&disk_timer);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(ctx);
+#endif
 
 			pthread_mutex_lock(&request_mutex);
 			if (data) {
