@@ -26,14 +26,14 @@ void TracyOGL_ZoneBegin(const TracySourceLocationData* srcloc) {
     // We assume binary compatibility or layout compatibility.
     // Tracy's SourceLocationData:
     // struct SourceLocationData { const char* name; const char* function; const char* file; uint32_t line; uint32_t color; };
-    const auto* tracy_srcloc = reinterpret_cast<const Tracy::SourceLocationData*>(srcloc);
+    const auto* tracy_srcloc = reinterpret_cast<const tracy::SourceLocationData*>(srcloc);
 
     // Call QueryBegin
-    Tracy::GetGpuCtx().QueryBegin(*tracy_srcloc);
+    tracy::GetGpuCtx().QueryBegin(*tracy_srcloc);
 }
 
 void TracyOGL_ZoneEnd(void) {
-    Tracy::GetGpuCtx().QueryEnd();
+    tracy::GetGpuCtx().QueryEnd();
 }
 
 } // extern "C"
