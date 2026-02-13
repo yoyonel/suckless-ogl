@@ -69,9 +69,16 @@ void setUp(void)
 		TEST_ASSERT_EQUAL_INT(1, result);
 		g_app_initialized = true;
 
-		// Wait for async HDR texture load and cache it
+		// Wait for async HDR texture load AND transition to finish
 		int timeout = POLL_TIMEOUT_ITERATIONS;
-		while (g_test_app.hdr_texture == 0 && timeout-- > 0) {
+		double last_time = glfwGetTime();
+		while ((g_test_app.hdr_texture == 0 ||
+		        g_test_app.transition_state != TRANSITION_IDLE) &&
+		       timeout-- > 0) {
+			double current_time = glfwGetTime();
+			g_test_app.delta_time = current_time - last_time;
+			last_time = current_time;
+
 			app_update(&g_test_app);
 			glfwPollEvents();
 			struct timespec req = {0, NANOSLEEP_DURATION};

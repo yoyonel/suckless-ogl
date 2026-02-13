@@ -63,6 +63,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->first_mouse = 1;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
+	app->is_first_load = 1;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -96,6 +97,16 @@ int app_init(App* app, int width, int height, const char* title)
 	             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)), NULL,
 	             GL_STREAM_READ);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+	/* Transition Snapshot Initialization (GL Context Ready) */
+	/* Transition Initialization (Starts Black, fades in when IBL is done)
+	 */
+	app->transition_state = TRANSITION_WAIT_IBL;
+	app->transition_alpha = 1.0F;
+	app->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
+	app->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
+	app->transition_snapshot_tex = 0;
+	app->is_first_load = 1;
 
 	app->current_exposure = 1.0F;
 	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
@@ -340,6 +351,9 @@ void app_cleanup(App* app)
 	glDeleteTextures(1, &app->irradiance_tex);
 	glDeleteTextures(1, &app->dummy_black_tex);
 	glDeleteTextures(1, &app->dummy_white_tex);
+	if (app->transition_snapshot_tex) {
+		glDeleteTextures(1, &app->transition_snapshot_tex);
+	}
 	glDeleteBuffers(1, &app->exposure_pbo);
 	glDeleteBuffers(1, &app->histogram_pbo);
 
@@ -433,6 +447,7 @@ void app_update(App* app)
 		}
 	}
 	app_process_ibl_state_machine(app);
+	app_update_transition(app);
 }
 
 static inline void stencil_begin_object_pass(void)
@@ -585,6 +600,44 @@ void app_render(App* app)
 	{
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "UI Overlay",
 		                   GPU_PROFILER_UI_COLOR);
+
+		/* Render Transition Overlay */
+		if (app->transition_state != TRANSITION_IDLE) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_DEPTH_TEST);
+
+			shader_use(app->debug_shader);
+			shader_set_int(app->debug_shader, "u_tex", 0);
+			shader_set_float(app->debug_shader, "u_alpha",
+			                 app->transition_alpha);
+			shader_set_int(app->debug_shader, "u_bypass_processing",
+			               1);
+			shader_set_float(app->debug_shader, "lod", 0.0F);
+
+			glActiveTexture(GL_TEXTURE0);
+			if (app->env_transition_mode ==
+			        ENV_TRANSITION_CROSSFADE &&
+			    app->transition_snapshot_tex != 0 &&
+			    app->transition_state == TRANSITION_FADE_IN) {
+				/* Crossfade: Bind snapshot texture */
+				glBindTexture(GL_TEXTURE_2D,
+				              app->transition_snapshot_tex);
+			} else {
+				/* Black Screen / Initial Load: Bind dummy black
+				 */
+				glBindTexture(GL_TEXTURE_2D,
+				              app->dummy_black_tex);
+			}
+
+			glBindVertexArray(app->quad_vbo);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			glBindVertexArray(0);
+
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
+		}
+
 		app_render_ui(app);
 	}
 

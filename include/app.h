@@ -50,6 +50,18 @@ typedef enum {
 } IBLState;
 
 /**
+ * @enum TransitionState
+ * @brief States for the environment map transition.
+ */
+typedef enum {
+	TRANSITION_IDLE = 0,
+	TRANSITION_LOADING,  /**< Background loading while scene visible. */
+	TRANSITION_WAIT_IBL, /**< Stay Black (e.g. initial load). */
+	TRANSITION_FADE_OUT, /**< Old scene -> Black. */
+	TRANSITION_FADE_IN   /**< Black -> New scene. */
+} TransitionState;
+
+/**
  * @struct IBLContext
  * @brief Progressive environment processing state.
  *
@@ -191,6 +203,14 @@ typedef struct App {
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
+
+	/* --- Environment Transition --- */
+	TransitionState transition_state;
+	float transition_alpha;
+	float transition_duration;
+	int is_first_load;
+	int env_transition_mode;        /**< EnvTransitionMode. */
+	GLuint transition_snapshot_tex; /**< For crossfade mode. */
 
 	/* --- Global GPU Resources --- */
 	GLuint sphere_vao;           /**< Shared geometry VAO. */

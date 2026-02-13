@@ -142,6 +142,66 @@ void app_finalize_environment_load(App* app, AsyncRequest* req)
 	app->env_map_loading = 0;
 }
 
+int app_trigger_env_transition(App* app, const char* filename)
+{
+	/* Don't trigger if already fading or loading */
+	if (app->transition_state != TRANSITION_IDLE) {
+		return 0;
+	}
+
+	/* Start loading in background */
+	app->transition_state = TRANSITION_LOADING;
+	app->transition_alpha = 0.0F;
+
+	return app_load_env_map(app, filename);
+}
+
+static void capture_snapshot(App* app)
+{
+	if (app->transition_snapshot_tex == 0) {
+		glGenTextures(1, &app->transition_snapshot_tex);
+	}
+	glBindTexture(GL_TEXTURE_2D, app->transition_snapshot_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, app->width, app->height, 0,
+	             GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, app->width,
+	                    app->height);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+static void finalize_ibl_swap(App* app)
+{
+	IBLContext* ctx = &app->ibl_ctx;
+
+	postprocess_set_exposure(&app->postprocess, ctx->threshold);
+	if (app->hdr_texture) {
+		glDeleteTextures(1, &app->hdr_texture);
+	}
+	if (app->spec_prefiltered_tex) {
+		glDeleteTextures(1, &app->spec_prefiltered_tex);
+	}
+	if (app->irradiance_tex) {
+		glDeleteTextures(1, &app->irradiance_tex);
+	}
+
+	app->hdr_texture = ctx->pending_hdr_tex;
+	app->spec_prefiltered_tex = ctx->pending_spec_tex;
+	app->irradiance_tex = ctx->pending_irr_tex;
+
+	ctx->pending_hdr_tex = 0;
+	ctx->pending_spec_tex = 0;
+	ctx->pending_irr_tex = 0;
+	ctx->state = IBL_STATE_IDLE;
+
+	double total_time_ms = perf_timer_elapsed_ms(&ctx->global_timer);
+	LOG_INFO("suckless-ogl.app",
+	         "[Frame %llu] Environment swap finalized. Total Time: %.2f ms",
+	         (unsigned long long)app->frame_count, total_time_ms);
+}
+
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 void app_process_ibl_state_machine(App* app)
 {
@@ -295,38 +355,67 @@ void app_process_ibl_state_machine(App* app)
 		}
 
 		case IBL_STATE_DONE: {
-			postprocess_set_exposure(&app->postprocess,
-			                         ctx->threshold);
-			if (app->hdr_texture) {
-				glDeleteTextures(1, &app->hdr_texture);
+			if (app->transition_state == TRANSITION_WAIT_IBL) {
+				/* Initial load: Stay black, just swap and fade
+				 * in
+				 */
+				finalize_ibl_swap(app);
+				app->transition_state = TRANSITION_FADE_IN;
+				app->transition_alpha = 1.0F;
+			} else if (app->transition_state ==
+			           TRANSITION_LOADING) {
+				if (app->env_transition_mode ==
+				    ENV_TRANSITION_BLACK_SCREEN) {
+					/* Black Screen mode: Start fading out
+					 * to black */
+					app->transition_state =
+					    TRANSITION_FADE_OUT;
+					app->transition_alpha = 0.0F;
+				} else {
+					/* Crossfade mode: Capture, swap and
+					 * fade in */
+					capture_snapshot(app);
+					finalize_ibl_swap(app);
+					app->transition_state =
+					    TRANSITION_FADE_IN;
+					app->transition_alpha = 1.0F;
+				}
 			}
-			if (app->spec_prefiltered_tex) {
-				glDeleteTextures(1, &app->spec_prefiltered_tex);
-			}
-			if (app->irradiance_tex) {
-				glDeleteTextures(1, &app->irradiance_tex);
-			}
-
-			app->hdr_texture = ctx->pending_hdr_tex;
-			app->spec_prefiltered_tex = ctx->pending_spec_tex;
-			app->irradiance_tex = ctx->pending_irr_tex;
-
-			ctx->pending_hdr_tex = 0;
-			ctx->pending_spec_tex = 0;
-			ctx->pending_irr_tex = 0;
-			ctx->state = IBL_STATE_IDLE;
-
-			double total_time_ms =
-			    perf_timer_elapsed_ms(&ctx->global_timer);
-			LOG_INFO(
-			    "suckless-ogl.app",
-			    "[Frame %llu] Environment updated successfully "
-			    "(progressive). Total Time: %.2f ms",
-			    (unsigned long long)app->frame_count,
-			    total_time_ms);
 			break;
 		}
 		default:
+			break;
+	}
+}
+
+void app_update_transition(App* app)
+{
+	switch (app->transition_state) {
+		case TRANSITION_IDLE:
+		case TRANSITION_LOADING:
+		case TRANSITION_WAIT_IBL:
+			break;
+
+		case TRANSITION_FADE_OUT:
+			app->transition_alpha +=
+			    (float)app->delta_time / app->transition_duration;
+			if (app->transition_alpha >= 1.0F) {
+				app->transition_alpha = 1.0F;
+
+				/* BLACK SCREEN SWAP HAPPENS HERE */
+				finalize_ibl_swap(app);
+
+				app->transition_state = TRANSITION_FADE_IN;
+			}
+			break;
+
+		case TRANSITION_FADE_IN:
+			app->transition_alpha -=
+			    (float)app->delta_time / app->transition_duration;
+			if (app->transition_alpha <= 0.0F) {
+				app->transition_alpha = 0.0F;
+				app->transition_state = TRANSITION_IDLE;
+			}
 			break;
 	}
 }

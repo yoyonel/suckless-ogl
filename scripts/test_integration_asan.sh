@@ -89,6 +89,10 @@ echo "=> Test Windowed (F)"
 xdotool key --delay 200 F
 sleep 1
 
+echo "=> Test Transition switching mode (T)"
+xdotool key --delay 200 T
+sleep 1
+
 # 1. Environment Switching
 echo "=> Switching Environments (Page_Up / Page_Down)"
 xdotool key --delay 200 Page_Up

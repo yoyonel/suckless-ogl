@@ -8,6 +8,7 @@
 
 #include "gl_common.h"
 #include <stdbool.h>
+#define SHADER_WARNING_THROTTLE_LIMIT 10
 
 /**
  * @brief Compiles a single shader stage from a file.
@@ -64,6 +65,7 @@ typedef struct {
 	int entry_capacity;    /**< Allocation size. */
 	bool
 	    silent_warnings; /**< If true, missing uniforms won't log errors. */
+	int warning_count;   /**< Internal counter for log throttling. */
 } Shader;
 
 /**
