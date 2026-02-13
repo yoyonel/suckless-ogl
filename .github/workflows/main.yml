@@ -45,6 +45,8 @@ jobs:
 
       - name: Install Build Dependencies
         run: |
+          # Remove broken Microsoft repos causing 403 errors
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/azure-cli.sources || true
           sudo apt-get update
           sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Run Format & Lint
@@ -65,6 +67,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          # Remove broken Microsoft repos causing 403 errors
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/azure-cli.sources || true
           sudo apt-get update
           sudo apt-get install -y \
             build-essential cmake clang llvm \
@@ -147,6 +151,8 @@ jobs:
           submodules: recursive
       - name: Install Documentation Tools
         run: |
+          # Remove broken Microsoft repos causing 403 errors
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/azure-cli.sources || true
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz
       - uses: actions/setup-python@v5
@@ -230,7 +236,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Deps
-        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
+        run: |
+          # Remove broken Microsoft repos causing 403 errors
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/azure-cli.sources || true
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Build
         run: |
           FLAGS=""
