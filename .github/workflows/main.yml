@@ -120,6 +120,7 @@ jobs:
 
       - name: Post Visual Comment on PR
         if: always() && github.event_name == 'pull_request'
+        continue-on-error: true
         uses: mshick/add-pr-comment@v2
         env:
           VISUAL_COMMENT: ${{ env.VISUAL_COMMENT }}
@@ -163,6 +164,7 @@ jobs:
 
       - name: Deploy Documentation Preview (Pull Request)
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         env:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
         run: |
