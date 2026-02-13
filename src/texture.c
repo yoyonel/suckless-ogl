@@ -25,7 +25,6 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 	                         &img_channels)) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to parse HDR image info: %s", path);
-		(void)fclose(file);
 		return NULL;
 	}
 
@@ -34,14 +33,12 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		LOG_ERROR("suckless-ogl.texture",
 		          "HDR image exceeds max dimensions: %s (%dx%d > %d)",
 		          path, img_width, img_height, MAX_TEXTURE_DIMENSION);
-		(void)fclose(file);
 		return NULL;
 	}
 
 	if (fseek(file, 0, SEEK_SET) != 0) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to reset file cursor: %s", path);
-		(void)fclose(file);
 		return NULL;
 	}
 
@@ -49,7 +46,6 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to load HDR pixels: %s", path);
-		(void)fclose(file);
 		return NULL;
 	}
 
@@ -61,7 +57,6 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		    "> %d)",
 		    path, *width, *height, MAX_TEXTURE_DIMENSION);
 		stbi_image_free(data);
-		(void)fclose(file);
 		return NULL;
 	}
 
@@ -69,10 +64,7 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
 	         *channels);
 
-	/* File is automatically closed by CLEANUP_FILE, but explicit close
-	 * satisfies clang-tidy cert-err33-c */
-	(void)fclose(file);
-	TRANSFER_OWNERSHIP(file); /* Prevent double-close by CLEANUP_FILE */
+	/* File is automatically closed by CLEANUP_FILE */
 	return data;
 }
 
