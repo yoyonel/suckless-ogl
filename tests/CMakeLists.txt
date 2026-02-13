@@ -7,6 +7,10 @@
 set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl Threads::Threads)
 set(TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
+if(ENABLE_TRACY)
+    list(APPEND TEST_INCLUDE_DIRS "${TRACY_DIR}/public")
+endif()
+
 # =============================================================================
 # BIBLIOTHÈQUE PARTAGÉE POUR LES TESTS
 # =============================================================================
@@ -33,8 +37,8 @@ target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
 target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 
 if(ENABLE_TRACY)
-    target_include_directories(app_testlib PRIVATE "${TRACY_DIR}/public")
-    target_compile_definitions(app_testlib PRIVATE TRACY_ENABLE)
+    target_include_directories(app_testlib PUBLIC "${TRACY_DIR}/public")
+    target_compile_definitions(app_testlib PUBLIC TRACY_ENABLE)
 endif()
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
@@ -129,7 +133,6 @@ add_executable(test_shader_path_security_standalone
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
 
-# On inclut d'abord les mocks pour qu'ils soient prioritaires
 target_include_directories(test_shader_path_security_standalone PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
@@ -138,6 +141,10 @@ target_include_directories(test_shader_path_security_standalone PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
+
+if(ENABLE_TRACY)
+    target_include_directories(test_shader_path_security_standalone PRIVATE "${TRACY_DIR}/public")
+endif()
 
 # On ne link PAS contre app_testlib, seulement libc/libm si besoin
 # (Mais on a besoin des headers de cglm pour shader.c s'il est inclus ?)
@@ -165,6 +172,10 @@ target_include_directories(test_texture_toctou PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
+
+if(ENABLE_TRACY)
+    target_include_directories(test_texture_toctou PRIVATE "${TRACY_DIR}/public")
+endif()
 target_link_libraries(test_texture_toctou PRIVATE cglm m)
 add_test(NAME test_texture_toctou
          COMMAND test_texture_toctou)
@@ -186,6 +197,10 @@ target_include_directories(test_billboard_cleanup PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
+
+if(ENABLE_TRACY)
+    target_include_directories(test_billboard_cleanup PRIVATE "${TRACY_DIR}/public")
+endif()
 
 target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
 
@@ -209,6 +224,10 @@ target_include_directories(test_billboard_overflow PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
+
+if(ENABLE_TRACY)
+    target_include_directories(test_billboard_overflow PRIVATE "${TRACY_DIR}/public")
+endif()
 
 target_link_libraries(test_billboard_overflow PRIVATE cglm)
 

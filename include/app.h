@@ -236,6 +236,8 @@ typedef struct App {
 	GLuint dummy_black_tex; /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex; /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
+	GLuint capture_fbo;     /**< FBO for Tracy frame capture. */
+	GLuint capture_tex;     /**< Texture for Tracy frame capture. */
 
 	/* --- Global Configuration Uniforms --- */
 	float env_lod;          /**< Skybox blurriness. */

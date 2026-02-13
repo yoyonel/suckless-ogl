@@ -21,6 +21,8 @@ void TracyOGL_Destroy(void);
 void* TracyOGL_ZoneBegin(const TracySourceLocationData* srcloc);
 void TracyOGL_ZoneEnd(void* ctx);
 void TracyOGL_Collect(void);
+void TracyOGL_FrameImage(const void* data, uint16_t width, uint16_t height,
+                         uint8_t offset, int flip);
 #endif
 
 #ifdef __cplusplus
