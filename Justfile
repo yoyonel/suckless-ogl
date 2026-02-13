@@ -132,6 +132,18 @@ build-profile:
 run-profile: build-profile
     @{{build_dir}}/app
 
+# Build the Tracy Profiler GUI (requires deps: libcapstone-dev libfreetype-dev libglfw3-dev)
+tracy-server:
+    @echo "Building Tracy Profiler GUI (v0.10)..."
+    @mkdir -p tools
+    @if [ ! -d "tools/tracy" ]; then \
+        git clone https://github.com/wolfpld/tracy.git tools/tracy; \
+    fi
+    @cd tools/tracy && git fetch && git checkout v0.10
+    @cd tools/tracy/profiler/build/unix && {{distrobox}} make -j$(nproc) release
+    @echo "Tracy Profiler built at: tools/tracy/profiler/build/unix/Tracy-release"
+    @echo "Run it with: ./tools/tracy/profiler/build/unix/Tracy-release"
+
 # =============================================================================
 # Testing & QA
 # =============================================================================

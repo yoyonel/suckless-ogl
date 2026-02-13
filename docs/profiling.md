@@ -5,12 +5,34 @@ This project integrates [Tracy Profiler](https://github.com/wolfpld/tracy) for r
 ## Prerequisites
 
 - CMake
-- A C++ compiler (since Tracy Client is C++)
+- A C++ compiler
 - Tracy Server (GUI)
 
-## Building with Tracy
+## Building the Tracy Server (GUI)
 
-To enable Tracy profiling, configure the build with `-DENABLE_TRACY=ON`.
+The Tracy Server is required to visualize the profiling data. You can build it directly from this repository:
+
+1.  **Install Dependencies** (Debian/Ubuntu):
+    ```bash
+    sudo apt-get install libcapstone-dev libfreetype-dev libglfw3-dev
+    ```
+
+2.  **Build the Server**:
+    ```bash
+    just tracy-server
+    ```
+
+    This will clone Tracy (v0.10) into `tools/tracy` and compile the profiler GUI. The executable will be located at:
+    `tools/tracy/profiler/build/unix/Tracy-release`
+
+3.  **Run the Server**:
+    ```bash
+    ./tools/tracy/profiler/build/unix/Tracy-release
+    ```
+
+## Building the Application with Profiling
+
+To enable Tracy profiling in the application:
 
 Using `Just`:
 
@@ -28,17 +50,12 @@ cmake --build build
 
 ## Running the Application
 
-Run the application as usual. It will attempt to connect to the Tracy Server on `localhost:8086`.
-
-```bash
-just run-profile
-```
-
-## Analyzing the Profile
-
-1.  Download or build the Tracy Server (GUI) matching version `v0.10` (or the version specified in `CMakeLists.txt`).
-2.  Start the Tracy Server.
-3.  Click "Connect" while the application is running.
+1.  Start the Tracy Server (as described above).
+2.  Run the application:
+    ```bash
+    just run-profile
+    ```
+3.  In the Tracy Server window, click "Connect".
 
 ## Integration Details
 
