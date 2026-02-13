@@ -314,6 +314,17 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a57e898a48bf9e63709f7774eb98bb0ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the Image-Based Lighting (IBL) progressive loading.  <a href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">More...</a><br /></td></tr>
 <tr class="separator:a57e898a48bf9e63709f7774eb98bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e019cb397af76f46ed7eb54267cfb03" id="r_a1e019cb397af76f46ed7eb54267cfb03"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a> { <br />
+&#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4">TRANSITION_IDLE</a> = 0
+, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2">TRANSITION_LOADING</a>
+, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39">TRANSITION_WAIT_IBL</a>
+, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4">TRANSITION_FADE_OUT</a>
+, <br />
+&#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22">TRANSITION_FADE_IN</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a1e019cb397af76f46ed7eb54267cfb03"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the environment map transition.  <a href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">More...</a><br /></td></tr>
+<tr class="separator:a1e019cb397af76f46ed7eb54267cfb03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -362,6 +373,33 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d" name="a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d"></a>IBL_STATE_IRRADIANCE&#160;</td><td class="fielddoc"><p>Sliced convolution of irradiance map. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24" name="a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24"></a>IBL_STATE_DONE&#160;</td><td class="fielddoc"><p>Resource cleanup and texture activation. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="a1e019cb397af76f46ed7eb54267cfb03" name="a1e019cb397af76f46ed7eb54267cfb03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e019cb397af76f46ed7eb54267cfb03">&#9670;&#160;</a></span>TransitionState</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>States for the environment map transition. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4" name="a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4"></a>TRANSITION_IDLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2" name="a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2"></a>TRANSITION_LOADING&#160;</td><td class="fielddoc"><p>Background loading while scene visible. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39" name="a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39"></a>TRANSITION_WAIT_IBL&#160;</td><td class="fielddoc"><p>Stay Black (e.g. initial load). </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4" name="a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4"></a>TRANSITION_FADE_OUT&#160;</td><td class="fielddoc"><p>Old scene -&gt; Black. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22" name="a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22"></a>TRANSITION_FADE_IN&#160;</td><td class="fielddoc"><p>Black -&gt; New scene. </p>
 </td></tr>
 </table>
 

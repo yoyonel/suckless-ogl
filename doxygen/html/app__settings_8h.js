@@ -1,6 +1,10 @@
 var app__settings_8h =
 [
     [ "USE_TRANSPARENT_BILLBOARDS", "group__Renderer.html#ga488c62fb8eb8169482e08d0daf83320d", null ],
+    [ "EnvTransitionMode", "group__Environment.html#ga9ae155b103e5528d5cb4530cf6ec8d28", [
+      [ "ENV_TRANSITION_CROSSFADE", "group__Environment.html#gga9ae155b103e5528d5cb4530cf6ec8d28a3f2f834e9d5775c48a95cbd342b8a74e", null ],
+      [ "ENV_TRANSITION_BLACK_SCREEN", "group__Environment.html#gga9ae155b103e5528d5cb4530cf6ec8d28a8b2c4d2e91ae66cad88a3080870b6ba8", null ]
+    ] ],
     [ "BRDF_LUT_MAP_SIZE", "group__Environment.html#ga47f89c3d7c8c156494fdecaf0b5a33c8", null ],
     [ "DEFAULT_AO", "group__PBR.html#ga333d7e08b7c0e4275823e92f9182c455", null ],
     [ "DEFAULT_AUTO_THRESHOLD", "group__PostProcess.html#gafa325fb5020f368cddf0ab9a216d4e85", null ],
@@ -10,6 +14,8 @@ var app__settings_8h =
     [ "DEFAULT_CLAMP_MULTIPLIER", "group__PBR.html#gaeb0f52b70b232cf017f3490d36896a5c", null ],
     [ "DEFAULT_COLS", "group__UI.html#ga5fdcccf71b7236c0ea9332f1bdc3cf7a", null ],
     [ "DEFAULT_ENV_LOD", "group__Camera.html#ga2a12595806a5ae01a44b8d1867f11638", null ],
+    [ "DEFAULT_ENV_TRANSITION_DURATION", "group__Environment.html#ga24f192aad05183c640849a649a49e70e", null ],
+    [ "DEFAULT_ENV_TRANSITION_MODE", "group__Environment.html#gaffc238ead56ea9102247ee235fba8f18", null ],
     [ "DEFAULT_EXPOSURE_STEP", "group__PostProcess.html#ga549835e9a52efb7bffd35d7eae64484b", null ],
     [ "DEFAULT_FONT_COLOR", "group__UI.html#gac2e10d99dde9c5629d462d4404ae7003", null ],
     [ "DEFAULT_FONT_OFFSET_X", "group__UI.html#ga066967c462f525b9e0c3b9cb583d1871", null ],

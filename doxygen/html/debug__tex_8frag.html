@@ -252,10 +252,14 @@ Variables</h2></td></tr>
 <tr class="separator:af5639df2ce0dea4170bb8b47a599911e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58b0e682d807370a92bb4b37474353a5" id="r_a58b0e682d807370a92bb4b37474353a5"><td class="memItemLeft" align="right" valign="top">in vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#a58b0e682d807370a92bb4b37474353a5">TexCoords</a></td></tr>
 <tr class="separator:a58b0e682d807370a92bb4b37474353a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb27f7795f7350279f8491e3c0a38226" id="r_adb27f7795f7350279f8491e3c0a38226"><td class="memItemLeft" align="right" valign="top">uniform sampler2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#adb27f7795f7350279f8491e3c0a38226">tex</a></td></tr>
-<tr class="separator:adb27f7795f7350279f8491e3c0a38226"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e0b42388ac0ec4373a9334a86e40f0c" id="r_a7e0b42388ac0ec4373a9334a86e40f0c"><td class="memItemLeft" align="right" valign="top">uniform sampler2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#a7e0b42388ac0ec4373a9334a86e40f0c">u_tex</a></td></tr>
+<tr class="separator:a7e0b42388ac0ec4373a9334a86e40f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a068c3f354e0a6a166659bcbfcb0053b4" id="r_a068c3f354e0a6a166659bcbfcb0053b4"><td class="memItemLeft" align="right" valign="top">uniform float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#a068c3f354e0a6a166659bcbfcb0053b4">lod</a></td></tr>
 <tr class="separator:a068c3f354e0a6a166659bcbfcb0053b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dae1a669f47ce5277ad35839a0b568f" id="r_a1dae1a669f47ce5277ad35839a0b568f"><td class="memItemLeft" align="right" valign="top">uniform float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#a1dae1a669f47ce5277ad35839a0b568f">u_alpha</a> = 1.0</td></tr>
+<tr class="separator:a1dae1a669f47ce5277ad35839a0b568f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17e835f1ff20bc23b02703d151f466cb" id="r_a17e835f1ff20bc23b02703d151f466cb"><td class="memItemLeft" align="right" valign="top">uniform bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="debug__tex_8frag.html#a17e835f1ff20bc23b02703d151f466cb">u_bypass_processing</a> = false</td></tr>
+<tr class="separator:a17e835f1ff20bc23b02703d151f466cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="acdef7a1fd863a6d3770c1268cb06add3" name="acdef7a1fd863a6d3770c1268cb06add3"></a>
@@ -304,20 +308,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="adb27f7795f7350279f8491e3c0a38226" name="adb27f7795f7350279f8491e3c0a38226"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb27f7795f7350279f8491e3c0a38226">&#9670;&#160;</a></span>tex</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uniform sampler2D tex</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a58b0e682d807370a92bb4b37474353a5" name="a58b0e682d807370a92bb4b37474353a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a58b0e682d807370a92bb4b37474353a5">&#9670;&#160;</a></span>TexCoords</h2>
 
@@ -326,6 +316,48 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">in vec2 TexCoords</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1dae1a669f47ce5277ad35839a0b568f" name="a1dae1a669f47ce5277ad35839a0b568f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dae1a669f47ce5277ad35839a0b568f">&#9670;&#160;</a></span>u_alpha</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uniform float u_alpha = 1.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a17e835f1ff20bc23b02703d151f466cb" name="a17e835f1ff20bc23b02703d151f466cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17e835f1ff20bc23b02703d151f466cb">&#9670;&#160;</a></span>u_bypass_processing</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uniform bool u_bypass_processing = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7e0b42388ac0ec4373a9334a86e40f0c" name="a7e0b42388ac0ec4373a9334a86e40f0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e0b42388ac0ec4373a9334a86e40f0c">&#9670;&#160;</a></span>u_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uniform sampler2D u_tex</td>
         </tr>
       </table>
 </div><div class="memdoc">

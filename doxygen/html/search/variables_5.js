@@ -15,9 +15,10 @@ var searchData=
   ['env_5flod_12',['env_lod',['../structApp.html#acdf677731e707e8a4bc70d37d9b62c31',1,'App']]],
   ['env_5fmap_5floading_13',['env_map_loading',['../structApp.html#a0d1c33bce3c61e2020c4fe4633c7431c',1,'App']]],
   ['env_5ftext_5fcolor_14',['ENV_TEXT_COLOR',['../app__ui_8c.html#af0b98e622dd47736cd7e777d203a82e7',1,'app_ui.c']]],
-  ['environmentmap_15',['environmentMap',['../background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623',1,'background.frag']]],
-  ['epsilon_16',['EPSILON',['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'pbr_functions.glsl']]],
-  ['exposure_17',['exposure',['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure'],['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure']]],
-  ['exposure_5fmanual_18',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
-  ['exposure_5fpbo_19',['exposure_pbo',['../structApp.html#af316b16ec5883e877c1fd57261e0b488',1,'App']]]
+  ['env_5ftransition_5fmode_15',['env_transition_mode',['../structApp.html#a51a9a6c0805893278338a44bf01d5e0a',1,'App']]],
+  ['environmentmap_16',['environmentMap',['../background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623',1,'background.frag']]],
+  ['epsilon_17',['EPSILON',['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'pbr_functions.glsl']]],
+  ['exposure_18',['exposure',['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure'],['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure']]],
+  ['exposure_5fmanual_19',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
+  ['exposure_5fpbo_20',['exposure_pbo',['../structApp.html#af316b16ec5883e877c1fd57261e0b488',1,'App']]]
 ];
