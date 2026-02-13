@@ -8,11 +8,11 @@ extern "C" {
 #endif
 
 typedef struct TracySourceLocationData {
-    const char* name;
-    const char* function;
-    const char* file;
-    uint32_t line;
-    uint32_t color;
+	const char* name;
+	const char* function;
+	const char* file;
+	uint32_t line;
+	uint32_t color;
 } TracySourceLocationData;
 
 #ifdef TRACY_ENABLE
@@ -27,4 +27,4 @@ void TracyOGL_Collect(void);
 }
 #endif
 
-#endif // TRACY_OGL_BRIDGE_H
+#endif  // TRACY_OGL_BRIDGE_H

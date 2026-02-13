@@ -157,19 +157,19 @@ static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
  * @brief Scoped GPU profiling stage. Automatically ends on scope exit.
  */
 #ifdef TRACY_ENABLE
-#define GPU_STAGE_PROFILER(profiler_ptr, name_str, color_hex)                  \
-	static const struct ___tracy_source_location_data TracyConcat(         \
-	    __tracy_source_location, __LINE__) = {                             \
-	    name_str, __func__, __FILE__, (uint32_t)__LINE__, color_hex};      \
-	static const TracySourceLocationData TracyConcat(__tracy_ogl_loc,      \
-	                                                 __LINE__) = {         \
-	    name_str, __func__, __FILE__, (uint32_t)__LINE__, color_hex};      \
-	GPUStageRAII _stage_raii##__LINE__                                     \
-	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {               \
-	        .profiler = profiler_ptr,                                      \
-	        .tracy_ctx = ___tracy_emit_zone_begin(                         \
-	            &TracyConcat(__tracy_source_location, __LINE__), 1)};      \
-	TracyOGL_ZoneBegin(&TracyConcat(__tracy_ogl_loc, __LINE__));           \
+#define GPU_STAGE_PROFILER(profiler_ptr, name_str, color_hex)             \
+	static const struct ___tracy_source_location_data TracyConcat(    \
+	    __tracy_source_location, __LINE__) = {                        \
+	    name_str, __func__, __FILE__, (uint32_t)__LINE__, color_hex}; \
+	static const TracySourceLocationData TracyConcat(                 \
+	    __tracy_ogl_loc, __LINE__) = {name_str, __func__, __FILE__,   \
+	                                  (uint32_t)__LINE__, color_hex}; \
+	GPUStageRAII _stage_raii##__LINE__                                \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {          \
+	        .profiler = profiler_ptr,                                 \
+	        .tracy_ctx = ___tracy_emit_zone_begin(                    \
+	            &TracyConcat(__tracy_source_location, __LINE__), 1)}; \
+	TracyOGL_ZoneBegin(&TracyConcat(__tracy_ogl_loc, __LINE__));      \
 	gpu_profiler_start_stage(profiler_ptr, name_str, color_hex)
 #else
 #define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
