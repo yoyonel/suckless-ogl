@@ -3,7 +3,7 @@
 #ifdef TRACY_ENABLE
 
 #include <glad/glad.h>
-#include <TracyOpenGL.hpp>
+#include <tracy/TracyOpenGL.hpp>
 
 extern "C" {
 

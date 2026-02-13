@@ -31,6 +31,11 @@ add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
 target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
 target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
 target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
+
+if(ENABLE_TRACY)
+    target_include_directories(app_testlib PRIVATE "${TRACY_DIR}/public")
+    target_compile_definitions(app_testlib PRIVATE TRACY_ENABLE)
+endif()
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
 # =============================================================================

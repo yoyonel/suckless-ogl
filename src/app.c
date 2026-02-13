@@ -38,7 +38,7 @@
 #include <GLFW/glfw3.h>
 
 #ifdef TRACY_ENABLE
-#include "TracyC.h"
+#include "tracy/TracyC.h"
 #include "tracy_ogl_bridge.h"
 #endif
 

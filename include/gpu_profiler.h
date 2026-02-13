@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 #ifdef TRACY_ENABLE
-#include "TracyC.h"
+#include "tracy/TracyC.h"
 #include "tracy_ogl_bridge.h"
 #endif
 
