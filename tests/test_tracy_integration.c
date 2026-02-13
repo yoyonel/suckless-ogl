@@ -44,8 +44,8 @@ void test_tracy_init(void)
 	TracySourceLocationData loc = {"TestZone", "test_tracy_init",
 	                               "tests/test_tracy_integration.c",
 	                               __LINE__, 0xFF0000};
-	TracyOGL_ZoneBegin(&loc);
-	TracyOGL_ZoneEnd();
+	void* tracy_scope = TracyOGL_ZoneBegin(&loc);
+	TracyOGL_ZoneEnd(tracy_scope);
 
 	TracyOGL_Collect();
 

@@ -18,10 +18,9 @@ typedef struct TracySourceLocationData {
 #ifdef TRACY_ENABLE
 void TracyOGL_Init(void);
 void TracyOGL_Destroy(void);
-void TracyOGL_ZoneBegin(const TracySourceLocationData* srcloc);
-void TracyOGL_ZoneEnd(void);
+void* TracyOGL_ZoneBegin(const TracySourceLocationData* srcloc);
+void TracyOGL_ZoneEnd(void* ctx);
 void TracyOGL_Collect(void);
-void Profiler_SendScreenCapture(int width, int height);
 #endif
 
 #ifdef __cplusplus

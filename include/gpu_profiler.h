@@ -140,6 +140,7 @@ typedef struct {
 	GPUProfiler* profiler;
 #ifdef TRACY_ENABLE
 	TracyCZoneCtx tracy_ctx;
+	void* tracy_gpu_scope;
 #endif
 } GPUStageRAII;
 
@@ -149,7 +150,7 @@ static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
 	gpu_profiler_end_stage(stage_raii->profiler);
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(stage_raii->tracy_ctx);
-	TracyOGL_ZoneEnd();
+	TracyOGL_ZoneEnd(stage_raii->tracy_gpu_scope);
 #endif
 }
 
@@ -168,8 +169,9 @@ static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
 	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {          \
 	        .profiler = profiler_ptr,                                 \
 	        .tracy_ctx = ___tracy_emit_zone_begin(                    \
-	            &TracyConcat(__tracy_source_location, __LINE__), 1)}; \
-	TracyOGL_ZoneBegin(&TracyConcat(__tracy_ogl_loc, __LINE__));      \
+	            &TracyConcat(__tracy_source_location, __LINE__), 1),  \
+	        .tracy_gpu_scope = TracyOGL_ZoneBegin(                    \
+	            &TracyConcat(__tracy_ogl_loc, __LINE__))};            \
 	gpu_profiler_start_stage(profiler_ptr, name_str, color_hex)
 #else
 #define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
