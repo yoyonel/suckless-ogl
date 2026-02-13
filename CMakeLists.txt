@@ -84,13 +84,6 @@ file(GLOB_RECURSE SOURCES
     "src/*.c"
 )
 
-if(ENABLE_TRACY)
-    list(APPEND SOURCES
-        "${TRACY_DIR}/public/TracyClient.cpp"
-        "src/tracy_ogl_bridge.cpp"
-    )
-endif()
-
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
@@ -114,6 +107,13 @@ if(ENABLE_TRACY)
     message(STATUS "Tracy Source Dir: ${TRACY_DIR}")
 
     add_compile_definitions(TRACY_ENABLE)
+endif()
+
+if(ENABLE_TRACY)
+    list(APPEND SOURCES
+        "${TRACY_DIR}/public/TracyClient.cpp"
+        "src/tracy_ogl_bridge.cpp"
+    )
 endif()
 
 # Force all FetchContent dependencies to build as STATIC libraries
