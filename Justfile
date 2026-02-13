@@ -132,34 +132,17 @@ build-profile:
 run-profile: build-profile
     @{{build_dir}}/app
 
-# Build the Tracy Profiler GUI (requires deps: freetype-devel capstone-devel gtk3-devel dbus-devel libpng-devel bzip2-devel libzstd-devel)
+# Build the Tracy Profiler GUI (requires deps: libcapstone-dev libfreetype-dev libglfw3-dev)
 tracy-server:
-	@mkdir -p tools
-	@if [ ! -d "tools/tracy" ]; then \
-		git clone https://github.com/wolfpld/tracy.git tools/tracy; \
-	fi
-	@cd tools/tracy && \
-	if [ -f profiler/build_v0.13.1/tracy-profiler ] && grep -q "v0.13.1" .build_version 2>/dev/null; then \
-		echo "Tracy Profiler v0.13.1 is already built and up-to-date."; \
-	else \
-		echo "Tracy version mismatch or first build. Performing clean setup..."; \
-		git fetch && git checkout v0.13.1 && git reset --hard v0.13.1 && git clean -ffdx; \
-		rm -rf profiler/build_*; \
-		echo "v0.13.1" > .build_version; \
-		echo "Installing/Updating build dependencies in Distrobox..."; \
-		{{distrobox}} sudo dnf install -y libcurl-devel freetype-devel capstone-devel dbus-devel libzstd-devel 2>/dev/null || \
-		{{distrobox}} sudo apt-get install -y libcurl4-openssl-dev libfreetype6-dev libcapstone-dev libdbus-1-dev libzstd-dev 2>/dev/null || true; \
-		echo "Building Tracy profiler (v0.13.1)..."; \
-		{{distrobox}} cmake -B profiler/build_v0.13.1 -S profiler -DCMAKE_BUILD_TYPE=Release -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF; \
-		{{distrobox}} cmake --build profiler/build_v0.13.1 --parallel $(nproc); \
-	fi
-	@echo "Tracy Profiler is ready at: tools/tracy/profiler/build_v0.13.1/tracy-profiler"
-	@echo "Run it with: just run-tracy"
-
-# Run the Tracy Profiler GUI
-run-tracy: tracy-server
-	@echo "Starting Tracy Profiler..."
-	@./tools/tracy/profiler/build_v0.13.1/tracy-profiler
+    @echo "Building Tracy Profiler GUI (v0.10)..."
+    @mkdir -p tools
+    @if [ ! -d "tools/tracy" ]; then \
+        git clone https://github.com/wolfpld/tracy.git tools/tracy; \
+    fi
+    @cd tools/tracy && git fetch && git checkout v0.10
+    @cd tools/tracy/profiler/build/unix && {{distrobox}} make -j$(nproc) release
+    @echo "Tracy Profiler built at: tools/tracy/profiler/build/unix/Tracy-release"
+    @echo "Run it with: ./tools/tracy/profiler/build/unix/Tracy-release"
 
 # =============================================================================
 # Testing & QA

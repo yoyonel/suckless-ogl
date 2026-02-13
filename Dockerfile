@@ -10,15 +10,6 @@ RUN dnf -y update && dnf -y install \
     python3 \
     glfw-devel \
     gamemode-devel \
-    freetype-devel \
-    capstone-devel \
-    gtk3-devel \
-    dbus-devel \
-    libpng-devel \
-    bzip2-devel \
-    libzstd-devel \
-    patch \
-    openssl-devel \
     && dnf clean all
 
 WORKDIR /src

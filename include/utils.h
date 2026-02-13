@@ -6,7 +6,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "tracy_hooks.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>

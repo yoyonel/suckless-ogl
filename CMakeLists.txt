@@ -95,12 +95,12 @@ option(ENABLE_TRACY "Enable Tracy Profiling" OFF)
 
 if(ENABLE_TRACY)
     enable_language(CXX)
-    message(STATUS "Tracy Profiling: ENABLED (Tag v0.13.1)")
+    message(STATUS "Tracy Profiling: ENABLED (Tag v0.10)")
 
     FetchContent_Declare(
         Tracy
         GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-        GIT_TAG        v0.13.1
+        GIT_TAG        v0.10
     )
     FetchContent_MakeAvailable(Tracy)
     FetchContent_GetProperties(Tracy SOURCE_DIR TRACY_DIR)
@@ -309,10 +309,6 @@ if(ENABLE_TRACY)
     target_include_directories(app PRIVATE "${TRACY_DIR}/public")
     target_link_libraries(app PRIVATE dl)
     set_target_properties(app PROPERTIES LINKER_LANGUAGE CXX)
-    
-    # Force include tracy_hooks.h in every file of the app target.
-    # We use -include for GCC/Clang. This ensures consistent memory tracking.
-    target_compile_options(app PRIVATE "-include" "${CMAKE_SOURCE_DIR}/include/tracy_hooks.h")
 endif()
 
 # Optional GameMode integration for performance optimization

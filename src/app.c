@@ -363,10 +363,6 @@ void app_cleanup(App* app)
 	if (app->transition_snapshot_tex) {
 		glDeleteTextures(1, &app->transition_snapshot_tex);
 	}
-	if (app->capture_fbo) {
-		glDeleteFramebuffers(1, &app->capture_fbo);
-		glDeleteTextures(1, &app->capture_tex);
-	}
 	glDeleteBuffers(1, &app->exposure_pbo);
 	glDeleteBuffers(1, &app->histogram_pbo);
 
@@ -389,60 +385,6 @@ void app_cleanup(App* app)
 
 	window_destroy(app->window);
 }
-
-#ifdef TRACY_ENABLE
-static void app_capture_frame(App* app)
-{
-	const uint64_t capture_interval = 60;
-	if (app->frame_count % capture_interval != 0) {
-		return;
-	}
-
-	const int capture_width = 320;
-	const int capture_height = 180;
-
-	if (app->capture_fbo == 0) {
-		glGenFramebuffers(1, &app->capture_fbo);
-		glGenTextures(1, &app->capture_tex);
-		glBindTexture(GL_TEXTURE_2D, app->capture_tex);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, capture_width,
-		             capture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-		             NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		                GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-		                GL_LINEAR);
-		glBindFramebuffer(GL_FRAMEBUFFER, app->capture_fbo);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D, app->capture_tex, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	// Read from default backbuffer (0) and blit to our small FBO
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, app->capture_fbo);
-	glBlitFramebuffer(0, 0, app->width, app->height, 0, 0, capture_width,
-	                  capture_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-	// Read from our FBO
-	glBindFramebuffer(GL_FRAMEBUFFER, app->capture_fbo);
-	void* capture_data = malloc((size_t)capture_width * capture_height * 4);
-	if (!capture_data) {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		return;
-	}
-
-	glReadPixels(0, 0, capture_width, capture_height, GL_RGBA,
-	             GL_UNSIGNED_BYTE, capture_data);
-
-	// Flip is 1 as we want it correctly oriented for Tracy
-	TracyOGL_FrameImage(capture_data, (uint16_t)capture_width,
-	                    (uint16_t)capture_height, 1, 1);
-
-	free(capture_data);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-#endif
 
 void app_run(App* app)
 {
@@ -501,10 +443,6 @@ void app_run(App* app)
 		app_update(app);
 		app_render(app);
 
-#ifdef TRACY_ENABLE
-		app_capture_frame(app);
-#endif
-
 		glfwSwapBuffers(app->window);
 		glfwPollEvents();
 	}
@@ -561,187 +499,167 @@ void app_render(App* app)
 	}
 
 	// 2. Démarrer la mesure globale de la frame
-	{
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
-		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+	GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
+	                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
-		postprocess_begin(&app->postprocess);
-		glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+	postprocess_begin(&app->postprocess);
+	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
-		mat4 view;
-		mat4 proj;
-		mat4 view_proj;
-		mat4 inv_view_proj;
-		vec3 camera_pos = {app->camera.position[0],
-		                   app->camera.position[1],
-		                   app->camera.position[2]};
-		camera_get_view_matrix(&app->camera, view);
-		if (app->height > 0) {
-			glm_perspective(glm_rad(app->camera.zoom),
-			                (float)app->width / (float)app->height,
-			                NEAR_PLANE, FAR_PLANE, proj);
-		} else {
-			glm_mat4_identity(proj);
-		}
-		glm_mat4_mul(proj, view, view_proj);
-		glm_mat4_inv(view_proj, inv_view_proj);
+	mat4 view;
+	mat4 proj;
+	mat4 view_proj;
+	mat4 inv_view_proj;
+	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
+	                   app->camera.position[2]};
+	camera_get_view_matrix(&app->camera, view);
+	if (app->height > 0) {
+		glm_perspective(glm_rad(app->camera.zoom),
+		                (float)app->width / (float)app->height,
+		                NEAR_PLANE, FAR_PLANE, proj);
+	} else {
+		glm_mat4_identity(proj);
+	}
+	glm_mat4_mul(proj, view, view_proj);
+	glm_mat4_inv(view_proj, inv_view_proj);
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-		if (app->show_envmap) {
-			GPU_STAGE_PROFILER(&app->gpu_profiler, "EnvMap",
-			                   GPU_PROFILER_ENV_COLOR);
+	if (app->show_envmap) {
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "EnvMap",
+		                   GPU_PROFILER_ENV_COLOR);
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDisable(GL_DEPTH_TEST);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_DEPTH_TEST);
+		skybox_render(&app->skybox, app->skybox_shader,
+		              app->hdr_texture, app->dummy_black_tex,
+		              inv_view_proj, app->env_lod);
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
+		                   GPU_PROFILER_SCENE_COLOR);
+
+		stencil_begin_object_pass();
+
+		if (app->billboard_mode) {
+			sphere_sorter_sort(
+			    &app->sphere_sorter, &app->sphere_instances,
+			    app->sphere_instance_count, app->camera.position);
+			billboard_group_update(&app->billboard_group,
+			                       app->sphere_instances,
+			                       app->sphere_instance_count);
+		}
+
+		if (app->billboard_mode) {
+			// 1. Activer le Blending UNIQUEMENT pour la couleur
+			// (Attachment 0) Cela permet à ton 'edgeFactor' de
+			// lisser les bords de la sphère
+			glEnablei(GL_BLEND, 0);
+
+			// 2. Configurer l'équation de blend (toujours globale
+			// ou par index si besoin) Pour l'alpha blending
+			// classique (lissage des bords)
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			// 3. DÉSACTIVER explicitement le Blending pour la
+			// vélocité (Attachment 1) C'est la clé : le buffer de
+			// vélocité recevra les valeurs brutes du shader sans
+			// être multipliées par l'alpha ou mixées avec le noir
+			// du fond.
+			glDisablei(GL_BLEND, 1);
+
+			app_render_billboards(app, view, proj, camera_pos);
+
+			// Nettoyage après rendu (Optionnel mais propre)
+			glDisablei(GL_BLEND, 0);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK,
+			              app->wireframe ? GL_LINE : GL_FILL);
+
+			app_render_instanced(app, view, proj, camera_pos);
+
+			if (app->wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		}
+
+		glDisable(GL_STENCIL_TEST);
+	}
+#else
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
+		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+
+		stencil_begin_object_pass();
+
+		if (app->billboard_mode) {
+			app_render_billboards(app, view, proj, camera_pos);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK,
+			              app->wireframe ? GL_LINE : GL_FILL);
+			app_render_instanced(app, view, proj, camera_pos);
+
+			if (app->wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		}
+
+		glDisable(GL_STENCIL_TEST);
+
+		if (app->show_envmap) {
 			skybox_render(&app->skybox, app->skybox_shader,
 			              app->hdr_texture, app->dummy_black_tex,
 			              inv_view_proj, app->env_lod);
-			glEnable(GL_DEPTH_TEST);
 		}
-
-		{
-			GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
-			                   GPU_PROFILER_SCENE_COLOR);
-
-			stencil_begin_object_pass();
-
-			if (app->billboard_mode) {
-				sphere_sorter_sort(&app->sphere_sorter,
-				                   &app->sphere_instances,
-				                   app->sphere_instance_count,
-				                   app->camera.position);
-				billboard_group_update(
-				    &app->billboard_group,
-				    app->sphere_instances,
-				    app->sphere_instance_count);
-			}
-
-			if (app->billboard_mode) {
-				// 1. Activer le Blending UNIQUEMENT pour la
-				// couleur (Attachment 0) Cela permet à ton
-				// 'edgeFactor' de lisser les bords de la sphère
-				glEnablei(GL_BLEND, 0);
-
-				// 2. Configurer l'équation de blend (toujours
-				// globale ou par index si besoin) Pour l'alpha
-				// blending classique (lissage des bords)
-				glBlendFunc(GL_SRC_ALPHA,
-				            GL_ONE_MINUS_SRC_ALPHA);
-
-				// 3. DÉSACTIVER explicitement le Blending pour
-				// la vélocité (Attachment 1) C'est la clé : le
-				// buffer de vélocité recevra les valeurs brutes
-				// du shader sans être multipliées par l'alpha
-				// ou mixées avec le noir du fond.
-				glDisablei(GL_BLEND, 1);
-
-				app_render_billboards(app, view, proj,
-				                      camera_pos);
-
-				// Nettoyage après rendu (Optionnel mais propre)
-				glDisablei(GL_BLEND, 0);
-			} else {
-				glPolygonMode(GL_FRONT_AND_BACK, app->wireframe
-				                                     ? GL_LINE
-				                                     : GL_FILL);
-
-				app_render_instanced(app, view, proj,
-				                     camera_pos);
-
-				if (app->wireframe) {
-					glPolygonMode(GL_FRONT_AND_BACK,
-					              GL_FILL);
-				}
-			}
-
-			glDisable(GL_STENCIL_TEST);
-		}
-#else
-		{
-			GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
-			                   GPU_PROFILER_TOTAL_FRAME_COLOR);
-
-			stencil_begin_object_pass();
-
-			if (app->billboard_mode) {
-				app_render_billboards(app, view, proj,
-				                      camera_pos);
-			} else {
-				glPolygonMode(GL_FRONT_AND_BACK, app->wireframe
-				                                     ? GL_LINE
-				                                     : GL_FILL);
-				app_render_instanced(app, view, proj,
-				                     camera_pos);
-
-				if (app->wireframe) {
-					glPolygonMode(GL_FRONT_AND_BACK,
-					              GL_FILL);
-				}
-			}
-
-			glDisable(GL_STENCIL_TEST);
-
-			if (app->show_envmap) {
-				skybox_render(&app->skybox, app->skybox_shader,
-				              app->hdr_texture,
-				              app->dummy_black_tex,
-				              inv_view_proj, app->env_lod);
-			}
-		}
+	}
 #endif
 
-		postprocess_end(&app->postprocess);
+	postprocess_end(&app->postprocess);
 
-		postprocess_update_matrices(&app->postprocess, view_proj);
+	postprocess_update_matrices(&app->postprocess, view_proj);
 
-		{
-			GPU_STAGE_PROFILER(&app->gpu_profiler, "UI Overlay",
-			                   GPU_PROFILER_UI_COLOR);
+	{
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "UI Overlay",
+		                   GPU_PROFILER_UI_COLOR);
 
-			/* Render Transition Overlay */
-			if (app->transition_state != TRANSITION_IDLE) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA,
-				            GL_ONE_MINUS_SRC_ALPHA);
-				glDisable(GL_DEPTH_TEST);
+		/* Render Transition Overlay */
+		if (app->transition_state != TRANSITION_IDLE) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_DEPTH_TEST);
 
-				shader_use(app->debug_shader);
-				shader_set_int(app->debug_shader, "u_tex", 0);
-				shader_set_float(app->debug_shader, "u_alpha",
-				                 app->transition_alpha);
-				shader_set_int(app->debug_shader,
-				               "u_bypass_processing", 1);
-				shader_set_float(app->debug_shader, "lod",
-				                 0.0F);
+			shader_use(app->debug_shader);
+			shader_set_int(app->debug_shader, "u_tex", 0);
+			shader_set_float(app->debug_shader, "u_alpha",
+			                 app->transition_alpha);
+			shader_set_int(app->debug_shader, "u_bypass_processing",
+			               1);
+			shader_set_float(app->debug_shader, "lod", 0.0F);
 
-				glActiveTexture(GL_TEXTURE0);
-				if (app->env_transition_mode ==
-				        ENV_TRANSITION_CROSSFADE &&
-				    app->transition_snapshot_tex != 0 &&
-				    app->transition_state ==
-				        TRANSITION_FADE_IN) {
-					/* Crossfade: Bind snapshot texture */
-					glBindTexture(
-					    GL_TEXTURE_2D,
-					    app->transition_snapshot_tex);
-				} else {
-					/* Black Screen / Initial Load: Bind
-					 * dummy black
-					 */
-					glBindTexture(GL_TEXTURE_2D,
-					              app->dummy_black_tex);
-				}
-
-				glBindVertexArray(app->quad_vbo);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				glBindVertexArray(0);
-
-				glEnable(GL_DEPTH_TEST);
-				glDisable(GL_BLEND);
+			glActiveTexture(GL_TEXTURE0);
+			if (app->env_transition_mode ==
+			        ENV_TRANSITION_CROSSFADE &&
+			    app->transition_snapshot_tex != 0 &&
+			    app->transition_state == TRANSITION_FADE_IN) {
+				/* Crossfade: Bind snapshot texture */
+				glBindTexture(GL_TEXTURE_2D,
+				              app->transition_snapshot_tex);
+			} else {
+				/* Black Screen / Initial Load: Bind dummy black
+				 */
+				glBindTexture(GL_TEXTURE_2D,
+				              app->dummy_black_tex);
 			}
 
-			app_render_ui(app);
+			glBindVertexArray(app->quad_vbo);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			glBindVertexArray(0);
+
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
 		}
+
+		app_render_ui(app);
 	}
 
 	// 4. Logique d'affichage et animations
