@@ -6,6 +6,11 @@
 #include "perf_timer.h"
 #include <stdint.h>
 
+#ifdef TRACY_ENABLE
+#include "TracyC.h"
+#include "tracy_ogl_bridge.h"
+#endif
+
 #define MAX_GPU_STAGES 32
 #define MAX_GPU_STAGE_NAME 32
 #define GPU_QUERY_BUFFER_COUNT 2
@@ -133,20 +138,44 @@ void gpu_profiler_reset_samplers(GPUProfiler* profiler, double current_time);
  */
 typedef struct {
 	GPUProfiler* profiler;
+#ifdef TRACY_ENABLE
+	TracyCZoneCtx tracy_ctx;
+#endif
 } GPUStageRAII;
 
 /** @brief Internal cleanup function for GPUStageRAII. */
 static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
 {
 	gpu_profiler_end_stage(stage_raii->profiler);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(stage_raii->tracy_ctx);
+	TracyOGL_ZoneEnd();
+#endif
 }
 
 /**
  * @brief Scoped GPU profiling stage. Automatically ends on scope exit.
  */
+#ifdef TRACY_ENABLE
+#define GPU_STAGE_PROFILER(profiler_ptr, name_str, color_hex)                  \
+	static const struct ___tracy_source_location_data TracyConcat(         \
+	    __tracy_source_location, __LINE__) = {                             \
+	    name_str, __func__, __FILE__, (uint32_t)__LINE__, color_hex};      \
+	static const TracySourceLocationData TracyConcat(__tracy_ogl_loc,      \
+	                                                 __LINE__) = {         \
+	    name_str, __func__, __FILE__, (uint32_t)__LINE__, color_hex};      \
+	GPUStageRAII _stage_raii##__LINE__                                     \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {               \
+	        .profiler = profiler_ptr,                                      \
+	        .tracy_ctx = ___tracy_emit_zone_begin(                         \
+	            &TracyConcat(__tracy_source_location, __LINE__), 1)};      \
+	TracyOGL_ZoneBegin(&TracyConcat(__tracy_ogl_loc, __LINE__));           \
+	gpu_profiler_start_stage(profiler_ptr, name_str, color_hex)
+#else
 #define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
 	GPUStageRAII _stage_raii##__LINE__                                     \
 	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
 	gpu_profiler_start_stage(profiler_ptr, name, color)
+#endif
 
 #endif  // GPU_PROFILER_H

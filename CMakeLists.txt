@@ -84,11 +84,35 @@ file(GLOB_RECURSE SOURCES
     "src/*.c"
 )
 
+if(ENABLE_TRACY)
+    list(APPEND SOURCES
+        "${tracy_SOURCE_DIR}/public/TracyClient.cpp"
+        "src/tracy_ogl_bridge.cpp"
+    )
+endif()
+
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
 set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
 
 # Dependencies (automated via FetchContent)
 include(FetchContent)
+
+# Option pour activer Tracy Profiler
+option(ENABLE_TRACY "Enable Tracy Profiling" OFF)
+
+if(ENABLE_TRACY)
+    enable_language(CXX)
+    message(STATUS "Tracy Profiling: ENABLED (Tag v0.10)")
+
+    FetchContent_Declare(
+        tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+        GIT_TAG        v0.10
+    )
+    FetchContent_MakeAvailable(tracy)
+
+    add_compile_definitions(TRACY_ENABLE)
+endif()
 
 # Force all FetchContent dependencies to build as STATIC libraries
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static libraries only" FORCE)
@@ -278,6 +302,12 @@ target_link_libraries(app PRIVATE
     dl
     Threads::Threads
 )
+
+if(ENABLE_TRACY)
+    target_include_directories(app PRIVATE "${tracy_SOURCE_DIR}/public")
+    target_link_libraries(app PRIVATE dl)
+    set_target_properties(app PROPERTIES LINKER_LANGUAGE CXX)
+endif()
 
 # Optional GameMode integration for performance optimization
 # Requires both the library AND the header to be installed

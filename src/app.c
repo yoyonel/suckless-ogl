@@ -37,6 +37,11 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
 
+#ifdef TRACY_ENABLE
+#include "TracyC.h"
+#include "tracy_ogl_bridge.h"
+#endif
+
 int app_init(App* app, int width, int height, const char* title)
 {
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
@@ -72,6 +77,10 @@ int app_init(App* app, int width, int height, const char* title)
 	if (!app->window) {
 		return 0;
 	}
+
+#ifdef TRACY_ENABLE
+	TracyOGL_Init();
+#endif
 
 	glfwSwapInterval(0);
 	glfwSetWindowUserPointer(app->window, app);
@@ -381,6 +390,9 @@ void app_run(App* app)
 {
 	int last_subdiv = -1;
 	while (!glfwWindowShouldClose(app->window)) {
+#ifdef TRACY_ENABLE
+		TracyCFrameMark;
+#endif
 		app->frame_count++;
 		double current_time = glfwGetTime();
 		app->delta_time = current_time - app->last_frame_time;
@@ -438,6 +450,9 @@ void app_run(App* app)
 
 void app_update(App* app)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(ctx, "App Update", 1);
+#endif
 	AsyncRequest req;
 	if (async_loader_poll(&req)) {
 		app_finalize_environment_load(app, &req);
@@ -448,6 +463,9 @@ void app_update(App* app)
 	}
 	app_process_ibl_state_machine(app);
 	app_update_transition(app);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(ctx);
+#endif
 }
 
 static inline void stencil_begin_object_pass(void)
@@ -460,6 +478,9 @@ static inline void stencil_begin_object_pass(void)
 
 void app_render(App* app)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(ctx, "App Render", 1);
+#endif
 	// 1. Signaler le début de la frame pour traiter les résultats
 	// précédents
 	// 1. Signaler le début de la frame pour traiter les résultats
@@ -646,4 +667,9 @@ void app_render(App* app)
 	gpu_profiler_ui_update(&app->timeline_ui, &app->gpu_profiler,
 	                       app->delta_time, current_time,
 	                       (bool)app->log_gpu_metrics);
+
+#ifdef TRACY_ENABLE
+	TracyOGL_Collect();
+	TracyCZoneEnd(ctx);
+#endif
 }

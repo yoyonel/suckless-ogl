@@ -70,6 +70,7 @@ set(OPENGL_TESTS
     test_shader_uniforms_loc
     test_stencil_masking
     test_env_transition
+    test_tracy_integration
 )
 
 # Pour chaque fichier test trouvé

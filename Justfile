@@ -120,6 +120,18 @@ perf: profile
     @{{distrobox}} perf record -g {{build_dir}}/app
     @{{distrobox}} perf report
 
+# Configure for Tracy Profiling
+configure-profile:
+    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
+
+# Build with Tracy Profiling
+build-profile:
+    @{{distrobox}} cmake --build {{build_dir}} --parallel
+
+# Build and run with Tracy Profiling
+run-profile: build-profile
+    @{{build_dir}}/app
+
 # =============================================================================
 # Testing & QA
 # =============================================================================
