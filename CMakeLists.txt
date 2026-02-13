@@ -110,6 +110,10 @@ if(ENABLE_TRACY)
         GIT_TAG        v0.10
     )
     FetchContent_MakeAvailable(tracy)
+    FetchContent_GetProperties(tracy)
+    if(NOT tracy_POPULATED)
+        FetchContent_Populate(tracy)
+    endif()
 
     add_compile_definitions(TRACY_ENABLE)
 endif()
