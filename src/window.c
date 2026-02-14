@@ -44,7 +44,8 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 	}
 
 	/* Initialize OpenGL Debug */
-	/* Satisfies requirement for High Sensitivity debug context (OpenGL 4.x) */
+	/* Satisfies requirement for High Sensitivity debug context (OpenGL 4.x)
+	 */
 	setup_opengl_debug();
 
 	/* Log Context Info */

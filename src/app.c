@@ -39,8 +39,8 @@
 
 int app_init(App* app, int width, int height, const char* title)
 {
-	/* ASSUMPTION: 'app' must be zero-initialized or valid (e.g. from main.c)
-	 * to avoid Undefined Behavior when checking app->window. */
+	/* ASSUMPTION: 'app' must be zero-initialized or valid (e.g. from
+	 * main.c) to avoid Undefined Behavior when checking app->window. */
 	if (app->window != NULL) {
 		app_cleanup(app);
 	}
