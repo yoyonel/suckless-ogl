@@ -3,6 +3,7 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "mem.h"
 #include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>

@@ -3,6 +3,7 @@
 #endif
 #include "log.h"
 
+#include "tracy_log.h"
 #include "utils.h"
 #include <stdarg.h>
 #include <stdbool.h>
@@ -140,18 +141,18 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	va_list args;
 	va_start(args, format);
 
+	char msg_buf[MSG_BUFFER_SIZE];
+	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args);
+
 	if (g_log_callback) {
-		va_list args_copy;
-		va_copy(args_copy, args);
-		char msg_buf[MSG_BUFFER_SIZE];
-		// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args_copy);
 		g_log_callback(level, tag, msg_buf);
-		va_end(args_copy);
 	}
 
+	tracy_log_message(level, msg_buf);
+
 	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
-	(void)vfprintf(out, format, args);
+	(void)fputs(msg_buf, out);
 	va_end(args);
 
 	(void)fputs("\n", out);

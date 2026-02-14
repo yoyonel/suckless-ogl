@@ -236,6 +236,11 @@ typedef struct App {
 	GLuint dummy_black_tex; /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex; /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
+	GLuint
+	    screenshot_pbo[2];  /**< PBOs for asynchronous Tracy thumbnails. */
+	GLuint screenshot_fbo;  /**< FBO for downscaling screenshots. */
+	GLuint screenshot_tex;  /**< Texture for the screenshot FBO. */
+	int screenshot_pbo_idx; /**< Current PBO index for ping-pong. */
 
 	/* --- Global Configuration Uniforms --- */
 	float env_lod;          /**< Skybox blurriness. */
@@ -297,5 +302,8 @@ void app_render(App* app);
 #include "app_input.h"
 #include "app_scene.h"
 #include "app_ui.h"
+
+#define TRACY_SCREENSHOT_WIDTH 320
+#define TRACY_SCREENSHOT_HEIGHT 180
 
 #endif /* APP_H */

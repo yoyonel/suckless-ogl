@@ -5,6 +5,10 @@
 #include "utils.h"
 #include <stddef.h> /* size_t */
 
+#ifdef TRACY_ENABLE
+#include "tracy_gpu.h"
+#endif
+
 /* Constants to avoid magic numbers */
 static const float SAMPLER_WINDOW_DURATION = GPU_PROFILER_WINDOW_DURATION_S;
 static const size_t SAMPLER_TARGET_SAMPLES = 120;
@@ -19,6 +23,10 @@ void gpu_profiler_init(GPUProfiler* profiler)
 
 	/* 1. Safe Zero Initialization (replaces unsafe memset) */
 	*profiler = (GPUProfiler){0};
+
+#ifdef TRACY_ENABLE
+	tracy_gpu_init();
+#endif
 
 	/* 2. Init Ping-Pong */
 	profiler->write_index = 0;

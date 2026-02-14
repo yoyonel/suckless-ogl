@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(suckless-ogl C)
+project(suckless-ogl C CXX)
 
 # Generate compile_commands.json for generic clang-tidy usage
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -74,6 +74,13 @@ if(ENABLE_SHADER_OPTIMIZATION)
     message(STATUS "Shader Optimization: ENABLED (Static compile)")
 endif()
 
+# Tracy Profiler Integration
+option(ENABLE_TRACY "Enable Tracy Profiler integration" OFF)
+if(ENABLE_TRACY)
+    add_compile_definitions(TRACY_ENABLE TRACY_FIBERS)
+    message(STATUS "Tracy Profiler: ENABLED (with Fibers)")
+endif()
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -82,6 +89,7 @@ add_compile_definitions(_GNU_SOURCE)
 file(GLOB_RECURSE SOURCES
     CONFIGURE_DEPENDS
     "src/*.c"
+    "src/*.cpp" # Added to support tracy_gpu.cpp
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -256,7 +264,11 @@ elseif(ENABLE_ASAN)
 endif()
 
 # App target
-add_executable(app ${SOURCES})
+set(APP_SOURCES ${SOURCES})
+if(ENABLE_TRACY)
+    list(APPEND APP_SOURCES "deps/tracy/public/TracyClient.cpp")
+endif()
+add_executable(app ${APP_SOURCES})
 
 # Apply Clang-Tidy only to this target
 if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
@@ -266,6 +278,9 @@ endif()
 # Target properties and includes
 target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
 target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
+if(ENABLE_TRACY)
+    target_include_directories(app PUBLIC deps/tracy/public)
+endif()
 
 # Link avec la version statique de cJSON
 find_package(Threads REQUIRED)
@@ -330,6 +345,11 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     # puissent reconstruire la pile d'appel (stack trace) correctement.
     if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
+    endif()
+
+    if(ENABLE_TRACY)
+        # Required for Tracy to resolve symbols in callstacks
+        target_link_options(app PRIVATE -rdynamic)
     endif()
 
     add_compile_definitions(_GNU_SOURCE)

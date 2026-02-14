@@ -271,3 +271,29 @@ trace-perf:
 # Clean build directory
 clean:
     @{{distrobox}} cmake --build {{build_dir}} --target clean
+
+# =============================================================================
+# Tracy Profiler (v0.13.1)
+# =============================================================================
+
+tracy_legacy := `if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then echo OFF; else echo ON; fi`
+
+# Build Tracy Server (X11 by default on Linux if LEGACY=ON)
+build-tracy-server:
+    @echo "Building Tracy Profiler Server (Legacy/X11: {{tracy_legacy}})..."
+    @mkdir -p deps/tracy/profiler/build
+    @{{distrobox}} cmake -B deps/tracy/profiler/build -S deps/tracy/profiler -DCMAKE_BUILD_TYPE=Release -DLEGACY={{tracy_legacy}}
+    @{{distrobox}} cmake --build deps/tracy/profiler/build --parallel
+
+# Run Tracy Server
+tracy-server:
+    @./deps/tracy/profiler/build/tracy-profiler
+
+# Build and run application with Tracy enabled
+run-tracy: build-tracy
+    @./build-tracy/app
+
+# Build application with Tracy enabled
+build-tracy:
+    @{{distrobox}} cmake -B build-tracy -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
+    @{{distrobox}} cmake --build build-tracy --parallel

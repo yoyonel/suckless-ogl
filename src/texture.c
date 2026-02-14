@@ -2,11 +2,17 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "profiler.h"
 #include "utils.h"
 #include <math.h>
 #include <stb_image.h>
 #include <stddef.h>
 #include <stdio.h>
+
+static const uint32_t TRACY_COLOR_TEXTURE_UPLOAD = 0xAAAA55;
+static const uint32_t TRACY_COLOR_TEXTURE_STORAGE = 0xAA55AA;
+static const uint32_t TRACY_COLOR_MIPMAP_GEN = 0x55AAAA;
+static const uint32_t TRACY_COLOR_TEXTURE_UPLOAD_FULL = 0xFF8800;
 
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
@@ -70,6 +76,9 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 
 GLuint texture_upload_hdr(float* data, int width, int height)
 {
+	TRACE_GPU_SCOPE("TextureUploadHDR_Full",
+	                TRACY_COLOR_TEXTURE_UPLOAD_FULL);
+
 	if (!data) {
 		return 0;
 	}
@@ -97,7 +106,11 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
 	}
 
-	glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
+	{
+		TRACE_GPU_SCOPE("TexStorageHDR", TRACY_COLOR_TEXTURE_STORAGE);
+		glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width,
+		               height);
+	}
 
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -108,8 +121,11 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 		return 0;
 	}
 
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-	                GL_FLOAT, data);
+	{
+		TRACE_GPU_SCOPE("TexUploadHDR", TRACY_COLOR_TEXTURE_UPLOAD);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
+		                GL_FLOAT, data);
+	}
 
 	err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -126,7 +142,10 @@ GLuint texture_upload_hdr(float* data, int width, int height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glGenerateMipmap(GL_TEXTURE_2D);
+	{
+		TRACE_GPU_SCOPE("GenMipmapHDR", TRACY_COLOR_MIPMAP_GEN);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	err = glGetError();
 	if (err != GL_NO_ERROR) {

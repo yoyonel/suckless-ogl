@@ -13,6 +13,7 @@
 #include "glad/glad.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include "mem.h"
 #include "render_utils.h"
 #include "sphere_sorting.h"
 #include <cglm/cam.h>
@@ -97,6 +98,28 @@ int app_init(App* app, int width, int height, const char* title)
 	             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)), NULL,
 	             GL_STREAM_READ);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	/* Initialize Tracy Screenshot FBO */
+	app->screenshot_tex = render_utils_create_texture_2d(
+	    TRACY_SCREENSHOT_WIDTH, TRACY_SCREENSHOT_HEIGHT, GL_RGBA8, 1,
+	    "Tracy Screenshot");
+	glGenFramebuffers(1, &app->screenshot_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, app->screenshot_fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, app->screenshot_tex, 0);
+	render_utils_check_framebuffer("Tracy Screenshot FBO");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/* Initialize Tracy Screenshot PBOs */
+	glGenBuffers(2, app->screenshot_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->screenshot_pbo[i]);
+		glBufferData(
+		    GL_PIXEL_PACK_BUFFER,
+		    TRACY_SCREENSHOT_WIDTH * TRACY_SCREENSHOT_HEIGHT * 4, NULL,
+		    GL_STREAM_READ);
+	}
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	app->screenshot_pbo_idx = 0;
 
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
@@ -356,6 +379,8 @@ void app_cleanup(App* app)
 	}
 	glDeleteBuffers(1, &app->exposure_pbo);
 	glDeleteBuffers(1, &app->histogram_pbo);
+	glDeleteTextures(1, &app->screenshot_tex);
+	glDeleteFramebuffers(1, &app->screenshot_fbo);
 
 	async_loader_shutdown();
 
@@ -431,7 +456,56 @@ void app_run(App* app)
 		app_update(app);
 		app_render(app);
 
+#ifdef TRACY_ENABLE
+		/* 1. Send previous frame's screenshot (already in PBO) */
+		/* Skip first frame to avoid garbage data from uninitialized PBO
+		 * 1 */
+		static bool first_frame = true;
+		if (!first_frame) {
+			int read_idx = (app->screenshot_pbo_idx + 1) % 2;
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             app->screenshot_pbo[read_idx]);
+			void* pbo_ptr =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (pbo_ptr) {
+				tracy_gpu_screenshot(pbo_ptr,
+				                     TRACY_SCREENSHOT_WIDTH,
+				                     TRACY_SCREENSHOT_HEIGHT);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
+		}
+		first_frame = false;
+
+		/* 2. Start new screenshot capture for current frame */
+		/* Sanitize state for blit */
+		glDisable(GL_SCISSOR_TEST);
+
+		/* First downscale the backbuffer to our small FBO */
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glReadBuffer(GL_BACK);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, app->screenshot_fbo);
+		glBlitFramebuffer(
+		    0, 0, app->width, app->height, 0, 0, TRACY_SCREENSHOT_WIDTH,
+		    TRACY_SCREENSHOT_HEIGHT, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+		/* Then read from the small FBO into PBO */
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, app->screenshot_fbo);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             app->screenshot_pbo[app->screenshot_pbo_idx]);
+		glReadPixels(0, 0, TRACY_SCREENSHOT_WIDTH,
+		             TRACY_SCREENSHOT_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE,
+		             0);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		/* 3. Ping-pong */
+		app->screenshot_pbo_idx = (app->screenshot_pbo_idx + 1) % 2;
+#endif
+
 		glfwSwapBuffers(app->window);
+#ifdef TRACY_ENABLE
+		tracy_gpu_collect();
+#endif
 		glfwPollEvents();
 	}
 }
@@ -469,6 +543,10 @@ void app_render(App* app)
 	    effect_benchmark_is_running(&app->effect_bench);
 	gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
 	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+
+#ifdef TRACY_ENABLE
+	TracyCFrameMark;
+#endif
 
 	/* Effect benchmark: read previous frame's profiler results */
 	if (effect_benchmark_update(&app->effect_bench)) {

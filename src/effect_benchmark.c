@@ -309,7 +309,7 @@ bool effect_benchmark_update(EffectBenchmark* bench)
 
 void effect_benchmark_log_results(const EffectBenchmark* bench)
 {
-	LOG_INFO(BENCH_TAG, "");
+	LOG_INFO(BENCH_TAG, " ");
 	LOG_INFO(BENCH_TAG,
 	         "╔══════════════════════════════════════════════════════╗");
 	LOG_INFO(BENCH_TAG,
@@ -341,7 +341,7 @@ void effect_benchmark_log_results(const EffectBenchmark* bench)
 	         total_cost);
 	LOG_INFO(BENCH_TAG,
 	         "╚════════════════════╩═══════════╩═══════════╩════════╝");
-	LOG_INFO(BENCH_TAG, "");
+	LOG_INFO(BENCH_TAG, " ");
 	LOG_INFO(BENCH_TAG,
 	         "Note: Positive cost = effect adds GPU time. "
 	         "Sum may not equal baseline due to shared ALU/cache.");

@@ -38,13 +38,17 @@ typedef struct {
 	int active; /**< Flag indicating if a measurement is in progress. */
 } GPUTimer;
 
+#include <tracy/TracyC.h>
+
 /**
  * @struct HybridTimer
  * @brief Hybrid timer combining CPU and GPU measurements.
  */
 typedef struct {
-	PerfTimer cpu; /**< CPU timer. */
-	GPUTimer gpu;  /**< GPU timer. */
+	PerfTimer cpu;           /**< CPU timer. */
+	GPUTimer gpu;            /**< GPU timer. */
+	TracyCZoneCtx tracy_ctx; /**< Tracy profiling context (Outer). */
+	TracyCZoneCtx host_ctx;  /**< Tracy profiling context (Inner Host). */
 } HybridTimer;
 
 /* ========================================================================= */

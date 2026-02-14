@@ -1,18 +1,26 @@
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
 #include "perf_timer.h"
 
 #include "log.h"
+#include "utils.h"
+#include <stdio.h>
+#include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
+#include <tracy/TracyC.h>
 
 // ============================================================================
 // Time conversion constants
 // ============================================================================
 
 enum TimeConversionFactors {
-	NS_PER_MS = 1000000,    // Nanoseconds per millisecond
-	NS_PER_US = 1000,       // Nanoseconds per microsecond
-	NS_PER_S = 1000000000,  // Nanoseconds per second
-	US_PER_S = 1000000,     // Microseconds per second
-	MS_PER_S = 1000         // Milliseconds per second
+	NS_PER_MS = 1000000,     // Nanoseconds per millisecond
+	NS_PER_US = 1000,        // Nanoseconds per microsecond
+	NS_PER_S = 1000000000,   // Nanoseconds per second
+	US_PER_S = 1000000,      // Microseconds per second
+	MS_PER_S = 1000,         // Milliseconds per second
+	LABEL_BUFFER_SIZE = 128  // Buffer size for Tracy labels
 };
 
 static const double NS_TO_MS = 1.0 / (double)NS_PER_MS;
@@ -180,11 +188,40 @@ void gpu_timer_cleanup(GPUTimer* timer)
 // Hybrid Timer Implementation
 // ============================================================================
 
+// Source location statique pour les tâches hybrides afin d'éviter la double
+// barre dans Tracy (on laisse 'function' à NULL pour n'afficher que le label)
+static const struct ___tracy_source_location_data HYBRID_SRCLOC = {
+    .name = "Hybrid Perf",
+    .function = NULL,
+    .file = __FILE__,
+    .line = __LINE__,
+    .color = 0};
+
+static const struct ___tracy_source_location_data HOST_SRCLOC = {
+    .name = "Host (CPU)",
+    .function = NULL,
+    .file = __FILE__,
+    .line = __LINE__,
+    .color = 0xAA6666};  // Rougeâtre pour le travail CPU
+
+static const struct ___tracy_source_location_data SYNC_SRCLOC = {
+    .name = "Sync (GPU Wait)",
+    .function = NULL,
+    .file = __FILE__,
+    .line = __LINE__,
+    .color = 0x66AA66};  // Verdâtre pour l'attente GPU
+
 HybridTimer perf_hybrid_start(void)
 {
 	HybridTimer timer_struct;
 	perf_timer_start(&timer_struct.cpu);
 	gpu_timer_start(&timer_struct.gpu);
+
+	TracyCFiberEnter("Hybrid Perf");
+	timer_struct.tracy_ctx = ___tracy_emit_zone_begin(&HYBRID_SRCLOC, 1);
+	timer_struct.host_ctx = ___tracy_emit_zone_begin(&HOST_SRCLOC, 1);
+	TracyCFiberLeave;
+
 	return timer_struct;
 }
 
@@ -194,12 +231,35 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label)
 		return;
 	}
 
+	TracyCFiberEnter("Hybrid Perf");
+	// Fin de la partie "Host" (préparation des commandes)
+	TracyCZoneEnd(timer->host_ctx);
+
+	// Début de l'attente GPU (synchronisation)
+	TracyCZoneCtx sync_ctx = ___tracy_emit_zone_begin(&SYNC_SRCLOC, 1);
+
 	double cpu_ms = perf_timer_elapsed_ms(&timer->cpu);
-	double gpu_ms = gpu_timer_elapsed_ms(&timer->gpu, 1);
+	double gpu_ms = gpu_timer_elapsed_ms(&timer->gpu, 1);  // Bloque ici
+
+	// Fin de l'attente
+	TracyCZoneEnd(sync_ctx);
 
 	// Utilisation de %g ou plus de précision pour les petites valeurs
 	LOG_INFO("perf.hybrid", "%s: [CPU: %.2f ms] [GPU: %.3f ms]", label,
 	         cpu_ms, gpu_ms);
+
+	if (label) {
+		TracyCZoneName(timer->tracy_ctx, label, strlen(label));
+	}
+
+	char buf[LABEL_BUFFER_SIZE];
+	if (safe_snprintf(buf, sizeof(buf), "CPU: %.2fms | GPU: %.3fms", cpu_ms,
+	                  gpu_ms)) {
+		TracyCZoneText(timer->tracy_ctx, buf, strlen(buf));
+	}
+
+	TracyCZoneEnd(timer->tracy_ctx);
+	TracyCFiberLeave;
 
 	gpu_timer_cleanup(&timer->gpu);
 }

@@ -8,6 +8,9 @@
 #include <stb_image.h>
 #include <stdbool.h>
 #include <string.h>
+#ifdef TRACY_ENABLE
+#include "tracy/TracyC.h"
+#endif
 
 /* Single slot for now, as we only load one environment map at a time */
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
@@ -23,13 +26,102 @@ static volatile bool running = false;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static volatile bool has_pending_work = false;
 
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static PerfTimer loader_sys_timer;
+
+#ifdef TRACY_ENABLE
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static TracyCZoneCtx active_state_ctx;
+#define ASYNC_STATE_COUNT 5
+
+static void transition_tracy_state(AsyncState new_state)
+{
+	const int active = 1;
+	const uint32_t color_idle = 0x888888;
+	const uint32_t color_pending = 0xAAAA00;
+	const uint32_t color_loading = 0x00AA00;
+	const uint32_t color_ready = 0x00FFAA;
+	const uint32_t color_failed = 0xFF0000;
+
+	TracyCFiberEnter("Async Status");
+	if (active_state_ctx.id != 0) {
+		TracyCZoneEnd(active_state_ctx);
+		active_state_ctx.id = 0;
+	}
+
+	switch (new_state) {
+		case ASYNC_IDLE: {
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async IDLE", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_idle};
+			active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
+		case ASYNC_PENDING: {
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async PENDING", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_pending};
+			active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
+		case ASYNC_LOADING: {
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async LOADING", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_loading};
+			active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
+		case ASYNC_READY: {
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async READY", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_ready};
+			active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
+		case ASYNC_FAILED: {
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async FAILED", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_failed};
+			active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
+	}
+	TracyCFiberLeave;
+}
+
+static void cleanup_tracy_states(void)
+{
+	if (active_state_ctx.id != 0) {
+		TracyCFiberEnter("Async Status");
+		TracyCZoneEnd(active_state_ctx);
+		active_state_ctx.id = 0;
+		TracyCFiberLeave;
+	}
+}
+#else
+#define transition_tracy_state(s) ((void)0)
+#define cleanup_tracy_states() ((void)0)
+#endif
+
 static void* async_worker_func(void* arg)
 {
 	(void)arg; /* Unused */
 
+#ifdef TRACY_ENABLE
+	TracyCSetThreadName("Async Loader");
+#endif
+
 	pthread_mutex_lock(&request_mutex);
 	while (running) {
 		while (running && !has_pending_work) {
+#ifdef TRACY_ENABLE
+			TracyCMessageL("Waiting for work...");
+#endif
 			pthread_cond_wait(&request_cond, &request_mutex);
 		}
 
@@ -45,6 +137,19 @@ static void* async_worker_func(void* arg)
 			(void)safe_snprintf(path_to_load, sizeof(path_to_load),
 			                    "%s", current_request.path);
 			current_request.state = ASYNC_LOADING;
+			transition_tracy_state(ASYNC_LOADING);
+
+#ifdef TRACY_ENABLE
+			double now = perf_timer_elapsed_ms(&loader_sys_timer);
+			double queue_time =
+			    now - current_request.submission_time;
+			const size_t tracy_msg_size = 128;
+			char msg[tracy_msg_size];
+			(void)safe_snprintf(msg, sizeof(msg),
+			                    "Queuing delay: %.2f ms",
+			                    queue_time);
+			TracyCMessage(msg, strlen(msg));
+#endif
 			work_available = true;
 		}
 
@@ -53,6 +158,10 @@ static void* async_worker_func(void* arg)
 
 		/* 2. Process work (Disk I/O + Decompression) */
 		if (work_available) {
+#ifdef TRACY_ENABLE
+			TracyCZoneN(work_ctx, "I/O & Docoding", 1);
+			TracyCMessage(path_to_load, strlen(path_to_load));
+#endif
 			int width = 0;
 			int height = 0;
 			int channels = 0;
@@ -63,6 +172,9 @@ static void* async_worker_func(void* arg)
 			float* data = texture_load_pixels(path_to_load, &width,
 			                                  &height, &channels);
 			double load_ms = perf_timer_elapsed_ms(&disk_timer);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(work_ctx);
+#endif
 
 			pthread_mutex_lock(&request_mutex);
 			if (data) {
@@ -71,11 +183,13 @@ static void* async_worker_func(void* arg)
 				current_request.height = height;
 				current_request.channels = channels;
 				current_request.state = ASYNC_READY;
+				transition_tracy_state(ASYNC_READY);
 				LOG_INFO("suckless-ogl.async",
 				         "Finished loading: %s (%.2f ms)",
 				         path_to_load, load_ms);
 			} else {
 				current_request.state = ASYNC_FAILED;
+				transition_tracy_state(ASYNC_FAILED);
 				LOG_ERROR("suckless-ogl.async",
 				          "Failed loading: %s", path_to_load);
 			}
@@ -93,8 +207,8 @@ static void* async_worker_func(void* arg)
 
 void async_loader_init(void)
 {
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)memset(&current_request, 0, sizeof(AsyncRequest));
+	(void)safe_memset(&current_request, sizeof(AsyncRequest), 0,
+	                  sizeof(AsyncRequest));
 	current_request.state = ASYNC_IDLE;
 
 	if (pthread_mutex_init(&request_mutex, NULL) != 0) {
@@ -109,6 +223,9 @@ void async_loader_init(void)
 	}
 
 	running = true;
+	perf_timer_start(&loader_sys_timer);
+	transition_tracy_state(ASYNC_IDLE);
+
 	if (pthread_create(&worker_thread, NULL, async_worker_func, NULL) !=
 	    0) {
 		LOG_ERROR("suckless-ogl.async", "Thread creation failed");
@@ -141,12 +258,20 @@ void async_loader_shutdown(void)
 
 	pthread_cond_destroy(&request_cond);
 	pthread_mutex_destroy(&request_mutex);
+	cleanup_tracy_states();
 	LOG_INFO("suckless-ogl.async", "Async loader shutdown.");
 }
 
 bool async_loader_request(const char* path)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(req_ctx, "async_loader_request", 1);
+	TracyCMessage(path, path ? strlen(path) : 0);
+#endif
 	if (!path) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(req_ctx);
+#endif
 		return false;
 	}
 
@@ -168,8 +293,12 @@ bool async_loader_request(const char* path)
 			LOG_ERROR("suckless-ogl.async", "Path too long: %s",
 			          path);
 			current_request.state = ASYNC_IDLE;
+			transition_tracy_state(ASYNC_IDLE);
 		} else {
 			current_request.state = ASYNC_PENDING;
+			current_request.submission_time =
+			    perf_timer_elapsed_ms(&loader_sys_timer);
+			transition_tracy_state(ASYNC_PENDING);
 			has_pending_work = true;
 			pthread_cond_signal(&request_cond);
 			accepted = true;
@@ -177,12 +306,21 @@ bool async_loader_request(const char* path)
 	}
 
 	pthread_mutex_unlock(&request_mutex);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(req_ctx);
+#endif
 	return accepted;
 }
 
 bool async_loader_poll(AsyncRequest* out_req)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(poll_ctx, "async_loader_poll", 1);
+#endif
 	if (!out_req) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(poll_ctx);
+#endif
 		return false;
 	}
 
@@ -195,6 +333,7 @@ bool async_loader_poll(AsyncRequest* out_req)
 
 		/* Clear internal slot */
 		current_request.state = ASYNC_IDLE;
+		transition_tracy_state(ASYNC_IDLE);
 		current_request.data = NULL; /* Ownership transferred */
 		result = true;
 	} else if (current_request.state == ASYNC_FAILED) {
@@ -202,8 +341,12 @@ bool async_loader_poll(AsyncRequest* out_req)
 		LOG_ERROR("suckless-ogl.async", "Async load failed for: %s",
 		          current_request.path);
 		current_request.state = ASYNC_IDLE;
+		transition_tracy_state(ASYNC_IDLE);
 	}
 
 	pthread_mutex_unlock(&request_mutex);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(poll_ctx);
+#endif
 	return result;
 }

@@ -4,11 +4,20 @@
 #include "cli.h"
 #include "gl_common.h"
 #include "log.h"
+#include "mem.h"
+#include <cJSON.h>
 #include <stdlib.h>
 #include <string.h>
 
 int main(int argc, char* argv[])
 {
+#ifdef TRACY_ENABLE
+	cJSON_Hooks hooks;
+	hooks.malloc_fn = tracy_malloc;
+	hooks.free_fn = tracy_free;
+	cJSON_InitHooks(&hooks);
+#endif
+
 	CliAction action = cli_handle_args(argc, argv);
 	if (action == CLI_ACTION_EXIT_SUCCESS) {
 		return EXIT_SUCCESS;

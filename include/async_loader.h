@@ -37,6 +37,7 @@ typedef struct AsyncRequest {
 	int width;    /**< Image width in pixels. */
 	int height;   /**< Image height in pixels. */
 	int channels; /**< Number of color channels (e.g., 3 for RGB). */
+	double submission_time; /**< Time when request was submitted. */
 	volatile AsyncState
 	    state; /**< Current state (atomic/volatile for thread-safety). */
 } AsyncRequest;
