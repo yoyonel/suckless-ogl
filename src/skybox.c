@@ -7,6 +7,11 @@
 
 void skybox_init(Skybox* skybox, Shader* shader)
 {
+	/* ASSUMPTION: 'skybox' must be zero-initialized or valid */
+	if (skybox->vao != 0 || skybox->vbo != 0) {
+		skybox_cleanup(skybox);
+	}
+
 	/* Cache uniform locations using robust shader API */
 	skybox->u_inv_view_proj =
 	    shader_get_uniform_location(shader, "m_inv_view_proj");
@@ -69,6 +74,12 @@ void skybox_render(Skybox* skybox, Shader* shader, GLuint env_map,
 
 void skybox_cleanup(Skybox* skybox)
 {
-	glDeleteVertexArrays(1, &skybox->vao);
-	glDeleteBuffers(1, &skybox->vbo);
+	if (skybox->vao) {
+		glDeleteVertexArrays(1, &skybox->vao);
+		skybox->vao = 0;
+	}
+	if (skybox->vbo) {
+		glDeleteBuffers(1, &skybox->vbo);
+		skybox->vbo = 0;
+	}
 }

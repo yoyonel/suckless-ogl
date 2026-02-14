@@ -254,6 +254,11 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 		return 0;
 	}
 
+	/* ASSUMPTION: 'ui_context' must be zero-initialized or valid */
+	if (ui_context->texture != 0 || ui_context->vao != 0) {
+		ui_destroy(ui_context);
+	}
+
 	// Initialize to safe defaults (manual zeroing to avoid memset warning)
 	ui_context->texture = 0;
 	ui_context->shader = NULL;

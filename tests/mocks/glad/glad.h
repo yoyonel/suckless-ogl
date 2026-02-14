@@ -49,6 +49,9 @@ typedef long GLintptr;
 #define GL_REPEAT 0x2901
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_NO_ERROR 0
+#define GL_LEQUAL 0x0203
+#define GL_LESS 0x0201
+#define GL_TEXTURE0 0x84C0
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -116,6 +119,9 @@ void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
                            GLsizei instancecount);
 void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
                              const void* indices, GLsizei instancecount);
+void glDrawArrays(GLenum mode, GLint first, GLsizei count);
+void glDepthFunc(GLenum func);
+void glActiveTexture(GLenum texture);
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);

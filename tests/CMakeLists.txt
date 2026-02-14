@@ -45,6 +45,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_integrity_leaks\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -208,6 +209,29 @@ target_link_libraries(test_billboard_overflow PRIVATE cglm)
 
 add_test(NAME test_billboard_overflow
          COMMAND test_billboard_overflow)
+
+# =============================================================================
+# TEST INTEGRITY LEAKS (MOCKED)
+# =============================================================================
+add_executable(test_integrity_leaks
+    test_integrity_leaks.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+)
+
+target_include_directories(test_integrity_leaks PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_integrity_leaks PRIVATE cglm m)
+
+add_test(NAME test_integrity_leaks
+         COMMAND test_integrity_leaks)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION
