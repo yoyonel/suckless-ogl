@@ -23,7 +23,6 @@ Parameters are stored in the `PostProcess` structure:
         *   `min_luminance` / `max_luminance`: Clamping range for scene luminance.
         *   `speed_up` / `speed_down`: Adaptation speed (eye opens faster than it closes).
         *   `key_value`: The target middle grey value (Exposure anchor).
-    *   Control: `postprocess_set_auto_exposure()`.
 
 ### GPU Side (Uniforms & Textures)
 *   **Manual**: Transmitted via the `exposure.exposure` uniform.
