@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static GLFWwindow* window = NULL;
 
@@ -87,8 +88,19 @@ void test_texture_integration_success(void)
 	TEST_ASSERT_NOT_NULL(half_data);
 	convert_float_to_half_simd(data, half_data, pixel_count);
 
-	GLuint tex =
-	    texture_upload_hdr(half_data, width, height, TEX_LEVEL_0, 0);
+	// Create PBO, allocate, map, and copy data (matching async_loader flow)
+	GLuint pbo;
+	glGenBuffers(1, &pbo);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+	GLsizeiptr pbo_size = (GLsizeiptr)(pixel_count * sizeof(uint16_t));
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, pbo_size, NULL, GL_STREAM_DRAW);
+	void* mapped = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+	TEST_ASSERT_NOT_NULL(mapped);
+	memcpy(mapped, half_data, (size_t)pbo_size);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, width, height, 0);
+	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
 
@@ -117,8 +129,19 @@ void test_texture_upload_hdr_properties(void)
 	TEST_ASSERT_NOT_NULL(half_data);
 	convert_float_to_half_simd(data, half_data, pixel_count);
 
-	GLuint tex =
-	    texture_upload_hdr(half_data, width, height, TEX_LEVEL_0, 0);
+	// Create PBO, allocate, map, and copy data (matching async_loader flow)
+	GLuint pbo;
+	glGenBuffers(1, &pbo);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+	GLsizeiptr pbo_size = (GLsizeiptr)(pixel_count * sizeof(uint16_t));
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, pbo_size, NULL, GL_STREAM_DRAW);
+	void* mapped = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+	TEST_ASSERT_NOT_NULL(mapped);
+	memcpy(mapped, half_data, (size_t)pbo_size);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, width, height, 0);
+	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
 	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);

@@ -44,10 +44,12 @@ int stbi_info_from_file(FILE* f, int* x, int* y, int* comp)
 	return 1; /* Success */
 }
 
-float* stbi_loadf_from_file(FILE* f, int* x, int* y, int* channels_in_file,
-                            int desired_channels)
+float* stbi_loadf_from_memory(const unsigned char* buffer, int len, int* x,
+                              int* y, int* channels_in_file,
+                              int desired_channels)
 {
-	(void)f;
+	(void)buffer;
+	(void)len;
 	(void)channels_in_file;
 	(void)desired_channels;
 
@@ -73,6 +75,14 @@ float* stbi_loadf_from_file(FILE* f, int* x, int* y, int* channels_in_file,
 	/* Allocate dummy data */
 	float* data = (float*)malloc(sizeof(float) * 4);
 	return data;
+}
+
+float* stbi_loadf_from_file(FILE* f, int* x, int* y, int* channels_in_file,
+                            int desired_channels)
+{
+	(void)f;
+	return stbi_loadf_from_memory(NULL, 0, x, y, channels_in_file,
+	                              desired_channels);
 }
 
 void stbi_image_free(void* retval_from_stbi_load)

@@ -130,6 +130,9 @@ add_executable(test_shader_path_security_standalone
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
+if(ENABLE_TRACY)
+    target_sources(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
 
 target_include_directories(test_shader_path_security_standalone PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
@@ -162,6 +165,9 @@ add_executable(test_texture_toctou
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
     ${CMAKE_SOURCE_DIR}/src/simd_utils.c
 )
+if(ENABLE_TRACY)
+    target_sources(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
 target_include_directories(test_texture_toctou PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
@@ -185,6 +191,9 @@ add_executable(test_billboard_cleanup
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
+if(ENABLE_TRACY)
+    target_sources(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
 
 target_include_directories(test_billboard_cleanup PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
@@ -211,6 +220,9 @@ add_executable(test_billboard_overflow
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
 )
+if(ENABLE_TRACY)
+    target_sources(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
 
 target_include_directories(test_billboard_overflow PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks

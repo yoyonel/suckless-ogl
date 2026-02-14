@@ -7,9 +7,13 @@
 #ifdef TRACY_ENABLE
 #include "tracy/TracyC.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
 static inline void* tracy_malloc(size_t size)
 {
-	void* ptr = malloc(size);
+	void* ptr = NULL;
+	ptr = malloc(size);
 	if (ptr) {
 		TracyCAlloc(ptr, size);
 	}
@@ -18,7 +22,8 @@ static inline void* tracy_malloc(size_t size)
 
 static inline void* tracy_calloc(size_t num, size_t size)
 {
-	void* ptr = calloc(num, size);
+	void* ptr = NULL;
+	ptr = calloc(num, size);
 	if (ptr) {
 		TracyCAlloc(ptr, num * size);
 	}
@@ -30,7 +35,8 @@ static inline void* tracy_realloc(void* ptr, size_t size)
 	if (ptr) {
 		TracyCFree(ptr);
 	}
-	void* new_ptr = realloc(ptr, size);
+	void* new_ptr = NULL;
+	new_ptr = realloc(ptr, size);
 	if (new_ptr) {
 		TracyCAlloc(new_ptr, size);
 	}
@@ -47,7 +53,8 @@ static inline void tracy_free(void* ptr)
 
 static inline char* tracy_strdup(const char* str)
 {
-	char* ptr = strdup(str);
+	char* ptr = NULL;
+	ptr = strdup(str);
 	if (ptr) {
 		TracyCAlloc(ptr, strlen(ptr) + 1);
 	}
@@ -66,7 +73,8 @@ static inline int tracy_posix_memalign(void** memptr, size_t alignment,
 
 static inline void* tracy_aligned_alloc(size_t alignment, size_t size)
 {
-	void* ptr = aligned_alloc(alignment, size);
+	void* ptr = NULL;
+	ptr = aligned_alloc(alignment, size);
 	if (ptr) {
 		TracyCAlloc(ptr, size);
 	}
@@ -80,6 +88,8 @@ static inline void* tracy_aligned_alloc(size_t alignment, size_t size)
 #define strdup(x) tracy_strdup(x)
 #define posix_memalign(x, y, z) tracy_posix_memalign(x, y, z)
 #define aligned_alloc(x, y) tracy_aligned_alloc(x, y)
+
+#pragma GCC diagnostic pop
 
 #endif  // TRACY_ENABLE
 
