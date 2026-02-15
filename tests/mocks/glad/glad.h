@@ -148,8 +148,14 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
 void glDeleteTextures(GLsizei n, const GLuint* textures);
-void glDebugMessageCallback(void (*callback)(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam), const void* userParam);
-void glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint* ids, GLboolean enabled);
+void glDebugMessageCallback(void (*callback)(GLenum source, GLenum type,
+                                             GLuint id, GLenum severity,
+                                             GLsizei length,
+                                             const GLchar* message,
+                                             const void* userParam),
+                            const void* userParam);
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity,
+                           GLsizei count, const GLuint* ids, GLboolean enabled);
 
 void glGenTextures(GLsizei n, GLuint* textures);
 void glBindTexture(GLenum target, GLuint texture);
@@ -198,7 +204,8 @@ void glDrawArrays(GLenum mode, GLint first, GLsizei count);
 GLenum glCheckFramebufferStatus(GLenum target);
 const GLubyte* glGetString(GLenum name);
 void glDepthFunc(GLenum func);
-void glObjectLabel(GLenum identifier, GLuint name, GLsizei length, const GLchar* label);
+void glObjectLabel(GLenum identifier, GLuint name, GLsizei length,
+                   const GLchar* label);
 void glGetIntegerv(GLenum pname, GLint* data);
 void glPolygonMode(GLenum face, GLenum mode);
 void glBlendFunc(GLenum sfactor, GLenum dfactor);

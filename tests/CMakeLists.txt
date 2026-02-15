@@ -33,6 +33,16 @@ target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
 target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
+# Force GLFW include for FetchContent usage if needed
+if(TARGET glfw)
+    target_include_directories(app_testlib PUBLIC ${glfw_SOURCE_DIR}/include)
+else()
+    # If glfw target is not defined (e.g. system provided or separate fetch), try to find where it is
+    if(EXISTS "${CMAKE_SOURCE_DIR}/build/_deps/glfw-src/include")
+        target_include_directories(app_testlib PUBLIC ${CMAKE_SOURCE_DIR}/build/_deps/glfw-src/include)
+    endif()
+endif()
+
 # =============================================================================
 # AUTO-DÉCOUVERTE DES TESTS
 # =============================================================================
@@ -80,7 +90,13 @@ foreach(test_file ${TEST_SOURCES})
 
     # Créer l'exécutable
     add_executable(${test_name} ${test_file})
-    target_link_libraries(${test_name} PRIVATE app_testlib)
+
+    # Check if test uses GLFW and link accordingly
+    if(${test_name} IN_LIST OPENGL_TESTS)
+        target_link_libraries(${test_name} PRIVATE app_testlib ${GLFW3_LIBRARIES})
+    else()
+        target_link_libraries(${test_name} PRIVATE app_testlib)
+    endif()
 
     # Injecter les variables pour le test de sécurité du log
     if(${test_name} STREQUAL "test_log_security")
