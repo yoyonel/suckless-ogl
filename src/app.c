@@ -39,6 +39,11 @@
 
 int app_init(App* app, int width, int height, const char* title)
 {
+	/* Cleanup if re-initializing */
+	if (app->window != NULL) {
+		app_cleanup(app);
+	}
+
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)memset(
 	    app, 0,

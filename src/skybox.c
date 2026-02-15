@@ -7,6 +7,11 @@
 
 void skybox_init(Skybox* skybox, Shader* shader)
 {
+	/* Cleanup existing resources if re-initializing */
+	if (skybox->vao != 0) {
+		skybox_cleanup(skybox);
+	}
+
 	/* Cache uniform locations using robust shader API */
 	skybox->u_inv_view_proj =
 	    shader_get_uniform_location(shader, "m_inv_view_proj");

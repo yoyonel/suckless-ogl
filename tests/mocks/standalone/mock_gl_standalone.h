@@ -2,20 +2,8 @@
 #define MOCK_GL_STANDALONE_H
 
 #include <stddef.h>
-
-/* Define types compatible with GLAD/OpenGL */
-typedef unsigned int GLuint;
-typedef unsigned int GLenum;
-typedef int GLint;
-typedef int GLsizei;
-typedef char GLchar;
-typedef unsigned char GLboolean;
-typedef float GLfloat;
-typedef long GLsizeiptr;
-typedef long GLintptr;
-
-#define GL_FALSE 0
-#define GL_TRUE 1
+#include <stdint.h>
+#include "glad/glad.h"
 
 /* Defaults */
 #define DEFAULT_BUFFER_ID 123
@@ -53,6 +41,16 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
 
+/* Additional APIs for tests */
+void glTexImage2D(GLenum target, GLint level, GLint internalformat,
+                  GLsizei width, GLsizei height, GLint border, GLenum format,
+                  GLenum type, const void* pixels);
+void glActiveTexture(GLenum texture);
+void glDrawArrays(GLenum mode, GLint first, GLsizei count);
+GLenum glCheckFramebufferStatus(GLenum target);
+const GLubyte* glGetString(GLenum name);
+void glDepthFunc(GLenum func);
+
 /* Control API */
 void mock_gl_reset_calls(void);
 GLuint mock_gl_get_generated_buffer_id(void);
@@ -63,5 +61,14 @@ int mock_gl_get_buffer_data_call_count(void);
 int mock_gl_get_buffer_sub_data_call_count(void);
 GLsizeiptr mock_gl_get_last_buffer_data_size(void);
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void);
+int mock_gl_get_delete_texture_call_count(void);
+
+/* Query API */
+void glGenQueries(GLsizei n, GLuint* ids);
+void glDeleteQueries(GLsizei n, const GLuint* ids);
+void glQueryCounter(GLuint id, GLenum target);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
+
+int mock_gl_get_delete_query_call_count(void);
 
 #endif /* MOCK_GL_STANDALONE_H */

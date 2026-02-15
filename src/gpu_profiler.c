@@ -17,6 +17,12 @@ void gpu_profiler_init(GPUProfiler* profiler)
 		return;
 	}
 
+	/* Check for potential double-initialization and clean up existing
+	 * resources */
+	if (profiler->buffers[0].queries[0].query_start != 0) {
+		gpu_profiler_cleanup(profiler);
+	}
+
 	/* 1. Safe Zero Initialization (replaces unsafe memset) */
 	*profiler = (GPUProfiler){0};
 

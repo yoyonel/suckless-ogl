@@ -10,6 +10,8 @@ static int g_buffer_data_call_count = 0;
 static int g_buffer_sub_data_call_count = 0;
 static GLsizeiptr g_last_buffer_data_size = 0;
 static GLsizeiptr g_last_buffer_sub_data_size = 0;
+static int g_delete_query_call_count = 0;
+static int g_delete_texture_call_count = 0;
 
 void mock_gl_reset_calls(void)
 {
@@ -20,6 +22,8 @@ void mock_gl_reset_calls(void)
 	g_buffer_sub_data_call_count = 0;
 	g_last_buffer_data_size = 0;
 	g_last_buffer_sub_data_size = 0;
+	g_delete_query_call_count = 0;
+	g_delete_texture_call_count = 0;
 }
 
 GLuint mock_gl_get_generated_buffer_id(void)
@@ -60,6 +64,16 @@ GLsizeiptr mock_gl_get_last_buffer_data_size(void)
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
 {
 	return g_last_buffer_sub_data_size;
+}
+
+int mock_gl_get_delete_query_call_count(void)
+{
+	return g_delete_query_call_count;
+}
+
+int mock_gl_get_delete_texture_call_count(void)
+{
+	return g_delete_texture_call_count;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -247,13 +261,9 @@ GLenum glGetError(void)
 void glDeleteTextures(GLsizei n, const GLuint* textures)
 {
 	(void)n;
-	(void)textures;
-}
-
-void glGetIntegerv(GLenum pname, GLint* data)
-{
-	(void)pname;
-	(void)data;
+	if (textures) {
+		g_delete_texture_call_count++;
+	}
 }
 
 /* -------------------------------------------------------------------------- */
@@ -396,4 +406,99 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 }
 void glPopDebugGroup(void)
 {
+}
+
+void glGenQueries(GLsizei n, GLuint* ids)
+{
+	(void)n;
+	if (ids) {
+		*ids = 999;
+	}
+}
+
+void glDeleteQueries(GLsizei n, const GLuint* ids)
+{
+	(void)n;
+	if (ids) {
+		g_delete_query_call_count++;
+	}
+}
+
+void glQueryCounter(GLuint id, GLenum target)
+{
+	(void)id;
+	(void)target;
+}
+
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
+{
+	(void)id;
+	(void)pname;
+	if (params) {
+		*params = 100;
+	}
+}
+
+void glTexImage2D(GLenum target, GLint level, GLint internalformat,
+                  GLsizei width, GLsizei height, GLint border, GLenum format,
+                  GLenum type, const void* pixels)
+{
+	(void)target;
+	(void)level;
+	(void)internalformat;
+	(void)width;
+	(void)height;
+	(void)border;
+	(void)format;
+	(void)type;
+	(void)pixels;
+}
+
+void glActiveTexture(GLenum texture)
+{
+	(void)texture;
+}
+
+void glDrawArrays(GLenum mode, GLint first, GLsizei count)
+{
+	(void)mode;
+	(void)first;
+	(void)count;
+}
+
+GLenum glCheckFramebufferStatus(GLenum target)
+{
+	(void)target;
+	return GL_FRAMEBUFFER_COMPLETE;
+}
+
+const GLubyte* glGetString(GLenum name)
+{
+	(void)name;
+	return (const GLubyte*)"Mock GL";
+}
+
+void glDepthFunc(GLenum func)
+{
+	(void)func;
+}
+
+void glGetIntegerv(GLenum pname, GLint* data)
+{
+	(void)pname;
+	if (data) {
+		*data = 0;
+	}
+}
+
+void glPolygonMode(GLenum face, GLenum mode)
+{
+	(void)face;
+	(void)mode;
+}
+
+void glBlendFunc(GLenum sfactor, GLenum dfactor)
+{
+	(void)sfactor;
+	(void)dfactor;
 }

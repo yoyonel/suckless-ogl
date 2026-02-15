@@ -59,7 +59,7 @@ void tearDown(void)
  */
 void test_gpu_profiler_init(void)
 {
-	GPUProfiler profiler;
+	GPUProfiler profiler = {0};
 	gpu_profiler_init(&profiler);
 
 	TEST_ASSERT_EQUAL(0, profiler.stage_count);
@@ -77,7 +77,7 @@ void test_gpu_profiler_init(void)
  */
 void test_gpu_profiler_double_buffering_swap(void)
 {
-	GPUProfiler profiler;
+	GPUProfiler profiler = {0};
 	gpu_profiler_init(&profiler);
 
 	// Initial State: Write 0, Read 1
@@ -105,7 +105,7 @@ void test_gpu_profiler_double_buffering_swap(void)
  */
 void test_gpu_profiler_stage_registration(void)
 {
-	GPUProfiler profiler;
+	GPUProfiler profiler = {0};
 	gpu_profiler_init(&profiler);
 	gpu_profiler_set_enabled(&profiler, true);
 
@@ -142,7 +142,7 @@ void test_gpu_profiler_stage_registration(void)
  */
 void test_gpu_profiler_result_retrieval(void)
 {
-	GPUProfiler profiler;
+	GPUProfiler profiler = {0};
 	gpu_profiler_init(&profiler);
 
 	// On boucle suffisamment pour amorcer le buffer circulaire (Ping-Pong)
