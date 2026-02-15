@@ -14,7 +14,13 @@ else:
 
 src_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIRS = [os.path.join(src_root, "src")]
-CACHE_DIR = os.path.join(src_root, ".lint_cache")
+
+# Derive cache directory from build directory to allow multiple build configs
+# e.g., build -> .lint_cache_build
+#       .lint_full -> .lint_cache_.lint_full
+build_dir_name = os.path.basename(os.path.normpath(BUILD_DIR))
+CACHE_DIR = os.path.join(src_root, f".lint_cache_{build_dir_name}")
+
 COMPILE_COMMANDS = os.path.join(BUILD_DIR, "compile_commands.json")
 CLANG_TIDY_CONFIG = os.path.join(src_root, ".clang-tidy")
 

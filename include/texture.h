@@ -12,25 +12,6 @@
 enum { MAX_TEXTURE_DIMENSION = 8192 };
 
 /**
- * @brief Uploads an HDR texture to the GPU using a PBO for asynchronous
- * transfer.
- *
- * This function takes pre-converted half-float data (uint16_t*) and uploads it
- * to a GL_RGBA16F texture. It uses a PBO to ensure the transfer is
- * non-blocking on the CPU.
- *
- * @param half_data Pointer to the source data (Float16/Half-Float).
- * @param width Width of the texture.
- * @param height Height of the texture.
- * @param reuse_tex_id Optional ID of an existing texture to recycle (0 to
- * create new).
- * @param pbo_id ID of the PBO to use for upload (0 to use client memory).
- * @return GLuint ID of the uploaded texture.
- */
-GLuint texture_upload_hdr(uint16_t* half_data, int width, int height,
-                          GLuint reuse_tex_id, GLuint pbo_id);
-
-/**
  * @brief Ensures a PBO is allocated with sufficient size.
  *
  * Checks if internal *current_size is >= required_size. If not, reallocates

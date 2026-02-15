@@ -104,7 +104,8 @@ docs-clean:
 
 clean-all: docs-clean
 	@echo "Removing all build directories..."
-	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) $(BUILD_ASAN_DIR) build-ssbo
+	@rm -rf $(BUILD_DIR) $(BUILD_COV_DIR) $(BUILD_PROF_DIR) $(BUILD_ASAN_DIR) build-ssbo build-tracy
+	@rm -f build_*.log
 
 rebuild: clean-all all
 
@@ -139,43 +140,48 @@ CGLM_INC := $(shell [ -d deps/cglm ] && echo deps/cglm/include || echo build/_de
 GLAD_INC := build/_deps/glad-build/include
 CJSON_INC := $(shell [ -d deps/cjson ] && echo deps/cjson || echo build/_deps/cjson-src)
 
-NPROCS := $(shell nproc 2>/dev/null || echo 1)
 # Static analysis wrapper (handle cltcache if present)
 CLT_CMD := $(shell $(DISTROBOX) command -v cltcache 2>/dev/null)
 CLANG_TIDY := $(if $(CLT_CMD),$(CLT_CMD) clang-tidy,clang-tidy)
-
-LINT_CACHE_DIR := .lint_cache
-C_SRCS := $(shell find src -name "*.c")
-LINTED_FILES := $(patsubst %,$(LINT_CACHE_DIR)/%.linted,$(C_SRCS))
-
-# Incremental linting: only run clang-tidy if .c or .clang-tidy changed
-$(LINT_CACHE_DIR)/%.linted: % .clang-tidy $(BUILD_DIR)/compile_commands.json
-	@mkdir -p $(dir $@)
-	@OUT=$$($(DISTROBOX) $(CLANG_TIDY) -p $(BUILD_DIR) --quiet $< 2>&1) || { echo "  LINT $< (FAILED)"; echo "$$OUT"; exit 1; }; \
-	if [ -n "$$OUT" ]; then \
-		echo "  LINT $<"; \
-		echo "$$OUT"; \
-	fi
-	@touch $@
 
 lint-deps: $(BUILD_DIR)/compile_commands.json
 	@echo "Ensuring generated headers are ready..."
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --target glad --parallel $(NPROCS)
 
 lint: lint-deps
-	@echo "Linting C code (Parallelized & Incremental)..."
-	@$(MAKE) -j$(NPROCS) $(LINTED_FILES) --no-print-directory
+	@echo "Linting C code (Incremental)..."
+	@$(DISTROBOX) python3 scripts/lint_incremental.py $(BUILD_DIR)
 	@echo "Linting Python scripts..."
 	@$(TOOL_RUN) ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py || (echo "⚠️  Install ruff: $$CMD install ruff" && exit 1)
 	@echo "✓ All linting passed"
 
 lint-clean:
 	@echo "Cleaning lint cache..."
-	@rm -rf $(LINT_CACHE_DIR)
+	@rm -rf .lint_cache*
 
 # Ensure compile_commands.json is up to date before linting
 $(BUILD_DIR)/compile_commands.json: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) -B $(BUILD_DIR) -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+# Full linting with all features enabled (Tracy, SSBO, etc.)
+LINT_FULL_DIR := .lint_full
+LINT_FULL_JSON := $(LINT_FULL_DIR)/compile_commands.json
+
+$(LINT_FULL_JSON): CMakeLists.txt Makefile
+	@echo "Generating compile_commands.json with all features enabled..."
+	@mkdir -p $(LINT_FULL_DIR)
+	@$(DISTROBOX) $(CMAKE) -B $(LINT_FULL_DIR) \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-DENABLE_TRACY=ON \
+		-DUSE_SSBO_RENDERING=ON \
+		-G "Unix Makefiles" > /dev/null
+
+lint-full: $(LINT_FULL_JSON)
+	@echo "Ensuring generated headers are ready..."
+	@$(DISTROBOX) $(CMAKE) --build $(LINT_FULL_DIR) --target glad --parallel $(shell nproc) > /dev/null
+	@echo "Linting C code (Full Coverage)..."
+	@$(DISTROBOX) python3 scripts/lint_incremental.py $(LINT_FULL_DIR)
+	@echo "✓ Full linting passed"
 
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh
@@ -235,7 +241,7 @@ $(BUILD_COV_DIR):
 
 coverage: $(BUILD_COV_DIR)
 	@echo "Building with coverage instrumentation..."
-	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
+	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
 
 	@echo "Running tests to generate profile data..."
@@ -251,7 +257,7 @@ coverage: $(BUILD_COV_DIR)
 		$(BUILD_COV_DIR)/app \
 		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
 		-output-dir=$(REPORT_DIR) \
-		-ignore-filename-regex="(generated|deps|tests)"
+		-ignore-filename-regex='(tests/|include/|external/|deps/)'
 	@echo "Report generated at: $(REPORT_DIR)/index.html"
 
 	@echo "Coverage Summary:"
@@ -259,7 +265,7 @@ coverage: $(BUILD_COV_DIR)
 		-instr-profile=$(BUILD_COV_DIR)/coverage.profdata \
 		$(BUILD_COV_DIR)/app \
 		$$(find $(BUILD_COV_DIR)/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
-		-ignore-filename-regex="(generated|deps|tests)" | tee $(BUILD_COV_DIR)/coverage_summary.txt
+		-ignore-filename-regex='(tests/|include/|external/|deps/)' | tee $(BUILD_COV_DIR)/coverage_summary.txt
 
 	@echo "Running Python coverage..."
 	@$(TOOL_RUN) pytest .github/workflows/scripts/test_trace_analyze.py --cov=scripts --cov-report=html:$(REPORT_DIR)/python_coverage --cov-report=term || \

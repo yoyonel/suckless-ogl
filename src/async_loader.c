@@ -13,6 +13,8 @@
 #include "tracy/TracyC.h"
 #endif
 
+enum { MSG_BUF_SIZE = 128 };
+
 struct AsyncLoader {
 	AsyncRequest current_request;
 	pthread_mutex_t request_mutex;
@@ -24,7 +26,8 @@ struct AsyncLoader {
 };
 
 #ifdef TRACY_ENABLE
-static TracyCZoneCtx active_state_ctx;
+static TracyCZoneCtx
+    active_state_ctx;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 #define ASYNC_STATE_COUNT 7
 
 static void transition_tracy_state(AsyncState new_state)
@@ -129,7 +132,7 @@ static bool async_load_data(const char* path, float** out_data, int* width,
 	*out_data = texture_load_pixels(path, width, height, channels);
 #ifdef TRACY_ENABLE
 	double load_ms = perf_timer_elapsed_ms(&disk_timer);
-	char msg[64];
+	char msg[MSG_BUF_SIZE];
 	if (safe_snprintf(msg, sizeof(msg), "Load: %.2f ms", load_ms)) {
 		TracyCMessage(msg, strlen(msg));
 	}
@@ -262,7 +265,7 @@ static void* async_worker_func(void* arg)
 			double now = perf_timer_elapsed_ms(&loader->sys_timer);
 			double queue_time =
 			    now - loader->current_request.submission_time;
-			char msg[128];
+			char msg[MSG_BUF_SIZE];
 			if (safe_snprintf(msg, sizeof(msg),
 			                  "Queuing delay: %.2f ms",
 			                  queue_time)) {

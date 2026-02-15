@@ -8,7 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
+#ifdef TRACY_ENABLE
 #include <tracy/TracyC.h>
+#endif
 
 // ============================================================================
 // Time conversion constants
@@ -188,6 +190,7 @@ void gpu_timer_cleanup(GPUTimer* timer)
 // Hybrid Timer Implementation
 // ============================================================================
 
+#ifdef TRACY_ENABLE
 // Source location statique pour les tâches hybrides afin d'éviter la double
 // barre dans Tracy (on laisse 'function' à NULL pour n'afficher que le label)
 static const struct ___tracy_source_location_data HYBRID_SRCLOC = {
@@ -210,6 +213,7 @@ static const struct ___tracy_source_location_data SYNC_SRCLOC = {
     .file = __FILE__,
     .line = __LINE__,
     .color = 0x66AA66};  // Verdâtre pour l'attente GPU
+#endif
 
 HybridTimer perf_hybrid_start(void)
 {
@@ -222,9 +226,6 @@ HybridTimer perf_hybrid_start(void)
 	timer_struct.tracy_ctx = ___tracy_emit_zone_begin(&HYBRID_SRCLOC, 1);
 	timer_struct.host_ctx = ___tracy_emit_zone_begin(&HOST_SRCLOC, 1);
 	TracyCFiberLeave;
-#else
-	memset(&timer_struct.tracy_ctx, 0, sizeof(timer_struct.tracy_ctx));
-	memset(&timer_struct.host_ctx, 0, sizeof(timer_struct.host_ctx));
 #endif
 
 	return timer_struct;

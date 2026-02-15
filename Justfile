@@ -47,11 +47,13 @@ configure:
 
 # Build the project (Debug)
 build:
+    @if [ ! -d {{build_dir}} ]; then just configure; fi
     @{{distrobox}} cmake --build {{build_dir}} --parallel
 
 # Completely remove the build directory
 clean-all:
-    @rm -rf {{build_dir}} build-ssbo build-sync build-small build-docs build-coverage
+    @rm -rf {{build_dir}} build-*
+    @rm -f build_*.log
 
 # Build and run the application (Debug)
 run: build
@@ -167,7 +169,7 @@ test-integration-asan: asan
 # Generate HTML code coverage report (llvm-cov)
 coverage:
     @echo "Building with coverage instrumentation..."
-    @{{distrobox}} cmake -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang
+    @{{distrobox}} cmake -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     @{{distrobox}} cmake --build build-coverage --parallel
     @echo "Running tests to generate profile data..."
     @{{distrobox}} sh -c "LLVM_PROFILE_FILE='{{justfile_directory()}}/build-coverage/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir build-coverage --output-on-failure"
@@ -180,7 +182,13 @@ coverage:
         build-coverage/app \
         $(find build-coverage/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
         -output-dir=build-coverage/coverage_report \
-        -ignore-filename-regex='(tests/|include/|external/)'
+        -ignore-filename-regex='(tests/|include/|external/|deps/)'
+    @echo "Summary Report:"
+    @{{distrobox}} llvm-cov report \
+        -instr-profile=build-coverage/coverage.profdata \
+        build-coverage/app \
+        $(find build-coverage/tests -maxdepth 1 -name "test_*" -type f -executable -printf "-object %p ") \
+        -ignore-filename-regex='(tests/|include/|external/|deps/)'
     @echo "Coverage report generated in build-coverage/coverage_report/index.html"
 
 # Build with AddressSanitizer (ASan)
@@ -252,16 +260,39 @@ docs-verify:
     @echo "Verifying Documentation Quality..."
     @{{py_run}} scripts/verify_docs.py docs site/doxygen/html
 
+# Serve full static site (MkDocs + Doxygen)
+docs-serve:
+    @echo "Serving full static site (MkDocs + Doxygen)..."
+    @echo "Open http://localhost:8000"
+    @{{py_run}} -m http.server -d site 8000
+
 # Format code using clang-format and ruff
 format:
-    @find src include tests -name "*.[ch]" | xargs clang-format -i
+    @echo "Formatting C and Shader files..."
+    @{{distrobox}} sh -c 'find src include tests shaders -name "_deps" -prune -o -name "*.c" -print -o -name "*.h" -print -o -name "*.glsl" -print -o -name "*.vert" -print -o -name "*.frag" -print | xargs -P $(nproc) clang-format -i'
+    @echo "Formatting Python scripts..."
     @{{distrobox}} ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
 # Lint code using clang-tidy and ruff
 lint:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-    @{{distrobox}} run-clang-tidy -p {{build_dir}} -header-filter='.*' -checks='-*,readability-*,bugprone-*,performance-*,portability-*,modernize-*' src/*.c include/*.h tests/*.c
+    @if [ ! -f {{build_dir}}/compile_commands.json ]; then {{distrobox}} cmake -B {{build_dir}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; fi
+    @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py {{build_dir}}
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
+
+# Full linting with all features enabled (Tracy, SSBO, etc.)
+lint-full:
+    @if [ ! -f .lint_full/compile_commands.json ] || [ CMakeLists.txt -nt .lint_full/compile_commands.json ]; then \
+        echo "Generating compile_commands.json with all features enabled..."; \
+        mkdir -p .lint_full; \
+        {{distrobox}} cmake -B .lint_full \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+            -DENABLE_TRACY=ON \
+            -DUSE_SSBO_RENDERING=ON \
+            -G "Unix Makefiles" > /dev/null; \
+    fi
+    @echo "Linting C code (Full Coverage)..."
+    @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py .lint_full
+    @echo "✓ Full linting passed"
 
 # Trace Performance Analysis
 trace-perf:
@@ -270,7 +301,7 @@ trace-perf:
 
 # Clean build directory
 clean:
-    @{{distrobox}} cmake --build {{build_dir}} --target clean
+    @if [ -f {{build_dir}}/Makefile ]; then {{distrobox}} cmake --build {{build_dir}} --target clean; else echo "Build directory not configured, skipping clean."; fi
 
 # =============================================================================
 # Tracy Profiler (v0.13.1)
@@ -297,3 +328,27 @@ run-tracy: build-tracy
 build-tracy:
     @{{distrobox}} cmake -B build-tracy -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
     @{{distrobox}} cmake --build build-tracy --parallel
+
+# Build with Tracy AND AddressSanitizer
+build-tracy-asan:
+    @{{distrobox}} cmake -B build-tracy-asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
+    @{{distrobox}} cmake --build build-tracy-asan --parallel
+
+# Run integration test with Tracy AND ASan
+test-integration-tracy-asan: build-tracy-asan
+    @{{distrobox}} chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} bash scripts/test_integration_generic.sh ./build-tracy-asan/app
+
+# Build with Tracy in Release mode
+build-tracy-release:
+    @{{distrobox}} cmake -B build-tracy-release -DCMAKE_BUILD_TYPE=Release -DENABLE_TRACY=ON
+    @{{distrobox}} cmake --build build-tracy-release --parallel
+
+# Run integration test with Tracy in Release mode
+test-integration-tracy-release: build-tracy-release
+    @{{distrobox}} chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} bash scripts/test_integration_generic.sh ./build-tracy-release/app
+
+# Run application with Tracy enabled in Release mode
+run-tracy-release: build-tracy-release
+    @./build-tracy-release/app

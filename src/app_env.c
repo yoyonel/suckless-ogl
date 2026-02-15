@@ -164,20 +164,8 @@ void app_finalize_environment_load(App* app, AsyncRequest* req)
 	 * async loader
 	 */
 	LOG_INFO("suckless-ogl.app", "Finalizing environment load (GPU)...");
-	GLuint hdr_tex = 0;
-	if (req->half_data) {
-		/* Legacy/Fallback: CPU Buffer -> GPU */
-		hdr_tex =
-		    texture_upload_hdr(req->half_data, req->width, req->height,
-		                       app->recycled_hdr_tex, 0);
-	} else {
-		/* PBO Path: Already in PBO -> GPU */
-		/* We use the PBO ID stored in the request to ensure we use the
-		 * correct one of the double-buffered Pair */
-		hdr_tex = texture_upload_hdr_from_pbo(req->pbo_id, req->width,
-		                                      req->height,
-		                                      app->recycled_hdr_tex);
-	}
+	GLuint hdr_tex = texture_upload_hdr_from_pbo(
+	    req->pbo_id, req->width, req->height, app->recycled_hdr_tex);
 
 	/* If the upload returned a new ID (or the reused one), clear
 	 * the recycled handle from App state so we don't accidentally

@@ -10,19 +10,27 @@ void tracy_log_message(LogLevel level, const char* msg)
 		return;
 	}
 
-	uint32_t color = 0xFFFFFF;  // Default Info (White)
+	enum {
+		COLOR_WHITE = 0xFFFFFF,
+		COLOR_RED = 0xFF0000,
+		COLOR_LIGHT_RED = 0xFF5555,
+		COLOR_LIGHT_YELLOW = 0xFFFF55,
+		COLOR_LIGHT_GREY = 0xAAAAAA
+	};
+
+	uint32_t color = COLOR_WHITE;
 	switch (level) {
 		case LOG_LEVEL_CRITICAL:
-			color = 0xFF0000;
+			color = COLOR_RED;
 			break;
 		case LOG_LEVEL_ERROR:
-			color = 0xFF5555;
+			color = COLOR_LIGHT_RED;
 			break;
 		case LOG_LEVEL_WARNING:
-			color = 0xFFFF55;
+			color = COLOR_LIGHT_YELLOW;
 			break;
 		case LOG_LEVEL_DEBUG:
-			color = 0xAAAAAA;
+			color = COLOR_LIGHT_GREY;
 			break;
 		default:
 			break;

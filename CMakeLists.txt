@@ -271,6 +271,7 @@ endif()
 set(APP_SOURCES ${SOURCES})
 if(ENABLE_TRACY)
     list(APPEND APP_SOURCES "deps/tracy/public/TracyClient.cpp")
+    set_source_files_properties("deps/tracy/public/TracyClient.cpp" PROPERTIES COMPILE_FLAGS "-w")
 endif()
 add_executable(app ${APP_SOURCES})
 
@@ -371,23 +372,33 @@ add_custom_command(TARGET app POST_BUILD
 )
 
 # --- Unit Testing ---
-enable_testing()
+if(NOT ENABLE_TRACY)
+    enable_testing()
 
-# --- Code Coverage ---
-option(CODE_COVERAGE "Enable coverage reporting" OFF)
-if(CODE_COVERAGE)
-    message(STATUS "Code Coverage: ON (Using llvm-cov)")
-    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
-    add_link_options(-fprofile-instr-generate)
+    # --- Code Coverage ---
+    option(CODE_COVERAGE "Enable coverage reporting" OFF)
+    if(CODE_COVERAGE)
+        if(CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            message(STATUS "Code Coverage: ON (Using llvm-cov flags)")
+            add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+            add_link_options(-fprofile-instr-generate)
+        elseif(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+            message(STATUS "Code Coverage: ON (Using gcov flags)")
+            add_compile_options(--coverage)
+            add_link_options(--coverage)
+        endif()
+    endif()
+
+    # Fetch Unity (Lightweight C Testing Framework)
+    FetchContent_Declare(
+        unity
+        GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
+        GIT_TAG        v2.6.0
+    )
+    FetchContent_MakeAvailable(unity)
+
+    # Add tests subdirectory
+    add_subdirectory(tests)
+else()
+    message(STATUS "Unit Testing: DISABLED (Tracy Profiler Active)")
 endif()
-
-# Fetch Unity (Lightweight C Testing Framework)
-FetchContent_Declare(
-    unity
-    GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
-    GIT_TAG        v2.6.0
-)
-FetchContent_MakeAvailable(unity)
-
-# Add tests subdirectory
-add_subdirectory(tests)
