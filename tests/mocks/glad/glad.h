@@ -60,8 +60,25 @@ typedef long GLintptr;
 #define GL_RENDERER 0x1F01
 #define GL_VERSION 0x1F02
 #define GL_TEXTURE 0x1702
+#define GL_COLOR_BUFFER_BIT 0x00004000
+#define GL_DEPTH_BUFFER_BIT 0x00000100
+#define GL_STENCIL_BUFFER_BIT 0x00000400
+#define GL_RGB 0x1907
+#define GL_UNSIGNED_BYTE 0x1401
 
 typedef unsigned char GLubyte;
+typedef unsigned int GLbitfield;
+typedef void (*GLADloadproc)(const char *name);
+
+int gladLoadGLLoader(GLADloadproc load);
+
+void glDrawArrays(GLenum mode, GLint first, GLsizei count);
+void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+void glStencilMask(GLuint mask);
+void glClearStencil(GLint s);
+void glClear(GLbitfield mask);
+void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels);
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,

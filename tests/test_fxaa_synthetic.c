@@ -258,17 +258,14 @@ static void run_synthetic_test(int mode, const char* pattern_name)
 	flip_image_vertically(WIDTH, HEIGHT, pixels_before);
 	flip_image_vertically(WIDTH, HEIGHT, pixels_after);
 
-	char gpu_id[PATH_MAX_LEN];
-	render_utils_get_gpu_identifier(gpu_id, sizeof(gpu_id));
-
 	char path_b[PATH_MAX_LEN];
 	char path_a[PATH_MAX_LEN];
-	if (snprintf(path_b, sizeof(path_b), "tests/fxaa_test_%s_before_%s.png",
-	             pattern_name, gpu_id) < 0) {
+	if (snprintf(path_b, sizeof(path_b), "tests/fxaa_test_%s_before.png",
+	             pattern_name) < 0) {
 		TEST_FAIL_MESSAGE("snprintf failed for path_b");
 	}
-	if (snprintf(path_a, sizeof(path_a), "tests/fxaa_test_%s_after_%s.png",
-	             pattern_name, gpu_id) < 0) {
+	if (snprintf(path_a, sizeof(path_a), "tests/fxaa_test_%s_after.png",
+	             pattern_name) < 0) {
 		TEST_FAIL_MESSAGE("snprintf failed for path_a");
 	}
 
