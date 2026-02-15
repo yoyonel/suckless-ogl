@@ -44,11 +44,24 @@ typedef long GLintptr;
 #define GL_TEXTURE_MAG_FILTER 0x2800
 #define GL_LINEAR_MIPMAP_LINEAR 0x2703
 #define GL_LINEAR 0x2601
+#define GL_NEAREST 0x2600
 #define GL_TEXTURE_WRAP_S 0x2802
 #define GL_TEXTURE_WRAP_T 0x2803
 #define GL_REPEAT 0x2901
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_NO_ERROR 0
+#define GL_TEXTURE0 0x84C0
+#define GL_VERTEX_ARRAY 0x8074
+#define GL_STATIC_DRAW 0x88E4
+#define GL_BUFFER 0x82E0
+#define GL_FRAMEBUFFER 0x8D40
+#define GL_FRAMEBUFFER_COMPLETE 0x8CD5
+#define GL_VENDOR 0x1F00
+#define GL_RENDERER 0x1F01
+#define GL_VERSION 0x1F02
+#define GL_TEXTURE 0x1702
+
+typedef unsigned char GLubyte;
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -81,6 +94,7 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
 void glDeleteTextures(GLsizei n, const GLuint* textures);
+void glActiveTexture(GLenum texture);
 
 void glGenTextures(GLsizei n, GLuint* textures);
 void glBindTexture(GLenum target, GLuint texture);
@@ -119,5 +133,7 @@ void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
+GLenum glCheckFramebufferStatus(GLenum target);
+const GLubyte* glGetString(GLenum name);
 
 #endif

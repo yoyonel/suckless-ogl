@@ -159,32 +159,6 @@ typedef struct {
 GPUInfo render_utils_get_gpu_info(void);
 
 /**
- * @brief Sanitizes GPU vendor and renderer strings into a filesystem-safe
- * identifier.
- *
- * Lowercases alphanumeric characters and collapses multiple separators into a
- * single underscore.
- *
- * @param vendor The GPU vendor string.
- * @param renderer The GPU renderer string.
- * @param[out] buffer Destination buffer for the identifier.
- * @param size Size of the destination buffer.
- */
-void render_utils_generate_gpu_identifier(const char* vendor,
-                                          const char* renderer, char* buffer,
-                                          size_t size);
-
-/**
- * @brief Generates a filesystem-safe identifier for the *current* GPU.
- *
- * Sanitizes vendor and renderer strings (lowercase, alphanumeric, underscores).
- *
- * @param[out] buffer Destination buffer for the identifier.
- * @param size Size of the destination buffer.
- */
-void render_utils_get_gpu_identifier(char* buffer, size_t size);
-
-/**
  * @brief Checks the completeness of the currently bound framebuffer.
  *
  * Logs an error message if the framebuffer is not complete.
