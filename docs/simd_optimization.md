@@ -8,7 +8,7 @@ This guide details the implementation of SIMD (Single Instruction, Multiple Data
 
 Profiling via [Tracy](profiling_tracy.md) revealed that `glTexSubImage2D` was a significant bottleneck during the loading phase, particularly for large HDR environment maps (4K resolution).
 
-- **Problem**: The OpenGL driver was performing the `Float32 -> Float16` conversion on the CPU using a scalar (single-value) path, leading to high CPU usage and stalling the main thread.
+- **Problem**: The OpenGL driver was performing the `Float32 -> Float16` conversion on the CPU using a scalar (single-value) path, leading to high CPU usage and stalling the main thread. See the detailed [Mesa F32-to-F16 Analysis](mesa_f32_to_f16_analysis.md) for a technical breakdown of this bottleneck.
 - **Goal**: Offload this conversion to optimized hardware vector instructions (AVX2/F16C) before handing the data to the driver, allowing `glTexSubImage2D` to perform a fast `memcpy`.
 
 ## Implementation
