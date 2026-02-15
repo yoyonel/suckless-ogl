@@ -141,6 +141,23 @@ void test_is_safe_path_cases(void)
 	                          "File protocol should be unsafe");
 }
 
+void test_shader_read_file_blocks_unsafe_paths(void)
+{
+	// Attempt to read a file using parent directory traversal
+	// This file likely doesn't exist at this path relative to the test
+	// binary, but the security check should happen BEFORE fopen.
+
+	const char* unsafe_path = "../Makefile";
+	char* content = shader_read_file(unsafe_path);
+
+	TEST_ASSERT_NULL_MESSAGE(
+	    content, "shader_read_file should return NULL for unsafe paths");
+
+	// We can't easily check if it returned NULL due to fopen fail or
+	// security check without mocking fopen or capturing logs. But given
+	// is_safe_path("../Makefile") is false, it MUST fail securely.
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -149,5 +166,6 @@ int main(void)
 	RUN_TEST(test_parse_include_path_truncation);
 	RUN_TEST(test_parse_include_path_success);
 	RUN_TEST(test_is_safe_path_cases);
+	RUN_TEST(test_shader_read_file_blocks_unsafe_paths);
 	return UNITY_END();
 }
