@@ -68,7 +68,7 @@ typedef long GLintptr;
 
 typedef unsigned char GLubyte;
 typedef unsigned int GLbitfield;
-typedef void (*GLADloadproc)(const char *name);
+typedef void (*GLADloadproc)(const char* name);
 
 int gladLoadGLLoader(GLADloadproc load);
 
@@ -78,7 +78,8 @@ void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 void glStencilMask(GLuint mask);
 void glClearStencil(GLint s);
 void glClear(GLbitfield mask);
-void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void *pixels);
+void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height,
+                  GLenum format, GLenum type, void* pixels);
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
