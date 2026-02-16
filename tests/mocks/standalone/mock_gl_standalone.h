@@ -13,13 +13,21 @@ typedef unsigned char GLboolean;
 typedef float GLfloat;
 typedef long GLsizeiptr;
 typedef long GLintptr;
+typedef unsigned long long GLuint64;
+typedef long long GLint64;
 
 #define GL_FALSE 0
 #define GL_TRUE 1
 
+/* Query Object Constants */
+#define GL_TIMESTAMP 0x8E28
+#define GL_QUERY_RESULT 0x8866
+#define GL_QUERY_RESULT_AVAILABLE 0x8867
+
 /* Defaults */
 #define DEFAULT_BUFFER_ID 123
 #define DEFAULT_VAO_ID 456
+#define DEFAULT_QUERY_ID_START 1000
 
 /* Shader & Program APIs */
 GLuint glCreateShader(GLenum type);
@@ -53,6 +61,15 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
 
+/* Query Object APIs */
+void glGenQueries(GLsizei n, GLuint* ids);
+void glDeleteQueries(GLsizei n, const GLuint* ids);
+void glQueryCounter(GLuint id, GLenum target);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params);
+void glFlush(void);
+void glFinish(void);
+
 /* Control API */
 void mock_gl_reset_calls(void);
 GLuint mock_gl_get_generated_buffer_id(void);
@@ -63,5 +80,12 @@ int mock_gl_get_buffer_data_call_count(void);
 int mock_gl_get_buffer_sub_data_call_count(void);
 GLsizeiptr mock_gl_get_last_buffer_data_size(void);
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void);
+
+/* Query Stats API */
+int mock_gl_get_gen_queries_call_count(void);
+int mock_gl_get_delete_queries_call_count(void);
+int mock_gl_get_query_counter_call_count(void);
+int mock_gl_get_flush_call_count(void);
+int mock_gl_get_finish_call_count(void);
 
 #endif /* MOCK_GL_STANDALONE_H */

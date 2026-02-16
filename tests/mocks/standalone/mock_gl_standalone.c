@@ -11,6 +11,14 @@ static int g_buffer_sub_data_call_count = 0;
 static GLsizeiptr g_last_buffer_data_size = 0;
 static GLsizeiptr g_last_buffer_sub_data_size = 0;
 
+/* Query Object Stats */
+static int g_gen_queries_call_count = 0;
+static int g_delete_queries_call_count = 0;
+static int g_query_counter_call_count = 0;
+static int g_flush_call_count = 0;
+static int g_finish_call_count = 0;
+static GLuint g_next_query_id = DEFAULT_QUERY_ID_START;
+
 void mock_gl_reset_calls(void)
 {
 	g_generated_buffer_id = DEFAULT_BUFFER_ID;
@@ -20,6 +28,13 @@ void mock_gl_reset_calls(void)
 	g_buffer_sub_data_call_count = 0;
 	g_last_buffer_data_size = 0;
 	g_last_buffer_sub_data_size = 0;
+
+	g_gen_queries_call_count = 0;
+	g_delete_queries_call_count = 0;
+	g_query_counter_call_count = 0;
+	g_flush_call_count = 0;
+	g_finish_call_count = 0;
+	g_next_query_id = DEFAULT_QUERY_ID_START;
 }
 
 GLuint mock_gl_get_generated_buffer_id(void)
@@ -60,6 +75,31 @@ GLsizeiptr mock_gl_get_last_buffer_data_size(void)
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
 {
 	return g_last_buffer_sub_data_size;
+}
+
+int mock_gl_get_gen_queries_call_count(void)
+{
+	return g_gen_queries_call_count;
+}
+
+int mock_gl_get_delete_queries_call_count(void)
+{
+	return g_delete_queries_call_count;
+}
+
+int mock_gl_get_query_counter_call_count(void)
+{
+	return g_query_counter_call_count;
+}
+
+int mock_gl_get_flush_call_count(void)
+{
+	return g_flush_call_count;
+}
+
+int mock_gl_get_finish_call_count(void)
+{
+	return g_finish_call_count;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -254,6 +294,59 @@ void glGetIntegerv(GLenum pname, GLint* data)
 {
 	(void)pname;
 	(void)data;
+}
+
+/* Query Object Mocks */
+void glGenQueries(GLsizei n, GLuint* ids)
+{
+	if (!ids)
+		return;
+	g_gen_queries_call_count++;
+	for (GLsizei i = 0; i < n; i++) {
+		ids[i] = g_next_query_id++;
+	}
+}
+
+void glDeleteQueries(GLsizei n, const GLuint* ids)
+{
+	(void)ids;
+	g_delete_queries_call_count++;
+	(void)n;
+}
+
+void glQueryCounter(GLuint id, GLenum target)
+{
+	(void)id;
+	(void)target;
+	g_query_counter_call_count++;
+}
+
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
+{
+	(void)id;
+	(void)pname;
+	if (params) {
+		*params = 1000; /* Return a dummy timestamp */
+	}
+}
+
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
+{
+	(void)id;
+	(void)pname;
+	if (params) {
+		*params = GL_TRUE; /* Available */
+	}
+}
+
+void glFlush(void)
+{
+	g_flush_call_count++;
+}
+
+void glFinish(void)
+{
+	g_finish_call_count++;
 }
 
 /* -------------------------------------------------------------------------- */
