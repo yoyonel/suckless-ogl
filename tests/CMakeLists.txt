@@ -54,6 +54,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -275,6 +276,29 @@ target_link_libraries(test_gpu_profiler_repro PRIVATE cglm m)
 
 add_test(NAME test_gpu_profiler_repro
          COMMAND test_gpu_profiler_repro)
+
+# =============================================================================
+# TEST SHADER LIMIT (MOCKED)
+# =============================================================================
+add_executable(test_shader_limit
+    test_shader_limit.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+)
+
+target_include_directories(test_shader_limit PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_shader_limit PRIVATE cglm m)
+
+add_test(NAME test_shader_limit
+         COMMAND test_shader_limit)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

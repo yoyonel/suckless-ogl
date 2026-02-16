@@ -147,12 +147,28 @@ static void ctx_add_buffer(IncludeContext* ctx, char* data)
 	ctx->buffers_head = loaded_buf;
 }
 
-static void ctx_add_chunk(IncludeContext* ctx, const char* ptr, size_t len)
+static bool ctx_add_chunk(IncludeContext* ctx, const char* ptr, size_t len)
 {
 	if (len == 0) {
-		return;
+		return true;
 	}
+
+	/* Prevent DoS via recursive include explosion */
+	if (len > MAX_SHADER_SOURCE_SIZE ||
+	    ctx->total_size > MAX_SHADER_SOURCE_SIZE - len) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Shader source expansion exceeds limit (%d bytes)",
+		          MAX_SHADER_SOURCE_SIZE);
+		return false;
+	}
+
 	Chunk* chunk = malloc(sizeof(Chunk));
+	if (!chunk) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Failed to allocate memory for shader chunk");
+		return false;
+	}
+
 	chunk->ptr = ptr;
 	chunk->len = len;
 	chunk->next = NULL;
@@ -164,6 +180,8 @@ static void ctx_add_chunk(IncludeContext* ctx, const char* ptr, size_t len)
 	}
 	ctx->chunks_tail = chunk;
 	ctx->total_size += len;
+
+	return true;
 }
 
 static void ctx_free(IncludeContext* ctx)
@@ -331,7 +349,9 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 	while (cursor && *cursor) {
 		const char* next_tag = strstr(cursor, "@header");
 		if (!next_tag) {
-			ctx_add_chunk(ctx, cursor, strlen(cursor));
+			if (!ctx_add_chunk(ctx, cursor, strlen(cursor))) {
+				return false;
+			}
 			break;
 		}
 
@@ -342,13 +362,17 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 		if (!at_line_start) {
 			size_t len =
 			    (size_t)(next_tag - cursor) + HEADER_TAG_LEN;
-			ctx_add_chunk(ctx, cursor, len);
+			if (!ctx_add_chunk(ctx, cursor, len)) {
+				return false;
+			}
 			cursor = next_tag + HEADER_TAG_LEN;
 			continue;
 		}
 
 		/* Add chunk BEFORE the tag */
-		ctx_add_chunk(ctx, cursor, (size_t)(next_tag - cursor));
+		if (!ctx_add_chunk(ctx, cursor, (size_t)(next_tag - cursor))) {
+			return false;
+		}
 
 		/* Parse path */
 		char raw_inc_path[PATH_BUFFER_SIZE];
