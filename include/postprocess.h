@@ -429,39 +429,8 @@ int postprocess_is_enabled(PostProcess* post_processing,
 
 /* --- Parameter Tuning --- */
 
-void postprocess_set_white_balance(PostProcess* post_processing,
-                                   float temperature, float tint);
-void postprocess_set_color_grading(PostProcess* post_processing,
-                                   float saturation, float contrast,
-                                   float gamma, float gain, float offset);
-void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
-                                float toe, float shoulder, float black_clip,
-                                float white_clip);
-void postprocess_set_grading_ue_default(PostProcess* post_processing);
-void postprocess_set_vignette(PostProcess* post_processing, float intensity,
-                              float smoothness, float roundness);
-void postprocess_set_grain(PostProcess* post_processing, float intensity);
 void postprocess_set_exposure(PostProcess* post_processing, float exposure);
-void postprocess_set_chrom_abbr(PostProcess* post_processing, float strength);
-void postprocess_set_bloom(PostProcess* post_processing, float intensity,
-                           float threshold, float soft_threshold);
-void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
-                         float focal_range, float bokeh_scale);
 float postprocess_get_exposure(PostProcess* post_processing);
-void postprocess_set_auto_exposure(PostProcess* post_processing,
-                                   float min_luminance, float max_luminance,
-                                   float speed_up, float speed_down,
-                                   float key_value);
-void postprocess_set_fxaa(PostProcess* post_processing, float subpix,
-                          float edge_threshold, float edge_threshold_min);
-void postprocess_set_banding(PostProcess* post_processing, BandingMode mode,
-                             float levels);
-void postprocess_set_banding_dither(PostProcess* post_processing,
-                                    float strength);
-void postprocess_set_banding_perceptual(PostProcess* post_processing,
-                                        float gamma);
-void postprocess_set_banding_channels(PostProcess* post_processing, float red,
-                                      float green, float blue);
 
 /**
  * @brief Updates view-projection matrices for effects requiring
