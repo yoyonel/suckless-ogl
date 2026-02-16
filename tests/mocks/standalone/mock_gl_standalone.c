@@ -212,6 +212,21 @@ void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
 	(void)height;
 }
 
+void glTexImage2D(GLenum target, GLint level, GLint internalformat,
+                  GLsizei width, GLsizei height, GLint border, GLenum format,
+                  GLenum type, const void* pixels)
+{
+	(void)target;
+	(void)level;
+	(void)internalformat;
+	(void)width;
+	(void)height;
+	(void)border;
+	(void)format;
+	(void)type;
+	(void)pixels;
+}
+
 void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height, GLenum format, GLenum type,
                      const void* pixels)
@@ -396,4 +411,28 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 }
 void glPopDebugGroup(void)
 {
+}
+
+void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
+                              GLint* params)
+{
+	(void)target;
+	(void)level;
+	(void)pname;
+	(void)params;
+}
+
+void* glMapBuffer(GLenum target, GLenum access)
+{
+	(void)target;
+	(void)access;
+	/* Return a dummy pointer that is non-NULL */
+	static char dummy_buffer[1024];
+	return dummy_buffer;
+}
+
+GLboolean glUnmapBuffer(GLenum target)
+{
+	(void)target;
+	return GL_TRUE;
 }

@@ -14,6 +14,28 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Default slice count for software renderers (no slicing).
+ * Slicing is disabled to avoid the massive overhead of multiple draw calls
+ * on CPU-bound renderers (llvmpipe, etc.).
+ */
+static const int IBL_SOFTWARE_FALLBACK_SLICES = 1;
+
+/** @brief Number of slices for irradiance convolution on hardware (GPU). */
+static const int IBL_IRRADIANCE_HARDWARE_SLICES = 12;
+
+/** @brief Number of slices for the largest specular mip (Mip 0) on hardware. */
+static const int IBL_SPECULAR_MIP0_HARDWARE_SLICES = 24;
+
+/** @brief Number of slices for the second specular mip (Mip 1) on hardware. */
+static const int IBL_SPECULAR_MIP1_HARDWARE_SLICES = 8;
+
+/** @brief Mip level from which specular mips are grouped in a single frame. */
+static const int IBL_SPECULAR_MIP_GROUPING_START_MIP = 3;
+
+/** @brief Mip level for software grouping (all mips at once). */
+static const int IBL_SOFTWARE_MIP_GROUPING_START_MIP = 0;
+
 /*
  * SLICING constants for progressive IBL loading.
  * In software-rendering mode (llvmpipe, swrast), slicing is disabled
@@ -31,22 +53,31 @@ static bool is_software_renderer(void)
 }
 static int ibl_irradiance_slices(void)
 {
-	return is_software_renderer() ? 1 : 4;
+	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
+	                              : IBL_IRRADIANCE_HARDWARE_SLICES;
 }
 static int ibl_specular_mip0_slices(void)
 {
-	return is_software_renderer() ? 1 : 4;
+	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
+	                              : IBL_SPECULAR_MIP0_HARDWARE_SLICES;
 }
 static int ibl_specular_mip1_slices(void)
 {
-	return is_software_renderer() ? 1 : 2;
+	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
+	                              : IBL_SPECULAR_MIP1_HARDWARE_SLICES;
 }
 static int ibl_specular_mips_grouping_start(void)
 {
-	return is_software_renderer() ? 0 : 3;
+	return is_software_renderer() ? IBL_SOFTWARE_MIP_GROUPING_START_MIP
+	                              : IBL_SPECULAR_MIP_GROUPING_START_MIP;
 }
 
 static const int IBL_LOG_LABEL_SIZE = 128;
+static const char* const HDR_TEXTURE_PATH = "assets/textures/hdr";
+static const char* const HDR_EXTENSION = ".hdr";
+static const float IBL_THRESHOLD_FALLBACK_MIN = 1.0F;
+
+static const int MAX_PATH_LENGTH = 256;
 
 static int compare_strings(const void* string_a, const void* string_b)
 {
@@ -61,11 +92,11 @@ void app_scan_hdr_files(App* app)
 
 	DIR* dir_handle = NULL;
 	struct dirent* entry = NULL;
-	dir_handle = opendir("assets/textures/hdr");
+	dir_handle = opendir(HDR_TEXTURE_PATH);
 	if (dir_handle) {
 		while ((entry = readdir(dir_handle)) != NULL) {
 			char* dot = strrchr(entry->d_name, '.');
-			if (dot && strcmp(dot, ".hdr") == 0) {
+			if (dot && strcmp(dot, HDR_EXTENSION) == 0) {
 				char** new_files =
 				    realloc(app->hdr_files,
 				            (size_t)(app->hdr_count + 1) *
@@ -98,18 +129,16 @@ void app_scan_hdr_files(App* app)
 
 int app_load_env_map(App* app, const char* filename)
 {
-	char path
-	    [256]; /* NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	            */
-	if (!safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
+	char path[MAX_PATH_LENGTH];
+	if (!safe_snprintf(path, sizeof(path), "%s/%s", HDR_TEXTURE_PATH,
 	                   filename)) {
 		LOG_ERROR("suckless-ogl.app", "Filename too long: %s",
 		          filename);
-		return 0;
+		return false;
 	}
 
 	LOG_INFO("suckless-ogl.app", "Queuing async load for: %s", path);
-	if (async_loader_request(path)) {
+	if (async_loader_request(app->async_loader, path)) {
 		app->env_map_loading = 1;
 		return 1;
 	}
@@ -120,14 +149,48 @@ int app_load_env_map(App* app, const char* filename)
 
 void app_finalize_environment_load(App* app, AsyncRequest* req)
 {
-	if (!req || !req->data) {
+	/* If half_data is NULL, we assume PBO was used. */
+	if (!req || (!req->half_data && !req->pbo_mapped_ptr)) {
+		/* Note: We use pbo_mapped_ptr as a flag here, even if it's
+		 * logically a pointer */
 		LOG_ERROR("suckless-ogl.app", "Async request data is NULL!");
 		app->env_map_loading = 0;
 		return;
 	}
 
+	/* 3. Upload texture to GPU (Main thread) */
+	/* Note: req->half_data is already converted to FP16 by the
+	 * async loader
+	 */
 	LOG_INFO("suckless-ogl.app", "Finalizing environment load (GPU)...");
-	GLuint hdr_tex = texture_upload_hdr(req->data, req->width, req->height);
+	GLuint hdr_tex = 0;
+	if (req->half_data) {
+		/* Legacy/Fallback: CPU Buffer -> GPU */
+		hdr_tex =
+		    texture_upload_hdr(req->half_data, req->width, req->height,
+		                       app->recycled_hdr_tex, 0);
+	} else {
+		/* PBO Path: Already in PBO -> GPU */
+		/* We use the PBO ID stored in the request to ensure we use the
+		 * correct one of the double-buffered Pair */
+		hdr_tex = texture_upload_hdr_from_pbo(req->pbo_id, req->width,
+		                                      req->height,
+		                                      app->recycled_hdr_tex);
+	}
+
+	/* If the upload returned a new ID (or the reused one), clear
+	 * the recycled handle from App state so we don't accidentally
+	 * double-free it later.
+	 */
+	if (hdr_tex != 0) {
+		app->recycled_hdr_tex = 0;
+	}
+
+	/* 4. Free CPU memory (now that upload is done/queued) */
+	if (req->half_data) {
+		free(req->half_data);
+		req->half_data = NULL;
+	}
 
 	if (hdr_tex) {
 		app->ibl_ctx.state = IBL_STATE_LUMINANCE;
@@ -177,9 +240,18 @@ static void finalize_ibl_swap(App* app)
 	IBLContext* ctx = &app->ibl_ctx;
 
 	postprocess_set_exposure(&app->postprocess, ctx->threshold);
+
+	/* Recycle the old HDR texture instead of deleting it */
 	if (app->hdr_texture) {
-		glDeleteTextures(1, &app->hdr_texture);
+		if (app->recycled_hdr_tex) {
+			/* If we already have one (weird edge case),
+			 * delete the old one */
+			glDeleteTextures(1, &app->recycled_hdr_tex);
+		}
+		app->recycled_hdr_tex = app->hdr_texture;
+		/* app->hdr_texture will be overwritten below */
 	}
+
 	if (app->spec_prefiltered_tex) {
 		glDeleteTextures(1, &app->spec_prefiltered_tex);
 	}
@@ -198,7 +270,8 @@ static void finalize_ibl_swap(App* app)
 
 	double total_time_ms = perf_timer_elapsed_ms(&ctx->global_timer);
 	LOG_INFO("suckless-ogl.app",
-	         "[Frame %llu] Environment swap finalized. Total Time: %.2f ms",
+	         "[Frame %llu] Environment swap finalized. Total Time: "
+	         "%.2f ms",
 	         (unsigned long long)app->frame_count, total_time_ms);
 }
 
@@ -213,6 +286,7 @@ void app_process_ibl_state_machine(App* app)
 	switch (ctx->state) {
 		case IBL_STATE_LUMINANCE: {
 			perf_timer_start(&ctx->global_timer);
+			ibl_stats_reset(ctx);
 			HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
 			{
 				LOG_INFO("suckless-ogl.app",
@@ -225,11 +299,16 @@ void app_process_ibl_state_machine(App* app)
 				    DEFAULT_CLAMP_MULTIPLIER, app->lum_ssbo);
 			}
 
-			if (ctx->threshold < 1.0F || isnan(ctx->threshold) ||
-			    isinf(ctx->threshold)) {
+			if (ctx->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
+			    isnan(ctx->threshold) || isinf(ctx->threshold)) {
 				ctx->threshold = DEFAULT_AUTO_THRESHOLD;
 			}
 			app->auto_threshold = ctx->threshold;
+			LOG_INFO("suckless-ogl.app",
+			         "[Frame %llu] Progressive IBL: Luminance — "
+			         "wall: %.2f ms",
+			         (unsigned long long)app->frame_count,
+			         perf_timer_elapsed_ms(&ctx->stage_timer));
 			ctx->state = IBL_STATE_SPECULAR_INIT;
 			break;
 		}
@@ -253,10 +332,11 @@ void app_process_ibl_state_machine(App* app)
 			if (ctx->current_mip >=
 			    ibl_specular_mips_grouping_start()) {
 				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(
-				    label, sizeof(label),
-				    "Progressive IBL: Specular Mips %d-%d",
-				    ctx->current_mip, ctx->total_mips - 1);
+				safe_snprintf(label, sizeof(label),
+				              "Progressive IBL: "
+				              "Specular Mips %d-%d",
+				              ctx->current_mip,
+				              ctx->total_mips - 1);
 				LOG_INFO("suckless-ogl.app",
 				         "[Frame %llu] - %s...",
 				         (unsigned long long)app->frame_count,
@@ -355,9 +435,17 @@ void app_process_ibl_state_machine(App* app)
 		}
 
 		case IBL_STATE_DONE: {
+			/* Single deferred barrier for all preceding compute
+			 * dispatches (specular + irradiance). Individual slices
+			 * write to disjoint regions and read from the same
+			 * source texture, so no inter-slice barriers were
+			 * needed. This one barrier ensures all image stores
+			 * are visible before the textures are sampled. */
+			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
 			if (app->transition_state == TRANSITION_WAIT_IBL) {
-				/* Initial load: Stay black, just swap and fade
-				 * in
+				/* Initial load: Stay black, just swap
+				 * and fade in
 				 */
 				finalize_ibl_swap(app);
 				app->transition_state = TRANSITION_FADE_IN;
@@ -366,14 +454,14 @@ void app_process_ibl_state_machine(App* app)
 			           TRANSITION_LOADING) {
 				if (app->env_transition_mode ==
 				    ENV_TRANSITION_BLACK_SCREEN) {
-					/* Black Screen mode: Start fading out
-					 * to black */
+					/* Black Screen mode: Start
+					 * fading out to black */
 					app->transition_state =
 					    TRANSITION_FADE_OUT;
 					app->transition_alpha = 0.0F;
 				} else {
-					/* Crossfade mode: Capture, swap and
-					 * fade in */
+					/* Crossfade mode: Capture, swap
+					 * and fade in */
 					capture_snapshot(app);
 					finalize_ibl_swap(app);
 					app->transition_state =

@@ -1,6 +1,8 @@
 // tests/test_texture.c
+#include "simd_utils.h"
 #include "texture.h"
 #include "unity.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -79,8 +81,16 @@ void test_texture_integration_success(void)
 	TEST_ASSERT_GREATER_THAN(INITIAL_DIMENSION, width);
 	TEST_ASSERT_GREATER_THAN(INITIAL_DIMENSION, height);
 
-	GLuint tex = texture_upload_hdr(data, width, height);
+	// Convert to half-float
+	size_t pixel_count = (size_t)width * (size_t)height * 4;
+	uint16_t* half_data = malloc(pixel_count * sizeof(uint16_t));
+	TEST_ASSERT_NOT_NULL(half_data);
+	convert_float_to_half_simd(data, half_data, pixel_count);
+
+	GLuint tex =
+	    texture_upload_hdr(half_data, width, height, TEX_LEVEL_0, 0);
 	free(data);
+	free(half_data);
 
 	// Should return non-zero texture ID
 	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
@@ -101,8 +111,16 @@ void test_texture_upload_hdr_properties(void)
 	                        &width, &height, &channels);
 	TEST_ASSERT_NOT_NULL(data);
 
-	GLuint tex = texture_upload_hdr(data, width, height);
+	// Convert to half-float
+	size_t pixel_count = (size_t)width * (size_t)height * 4;
+	uint16_t* half_data = malloc(pixel_count * sizeof(uint16_t));
+	TEST_ASSERT_NOT_NULL(half_data);
+	convert_float_to_half_simd(data, half_data, pixel_count);
+
+	GLuint tex =
+	    texture_upload_hdr(half_data, width, height, TEX_LEVEL_0, 0);
 	free(data);
+	free(half_data);
 	TEST_ASSERT_NOT_EQUAL(INVALID_TEX, tex);
 
 	// Bind and verify texture properties

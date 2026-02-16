@@ -43,7 +43,7 @@ default:
 
 # Configure CMake (Debug build)
 configure:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug
+    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON
 
 # Build the project (Debug)
 build:
@@ -67,7 +67,7 @@ run-soft: build
 
 # Build for Maximum Speed (-O3, Native, FastMath, Stripped)
 release:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Release
+    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Release -DENABLE_NATIVE_ARCH=ON
     @{{distrobox}} cmake --build {{build_dir}} --parallel
 
 # Build and run in Release mode
@@ -112,7 +112,7 @@ clean-sync:
 
 # Build with optimizations and debug symbols (for profiling)
 profile:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
     @{{distrobox}} cmake --build {{build_dir}} --parallel
 
 # Build and run Linux 'perf' profiler (requires root/capabilities)

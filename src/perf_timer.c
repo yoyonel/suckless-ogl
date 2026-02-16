@@ -224,12 +224,73 @@ HybridTimer perf_hybrid_start(void)
 
 	return timer_struct;
 }
+/*
+ * X-macro: generates the perf_hybrid_stop body parameterized by log level.
+ * The log_fn argument is resolved at compile time (LOG_INFO or LOG_DEBUG),
+ * so there is no runtime branch for the log level.
+ *
+ * Expands to a block that declares `double _gpu_ms` in the enclosing scope.
+ * The caller is responsible for return semantics (void vs double).
+ */
+/* clang-format off */
+#define HYBRID_STOP_BODY(log_fn)                                               \
+	TRACY_HYBRID_STOP_PREAMBLE(timer);                                     \
+	double _cpu_ms = perf_timer_elapsed_ms(&timer->cpu);                   \
+	double _gpu_ms = gpu_timer_elapsed_ms(&timer->gpu, 1);                 \
+	TRACY_HYBRID_STOP_SYNC_END();                                          \
+	log_fn("perf.hybrid", "%s: [CPU: %.2f ms] [GPU: %.3f ms]",            \
+	       label, _cpu_ms, _gpu_ms);                                       \
+	TRACY_HYBRID_STOP_POSTAMBLE(timer, label, _cpu_ms, _gpu_ms);           \
+	gpu_timer_cleanup(&timer->gpu)
+/* clang-format on */
+
+/*
+ * Tracy helper macros — expand to nothing when TRACY_ENABLE is off.
+ * Kept as macros (not inline functions) because TracyCZoneCtx has
+ * local scope and cannot be passed across function boundaries.
+ */
+#ifdef TRACY_ENABLE
+
+#define TRACY_HYBRID_STOP_PREAMBLE(timer) \
+	TracyCFiberEnter("Hybrid Perf");  \
+	TracyCZoneEnd((timer)->host_ctx); \
+	TracyCZoneCtx _sync_ctx = ___tracy_emit_zone_begin(&SYNC_SRCLOC, 1)
+
+#define TRACY_HYBRID_STOP_SYNC_END() TracyCZoneEnd(_sync_ctx)
+
+#define TRACY_HYBRID_STOP_POSTAMBLE(timer, label, cpu_ms, gpu_ms)        \
+	do {                                                             \
+		if (label) {                                             \
+			TracyCZoneName((timer)->tracy_ctx, (label),      \
+			               strlen(label));                   \
+		}                                                        \
+		char _buf[LABEL_BUFFER_SIZE];                            \
+		if (safe_snprintf(_buf, sizeof(_buf),                    \
+		                  "CPU: %.2fms | GPU: %.3fms", (cpu_ms), \
+		                  (gpu_ms))) {                           \
+			TracyCZoneText((timer)->tracy_ctx, _buf,         \
+			               strlen(_buf));                    \
+		}                                                        \
+		TracyCZoneEnd((timer)->tracy_ctx);                       \
+		TracyCFiberLeave;                                        \
+	} while (0)
+
+#else /* !TRACY_ENABLE */
+
+#define TRACY_HYBRID_STOP_PREAMBLE(timer) ((void)0)
+#define TRACY_HYBRID_STOP_SYNC_END() ((void)0)
+#define TRACY_HYBRID_STOP_POSTAMBLE(timer, label, cpu_ms, gpu_ms) ((void)0)
+
+#endif /* TRACY_ENABLE */
+
+/* --- Public API ---------------------------------------------------------- */
 
 void perf_hybrid_stop(HybridTimer* timer, const char* label)
 {
 	if (timer == NULL) {
 		return;
 	}
+<<<<<<< HEAD
 
 	TracyCFiberEnter("Hybrid Perf");
 	// Fin de la partie "Host" (préparation des commandes)
@@ -263,3 +324,16 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label)
 
 	gpu_timer_cleanup(&timer->gpu);
 }
+=======
+	HYBRID_STOP_BODY(LOG_INFO);
+}
+
+double perf_hybrid_stop_debug(HybridTimer* timer, const char* label)
+{
+	if (timer == NULL) {
+		return 0.0;
+	}
+	HYBRID_STOP_BODY(LOG_DEBUG);
+	return _gpu_ms;
+}
+>>>>>>> 6a67a3bb (refactor: apply code review fixes (DRY, helpers, stale comments))

@@ -222,7 +222,7 @@ set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags
 set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
 
 # --- Optimisations Avancées ---
-option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" OFF)
+option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" ON)
 option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
 option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
 
@@ -232,9 +232,13 @@ if(ENABLE_UNITY_BUILD)
 endif()
 
 if(ENABLE_NATIVE_ARCH)
+    message(STATUS "Compiler ID: ${CMAKE_C_COMPILER_ID}")
     if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-        add_compile_options(-march=native)
-        message(STATUS "Native Architecture Optimization: ENABLED")
+        # Force AVX2/F16C in addition to native, just to be sure
+        add_compile_options(-march=native -mavx2 -mf16c)
+        message(STATUS "Native Architecture Optimization: ENABLED (Flags: -march=native -mavx2 -mf16c)")
+    else()
+        message(WARNING "Native Architecture Optimization enabled but compiler '${CMAKE_C_COMPILER_ID}' not recognized")
     endif()
 endif()
 

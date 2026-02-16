@@ -87,6 +87,9 @@ void glBindTexture(GLenum target, GLuint texture);
 void glPixelStorei(GLenum pname, GLint param);
 void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
                     GLsizei width, GLsizei height);
+void glTexImage2D(GLenum target, GLint level, GLint internalformat,
+                  GLsizei width, GLsizei height, GLint border, GLenum format,
+                  GLenum type, const void* pixels);
 void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height, GLenum format, GLenum type,
                      const void* pixels);

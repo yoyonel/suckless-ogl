@@ -1,4 +1,5 @@
 # tests/CMakeLists.txt - Version avec auto-découverte des tests
+# (Touched to force re-glob)
 
 # =============================================================================
 # CONFIGURATION COMMUNE
@@ -159,6 +160,7 @@ add_executable(test_texture_toctou
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/simd_utils.c
 )
 target_include_directories(test_texture_toctou PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks

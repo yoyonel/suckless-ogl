@@ -9,6 +9,8 @@
 #ifndef ASYNC_LOADER_H
 #define ASYNC_LOADER_H
 
+#include <glad/glad.h>
+
 #include <stdbool.h>
 
 /** @brief Maximum path length for an asynchronous load request. */
@@ -22,52 +24,81 @@ typedef enum {
 	ASYNC_IDLE = 0, /**< No active request. */
 	ASYNC_PENDING,  /**< Request submitted but not yet picked up by worker.
 	                 */
-	ASYNC_LOADING, /**< Worker is currently reading or decoding the file. */
-	ASYNC_READY, /**< Data is available and ready to be uploaded to GPU. */
-	ASYNC_FAILED /**< Error encountered during load (missing file, etc). */
+	ASYNC_LOADING,  /**< Worker is loading/decompressing file */
+	ASYNC_WAITING_FOR_PBO, /**< Worker waiting for PBO from main thread */
+	ASYNC_CONVERTING,      /**< Worker converting floats to mapped PBO */
+	ASYNC_READY,           /**< Data is ready in PBO (or half_data if
+	                          fallback) */
+	ASYNC_FAILED           /**< Loading failed */
 } AsyncState;
 
 /**
  * @struct AsyncRequest
  * @brief Container for asynchronous load results and metadata.
  */
+#include <stdint.h>
+
 typedef struct AsyncRequest {
 	char path[ASYNC_MAX_PATH]; /**< Absolute path to the source file. */
-	float* data;  /**< Raw pixel data (must be freed by caller). */
-	int width;    /**< Image width in pixels. */
-	int height;   /**< Image height in pixels. */
-	int channels; /**< Number of color channels (e.g., 3 for RGB). */
+	/* --- Internal Data for Async Ops --- */
+	float* float_data;   /* For loading stage */
+	uint16_t* half_data; /* For legacy upload (if no PBO) */
+	void* pbo_mapped_ptr;
+	GLuint pbo_id; /* ID of the PBO used for this request */
+	int width;     /**< Image width in pixels. */
+	int height;    /**< Image height in pixels. */
+	int channels;  /**< Number of color channels (e.g., 3 for RGB). */
 	double submission_time; /**< Time when request was submitted. */
 	volatile AsyncState
 	    state; /**< Current state (atomic/volatile for thread-safety). */
 } AsyncRequest;
 
 /**
- * @brief Spawns the background worker thread.
- * @note Must be called once during application startup.
+ * @struct AsyncLoader
+ * @brief Opaque handle to the asynchronous loader context.
  */
-void async_loader_init(void);
+typedef struct AsyncLoader AsyncLoader;
 
 /**
- * @brief Signals the worker thread to exit and joins it.
- * @note Clean up all pending requests and free the internal queue.
+ * @brief Creates and initializes a new async loader instance.
+ * @return Pointer to the new loader, or NULL on failure.
  */
-void async_loader_shutdown(void);
+AsyncLoader* async_loader_create(void);
+
+/**
+ * @brief Destroys the async loader and frees resources.
+ * @param loader The loader instance to destroy.
+ */
+void async_loader_destroy(AsyncLoader* loader);
 
 /**
  * @brief Submits a new file path for background loading.
+ * @param loader The loader instance.
  * @param path The absolute path to the HDR/texture file.
  * @return true if the request was successfully queued, false if queue is full.
  */
-bool async_loader_request(const char* path);
+bool async_loader_request(AsyncLoader* loader, const char* path);
 
 /**
  * @brief Polls the loader for any completed requests.
  *
  * This should be called from the main (OpenGL) thread once per frame.
- * @param[out] out_request Pointer to store the successfully loaded data.
+ * @param loader The loader instance.
+ * @param[out] out_req Pointer to store the successfully loaded data.
  * @return true if data was retrieved, false otherwise.
  */
-bool async_loader_poll(AsyncRequest* out_request);
+bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req);
+
+/**
+ * @brief Provides a mapped PBO pointer to the async loader for conversion.
+ *
+ * Call this when async_loader_poll returns a request in
+ * ASYNC_WAITING_FOR_PBO state.
+ * @param loader The loader instance.
+ * @param mapped_ptr Pointer to the mapped PBO memory.
+ * @param pbo_id ID of the PBO being used.
+ */
+void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
+                              GLuint pbo_id);
 
 #endif /* ASYNC_LOADER_H */

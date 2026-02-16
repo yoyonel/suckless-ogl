@@ -1,5 +1,6 @@
 #include "texture.h"
 #include "unity.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -54,15 +55,15 @@ void test_texture_upload_excessive_dimensions(void)
 	// We test MAX_TEXTURE_DIMENSION + 1 to ensure it is rejected.
 	int width = MAX_TEXTURE_DIMENSION + 1;
 	int height = TEST_DIM;
-	float dummy_data[DUMMY_DATA_SIZE] = {0};
+	uint16_t dummy_data[DUMMY_DATA_SIZE] = {0};
 
-	GLuint tex = texture_upload_hdr(dummy_data, width, height);
+	GLuint tex = texture_upload_hdr(dummy_data, width, height, 0, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex, "Should reject texture with width > MAX_TEXTURE_DIMENSION");
 
 	width = TEST_DIM;
 	height = MAX_TEXTURE_DIMENSION + 1;
-	tex = texture_upload_hdr(dummy_data, width, height);
+	tex = texture_upload_hdr(dummy_data, width, height, 0, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex,
 	    "Should reject texture with height > MAX_TEXTURE_DIMENSION");
@@ -73,9 +74,9 @@ void test_texture_upload_valid_dimensions(void)
 	int width = 4;
 	int height = 4;
 	// 4x4 * 4 floats * sizeof(float) = 64 bytes
-	float dummy_data[DUMMY_DATA_SIZE] = {0};
+	uint16_t dummy_data[DUMMY_DATA_SIZE] = {0};
 
-	GLuint tex = texture_upload_hdr(dummy_data, width, height);
+	GLuint tex = texture_upload_hdr(dummy_data, width, height, 0, 0);
 	TEST_ASSERT_NOT_EQUAL(0, tex);
 
 	glDeleteTextures(1, &tex);
@@ -137,7 +138,7 @@ void test_texture_load_pixels_invalid_file(void)
 
 void test_texture_upload_null_data(void)
 {
-	GLuint tex = texture_upload_hdr(NULL, 16, 16);
+	GLuint tex = texture_upload_hdr(NULL, 16, 16, 0, 0);
 	TEST_ASSERT_EQUAL(0, tex);
 }
 
