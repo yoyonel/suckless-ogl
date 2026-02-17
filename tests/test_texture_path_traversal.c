@@ -52,7 +52,8 @@ void test_texture_load_pixels_path_traversal(void)
 	TEST_ASSERT_NULL_MESSAGE(pixels, "Should reject path with '..'");
 
 	// 6. Cleanup
-	if (pixels) free(pixels);
+	if (pixels)
+		free(pixels);
 	remove(filename);
 	rmdir(subdir);
 }
