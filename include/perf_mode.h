@@ -108,22 +108,6 @@ int perf_mode_request_start(PerfModeContext* ctx);
 int perf_mode_request_end(PerfModeContext* ctx);
 
 /**
- * @brief Get the current performance mode state.
- *
- * @param ctx Pointer to the context.
- * @return Current PerfModeState value.
- */
-PerfModeState perf_mode_get_state(const PerfModeContext* ctx);
-
-/**
- * @brief Get the detected backend type.
- *
- * @param ctx Pointer to the context.
- * @return Detected PerfModeBackend value.
- */
-PerfModeBackend perf_mode_get_backend(const PerfModeContext* ctx);
-
-/**
  * @brief Get a human-readable string for the current state.
  *
  * @param ctx Pointer to the context.
@@ -131,13 +115,5 @@ PerfModeBackend perf_mode_get_backend(const PerfModeContext* ctx);
  *         "Native SCHED_FIFO", "Off").
  */
 const char* perf_mode_get_state_string(const PerfModeContext* ctx);
-
-/**
- * @brief Check if performance mode is currently active.
- *
- * @param ctx Pointer to the context.
- * @return 1 if active, 0 if not.
- */
-int perf_mode_is_active(const PerfModeContext* ctx);
 
 #endif /* PERF_MODE_H */

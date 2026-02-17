@@ -321,16 +321,6 @@ void perf_mode_cleanup(PerfModeContext* ctx)
 	LOG_INFO("suckless-ogl.perf", "Performance mode cleaned up");
 }
 
-PerfModeState perf_mode_get_state(const PerfModeContext* ctx)
-{
-	return ctx ? ctx->state : PERF_MODE_OFF;
-}
-
-PerfModeBackend perf_mode_get_backend(const PerfModeContext* ctx)
-{
-	return ctx ? ctx->backend : PERF_BACKEND_NONE;
-}
-
 const char* perf_mode_get_state_string(const PerfModeContext* ctx)
 {
 	if (!ctx) {
@@ -350,10 +340,4 @@ const char* perf_mode_get_state_string(const PerfModeContext* ctx)
 		default:
 			return "Unknown";
 	}
-}
-
-int perf_mode_is_active(const PerfModeContext* ctx)
-{
-	return ctx && ctx->state != PERF_MODE_OFF &&
-	       ctx->state != PERF_MODE_ERROR;
 }
