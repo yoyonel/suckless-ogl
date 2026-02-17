@@ -205,23 +205,6 @@ static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
 	return true;
 }
 
-static bool is_safe_path(const char* path)
-{
-	if (strstr(path, "..")) {
-		return false;
-	}
-	if (path[0] == '/') {
-		return false;
-	}
-	if (strchr(path, '\\')) {
-		return false;
-	}
-	if (strstr(path, ":")) {
-		return false;
-	}
-	return true;
-}
-
 /*
  * Helper to resolve and parse an included file.
  * Returns true on success, false on error.

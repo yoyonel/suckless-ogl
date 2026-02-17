@@ -113,6 +113,28 @@ static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
 }
 
 /**
+ * @brief Checks if a path is safe (no traversal, no absolute paths).
+ * @param path The path to check.
+ * @return true if safe, false otherwise.
+ */
+static inline bool is_safe_path(const char* path)
+{
+	if (strstr(path, "..")) {
+		return false;
+	}
+	if (path[0] == '/') {
+		return false;
+	}
+	if (strchr(path, '\\')) {
+		return false;
+	}
+	if (strstr(path, ":")) {
+		return false;
+	}
+	return true;
+}
+
+/**
  * @brief RAII callback for `FILE*`.
  */
 static inline void cleanup_file(FILE** file_ptr)
