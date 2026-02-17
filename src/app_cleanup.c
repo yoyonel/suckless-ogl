@@ -1,6 +1,5 @@
-#include "app.h"
-
 #include "adaptive_sampler.h"
+#include "app.h"
 #include "app_ui.h"
 #include "billboard_rendering.h"
 #include "gl_common.h"

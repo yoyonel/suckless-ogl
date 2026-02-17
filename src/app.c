@@ -298,7 +298,6 @@ int app_init(App* app, int width, int height, const char* title)
 	return 1;
 }
 
-
 void app_run(App* app)
 {
 	int last_subdiv = -1;

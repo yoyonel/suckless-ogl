@@ -1,9 +1,8 @@
+#include "mock_gl_standalone.h"
+#include "unity.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
-
-#include "mock_gl_standalone.h"
-#include "unity.h"
 
 /* Include implementation under test */
 #include "app_cleanup.c"
@@ -76,7 +75,10 @@ void window_destroy(GLFWwindow* w)
 }
 /* SSBO Mock if needed (macro might handle it) */
 #ifdef USE_SSBO_RENDERING
-void ssbo_group_cleanup(SSBOGroup* g) { (void)g; }
+void ssbo_group_cleanup(SSBOGroup* g)
+{
+	(void)g;
+}
 #endif
 
 /* -------------------------------------------------------------------------- */
@@ -107,7 +109,8 @@ void test_cleanup_deletes_pending_ibl_textures(void)
 	TEST_ASSERT_EQUAL(0, app.ibl_ctx.pending_irr_tex);
 
 	/* Assert that glDeleteTextures was called at least 3 times. */
-	TEST_ASSERT_GREATER_OR_EQUAL(3, mock_gl_get_delete_texture_call_count());
+	TEST_ASSERT_GREATER_OR_EQUAL(3,
+	                             mock_gl_get_delete_texture_call_count());
 }
 
 void test_cleanup_is_idempotent(void)
