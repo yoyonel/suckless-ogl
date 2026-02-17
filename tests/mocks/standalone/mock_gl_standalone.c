@@ -10,6 +10,8 @@ static int g_buffer_data_call_count = 0;
 static int g_buffer_sub_data_call_count = 0;
 static GLsizeiptr g_last_buffer_data_size = 0;
 static GLsizeiptr g_last_buffer_sub_data_size = 0;
+static int g_delete_texture_call_count = 0;
+static GLuint g_last_deleted_texture = 0;
 
 void mock_gl_reset_calls(void)
 {
@@ -20,6 +22,8 @@ void mock_gl_reset_calls(void)
 	g_buffer_sub_data_call_count = 0;
 	g_last_buffer_data_size = 0;
 	g_last_buffer_sub_data_size = 0;
+	g_delete_texture_call_count = 0;
+	g_last_deleted_texture = 0;
 }
 
 GLuint mock_gl_get_generated_buffer_id(void)
@@ -60,6 +64,16 @@ GLsizeiptr mock_gl_get_last_buffer_data_size(void)
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
 {
 	return g_last_buffer_sub_data_size;
+}
+
+int mock_gl_get_delete_texture_call_count(void)
+{
+	return g_delete_texture_call_count;
+}
+
+GLuint mock_gl_get_last_deleted_texture(void)
+{
+	return g_last_deleted_texture;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -246,8 +260,10 @@ GLenum glGetError(void)
 
 void glDeleteTextures(GLsizei n, const GLuint* textures)
 {
-	(void)n;
-	(void)textures;
+	if (n > 0 && textures) {
+		g_delete_texture_call_count += n;
+		g_last_deleted_texture = textures[n - 1];
+	}
 }
 
 void glGetIntegerv(GLenum pname, GLint* data)

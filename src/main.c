@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong")) {
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to initialize application");
-		app_cleanup(app);
+		/* app_cleanup is called inside app_init on failure */
 		free(app);
 		return EXIT_FAILURE;
 	}

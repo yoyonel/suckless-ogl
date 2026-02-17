@@ -53,6 +53,10 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
 
+void glDeleteBuffers(GLsizei n, const GLuint* buffers);
+void glDeleteVertexArrays(GLsizei n, const GLuint* arrays);
+void glDeleteTextures(GLsizei n, const GLuint* textures);
+
 /* Control API */
 void mock_gl_reset_calls(void);
 GLuint mock_gl_get_generated_buffer_id(void);
@@ -63,5 +67,8 @@ int mock_gl_get_buffer_data_call_count(void);
 int mock_gl_get_buffer_sub_data_call_count(void);
 GLsizeiptr mock_gl_get_last_buffer_data_size(void);
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void);
+
+int mock_gl_get_delete_texture_call_count(void);
+GLuint mock_gl_get_last_deleted_texture(void);
 
 #endif /* MOCK_GL_STANDALONE_H */

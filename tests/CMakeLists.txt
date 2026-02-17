@@ -45,6 +45,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_app_cleanup_logic\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -208,6 +209,30 @@ target_link_libraries(test_billboard_overflow PRIVATE cglm)
 
 add_test(NAME test_billboard_overflow
          COMMAND test_billboard_overflow)
+
+# =============================================================================
+# TEST APP CLEANUP LOGIC (STANDALONE LOGIC VERIFICATION)
+# =============================================================================
+add_executable(test_app_cleanup_logic
+    test_app_cleanup_logic.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+)
+
+target_include_directories(test_app_cleanup_logic PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+
+# Only link against basic libs, no app_testlib or full GL
+target_link_libraries(test_app_cleanup_logic PRIVATE m)
+
+add_test(NAME test_app_cleanup_logic
+         COMMAND test_app_cleanup_logic)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION
