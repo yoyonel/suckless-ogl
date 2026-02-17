@@ -132,6 +132,7 @@ target_include_directories(test_shader_path_security_standalone PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
+    ${cglm_SOURCE_DIR}/include
 )
 
 # On ne link PAS contre app_testlib, seulement libc/libm si besoin
