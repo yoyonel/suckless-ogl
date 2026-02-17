@@ -230,7 +230,7 @@ target_include_directories(test_app_cleanup_logic PRIVATE
 )
 
 # Only link against basic libs, no app_testlib or full GL
-target_link_libraries(test_app_cleanup_logic PRIVATE m)
+target_link_libraries(test_app_cleanup_logic PRIVATE cglm m)
 
 add_test(NAME test_app_cleanup_logic
          COMMAND test_app_cleanup_logic)
