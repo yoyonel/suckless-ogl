@@ -189,14 +189,14 @@ GLboolean glIsEnabled(GLenum cap)
 const GLchar* glGetString(GLenum name)
 {
 	switch (name) {
-	case GL_VENDOR:
-		return "Mock Vendor";
-	case GL_RENDERER:
-		return "Mock Renderer";
-	case GL_VERSION:
-		return "Mock Version 1.0";
-	default:
-		return NULL;
+		case GL_VENDOR:
+			return "Mock Vendor";
+		case GL_RENDERER:
+			return "Mock Renderer";
+		case GL_VERSION:
+			return "Mock Version 1.0";
+		default:
+			return NULL;
 	}
 }
 
