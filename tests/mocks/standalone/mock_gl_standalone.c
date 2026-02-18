@@ -399,13 +399,14 @@ void glPopDebugGroup(void)
 {
 }
 
-void glDebugMessageCallback(GLDEBUGPROC callback, const void *userParam)
+void glDebugMessageCallback(GLDEBUGPROC callback, const void* userParam)
 {
 	(void)callback;
 	(void)userParam;
 }
 
-void glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled)
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity,
+                           GLsizei count, const GLuint* ids, GLboolean enabled)
 {
 	(void)source;
 	(void)type;

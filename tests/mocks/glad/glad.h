@@ -78,7 +78,10 @@ typedef long GLintptr;
 #define GL_CONTEXT_FLAGS 0x821E
 #define GL_CONTEXT_FLAG_DEBUG_BIT 0x00000002
 
-typedef void (APIENTRY *GLDEBUGPROC)(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,const GLchar *message,const void *userParam);
+typedef void(APIENTRY* GLDEBUGPROC)(GLenum source, GLenum type, GLuint id,
+                                    GLenum severity, GLsizei length,
+                                    const GLchar* message,
+                                    const void* userParam);
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -110,8 +113,9 @@ void glUniform4fv(GLint location, GLsizei count, const float* value);
 void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);
 void glPopDebugGroup(void);
-void glDebugMessageCallback(GLDEBUGPROC callback, const void *userParam);
-void glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled);
+void glDebugMessageCallback(GLDEBUGPROC callback, const void* userParam);
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity,
+                           GLsizei count, const GLuint* ids, GLboolean enabled);
 void glDeleteTextures(GLsizei n, const GLuint* textures);
 
 void glGenTextures(GLsizei n, GLuint* textures);

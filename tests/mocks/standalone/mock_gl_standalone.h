@@ -1,8 +1,8 @@
 #ifndef MOCK_GL_STANDALONE_H
 #define MOCK_GL_STANDALONE_H
 
-#include <stddef.h>
 #include "glad/glad.h"
+#include <stddef.h>
 
 /* Defaults */
 #define DEFAULT_BUFFER_ID 123
