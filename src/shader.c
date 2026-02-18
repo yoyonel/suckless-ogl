@@ -3,7 +3,6 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "log.h"
-#include "mem.h"
 #include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -695,7 +694,8 @@ static void shader_cache_uniforms(Shader* shader)
 	GLint max_name_len = 0;
 	glGetProgramiv(shader->program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
 	               &max_name_len);
-	char* name_buffer = calloc(max_name_len + 1, 1);
+	char* name_buffer = NULL;
+	name_buffer = calloc(max_name_len + 1, 1);
 
 	for (int i = 0; i < count; i++) {
 		GLsizei length = 0;

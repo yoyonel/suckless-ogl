@@ -126,8 +126,9 @@ void* texture_map_pbo(GLuint pbo_id, size_t size_bytes)
 	                    (GLbitfield)GL_MAP_INVALIDATE_BUFFER_BIT |
 	                    (GLbitfield)GL_MAP_UNSYNCHRONIZED_BIT;
 
-	void* ptr = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0,
-	                             (GLsizeiptr)size_bytes, access);
+	void* ptr = NULL;
+	ptr = glMapBufferRange(GL_PIXEL_UNPACK_BUFFER, 0,
+	                       (GLsizeiptr)size_bytes, access);
 
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 	return ptr;

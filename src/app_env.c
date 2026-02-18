@@ -44,7 +44,8 @@ static const int IBL_SOFTWARE_MIP_GROUPING_START_MIP = 0;
  */
 static bool is_software_renderer(void)
 {
-	const char* renderer = (const char*)glGetString(GL_RENDERER);
+	const char* renderer = NULL;
+	renderer = (const char*)glGetString(GL_RENDERER);
 	if (!renderer) {
 		return false;
 	}

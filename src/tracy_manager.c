@@ -66,7 +66,8 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 		int read_idx = (mgr->screenshot_pbo_idx + 1) % 2;
 		glBindBuffer(GL_PIXEL_PACK_BUFFER,
 		             mgr->screenshot_pbo[read_idx]);
-		void* pbo_ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		void* pbo_ptr = NULL;
+		pbo_ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 		if (pbo_ptr) {
 			tracy_gpu_screenshot(pbo_ptr, TRACY_SCREENSHOT_WIDTH,
 			                     TRACY_SCREENSHOT_HEIGHT);

@@ -289,6 +289,7 @@ lint-full:
             -DENABLE_TRACY=ON \
             -DUSE_SSBO_RENDERING=ON \
             -G "Unix Makefiles" > /dev/null; \
+        {{distrobox}} cmake --build .lint_full --target glad-generate-files > /dev/null; \
     fi
     @echo "Linting C code (Full Coverage)..."
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py .lint_full
