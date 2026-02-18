@@ -80,6 +80,13 @@ typedef struct {
 	int current_slice;       /**< Cubemap face/slice being processed. */
 	int total_slices;        /**< Face count (typically 6). */
 	PerfTimer global_timer;  /**< Benchmarking for the entire process. */
+
+	/* Per-stage GPU timing statistics (for summary logging) */
+	PerfTimer stage_timer; /**< Wall-clock timer for the current stage. */
+	double stage_gpu_min;  /**< Minimum GPU time across slices (ms). */
+	double stage_gpu_max;  /**< Maximum GPU time across slices (ms). */
+	double stage_gpu_sum;  /**< Accumulated GPU time across slices (ms). */
+	int stage_slice_count; /**< Number of slices completed in stage. */
 } IBLContext;
 
 /**

@@ -9,6 +9,7 @@
 #include "texture.h"
 #include "utils.h"
 #include <dirent.h>
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -275,6 +276,46 @@ static void finalize_ibl_swap(App* app)
 	         (unsigned long long)app->frame_count, total_time_ms);
 }
 
+/** @brief Reset stage timing statistics for a new IBL stage. */
+static void ibl_stats_reset(IBLContext* ctx)
+{
+	perf_timer_start(&ctx->stage_timer);
+	ctx->stage_gpu_min = DBL_MAX;
+	ctx->stage_gpu_max = 0.0;
+	ctx->stage_gpu_sum = 0.0;
+	ctx->stage_slice_count = 0;
+}
+
+/** @brief Accumulate a slice's GPU timing into the stage statistics. */
+static void ibl_stats_accumulate(IBLContext* ctx, double gpu_ms)
+{
+	if (gpu_ms < ctx->stage_gpu_min) {
+		ctx->stage_gpu_min = gpu_ms;
+	}
+	if (gpu_ms > ctx->stage_gpu_max) {
+		ctx->stage_gpu_max = gpu_ms;
+	}
+	ctx->stage_gpu_sum += gpu_ms;
+	ctx->stage_slice_count++;
+}
+
+/** @brief Log a single INFO summary line for a completed IBL stage. */
+static void ibl_stats_log_summary(IBLContext* ctx, unsigned long long frame,
+                                  const char* stage_name)
+{
+	if (ctx->stage_slice_count <= 0) {
+		return;
+	}
+	double wall_ms = perf_timer_elapsed_ms(&ctx->stage_timer);
+	double avg = ctx->stage_gpu_sum / ctx->stage_slice_count;
+	LOG_INFO("suckless-ogl.app",
+	         "[Frame %llu] Progressive IBL: %s — %d slices, "
+	         "GPU min/avg/max: %.2f / %.2f / %.2f ms, "
+	         "GPU total: %.2f ms, wall: %.2f ms",
+	         frame, stage_name, ctx->stage_slice_count, ctx->stage_gpu_min,
+	         avg, ctx->stage_gpu_max, ctx->stage_gpu_sum, wall_ms);
+}
+
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)
 void app_process_ibl_state_machine(App* app)
 {
@@ -324,6 +365,7 @@ void app_process_ibl_state_machine(App* app)
 			    (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
 			ctx->current_mip = 0;
 			ctx->current_slice = 0;
+			ibl_stats_reset(ctx);
 			ctx->state = IBL_STATE_SPECULAR_MIPS;
 			break;
 		}
@@ -337,12 +379,12 @@ void app_process_ibl_state_machine(App* app)
 				              "Specular Mips %d-%d",
 				              ctx->current_mip,
 				              ctx->total_mips - 1);
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - %s...",
-				         (unsigned long long)app->frame_count,
-				         label);
+				LOG_DEBUG("suckless-ogl.app",
+				          "[Frame %llu] - %s...",
+				          (unsigned long long)app->frame_count,
+				          label);
 
-				HYBRID_MEASURE_LOG(label)
+				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
 				{
 					for (int mip = ctx->current_mip;
 					     mip < ctx->total_mips; ++mip) {
@@ -356,6 +398,7 @@ void app_process_ibl_state_machine(App* app)
 						    ctx->threshold);
 					}
 				}
+				ibl_stats_accumulate(ctx, gpu_ms);
 				ctx->current_mip = ctx->total_mips;
 			} else {
 				if (ctx->current_mip == 0) {
@@ -375,11 +418,11 @@ void app_process_ibl_state_machine(App* app)
 				              ctx->current_mip,
 				              ctx->current_slice + 1,
 				              ctx->total_slices);
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - %s...",
-				         (unsigned long long)app->frame_count,
-				         label);
-				HYBRID_MEASURE_LOG(label)
+				LOG_DEBUG("suckless-ogl.app",
+				          "[Frame %llu] - %s...",
+				          (unsigned long long)app->frame_count,
+				          label);
+				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
 				{
 					pbr_prefilter_mip(
 					    app->shader_spmap,
@@ -391,6 +434,7 @@ void app_process_ibl_state_machine(App* app)
 					    ctx->current_slice,
 					    ctx->total_slices, ctx->threshold);
 				}
+				ibl_stats_accumulate(ctx, gpu_ms);
 
 				ctx->current_slice++;
 				if (ctx->current_slice >= ctx->total_slices) {
@@ -400,9 +444,13 @@ void app_process_ibl_state_machine(App* app)
 			}
 
 			if (ctx->current_mip >= ctx->total_mips) {
+				ibl_stats_log_summary(
+				    ctx, (unsigned long long)app->frame_count,
+				    "Specular");
 				ctx->state = IBL_STATE_IRRADIANCE;
 				ctx->current_slice = 0;
 				ctx->total_slices = ibl_irradiance_slices();
+				ibl_stats_reset(ctx);
 				ctx->pending_irr_tex =
 				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
 			}
@@ -415,10 +463,10 @@ void app_process_ibl_state_machine(App* app)
 			              "Progressive IBL: Irradiance Slice %d/%d",
 			              ctx->current_slice + 1,
 			              ctx->total_slices);
-			LOG_INFO("suckless-ogl.app", "[Frame %llu] - %s...",
-			         (unsigned long long)app->frame_count, label);
+			LOG_DEBUG("suckless-ogl.app", "[Frame %llu] - %s...",
+			          (unsigned long long)app->frame_count, label);
 
-			HYBRID_MEASURE_LOG(label)
+			HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
 			{
 				pbr_irradiance_slice_compute(
 				    app->shader_irmap, ctx->pending_hdr_tex,
@@ -426,9 +474,13 @@ void app_process_ibl_state_machine(App* app)
 				    ctx->current_slice, ctx->total_slices,
 				    ctx->threshold);
 			}
+			ibl_stats_accumulate(ctx, gpu_ms);
 
 			ctx->current_slice++;
 			if (ctx->current_slice >= ctx->total_slices) {
+				ibl_stats_log_summary(
+				    ctx, (unsigned long long)app->frame_count,
+				    "Irradiance");
 				ctx->state = IBL_STATE_DONE;
 			}
 			break;

@@ -131,6 +131,18 @@ HybridTimer perf_hybrid_start(void);
  */
 void perf_hybrid_stop(HybridTimer* timer, const char* label);
 
+/**
+ * @brief Like perf_hybrid_stop, but logs at DEBUG level instead of INFO.
+ *
+ * Tracy zones are still emitted at full detail. Only the console output
+ * is demoted to reduce noise in production. Returns GPU elapsed ms.
+ *
+ * @param timer Pointer to the timer.
+ * @param label Descriptive string for the log entry.
+ * @return GPU elapsed time in milliseconds.
+ */
+double perf_hybrid_stop_debug(HybridTimer* timer, const char* label);
+
 /* ========================================================================= */
 /* Macro Helpers                                                             */
 /* ========================================================================= */
@@ -195,6 +207,27 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label);
 #define HYBRID_MEASURE_LOG(label)                                             \
 	for (HybridTimer _h = perf_hybrid_start(), *_h_run = (HybridTimer*)1; \
 	     _h_run; perf_hybrid_stop(&_h, label), _h_run = NULL)
+
+/**
+ * @brief Hybrid measurement with DEBUG-level console logging.
+ *
+ * Like HYBRID_MEASURE_LOG but demotes console output to LOG_DEBUG.
+ * Tracy zones are still emitted. Captures GPU elapsed ms into `var_name`.
+ *
+ * Usage:
+ * @code
+ *   HYBRID_MEASURE_DEBUG_MS(gpu_ms, "Progressive IBL: Specular Mip 0 Slice
+ * 1/24") { pbr_prefilter_mip(...);
+ *   }
+ *   // gpu_ms now contains the GPU time in milliseconds
+ * @endcode
+ */
+#define HYBRID_MEASURE_DEBUG_MS(var_name, label)                              \
+	double var_name = 0.0;                                                \
+	for (HybridTimer _h##var_name = perf_hybrid_start(),                  \
+	                 *_h_run = (HybridTimer*)1;                           \
+	     _h_run; var_name = perf_hybrid_stop_debug(&_h##var_name, label), \
+	                 _h_run = NULL)
 
 /**
  * @struct HybridTimerRAII

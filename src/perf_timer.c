@@ -217,10 +217,15 @@ HybridTimer perf_hybrid_start(void)
 	perf_timer_start(&timer_struct.cpu);
 	gpu_timer_start(&timer_struct.gpu);
 
+#ifdef TRACY_ENABLE
 	TracyCFiberEnter("Hybrid Perf");
 	timer_struct.tracy_ctx = ___tracy_emit_zone_begin(&HYBRID_SRCLOC, 1);
 	timer_struct.host_ctx = ___tracy_emit_zone_begin(&HOST_SRCLOC, 1);
 	TracyCFiberLeave;
+#else
+	memset(&timer_struct.tracy_ctx, 0, sizeof(timer_struct.tracy_ctx));
+	memset(&timer_struct.host_ctx, 0, sizeof(timer_struct.host_ctx));
+#endif
 
 	return timer_struct;
 }
@@ -290,41 +295,7 @@ void perf_hybrid_stop(HybridTimer* timer, const char* label)
 	if (timer == NULL) {
 		return;
 	}
-<<<<<<< HEAD
 
-	TracyCFiberEnter("Hybrid Perf");
-	// Fin de la partie "Host" (préparation des commandes)
-	TracyCZoneEnd(timer->host_ctx);
-
-	// Début de l'attente GPU (synchronisation)
-	TracyCZoneCtx sync_ctx = ___tracy_emit_zone_begin(&SYNC_SRCLOC, 1);
-
-	double cpu_ms = perf_timer_elapsed_ms(&timer->cpu);
-	double gpu_ms = gpu_timer_elapsed_ms(&timer->gpu, 1);  // Bloque ici
-
-	// Fin de l'attente
-	TracyCZoneEnd(sync_ctx);
-
-	// Utilisation de %g ou plus de précision pour les petites valeurs
-	LOG_INFO("perf.hybrid", "%s: [CPU: %.2f ms] [GPU: %.3f ms]", label,
-	         cpu_ms, gpu_ms);
-
-	if (label) {
-		TracyCZoneName(timer->tracy_ctx, label, strlen(label));
-	}
-
-	char buf[LABEL_BUFFER_SIZE];
-	if (safe_snprintf(buf, sizeof(buf), "CPU: %.2fms | GPU: %.3fms", cpu_ms,
-	                  gpu_ms)) {
-		TracyCZoneText(timer->tracy_ctx, buf, strlen(buf));
-	}
-
-	TracyCZoneEnd(timer->tracy_ctx);
-	TracyCFiberLeave;
-
-	gpu_timer_cleanup(&timer->gpu);
-}
-=======
 	HYBRID_STOP_BODY(LOG_INFO);
 }
 
@@ -336,4 +307,3 @@ double perf_hybrid_stop_debug(HybridTimer* timer, const char* label)
 	HYBRID_STOP_BODY(LOG_DEBUG);
 	return _gpu_ms;
 }
->>>>>>> 6a67a3bb (refactor: apply code review fixes (DRY, helpers, stale comments))
