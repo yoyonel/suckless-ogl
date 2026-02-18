@@ -143,19 +143,29 @@ void test_is_safe_relative_path_cases(void)
 
 void test_shader_read_file_blocks_unsafe_paths(void)
 {
-	// Attempt to read a file using parent directory traversal
-	// This file likely doesn't exist at this path relative to the test
-	// binary, but the security check should happen BEFORE fopen.
+	/* Try to read an absolute path that exists */
+#ifdef _WIN32
+	const char* unsafe_path_abs =
+	    "C:\\Windows\\System32\\drivers\\etc\\hosts";
+#else
+	const char* unsafe_path_abs = "/etc/hosts";
+#endif
 
-	const char* unsafe_path = "../Makefile";
-	char* content = shader_read_file(unsafe_path);
+	char* content = shader_read_file(unsafe_path_abs);
+	if (content) {
+		free(content);
+		TEST_FAIL_MESSAGE(
+		    "shader_read_file should return NULL for unsafe absolute "
+		    "path");
+	}
 
-	TEST_ASSERT_NULL_MESSAGE(
-	    content, "shader_read_file should return NULL for unsafe paths");
-
-	// We can't easily check if it returned NULL due to fopen fail or
-	// security check without mocking fopen or capturing logs. But given
-	// is_safe_relative_path("../Makefile") is false, it MUST fail securely.
+	/* Try traversal */
+	content = shader_read_file("../README.md");
+	if (content) {
+		free(content);
+		TEST_FAIL_MESSAGE(
+		    "shader_read_file should return NULL for traversal path");
+	}
 }
 
 int main(void)

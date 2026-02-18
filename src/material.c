@@ -1,7 +1,7 @@
 #include "material.h"
 
 #include "log.h"
-#include "mem.h"
+#include "utils.h"
 #include <cJSON.h>
 #include <limits.h>
 #include <stdint.h>
@@ -22,6 +22,12 @@ enum { MAX_MATERIAL_COUNT = 10000, RGB_COMPONENTS = 3 };
 
 static char* read_file_to_buffer(const char* path, size_t* out_size)
 {
+	if (!is_safe_relative_path(path)) {
+		LOG_ERROR("material", "Security Violation: Unsafe path: %s",
+		          path);
+		return NULL;
+	}
+
 	FILE* file = fopen(path, "rb");
 	if (file == NULL) {
 		LOG_ERROR("material", "Could not open file: %s", path);

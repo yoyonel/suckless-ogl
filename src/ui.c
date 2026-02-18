@@ -4,6 +4,7 @@
 #include "log.h"
 #include "mem.h"
 #include "shader.h"
+#include "utils.h"
 #include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>     // IWYU pragma: keep
 #include <cglm/mat4.h>    // IWYU pragma: keep
@@ -102,6 +103,11 @@ static void setup_ui_render_state(void)
 
 static unsigned char* read_font_file(const char* path, size_t* out_size)
 {
+	if (!is_safe_path(path)) {
+		LOG_ERROR("ui", "Security Violation: Unsafe path: %s", path);
+		return NULL;
+	}
+
 	FILE* file = fopen(path, "rb");
 	if (file == NULL) {
 		LOG_ERROR("ui", "Failed to open font file: %s", path);

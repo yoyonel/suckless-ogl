@@ -17,6 +17,12 @@ static const uint32_t TRACY_COLOR_TEXTURE_UPLOAD_FULL = 0xFF8800;
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
+	if (!is_safe_path(path)) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Security Violation: Unsafe path: %s", path);
+		return NULL;
+	}
+
 	CLEANUP_FILE FILE* file = fopen(path, "rb");
 	if (!file) {
 		LOG_ERROR("suckless-ogl.texture",
