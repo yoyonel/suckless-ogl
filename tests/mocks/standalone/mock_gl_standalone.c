@@ -175,10 +175,29 @@ void glDisable(GLenum cap)
 	(void)cap;
 }
 
+void glActiveTexture(GLenum texture)
+{
+	(void)texture;
+}
+
 GLboolean glIsEnabled(GLenum cap)
 {
 	(void)cap;
 	return GL_FALSE;
+}
+
+const GLchar* glGetString(GLenum name)
+{
+	switch (name) {
+	case GL_VENDOR:
+		return "Mock Vendor";
+	case GL_RENDERER:
+		return "Mock Renderer";
+	case GL_VERSION:
+		return "Mock Version 1.0";
+	default:
+		return NULL;
+	}
 }
 
 /* Texture Mocks (needed for test_texture_toctou) */

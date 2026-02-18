@@ -49,7 +49,13 @@ typedef long GLintptr;
 #define GL_REPEAT 0x2901
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_NO_ERROR 0
+#define GL_VENDOR 0x1F00
+#define GL_RENDERER 0x1F01
+#define GL_VERSION 0x1F02
+#define GL_TEXTURE0 0x84C0
 
+const GLchar* glGetString(GLenum name);
+void glActiveTexture(GLenum texture);
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
                     const GLint* length);

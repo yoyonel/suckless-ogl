@@ -21,6 +21,10 @@ typedef long GLintptr;
 #define DEFAULT_BUFFER_ID 123
 #define DEFAULT_VAO_ID 456
 
+#define GL_VENDOR 0x1F00
+#define GL_RENDERER 0x1F01
+#define GL_VERSION 0x1F02
+
 /* Shader & Program APIs */
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
