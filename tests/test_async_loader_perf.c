@@ -26,7 +26,7 @@ static AsyncLoader* loader;
 
 void setUp(void)
 {
-	loader = async_loader_create();
+	loader = async_loader_create(NULL);
 }
 
 void tearDown(void)

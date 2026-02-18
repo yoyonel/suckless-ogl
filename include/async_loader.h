@@ -59,11 +59,14 @@ typedef struct AsyncRequest {
  */
 typedef struct AsyncLoader AsyncLoader;
 
+struct TracyManager;
+
 /**
  * @brief Creates and initializes a new async loader instance.
+ * @param mgr The Tracy instrumentation manager.
  * @return Pointer to the new loader, or NULL on failure.
  */
-AsyncLoader* async_loader_create(void);
+AsyncLoader* async_loader_create(struct TracyManager* mgr);
 
 /**
  * @brief Destroys the async loader and frees resources.

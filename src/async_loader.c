@@ -5,13 +5,11 @@
 #include "perf_timer.h"
 #include "simd_utils.h"
 #include "texture.h"
+#include "tracy_manager.h"
 #include <pthread.h>
 #include <stb_image.h>
 #include <stdbool.h>
 #include <string.h>
-#ifdef TRACY_ENABLE
-#include "tracy/TracyC.h"
-#endif
 
 enum { MSG_BUF_SIZE = 128 };
 
@@ -23,102 +21,12 @@ struct AsyncLoader {
 	volatile bool running;
 	volatile bool has_pending_work;
 	PerfTimer sys_timer;
+	TracyManager* tracy_mgr;
 };
 
-#ifdef TRACY_ENABLE
-static TracyCZoneCtx
-    active_state_ctx;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-#define ASYNC_STATE_COUNT 7
-
-static void transition_tracy_state(AsyncState new_state)
-{
-	const int active = 1;
-	const uint32_t color_idle = 0x888888;
-	const uint32_t color_pending = 0xAAAA00;
-	const uint32_t color_loading = 0x00AA00;
-	const uint32_t color_ready = 0x00FFAA;
-	const uint32_t color_failed = 0xFF0000;
-
-	TracyCFiberEnter("Async Status");
-	if (active_state_ctx.id != 0) {
-		TracyCZoneEnd(active_state_ctx);
-		active_state_ctx.id = 0;
-	}
-
-	switch (new_state) {
-		case ASYNC_IDLE: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async IDLE", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_idle};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_PENDING: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async PENDING", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_pending};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_LOADING: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async LOADING", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_loading};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_WAITING_FOR_PBO: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async WAIT_PBO", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_pending};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_CONVERTING: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async CONVERT", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_loading};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_READY: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async READY", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_ready};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-		case ASYNC_FAILED: {
-			static const struct ___tracy_source_location_data
-			    srcloc = {"Async FAILED", __func__, TracyFile,
-			              (uint32_t)__LINE__, color_failed};
-			active_state_ctx =
-			    ___tracy_emit_zone_begin(&srcloc, active);
-			break;
-		}
-	}
-	TracyCFiberLeave;
-}
-
-static void cleanup_tracy_states(void)
-{
-	if (active_state_ctx.id != 0) {
-		TracyCFiberEnter("Async Status");
-		TracyCZoneEnd(active_state_ctx);
-		active_state_ctx.id = 0;
-		TracyCFiberLeave;
-	}
-}
-#else
-#define transition_tracy_state(s) ((void)0)
-#define cleanup_tracy_states() ((void)0)
-#endif
+#define transition_tracy_state(s) \
+	tracy_manager_async_transition(loader->tracy_mgr, s)
+#define cleanup_tracy_states() tracy_manager_async_end(loader->tracy_mgr)
 
 static bool async_load_data(const char* path, float** out_data, int* width,
                             int* height, int* channels)
@@ -294,7 +202,7 @@ static void* async_worker_func(void* arg)
 	return NULL;
 }
 
-AsyncLoader* async_loader_create(void)
+AsyncLoader* async_loader_create(struct TracyManager* mgr)
 {
 	AsyncLoader* loader = (AsyncLoader*)calloc(1, sizeof(AsyncLoader));
 	if (!loader) {
@@ -320,6 +228,7 @@ AsyncLoader* async_loader_create(void)
 	}
 
 	loader->running = true;
+	loader->tracy_mgr = mgr;
 	perf_timer_start(&loader->sys_timer);
 	transition_tracy_state(ASYNC_IDLE);
 
