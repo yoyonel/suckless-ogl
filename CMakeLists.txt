@@ -169,21 +169,25 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-# 4. GLFW (Force FetchContent for Host IDE Support)
-# We deliberately skip pkg-config to ensure headers are available in build/_deps
-# This allows clangd on the host to index them even if they are not installed on the host system.
-message(STATUS "Forcing GLFW3 FetchContent for IDE compatibility...")
-FetchContent_Declare(
-    glfw
-    GIT_REPOSITORY https://github.com/glfw/glfw.git
-    GIT_TAG        3.3.8
-)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(glfw)
-set(GLFW3_LIBRARIES glfw)
+option(BUILD_APP "Build the main application" ON)
+
+if(BUILD_APP)
+    # 4. GLFW (Force FetchContent for Host IDE Support)
+    # We deliberately skip pkg-config to ensure headers are available in build/_deps
+    # This allows clangd on the host to index them even if they are not installed on the host system.
+    message(STATUS "Forcing GLFW3 FetchContent for IDE compatibility...")
+    FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.3.8
+    )
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(glfw)
+    set(GLFW3_LIBRARIES glfw)
+endif()
 
 # 5. cJSON (Static Build - CONFIGURATION AMÉLIORÉE)
 message(STATUS "Fetching cJSON...")
@@ -255,96 +259,98 @@ elseif(ENABLE_ASAN)
     set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_PROFILING OFF)
 endif()
 
-# App target
-add_executable(app ${SOURCES})
+if(BUILD_APP)
+    # App target
+    add_executable(app ${SOURCES})
 
-# Apply Clang-Tidy only to this target
-if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
-    set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
-endif()
-
-# Target properties and includes
-target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
-target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
-
-# Link avec la version statique de cJSON
-find_package(Threads REQUIRED)
-target_link_libraries(app PRIVATE
-    cglm
-    glad
-    cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
-    ${GLFW3_LIBRARIES}
-    m
-    dl
-    Threads::Threads
-)
-
-# Optional GameMode integration for performance optimization
-# Requires both the library AND the header to be installed
-find_library(GAMEMODE_LIB NAMES gamemode)
-find_path(GAMEMODE_INCLUDE_DIR NAMES gamemode_client.h)
-if(GAMEMODE_LIB AND GAMEMODE_INCLUDE_DIR)
-    message(STATUS "GameMode found: ${GAMEMODE_LIB}")
-    message(STATUS "GameMode headers: ${GAMEMODE_INCLUDE_DIR}")
-    target_compile_definitions(app PRIVATE HAVE_GAMEMODE)
-    target_include_directories(app PRIVATE ${GAMEMODE_INCLUDE_DIR})
-    target_link_libraries(app PRIVATE ${GAMEMODE_LIB})
-else()
-    if(GAMEMODE_LIB AND NOT GAMEMODE_INCLUDE_DIR)
-        message(STATUS "GameMode library found but headers missing - install libgamemode-dev")
-    endif()
-    message(STATUS "GameMode not available - using native scheduling fallback")
-endif()
-
-target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
-
-# Compiler flags
-# Compiler flags
-if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(app PRIVATE -Wall -Wextra)
-
-    # Sentinel: Security Hardening Flags
-    # -fstack-protector-strong: Protects against stack buffer overflows
-    # -Wformat -Wformat-security: Warns about unsafe format string usage
-    target_compile_options(app PRIVATE
-        -fstack-protector-strong
-        -Wformat
-        -Wformat-security
-    )
-
-    # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
-    # (Requires optimization level -O1 or higher)
-    target_compile_definitions(app PRIVATE _FORTIFY_SOURCE=2)
-
-    # Linker Hardening:
-    # -Wl,-z,relro: Read-only Relocations (protects GOT)
-    # -Wl,-z,now: Immediate Binding (protects PLT)
-    # -Wl,-z,noexecstack: Prevents code execution on the stack
-    target_link_options(app PRIVATE
-        -Wl,-z,relro
-        -Wl,-z,now
-        -Wl,-z,noexecstack
-    )
-
-    # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind)
-    # puissent reconstruire la pile d'appel (stack trace) correctement.
-    if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        target_compile_options(app PRIVATE -fno-omit-frame-pointer)
+    # Apply Clang-Tidy only to this target
+    if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
+        set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
     endif()
 
-    add_compile_definitions(_GNU_SOURCE)
-endif()
+    # Target properties and includes
+    target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
+    target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
 
-if(ENABLE_SHADER_OPTIMIZATION)
-    target_compile_definitions(app PRIVATE ENABLE_SHADER_OPTIMIZATION)
-endif()
+    # Link avec la version statique de cJSON
+    find_package(Threads REQUIRED)
+    target_link_libraries(app PRIVATE
+        cglm
+        glad
+        cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
+        ${GLFW3_LIBRARIES}
+        m
+        dl
+        Threads::Threads
+    )
 
-# Vérification post-build pour s'assurer que tout est statique
-add_custom_command(TARGET app POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Checking for dynamic dependencies..."
-    COMMAND ldd $<TARGET_FILE:app> || true
-    COMMENT "Binary dependencies check"
-)
+    # Optional GameMode integration for performance optimization
+    # Requires both the library AND the header to be installed
+    find_library(GAMEMODE_LIB NAMES gamemode)
+    find_path(GAMEMODE_INCLUDE_DIR NAMES gamemode_client.h)
+    if(GAMEMODE_LIB AND GAMEMODE_INCLUDE_DIR)
+        message(STATUS "GameMode found: ${GAMEMODE_LIB}")
+        message(STATUS "GameMode headers: ${GAMEMODE_INCLUDE_DIR}")
+        target_compile_definitions(app PRIVATE HAVE_GAMEMODE)
+        target_include_directories(app PRIVATE ${GAMEMODE_INCLUDE_DIR})
+        target_link_libraries(app PRIVATE ${GAMEMODE_LIB})
+    else()
+        if(GAMEMODE_LIB AND NOT GAMEMODE_INCLUDE_DIR)
+            message(STATUS "GameMode library found but headers missing - install libgamemode-dev")
+        endif()
+        message(STATUS "GameMode not available - using native scheduling fallback")
+    endif()
+
+    target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
+
+    # Compiler flags
+    # Compiler flags
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        target_compile_options(app PRIVATE -Wall -Wextra)
+
+        # Sentinel: Security Hardening Flags
+        # -fstack-protector-strong: Protects against stack buffer overflows
+        # -Wformat -Wformat-security: Warns about unsafe format string usage
+        target_compile_options(app PRIVATE
+            -fstack-protector-strong
+            -Wformat
+            -Wformat-security
+        )
+
+        # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
+        # (Requires optimization level -O1 or higher)
+        target_compile_definitions(app PRIVATE _FORTIFY_SOURCE=2)
+
+        # Linker Hardening:
+        # -Wl,-z,relro: Read-only Relocations (protects GOT)
+        # -Wl,-z,now: Immediate Binding (protects PLT)
+        # -Wl,-z,noexecstack: Prevents code execution on the stack
+        target_link_options(app PRIVATE
+            -Wl,-z,relro
+            -Wl,-z,now
+            -Wl,-z,noexecstack
+        )
+
+        # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind)
+        # puissent reconstruire la pile d'appel (stack trace) correctement.
+        if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+            target_compile_options(app PRIVATE -fno-omit-frame-pointer)
+        endif()
+
+        add_compile_definitions(_GNU_SOURCE)
+    endif()
+
+    if(ENABLE_SHADER_OPTIMIZATION)
+        target_compile_definitions(app PRIVATE ENABLE_SHADER_OPTIMIZATION)
+    endif()
+
+    # Vérification post-build pour s'assurer que tout est statique
+    add_custom_command(TARGET app POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Checking for dynamic dependencies..."
+        COMMAND ldd $<TARGET_FILE:app> || true
+        COMMENT "Binary dependencies check"
+    )
+endif()
 
 # --- Unit Testing ---
 enable_testing()

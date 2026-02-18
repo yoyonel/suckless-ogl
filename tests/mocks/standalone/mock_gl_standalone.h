@@ -2,20 +2,7 @@
 #define MOCK_GL_STANDALONE_H
 
 #include <stddef.h>
-
-/* Define types compatible with GLAD/OpenGL */
-typedef unsigned int GLuint;
-typedef unsigned int GLenum;
-typedef int GLint;
-typedef int GLsizei;
-typedef char GLchar;
-typedef unsigned char GLboolean;
-typedef float GLfloat;
-typedef long GLsizeiptr;
-typedef long GLintptr;
-
-#define GL_FALSE 0
-#define GL_TRUE 1
+#include "glad/glad.h"
 
 /* Defaults */
 #define DEFAULT_BUFFER_ID 123

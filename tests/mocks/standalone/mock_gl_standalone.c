@@ -252,8 +252,9 @@ void glDeleteTextures(GLsizei n, const GLuint* textures)
 
 void glGetIntegerv(GLenum pname, GLint* data)
 {
-	(void)pname;
-	(void)data;
+	if (pname == GL_CONTEXT_FLAGS && data) {
+		*data = GL_CONTEXT_FLAG_DEBUG_BIT;
+	}
 }
 
 /* -------------------------------------------------------------------------- */
@@ -396,4 +397,20 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 }
 void glPopDebugGroup(void)
 {
+}
+
+void glDebugMessageCallback(GLDEBUGPROC callback, const void *userParam)
+{
+	(void)callback;
+	(void)userParam;
+}
+
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity, GLsizei count, const GLuint *ids, GLboolean enabled)
+{
+	(void)source;
+	(void)type;
+	(void)severity;
+	(void)count;
+	(void)ids;
+	(void)enabled;
 }

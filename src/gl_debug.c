@@ -104,34 +104,31 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 
 	entry->count++;
 
-	/* Log only the first occurrence to avoid flooding, matching Rust
-	 * behavior */
-	if (entry->count == 1) {
-		const char *src_str = get_source_str(source);
-		const char *type_str = get_type_str(type);
-		const char *sev_str = get_severity_str(severity);
+	/* Log ALL occurrences to ensure visibility of state inconsistencies */
+	const char *src_str = get_source_str(source);
+	const char *type_str = get_type_str(type);
+	const char *sev_str = get_severity_str(severity);
 
-		if (type == GL_DEBUG_TYPE_ERROR ||
-		    severity == GL_DEBUG_SEVERITY_HIGH) {
-			LOG_ERROR(LOG_TAG,
-			          "id: 0x%X, source: %s, type: %s, severity: "
-			          "%s, message: %s",
-			          message_id, src_str, type_str, sev_str,
-			          message);
-		} else if (severity == GL_DEBUG_SEVERITY_MEDIUM ||
-		           severity == GL_DEBUG_SEVERITY_LOW) {
-			LOG_WARNING(LOG_TAG,
-			            "id: 0x%X, source: %s, type: %s, severity: "
-			            "%s, message: %s",
-			            message_id, src_str, type_str, sev_str,
-			            message);
-		} else {
-			LOG_INFO(LOG_TAG,
-			         "id: 0x%X, source: %s, type: %s, severity: "
-			         "%s, message: %s",
-			         message_id, src_str, type_str, sev_str,
-			         message);
-		}
+	if (type == GL_DEBUG_TYPE_ERROR ||
+	    severity == GL_DEBUG_SEVERITY_HIGH) {
+		LOG_ERROR(LOG_TAG,
+		          "id: 0x%X, source: %s, type: %s, severity: "
+		          "%s, message: %s",
+		          message_id, src_str, type_str, sev_str,
+		          message);
+	} else if (severity == GL_DEBUG_SEVERITY_MEDIUM ||
+	           severity == GL_DEBUG_SEVERITY_LOW) {
+		LOG_WARNING(LOG_TAG,
+		            "id: 0x%X, source: %s, type: %s, severity: "
+		            "%s, message: %s",
+		            message_id, src_str, type_str, sev_str,
+		            message);
+	} else {
+		LOG_INFO(LOG_TAG,
+		         "id: 0x%X, source: %s, type: %s, severity: "
+		         "%s, message: %s",
+		         message_id, src_str, type_str, sev_str,
+		         message);
 	}
 }
 
