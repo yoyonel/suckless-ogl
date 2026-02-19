@@ -6,7 +6,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "mem.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>

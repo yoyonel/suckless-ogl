@@ -1,8 +1,9 @@
 #include "ui.h"
 
 #include "glad/glad.h"
+#include "io.h"
 #include "log.h"
-#include "mem.h"
+#include "render_utils.h"
 #include "shader.h"
 #include "utils.h"
 #include <cglm/affine.h>  // IWYU pragma: keep
@@ -57,38 +58,6 @@ typedef struct {
 // OpenGL State Management
 // ============================================================================
 
-typedef struct {
-	GLboolean depth_enabled;
-	GLboolean blend_enabled;
-	GLint polygon_mode[2];
-} GLStateBackup;
-
-static GLStateBackup save_gl_state(void)
-{
-	GLStateBackup state;
-	state.depth_enabled = glIsEnabled(GL_DEPTH_TEST);
-	state.blend_enabled = glIsEnabled(GL_BLEND);
-	glGetIntegerv(GL_POLYGON_MODE, state.polygon_mode);
-	return state;
-}
-
-static void restore_gl_state(const GLStateBackup* state)
-{
-	if (state->depth_enabled != 0U) {
-		glEnable(GL_DEPTH_TEST);
-	} else {
-		glDisable(GL_DEPTH_TEST);
-	}
-
-	if (state->blend_enabled != 0U) {
-		glEnable(GL_BLEND);
-	} else {
-		glDisable(GL_BLEND);
-	}
-
-	glPolygonMode(GL_FRONT_AND_BACK, state->polygon_mode[0]);
-}
-
 static void setup_ui_render_state(void)
 {
 	glEnable(GL_BLEND);
@@ -100,49 +69,6 @@ static void setup_ui_render_state(void)
 // ============================================================================
 // Font Loading Helpers
 // ============================================================================
-
-static unsigned char* read_font_file(const char* path, size_t* out_size)
-{
-	if (!is_safe_path(path)) {
-		LOG_ERROR("ui", "Security Violation: Unsafe path: %s", path);
-		return NULL;
-	}
-
-	FILE* file = fopen(path, "rb");
-	if (file == NULL) {
-		LOG_ERROR("ui", "Failed to open font file: %s", path);
-		return NULL;
-	}
-
-	(void)fseek(file, 0, SEEK_END);
-	const long file_size = ftell(file);
-	(void)fseek(file, 0, SEEK_SET);
-
-	if (file_size <= 0 || (size_t)file_size > MAX_FONT_FILE_SIZE) {
-		LOG_ERROR("ui", "Invalid font file size: %ld bytes", file_size);
-		(void)fclose(file);
-		return NULL;
-	}
-
-	unsigned char* buffer = malloc((size_t)file_size);
-	if (buffer == NULL) {
-		LOG_ERROR("ui", "Failed to allocate font buffer");
-		(void)fclose(file);
-		return NULL;
-	}
-
-	const size_t bytes_read = fread(buffer, 1, (size_t)file_size, file);
-	(void)fclose(file);
-
-	if (bytes_read != (size_t)file_size) {
-		LOG_ERROR("ui", "Failed to read complete font file");
-		free(buffer);
-		return NULL;
-	}
-
-	*out_size = (size_t)file_size;
-	return buffer;
-}
 
 static int create_font_atlas(unsigned char* font_buffer, float font_size,
                              UIContext* ui_context)
@@ -274,18 +200,18 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 
 	// Load font file
 	size_t font_buffer_size = 0;
-	unsigned char* font_buffer =
-	    read_font_file(font_path, &font_buffer_size);
-	if (font_buffer == NULL) {
+	CLEANUP_FREE unsigned char* font_buf = (unsigned char*)io_read_file(
+	    font_path, MAX_FONT_FILE_SIZE, &font_buffer_size);
+	if (font_buf == NULL) {
 		return 0;
 	}
 
 	// Create font atlas
-	if (!create_font_atlas(font_buffer, font_size, ui_context)) {
-		free(font_buffer);
+	if (!create_font_atlas(font_buf, font_size, ui_context)) {
+		/* font_buf is CLEANUP_FREE, no manual free needed */
+		RAII_SATISFY_FREE(font_buf);
 		return 0;
 	}
-	free(font_buffer);
 
 	// Setup vertex buffers
 	if (!setup_vertex_buffers(ui_context)) {
@@ -358,7 +284,7 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 	}
 
 	// Save and setup OpenGL state
-	const GLStateBackup saved_state = save_gl_state();
+	const GLStateBackup saved_state = render_utils_save_state();
 	setup_ui_render_state();
 
 	// Activate shader
@@ -419,7 +345,7 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 	glUseProgram(0);
 
 	// Restore OpenGL state
-	restore_gl_state(&saved_state);
+	render_utils_restore_state(&saved_state);
 }
 
 // NOLINTNEXTLINE(readability-identifier-length)
@@ -440,7 +366,7 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 	}
 
 	// Save and setup OpenGL state
-	const GLStateBackup saved_state = save_gl_state();
+	const GLStateBackup saved_state = render_utils_save_state();
 	setup_ui_render_state();
 
 	// Activate shader
@@ -458,8 +384,9 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 	shader_set_int(ui_context->shader, "useTexture",
 	               0); /* Disable Texture for Rect */
 
-	// Bind vertex array (No texture binding needed, but VAO is required)
-	// We bind texture even if ignored to silence driver warnings about Unit
+	// Bind vertex array (No texture binding needed, but VAO is
+	// required) We bind texture even if ignored to silence driver
+	// warnings about Unit
 	// 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
@@ -489,7 +416,7 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 	glUseProgram(0);
 
 	// Restore OpenGL state
-	restore_gl_state(&saved_state);
+	render_utils_restore_state(&saved_state);
 }
 
 void ui_destroy(UIContext* ui_context)
@@ -564,7 +491,7 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 		return;
 	}
 
-	const GLStateBackup saved_state = save_gl_state();
+	const GLStateBackup saved_state = render_utils_save_state();
 	setup_ui_render_state();
 
 	shader_use(ui_context->spinner_shader);
@@ -619,7 +546,7 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
-	restore_gl_state(&saved_state);
+	render_utils_restore_state(&saved_state);
 }
 
 // NOLINTNEXTLINE(readability-identifier-length)
@@ -633,7 +560,7 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 	}
 
 	// Save and setup OpenGL state
-	const GLStateBackup saved_state = save_gl_state();
+	const GLStateBackup saved_state = render_utils_save_state();
 	setup_ui_render_state();
 
 	// Activate shader
@@ -684,5 +611,5 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
-	restore_gl_state(&saved_state);
+	render_utils_restore_state(&saved_state);
 }
