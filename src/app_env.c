@@ -138,7 +138,7 @@ int app_load_env_map(App* app, const char* filename)
 		return 0;
 	}
 
-	char path[256];
+	char path[MAX_PATH_LENGTH];
 	if (!safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
 	                   filename)) {
 		LOG_ERROR("suckless-ogl.app", "Filename too long: %s",
