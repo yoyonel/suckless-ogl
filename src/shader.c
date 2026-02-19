@@ -2,6 +2,7 @@
 
 #include "app_settings.h"
 #include "glad/glad.h"
+#include "io.h"
 #include "log.h"
 #include "utils.h"
 #include <stdbool.h>
@@ -67,77 +68,6 @@ enum { HEADER_TAG_LEN = 7 };
 /* Forward declaration */
 static bool process_source(IncludeContext* ctx, const char* current_file_src,
                            const char* current_file_path);
-
-/*
- * Reads an entire file into a null-terminated string.
- * This is the only place doing raw I/O and malloc for file content.
- */
-static char* load_file_into_ram(const char* path)
-{
-	if (!is_safe_relative_path(path)) {
-		LOG_ERROR("suckless-ogl.shader",
-		          "Security Violation: Unsafe path blocked: %s", path);
-		return NULL;
-	}
-
-	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
-	if (!file_ptr) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to open file: %s",
-		          path);
-		return NULL;
-	}
-
-	if (fseek(file_ptr, 0, SEEK_END) != 0) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to seek end: %s",
-		          path);
-		RAII_SATISFY_FILE(file_ptr);
-		return NULL;
-	}
-
-	long len = ftell(file_ptr);
-	if (len < 0) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to tell size: %s",
-		          path);
-		RAII_SATISFY_FILE(file_ptr);
-		return NULL;
-	}
-
-	/* Check against MAX_SHADER_SOURCE_SIZE to prevent DoS */
-	if (len > MAX_SHADER_SOURCE_SIZE) {
-		LOG_ERROR("suckless-ogl.shader",
-		          "File too large: %s (%ld > %d)", path, len,
-		          MAX_SHADER_SOURCE_SIZE);
-		RAII_SATISFY_FILE(file_ptr);
-		return NULL;
-	}
-
-	size_t size = (size_t)len;
-	CLEANUP_FREE char* buf = safe_calloc(size + 1, 1);
-	if (!buf) {
-		LOG_ERROR("suckless-ogl.shader", "Allocation failed: %s", path);
-		RAII_SATISFY_FILE(file_ptr);
-		return NULL;
-	}
-
-	if (fseek(file_ptr, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.shader", "Failed to seek set: %s",
-		          path);
-		RAII_SATISFY_FILE(file_ptr);
-		RAII_SATISFY_FREE(buf);
-		return NULL;
-	}
-
-	size_t read_count = fread(buf, 1, size, file_ptr);
-	if (read_count != size) {
-		LOG_ERROR("suckless-ogl.shader", "Incomplete read: %s", path);
-		RAII_SATISFY_FILE(file_ptr);
-		RAII_SATISFY_FREE(buf);
-		return NULL;
-	}
-
-	RAII_SATISFY_FILE(file_ptr);
-	return TRANSFER_OWNERSHIP(buf);
-}
 
 static void ctx_add_buffer(IncludeContext* ctx, char* data)
 {
@@ -263,18 +193,19 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
 	}
 
 	/* Load the included file */
-	char* inc_src = load_file_into_ram(resolved_path);
-	if (!inc_src) {
+	char* include_src =
+	    io_read_file(resolved_path, MAX_SHADER_SOURCE_SIZE, NULL);
+	if (!include_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Failed to resolve include: %s (in %s)", path_term,
 		          current_file_path);
 		return false;
 	}
 
-	ctx_add_buffer(ctx, inc_src);
+	ctx_add_buffer(ctx, include_src);
 
 	/* Recursively process the included content */
-	return process_source(ctx, inc_src, resolved_path);
+	return process_source(ctx, include_src, resolved_path);
 }
 
 /*
@@ -483,7 +414,8 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
                                     int count)
 {
 	/* 1. Load root file */
-	CLEANUP_FREE char* root_src = load_file_into_ram(path);
+	CLEANUP_FREE char* root_src =
+	    io_read_file(path, MAX_SHADER_SOURCE_SIZE, NULL);
 	if (!root_src) {
 		return NULL;
 	}
@@ -517,20 +449,22 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
 	}
 
 	/* 3. Setup Context */
-	CLEANUP_CTX IncludeContext ctx = {0};
+	IncludeContext ctx = {0};
 	ctx_add_buffer(&ctx, TRANSFER_OWNERSHIP(root_src));
 
 	/* 4. Recursively parse and build chunk list */
 	if (!process_source(&ctx, ctx.buffers_head->data, path)) {
+		ctx_free(&ctx);
 		return NULL;
 	}
 
 	/* 5. Single Allocation for final result */
-	CLEANUP_FREE char* final_src = safe_calloc(ctx.total_size + 1, 1);
+	char* final_src = safe_calloc(ctx.total_size + 1, 1);
 	if (!final_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Final allocation failed (%lu bytes)",
 		          ctx.total_size);
+		ctx_free(&ctx);
 		return NULL;
 	}
 
@@ -546,7 +480,9 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
 	}
 	*wptr = '\0'; /* Null terminate */
 
-	return TRANSFER_OWNERSHIP(final_src);
+	char* result = TRANSFER_OWNERSHIP(final_src);
+	ctx_free(&ctx);
+	return result;
 }
 
 char* shader_read_file(const char* path)
