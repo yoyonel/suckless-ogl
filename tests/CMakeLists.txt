@@ -53,6 +53,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_path_security_standalone\\
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_cleanup\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -240,6 +241,40 @@ target_link_libraries(test_billboard_overflow PRIVATE cglm)
 
 add_test(NAME test_billboard_overflow
          COMMAND test_billboard_overflow)
+
+# =============================================================================
+# TEST GPU PROFILER REPRO (MOCKED)
+# =============================================================================
+add_executable(test_gpu_profiler_repro
+    test_gpu_profiler_repro.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/gpu_profiler.c
+    ${CMAKE_SOURCE_DIR}/src/adaptive_sampler.c
+    ${CMAKE_SOURCE_DIR}/src/log.c
+    ${CMAKE_SOURCE_DIR}/src/tracy_log.c
+    ${CMAKE_SOURCE_DIR}/src/metric_stack.c
+)
+if(ENABLE_TRACY)
+    target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_gpu_profiler_repro PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+if(ENABLE_TRACY)
+    target_include_directories(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+target_link_libraries(test_gpu_profiler_repro PRIVATE cglm m)
+
+add_test(NAME test_gpu_profiler_repro
+         COMMAND test_gpu_profiler_repro)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION
