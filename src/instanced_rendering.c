@@ -10,7 +10,9 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
 	group->instance_count = count;
 	group->vao = 0;  // Sera créé dans bind_mesh
 
-	glGenBuffers(1, &group->instance_vbo);
+	if (group->instance_vbo == 0) {
+		glGenBuffers(1, &group->instance_vbo);
+	}
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(count * sizeof(SphereInstance)), data,

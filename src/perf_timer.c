@@ -92,9 +92,13 @@ void gpu_timer_start(GPUTimer* timer)
 		return;
 	}
 
-	// Générer les query objects
-	glGenQueries(1, &timer->query_start);
-	glGenQueries(1, &timer->query_end);
+	// Générer les query objects (lazy init)
+	if (timer->query_start == 0) {
+		glGenQueries(1, &timer->query_start);
+	}
+	if (timer->query_end == 0) {
+		glGenQueries(1, &timer->query_end);
+	}
 
 	// Enregistrer le timestamp actuel sur le GPU
 	glQueryCounter(timer->query_start, GL_TIMESTAMP);

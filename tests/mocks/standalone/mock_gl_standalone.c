@@ -1,6 +1,7 @@
 #include "mock_gl_standalone.h"
 
-#include <stdio.h> /* For definition of NULL if needed, though not used here */
+#include <stdio.h>
+#include <string.h>
 
 /* Control Variables */
 static GLuint g_generated_buffer_id = DEFAULT_BUFFER_ID;
@@ -11,6 +12,15 @@ static int g_buffer_sub_data_call_count = 0;
 static GLsizeiptr g_last_buffer_data_size = 0;
 static GLsizeiptr g_last_buffer_sub_data_size = 0;
 
+/* Query Control */
+static int g_gen_queries_call_count = 0;
+static int g_delete_queries_call_count = 0;
+static GLuint64 g_query_result = 1000; /* Default non-zero result */
+
+/* Debug Control */
+static GLDEBUGPROC g_debug_callback = NULL;
+static const void* g_debug_user_param = NULL;
+
 void mock_gl_reset_calls(void)
 {
 	g_generated_buffer_id = DEFAULT_BUFFER_ID;
@@ -20,6 +30,13 @@ void mock_gl_reset_calls(void)
 	g_buffer_sub_data_call_count = 0;
 	g_last_buffer_data_size = 0;
 	g_last_buffer_sub_data_size = 0;
+
+	g_gen_queries_call_count = 0;
+	g_delete_queries_call_count = 0;
+	g_query_result = 1000;
+
+	g_debug_callback = NULL;
+	g_debug_user_param = NULL;
 }
 
 GLuint mock_gl_get_generated_buffer_id(void)
@@ -60,6 +77,31 @@ GLsizeiptr mock_gl_get_last_buffer_data_size(void)
 GLsizeiptr mock_gl_get_last_buffer_sub_data_size(void)
 {
 	return g_last_buffer_sub_data_size;
+}
+
+int mock_gl_get_gen_queries_call_count(void)
+{
+	return g_gen_queries_call_count;
+}
+
+int mock_gl_get_delete_queries_call_count(void)
+{
+	return g_delete_queries_call_count;
+}
+
+void mock_gl_set_query_result(GLuint id, GLuint64 result)
+{
+	(void)id;
+	g_query_result = result;
+}
+
+void mock_gl_trigger_debug_callback(GLenum source, GLenum type, GLuint id,
+                                    GLenum severity, const char* message)
+{
+	if (g_debug_callback) {
+		g_debug_callback(source, type, id, severity, (GLsizei)strlen(message),
+		                 message, g_debug_user_param);
+	}
 }
 
 /* -------------------------------------------------------------------------- */
@@ -253,7 +295,80 @@ void glDeleteTextures(GLsizei n, const GLuint* textures)
 void glGetIntegerv(GLenum pname, GLint* data)
 {
 	(void)pname;
-	(void)data;
+	if (data) {
+		/* Return DEBUG_BIT for GL_CONTEXT_FLAGS */
+		if (pname == 0x821E) { /* GL_CONTEXT_FLAGS */
+			*data = 0x00000002; /* GL_CONTEXT_FLAG_DEBUG_BIT */
+		} else {
+			*data = 0;
+		}
+	}
+}
+
+/* Query Mocks */
+void glGenQueries(GLsizei n, GLuint* ids)
+{
+	g_gen_queries_call_count++;
+	for (int i = 0; i < n; i++) {
+		ids[i] = DEFAULT_QUERY_ID + i;
+	}
+}
+
+void glDeleteQueries(GLsizei n, const GLuint* ids)
+{
+	(void)ids;
+	g_delete_queries_call_count++;
+	(void)n;
+}
+
+void glQueryCounter(GLuint id, GLenum target)
+{
+	(void)id;
+	(void)target;
+}
+
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params)
+{
+	(void)id;
+	(void)pname;
+	if (params) {
+		*params = GL_TRUE; /* Available */
+	}
+}
+
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params)
+{
+	(void)id;
+	(void)pname;
+	if (params) {
+		*params = g_query_result;
+	}
+}
+
+void glFlush(void)
+{
+}
+
+void glFinish(void)
+{
+}
+
+/* Debug Mocks */
+void glDebugMessageCallback(GLDEBUGPROC callback, const void* userParam)
+{
+	g_debug_callback = callback;
+	g_debug_user_param = userParam;
+}
+
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity,
+                           GLsizei count, const GLuint* ids, GLboolean enabled)
+{
+	(void)source;
+	(void)type;
+	(void)severity;
+	(void)count;
+	(void)ids;
+	(void)enabled;
 }
 
 /* -------------------------------------------------------------------------- */
