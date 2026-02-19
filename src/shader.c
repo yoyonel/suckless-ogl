@@ -68,30 +68,13 @@ enum { HEADER_TAG_LEN = 7 };
 static bool process_source(IncludeContext* ctx, const char* current_file_src,
                            const char* current_file_path);
 
-static bool is_safe_path(const char* path)
-{
-	if (strstr(path, "..")) {
-		return false;
-	}
-	if (path[0] == '/') {
-		return false;
-	}
-	if (strchr(path, '\\')) {
-		return false;
-	}
-	if (strstr(path, ":")) {
-		return false;
-	}
-	return true;
-}
-
 /*
  * Reads an entire file into a null-terminated string.
  * This is the only place doing raw I/O and malloc for file content.
  */
 static char* load_file_into_ram(const char* path)
 {
-	if (!is_safe_path(path)) {
+	if (!is_safe_relative_path(path)) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Security Violation: Unsafe path blocked: %s", path);
 		return NULL;
@@ -237,7 +220,7 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
                                       const char* path_term,
                                       const char* current_file_path)
 {
-	if (!is_safe_path(path_term)) {
+	if (!is_safe_relative_path(path_term)) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Security Violation: Unsafe include path detected: "
 		          "%s (in %s)",
