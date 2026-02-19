@@ -1,6 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"structInstanceData.html":[5,0,41],
 "structInstanceData.html#a068536f2c0889153fa6341fc2ff162ad":[5,0,41,2],
 "structInstanceData.html#a3936ebb68a345bdbd5db631b2584a881":[5,0,41,3],
 "structInstanceData.html#a3b0cebd54854de3a98a8a1ec79c3db12":[5,0,41,5],
@@ -249,5 +248,6 @@ var NAVTREEINDEX7 =
 "structWhiteBalanceParams.html#a1090618e65688ffbd497f273cf40628f":[5,0,72,1],
 "structWhiteBalanceParams.html#a5c1f69be4b6a53d7c413556da2c6d72d":[5,0,72,0],
 "texture_8c.html":[6,0,4,34],
-"texture_8c.html#a0d3c44efbe21ce365f8726603776fab5":[6,0,4,34,2]
+"texture_8c.html#a0d3c44efbe21ce365f8726603776fab5":[6,0,4,34,2],
+"texture_8c.html#a4c821497ea20a5b74199e3080c0f4a1c":[6,0,4,34,1]
 };

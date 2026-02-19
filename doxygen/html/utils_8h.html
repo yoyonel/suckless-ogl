@@ -306,6 +306,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa3f28e50cc06585ceeeb962f997f598c" id="r_aa3f28e50cc06585ceeeb962f997f598c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c">is_safe_filename</a> (const char *filename)</td></tr>
 <tr class="memdesc:aa3f28e50cc06585ceeeb962f997f598c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a filename to prevent path traversal and shell injection.  <br /></td></tr>
 <tr class="separator:aa3f28e50cc06585ceeeb962f997f598c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fca40fda3337b1d62d89a81293a18ec" id="r_a7fca40fda3337b1d62d89a81293a18ec"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a7fca40fda3337b1d62d89a81293a18ec">is_safe_relative_path</a> (const char *path)</td></tr>
+<tr class="memdesc:a7fca40fda3337b1d62d89a81293a18ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a relative path to prevent arbitrary file access.  <br /></td></tr>
+<tr class="separator:a7fca40fda3337b1d62d89a81293a18ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55529722f47ff4c9bc4b65d398008fc4" id="r_a55529722f47ff4c9bc4b65d398008fc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a> (FILE **file_ptr)</td></tr>
 <tr class="memdesc:a55529722f47ff4c9bc4b65d398008fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>FILE*</code>.  <br /></td></tr>
 <tr class="separator:a55529722f47ff4c9bc4b65d398008fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -542,6 +545,42 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the filename is safe, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a7fca40fda3337b1d62d89a81293a18ec" name="a7fca40fda3337b1d62d89a81293a18ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fca40fda3337b1d62d89a81293a18ec">&#9670;&#160;</a></span>is_safe_relative_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool is_safe_relative_path </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Validates a relative path to prevent arbitrary file access. </p>
+<p>Rejects absolute paths, parent directory traversal (".."), and platform-specific path features like backslashes or drive letters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The relative path to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the path is safe, false otherwise. </dd></dl>
 
 </div>
 </div>

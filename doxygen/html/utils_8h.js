@@ -9,6 +9,7 @@ var utils_8h =
     [ "cleanup_file", "utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4", null ],
     [ "cleanup_free", "utils_8h.html#a60d756fd34ef42d063535564a151e219", null ],
     [ "is_safe_filename", "utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c", null ],
+    [ "is_safe_relative_path", "utils_8h.html#a7fca40fda3337b1d62d89a81293a18ec", null ],
     [ "safe_calloc", "utils_8h.html#adbb98512b516893d07ffb8d439b807ea", null ],
     [ "safe_memcpy", "utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee", null ],
     [ "safe_memset", "utils_8h.html#a66f52a36a090fdc6ca2f3f91078c9f4f", null ],

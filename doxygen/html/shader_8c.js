@@ -10,7 +10,6 @@ var shader_8c =
     [ "ctx_free", "shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c", null ],
     [ "get_dir_from_path", "shader_8c.html#af175eada3763b4ece51e0344ee4a0da0", null ],
     [ "inject_defines_into_source", "shader_8c.html#accb74d7cb19fd2bdf7d928b84376fc9c", null ],
-    [ "is_safe_path", "shader_8c.html#af01fb0cf9ca997f812c57005fd737173", null ],
     [ "load_file_into_ram", "shader_8c.html#a2af39f53b97008c3ca89d9c3d176b321", null ],
     [ "parse_include_path", "shader_8c.html#adec70256cc2e6f4382eae7f1cd03cfec", null ],
     [ "process_source", "shader_8c.html#a3aeeed571399ca7ff98bc7dc73ca8d05", null ],
