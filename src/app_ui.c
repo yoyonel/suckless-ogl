@@ -6,6 +6,7 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "postprocess.h"
+#include "render_utils.h"
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
@@ -44,10 +45,8 @@ static const size_t UI_LOADING_TEXT_SIZE = 64;
 
 void app_draw_help_overlay(App* app)
 {
-	/* Setup strict 2D state again just in case */
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
+	const GLStateBackup saved_state = render_utils_save_state();
+	render_utils_setup_ui_state();
 
 	static const float HELP_START_X = 20.0F;
 	static const float HELP_START_Y = 60.0F;
@@ -109,8 +108,7 @@ void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[F9] Toggle Performance Mode", HELP_COLOR);
 	ui_layout_text(&layout, "[F12] Take Screenshot", HELP_COLOR);
 
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
+	render_utils_restore_state(&saved_state);
 }
 
 void draw_exposure_debug_text(App* app)
@@ -245,9 +243,8 @@ void app_draw_debug_overlay(App* app)
 {
 	/* Auto Exposure Debug Text */
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glDisable(GL_DEPTH_TEST);
+		const GLStateBackup saved_state = render_utils_save_state();
+		render_utils_setup_ui_state();
 
 		draw_exposure_debug_text(app);
 
@@ -266,13 +263,15 @@ void app_draw_debug_overlay(App* app)
 		}
 
 		/* Cleanup */
-		glEnable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+		render_utils_restore_state(&saved_state);
 	}
 }
 
 void app_render_ui(App* app)
 {
+	const GLStateBackup saved_state = render_utils_save_state();
+	render_utils_setup_ui_state();
+
 	/* --- Draw Main Info Overlay --- */
 	UILayout layout;
 	/* Start slightly offset from top-left */
@@ -394,8 +393,7 @@ void app_render_ui(App* app)
 		                app->height);
 	}
 
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
+	render_utils_restore_state(&saved_state);
 
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
 		app_draw_debug_overlay(app);

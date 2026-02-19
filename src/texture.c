@@ -1,6 +1,7 @@
 #include "texture.h"
 
 #include "gl_common.h"
+#include "io.h"
 #include "log.h"
 #include "profiler.h"
 #include "utils.h"
@@ -14,21 +15,24 @@ static const uint32_t TRACY_COLOR_TEXTURE_STORAGE = 0xAA55AA;
 static const uint32_t TRACY_COLOR_MIPMAP_GEN = 0x55AAAA;
 static const uint32_t TRACY_COLOR_TEXTURE_UPLOAD_FULL = 0xFF8800;
 
+enum { MAX_TEXTURE_FILE_SIZE = 64 * 1024 * 1024 };
+
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
-	CLEANUP_FILE FILE* file = fopen(path, "rb");
-	if (!file) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to open HDR image: %s", path);
+	size_t content_size = 0;
+	/* Limit to 64MB for textures */
+	CLEANUP_FREE unsigned char* content = (unsigned char*)io_read_file(
+	    path, MAX_TEXTURE_FILE_SIZE, &content_size);
+	if (!content) {
 		return NULL;
 	}
 
 	int img_width = 0;
 	int img_height = 0;
 	int img_channels = 0;
-	if (!stbi_info_from_file(file, &img_width, &img_height,
-	                         &img_channels)) {
+	if (!stbi_info_from_memory(content, (int)content_size, &img_width,
+	                           &img_height, &img_channels)) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to parse HDR image info: %s", path);
 		return NULL;
@@ -42,13 +46,8 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 		return NULL;
 	}
 
-	if (fseek(file, 0, SEEK_SET) != 0) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to reset file cursor: %s", path);
-		return NULL;
-	}
-
-	float* data = stbi_loadf_from_file(file, width, height, channels, 4);
+	float* data = stbi_loadf_from_memory(content, (int)content_size, width,
+	                                     height, channels, 4);
 	if (!data) {
 		LOG_ERROR("suckless-ogl.texture",
 		          "Failed to load HDR pixels: %s", path);
@@ -70,7 +69,6 @@ float* texture_load_pixels(const char* path, int* width, int* height,
 	         "HDR image loaded (CPU): %dx%d, channels=%d", *width, *height,
 	         *channels);
 
-	/* File is automatically closed by CLEANUP_FILE */
 	return data;
 }
 

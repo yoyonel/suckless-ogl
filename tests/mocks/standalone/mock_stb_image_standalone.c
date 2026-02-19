@@ -44,6 +44,14 @@ int stbi_info_from_file(FILE* f, int* x, int* y, int* comp)
 	return 1; /* Success */
 }
 
+int stbi_info_from_memory(const unsigned char* buffer, int len, int* x, int* y,
+                          int* comp)
+{
+	(void)buffer;
+	(void)len;
+	return stbi_info_from_file(NULL, x, y, comp);
+}
+
 float* stbi_loadf_from_memory(const unsigned char* buffer, int len, int* x,
                               int* y, int* channels_in_file,
                               int desired_channels)

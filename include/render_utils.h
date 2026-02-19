@@ -226,4 +226,34 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
                                                    size_t offset_albedo,
                                                    size_t offset_metallic);
 
+// -----------------------------------------------------------------------------
+// State Management
+// -----------------------------------------------------------------------------
+
+/**
+ * @brief Struct to backup common OpenGL state bits to restore after 2D/UI
+ * passes.
+ */
+typedef struct {
+	GLboolean depth_enabled;
+	GLboolean blend_enabled;
+	GLint polygon_mode[2];
+} GLStateBackup;
+
+/**
+ * @brief Saves current OpenGL state to a backup struct.
+ */
+GLStateBackup render_utils_save_state(void);
+
+/**
+ * @brief Restores OpenGL state from a backup struct.
+ * @param state Pointer to the state backup to restore.
+ */
+void render_utils_restore_state(const GLStateBackup* state);
+
+/**
+ * @brief Configures standard 2D/UI rendering state (Alpha blend, No depth).
+ */
+void render_utils_setup_ui_state(void);
+
 #endif  // RENDER_UTILS_H

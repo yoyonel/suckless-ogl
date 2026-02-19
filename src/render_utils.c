@@ -85,6 +85,7 @@ void render_utils_create_quad_vbo(GLuint* vbo)
 	glObjectLabel(GL_BUFFER, *vbo, -1, "Quad VBO");
 }
 
+enum { MAX_MATERIAL_CONFIG_SIZE = 2 * 1024 * 1024 };
 void render_utils_create_wire_cube_vbo(GLuint* vbo)
 {
 	static const float cubeVertices[] = {
@@ -127,6 +128,7 @@ void render_utils_create_wire_quad_vbo(GLuint* vbo)
 
 void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 {
+	enum { TEX_COORD_OFFSET = 8 };
 	static const float
 	    screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] = {
 	        /* positions     texCoords */
@@ -152,8 +154,11 @@ void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 
 	/* TexCoords */
 	glEnableVertexAttribArray(1);
+	/* clang-format off */
+	const void* tex_offset = (const void*)(uintptr_t)TEX_COORD_OFFSET; /* NOLINT(performance-no-int-to-ptr) */
+	/* clang-format on */
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      BUFFER_OFFSET(2 * sizeof(float)));
+	                      tex_offset);
 	glVertexAttribDivisor(1, 0);
 
 	glBindVertexArray(0);
@@ -193,7 +198,7 @@ static void append_sanitized_char(char raw_char, char* buffer, size_t* dst_idx,
 
 	unsigned char unsigned_char = (unsigned char)raw_char;
 	if (isalnum(unsigned_char)) {
-		buffer[(*dst_idx)++] = (char)tolower(unsigned_char);
+		buffer[(*dst_idx)++] = (char)tolower((int)unsigned_char);
 		return;
 	}
 
@@ -205,6 +210,8 @@ static void append_sanitized_char(char raw_char, char* buffer, size_t* dst_idx,
 		buffer[(*dst_idx)++] = '_';
 	}
 }
+
+enum { GPU_IDENTIFIER_RAW_BUF_SIZE = 512 };
 
 void render_utils_generate_gpu_identifier(const char* vendor,
                                           const char* renderer, char* buffer,
@@ -218,9 +225,9 @@ void render_utils_generate_gpu_identifier(const char* vendor,
 	const char* r_str =
 	    (renderer && renderer[0] != '\0') ? renderer : "gpu";
 
-	static const size_t RAW_BUF_SIZE = 512;
-	char raw[RAW_BUF_SIZE];
-	if (!safe_snprintf(raw, RAW_BUF_SIZE, "%s_%s", v_str, r_str)) {
+	char raw[GPU_IDENTIFIER_RAW_BUF_SIZE];
+	if (!safe_snprintf(raw, GPU_IDENTIFIER_RAW_BUF_SIZE, "%s_%s", v_str,
+	                   r_str)) {
 		safe_snprintf(buffer, size, "%s", "unknown_gpu");
 		return;
 	}
@@ -276,19 +283,23 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 
 	/* mat4 model (Locations 2, 3, 4, 5) */
 	for (int i = 0; i < 4; i++) {
+		/* clang-format off */
+		const void* m_offset = (const void*)(uintptr_t)(i * 4 * sizeof(float)); /* NOLINT(performance-no-int-to-ptr) */
+		/* clang-format on */
 		glEnableVertexAttribArray(index_vattrib);
 		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
-		                      stride,
-		                      // NOLINTNEXTLINE(misc-include-cleaner)
-		                      BUFFER_OFFSET(i * 4 * sizeof(float)));
+		                      stride, m_offset);
 		glVertexAttribDivisor(index_vattrib, 1);
 		index_vattrib++;
 	}
 
 	/* Albedo (6) */
 	glEnableVertexAttribArray(index_vattrib);
+	/* clang-format off */
+	const void* a_offset = (const void*)(uintptr_t)offset_albedo; /* NOLINT(performance-no-int-to-ptr) */
+	/* clang-format on */
 	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
-	                      BUFFER_OFFSET(offset_albedo));
+	                      a_offset);
 	glVertexAttribDivisor(index_vattrib, 1);
 	index_vattrib++;
 
@@ -297,4 +308,42 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
 	                      BUFFER_OFFSET(offset_metallic));
 	glVertexAttribDivisor(index_vattrib, 1);
+}
+
+// -----------------------------------------------------------------------------
+// State Management
+// -----------------------------------------------------------------------------
+
+GLStateBackup render_utils_save_state(void)
+{
+	GLStateBackup state;
+	state.depth_enabled = glIsEnabled(GL_DEPTH_TEST);
+	state.blend_enabled = glIsEnabled(GL_BLEND);
+	glGetIntegerv(GL_POLYGON_MODE, state.polygon_mode);
+	return state;
+}
+
+void render_utils_restore_state(const GLStateBackup* state)
+{
+	if (state->depth_enabled != 0U) {
+		glEnable(GL_DEPTH_TEST);
+	} else {
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	if (state->blend_enabled != 0U) {
+		glEnable(GL_BLEND);
+	} else {
+		glDisable(GL_BLEND);
+	}
+
+	glPolygonMode(GL_FRONT_AND_BACK, state->polygon_mode[0]);
+}
+
+void render_utils_setup_ui_state(void)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

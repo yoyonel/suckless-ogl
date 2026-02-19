@@ -1,7 +1,8 @@
 #include "material.h"
 
+#include "io.h"
 #include "log.h"
-#include "mem.h"
+#include "utils.h"
 #include <cJSON.h>
 #include <limits.h>
 #include <stdint.h>
@@ -10,8 +11,8 @@
 #include <string.h>
 
 // Constantes pour les limites
-#define MAX_FILE_SIZE (2L * 1024L * 1024L)
 
+enum { MAX_MATERIAL_CONFIG_SIZE = 2 * 1024 * 1024 };
 // Constantes en enum au lieu de defines
 enum { MAX_MATERIAL_COUNT = 10000, RGB_COMPONENTS = 3 };
 
@@ -19,62 +20,6 @@ enum { MAX_MATERIAL_COUNT = 10000, RGB_COMPONENTS = 3 };
 #define MAT_DEFAULT_ROUGHNESS 0.5F
 #define MAT_DEFAULT_ALBEDO 0.0F
 #define MAT_DEFAULT_METALLIC 0.0F
-
-static char* read_file_to_buffer(const char* path, size_t* out_size)
-{
-	FILE* file = fopen(path, "rb");
-	if (file == NULL) {
-		LOG_ERROR("material", "Could not open file: %s", path);
-		return NULL;
-	}
-
-	(void)fseek(file, 0, SEEK_END);
-	const long raw_size = ftell(file);
-	(void)fseek(file, 0, SEEK_SET);
-
-	if (raw_size <= 0 || raw_size > MAX_FILE_SIZE) {
-		LOG_ERROR("material", "File size out of bounds: %s", path);
-		(void)fclose(file);
-		return NULL;
-	}
-
-	// Conversion avec validation stricte pour l'analyseur statique
-	if (raw_size < 0 || (unsigned long)raw_size > SIZE_MAX - 1U) {
-		LOG_ERROR("material",
-		          "File size invalid for buffer allocation");
-		(void)fclose(file);
-		return NULL;
-	}
-
-	const size_t file_size = (size_t)raw_size;
-
-	// Allouer un buffer plus grand que nécessaire pour être sûr
-	const size_t buffer_size = file_size + 1U;
-	char* buffer = malloc(buffer_size);
-	if (buffer == NULL) {
-		LOG_ERROR("material", "Failed to allocate buffer");
-		(void)fclose(file);
-		return NULL;
-	}
-
-	const size_t bytes_read = fread(buffer, 1, file_size, file);
-	(void)fclose(file);
-
-	if (bytes_read != file_size) {
-		LOG_ERROR("material", "Failed to read complete file");
-		free(buffer);
-		return NULL;
-	}
-
-	// Null-terminate le buffer
-	// Note: file_size est garanti < buffer_size par nos validations
-	// précédentes L'analyseur statique ne peut pas tracer cela, donc on
-	// supprime le warning
-	buffer[file_size] = '\0';  // NOLINT(clang-analyzer-security.ArrayBound)
-
-	*out_size = file_size;
-	return buffer;
-}
 
 static void parse_material_name(cJSON* element, PBRMaterial* mat)
 {
@@ -193,14 +138,14 @@ static int parse_materials_from_json(cJSON* json_root, PBRMaterial* materials,
 
 MaterialLib* material_load_presets(const char* path)
 {
-	size_t buffer_size = 0;
-	char* buffer = read_file_to_buffer(path, &buffer_size);
-	if (buffer == NULL) {
+	size_t content_size = 0;
+	CLEANUP_FREE char* content =
+	    io_read_file(path, MAX_MATERIAL_CONFIG_SIZE, &content_size);
+	if (content == NULL) {
 		return NULL;
 	}
 
-	cJSON* json_root = cJSON_Parse(buffer);
-	free(buffer);
+	cJSON* json_root = cJSON_Parse(content);
 
 	if (json_root == NULL) {
 		const char* error_ptr = cJSON_GetErrorPtr();

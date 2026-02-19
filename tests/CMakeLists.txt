@@ -131,6 +131,7 @@ add_executable(test_shader_path_security_standalone
     test_shader_path_security_standalone.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/io.c
 )
 if(ENABLE_TRACY)
     target_sources(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -166,6 +167,7 @@ add_executable(test_texture_toctou
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
     ${CMAKE_SOURCE_DIR}/src/simd_utils.c
+    ${CMAKE_SOURCE_DIR}/src/io.c
 )
 if(ENABLE_TRACY)
     target_sources(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -284,6 +286,7 @@ add_executable(test_shader_limit
     test_shader_limit.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/io.c
 )
 
 target_include_directories(test_shader_limit PRIVATE
