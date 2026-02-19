@@ -6,11 +6,14 @@ var async__loader_8h =
       [ "ASYNC_IDLE", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8656936306a2b76ece5040edbf01e324", null ],
       [ "ASYNC_PENDING", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a140b746f61b307813404ecc0f6bbb6fc", null ],
       [ "ASYNC_LOADING", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209af69125c6d0b854360346a727438a14ea", null ],
+      [ "ASYNC_WAITING_FOR_PBO", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209ad047ad3d642b4e0f7f29d18a090d6f18", null ],
+      [ "ASYNC_CONVERTING", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a23bd260bfc224be15e3f2be28cd7208f", null ],
       [ "ASYNC_READY", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a", null ],
       [ "ASYNC_FAILED", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435", null ]
     ] ],
-    [ "async_loader_init", "async__loader_8h.html#a80f225c8c7901099edb71299a2d3dd04", null ],
-    [ "async_loader_poll", "async__loader_8h.html#a10cfe57da0db42372de7efdc7dd68aef", null ],
-    [ "async_loader_request", "async__loader_8h.html#a739e2fd90d57a917fff50e6f09a7ffc0", null ],
-    [ "async_loader_shutdown", "async__loader_8h.html#a748c36041963ecba8878574c4d881c0e", null ]
+    [ "async_loader_create", "async__loader_8h.html#aa0330860c0daf9333351d3e5204501c6", null ],
+    [ "async_loader_destroy", "async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564", null ],
+    [ "async_loader_poll", "async__loader_8h.html#a6de1e12f1acee74c563ec68d926092eb", null ],
+    [ "async_loader_provide_pbo", "async__loader_8h.html#a5c550b2e0e880d9be179ada62e3d99e3", null ],
+    [ "async_loader_request", "async__loader_8h.html#a728931915db1981745d8648f661e4bce", null ]
 ];

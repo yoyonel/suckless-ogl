@@ -8,6 +8,9 @@ var pbr_8c =
     [ "pbr_irradiance_slice_compute", "pbr_8c.html#a1360d7bdc52318d5925e02496a2220a8", null ],
     [ "pbr_prefilter_init", "pbr_8c.html#a71941da15aee302848216a21ec1cc846", null ],
     [ "pbr_prefilter_mip", "pbr_8c.html#a3565e3f9822026deb79279a47a6a5973", null ],
+    [ "BINDING_DEST_TEXTURE", "pbr_8c.html#aa491eae0c7780d7ceee29175380adc09", null ],
+    [ "BINDING_ENV_MAP", "pbr_8c.html#afaf8e347ba781b760c16e0e3f32fa74e", null ],
+    [ "COMPUTE_DISPATCH_Z_ONCE", "pbr_8c.html#a4751ae91e8a7caee11606c0b95b59715", null ],
     [ "COMPUTE_GROUP_SIZE_LUM", "pbr_8c.html#a764e470d5b315a2fc1bfdcad6183545b", null ],
     [ "COMPUTE_GROUP_SIZE_PBR", "pbr_8c.html#ab465f690f56447171309690f4cbb2601", null ],
     [ "MAX_HDR_RESOLUTION", "pbr_8c.html#aeec0e4121b2f13da5d4c37deb40952b6", null ]

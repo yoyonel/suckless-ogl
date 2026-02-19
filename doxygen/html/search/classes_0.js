@@ -5,5 +5,6 @@ var searchData=
   ['adaptivesampleitem_2',['AdaptiveSampleItem',['../structAdaptiveSampleItem.html',1,'']]],
   ['adaptivesampler_3',['AdaptiveSampler',['../structAdaptiveSampler.html',1,'']]],
   ['app_4',['App',['../structApp.html',1,'']]],
-  ['asyncrequest_5',['AsyncRequest',['../structAsyncRequest.html',1,'']]]
+  ['asyncloader_5',['AsyncLoader',['../structAsyncLoader.html',1,'']]],
+  ['asyncrequest_6',['AsyncRequest',['../structAsyncRequest.html',1,'']]]
 ];

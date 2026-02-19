@@ -244,6 +244,7 @@ $(document).ready(function(){initNavTree('texture_8h.html',''); initResizable();
 <p>Image loading and GPU texture management.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for texture.h:</div>
 <div class="dyncontent">
@@ -252,7 +253,7 @@ Include dependency graph for texture.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h__dep__incl.svg" width="415" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h__dep__incl.svg" width="520" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 <p><a href="texture_8h_source.html">Go to the source code of this file.</a></p>
@@ -265,9 +266,18 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a01e129653227bd752f57379613c96b3c" id="r_a01e129653227bd752f57379613c96b3c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a01e129653227bd752f57379613c96b3c">texture_upload_hdr</a> (float *data, int width, int height)</td></tr>
-<tr class="memdesc:a01e129653227bd752f57379613c96b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uploads raw floating-point RGB data to an OpenGL texture. height.  <br /></td></tr>
-<tr class="separator:a01e129653227bd752f57379613c96b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab7453443bd88ad6c923d608ec066a28" id="r_aab7453443bd88ad6c923d608ec066a28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#aab7453443bd88ad6c923d608ec066a28">texture_ensure_pbo</a> (GLuint *pbo_id, GLsizeiptr *current_size, GLsizeiptr required_size)</td></tr>
+<tr class="memdesc:aab7453443bd88ad6c923d608ec066a28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures a PBO is allocated with sufficient size.  <br /></td></tr>
+<tr class="separator:aab7453443bd88ad6c923d608ec066a28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d3c44efbe21ce365f8726603776fab5" id="r_a0d3c44efbe21ce365f8726603776fab5"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a0d3c44efbe21ce365f8726603776fab5">texture_map_pbo</a> (GLuint pbo_id, size_t size_bytes)</td></tr>
+<tr class="memdesc:a0d3c44efbe21ce365f8726603776fab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps a PBO for writing.  <br /></td></tr>
+<tr class="separator:a0d3c44efbe21ce365f8726603776fab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaaf787b6ecd6938e78ec390d6749359" id="r_aeaaf787b6ecd6938e78ec390d6749359"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#aeaaf787b6ecd6938e78ec390d6749359">texture_preallocate_hdr</a> (int width, int height, GLuint old_tex)</td></tr>
+<tr class="memdesc:aeaaf787b6ecd6938e78ec390d6749359"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-allocates VRAM for an HDR texture (glTexStorage2D only).  <br /></td></tr>
+<tr class="separator:aeaaf787b6ecd6938e78ec390d6749359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b2e1a73489371d72362f97552ad57a8" id="r_a9b2e1a73489371d72362f97552ad57a8"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a9b2e1a73489371d72362f97552ad57a8">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, int width, int height, GLuint reuse_tex_id)</td></tr>
+<tr class="memdesc:a9b2e1a73489371d72362f97552ad57a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <br /></td></tr>
+<tr class="separator:a9b2e1a73489371d72362f97552ad57a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c821497ea20a5b74199e3080c0f4a1c" id="r_a4c821497ea20a5b74199e3080c0f4a1c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a4c821497ea20a5b74199e3080c0f4a1c">texture_load_pixels</a> (const char *path, int *width, int *height, int *channels)</td></tr>
 <tr class="memdesc:a4c821497ea20a5b74199e3080c0f4a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes an HDR image into RAM without uploading to GPU.  <br /></td></tr>
 <tr class="separator:a4c821497ea20a5b74199e3080c0f4a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -293,6 +303,51 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aab7453443bd88ad6c923d608ec066a28" name="aab7453443bd88ad6c923d608ec066a28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7453443bd88ad6c923d608ec066a28">&#9670;&#160;</a></span>texture_ensure_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void texture_ensure_pbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint *&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsizeiptr *&#160;</td>
+          <td class="paramname"><em>current_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsizeiptr&#160;</td>
+          <td class="paramname"><em>required_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ensures a PBO is allocated with sufficient size. </p>
+<p>Checks if internal *current_size is &gt;= required_size. If not, reallocates (orphans) the buffer using glBufferData.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>Pointer to the PBO ID (generated if 0). </td></tr>
+    <tr><td class="paramname">current_size</td><td>Pointer to the currently tracking size (updated on realloc). </td></tr>
+    <tr><td class="paramname">required_size</td><td>The minimum size needed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4c821497ea20a5b74199e3080c0f4a1c" name="a4c821497ea20a5b74199e3080c0f4a1c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c821497ea20a5b74199e3080c0f4a1c">&#9670;&#160;</a></span>texture_load_pixels()</h2>
 
@@ -345,17 +400,106 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a01e129653227bd752f57379613c96b3c" name="a01e129653227bd752f57379613c96b3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01e129653227bd752f57379613c96b3c">&#9670;&#160;</a></span>texture_upload_hdr()</h2>
+<a id="a0d3c44efbe21ce365f8726603776fab5" name="a0d3c44efbe21ce365f8726603776fab5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d3c44efbe21ce365f8726603776fab5">&#9670;&#160;</a></span>texture_map_pbo()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">GLuint texture_upload_hdr </td>
+          <td class="memname">void * texture_map_pbo </td>
           <td>(</td>
-          <td class="paramtype">float *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size_bytes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Maps a PBO for writing. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>ID of the PBO to map. </td></tr>
+    <tr><td class="paramname">size_bytes</td><td>Size to map (should match creation size). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to mapped memory, or NULL on failure. </dd></dl>
+
+</div>
+</div>
+<a id="aeaaf787b6ecd6938e78ec390d6749359" name="aeaaf787b6ecd6938e78ec390d6749359"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaaf787b6ecd6938e78ec390d6749359">&#9670;&#160;</a></span>texture_preallocate_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint texture_preallocate_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>old_tex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Pre-allocates VRAM for an HDR texture (glTexStorage2D only). </p>
+<p>Call this early (e.g. when async loader requests a PBO) to spread the cost of texture allocation across frames. If old_tex already matches the requested dimensions, it is returned as-is (zero-cost reuse).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
+    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
+    <tr><td class="paramname">old_tex</td><td>Existing texture ID to check for reuse (0 if none). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint Pre-allocated texture ID, or 0 on failure. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h_aeaaf787b6ecd6938e78ec390d6749359_cgraph.svg" width="396" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a9b2e1a73489371d72362f97552ad57a8" name="a9b2e1a73489371d72362f97552ad57a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b2e1a73489371d72362f97552ad57a8">&#9670;&#160;</a></span>texture_upload_hdr_from_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint texture_upload_hdr_from_pbo </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>pbo_id</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -367,7 +511,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>height</em>&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>reuse_tex_id</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -377,8 +527,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Uploads raw floating-point RGB data to an OpenGL texture. height. </p>
-<dl class="section return"><dt>Returns</dt><dd>GLuint handle. </dd></dl>
+<p>Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pbo_id</td><td>ID of the PBO (must be bound/mapped). </td></tr>
+    <tr><td class="paramname">width</td><td>Texture width. </td></tr>
+    <tr><td class="paramname">height</td><td>Texture height. </td></tr>
+    <tr><td class="paramname">reuse_tex_id</td><td>Existing texture ID to update/reuse. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GLuint The texture ID (new or reused). </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8h_a9b2e1a73489371d72362f97552ad57a8_cgraph.svg" width="367" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>

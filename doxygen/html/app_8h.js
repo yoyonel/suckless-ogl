@@ -5,6 +5,8 @@ var app_8h =
     [ "DebugUniforms", "structDebugUniforms.html", "structDebugUniforms" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
     [ "App", "structApp.html", "structApp" ],
+    [ "TRACY_SCREENSHOT_HEIGHT", "app_8h.html#a895ec888aa709e89ca4a83f777235343", null ],
+    [ "TRACY_SCREENSHOT_WIDTH", "app_8h.html#a1c3f645cdb2e95fad70014638acef749", null ],
     [ "IBLState", "app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea", [
       [ "IBL_STATE_IDLE", "app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3", null ],
       [ "IBL_STATE_LUMINANCE", "app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61", null ],

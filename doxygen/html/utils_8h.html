@@ -243,7 +243,8 @@ $(document).ready(function(){initNavTree('utils_8h.html',''); initResizable(); }
 
 <p>Zero-overhead utility functions and RAII cleanup helpers.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;stdarg.h&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="mem_8h_source.html">mem.h</a>&quot;</code><br />
+<code>#include &lt;stdarg.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
@@ -251,7 +252,7 @@ $(document).ready(function(){initNavTree('utils_8h.html',''); initResizable(); }
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for utils.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utils_8h__incl.svg" width="474" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="utils_8h__incl.svg" width="476" height="183"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -293,6 +294,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abaf40f2826b08aa05ee7ca7c2a4b79ee" id="r_abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee">safe_memcpy</a> (void *dest, size_t dest_size, const void *src, size_t count)</td></tr>
 <tr class="memdesc:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">memcpy wrapper with bounds checking.  <br /></td></tr>
 <tr class="separator:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66f52a36a090fdc6ca2f3f91078c9f4f" id="r_a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a66f52a36a090fdc6ca2f3f91078c9f4f">safe_memset</a> (void *dest, size_t dest_size, int value, size_t count)</td></tr>
+<tr class="memdesc:a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">memset wrapper with bounds checking.  <br /></td></tr>
+<tr class="separator:a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a823bc487fbd1a8980dc7a3e5e2277179" id="r_a823bc487fbd1a8980dc7a3e5e2277179"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a823bc487fbd1a8980dc7a3e5e2277179">safe_strncpy</a> (char *dest, size_t dest_size, const char *src, size_t src_size)</td></tr>
 <tr class="memdesc:a823bc487fbd1a8980dc7a3e5e2277179"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncpy to ensure null-termination.  <br /></td></tr>
 <tr class="separator:a823bc487fbd1a8980dc7a3e5e2277179"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -587,6 +591,56 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>memcpy wrapper with bounds checking. </p>
+
+</div>
+</div>
+<a id="a66f52a36a090fdc6ca2f3f91078c9f4f" name="a66f52a36a090fdc6ca2f3f91078c9f4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66f52a36a090fdc6ca2f3f91078c9f4f">&#9670;&#160;</a></span>safe_memset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool safe_memset </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>memset wrapper with bounds checking. </p>
 
 </div>
 </div>

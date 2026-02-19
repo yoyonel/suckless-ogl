@@ -29,11 +29,14 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "postprocess.c", "postprocess_8c.html", "postprocess_8c" ],
     [ "render_utils.c", "render__utils_8c.html", "render__utils_8c" ],
     [ "shader.c", "shader_8c.html", "shader_8c" ],
+    [ "simd_utils.c", "simd__utils_8c.html", "simd__utils_8c" ],
     [ "skybox.c", "skybox_8c.html", "skybox_8c" ],
     [ "sphere_sorting.c", "sphere__sorting_8c.html", "sphere__sorting_8c" ],
     [ "ssbo_rendering.c", "ssbo__rendering_8c.html", "ssbo__rendering_8c" ],
     [ "stb_image_impl.c", "stb__image__impl_8c.html", "stb__image__impl_8c" ],
     [ "texture.c", "texture_8c.html", "texture_8c" ],
+    [ "tracy_log.c", "tracy__log_8c.html", "tracy__log_8c" ],
+    [ "tracy_manager.c", "tracy__manager_8c.html", "tracy__manager_8c" ],
     [ "ui.c", "ui_8c.html", "ui_8c" ],
     [ "window.c", "window_8c.html", "window_8c" ]
 ];

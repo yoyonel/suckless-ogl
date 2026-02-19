@@ -236,6 +236,7 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">app.h File Reference</div></div>
@@ -263,6 +264,7 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="tracy__manager_8h_source.html">tracy_manager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ui_8h_source.html">ui.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="app__env_8h_source.html">app_env.h</a>&quot;</code><br />
@@ -300,6 +302,13 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The central state container for the entire application.  <a href="structApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a1c3f645cdb2e95fad70014638acef749" id="r_a1c3f645cdb2e95fad70014638acef749"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1c3f645cdb2e95fad70014638acef749">TRACY_SCREENSHOT_WIDTH</a>&#160;&#160;&#160;320</td></tr>
+<tr class="separator:a1c3f645cdb2e95fad70014638acef749"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a895ec888aa709e89ca4a83f777235343" id="r_a895ec888aa709e89ca4a83f777235343"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a895ec888aa709e89ca4a83f777235343">TRACY_SCREENSHOT_HEIGHT</a>&#160;&#160;&#160;180</td></tr>
+<tr class="separator:a895ec888aa709e89ca4a83f777235343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:a57e898a48bf9e63709f7774eb98bb0ea" id="r_a57e898a48bf9e63709f7774eb98bb0ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> { <br />
@@ -312,7 +321,6 @@ Enumerations</h2></td></tr>
 , <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a>
 <br />
  }</td></tr>
-<tr class="memdesc:a57e898a48bf9e63709f7774eb98bb0ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the Image-Based Lighting (IBL) progressive loading.  <a href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">More...</a><br /></td></tr>
 <tr class="separator:a57e898a48bf9e63709f7774eb98bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e019cb397af76f46ed7eb54267cfb03" id="r_a1e019cb397af76f46ed7eb54267cfb03"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a> { <br />
 &#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4">TRANSITION_IDLE</a> = 0
@@ -347,7 +355,36 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Core application module and state container. </p>
 <p>This header defines the main <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> structure and the high-level orchestration API. It integrates all sub-modules (UI, Input, Env, Scene) for the final executable. </p>
-</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a895ec888aa709e89ca4a83f777235343" name="a895ec888aa709e89ca4a83f777235343"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a895ec888aa709e89ca4a83f777235343">&#9670;&#160;</a></span>TRACY_SCREENSHOT_HEIGHT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRACY_SCREENSHOT_HEIGHT&#160;&#160;&#160;180</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1c3f645cdb2e95fad70014638acef749" name="a1c3f645cdb2e95fad70014638acef749"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c3f645cdb2e95fad70014638acef749">&#9670;&#160;</a></span>TRACY_SCREENSHOT_WIDTH</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRACY_SCREENSHOT_WIDTH&#160;&#160;&#160;320</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a57e898a48bf9e63709f7774eb98bb0ea" name="a57e898a48bf9e63709f7774eb98bb0ea"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a57e898a48bf9e63709f7774eb98bb0ea">&#9670;&#160;</a></span>IBLState</h2>
 
@@ -359,8 +396,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>States for the Image-Based Lighting (IBL) progressive loading. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3" name="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3"></a>IBL_STATE_IDLE&#160;</td><td class="fielddoc"><p>Application is waiting for a request. </p>
 </td></tr>

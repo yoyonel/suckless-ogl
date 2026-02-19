@@ -239,17 +239,34 @@ $(document).ready(function(){initNavTree('stb__image__impl_8c.html',''); initRes
   <div class="headertitle"><div class="title">stb_image_impl.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stb_image.h&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="mem_8h_source.html">mem.h</a>&quot;</code><br />
+<code>#include &lt;stb_image.h&gt;</code><br />
 <code>#include &lt;stb_image_write.h&gt;</code><br />
 <code>#include &lt;stb_truetype.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for stb_image_impl.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="stb__image__impl_8c__incl.svg" width="420" height="110"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="stb__image__impl_8c__incl.svg" width="560" height="183"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a5d9e5717bb92709110f1a5d43392d42e" id="r_a5d9e5717bb92709110f1a5d43392d42e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a5d9e5717bb92709110f1a5d43392d42e">STBI_MALLOC</a>(sz)&#160;&#160;&#160;malloc(sz)</td></tr>
+<tr class="separator:a5d9e5717bb92709110f1a5d43392d42e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04faac13c8df95cac0a8583cc2e4eef9" id="r_a04faac13c8df95cac0a8583cc2e4eef9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a04faac13c8df95cac0a8583cc2e4eef9">STBI_REALLOC</a>(p,  newsz)&#160;&#160;&#160;realloc(p, newsz)</td></tr>
+<tr class="separator:a04faac13c8df95cac0a8583cc2e4eef9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07af50300e5cc077c6b31a4d2e8af32a" id="r_a07af50300e5cc077c6b31a4d2e8af32a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a07af50300e5cc077c6b31a4d2e8af32a">STBI_FREE</a>(p)&#160;&#160;&#160;free(p)</td></tr>
+<tr class="separator:a07af50300e5cc077c6b31a4d2e8af32a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6aa20c0cef4fef36e5c75338249392a" id="r_ac6aa20c0cef4fef36e5c75338249392a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#ac6aa20c0cef4fef36e5c75338249392a">STBIW_MALLOC</a>(sz)&#160;&#160;&#160;malloc(sz)</td></tr>
+<tr class="separator:ac6aa20c0cef4fef36e5c75338249392a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0b5aafee9edcab237a0fa9ec0690706" id="r_aa0b5aafee9edcab237a0fa9ec0690706"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#aa0b5aafee9edcab237a0fa9ec0690706">STBIW_REALLOC</a>(p,  newsz)&#160;&#160;&#160;realloc(p, newsz)</td></tr>
+<tr class="separator:aa0b5aafee9edcab237a0fa9ec0690706"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a9b1bc74a9e2aeac2e844c24939215" id="r_a05a9b1bc74a9e2aeac2e844c24939215"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a05a9b1bc74a9e2aeac2e844c24939215">STBIW_FREE</a>(p)&#160;&#160;&#160;free(p)</td></tr>
+<tr class="separator:a05a9b1bc74a9e2aeac2e844c24939215"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f6734fe0cb6d6aa09e494602afa96be" id="r_a8f6734fe0cb6d6aa09e494602afa96be"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a8f6734fe0cb6d6aa09e494602afa96be">STBTT_malloc</a>(x,  u)&#160;&#160;&#160;((void)(u), malloc(x))</td></tr>
+<tr class="separator:a8f6734fe0cb6d6aa09e494602afa96be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a357d3564409e68f1b694e06f7beeca7e" id="r_a357d3564409e68f1b694e06f7beeca7e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a357d3564409e68f1b694e06f7beeca7e">STBTT_free</a>(x,  u)&#160;&#160;&#160;((void)(u), free(x))</td></tr>
+<tr class="separator:a357d3564409e68f1b694e06f7beeca7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18372412ad2fc3ce1e3240b3cf0efe78" id="r_a18372412ad2fc3ce1e3240b3cf0efe78"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#a18372412ad2fc3ce1e3240b3cf0efe78">STB_IMAGE_IMPLEMENTATION</a></td></tr>
 <tr class="separator:a18372412ad2fc3ce1e3240b3cf0efe78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefe397a94e8feddc652f92ef40ce9597" id="r_aefe397a94e8feddc652f92ef40ce9597"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stb__image__impl_8c.html#aefe397a94e8feddc652f92ef40ce9597">STB_IMAGE_WRITE_IMPLEMENTATION</a></td></tr>
@@ -294,6 +311,190 @@ Macros</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">#define STB_TRUETYPE_IMPLEMENTATION</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a07af50300e5cc077c6b31a4d2e8af32a" name="a07af50300e5cc077c6b31a4d2e8af32a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07af50300e5cc077c6b31a4d2e8af32a">&#9670;&#160;</a></span>STBI_FREE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBI_FREE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">p</td><td>)</td>
+          <td>&#160;&#160;&#160;free(p)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d9e5717bb92709110f1a5d43392d42e" name="a5d9e5717bb92709110f1a5d43392d42e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d9e5717bb92709110f1a5d43392d42e">&#9670;&#160;</a></span>STBI_MALLOC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBI_MALLOC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">sz</td><td>)</td>
+          <td>&#160;&#160;&#160;malloc(sz)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a04faac13c8df95cac0a8583cc2e4eef9" name="a04faac13c8df95cac0a8583cc2e4eef9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04faac13c8df95cac0a8583cc2e4eef9">&#9670;&#160;</a></span>STBI_REALLOC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBI_REALLOC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">newsz&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;realloc(p, newsz)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a05a9b1bc74a9e2aeac2e844c24939215" name="a05a9b1bc74a9e2aeac2e844c24939215"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05a9b1bc74a9e2aeac2e844c24939215">&#9670;&#160;</a></span>STBIW_FREE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBIW_FREE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">p</td><td>)</td>
+          <td>&#160;&#160;&#160;free(p)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac6aa20c0cef4fef36e5c75338249392a" name="ac6aa20c0cef4fef36e5c75338249392a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6aa20c0cef4fef36e5c75338249392a">&#9670;&#160;</a></span>STBIW_MALLOC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBIW_MALLOC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">sz</td><td>)</td>
+          <td>&#160;&#160;&#160;malloc(sz)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0b5aafee9edcab237a0fa9ec0690706" name="aa0b5aafee9edcab237a0fa9ec0690706"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0b5aafee9edcab237a0fa9ec0690706">&#9670;&#160;</a></span>STBIW_REALLOC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBIW_REALLOC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">p, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">newsz&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;realloc(p, newsz)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a357d3564409e68f1b694e06f7beeca7e" name="a357d3564409e68f1b694e06f7beeca7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a357d3564409e68f1b694e06f7beeca7e">&#9670;&#160;</a></span>STBTT_free</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBTT_free</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">u&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((void)(u), free(x))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8f6734fe0cb6d6aa09e494602afa96be" name="a8f6734fe0cb6d6aa09e494602afa96be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f6734fe0cb6d6aa09e494602afa96be">&#9670;&#160;</a></span>STBTT_malloc</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define STBTT_malloc</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">u&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((void)(u), malloc(x))</td>
         </tr>
       </table>
 </div><div class="memdoc">

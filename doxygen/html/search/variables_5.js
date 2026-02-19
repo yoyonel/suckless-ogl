@@ -18,7 +18,13 @@ var searchData=
   ['env_5ftransition_5fmode_15',['env_transition_mode',['../structApp.html#a51a9a6c0805893278338a44bf01d5e0a',1,'App']]],
   ['environmentmap_16',['environmentMap',['../background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623',1,'background.frag']]],
   ['epsilon_17',['EPSILON',['../pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9',1,'pbr_functions.glsl']]],
-  ['exposure_18',['exposure',['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure'],['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure']]],
-  ['exposure_5fmanual_19',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
-  ['exposure_5fpbo_20',['exposure_pbo',['../structApp.html#af316b16ec5883e877c1fd57261e0b488',1,'App']]]
+  ['exp_5fbias_5ff16_18',['EXP_BIAS_F16',['../simd__utils_8c.html#aab3b67db488cf798310dc9c433fb7840',1,'simd_utils.c']]],
+  ['exp_5fbias_5ff32_19',['EXP_BIAS_F32',['../simd__utils_8c.html#a994788d6c6f37b3a2a5d3d5fc44bdd4a',1,'simd_utils.c']]],
+  ['exp_5fmask_20',['EXP_MASK',['../simd__utils_8c.html#a76d7323cc86b8e584c4e059036b9d6a0',1,'simd_utils.c']]],
+  ['exp_5fmax_5ff16_21',['EXP_MAX_F16',['../simd__utils_8c.html#a1e0834be4415d63d67fcb5a426225214',1,'simd_utils.c']]],
+  ['exp_5fmax_5ff32_22',['EXP_MAX_F32',['../simd__utils_8c.html#afa4df89732b729f21dc807d47822915c',1,'simd_utils.c']]],
+  ['exp_5fshift_23',['EXP_SHIFT',['../simd__utils_8c.html#af807f1b443f96747136afa899ae0625f',1,'simd_utils.c']]],
+  ['exposure_24',['exposure',['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure'],['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure']]],
+  ['exposure_5fmanual_25',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
+  ['exposure_5fpbo_26',['exposure_pbo',['../structApp.html#af316b16ec5883e877c1fd57261e0b488',1,'App']]]
 ];

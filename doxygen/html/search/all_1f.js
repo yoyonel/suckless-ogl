@@ -11,7 +11,7 @@ var searchData=
   ['window_8',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App']]],
   ['window_2ec_9',['window.c',['../window_8c.html',1,'']]],
   ['window_2eh_10',['window.h',['../window_8h.html',1,'']]],
-  ['window_5fcreate_11',['window_create',['../window_8h.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c'],['../window_8c.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c']]],
+  ['window_5fcreate_11',['window_create',['../window_8c.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c'],['../window_8h.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c']]],
   ['window_5fdestroy_12',['window_destroy',['../window_8c.html#ad31b45f175d070f99c1a82cb93b2c82d',1,'window_destroy(GLFWwindow *window):&#160;window.c'],['../window_8h.html#ad31b45f175d070f99c1a82cb93b2c82d',1,'window_destroy(GLFWwindow *window):&#160;window.c']]],
   ['window_5fduration_13',['window_duration',['../structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7',1,'AdaptiveSampler']]],
   ['window_5fend_5fframe_14',['window_end_frame',['../structAdaptiveSampler.html#a5c5722c6a15025f2d559a5ed359a9804',1,'AdaptiveSampler']]],
@@ -24,7 +24,7 @@ var searchData=
   ['wire_5fquad_5fvbo_21',['wire_quad_vbo',['../structApp.html#aa69b6df5e41f231a520a4af094a6411d',1,'App']]],
   ['wireframe_22',['wireframe',['../structApp.html#a66119ddc8fec7b0ff658340bcf2561f0',1,'App']]],
   ['without_20trigonometry_23',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
-  ['worker_5fthread_24',['worker_thread',['../async__loader_8c.html#a1a5d212dca3603fc56d0b57172722423',1,'async_loader.c']]],
+  ['worker_5fthread_24',['worker_thread',['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader']]],
   ['world_5fup_25',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
   ['worldpos_26',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]],
   ['write_5findex_27',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]

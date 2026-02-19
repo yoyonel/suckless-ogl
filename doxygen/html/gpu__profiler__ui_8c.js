@@ -9,6 +9,7 @@ var gpu__profiler__ui_8c =
     [ "gpu_profiler_ui_toggle_visibility", "gpu__profiler__ui_8c.html#a887925b2aff08e85f6c5028edc30ef98", null ],
     [ "gpu_profiler_ui_update", "gpu__profiler__ui_8c.html#ac53c270cd512488caca074831008a6db", null ],
     [ "gpu_profiler_ui_update_visibility", "gpu__profiler__ui_8c.html#a354e56ee6aaa3ae6e00da508876cb513", null ],
+    [ "gpu_stage_move", "gpu__profiler__ui_8c.html#ab390637c15904dd866b0c2916eb948b0", null ],
     [ "hex_to_vec3", "gpu__profiler__ui_8c.html#a9b6c2b2384f308fa84ba23481d65afdf", null ],
     [ "BAR_RADIUS_FACTOR", "gpu__profiler__ui_8c.html#a63834086f414f93a5af7b7b19c8f0751", null ],
     [ "BG_ALPHA", "gpu__profiler__ui_8c.html#a0163454689a4fab5f548d308ee83d168", null ],

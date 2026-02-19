@@ -738,10 +738,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-specular-map-512x512" class="md-nav__link">
+  <a href="#b-specular-map-1024x1024" class="md-nav__link">
     <span class="md-ellipsis">
       
-        B. Specular Map (512x512)
+        B. Specular Map (1024x1024)
       
     </span>
   </a>
@@ -754,10 +754,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-global-performance" class="md-nav__link">
+  <a href="#4-deferred-memory-barrier-optimization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Global Performance
+        4. Deferred Memory Barrier Optimization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Deferred Memory Barrier Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-the-problem-per-slice-barrier-overhead" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 The Problem: Per-Slice Barrier Overhead
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-key-observation-no-inter-slice-data-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Key Observation: No Inter-Slice Data Dependencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-solution-single-deferred-barrier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Solution: Single Deferred Barrier
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-benchmark-results-16-slices-on-mip-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Benchmark Results (16 slices on Mip 0)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-global-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Global Performance
       
     </span>
   </a>
@@ -765,10 +826,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-key-files" class="md-nav__link">
+  <a href="#6-key-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Key Files
+        6. Key Files
       
     </span>
   </a>
@@ -1183,6 +1244,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../async_pbo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async PBO Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../nvidia_optimizations/" class="md-nav__link">
         
   
@@ -1303,6 +1392,62 @@
     
   
     Stencil Buffer Masking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simd_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIMD Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesa F32-to-F16 Analysis
   
 
     
@@ -1499,6 +1644,34 @@
     
   
     Profiling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling_tracy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracy Profiling (v0.13.1)
   
 
     
@@ -1771,6 +1944,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../memory_management_audit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management Audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../standalone_testing_mocking/" class="md-nav__link">
         
   
@@ -2013,8 +2214,8 @@
 <p>Compute Shader Workgroups have a fixed size (32x32). If we ask to compute a slice <strong>1 pixel</strong> high, the GPU still launches a block 32 pixels high.
 Without protection, the 31 excess rows overwrite/recalculate neighboring pixels, massively wasting resources.</p>
 <p><strong>The Fix (<code>u_max_y_slice</code>)</strong>:
-We pass a precise limit to the shader:
-</p><div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span>
+We pass a precise limit to the shader:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// shaders/IBL/spmap.glsl &amp; irmap.glsl</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">;</span><span class="w"> </span><span class="c1">// Y limit of the current slice</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">void</span><span class="w"> </span><span class="n">main_task</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
@@ -2023,17 +2224,17 @@ We pass a precise limit to the shader:
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pixel_pos</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">u_max_y_slice</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="c1">// Immediate stop for phantom threads</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="c1">// ...</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
-</span></code></pre></div><p></p>
+</span></code></pre></div>
 <hr>
 <h2 id="3-optimized-configuration-adaptive-slicing">3. Optimized Configuration (Adaptive Slicing)<a class="headerlink" href="#3-optimized-configuration-adaptive-slicing" title="Permanent link">¶</a></h2>
 <p>To reconcile <strong>fluidity</strong> (no freeze) and <strong>overall speed</strong> (fast loading), we use an adaptive strategy based on the workload weight.</p>
 <h3 id="a-irradiance-map-64x64">A. Irradiance Map (64x64)<a class="headerlink" href="#a-irradiance-map-64x64" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Strategy</strong>: Constant slicing.</li>
-<li><strong>Slicing</strong>: 4 Slices.</li>
-<li><strong>Cost</strong>: ~40ms / slice (Total ~160ms).</li>
+<li><strong>Slicing</strong>: 12 Slices.</li>
+<li><strong>Cost</strong>: ~5ms / slice.</li>
 </ul>
-<h3 id="b-specular-map-512x512">B. Specular Map (512x512)<a class="headerlink" href="#b-specular-map-512x512" title="Permanent link">¶</a></h3>
+<h3 id="b-specular-map-1024x1024">B. Specular Map (1024x1024)<a class="headerlink" href="#b-specular-map-1024x1024" title="Permanent link">¶</a></h3>
 <p>This is the heaviest part. The cost per mipmap decreases exponentially.</p>
 <table>
 <thead>
@@ -2048,28 +2249,28 @@ We pass a precise limit to the shader:
 <tbody>
 <tr>
 <td style="text-align: left;"><strong>Mip 0</strong></td>
-<td style="text-align: left;">512x512</td>
-<td style="text-align: left;"><strong>4 Slices</strong></td>
-<td style="text-align: left;">~30-40ms</td>
+<td style="text-align: left;">1024x1024</td>
+<td style="text-align: left;"><strong>24 Slices</strong></td>
+<td style="text-align: left;">~25-35ms</td>
 <td style="text-align: left;">Heaviest (High Frequency details).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Mip 1</strong></td>
-<td style="text-align: left;">256x256</td>
-<td style="text-align: left;"><strong>2 Slices</strong></td>
-<td style="text-align: left;">~20-30ms</td>
+<td style="text-align: left;">512x512</td>
+<td style="text-align: left;"><strong>8 Slices</strong></td>
+<td style="text-align: left;">~15-25ms</td>
 <td style="text-align: left;">Medium.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Mip 2</strong></td>
-<td style="text-align: left;">128x128</td>
+<td style="text-align: left;">256x256</td>
 <td style="text-align: left;"><strong>1 Slice</strong></td>
 <td style="text-align: left;">~15ms</td>
 <td style="text-align: left;">Light, computed in one go.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Mip 3-10</strong></td>
-<td style="text-align: left;">64..1</td>
+<td style="text-align: left;">128..1</td>
 <td style="text-align: left;"><strong>Tail Grouping</strong></td>
 <td style="text-align: left;">~20ms (Total)</td>
 <td style="text-align: left;">All computed in <strong>a single frame</strong>.</td>
@@ -2079,15 +2280,102 @@ We pass a precise limit to the shader:
 <p><strong>Total "Tail Grouping"</strong>: Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (&lt;1ms each).</p>
 <p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNq1VF1P2zAUfe-vsLKXIqWQhH6kqjJpiMEmgTStIB46NLn2TWLV2JHtgmDiv89JHJqk3cOY9uZzP47PPdcyZZnCRY6-nl19YwVwJgD9GiCksNhQppKr7wuL1hmRXKrEMzauC6xAGK9M0IIls2gxsMeTE7Tckg0HrUfXkoISyLvMpTYeOgfNMoFu5AaERsPbQhPMgR7ZLmEr0coeENI5LiBRQIxfY_PMIfGU3AoK1KuDqRRG4Acb_wL8EQwj2P-kGOa-tspGGhRLW6WavUASTl2Ace7mEFKAK3ORD-NwHE_jVm-TIAHB6cQlChBPjJo8iSy8rwYHmjUjNC2T6SSN5_8iOd7XMcd4QhrVWCn5VJUGx3FPWni8E6e363rBhG-1AfUzB_z4XK0YIY7XwEtZZehOqg2XmKLhkjNit1Mt-KB8dCY53Z9h0Z9hsTdDOptNY3CV3QX7FOvc7nnRcbLT8IBVxkQSBTW8ZkWAVm4IC1DwQwzH6EJZtfrI8_sk_iEp929cYYcrtFzRe7heD9rOWZabru0XWJuW65fWh-I_2T4HAlN80Pae353Kfb-jjkeR9SisPWpb5Dj8QxKc3TeY8TaVRqejMPh7On_36k937i8NVgat6g-FMEU4-I3rVa7FPsM4Smc9dhesGD8L2lBRuV1z6BGeV1_Je9S-KR19rN5yeVv1pmscOhw6HDkclbg0sMSVkRZXKv98XWSvex38BpKHxiY=?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNq1VF1P2zAUfe-vsLKXIqWQhH6kqjJpiMEmgTStIB46NLn2TWLV2JHtgmDiv89JHJqk3cOY9uZzP47PPdcyZZnCRY6-nl19YwVwJgD9GiCksNhQppKr7wuL1hmRXKrEMzauC6xAGK9M0IIls2gxsMeTE7Tckg0HrUfXkoISyLvMpTYeOgfNMoFu5AaERsPbQhPMgR7ZLmEr0coeENI5LiBRQIxfY_PMIfGU3AoK1KuDqRRG4Acb_wL8EQwj2P-kGOa-tspGGhRLW6WavUASTl2Ace7mEFKAK3ORD-NwHE_jVm-TIAHB6cQlChBPjJo8iSy8rwYHmjUjNC2T6SSN5_8iOd7XMcd4QhrVWCn5VJUGx3FPWni8E6e363rBhG-1AfUzB_z4XK0YIY7XwEtZZehOqg2XmKLhkjNit1Mt-KB8dCY53Z9h0Z9hsTdDOptNY3CV3QX7FOvc7nnRcbLT8IBVxkQSBTW8ZkWAVm4IC1DwQwzH6EJZtfrI8_sk_iEp929cYYcrtFzRe7heD9rOWZabru0XWJuW65fWh-I_2T4HAlN80Pae353Kfb-jjkeR9SisPWpb5Dj8QxKc3TeY8TaVRqejMPh7On_36k937i8NVgat6g-FMEU4-I3rVa7FPsM4Smc9dhesGD8L2lBRuV1z6BGeV1_Je9S-KR19rN5yeVv1pmscOhw6HDkclbg0sMSVkRZXKv98XWSvex38BpKHxiY=?"></a></p>
 <hr>
-<h2 id="4-global-performance">4. Global Performance<a class="headerlink" href="#4-global-performance" title="Permanent link">¶</a></h2>
-<p>With this architecture on an integrated GPU (Intel UHD):
--   <strong>FPS</strong>: Remains fluid (no brutal drop below 30 FPS).
--   <strong>Total Time</strong>: A complete environment transition takes about <strong>600ms to 800ms</strong>.
--   <strong>Perceived Latency</strong>: Near-zero thanks to continuous display of the old environment during computation.</p>
-<h2 id="5-key-files">5. Key Files<a class="headerlink" href="#5-key-files" title="Permanent link">¶</a></h2>
+<h2 id="4-deferred-memory-barrier-optimization">4. Deferred Memory Barrier Optimization<a class="headerlink" href="#4-deferred-memory-barrier-optimization" title="Permanent link">¶</a></h2>
+<h3 id="41-the-problem-per-slice-barrier-overhead">4.1 The Problem: Per-Slice Barrier Overhead<a class="headerlink" href="#41-the-problem-per-slice-barrier-overhead" title="Permanent link">¶</a></h3>
+<p>Initially, each slice dispatch called <code>glMemoryBarrier(GL_ALL_BARRIER_BITS)</code> at
+the end. This forced the GPU to:</p>
+<ol>
+<li><strong>Drain the entire pipeline</strong> — all in-flight commands complete before the
+    next dispatch starts.</li>
+<li><strong>Invalidate all GPU caches</strong> — texture cache, L2, framebuffer, etc.</li>
+<li><strong>Cold-restart</strong> — the next dispatch re-fetches <code>env_hdr_tex</code> from VRAM
+    instead of hitting cache.</li>
+</ol>
+<p>The overhead was <strong>super-linear</strong>: doubling the slice count more than doubled
+the total processing time. This made fine-grained slicing (many small slices
+for ~33ms/frame budget) impractical.</p>
+<h3 id="42-key-observation-no-inter-slice-data-dependencies">4.2 Key Observation: No Inter-Slice Data Dependencies<a class="headerlink" href="#42-key-observation-no-inter-slice-data-dependencies" title="Permanent link">¶</a></h3>
+<p>Analyzing the data flow reveals that slices are <strong>independent</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Slice 0: READ env_hdr_tex → WRITE dest_tex[mip][y: 0..N]
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Slice 1: READ env_hdr_tex → WRITE dest_tex[mip][y: N..2N]
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>...etc
+</span></code></pre></div>
 <ul>
-<li><code>src/app.c</code>: Contains the State Machine (<code>app_process_ibl_state_machine</code>).</li>
-<li><code>src/pbr.c</code>: Implements sending slicing uniforms (<code>pbr_prefilter_mip</code>, <code>pbr_irradiance_slice_compute</code>).</li>
+<li>All slices <strong>read</strong> from the same source HDR texture (never modified).</li>
+<li>Each slice <strong>writes</strong> to a disjoint Y-range of the destination texture.</li>
+<li>There is no read-after-write or write-after-write hazard between slices.</li>
+</ul>
+<p>The same holds across mip levels: each mip writes to a different mip level of
+the destination, and reads from the same source HDR.</p>
+<h3 id="43-solution-single-deferred-barrier">4.3 Solution: Single Deferred Barrier<a class="headerlink" href="#43-solution-single-deferred-barrier" title="Permanent link">¶</a></h3>
+<p>Remove all per-slice barriers and issue <strong>one</strong> barrier at the end:</p>
+<ul>
+<li><code>pbr_prefilter_mip()</code> and <code>pbr_irradiance_slice_compute()</code> no longer call
+    <code>glMemoryBarrier()</code>. The caller is responsible.</li>
+<li>A single <code>glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)</code> is placed in
+    <code>IBL_STATE_DONE</code>, just before the textures are sampled for rendering.</li>
+<li>The barrier type is narrowed from <code>GL_ALL_BARRIER_BITS</code> to
+    <code>GL_SHADER_IMAGE_ACCESS_BARRIER_BIT</code> — only the image-store-to-texture-fetch
+    coherency path is flushed.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/mermaid/svg/eNqtUUFOwzAQvOcVe0xE-wEOlZI0qiK1pUpAHCPX3iQWjm3WDojf4xgESLTiwh7HM-uZWYfPM2qOW8kGYlMCYSwjL7m0THsoTw-_sF3AIng0HsG8IC20VYBv4U4JYNaSYXyE1CKtnZIc4cyIJFIWdcoYC9XCaJfHiC0Ttqw3m7hnUFvpLPN8LM1kZ49pdpl2wMnQW_GxPs33-67Im6aumq6o79tvUfRKchg9mB6i-CQtKqkRBDGp4QZ4sITQq9mNUYdaXA16xNcfQQX2SITiX3NesPxo6AnCxWYUK9AGnGdKfXn9o5z6kO-qLi_Lqm2XdrLkyi-t1IP6LALO2BtCcGyyoawheQew86rs?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/mermaid/svg/eNqtUUFOwzAQvOcVe0xE-wEOlZI0qiK1pUpAHCPX3iQWjm3WDojf4xgESLTiwh7HM-uZWYfPM2qOW8kGYlMCYSwjL7m0THsoTw-_sF3AIng0HsG8IC20VYBv4U4JYNaSYXyE1CKtnZIc4cyIJFIWdcoYC9XCaJfHiC0Ttqw3m7hnUFvpLPN8LM1kZ49pdpl2wMnQW_GxPs33-67Im6aumq6o79tvUfRKchg9mB6i-CQtKqkRBDGp4QZ4sITQq9mNUYdaXA16xNcfQQX2SITiX3NesPxo6AnCxWYUK9AGnGdKfXn9o5z6kO-qLi_Lqm2XdrLkyi-t1IP6LALO2BtCcGyyoawheQew86rs?"></a></p>
+<h3 id="44-benchmark-results-16-slices-on-mip-0">4.4 Benchmark Results (16 slices on Mip 0)<a class="headerlink" href="#44-benchmark-results-16-slices-on-mip-0" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Metric</th>
+<th style="text-align: left;">Before (per-slice barrier)</th>
+<th style="text-align: left;">After (deferred)</th>
+<th style="text-align: left;">Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Average</strong></td>
+<td style="text-align: left;">~1004 ms</td>
+<td style="text-align: left;">~875 ms</td>
+<td style="text-align: left;"><strong>~13%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Min</strong></td>
+<td style="text-align: left;">792 ms</td>
+<td style="text-align: left;">668 ms</td>
+<td style="text-align: left;"><strong>~16%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Max</strong></td>
+<td style="text-align: left;">1189 ms</td>
+<td style="text-align: left;">904 ms</td>
+<td style="text-align: left;"><strong>~24%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Variance</strong></td>
+<td style="text-align: left;">±200 ms</td>
+<td style="text-align: left;">±80 ms</td>
+<td style="text-align: left;"><strong>Much more stable</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The variance reduction is significant: per-slice pipeline drains introduced
+unpredictable GPU idle time. With the deferred barrier, the GPU runs
+continuously without stalls.</p>
+<blockquote>
+<p>[!IMPORTANT]
+With the deferred barrier, the slice count can be increased freely without
+super-linear overhead. This allows targeting a ~33ms/frame budget per slice
+for smooth 30 FPS during IBL generation.</p>
+</blockquote>
+<hr>
+<h2 id="5-global-performance">5. Global Performance<a class="headerlink" href="#5-global-performance" title="Permanent link">¶</a></h2>
+<p>With this architecture on a discrete GPU:
+* <strong>FPS</strong>: Remains fluid (~30+ FPS during IBL generation).
+* <strong>Total Time</strong>: A complete environment transition takes about <strong>850ms to 950ms</strong> (with 24+8+12 slices).
+* <strong>Perceived Latency</strong>: Near-zero thanks to continuous display of the old environment during computation.</p>
+<h2 id="6-key-files">6. Key Files<a class="headerlink" href="#6-key-files" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>src/app_env.c</code>: Contains the State Machine (<code>app_process_ibl_state_machine</code>) and the deferred barrier in <code>IBL_STATE_DONE</code>.</li>
+<li><code>src/pbr.c</code>: Implements sliced compute dispatches (<code>pbr_prefilter_mip</code>, <code>pbr_irradiance_slice_compute</code>) — no internal barriers.</li>
+<li><code>include/pbr.h</code>: API documentation with <code>@note</code> about caller barrier responsibility.</li>
 <li><code>shaders/IBL/*.glsl</code>: Shaders modified to support <code>u_offset_y</code> and <code>u_max_y</code>.</li>
 </ul>
 
@@ -2110,7 +2398,7 @@ We pass a precise limit to the shader:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 13, 2026 08:11:37 UTC">February 13, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 19, 2026 12:22:24 UTC">February 19, 2026</span>
   </span>
 
     

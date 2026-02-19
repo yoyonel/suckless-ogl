@@ -610,10 +610,11 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">size</td><td>Resolution. </td></tr>
     <tr><td class="paramname">slice_index</td><td>Current face. </td></tr>
     <tr><td class="paramname">total_slices</td><td>Total faces. </td></tr>
-    <tr><td class="paramname">threshold</td><td>Luminance threshold. </td></tr>
+    <tr><td class="paramname">threshold</td><td>Luminance threshold.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function does NOT issue a memory barrier. The caller must call glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all slices have been dispatched. </dd></dl>
 
 </div>
 </div>
@@ -746,10 +747,11 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">total_levels</td><td>Total number of mips in the cubemap. </td></tr>
     <tr><td class="paramname">slice_index</td><td>Current face/slice being processed. </td></tr>
     <tr><td class="paramname">total_slices</td><td>Total slices (usually 6). </td></tr>
-    <tr><td class="paramname">threshold</td><td>Luminance threshold. </td></tr>
+    <tr><td class="paramname">threshold</td><td>Luminance threshold.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function does NOT issue a memory barrier. The caller must call glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all slices have been dispatched. </dd></dl>
 
 </div>
 </div>

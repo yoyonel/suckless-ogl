@@ -289,6 +289,12 @@ Variables</h2></td></tr>
 <tr class="separator:a764e470d5b315a2fc1bfdcad6183545b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeec0e4121b2f13da5d4c37deb40952b6" id="r_aeec0e4121b2f13da5d4c37deb40952b6"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#aeec0e4121b2f13da5d4c37deb40952b6">MAX_HDR_RESOLUTION</a> = 4096</td></tr>
 <tr class="separator:aeec0e4121b2f13da5d4c37deb40952b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaf8e347ba781b760c16e0e3f32fa74e" id="r_afaf8e347ba781b760c16e0e3f32fa74e"><td class="memItemLeft" align="right" valign="top">static const GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#afaf8e347ba781b760c16e0e3f32fa74e">BINDING_ENV_MAP</a> = 0</td></tr>
+<tr class="separator:afaf8e347ba781b760c16e0e3f32fa74e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa491eae0c7780d7ceee29175380adc09" id="r_aa491eae0c7780d7ceee29175380adc09"><td class="memItemLeft" align="right" valign="top">static const GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#aa491eae0c7780d7ceee29175380adc09">BINDING_DEST_TEXTURE</a> = 1</td></tr>
+<tr class="separator:aa491eae0c7780d7ceee29175380adc09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4751ae91e8a7caee11606c0b95b59715" id="r_a4751ae91e8a7caee11606c0b95b59715"><td class="memItemLeft" align="right" valign="top">static const GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a4751ae91e8a7caee11606c0b95b59715">COMPUTE_DISPATCH_Z_ONCE</a> = 1</td></tr>
+<tr class="separator:a4751ae91e8a7caee11606c0b95b59715"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a626c9aaaa1dea8809b7f5c9a745aac55" name="a626c9aaaa1dea8809b7f5c9a745aac55"></a>
@@ -614,10 +620,11 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">size</td><td>Resolution. </td></tr>
     <tr><td class="paramname">slice_index</td><td>Current face. </td></tr>
     <tr><td class="paramname">total_slices</td><td>Total faces. </td></tr>
-    <tr><td class="paramname">threshold</td><td>Luminance threshold. </td></tr>
+    <tr><td class="paramname">threshold</td><td>Luminance threshold.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function does NOT issue a memory barrier. The caller must call glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all slices have been dispatched. </dd></dl>
 
 </div>
 </div>
@@ -750,14 +757,81 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">total_levels</td><td>Total number of mips in the cubemap. </td></tr>
     <tr><td class="paramname">slice_index</td><td>Current face/slice being processed. </td></tr>
     <tr><td class="paramname">total_slices</td><td>Total slices (usually 6). </td></tr>
-    <tr><td class="paramname">threshold</td><td>Luminance threshold. </td></tr>
+    <tr><td class="paramname">threshold</td><td>Luminance threshold.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section note"><dt>Note</dt><dd>This function does NOT issue a memory barrier. The caller must call glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all slices have been dispatched. </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="aa491eae0c7780d7ceee29175380adc09" name="aa491eae0c7780d7ceee29175380adc09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa491eae0c7780d7ceee29175380adc09">&#9670;&#160;</a></span>BINDING_DEST_TEXTURE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const GLuint BINDING_DEST_TEXTURE = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afaf8e347ba781b760c16e0e3f32fa74e" name="afaf8e347ba781b760c16e0e3f32fa74e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaf8e347ba781b760c16e0e3f32fa74e">&#9670;&#160;</a></span>BINDING_ENV_MAP</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const GLuint BINDING_ENV_MAP = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4751ae91e8a7caee11606c0b95b59715" name="a4751ae91e8a7caee11606c0b95b59715"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4751ae91e8a7caee11606c0b95b59715">&#9670;&#160;</a></span>COMPUTE_DISPATCH_Z_ONCE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const GLuint COMPUTE_DISPATCH_Z_ONCE = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a764e470d5b315a2fc1bfdcad6183545b" name="a764e470d5b315a2fc1bfdcad6183545b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a764e470d5b315a2fc1bfdcad6183545b">&#9670;&#160;</a></span>COMPUTE_GROUP_SIZE_LUM</h2>
 

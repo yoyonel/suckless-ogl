@@ -17,5 +17,6 @@ var searchData=
   ['postprocess_2eh_14',['postprocess.h',['../postprocess_8h.html',1,'']]],
   ['postprocess_2evert_15',['postprocess.vert',['../postprocess_8vert.html',1,'']]],
   ['postprocess_5fpresets_2eh_16',['postprocess_presets.h',['../postprocess__presets_8h.html',1,'']]],
-  ['projection_5futils_2eglsl_17',['projection_utils.glsl',['../projection__utils_8glsl.html',1,'']]]
+  ['profiler_2eh_17',['profiler.h',['../profiler_8h.html',1,'']]],
+  ['projection_5futils_2eglsl_18',['projection_utils.glsl',['../projection__utils_8glsl.html',1,'']]]
 ];

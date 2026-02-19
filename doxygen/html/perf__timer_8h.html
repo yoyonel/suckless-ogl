@@ -291,6 +291,9 @@ Macros</h2></td></tr>
 <tr class="memitem:a2890bfff296f02d391c9c90a2d8e5005" id="r_a2890bfff296f02d391c9c90a2d8e5005"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005">HYBRID_MEASURE_LOG</a>(label)</td></tr>
 <tr class="memdesc:a2890bfff296f02d391c9c90a2d8e5005"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hybrid measurement macro. Useful for identifying driver vs GPU bottlenecks.  <br /></td></tr>
 <tr class="separator:a2890bfff296f02d391c9c90a2d8e5005"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc24452fa4cd12c093c41f487c21f701" id="r_afc24452fa4cd12c093c41f487c21f701"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">HYBRID_MEASURE_DEBUG_MS</a>(var_name,  label)</td></tr>
+<tr class="memdesc:afc24452fa4cd12c093c41f487c21f701"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hybrid measurement with DEBUG-level console logging.  <br /></td></tr>
+<tr class="separator:afc24452fa4cd12c093c41f487c21f701"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad9c1d6c0afa04bfd26ab833806b67b5" id="r_aad9c1d6c0afa04bfd26ab833806b67b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(label)</td></tr>
 <tr class="memdesc:aad9c1d6c0afa04bfd26ab833806b67b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scoped hybrid timer. Automatically logs on scope exit.  <br /></td></tr>
 <tr class="separator:aad9c1d6c0afa04bfd26ab833806b67b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -327,6 +330,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a144c7bd743c4e27d7738669d549e59ae" id="r_a144c7bd743c4e27d7738669d549e59ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a> (<a class="el" href="structHybridTimer.html">HybridTimer</a> *timer, const char *label)</td></tr>
 <tr class="memdesc:a144c7bd743c4e27d7738669d549e59ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops both measurements and logs the results to the console.  <br /></td></tr>
 <tr class="separator:a144c7bd743c4e27d7738669d549e59ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb9cf6460e741f89a12f75ad91b83bfc" id="r_adb9cf6460e741f89a12f75ad91b83bfc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_hybrid_stop_debug</a> (<a class="el" href="structHybridTimer.html">HybridTimer</a> *timer, const char *label)</td></tr>
+<tr class="memdesc:adb9cf6460e741f89a12f75ad91b83bfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Like perf_hybrid_stop, but logs at DEBUG level instead of INFO.  <br /></td></tr>
+<tr class="separator:adb9cf6460e741f89a12f75ad91b83bfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b01333acd4f8363793592ca8eebe9ce" id="r_a9b01333acd4f8363793592ca8eebe9ce"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a> (<a class="el" href="structHybridTimerRAII.html">HybridTimerRAII</a> *timer_raii)</td></tr>
 <tr class="memdesc:a9b01333acd4f8363793592ca8eebe9ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal cleanup function for <a class="el" href="structHybridTimerRAII.html" title="Internal helper for scope-based timing.">HybridTimerRAII</a>.  <br /></td></tr>
 <tr class="separator:a9b01333acd4f8363793592ca8eebe9ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -357,8 +363,8 @@ Functions</h2></td></tr>
 <div class="line">                            <a class="code hl_function" href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a>(&amp;_gpu_timer, 1)),     \</div>
 <div class="line">             gpu_timer_cleanup(&amp;_gpu_timer), _gpu_run = NULL)</div>
 <div class="ttc" id="alog_8h_html_a4ec0b91afc0eca2e85c60b528628b8cc"><div class="ttname"><a href="log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc">LOG_INFO</a></div><div class="ttdeci">#define LOG_INFO(tag,...)</div><div class="ttdoc">Log an info message.</div><div class="ttdef"><b>Definition</b> log.h:73</div></div>
-<div class="ttc" id="aperf__timer_8h_html_a248eca7078cf6b01ea1d0a65f3863774"><div class="ttname"><a href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a></div><div class="ttdeci">double gpu_timer_elapsed_ms(GPUTimer *timer, int wait_for_result)</div><div class="ttdoc">Stops the GPU timer and retrieves the result.</div><div class="ttdef"><b>Definition</b> perf_timer.c:108</div></div>
-<div class="ttc" id="aperf__timer_8h_html_ab590b4c19b3d254d82d940eca2bfdcab"><div class="ttname"><a href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">gpu_timer_start</a></div><div class="ttdeci">void gpu_timer_start(GPUTimer *timer)</div><div class="ttdoc">Initializes and starts a GPU measurement.</div><div class="ttdef"><b>Definition</b> perf_timer.c:89</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a248eca7078cf6b01ea1d0a65f3863774"><div class="ttname"><a href="perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a></div><div class="ttdeci">double gpu_timer_elapsed_ms(GPUTimer *timer, int wait_for_result)</div><div class="ttdoc">Stops the GPU timer and retrieves the result.</div><div class="ttdef"><b>Definition</b> perf_timer.c:118</div></div>
+<div class="ttc" id="aperf__timer_8h_html_ab590b4c19b3d254d82d940eca2bfdcab"><div class="ttname"><a href="perf__timer_8h.html#ab590b4c19b3d254d82d940eca2bfdcab">gpu_timer_start</a></div><div class="ttdeci">void gpu_timer_start(GPUTimer *timer)</div><div class="ttdoc">Initializes and starts a GPU measurement.</div><div class="ttdef"><b>Definition</b> perf_timer.c:99</div></div>
 <div class="ttc" id="astructGPUTimer_html"><div class="ttname"><a href="structGPUTimer.html">GPUTimer</a></div><div class="ttdoc">GPU performance timer using OpenGL Query Objects.</div><div class="ttdef"><b>Definition</b> perf_timer.h:35</div></div>
 </div><!-- fragment -->
 <p>Automatically measures and logs a GPU block to "perf.gpu". </p>
@@ -411,15 +417,60 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">    <a class="code hl_struct" href="structHybridTimerRAII.html">HybridTimerRAII</a> _h_raii                                     \</div>
 <div class="line">        __attribute__((cleanup(<a class="code hl_function" href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a>))) = { \</div>
 <div class="line">            perf_hybrid_start(), label}</div>
-<div class="ttc" id="aperf__timer_8h_html_a9b01333acd4f8363793592ca8eebe9ce"><div class="ttname"><a href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a></div><div class="ttdeci">static void hybrid_timer_cleanup_raii(HybridTimerRAII *timer_raii)</div><div class="ttdoc">Internal cleanup function for HybridTimerRAII.</div><div class="ttdef"><b>Definition</b> perf_timer.h:205</div></div>
-<div class="ttc" id="astructHybridTimerRAII_html"><div class="ttname"><a href="structHybridTimerRAII.html">HybridTimerRAII</a></div><div class="ttdoc">Internal helper for scope-based timing.</div><div class="ttdef"><b>Definition</b> perf_timer.h:199</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a9b01333acd4f8363793592ca8eebe9ce"><div class="ttname"><a href="perf__timer_8h.html#a9b01333acd4f8363793592ca8eebe9ce">hybrid_timer_cleanup_raii</a></div><div class="ttdeci">static void hybrid_timer_cleanup_raii(HybridTimerRAII *timer_raii)</div><div class="ttdoc">Internal cleanup function for HybridTimerRAII.</div><div class="ttdef"><b>Definition</b> perf_timer.h:246</div></div>
+<div class="ttc" id="astructHybridTimerRAII_html"><div class="ttname"><a href="structHybridTimerRAII.html">HybridTimerRAII</a></div><div class="ttdoc">Internal helper for scope-based timing.</div><div class="ttdef"><b>Definition</b> perf_timer.h:240</div></div>
 </div><!-- fragment -->
 <p>Scoped hybrid timer. Automatically logs on scope exit. </p>
 <p>Usage: </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> complex_function() {</div>
 <div class="line">    <a class="code hl_define" href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a>(<span class="stringliteral">&quot;IBL: Specular Map&quot;</span>);</div>
 <div class="line">    <span class="comment">// ... function body ...</span></div>
 <div class="line">}</div>
-<div class="ttc" id="aperf__timer_8h_html_aad9c1d6c0afa04bfd26ab833806b67b5"><div class="ttname"><a href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a></div><div class="ttdeci">#define HYBRID_FUNC_TIMER(label)</div><div class="ttdoc">Scoped hybrid timer. Automatically logs on scope exit.</div><div class="ttdef"><b>Definition</b> perf_timer.h:221</div></div>
+<div class="ttc" id="aperf__timer_8h_html_aad9c1d6c0afa04bfd26ab833806b67b5"><div class="ttname"><a href="perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5">HYBRID_FUNC_TIMER</a></div><div class="ttdeci">#define HYBRID_FUNC_TIMER(label)</div><div class="ttdoc">Scoped hybrid timer. Automatically logs on scope exit.</div><div class="ttdef"><b>Definition</b> perf_timer.h:262</div></div>
+</div><!-- fragment --> 
+</div>
+</div>
+<a id="afc24452fa4cd12c093c41f487c21f701" name="afc24452fa4cd12c093c41f487c21f701"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc24452fa4cd12c093c41f487c21f701">&#9670;&#160;</a></span>HYBRID_MEASURE_DEBUG_MS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HYBRID_MEASURE_DEBUG_MS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">var_name, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">label&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">double</span> var_name = 0.0;                                                \</div>
+<div class="line">    for (<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a> _h##var_name = <a class="code hl_function" href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a>(),                  \</div>
+<div class="line">                     *_h_run = (<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a>*)1;                           \</div>
+<div class="line">         _h_run; var_name = <a class="code hl_function" href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_hybrid_stop_debug</a>(&amp;_h##var_name, label), \</div>
+<div class="line">                     _h_run = NULL)</div>
+<div class="ttc" id="aperf__timer_8h_html_a59a73414ace7b1c18599fb7ea34b376b"><div class="ttname"><a href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a></div><div class="ttdeci">HybridTimer perf_hybrid_start(void)</div><div class="ttdoc">Starts both CPU and GPU measurement simultaneously.</div><div class="ttdef"><b>Definition</b> perf_timer.c:218</div></div>
+<div class="ttc" id="aperf__timer_8h_html_adb9cf6460e741f89a12f75ad91b83bfc"><div class="ttname"><a href="perf__timer_8h.html#adb9cf6460e741f89a12f75ad91b83bfc">perf_hybrid_stop_debug</a></div><div class="ttdeci">double perf_hybrid_stop_debug(HybridTimer *timer, const char *label)</div><div class="ttdoc">Like perf_hybrid_stop, but logs at DEBUG level instead of INFO.</div><div class="ttdef"><b>Definition</b> perf_timer.c:303</div></div>
+<div class="ttc" id="astructHybridTimer_html"><div class="ttname"><a href="structHybridTimer.html">HybridTimer</a></div><div class="ttdoc">Hybrid timer combining CPU and GPU measurements.</div><div class="ttdef"><b>Definition</b> perf_timer.h:49</div></div>
+</div><!-- fragment -->
+<p>Hybrid measurement with DEBUG-level console logging. </p>
+<p>Like HYBRID_MEASURE_LOG but demotes console output to LOG_DEBUG. Tracy zones are still emitted. Captures GPU elapsed ms into <code>var_name</code>.</p>
+<p>Usage: </p><div class="fragment"><div class="line">  <a class="code hl_define" href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">HYBRID_MEASURE_DEBUG_MS</a>(gpu_ms, <span class="stringliteral">&quot;Progressive IBL: Specular Mip 0 Slice</span></div>
+<div class="line"><span class="stringliteral">1/24&quot;</span>) { <a class="code hl_function" href="pbr_8h.html#a3565e3f9822026deb79279a47a6a5973">pbr_prefilter_mip</a>(...);</div>
+<div class="line">  }</div>
+<div class="line">  <span class="comment">// gpu_ms now contains the GPU time in milliseconds</span></div>
+<div class="ttc" id="apbr_8h_html_a3565e3f9822026deb79279a47a6a5973"><div class="ttname"><a href="pbr_8h.html#a3565e3f9822026deb79279a47a6a5973">pbr_prefilter_mip</a></div><div class="ttdeci">void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex, int width, int height, int level, int total_levels, int slice_index, int total_slices, float threshold)</div><div class="ttdoc">Computes a single slice or mip-level for progressive pre-filtering.</div><div class="ttdef"><b>Definition</b> pbr.c:31</div></div>
+<div class="ttc" id="aperf__timer_8h_html_afc24452fa4cd12c093c41f487c21f701"><div class="ttname"><a href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">HYBRID_MEASURE_DEBUG_MS</a></div><div class="ttdeci">#define HYBRID_MEASURE_DEBUG_MS(var_name, label)</div><div class="ttdoc">Hybrid measurement with DEBUG-level console logging.</div><div class="ttdef"><b>Definition</b> perf_timer.h:229</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -440,9 +491,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">for</span> (<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a> _h = <a class="code hl_function" href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a>(), *_h_run = (<a class="code hl_struct" href="structHybridTimer.html">HybridTimer</a>*)1; \</div>
 <div class="line">         _h_run; <a class="code hl_function" href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a>(&amp;_h, label), _h_run = NULL)</div>
-<div class="ttc" id="aperf__timer_8h_html_a144c7bd743c4e27d7738669d549e59ae"><div class="ttname"><a href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a></div><div class="ttdeci">void perf_hybrid_stop(HybridTimer *timer, const char *label)</div><div class="ttdoc">Stops both measurements and logs the results to the console.</div><div class="ttdef"><b>Definition</b> perf_timer.c:191</div></div>
-<div class="ttc" id="aperf__timer_8h_html_a59a73414ace7b1c18599fb7ea34b376b"><div class="ttname"><a href="perf__timer_8h.html#a59a73414ace7b1c18599fb7ea34b376b">perf_hybrid_start</a></div><div class="ttdeci">HybridTimer perf_hybrid_start(void)</div><div class="ttdoc">Starts both CPU and GPU measurement simultaneously.</div><div class="ttdef"><b>Definition</b> perf_timer.c:183</div></div>
-<div class="ttc" id="astructHybridTimer_html"><div class="ttname"><a href="structHybridTimer.html">HybridTimer</a></div><div class="ttdoc">Hybrid timer combining CPU and GPU measurements.</div><div class="ttdef"><b>Definition</b> perf_timer.h:45</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a144c7bd743c4e27d7738669d549e59ae"><div class="ttname"><a href="perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae">perf_hybrid_stop</a></div><div class="ttdeci">void perf_hybrid_stop(HybridTimer *timer, const char *label)</div><div class="ttdoc">Stops both measurements and logs the results to the console.</div><div class="ttdef"><b>Definition</b> perf_timer.c:294</div></div>
 </div><!-- fragment -->
 <p>Hybrid measurement macro. Useful for identifying driver vs GPU bottlenecks. </p>
 
@@ -468,8 +517,8 @@ Functions</h2></td></tr>
 <div class="line">         _run; <a class="code hl_define" href="log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc">LOG_INFO</a>(<span class="stringliteral">&quot;perf&quot;</span>, <span class="stringliteral">&quot;%s: %.2f ms&quot;</span>, label,                  \</div>
 <div class="line">                        <a class="code hl_function" href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a>(&amp;_timer)),               \</div>
 <div class="line">                   _run = NULL)</div>
-<div class="ttc" id="aperf__timer_8h_html_a0d2ae17973105f843bf88f6f7be496bc"><div class="ttname"><a href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a></div><div class="ttdeci">double perf_timer_elapsed_ms(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in milliseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:37</div></div>
-<div class="ttc" id="aperf__timer_8h_html_a2fe19c18f13ab8077e83373abd1a00f5"><div class="ttname"><a href="perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer_start</a></div><div class="ttdeci">void perf_timer_start(PerfTimer *timer)</div><div class="ttdoc">Starts the CPU timer.</div><div class="ttdef"><b>Definition</b> perf_timer.c:28</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a0d2ae17973105f843bf88f6f7be496bc"><div class="ttname"><a href="perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a></div><div class="ttdeci">double perf_timer_elapsed_ms(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in milliseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:47</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a2fe19c18f13ab8077e83373abd1a00f5"><div class="ttname"><a href="perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5">perf_timer_start</a></div><div class="ttdeci">void perf_timer_start(PerfTimer *timer)</div><div class="ttdoc">Starts the CPU timer.</div><div class="ttdef"><b>Definition</b> perf_timer.c:38</div></div>
 <div class="ttc" id="astructPerfTimer_html"><div class="ttname"><a href="structPerfTimer.html">PerfTimer</a></div><div class="ttdoc">CPU high-precision timer.</div><div class="ttdef"><b>Definition</b> perf_timer.h:24</div></div>
 </div><!-- fragment -->
 <p>Automatically measures and logs a code block to the "perf" category. </p>
@@ -503,7 +552,7 @@ Functions</h2></td></tr>
 <div class="line">    <span class="comment">// Code to measure</span></div>
 <div class="line">}</div>
 <div class="line">printf(<span class="stringliteral">&quot;Took %.2f ms\n&quot;</span>, load_time);</div>
-<div class="ttc" id="aperf__timer_8h_html_a7efd9f8bb3f173a7b166137af173398f"><div class="ttname"><a href="perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f">PERF_MEASURE_MS</a></div><div class="ttdeci">#define PERF_MEASURE_MS(var_name)</div><div class="ttdoc">Automatically measures a code block and stores result in var_name.</div><div class="ttdef"><b>Definition</b> perf_timer.h:145</div></div>
+<div class="ttc" id="aperf__timer_8h_html_a7efd9f8bb3f173a7b166137af173398f"><div class="ttname"><a href="perf__timer_8h.html#a7efd9f8bb3f173a7b166137af173398f">PERF_MEASURE_MS</a></div><div class="ttdeci">#define PERF_MEASURE_MS(var_name)</div><div class="ttdoc">Automatically measures a code block and stores result in var_name.</div><div class="ttdef"><b>Definition</b> perf_timer.h:165</div></div>
 </div><!-- fragment --> 
 </div>
 </div>
@@ -652,7 +701,7 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="perf__timer_8h_a9b01333acd4f8363793592ca8eebe9ce_cgraph.svg" width="603" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="perf__timer_8h_a9b01333acd4f8363793592ca8eebe9ce_cgraph.svg" width="380" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -717,11 +766,45 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="perf__timer_8h_a144c7bd743c4e27d7738669d549e59ae_cgraph.svg" width="364" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+
 </div>
+</div>
+<a id="adb9cf6460e741f89a12f75ad91b83bfc" name="adb9cf6460e741f89a12f75ad91b83bfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb9cf6460e741f89a12f75ad91b83bfc">&#9670;&#160;</a></span>perf_hybrid_stop_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double perf_hybrid_stop_debug </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structHybridTimer.html">HybridTimer</a> *&#160;</td>
+          <td class="paramname"><em>timer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>label</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Like perf_hybrid_stop, but logs at DEBUG level instead of INFO. </p>
+<p>Tracy zones are still emitted at full detail. Only the console output is demoted to reduce noise in production. Returns GPU elapsed ms.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timer</td><td>Pointer to the timer. </td></tr>
+    <tr><td class="paramname">label</td><td>Descriptive string for the log entry. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>GPU elapsed time in milliseconds. </dd></dl>
 
 </div>
 </div>

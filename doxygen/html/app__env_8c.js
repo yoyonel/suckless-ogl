@@ -13,6 +13,19 @@ var app__env_8c =
     [ "ibl_specular_mip0_slices", "app__env_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4", null ],
     [ "ibl_specular_mip1_slices", "app__env_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7", null ],
     [ "ibl_specular_mips_grouping_start", "app__env_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e", null ],
+    [ "ibl_stats_accumulate", "app__env_8c.html#a01b873dda5b529190d63451e58a9c50c", null ],
+    [ "ibl_stats_log_summary", "app__env_8c.html#ac866c40354d035d69543e49a15569081", null ],
+    [ "ibl_stats_reset", "app__env_8c.html#a4f8b9df1bbc5d81058f5d6f9425ee3cb", null ],
     [ "is_software_renderer", "app__env_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e", null ],
-    [ "IBL_LOG_LABEL_SIZE", "app__env_8c.html#aa5ac2b4f077bc45d4ea556539a84db38", null ]
+    [ "HDR_EXTENSION", "app__env_8c.html#addf3c4a8a43f871218486c07bbb28461", null ],
+    [ "HDR_TEXTURE_PATH", "app__env_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3", null ],
+    [ "IBL_IRRADIANCE_HARDWARE_SLICES", "app__env_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45", null ],
+    [ "IBL_LOG_LABEL_SIZE", "app__env_8c.html#aa5ac2b4f077bc45d4ea556539a84db38", null ],
+    [ "IBL_SOFTWARE_FALLBACK_SLICES", "app__env_8c.html#a6494d63e0ff1eb4d9ec732a056ab655c", null ],
+    [ "IBL_SOFTWARE_MIP_GROUPING_START_MIP", "app__env_8c.html#a7427e33647e1f11c1129bfe49029bcce", null ],
+    [ "IBL_SPECULAR_MIP0_HARDWARE_SLICES", "app__env_8c.html#a10906b0fc6004f05d5b0428c10cad2e9", null ],
+    [ "IBL_SPECULAR_MIP1_HARDWARE_SLICES", "app__env_8c.html#ad724e11eb756c49bf2e1f0603946b3e0", null ],
+    [ "IBL_SPECULAR_MIP_GROUPING_START_MIP", "app__env_8c.html#a0f951302cb33cd6f2aa28d7314bc2bc8", null ],
+    [ "IBL_THRESHOLD_FALLBACK_MIN", "app__env_8c.html#a7f01277e23e73c88a937e3771351252c", null ],
+    [ "MAX_PATH_LENGTH", "app__env_8c.html#acf85965108ddb048b66205bcd09d87b6", null ]
 ];
