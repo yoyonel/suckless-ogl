@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "mem.h"
 #include "perf_mode.h"
 #include "postprocess.h" /* Explicit include for types */
 #include "postprocess_presets.h"

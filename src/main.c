@@ -4,11 +4,16 @@
 #include "cli.h"
 #include "gl_common.h"
 #include "log.h"
+#include "mem.h"
+#include "tracy_manager.h"
+#include <cJSON.h>
 #include <stdlib.h>
 #include <string.h>
 
 int main(int argc, char* argv[])
 {
+	tracy_manager_init_global();
+
 	CliAction action = cli_handle_args(argc, argv);
 	if (action == CLI_ACTION_EXIT_SUCCESS) {
 		return EXIT_SUCCESS;

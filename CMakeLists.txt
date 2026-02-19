@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(suckless-ogl C)
+project(suckless-ogl C CXX)
 
 # Generate compile_commands.json for generic clang-tidy usage
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -74,6 +74,13 @@ if(ENABLE_SHADER_OPTIMIZATION)
     message(STATUS "Shader Optimization: ENABLED (Static compile)")
 endif()
 
+# Tracy Profiler Integration
+option(ENABLE_TRACY "Enable Tracy Profiler integration" OFF)
+if(ENABLE_TRACY)
+    add_compile_definitions(TRACY_ENABLE TRACY_FIBERS)
+    message(STATUS "Tracy Profiler: ENABLED (with Fibers)")
+endif()
+
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -82,6 +89,7 @@ add_compile_definitions(_GNU_SOURCE)
 file(GLOB_RECURSE SOURCES
     CONFIGURE_DEPENDS
     "src/*.c"
+    "src/*.cpp" # Added to support tracy_gpu.cpp
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -214,7 +222,7 @@ set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags
 set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
 
 # --- Optimisations Avancées ---
-option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" OFF)
+option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" ON)
 option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
 option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
 
@@ -224,9 +232,13 @@ if(ENABLE_UNITY_BUILD)
 endif()
 
 if(ENABLE_NATIVE_ARCH)
+    message(STATUS "Compiler ID: ${CMAKE_C_COMPILER_ID}")
     if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-        add_compile_options(-march=native)
-        message(STATUS "Native Architecture Optimization: ENABLED")
+        # Force AVX2/F16C in addition to native, just to be sure
+        add_compile_options(-march=native -mavx2 -mf16c)
+        message(STATUS "Native Architecture Optimization: ENABLED (Flags: -march=native -mavx2 -mf16c)")
+    else()
+        message(WARNING "Native Architecture Optimization enabled but compiler '${CMAKE_C_COMPILER_ID}' not recognized")
     endif()
 endif()
 
@@ -256,7 +268,12 @@ elseif(ENABLE_ASAN)
 endif()
 
 # App target
-add_executable(app ${SOURCES})
+set(APP_SOURCES ${SOURCES})
+if(ENABLE_TRACY)
+    list(APPEND APP_SOURCES "deps/tracy/public/TracyClient.cpp")
+    set_source_files_properties("deps/tracy/public/TracyClient.cpp" PROPERTIES COMPILE_FLAGS "-w")
+endif()
+add_executable(app ${APP_SOURCES})
 
 # Apply Clang-Tidy only to this target
 if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
@@ -266,6 +283,9 @@ endif()
 # Target properties and includes
 target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
 target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
+if(ENABLE_TRACY)
+    target_include_directories(app PUBLIC deps/tracy/public)
+endif()
 
 # Link avec la version statique de cJSON
 find_package(Threads REQUIRED)
@@ -332,6 +352,11 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
+    if(ENABLE_TRACY)
+        # Required for Tracy to resolve symbols in callstacks
+        target_link_options(app PRIVATE -rdynamic)
+    endif()
+
     add_compile_definitions(_GNU_SOURCE)
 endif()
 
@@ -347,23 +372,33 @@ add_custom_command(TARGET app POST_BUILD
 )
 
 # --- Unit Testing ---
-enable_testing()
+if(NOT ENABLE_TRACY)
+    enable_testing()
 
-# --- Code Coverage ---
-option(CODE_COVERAGE "Enable coverage reporting" OFF)
-if(CODE_COVERAGE)
-    message(STATUS "Code Coverage: ON (Using llvm-cov)")
-    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
-    add_link_options(-fprofile-instr-generate)
+    # --- Code Coverage ---
+    option(CODE_COVERAGE "Enable coverage reporting" OFF)
+    if(CODE_COVERAGE)
+        if(CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+            message(STATUS "Code Coverage: ON (Using llvm-cov flags)")
+            add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+            add_link_options(-fprofile-instr-generate)
+        elseif(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+            message(STATUS "Code Coverage: ON (Using gcov flags)")
+            add_compile_options(--coverage)
+            add_link_options(--coverage)
+        endif()
+    endif()
+
+    # Fetch Unity (Lightweight C Testing Framework)
+    FetchContent_Declare(
+        unity
+        GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
+        GIT_TAG        v2.6.0
+    )
+    FetchContent_MakeAvailable(unity)
+
+    # Add tests subdirectory
+    add_subdirectory(tests)
+else()
+    message(STATUS "Unit Testing: DISABLED (Tracy Profiler Active)")
 endif()
-
-# Fetch Unity (Lightweight C Testing Framework)
-FetchContent_Declare(
-    unity
-    GIT_REPOSITORY https://github.com/ThrowTheSwitch/Unity.git
-    GIT_TAG        v2.6.0
-)
-FetchContent_MakeAvailable(unity)
-
-# Add tests subdirectory
-add_subdirectory(tests)

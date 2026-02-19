@@ -44,6 +44,10 @@ GLuint pbr_prefilter_init(int width, int height);
  * @param slice_index Current face/slice being processed.
  * @param total_slices Total slices (usually 6).
  * @param threshold Luminance threshold.
+ *
+ * @note This function does NOT issue a memory barrier. The caller must call
+ *       glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all
+ *       slices have been dispatched.
  */
 void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
                        int width, int height, int level, int total_levels,
@@ -76,6 +80,10 @@ GLuint pbr_irradiance_init(int size);
  * @param slice_index Current face.
  * @param total_slices Total faces.
  * @param threshold Luminance threshold.
+ *
+ * @note This function does NOT issue a memory barrier. The caller must call
+ *       glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all
+ *       slices have been dispatched.
  */
 void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
                                   GLuint dest_tex, int size, int slice_index,

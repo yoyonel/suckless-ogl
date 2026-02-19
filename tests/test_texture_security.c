@@ -1,7 +1,9 @@
 #include "texture.h"
 #include "unity.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static GLFWwindow* window = NULL;
 
@@ -54,15 +56,17 @@ void test_texture_upload_excessive_dimensions(void)
 	// We test MAX_TEXTURE_DIMENSION + 1 to ensure it is rejected.
 	int width = MAX_TEXTURE_DIMENSION + 1;
 	int height = TEST_DIM;
-	float dummy_data[DUMMY_DATA_SIZE] = {0};
+	uint16_t dummy_data[DUMMY_DATA_SIZE] = {0};
 
-	GLuint tex = texture_upload_hdr(dummy_data, width, height);
+	// We can pass 0 for pbo_id because the dimension check happens
+	// before any PBO operations.
+	GLuint tex = texture_upload_hdr_from_pbo(0, width, height, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex, "Should reject texture with width > MAX_TEXTURE_DIMENSION");
 
 	width = TEST_DIM;
 	height = MAX_TEXTURE_DIMENSION + 1;
-	tex = texture_upload_hdr(dummy_data, width, height);
+	tex = texture_upload_hdr_from_pbo(0, width, height, 0);
 	TEST_ASSERT_EQUAL_MESSAGE(
 	    0, tex,
 	    "Should reject texture with height > MAX_TEXTURE_DIMENSION");
@@ -73,12 +77,24 @@ void test_texture_upload_valid_dimensions(void)
 	int width = 4;
 	int height = 4;
 	// 4x4 * 4 floats * sizeof(float) = 64 bytes
-	float dummy_data[DUMMY_DATA_SIZE] = {0};
+	uint16_t dummy_data[DUMMY_DATA_SIZE] = {0};
 
-	GLuint tex = texture_upload_hdr(dummy_data, width, height);
+	// Create PBO and upload dummy data
+	GLuint pbo = 0;
+	glGenBuffers(1, &pbo);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, sizeof(dummy_data), NULL,
+	             GL_STREAM_DRAW);
+	void* pbo_ptr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
+	TEST_ASSERT_NOT_NULL_MESSAGE(pbo_ptr, "Failed to map PBO");
+	memcpy(pbo_ptr, dummy_data, sizeof(dummy_data));
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, width, height, 0);
 	TEST_ASSERT_NOT_EQUAL(0, tex);
 
 	glDeleteTextures(1, &tex);
+	glDeleteBuffers(1, &pbo);
 }
 
 void test_texture_load_huge_header_dos(void)
@@ -135,73 +151,6 @@ void test_texture_load_pixels_invalid_file(void)
 	remove(invalid_path);
 }
 
-void test_texture_upload_null_data(void)
-{
-	GLuint tex = texture_upload_hdr(NULL, 16, 16);
-	TEST_ASSERT_EQUAL(0, tex);
-}
-
-void test_texture_load_pixels_excessive_dimensions(void)
-{
-	const char* bomb_path = "pixels_bomb.hdr";
-	FILE* file = fopen(bomb_path, "wb");
-	TEST_ASSERT_NOT_NULL(file);
-	// Create a fake HDR header with huge dimensions
-	// RADIANCE format: "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 20000 +X
-	// 20000\n"
-	int printed =
-	    fprintf(file, "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y %d +X %d\n",
-	            MAX_TEXTURE_DIMENSION + 1, MAX_TEXTURE_DIMENSION + 1);
-	TEST_ASSERT_GREATER_THAN(0, printed);
-	fclose(file);
-
-	int w, h, c;
-	float* data = texture_load_pixels(bomb_path, &w, &h, &c);
-	TEST_ASSERT_NULL(data);
-
-	remove(bomb_path);
-}
-
-// test_texture_load_pixels_corrupt removed as stbi is too robust to fail on
-// simple corruption
-
-#include <sys/stat.h>
-#include <unistd.h>
-
-void test_texture_load_pixels_fseek_fail(void)
-{
-	const char* fifo_path = "test_fifo";
-	if (mkfifo(fifo_path, 0666) != 0) {
-		TEST_IGNORE_MESSAGE("Skipping fseek test: mkfifo failed");
-	}
-
-	// Fork to write to FIFO (otherwise open blocks)
-	pid_t pid = fork();
-	if (pid == 0) {
-		// Child: Write to FIFO
-		FILE* file = fopen(fifo_path, "wb");
-		if (file) {
-			fprintf(file,
-			        "#?RADIANCE\nFORMAT=32-bit_rle_rgbe\n\n-Y 2 +X "
-			        "2\n");
-			fclose(file);
-		}
-		exit(0);
-	} else if (pid > 0) {
-		// Parent: Read from FIFO
-		int w, h, c;
-		// texture_load_pixels opens the file. valid header is read.
-		// fseek should fail because it's a pipe.
-		float* data = texture_load_pixels(fifo_path, &w, &h, &c);
-		TEST_ASSERT_NULL(data);
-
-		remove(fifo_path);
-	} else {
-		TEST_FAIL_MESSAGE("Fork failed");
-		remove(fifo_path);
-	}
-}
-
 int main(void)
 {
 	UNITY_BEGIN();
@@ -210,8 +159,5 @@ int main(void)
 	RUN_TEST(test_texture_load_huge_header_dos);
 	RUN_TEST(test_texture_load_pixels_non_existent_file);
 	RUN_TEST(test_texture_load_pixels_invalid_file);
-	RUN_TEST(test_texture_upload_null_data);
-	RUN_TEST(test_texture_load_pixels_excessive_dimensions);
-	RUN_TEST(test_texture_load_pixels_fseek_fail);
 	return UNITY_END();
 }

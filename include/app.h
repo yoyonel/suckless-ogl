@@ -32,13 +32,10 @@
 #include "shader.h"
 #include "skybox.h"
 #include "sphere_sorting.h"
+#include "tracy_manager.h"
 #include "ui.h"
 #include <cglm/cglm.h>
 
-/**
- * @enum IBLState
- * @brief States for the Image-Based Lighting (IBL) progressive loading.
- */
 typedef enum {
 	IBL_STATE_IDLE = 0,  /**< Application is waiting for a request. */
 	IBL_STATE_LUMINANCE, /**< GPU-side analysis of HDR mean luminance. */
@@ -48,6 +45,9 @@ typedef enum {
 	IBL_STATE_IRRADIANCE,    /**< Sliced convolution of irradiance map. */
 	IBL_STATE_DONE /**< Resource cleanup and texture activation. */
 } IBLState;
+
+typedef struct AsyncLoader
+    AsyncLoader; /**< Forward declaration of AsyncLoader. */
 
 /**
  * @enum TransitionState
@@ -81,6 +81,13 @@ typedef struct {
 	int current_slice;       /**< Cubemap face/slice being processed. */
 	int total_slices;        /**< Face count (typically 6). */
 	PerfTimer global_timer;  /**< Benchmarking for the entire process. */
+
+	/* Per-stage GPU timing statistics (for summary logging) */
+	PerfTimer stage_timer; /**< Wall-clock timer for the current stage. */
+	double stage_gpu_min;  /**< Minimum GPU time across slices (ms). */
+	double stage_gpu_max;  /**< Maximum GPU time across slices (ms). */
+	double stage_gpu_sum;  /**< Accumulated GPU time across slices (ms). */
+	int stage_slice_count; /**< Number of slices completed in stage. */
 } IBLContext;
 
 /**
@@ -213,15 +220,23 @@ typedef struct App {
 	GLuint transition_snapshot_tex; /**< For crossfade mode. */
 
 	/* --- Global GPU Resources --- */
-	GLuint sphere_vao;           /**< Shared geometry VAO. */
-	GLuint sphere_vbo;           /**< Shared vertex buffer. */
-	GLuint sphere_nbo;           /**< Shared normal buffer. */
-	GLuint sphere_ebo;           /**< Shared index buffer. */
-	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
-	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
-	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
-	Shader* skybox_shader;       /**< Skybox shader wrapper. */
-	GLuint hdr_texture;          /**< Active HDR cubemap. */
+	GLuint sphere_vao;     /**< Shared geometry VAO. */
+	GLuint sphere_vbo;     /**< Shared vertex buffer. */
+	GLuint sphere_nbo;     /**< Shared normal buffer. */
+	GLuint sphere_ebo;     /**< Shared index buffer. */
+	GLuint quad_vbo;       /**< Shared full-screen quad (FSQ). */
+	GLuint wire_cube_vbo;  /**< Shared wireframe cube. */
+	GLuint wire_quad_vbo;  /**< Shared wireframe quad. */
+	Shader* skybox_shader; /**< Skybox shader wrapper. */
+	GLuint hdr_texture;    /**< Active HDR cubemap. */
+	GLuint recycled_hdr_tex;
+	GLuint upload_pbo[2];
+	int upload_pbo_idx;
+	GLsizeiptr upload_pbo_size[2];
+	int pending_prealloc_w; /**< Deferred pre-alloc width (0=none). */
+	int pending_prealloc_h; /**< Deferred pre-alloc height. */
+
+	/**< Recycled texture for next load. */
 	GLuint spec_prefiltered_tex; /**< Active Specular map. */
 	GLuint irradiance_tex;       /**< Active Irradiance map. */
 	GLuint brdf_lut_tex;         /**< Shared BRDF lookup table. */
@@ -236,6 +251,7 @@ typedef struct App {
 	GLuint dummy_black_tex; /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex; /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
+	TracyManager tracy_mgr; /**< Tracy instrumentation manager. */
 
 	/* --- Global Configuration Uniforms --- */
 	float env_lod;          /**< Skybox blurriness. */
@@ -254,6 +270,8 @@ typedef struct App {
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
 	InstancedUniforms instanced_uniforms; /**< Cached locations. */
 	DebugUniforms debug_uniforms;         /**< Cached locations. */
+
+	AsyncLoader* async_loader; /**< Background asset loader context. */
 } App;
 
 /* --- Core Control Flow --- */
@@ -297,5 +315,8 @@ void app_render(App* app);
 #include "app_input.h"
 #include "app_scene.h"
 #include "app_ui.h"
+
+#define TRACY_SCREENSHOT_WIDTH 320
+#define TRACY_SCREENSHOT_HEIGHT 180
 
 #endif /* APP_H */

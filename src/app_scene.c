@@ -7,6 +7,7 @@
 #include "instanced_rendering.h"
 #include "log.h"
 #include "material.h"
+#include "mem.h"
 #include "render_utils.h"
 #include "shader.h"
 #include "sphere_sorting.h"
@@ -80,7 +81,8 @@ void app_init_instancing(App* app)
 	SphereInstance* data = NULL;
 	// NOLINTNEXTLINE(misc-include-cleaner)
 	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
-	                   sizeof(SphereInstance) * (size_t)total_count) != 0) {
+	                   sizeof(SphereInstance) * (size_t)total_count) != 0 ||
+	    !data) {
 		LOG_ERROR("suckless-ogl.app",
 		          "Failed to allocate aligned memory for instancing");
 		return;

@@ -1,6 +1,6 @@
 # .clang-tidy
 ---
-Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*,misc-*,performance-*,readability-*,cert-*,portability-*,-readability-identifier-naming,-hicpp-no-array-decay,-cppcoreguidelines-pro-type-vararg,-clang-analyzer-deadcode.DeadStores,-clang-analyzer-security.insecureAPI.vararg,-misc-non-private-member-variables-in-classes,-readability-magic-numbers,-performance-unnecessary-value-param,-misc-include-cleaner,-misc-unused-parameters'
+Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,hicpp-*,misc-*,performance-*,readability-*,cert-*,portability-*,-readability-identifier-naming,-hicpp-no-array-decay,-cppcoreguidelines-pro-type-vararg,-clang-analyzer-deadcode.DeadStores,-clang-analyzer-security.insecureAPI.vararg,-misc-non-private-member-variables-in-classes,-performance-unnecessary-value-param,-misc-include-cleaner,-misc-unused-parameters'
 HeaderFilterRegex: '^(src/|include/).*'
 WarningsAsErrors: '*'
 

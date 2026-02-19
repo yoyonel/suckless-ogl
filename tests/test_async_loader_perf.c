@@ -22,14 +22,16 @@ static void sleep_ms(long milliseconds)
 	nanosleep(&req, NULL);
 }
 
+static AsyncLoader* loader;
+
 void setUp(void)
 {
-	async_loader_init();
+	loader = async_loader_create(NULL);
 }
 
 void tearDown(void)
 {
-	async_loader_shutdown();
+	async_loader_destroy(loader);
 }
 
 static long timeval_to_us(struct timeval* time_val)
@@ -66,7 +68,7 @@ void test_load_request(void)
 {
 	// Request a non-existent file. It should fail, but the state cycle
 	// should complete. This verifies the worker thread wakes up.
-	bool accepted = async_loader_request("non_existent_file.png");
+	bool accepted = async_loader_request(loader, "non_existent_file.png");
 	TEST_ASSERT_TRUE(accepted);
 
 	// Poll until finished (by checking if we can submit again)
@@ -77,7 +79,7 @@ void test_load_request(void)
 
 	while (attempts < MAX_ATTEMPTS) {  // Wait up to 1 second
 		AsyncRequest req = {0};
-		if (async_loader_poll(&req)) {
+		if (async_loader_poll(loader, &req)) {
 			// It actually loaded something? (Should not happen for
 			// non-existent file) But if it did, it's finished.
 			finished = true;
@@ -86,7 +88,7 @@ void test_load_request(void)
 
 		// Try to submit again. If successful, the previous one finished
 		// (failed).
-		if (async_loader_request("another_file.png")) {
+		if (async_loader_request(loader, "another_file.png")) {
 			finished = true;
 			break;
 		}

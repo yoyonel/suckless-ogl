@@ -6,6 +6,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "mem.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -65,6 +66,20 @@ static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
 	}
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memcpy(dest, src, count);
+	return true;
+}
+
+/**
+ * @brief memset wrapper with bounds checking.
+ */
+static inline bool safe_memset(void* dest, size_t dest_size, int value,
+                               size_t count)
+{
+	if (!dest || dest_size < count) {
+		return false;
+	}
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	memset(dest, value, count);
 	return true;
 }
 

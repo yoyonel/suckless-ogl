@@ -22,17 +22,21 @@
 #include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>
+
+static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
 #include "async_loader.h"
 #include "camera.h"
+#include "log.h"
 #include "material.h"
 #include "pbr.h"
 #include "perf_mode.h"
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
+#include "texture.h"
 #include "ui.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
@@ -48,22 +52,22 @@ int app_init(App* app, int width, int height, const char* title)
 	app->width = width;
 	app->height = height;
 	app->subdivisions = INITIAL_SUBDIVISIONS;
-	app->wireframe = 0;
+	app->wireframe = false;
 
-	app->camera_enabled = 1;
+	app->camera_enabled = true;
 	app->env_lod = DEFAULT_ENV_LOD;
-	app->show_info_overlay = 1;
-	app->show_exposure_debug = 0;
+	app->show_info_overlay = true;
+	app->show_exposure_debug = false;
 	app->text_overlay_mode = 0;
 	app->pbr_debug_mode = 0;
-	app->is_fullscreen = 0;
-	app->show_help = 0;
-	app->show_envmap = 1;
-	app->billboard_mode = 1;
-	app->first_mouse = 1;
+	app->is_fullscreen = false;
+	app->show_help = false;
+	app->show_envmap = true;
+	app->billboard_mode = true;
+	app->first_mouse = true;
 	app->last_mouse_x = 0.0;
 	app->last_mouse_y = 0.0;
-	app->is_first_load = 1;
+	app->is_first_load = true;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -97,6 +101,8 @@ int app_init(App* app, int width, int height, const char* title)
 	             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)), NULL,
 	             GL_STREAM_READ);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	/* Initialize Tracy Manager */
+	tracy_manager_init(&app->tracy_mgr, width, height);
 
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
@@ -109,8 +115,15 @@ int app_init(App* app, int width, int height, const char* title)
 	app->is_first_load = 1;
 
 	app->current_exposure = 1.0F;
-	app->dummy_black_tex = render_utils_create_color_texture(0, 0, 0, 0);
-	app->dummy_white_tex = render_utils_create_color_texture(1, 1, 1, 1);
+	app->dummy_black_tex =
+	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
+	app->dummy_white_tex =
+	    render_utils_create_color_texture(1.0F, 1.0F, 1.0F, 1.0F);
+
+	glGenBuffers(2, app->upload_pbo);
+	app->upload_pbo_idx = 0;
+	app->upload_pbo_size[0] = 0;
+	app->upload_pbo_size[1] = 0;
 
 	app->lum_histogram_buffer =
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
@@ -121,13 +134,18 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
-	async_loader_init();
+	app->async_loader = async_loader_create(&app->tracy_mgr);
+	if (!app->async_loader) {
+		app_cleanup(app);
+		return 0;
+	}
 
 	app_scan_hdr_files(app);
 	if (app->hdr_count > 0) {
 		int default_idx = 0;
 		for (int i = 0; i < app->hdr_count; i++) {
-			if (strcmp(app->hdr_files[i], "env.hdr") == 0) {
+			if (strcmp(app->hdr_files[i], DEFAULT_ENV_FILENAME) ==
+			    0) {
 				default_idx = i;
 				break;
 			}
@@ -346,6 +364,7 @@ void app_cleanup(App* app)
 	adaptive_sampler_cleanup(&app->fps_sampler);
 
 	glDeleteTextures(1, &app->hdr_texture);
+	glDeleteTextures(1, &app->recycled_hdr_tex);
 	glDeleteTextures(1, &app->brdf_lut_tex);
 	glDeleteTextures(1, &app->spec_prefiltered_tex);
 	glDeleteTextures(1, &app->irradiance_tex);
@@ -356,8 +375,11 @@ void app_cleanup(App* app)
 	}
 	glDeleteBuffers(1, &app->exposure_pbo);
 	glDeleteBuffers(1, &app->histogram_pbo);
+	glDeleteBuffers(2, app->upload_pbo);
 
-	async_loader_shutdown();
+	/* Async Loader Shutdown */
+	async_loader_destroy(app->async_loader);
+	app->async_loader = NULL;
 
 	if (app->hdr_files) {
 		for (int i = 0; i < app->hdr_count; i++) {
@@ -375,6 +397,7 @@ void app_cleanup(App* app)
 	gpu_profiler_ui_cleanup(&app->timeline_ui);
 
 	window_destroy(app->window);
+	tracy_manager_cleanup(&app->tracy_mgr);
 }
 
 void app_run(App* app)
@@ -431,19 +454,79 @@ void app_run(App* app)
 		app_update(app);
 		app_render(app);
 
+		tracy_manager_update_screenshots(&app->tracy_mgr, app);
+
 		glfwSwapBuffers(app->window);
+#ifdef TRACY_ENABLE
+		tracy_gpu_collect();
+#endif
 		glfwPollEvents();
 	}
 }
 
 void app_update(App* app)
 {
+	/* Deferred texture pre-allocation: runs in the frame AFTER
+	 * PBO setup, so glTexImage2D doesn't pile up on the same
+	 * frame as PBO Setup & Map.
+	 */
+	if (app->pending_prealloc_w > 0) {
+		app->recycled_hdr_tex = texture_preallocate_hdr(
+		    app->pending_prealloc_w, app->pending_prealloc_h,
+		    app->recycled_hdr_tex);
+		app->pending_prealloc_w = 0;
+		app->pending_prealloc_h = 0;
+	}
+
 	AsyncRequest req;
-	if (async_loader_poll(&req)) {
-		app_finalize_environment_load(app, &req);
-		if (req.data) {
-			stbi_image_free(req.data); /* Data was allocated with
-			                   malloc in texture_load_pixels */
+	if (async_loader_poll(app->async_loader, &req)) {
+		if (req.state == ASYNC_WAITING_FOR_PBO) {
+			/* Step 1: Main thread provides mapped PBO */
+			/* Use ping-pong index to avoid stalling on previous
+			 * frame's upload */
+			int pbo_idx = app->upload_pbo_idx;
+			size_t size = (size_t)req.width * (size_t)req.height *
+			              4 * sizeof(uint16_t);
+#ifdef TRACY_ENABLE
+			TracyCZoneN(pbo_ctx, "PBO Setup & Map", 1);
+#endif
+			texture_ensure_pbo(&app->upload_pbo[pbo_idx],
+			                   &app->upload_pbo_size[pbo_idx],
+			                   (GLsizeiptr)size);
+			void* ptr =
+			    texture_map_pbo(app->upload_pbo[pbo_idx], size);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(pbo_ctx);
+#endif
+			if (ptr) {
+				async_loader_provide_pbo(
+				    app->async_loader, ptr,
+				    app->upload_pbo[pbo_idx]);
+				/* Advance index for next request */
+				app->upload_pbo_idx =
+				    (app->upload_pbo_idx + 1) % 2;
+
+				/* Schedule deferred pre-allocation for
+				 * NEXT frame. This spreads glTexStorage2D
+				 * cost away from PBO setup.
+				 */
+				app->pending_prealloc_w = req.width;
+				app->pending_prealloc_h = req.height;
+			} else {
+				LOG_ERROR("suckless-ogl.app",
+				          "Failed to map PBO for async upload");
+				/* We should probably cancel the request here,
+				 * but related cleanup is tricky. The loader
+				 * will hang waiting for PBO if we don't signal.
+				 * TODO: Implement cancel or timeout in loader.
+				 */
+			}
+		} else if (req.state == ASYNC_READY) {
+			/* Step 2: Upload from PBO (or legacy CPU buffer) */
+			app_finalize_environment_load(app, &req);
+			if (req.half_data) {
+				free(req.half_data); /* Legacy path cleanup */
+			}
 		}
 	}
 	app_process_ibl_state_machine(app);
@@ -469,6 +552,10 @@ void app_render(App* app)
 	    effect_benchmark_is_running(&app->effect_bench);
 	gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
 	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+
+#ifdef TRACY_ENABLE
+	TracyCFrameMark;
+#endif
 
 	/* Effect benchmark: read previous frame's profiler results */
 	if (effect_benchmark_update(&app->effect_bench)) {

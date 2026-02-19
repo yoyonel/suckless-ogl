@@ -13,6 +13,10 @@ static const uint32_t COMPUTE_GROUP_SIZE_PBR = 32;
 static const uint32_t COMPUTE_GROUP_SIZE_LUM = 16;
 static const uint32_t MAX_HDR_RESOLUTION = 4096;
 
+static const GLuint BINDING_ENV_MAP = 0;
+static const GLuint BINDING_DEST_TEXTURE = 1;
+static const GLuint COMPUTE_DISPATCH_Z_ONCE = 1;
+
 GLuint pbr_prefilter_init(int width, int height)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
@@ -37,7 +41,7 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 	/* Set uniforms */
 	GLint u_env_map = glGetUniformLocation(shader, "envMap");
 	if (u_env_map >= 0) {
-		glUniform1i(u_env_map, 0);
+		glUniform1i(u_env_map, (GLint)BINDING_ENV_MAP);
 	}
 
 	GLint u_roughness = glGetUniformLocation(shader, "roughnessValue");
@@ -86,11 +90,11 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 		glUniform1i(u_max_y, y_end);
 	}
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
 	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
 
-	glBindImageTexture(1, dest_tex, level, GL_FALSE, 0, GL_WRITE_ONLY,
-	                   GL_RGBA16F);
+	glBindImageTexture(BINDING_DEST_TEXTURE, dest_tex, level, GL_FALSE, 0,
+	                   GL_WRITE_ONLY, GL_RGBA16F);
 
 	uint32_t groups_x =
 	    (mip_w + (COMPUTE_GROUP_SIZE_PBR - 1)) / COMPUTE_GROUP_SIZE_PBR;
@@ -98,10 +102,13 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 	    ((uint32_t)actual_lines + (COMPUTE_GROUP_SIZE_PBR - 1)) /
 	    COMPUTE_GROUP_SIZE_PBR;
 
-	glDispatchCompute(groups_x, groups_y, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	glDispatchCompute(groups_x, groups_y, COMPUTE_DISPATCH_Z_ONCE);
+	/* No barrier here: caller is responsible for issuing a single
+	 * glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) after all
+	 * slices are dispatched. Slices write to disjoint Y-ranges of the
+	 * same image, so no inter-slice coherency is required. */
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -122,6 +129,7 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 		pbr_prefilter_mip(shader, env_hdr_tex, spec_tex, width, height,
 		                  level, levels, 0, 1, threshold);
 	}
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	return spec_tex;
 }
@@ -172,18 +180,21 @@ void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
 		glUniform1i(u_offset_y, y_start);
 	}
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
 	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
-	glBindImageTexture(1, dest_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY,
-	                   GL_RGBA16F);
+	glBindImageTexture(BINDING_DEST_TEXTURE, dest_tex, 0, GL_FALSE, 0,
+	                   GL_WRITE_ONLY, GL_RGBA16F);
 
 	int groups_x = (size + (int)COMPUTE_GROUP_SIZE_PBR - 1) /
 	               (int)COMPUTE_GROUP_SIZE_PBR;
 	int groups_y = (actual_lines + (int)COMPUTE_GROUP_SIZE_PBR - 1) /
 	               (int)COMPUTE_GROUP_SIZE_PBR;
 
-	glDispatchCompute(groups_x, groups_y, 1);
-	glMemoryBarrier(GL_ALL_BARRIER_BITS);
+	glDispatchCompute((GLuint)groups_x, (GLuint)groups_y,
+	                  COMPUTE_DISPATCH_Z_ONCE);
+	/* No barrier here: caller is responsible for issuing a single
+	 * glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) after all
+	 * slices are dispatched. */
 }
 
 GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,

@@ -149,8 +149,8 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 
 	/* Bind PBO and map buffer (Read Previous Frame) */
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo);
-	float* lum_data =
-	    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+	float* lum_data = NULL;
+	lum_data = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
 	int processed = 0;
 	if (lum_data) {
@@ -341,8 +341,9 @@ void app_render_ui(App* app)
 		if (postprocess_is_enabled(&app->postprocess,
 		                           POSTFX_AUTO_EXPOSURE)) {
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
-			                                 GL_READ_ONLY);
+			float* ptr = NULL;
+			ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
+			                          GL_READ_ONLY);
 			if (ptr) {
 				app->current_exposure = *ptr;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);

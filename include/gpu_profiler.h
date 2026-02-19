@@ -6,6 +6,11 @@
 #include "perf_timer.h"
 #include <stdint.h>
 
+#ifdef TRACY_ENABLE
+#include "../deps/tracy/public/tracy/TracyC.h"
+#include "tracy_gpu.h"
+#endif
+
 #define MAX_GPU_STAGES 32
 #define MAX_GPU_STAGE_NAME 32
 #define GPU_QUERY_BUFFER_COUNT 2
@@ -129,24 +134,43 @@ void gpu_profiler_reset_samplers(GPUProfiler* profiler, double current_time);
 
 /**
  * @struct GPUStageRAII
- * @brief RAII container for automatic GPU stage management.
+ * @brief RAII container for automatic GPU stage management and Tracy zones.
  */
 typedef struct {
 	GPUProfiler* profiler;
+#ifdef TRACY_ENABLE
+	TracyCZoneCtx tracy_ctx;
+	void* tracy_gpu_ctx;
+#endif
 } GPUStageRAII;
 
 /** @brief Internal cleanup function for GPUStageRAII. */
 static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
 {
 	gpu_profiler_end_stage(stage_raii->profiler);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(stage_raii->tracy_ctx);
+	tracy_gpu_zone_end(stage_raii->tracy_gpu_ctx);
+#endif
 }
 
 /**
  * @brief Scoped GPU profiling stage. Automatically ends on scope exit.
  */
+#ifdef TRACY_ENABLE
+#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
+	TracyCZoneN(_tracy_ctx##__LINE__, name, 1);                            \
+	void* _tracy_gpu_ctx##__LINE__ =                                       \
+	    tracy_gpu_zone_begin(name, __func__, __FILE__, __LINE__, color);   \
+	GPUStageRAII _stage_raii##__LINE__                                     \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {               \
+	        profiler_ptr, _tracy_ctx##__LINE__, _tracy_gpu_ctx##__LINE__}; \
+	gpu_profiler_start_stage(profiler_ptr, name, color)
+#else
 #define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
 	GPUStageRAII _stage_raii##__LINE__                                     \
 	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
 	gpu_profiler_start_stage(profiler_ptr, name, color)
+#endif
 
 #endif  // GPU_PROFILER_H

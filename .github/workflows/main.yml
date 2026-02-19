@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -53,6 +55,7 @@ jobs:
           make format CONTAINER_RUN=""
           git diff --exit-code || (echo "❌ Format error" && exit 1)
           make lint CONTAINER_RUN=""
+          make lint-full CONTAINER_RUN=""
 
   # --- JOB 2 : TESTS, COUVERTURE ET CAPTURES VISUELLES (LENT) ---
   test-and-coverage:
@@ -90,7 +93,7 @@ jobs:
         id: run_tests
         run: |
           # Exécution des tests via Xvfb
-          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang
+          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang CXX=clang++
 
 
       - name: Generate Visual Artifacts

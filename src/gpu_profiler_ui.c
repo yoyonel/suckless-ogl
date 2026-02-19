@@ -61,6 +61,39 @@ static void gpu_profiler_ui_update_visibility(GPUProfilerUI* profiler_ui,
 	}
 }
 
+/**
+ * @brief Safely moves contents of one stage to another, avoiding shallow copies
+ * of heap-allocated buffers in AdaptiveSamplers.
+ */
+static void gpu_stage_move(GPUStage* dest, GPUStage* src)
+{
+	if (dest == src) {
+		return;
+	}
+
+	/* 1. Copy non-pointer fields */
+	safe_strncpy(dest->name, sizeof(dest->name), src->name,
+	             sizeof(dest->name) - 1);
+	dest->color = src->color;
+	dest->start_offset_ms = src->start_offset_ms;
+	dest->duration_ms = src->duration_ms;
+	dest->prev_start_offset_ms = src->prev_start_offset_ms;
+	dest->prev_duration_ms = src->prev_duration_ms;
+	dest->alpha = src->alpha;
+	dest->prev_alpha = src->prev_alpha;
+	dest->depth = src->depth;
+	dest->parent_index = src->parent_index;
+
+	/* 2. Swap AdaptiveSampler buffers to maintain pointer uniqueness */
+	AdaptiveSampleItem* tmp_duration = dest->duration_sampler.samples;
+	dest->duration_sampler = src->duration_sampler;
+	src->duration_sampler.samples = tmp_duration;
+
+	AdaptiveSampleItem* tmp_offset = dest->offset_sampler.samples;
+	dest->offset_sampler = src->offset_sampler;
+	src->offset_sampler.samples = tmp_offset;
+}
+
 static void gpu_profiler_ui_compact_stages(GPUProfilerUI* profiler_ui)
 {
 	int read_ptr = 0;
@@ -73,8 +106,9 @@ static void gpu_profiler_ui_compact_stages(GPUProfilerUI* profiler_ui)
 			read_ptr++;
 		} else {
 			if (write_ptr != read_ptr) {
-				profiler_ui->display_profiler
-				    .stages[write_ptr] = *stage;
+				gpu_stage_move(&profiler_ui->display_profiler
+				                    .stages[write_ptr],
+				               stage);
 			}
 			write_ptr++;
 			read_ptr++;

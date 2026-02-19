@@ -1,6 +1,7 @@
 #include "material.h"
 
 #include "log.h"
+#include "mem.h"
 #include <cJSON.h>
 #include <limits.h>
 #include <stdint.h>

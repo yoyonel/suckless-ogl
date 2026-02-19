@@ -2,6 +2,7 @@
 
 #include "glad/glad.h"
 #include "log.h"
+#include "mem.h"
 #include "shader.h"
 #include <cglm/affine.h>  // IWYU pragma: keep
 #include <cglm/cam.h>     // IWYU pragma: keep
