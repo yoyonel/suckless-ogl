@@ -64,20 +64,6 @@ void perf_timer_start(PerfTimer* timer);
  */
 double perf_timer_elapsed_ms(PerfTimer* timer);
 
-/**
- * @brief Stops the timer and returns elapsed time in microseconds.
- * @param timer Pointer to the timer.
- * @return Elapsed time (double precision).
- */
-double perf_timer_elapsed_us(PerfTimer* timer);
-
-/**
- * @brief Stops the timer and returns elapsed time in seconds.
- * @param timer Pointer to the timer.
- * @return Elapsed time (double precision).
- */
-double perf_timer_elapsed_s(PerfTimer* timer);
-
 /* ========================================================================= */
 /* GPU Timer API                                                             */
 /* ========================================================================= */
@@ -87,12 +73,6 @@ double perf_timer_elapsed_s(PerfTimer* timer);
  * @param timer Pointer to the timer.
  */
 void gpu_timer_start(GPUTimer* timer);
-
-/**
- * @brief Explicitly stops the GPU timer (records end timestamp).
- * @param timer Pointer to the timer.
- */
-void gpu_timer_stop(GPUTimer* timer);
 
 /**
  * @brief Stops the GPU timer and retrieves the result.

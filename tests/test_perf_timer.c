@@ -47,35 +47,11 @@ void test_perf_timer_elapsed_ms(void)
 	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
 }
 
-void test_perf_timer_elapsed_us(void)
-{
-	PerfTimer timer;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&timer, 0, sizeof(PerfTimer));
-	perf_timer_start(&timer);
-
-	double elapsed = perf_timer_elapsed_us(&timer);
-	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
-}
-
-void test_perf_timer_elapsed_s(void)
-{
-	PerfTimer timer;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&timer, 0, sizeof(PerfTimer));
-	perf_timer_start(&timer);
-
-	double elapsed = perf_timer_elapsed_s(&timer);
-	TEST_ASSERT_GREATER_OR_EQUAL(ZERO_THRESHOLD, elapsed);
-}
-
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_perf_timer_module_exists);
 	RUN_TEST(test_perf_timer_start);
 	RUN_TEST(test_perf_timer_elapsed_ms);
-	RUN_TEST(test_perf_timer_elapsed_us);
-	RUN_TEST(test_perf_timer_elapsed_s);
 	return UNITY_END();
 }

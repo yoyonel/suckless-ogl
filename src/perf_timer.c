@@ -50,38 +50,6 @@ double perf_timer_elapsed_ms(PerfTimer* timer)
 	return (seconds * S_TO_MS) + (nanoseconds * NS_TO_MS);
 }
 
-double perf_timer_elapsed_us(PerfTimer* timer)
-{
-	if (timer == NULL) {
-		return 0.0;
-	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
-
-	const double seconds =
-	    (double)(timer->end.tv_sec - timer->start.tv_sec);
-	const double nanoseconds =
-	    (double)(timer->end.tv_nsec - timer->start.tv_nsec);
-
-	return (seconds * S_TO_US) + (nanoseconds * NS_TO_US);
-}
-
-double perf_timer_elapsed_s(PerfTimer* timer)
-{
-	if (timer == NULL) {
-		return 0.0;
-	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
-
-	const double seconds =
-	    (double)(timer->end.tv_sec - timer->start.tv_sec);
-	const double nanoseconds =
-	    (double)(timer->end.tv_nsec - timer->start.tv_nsec);
-
-	return seconds + (nanoseconds * NS_TO_S);
-}
-
 // ============================================================================
 // GPU Timer Implementation (Timestamp queries)
 // ============================================================================
