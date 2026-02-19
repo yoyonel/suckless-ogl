@@ -458,8 +458,7 @@ void glQueryCounter(GLuint query_id, GLenum target)
 	(void)target;
 }
 
-void glGetQueryObjectui64v(GLuint query_id, GLenum pname,
-                           unsigned long long* params)
+void glGetQueryObjectui64v(GLuint query_id, GLenum pname, GLuint64* params)
 {
 	(void)query_id;
 	(void)pname;

@@ -125,9 +125,14 @@ void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
 
+#include <stdint.h>
+
+typedef uint64_t GLuint64;
+typedef int64_t GLint64;
+
 void glGenQueries(GLsizei n, GLuint* ids);
 void glDeleteQueries(GLsizei n, const GLuint* ids);
 void glQueryCounter(GLuint id, GLenum target);
-void glGetQueryObjectui64v(GLuint id, GLenum pname, unsigned long long* params);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
 
 #endif
