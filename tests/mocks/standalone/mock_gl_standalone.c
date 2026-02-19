@@ -99,8 +99,9 @@ void mock_gl_trigger_debug_callback(GLenum source, GLenum type, GLuint id,
                                     GLenum severity, const char* message)
 {
 	if (g_debug_callback) {
-		g_debug_callback(source, type, id, severity, (GLsizei)strlen(message),
-		                 message, g_debug_user_param);
+		g_debug_callback(source, type, id, severity,
+		                 (GLsizei)strlen(message), message,
+		                 g_debug_user_param);
 	}
 }
 
@@ -297,7 +298,7 @@ void glGetIntegerv(GLenum pname, GLint* data)
 	(void)pname;
 	if (data) {
 		/* Return DEBUG_BIT for GL_CONTEXT_FLAGS */
-		if (pname == 0x821E) { /* GL_CONTEXT_FLAGS */
+		if (pname == 0x821E) {      /* GL_CONTEXT_FLAGS */
 			*data = 0x00000002; /* GL_CONTEXT_FLAG_DEBUG_BIT */
 		} else {
 			*data = 0;
