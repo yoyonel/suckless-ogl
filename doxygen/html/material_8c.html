@@ -242,8 +242,9 @@ $(document).ready(function(){initNavTree('material_8c.html',''); initResizable()
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="io_8h_source.html">io.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="mem_8h_source.html">mem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;cJSON.h&gt;</code><br />
 <code>#include &lt;limits.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
@@ -258,8 +259,6 @@ Include dependency graph for material.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a649ad5274d988d17a275a3cead056746" id="r_a649ad5274d988d17a275a3cead056746"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#a649ad5274d988d17a275a3cead056746">MAX_FILE_SIZE</a>&#160;&#160;&#160;(2L * 1024L * 1024L)</td></tr>
-<tr class="separator:a649ad5274d988d17a275a3cead056746"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42ca186adca245bf3a05a495dfbc8a37" id="r_a42ca186adca245bf3a05a495dfbc8a37"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#a42ca186adca245bf3a05a495dfbc8a37">MAT_DEFAULT_ROUGHNESS</a>&#160;&#160;&#160;0.5F</td></tr>
 <tr class="separator:a42ca186adca245bf3a05a495dfbc8a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab718c0f3f47b49dc37c40edb75621e49" id="r_ab718c0f3f47b49dc37c40edb75621e49"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#ab718c0f3f47b49dc37c40edb75621e49">MAT_DEFAULT_ALBEDO</a>&#160;&#160;&#160;0.0F</td></tr>
@@ -269,15 +268,16 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a6b7b47dd702d9e331586d485013fd1ea" id="r_a6b7b47dd702d9e331586d485013fd1ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="material_8c.html#a6b7b47dd702d9e331586d485013fd1eaa791194604c51f810416b76a9035095c8">MAX_MATERIAL_COUNT</a> = 10000
-, <a class="el" href="material_8c.html#a6b7b47dd702d9e331586d485013fd1eaa0c7b6f51af7759eefe1d6ee71bc9a421">RGB_COMPONENTS</a> = 3
+<tr class="memitem:af9bdc3014f3d54c426b6d2df10de4960" id="r_af9bdc3014f3d54c426b6d2df10de4960"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="material_8c.html#af9bdc3014f3d54c426b6d2df10de4960a3ef23592467efdce9ca509f61c0f6128">MAX_MATERIAL_CONFIG_SIZE</a> = 2 * 1024 * 1024
  }</td></tr>
-<tr class="separator:a6b7b47dd702d9e331586d485013fd1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:af9bdc3014f3d54c426b6d2df10de4960"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb49720dc49f7d4e4cf9adbf2948e409" id="r_adb49720dc49f7d4e4cf9adbf2948e409"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a791194604c51f810416b76a9035095c8">MAX_MATERIAL_COUNT</a> = 10000
+, <a class="el" href="material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421">RGB_COMPONENTS</a> = 3
+ }</td></tr>
+<tr class="separator:adb49720dc49f7d4e4cf9adbf2948e409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a0beede55eacd18b453da31da0853f053" id="r_a0beede55eacd18b453da31da0853f053"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#a0beede55eacd18b453da31da0853f053">read_file_to_buffer</a> (const char *path, size_t *out_size)</td></tr>
-<tr class="separator:a0beede55eacd18b453da31da0853f053"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c9ce1d8ed49f869fa54e5d74f743610" id="r_a4c9ce1d8ed49f869fa54e5d74f743610"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#a4c9ce1d8ed49f869fa54e5d74f743610">parse_material_name</a> (cJSON *element, <a class="el" href="structPBRMaterial.html">PBRMaterial</a> *mat)</td></tr>
 <tr class="separator:a4c9ce1d8ed49f869fa54e5d74f743610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef3a2c69f116490ba40deda62991392d" id="r_aef3a2c69f116490ba40deda62991392d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="material_8c.html#aef3a2c69f116490ba40deda62991392d">parse_albedo_array</a> (cJSON *element, <a class="el" href="structPBRMaterial.html">PBRMaterial</a> *mat)</td></tr>
@@ -338,23 +338,9 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a649ad5274d988d17a275a3cead056746" name="a649ad5274d988d17a275a3cead056746"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a649ad5274d988d17a275a3cead056746">&#9670;&#160;</a></span>MAX_FILE_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define MAX_FILE_SIZE&#160;&#160;&#160;(2L * 1024L * 1024L)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a6b7b47dd702d9e331586d485013fd1ea" name="a6b7b47dd702d9e331586d485013fd1ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b7b47dd702d9e331586d485013fd1ea">&#9670;&#160;</a></span>anonymous enum</h2>
+<a id="af9bdc3014f3d54c426b6d2df10de4960" name="af9bdc3014f3d54c426b6d2df10de4960"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9bdc3014f3d54c426b6d2df10de4960">&#9670;&#160;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,8 +351,25 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6b7b47dd702d9e331586d485013fd1eaa791194604c51f810416b76a9035095c8" name="a6b7b47dd702d9e331586d485013fd1eaa791194604c51f810416b76a9035095c8"></a>MAX_MATERIAL_COUNT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a6b7b47dd702d9e331586d485013fd1eaa0c7b6f51af7759eefe1d6ee71bc9a421" name="a6b7b47dd702d9e331586d485013fd1eaa0c7b6f51af7759eefe1d6ee71bc9a421"></a>RGB_COMPONENTS&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af9bdc3014f3d54c426b6d2df10de4960a3ef23592467efdce9ca509f61c0f6128" name="af9bdc3014f3d54c426b6d2df10de4960a3ef23592467efdce9ca509f61c0f6128"></a>MAX_MATERIAL_CONFIG_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="adb49720dc49f7d4e4cf9adbf2948e409" name="adb49720dc49f7d4e4cf9adbf2948e409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb49720dc49f7d4e4cf9adbf2948e409">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adb49720dc49f7d4e4cf9adbf2948e409a791194604c51f810416b76a9035095c8" name="adb49720dc49f7d4e4cf9adbf2948e409a791194604c51f810416b76a9035095c8"></a>MAX_MATERIAL_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421" name="adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421"></a>RGB_COMPONENTS&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -451,7 +454,7 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="material_8c_af5bc1a68b9f8f61a3c459d5aee369a37_cgraph.svg" width="666" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="material_8c_af5bc1a68b9f8f61a3c459d5aee369a37_cgraph.svg" width="666" height="234"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -608,42 +611,6 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="material_8c_ab29b44b2deb74423e0b2836b77e0b040_cgraph.svg" width="451" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
-
-</div>
-</div>
-<a id="a0beede55eacd18b453da31da0853f053" name="a0beede55eacd18b453da31da0853f053"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0beede55eacd18b453da31da0853f053">&#9670;&#160;</a></span>read_file_to_buffer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static char * read_file_to_buffer </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t *&#160;</td>
-          <td class="paramname"><em>out_size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

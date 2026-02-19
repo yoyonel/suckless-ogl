@@ -29,7 +29,7 @@ var searchData=
   ['tile_5fmax_5fshader_26',['tile_max_shader',['../structPostProcess.html#a530d1645617f13d01c66ce680d8ccad6',1,'PostProcess']]],
   ['time_27',['time',['../structPostProcess.html#afb71aa02b237fe2666213becfa342d31',1,'PostProcess::time'],['../structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1',1,'PostProcessUBO::time']]],
   ['time_5fbuf_5fsize_28',['TIME_BUF_SIZE',['../gpu__profiler__ui_8c.html#aba01db17f4a2bfbc3db60dc172972a25aa3c09595391d094d235e7a7d12566308',1,'gpu_profiler_ui.c']]],
-  ['time_5fbuffer_5fsize_29',['TIME_BUFFER_SIZE',['../log_8c.html#a80155586fa275b28773c9b203f52cabaaa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
+  ['time_5fbuffer_5fsize_29',['TIME_BUFFER_SIZE',['../log_8c.html#a6b7b47dd702d9e331586d485013fd1eaaa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
   ['timeconversionfactors_30',['TimeConversionFactors',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eae',1,'perf_timer.c']]],
   ['timeline_5fui_31',['timeline_ui',['../structApp.html#aa5d6dcc01250cc293759332386af57aa',1,'App']]],
   ['timeout_5ftimer_32',['timeout_timer',['../structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e',1,'EffectBenchmark']]],

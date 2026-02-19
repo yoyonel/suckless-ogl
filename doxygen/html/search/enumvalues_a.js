@@ -1,7 +1,20 @@
 var searchData=
 [
-  ['notif_5fbuf_5fsize_0',['NOTIF_BUF_SIZE',['../app__input_8c.html#abc5c98fcc1211af2b80116dd6e0a035da4a400d8a348b628422a6de4f19fa7bce',1,'app_input.c']]],
-  ['ns_5fper_5fms_1',['NS_PER_MS',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeafd57fe7f4eaf46322b94fec775395bcf',1,'perf_timer.c']]],
-  ['ns_5fper_5fs_2',['NS_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaeac27f89df3cdb20ed1a53d35d3f772a3d',1,'perf_timer.c']]],
-  ['ns_5fper_5fus_3',['NS_PER_US',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea260259317d526f9e0d23af05655c0ca1',1,'perf_timer.c']]]
+  ['max_5fdefine_5flength_0',['MAX_DEFINE_LENGTH',['../postprocess_8c.html#ae4d5251432e1a9e6803c0240cc492e18ae2d8bf19c4a749e8099783aff02acd67',1,'postprocess.c']]],
+  ['max_5fdefines_1',['MAX_DEFINES',['../shader_8c.html#a458e651af6690959efa2afb96be7d609a91ae2ad4b58ea1f33cd3254403970818',1,'shader.c']]],
+  ['max_5finclude_5fdepth_2',['MAX_INCLUDE_DEPTH',['../shader_8c.html#a0944a4353780132eeab7b06e3e42291da34143976b450ff92e89581ba34a4debf',1,'shader.c']]],
+  ['max_5fmaterial_5fconfig_5fsize_3',['max_material_config_size',['../material_8c.html#af9bdc3014f3d54c426b6d2df10de4960a3ef23592467efdce9ca509f61c0f6128',1,'MAX_MATERIAL_CONFIG_SIZE:&#160;material.c'],['../render__utils_8c.html#a7ff5f2dff38e7639981794c43dc9167ba3ef23592467efdce9ca509f61c0f6128',1,'MAX_MATERIAL_CONFIG_SIZE:&#160;render_utils.c']]],
+  ['max_5fmaterial_5fcount_4',['MAX_MATERIAL_COUNT',['../material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a791194604c51f810416b76a9035095c8',1,'material.c']]],
+  ['max_5fshader_5fdefines_5',['MAX_SHADER_DEFINES',['../postprocess_8c.html#ae4d5251432e1a9e6803c0240cc492e18a288123cc32f90d11ebff0279deb35e6d',1,'postprocess.c']]],
+  ['max_5fshader_5fname_5flen_6',['MAX_SHADER_NAME_LEN',['../shader_8c.html#aac34dfe6c6b73b43a4656c9dce041034a75751c824ae3bf41e5fe22118a79c341',1,'shader.c']]],
+  ['max_5fshader_5fsource_5fsize_7',['MAX_SHADER_SOURCE_SIZE',['../shader_8c.html#a4790f45dcc812c1b00184a2edccdddf5ad0b512e0ee8b214855ee8781e7b04c62',1,'shader.c']]],
+  ['max_5fsubdiv_8',['MAX_SUBDIV',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7ac846edb36b9f557d22d6a1166f02f344',1,'app_settings.h']]],
+  ['max_5ftexture_5fdimension_9',['MAX_TEXTURE_DIMENSION',['../texture_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a554cc0f6069d6004d10af477e1507957',1,'texture.h']]],
+  ['max_5ftexture_5ffile_5fsize_10',['MAX_TEXTURE_FILE_SIZE',['../texture_8c.html#a77867ab4129f63159b37bca3b652a798a0d3aebca00d51ee1340e5b60c9d2eba4',1,'texture.c']]],
+  ['max_5fvertex_5fattribs_5fbaseline_11',['MAX_VERTEX_ATTRIBS_BASELINE',['../gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04a0305c7ac38f33f9eebc608633b2fc732',1,'gl_common.h']]],
+  ['milli_5fdivisor_12',['MILLI_DIVISOR',['../log_8c.html#a6b7b47dd702d9e331586d485013fd1eaa490d7b93a43f9c7422bb90f9fdb1556f',1,'log.c']]],
+  ['min_5fsubdiv_13',['MIN_SUBDIV',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a6abbd2a2e390ed49e79692e2cd617e7e',1,'app_settings.h']]],
+  ['ms_5fper_5fs_14',['MS_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaea267b7927f41c268b57b08cdd64cb84ca',1,'perf_timer.c']]],
+  ['msg_5fbuf_5fsize_15',['MSG_BUF_SIZE',['../async__loader_8c.html#a05589fbab0657f08285ebdfe93f5ec9ea11a5639b207ef5cd10cd0962ace3eede',1,'async_loader.c']]],
+  ['msg_5fbuffer_5fsize_16',['MSG_BUFFER_SIZE',['../log_8c.html#a6b7b47dd702d9e331586d485013fd1eaa6a5dd49e581491233eb9ddb60aca3b2d',1,'log.c']]]
 ];

@@ -1,6 +1,7 @@
 var render__utils_8h =
 [
     [ "GPUInfo", "structGPUInfo.html", "structGPUInfo" ],
+    [ "GLStateBackup", "structGLStateBackup.html", "structGLStateBackup" ],
     [ "render_utils_bind_texture_safe", "render__utils_8h.html#a46e8c525ba0c0e1535cd2667b419a56c", null ],
     [ "render_utils_check_framebuffer", "render__utils_8h.html#ace7798af7f607d9b719f08e4dedf2d9a", null ],
     [ "render_utils_create_color_texture", "render__utils_8h.html#acb93c5e9986da209ae59c3e07e9c1bf4", null ],
@@ -14,5 +15,8 @@ var render__utils_8h =
     [ "render_utils_get_gpu_identifier", "render__utils_8h.html#a14b5c2c05c8237ed479c12883a7513e5", null ],
     [ "render_utils_get_gpu_info", "render__utils_8h.html#a36893aa437e6ad9c7fee136de3298763", null ],
     [ "render_utils_reset_texture_units", "render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045", null ],
-    [ "render_utils_setup_sphere_instance_attributes", "render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578", null ]
+    [ "render_utils_restore_state", "render__utils_8h.html#aa6820952026feea828b06074d33f0a96", null ],
+    [ "render_utils_save_state", "render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9", null ],
+    [ "render_utils_setup_sphere_instance_attributes", "render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578", null ],
+    [ "render_utils_setup_ui_state", "render__utils_8h.html#adbe8e8e2842c2125b1d96b31225ebada", null ]
 ];

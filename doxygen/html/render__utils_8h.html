@@ -263,6 +263,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGPUInfo.html">GPUInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct to hold GPU hardware and driver information.  <a href="structGPUInfo.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGLStateBackup.html">GLStateBackup</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct to backup common OpenGL state bits to restore after 2D/UI passes.  <a href="structGLStateBackup.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -308,6 +311,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a5bfd4e31069d2594b6b21ef1970bb578" id="r_a5bfd4e31069d2594b6b21ef1970bb578"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578">render_utils_setup_sphere_instance_attributes</a> (GLsizei stride, size_t offset_albedo, size_t offset_metallic)</td></tr>
 <tr class="memdesc:a5bfd4e31069d2594b6b21ef1970bb578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up instance attributes for sphere rendering (Model, Albedo, PBR).  <br /></td></tr>
 <tr class="separator:a5bfd4e31069d2594b6b21ef1970bb578"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6f98bd6406323d50aa3beb34f2bd8a9" id="r_aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLStateBackup.html">GLStateBackup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9">render_utils_save_state</a> (void)</td></tr>
+<tr class="memdesc:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves current OpenGL state to a backup struct.  <br /></td></tr>
+<tr class="separator:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6820952026feea828b06074d33f0a96" id="r_aa6820952026feea828b06074d33f0a96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#aa6820952026feea828b06074d33f0a96">render_utils_restore_state</a> (const <a class="el" href="structGLStateBackup.html">GLStateBackup</a> *state)</td></tr>
+<tr class="memdesc:aa6820952026feea828b06074d33f0a96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores OpenGL state from a backup struct.  <br /></td></tr>
+<tr class="separator:aa6820952026feea828b06074d33f0a96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe8e8e2842c2125b1d96b31225ebada" id="r_adbe8e8e2842c2125b1d96b31225ebada"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8h.html#adbe8e8e2842c2125b1d96b31225ebada">render_utils_setup_ui_state</a> (void)</td></tr>
+<tr class="memdesc:adbe8e8e2842c2125b1d96b31225ebada"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures standard 2D/UI rendering state (Alpha blend, No depth).  <br /></td></tr>
+<tr class="separator:adbe8e8e2842c2125b1d96b31225ebada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Utilities for OpenGL rendering, focusing on robustness and NVIDIA compatibility. </p>
@@ -827,6 +839,52 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="aa6820952026feea828b06074d33f0a96" name="aa6820952026feea828b06074d33f0a96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6820952026feea828b06074d33f0a96">&#9670;&#160;</a></span>render_utils_restore_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_restore_state </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structGLStateBackup.html">GLStateBackup</a> *&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restores OpenGL state from a backup struct. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Pointer to the state backup to restore. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa6f98bd6406323d50aa3beb34f2bd8a9" name="aa6f98bd6406323d50aa3beb34f2bd8a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6f98bd6406323d50aa3beb34f2bd8a9">&#9670;&#160;</a></span>render_utils_save_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGLStateBackup.html">GLStateBackup</a> render_utils_save_state </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves current OpenGL state to a backup struct. </p>
+
+</div>
+</div>
 <a id="a5bfd4e31069d2594b6b21ef1970bb578" name="a5bfd4e31069d2594b6b21ef1970bb578"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5bfd4e31069d2594b6b21ef1970bb578">&#9670;&#160;</a></span>render_utils_setup_sphere_instance_attributes()</h2>
 
@@ -869,6 +927,26 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="adbe8e8e2842c2125b1d96b31225ebada" name="adbe8e8e2842c2125b1d96b31225ebada"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe8e8e2842c2125b1d96b31225ebada">&#9670;&#160;</a></span>render_utils_setup_ui_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_setup_ui_state </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Configures standard 2D/UI rendering state (Alpha blend, No depth). </p>
 
 </div>
 </div>

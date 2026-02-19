@@ -46,7 +46,7 @@
   </g>
 </defs>
 <script type="application/ecmascript">
-var viewWidth = 758;
+var viewWidth = 915;
 var viewHeight = 175;
 var sectionId = 'dynsection-6';
 </script>
@@ -91,9 +91,9 @@ var sectionId = 'dynsection-6';
 </g>
 </g>
 <!-- Node1&#45;&gt;Node4 -->
-<g id="edge10_Node000001_Node000004" class="edge">
+<g id="edge13_Node000001_Node000004" class="edge">
 <title>Node1&#45;&gt;Node4</title>
-<g id="a_edge10_Node000001_Node000004"><a xlink:title=" ">
+<g id="a_edge13_Node000001_Node000004"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M110.3,-46.5C196.53,-46.5 364.97,-46.5 462.61,-46.5"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="462.7,-50 472.7,-46.5 462.7,-43 462.7,-50"/>
 </a>
@@ -109,9 +109,9 @@ var sectionId = 'dynsection-6';
 </g>
 </g>
 <!-- Node1&#45;&gt;Node6 -->
-<g id="edge11_Node000001_Node000006" class="edge">
+<g id="edge14_Node000001_Node000006" class="edge">
 <title>Node1&#45;&gt;Node6</title>
-<g id="a_edge11_Node000001_Node000006"><a xlink:title=" ">
+<g id="a_edge14_Node000001_Node000006"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M110.3,-42.33C204.67,-35.08 397.53,-20.26 488.25,-13.28"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="488.57,-16.77 498.28,-12.51 488.04,-9.79 488.57,-16.77"/>
 </a>
@@ -135,19 +135,19 @@ var sectionId = 'dynsection-6';
 </a>
 </g>
 </g>
-<!-- Node8 -->
-<g id="Node000008" class="node">
-<title>Node8</title>
-<g id="a_Node000008"><a xlink:href="async__loader_8c.html#a176d1e0504916b9fa61b60d9411f0704" target="_top" xlink:title=" ">
+<!-- Node11 -->
+<g id="Node000011" class="node">
+<title>Node11</title>
+<g id="a_Node000011"><a xlink:href="async__loader_8c.html#a176d1e0504916b9fa61b60d9411f0704" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="428,-149 280,-149 280,-130 428,-130 428,-149"/>
 <text text-anchor="middle" x="354" y="-137" font-family="Helvetica,sans-Serif" font-size="10.00">async_perform_conversion</text>
 </a>
 </g>
 </g>
-<!-- Node2&#45;&gt;Node8 -->
-<g id="edge7_Node000002_Node000008" class="edge">
-<title>Node2&#45;&gt;Node8</title>
-<g id="a_edge7_Node000002_Node000008"><a xlink:title=" ">
+<!-- Node2&#45;&gt;Node11 -->
+<g id="edge10_Node000002_Node000011" class="edge">
+<title>Node2&#45;&gt;Node11</title>
+<g id="a_edge10_Node000002_Node000011"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M223.35,-94.08C249.05,-103.08 287.7,-116.62 316.12,-126.58"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="315.11,-129.93 325.7,-129.94 317.42,-123.33 315.11,-129.93"/>
 </a>
@@ -207,12 +207,30 @@ var sectionId = 'dynsection-6';
 </a>
 </g>
 </g>
+<!-- Node8 -->
+<g id="Node000008" class="node">
+<title>Node8</title>
+<g id="a_Node000008"><a xlink:href="io_8c.html#a4ce68f88c050c3287a2a532957ffa1fc" target="_top" xlink:title="Reads an entire file into a null&#45;terminated string.">
+<polygon fill="white" stroke="#666666" points="736,-130 663,-130 663,-111 736,-111 736,-130"/>
+<text text-anchor="middle" x="699.5" y="-118" font-family="Helvetica,sans-Serif" font-size="10.00">io_read_file</text>
+</a>
+</g>
+</g>
+<!-- Node7&#45;&gt;Node8 -->
+<g id="edge7_Node000007_Node000008" class="edge">
+<title>Node7&#45;&gt;Node8</title>
+<g id="a_edge7_Node000007_Node000008"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M594.66,-120.5C613.65,-120.5 634.68,-120.5 652.82,-120.5"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="652.85,-124 662.85,-120.5 652.85,-117 652.85,-124"/>
+</a>
+</g>
+</g>
 <!-- Node9 -->
 <g id="Node000009" class="node">
 <title>Node9</title>
-<g id="a_Node000009"><a xlink:href="simd__utils_8c.html#aa334e50ee9c6d6c9c91f18dd4f3eac68" target="_top" xlink:title="Converts an array of 32&#45;bit floats to 16&#45;bit half&#45;floats using SIMD (AVX2/F16C).">
-<polygon fill="white" stroke="#666666" points="613,-167 464,-167 464,-148 613,-148 613,-167"/>
-<text text-anchor="middle" x="538.5" y="-155" font-family="Helvetica,sans-Serif" font-size="10.00">convert_float_to_half_simd</text>
+<g id="a_Node000009"><a xlink:href="utils_8h.html#a7fca40fda3337b1d62d89a81293a18ec" target="_top" xlink:title="Validates a relative path to prevent arbitrary file access.">
+<polygon fill="white" stroke="#666666" points="907,-149 786,-149 786,-130 907,-130 907,-149"/>
+<text text-anchor="middle" x="846.5" y="-137" font-family="Helvetica,sans-Serif" font-size="10.00">is_safe_relative_path</text>
 </a>
 </g>
 </g>
@@ -220,24 +238,60 @@ var sectionId = 'dynsection-6';
 <g id="edge8_Node000008_Node000009" class="edge">
 <title>Node8&#45;&gt;Node9</title>
 <g id="a_edge8_Node000008_Node000009"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M428.18,-146.72C436.59,-147.55 445.21,-148.4 453.75,-149.24"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="453.41,-152.72 463.71,-150.22 454.1,-145.76 453.41,-152.72"/>
+<path fill="none" stroke="#63b8ff" d="M736.34,-125.2C748.35,-126.77 762.19,-128.58 775.89,-130.38"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="775.44,-133.85 785.81,-131.68 776.35,-126.91 775.44,-133.85"/>
 </a>
 </g>
 </g>
 <!-- Node10 -->
 <g id="Node000010" class="node">
 <title>Node10</title>
-<g id="a_Node000010"><a xlink:href="simd__utils_8c.html#a839aa1475cc59c051f1e10be7ffe4b23" target="_top" xlink:title=" ">
+<g id="a_Node000010"><a xlink:href="utils_8h.html#adbb98512b516893d07ffb8d439b807ea" target="_top" xlink:title="calloc wrapper with zero&#45;size check.">
+<polygon fill="white" stroke="#666666" points="882,-112 811,-112 811,-93 882,-93 882,-112"/>
+<text text-anchor="middle" x="846.5" y="-100" font-family="Helvetica,sans-Serif" font-size="10.00">safe_calloc</text>
+</a>
+</g>
+</g>
+<!-- Node8&#45;&gt;Node10 -->
+<g id="edge9_Node000008_Node000010" class="edge">
+<title>Node8&#45;&gt;Node10</title>
+<g id="a_edge9_Node000008_Node000010"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M736.34,-116.05C755.79,-113.64 780,-110.63 800.68,-108.06"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="801.33,-111.51 810.82,-106.81 800.46,-104.56 801.33,-111.51"/>
+</a>
+</g>
+</g>
+<!-- Node12 -->
+<g id="Node000012" class="node">
+<title>Node12</title>
+<g id="a_Node000012"><a xlink:href="simd__utils_8c.html#aa334e50ee9c6d6c9c91f18dd4f3eac68" target="_top" xlink:title="Converts an array of 32&#45;bit floats to 16&#45;bit half&#45;floats using SIMD (AVX2/F16C).">
+<polygon fill="white" stroke="#666666" points="613,-167 464,-167 464,-148 613,-148 613,-167"/>
+<text text-anchor="middle" x="538.5" y="-155" font-family="Helvetica,sans-Serif" font-size="10.00">convert_float_to_half_simd</text>
+</a>
+</g>
+</g>
+<!-- Node11&#45;&gt;Node12 -->
+<g id="edge11_Node000011_Node000012" class="edge">
+<title>Node11&#45;&gt;Node12</title>
+<g id="a_edge11_Node000011_Node000012"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M428.18,-146.72C436.59,-147.55 445.21,-148.4 453.75,-149.24"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="453.41,-152.72 463.71,-150.22 454.1,-145.76 453.41,-152.72"/>
+</a>
+</g>
+</g>
+<!-- Node13 -->
+<g id="Node000013" class="node">
+<title>Node13</title>
+<g id="a_Node000013"><a xlink:href="simd__utils_8c.html#a839aa1475cc59c051f1e10be7ffe4b23" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="#666666" points="750,-167 649,-167 649,-148 750,-148 750,-167"/>
 <text text-anchor="middle" x="699.5" y="-155" font-family="Helvetica,sans-Serif" font-size="10.00">float_to_half_soft</text>
 </a>
 </g>
 </g>
-<!-- Node9&#45;&gt;Node10 -->
-<g id="edge9_Node000009_Node000010" class="edge">
-<title>Node9&#45;&gt;Node10</title>
-<g id="a_edge9_Node000009_Node000010"><a xlink:title=" ">
+<!-- Node12&#45;&gt;Node13 -->
+<g id="edge12_Node000012_Node000013" class="edge">
+<title>Node12&#45;&gt;Node13</title>
+<g id="a_edge12_Node000012_Node000013"><a xlink:title=" ">
 <path fill="none" stroke="#63b8ff" d="M613.41,-157.5C621.85,-157.5 630.38,-157.5 638.6,-157.5"/>
 <polygon fill="#63b8ff" stroke="#63b8ff" points="638.83,-161 648.83,-157.5 638.83,-154 638.83,-161"/>
 </a>

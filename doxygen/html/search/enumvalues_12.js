@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['window_5fheight_0',['WINDOW_HEIGHT',['../main_8h.html#abed82baf7f470b522273a3e37c24c600a0b6f4c348a85ec0f8fbf9fa683f37a74',1,'main.h']]],
-  ['window_5fwidth_1',['WINDOW_WIDTH',['../main_8h.html#abed82baf7f470b522273a3e37c24c600aa7523c5c17a6efb6c582e350985cf859',1,'main.h']]]
+  ['vertex_5fcomponents_0',['VERTEX_COMPONENTS',['../ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98',1,'ui.c']]],
+  ['vertices_5fper_5fquad_1',['VERTICES_PER_QUAD',['../ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa',1,'ui.c']]]
 ];

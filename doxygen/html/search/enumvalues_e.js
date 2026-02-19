@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['screen_5fquad_5fvertex_5fcount_0',['SCREEN_QUAD_VERTEX_COUNT',['../gl__common_8h.html#a726ca809ffd3d67ab4b8476646f26635a726b6f2464109ad63235993e0fd37631',1,'gl_common.h']]],
-  ['shader_5flabel_5fbuffer_5fsize_1',['SHADER_LABEL_BUFFER_SIZE',['../shader_8c.html#a7ff5f2dff38e7639981794c43dc9167ba392912e5ab211e28c877a7cc3b56b0f5',1,'shader.c']]],
-  ['simd_5falignment_2',['SIMD_ALIGNMENT',['../gl__common_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7619557dd412e4f5e4416d11b1c40d42',1,'gl_common.h']]],
-  ['sync_5fattr_5fstart_3',['SYNC_ATTR_START',['../gl__common_8h.html#a61dadd085c1777f559549e05962b2c9ea8fc307a473aac724f3230b8a1bc02449',1,'gl_common.h']]]
+  ['range_5ftext_5fbuffer_5fsize_0',['RANGE_TEXT_BUFFER_SIZE',['../app__ui_8c.html#ac36f475ca5b446f4fde4c9b90bec77c8af857797fa834c37834916f6bb3ee3dd4',1,'app_ui.c']]],
+  ['resolved_5fpath_5fbuffer_5fsize_1',['RESOLVED_PATH_BUFFER_SIZE',['../shader_8c.html#a96a58e29e8dbf2b5bdeb775cba46556ea63b1dfadb89175941f78629653841b52',1,'shader.c']]],
+  ['rgb_5fcomponents_2',['RGB_COMPONENTS',['../material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421',1,'material.c']]]
 ];

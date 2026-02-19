@@ -2,7 +2,6 @@ var ui_8c =
 [
     [ "UIVertex", "structUIVertex.html", "structUIVertex" ],
     [ "UIQuad", "structUIQuad.html", "structUIQuad" ],
-    [ "GLStateBackup", "structGLStateBackup.html", "structGLStateBackup" ],
     [ "FontAtlasConfig", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27", [
       [ "FONT_ATLAS_SIZE", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27aa0f4026de0fe5858c7c8199069825526", null ],
       [ "FONT_FIRST_CHAR", "ui_8c.html#ad3f72dd84eefcfe643a0a210388d8d27a116ff0645ada6fcc090c80ab2fbe527b", null ],
@@ -16,9 +15,6 @@ var ui_8c =
     ] ],
     [ "create_font_atlas", "ui_8c.html#adea4af1dfed2a306c55f45c26e117280", null ],
     [ "make_glyph_quad", "ui_8c.html#a8d8220e7d7899791fe745aec49f72e6d", null ],
-    [ "read_font_file", "ui_8c.html#acb4115f9f24ae7fbe2ed09b4537c13e3", null ],
-    [ "restore_gl_state", "ui_8c.html#a3c924c9b9fc2b783756213d65e6d28d8", null ],
-    [ "save_gl_state", "ui_8c.html#a1a81b4728d6451c5090b8190bdfd3b80", null ],
     [ "setup_ui_render_state", "ui_8c.html#a05f2c5e6678bcb2f958195dcab774062", null ],
     [ "setup_vertex_buffers", "ui_8c.html#a38379b82fe44d3fc5826c8a9ed606cf5", null ],
     [ "ui_destroy", "ui_8c.html#a5c138218fecc5ed14d4ade5e6948d5cb", null ],

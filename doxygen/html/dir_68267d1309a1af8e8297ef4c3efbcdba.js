@@ -19,6 +19,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "gpu_profiler_ui.c", "gpu__profiler__ui_8c.html", "gpu__profiler__ui_8c" ],
     [ "icosphere.c", "icosphere_8c.html", "icosphere_8c" ],
     [ "instanced_rendering.c", "instanced__rendering_8c.html", "instanced__rendering_8c" ],
+    [ "io.c", "io_8c.html", "io_8c" ],
     [ "log.c", "log_8c.html", "log_8c" ],
     [ "main.c", "main_8c.html", "main_8c" ],
     [ "material.c", "material_8c.html", "material_8c" ],

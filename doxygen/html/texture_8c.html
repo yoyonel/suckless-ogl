@@ -235,6 +235,7 @@ $(document).ready(function(){initNavTree('texture_8c.html',''); initResizable();
 
 <div class="header">
   <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">texture.c File Reference</div></div>
@@ -242,6 +243,7 @@ $(document).ready(function(){initNavTree('texture_8c.html',''); initResizable();
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="io_8h_source.html">io.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
@@ -255,6 +257,12 @@ Include dependency graph for texture.c:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="texture_8c__incl.svg" width="100%" height="547"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a77867ab4129f63159b37bca3b652a798" id="r_a77867ab4129f63159b37bca3b652a798"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="texture_8c.html#a77867ab4129f63159b37bca3b652a798a0d3aebca00d51ee1340e5b60c9d2eba4">MAX_TEXTURE_FILE_SIZE</a> = 64 * 1024 * 1024
+ }</td></tr>
+<tr class="separator:a77867ab4129f63159b37bca3b652a798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a4c821497ea20a5b74199e3080c0f4a1c" id="r_a4c821497ea20a5b74199e3080c0f4a1c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a4c821497ea20a5b74199e3080c0f4a1c">texture_load_pixels</a> (const char *path, int *width, int *height, int *channels)</td></tr>
@@ -287,6 +295,24 @@ Variables</h2></td></tr>
 <tr class="memitem:a94dc4fc43b2c6f3610a1582be71e7dd4" id="r_a94dc4fc43b2c6f3610a1582be71e7dd4"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a94dc4fc43b2c6f3610a1582be71e7dd4">TRACY_COLOR_TEXTURE_UPLOAD_FULL</a> = 0xFF8800</td></tr>
 <tr class="separator:a94dc4fc43b2c6f3610a1582be71e7dd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a77867ab4129f63159b37bca3b652a798" name="a77867ab4129f63159b37bca3b652a798"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77867ab4129f63159b37bca3b652a798">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a77867ab4129f63159b37bca3b652a798a0d3aebca00d51ee1340e5b60c9d2eba4" name="a77867ab4129f63159b37bca3b652a798a0d3aebca00d51ee1340e5b60c9d2eba4"></a>MAX_TEXTURE_FILE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="aab7453443bd88ad6c923d608ec066a28" name="aab7453443bd88ad6c923d608ec066a28"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab7453443bd88ad6c923d608ec066a28">&#9670;&#160;</a></span>texture_ensure_pbo()</h2>
@@ -382,6 +408,11 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to heap-allocated data. Buffer must be freed by caller. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a4c821497ea20a5b74199e3080c0f4a1c_cgraph.svg" width="515" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
 
 </div>
 </div>

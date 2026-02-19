@@ -235,6 +235,7 @@ $(document).ready(function(){initNavTree('render__utils_8c.html',''); initResiza
 
 <div class="header">
   <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">render_utils.c File Reference</div></div>
 </div><!--header-->
@@ -250,9 +251,18 @@ $(document).ready(function(){initNavTree('render__utils_8c.html',''); initResiza
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for render_utils.c:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="render__utils_8c__incl.svg" width="100%" height="492"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="render__utils_8c__incl.svg" width="100%" height="437"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a7ff5f2dff38e7639981794c43dc9167b" id="r_a7ff5f2dff38e7639981794c43dc9167b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="render__utils_8c.html#a7ff5f2dff38e7639981794c43dc9167ba3ef23592467efdce9ca509f61c0f6128">MAX_MATERIAL_CONFIG_SIZE</a> = 2 * 1024 * 1024
+ }</td></tr>
+<tr class="separator:a7ff5f2dff38e7639981794c43dc9167b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabfcbcb5ac86a1edac4035264bc7d2b8" id="r_aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="render__utils_8c.html#aabfcbcb5ac86a1edac4035264bc7d2b8a088b803bc4a6432888162268cf640155">GPU_IDENTIFIER_RAW_BUF_SIZE</a> = 512
+ }</td></tr>
+<tr class="separator:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:acb93c5e9986da209ae59c3e07e9c1bf4" id="r_acb93c5e9986da209ae59c3e07e9c1bf4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8c.html#acb93c5e9986da209ae59c3e07e9c1bf4">render_utils_create_color_texture</a> (float red, float green, float blue, float alpha)</td></tr>
@@ -299,7 +309,51 @@ Functions</h2></td></tr>
 <tr class="memitem:a5bfd4e31069d2594b6b21ef1970bb578" id="r_a5bfd4e31069d2594b6b21ef1970bb578"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8c.html#a5bfd4e31069d2594b6b21ef1970bb578">render_utils_setup_sphere_instance_attributes</a> (GLsizei stride, size_t offset_albedo, size_t offset_metallic)</td></tr>
 <tr class="memdesc:a5bfd4e31069d2594b6b21ef1970bb578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up instance attributes for sphere rendering (Model, Albedo, PBR).  <br /></td></tr>
 <tr class="separator:a5bfd4e31069d2594b6b21ef1970bb578"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6f98bd6406323d50aa3beb34f2bd8a9" id="r_aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGLStateBackup.html">GLStateBackup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8c.html#aa6f98bd6406323d50aa3beb34f2bd8a9">render_utils_save_state</a> (void)</td></tr>
+<tr class="memdesc:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves current OpenGL state to a backup struct.  <br /></td></tr>
+<tr class="separator:aa6f98bd6406323d50aa3beb34f2bd8a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6820952026feea828b06074d33f0a96" id="r_aa6820952026feea828b06074d33f0a96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8c.html#aa6820952026feea828b06074d33f0a96">render_utils_restore_state</a> (const <a class="el" href="structGLStateBackup.html">GLStateBackup</a> *state)</td></tr>
+<tr class="memdesc:aa6820952026feea828b06074d33f0a96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Restores OpenGL state from a backup struct.  <br /></td></tr>
+<tr class="separator:aa6820952026feea828b06074d33f0a96"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbe8e8e2842c2125b1d96b31225ebada" id="r_adbe8e8e2842c2125b1d96b31225ebada"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="render__utils_8c.html#adbe8e8e2842c2125b1d96b31225ebada">render_utils_setup_ui_state</a> (void)</td></tr>
+<tr class="memdesc:adbe8e8e2842c2125b1d96b31225ebada"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures standard 2D/UI rendering state (Alpha blend, No depth).  <br /></td></tr>
+<tr class="separator:adbe8e8e2842c2125b1d96b31225ebada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a7ff5f2dff38e7639981794c43dc9167b" name="a7ff5f2dff38e7639981794c43dc9167b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ff5f2dff38e7639981794c43dc9167b">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7ff5f2dff38e7639981794c43dc9167ba3ef23592467efdce9ca509f61c0f6128" name="a7ff5f2dff38e7639981794c43dc9167ba3ef23592467efdce9ca509f61c0f6128"></a>MAX_MATERIAL_CONFIG_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aabfcbcb5ac86a1edac4035264bc7d2b8" name="aabfcbcb5ac86a1edac4035264bc7d2b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabfcbcb5ac86a1edac4035264bc7d2b8">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aabfcbcb5ac86a1edac4035264bc7d2b8a088b803bc4a6432888162268cf640155" name="aabfcbcb5ac86a1edac4035264bc7d2b8a088b803bc4a6432888162268cf640155"></a>GPU_IDENTIFIER_RAW_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a70aa736cd259992d3e2c00abdc459f49" name="a70aa736cd259992d3e2c00abdc459f49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a70aa736cd259992d3e2c00abdc459f49">&#9670;&#160;</a></span>append_sanitized_char()</h2>
@@ -858,6 +912,52 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="aa6820952026feea828b06074d33f0a96" name="aa6820952026feea828b06074d33f0a96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6820952026feea828b06074d33f0a96">&#9670;&#160;</a></span>render_utils_restore_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_restore_state </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structGLStateBackup.html">GLStateBackup</a> *&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Restores OpenGL state from a backup struct. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Pointer to the state backup to restore. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa6f98bd6406323d50aa3beb34f2bd8a9" name="aa6f98bd6406323d50aa3beb34f2bd8a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6f98bd6406323d50aa3beb34f2bd8a9">&#9670;&#160;</a></span>render_utils_save_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGLStateBackup.html">GLStateBackup</a> render_utils_save_state </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves current OpenGL state to a backup struct. </p>
+
+</div>
+</div>
 <a id="a5bfd4e31069d2594b6b21ef1970bb578" name="a5bfd4e31069d2594b6b21ef1970bb578"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5bfd4e31069d2594b6b21ef1970bb578">&#9670;&#160;</a></span>render_utils_setup_sphere_instance_attributes()</h2>
 
@@ -900,6 +1000,26 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="adbe8e8e2842c2125b1d96b31225ebada" name="adbe8e8e2842c2125b1d96b31225ebada"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe8e8e2842c2125b1d96b31225ebada">&#9670;&#160;</a></span>render_utils_setup_ui_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void render_utils_setup_ui_state </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Configures standard 2D/UI rendering state (Alpha blend, No depth). </p>
 
 </div>
 </div>
