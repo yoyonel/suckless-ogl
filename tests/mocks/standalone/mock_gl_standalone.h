@@ -1,9 +1,11 @@
 #ifndef MOCK_GL_STANDALONE_H
 #define MOCK_GL_STANDALONE_H
 
-#include <stddef.h>
+#include <stdint.h>
 
 /* Define types compatible with GLAD/OpenGL */
+typedef uint64_t GLuint64;
+typedef int64_t GLint64;
 typedef unsigned int GLuint;
 typedef unsigned int GLenum;
 typedef int GLint;
@@ -74,7 +76,7 @@ void glTexImage2D(GLenum target, GLint level, GLint internalformat,
 void glGenQueries(GLsizei n, GLuint* ids);
 void glDeleteQueries(GLsizei n, const GLuint* ids);
 void glQueryCounter(GLuint id, GLenum target);
-void glGetQueryObjectui64v(GLuint id, GLenum pname, unsigned long long* params);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
 
 /* Control API */
 void mock_gl_reset_calls(void);
