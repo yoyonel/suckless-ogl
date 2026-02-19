@@ -303,6 +303,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5b0bcc183c4e6fb94386733edd277fc3" id="r_a5b0bcc183c4e6fb94386733edd277fc3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a5b0bcc183c4e6fb94386733edd277fc3">safe_strncat</a> (char *dest, size_t dest_size, const char *src)</td></tr>
 <tr class="memdesc:a5b0bcc183c4e6fb94386733edd277fc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncat to ensure bounds safety.  <br /></td></tr>
 <tr class="separator:a5b0bcc183c4e6fb94386733edd277fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3f28e50cc06585ceeeb962f997f598c" id="r_aa3f28e50cc06585ceeeb962f997f598c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c">is_safe_filename</a> (const char *filename)</td></tr>
+<tr class="memdesc:aa3f28e50cc06585ceeeb962f997f598c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a filename to prevent path traversal and shell injection.  <br /></td></tr>
+<tr class="separator:aa3f28e50cc06585ceeeb962f997f598c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55529722f47ff4c9bc4b65d398008fc4" id="r_a55529722f47ff4c9bc4b65d398008fc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a> (FILE **file_ptr)</td></tr>
 <tr class="memdesc:a55529722f47ff4c9bc4b65d398008fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>FILE*</code>.  <br /></td></tr>
 <tr class="separator:a55529722f47ff4c9bc4b65d398008fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -503,6 +506,42 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>RAII callback for <code>free()</code>. </p>
+
+</div>
+</div>
+<a id="aa3f28e50cc06585ceeeb962f997f598c" name="aa3f28e50cc06585ceeeb962f997f598c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3f28e50cc06585ceeeb962f997f598c">&#9670;&#160;</a></span>is_safe_filename()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool is_safe_filename </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Validates a filename to prevent path traversal and shell injection. </p>
+<p>Rejects strings containing path separators ('/', '\') or directory traversal sequences ("..") or current directory (".").</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>The filename to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the filename is safe, false otherwise. </dd></dl>
 
 </div>
 </div>

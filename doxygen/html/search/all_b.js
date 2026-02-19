@@ -29,7 +29,7 @@ var searchData=
   ['chunks_5fhead_26',['chunks_head',['../structIncludeContext.html#a29f3d363ac094f5696e1d7fd66d1a268',1,'IncludeContext']]],
   ['chunks_5ftail_27',['chunks_tail',['../structIncludeContext.html#a52cbaa31b3eec4d49894d5721176ede0',1,'IncludeContext']]],
   ['cleanup_5fctx_28',['CLEANUP_CTX',['../shader_8c.html#af36a2b599facb84c8d6e2a39ea7011d1',1,'shader.c']]],
-  ['cleanup_5ffile_29',['cleanup_file',['../utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4',1,'cleanup_file(FILE **file_ptr):&#160;utils.h'],['../utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7',1,'CLEANUP_FILE:&#160;utils.h']]],
+  ['cleanup_5ffile_29',['cleanup_file',['../utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7',1,'CLEANUP_FILE:&#160;utils.h'],['../utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4',1,'cleanup_file(FILE **file_ptr):&#160;utils.h']]],
   ['cleanup_5ffree_30',['cleanup_free',['../utils_8h.html#a60d756fd34ef42d063535564a151e219',1,'cleanup_free(void *ptr_ptr):&#160;utils.h'],['../utils_8h.html#ac333249d502a536c37149f9397c09060',1,'CLEANUP_FREE:&#160;utils.h']]],
   ['cleanup_5fgl_5fdebug_5fgroup_31',['cleanup_gl_debug_group',['../gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc',1,'gl_common.h']]],
   ['cleanup_5fgl_5ftexture_32',['cleanup_gl_texture',['../gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33',1,'gl_common.h']]],

@@ -79,7 +79,8 @@ var searchData=
   ['is_5ffirst_5fload_76',['is_first_load',['../structApp.html#a5113726436bc601bb7eac489894799a9',1,'App']]],
   ['is_5ffullscreen_77',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],
   ['is_5foptimized_78',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]],
-  ['is_5fsafe_5fpath_79',['is_safe_path',['../shader_8c.html#af01fb0cf9ca997f812c57005fd737173',1,'shader.c']]],
-  ['is_5fshader_5fin_5fcache_80',['is_shader_in_cache',['../postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1',1,'postprocess.c']]],
-  ['is_5fsoftware_5frenderer_81',['is_software_renderer',['../app__env_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e',1,'app_env.c']]]
+  ['is_5fsafe_5ffilename_79',['is_safe_filename',['../utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c',1,'utils.h']]],
+  ['is_5fsafe_5fpath_80',['is_safe_path',['../shader_8c.html#af01fb0cf9ca997f812c57005fd737173',1,'shader.c']]],
+  ['is_5fshader_5fin_5fcache_81',['is_shader_in_cache',['../postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1',1,'postprocess.c']]],
+  ['is_5fsoftware_5frenderer_82',['is_software_renderer',['../app__env_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e',1,'app_env.c']]]
 ];
