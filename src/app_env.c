@@ -131,8 +131,15 @@ void app_scan_hdr_files(App* app)
 
 int app_load_env_map(App* app, const char* filename)
 {
+	if (!is_safe_filename(filename)) {
+		LOG_ERROR("suckless-ogl.app",
+		          "Security Violation: Invalid filename rejected: %s",
+		          filename ? filename : "NULL");
+		return 0;
+	}
+
 	char path[MAX_PATH_LENGTH];
-	if (!safe_snprintf(path, sizeof(path), "%s/%s", HDR_TEXTURE_PATH,
+	if (!safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
 	                   filename)) {
 		LOG_ERROR("suckless-ogl.app", "Filename too long: %s",
 		          filename);
