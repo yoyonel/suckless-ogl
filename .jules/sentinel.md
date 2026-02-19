@@ -39,3 +39,8 @@
 **Vulnerability:** `stbi_load` allocated memory based on dimensions read from file header before application validation, allowing a small file to trigger massive allocation (DoS).
 **Learning:** Helper libraries often prioritize convenience over security. Trusting external input to determine allocation size without validation is dangerous.
 **Prevention:** Use a "Peek & Validate" pattern: parse metadata first (`stbi_info`), validate against constraints, then allocate/load.
+
+## 2026-02-19 - [Path Traversal] Unprotected Texture Loading
+**Vulnerability:** `texture_load_pixels` in `src/texture.c` lacked path validation, allowing traversal attacks via crafted filenames, despite earlier logs suggesting it was secured. `is_safe_path` was isolated in `src/shader.c`.
+**Learning:** Security functions like `is_safe_path` must be centralized (e.g., in `utils.h`) to ensure consistent application across all modules (Texture, Shader, Audio, etc.). Code duplication leads to inconsistent security posture.
+**Prevention:** Moved `is_safe_path` to `include/utils.h` and enforced it in `texture_load_pixels`. Always verify that security controls are applied to ALL input vectors, not just the one currently being worked on (e.g., shaders).

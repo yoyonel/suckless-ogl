@@ -11,6 +11,12 @@
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels)
 {
+	if (!is_safe_path(path)) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "Security Violation: Unsafe texture path: %s", path);
+		return NULL;
+	}
+
 	CLEANUP_FILE FILE* file = fopen(path, "rb");
 	if (!file) {
 		LOG_ERROR("suckless-ogl.texture",

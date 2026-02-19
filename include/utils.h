@@ -182,4 +182,26 @@ static inline void raii_satisfy_analyzer_free(
 		_tmp_ptr;                         \
 	})
 
+/**
+ * @brief Checks if a file path is safe (prevents directory traversal).
+ * @param path The path to check.
+ * @return true if the path is safe, false otherwise.
+ */
+static inline bool is_safe_path(const char* path)
+{
+	if (strstr(path, "..")) {
+		return false;
+	}
+	if (path[0] == '/') {
+		return false;
+	}
+	if (strchr(path, '\\')) {
+		return false;
+	}
+	if (strstr(path, ":")) {
+		return false;
+	}
+	return true;
+}
+
 #endif /* UTILS_H */
