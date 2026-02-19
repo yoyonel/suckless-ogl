@@ -74,6 +74,12 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
  */
 static char* load_file_into_ram(const char* path)
 {
+	if (!is_safe_relative_path(path)) {
+		LOG_ERROR("suckless-ogl.shader",
+		          "Security Violation: Unsafe path blocked: %s", path);
+		return NULL;
+	}
+
 	CLEANUP_FILE FILE* file_ptr = fopen(path, "rb");
 	if (!file_ptr) {
 		LOG_ERROR("suckless-ogl.shader", "Failed to open file: %s",
@@ -205,23 +211,6 @@ static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
 	return true;
 }
 
-static bool is_safe_path(const char* path)
-{
-	if (strstr(path, "..")) {
-		return false;
-	}
-	if (path[0] == '/') {
-		return false;
-	}
-	if (strchr(path, '\\')) {
-		return false;
-	}
-	if (strstr(path, ":")) {
-		return false;
-	}
-	return true;
-}
-
 /*
  * Helper to resolve and parse an included file.
  * Returns true on success, false on error.
@@ -231,7 +220,7 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
                                       const char* path_term,
                                       const char* current_file_path)
 {
-	if (!is_safe_path(path_term)) {
+	if (!is_safe_relative_path(path_term)) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Security Violation: Unsafe include path detected: "
 		          "%s (in %s)",

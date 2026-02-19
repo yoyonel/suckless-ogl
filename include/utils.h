@@ -149,10 +149,40 @@ static inline bool is_safe_filename(const char* filename)
 		return false;
 	}
 	/* Check for path separators (Linux/Windows) */
-	if (strchr(filename, '/') != NULL) {
+	if (strchr(filename, '/') != NULL || strchr(filename, '\\') != NULL) {
 		return false;
 	}
-	if (strchr(filename, '\\') != NULL) {
+	return true;
+}
+
+/**
+ * @brief Validates a relative path to prevent arbitrary file access.
+ *
+ * Rejects absolute paths, parent directory traversal (".."), and
+ * platform-specific path features like backslashes or drive letters.
+ *
+ * @param path The relative path to check.
+ * @return true if the path is safe, false otherwise.
+ */
+static inline bool is_safe_relative_path(const char* path)
+{
+	if (!path) {
+		return false;
+	}
+	/* No parent directory traversal */
+	if (strstr(path, "..") != NULL) {
+		return false;
+	}
+	/* No absolute paths */
+	if (path[0] == '/') {
+		return false;
+	}
+	/* No Windows-style backslashes */
+	if (strchr(path, '\\') != NULL) {
+		return false;
+	}
+	/* No Windows-style drive letters or colon-based protocols */
+	if (strstr(path, ":") != NULL) {
 		return false;
 	}
 	return true;
