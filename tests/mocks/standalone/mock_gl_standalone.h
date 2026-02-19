@@ -26,6 +26,8 @@ typedef long GLintptr;
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
 #define GL_STREAM_DRAW 0x88E0
 #define GL_WRITE_ONLY 0x88B9
+#define GL_QUERY_RESULT 0x8866
+#define GL_TIMESTAMP 0x8E28
 
 /* Defaults */
 #define DEFAULT_BUFFER_ID 123
@@ -69,6 +71,10 @@ GLboolean glUnmapBuffer(GLenum target);
 void glTexImage2D(GLenum target, GLint level, GLint internalformat,
                   GLsizei width, GLsizei height, GLint border, GLenum format,
                   GLenum type, const void* pixels);
+void glGenQueries(GLsizei n, GLuint* ids);
+void glDeleteQueries(GLsizei n, const GLuint* ids);
+void glQueryCounter(GLuint id, GLenum target);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, unsigned long long* params);
 
 /* Control API */
 void mock_gl_reset_calls(void);

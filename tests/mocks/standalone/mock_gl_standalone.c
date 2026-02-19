@@ -436,3 +436,34 @@ GLboolean glUnmapBuffer(GLenum target)
 	(void)target;
 	return GL_TRUE;
 }
+
+void glGenQueries(GLsizei n, GLuint* ids)
+{
+	for (GLsizei i = 0; i < n; i++) {
+		if (ids) {
+			ids[i] = (GLuint)(i + 1); /* Dummy unique IDs */
+		}
+	}
+}
+
+void glDeleteQueries(GLsizei n, const GLuint* ids)
+{
+	(void)n;
+	(void)ids;
+}
+
+void glQueryCounter(GLuint query_id, GLenum target)
+{
+	(void)query_id;
+	(void)target;
+}
+
+void glGetQueryObjectui64v(GLuint query_id, GLenum pname,
+                           unsigned long long* params)
+{
+	(void)query_id;
+	(void)pname;
+	if (params) {
+		*params = 1000; /* Dummy timestamp value */
+	}
+}

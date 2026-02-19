@@ -49,6 +49,8 @@ typedef long GLintptr;
 #define GL_REPEAT 0x2901
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_NO_ERROR 0
+#define GL_QUERY_RESULT 0x8866
+#define GL_TIMESTAMP 0x8E28
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -122,5 +124,10 @@ void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
+
+void glGenQueries(GLsizei n, GLuint* ids);
+void glDeleteQueries(GLsizei n, const GLuint* ids);
+void glQueryCounter(GLuint id, GLenum target);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, unsigned long long* params);
 
 #endif
