@@ -309,8 +309,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2af39f53b97008c3ca89d9c3d176b321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66f86edf5f10c44d07a691cd2c138f35" id="r_a66f86edf5f10c44d07a691cd2c138f35"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a66f86edf5f10c44d07a691cd2c138f35">ctx_add_buffer</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, char *data)</td></tr>
 <tr class="separator:a66f86edf5f10c44d07a691cd2c138f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a142a88d0fea7ccccd9261c43c7344038" id="r_a142a88d0fea7ccccd9261c43c7344038"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a142a88d0fea7ccccd9261c43c7344038">ctx_add_chunk</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, const char *ptr, size_t len)</td></tr>
-<tr class="separator:a142a88d0fea7ccccd9261c43c7344038"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf4c6444de4fe1143933a96b4bc54baa" id="r_acf4c6444de4fe1143933a96b4bc54baa"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#acf4c6444de4fe1143933a96b4bc54baa">ctx_add_chunk</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx, const char *ptr, size_t len)</td></tr>
+<tr class="separator:acf4c6444de4fe1143933a96b4bc54baa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a576159e7078a0f92b5e3739cd6b9248c" id="r_a576159e7078a0f92b5e3739cd6b9248c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c">ctx_free</a> (<a class="el" href="structIncludeContext.html">IncludeContext</a> *ctx)</td></tr>
 <tr class="separator:a576159e7078a0f92b5e3739cd6b9248c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af175eada3763b4ece51e0344ee4a0da0" id="r_af175eada3763b4ece51e0344ee4a0da0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8c.html#af175eada3763b4ece51e0344ee4a0da0">get_dir_from_path</a> (const char *path, char *out_dir, size_t size)</td></tr>
@@ -630,8 +630,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a142a88d0fea7ccccd9261c43c7344038" name="a142a88d0fea7ccccd9261c43c7344038"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a142a88d0fea7ccccd9261c43c7344038">&#9670;&#160;</a></span>ctx_add_chunk()</h2>
+<a id="acf4c6444de4fe1143933a96b4bc54baa" name="acf4c6444de4fe1143933a96b4bc54baa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf4c6444de4fe1143933a96b4bc54baa">&#9670;&#160;</a></span>ctx_add_chunk()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -640,7 +640,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void ctx_add_chunk </td>
+          <td class="memname">static bool ctx_add_chunk </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structIncludeContext.html">IncludeContext</a> *&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
