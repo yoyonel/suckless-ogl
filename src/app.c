@@ -43,12 +43,6 @@ static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
 int app_init(App* app, int width, int height, const char* title)
 {
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)memset(
-	    app, 0,
-	    sizeof(
-	        App));  // NOLINT(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-
 	app->width = width;
 	app->height = height;
 	app->subdivisions = INITIAL_SUBDIVISIONS;
@@ -129,14 +123,12 @@ int app_init(App* app, int width, int height, const char* title)
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
 	           sizeof(float));
 	if (!app->lum_histogram_buffer) {
-		app_cleanup(app);
 		return 0;
 	}
 
 	app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	app->async_loader = async_loader_create(&app->tracy_mgr);
 	if (!app->async_loader) {
-		app_cleanup(app);
 		return 0;
 	}
 
@@ -162,21 +154,18 @@ int app_init(App* app, int width, int height, const char* title)
 	app->skybox_shader =
 	    shader_load("shaders/background.vert", "shaders/background.frag");
 	if (!app->skybox_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 
 	app->debug_shader =
 	    shader_load("shaders/debug_tex.vert", "shaders/debug_tex.frag");
 	if (!app->debug_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 
 	app->debug_line_shader =
 	    shader_load("shaders/debug_line.vert", "shaders/debug_line.frag");
 	if (!app->debug_line_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 
@@ -185,7 +174,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_billboard_shader = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
 	if (!app->pbr_billboard_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 
@@ -244,7 +232,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
 	                                   "shaders/pbr_ibl_instanced.frag");
 	if (!app->pbr_ssbo_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 	Shader* inst_shader = app->pbr_ssbo_shader;
@@ -253,7 +240,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->pbr_instanced_shader = shader_load(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
 	if (!app->pbr_instanced_shader) {
-		app_cleanup(app);
 		return 0;
 	}
 	app_update_instancing_mode(app);
@@ -292,7 +278,6 @@ int app_init(App* app, int width, int height, const char* title)
 
 	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
 	                      height)) {
-		app_cleanup(app);
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
@@ -316,13 +301,14 @@ int app_init(App* app, int width, int height, const char* title)
 	return 1;
 }
 
-void app_cleanup(App* app)
+static void app_cleanup_rendering_groups(App* app)
 {
 	icosphere_free(&app->geometry);
 	skybox_cleanup(&app->skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (app->sphere_instances) {
 		free(app->sphere_instances);
+		app->sphere_instances = NULL;
 	}
 	sphere_sorter_cleanup(&app->sphere_sorter);
 #endif
@@ -331,64 +317,108 @@ void app_cleanup(App* app)
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&app->ssbo_group);
 #endif
-	if (app->material_lib) {
-		material_free_lib(app->material_lib);
+}
+
+static void app_cleanup_pbr_shaders(App* app)
+{
+	SHADER_SAFE_DESTROY(app->pbr_instanced_shader);
+	SHADER_SAFE_DESTROY(app->pbr_billboard_shader);
+#ifdef USE_SSBO_RENDERING
+	SHADER_SAFE_DESTROY(app->pbr_ssbo_shader);
+#endif
+}
+
+static void app_cleanup_util_shaders(App* app)
+{
+	SHADER_SAFE_DESTROY(app->debug_shader);
+	SHADER_SAFE_DESTROY(app->debug_line_shader);
+	SHADER_SAFE_DESTROY(app->skybox_shader);
+	GL_SAFE_DELETE_PROGRAM(app->shader_spmap);
+	GL_SAFE_DELETE_PROGRAM(app->shader_irmap);
+	GL_SAFE_DELETE_PROGRAM(app->shader_lum_pass1);
+	GL_SAFE_DELETE_PROGRAM(app->shader_lum_pass2);
+}
+
+static void app_cleanup_gpu_vaos(App* app)
+{
+	GL_SAFE_DELETE_VAO(app->sphere_vao);
+	GL_SAFE_DELETE_VAO(app->empty_vao);
+}
+
+static void app_cleanup_gpu_vbos(App* app)
+{
+	GL_SAFE_DELETE_BUFFER(app->sphere_vbo);
+	GL_SAFE_DELETE_BUFFER(app->sphere_nbo);
+	GL_SAFE_DELETE_BUFFER(app->sphere_ebo);
+	GL_SAFE_DELETE_BUFFER(app->wire_cube_vbo);
+	GL_SAFE_DELETE_BUFFER(app->wire_quad_vbo);
+	GL_SAFE_DELETE_BUFFER(app->quad_vbo);
+	GL_SAFE_DELETE_BUFFERS(2, app->lum_ssbo);
+}
+
+static void app_cleanup_gpu_textures(App* app)
+{
+	GL_SAFE_DELETE_TEXTURE(app->hdr_texture);
+	GL_SAFE_DELETE_TEXTURE(app->recycled_hdr_tex);
+	GL_SAFE_DELETE_TEXTURE(app->brdf_lut_tex);
+	GL_SAFE_DELETE_TEXTURE(app->spec_prefiltered_tex);
+	GL_SAFE_DELETE_TEXTURE(app->irradiance_tex);
+	GL_SAFE_DELETE_TEXTURE(app->dummy_black_tex);
+	GL_SAFE_DELETE_TEXTURE(app->dummy_white_tex);
+	GL_SAFE_DELETE_TEXTURE(app->transition_snapshot_tex);
+}
+
+static void app_cleanup_gpu_pbos(App* app)
+{
+	GL_SAFE_DELETE_BUFFER(app->exposure_pbo);
+	GL_SAFE_DELETE_BUFFER(app->histogram_pbo);
+	GL_SAFE_DELETE_BUFFERS(2, app->upload_pbo);
+}
+
+void app_cleanup(App* app)
+{
+	if (!app) {
+		return;
 	}
 
-	shader_destroy(app->pbr_instanced_shader);
-	shader_destroy(app->pbr_billboard_shader);
-	shader_destroy(app->debug_shader);
-	shader_destroy(app->debug_line_shader);
-#ifdef USE_SSBO_RENDERING
-	shader_destroy(app->pbr_ssbo_shader);
-#endif
-
-	shader_destroy(app->skybox_shader);
-	glDeleteProgram(app->shader_spmap);
-	glDeleteProgram(app->shader_irmap);
-	glDeleteProgram(app->shader_lum_pass1);
-	glDeleteProgram(app->shader_lum_pass2);
-
-	glDeleteVertexArrays(1, &app->sphere_vao);
-	glDeleteVertexArrays(1, &app->empty_vao);
-	glDeleteBuffers(1, &app->sphere_vbo);
-	glDeleteBuffers(1, &app->sphere_nbo);
-	glDeleteBuffers(1, &app->sphere_ebo);
-	glDeleteBuffers(1, &app->wire_cube_vbo);
-	glDeleteBuffers(1, &app->wire_quad_vbo);
-	glDeleteBuffers(1, &app->quad_vbo);
-	glDeleteBuffers(2, app->lum_ssbo);
-
+	/* 1. High-level systems first (may depend on textures/shaders) */
 	ui_destroy(&app->ui);
 	postprocess_cleanup(&app->postprocess);
-	adaptive_sampler_cleanup(&app->fps_sampler);
 
-	glDeleteTextures(1, &app->hdr_texture);
-	glDeleteTextures(1, &app->recycled_hdr_tex);
-	glDeleteTextures(1, &app->brdf_lut_tex);
-	glDeleteTextures(1, &app->spec_prefiltered_tex);
-	glDeleteTextures(1, &app->irradiance_tex);
-	glDeleteTextures(1, &app->dummy_black_tex);
-	glDeleteTextures(1, &app->dummy_white_tex);
-	if (app->transition_snapshot_tex) {
-		glDeleteTextures(1, &app->transition_snapshot_tex);
-	}
-	glDeleteBuffers(1, &app->exposure_pbo);
-	glDeleteBuffers(1, &app->histogram_pbo);
-	glDeleteBuffers(2, app->upload_pbo);
-
-	/* Async Loader Shutdown */
+	/* Async Loader Shutdown before other resources */
 	async_loader_destroy(app->async_loader);
 	app->async_loader = NULL;
+
+	/* 2. Scene / Rendering groups */
+	app_cleanup_rendering_groups(app);
+
+	if (app->material_lib) {
+		material_free_lib(app->material_lib);
+		app->material_lib = NULL;
+	}
+
+	/* 3. Common low-level resources */
+	app_cleanup_pbr_shaders(app);
+	app_cleanup_util_shaders(app);
+	app_cleanup_gpu_vaos(app);
+	app_cleanup_gpu_vbos(app);
+	app_cleanup_gpu_textures(app);
+	app_cleanup_gpu_pbos(app);
+
+	adaptive_sampler_cleanup(&app->fps_sampler);
 
 	if (app->hdr_files) {
 		for (int i = 0; i < app->hdr_count; i++) {
 			free(app->hdr_files[i]);
+			app->hdr_files[i] = NULL;
 		}
 		free(app->hdr_files);
+		app->hdr_files = NULL;
+		app->hdr_count = 0;
 	}
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
+		app->lum_histogram_buffer = NULL;
 	}
 
 	perf_mode_cleanup(&app->perf_context);
@@ -397,6 +427,8 @@ void app_cleanup(App* app)
 	gpu_profiler_ui_cleanup(&app->timeline_ui);
 
 	window_destroy(app->window);
+	app->window = NULL;
+
 	tracy_manager_cleanup(&app->tracy_mgr);
 }
 
