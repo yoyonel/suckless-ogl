@@ -64,15 +64,7 @@ void gpu_profiler_end_stage(GPUProfiler* profiler)
 }
 
 // GL Mocks missing from mock_gl_standalone.c
-void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
-                       GLbitfield access)
-{
-	(void)target;
-	(void)offset;
-	(void)length;
-	(void)access;
-	return NULL;
-}
+// (Moved to mock_gl_standalone.c)
 
 // Include source under test
 // Note: We include it here so it can see internal static functions, but we

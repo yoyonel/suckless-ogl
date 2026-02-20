@@ -478,11 +478,27 @@ void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
 	(void)level;
 	(void)pname;
 	(void)params;
+	/* Stub implementation */
+	if (params) {
+		*params = 0;
+	}
 }
 
 void* glMapBuffer(GLenum target, GLenum access)
 {
 	(void)target;
+	(void)access;
+	/* Return a dummy pointer that is non-NULL */
+	static char dummy_buffer[1024];
+	return dummy_buffer;
+}
+
+void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
+                       GLenum access)
+{
+	(void)target;
+	(void)offset;
+	(void)length;
 	(void)access;
 	/* Return a dummy pointer that is non-NULL */
 	static char dummy_buffer[1024];

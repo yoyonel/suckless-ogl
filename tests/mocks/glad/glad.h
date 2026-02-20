@@ -17,7 +17,9 @@ typedef unsigned char GLubyte;
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
 #define GL_DYNAMIC_DRAW 0x88E8
+#define GL_STREAM_DRAW 0x88E0
 #define GL_FLOAT 0x1406
+#define GL_HALF_FLOAT 0x140B
 #define GL_UNSIGNED_INT 0x1405
 #define GL_CULL_FACE 0x0B44
 #define GL_TRIANGLES 0x0004
@@ -81,6 +83,12 @@ typedef unsigned char GLubyte;
 #define GL_RENDERER 0x1F01
 #define GL_VERSION 0x1F02
 #define GL_TEXTURE0 0x84C0
+#define GL_PIXEL_UNPACK_BUFFER 0x88EC
+#define GL_TEXTURE_WIDTH 0x1000
+#define GL_TEXTURE_HEIGHT 0x1001
+#define GL_TEXTURE_INTERNAL_FORMAT 0x1003
+#define GL_MAP_WRITE_BIT 0x0002
+#define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
 
 typedef void(APIENTRY* GLDEBUGPROC)(GLenum source, GLenum type, GLuint id,
                                     GLenum severity, GLsizei length,
@@ -134,6 +142,8 @@ void glTexParameteri(GLenum target, GLenum pname, GLint param);
 void glGenerateMipmap(GLenum target);
 GLenum glGetError(void);
 void glGetIntegerv(GLenum pname, GLint* data);
+void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
+                              GLint* params);
 
 void glGenBuffers(GLsizei n, GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);
@@ -142,6 +152,10 @@ void glBufferData(GLenum target, GLsizeiptr size, const void* data,
 void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
                      const void* data);
 void glDeleteBuffers(GLsizei n, const GLuint* buffers);
+void* glMapBuffer(GLenum target, GLenum access);
+void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
+                       GLenum access);
+GLboolean glUnmapBuffer(GLenum target);
 
 void glGenVertexArrays(GLsizei n, GLuint* arrays);
 void glBindVertexArray(GLuint array);
