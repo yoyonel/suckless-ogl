@@ -19,7 +19,6 @@ static int create_framebuffer(PostProcess* post_processing);
 static void destroy_framebuffer(PostProcess* post_processing);
 static void destroy_screen_quad(PostProcess* post_processing);
 static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader);
-static void setup_sampler_uniforms(PostProcess* post_processing);
 
 /* Texture Units */
 enum {
@@ -35,8 +34,6 @@ enum {
 
 /* Compute Shader Constants */
 enum { POSTPROCESS_COMPUTE_GROUP_SIZE = 16 };
-
-/* Compute Shader Constants */
 
 int postprocess_init(PostProcess* post_processing,
                      GPUProfiler* external_profiler, int width, int height)
@@ -198,35 +195,59 @@ void postprocess_set_dummy_textures(PostProcess* post_processing,
 	         dummy_black);
 }
 
+static void destroy_framebuffer(PostProcess* post_processing)
+{
+	GL_SAFE_DELETE_TEXTURE(post_processing->scene_color_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->velocity_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->scene_depth_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->scene_stencil_view);
+	GL_SAFE_DELETE_FRAMEBUFFER(post_processing->scene_fbo);
+
+	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
+	 * resize
+	 */
+	render_utils_bind_texture_safe(GL_TEXTURE0, 0,
+	                               post_processing->dummy_black_tex);
+}
+
+static void destroy_screen_quad(PostProcess* post_processing)
+{
+	GL_SAFE_DELETE_VAO(post_processing->screen_quad_vao);
+	GL_SAFE_DELETE_BUFFER(post_processing->screen_quad_vbo);
+}
+
 void postprocess_cleanup(PostProcess* post_processing)
 {
+	if (!post_processing) {
+		return;
+	}
+
 	destroy_framebuffer(post_processing);
 	destroy_screen_quad(post_processing);
 
-	if (post_processing->settings_ubo) {
-		glDeleteBuffers(1, &post_processing->settings_ubo);
-		post_processing->settings_ubo = 0;
+	GL_SAFE_DELETE_BUFFER(post_processing->settings_ubo);
+
+	/* Main shader might be one of the cached ones.
+	 * Nullify it if it's in the cache so it's not destroyed twice. */
+	if (is_shader_in_cache(post_processing,
+	                       post_processing->postprocess_shader)) {
+		post_processing->postprocess_shader = NULL;
 	}
 
 	/* Destroy cached shaders */
-	bool current_was_cached = false;
 	for (int i = 0; i < post_processing->shader_cache_count; i++) {
 		if (post_processing->shader_cache[i].shader) {
-			if (post_processing->shader_cache[i].shader ==
-			    post_processing->postprocess_shader) {
-				current_was_cached = true;
-			}
-			shader_destroy(post_processing->shader_cache[i].shader);
+			/* SHADER_SAFE_DESTROY will handle internal program +
+			 * struct free */
+			SHADER_SAFE_DESTROY(
+			    post_processing->shader_cache[i].shader);
 		}
 	}
 	post_processing->shader_cache_count = 0;
 
-	if (post_processing->postprocess_shader) {
-		if (!current_was_cached) {
-			shader_destroy(post_processing->postprocess_shader);
-		}
-		post_processing->postprocess_shader = NULL;
-	}
+	/* Destroy postprocess_shader if it wasn't in the cache */
+	SHADER_SAFE_DESTROY(post_processing->postprocess_shader);
+
 	fx_bloom_cleanup(post_processing);
 	fx_dof_cleanup(post_processing);
 	fx_auto_exposure_cleanup(post_processing);
@@ -867,48 +888,6 @@ static int create_framebuffer(PostProcess* post_processing)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	return render_utils_check_framebuffer("PostProcess Scene FBO");
-}
-
-static void destroy_framebuffer(PostProcess* post_processing)
-{
-	if (post_processing->scene_fbo) {
-		glDeleteFramebuffers(1, &post_processing->scene_fbo);
-		post_processing->scene_fbo = 0;
-	}
-	if (post_processing->scene_color_tex) {
-		glDeleteTextures(1, &post_processing->scene_color_tex);
-		post_processing->scene_color_tex = 0;
-	}
-	if (post_processing->scene_depth_tex) {
-		glDeleteTextures(1, &post_processing->scene_depth_tex);
-		post_processing->scene_depth_tex = 0;
-	}
-	if (post_processing->scene_stencil_view) {
-		glDeleteTextures(1, &post_processing->scene_stencil_view);
-		post_processing->scene_stencil_view = 0;
-	}
-	if (post_processing->velocity_tex) {
-		glDeleteTextures(1, &post_processing->velocity_tex);
-		post_processing->velocity_tex = 0;
-	}
-
-	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
-	 * resize
-	 */
-	render_utils_bind_texture_safe(GL_TEXTURE0, 0,
-	                               post_processing->dummy_black_tex);
-}
-
-static void destroy_screen_quad(PostProcess* post_processing)
-{
-	if (post_processing->screen_quad_vao) {
-		glDeleteVertexArrays(1, &post_processing->screen_quad_vao);
-		post_processing->screen_quad_vao = 0;
-	}
-	if (post_processing->screen_quad_vbo) {
-		glDeleteBuffers(1, &post_processing->screen_quad_vbo);
-		post_processing->screen_quad_vbo = 0;
-	}
 }
 
 enum { MAX_SHADER_DEFINES = 32, MAX_DEFINE_LENGTH = 64 };

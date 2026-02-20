@@ -92,18 +92,9 @@ void fx_bloom_cleanup(PostProcess* post_processing)
 		}
 	}
 
-	if (bloom->prefilter_shader) {
-		shader_destroy(bloom->prefilter_shader);
-		bloom->prefilter_shader = NULL;
-	}
-	if (bloom->downsample_shader) {
-		shader_destroy(bloom->downsample_shader);
-		bloom->downsample_shader = NULL;
-	}
-	if (bloom->upsample_shader) {
-		shader_destroy(bloom->upsample_shader);
-		bloom->upsample_shader = NULL;
-	}
+	SHADER_SAFE_DESTROY(bloom->prefilter_shader);
+	SHADER_SAFE_DESTROY(bloom->downsample_shader);
+	SHADER_SAFE_DESTROY(bloom->upsample_shader);
 }
 
 void fx_bloom_render(PostProcess* post_processing)
