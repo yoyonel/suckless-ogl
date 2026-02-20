@@ -103,4 +103,70 @@ static inline void cleanup_gl_texture(GLuint* tex)
 /** @brief Attribute to automatically delete an OpenGL texture on scope exit. */
 #define CLEANUP_TEXTURE __attribute__((cleanup(cleanup_gl_texture)))
 
+/**
+ * @brief Idempotent OpenGL resource deletion macros.
+ * These macros check if the resource handle is non-zero, delete the resource,
+ * and set the handle to 0 to prevent double-deletion.
+ */
+
+#define GL_SAFE_DELETE_TEXTURE(tex)                  \
+	do {                                         \
+		if ((tex) != 0) {                    \
+			glDeleteTextures(1, &(tex)); \
+			(tex) = 0;                   \
+		}                                    \
+	} while (0)
+
+#define GL_SAFE_DELETE_BUFFER(buf)                  \
+	do {                                        \
+		if ((buf) != 0) {                   \
+			glDeleteBuffers(1, &(buf)); \
+			(buf) = 0;                  \
+		}                                   \
+	} while (0)
+
+#define GL_SAFE_DELETE_BUFFERS(count, ids)                  \
+	do {                                                \
+		if ((ids) != NULL) {                        \
+			glDeleteBuffers(count, ids);        \
+			for (int i = 0; i < (count); i++) { \
+				(ids)[i] = 0;               \
+			}                                   \
+		}                                           \
+	} while (0)
+
+#define GL_SAFE_DELETE_VAO(vao)                          \
+	do {                                             \
+		if ((vao) != 0) {                        \
+			glDeleteVertexArrays(1, &(vao)); \
+			(vao) = 0;                       \
+		}                                        \
+	} while (0)
+
+#define GL_SAFE_DELETE_VAOS(count, vaos)                    \
+	do {                                                \
+		if ((vaos) != NULL) {                       \
+			glDeleteVertexArrays(count, vaos);  \
+			for (int i = 0; i < (count); i++) { \
+				(vaos)[i] = 0;              \
+			}                                   \
+		}                                           \
+	} while (0)
+
+#define GL_SAFE_DELETE_PROGRAM(prog)           \
+	do {                                   \
+		if ((prog) != 0) {             \
+			glDeleteProgram(prog); \
+			(prog) = 0;            \
+		}                              \
+	} while (0)
+
+#define GL_SAFE_DELETE_FRAMEBUFFER(fbo)                  \
+	do {                                             \
+		if ((fbo) != 0) {                        \
+			glDeleteFramebuffers(1, &(fbo)); \
+			(fbo) = 0;                       \
+		}                                        \
+	} while (0)
+
 #endif /* GL_COMMON_H */

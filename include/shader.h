@@ -133,4 +133,16 @@ void shader_set_vec3_loc(GLint loc, const float* val);
 void shader_set_vec4_loc(GLint loc, const float* val);
 void shader_set_mat4_loc(GLint loc, const float* val);
 
+/**
+ * @brief Idempotent shader destruction macro.
+ * Sets the pointer to NULL after calling shader_destroy.
+ */
+#define SHADER_SAFE_DESTROY(s)             \
+	do {                               \
+		if ((s) != NULL) {         \
+			shader_destroy(s); \
+			(s) = NULL;        \
+		}                          \
+	} while (0)
+
 #endif /* SHADER_H */
