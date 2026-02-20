@@ -3,7 +3,7 @@ var searchData=
   ['fade_5fepsilon_0',['FADE_EPSILON',['../gpu__profiler__ui_8c.html#ae35a1d8806e5b62cce179618e82ff524',1,'gpu_profiler_ui.c']]],
   ['far_5fplane_1',['FAR_PLANE',['../group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6',1,'app_settings.h']]],
   ['filterradius_2',['filterRadius',['../bloom__upsample_8frag.html#a2d45ac1478cca0b31f3b65fff9cb3530',1,'bloom_upsample.frag']]],
-  ['first_5fmouse_3',['first_mouse',['../structApp.html#a43d21c7852fd04d1c41dc6c1e84cee23',1,'App']]],
+  ['first_5fmouse_3',['first_mouse',['../structCamera.html#a4f48229a17cdd03202c93ed0291aaa8a',1,'Camera']]],
   ['fixed_5ftimestep_4',['fixed_timestep',['../structCamera.html#a63e30b404a845c654ac4da0e6dfea836',1,'Camera']]],
   ['flag_5',['flag',['../structEffectMetadata.html#a5bcaaec894500aabd5aa2e9412666098',1,'EffectMetadata']]],
   ['flags_6',['flags',['../structShaderCacheEntry.html#abd0355feb6384ff181bd6ffcca73d382',1,'ShaderCacheEntry']]],

@@ -3,7 +3,6 @@ var app__input_8c =
     [ "app_handle_env_input", "app__input_8c.html#a5bd036fc9913a0b441d5a2121daf0f0e", null ],
     [ "app_save_png_frame", "app__input_8c.html#a9ad0dce8449731259f77702aeba8e457", null ],
     [ "app_toggle_fullscreen", "app__input_8c.html#a479d0af6d3acd4e6dc4e13cd29b9b63d", null ],
-    [ "camera_process_key_callback", "app__input_8c.html#a3070b445bac4fb12dc3494a9e6746038", null ],
     [ "framebuffer_size_callback", "app__input_8c.html#a5180f7bf2b71421af837035824a8c8ac", null ],
     [ "handle_app_input", "app__input_8c.html#a588f02e0bebbc36ff133173dd0392713", null ],
     [ "handle_camera_toggle", "app__input_8c.html#a8f2a339cb07f464d7404ae746b0dc910", null ],

@@ -11,6 +11,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "async_loader.c", "async__loader_8c.html", "async__loader_8c" ],
     [ "billboard_rendering.c", "billboard__rendering_8c.html", "billboard__rendering_8c" ],
     [ "camera.c", "camera_8c.html", "camera_8c" ],
+    [ "camera_input.c", "camera__input_8c.html", "camera__input_8c" ],
     [ "cli.c", "cli_8c.html", "cli_8c" ],
     [ "effect_benchmark.c", "effect__benchmark_8c.html", "effect__benchmark_8c" ],
     [ "fps.c", "fps_8c.html", "fps_8c" ],

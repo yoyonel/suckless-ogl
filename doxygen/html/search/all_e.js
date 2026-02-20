@@ -8,7 +8,7 @@ var searchData=
   ['find_5fcomposite_5fduration_5',['find_composite_duration',['../effect__benchmark_8c.html#a733a99a378a7c1dd5155e7f8521a7a15',1,'effect_benchmark.c']]],
   ['find_5fshader_5fin_5fcache_6',['find_shader_in_cache',['../postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0',1,'postprocess.c']]],
   ['finding_20tangent_20normals_20without_20trigonometry_7',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
-  ['first_5fmouse_8',['first_mouse',['../structApp.html#a43d21c7852fd04d1c41dc6c1e84cee23',1,'App']]],
+  ['first_5fmouse_8',['first_mouse',['../structCamera.html#a4f48229a17cdd03202c93ed0291aaa8a',1,'Camera']]],
   ['fixed_5ftimestep_9',['fixed_timestep',['../structCamera.html#a63e30b404a845c654ac4da0e6dfea836',1,'Camera']]],
   ['fixes_10',['2026-02-08 — Robustness Audit &amp; Fixes',['../md_docs_2billboard__optimization.html#autotoc_md19',1,'']]],
   ['flag_11',['flag',['../structEffectMetadata.html#a5bcaaec894500aabd5aa2e9412666098',1,'EffectMetadata']]],
