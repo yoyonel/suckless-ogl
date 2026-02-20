@@ -2,6 +2,7 @@
 
 #include "app.h"
 #include "app_input.h"
+#include "camera_input.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -171,13 +172,12 @@ void test_camera_movement_keys(void)
 	int keys[] = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A,
 	              GLFW_KEY_D, GLFW_KEY_Q, GLFW_KEY_E};
 	for (int i = 0; i < 6; i++) {
-		camera_process_key_callback(&test_app->camera, keys[i],
-		                            GLFW_PRESS);
+		camera_input_handle_key(&test_app->camera, keys[i], GLFW_PRESS);
 		/* Check some flag in camera. W should set move_forward, etc.
 		   But since we don't assert every single one, just ensure it
 		   doesn't crash and covers the lines. */
-		camera_process_key_callback(&test_app->camera, keys[i],
-		                            GLFW_RELEASE);
+		camera_input_handle_key(&test_app->camera, keys[i],
+		                        GLFW_RELEASE);
 	}
 }
 
@@ -191,11 +191,11 @@ void test_camera_movement_keys(void)
 void test_mouse_and_scroll_exhaustive(void)
 {
 	test_app->camera_enabled = true;
-	test_app->first_mouse = 1;
+	test_app->camera.first_mouse = 1;
 	mouse_callback(test_app->window, 100.0, 100.0);
 	mouse_callback(test_app->window, 110.0, 120.0);
-	TEST_ASSERT_EQUAL_FLOAT(110.0F, (float)test_app->last_mouse_x);
-	TEST_ASSERT_EQUAL_FLOAT(120.0F, (float)test_app->last_mouse_y);
+	TEST_ASSERT_EQUAL_FLOAT(110.0F, (float)test_app->camera.last_mouse_x);
+	TEST_ASSERT_EQUAL_FLOAT(120.0F, (float)test_app->camera.last_mouse_y);
 
 	scroll_callback(test_app->window, 0.0, 1.0);
 	scroll_callback(test_app->window, 0.0, -1.0);

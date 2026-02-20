@@ -58,9 +58,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->show_help = false;
 	app->show_envmap = true;
 	app->billboard_mode = true;
-	app->first_mouse = true;
-	app->last_mouse_x = 0.0;
-	app->last_mouse_y = 0.0;
 	app->is_first_load = true;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,

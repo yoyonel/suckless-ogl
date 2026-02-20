@@ -55,6 +55,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -304,6 +305,28 @@ target_link_libraries(test_shader_limit PRIVATE cglm m)
 
 add_test(NAME test_shader_limit
          COMMAND test_shader_limit)
+
+# =============================================================================
+# TEST CAMERA INPUT (ISOLATED)
+# =============================================================================
+add_executable(test_camera_input
+    test_camera_input.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/src/camera.c
+    ${CMAKE_SOURCE_DIR}/src/camera_input.c
+)
+
+target_include_directories(test_camera_input PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${unity_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_camera_input PRIVATE cglm m)
+
+add_test(NAME test_camera_input
+         COMMAND test_camera_input)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

@@ -86,6 +86,11 @@ typedef struct Camera {
 
 	float mouse_smoothing_factor; /**< Input lag simulation factor for
 	                                 smoother movement. */
+
+	/* Input State */
+	double last_mouse_x; /**< Previous mouse X position. */
+	double last_mouse_y; /**< Previous mouse Y position. */
+	int first_mouse;     /**< Flag to handle initial mouse jump. */
 } Camera;
 
 /**
