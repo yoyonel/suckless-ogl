@@ -176,7 +176,8 @@ void test_camera_movement_keys(void)
 		/* Check some flag in camera. W should set move_forward, etc.
 		   But since we don't assert every single one, just ensure it
 		   doesn't crash and covers the lines. */
-		camera_input_handle_key(&test_app->camera, keys[i], GLFW_RELEASE);
+		camera_input_handle_key(&test_app->camera, keys[i],
+		                        GLFW_RELEASE);
 	}
 }
 
