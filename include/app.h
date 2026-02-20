@@ -146,8 +146,6 @@ typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
 	PostProcess postprocess;      /**< Main post-processing pipeline. */
 	GLFWwindow* window;           /**< The GLFW window context. */
-	double last_mouse_x;          /**< Previous X for Delta calculations. */
-	double last_mouse_y;          /**< Previous Y for Delta calculations. */
 	double last_frame_time;       /**< Absolute time of last frame start. */
 	double delta_time;            /**< Time elapsed since last frame. */
 	uint64_t frame_count;         /**< Monotonic frame counter. */
@@ -198,7 +196,6 @@ typedef struct App {
 	int subdivisions;              /**< LOD of the shared icosphere. */
 	int wireframe;                 /**< OpenGL wireframe mode toggle. */
 	int show_envmap;               /**< Draw skybox toggle. */
-	int first_mouse;               /**< Input initialization flag. */
 	int camera_enabled;            /**< Pause camera movement. */
 	int billboard_mode;    /**< Toggle for billboard rendering path. */
 	int hdr_count;         /**< Number of available environment maps. */

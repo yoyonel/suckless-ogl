@@ -6,6 +6,7 @@
 #include "app_scene.h"
 #include "app_settings.h"
 #include "camera.h"
+#include "camera_input.h"
 #include "glad/glad.h"
 #include "log.h"
 #include "mem.h"
@@ -421,7 +422,7 @@ static void handle_camera_toggle(App* app)
 	if (app->camera_enabled) {
 		glfwSetInputMode(app->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
-		app->first_mouse = 1;
+		app->camera.first_mouse = 1;
 	} else {
 		glfwSetInputMode(app->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
@@ -668,30 +669,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			handle_app_input(app, key, mods);
 		}
 	}
-	camera_process_key_callback(&app->camera, key, action);
-}
-
-void camera_process_key_callback(Camera* camera, int key, int action)
-{
-	int pressed = (action != GLFW_RELEASE);
-	if (key == GLFW_KEY_W) {
-		camera->move_forward = pressed;
-	}
-	if (key == GLFW_KEY_S) {
-		camera->move_backward = pressed;
-	}
-	if (key == GLFW_KEY_A) {
-		camera->move_left = pressed;
-	}
-	if (key == GLFW_KEY_D) {
-		camera->move_right = pressed;
-	}
-	if (key == GLFW_KEY_Q) {
-		camera->move_up = pressed;
-	}
-	if (key == GLFW_KEY_E) {
-		camera->move_down = pressed;
-	}
+	camera_input_handle_key(&app->camera, key, action);
 }
 
 void app_toggle_fullscreen(App* app, GLFWwindow* window)
@@ -723,24 +701,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	if (!app->camera_enabled) {
 		return;
 	}
-	if (app->first_mouse) {
-		app->last_mouse_x = xpos;
-		app->last_mouse_y = ypos;
-		app->first_mouse = 0;
-		return;
-	}
-	double delta_x = xpos - app->last_mouse_x;
-	double delta_y = ypos - app->last_mouse_y;
-	app->last_mouse_x = xpos;
-	app->last_mouse_y = ypos;
-	camera_process_mouse(&app->camera, (float)delta_x, (float)delta_y);
+	camera_input_handle_mouse(&app->camera, xpos, ypos);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	(void)xoffset;
 	App* app = (App*)glfwGetWindowUserPointer(window);
-	camera_process_scroll(&app->camera, (float)yoffset);
+	camera_input_handle_scroll(&app->camera, yoffset);
 }
 
 void app_save_png_frame(App* app, const char* filename)

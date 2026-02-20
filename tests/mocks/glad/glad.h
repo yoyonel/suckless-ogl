@@ -38,8 +38,26 @@ typedef long GLintptr;
 #define APIENTRY
 #define GL_TEXTURE_2D 0x0DE1
 #define GL_RGBA16F 0x881A
+#define GL_RGB 0x1907
 #define GL_RGBA 0x1908
 #define GL_UNPACK_ALIGNMENT 0x0CF5
+#define GL_PACK_ALIGNMENT 0x0D05
+#define GL_UNSIGNED_BYTE 0x1401
+#define GL_PIXEL_PACK_BUFFER 0x88EB
+#define GL_STREAM_READ 0x88E1
+#define GL_DEPTH_TEST 0x0B71
+#define GL_STENCIL_TEST 0x0B90
+#define GL_KEEP 0x1E00
+#define GL_REPLACE 0x1E01
+#define GL_ALWAYS 0x0207
+#define GL_FRONT_AND_BACK 0x0408
+#define GL_FILL 0x1B02
+#define GL_LINE 0x1B01
+#define GL_BLEND 0x0BE2
+#define GL_SRC_ALPHA 0x0302
+#define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_TEXTURE0 0x84C0
+#define GL_SHADER_IMAGE_ACCESS_BARRIER_BIT 0x00000020
 #define GL_TEXTURE_MIN_FILTER 0x2801
 #define GL_TEXTURE_MAG_FILTER 0x2800
 #define GL_LINEAR_MIPMAP_LINEAR 0x2703
@@ -98,6 +116,19 @@ void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 void glTexParameteri(GLenum target, GLenum pname, GLint param);
 void glGenerateMipmap(GLenum target);
 GLenum glGetError(void);
+void glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height,
+                  GLenum format, GLenum type, void* pixels);
+void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+void glPolygonMode(GLenum face, GLenum mode);
+void glEnablei(GLenum target, GLuint index);
+void glDisablei(GLenum target, GLuint index);
+void glBlendFunc(GLenum sfactor, GLenum dfactor);
+void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass);
+void glStencilFunc(GLenum func, GLint ref, GLuint mask);
+void glStencilMask(GLuint mask);
+void glActiveTexture(GLenum texture);
+void glDrawArrays(GLenum mode, GLint first, GLsizei count);
+void glMemoryBarrier(GLenum barriers);
 
 void glGenBuffers(GLsizei n, GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);

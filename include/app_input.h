@@ -92,14 +92,6 @@ void handle_postprocess_input(App* app, int key);
 void app_handle_env_input(App* app, int action, int mods, int key);
 
 /**
- * @brief Bridges GLFW key actions to the camera movement state machine.
- * @param camera Pointer to the camera instance.
- * @param key Key code.
- * @param action Press/Release action.
- */
-void camera_process_key_callback(Camera* camera, int key, int action);
-
-/**
  * @brief Toggles the application window between Windowed and Fullscreen.
  * @param app Pointer to the application state.
  * @param window GLFW window handle.
