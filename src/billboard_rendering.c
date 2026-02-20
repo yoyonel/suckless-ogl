@@ -3,7 +3,6 @@
 #include "gl_common.h"
 #include "instanced_rendering.h"
 #include "render_utils.h"
-#include "shader.h"
 #include <assert.h>
 #include <cglm/types.h>
 #include <stddef.h>
@@ -142,23 +141,10 @@ void billboard_group_draw(BillboardGroup* group)
 
 void billboard_group_cleanup(BillboardGroup* group)
 {
-	if (group->vao) {
-		glDeleteVertexArrays(1, &group->vao);
-		group->vao = 0;
-	}
-	if (group->vao_wire_quad) {
-		glDeleteVertexArrays(1, &group->vao_wire_quad);
-		group->vao_wire_quad = 0;
-	}
-	if (group->vao_wire_box) {
-		glDeleteVertexArrays(1, &group->vao_wire_box);
-		group->vao_wire_box = 0;
-	}
-
-	if (group->instance_vbo != 0) {
-		glDeleteBuffers(1, &group->instance_vbo);
-		group->instance_vbo = 0;
-	}
+	GL_SAFE_DELETE_VAO(group->vao);
+	GL_SAFE_DELETE_VAO(group->vao_wire_quad);
+	GL_SAFE_DELETE_VAO(group->vao_wire_box);
+	GL_SAFE_DELETE_BUFFER(group->instance_vbo);
 }
 
 void billboard_group_draw_debug_fill(BillboardGroup* group)

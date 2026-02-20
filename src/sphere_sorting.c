@@ -3,7 +3,7 @@
 #include "gl_common.h"           /* For SIMD_ALIGNMENT */
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
-#include "utils.h"      /* For safe_memcpy */
+// No longer using utils.h in this file
 #include <cglm/types.h> /* For vec3 */
 #include <cglm/vec3.h>  /* For glm_vec3_distance2 */
 #include <stdlib.h>
@@ -98,6 +98,7 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 		/* realloc is not guaranteed to preserve alignment > default,
 		   and aligned_realloc is not standard C11 */
 		free(sorter->temp_instances);
+		sorter->temp_instances = NULL;
 		/* Size must be multiple of alignment */
 		size_t size = new_cap * sizeof(SphereInstance);
 		if (size % SIMD_ALIGNMENT != 0) {

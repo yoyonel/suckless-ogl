@@ -69,6 +69,6 @@ void skybox_render(Skybox* skybox, Shader* shader, GLuint env_map,
 
 void skybox_cleanup(Skybox* skybox)
 {
-	glDeleteVertexArrays(1, &skybox->vao);
-	glDeleteBuffers(1, &skybox->vbo);
+	GL_SAFE_DELETE_VAO(skybox->vao);
+	GL_SAFE_DELETE_BUFFER(skybox->vbo);
 }

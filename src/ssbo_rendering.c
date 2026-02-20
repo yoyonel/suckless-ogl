@@ -72,12 +72,6 @@ void ssbo_group_draw(SSBOGroup* group, size_t index_count)
 
 void ssbo_group_cleanup(SSBOGroup* group)
 {
-	if (group->ssbo) {
-		glDeleteBuffers(1, &group->ssbo);
-		group->ssbo = 0;
-	}
-	if (group->vao) {
-		glDeleteVertexArrays(1, &group->vao);
-		group->vao = 0;
-	}
+	GL_SAFE_DELETE_BUFFER(group->ssbo);
+	GL_SAFE_DELETE_VAO(group->vao);
 }
