@@ -55,6 +55,8 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_toctou\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_reinit_leaks\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gl_debug_dedup\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -302,6 +304,60 @@ target_link_libraries(test_shader_limit PRIVATE cglm m)
 
 add_test(NAME test_shader_limit
          COMMAND test_shader_limit)
+
+# =============================================================================
+# TEST REINIT LEAKS (MOCKED)
+# =============================================================================
+add_executable(test_reinit_leaks
+    test_reinit_leaks.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/perf_timer.c
+    ${CMAKE_SOURCE_DIR}/src/instanced_rendering.c
+    ${CMAKE_SOURCE_DIR}/src/log.c
+    ${CMAKE_SOURCE_DIR}/src/adaptive_sampler.c
+    ${CMAKE_SOURCE_DIR}/src/metric_stack.c
+    ${CMAKE_SOURCE_DIR}/src/tracy_log.c
+)
+if(ENABLE_TRACY)
+    target_sources(test_reinit_leaks PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_reinit_leaks PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+if(ENABLE_TRACY)
+    target_include_directories(test_reinit_leaks PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+target_link_libraries(test_reinit_leaks PRIVATE cglm m)
+
+add_test(NAME test_reinit_leaks
+         COMMAND test_reinit_leaks)
+
+# =============================================================================
+# TEST GL DEBUG DEDUP (MOCKED)
+# =============================================================================
+add_executable(test_gl_debug_dedup
+    test_gl_debug_dedup.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+)
+target_include_directories(test_gl_debug_dedup PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+target_link_libraries(test_gl_debug_dedup PRIVATE cglm m)
+add_test(NAME test_gl_debug_dedup COMMAND test_gl_debug_dedup)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

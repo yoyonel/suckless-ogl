@@ -102,6 +102,11 @@ void gpu_timer_start(GPUTimer* timer)
 		return;
 	}
 
+	/* Prevent leak if timer is reused without cleanup */
+	if (timer->query_start != 0 || timer->query_end != 0) {
+		gpu_timer_cleanup(timer);
+	}
+
 	// Générer les query objects
 	glGenQueries(1, &timer->query_start);
 	glGenQueries(1, &timer->query_end);

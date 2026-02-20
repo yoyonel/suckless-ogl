@@ -7,8 +7,18 @@
 void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
                           int count)
 {
+	/* Prevent leaks on re-init */
+	if (group->instance_vbo != 0) {
+		glDeleteBuffers(1, &group->instance_vbo);
+		group->instance_vbo = 0;
+	}
+	if (group->vao != 0) {
+		glDeleteVertexArrays(1, &group->vao);
+		group->vao = 0;
+	}
+
 	group->instance_count = count;
-	group->vao = 0;  // Sera créé dans bind_mesh
+	/* group->vao is already 0 */
 
 	glGenBuffers(1, &group->instance_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);

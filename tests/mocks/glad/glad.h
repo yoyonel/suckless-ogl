@@ -12,6 +12,7 @@ typedef unsigned char GLboolean;
 typedef float GLfloat;
 typedef long GLsizeiptr;
 typedef long GLintptr;
+typedef unsigned char GLubyte;
 
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
@@ -50,7 +51,41 @@ typedef long GLintptr;
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_NO_ERROR 0
 #define GL_QUERY_RESULT 0x8866
+#define GL_QUERY_RESULT_AVAILABLE 0x8867
 #define GL_TIMESTAMP 0x8E28
+#define GL_DEBUG_OUTPUT 0x92E0
+#define GL_DEBUG_OUTPUT_SYNCHRONOUS 0x8242
+#define GL_DONT_CARE 0x1100
+#define GL_DEBUG_SOURCE_API 0x8246
+#define GL_DEBUG_SOURCE_WINDOW_SYSTEM 0x8247
+#define GL_DEBUG_SOURCE_SHADER_COMPILER 0x8248
+#define GL_DEBUG_SOURCE_THIRD_PARTY 0x8249
+#define GL_DEBUG_SOURCE_APPLICATION 0x824A
+#define GL_DEBUG_SOURCE_OTHER 0x824B
+#define GL_DEBUG_TYPE_ERROR 0x824C
+#define GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR 0x824D
+#define GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR 0x824E
+#define GL_DEBUG_TYPE_PORTABILITY 0x824F
+#define GL_DEBUG_TYPE_PERFORMANCE 0x8250
+#define GL_DEBUG_TYPE_MARKER 0x8268
+#define GL_DEBUG_TYPE_PUSH_GROUP 0x8269
+#define GL_DEBUG_TYPE_POP_GROUP 0x826A
+#define GL_DEBUG_TYPE_OTHER 0x8251
+#define GL_DEBUG_SEVERITY_HIGH 0x9146
+#define GL_DEBUG_SEVERITY_MEDIUM 0x9147
+#define GL_DEBUG_SEVERITY_LOW 0x9148
+#define GL_DEBUG_SEVERITY_NOTIFICATION 0x826B
+#define GL_CONTEXT_FLAGS 0x821E
+#define GL_CONTEXT_FLAG_DEBUG_BIT 0x00000002
+#define GL_VENDOR 0x1F00
+#define GL_RENDERER 0x1F01
+#define GL_VERSION 0x1F02
+#define GL_TEXTURE0 0x84C0
+
+typedef void(APIENTRY* GLDEBUGPROC)(GLenum source, GLenum type, GLuint id,
+                                    GLenum severity, GLsizei length,
+                                    const GLchar* message,
+                                    const void* userParam);
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -98,6 +133,7 @@ void glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 void glTexParameteri(GLenum target, GLenum pname, GLint param);
 void glGenerateMipmap(GLenum target);
 GLenum glGetError(void);
+void glGetIntegerv(GLenum pname, GLint* data);
 
 void glGenBuffers(GLsizei n, GLuint* buffers);
 void glBindBuffer(GLenum target, GLuint buffer);
@@ -124,6 +160,12 @@ void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
+void glDebugMessageCallback(GLDEBUGPROC callback, const void* userParam);
+void glDebugMessageControl(GLenum source, GLenum type, GLenum severity,
+                           GLsizei count, const GLuint* ids, GLboolean enabled);
+
+const GLubyte* glGetString(GLenum name);
+void glActiveTexture(GLenum texture);
 
 #include <stdint.h>
 
@@ -134,5 +176,9 @@ void glGenQueries(GLsizei n, GLuint* ids);
 void glDeleteQueries(GLsizei n, const GLuint* ids);
 void glQueryCounter(GLuint id, GLenum target);
 void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params);
+
+void glFlush(void);
+void glFinish(void);
 
 #endif

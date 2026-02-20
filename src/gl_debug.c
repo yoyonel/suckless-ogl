@@ -106,7 +106,8 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 
 	/* Log only the first occurrence to avoid flooding, matching Rust
 	 * behavior */
-	if (entry->count == 1) {
+	/* Jules: Removed deduplication for High Sensitivity Monitoring */
+	if (1 || entry->count == 1) {
 		const char *src_str = get_source_str(source);
 		const char *type_str = get_type_str(type);
 		const char *sev_str = get_severity_str(severity);
