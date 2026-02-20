@@ -88,14 +88,8 @@ void fx_auto_exposure_cleanup(PostProcess* post_processing)
 		glDeleteTextures(1, &auto_exp->exposure_tex);
 		auto_exp->exposure_tex = 0;
 	}
-	if (auto_exp->downsample_shader) {
-		shader_destroy(auto_exp->downsample_shader);
-		auto_exp->downsample_shader = NULL;
-	}
-	if (auto_exp->adapt_shader) {
-		shader_destroy(auto_exp->adapt_shader);
-		auto_exp->adapt_shader = NULL;
-	}
+	SHADER_SAFE_DESTROY(auto_exp->downsample_shader);
+	SHADER_SAFE_DESTROY(auto_exp->adapt_shader);
 }
 
 void fx_auto_exposure_render(PostProcess* post_processing)

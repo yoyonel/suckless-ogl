@@ -38,7 +38,7 @@ endif()
 add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
 target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
 target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
-target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE)
+target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE _GNU_SOURCE)
 # target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
 
 # =============================================================================
@@ -157,6 +157,7 @@ endif()
 
 # Si cglm est header-only ou statique:
 target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
+target_compile_definitions(test_shader_path_security_standalone PRIVATE _GNU_SOURCE)
 
 add_test(NAME test_shader_path_security_standalone
          COMMAND test_shader_path_security_standalone)
@@ -184,6 +185,7 @@ if(ENABLE_TRACY)
     target_include_directories(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
 endif()
 target_link_libraries(test_texture_toctou PRIVATE cglm m)
+target_compile_definitions(test_texture_toctou PRIVATE _GNU_SOURCE)
 add_test(NAME test_texture_toctou
          COMMAND test_texture_toctou)
 

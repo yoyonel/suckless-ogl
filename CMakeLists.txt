@@ -84,7 +84,7 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-add_compile_definitions(_GNU_SOURCE)
+
 
 file(GLOB_RECURSE SOURCES
     CONFIGURE_DEPENDS
@@ -334,7 +334,10 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
 
     # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
     # (Requires optimization level -O1 or higher)
-    target_compile_definitions(app PRIVATE _FORTIFY_SOURCE=2)
+    # We only enable it for non-Debug builds to avoid "#warning _FORTIFY_SOURCE requires compiling with optimization"
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_definitions(app PRIVATE _FORTIFY_SOURCE=2)
+    endif()
 
     # Linker Hardening:
     # -Wl,-z,relro: Read-only Relocations (protects GOT)
@@ -352,12 +355,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
-    if(ENABLE_TRACY)
-        # Required for Tracy to resolve symbols in callstacks
-        target_link_options(app PRIVATE -rdynamic)
-    endif()
-
-    add_compile_definitions(_GNU_SOURCE)
+    target_compile_definitions(app PRIVATE _GNU_SOURCE)
 endif()
 
 if(ENABLE_SHADER_OPTIMIZATION)

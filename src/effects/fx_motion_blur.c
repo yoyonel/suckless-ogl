@@ -62,14 +62,8 @@ void fx_motion_blur_cleanup(PostProcess* post_processing)
 		glDeleteTextures(1, &mb_fx->neighbor_max_tex);
 		mb_fx->neighbor_max_tex = 0;
 	}
-	if (mb_fx->tile_max_shader) {
-		shader_destroy(mb_fx->tile_max_shader);
-		mb_fx->tile_max_shader = NULL;
-	}
-	if (mb_fx->neighbor_max_shader) {
-		shader_destroy(mb_fx->neighbor_max_shader);
-		mb_fx->neighbor_max_shader = NULL;
-	}
+	SHADER_SAFE_DESTROY(mb_fx->tile_max_shader);
+	SHADER_SAFE_DESTROY(mb_fx->neighbor_max_shader);
 }
 
 int fx_motion_blur_resize(PostProcess* post_processing)

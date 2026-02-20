@@ -74,8 +74,6 @@ void instanced_group_draw(InstancedGroup* group, size_t index_count)
 
 void instanced_group_cleanup(InstancedGroup* group)
 {
-	glDeleteBuffers(1, &group->instance_vbo);
-	if (group->vao) {
-		glDeleteVertexArrays(1, &group->vao);
-	}
+	GL_SAFE_DELETE_BUFFER(group->instance_vbo);
+	GL_SAFE_DELETE_VAO(group->vao);
 }
