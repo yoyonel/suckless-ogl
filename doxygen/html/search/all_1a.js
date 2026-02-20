@@ -38,7 +38,7 @@ var searchData=
   ['request_5fmutex_35',['request_mutex',['../structAsyncLoader.html#a6d002824c4d54f63263a4194f4ba2144',1,'AsyncLoader']]],
   ['reset_5faccumulator_36',['reset_accumulator',['../effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01',1,'effect_benchmark.c']]],
   ['resolve_5fand_5fparse_5finclude_37',['resolve_and_parse_include',['../shader_8c.html#ac15799adabb256a48435e8b899baae35',1,'shader.c']]],
-  ['resolved_5fpath_5fbuffer_5fsize_38',['RESOLVED_PATH_BUFFER_SIZE',['../shader_8c.html#a96a58e29e8dbf2b5bdeb775cba46556ea63b1dfadb89175941f78629653841b52',1,'shader.c']]],
+  ['resolved_5fpath_5fbuffer_5fsize_38',['RESOLVED_PATH_BUFFER_SIZE',['../shader_8c.html#a4caf8d8f829279fba122163d961608a4a63b1dfadb89175941f78629653841b52',1,'shader.c']]],
   ['result_5fcount_39',['result_count',['../structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf',1,'EffectBenchmark']]],
   ['results_40',['results',['../md_docs_2billboard__optimization.html#autotoc_md6',1,'Implementation Results'],['../structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855',1,'EffectBenchmark::results']]],
   ['rgb_5fcomponents_41',['RGB_COMPONENTS',['../material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421',1,'material.c']]],
