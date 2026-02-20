@@ -85,7 +85,6 @@ void render_utils_create_quad_vbo(GLuint* vbo)
 	glObjectLabel(GL_BUFFER, *vbo, -1, "Quad VBO");
 }
 
-enum { MAX_MATERIAL_CONFIG_SIZE = 2 * 1024 * 1024 };
 void render_utils_create_wire_cube_vbo(GLuint* vbo)
 {
 	static const float cubeVertices[] = {

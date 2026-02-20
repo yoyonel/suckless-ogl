@@ -76,6 +76,18 @@ release:
 run-release: release
     @{{build_dir}}/app
 
+# Build for Extreme Performance (Unity Build, Native, Aggressive Math)
+ultra-release:
+    @{{distrobox}} cmake -B build-ultra -DCMAKE_BUILD_TYPE=Release \
+        -DENABLE_UNITY_BUILD=ON \
+        -DENABLE_NATIVE_ARCH=ON \
+        -DENABLE_AGGRESSIVE_MATH=ON
+    @{{distrobox}} cmake --build build-ultra --parallel
+
+# Build and run in UltraRelease mode
+run-ultra-release: ultra-release
+    @build-ultra/app
+
 # Build for Minimum Size (-Os, Stripped)
 small:
     @{{distrobox}} cmake -B build-small -DCMAKE_BUILD_TYPE=MinSizeRel
