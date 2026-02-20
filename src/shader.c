@@ -459,7 +459,8 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
 	}
 
 	/* 5. Single Allocation for final result */
-	char* final_src = safe_calloc(ctx.total_size + 1, 1);
+	size_t alloc_size = ctx.total_size + 1;
+	char* final_src = safe_calloc(alloc_size, 1);
 	if (!final_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Final allocation failed (%lu bytes)",
@@ -469,16 +470,15 @@ char* shader_read_file_with_defines(const char* path, const char** defines,
 	}
 
 	/* 6. Assemble */
-	char* wptr = final_src;
-	Chunk* node = ctx.chunks_head;
-	while (node) {
-		safe_memcpy(wptr,
-		            ctx.total_size + 1 - (size_t)(wptr - final_src),
-		            node->ptr, node->len);
-		wptr += node->len;
-		node = node->next;
+	size_t current_pos = 0;
+	for (Chunk* node = ctx.chunks_head; node; node = node->next) {
+		size_t remaining = ctx.total_size + 1 - current_pos;
+		if (safe_memcpy(&final_src[current_pos], remaining, node->ptr,
+		                node->len)) {
+			current_pos += node->len;
+		}
 	}
-	*wptr = '\0'; /* Null terminate */
+	/* result is already null-terminated because of safe_calloc */
 
 	char* result = TRANSFER_OWNERSHIP(final_src);
 	ctx_free(&ctx);
@@ -569,10 +569,11 @@ GLuint shader_load_program_with_defines(const char* vertex_path,
 		GLint binary_length = 0;
 		glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH,
 		               &binary_length);
-		LOG_INFO(
-		    "Shader",
-		    "Linked shader program '%s' (ID %u). Binary size: %d bytes",
-		    name, program, binary_length);
+		LOG_INFO("Shader",
+		         "Linked shader program '%s' (ID %u). "
+		         "Binary "
+		         "size: %d bytes",
+		         name, program, binary_length);
 	}
 
 	return program;
@@ -617,7 +618,8 @@ GLuint shader_load_compute(const char* compute_path)
 
 /* -------------------------------------------------------------------------
  * New Generic Shader API Implementation
- * ------------------------------------------------------------------------- */
+ * -------------------------------------------------------------------------
+ */
 
 static int cmp_uniform_entry(const void* lhs, const void* rhs)
 {
@@ -675,7 +677,9 @@ static Shader* shader_create_from_program(GLuint program, const char* name)
 	shader->program = program;
 	if (name) {
 		shader->name = strdup(name);
-		/* Label the program for profilers (RenderDoc/ApiTrace) */
+		/* Label the program for profilers
+		 * (RenderDoc/ApiTrace)
+		 */
 		glObjectLabel(GL_PROGRAM, program, -1, name);
 	} else {
 		shader->name = strdup("Unknown Shader");
@@ -760,20 +764,25 @@ GLint shader_get_uniform_location(Shader* shader, const char* name)
 
 	if (!shader->silent_warnings) {
 		if (shader->warning_count < SHADER_WARNING_THROTTLE_LIMIT) {
-			LOG_WARNING(
-			    "suckless-ogl.shader",
-			    "Uniform '%s' not found or active in shader '%s' "
-			    "(ID %d)",
-			    name, shader->name ? shader->name : "Unknown",
-			    shader->program);
+			LOG_WARNING("suckless-ogl.shader",
+			            "Uniform '%s' not found or "
+			            "active in "
+			            "shader '%s' "
+			            "(ID %d)",
+			            name,
+			            shader->name ? shader->name : "Unknown",
+			            shader->program);
 			shader->warning_count++;
 			if (shader->warning_count ==
 			    SHADER_WARNING_THROTTLE_LIMIT) {
 				LOG_WARNING(
 				    "suckless-ogl.shader",
-				    "Too many uniform warnings for shader "
+				    "Too many uniform warnings "
+				    "for "
+				    "shader "
 				    "'%s'. "
-				    "Throttling future warnings.",
+				    "Throttling future "
+				    "warnings.",
 				    shader->name ? shader->name : "Unknown");
 			}
 		}
