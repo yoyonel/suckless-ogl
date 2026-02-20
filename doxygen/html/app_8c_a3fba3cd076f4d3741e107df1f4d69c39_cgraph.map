@@ -1,109 +1,110 @@
 <map id="app_init" name="app_init">
-<area shape="rect" id="Node000001" title="Fully initializes the application state, window, and OpenGL context." alt="" coords="5,925,80,951"/>
-<area shape="rect" id="Node000002" href="$action__notifier_8c.html#a2f4e4f6564af9cf640cc72c6e8a002f0" title="Initializes the notifier." alt="" coords="165,5,307,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="42,925,48,755,63,475,74,331,88,202,105,103,115,69,126,48,150,30,153,34,130,52,120,71,110,104,93,202,79,331,68,476,53,755,47,925"/>
-<area shape="rect" id="Node000003" href="$adaptive__sampler_8c.html#a479da41e7acc65d784109c444eed40e7" title="Initializes the adaptive sampler." alt="" coords="627,81,793,107"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="42,925,47,761,60,495,71,359,86,237,104,146,114,115,126,96,161,76,212,63,273,57,341,56,485,63,613,77,613,83,485,68,341,61,273,62,212,69,163,81,130,100,119,117,109,147,91,238,77,359,66,496,52,762,47,925"/>
-<area shape="rect" id="Node000005" href="$app_8c.html#a201c8d0c1a848c34571be7266d0f691d" title="Safely releases all GPU and CPU resources held by the application." alt="" coords="184,453,288,479"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="42,925,48,838,61,706,72,638,86,575,104,523,126,488,146,474,170,466,171,471,149,478,130,492,109,526,92,577,78,639,67,707,53,838,47,925"/>
-<area shape="rect" id="Node000031" href="$app__scene_8c.html#a168371b77780ac21966da9f77039d3b7" title="Initializes instancing resources (buffers, sorting structures)." alt="" coords="162,157,310,183"/>
-<area shape="poly" id="edge17_Node000001_Node000031" title=" " alt="" coords="42,925,50,779,66,545,78,425,91,318,107,237,116,209,126,192,147,177,150,181,130,196,121,212,113,239,97,319,83,426,71,546,55,779,47,925"/>
-<area shape="rect" id="Node000042" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="162,207,310,232"/>
-<area shape="poly" id="edge18_Node000001_Node000042" title=" " alt="" coords="42,925,50,788,68,570,93,359,108,283,117,258,126,242,147,226,150,230,130,245,122,260,113,285,98,360,73,571,56,788,47,925"/>
-<area shape="rect" id="Node000047" href="$app__env_8c.html#aaf888ef9851eecc3a98700e168300f51" title="Scans the assets directory for HDR environment maps." alt="" coords="163,256,309,281"/>
-<area shape="poly" id="edge19_Node000001_Node000047" title=" " alt="" coords="41,925,41,805,50,614,59,513,75,420,96,343,110,314,126,291,149,275,152,279,130,295,115,316,101,345,80,421,65,514,55,615,47,805,46,925"/>
-<area shape="rect" id="Node000049" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="128,305,344,331"/>
-<area shape="poly" id="edge20_Node000001_Node000049" title=" " alt="" coords="41,925,43,813,52,637,63,544,78,459,98,388,111,361,126,340,129,337,133,341,130,344,116,364,103,390,83,460,68,545,58,638,48,813,47,925"/>
-<area shape="rect" id="Node000050" href="$async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6" title="Creates and initializes a new async loader instance." alt="" coords="158,355,314,380"/>
-<area shape="poly" id="edge21_Node000001_Node000050" title=" " alt="" coords="41,925,44,822,55,660,66,576,81,498,100,433,112,408,126,389,143,376,147,381,130,393,117,411,105,435,86,499,71,577,61,661,50,822,47,925"/>
-<area shape="rect" id="Node000063" href="$pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="163,700,309,725"/>
-<area shape="poly" id="edge22_Node000001_Node000063" title=" " alt="" coords="43,924,50,889,65,840,90,788,106,764,126,743,148,728,151,733,130,747,111,767,94,791,70,842,56,890,48,926"/>
-<area shape="rect" id="Node000065" href="$shader_8c.html#a261eeb4f63e33c6cf31350b32eb97ff9" title="Helper to load a compute program from disk." alt="" coords="403,739,568,764"/>
-<area shape="poly" id="edge51_Node000001_Node000065" title=" " alt="" coords="44,925,53,895,69,857,93,818,126,787,157,769,190,756,258,740,327,735,389,736,389,741,327,740,259,745,191,761,159,774,130,791,97,821,74,859,58,897,49,926"/>
-<area shape="rect" id="Node000077" href="$camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="187,503,285,528"/>
-<area shape="poly" id="edge24_Node000001_Node000077" title=" " alt="" coords="42,925,49,847,64,730,76,670,89,614,106,569,126,537,148,523,173,515,174,520,150,527,130,541,111,571,95,616,81,671,70,731,55,847,48,925"/>
-<area shape="rect" id="Node000079" href="$effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153" title="Initializes the benchmark (call once at startup)." alt="" coords="153,552,319,577"/>
-<area shape="poly" id="edge25_Node000001_Node000079" title=" " alt="" coords="43,925,51,855,68,753,92,653,108,614,126,587,138,577,142,581,130,590,113,616,97,655,73,755,56,856,48,926"/>
-<area shape="rect" id="Node000080" href="$fps_8c.html#a6502614d8abf01ccea0eacbf993a89c0" title=" " alt="" coords="201,601,271,627"/>
-<area shape="poly" id="edge26_Node000001_Node000080" title=" " alt="" coords="41,925,41,872,51,794,61,751,76,709,98,670,126,636,154,619,186,612,187,617,156,624,130,640,102,673,81,711,66,753,56,795,47,872,46,925"/>
-<area shape="rect" id="Node000081" href="$app__input_8c.html#a5180f7bf2b71421af837035824a8c8ac" title="Primary GLFW framebuffer size callback." alt="" coords="139,651,333,676"/>
-<area shape="poly" id="edge27_Node000001_Node000081" title=" " alt="" coords="41,925,45,880,57,815,67,780,82,745,101,713,126,685,131,681,134,685,130,689,106,716,87,748,72,782,62,816,50,880,47,925"/>
-<area shape="rect" id="Node000086" href="$gpu__profiler_8c.html#a80772be366a911115ff01dc5d9bcd4f0" title="Initializes the GPU profiler." alt="" coords="422,107,549,132"/>
-<area shape="poly" id="edge28_Node000001_Node000086" title=" " alt="" coords="42,925,48,770,63,519,74,391,88,276,105,190,115,161,126,143,159,118,196,101,236,91,277,86,358,89,427,101,426,106,358,94,278,91,237,96,198,106,162,122,130,146,120,163,110,191,93,277,79,391,68,520,53,770,47,925"/>
-<area shape="rect" id="Node000088" href="$gpu__profiler__ui_8c.html#aed68b1cca30d6c8812275e6756233fa8" title="Initializes the GPU timeline UI state." alt="" coords="163,404,309,429"/>
-<area shape="poly" id="edge30_Node000001_Node000088" title=" " alt="" coords="42,925,46,829,58,683,69,607,84,536,102,478,113,456,126,439,148,423,151,428,130,443,118,459,107,480,89,538,74,608,64,684,51,830,47,925"/>
-<area shape="rect" id="Node000089" href="$icosphere_8c.html#a98ec73bfde90923b7425adee892c7529" title="Initializes icosphere geometry buffers." alt="" coords="179,801,293,827"/>
-<area shape="poly" id="edge32_Node000001_Node000089" title=" " alt="" coords="49,924,78,880,101,856,127,836,165,820,167,825,129,840,104,860,83,884,53,927"/>
-<area shape="rect" id="Node000092" href="$app__input_8c.html#a286930f4e8ede059b83ff6eafa2ff718" title="Primary GLFW key callback." alt="" coords="183,851,289,876"/>
-<area shape="poly" id="edge33_Node000001_Node000092" title=" " alt="" coords="60,923,91,903,127,885,169,872,170,877,129,890,93,908,63,927"/>
-<area shape="rect" id="Node000145" href="$material_8c.html#af5bc1a68b9f8f61a3c459d5aee369a37" title="Loads a set of material presets from a configuration file." alt="" coords="153,900,319,925"/>
-<area shape="poly" id="edge34_Node000001_Node000145" title=" " alt="" coords="80,931,139,923,139,928,81,936"/>
-<area shape="rect" id="Node000151" href="$app__input_8c.html#af4ca2891044ac10a664b8d83ce590f1f" title="Primary GLFW mouse position callback." alt="" coords="173,949,299,975"/>
-<area shape="poly" id="edge35_Node000001_Node000151" title=" " alt="" coords="81,940,159,950,159,955,80,945"/>
-<area shape="rect" id="Node000153" href="$perf__mode_8c.html#a154025c04a9fa8a639eeb948e58e2505" title="Initialize the performance mode subsystem." alt="" coords="176,999,296,1024"/>
-<area shape="poly" id="edge36_Node000001_Node000153" title=" " alt="" coords="64,948,94,967,129,984,163,995,162,1000,127,988,91,971,61,953"/>
-<area shape="rect" id="Node000111" href="$postprocess_8c.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="406,1093,565,1133"/>
-<area shape="poly" id="edge37_Node000001_Node000111" title=" " alt="" coords="53,949,83,991,104,1014,129,1033,166,1045,233,1061,393,1093,392,1099,231,1066,164,1050,127,1038,101,1018,79,995,49,952"/>
-<area shape="rect" id="Node000136" href="$postprocess_8c.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="161,1100,311,1125"/>
-<area shape="poly" id="edge38_Node000001_Node000136" title=" " alt="" coords="50,950,77,1012,100,1048,130,1079,153,1093,151,1097,126,1083,96,1051,72,1014,45,952"/>
-<area shape="rect" id="Node000156" href="$postprocess_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b" title="Initializes the post&#45;processing pipeline." alt="" coords="172,1149,300,1175"/>
-<area shape="poly" id="edge39_Node000001_Node000156" title=" " alt="" coords="48,951,55,987,69,1037,93,1090,110,1114,130,1135,160,1151,157,1156,126,1139,106,1117,88,1093,64,1039,49,989,43,951"/>
-<area shape="rect" id="Node000158" href="$postprocess_8c.html#a47114280aafaff716053e0b12be92dca" title="Internal helper to set fallback textures." alt="" coords="144,1199,328,1239"/>
-<area shape="poly" id="edge41_Node000001_Node000158" title=" " alt="" coords="47,951,51,995,64,1058,88,1125,107,1157,130,1184,136,1189,132,1193,126,1188,102,1160,84,1128,58,1059,46,996,42,951"/>
-<area shape="rect" id="Node000128" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="139,1264,333,1289"/>
-<area shape="poly" id="edge42_Node000001_Node000128" title=" " alt="" coords="48,950,58,1014,75,1104,100,1193,114,1227,130,1250,136,1255,132,1259,126,1253,110,1229,95,1194,70,1105,53,1015,43,951"/>
-<area shape="rect" id="Node000159" href="$render__utils_8c.html#acb93c5e9986da209ae59c3e07e9c1bf4" title="Creates a 1x1 floating&#45;point texture of a specific color." alt="" coords="163,1314,309,1354"/>
-<area shape="poly" id="edge43_Node000001_Node000159" title=" " alt="" coords="48,950,56,1022,73,1127,98,1231,113,1272,130,1299,151,1315,148,1319,126,1302,108,1274,93,1232,68,1128,51,1023,43,951"/>
-<area shape="rect" id="Node000160" href="$render__utils_8c.html#a98a336c2498940402d85cac4b93e71a7" title="Creates an empty Vertex Array Object (VAO)." alt="" coords="163,1378,309,1418"/>
-<area shape="poly" id="edge44_Node000001_Node000160" title=" " alt="" coords="47,951,54,1034,69,1158,80,1223,94,1283,110,1331,130,1364,152,1380,148,1385,126,1368,106,1334,89,1284,75,1224,64,1159,49,1034,42,951"/>
-<area shape="rect" id="Node000161" href="$render__utils_8c.html#a691eca4a993c57791a056d182eeeda68" title="Creates a standard centered Quad VBO." alt="" coords="163,1442,309,1482"/>
-<area shape="poly" id="edge45_Node000001_Node000161" title=" " alt="" coords="47,951,52,1044,65,1188,76,1264,90,1333,108,1390,130,1428,151,1445,148,1449,126,1432,103,1392,85,1334,71,1265,60,1189,47,1045,42,951"/>
-<area shape="rect" id="Node000162" href="$render__utils_8c.html#a60b35229c13299bba83a2d47ed4c1013" title="Creates a wireframe Unit Cube VBO (GL_LINES)." alt="" coords="163,1506,309,1546"/>
-<area shape="poly" id="edge46_Node000001_Node000162" title=" " alt="" coords="47,951,50,1056,61,1219,72,1304,87,1383,106,1448,117,1473,130,1492,151,1509,148,1513,126,1496,113,1476,101,1450,81,1385,67,1305,56,1219,45,1056,41,951"/>
-<area shape="rect" id="Node000163" href="$render__utils_8c.html#aa370bd3e8bd4ca7c706c84d4c5505688" title="Creates a wireframe Quad VBO (GL_LINE_LOOP)." alt="" coords="163,1570,309,1610"/>
-<area shape="poly" id="edge47_Node000001_Node000163" title=" " alt="" coords="47,951,48,1066,58,1248,68,1345,83,1433,103,1507,116,1535,130,1556,152,1573,148,1577,126,1560,111,1538,98,1509,78,1435,63,1345,53,1249,43,1066,41,951"/>
-<area shape="rect" id="Node000164" href="$app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea" title="Primary GLFW scroll callback." alt="" coords="177,1635,295,1660"/>
-<area shape="poly" id="edge48_Node000001_Node000164" title=" " alt="" coords="46,951,46,1077,53,1280,63,1386,78,1485,100,1566,114,1597,130,1620,146,1633,165,1641,163,1645,143,1637,126,1624,109,1600,95,1568,73,1486,57,1387,48,1280,40,1077,41,951"/>
-<area shape="rect" id="Node000123" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="409,1703,561,1743"/>
-<area shape="poly" id="edge49_Node000001_Node000123" title=" " alt="" coords="47,951,55,1095,71,1326,82,1444,96,1549,112,1628,121,1654,130,1670,147,1682,173,1692,241,1707,320,1716,396,1720,396,1725,319,1721,240,1712,171,1697,145,1686,126,1673,116,1656,107,1629,91,1550,77,1445,65,1326,49,1096,42,951"/>
-<area shape="rect" id="Node000166" href="$shader_8c.html#a8ae59be689516da13853d4be3758f253" title="Loads a linked program and caches all its active uniforms." alt="" coords="435,1815,536,1840"/>
-<area shape="poly" id="edge50_Node000001_Node000166" title=" " alt="" coords="47,951,53,1112,68,1376,79,1511,93,1632,110,1723,120,1753,130,1771,149,1784,178,1796,255,1811,342,1820,421,1824,421,1829,342,1826,254,1817,177,1801,147,1789,126,1774,115,1755,105,1724,88,1632,74,1512,62,1376,48,1113,42,951"/>
-<area shape="rect" id="Node000167" href="$skybox_8c.html#ad8084984d6dafbe33c871117733efacf" title="Initializes skybox geometry and caches uniform locations." alt="" coords="188,1736,284,1761"/>
-<area shape="poly" id="edge52_Node000001_Node000167" title=" " alt="" coords="47,951,55,1103,71,1347,83,1473,97,1584,112,1669,121,1698,130,1715,150,1731,176,1741,174,1746,148,1736,126,1718,116,1700,107,1671,91,1585,78,1473,66,1347,49,1103,42,951"/>
-<area shape="rect" id="Node000168" href="$tracy__manager_8c.html#a6eb1bd30b5bd993a46af5c06232ef4f8" title="Initialize a TracyManager instance." alt="" coords="162,1837,310,1863"/>
-<area shape="poly" id="edge54_Node000001_Node000168" title=" " alt="" coords="47,951,53,1121,68,1398,80,1540,94,1667,111,1764,120,1797,130,1816,151,1833,148,1837,126,1820,115,1799,105,1766,88,1668,74,1541,63,1398,48,1121,42,951"/>
-<area shape="rect" id="Node000169" href="$ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712" title="Initializes the UI system." alt="" coords="205,1887,267,1912"/>
-<area shape="poly" id="edge55_Node000001_Node000169" title=" " alt="" coords="47,951,52,1130,66,1426,77,1579,91,1715,109,1818,119,1853,130,1874,143,1884,158,1892,191,1898,190,1903,156,1897,140,1889,126,1877,114,1855,104,1820,86,1716,71,1579,60,1426,47,1130,42,951"/>
-<area shape="rect" id="Node000172" href="$window_8c.html#acfd354d9948652de8c5f2f51e69347c6" title=" " alt="" coords="176,1936,296,1961"/>
-<area shape="poly" id="edge57_Node000001_Node000172" title=" " alt="" coords="47,951,51,1139,64,1450,75,1611,89,1755,108,1865,118,1901,130,1923,145,1935,164,1943,161,1948,142,1940,126,1926,114,1903,103,1866,84,1756,70,1612,59,1450,46,1139,42,951"/>
-<area shape="rect" id="Node000004" href="$adaptive__sampler_8c.html#a2660fb6f3b2980637738bab0d618978f" title=" " alt="" coords="891,81,989,107"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="793,91,877,91,877,97,793,97"/>
-<area shape="rect" id="Node000006" href="$adaptive__sampler_8c.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="841,551,1039,576"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="289,470,834,546,833,551,288,476"/>
-<area shape="rect" id="Node000007" href="$async__loader_8c.html#a8f4ca9abf78e333d8d7ca5762db31564" title="Destroys the async loader and frees resources." alt="" coords="403,527,567,552"/>
-<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="289,473,345,487,393,505,435,520,434,525,391,510,343,493,287,479"/>
-<area shape="rect" id="Node000008" href="$billboard__rendering_8c.html#afe9bff73b698b1f2017877983fbf3f4c" title="Releases all GPU resources allocated for the billboard group." alt="" coords="395,576,576,601"/>
-<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="289,467,318,474,346,488,363,506,371,525,378,544,394,561,405,568,402,573,390,565,373,547,366,527,358,509,342,492,316,479,288,472"/>
-<area shape="rect" id="Node000009" href="$gpu__profiler_8c.html#a99aa06bd6e69115f881711abc461984e" title="Cleans up GPU resources." alt="" coords="631,625,789,651"/>
-<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="289,464,319,472,346,488,362,510,370,533,369,579,367,601,369,622,376,642,394,660,426,678,461,688,499,692,537,690,610,675,669,654,670,659,611,680,538,695,499,697,460,694,424,683,390,664,372,645,363,623,362,601,363,578,364,534,358,512,342,492,317,477,288,469"/>
-<area shape="rect" id="Node000010" href="$gpu__profiler__ui_8c.html#aa5843b14190f472881eb53b6aa0cb4f0" title="Cleans up GPU resources used by the UI." alt="" coords="397,625,573,651"/>
-<area shape="poly" id="edge10_Node000005_Node000010" title=" " alt="" coords="289,465,319,472,346,488,359,503,367,519,371,551,375,582,382,596,394,611,401,616,398,620,390,615,377,599,370,583,366,551,362,521,355,506,342,492,317,477,287,470"/>
-<area shape="rect" id="Node000011" href="$icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f" title="Frees all dynamic memory in the icosphere container." alt="" coords="426,228,545,253"/>
-<area shape="poly" id="edge12_Node000005_Node000011" title=" " alt="" coords="288,462,317,454,342,439,358,418,365,397,366,353,366,308,373,285,390,263,412,249,415,253,394,267,378,288,371,309,371,353,371,398,363,421,346,443,319,459,289,467"/>
-<area shape="rect" id="Node000014" href="$instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884" title="Releases all GPU resources for the instanced group." alt="" coords="392,277,579,303"/>
-<area shape="poly" id="edge13_Node000005_Node000014" title=" " alt="" coords="287,461,317,454,342,439,355,424,362,409,366,377,369,344,377,328,390,312,396,308,399,312,394,316,381,331,375,346,371,378,367,410,359,427,346,443,319,459,289,466"/>
-<area shape="rect" id="Node000015" href="$material_8c.html#aa231f444b37b3b2f771ad22b78b2acb3" title="Frees all memory associated with a material library." alt="" coords="419,327,552,352"/>
-<area shape="poly" id="edge14_Node000005_Node000015" title=" " alt="" coords="288,459,316,452,342,439,358,421,366,401,373,381,390,361,404,353,407,357,394,365,378,384,371,403,363,423,346,443,318,457,289,465"/>
-<area shape="rect" id="Node000016" href="$perf__mode_8c.html#a93ee859004a75de69605d3984f7ea2f2" title="Clean up performance mode resources." alt="" coords="410,376,561,401"/>
-<area shape="poly" id="edge15_Node000005_Node000016" title=" " alt="" coords="287,455,343,438,367,424,391,410,411,403,413,408,393,415,369,429,345,443,289,460"/>
-<area shape="rect" id="Node000020" href="$postprocess_8c.html#a9ad5053871c219c0dd7585fab39c18b0" title="Releases all GPU and CPU resources." alt="" coords="406,425,565,451"/>
-<area shape="poly" id="edge16_Node000005_Node000020" title=" " alt="" coords="288,458,392,446,393,451,289,463"/>
-<area shape="poly" id="edge9_Node000009_Node000006" title=" " alt="" coords="750,623,886,578,888,583,751,628"/>
-<area shape="poly" id="edge11_Node000010_Node000009" title=" " alt="" coords="574,635,618,635,618,641,574,641"/>
-<area shape="poly" id="edge23_Node000063_Node000065" title=" " alt="" coords="310,721,390,734,389,739,309,727"/>
-<area shape="poly" id="edge29_Node000086_Node000003" title=" " alt="" coords="549,110,613,102,613,108,549,115"/>
-<area shape="poly" id="edge31_Node000088_Node000086" title=" " alt="" coords="309,408,327,401,342,389,359,369,368,349,372,308,373,264,378,240,390,214,421,172,455,139,459,143,425,176,394,217,383,242,378,265,378,309,373,351,363,372,346,393,329,405,311,413"/>
-<area shape="poly" id="edge40_Node000156_Node000111" title=" " alt="" coords="300,1147,392,1128,393,1134,301,1152"/>
-<area shape="poly" id="edge53_Node000167_Node000123" title=" " alt="" coords="284,1741,395,1730,396,1735,285,1746"/>
-<area shape="poly" id="edge56_Node000169_Node000166" title=" " alt="" coords="267,1891,343,1873,437,1842,439,1847,345,1878,268,1896"/>
+<area shape="rect" id="Node000001" title="Fully initializes the application state, window, and OpenGL context." alt="" coords="5,1033,80,1059"/>
+<area shape="rect" id="Node000002" href="$action__notifier_8c.html#a2f4e4f6564af9cf640cc72c6e8a002f0" title="Initializes the notifier." alt="" coords="165,76,307,101"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="42,1033,47,854,60,560,71,407,86,272,104,168,114,133,126,111,150,94,153,98,130,114,119,135,109,169,91,273,77,408,66,560,52,855,47,1033"/>
+<area shape="rect" id="Node000003" href="$adaptive__sampler_8c.html#a479da41e7acc65d784109c444eed40e7" title="Initializes the adaptive sampler." alt="" coords="647,179,813,204"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="42,1033,50,899,67,689,78,581,92,486,108,414,117,390,126,375,155,351,183,335,211,325,239,320,294,323,350,336,408,351,467,361,498,361,530,358,563,350,597,336,635,310,668,278,694,244,713,214,718,217,698,247,672,281,639,314,600,340,565,355,531,363,499,367,467,366,407,356,349,341,294,328,239,325,212,330,185,340,158,356,130,378,121,392,113,416,97,487,84,582,72,690,55,900,47,1033"/>
+<area shape="rect" id="Node000005" href="$app__scene_8c.html#a168371b77780ac21966da9f77039d3b7" title="Initializes instancing resources (buffers, sorting structures)." alt="" coords="162,227,310,252"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="42,1033,46,905,59,698,70,588,84,484,102,395,126,331,141,309,159,289,199,257,202,262,163,292,145,312,130,334,108,397,89,485,75,588,64,699,51,905,47,1033"/>
+<area shape="rect" id="Node000016" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="162,439,310,464"/>
+<area shape="poly" id="edge11_Node000001_Node000016" title=" " alt="" coords="41,1033,44,925,54,757,64,669,79,587,99,520,112,493,126,473,148,458,151,463,130,477,116,496,104,521,84,588,70,669,59,758,49,926,47,1033"/>
+<area shape="rect" id="Node000021" href="$app__env_8c.html#aaf888ef9851eecc3a98700e168300f51" title="Scans the assets directory for HDR environment maps." alt="" coords="163,488,309,513"/>
+<area shape="poly" id="edge16_Node000001_Node000021" title=" " alt="" coords="42,1033,46,935,59,785,69,706,84,633,102,573,126,531,149,514,152,518,130,534,107,575,89,634,75,707,64,785,51,936,47,1033"/>
+<area shape="rect" id="Node000023" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="128,389,344,415"/>
+<area shape="poly" id="edge18_Node000001_Node000023" title=" " alt="" coords="41,1033,42,917,51,734,61,637,76,548,97,475,111,446,126,424,129,421,133,425,130,428,115,449,102,476,81,549,66,638,56,734,47,917,46,1033"/>
+<area shape="rect" id="Node000024" href="$async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6" title="Creates and initializes a new async loader instance." alt="" coords="158,836,314,861"/>
+<area shape="poly" id="edge19_Node000001_Node000024" title=" " alt="" coords="44,1033,52,1000,67,956,91,910,107,889,126,871,144,860,147,864,130,875,111,892,96,913,72,958,57,1001,49,1034"/>
+<area shape="rect" id="Node000037" href="$pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="163,787,309,812"/>
+<area shape="poly" id="edge22_Node000001_Node000037" title=" " alt="" coords="42,1033,47,992,60,934,85,874,104,846,126,821,148,808,151,812,130,825,108,849,90,876,65,936,52,993,47,1033"/>
+<area shape="rect" id="Node000039" href="$shader_8c.html#a261eeb4f63e33c6cf31350b32eb97ff9" title="Helper to load a compute program from disk." alt="" coords="413,664,578,689"/>
+<area shape="poly" id="edge52_Node000001_Node000039" title=" " alt="" coords="42,1033,45,941,57,801,67,729,82,663,101,610,113,589,126,575,153,555,179,544,205,539,230,539,283,552,345,574,361,582,371,591,394,612,461,655,459,659,390,616,367,595,358,586,343,579,282,557,229,545,205,544,181,549,156,560,130,579,117,593,106,612,87,665,73,730,62,802,50,941,47,1033"/>
+<area shape="rect" id="Node000051" href="$camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="187,589,285,615"/>
+<area shape="poly" id="edge24_Node000001_Node000051" title=" " alt="" coords="42,1033,48,950,63,828,74,764,88,705,105,657,126,624,148,609,172,601,174,606,150,614,130,628,110,659,93,707,79,765,68,828,54,951,47,1033"/>
+<area shape="rect" id="Node000053" href="$effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153" title="Initializes the benchmark (call once at startup)." alt="" coords="153,639,319,664"/>
+<area shape="poly" id="edge25_Node000001_Node000053" title=" " alt="" coords="42,1033,50,960,66,851,91,744,107,702,126,674,138,664,142,668,130,677,112,705,96,746,71,852,56,960,48,1034"/>
+<area shape="rect" id="Node000054" href="$fps_8c.html#a6502614d8abf01ccea0eacbf993a89c0" title=" " alt="" coords="201,688,271,713"/>
+<area shape="poly" id="edge26_Node000001_Node000054" title=" " alt="" coords="43,1033,52,968,69,875,94,783,109,747,126,723,155,706,186,698,187,703,157,710,130,727,114,750,99,785,75,876,58,969,48,1034"/>
+<area shape="rect" id="Node000055" href="$app__input_8c.html#a5180f7bf2b71421af837035824a8c8ac" title="Primary GLFW framebuffer size callback." alt="" coords="139,737,333,763"/>
+<area shape="poly" id="edge27_Node000001_Node000055" title=" " alt="" coords="41,1033,43,984,54,913,65,875,80,838,100,802,126,772,131,768,134,772,130,776,104,806,84,840,70,877,59,915,49,984,46,1033"/>
+<area shape="rect" id="Node000062" href="$gpu__profiler_8c.html#a80772be366a911115ff01dc5d9bcd4f0" title="Initializes the GPU profiler." alt="" coords="432,5,559,31"/>
+<area shape="poly" id="edge28_Node000001_Node000062" title=" " alt="" coords="42,1033,48,871,64,609,75,474,89,354,106,263,115,232,126,212,152,191,178,181,205,179,233,182,260,185,288,184,315,177,342,160,355,146,361,132,365,102,370,71,377,55,390,40,417,25,420,29,394,44,381,58,375,72,371,102,366,133,359,149,346,164,317,182,288,190,260,190,232,187,205,185,179,186,154,195,130,216,120,234,111,264,94,355,80,475,69,610,54,871,47,1033"/>
+<area shape="rect" id="Node000064" href="$gpu__profiler__ui_8c.html#aed68b1cca30d6c8812275e6756233fa8" title="Initializes the GPU timeline UI state." alt="" coords="163,125,309,151"/>
+<area shape="poly" id="edge30_Node000001_Node000064" title=" " alt="" coords="42,1033,48,864,63,588,75,446,89,319,105,222,115,189,126,168,148,151,151,155,130,172,120,191,111,223,94,320,80,446,69,589,53,864,47,1033"/>
+<area shape="rect" id="Node000065" href="$icosphere_8c.html#a98ec73bfde90923b7425adee892c7529" title="Initializes icosphere geometry buffers." alt="" coords="179,885,293,911"/>
+<area shape="poly" id="edge32_Node000001_Node000065" title=" " alt="" coords="47,1032,74,977,97,946,127,920,165,903,167,908,129,924,101,950,79,980,51,1034"/>
+<area shape="rect" id="Node000068" href="$app__input_8c.html#a286930f4e8ede059b83ff6eafa2ff718" title="Primary GLFW key callback." alt="" coords="183,935,289,960"/>
+<area shape="poly" id="edge33_Node000001_Node000068" title=" " alt="" coords="53,1031,84,1000,127,969,168,954,170,959,129,974,87,1004,56,1035"/>
+<area shape="rect" id="Node000125" href="$material_8c.html#af5bc1a68b9f8f61a3c459d5aee369a37" title="Loads a set of material presets from a configuration file." alt="" coords="153,984,319,1009"/>
+<area shape="poly" id="edge34_Node000001_Node000125" title=" " alt="" coords="79,1032,127,1018,161,1010,162,1015,129,1023,81,1037"/>
+<area shape="rect" id="Node000131" href="$app__input_8c.html#af4ca2891044ac10a664b8d83ce590f1f" title="Primary GLFW mouse position callback." alt="" coords="173,1033,299,1059"/>
+<area shape="poly" id="edge35_Node000001_Node000131" title=" " alt="" coords="80,1043,159,1043,159,1049,80,1049"/>
+<area shape="rect" id="Node000133" href="$perf__mode_8c.html#a154025c04a9fa8a639eeb948e58e2505" title="Initialize the performance mode subsystem." alt="" coords="176,1083,296,1108"/>
+<area shape="poly" id="edge36_Node000001_Node000133" title=" " alt="" coords="81,1054,129,1067,167,1077,166,1082,127,1073,80,1059"/>
+<area shape="rect" id="Node000090" href="$postprocess_8c.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="416,1125,575,1165"/>
+<area shape="poly" id="edge37_Node000001_Node000090" title=" " alt="" coords="48,1058,55,1092,69,1136,94,1181,110,1200,129,1216,169,1234,212,1241,256,1240,300,1232,343,1219,384,1203,450,1169,452,1174,386,1208,345,1224,302,1237,257,1245,212,1246,168,1239,127,1220,106,1204,89,1184,65,1138,50,1094,43,1060"/>
+<area shape="rect" id="Node000116" href="$postprocess_8c.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="161,1181,311,1207"/>
+<area shape="poly" id="edge39_Node000001_Node000116" title=" " alt="" coords="51,1057,79,1111,102,1141,130,1166,149,1177,146,1182,126,1171,98,1145,75,1114,47,1060"/>
+<area shape="rect" id="Node000136" href="$postprocess_8c.html#a2bc2aa1dea945700e2e0ce539fffd53b" title="Initializes the post&#45;processing pipeline." alt="" coords="172,1132,300,1157"/>
+<area shape="poly" id="edge40_Node000001_Node000136" title=" " alt="" coords="57,1057,88,1088,129,1117,160,1129,158,1134,127,1122,84,1092,53,1061"/>
+<area shape="rect" id="Node000139" href="$postprocess_8c.html#a47114280aafaff716053e0b12be92dca" title="Internal helper to set fallback textures." alt="" coords="144,1282,328,1322"/>
+<area shape="poly" id="edge42_Node000001_Node000139" title=" " alt="" coords="48,1058,54,1097,68,1152,92,1210,109,1237,130,1261,145,1273,142,1277,126,1265,105,1241,88,1213,63,1153,49,1099,43,1059"/>
+<area shape="rect" id="Node000108" href="$postprocess_8c.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="139,1347,333,1372"/>
+<area shape="poly" id="edge43_Node000001_Node000108" title=" " alt="" coords="46,1059,48,1110,58,1184,68,1224,83,1264,103,1300,130,1332,136,1337,133,1341,126,1336,99,1303,78,1266,63,1226,52,1185,42,1111,41,1059"/>
+<area shape="rect" id="Node000140" href="$render__utils_8c.html#acb93c5e9986da209ae59c3e07e9c1bf4" title="Creates a 1x1 floating&#45;point texture of a specific color." alt="" coords="163,1397,309,1437"/>
+<area shape="poly" id="edge44_Node000001_Node000140" title=" " alt="" coords="48,1059,57,1126,75,1223,99,1319,114,1356,130,1382,152,1397,148,1402,126,1385,109,1359,94,1321,69,1224,52,1127,43,1059"/>
+<area shape="rect" id="Node000141" href="$render__utils_8c.html#a98a336c2498940402d85cac4b93e71a7" title="Creates an empty Vertex Array Object (VAO)." alt="" coords="163,1461,309,1501"/>
+<area shape="poly" id="edge45_Node000001_Node000141" title=" " alt="" coords="48,1059,55,1137,70,1254,95,1371,111,1416,130,1447,152,1463,149,1467,126,1450,107,1419,90,1372,65,1255,50,1138,42,1059"/>
+<area shape="rect" id="Node000142" href="$render__utils_8c.html#a691eca4a993c57791a056d182eeeda68" title="Creates a standard centered Quad VBO." alt="" coords="163,1525,309,1565"/>
+<area shape="poly" id="edge46_Node000001_Node000142" title=" " alt="" coords="47,1059,53,1149,67,1285,78,1356,92,1421,109,1475,130,1511,152,1527,148,1531,126,1514,104,1477,86,1423,72,1357,61,1285,47,1149,42,1059"/>
+<area shape="rect" id="Node000143" href="$render__utils_8c.html#a60b35229c13299bba83a2d47ed4c1013" title="Creates a wireframe Unit Cube VBO (GL_LINES)." alt="" coords="163,1589,309,1629"/>
+<area shape="poly" id="edge47_Node000001_Node000143" title=" " alt="" coords="47,1059,51,1159,63,1315,74,1396,88,1471,107,1533,118,1557,130,1575,151,1591,148,1595,126,1579,113,1560,102,1535,83,1473,68,1397,58,1315,45,1159,42,1059"/>
+<area shape="rect" id="Node000144" href="$render__utils_8c.html#aa370bd3e8bd4ca7c706c84d4c5505688" title="Creates a wireframe Quad VBO (GL_LINE_LOOP)." alt="" coords="163,1653,309,1693"/>
+<area shape="poly" id="edge48_Node000001_Node000144" title=" " alt="" coords="47,1059,49,1170,59,1344,70,1437,84,1522,104,1592,116,1619,130,1639,152,1656,148,1660,126,1642,112,1621,99,1593,79,1523,64,1437,54,1345,44,1170,41,1059"/>
+<area shape="rect" id="Node000145" href="$app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea" title="Primary GLFW scroll callback." alt="" coords="177,1717,295,1743"/>
+<area shape="poly" id="edge49_Node000001_Node000145" title=" " alt="" coords="46,1059,46,1181,54,1376,64,1478,79,1573,101,1651,115,1681,130,1703,146,1715,165,1723,163,1728,143,1720,126,1706,110,1683,96,1653,74,1574,59,1479,49,1376,41,1181,41,1059"/>
+<area shape="rect" id="Node000103" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="419,1785,571,1825"/>
+<area shape="poly" id="edge50_Node000001_Node000103" title=" " alt="" coords="47,1059,53,1208,68,1447,80,1570,94,1678,110,1760,120,1786,130,1801,162,1824,198,1839,236,1847,276,1849,355,1842,424,1826,426,1831,356,1848,276,1855,235,1852,196,1844,159,1828,126,1805,115,1789,105,1761,88,1679,74,1570,63,1447,48,1208,42,1059"/>
+<area shape="rect" id="Node000147" href="$shader_8c.html#a8ae59be689516da13853d4be3758f253" title="Loads a linked program and caches all its active uniforms." alt="" coords="445,1896,546,1921"/>
+<area shape="poly" id="edge51_Node000001_Node000147" title=" " alt="" coords="47,1059,51,1235,63,1523,74,1672,88,1803,107,1902,118,1935,130,1953,167,1978,210,1990,256,1992,302,1985,348,1973,391,1958,460,1925,462,1930,393,1963,350,1978,303,1991,256,1997,209,1995,165,1983,126,1957,113,1937,102,1904,83,1804,69,1672,58,1523,45,1235,42,1059"/>
+<area shape="rect" id="Node000148" href="$skybox_8c.html#ad8084984d6dafbe33c871117733efacf" title="Initializes skybox geometry and caches uniform locations." alt="" coords="188,1767,284,1792"/>
+<area shape="poly" id="edge53_Node000001_Node000148" title=" " alt="" coords="47,1059,56,1199,73,1420,98,1635,113,1712,122,1737,130,1752,150,1767,175,1775,173,1780,148,1772,126,1756,117,1739,108,1713,93,1636,67,1421,50,1199,42,1059"/>
+<area shape="rect" id="Node000149" href="$tracy__manager_8c.html#a6eb1bd30b5bd993a46af5c06232ef4f8" title="Initialize a TracyManager instance." alt="" coords="162,1917,310,1943"/>
+<area shape="poly" id="edge55_Node000001_Node000149" title=" " alt="" coords="47,1059,53,1225,68,1496,79,1636,93,1760,110,1854,120,1886,130,1904,150,1919,147,1923,126,1908,115,1888,105,1855,88,1760,74,1636,63,1496,48,1226,42,1059"/>
+<area shape="rect" id="Node000150" href="$ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712" title="Initializes the UI system." alt="" coords="205,1868,267,1893"/>
+<area shape="poly" id="edge56_Node000001_Node000150" title=" " alt="" coords="47,1059,54,1214,71,1466,82,1596,96,1712,112,1800,121,1829,130,1847,143,1859,158,1867,192,1876,190,1881,156,1872,140,1863,126,1850,116,1831,107,1801,91,1713,77,1597,65,1467,49,1215,42,1059"/>
+<area shape="rect" id="Node000153" href="$window_8c.html#acfd354d9948652de8c5f2f51e69347c6" title=" " alt="" coords="176,2019,296,2044"/>
+<area shape="poly" id="edge58_Node000001_Node000153" title=" " alt="" coords="47,1059,52,1240,66,1540,77,1696,92,1835,109,1941,119,1976,130,1998,145,2011,164,2020,161,2025,142,2015,126,2001,114,1978,104,1942,86,1836,72,1697,61,1541,47,1240,42,1059"/>
+<area shape="rect" id="Node000004" href="$adaptive__sampler_8c.html#a2660fb6f3b2980637738bab0d618978f" title=" " alt="" coords="861,179,960,204"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="814,189,847,189,847,194,814,194"/>
+<area shape="rect" id="Node000006" href="$billboard__rendering_8c.html#a2e879f800244b637740be72363feeb04" title="Initializes the billboard group and allocates GPU memory." alt="" coords="420,301,571,327"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="276,250,393,286,428,295,426,301,391,291,274,255"/>
+<area shape="rect" id="Node000007" href="$billboard__rendering_8c.html#ac2460cc8c0b2f53a206ac95146ac5923" title="Prepares the VAO by linking a shared quad VBO with internal instance data." alt="" coords="405,55,585,80"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="309,225,327,216,342,205,354,192,360,178,365,148,370,119,377,104,390,89,396,85,399,89,394,93,382,107,375,120,370,149,366,179,358,195,346,209,329,221,311,229"/>
+<area shape="rect" id="Node000011" href="$instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4" title="Binds a procedural mesh (e.g., icosphere) to the instanced group." alt="" coords="392,104,599,129"/>
+<area shape="poly" id="edge7_Node000005_Node000011" title=" " alt="" coords="303,224,342,205,358,189,365,173,374,155,390,139,400,133,403,137,394,143,378,158,370,175,362,192,346,209,305,229"/>
+<area shape="rect" id="Node000013" href="$instanced__rendering_8c.html#aaf6a9f5495e335b448587e24c56c2a77" title="Allocates the instance VBO on the GPU." alt="" coords="417,153,574,179"/>
+<area shape="poly" id="edge8_Node000005_Node000013" title=" " alt="" coords="281,224,343,205,391,187,421,179,423,184,393,193,345,210,282,229"/>
+<area shape="rect" id="Node000014" href="$utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee" title="memcpy wrapper with bounds checking." alt="" coords="438,203,553,228"/>
+<area shape="poly" id="edge9_Node000005_Node000014" title=" " alt="" coords="310,230,424,219,424,225,310,235"/>
+<area shape="rect" id="Node000015" href="$sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946" title="Allocates internal buffers for the sorter." alt="" coords="426,252,565,277"/>
+<area shape="poly" id="edge10_Node000005_Node000015" title=" " alt="" coords="310,244,413,254,412,259,310,249"/>
+<area shape="rect" id="Node000017" href="$async__loader_8c.html#a728931915db1981745d8648f661e4bce" title="Submits a new file path for background loading." alt="" coords="413,528,577,553"/>
+<area shape="poly" id="edge12_Node000016_Node000017" title=" " alt="" coords="311,461,345,473,370,489,393,506,431,521,429,526,391,511,367,494,343,478,309,466"/>
+<area shape="rect" id="Node000019" href="$utils_8h.html#ab1d13540441b5a2f988e0cd57754e625" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="677,657,783,683"/>
+<area shape="poly" id="edge15_Node000016_Node000019" title=" " alt="" coords="310,456,471,477,547,494,600,513,639,542,672,577,698,613,718,644,713,646,694,616,668,581,635,546,597,518,545,499,470,483,310,461"/>
+<area shape="rect" id="Node000020" href="$utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c" title="Validates a filename to prevent path traversal and shell injection." alt="" coords="429,427,561,452"/>
+<area shape="poly" id="edge14_Node000016_Node000020" title=" " alt="" coords="310,445,416,440,416,446,310,451"/>
+<area shape="poly" id="edge13_Node000017_Node000019" title=" " alt="" coords="570,551,600,562,632,581,661,603,709,645,705,649,658,607,629,585,598,567,568,556"/>
+<area shape="rect" id="Node000022" href="$app__env_8c.html#a8af94b56d6cef5f5143fd60907cb02f9" title=" " alt="" coords="430,577,561,603"/>
+<area shape="poly" id="edge17_Node000021_Node000022" title=" " alt="" coords="292,511,345,530,369,547,393,562,417,571,416,576,391,567,366,551,343,535,290,516"/>
+<area shape="rect" id="Node000025" href="$async__loader_8c.html#a390839e4ad145609522e9b52a23899c7" title=" " alt="" coords="422,787,569,812"/>
+<area shape="poly" id="edge20_Node000024_Node000025" title=" " alt="" coords="303,833,414,812,415,817,304,839"/>
+<area shape="poly" id="edge21_Node000025_Node000019" title=" " alt="" coords="518,784,692,687,695,692,521,789"/>
+<area shape="poly" id="edge23_Node000037_Node000039" title=" " alt="" coords="305,784,343,772,411,734,466,696,469,700,414,739,345,776,307,789"/>
+<area shape="poly" id="edge29_Node000062_Node000003" title=" " alt="" coords="560,24,600,40,638,68,670,102,717,166,712,169,666,106,634,72,597,44,558,29"/>
+<area shape="poly" id="edge31_Node000064_Node000062" title=" " alt="" coords="309,126,342,110,358,94,366,76,373,58,390,40,417,27,420,31,394,44,378,61,370,78,363,97,346,115,311,131"/>
+<area shape="poly" id="edge38_Node000090_Node000019" title=" " alt="" coords="504,1123,714,694,719,696,509,1125"/>
+<area shape="poly" id="edge41_Node000136_Node000090" title=" " alt="" coords="300,1142,402,1142,402,1147,300,1147"/>
+<area shape="poly" id="edge54_Node000148_Node000103" title=" " alt="" coords="285,1781,406,1793,405,1799,284,1787"/>
+<area shape="poly" id="edge57_Node000150_Node000147" title=" " alt="" coords="268,1881,431,1899,431,1904,267,1887"/>
 </map>

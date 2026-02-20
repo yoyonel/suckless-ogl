@@ -287,6 +287,20 @@ Functions</h2></td></tr>
 <tr class="memitem:a3fba3cd076f4d3741e107df1f4d69c39" id="r_a3fba3cd076f4d3741e107df1f4d69c39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a3fba3cd076f4d3741e107df1f4d69c39">app_init</a> (<a class="el" href="structApp.html">App</a> *app, int width, int height, const char *title)</td></tr>
 <tr class="memdesc:a3fba3cd076f4d3741e107df1f4d69c39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fully initializes the application state, window, and OpenGL context.  <br /></td></tr>
 <tr class="separator:a3fba3cd076f4d3741e107df1f4d69c39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae526f1d5670d54fdc51e407d4cdb30e5" id="r_ae526f1d5670d54fdc51e407d4cdb30e5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#ae526f1d5670d54fdc51e407d4cdb30e5">app_cleanup_rendering_groups</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ae526f1d5670d54fdc51e407d4cdb30e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fe80d876d20b1d83ba62e313430fc39" id="r_a5fe80d876d20b1d83ba62e313430fc39"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a5fe80d876d20b1d83ba62e313430fc39">app_cleanup_pbr_shaders</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a5fe80d876d20b1d83ba62e313430fc39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac2004476d87227bf49befe0a0b22588" id="r_aac2004476d87227bf49befe0a0b22588"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#aac2004476d87227bf49befe0a0b22588">app_cleanup_util_shaders</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:aac2004476d87227bf49befe0a0b22588"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5238379ac0bfde67fc5675db14ac32a2" id="r_a5238379ac0bfde67fc5675db14ac32a2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a5238379ac0bfde67fc5675db14ac32a2">app_cleanup_gpu_vaos</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a5238379ac0bfde67fc5675db14ac32a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a013dc18ceb6cbd4a7cb53b721c4efa64" id="r_a013dc18ceb6cbd4a7cb53b721c4efa64"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a013dc18ceb6cbd4a7cb53b721c4efa64">app_cleanup_gpu_vbos</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a013dc18ceb6cbd4a7cb53b721c4efa64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fb36cb559118d0c665ccc3e627de38a" id="r_a4fb36cb559118d0c665ccc3e627de38a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a4fb36cb559118d0c665ccc3e627de38a">app_cleanup_gpu_textures</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a4fb36cb559118d0c665ccc3e627de38a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed69b4dca42013e74012d76616a8e683" id="r_aed69b4dca42013e74012d76616a8e683"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#aed69b4dca42013e74012d76616a8e683">app_cleanup_gpu_pbos</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:aed69b4dca42013e74012d76616a8e683"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a201c8d0c1a848c34571be7266d0f691d" id="r_a201c8d0c1a848c34571be7266d0f691d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8c.html#a201c8d0c1a848c34571be7266d0f691d">app_cleanup</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="memdesc:a201c8d0c1a848c34571be7266d0f691d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely releases all GPU and CPU resources held by the application.  <br /></td></tr>
 <tr class="separator:a201c8d0c1a848c34571be7266d0f691d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -336,6 +350,193 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app_8c_a201c8d0c1a848c34571be7266d0f691d_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+
+</div>
+</div>
+<a id="aed69b4dca42013e74012d76616a8e683" name="aed69b4dca42013e74012d76616a8e683"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed69b4dca42013e74012d76616a8e683">&#9670;&#160;</a></span>app_cleanup_gpu_pbos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_gpu_pbos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4fb36cb559118d0c665ccc3e627de38a" name="a4fb36cb559118d0c665ccc3e627de38a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fb36cb559118d0c665ccc3e627de38a">&#9670;&#160;</a></span>app_cleanup_gpu_textures()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_gpu_textures </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5238379ac0bfde67fc5675db14ac32a2" name="a5238379ac0bfde67fc5675db14ac32a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5238379ac0bfde67fc5675db14ac32a2">&#9670;&#160;</a></span>app_cleanup_gpu_vaos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_gpu_vaos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a013dc18ceb6cbd4a7cb53b721c4efa64" name="a013dc18ceb6cbd4a7cb53b721c4efa64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a013dc18ceb6cbd4a7cb53b721c4efa64">&#9670;&#160;</a></span>app_cleanup_gpu_vbos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_gpu_vbos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fe80d876d20b1d83ba62e313430fc39" name="a5fe80d876d20b1d83ba62e313430fc39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fe80d876d20b1d83ba62e313430fc39">&#9670;&#160;</a></span>app_cleanup_pbr_shaders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_pbr_shaders </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae526f1d5670d54fdc51e407d4cdb30e5" name="ae526f1d5670d54fdc51e407d4cdb30e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae526f1d5670d54fdc51e407d4cdb30e5">&#9670;&#160;</a></span>app_cleanup_rendering_groups()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_rendering_groups </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app_8c_ae526f1d5670d54fdc51e407d4cdb30e5_cgraph.svg" width="587" height="283"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="aac2004476d87227bf49befe0a0b22588" name="aac2004476d87227bf49befe0a0b22588"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac2004476d87227bf49befe0a0b22588">&#9670;&#160;</a></span>app_cleanup_util_shaders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_cleanup_util_shaders </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

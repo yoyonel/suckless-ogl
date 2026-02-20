@@ -2,6 +2,7 @@ var shader_8h =
 [
     [ "UniformEntry", "structUniformEntry.html", "structUniformEntry" ],
     [ "Shader", "structShader.html", "structShader" ],
+    [ "SHADER_SAFE_DESTROY", "shader_8h.html#a2bd907645fc175f8defb74557aadff73", null ],
     [ "SHADER_WARNING_THROTTLE_LIMIT", "shader_8h.html#a70496697a218d649db5ec089ba1ee825", null ],
     [ "shader_compile", "shader_8h.html#a8e2f3d3cd026d62964de6bc23968a5cd", null ],
     [ "shader_destroy", "shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b", null ],

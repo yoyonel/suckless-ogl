@@ -272,6 +272,9 @@ Data Structures</h2></td></tr>
 Macros</h2></td></tr>
 <tr class="memitem:a70496697a218d649db5ec089ba1ee825" id="r_a70496697a218d649db5ec089ba1ee825"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a70496697a218d649db5ec089ba1ee825">SHADER_WARNING_THROTTLE_LIMIT</a>&#160;&#160;&#160;10</td></tr>
 <tr class="separator:a70496697a218d649db5ec089ba1ee825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd907645fc175f8defb74557aadff73" id="r_a2bd907645fc175f8defb74557aadff73"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#a2bd907645fc175f8defb74557aadff73">SHADER_SAFE_DESTROY</a>(s)</td></tr>
+<tr class="memdesc:a2bd907645fc175f8defb74557aadff73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Idempotent shader destruction macro. Sets the pointer to NULL after calling shader_destroy.  <br /></td></tr>
+<tr class="separator:a2bd907645fc175f8defb74557aadff73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -333,6 +336,32 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>High-level OpenGL shader management with metadata and uniform caching. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a2bd907645fc175f8defb74557aadff73" name="a2bd907645fc175f8defb74557aadff73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bd907645fc175f8defb74557aadff73">&#9670;&#160;</a></span>SHADER_SAFE_DESTROY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SHADER_SAFE_DESTROY</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">s</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                               \</div>
+<div class="line">        if ((s) != NULL) {         \</div>
+<div class="line">            shader_destroy(s); \</div>
+<div class="line">            (s) = NULL;        \</div>
+<div class="line">        }                          \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+<p>Idempotent shader destruction macro. Sets the pointer to NULL after calling shader_destroy. </p>
+
+</div>
+</div>
 <a id="a70496697a218d649db5ec089ba1ee825" name="a70496697a218d649db5ec089ba1ee825"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a70496697a218d649db5ec089ba1ee825">&#9670;&#160;</a></span>SHADER_WARNING_THROTTLE_LIMIT</h2>
 

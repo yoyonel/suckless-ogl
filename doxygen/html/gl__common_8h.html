@@ -281,6 +281,21 @@ Macros</h2></td></tr>
 <tr class="memitem:a74a399d3e71315d0d06000c63b41aea9" id="r_a74a399d3e71315d0d06000c63b41aea9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a74a399d3e71315d0d06000c63b41aea9">CLEANUP_TEXTURE</a>&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33">cleanup_gl_texture</a>)))</td></tr>
 <tr class="memdesc:a74a399d3e71315d0d06000c63b41aea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attribute to automatically delete an OpenGL texture on scope exit.  <br /></td></tr>
 <tr class="separator:a74a399d3e71315d0d06000c63b41aea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad734625837606032212a5f0706243b60" id="r_ad734625837606032212a5f0706243b60"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ad734625837606032212a5f0706243b60">GL_SAFE_DELETE_TEXTURE</a>(tex)</td></tr>
+<tr class="memdesc:ad734625837606032212a5f0706243b60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Idempotent OpenGL resource deletion macros. These macros check if the resource handle is non-zero, delete the resource, and set the handle to 0 to prevent double-deletion.  <br /></td></tr>
+<tr class="separator:ad734625837606032212a5f0706243b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedc18d73b9271df253a8aa74a429088f" id="r_aedc18d73b9271df253a8aa74a429088f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#aedc18d73b9271df253a8aa74a429088f">GL_SAFE_DELETE_BUFFER</a>(buf)</td></tr>
+<tr class="separator:aedc18d73b9271df253a8aa74a429088f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8ccf88806834695c45f7f30d868020a" id="r_ab8ccf88806834695c45f7f30d868020a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ab8ccf88806834695c45f7f30d868020a">GL_SAFE_DELETE_BUFFERS</a>(count,  ids)</td></tr>
+<tr class="separator:ab8ccf88806834695c45f7f30d868020a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace3537fd305f55199d8725f41848be06" id="r_ace3537fd305f55199d8725f41848be06"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ace3537fd305f55199d8725f41848be06">GL_SAFE_DELETE_VAO</a>(vao)</td></tr>
+<tr class="separator:ace3537fd305f55199d8725f41848be06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac316bc6aa955deccf369fbc75312aa6" id="r_aac316bc6aa955deccf369fbc75312aa6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#aac316bc6aa955deccf369fbc75312aa6">GL_SAFE_DELETE_VAOS</a>(count,  vaos)</td></tr>
+<tr class="separator:aac316bc6aa955deccf369fbc75312aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc0369d2f808530b4d51126a46d96bb0" id="r_acc0369d2f808530b4d51126a46d96bb0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#acc0369d2f808530b4d51126a46d96bb0">GL_SAFE_DELETE_PROGRAM</a>(prog)</td></tr>
+<tr class="separator:acc0369d2f808530b4d51126a46d96bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10cfad274967c1969dd686fa14ce7deb" id="r_a10cfad274967c1969dd686fa14ce7deb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a10cfad274967c1969dd686fa14ce7deb">GL_SAFE_DELETE_FRAMEBUFFER</a>(fbo)</td></tr>
+<tr class="separator:a10cfad274967c1969dd686fa14ce7deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -400,6 +415,200 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
+</div>
+</div>
+<a id="aedc18d73b9271df253a8aa74a429088f" name="aedc18d73b9271df253a8aa74a429088f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedc18d73b9271df253a8aa74a429088f">&#9670;&#160;</a></span>GL_SAFE_DELETE_BUFFER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_BUFFER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">buf</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                        \</div>
+<div class="line">        if ((buf) != 0) {                   \</div>
+<div class="line">            glDeleteBuffers(1, &amp;(buf)); \</div>
+<div class="line">            (buf) = 0;                  \</div>
+<div class="line">        }                                   \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ab8ccf88806834695c45f7f30d868020a" name="ab8ccf88806834695c45f7f30d868020a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8ccf88806834695c45f7f30d868020a">&#9670;&#160;</a></span>GL_SAFE_DELETE_BUFFERS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_BUFFERS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">count, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ids&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                \</div>
+<div class="line">        if ((ids) != NULL) {                        \</div>
+<div class="line">            glDeleteBuffers(count, ids);        \</div>
+<div class="line">            for (<span class="keywordtype">int</span> i = 0; i &lt; (count); i++) { \</div>
+<div class="line">                (ids)[i] = 0;               \</div>
+<div class="line">            }                                   \</div>
+<div class="line">        }                                           \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a10cfad274967c1969dd686fa14ce7deb" name="a10cfad274967c1969dd686fa14ce7deb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10cfad274967c1969dd686fa14ce7deb">&#9670;&#160;</a></span>GL_SAFE_DELETE_FRAMEBUFFER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_FRAMEBUFFER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">fbo</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                             \</div>
+<div class="line">        if ((fbo) != 0) {                        \</div>
+<div class="line">            glDeleteFramebuffers(1, &amp;(fbo)); \</div>
+<div class="line">            (fbo) = 0;                       \</div>
+<div class="line">        }                                        \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="acc0369d2f808530b4d51126a46d96bb0" name="acc0369d2f808530b4d51126a46d96bb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc0369d2f808530b4d51126a46d96bb0">&#9670;&#160;</a></span>GL_SAFE_DELETE_PROGRAM</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_PROGRAM</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">prog</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                   \</div>
+<div class="line">        if ((prog) != 0) {             \</div>
+<div class="line">            glDeleteProgram(prog); \</div>
+<div class="line">            (prog) = 0;            \</div>
+<div class="line">        }                              \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ad734625837606032212a5f0706243b60" name="ad734625837606032212a5f0706243b60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad734625837606032212a5f0706243b60">&#9670;&#160;</a></span>GL_SAFE_DELETE_TEXTURE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_TEXTURE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">tex</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                         \</div>
+<div class="line">        if ((tex) != 0) {                    \</div>
+<div class="line">            glDeleteTextures(1, &amp;(tex)); \</div>
+<div class="line">            (tex) = 0;                   \</div>
+<div class="line">        }                                    \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+<p>Idempotent OpenGL resource deletion macros. These macros check if the resource handle is non-zero, delete the resource, and set the handle to 0 to prevent double-deletion. </p>
+
+</div>
+</div>
+<a id="ace3537fd305f55199d8725f41848be06" name="ace3537fd305f55199d8725f41848be06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace3537fd305f55199d8725f41848be06">&#9670;&#160;</a></span>GL_SAFE_DELETE_VAO</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_VAO</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">vao</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                             \</div>
+<div class="line">        if ((vao) != 0) {                        \</div>
+<div class="line">            glDeleteVertexArrays(1, &amp;(vao)); \</div>
+<div class="line">            (vao) = 0;                       \</div>
+<div class="line">        }                                        \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="aac316bc6aa955deccf369fbc75312aa6" name="aac316bc6aa955deccf369fbc75312aa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac316bc6aa955deccf369fbc75312aa6">&#9670;&#160;</a></span>GL_SAFE_DELETE_VAOS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_SAFE_DELETE_VAOS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">count, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">vaos&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                \</div>
+<div class="line">        if ((vaos) != NULL) {                       \</div>
+<div class="line">            glDeleteVertexArrays(count, vaos);  \</div>
+<div class="line">            for (<span class="keywordtype">int</span> i = 0; i &lt; (count); i++) { \</div>
+<div class="line">                (vaos)[i] = 0;              \</div>
+<div class="line">            }                                   \</div>
+<div class="line">        }                                           \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="a5f71b6552f5675333cc18677cb881580" name="a5f71b6552f5675333cc18677cb881580"></a>
