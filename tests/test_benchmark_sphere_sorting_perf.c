@@ -2,12 +2,18 @@
 #include "gl_common.h"
 #include "instanced_rendering.h"
 #include "sphere_sorting.h"
-#include "utils.h"
 #include <cglm/cglm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+void setUp(void)
+{
+}
+void tearDown(void)
+{
+}
 
 /* Baseline logic extracted from previous implementation */
 static int compare_depth_desc(const void* lhs, const void* rhs)
@@ -27,26 +33,40 @@ static int compare_depth_desc(const void* lhs, const void* rhs)
 /* Re-implementation of the baseline sort logic (memcpy) */
 void sphere_sorter_sort_baseline(SphereSorter* sorter,
                                  SphereInstance* instances, int count,
-                                 vec3 camera_pos)
+                                 const vec3 camera_pos)
 {
 	if (count <= 0 || !instances) {
 		return;
 	}
 
-	/* Capacity handling (simplified for benchmark as we pre-allocate) */
-	/* Assume sorter is initialized large enough */
+	/* Ensure scratchpad capacity */
+	if (count > sorter->min_capacity && count > sorter->capacity) {
+		void* new_entries = realloc(
+		    sorter->entries, (size_t)count * sizeof(SphereSortEntry));
+		void* new_temp =
+		    realloc(sorter->temp_instances,
+		            (size_t)count * sizeof(SphereInstance));
+		if (new_entries) {
+			sorter->entries = new_entries;
+		}
+		if (new_temp) {
+			sorter->temp_instances = new_temp;
+		}
+		if (!new_entries || !new_temp) {
+			return;
+		}
+	}
 
 	/* Compute Depths */
 	for (int i = 0; i < count; ++i) {
-		vec3 pos = {instances[i].model[3][0], instances[i].model[3][1],
-		            instances[i].model[3][2]};
-
+		float* pos = (float*)instances[i].model[3];
 		sorter->entries[i].original_index = i;
-		sorter->entries[i].depth = glm_vec3_distance2(pos, camera_pos);
+		sorter->entries[i].depth =
+		    glm_vec3_distance2(pos, (float*)camera_pos);
 	}
 
 	/* Sort Indices */
-	qsort(sorter->entries, count, sizeof(SphereSortEntry),
+	qsort(sorter->entries, (size_t)count, sizeof(SphereSortEntry),
 	      compare_depth_desc);
 
 	/* Reorder to Temp */
@@ -57,7 +77,7 @@ void sphere_sorter_sort_baseline(SphereSorter* sorter,
 
 	/* Copy Back (The overhead we are removing) */
 	memcpy(instances, sorter->temp_instances,
-	       count * sizeof(SphereInstance));
+	       (size_t)count * sizeof(SphereInstance));
 }
 
 int main(void)
@@ -105,14 +125,12 @@ int main(void)
 	clock_t end_base = clock();
 	double time_base = (double)(end_base - start_base) / CLOCKS_PER_SEC;
 
-	/* Measure Optimized */
+	/* Measure Optimized (CPU path now available in API) */
 	clock_t start_opt = clock();
-	/* Note: Optimized swaps the pointer, so we must track it */
-	SphereInstance* current_instances_ptr = instances_optimized;
 	for (int i = 0; i < ITERATIONS; ++i) {
-		current_instances_ptr[0].model[3][2] = (float)(rand() % 1000);
-		sphere_sorter_sort(&sorter_optimized, &current_instances_ptr,
-		                   COUNT, camera_pos);
+		instances_optimized[0].model[3][2] = (float)(rand() % 1000);
+		sphere_sorter_sort_cpu(&sorter_optimized, instances_optimized,
+		                       COUNT, camera_pos);
 	}
 	clock_t end_opt = clock();
 	double time_opt = (double)(end_opt - start_opt) / CLOCKS_PER_SEC;
@@ -127,16 +145,11 @@ int main(void)
 
 	/* Cleanup */
 	sphere_sorter_cleanup(&sorter_baseline);
-	/* For optimized, sorter holds one buffer, current_instances_ptr holds
-	 * the other */
-	/* sphere_sorter_cleanup will free the one inside sorter */
 	sphere_sorter_cleanup(&sorter_optimized);
 
 	/* Free the buffers we allocated initially */
 	free(instances_baseline);
-	/* For optimized, we need to free the one currently held by the app side
-	 */
-	free(current_instances_ptr);
+	free(instances_optimized);
 
 	return 0;
 }
