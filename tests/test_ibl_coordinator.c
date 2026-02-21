@@ -136,7 +136,7 @@ float compute_mean_luminance_gpu(GLuint s1, GLuint s2, GLuint tex, int w, int h,
 	(void)h;
 	(void)m;
 	(void)ssbos;
-	return 0.5f;
+	return 3.0f;
 }
 /* ------------------------------------------------ */
 

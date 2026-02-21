@@ -101,6 +101,7 @@ static inline void safe_strncpy(char* dest, size_t dest_size, const char* src,
 		copy_len = dest_size - 1;
 	}
 
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)strncpy(dest, src, copy_len);
 	dest[copy_len] = '\0';
 }
@@ -123,6 +124,7 @@ static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
 	}
 
 	size_t remaining = dest_size - current_len - 1;
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)strncat(dest, src, remaining);
 }
 
