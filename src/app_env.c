@@ -210,13 +210,15 @@ void app_process_ibl_state_machine(App* app)
 	if (state == IBL_STATE_DONE) {
 		if (app->transition_state == TRANSITION_WAIT_IBL) {
 			/* Initial load: Stay black, just swap and fade in */
-			GLuint h = 0;
-			GLuint s = 0;
-			GLuint i = 0;
-			float t = 0.0F;
-			if (ibl_coordinator_get_results(&app->ibl_coord, &h, &s,
-			                                &i, &t)) {
-				finalize_ibl_swap(app, h, s, i, t);
+			GLuint hdr_tex = 0;
+			GLuint spec_tex = 0;
+			GLuint irr_tex = 0;
+			float threshold = 0.0F;
+			if (ibl_coordinator_get_results(
+			        &app->ibl_coord, &hdr_tex, &spec_tex,
+			        &irr_tex, &threshold)) {
+				finalize_ibl_swap(app, hdr_tex, spec_tex,
+				                  irr_tex, threshold);
 				app->transition_state = TRANSITION_FADE_IN;
 				app->transition_alpha = 1.0F;
 			}
@@ -230,14 +232,16 @@ void app_process_ibl_state_machine(App* app)
 				app->transition_alpha = 0.0F;
 			} else {
 				/* Crossfade mode: Capture, swap and fade in */
-				GLuint h = 0;
-				GLuint s = 0;
-				GLuint i = 0;
-				float t = 0.0F;
+				GLuint hdr_tex = 0;
+				GLuint spec_tex = 0;
+				GLuint irr_tex = 0;
+				float threshold = 0.0F;
 				if (ibl_coordinator_get_results(
-				        &app->ibl_coord, &h, &s, &i, &t)) {
+				        &app->ibl_coord, &hdr_tex, &spec_tex,
+				        &irr_tex, &threshold)) {
 					capture_snapshot(app);
-					finalize_ibl_swap(app, h, s, i, t);
+					finalize_ibl_swap(app, hdr_tex, spec_tex,
+					                  irr_tex, threshold);
 					app->transition_state =
 					    TRANSITION_FADE_IN;
 					app->transition_alpha = 1.0F;
@@ -262,13 +266,15 @@ void app_update_transition(App* app)
 				app->transition_alpha = 1.0F;
 
 				/* BLACK SCREEN SWAP HAPPENS HERE */
-				GLuint h = 0;
-				GLuint s = 0;
-				GLuint i = 0;
-				float t = 0.0F;
+				GLuint hdr_tex = 0;
+				GLuint spec_tex = 0;
+				GLuint irr_tex = 0;
+				float threshold = 0.0F;
 				if (ibl_coordinator_get_results(
-				        &app->ibl_coord, &h, &s, &i, &t)) {
-					finalize_ibl_swap(app, h, s, i, t);
+				        &app->ibl_coord, &hdr_tex, &spec_tex,
+				        &irr_tex, &threshold)) {
+					finalize_ibl_swap(app, hdr_tex, spec_tex,
+					                  irr_tex, threshold);
 					app->transition_state =
 					    TRANSITION_FADE_IN;
 				}
