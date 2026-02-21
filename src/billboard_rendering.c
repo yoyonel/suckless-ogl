@@ -60,6 +60,32 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void billboard_group_update_from_buffer(BillboardGroup* group,
+                                        GLuint src_buffer, int count)
+{
+	if (group->instance_vbo == 0) {
+		return;
+	}
+
+	group->instance_count = count;
+	GLsizeiptr size = (GLsizeiptr)(count * sizeof(SphereInstance));
+
+	glBindBuffer(GL_COPY_READ_BUFFER, src_buffer);
+	glBindBuffer(GL_COPY_WRITE_BUFFER, group->instance_vbo);
+
+	if (count > group->capacity) {
+		/* Reallocate buffer */
+		glBufferData(GL_COPY_WRITE_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+		group->capacity = count;
+	}
+
+	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0,
+	                    size);
+
+	glBindBuffer(GL_COPY_READ_BUFFER, 0);
+	glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
+}
+
 static void setup_billboard_instance_attributes(void)
 {
 	render_utils_setup_sphere_instance_attributes(

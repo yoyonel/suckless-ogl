@@ -75,6 +75,19 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
                             int count);
 
 /**
+ * @brief Updates instance data on the GPU by copying from another GPU buffer
+ * (e.g. SSBO).
+ *
+ * Use this when the sorted data is already on the GPU to avoid CPU roundtrips.
+ *
+ * @param group Pointer to the group.
+ * @param src_buffer Handle of the source buffer.
+ * @param count Number of instances to update.
+ */
+void billboard_group_update_from_buffer(BillboardGroup* group,
+                                        GLuint src_buffer, int count);
+
+/**
  * @brief Releases all GPU resources allocated for the billboard group.
  * @param group Pointer to the group.
  */

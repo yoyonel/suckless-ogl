@@ -3,242 +3,132 @@
 #include "gl_common.h"           /* For SIMD_ALIGNMENT */
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
-// No longer using utils.h in this file
-#include <cglm/types.h> /* For vec3 */
-#include <cglm/vec3.h>  /* For glm_vec3_distance2 */
-#include <stdint.h>
+#include "shader.h"
 #include <stdlib.h>
-#include <string.h>
 
-enum {
-	INITIAL_CAPACITY = 64,
-	RADIX_BITS = 8,
-	RADIX_BUCKETS = 256, /* 1 << RADIX_BITS */
-	RADIX_MASK = 255     /* RADIX_BUCKETS - 1 */
-};
+enum { WORKGROUP_SIZE = 256 };
+enum { DEFAULT_MIN_CAPACITY = 64 };
+static const unsigned int BIT_SHIFT_1 = 1U;
+static const unsigned int BIT_SHIFT_2 = 2U;
+static const unsigned int BIT_SHIFT_4 = 4U;
+static const unsigned int BIT_SHIFT_8 = 8U;
+static const unsigned int BIT_SHIFT_16 = 16U;
+static const unsigned int INITIAL_SORT_STEP = 2U;
 
-/*
- * 4-pass Radix Sort (LSD) on 32-bit floats (treated as uint32_t).
- * Sorts DESCENDING (Furthest first -> Back-to-Front).
- *
- * This implementation relies on the fact that for non-negative IEEE 754 floats,
- * the integer representation preserves order. Depth (squared distance) is
- * always non-negative.
- */
-static void radix_sort_depth_desc(SphereSortEntry* entries,
-                                  SphereSortEntry* temp, int count)
+static int next_pow2(int v)
 {
-	/* Histogram for 256 buckets */
-	unsigned int histogram[RADIX_BUCKETS];
-	unsigned int offsets[RADIX_BUCKETS];
-
-	SphereSortEntry* src = entries;
-	SphereSortEntry* dst = temp;
-
-	for (int byte_idx = 0; byte_idx < 4; ++byte_idx) {
-		/* Zero initialization is safer/cleaner than memset */
-		for (int i = 0; i < RADIX_BUCKETS; ++i) {
-			histogram[i] = 0;
-		}
-
-		/* 1. Build Histogram */
-		for (int i = 0; i < count; ++i) {
-			uint32_t val = 0;
-			float depth_val = src[i].depth;
-			/* Safe type punning via memcpy */
-			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			memcpy(&val, &depth_val, sizeof(uint32_t));
-
-			unsigned char byte =
-			    (val >> ((unsigned int)byte_idx *
-			             (unsigned int)RADIX_BITS)) &
-			    (unsigned int)RADIX_MASK;
-			histogram[byte]++;
-		}
-
-		/* 2. Compute Offsets (Descending Order: 255 -> 0) */
-		unsigned int total = 0;
-		for (int i = RADIX_BUCKETS - 1; i >= 0; --i) {
-			offsets[i] = total;
-			total += histogram[i];
-		}
-
-		/* 3. Scatter */
-		for (int i = 0; i < count; ++i) {
-			uint32_t val = 0;
-			float depth_val = src[i].depth;
-			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			memcpy(&val, &depth_val, sizeof(uint32_t));
-
-			unsigned char byte =
-			    (val >> ((unsigned int)byte_idx *
-			             (unsigned int)RADIX_BITS)) &
-			    (unsigned int)RADIX_MASK;
-			dst[offsets[byte]++] = src[i];
-		}
-
-		/* 4. Swap Buffers */
-		SphereSortEntry* tmp = src;
-		src = dst;
-		dst = tmp;
+	if (v <= 0) {
+		return 1;
 	}
-
-	/*
-	 * After 4 passes (even number), 'src' points to the buffer holding the
-	 * sorted result.
-	 * Start: src=entries, dst=temp
-	 * Pass 1: src=entries -> dst=temp (swap -> src=temp)
-	 * Pass 2: src=temp -> dst=entries (swap -> src=entries)
-	 * Pass 3: src=entries -> dst=temp (swap -> src=temp)
-	 * Pass 4: src=temp -> dst=entries (swap -> src=entries)
-	 * Result is in 'entries'.
-	 */
+	unsigned int x = (unsigned int)v;
+	x--;
+	x |= x >> BIT_SHIFT_1;
+	x |= x >> BIT_SHIFT_2;
+	x |= x >> BIT_SHIFT_4;
+	x |= x >> BIT_SHIFT_8;
+	x |= x >> BIT_SHIFT_16;
+	x++;
+	return (int)x;
 }
 
 void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 {
-	if (initial_capacity <= 0) {
-		initial_capacity = INITIAL_CAPACITY;
+	sorter->compute_program =
+	    shader_load_compute("shaders/sphere_sort.glsl");
+	if (sorter->compute_program == 0) {
+		LOG_ERROR("SphereSorter", "Failed to load compute shader");
 	}
-	sorter->capacity = initial_capacity;
-	sorter->min_capacity = initial_capacity;
-	sorter->entries = calloc(initial_capacity, sizeof(SphereSortEntry));
-	sorter->temp_entries =
-	    malloc(initial_capacity * sizeof(SphereSortEntry));
 
-	size_t size = initial_capacity * sizeof(SphereInstance);
-	if (size % SIMD_ALIGNMENT != 0) {
-		size += SIMD_ALIGNMENT - (size % SIMD_ALIGNMENT);
-	}
-	sorter->temp_instances = aligned_alloc(SIMD_ALIGNMENT, size);
-
-	if (!sorter->entries || !sorter->temp_instances ||
-	    !sorter->temp_entries) {
-		LOG_ERROR("suckless-ogl.sphere_sorter",
-		          "Failed to allocate sphere sorting buffers");
-	}
+	glGenBuffers(1, &sorter->instance_ssbo);
+	sorter->capacity = 0;
+	sorter->min_capacity = initial_capacity > 0 ? initial_capacity
+	                                            : DEFAULT_MIN_CAPACITY;
 }
 
 void sphere_sorter_cleanup(SphereSorter* sorter)
 {
-	if (sorter->entries) {
-		free(sorter->entries);
-		sorter->entries = NULL;
-	}
-	if (sorter->temp_entries) {
-		free(sorter->temp_entries);
-		sorter->temp_entries = NULL;
-	}
-	if (sorter->temp_instances) {
-		free(sorter->temp_instances);
-		sorter->temp_instances = NULL;
-	}
+	GL_SAFE_DELETE_BUFFER(sorter->instance_ssbo);
+	GL_SAFE_DELETE_PROGRAM(sorter->compute_program);
 	sorter->capacity = 0;
 	sorter->min_capacity = 0;
 }
 
-void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
-                        int count, vec3 camera_pos)
+GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
+                              const SphereInstance* instances, int count,
+                              const vec3 camera_pos)
 {
-	if (count <= 0 || !instances_ptr || !*instances_ptr) {
-		return;
+	if (count <= 0 || sorter->compute_program == 0) {
+		return sorter->instance_ssbo;
 	}
 
-	SphereInstance* instances = *instances_ptr;
+	/* 1. Ensure SSBO Capacity (Power of Two) */
+	int count_pot = next_pow2(count);
+	if (count_pot < sorter->min_capacity) {
+		count_pot = sorter->min_capacity;
+		/* Ensure min_capacity is POT too if we enforce it */
+		count_pot = next_pow2(count_pot);
+	}
 
-	/*
-	 * Determine required capacity.
-	 * We must maintain at least min_capacity to ensure the App receives
-	 * a buffer large enough for its max usage (assuming max <=
-	 * min_capacity). If count exceeds min_capacity, we grow.
-	 */
-	int required_capacity =
-	    (count > sorter->min_capacity) ? count : sorter->min_capacity;
+	/* 2. Resize buffer if needed */
+	if (count_pot > sorter->capacity) {
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
+		glBufferData(GL_SHADER_STORAGE_BUFFER,
+		             (GLsizeiptr)(count_pot * sizeof(SphereInstance)),
+		             NULL, GL_DYNAMIC_DRAW);
+		sorter->capacity = count_pot;
+	}
 
-	/* 1. Ensure Capacity */
-	if (required_capacity > sorter->capacity) {
-		/* If growing beyond min_capacity, double for amortized O(1).
-		   Otherwise, just restore to min_capacity. */
-		int new_cap = required_capacity;
-		if (required_capacity > sorter->min_capacity) {
-			new_cap = required_capacity * 2;
+	/* 3. Upload Data */
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
+	                (GLsizeiptr)(count * sizeof(SphereInstance)),
+	                instances);
+
+	/* 4. Dispatch Compute */
+	glUseProgram(sorter->compute_program);
+
+	GLint loc_count =
+	    glGetUniformLocation(sorter->compute_program, "u_count");
+	GLint loc_count_pot =
+	    glGetUniformLocation(sorter->compute_program, "u_count_pot");
+	GLint loc_cam =
+	    glGetUniformLocation(sorter->compute_program, "u_cam_pos");
+	GLint loc_j = glGetUniformLocation(sorter->compute_program, "u_j");
+	GLint loc_k = glGetUniformLocation(sorter->compute_program, "u_k");
+
+	if (loc_count >= 0)
+		glUniform1i(loc_count, count);
+	if (loc_count_pot >= 0)
+		glUniform1i(loc_count_pot, count_pot);
+	if (loc_cam >= 0)
+		glUniform3fv(loc_cam, 1, (const float*)camera_pos);
+
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, sorter->instance_ssbo);
+
+	/* Bitonic Sort Loop */
+	unsigned int u_count_pot = (unsigned int)count_pot;
+	for (unsigned int k = INITIAL_SORT_STEP; k <= u_count_pot;
+	     k <<= BIT_SHIFT_1) {
+		for (unsigned int j = k >> BIT_SHIFT_1; j > 0U;
+		     j >>= BIT_SHIFT_1) {
+			if (loc_j >= 0)
+				glUniform1i(loc_j, (int)j);
+			if (loc_k >= 0)
+				glUniform1i(loc_k, (int)k);
+
+			/* Dispatch */
+			unsigned int num_groups =
+			    (u_count_pot + WORKGROUP_SIZE - 1U) /
+			    WORKGROUP_SIZE;
+			glDispatchCompute(num_groups, 1, 1);
+
+			/* Barrier */
+			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		}
-
-		SphereSortEntry* new_entries =
-		    realloc(sorter->entries, new_cap * sizeof(SphereSortEntry));
-		SphereSortEntry* new_temp_entries = realloc(
-		    sorter->temp_entries, new_cap * sizeof(SphereSortEntry));
-
-		/* Free old aligned buffer and allocate new one */
-		/* realloc is not guaranteed to preserve alignment > default,
-		   and aligned_realloc is not standard C11 */
-		free(sorter->temp_instances);
-		sorter->temp_instances = NULL;
-		/* Size must be multiple of alignment */
-		size_t size = new_cap * sizeof(SphereInstance);
-		if (size % SIMD_ALIGNMENT != 0) {
-			size += SIMD_ALIGNMENT - (size % SIMD_ALIGNMENT);
-		}
-		SphereInstance* new_temp = aligned_alloc(SIMD_ALIGNMENT, size);
-
-		if (!new_entries || !new_temp || !new_temp_entries) {
-			LOG_ERROR("suckless-ogl.sphere_sorter",
-			          "Failed to resize sorting buffers to %d",
-			          new_cap);
-			/* Try to recover or maintain old state if possible,
-			   but temp list is gone. */
-			if (new_entries) {
-				sorter->entries = new_entries;
-			}
-			if (new_temp_entries) {
-				sorter->temp_entries = new_temp_entries;
-			}
-			/* Capacity stays same if failed? Or broken state?
-			   Ideally handle better, but just bail. */
-			if (new_temp) {
-				free(new_temp);
-			}
-			return;
-		}
-
-		free(sorter->temp_instances);
-		sorter->entries = new_entries;
-		sorter->temp_entries = new_temp_entries;
-		sorter->temp_instances = new_temp;
-		sorter->capacity = new_cap;
 	}
 
-	/* 2. Compute Depths and Indices */
-	for (int i = 0; i < count; ++i) {
-		/* model[3] is the translation column in column-major mat4 */
-		vec3 pos = {instances[i].model[3][0], instances[i].model[3][1],
-		            instances[i].model[3][2]};
+	glUseProgram(0);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-		sorter->entries[i].original_index = i;
-		sorter->entries[i].depth = glm_vec3_distance2(pos, camera_pos);
-	}
-
-	/* 3. Sort Indices (Radix Sort) */
-	radix_sort_depth_desc(sorter->entries, sorter->temp_entries, count);
-
-	/* 4. Reorder Instances into Temp Buffer */
-	for (int i = 0; i < count; ++i) {
-		int old_idx = sorter->entries[i].original_index;
-		/* Struct copy */
-		sorter->temp_instances[i] = instances[old_idx];
-	}
-
-	/* 5. Swap pointers instead of copying back */
-	*instances_ptr = sorter->temp_instances;
-	sorter->temp_instances = instances;
-
-	/*
-	 * We've swapped buffers. The buffer we now hold (old 'instances')
-	 * has an unknown capacity (at least 'count').
-	 * However, we enforce that the external buffer MUST be at least
-	 * 'min_capacity' in size. We rely on this contract to avoid
-	 * unnecessary reallocations when count < min_capacity.
-	 */
-	sorter->capacity =
-	    (count > sorter->min_capacity) ? count : sorter->min_capacity;
+	return sorter->instance_ssbo;
 }

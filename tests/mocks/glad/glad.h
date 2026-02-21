@@ -73,6 +73,10 @@ typedef unsigned int GLbitfield;
 #define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #define GL_CLIENT_STORAGE_BIT 0x0200
 #define GL_SHADER_STORAGE_BUFFER 0x90D2
+#define GL_DYNAMIC_COPY 0x88EA
+#define GL_COPY_READ_BUFFER 0x8F36
+#define GL_COPY_WRITE_BUFFER 0x8F37
+#define GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT 0x00000001
 #define GL_BUFFER_UPDATE_BARRIER_BIT 0x00000200
 #define GL_TEXTURE0 0x84C0
 #define GL_DEBUG_SOURCE_APPLICATION 0x8246
@@ -169,6 +173,15 @@ void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
                            GLsizei instancecount);
 void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type,
                              const void* indices, GLsizei instancecount);
+
+void glDispatchCompute(GLuint num_groups_x, GLuint num_groups_y,
+                       GLuint num_groups_z);
+void glMemoryBarrier(GLenum barriers);
+void glBindBufferBase(GLenum target, GLuint index, GLuint buffer);
+void glCopyBufferSubData(GLenum readTarget, GLenum writeTarget,
+                         GLintptr readOffset, GLintptr writeOffset,
+                         GLsizeiptr size);
+
 void glEnable(GLenum cap);
 void glDisable(GLenum cap);
 GLboolean glIsEnabled(GLenum cap);
