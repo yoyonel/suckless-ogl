@@ -620,6 +620,31 @@ void handle_app_input(App* app, int key, int mods)
 			                         : "Billboards: OFF",
 			                     NOTIF_DUR_NORMAL);
 			break;
+		case GLFW_KEY_O:
+			app->sorting_mode = (app->sorting_mode + 1) % 3;
+			const char* mode_name = "Unknown";
+			const char* notif_name = "Sort: Unknown";
+
+			switch (app->sorting_mode) {
+				case SORTING_MODE_CPU_QSORT:
+					mode_name = "CPU (qsort)";
+					notif_name = "Sort: CPU (qsort)";
+					break;
+				case SORTING_MODE_CPU_RADIX:
+					mode_name = "CPU (Radix)";
+					notif_name = "Sort: CPU (Radix)";
+					break;
+				case SORTING_MODE_GPU_BITONIC:
+					mode_name = "GPU (Bitonic)";
+					notif_name = "Sort: GPU (Bitonic)";
+					break;
+			}
+
+			LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s",
+			         mode_name);
+			action_notifier_push(&app->notifier, notif_name,
+			                     NOTIF_DUR_NORMAL);
+			break;
 		case GLFW_KEY_T:
 			app->env_transition_mode =
 			    (app->env_transition_mode + 1) % 2;

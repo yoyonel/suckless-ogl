@@ -59,7 +59,11 @@ int app_init(App* app, int width, int height, const char* title)
 	app->show_help = false;
 	app->show_envmap = true;
 	app->billboard_mode = true;
+	app->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	app->is_first_load = true;
+
+	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+	memset(&app->sphere_sorter, 0, sizeof(SphereSorter));
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -644,15 +648,35 @@ void app_render(App* app)
 		stencil_begin_object_pass();
 
 		if (app->billboard_mode) {
-			GLuint sorted_ssbo = sphere_sorter_sort_gpu(
-			    &app->sphere_sorter, app->sphere_instances,
-			    app->sphere_instance_count, app->camera.position);
+			GLuint sorted_ssbo = 0;
+			switch (app->sorting_mode) {
+				case SORTING_MODE_CPU_QSORT:
+					sorted_ssbo = sphere_sorter_sort_cpu(
+					    &app->sphere_sorter,
+					    app->sphere_instances,
+					    app->sphere_instance_count,
+					    app->camera.position);
+					break;
+				case SORTING_MODE_CPU_RADIX:
+					sorted_ssbo =
+					    sphere_sorter_sort_cpu_radix(
+					        &app->sphere_sorter,
+					        app->sphere_instances,
+					        app->sphere_instance_count,
+					        app->camera.position);
+					break;
+				case SORTING_MODE_GPU_BITONIC:
+					sorted_ssbo = sphere_sorter_sort_gpu(
+					    &app->sphere_sorter,
+					    app->sphere_instances,
+					    app->sphere_instance_count,
+					    app->camera.position);
+					break;
+			}
 			billboard_group_update_from_buffer(
 			    &app->billboard_group, sorted_ssbo,
 			    app->sphere_instance_count);
-		}
 
-		if (app->billboard_mode) {
 			// 1. Activer le Blending UNIQUEMENT pour la couleur
 			// (Attachment 0) Cela permet à ton 'edgeFactor' de
 			// lisser les bords de la sphère
