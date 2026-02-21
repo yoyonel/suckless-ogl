@@ -1,83 +1,154 @@
 #version 430 core
 
-layout(local_size_x = 256) in;
+layout(local_size_x = 1024) in;
 
 struct SphereInstance {
-    mat4 model;      // 64 bytes
-    vec3 albedo;     // 12 bytes (align 16)
-    float metallic;  // 4 bytes
-    float roughness; // 4 bytes
-    float ao;        // 4 bytes
-    float padding;   // 4 bytes
-    // Total used so far: 64 + 12 + 4 + 4 + 4 + 4 = 92 bytes.
-    // C struct is aligned to 64 bytes, so sizeof is 128.
-    // We need 36 bytes of padding. 9 floats.
-    float _pad[9];
+	mat4 model;       // 64 bytes
+	vec3 albedo;      // 12 bytes (align 16)
+	float metallic;   // 4 bytes
+	float roughness;  // 4 bytes
+	float ao;         // 4 bytes
+	float padding;    // 4 bytes
+	float _pad[9];    // 36 bytes
 };
 
-layout(std430, binding = 0) buffer DataBuffer {
-    SphereInstance data[];
+struct Entry {
+	int index;
+	float depth;
 };
 
-uniform int u_stage;       // 0: Prepare, 1: Sort
-uniform int u_count;       // Actual count
-uniform int u_count_pot;   // Power of two count
+layout(std430, binding = 0) buffer DataBuffer
+{
+	SphereInstance instances[];
+};
+
+layout(std430, binding = 1) buffer EntryBuffer
+{
+	Entry entries[];
+};
+
+layout(std430, binding = 2) buffer SortedBuffer
+{
+	SphereInstance sorted_instances[];
+};
+
+uniform int u_stage;      // 0: Prepare, 1: Sort, 2: Permute, 3: Single-Pass
+uniform int u_count;      // Actual count
+uniform int u_count_pot;  // Power of two count
 uniform vec3 u_cam_pos;
 
 // For sort stage
 uniform int u_j;
 uniform int u_k;
 
-// Helper to get distance squared
-float get_depth(uint idx) {
-    if (idx >= u_count) return -1.0; // Push out of bounds items to end (or front?)
-    // We want Back-to-Front (Furthest first).
-    // So larger depth comes first.
-    // If idx >= count, we treat them as depth -infinity so they go to the end?
-    // Wait, we want Descending order (Max -> Min).
-    // Valid items have depth >= 0.
-    // Invalid items should act like depth -1 so they are smaller than any valid depth.
+shared Entry s_entries[1024];
 
-    vec3 pos = vec3(data[idx].model[3]); // Translation column
-    float d2 = dot(pos - u_cam_pos, pos - u_cam_pos);
-    return d2;
-}
+void main()
+{
+	uint i = gl_GlobalInvocationID.x;
 
-void main() {
-    uint i = gl_GlobalInvocationID.x;
-    if (i >= u_count_pot) return;
+	if (u_stage == 3) {
+		// --- SINGLE PASS SHARED MEMORY MODE (For count <= 1024) ---
+		// 1. Load / Prepare
+		if (i < u_count_pot) {
+			if (i < u_count) {
+				vec3 pos = vec3(instances[i].model[3]);
+				float d2 =
+				    dot(pos - u_cam_pos, pos - u_cam_pos);
+				s_entries[i].depth = d2;
+				s_entries[i].index = int(i);
+			} else {
+				s_entries[i].depth = -1.0;
+				s_entries[i].index = -1;
+			}
+		}
+		barrier();
 
-    // Bitonic Sort
-    // We sort indices based on depth.
-    // Actually, we are sorting the data array directly for simplicity here,
-    // although sorting indices is usually better for large structs.
-    // But since we want to avoid Gather on the final draw, swapping structs in SSBO is fine
-    // if bandwidth allows. 128 bytes is not too huge.
+		// 2. Bitonic Sort in Shared Memory
+		for (uint k = 2; k <= u_count_pot; k <<= 1) {
+			for (uint j = k >> 1; j > 0; j >>= 1) {
+				uint ixj = i ^ j;
+				if (ixj > i && ixj < u_count_pot) {
+					float d_i = s_entries[i].depth;
+					float d_ixj = s_entries[ixj].depth;
 
-    // Sort logic:
-    // Direction: Descending (Furthest first).
+					bool swap = false;
+					if ((i & k) == 0) {
+						if (d_i < d_ixj)
+							swap = true;
+					} else {
+						if (d_i > d_ixj)
+							swap = true;
+					}
 
-    uint ixj = i ^ u_j;
+					if (swap) {
+						Entry temp = s_entries[i];
+						s_entries[i] = s_entries[ixj];
+						s_entries[ixj] = temp;
+					}
+				}
+				barrier();
+			}
+		}
 
-    if (ixj > i) {
-        float d_i = (i < u_count) ? get_depth(i) : -1.0;
-        float d_ixj = (ixj < u_count) ? get_depth(ixj) : -1.0;
+		// 3. Permute / Final Writeback
+		if (i < u_count) {
+			int original_idx = s_entries[i].index;
+			if (original_idx >= 0 && original_idx < u_count) {
+				sorted_instances[i] = instances[original_idx];
+			}
+		}
+		return;
+	}
 
-        bool swap = false;
+	// --- MULTI-PASS GLOBAL MEMORY MODE ---
+	if (u_stage == 0) {
+		if (i >= u_count_pot)
+			return;
+		// PREPARE stage: Calculate depth for valid items once
+		if (i < u_count) {
+			vec3 pos =
+			    vec3(instances[i].model[3]);  // Translation column
+			float d2 = dot(pos - u_cam_pos, pos - u_cam_pos);
+			entries[i].depth = d2;
+			entries[i].index = int(i);
+		} else {
+			// Out of bounds items get minimal depth
+			entries[i].depth = -1.0;
+			entries[i].index = -1;
+		}
+	} else if (u_stage == 1) {
+		if (i >= u_count_pot)
+			return;
+		// SORT stage: Bitonic Sort on entries
+		uint ixj = i ^ u_j;
 
-        // k determines the monotonic sequence direction
-        if ((i & u_k) == 0) {
-            // Sort Descending
-            if (d_i < d_ixj) swap = true;
-        } else {
-            // Sort Ascending
-            if (d_i > d_ixj) swap = true;
-        }
+		if (ixj > i) {
+			float d_i = entries[i].depth;
+			float d_ixj = entries[ixj].depth;
 
-        if (swap) {
-            SphereInstance temp = data[i];
-            data[i] = data[ixj];
-            data[ixj] = temp;
-        }
-    }
+			bool swap = false;
+			if ((i & u_k) == 0) {
+				if (d_i < d_ixj)
+					swap = true;
+			} else {
+				if (d_i > d_ixj)
+					swap = true;
+			}
+
+			if (swap) {
+				Entry temp = entries[i];
+				entries[i] = entries[ixj];
+				entries[ixj] = temp;
+			}
+		}
+	} else if (u_stage == 2) {
+		if (i >= u_count)
+			return;
+		// PERMUTE stage: Reorder instances based on sorted entries
+		int original_idx = entries[i].index;
+		if (original_idx >= 0 && original_idx < u_count) {
+			sorted_instances[i] = instances[original_idx];
+		}
+	}
 }
