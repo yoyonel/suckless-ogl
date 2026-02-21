@@ -17,7 +17,7 @@ The **Bitonic Sort** is a "Sorting Network" algorithm. Unlike `qsort` or `std::s
 
 ### Why it's Perfect for the GPU
 -   **No Branching**: A GPU shader is like a factory line. If one worker (thread) has to do an "if" and another doesn't, the whole line slows down (Divergence). Bitonic sort has *zero* divergence because every thread performs exactly the same comparison pattern.
--   **Massive Parallelism**: With a complexity of $O(N \log^2 N)$, it does more total work than $O(N \log N)$ algorithms, but it does it **simultaneously** across thousands of GPU cores. 
+-   **Massive Parallelism**: With a complexity of $O(N \log^2 N)$, it does more total work than $O(N \log N)$ algorithms, but it does it **simultaneously** across thousands of GPU cores.
 
 ### Our Optimized "Proxy" Approach
 Initially, we swapped 128-byte `SphereInstance` structs. This was slow due to VRAM bandwidth.

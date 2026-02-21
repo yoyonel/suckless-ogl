@@ -69,8 +69,10 @@ void test_SphereSorter_Init_ShouldAllocateBuffers(void)
 	sphere_sorter_init(&sorter, INIT_CAPACITY);
 
 	TEST_ASSERT_NOT_NULL(sorter.entries);
+	TEST_ASSERT_NOT_NULL(sorter.entries_aux);
 	TEST_ASSERT_NOT_NULL(sorter.temp_instances);
-	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.capacity);
+	TEST_ASSERT_EQUAL_INT(0, sorter.capacity);
+	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.cpu_capacity);
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.min_capacity);
 
 	sphere_sorter_cleanup(&sorter);
@@ -118,27 +120,80 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	/* Expected Order: Far (-20), Middle (-10), Near (-5) */
 	/* Indices should become: 1, 2, 0 */
 
-	sphere_sorter_sort(&sorter, &instances, count, camera_pos);
+	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
 
 	/* Check First (Furthest) */
 	const int MAT_Z_INDEX = 3;
 	const int MAT_Z_OFFSET = 2;
-	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, COORD_NEG_20,
-	                         instances[0].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_20,
+	    sorter.temp_instances[0].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
 	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_B,
-	                         instances[0].roughness);
+	                         sorter.temp_instances[0].roughness);
 
 	/* Check Second */
-	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, COORD_NEG_10,
-	                         instances[1].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_10,
+	    sorter.temp_instances[1].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
 	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_C,
-	                         instances[1].roughness);
+	                         sorter.temp_instances[1].roughness);
 
 	/* Check Third (Nearest) */
-	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, COORD_NEG_5,
-	                         instances[2].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_5,
+	    sorter.temp_instances[2].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
 	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_A,
-	                         instances[2].roughness);
+	                         sorter.temp_instances[2].roughness);
+
+	free(instances);
+	sphere_sorter_cleanup(&sorter);
+}
+
+void test_SphereSorter_SortRadix_ShouldOrderBackToFront(void)
+{
+	SphereSorter sorter;
+	sphere_sorter_init(&sorter, TEST_COUNT_4);
+
+	int count = TEST_COUNT_3;
+	SphereInstance* instances =
+	    create_dummy_instances(count, sorter.min_capacity);
+
+	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
+
+	/* A: Near (-5) */
+	set_position(&instances[0], COORD_ZERO, COORD_ZERO, COORD_NEG_5);
+	instances[0].roughness = ROUGHNESS_A;
+
+	/* B: Far (-20) */
+	set_position(&instances[1], COORD_ZERO, COORD_ZERO, COORD_NEG_20);
+	instances[1].roughness = ROUGHNESS_B;
+
+	/* C: Middle (-10) */
+	set_position(&instances[2], COORD_ZERO, COORD_ZERO, COORD_NEG_10);
+	instances[2].roughness = ROUGHNESS_C;
+
+	(void)sphere_sorter_sort_cpu_radix(&sorter, instances, count,
+	                                   camera_pos);
+
+	const int MAT_Z_INDEX = 3;
+	const int MAT_Z_OFFSET = 2;
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_20,
+	    sorter.temp_instances[0].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_B,
+	                         sorter.temp_instances[0].roughness);
+
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_10,
+	    sorter.temp_instances[1].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_C,
+	                         sorter.temp_instances[1].roughness);
+
+	TEST_ASSERT_FLOAT_WITHIN(
+	    TOLERANCE, COORD_NEG_5,
+	    sorter.temp_instances[2].model[MAT_Z_INDEX][MAT_Z_OFFSET]);
+	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_A,
+	                         sorter.temp_instances[2].roughness);
 
 	free(instances);
 	sphere_sorter_cleanup(&sorter);
@@ -156,10 +211,35 @@ void test_SphereSorter_Resize_ShouldHandleMoreThanCapacity(void)
 	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
 
 	/* Just check it doesn't crash and resizes */
-	sphere_sorter_sort(&sorter, &instances, count, camera_pos);
+	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
 
 	/* Check that capacity grew */
-	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.capacity);
+	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
+
+	free(instances);
+	sphere_sorter_cleanup(&sorter);
+}
+
+void test_SphereSorter_CapacitySync_ShouldNotCrash(void)
+{
+	SphereSorter sorter;
+	sphere_sorter_init(&sorter, SMALL_CAPACITY);
+
+	/* Simulate GPU path growing 'capacity' to 100 */
+	sorter.capacity = 100;
+
+	/* Now use CPU path with count 50.
+	 * If it relies blindly on 'capacity', it might not realloc its
+	 * scratchpads (which are size 2). */
+	int count = 50;
+	SphereInstance* instances =
+	    create_dummy_instances(count, sorter.min_capacity);
+	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
+
+	/* This would SIGSEGV if capacity sync is broken */
+	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
+
+	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
 
 	free(instances);
 	sphere_sorter_cleanup(&sorter);
@@ -171,6 +251,8 @@ int main(void)
 	RUN_TEST(test_SphereSorter_Init_ShouldAllocateBuffers);
 	RUN_TEST(test_SphereSorter_Cleanup_ShouldFreeBuffers);
 	RUN_TEST(test_SphereSorter_Sort_ShouldOrderBackToFront);
+	RUN_TEST(test_SphereSorter_SortRadix_ShouldOrderBackToFront);
 	RUN_TEST(test_SphereSorter_Resize_ShouldHandleMoreThanCapacity);
+	RUN_TEST(test_SphereSorter_CapacitySync_ShouldNotCrash);
 	return UNITY_END();
 }

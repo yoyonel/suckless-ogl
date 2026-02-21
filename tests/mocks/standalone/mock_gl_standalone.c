@@ -182,26 +182,6 @@ void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count,
 	(void)instancecount;
 }
 
-void glDispatchCompute(GLuint num_groups_x, GLuint num_groups_y,
-                       GLuint num_groups_z)
-{
-	(void)num_groups_x;
-	(void)num_groups_y;
-	(void)num_groups_z;
-}
-
-void glMemoryBarrier(GLenum barriers)
-{
-	(void)barriers;
-}
-
-void glBindBufferBase(GLenum target, GLuint index, GLuint buffer)
-{
-	(void)target;
-	(void)index;
-	(void)buffer;
-}
-
 void glCopyBufferSubData(GLenum readTarget, GLenum writeTarget,
                          GLintptr readOffset, GLintptr writeOffset,
                          GLsizeiptr size)

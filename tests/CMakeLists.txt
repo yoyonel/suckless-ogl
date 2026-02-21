@@ -58,6 +58,8 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -419,3 +421,45 @@ add_test(NAME test_benchmark_sphere_sorting
 # Pour lancer un test spécifique :
 #   cd build && ctest -R test_camera --verbose
 # =============================================================================
+# =============================================================================
+# SPHERE SORTING TESTS (MOCKED)
+# =============================================================================
+add_executable(test_sphere_sorting
+    test_sphere_sorting.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+target_include_directories(test_sphere_sorting PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+target_link_libraries(test_sphere_sorting PRIVATE cglm m)
+add_test(NAME test_sphere_sorting COMMAND test_sphere_sorting)
+
+add_executable(test_benchmark_sphere_sorting_perf
+    test_benchmark_sphere_sorting_perf.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+target_link_libraries(test_benchmark_sphere_sorting_perf PRIVATE cglm m)
+add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_sorting_perf)

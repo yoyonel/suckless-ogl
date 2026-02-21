@@ -22,7 +22,7 @@ static uint32_t hash_id(GLuint message_id)
 	return message_id % DEBUG_HASH_SIZE;
 }
 
-static const char *get_source_str(GLenum source)
+static const char* get_source_str(GLenum source)
 {
 	switch (source) {
 		case GL_DEBUG_SOURCE_API:
@@ -42,7 +42,7 @@ static const char *get_source_str(GLenum source)
 	}
 }
 
-static const char *get_type_str(GLenum type)
+static const char* get_type_str(GLenum type)
 {
 	switch (type) {
 		case GL_DEBUG_TYPE_ERROR:
@@ -68,7 +68,7 @@ static const char *get_type_str(GLenum type)
 	}
 }
 
-static const char *get_severity_str(GLenum severity)
+static const char* get_severity_str(GLenum severity)
 {
 	switch (severity) {
 		case GL_DEBUG_SEVERITY_HIGH:
@@ -86,8 +86,8 @@ static const char *get_severity_str(GLenum severity)
 
 static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
                                        GLuint message_id, GLenum severity,
-                                       GLsizei length, const GLchar *message,
-                                       const void *user_param)
+                                       GLsizei length, const GLchar* message,
+                                       const void* user_param)
 {
 	(void)length;
 	(void)user_param;
@@ -95,7 +95,7 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 	static DebugMessageEntry debug_cache[DEBUG_HASH_SIZE] = {0};
 
 	uint32_t hash_idx = hash_id(message_id);
-	DebugMessageEntry *entry = &debug_cache[hash_idx];
+	DebugMessageEntry* entry = &debug_cache[hash_idx];
 
 	if (entry->message_id != message_id) {
 		entry->message_id = message_id;
@@ -107,9 +107,9 @@ static void APIENTRY gl_debug_callback(GLenum source, GLenum type,
 	/* Log only the first occurrence to avoid flooding, matching Rust
 	 * behavior */
 	if (entry->count == 1) {
-		const char *src_str = get_source_str(source);
-		const char *type_str = get_type_str(type);
-		const char *sev_str = get_severity_str(severity);
+		const char* src_str = get_source_str(source);
+		const char* type_str = get_type_str(type);
+		const char* sev_str = get_severity_str(severity);
 
 		if (type == GL_DEBUG_TYPE_ERROR ||
 		    severity == GL_DEBUG_SEVERITY_HIGH) {

@@ -8,12 +8,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunknown-pragmas"
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 /* Suppress "function 'vsnprintf' is insecure" and similar analyzer warnings
  * because this file implements the safe wrappers themselves. */
 #pragma clang diagnostic ignored "-Wformat-security"
+#endif
 #if defined(__clang__) && !defined(__APPLE__)
 #pragma clang diagnostic ignored "-Wunknown-warning-option"
 #endif
@@ -98,7 +100,9 @@ void safe_strncat(char* dest, size_t dest_size, const char* src)
 // NOLINTEND(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
 // clang-analyzer-valist.Uninitialized)
 
+#ifdef __clang__
 #pragma clang diagnostic pop
+#endif
 
 bool is_safe_filename(const char* filename)
 {
