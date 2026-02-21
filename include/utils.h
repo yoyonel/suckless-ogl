@@ -19,21 +19,10 @@
  * @param format Printf-style format string.
  * @return true if string was fully written, false if truncated or error.
  */
-__attribute__((format(printf, 3, 4))) static inline bool safe_snprintf(
-    char* buf, size_t buf_size, const char* format, ...)
-{
-	if (!buf || !buf_size) {
-		return false;
-	}
-
-	va_list args;
-	va_start(args, format);
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	int result = vsnprintf(buf, buf_size, format, args);
-	va_end(args);
-
-	return (result >= 0 && (size_t)result < buf_size);
-}
+__attribute__((format(printf, 3, 4))) bool safe_snprintf(char* buf,
+                                                         size_t buf_size,
+                                                         const char* format,
+                                                         ...);
 
 /**
  * @brief Bitwise flag check helper.
@@ -46,41 +35,17 @@ static inline bool check_flag(int value, int flag)
 /**
  * @brief calloc wrapper with zero-size check.
  */
-static inline void* safe_calloc(size_t num, size_t size)
-{
-	if (num == 0 || size == 0) {
-		return NULL;
-	}
-	return calloc(num, size);
-}
+void* safe_calloc(size_t num, size_t size);
 
 /**
  * @brief memcpy wrapper with bounds checking.
  */
-static inline bool safe_memcpy(void* dest, size_t dest_size, const void* src,
-                               size_t count)
-{
-	if (!dest || !src || dest_size < count) {
-		return false;
-	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memcpy(dest, src, count);
-	return true;
-}
+bool safe_memcpy(void* dest, size_t dest_size, const void* src, size_t count);
 
 /**
  * @brief memset wrapper with bounds checking.
  */
-static inline bool safe_memset(void* dest, size_t dest_size, int value,
-                               size_t count)
-{
-	if (!dest || dest_size < count) {
-		return false;
-	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(dest, value, count);
-	return true;
-}
+bool safe_memset(void* dest, size_t dest_size, int value, size_t count);
 
 /**
  * @brief Safe wrapper around strncpy to ensure null-termination.
@@ -89,21 +54,8 @@ static inline bool safe_memset(void* dest, size_t dest_size, int value,
  * @param src Source string.
  * @param src_size Max characters to copy (or just use sizeof(dest)).
  */
-static inline void safe_strncpy(char* dest, size_t dest_size, const char* src,
-                                size_t src_size)
-{
-	if (!dest || !dest_size || !src) {
-		return;
-	}
-
-	size_t copy_len = src_size;
-	if (copy_len >= dest_size) {
-		copy_len = dest_size - 1;
-	}
-
-	(void)strncpy(dest, src, copy_len);
-	dest[copy_len] = '\0';
-}
+void safe_strncpy(char* dest, size_t dest_size, const char* src,
+                  size_t src_size);
 
 /**
  * @brief Safe wrapper around strncat to ensure bounds safety.
@@ -111,20 +63,7 @@ static inline void safe_strncpy(char* dest, size_t dest_size, const char* src,
  * @param dest_size Total size of destination buffer.
  * @param src Source string.
  */
-static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
-{
-	if (!dest || !dest_size || !src) {
-		return;
-	}
-
-	size_t current_len = strnlen(dest, dest_size);
-	if (current_len >= dest_size - 1) {
-		return;  // No space left
-	}
-
-	size_t remaining = dest_size - current_len - 1;
-	(void)strncat(dest, src, remaining);
-}
+void safe_strncat(char* dest, size_t dest_size, const char* src);
 
 /**
  * @brief Validates a filename to prevent path traversal and shell injection.
@@ -135,24 +74,7 @@ static inline void safe_strncat(char* dest, size_t dest_size, const char* src)
  * @param filename The filename to check.
  * @return true if the filename is safe, false otherwise.
  */
-static inline bool is_safe_filename(const char* filename)
-{
-	if (!filename) {
-		return false;
-	}
-	/* Check for directory traversal (..) */
-	if (strstr(filename, "..") != NULL) {
-		return false;
-	}
-	if (strcmp(filename, ".") == 0) {
-		return false;
-	}
-	/* Check for path separators (Linux/Windows) */
-	if (strchr(filename, '/') != NULL || strchr(filename, '\\') != NULL) {
-		return false;
-	}
-	return true;
-}
+bool is_safe_filename(const char* filename);
 
 /**
  * @brief Validates a relative path to prevent arbitrary file access.
@@ -163,29 +85,7 @@ static inline bool is_safe_filename(const char* filename)
  * @param path The relative path to check.
  * @return true if the path is safe, false otherwise.
  */
-static inline bool is_safe_relative_path(const char* path)
-{
-	if (!path) {
-		return false;
-	}
-	/* No parent directory traversal */
-	if (strstr(path, "..") != NULL) {
-		return false;
-	}
-	/* No absolute paths */
-	if (path[0] == '/') {
-		return false;
-	}
-	/* No Windows-style backslashes */
-	if (strchr(path, '\\') != NULL) {
-		return false;
-	}
-	/* No Windows-style drive letters or colon-based protocols */
-	if (strstr(path, ":") != NULL) {
-		return false;
-	}
-	return true;
-}
+bool is_safe_relative_path(const char* path);
 
 /**
  * @brief RAII callback for `FILE*`.

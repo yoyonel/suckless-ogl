@@ -93,6 +93,7 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
 	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
 
+	// NOLINTNEXTLINE(readability-suspicious-call-argument)
 	glBindImageTexture(BINDING_DEST_TEXTURE, dest_tex, level, GL_FALSE, 0,
 	                   GL_WRITE_ONLY, GL_RGBA16F);
 
@@ -182,6 +183,7 @@ void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
 
 	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
 	glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
+	// NOLINTNEXTLINE(readability-suspicious-call-argument)
 	glBindImageTexture(BINDING_DEST_TEXTURE, dest_tex, 0, GL_FALSE, 0,
 	                   GL_WRITE_ONLY, GL_RGBA16F);
 

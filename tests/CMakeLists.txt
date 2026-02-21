@@ -56,6 +56,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -133,6 +134,7 @@ add_executable(test_shader_path_security_standalone
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/src/io.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_shader_path_security_standalone PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -170,6 +172,7 @@ add_executable(test_texture_toctou
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_stb_image_standalone.c
     ${CMAKE_SOURCE_DIR}/src/simd_utils.c
     ${CMAKE_SOURCE_DIR}/src/io.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_texture_toctou PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -197,6 +200,7 @@ add_executable(test_billboard_cleanup
     test_billboard_cleanup.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -226,6 +230,7 @@ add_executable(test_billboard_overflow
     test_billboard_overflow.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -260,6 +265,7 @@ add_executable(test_gpu_profiler_repro
     ${CMAKE_SOURCE_DIR}/src/log.c
     ${CMAKE_SOURCE_DIR}/src/tracy_log.c
     ${CMAKE_SOURCE_DIR}/src/metric_stack.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -290,6 +296,7 @@ add_executable(test_shader_limit
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/src/io.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 
 target_include_directories(test_shader_limit PRIVATE
@@ -314,6 +321,7 @@ add_executable(test_camera_input
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/src/camera.c
     ${CMAKE_SOURCE_DIR}/src/camera_input.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 
 target_include_directories(test_camera_input PRIVATE
@@ -327,6 +335,39 @@ target_link_libraries(test_camera_input PRIVATE cglm m)
 
 add_test(NAME test_camera_input
          COMMAND test_camera_input)
+
+# =============================================================================
+# TEST IBL COORDINATOR (MOCKED)
+# =============================================================================
+add_executable(test_ibl_coordinator
+    test_ibl_coordinator.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/ibl_coordinator.c
+    ${CMAKE_SOURCE_DIR}/src/log.c
+    ${CMAKE_SOURCE_DIR}/src/tracy_log.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+if(ENABLE_TRACY)
+    target_sources(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_ibl_coordinator PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+if(ENABLE_TRACY)
+    target_include_directories(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+target_link_libraries(test_ibl_coordinator PRIVATE cglm m)
+
+add_test(NAME test_ibl_coordinator
+         COMMAND test_ibl_coordinator)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

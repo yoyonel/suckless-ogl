@@ -1,3 +1,20 @@
+/**
+ * @file mock_gl_standalone.c
+ * @brief Implementation of a minimal mock OpenGL environment.
+ *
+ * NOTE: This file includes "mock_gl_standalone.h", which includes
+ * "glad/glad.h". When compiled for standalone tests (e.g.
+ * test_ibl_coordinator), the "glad/glad.h" resolved is the MANUAL mock in
+ * "tests/mocks/glad/glad.h". This manual mock defines GL functions as regular C
+ * functions (not macros). Thus, implementing them here causes no conflict.
+ *
+ * However, if this file were compiled in an environment where "glad.h" is the
+ * REAL one (defining macros expanding to function pointers), this would cause a
+ * build error. Ensure CMake configuration for standalone tests strictly
+ * controls include paths to favor "tests/mocks" over
+ * "build/_deps/glad-src/include".
+ */
+
 #include "mock_gl_standalone.h"
 
 #include <stdio.h> /* For definition of NULL if needed, though not used here */
@@ -265,12 +282,6 @@ void glDeleteTextures(GLsizei n, const GLuint* textures)
 	(void)textures;
 }
 
-void glGetIntegerv(GLenum pname, GLint* data)
-{
-	(void)pname;
-	(void)data;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                          SHADER MOCK IMPLEMENTATIONS                       */
 /* -------------------------------------------------------------------------- */
@@ -409,8 +420,52 @@ void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
 	(void)transpose;
 	(void)value;
 }
+void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
+                      const GLchar* message)
+{
+	(void)source;
+	(void)id;
+	(void)length;
+	(void)message;
+}
 void glPopDebugGroup(void)
 {
+}
+
+GLenum glCheckFramebufferStatus(GLenum target)
+{
+	(void)target;
+	return GL_FRAMEBUFFER_COMPLETE;
+}
+
+void glGetIntegerv(GLenum pname, GLint* data)
+{
+	(void)pname;
+	if (data) {
+		if (pname == GL_POLYGON_MODE) {
+			data[0] = GL_FILL;
+			data[1] = GL_FILL;
+		} else {
+			*data = 0;
+		}
+	}
+}
+
+void glPolygonMode(GLenum face, GLenum mode)
+{
+	(void)face;
+	(void)mode;
+}
+
+void glBlendFunc(GLenum sfactor, GLenum dfactor)
+{
+	(void)sfactor;
+	(void)dfactor;
+}
+
+void glActiveTexture(GLenum texture)
+{
+	(void)texture;
 }
 
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
@@ -465,4 +520,89 @@ void glGetQueryObjectui64v(GLuint query_id, GLenum pname, GLuint64* params)
 	if (params) {
 		*params = 1000; /* Dummy timestamp value */
 	}
+}
+
+void glGetQueryObjectiv(GLuint query_id, GLenum pname, GLint* params)
+{
+	(void)query_id;
+	(void)pname;
+	if (params) {
+		*params = GL_TRUE; /* Available */
+	}
+}
+
+void glFlush(void)
+{
+}
+
+void glFinish(void)
+{
+}
+
+const GLchar* glGetString(GLenum name)
+{
+	if (name == GL_RENDERER) {
+		return "Mock Renderer (Standalone)";
+	}
+	return "Mock GL";
+}
+
+void glDispatchCompute(GLuint num_groups_x, GLuint num_groups_y,
+                       GLuint num_groups_z)
+{
+	(void)num_groups_x;
+	(void)num_groups_y;
+	(void)num_groups_z;
+}
+
+void glMemoryBarrier(unsigned int barriers)
+{
+	(void)barriers;
+}
+
+void glBindImageTexture(GLuint unit, GLuint texture, GLint level,
+                        GLboolean layered, GLint layer, GLenum access,
+                        GLenum format)
+{
+	(void)unit;
+	(void)texture;
+	(void)level;
+	(void)layered;
+	(void)layer;
+	(void)access;
+	(void)format;
+}
+
+void glBindBufferBase(GLenum target, GLuint index, GLuint buffer)
+{
+	(void)target;
+	(void)index;
+	(void)buffer;
+}
+
+void glBufferStorage(GLenum target, GLsizeiptr size, const void* data,
+                     unsigned int flags)
+{
+	(void)target;
+	(void)size;
+	(void)data;
+	(void)flags;
+}
+
+void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
+                        void* data)
+{
+	(void)target;
+	(void)offset;
+	(void)size;
+	if (data) {
+		/* Return a dummy non-zero mean luminance */
+		*(float*)data = 1.0F;
+	}
+}
+
+void glUniform1ui(GLint location, GLuint v0)
+{
+	(void)location;
+	(void)v0;
 }

@@ -1,7 +1,7 @@
 #include "app.h"
 #include "app_settings.h"
 #include "async_loader.h"
-#include "glad/glad.h"
+#include "ibl_coordinator.h"
 #include "log.h"
 #include "pbr.h"
 #include "perf_timer.h"
@@ -15,69 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * @brief Default slice count for software renderers (no slicing).
- * Slicing is disabled to avoid the massive overhead of multiple draw calls
- * on CPU-bound renderers (llvmpipe, etc.).
- */
-static const int IBL_SOFTWARE_FALLBACK_SLICES = 1;
-
-/** @brief Number of slices for irradiance convolution on hardware (GPU). */
-static const int IBL_IRRADIANCE_HARDWARE_SLICES = 12;
-
-/** @brief Number of slices for the largest specular mip (Mip 0) on hardware. */
-static const int IBL_SPECULAR_MIP0_HARDWARE_SLICES = 24;
-
-/** @brief Number of slices for the second specular mip (Mip 1) on hardware. */
-static const int IBL_SPECULAR_MIP1_HARDWARE_SLICES = 8;
-
-/** @brief Mip level from which specular mips are grouped in a single frame. */
-static const int IBL_SPECULAR_MIP_GROUPING_START_MIP = 3;
-
-/** @brief Mip level for software grouping (all mips at once). */
-static const int IBL_SOFTWARE_MIP_GROUPING_START_MIP = 0;
-
-/*
- * SLICING constants for progressive IBL loading.
- * In software-rendering mode (llvmpipe, swrast), slicing is disabled
- * (1 slice per step) to avoid the massive overhead of split dispatches.
- */
-static bool is_software_renderer(void)
-{
-	const char* renderer = NULL;
-	renderer = (const char*)glGetString(GL_RENDERER);
-	if (!renderer) {
-		return false;
-	}
-	return strstr(renderer, "llvmpipe") != NULL ||
-	       strstr(renderer, "softpipe") != NULL ||
-	       strstr(renderer, "swrast") != NULL;
-}
-static int ibl_irradiance_slices(void)
-{
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_IRRADIANCE_HARDWARE_SLICES;
-}
-static int ibl_specular_mip0_slices(void)
-{
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_SPECULAR_MIP0_HARDWARE_SLICES;
-}
-static int ibl_specular_mip1_slices(void)
-{
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_SPECULAR_MIP1_HARDWARE_SLICES;
-}
-static int ibl_specular_mips_grouping_start(void)
-{
-	return is_software_renderer() ? IBL_SOFTWARE_MIP_GROUPING_START_MIP
-	                              : IBL_SPECULAR_MIP_GROUPING_START_MIP;
-}
-
-static const int IBL_LOG_LABEL_SIZE = 128;
 static const char* const HDR_TEXTURE_PATH = "assets/textures/hdr";
 static const char* const HDR_EXTENSION = ".hdr";
-static const float IBL_THRESHOLD_FALLBACK_MIN = 1.0F;
 
 static const int MAX_PATH_LENGTH = 256;
 
@@ -190,10 +129,8 @@ void app_finalize_environment_load(App* app, AsyncRequest* req)
 	}
 
 	if (hdr_tex) {
-		app->ibl_ctx.state = IBL_STATE_LUMINANCE;
-		app->ibl_ctx.pending_hdr_tex = hdr_tex;
-		app->ibl_ctx.width = req->width;
-		app->ibl_ctx.height = req->height;
+		ibl_coordinator_start(&app->ibl_coord, hdr_tex, req->width,
+		                      req->height);
 	} else {
 		LOG_ERROR("suckless-ogl.app",
 		          "Failed to create texture from HDR data!");
@@ -232,11 +169,11 @@ static void capture_snapshot(App* app)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-static void finalize_ibl_swap(App* app)
+static void finalize_ibl_swap(App* app, GLuint hdr_tex, GLuint spec_tex,
+                              GLuint irr_tex, float threshold)
 {
-	IBLContext* ctx = &app->ibl_ctx;
-
-	postprocess_set_exposure(&app->postprocess, ctx->threshold);
+	postprocess_set_exposure(&app->postprocess, threshold);
+	app->auto_threshold = threshold;
 
 	/* Recycle the old HDR texture instead of deleting it */
 	if (app->hdr_texture) {
@@ -256,271 +193,66 @@ static void finalize_ibl_swap(App* app)
 		glDeleteTextures(1, &app->irradiance_tex);
 	}
 
-	app->hdr_texture = ctx->pending_hdr_tex;
-	app->spec_prefiltered_tex = ctx->pending_spec_tex;
-	app->irradiance_tex = ctx->pending_irr_tex;
+	app->hdr_texture = hdr_tex;
+	app->spec_prefiltered_tex = spec_tex;
+	app->irradiance_tex = irr_tex;
 
-	ctx->pending_hdr_tex = 0;
-	ctx->pending_spec_tex = 0;
-	ctx->pending_irr_tex = 0;
-	ctx->state = IBL_STATE_IDLE;
-
-	double total_time_ms = perf_timer_elapsed_ms(&ctx->global_timer);
-	LOG_INFO("suckless-ogl.app",
-	         "[Frame %llu] Environment swap finalized. Total Time: "
-	         "%.2f ms",
-	         (unsigned long long)app->frame_count, total_time_ms);
+	LOG_INFO("suckless-ogl.app", "[Frame %llu] Environment swap finalized.",
+	         (unsigned long long)app->frame_count);
 }
 
-/** @brief Reset stage timing statistics for a new IBL stage. */
-static void ibl_stats_reset(IBLContext* ctx)
+static void handle_ibl_done_wait_state(App* app)
 {
-	perf_timer_start(&ctx->stage_timer);
-	ctx->stage_gpu_min = DBL_MAX;
-	ctx->stage_gpu_max = 0.0;
-	ctx->stage_gpu_sum = 0.0;
-	ctx->stage_slice_count = 0;
+	GLuint hdr_tex = 0;
+	GLuint spec_tex = 0;
+	GLuint irr_tex = 0;
+	float threshold = 0.0F;
+
+	if (ibl_coordinator_get_results(&app->ibl_coord, &hdr_tex, &spec_tex,
+	                                &irr_tex, &threshold)) {
+		finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex, threshold);
+		app->transition_state = TRANSITION_FADE_IN;
+		app->transition_alpha = 1.0F;
+	}
 }
 
-/** @brief Accumulate a slice's GPU timing into the stage statistics. */
-static void ibl_stats_accumulate(IBLContext* ctx, double gpu_ms)
+static void handle_ibl_done_loading_state(App* app)
 {
-	if (gpu_ms < ctx->stage_gpu_min) {
-		ctx->stage_gpu_min = gpu_ms;
+	if (app->env_transition_mode == ENV_TRANSITION_BLACK_SCREEN) {
+		/* Black Screen mode: Start fading out to black.
+		 * Do NOT consume results yet (wait for fade out). */
+		app->transition_state = TRANSITION_FADE_OUT;
+		app->transition_alpha = 0.0F;
+	} else {
+		/* Crossfade mode: Capture, swap and fade in */
+		GLuint hdr_tex = 0;
+		GLuint spec_tex = 0;
+		GLuint irr_tex = 0;
+		float threshold = 0.0F;
+
+		if (ibl_coordinator_get_results(&app->ibl_coord, &hdr_tex,
+		                                &spec_tex, &irr_tex,
+		                                &threshold)) {
+			capture_snapshot(app);
+			finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex,
+			                  threshold);
+			app->transition_state = TRANSITION_FADE_IN;
+			app->transition_alpha = 1.0F;
+		}
 	}
-	if (gpu_ms > ctx->stage_gpu_max) {
-		ctx->stage_gpu_max = gpu_ms;
-	}
-	ctx->stage_gpu_sum += gpu_ms;
-	ctx->stage_slice_count++;
 }
 
-/** @brief Log a single INFO summary line for a completed IBL stage. */
-static void ibl_stats_log_summary(IBLContext* ctx, unsigned long long frame,
-                                  const char* stage_name)
-{
-	if (ctx->stage_slice_count <= 0) {
-		return;
-	}
-	double wall_ms = perf_timer_elapsed_ms(&ctx->stage_timer);
-	double avg = ctx->stage_gpu_sum / ctx->stage_slice_count;
-	LOG_INFO("suckless-ogl.app",
-	         "[Frame %llu] Progressive IBL: %s — %d slices, "
-	         "GPU min/avg/max: %.2f / %.2f / %.2f ms, "
-	         "GPU total: %.2f ms, wall: %.2f ms",
-	         frame, stage_name, ctx->stage_slice_count, ctx->stage_gpu_min,
-	         avg, ctx->stage_gpu_max, ctx->stage_gpu_sum, wall_ms);
-}
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 void app_process_ibl_state_machine(App* app)
 {
-	IBLContext* ctx = &app->ibl_ctx;
-	if (ctx->state == IBL_STATE_IDLE) {
-		return;
-	}
+	IBLState state =
+	    ibl_coordinator_update(&app->ibl_coord, app->frame_count);
 
-	switch (ctx->state) {
-		case IBL_STATE_LUMINANCE: {
-			perf_timer_start(&ctx->global_timer);
-			ibl_stats_reset(ctx);
-			HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
-			{
-				LOG_INFO("suckless-ogl.app",
-				         "[Frame %llu] - Luminance...",
-				         (unsigned long long)app->frame_count);
-				ctx->threshold = compute_mean_luminance_gpu(
-				    app->shader_lum_pass1,
-				    app->shader_lum_pass2, ctx->pending_hdr_tex,
-				    ctx->width, ctx->height,
-				    DEFAULT_CLAMP_MULTIPLIER, app->lum_ssbo);
-			}
-
-			if (ctx->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
-			    isnan(ctx->threshold) || isinf(ctx->threshold)) {
-				ctx->threshold = DEFAULT_AUTO_THRESHOLD;
-			}
-			app->auto_threshold = ctx->threshold;
-			LOG_INFO("suckless-ogl.app",
-			         "[Frame %llu] Progressive IBL: Luminance — "
-			         "wall: %.2f ms",
-			         (unsigned long long)app->frame_count,
-			         perf_timer_elapsed_ms(&ctx->stage_timer));
-			ctx->state = IBL_STATE_SPECULAR_INIT;
-			break;
+	if (state == IBL_STATE_DONE) {
+		if (app->transition_state == TRANSITION_WAIT_IBL) {
+			handle_ibl_done_wait_state(app);
+		} else if (app->transition_state == TRANSITION_LOADING) {
+			handle_ibl_done_loading_state(app);
 		}
-
-		case IBL_STATE_SPECULAR_INIT: {
-			LOG_INFO("suckless-ogl.app",
-			         "[Frame %llu] - Specular Init...",
-			         (unsigned long long)app->frame_count);
-			ctx->pending_spec_tex =
-			    pbr_prefilter_init(PREFILTERED_SPECULAR_MAP_SIZE,
-			                       PREFILTERED_SPECULAR_MAP_SIZE);
-			ctx->total_mips =
-			    (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
-			ctx->current_mip = 0;
-			ctx->current_slice = 0;
-			ibl_stats_reset(ctx);
-			ctx->state = IBL_STATE_SPECULAR_MIPS;
-			break;
-		}
-
-		case IBL_STATE_SPECULAR_MIPS: {
-			if (ctx->current_mip >=
-			    ibl_specular_mips_grouping_start()) {
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(label, sizeof(label),
-				              "Progressive IBL: "
-				              "Specular Mips %d-%d",
-				              ctx->current_mip,
-				              ctx->total_mips - 1);
-				LOG_DEBUG("suckless-ogl.app",
-				          "[Frame %llu] - %s...",
-				          (unsigned long long)app->frame_count,
-				          label);
-
-				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-				{
-					for (int mip = ctx->current_mip;
-					     mip < ctx->total_mips; ++mip) {
-						pbr_prefilter_mip(
-						    app->shader_spmap,
-						    ctx->pending_hdr_tex,
-						    ctx->pending_spec_tex,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    mip, ctx->total_mips, 0, 1,
-						    ctx->threshold);
-					}
-				}
-				ibl_stats_accumulate(ctx, gpu_ms);
-				ctx->current_mip = ctx->total_mips;
-			} else {
-				if (ctx->current_mip == 0) {
-					ctx->total_slices =
-					    ibl_specular_mip0_slices();
-				} else if (ctx->current_mip == 1) {
-					ctx->total_slices =
-					    ibl_specular_mip1_slices();
-				} else {
-					ctx->total_slices = 1;
-				}
-
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(label, sizeof(label),
-				              "Progressive IBL: Specular Mip "
-				              "%d Slice %d/%d",
-				              ctx->current_mip,
-				              ctx->current_slice + 1,
-				              ctx->total_slices);
-				LOG_DEBUG("suckless-ogl.app",
-				          "[Frame %llu] - %s...",
-				          (unsigned long long)app->frame_count,
-				          label);
-				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-				{
-					pbr_prefilter_mip(
-					    app->shader_spmap,
-					    ctx->pending_hdr_tex,
-					    ctx->pending_spec_tex,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    ctx->current_mip, ctx->total_mips,
-					    ctx->current_slice,
-					    ctx->total_slices, ctx->threshold);
-				}
-				ibl_stats_accumulate(ctx, gpu_ms);
-
-				ctx->current_slice++;
-				if (ctx->current_slice >= ctx->total_slices) {
-					ctx->current_slice = 0;
-					ctx->current_mip++;
-				}
-			}
-
-			if (ctx->current_mip >= ctx->total_mips) {
-				ibl_stats_log_summary(
-				    ctx, (unsigned long long)app->frame_count,
-				    "Specular");
-				ctx->state = IBL_STATE_IRRADIANCE;
-				ctx->current_slice = 0;
-				ctx->total_slices = ibl_irradiance_slices();
-				ibl_stats_reset(ctx);
-				ctx->pending_irr_tex =
-				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
-			}
-			break;
-		}
-
-		case IBL_STATE_IRRADIANCE: {
-			char label[IBL_LOG_LABEL_SIZE];
-			safe_snprintf(label, sizeof(label),
-			              "Progressive IBL: Irradiance Slice %d/%d",
-			              ctx->current_slice + 1,
-			              ctx->total_slices);
-			LOG_DEBUG("suckless-ogl.app", "[Frame %llu] - %s...",
-			          (unsigned long long)app->frame_count, label);
-
-			HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-			{
-				pbr_irradiance_slice_compute(
-				    app->shader_irmap, ctx->pending_hdr_tex,
-				    ctx->pending_irr_tex, IRIDIANCE_MAP_SIZE,
-				    ctx->current_slice, ctx->total_slices,
-				    ctx->threshold);
-			}
-			ibl_stats_accumulate(ctx, gpu_ms);
-
-			ctx->current_slice++;
-			if (ctx->current_slice >= ctx->total_slices) {
-				ibl_stats_log_summary(
-				    ctx, (unsigned long long)app->frame_count,
-				    "Irradiance");
-				ctx->state = IBL_STATE_DONE;
-			}
-			break;
-		}
-
-		case IBL_STATE_DONE: {
-			/* Single deferred barrier for all preceding compute
-			 * dispatches (specular + irradiance). Individual slices
-			 * write to disjoint regions and read from the same
-			 * source texture, so no inter-slice barriers were
-			 * needed. This one barrier ensures all image stores
-			 * are visible before the textures are sampled. */
-			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
-
-			if (app->transition_state == TRANSITION_WAIT_IBL) {
-				/* Initial load: Stay black, just swap
-				 * and fade in
-				 */
-				finalize_ibl_swap(app);
-				app->transition_state = TRANSITION_FADE_IN;
-				app->transition_alpha = 1.0F;
-			} else if (app->transition_state ==
-			           TRANSITION_LOADING) {
-				if (app->env_transition_mode ==
-				    ENV_TRANSITION_BLACK_SCREEN) {
-					/* Black Screen mode: Start
-					 * fading out to black */
-					app->transition_state =
-					    TRANSITION_FADE_OUT;
-					app->transition_alpha = 0.0F;
-				} else {
-					/* Crossfade mode: Capture, swap
-					 * and fade in */
-					capture_snapshot(app);
-					finalize_ibl_swap(app);
-					app->transition_state =
-					    TRANSITION_FADE_IN;
-					app->transition_alpha = 1.0F;
-				}
-			}
-			break;
-		}
-		default:
-			break;
 	}
 }
 
@@ -539,9 +271,19 @@ void app_update_transition(App* app)
 				app->transition_alpha = 1.0F;
 
 				/* BLACK SCREEN SWAP HAPPENS HERE */
-				finalize_ibl_swap(app);
-
-				app->transition_state = TRANSITION_FADE_IN;
+				GLuint hdr_tex = 0;
+				GLuint spec_tex = 0;
+				GLuint irr_tex = 0;
+				float threshold = 0.0F;
+				if (ibl_coordinator_get_results(
+				        &app->ibl_coord, &hdr_tex, &spec_tex,
+				        &irr_tex, &threshold)) {
+					finalize_ibl_swap(app, hdr_tex,
+					                  spec_tex, irr_tex,
+					                  threshold);
+					app->transition_state =
+					    TRANSITION_FADE_IN;
+				}
 			}
 			break;
 

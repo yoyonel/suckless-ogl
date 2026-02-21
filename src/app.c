@@ -11,6 +11,7 @@
 #include "fps.h"
 #include "gl_common.h"
 #include "glad/glad.h"
+#include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
 #include "render_utils.h"
@@ -224,6 +225,10 @@ int app_init(App* app, int width, int height, const char* title)
 	app->shader_lum_pass2 =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 
+	ibl_coordinator_init(&app->ibl_coord, app->shader_spmap,
+	                     app->shader_irmap, app->shader_lum_pass1,
+	                     app->shader_lum_pass2);
+
 #ifdef USE_SSBO_RENDERING
 	app_init_ssbo(app);
 	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
@@ -401,6 +406,8 @@ void app_cleanup(App* app)
 	app_cleanup_gpu_vbos(app);
 	app_cleanup_gpu_textures(app);
 	app_cleanup_gpu_pbos(app);
+
+	ibl_coordinator_cleanup(&app->ibl_coord);
 
 	adaptive_sampler_cleanup(&app->fps_sampler);
 

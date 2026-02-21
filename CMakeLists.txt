@@ -86,10 +86,55 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 
 
-file(GLOB_RECURSE SOURCES
-    CONFIGURE_DEPENDS
-    "src/*.c"
-    "src/*.cpp" # Added to support tracy_gpu.cpp
+set(SOURCES
+    src/action_notifier.c
+    src/adaptive_sampler.c
+    src/app.c
+    src/app_env.c
+    src/app_input.c
+    src/app_metrics.c
+    src/app_scene.c
+    src/app_ui.c
+    src/async_loader.c
+    src/billboard_rendering.c
+    src/camera.c
+    src/camera_input.c
+    src/cli.c
+    src/effect_benchmark.c
+    src/fps.c
+    src/gl_debug.c
+    src/gpu_profiler.c
+    src/gpu_profiler_ui.c
+    src/ibl_coordinator.c
+    src/icosphere.c
+    src/instanced_rendering.c
+    src/io.c
+    src/log.c
+    src/main.c
+    src/material.c
+    src/metric_stack.c
+    src/pbr.c
+    src/perf_mode.c
+    src/perf_timer.c
+    src/postprocess.c
+    src/render_utils.c
+    src/shader.c
+    src/simd_utils.c
+    src/skybox.c
+    src/sphere_sorting.c
+    src/ssbo_rendering.c
+    src/stb_image_impl.c
+    src/texture.c
+    src/tracy_gpu.cpp
+    src/tracy_log.c
+    src/tracy_manager.c
+    src/ui.c
+    src/utils.c
+    src/window.c
+    src/effects/fx_auto_exposure.c
+    src/effects/fx_bloom.c
+    src/effects/fx_dof.c
+    src/effects/fx_motion_blur.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
