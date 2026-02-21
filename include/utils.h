@@ -35,13 +35,7 @@ static inline bool check_flag(int value, int flag)
 /**
  * @brief calloc wrapper with zero-size check.
  */
-static inline void* safe_calloc(size_t num, size_t size)
-{
-	if (num == 0 || size == 0) {
-		return NULL;
-	}
-	return calloc(num, size);
-}
+void* safe_calloc(size_t num, size_t size);
 
 /**
  * @brief memcpy wrapper with bounds checking.
@@ -80,24 +74,7 @@ void safe_strncat(char* dest, size_t dest_size, const char* src);
  * @param filename The filename to check.
  * @return true if the filename is safe, false otherwise.
  */
-static inline bool is_safe_filename(const char* filename)
-{
-	if (!filename) {
-		return false;
-	}
-	/* Check for directory traversal (..) */
-	if (strstr(filename, "..") != NULL) {
-		return false;
-	}
-	if (strcmp(filename, ".") == 0) {
-		return false;
-	}
-	/* Check for path separators (Linux/Windows) */
-	if (strchr(filename, '/') != NULL || strchr(filename, '\\') != NULL) {
-		return false;
-	}
-	return true;
-}
+bool is_safe_filename(const char* filename);
 
 /**
  * @brief Validates a relative path to prevent arbitrary file access.
@@ -108,29 +85,7 @@ static inline bool is_safe_filename(const char* filename)
  * @param path The relative path to check.
  * @return true if the path is safe, false otherwise.
  */
-static inline bool is_safe_relative_path(const char* path)
-{
-	if (!path) {
-		return false;
-	}
-	/* No parent directory traversal */
-	if (strstr(path, "..") != NULL) {
-		return false;
-	}
-	/* No absolute paths */
-	if (path[0] == '/') {
-		return false;
-	}
-	/* No Windows-style backslashes */
-	if (strchr(path, '\\') != NULL) {
-		return false;
-	}
-	/* No Windows-style drive letters or colon-based protocols */
-	if (strstr(path, ":") != NULL) {
-		return false;
-	}
-	return true;
-}
+bool is_safe_relative_path(const char* path);
 
 /**
  * @brief RAII callback for `FILE*`.
