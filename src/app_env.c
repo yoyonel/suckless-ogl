@@ -3,14 +3,11 @@
 #include "async_loader.h"
 #include "ibl_coordinator.h"
 #include "log.h"
-#include "pbr.h"
-#include "perf_timer.h"
 #include "postprocess.h"
 #include "texture.h"
 #include "utils.h"
 #include <dirent.h>
 #include <float.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -201,52 +198,46 @@ static void finalize_ibl_swap(App* app, GLuint hdr_tex, GLuint spec_tex,
 	         (unsigned long long)app->frame_count);
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
+static void handle_ibl_transition_done(App* app, GLuint hdr_tex,
+                                       GLuint spec_tex, GLuint irr_tex,
+                                       float threshold)
+{
+	if (app->transition_state == TRANSITION_WAIT_IBL) {
+		/* Initial load: Stay black, just swap and fade in */
+		finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex, threshold);
+		app->transition_state = TRANSITION_FADE_IN;
+		app->transition_alpha = 1.0F;
+	} else if (app->transition_state == TRANSITION_LOADING) {
+		/* Crossfade mode: Capture, swap and fade in */
+		capture_snapshot(app);
+		finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex, threshold);
+		app->transition_state = TRANSITION_FADE_IN;
+		app->transition_alpha = 1.0F;
+	}
+}
+
 void app_process_ibl_state_machine(App* app)
 {
 	IBLState state =
 	    ibl_coordinator_update(&app->ibl_coord, app->frame_count);
 
 	if (state == IBL_STATE_DONE) {
-		if (app->transition_state == TRANSITION_WAIT_IBL) {
-			/* Initial load: Stay black, just swap and fade in */
-			GLuint hdr_tex = 0;
-			GLuint spec_tex = 0;
-			GLuint irr_tex = 0;
+		if (app->transition_state == TRANSITION_LOADING &&
+		    app->env_transition_mode == ENV_TRANSITION_BLACK_SCREEN) {
+			/* Just trigger fade out, don't consume yet */
+			app->transition_state = TRANSITION_FADE_OUT;
+			app->transition_alpha = 0.0F;
+		} else if (app->transition_state == TRANSITION_WAIT_IBL ||
+		           app->transition_state == TRANSITION_LOADING) {
+			GLuint hdr = 0;
+			GLuint spec = 0;
+			GLuint irr = 0;
 			float threshold = 0.0F;
-			if (ibl_coordinator_get_results(&app->ibl_coord,
-			                                &hdr_tex, &spec_tex,
-			                                &irr_tex, &threshold)) {
-				finalize_ibl_swap(app, hdr_tex, spec_tex,
-				                  irr_tex, threshold);
-				app->transition_state = TRANSITION_FADE_IN;
-				app->transition_alpha = 1.0F;
-			}
-		} else if (app->transition_state == TRANSITION_LOADING) {
-			if (app->env_transition_mode ==
-			    ENV_TRANSITION_BLACK_SCREEN) {
-				/* Black Screen mode: Start fading out to black.
-				 * Do NOT consume results yet (wait for fade
-				 * out). */
-				app->transition_state = TRANSITION_FADE_OUT;
-				app->transition_alpha = 0.0F;
-			} else {
-				/* Crossfade mode: Capture, swap and fade in */
-				GLuint hdr_tex = 0;
-				GLuint spec_tex = 0;
-				GLuint irr_tex = 0;
-				float threshold = 0.0F;
-				if (ibl_coordinator_get_results(
-				        &app->ibl_coord, &hdr_tex, &spec_tex,
-				        &irr_tex, &threshold)) {
-					capture_snapshot(app);
-					finalize_ibl_swap(app, hdr_tex,
-					                  spec_tex, irr_tex,
-					                  threshold);
-					app->transition_state =
-					    TRANSITION_FADE_IN;
-					app->transition_alpha = 1.0F;
-				}
+			if (ibl_coordinator_get_results(&app->ibl_coord, &hdr,
+			                                &spec, &irr,
+			                                &threshold)) {
+				handle_ibl_transition_done(app, hdr, spec, irr,
+				                           threshold);
 			}
 		}
 	}
