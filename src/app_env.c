@@ -214,9 +214,9 @@ void app_process_ibl_state_machine(App* app)
 			GLuint spec_tex = 0;
 			GLuint irr_tex = 0;
 			float threshold = 0.0F;
-			if (ibl_coordinator_get_results(
-			        &app->ibl_coord, &hdr_tex, &spec_tex,
-			        &irr_tex, &threshold)) {
+			if (ibl_coordinator_get_results(&app->ibl_coord,
+			                                &hdr_tex, &spec_tex,
+			                                &irr_tex, &threshold)) {
 				finalize_ibl_swap(app, hdr_tex, spec_tex,
 				                  irr_tex, threshold);
 				app->transition_state = TRANSITION_FADE_IN;
@@ -240,8 +240,9 @@ void app_process_ibl_state_machine(App* app)
 				        &app->ibl_coord, &hdr_tex, &spec_tex,
 				        &irr_tex, &threshold)) {
 					capture_snapshot(app);
-					finalize_ibl_swap(app, hdr_tex, spec_tex,
-					                  irr_tex, threshold);
+					finalize_ibl_swap(app, hdr_tex,
+					                  spec_tex, irr_tex,
+					                  threshold);
 					app->transition_state =
 					    TRANSITION_FADE_IN;
 					app->transition_alpha = 1.0F;
@@ -273,8 +274,9 @@ void app_update_transition(App* app)
 				if (ibl_coordinator_get_results(
 				        &app->ibl_coord, &hdr_tex, &spec_tex,
 				        &irr_tex, &threshold)) {
-					finalize_ibl_swap(app, hdr_tex, spec_tex,
-					                  irr_tex, threshold);
+					finalize_ibl_swap(app, hdr_tex,
+					                  spec_tex, irr_tex,
+					                  threshold);
 					app->transition_state =
 					    TRANSITION_FADE_IN;
 				}
