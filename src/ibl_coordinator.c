@@ -122,7 +122,7 @@ void ibl_coordinator_init(IBLCoordinator* coord, GLuint shader_spmap,
                           GLuint shader_irmap, GLuint shader_lum_pass1,
                           GLuint shader_lum_pass2)
 {
-	memset(coord, 0, sizeof(IBLCoordinator));
+	safe_memset(coord, sizeof(IBLCoordinator), 0, sizeof(IBLCoordinator));
 	coord->state = IBL_STATE_IDLE;
 
 	coord->shader_spmap = shader_spmap;
@@ -170,165 +170,171 @@ void ibl_coordinator_start(IBLCoordinator* coord, GLuint hdr_tex, int width,
 	coord->state = IBL_STATE_LUMINANCE;
 }
 
-IBLState ibl_coordinator_update(IBLCoordinator* ctx, uint64_t frame_count)
+static IBLState process_luminance(IBLCoordinator* coord,
+                                  unsigned long long frame)
 {
-	if (ctx->state == IBL_STATE_IDLE || ctx->state == IBL_STATE_DONE) {
-		return ctx->state;
+	perf_timer_start(&coord->global_timer);
+	ibl_stats_reset(coord);
+	HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
+	{
+		LOG_INFO("suckless-ogl.ibl", "[Frame %llu] - Luminance...",
+		         frame);
+		coord->threshold = compute_mean_luminance_gpu(
+		    coord->shader_lum_pass1, coord->shader_lum_pass2,
+		    coord->pending_hdr_tex, coord->width, coord->height,
+		    DEFAULT_CLAMP_MULTIPLIER, coord->lum_ssbo);
+	}
+
+	if (coord->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
+	    isnan(coord->threshold) || isinf(coord->threshold)) {
+		coord->threshold = DEFAULT_AUTO_THRESHOLD;
+	}
+
+	LOG_INFO("suckless-ogl.ibl",
+	         "[Frame %llu] Progressive IBL: Luminance — "
+	         "wall: %.2f ms",
+	         frame, perf_timer_elapsed_ms(&coord->stage_timer));
+	return IBL_STATE_SPECULAR_INIT;
+}
+
+static IBLState process_specular_init(IBLCoordinator* coord,
+                                      unsigned long long frame)
+{
+	LOG_INFO("suckless-ogl.ibl", "[Frame %llu] - Specular Init...", frame);
+	coord->pending_spec_tex = pbr_prefilter_init(
+	    PREFILTERED_SPECULAR_MAP_SIZE, PREFILTERED_SPECULAR_MAP_SIZE);
+	coord->total_mips = (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
+	coord->current_mip = 0;
+	coord->current_slice = 0;
+	ibl_stats_reset(coord);
+	return IBL_STATE_SPECULAR_MIPS;
+}
+
+static IBLState process_specular_mips(IBLCoordinator* coord,
+                                      unsigned long long frame)
+{
+	if (coord->current_mip >= ibl_specular_mips_grouping_start()) {
+		char label[IBL_LOG_LABEL_SIZE];
+		safe_snprintf(label, sizeof(label),
+		              "Progressive IBL: "
+		              "Specular Mips %d-%d",
+		              coord->current_mip, coord->total_mips - 1);
+		LOG_DEBUG("suckless-ogl.ibl", "[Frame %llu] - %s...", frame,
+		          label);
+
+		HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
+		{
+			for (int mip = coord->current_mip;
+			     mip < coord->total_mips; ++mip) {
+				pbr_prefilter_mip(
+				    coord->shader_spmap, coord->pending_hdr_tex,
+				    coord->pending_spec_tex,
+				    PREFILTERED_SPECULAR_MAP_SIZE,
+				    PREFILTERED_SPECULAR_MAP_SIZE, mip,
+				    coord->total_mips, 0, 1, coord->threshold);
+			}
+		}
+		ibl_stats_accumulate(coord, gpu_ms);
+		coord->current_mip = coord->total_mips;
+	} else {
+		if (coord->current_mip == 0) {
+			coord->total_slices = ibl_specular_mip0_slices();
+		} else if (coord->current_mip == 1) {
+			coord->total_slices = ibl_specular_mip1_slices();
+		} else {
+			coord->total_slices = 1;
+		}
+
+		char label[IBL_LOG_LABEL_SIZE];
+		safe_snprintf(label, sizeof(label),
+		              "Progressive IBL: Specular Mip "
+		              "%d Slice %d/%d",
+		              coord->current_mip, coord->current_slice + 1,
+		              coord->total_slices);
+		LOG_DEBUG("suckless-ogl.ibl", "[Frame %llu] - %s...", frame,
+		          label);
+		HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
+		{
+			pbr_prefilter_mip(
+			    coord->shader_spmap, coord->pending_hdr_tex,
+			    coord->pending_spec_tex,
+			    PREFILTERED_SPECULAR_MAP_SIZE,
+			    PREFILTERED_SPECULAR_MAP_SIZE, coord->current_mip,
+			    coord->total_mips, coord->current_slice,
+			    coord->total_slices, coord->threshold);
+		}
+		ibl_stats_accumulate(coord, gpu_ms);
+
+		coord->current_slice++;
+		if (coord->current_slice >= coord->total_slices) {
+			coord->current_slice = 0;
+			coord->current_mip++;
+		}
+	}
+
+	if (coord->current_mip >= coord->total_mips) {
+		ibl_stats_log_summary(coord, frame, "Specular");
+		coord->current_slice = 0;
+		coord->total_slices = ibl_irradiance_slices();
+		ibl_stats_reset(coord);
+		coord->pending_irr_tex =
+		    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
+		return IBL_STATE_IRRADIANCE;
+	}
+	return IBL_STATE_SPECULAR_MIPS;
+}
+
+static IBLState process_irradiance(IBLCoordinator* coord,
+                                   unsigned long long frame)
+{
+	char label[IBL_LOG_LABEL_SIZE];
+	safe_snprintf(label, sizeof(label),
+	              "Progressive IBL: Irradiance Slice %d/%d",
+	              coord->current_slice + 1, coord->total_slices);
+	LOG_DEBUG("suckless-ogl.ibl", "[Frame %llu] - %s...", frame, label);
+
+	HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
+	{
+		pbr_irradiance_slice_compute(
+		    coord->shader_irmap, coord->pending_hdr_tex,
+		    coord->pending_irr_tex, IRIDIANCE_MAP_SIZE,
+		    coord->current_slice, coord->total_slices,
+		    coord->threshold);
+	}
+	ibl_stats_accumulate(coord, gpu_ms);
+
+	coord->current_slice++;
+	if (coord->current_slice >= coord->total_slices) {
+		ibl_stats_log_summary(coord, frame, "Irradiance");
+		return IBL_STATE_DONE;
+	}
+	return IBL_STATE_IRRADIANCE;
+}
+
+IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count)
+{
+	if (coord->state == IBL_STATE_IDLE || coord->state == IBL_STATE_DONE) {
+		return coord->state;
 	}
 
 	unsigned long long frame = (unsigned long long)frame_count;
 
-	switch (ctx->state) {
-		case IBL_STATE_LUMINANCE: {
-			perf_timer_start(&ctx->global_timer);
-			ibl_stats_reset(ctx);
-			HYBRID_MEASURE_LOG("Progressive IBL: Luminance")
-			{
-				LOG_INFO("suckless-ogl.ibl",
-				         "[Frame %llu] - Luminance...", frame);
-				ctx->threshold = compute_mean_luminance_gpu(
-				    ctx->shader_lum_pass1,
-				    ctx->shader_lum_pass2, ctx->pending_hdr_tex,
-				    ctx->width, ctx->height,
-				    DEFAULT_CLAMP_MULTIPLIER, ctx->lum_ssbo);
-			}
-
-			if (ctx->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
-			    isnan(ctx->threshold) || isinf(ctx->threshold)) {
-				ctx->threshold = DEFAULT_AUTO_THRESHOLD;
-			}
-
-			LOG_INFO("suckless-ogl.ibl",
-			         "[Frame %llu] Progressive IBL: Luminance — "
-			         "wall: %.2f ms",
-			         frame,
-			         perf_timer_elapsed_ms(&ctx->stage_timer));
-			ctx->state = IBL_STATE_SPECULAR_INIT;
+	switch (coord->state) {
+		case IBL_STATE_LUMINANCE:
+			coord->state = process_luminance(coord, frame);
 			break;
-		}
 
-		case IBL_STATE_SPECULAR_INIT: {
-			LOG_INFO("suckless-ogl.ibl",
-			         "[Frame %llu] - Specular Init...", frame);
-			ctx->pending_spec_tex =
-			    pbr_prefilter_init(PREFILTERED_SPECULAR_MAP_SIZE,
-			                       PREFILTERED_SPECULAR_MAP_SIZE);
-			ctx->total_mips =
-			    (int)floor(log2(PREFILTERED_SPECULAR_MAP_SIZE)) + 1;
-			ctx->current_mip = 0;
-			ctx->current_slice = 0;
-			ibl_stats_reset(ctx);
-			ctx->state = IBL_STATE_SPECULAR_MIPS;
+		case IBL_STATE_SPECULAR_INIT:
+			coord->state = process_specular_init(coord, frame);
 			break;
-		}
 
-		case IBL_STATE_SPECULAR_MIPS: {
-			if (ctx->current_mip >=
-			    ibl_specular_mips_grouping_start()) {
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(label, sizeof(label),
-				              "Progressive IBL: "
-				              "Specular Mips %d-%d",
-				              ctx->current_mip,
-				              ctx->total_mips - 1);
-				LOG_DEBUG("suckless-ogl.ibl",
-				          "[Frame %llu] - %s...", frame, label);
-
-				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-				{
-					for (int mip = ctx->current_mip;
-					     mip < ctx->total_mips; ++mip) {
-						pbr_prefilter_mip(
-						    ctx->shader_spmap,
-						    ctx->pending_hdr_tex,
-						    ctx->pending_spec_tex,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    PREFILTERED_SPECULAR_MAP_SIZE,
-						    mip, ctx->total_mips, 0, 1,
-						    ctx->threshold);
-					}
-				}
-				ibl_stats_accumulate(ctx, gpu_ms);
-				ctx->current_mip = ctx->total_mips;
-			} else {
-				if (ctx->current_mip == 0) {
-					ctx->total_slices =
-					    ibl_specular_mip0_slices();
-				} else if (ctx->current_mip == 1) {
-					ctx->total_slices =
-					    ibl_specular_mip1_slices();
-				} else {
-					ctx->total_slices = 1;
-				}
-
-				char label[IBL_LOG_LABEL_SIZE];
-				safe_snprintf(label, sizeof(label),
-				              "Progressive IBL: Specular Mip "
-				              "%d Slice %d/%d",
-				              ctx->current_mip,
-				              ctx->current_slice + 1,
-				              ctx->total_slices);
-				LOG_DEBUG("suckless-ogl.ibl",
-				          "[Frame %llu] - %s...", frame, label);
-				HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-				{
-					pbr_prefilter_mip(
-					    ctx->shader_spmap,
-					    ctx->pending_hdr_tex,
-					    ctx->pending_spec_tex,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    PREFILTERED_SPECULAR_MAP_SIZE,
-					    ctx->current_mip, ctx->total_mips,
-					    ctx->current_slice,
-					    ctx->total_slices, ctx->threshold);
-				}
-				ibl_stats_accumulate(ctx, gpu_ms);
-
-				ctx->current_slice++;
-				if (ctx->current_slice >= ctx->total_slices) {
-					ctx->current_slice = 0;
-					ctx->current_mip++;
-				}
-			}
-
-			if (ctx->current_mip >= ctx->total_mips) {
-				ibl_stats_log_summary(ctx, frame, "Specular");
-				ctx->state = IBL_STATE_IRRADIANCE;
-				ctx->current_slice = 0;
-				ctx->total_slices = ibl_irradiance_slices();
-				ibl_stats_reset(ctx);
-				ctx->pending_irr_tex =
-				    pbr_irradiance_init(IRIDIANCE_MAP_SIZE);
-			}
+		case IBL_STATE_SPECULAR_MIPS:
+			coord->state = process_specular_mips(coord, frame);
 			break;
-		}
 
-		case IBL_STATE_IRRADIANCE: {
-			char label[IBL_LOG_LABEL_SIZE];
-			safe_snprintf(label, sizeof(label),
-			              "Progressive IBL: Irradiance Slice %d/%d",
-			              ctx->current_slice + 1,
-			              ctx->total_slices);
-			LOG_DEBUG("suckless-ogl.ibl", "[Frame %llu] - %s...",
-			          frame, label);
-
-			HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
-			{
-				pbr_irradiance_slice_compute(
-				    ctx->shader_irmap, ctx->pending_hdr_tex,
-				    ctx->pending_irr_tex, IRIDIANCE_MAP_SIZE,
-				    ctx->current_slice, ctx->total_slices,
-				    ctx->threshold);
-			}
-			ibl_stats_accumulate(ctx, gpu_ms);
-
-			ctx->current_slice++;
-			if (ctx->current_slice >= ctx->total_slices) {
-				ibl_stats_log_summary(ctx, frame, "Irradiance");
-				ctx->state = IBL_STATE_DONE;
-			}
+		case IBL_STATE_IRRADIANCE:
+			coord->state = process_irradiance(coord, frame);
 			break;
-		}
 
 		case IBL_STATE_DONE:
 			/* Barrier logic is better handled by caller or implicit
@@ -340,7 +346,7 @@ IBLState ibl_coordinator_update(IBLCoordinator* ctx, uint64_t frame_count)
 			break;
 	}
 
-	return ctx->state;
+	return coord->state;
 }
 
 int ibl_coordinator_get_results(IBLCoordinator* coord, GLuint* out_hdr_tex,
