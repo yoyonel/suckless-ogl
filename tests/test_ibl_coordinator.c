@@ -3,11 +3,144 @@
 #include "unity.h"
 #include <string.h>
 
-static IBLCoordinator coord;
+/* --- Stubs for PBR and PerfTimer dependencies --- */
+#include "pbr.h"
+#include "perf_timer.h"
 
-/* Stub out log functions if needed, but they are usually macro'd to printf or
- * internal. If they are in log.c, we linked it. log.c uses printf.
- */
+/* Mocks for perf_timer */
+void perf_timer_start(PerfTimer* timer)
+{
+	(void)timer;
+}
+double perf_timer_elapsed_ms(PerfTimer* timer)
+{
+	(void)timer;
+	return 1.0;
+}
+double perf_timer_elapsed_us(PerfTimer* timer)
+{
+	(void)timer;
+	return 1000.0;
+}
+double perf_timer_elapsed_s(PerfTimer* timer)
+{
+	(void)timer;
+	return 0.001;
+}
+
+/* Mocks for gpu_timer */
+void gpu_timer_start(GPUTimer* timer)
+{
+	(void)timer;
+}
+void gpu_timer_stop(GPUTimer* timer)
+{
+	(void)timer;
+}
+double gpu_timer_elapsed_ms(GPUTimer* timer, int wait)
+{
+	(void)timer;
+	(void)wait;
+	return 2.0;
+}
+void gpu_timer_cleanup(GPUTimer* timer)
+{
+	(void)timer;
+}
+
+/* Mocks for hybrid timer */
+HybridTimer perf_hybrid_start(void)
+{
+	HybridTimer t = {0};
+	return t;
+}
+void perf_hybrid_stop(HybridTimer* timer, const char* label)
+{
+	(void)timer;
+	(void)label;
+}
+double perf_hybrid_stop_debug(HybridTimer* timer, const char* label)
+{
+	(void)timer;
+	(void)label;
+	return 2.0;
+}
+
+/* Mocks for pbr */
+GLuint build_prefiltered_specular_map(GLuint shader, GLuint env, int w, int h,
+                                      float t)
+{
+	(void)shader;
+	(void)env;
+	(void)w;
+	(void)h;
+	(void)t;
+	return 0;
+}
+GLuint pbr_prefilter_init(int w, int h)
+{
+	(void)w;
+	(void)h;
+	return 200;
+}
+void pbr_prefilter_mip(GLuint shader, GLuint env, GLuint dest, int w, int h,
+                       int level, int total, int slice, int slices, float t)
+{
+	(void)shader;
+	(void)env;
+	(void)dest;
+	(void)w;
+	(void)h;
+	(void)level;
+	(void)total;
+	(void)slice;
+	(void)slices;
+	(void)t;
+}
+GLuint build_irradiance_map(GLuint shader, GLuint env, int size, float t)
+{
+	(void)shader;
+	(void)env;
+	(void)size;
+	(void)t;
+	return 0;
+}
+GLuint pbr_irradiance_init(int size)
+{
+	(void)size;
+	return 300;
+}
+void pbr_irradiance_slice_compute(GLuint shader, GLuint env, GLuint dest,
+                                  int size, int slice, int slices, float t)
+{
+	(void)shader;
+	(void)env;
+	(void)dest;
+	(void)size;
+	(void)slice;
+	(void)slices;
+	(void)t;
+}
+GLuint build_brdf_lut_map(int size)
+{
+	(void)size;
+	return 400;
+}
+float compute_mean_luminance_gpu(GLuint s1, GLuint s2, GLuint tex, int w, int h,
+                                 float m, GLuint ssbos[2])
+{
+	(void)s1;
+	(void)s2;
+	(void)tex;
+	(void)w;
+	(void)h;
+	(void)m;
+	(void)ssbos;
+	return 0.5f;
+}
+/* ------------------------------------------------ */
+
+static IBLCoordinator coord;
 
 void setUp(void)
 {

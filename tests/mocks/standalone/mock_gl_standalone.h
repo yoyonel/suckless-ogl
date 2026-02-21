@@ -82,7 +82,7 @@ void glUseProgram(GLuint program);
 void glUniform1i(GLint location, GLint v0);
 void glUniform1f(GLint location, float v0);
 void glUniform2fv(GLint location, GLsizei count, const float* value);
-void Uniform3fv(GLint location, GLsizei count, const float* value);
+void glUniform3fv(GLint location, GLsizei count, const float* value);
 void glUniform4fv(GLint location, GLsizei count, const float* value);
 void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose,
                         const float* value);

@@ -24,6 +24,7 @@
 #include "effect_benchmark.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
+#include "ibl_coordinator.h"
 #include "instanced_rendering.h"
 #include "material.h"
 #include "perf_mode.h"
@@ -35,16 +36,6 @@
 #include "tracy_manager.h"
 #include "ui.h"
 #include <cglm/cglm.h>
-
-typedef enum {
-	IBL_STATE_IDLE = 0,  /**< Application is waiting for a request. */
-	IBL_STATE_LUMINANCE, /**< GPU-side analysis of HDR mean luminance. */
-	IBL_STATE_SPECULAR_INIT, /**< Preparation of specular map textures. */
-	IBL_STATE_SPECULAR_MIPS, /**< Sliced pre-filtering of specular levels.
-	                          */
-	IBL_STATE_IRRADIANCE,    /**< Sliced convolution of irradiance map. */
-	IBL_STATE_DONE /**< Resource cleanup and texture activation. */
-} IBLState;
 
 typedef struct AsyncLoader
     AsyncLoader; /**< Forward declaration of AsyncLoader. */
@@ -60,35 +51,6 @@ typedef enum {
 	TRANSITION_FADE_OUT, /**< Old scene -> Black. */
 	TRANSITION_FADE_IN   /**< Black -> New scene. */
 } TransitionState;
-
-/**
- * @struct IBLContext
- * @brief Progressive environment processing state.
- *
- * Manages the state machine that allows high-quality IBL generation without
- * freezing the main thread.
- */
-typedef struct {
-	IBLState state;          /**< Current processing phase. */
-	int current_mip;         /**< Mip level being computed. */
-	int total_mips;          /**< Target mip count. */
-	int width;               /**< Source texture width. */
-	int height;              /**< Source texture height. */
-	float threshold;         /**< Radiance threshold for sampling. */
-	GLuint pending_hdr_tex;  /**< Source HDR texture handle. */
-	GLuint pending_spec_tex; /**< Target specular map handle. */
-	GLuint pending_irr_tex;  /**< Target irradiance map handle. */
-	int current_slice;       /**< Cubemap face/slice being processed. */
-	int total_slices;        /**< Face count (typically 6). */
-	PerfTimer global_timer;  /**< Benchmarking for the entire process. */
-
-	/* Per-stage GPU timing statistics (for summary logging) */
-	PerfTimer stage_timer; /**< Wall-clock timer for the current stage. */
-	double stage_gpu_min;  /**< Minimum GPU time across slices (ms). */
-	double stage_gpu_max;  /**< Maximum GPU time across slices (ms). */
-	double stage_gpu_sum;  /**< Accumulated GPU time across slices (ms). */
-	int stage_slice_count; /**< Number of slices completed in stage. */
-} IBLContext;
 
 /**
  * @struct InstancedUniforms
@@ -177,9 +139,9 @@ typedef struct App {
 	int sphere_instance_count;        /**< Active sphere count. */
 #endif
 
-	Skybox skybox;      /**< Environment renderer. */
-	Camera camera;      /**< View/Proj state. */
-	IBLContext ibl_ctx; /**< IBL Loader state machine. */
+	Skybox skybox;            /**< Environment renderer. */
+	Camera camera;            /**< View/Proj state. */
+	IBLCoordinator ibl_coord; /**< IBL Loader state machine. */
 
 	/* --- App State Flags and Values --- */
 	int width;                     /**< Current window/viewport width. */
