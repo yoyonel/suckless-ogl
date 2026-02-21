@@ -153,10 +153,11 @@ GLuint build_brdf_lut_map(int size)
 	(void)size;
 	return TEST_BRDF_ID;
 }
-float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
-                                 GLuint hdr_tex, int width, int height,
-                                 // NOLINTNEXTLINE(readability-non-const-parameter)
-                                 float clamp_multiplier, GLuint ssbos[2])
+float compute_mean_luminance_gpu(
+    GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width,
+    int height,
+    // NOLINTNEXTLINE(readability-non-const-parameter)
+    float clamp_multiplier, GLuint ssbos[2])
 {
 	(void)shader_pass1;
 	(void)shader_pass2;
