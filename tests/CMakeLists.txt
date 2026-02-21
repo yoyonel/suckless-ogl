@@ -370,25 +370,28 @@ target_link_libraries(test_ibl_coordinator PRIVATE cglm m)
 add_test(NAME test_ibl_coordinator
          COMMAND test_ibl_coordinator)
 
-# TEST BENCHMARK SPHERE SORTING (STANDALONE)
+# TEST BENCHMARK SPHERE SORTING (MOCKED)
 # =============================================================================
 add_executable(test_benchmark_sphere_sorting
     test_benchmark_sphere_sorting.c
     ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
 )
 
 target_include_directories(test_benchmark_sphere_sorting PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
 )
 
 target_link_libraries(test_benchmark_sphere_sorting PRIVATE cglm m)
 
 add_test(NAME test_benchmark_sphere_sorting
          COMMAND test_benchmark_sphere_sorting)
-
-# =============================================================================
 # NOTES ET DOCUMENTATION
 # =============================================================================
 # Cette approche offre plusieurs avantages :

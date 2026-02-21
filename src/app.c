@@ -644,12 +644,12 @@ void app_render(App* app)
 		stencil_begin_object_pass();
 
 		if (app->billboard_mode) {
-			sphere_sorter_sort(
-			    &app->sphere_sorter, &app->sphere_instances,
+			GLuint sorted_ssbo = sphere_sorter_sort_gpu(
+			    &app->sphere_sorter, app->sphere_instances,
 			    app->sphere_instance_count, app->camera.position);
-			billboard_group_update(&app->billboard_group,
-			                       app->sphere_instances,
-			                       app->sphere_instance_count);
+			billboard_group_update_from_buffer(
+			    &app->billboard_group, sorted_ssbo,
+			    app->sphere_instance_count);
 		}
 
 		if (app->billboard_mode) {
