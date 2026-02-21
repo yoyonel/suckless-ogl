@@ -365,7 +365,7 @@ void app_render_ui(App* app)
 	}
 
 	/* 5. IBL Processing Indicator */
-	if (app->ibl_ctx.state != IBL_STATE_IDLE || app->env_map_loading) {
+	if (app->ibl_coord.state != IBL_STATE_IDLE || app->env_map_loading) {
 		char loading_text[UI_LOADING_TEXT_SIZE];
 		const char* status = (app->env_map_loading != 0)
 		                         ? "Loading HDR"

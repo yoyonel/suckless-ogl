@@ -19,6 +19,7 @@ typedef unsigned int GLbitfield;
 #define GL_DYNAMIC_DRAW 0x88E8
 #define GL_STATIC_DRAW 0x88E4
 #define GL_FLOAT 0x1406
+#define GL_HALF_FLOAT 0x140B
 #define GL_UNSIGNED_INT 0x1405
 #define GL_CULL_FACE 0x0B44
 #define GL_TRIANGLES 0x0004
@@ -67,6 +68,9 @@ typedef unsigned int GLbitfield;
 #define GL_ALL_BARRIER_BITS 0xFFFFFFFF
 #define GL_DYNAMIC_STORAGE_BIT 0x0100
 #define GL_MAP_READ_BIT 0x0001
+#define GL_MAP_WRITE_BIT 0x0002
+#define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
+#define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
 #define GL_CLIENT_STORAGE_BIT 0x0200
 #define GL_SHADER_STORAGE_BUFFER 0x90D2
 #define GL_BUFFER_UPDATE_BARRIER_BIT 0x00000200
@@ -84,6 +88,11 @@ typedef unsigned int GLbitfield;
 #define GL_SRC_ALPHA 0x0302
 #define GL_ONE_MINUS_SRC_ALPHA 0x0303
 #define GL_FILL 0x1B02
+#define GL_PIXEL_UNPACK_BUFFER 0x88EC
+#define GL_STREAM_DRAW 0x88E0
+#define GL_TEXTURE_WIDTH 0x1000
+#define GL_TEXTURE_HEIGHT 0x1001
+#define GL_TEXTURE_INTERNAL_FORMAT 0x1003
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -191,5 +200,9 @@ void glBufferStorage(GLenum target, GLsizeiptr size, const void* data,
                      GLbitfield flags);
 void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
                         void* data);
+
+void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
+                              GLint* params);
+GLboolean glUnmapBuffer(GLenum target);
 
 #endif

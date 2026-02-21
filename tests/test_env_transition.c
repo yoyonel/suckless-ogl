@@ -61,7 +61,7 @@ void test_transition_initial_state(void)
 {
 	g_test_app->transition_state = TRANSITION_WAIT_IBL;
 	g_test_app->transition_alpha = 1.0F;
-	g_test_app->ibl_ctx.state = IBL_STATE_DONE;
+	g_test_app->ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
@@ -77,7 +77,7 @@ void test_transition_crossfade_flow(void)
 {
 	g_test_app->env_transition_mode = ENV_TRANSITION_CROSSFADE;
 	g_test_app->transition_state = TRANSITION_LOADING;
-	g_test_app->ibl_ctx.state = IBL_STATE_DONE;
+	g_test_app->ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
@@ -97,7 +97,7 @@ void test_transition_black_screen_flow(void)
 {
 	g_test_app->env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
 	g_test_app->transition_state = TRANSITION_LOADING;
-	g_test_app->ibl_ctx.state = IBL_STATE_DONE;
+	g_test_app->ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
