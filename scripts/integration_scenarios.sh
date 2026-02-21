@@ -64,6 +64,9 @@ run_scenario_full() {
     xdotool key --delay 500 w # Wireframe ON
     xdotool key --delay 500 w # Wireframe OFF
 
+    echo "=> Toggling Sphere Sorting (O)"
+    for i in {1..6}; do xdotool key --delay 500 o; done
+
     # 4. Camera Movement
     echo "=> Moving Camera"
     for key in z d s a q e; do
@@ -117,6 +120,9 @@ run_scenario_minimal() {
 
     xdotool key --delay 500 w # Wireframe ON
     xdotool key --delay 500 w # Wireframe OFF
+
+    echo "=> Toggling Sphere Sorting (O)"
+    for i in {1..3}; do xdotool key --delay 800 o; done
 
     # 4. Camera Movement
     echo "=> Moving Camera"

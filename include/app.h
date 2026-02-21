@@ -28,7 +28,6 @@
 #include "instanced_rendering.h"
 #include "material.h"
 #include "perf_mode.h"
-#include "perf_timer.h"
 #include "postprocess.h"
 #include "shader.h"
 #include "skybox.h"
@@ -51,6 +50,16 @@ typedef enum {
 	TRANSITION_FADE_OUT, /**< Old scene -> Black. */
 	TRANSITION_FADE_IN   /**< Black -> New scene. */
 } TransitionState;
+
+/**
+ * @enum SortingMode
+ * @brief Sorting algorithms for transparent billboards.
+ */
+typedef enum {
+	SORTING_MODE_CPU_QSORT = 0,
+	SORTING_MODE_CPU_RADIX,
+	SORTING_MODE_GPU_BITONIC
+} SortingMode;
 
 /**
  * @struct InstancedUniforms
@@ -159,12 +168,13 @@ typedef struct App {
 	int wireframe;                 /**< OpenGL wireframe mode toggle. */
 	int show_envmap;               /**< Draw skybox toggle. */
 	int camera_enabled;            /**< Pause camera movement. */
-	int billboard_mode;    /**< Toggle for billboard rendering path. */
-	int hdr_count;         /**< Number of available environment maps. */
-	int current_hdr_index; /**< Index of active HDR in file list. */
-	int banding_style_idx; /**< Cycle index for banding styles. */
-	int env_map_loading;   /**< Async lock for HDR loading. */
-	int perf_mode_active;  /**< Performance/GameMode optimization active. */
+	int billboard_mode;       /**< Toggle for billboard rendering path. */
+	SortingMode sorting_mode; /**< Selected sorting algorithm. */
+	int hdr_count;            /**< Number of available environment maps. */
+	int current_hdr_index;    /**< Index of active HDR in file list. */
+	int banding_style_idx;    /**< Cycle index for banding styles. */
+	int env_map_loading;      /**< Async lock for HDR loading. */
+	int perf_mode_active; /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
