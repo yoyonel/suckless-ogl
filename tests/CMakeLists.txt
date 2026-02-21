@@ -57,6 +57,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -368,6 +369,24 @@ target_link_libraries(test_ibl_coordinator PRIVATE cglm m)
 
 add_test(NAME test_ibl_coordinator
          COMMAND test_ibl_coordinator)
+
+# TEST BENCHMARK SPHERE SORTING (STANDALONE)
+# =============================================================================
+add_executable(test_benchmark_sphere_sorting
+    test_benchmark_sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+)
+
+target_include_directories(test_benchmark_sphere_sorting PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(test_benchmark_sphere_sorting PRIVATE cglm m)
+
+add_test(NAME test_benchmark_sphere_sorting
+         COMMAND test_benchmark_sphere_sorting)
 
 # =============================================================================
 # NOTES ET DOCUMENTATION

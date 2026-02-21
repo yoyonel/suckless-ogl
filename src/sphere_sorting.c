@@ -6,28 +6,94 @@
 // No longer using utils.h in this file
 #include <cglm/types.h> /* For vec3 */
 #include <cglm/vec3.h>  /* For glm_vec3_distance2 */
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
+enum {
+	INITIAL_CAPACITY = 64,
+	RADIX_BITS = 8,
+	RADIX_BUCKETS = 256, /* 1 << RADIX_BITS */
+	RADIX_MASK = 255     /* RADIX_BUCKETS - 1 */
+};
+
 /*
- * Comparator for qsort.
- * Sorts descending by depth (Furthest first -> Back-to-Front).
+ * 4-pass Radix Sort (LSD) on 32-bit floats (treated as uint32_t).
+ * Sorts DESCENDING (Furthest first -> Back-to-Front).
+ *
+ * This implementation relies on the fact that for non-negative IEEE 754 floats,
+ * the integer representation preserves order. Depth (squared distance) is
+ * always non-negative.
  */
-static int compare_depth_desc(const void* lhs, const void* rhs)
+static void radix_sort_depth_desc(SphereSortEntry* entries,
+                                  SphereSortEntry* temp, int count)
 {
-	const SphereSortEntry* entry_a = (const SphereSortEntry*)lhs;
-	const SphereSortEntry* entry_b = (const SphereSortEntry*)rhs;
+	/* Histogram for 256 buckets */
+	unsigned int histogram[RADIX_BUCKETS];
+	unsigned int offsets[RADIX_BUCKETS];
 
-	if (entry_a->depth < entry_b->depth) {
-		return 1;
+	SphereSortEntry* src = entries;
+	SphereSortEntry* dst = temp;
+
+	for (int byte_idx = 0; byte_idx < 4; ++byte_idx) {
+		/* Zero initialization is safer/cleaner than memset */
+		for (int i = 0; i < RADIX_BUCKETS; ++i) {
+			histogram[i] = 0;
+		}
+
+		/* 1. Build Histogram */
+		for (int i = 0; i < count; ++i) {
+			uint32_t val = 0;
+			float depth_val = src[i].depth;
+			/* Safe type punning via memcpy */
+			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			memcpy(&val, &depth_val, sizeof(uint32_t));
+
+			unsigned char byte =
+			    (val >> ((unsigned int)byte_idx *
+			             (unsigned int)RADIX_BITS)) &
+			    (unsigned int)RADIX_MASK;
+			histogram[byte]++;
+		}
+
+		/* 2. Compute Offsets (Descending Order: 255 -> 0) */
+		unsigned int total = 0;
+		for (int i = RADIX_BUCKETS - 1; i >= 0; --i) {
+			offsets[i] = total;
+			total += histogram[i];
+		}
+
+		/* 3. Scatter */
+		for (int i = 0; i < count; ++i) {
+			uint32_t val = 0;
+			float depth_val = src[i].depth;
+			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			memcpy(&val, &depth_val, sizeof(uint32_t));
+
+			unsigned char byte =
+			    (val >> ((unsigned int)byte_idx *
+			             (unsigned int)RADIX_BITS)) &
+			    (unsigned int)RADIX_MASK;
+			dst[offsets[byte]++] = src[i];
+		}
+
+		/* 4. Swap Buffers */
+		SphereSortEntry* tmp = src;
+		src = dst;
+		dst = tmp;
 	}
-	if (entry_a->depth > entry_b->depth) {
-		return -1;
-	}
-	return 0;
+
+	/*
+	 * After 4 passes (even number), 'src' points to the buffer holding the
+	 * sorted result.
+	 * Start: src=entries, dst=temp
+	 * Pass 1: src=entries -> dst=temp (swap -> src=temp)
+	 * Pass 2: src=temp -> dst=entries (swap -> src=entries)
+	 * Pass 3: src=entries -> dst=temp (swap -> src=temp)
+	 * Pass 4: src=temp -> dst=entries (swap -> src=entries)
+	 * Result is in 'entries'.
+	 */
 }
-
-enum { INITIAL_CAPACITY = 64 };
 
 void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 {
@@ -37,6 +103,8 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 	sorter->capacity = initial_capacity;
 	sorter->min_capacity = initial_capacity;
 	sorter->entries = calloc(initial_capacity, sizeof(SphereSortEntry));
+	sorter->temp_entries =
+	    malloc(initial_capacity * sizeof(SphereSortEntry));
 
 	size_t size = initial_capacity * sizeof(SphereInstance);
 	if (size % SIMD_ALIGNMENT != 0) {
@@ -44,7 +112,8 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 	}
 	sorter->temp_instances = aligned_alloc(SIMD_ALIGNMENT, size);
 
-	if (!sorter->entries || !sorter->temp_instances) {
+	if (!sorter->entries || !sorter->temp_instances ||
+	    !sorter->temp_entries) {
 		LOG_ERROR("suckless-ogl.sphere_sorter",
 		          "Failed to allocate sphere sorting buffers");
 	}
@@ -55,6 +124,10 @@ void sphere_sorter_cleanup(SphereSorter* sorter)
 	if (sorter->entries) {
 		free(sorter->entries);
 		sorter->entries = NULL;
+	}
+	if (sorter->temp_entries) {
+		free(sorter->temp_entries);
+		sorter->temp_entries = NULL;
 	}
 	if (sorter->temp_instances) {
 		free(sorter->temp_instances);
@@ -93,6 +166,8 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 
 		SphereSortEntry* new_entries =
 		    realloc(sorter->entries, new_cap * sizeof(SphereSortEntry));
+		SphereSortEntry* new_temp_entries = realloc(
+		    sorter->temp_entries, new_cap * sizeof(SphereSortEntry));
 
 		/* Free old aligned buffer and allocate new one */
 		/* realloc is not guaranteed to preserve alignment > default,
@@ -106,7 +181,7 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 		}
 		SphereInstance* new_temp = aligned_alloc(SIMD_ALIGNMENT, size);
 
-		if (!new_entries || !new_temp) {
+		if (!new_entries || !new_temp || !new_temp_entries) {
 			LOG_ERROR("suckless-ogl.sphere_sorter",
 			          "Failed to resize sorting buffers to %d",
 			          new_cap);
@@ -115,12 +190,20 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 			if (new_entries) {
 				sorter->entries = new_entries;
 			}
+			if (new_temp_entries) {
+				sorter->temp_entries = new_temp_entries;
+			}
 			/* Capacity stays same if failed? Or broken state?
 			   Ideally handle better, but just bail. */
+			if (new_temp) {
+				free(new_temp);
+			}
 			return;
 		}
 
+		free(sorter->temp_instances);
 		sorter->entries = new_entries;
+		sorter->temp_entries = new_temp_entries;
 		sorter->temp_instances = new_temp;
 		sorter->capacity = new_cap;
 	}
@@ -135,9 +218,8 @@ void sphere_sorter_sort(SphereSorter* sorter, SphereInstance** instances_ptr,
 		sorter->entries[i].depth = glm_vec3_distance2(pos, camera_pos);
 	}
 
-	/* 3. Sort Indices */
-	qsort(sorter->entries, count, sizeof(SphereSortEntry),
-	      compare_depth_desc);
+	/* 3. Sort Indices (Radix Sort) */
+	radix_sort_depth_desc(sorter->entries, sorter->temp_entries, count);
 
 	/* 4. Reorder Instances into Temp Buffer */
 	for (int i = 0; i < count; ++i) {
