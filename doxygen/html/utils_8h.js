@@ -8,12 +8,12 @@ var utils_8h =
     [ "check_flag", "utils_8h.html#abe907a059a85eecc3b288d41b903d5e7", null ],
     [ "cleanup_file", "utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4", null ],
     [ "cleanup_free", "utils_8h.html#a60d756fd34ef42d063535564a151e219", null ],
-    [ "is_safe_filename", "utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c", null ],
-    [ "is_safe_relative_path", "utils_8h.html#a7fca40fda3337b1d62d89a81293a18ec", null ],
-    [ "safe_calloc", "utils_8h.html#adbb98512b516893d07ffb8d439b807ea", null ],
-    [ "safe_memcpy", "utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee", null ],
-    [ "safe_memset", "utils_8h.html#a66f52a36a090fdc6ca2f3f91078c9f4f", null ],
-    [ "safe_snprintf", "utils_8h.html#ab1d13540441b5a2f988e0cd57754e625", null ],
-    [ "safe_strncat", "utils_8h.html#a5b0bcc183c4e6fb94386733edd277fc3", null ],
-    [ "safe_strncpy", "utils_8h.html#a823bc487fbd1a8980dc7a3e5e2277179", null ]
+    [ "is_safe_filename", "utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953", null ],
+    [ "is_safe_relative_path", "utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1", null ],
+    [ "safe_calloc", "utils_8h.html#a27804c99492b4365e7bc19cbc3d3e88e", null ],
+    [ "safe_memcpy", "utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332", null ],
+    [ "safe_memset", "utils_8h.html#aa0d7c61e364406aa652f12a630642256", null ],
+    [ "safe_snprintf", "utils_8h.html#aca6393fbdcd75a7379484de0a7604136", null ],
+    [ "safe_strncat", "utils_8h.html#a7da5d8902e26bfe1fcb9e660e1677ea3", null ],
+    [ "safe_strncpy", "utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ]
 ];

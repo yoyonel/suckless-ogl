@@ -33,7 +33,7 @@ var structApp =
     [ "hdr_texture", "structApp.html#a32f2e626cb5432c707b38a00175d6187", null ],
     [ "height", "structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31", null ],
     [ "histogram_pbo", "structApp.html#a24598a67c7334e2d8116c4cb3f1a7e5a", null ],
-    [ "ibl_ctx", "structApp.html#a54e3304ed4e5f9892cf5dcb43921a8af", null ],
+    [ "ibl_coord", "structApp.html#a225558272f41ea1f76113d7e4f586412", null ],
     [ "instanced_group", "structApp.html#a2ce8560fb41d73b278518669de8e7e54", null ],
     [ "instanced_uniforms", "structApp.html#a2c64ad6ac05adb0bc1020ceb640ede40", null ],
     [ "irradiance_tex", "structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09", null ],

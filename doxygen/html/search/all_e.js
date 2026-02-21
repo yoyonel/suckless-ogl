@@ -4,7 +4,7 @@ var searchData=
   ['fade_5fepsilon_1',['FADE_EPSILON',['../gpu__profiler__ui_8c.html#ae35a1d8806e5b62cce179618e82ff524',1,'gpu_profiler_ui.c']]],
   ['far_5fplane_2',['FAR_PLANE',['../group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6',1,'app_settings.h']]],
   ['filterradius_3',['filterRadius',['../bloom__upsample_8frag.html#a2d45ac1478cca0b31f3b65fff9cb3530',1,'bloom_upsample.frag']]],
-  ['finalize_5fibl_5fswap_4',['finalize_ibl_swap',['../app__env_8c.html#a28d3f263ee1b89b9b608709732893e13',1,'app_env.c']]],
+  ['finalize_5fibl_5fswap_4',['finalize_ibl_swap',['../app__env_8c.html#a67f5c84994c652d02a1228bc442fcd0c',1,'app_env.c']]],
   ['find_5fcomposite_5fduration_5',['find_composite_duration',['../effect__benchmark_8c.html#a733a99a378a7c1dd5155e7f8521a7a15',1,'effect_benchmark.c']]],
   ['find_5fshader_5fin_5fcache_6',['find_shader_in_cache',['../postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0',1,'postprocess.c']]],
   ['finding_20tangent_20normals_20without_20trigonometry_7',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],

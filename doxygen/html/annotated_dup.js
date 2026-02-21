@@ -38,7 +38,7 @@ var annotated_dup =
     [ "GrainParams", "structGrainParams.html", "structGrainParams" ],
     [ "HybridTimer", "structHybridTimer.html", "structHybridTimer" ],
     [ "HybridTimerRAII", "structHybridTimerRAII.html", "structHybridTimerRAII" ],
-    [ "IBLContext", "structIBLContext.html", "structIBLContext" ],
+    [ "IBLCoordinator", "structIBLCoordinator.html", "structIBLCoordinator" ],
     [ "IcosphereGeometry", "structIcosphereGeometry.html", "structIcosphereGeometry" ],
     [ "IncludeContext", "structIncludeContext.html", "structIncludeContext" ],
     [ "InstanceData", "structInstanceData.html", "structInstanceData" ],

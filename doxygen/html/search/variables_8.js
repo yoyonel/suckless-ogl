@@ -12,7 +12,7 @@ var searchData=
   ['hdr_5ffiles_9',['hdr_files',['../structApp.html#ada621b90055c79ec16258d30791087dd',1,'App']]],
   ['hdr_5ftexture_10',['hdr_texture',['../structApp.html#a32f2e626cb5432c707b38a00175d6187',1,'App']]],
   ['hdr_5ftexture_5fpath_11',['HDR_TEXTURE_PATH',['../app__env_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3',1,'app_env.c']]],
-  ['height_12',['height',['../structPostProcess.html#a01b97fc45027e3395f825daaa28109ef',1,'PostProcess::height'],['../structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f',1,'AsyncRequest::height'],['../structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31',1,'App::height'],['../structIBLContext.html#a23c404df4d31c2d51e1414a08775ae7a',1,'IBLContext::height']]],
+  ['height_12',['height',['../structPostProcess.html#a01b97fc45027e3395f825daaa28109ef',1,'PostProcess::height'],['../structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe',1,'IBLCoordinator::height'],['../structAsyncRequest.html#af4e953655035ef73bf310187cdb1091f',1,'AsyncRequest::height'],['../structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31',1,'App::height']]],
   ['hierarchy_5fstack_13',['hierarchy_stack',['../structGPUProfiler.html#acde8b71047ac0475cf647cb5206d488a',1,'GPUProfiler']]],
   ['highlights_5fmin_14',['highlights_min',['../structGrainParams.html#a8643f870d488dbfce3fed2e17131b345',1,'GrainParams']]],
   ['histo_5fbar_5fcolor_5fblue_15',['HISTO_BAR_COLOR_BLUE',['../app__ui_8c.html#a037be618a76f8bc4f34b1eca628ba857',1,'app_ui.c']]],

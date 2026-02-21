@@ -243,7 +243,7 @@ $(document).ready(function(){initNavTree('app__env_8c.html',''); initResizable()
 <div class="textblock"><code>#include &quot;<a class="el" href="app_8h_source.html">app.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
-<code>#include &quot;glad/glad.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="pbr_8h_source.html">pbr.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
@@ -264,16 +264,6 @@ Include dependency graph for app_env.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac7967759b1ba80b70a7d1bba2dfa753e" id="r_ac7967759b1ba80b70a7d1bba2dfa753e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e">is_software_renderer</a> (void)</td></tr>
-<tr class="separator:ac7967759b1ba80b70a7d1bba2dfa753e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a325df28750573fe64f999eace591c77b" id="r_a325df28750573fe64f999eace591c77b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a325df28750573fe64f999eace591c77b">ibl_irradiance_slices</a> (void)</td></tr>
-<tr class="separator:a325df28750573fe64f999eace591c77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa5ff05792c6e4a641f2bffb90279ac4" id="r_aaa5ff05792c6e4a641f2bffb90279ac4"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#aaa5ff05792c6e4a641f2bffb90279ac4">ibl_specular_mip0_slices</a> (void)</td></tr>
-<tr class="separator:aaa5ff05792c6e4a641f2bffb90279ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68e655e2e6acfa7418ca6cbb31f7dfa7" id="r_a68e655e2e6acfa7418ca6cbb31f7dfa7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a68e655e2e6acfa7418ca6cbb31f7dfa7">ibl_specular_mip1_slices</a> (void)</td></tr>
-<tr class="separator:a68e655e2e6acfa7418ca6cbb31f7dfa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd9d63c9f2007aeb78aa1e3df5552c3e" id="r_afd9d63c9f2007aeb78aa1e3df5552c3e"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#afd9d63c9f2007aeb78aa1e3df5552c3e">ibl_specular_mips_grouping_start</a> (void)</td></tr>
-<tr class="separator:afd9d63c9f2007aeb78aa1e3df5552c3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8af94b56d6cef5f5143fd60907cb02f9" id="r_a8af94b56d6cef5f5143fd60907cb02f9"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a8af94b56d6cef5f5143fd60907cb02f9">compare_strings</a> (const void *string_a, const void *string_b)</td></tr>
 <tr class="separator:a8af94b56d6cef5f5143fd60907cb02f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf888ef9851eecc3a98700e168300f51" id="r_aaf888ef9851eecc3a98700e168300f51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#aaf888ef9851eecc3a98700e168300f51">app_scan_hdr_files</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
@@ -290,17 +280,12 @@ Functions</h2></td></tr>
 <tr class="separator:a3f8407133e946387ed973afb98955c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab624eb61bafb2833e364b4b3562690d" id="r_aab624eb61bafb2833e364b4b3562690d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#aab624eb61bafb2833e364b4b3562690d">capture_snapshot</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="separator:aab624eb61bafb2833e364b4b3562690d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28d3f263ee1b89b9b608709732893e13" id="r_a28d3f263ee1b89b9b608709732893e13"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a28d3f263ee1b89b9b608709732893e13">finalize_ibl_swap</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="separator:a28d3f263ee1b89b9b608709732893e13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f8b9df1bbc5d81058f5d6f9425ee3cb" id="r_a4f8b9df1bbc5d81058f5d6f9425ee3cb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a4f8b9df1bbc5d81058f5d6f9425ee3cb">ibl_stats_reset</a> (<a class="el" href="structIBLContext.html">IBLContext</a> *ctx)</td></tr>
-<tr class="memdesc:a4f8b9df1bbc5d81058f5d6f9425ee3cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset stage timing statistics for a new IBL stage.  <br /></td></tr>
-<tr class="separator:a4f8b9df1bbc5d81058f5d6f9425ee3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01b873dda5b529190d63451e58a9c50c" id="r_a01b873dda5b529190d63451e58a9c50c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a01b873dda5b529190d63451e58a9c50c">ibl_stats_accumulate</a> (<a class="el" href="structIBLContext.html">IBLContext</a> *ctx, double gpu_ms)</td></tr>
-<tr class="memdesc:a01b873dda5b529190d63451e58a9c50c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accumulate a slice's GPU timing into the stage statistics.  <br /></td></tr>
-<tr class="separator:a01b873dda5b529190d63451e58a9c50c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac866c40354d035d69543e49a15569081" id="r_ac866c40354d035d69543e49a15569081"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#ac866c40354d035d69543e49a15569081">ibl_stats_log_summary</a> (<a class="el" href="structIBLContext.html">IBLContext</a> *ctx, unsigned long long frame, const char *stage_name)</td></tr>
-<tr class="memdesc:ac866c40354d035d69543e49a15569081"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log a single INFO summary line for a completed IBL stage.  <br /></td></tr>
-<tr class="separator:ac866c40354d035d69543e49a15569081"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67f5c84994c652d02a1228bc442fcd0c" id="r_a67f5c84994c652d02a1228bc442fcd0c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a67f5c84994c652d02a1228bc442fcd0c">finalize_ibl_swap</a> (<a class="el" href="structApp.html">App</a> *app, GLuint hdr_tex, GLuint spec_tex, GLuint irr_tex, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
+<tr class="separator:a67f5c84994c652d02a1228bc442fcd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac57c191b10bf6a6030c1321d62f2c1ab" id="r_ac57c191b10bf6a6030c1321d62f2c1ab"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#ac57c191b10bf6a6030c1321d62f2c1ab">handle_ibl_done_wait_state</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ac57c191b10bf6a6030c1321d62f2c1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94702b0439490fab0d8b8d4af209870d" id="r_a94702b0439490fab0d8b8d4af209870d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a94702b0439490fab0d8b8d4af209870d">handle_ibl_done_loading_state</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a94702b0439490fab0d8b8d4af209870d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b671bcba6f5af06cc8408efb65fb0f2" id="r_a9b671bcba6f5af06cc8408efb65fb0f2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a9b671bcba6f5af06cc8408efb65fb0f2">app_process_ibl_state_machine</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="memdesc:a9b671bcba6f5af06cc8408efb65fb0f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the current state of the IBL generation state machine.  <br /></td></tr>
 <tr class="separator:a9b671bcba6f5af06cc8408efb65fb0f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -310,32 +295,10 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a6494d63e0ff1eb4d9ec732a056ab655c" id="r_a6494d63e0ff1eb4d9ec732a056ab655c"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a6494d63e0ff1eb4d9ec732a056ab655c">IBL_SOFTWARE_FALLBACK_SLICES</a> = 1</td></tr>
-<tr class="memdesc:a6494d63e0ff1eb4d9ec732a056ab655c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default slice count for software renderers (no slicing). Slicing is disabled to avoid the massive overhead of multiple draw calls on CPU-bound renderers (llvmpipe, etc.).  <br /></td></tr>
-<tr class="separator:a6494d63e0ff1eb4d9ec732a056ab655c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50f2c8aeca54eeb71bd72a8fdeaf1c45" id="r_a50f2c8aeca54eeb71bd72a8fdeaf1c45"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45">IBL_IRRADIANCE_HARDWARE_SLICES</a> = 12</td></tr>
-<tr class="memdesc:a50f2c8aeca54eeb71bd72a8fdeaf1c45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slices for irradiance convolution on hardware (GPU).  <br /></td></tr>
-<tr class="separator:a50f2c8aeca54eeb71bd72a8fdeaf1c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10906b0fc6004f05d5b0428c10cad2e9" id="r_a10906b0fc6004f05d5b0428c10cad2e9"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a10906b0fc6004f05d5b0428c10cad2e9">IBL_SPECULAR_MIP0_HARDWARE_SLICES</a> = 24</td></tr>
-<tr class="memdesc:a10906b0fc6004f05d5b0428c10cad2e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slices for the largest specular mip (Mip 0) on hardware.  <br /></td></tr>
-<tr class="separator:a10906b0fc6004f05d5b0428c10cad2e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad724e11eb756c49bf2e1f0603946b3e0" id="r_ad724e11eb756c49bf2e1f0603946b3e0"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#ad724e11eb756c49bf2e1f0603946b3e0">IBL_SPECULAR_MIP1_HARDWARE_SLICES</a> = 8</td></tr>
-<tr class="memdesc:ad724e11eb756c49bf2e1f0603946b3e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of slices for the second specular mip (Mip 1) on hardware.  <br /></td></tr>
-<tr class="separator:ad724e11eb756c49bf2e1f0603946b3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f951302cb33cd6f2aa28d7314bc2bc8" id="r_a0f951302cb33cd6f2aa28d7314bc2bc8"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a0f951302cb33cd6f2aa28d7314bc2bc8">IBL_SPECULAR_MIP_GROUPING_START_MIP</a> = 3</td></tr>
-<tr class="memdesc:a0f951302cb33cd6f2aa28d7314bc2bc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mip level from which specular mips are grouped in a single frame.  <br /></td></tr>
-<tr class="separator:a0f951302cb33cd6f2aa28d7314bc2bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7427e33647e1f11c1129bfe49029bcce" id="r_a7427e33647e1f11c1129bfe49029bcce"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a7427e33647e1f11c1129bfe49029bcce">IBL_SOFTWARE_MIP_GROUPING_START_MIP</a> = 0</td></tr>
-<tr class="memdesc:a7427e33647e1f11c1129bfe49029bcce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mip level for software grouping (all mips at once).  <br /></td></tr>
-<tr class="separator:a7427e33647e1f11c1129bfe49029bcce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5ac2b4f077bc45d4ea556539a84db38" id="r_aa5ac2b4f077bc45d4ea556539a84db38"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#aa5ac2b4f077bc45d4ea556539a84db38">IBL_LOG_LABEL_SIZE</a> = 128</td></tr>
-<tr class="separator:aa5ac2b4f077bc45d4ea556539a84db38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73c65b37118d1d96e00ce15fb7e4b6d3" id="r_a73c65b37118d1d96e00ce15fb7e4b6d3"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3">HDR_TEXTURE_PATH</a> = &quot;assets/textures/hdr&quot;</td></tr>
 <tr class="separator:a73c65b37118d1d96e00ce15fb7e4b6d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addf3c4a8a43f871218486c07bbb28461" id="r_addf3c4a8a43f871218486c07bbb28461"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#addf3c4a8a43f871218486c07bbb28461">HDR_EXTENSION</a> = &quot;.hdr&quot;</td></tr>
 <tr class="separator:addf3c4a8a43f871218486c07bbb28461"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f01277e23e73c88a937e3771351252c" id="r_a7f01277e23e73c88a937e3771351252c"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a7f01277e23e73c88a937e3771351252c">IBL_THRESHOLD_FALLBACK_MIN</a> = 1.0F</td></tr>
-<tr class="separator:a7f01277e23e73c88a937e3771351252c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf85965108ddb048b66205bcd09d87b6" id="r_acf85965108ddb048b66205bcd09d87b6"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#acf85965108ddb048b66205bcd09d87b6">MAX_PATH_LENGTH</a> = 256</td></tr>
 <tr class="separator:acf85965108ddb048b66205bcd09d87b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -378,7 +341,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a2a1c34e50280775f9d66d3052b54b5ff_cgraph.svg" width="640" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a2a1c34e50280775f9d66d3052b54b5ff_cgraph.svg" width="648" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -558,7 +521,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a12c7b3e3e97c1122f55fca553c798228_cgraph.svg" width="602" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a12c7b3e3e97c1122f55fca553c798228_cgraph.svg" width="615" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -625,8 +588,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a28d3f263ee1b89b9b608709732893e13" name="a28d3f263ee1b89b9b608709732893e13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28d3f263ee1b89b9b608709732893e13">&#9670;&#160;</a></span>finalize_ibl_swap()</h2>
+<a id="a67f5c84994c652d02a1228bc442fcd0c" name="a67f5c84994c652d02a1228bc442fcd0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67f5c84994c652d02a1228bc442fcd0c">&#9670;&#160;</a></span>finalize_ibl_swap()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -636,6 +599,65 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">static void finalize_ibl_swap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>hdr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>spec_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>irr_tex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a67f5c84994c652d02a1228bc442fcd0c_cgraph.svg" width="387" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a94702b0439490fab0d8b8d4af209870d" name="a94702b0439490fab0d8b8d4af209870d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94702b0439490fab0d8b8d4af209870d">&#9670;&#160;</a></span>handle_ibl_done_loading_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_ibl_done_loading_state </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
@@ -651,13 +673,13 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a28d3f263ee1b89b9b608709732893e13_cgraph.svg" width="387" height="86"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a94702b0439490fab0d8b8d4af209870d_cgraph.svg" width="631" height="151"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
 </div>
-<a id="a325df28750573fe64f999eace591c77b" name="a325df28750573fe64f999eace591c77b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a325df28750573fe64f999eace591c77b">&#9670;&#160;</a></span>ibl_irradiance_slices()</h2>
+<a id="ac57c191b10bf6a6030c1321d62f2c1ab" name="ac57c191b10bf6a6030c1321d62f2c1ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac57c191b10bf6a6030c1321d62f2c1ab">&#9670;&#160;</a></span>handle_ibl_done_wait_state()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -666,10 +688,10 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int ibl_irradiance_slices </td>
+          <td class="memname">static void handle_ibl_done_wait_state </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -682,247 +704,8 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a325df28750573fe64f999eace591c77b_cgraph.svg" width="372" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_ac57c191b10bf6a6030c1321d62f2c1ab_cgraph.svg" width="611" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
-
-</div>
-</div>
-<a id="aaa5ff05792c6e4a641f2bffb90279ac4" name="aaa5ff05792c6e4a641f2bffb90279ac4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa5ff05792c6e4a641f2bffb90279ac4">&#9670;&#160;</a></span>ibl_specular_mip0_slices()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mip0_slices </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_aaa5ff05792c6e4a641f2bffb90279ac4_cgraph.svg" width="402" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a68e655e2e6acfa7418ca6cbb31f7dfa7" name="a68e655e2e6acfa7418ca6cbb31f7dfa7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68e655e2e6acfa7418ca6cbb31f7dfa7">&#9670;&#160;</a></span>ibl_specular_mip1_slices()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mip1_slices </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a68e655e2e6acfa7418ca6cbb31f7dfa7_cgraph.svg" width="402" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="afd9d63c9f2007aeb78aa1e3df5552c3e" name="afd9d63c9f2007aeb78aa1e3df5552c3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd9d63c9f2007aeb78aa1e3df5552c3e">&#9670;&#160;</a></span>ibl_specular_mips_grouping_start()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int ibl_specular_mips_grouping_start </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_afd9d63c9f2007aeb78aa1e3df5552c3e_cgraph.svg" width="420" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a01b873dda5b529190d63451e58a9c50c" name="a01b873dda5b529190d63451e58a9c50c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01b873dda5b529190d63451e58a9c50c">&#9670;&#160;</a></span>ibl_stats_accumulate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_accumulate </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structIBLContext.html">IBLContext</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>gpu_ms</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Accumulate a slice's GPU timing into the stage statistics. </p>
-
-</div>
-</div>
-<a id="ac866c40354d035d69543e49a15569081" name="ac866c40354d035d69543e49a15569081"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac866c40354d035d69543e49a15569081">&#9670;&#160;</a></span>ibl_stats_log_summary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_log_summary </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structIBLContext.html">IBLContext</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned long long&#160;</td>
-          <td class="paramname"><em>frame</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>stage_name</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Log a single INFO summary line for a completed IBL stage. </p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_ac866c40354d035d69543e49a15569081_cgraph.svg" width="407" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="a4f8b9df1bbc5d81058f5d6f9425ee3cb" name="a4f8b9df1bbc5d81058f5d6f9425ee3cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f8b9df1bbc5d81058f5d6f9425ee3cb">&#9670;&#160;</a></span>ibl_stats_reset()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void ibl_stats_reset </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structIBLContext.html">IBLContext</a> *&#160;</td>
-          <td class="paramname"><em>ctx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reset stage timing statistics for a new IBL stage. </p>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_a4f8b9df1bbc5d81058f5d6f9425ee3cb_cgraph.svg" width="303" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
-<a id="ac7967759b1ba80b70a7d1bba2dfa753e" name="ac7967759b1ba80b70a7d1bba2dfa753e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7967759b1ba80b70a7d1bba2dfa753e">&#9670;&#160;</a></span>is_software_renderer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool is_software_renderer </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>
@@ -960,194 +743,6 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const char* const HDR_TEXTURE_PATH = &quot;assets/textures/hdr&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a50f2c8aeca54eeb71bd72a8fdeaf1c45" name="a50f2c8aeca54eeb71bd72a8fdeaf1c45"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50f2c8aeca54eeb71bd72a8fdeaf1c45">&#9670;&#160;</a></span>IBL_IRRADIANCE_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_IRRADIANCE_HARDWARE_SLICES = 12</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Number of slices for irradiance convolution on hardware (GPU). </p>
-
-</div>
-</div>
-<a id="aa5ac2b4f077bc45d4ea556539a84db38" name="aa5ac2b4f077bc45d4ea556539a84db38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5ac2b4f077bc45d4ea556539a84db38">&#9670;&#160;</a></span>IBL_LOG_LABEL_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_LOG_LABEL_SIZE = 128</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6494d63e0ff1eb4d9ec732a056ab655c" name="a6494d63e0ff1eb4d9ec732a056ab655c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6494d63e0ff1eb4d9ec732a056ab655c">&#9670;&#160;</a></span>IBL_SOFTWARE_FALLBACK_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SOFTWARE_FALLBACK_SLICES = 1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default slice count for software renderers (no slicing). Slicing is disabled to avoid the massive overhead of multiple draw calls on CPU-bound renderers (llvmpipe, etc.). </p>
-
-</div>
-</div>
-<a id="a7427e33647e1f11c1129bfe49029bcce" name="a7427e33647e1f11c1129bfe49029bcce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7427e33647e1f11c1129bfe49029bcce">&#9670;&#160;</a></span>IBL_SOFTWARE_MIP_GROUPING_START_MIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SOFTWARE_MIP_GROUPING_START_MIP = 0</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Mip level for software grouping (all mips at once). </p>
-
-</div>
-</div>
-<a id="a10906b0fc6004f05d5b0428c10cad2e9" name="a10906b0fc6004f05d5b0428c10cad2e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10906b0fc6004f05d5b0428c10cad2e9">&#9670;&#160;</a></span>IBL_SPECULAR_MIP0_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP0_HARDWARE_SLICES = 24</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Number of slices for the largest specular mip (Mip 0) on hardware. </p>
-
-</div>
-</div>
-<a id="ad724e11eb756c49bf2e1f0603946b3e0" name="ad724e11eb756c49bf2e1f0603946b3e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad724e11eb756c49bf2e1f0603946b3e0">&#9670;&#160;</a></span>IBL_SPECULAR_MIP1_HARDWARE_SLICES</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP1_HARDWARE_SLICES = 8</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Number of slices for the second specular mip (Mip 1) on hardware. </p>
-
-</div>
-</div>
-<a id="a0f951302cb33cd6f2aa28d7314bc2bc8" name="a0f951302cb33cd6f2aa28d7314bc2bc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f951302cb33cd6f2aa28d7314bc2bc8">&#9670;&#160;</a></span>IBL_SPECULAR_MIP_GROUPING_START_MIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int IBL_SPECULAR_MIP_GROUPING_START_MIP = 3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Mip level from which specular mips are grouped in a single frame. </p>
-
-</div>
-</div>
-<a id="a7f01277e23e73c88a937e3771351252c" name="a7f01277e23e73c88a937e3771351252c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f01277e23e73c88a937e3771351252c">&#9670;&#160;</a></span>IBL_THRESHOLD_FALLBACK_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const float IBL_THRESHOLD_FALLBACK_MIN = 1.0F</td>
         </tr>
       </table>
   </td>

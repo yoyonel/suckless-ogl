@@ -20,6 +20,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "gl_debug.h", "gl__debug_8h.html", "gl__debug_8h" ],
     [ "gpu_profiler.h", "gpu__profiler_8h.html", "gpu__profiler_8h" ],
     [ "gpu_profiler_ui.h", "gpu__profiler__ui_8h.html", "gpu__profiler__ui_8h" ],
+    [ "ibl_coordinator.h", "ibl__coordinator_8h.html", "ibl__coordinator_8h" ],
     [ "icosphere.h", "icosphere_8h.html", "icosphere_8h" ],
     [ "instanced_rendering.h", "instanced__rendering_8h.html", "instanced__rendering_8h" ],
     [ "io.h", "io_8h.html", "io_8h" ],

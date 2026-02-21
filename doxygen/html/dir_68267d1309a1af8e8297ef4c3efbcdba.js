@@ -18,6 +18,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "gl_debug.c", "gl__debug_8c.html", "gl__debug_8c" ],
     [ "gpu_profiler.c", "gpu__profiler_8c.html", "gpu__profiler_8c" ],
     [ "gpu_profiler_ui.c", "gpu__profiler__ui_8c.html", "gpu__profiler__ui_8c" ],
+    [ "ibl_coordinator.c", "ibl__coordinator_8c.html", "ibl__coordinator_8c" ],
     [ "icosphere.c", "icosphere_8c.html", "icosphere_8c" ],
     [ "instanced_rendering.c", "instanced__rendering_8c.html", "instanced__rendering_8c" ],
     [ "io.c", "io_8c.html", "io_8c" ],
@@ -40,5 +41,6 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "tracy_log.c", "tracy__log_8c.html", "tracy__log_8c" ],
     [ "tracy_manager.c", "tracy__manager_8c.html", "tracy__manager_8c" ],
     [ "ui.c", "ui_8c.html", "ui_8c" ],
+    [ "utils.c", "utils_8c.html", "utils_8c" ],
     [ "window.c", "window_8c.html", "window_8c" ]
 ];

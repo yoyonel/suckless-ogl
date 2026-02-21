@@ -256,6 +256,7 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler__ui_8h_source.html">gpu_profiler_ui.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
@@ -286,9 +287,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLContext.html">IBLContext</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Progressive environment processing state.  <a href="structIBLContext.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached uniform locations for PBR instanced rendering.  <a href="structInstancedUniforms.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -311,17 +309,6 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a57e898a48bf9e63709f7774eb98bb0ea" id="r_a57e898a48bf9e63709f7774eb98bb0ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> { <br />
-&#160;&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">IBL_STATE_IDLE</a> = 0
-, <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">IBL_STATE_LUMINANCE</a>
-, <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">IBL_STATE_SPECULAR_INIT</a>
-, <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a>
-, <br />
-&#160;&#160;<a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a>
-, <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a>
-<br />
- }</td></tr>
-<tr class="separator:a57e898a48bf9e63709f7774eb98bb0ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e019cb397af76f46ed7eb54267cfb03" id="r_a1e019cb397af76f46ed7eb54267cfb03"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a> { <br />
 &#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4">TRANSITION_IDLE</a> = 0
 , <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2">TRANSITION_LOADING</a>
@@ -385,34 +372,6 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a57e898a48bf9e63709f7774eb98bb0ea" name="a57e898a48bf9e63709f7774eb98bb0ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57e898a48bf9e63709f7774eb98bb0ea">&#9670;&#160;</a></span>IBLState</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="app_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3" name="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3"></a>IBL_STATE_IDLE&#160;</td><td class="fielddoc"><p>Application is waiting for a request. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61" name="a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61"></a>IBL_STATE_LUMINANCE&#160;</td><td class="fielddoc"><p>GPU-side analysis of HDR mean luminance. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e" name="a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e"></a>IBL_STATE_SPECULAR_INIT&#160;</td><td class="fielddoc"><p>Preparation of specular map textures. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa" name="a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa"></a>IBL_STATE_SPECULAR_MIPS&#160;</td><td class="fielddoc"><p>Sliced pre-filtering of specular levels. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d" name="a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d"></a>IBL_STATE_IRRADIANCE&#160;</td><td class="fielddoc"><p>Sliced convolution of irradiance map. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24" name="a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24"></a>IBL_STATE_DONE&#160;</td><td class="fielddoc"><p>Resource cleanup and texture activation. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
 <a id="a1e019cb397af76f46ed7eb54267cfb03" name="a1e019cb397af76f46ed7eb54267cfb03"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e019cb397af76f46ed7eb54267cfb03">&#9670;&#160;</a></span>TransitionState</h2>
 

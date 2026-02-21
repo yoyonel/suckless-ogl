@@ -32,7 +32,7 @@ var searchData=
   ['gl_5fscope_5fuse_5fprogram_29',['GL_SCOPE_USE_PROGRAM',['../gl__common_8h.html#a8dcb3273b1d51b8da3a2a6f3082a799f',1,'gl_common.h']]],
   ['glfwwindow_30',['GLFWwindow',['../window_8h.html#a3c96d80d363e67d13a41b5d1821f3242',1,'window.h']]],
   ['global_5falpha_31',['global_alpha',['../structGPUProfilerUI.html#aa3aea768c0e27a27328b09024161b676',1,'GPUProfilerUI']]],
-  ['global_5ftimer_32',['global_timer',['../structIBLContext.html#ad22b5076e78f8636cd5667a0631437dc',1,'IBLContext']]],
+  ['global_5ftimer_32',['global_timer',['../structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76',1,'IBLCoordinator']]],
   ['globalalpha_33',['globalAlpha',['../ui_8frag.html#ab00cb5853fceb069c22f0e877646ea43',1,'ui.frag']]],
   ['glsl_34',['glsl',['../postprocess_8frag.html#a344f19d22dade43cee42acf63232782e',1,'glsl:&#160;postprocess.frag'],['../pbr__ibl__billboard_8frag.html#a344f19d22dade43cee42acf63232782e',1,'glsl:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a45bb4c97466db7e116560434ff23499a',1,'glsl:&#160;pbr_ibl_instanced.frag']]],
   ['glstatebackup_35',['GLStateBackup',['../structGLStateBackup.html',1,'']]],

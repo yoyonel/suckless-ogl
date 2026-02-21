@@ -7,7 +7,7 @@ var searchData=
   ['gamma_4',['gamma',['../structColorGradingParams.html#a60c4e1aee5f6f26fa98eee89f5924dd2',1,'ColorGradingParams']]],
   ['geometry_5',['geometry',['../structApp.html#a8f1346c71680ddd9b34a30915cd4295f',1,'App']]],
   ['global_5falpha_6',['global_alpha',['../structGPUProfilerUI.html#aa3aea768c0e27a27328b09024161b676',1,'GPUProfilerUI']]],
-  ['global_5ftimer_7',['global_timer',['../structIBLContext.html#ad22b5076e78f8636cd5667a0631437dc',1,'IBLContext']]],
+  ['global_5ftimer_7',['global_timer',['../structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76',1,'IBLCoordinator']]],
   ['globalalpha_8',['globalAlpha',['../ui_8frag.html#ab00cb5853fceb069c22f0e877646ea43',1,'ui.frag']]],
   ['glsl_9',['glsl',['../postprocess_8frag.html#a344f19d22dade43cee42acf63232782e',1,'glsl:&#160;postprocess.frag'],['../pbr__ibl__instanced_8frag.html#a45bb4c97466db7e116560434ff23499a',1,'glsl:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__billboard_8frag.html#a344f19d22dade43cee42acf63232782e',1,'glsl:&#160;pbr_ibl_billboard.frag']]],
   ['gpu_10',['gpu',['../structHybridTimer.html#a733adeac52db45de06419e84cf61c93e',1,'HybridTimer']]],

@@ -858,9 +858,9 @@ var sectionId = 'dynsection-0';
 <!-- Node40 -->
 <g id="Node000040" class="node">
 <title>Node40</title>
-<g id="a_Node000040"><a xlink:href="structIBLContext.html" target="_top" xlink:title="Progressive environment processing state.">
-<polygon fill="white" stroke="#666666" points="1209.5,-210.49 1139.5,-210.49 1139.5,-191.49 1209.5,-191.49 1209.5,-210.49"/>
-<text text-anchor="middle" x="1174.5" y="-198.49" font-family="Helvetica,sans-Serif" font-size="10.00">IBLContext</text>
+<g id="a_Node000040"><a xlink:href="structIBLCoordinator.html" target="_top" xlink:title="Manages the progressive IBL generation process.">
+<polygon fill="white" stroke="#666666" points="1219,-210.49 1130,-210.49 1130,-191.49 1219,-191.49 1219,-210.49"/>
+<text text-anchor="middle" x="1174.5" y="-198.49" font-family="Helvetica,sans-Serif" font-size="10.00">IBLCoordinator</text>
 </a>
 </g>
 </g>
@@ -868,11 +868,11 @@ var sectionId = 'dynsection-0';
 <g id="edge44_Node000001_Node000040" class="edge">
 <title>Node40&#45;&gt;Node1</title>
 <g id="a_edge44_Node000001_Node000040"><a xlink:title=" ">
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M1219.84,-190.1C1258.99,-183.35 1314.98,-181.2 1349,-212.99 1384.83,-246.48 1384.42,-412.09 1383.71,-454.22"/>
-<polygon fill="#9a32cd" stroke="#9a32cd" points="1218.95,-186.7 1209.77,-191.99 1220.25,-193.58 1218.95,-186.7"/>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M1222.66,-189.62C1261.64,-183.27 1315.79,-181.95 1349,-212.99 1384.83,-246.48 1384.42,-412.09 1383.71,-454.22"/>
+<polygon fill="#9a32cd" stroke="#9a32cd" points="1221.83,-186.22 1212.6,-191.43 1223.06,-193.11 1221.83,-186.22"/>
 </a>
 </g>
-<text text-anchor="middle" x="1299" y="-215.99" font-family="Helvetica,sans-Serif" font-size="10.00" fill="grey"> ibl_ctx</text>
+<text text-anchor="middle" x="1299" y="-215.99" font-family="Helvetica,sans-Serif" font-size="10.00" fill="grey"> ibl_coord</text>
 </g>
 <!-- Node41 -->
 <g id="Node000041" class="node">
@@ -887,7 +887,7 @@ var sectionId = 'dynsection-0';
 <g id="edge45_Node000040_Node000041" class="edge">
 <title>Node41&#45;&gt;Node40</title>
 <g id="a_edge45_Node000040_Node000041"><a xlink:title=" ">
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M973.48,-154.09C1006,-139.46 1061.11,-121.67 1100,-145.99 1115.5,-155.69 1104.2,-170.99 1118,-182.99 1124.04,-188.24 1131.63,-191.97 1139.25,-194.61"/>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M973.48,-154.09C1006,-139.46 1061.11,-121.67 1100,-145.99 1115.5,-155.69 1104.2,-170.99 1118,-182.99 1121.9,-186.38 1126.45,-189.14 1131.23,-191.37"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="971.71,-151.05 964.16,-158.48 974.69,-157.39 971.71,-151.05"/>
 </a>
 </g>

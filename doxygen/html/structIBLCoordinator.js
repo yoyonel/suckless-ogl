@@ -1,0 +1,25 @@
+var structIBLCoordinator =
+[
+    [ "current_mip", "structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def", null ],
+    [ "current_slice", "structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193", null ],
+    [ "global_timer", "structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76", null ],
+    [ "height", "structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe", null ],
+    [ "lum_ssbo", "structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70", null ],
+    [ "pending_hdr_tex", "structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02", null ],
+    [ "pending_irr_tex", "structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c", null ],
+    [ "pending_spec_tex", "structIBLCoordinator.html#a14287ac19c5a9cfc3fc8825c51036669", null ],
+    [ "shader_irmap", "structIBLCoordinator.html#aabe82399c187f13ee5fb1c7cec1f243a", null ],
+    [ "shader_lum_pass1", "structIBLCoordinator.html#ad744f5faa761586f5a4ee2e2c15ef0a5", null ],
+    [ "shader_lum_pass2", "structIBLCoordinator.html#abe4fa9a642288dbcdf707f378a6108c4", null ],
+    [ "shader_spmap", "structIBLCoordinator.html#a29dbfacff79b3b1a011c0b114573343b", null ],
+    [ "stage_gpu_max", "structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a", null ],
+    [ "stage_gpu_min", "structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e", null ],
+    [ "stage_gpu_sum", "structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0", null ],
+    [ "stage_slice_count", "structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4", null ],
+    [ "stage_timer", "structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3", null ],
+    [ "state", "structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0", null ],
+    [ "threshold", "structIBLCoordinator.html#a25c66e920fe5480ac2c0daad7e22e3a7", null ],
+    [ "total_mips", "structIBLCoordinator.html#a7bd55a2b0bcadc87485a5f9193df26de", null ],
+    [ "total_slices", "structIBLCoordinator.html#a77e6ebb9a8546c2aa95937090ce5fe76", null ],
+    [ "width", "structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1", null ]
+];

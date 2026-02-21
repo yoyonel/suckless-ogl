@@ -281,33 +281,33 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab1d13540441b5a2f988e0cd57754e625" id="r_ab1d13540441b5a2f988e0cd57754e625"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ab1d13540441b5a2f988e0cd57754e625">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
-<tr class="memdesc:ab1d13540441b5a2f988e0cd57754e625"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <br /></td></tr>
-<tr class="separator:ab1d13540441b5a2f988e0cd57754e625"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca6393fbdcd75a7379484de0a7604136" id="r_aca6393fbdcd75a7379484de0a7604136"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aca6393fbdcd75a7379484de0a7604136">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
+<tr class="memdesc:aca6393fbdcd75a7379484de0a7604136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <br /></td></tr>
+<tr class="separator:aca6393fbdcd75a7379484de0a7604136"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe907a059a85eecc3b288d41b903d5e7" id="r_abe907a059a85eecc3b288d41b903d5e7"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abe907a059a85eecc3b288d41b903d5e7">check_flag</a> (int value, int flag)</td></tr>
 <tr class="memdesc:abe907a059a85eecc3b288d41b903d5e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitwise flag check helper.  <br /></td></tr>
 <tr class="separator:abe907a059a85eecc3b288d41b903d5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbb98512b516893d07ffb8d439b807ea" id="r_adbb98512b516893d07ffb8d439b807ea"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#adbb98512b516893d07ffb8d439b807ea">safe_calloc</a> (size_t num, size_t size)</td></tr>
-<tr class="memdesc:adbb98512b516893d07ffb8d439b807ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">calloc wrapper with zero-size check.  <br /></td></tr>
-<tr class="separator:adbb98512b516893d07ffb8d439b807ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abaf40f2826b08aa05ee7ca7c2a4b79ee" id="r_abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abaf40f2826b08aa05ee7ca7c2a4b79ee">safe_memcpy</a> (void *dest, size_t dest_size, const void *src, size_t count)</td></tr>
-<tr class="memdesc:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">memcpy wrapper with bounds checking.  <br /></td></tr>
-<tr class="separator:abaf40f2826b08aa05ee7ca7c2a4b79ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66f52a36a090fdc6ca2f3f91078c9f4f" id="r_a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a66f52a36a090fdc6ca2f3f91078c9f4f">safe_memset</a> (void *dest, size_t dest_size, int value, size_t count)</td></tr>
-<tr class="memdesc:a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">memset wrapper with bounds checking.  <br /></td></tr>
-<tr class="separator:a66f52a36a090fdc6ca2f3f91078c9f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a823bc487fbd1a8980dc7a3e5e2277179" id="r_a823bc487fbd1a8980dc7a3e5e2277179"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a823bc487fbd1a8980dc7a3e5e2277179">safe_strncpy</a> (char *dest, size_t dest_size, const char *src, size_t src_size)</td></tr>
-<tr class="memdesc:a823bc487fbd1a8980dc7a3e5e2277179"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncpy to ensure null-termination.  <br /></td></tr>
-<tr class="separator:a823bc487fbd1a8980dc7a3e5e2277179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b0bcc183c4e6fb94386733edd277fc3" id="r_a5b0bcc183c4e6fb94386733edd277fc3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a5b0bcc183c4e6fb94386733edd277fc3">safe_strncat</a> (char *dest, size_t dest_size, const char *src)</td></tr>
-<tr class="memdesc:a5b0bcc183c4e6fb94386733edd277fc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncat to ensure bounds safety.  <br /></td></tr>
-<tr class="separator:a5b0bcc183c4e6fb94386733edd277fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3f28e50cc06585ceeeb962f997f598c" id="r_aa3f28e50cc06585ceeeb962f997f598c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa3f28e50cc06585ceeeb962f997f598c">is_safe_filename</a> (const char *filename)</td></tr>
-<tr class="memdesc:aa3f28e50cc06585ceeeb962f997f598c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a filename to prevent path traversal and shell injection.  <br /></td></tr>
-<tr class="separator:aa3f28e50cc06585ceeeb962f997f598c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fca40fda3337b1d62d89a81293a18ec" id="r_a7fca40fda3337b1d62d89a81293a18ec"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a7fca40fda3337b1d62d89a81293a18ec">is_safe_relative_path</a> (const char *path)</td></tr>
-<tr class="memdesc:a7fca40fda3337b1d62d89a81293a18ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a relative path to prevent arbitrary file access.  <br /></td></tr>
-<tr class="separator:a7fca40fda3337b1d62d89a81293a18ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27804c99492b4365e7bc19cbc3d3e88e" id="r_a27804c99492b4365e7bc19cbc3d3e88e"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a27804c99492b4365e7bc19cbc3d3e88e">safe_calloc</a> (size_t num, size_t size)</td></tr>
+<tr class="memdesc:a27804c99492b4365e7bc19cbc3d3e88e"><td class="mdescLeft">&#160;</td><td class="mdescRight">calloc wrapper with zero-size check.  <br /></td></tr>
+<tr class="separator:a27804c99492b4365e7bc19cbc3d3e88e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeb736cfb3c1a73ff0b6c3fabc20b332" id="r_abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332">safe_memcpy</a> (void *dest, size_t dest_size, const void *src, size_t count)</td></tr>
+<tr class="memdesc:abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="mdescLeft">&#160;</td><td class="mdescRight">memcpy wrapper with bounds checking.  <br /></td></tr>
+<tr class="separator:abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0d7c61e364406aa652f12a630642256" id="r_aa0d7c61e364406aa652f12a630642256"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa0d7c61e364406aa652f12a630642256">safe_memset</a> (void *dest, size_t dest_size, int value, size_t count)</td></tr>
+<tr class="memdesc:aa0d7c61e364406aa652f12a630642256"><td class="mdescLeft">&#160;</td><td class="mdescRight">memset wrapper with bounds checking.  <br /></td></tr>
+<tr class="separator:aa0d7c61e364406aa652f12a630642256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bdebcf7f8b13e9a0d4e0d96e8f3b075" id="r_a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075">safe_strncpy</a> (char *dest, size_t dest_size, const char *src, size_t src_size)</td></tr>
+<tr class="memdesc:a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncpy to ensure null-termination.  <br /></td></tr>
+<tr class="separator:a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7da5d8902e26bfe1fcb9e660e1677ea3" id="r_a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a7da5d8902e26bfe1fcb9e660e1677ea3">safe_strncat</a> (char *dest, size_t dest_size, const char *src)</td></tr>
+<tr class="memdesc:a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncat to ensure bounds safety.  <br /></td></tr>
+<tr class="separator:a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e22037461cd1f39af6f4ed6619bf953" id="r_a0e22037461cd1f39af6f4ed6619bf953"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953">is_safe_filename</a> (const char *filename)</td></tr>
+<tr class="memdesc:a0e22037461cd1f39af6f4ed6619bf953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a filename to prevent path traversal and shell injection.  <br /></td></tr>
+<tr class="separator:a0e22037461cd1f39af6f4ed6619bf953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a520044f64f3253a0c6842b6f80b4e6d1" id="r_a520044f64f3253a0c6842b6f80b4e6d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1">is_safe_relative_path</a> (const char *path)</td></tr>
+<tr class="memdesc:a520044f64f3253a0c6842b6f80b4e6d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a relative path to prevent arbitrary file access.  <br /></td></tr>
+<tr class="separator:a520044f64f3253a0c6842b6f80b4e6d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55529722f47ff4c9bc4b65d398008fc4" id="r_a55529722f47ff4c9bc4b65d398008fc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a> (FILE **file_ptr)</td></tr>
 <tr class="memdesc:a55529722f47ff4c9bc4b65d398008fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>FILE*</code>.  <br /></td></tr>
 <tr class="separator:a55529722f47ff4c9bc4b65d398008fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -511,28 +511,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa3f28e50cc06585ceeeb962f997f598c" name="aa3f28e50cc06585ceeeb962f997f598c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3f28e50cc06585ceeeb962f997f598c">&#9670;&#160;</a></span>is_safe_filename()</h2>
+<a id="a0e22037461cd1f39af6f4ed6619bf953" name="a0e22037461cd1f39af6f4ed6619bf953"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e22037461cd1f39af6f4ed6619bf953">&#9670;&#160;</a></span>is_safe_filename()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool is_safe_filename </td>
+          <td class="memname">bool is_safe_filename </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>filename</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Validates a filename to prevent path traversal and shell injection. </p>
@@ -547,28 +539,20 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7fca40fda3337b1d62d89a81293a18ec" name="a7fca40fda3337b1d62d89a81293a18ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fca40fda3337b1d62d89a81293a18ec">&#9670;&#160;</a></span>is_safe_relative_path()</h2>
+<a id="a520044f64f3253a0c6842b6f80b4e6d1" name="a520044f64f3253a0c6842b6f80b4e6d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a520044f64f3253a0c6842b6f80b4e6d1">&#9670;&#160;</a></span>is_safe_relative_path()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool is_safe_relative_path </td>
+          <td class="memname">bool is_safe_relative_path </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Validates a relative path to prevent arbitrary file access. </p>
@@ -583,17 +567,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="adbb98512b516893d07ffb8d439b807ea" name="adbb98512b516893d07ffb8d439b807ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbb98512b516893d07ffb8d439b807ea">&#9670;&#160;</a></span>safe_calloc()</h2>
+<a id="a27804c99492b4365e7bc19cbc3d3e88e" name="a27804c99492b4365e7bc19cbc3d3e88e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27804c99492b4365e7bc19cbc3d3e88e">&#9670;&#160;</a></span>safe_calloc()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void * safe_calloc </td>
+          <td class="memname">void * safe_calloc </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>num</em>, </td>
@@ -610,28 +591,20 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>calloc wrapper with zero-size check. </p>
 
 </div>
 </div>
-<a id="abaf40f2826b08aa05ee7ca7c2a4b79ee" name="abaf40f2826b08aa05ee7ca7c2a4b79ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abaf40f2826b08aa05ee7ca7c2a4b79ee">&#9670;&#160;</a></span>safe_memcpy()</h2>
+<a id="abeb736cfb3c1a73ff0b6c3fabc20b332" name="abeb736cfb3c1a73ff0b6c3fabc20b332"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abeb736cfb3c1a73ff0b6c3fabc20b332">&#9670;&#160;</a></span>safe_memcpy()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool safe_memcpy </td>
+          <td class="memname">bool safe_memcpy </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -660,28 +633,20 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>memcpy wrapper with bounds checking. </p>
 
 </div>
 </div>
-<a id="a66f52a36a090fdc6ca2f3f91078c9f4f" name="a66f52a36a090fdc6ca2f3f91078c9f4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66f52a36a090fdc6ca2f3f91078c9f4f">&#9670;&#160;</a></span>safe_memset()</h2>
+<a id="aa0d7c61e364406aa652f12a630642256" name="aa0d7c61e364406aa652f12a630642256"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0d7c61e364406aa652f12a630642256">&#9670;&#160;</a></span>safe_memset()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool safe_memset </td>
+          <td class="memname">bool safe_memset </td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -710,28 +675,20 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>memset wrapper with bounds checking. </p>
 
 </div>
 </div>
-<a id="ab1d13540441b5a2f988e0cd57754e625" name="ab1d13540441b5a2f988e0cd57754e625"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1d13540441b5a2f988e0cd57754e625">&#9670;&#160;</a></span>safe_snprintf()</h2>
+<a id="aca6393fbdcd75a7379484de0a7604136" name="aca6393fbdcd75a7379484de0a7604136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca6393fbdcd75a7379484de0a7604136">&#9670;&#160;</a></span>safe_snprintf()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool safe_snprintf </td>
+          <td class="memname">bool safe_snprintf </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>buf</em>, </td>
@@ -760,11 +717,6 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Safe wrapper around vsnprintf to format strings with bounds checking. </p>
@@ -780,17 +732,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a5b0bcc183c4e6fb94386733edd277fc3" name="a5b0bcc183c4e6fb94386733edd277fc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b0bcc183c4e6fb94386733edd277fc3">&#9670;&#160;</a></span>safe_strncat()</h2>
+<a id="a7da5d8902e26bfe1fcb9e660e1677ea3" name="a7da5d8902e26bfe1fcb9e660e1677ea3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7da5d8902e26bfe1fcb9e660e1677ea3">&#9670;&#160;</a></span>safe_strncat()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void safe_strncat </td>
+          <td class="memname">void safe_strncat </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -813,11 +762,6 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Safe wrapper around strncat to ensure bounds safety. </p>
@@ -832,17 +776,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a823bc487fbd1a8980dc7a3e5e2277179" name="a823bc487fbd1a8980dc7a3e5e2277179"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a823bc487fbd1a8980dc7a3e5e2277179">&#9670;&#160;</a></span>safe_strncpy()</h2>
+<a id="a9bdebcf7f8b13e9a0d4e0d96e8f3b075" name="a9bdebcf7f8b13e9a0d4e0d96e8f3b075"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bdebcf7f8b13e9a0d4e0d96e8f3b075">&#9670;&#160;</a></span>safe_strncpy()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void safe_strncpy </td>
+          <td class="memname">void safe_strncpy </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
@@ -871,11 +812,6 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Safe wrapper around strncpy to ensure null-termination. </p>
