@@ -1,3 +1,20 @@
+/**
+ * @file mock_gl_standalone.c
+ * @brief Implementation of a minimal mock OpenGL environment.
+ *
+ * NOTE: This file includes "mock_gl_standalone.h", which includes
+ * "glad/glad.h". When compiled for standalone tests (e.g.
+ * test_ibl_coordinator), the "glad/glad.h" resolved is the MANUAL mock in
+ * "tests/mocks/glad/glad.h". This manual mock defines GL functions as regular C
+ * functions (not macros). Thus, implementing them here causes no conflict.
+ *
+ * However, if this file were compiled in an environment where "glad.h" is the
+ * REAL one (defining macros expanding to function pointers), this would cause a
+ * build error. Ensure CMake configuration for standalone tests strictly
+ * controls include paths to favor "tests/mocks" over
+ * "build/_deps/glad-src/include".
+ */
+
 #include "mock_gl_standalone.h"
 
 #include <stdio.h> /* For definition of NULL if needed, though not used here */

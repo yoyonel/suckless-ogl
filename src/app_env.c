@@ -1,7 +1,6 @@
 #include "app.h"
 #include "app_settings.h"
 #include "async_loader.h"
-#include "glad/glad.h"
 #include "ibl_coordinator.h"
 #include "log.h"
 #include "pbr.h"
