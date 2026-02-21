@@ -27,6 +27,7 @@ typedef struct {
  */
 typedef struct {
 	SphereSortEntry* entries;       /**< Key array. */
+	SphereSortEntry* temp_entries;  /**< Scratchpad for Radix Sort. */
 	SphereInstance* temp_instances; /**< Scratchpad for reordering. */
 	int capacity;     /**< Current allocated size of temp_instances. */
 	int min_capacity; /**< Minimum capacity to maintain (from
