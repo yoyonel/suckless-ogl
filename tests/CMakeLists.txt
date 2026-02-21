@@ -200,6 +200,7 @@ add_executable(test_billboard_cleanup
     test_billboard_cleanup.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_billboard_cleanup PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -229,6 +230,7 @@ add_executable(test_billboard_overflow
     test_billboard_overflow.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_billboard_overflow PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -263,6 +265,7 @@ add_executable(test_gpu_profiler_repro
     ${CMAKE_SOURCE_DIR}/src/log.c
     ${CMAKE_SOURCE_DIR}/src/tracy_log.c
     ${CMAKE_SOURCE_DIR}/src/metric_stack.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -293,6 +296,7 @@ add_executable(test_shader_limit
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/src/io.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 
 target_include_directories(test_shader_limit PRIVATE
@@ -317,6 +321,7 @@ add_executable(test_camera_input
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/src/camera.c
     ${CMAKE_SOURCE_DIR}/src/camera_input.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 
 target_include_directories(test_camera_input PRIVATE
@@ -341,6 +346,7 @@ add_executable(test_ibl_coordinator
     ${CMAKE_SOURCE_DIR}/src/ibl_coordinator.c
     ${CMAKE_SOURCE_DIR}/src/log.c
     ${CMAKE_SOURCE_DIR}/src/tracy_log.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 if(ENABLE_TRACY)
     target_sources(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")

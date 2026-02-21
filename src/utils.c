@@ -14,9 +14,12 @@
 /* Suppress "function 'vsnprintf' is insecure" and similar analyzer warnings
  * because this file implements the safe wrappers themselves. */
 #pragma clang diagnostic ignored "-Wformat-security"
-#if defined(__clang__)
-#pragma clang diagnostic ignored "-Wdeprecated-safe-buffer-handling"
+#if defined(__clang__) && !defined(__APPLE__)
+#pragma clang diagnostic ignored "-Wunknown-warning-option"
 #endif
+
+// NOLINTBEGIN(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+// clang-analyzer-valist.Uninitialized)
 
 bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 {
@@ -26,7 +29,6 @@ bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	int result = vsnprintf(buf, buf_size, format, args);
 	va_end(args);
 
@@ -90,9 +92,11 @@ void safe_strncat(char* dest, size_t dest_size, const char* src)
 	}
 
 	size_t remaining = dest_size - current_len - 1;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	(void)strncat(dest, src, remaining);
 }
+
+// NOLINTEND(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+// clang-analyzer-valist.Uninitialized)
 
 #pragma clang diagnostic pop
 
