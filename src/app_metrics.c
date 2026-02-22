@@ -69,8 +69,9 @@ static void format_relative_percentages(const GPUProfiler* profiler,
 			}
 
 			const char* sep = first ? " {" : ", ";
-			bool success = safe_snprintf(ptr, remaining, "%s%.0f%% %s",
-			                             sep, percent, parent->name);
+			bool success =
+			    safe_snprintf(ptr, remaining, "%s%.0f%% %s", sep,
+			                  percent, parent->name);
 
 			if (!success) {
 				// Truncated or error
