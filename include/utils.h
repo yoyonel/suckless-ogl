@@ -104,13 +104,7 @@ static inline void cleanup_file(FILE** file_ptr)
  * @brief Satisfies Static Analyzers for file resource management.
  */
 #ifdef __clang_analyzer__
-static inline void raii_satisfy_analyzer_file(
-    FILE* f)  // NOLINT(readability-identifier-length)
-{
-	if (f) {
-		(void)fclose(f);
-	}
-}
+void raii_satisfy_analyzer_file(FILE* file_ptr);
 #define RAII_SATISFY_FILE(f) raii_satisfy_analyzer_file(f)
 #else
 #define RAII_SATISFY_FILE(f) (void)0
@@ -134,11 +128,7 @@ static inline void cleanup_free(void* ptr_ptr)
  * @brief Satisfies Static Analyzers for memory resource management.
  */
 #ifdef __clang_analyzer__
-static inline void raii_satisfy_analyzer_free(
-    void* p)  // NOLINT(readability-identifier-length)
-{
-	free(p);
-}
+void raii_satisfy_analyzer_free(void* ptr);
 #define RAII_SATISFY_FREE(p) raii_satisfy_analyzer_free(p)
 #else
 #define RAII_SATISFY_FREE(p) (void)0
