@@ -53,9 +53,10 @@ void billboard_group_update(BillboardGroup* group, const SphereInstance* data,
 		glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
 
 		/* Orphan buffer to prevent synchronization stalls */
-		glBufferData(GL_ARRAY_BUFFER,
-		             (GLsizeiptr)(group->capacity * sizeof(SphereInstance)),
-		             NULL, GL_DYNAMIC_DRAW);
+		glBufferData(
+		    GL_ARRAY_BUFFER,
+		    (GLsizeiptr)(group->capacity * sizeof(SphereInstance)),
+		    NULL, GL_DYNAMIC_DRAW);
 
 		/* Using glBufferSubData is fine for small updates (10-100
 		 * instances) */
