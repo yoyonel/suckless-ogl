@@ -29,12 +29,12 @@ static void format_missed_frames(const AdaptiveSampler* sampler, char* buffer,
 			    100.0F;
 		}
 
-		(void)snprintf(buffer, size,
-		               "[Frames: %lu-%lu, Miss: %zu/%lu (%.1f%%)]",
-		               start_frame, end_frame, missed_count,
-		               total_frames, miss_rate);
+		(void)safe_snprintf(buffer, size,
+		                    "[Frames: %lu-%lu, Miss: %zu/%lu (%.1f%%)]",
+		                    start_frame, end_frame, missed_count,
+		                    total_frames, miss_rate);
 	} else {
-		(void)snprintf(buffer, size, "[Range Empty]");
+		(void)safe_snprintf(buffer, size, "[Range Empty]");
 	}
 }
 
@@ -69,8 +69,11 @@ static void format_relative_percentages(const GPUProfiler* profiler,
 			}
 
 			const char* sep = first ? " {" : ", ";
-			int written = snprintf(ptr, remaining, "%s%.0f%% %s",
-			                       sep, percent, parent->name);
+			/* Use vsnprintf manually to get written count since
+			 * safe_snprintf returns bool */
+			int written =
+			    snprintf(ptr, remaining, "%s%.0f%% %s", sep,
+			             percent, parent->name);  // NOLINT
 
 			if (written < 0) {
 				break;
