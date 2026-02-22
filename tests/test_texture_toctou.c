@@ -12,17 +12,6 @@
 #include "stb_image.h"
 #include "unity.h"
 
-/* Define GL types/constants missing from mock_gl_standalone.h */
-#ifndef GL_MAP_READ_BIT
-typedef unsigned int GLbitfield;
-#define GL_MAP_READ_BIT 0x0001
-#define GL_MAP_WRITE_BIT 0x0002
-#define GL_MAP_INVALIDATE_RANGE_BIT 0x0004
-#define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
-#define GL_MAP_FLUSH_EXPLICIT_BIT 0x0010
-#define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
-#endif
-
 /*
  * Global Mocks for functions NOT provided by other files in the target.
  * We don't use 'static' so that other files in the same target (like io.c)
@@ -61,17 +50,6 @@ void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
 void gpu_profiler_end_stage(GPUProfiler* profiler)
 {
 	(void)profiler;
-}
-
-// GL Mocks missing from mock_gl_standalone.c
-void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
-                       GLbitfield access)
-{
-	(void)target;
-	(void)offset;
-	(void)length;
-	(void)access;
-	return NULL;
 }
 
 // Include source under test
