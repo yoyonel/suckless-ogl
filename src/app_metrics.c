@@ -29,12 +29,12 @@ static void format_missed_frames(const AdaptiveSampler* sampler, char* buffer,
 			    100.0F;
 		}
 
-		(void)safe_snprintf(buffer, size,
-		                    "[Frames: %lu-%lu, Miss: %zu/%lu (%.1f%%)]",
-		                    start_frame, end_frame, missed_count,
-		                    total_frames, miss_rate);
+		(void)snprintf(buffer, size,
+		               "[Frames: %lu-%lu, Miss: %zu/%lu (%.1f%%)]",
+		               start_frame, end_frame, missed_count,
+		               total_frames, miss_rate);
 	} else {
-		(void)safe_snprintf(buffer, size, "[Range Empty]");
+		(void)snprintf(buffer, size, "[Range Empty]");
 	}
 }
 
@@ -43,11 +43,17 @@ static void format_relative_percentages(const GPUProfiler* profiler,
                                         char* buffer, size_t size)
 {
 	// Safe initialization
+	if (size == 0) {
+		return;
+	}
 	buffer[0] = '\0';
 
 	// Traverse up the hierarchy
 	int parent_idx = profiler->stages[stage_index].parent_index;
 	bool first = true;
+
+	char* ptr = buffer;
+	size_t remaining = size;
 
 	while (parent_idx != -1) {
 		const GPUStage* parent = &profiler->stages[parent_idx];
@@ -62,26 +68,32 @@ static void format_relative_percentages(const GPUProfiler* profiler,
 				percent = 100.0F;
 			}
 
-			if (first) {
-				safe_strncat(buffer, size, " {");
-			} else {
-				safe_strncat(buffer, size, ", ");
+			const char* sep = first ? " {" : ", ";
+			int written = snprintf(ptr, remaining, "%s%.0f%% %s",
+			                       sep, percent, parent->name);
+
+			if (written < 0) {
+				break;
 			}
 
-			// MAX_PERCENT_STR_SIZE for "XX% ParentName"
-			const size_t MAX_PERCENT_STR_SIZE = 64;
-			char temp[MAX_PERCENT_STR_SIZE];
-			(void)safe_snprintf(temp, sizeof(temp), "%.0f%% %s",
-			                    percent, parent->name);
-			safe_strncat(buffer, size, temp);
+			if ((size_t)written >= remaining) {
+				// Truncated
+				ptr += remaining - 1;
+				remaining = 1;
+				break;
+			}
+
+			ptr += written;
+			remaining -= written;
 			first = false;
 		}
 
 		parent_idx = parent->parent_index;
 	}
 
-	if (!first) {
-		safe_strncat(buffer, size, "}");
+	if (!first && remaining > 1) {
+		*ptr++ = '}';
+		*ptr = '\0';
 	}
 }
 
@@ -256,7 +268,7 @@ bool app_metrics_log_gpu_stats(GPUProfiler* profiler, double current_time,
 		return false;
 	}
 
-	if (should_log) {
+	if (should_log && log_get_level() <= LOG_LEVEL_INFO) {
 		// Pass 1: Logging (All stages at once)
 		for (int i = 0; i < profiler->stage_count; i++) {
 			GPUStage* stage = &profiler->stages[i];
