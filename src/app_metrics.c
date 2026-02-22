@@ -71,9 +71,10 @@ static void format_relative_percentages(const GPUProfiler* profiler,
 			const char* sep = first ? " {" : ", ";
 			/* Use vsnprintf manually to get written count since
 			 * safe_snprintf returns bool */
-			int written =
-			    snprintf(ptr, remaining, "%s%.0f%% %s", sep,
-			             percent, parent->name);  // NOLINT
+			// NOLINTBEGIN(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			int written = snprintf(ptr, remaining, "%s%.0f%% %s",
+			                       sep, percent, parent->name);
+			// NOLINTEND(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 
 			if (written < 0) {
 				break;
