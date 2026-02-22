@@ -55,8 +55,8 @@ void test_cancel_request(void)
 	while (attempts < MAX_ATTEMPTS) {
 		if (async_loader_poll(loader, &req)) {
 			// Poll returned true means we got a result.
-			// But we expect it to be waiting for PBO, which returns true
-			// with state ASYNC_WAITING_FOR_PBO.
+			// But we expect it to be waiting for PBO, which returns
+			// true with state ASYNC_WAITING_FOR_PBO.
 			if (req.state == ASYNC_WAITING_FOR_PBO) {
 				waiting = true;
 				break;
@@ -70,23 +70,24 @@ void test_cancel_request(void)
 	                         "Loader did not reach WAITING_FOR_PBO state");
 
 	// 3. Cancel the request
-	// Note: async_loader_cancel is not yet implemented, but we expect it to exist
-	// based on our plan. Compilation will fail until we implement it.
+	// Note: async_loader_cancel is not yet implemented, but we expect it to
+	// exist based on our plan. Compilation will fail until we implement it.
 	async_loader_cancel(loader);
 
 	// 4. Verify it transitions to FAILED (and then IDLE upon poll)
-	// After cancel, the worker should wake up, clean up, set state to FAILED.
-	// The next poll should return the FAILED state or IDLE.
-	// Actually, async_loader_poll returns true if state is READY or WAITING_FOR_PBO.
-	// If state is FAILED, it returns false but logs error and resets to IDLE.
-	// Wait, let's check async_loader_poll implementation again.
+	// After cancel, the worker should wake up, clean up, set state to
+	// FAILED. The next poll should return the FAILED state or IDLE.
+	// Actually, async_loader_poll returns true if state is READY or
+	// WAITING_FOR_PBO. If state is FAILED, it returns false but logs error
+	// and resets to IDLE. Wait, let's check async_loader_poll
+	// implementation again.
 
 	/*
 	} else if (loader->current_request.state == ASYNC_FAILED) {
-		// Failed loading, just reset
-		LOG_ERROR(..., "Async load failed for: %s", ...);
-		loader->current_request.state = ASYNC_IDLE;
-		transition_tracy_state(ASYNC_IDLE);
+	        // Failed loading, just reset
+	        LOG_ERROR(..., "Async load failed for: %s", ...);
+	        loader->current_request.state = ASYNC_IDLE;
+	        transition_tracy_state(ASYNC_IDLE);
 	}
 	*/
 	// It returns false if FAILED. But it resets state to IDLE.
@@ -102,8 +103,8 @@ void test_cancel_request(void)
 
 	// 5. Verify we can submit a new request
 	accepted = async_loader_request(loader, TEMP_FILENAME);
-	TEST_ASSERT_TRUE_MESSAGE(accepted,
-	                         "Should be able to submit new request after cancel");
+	TEST_ASSERT_TRUE_MESSAGE(
+	    accepted, "Should be able to submit new request after cancel");
 }
 
 int main(void)

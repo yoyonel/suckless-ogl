@@ -446,7 +446,8 @@ void async_loader_cancel(AsyncLoader* loader)
 		loader->current_request.state = ASYNC_FAILED;
 		transition_tracy_state(ASYNC_FAILED);
 		pthread_cond_signal(&loader->request_cond); /* Wake up worker */
-		LOG_INFO("suckless-ogl.async", "Request cancelled by main thread: %s",
+		LOG_INFO("suckless-ogl.async",
+		         "Request cancelled by main thread: %s",
 		         loader->current_request.path);
 	} else {
 		LOG_ERROR("suckless-ogl.async",
