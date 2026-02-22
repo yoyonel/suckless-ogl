@@ -142,3 +142,17 @@ bool is_safe_relative_path(const char* path)
 	}
 	return true;
 }
+
+#ifdef __clang_analyzer__
+void raii_satisfy_analyzer_file(FILE* file_ptr)
+{
+	if (file_ptr) {
+		(void)fclose(file_ptr);
+	}
+}
+
+void raii_satisfy_analyzer_free(void* ptr)
+{
+	free(ptr);
+}
+#endif
