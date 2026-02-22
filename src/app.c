@@ -555,11 +555,7 @@ void app_update(App* app)
 			} else {
 				LOG_ERROR("suckless-ogl.app",
 				          "Failed to map PBO for async upload");
-				/* We should probably cancel the request here,
-				 * but related cleanup is tricky. The loader
-				 * will hang waiting for PBO if we don't signal.
-				 * TODO: Implement cancel or timeout in loader.
-				 */
+				async_loader_cancel(app->async_loader);
 			}
 		} else if (req.state == ASYNC_READY) {
 			/* Step 2: Upload from PBO (or legacy CPU buffer) */

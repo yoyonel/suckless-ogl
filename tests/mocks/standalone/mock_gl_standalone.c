@@ -497,6 +497,18 @@ void* glMapBuffer(GLenum target, GLenum access)
 	return dummy_buffer;
 }
 
+void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
+                       GLbitfield access)
+{
+	(void)target;
+	(void)offset;
+	(void)length;
+	(void)access;
+	/* Return a dummy pointer that is non-NULL */
+	static char dummy_buffer[1024];
+	return dummy_buffer;
+}
+
 GLboolean glUnmapBuffer(GLenum target)
 {
 	(void)target;
