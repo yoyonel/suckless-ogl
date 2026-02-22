@@ -6,6 +6,7 @@ var async__loader_8c =
     [ "transition_tracy_state", "async__loader_8c.html#a6374e46a70774e488a1ef33cb66a5414", null ],
     [ "async_handle_io", "async__loader_8c.html#a9523c8b4c688acd08f95fb3dc993e80e", null ],
     [ "async_load_data", "async__loader_8c.html#a16575f1339fc5e116f7f49ec520ac793", null ],
+    [ "async_loader_cancel", "async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a", null ],
     [ "async_loader_create", "async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6", null ],
     [ "async_loader_destroy", "async__loader_8c.html#a8f4ca9abf78e333d8d7ca5762db31564", null ],
     [ "async_loader_poll", "async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb", null ],

@@ -306,6 +306,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c550b2e0e880d9be179ada62e3d99e3" id="r_a5c550b2e0e880d9be179ada62e3d99e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8h.html#a5c550b2e0e880d9be179ada62e3d99e3">async_loader_provide_pbo</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, void *mapped_ptr, GLuint pbo_id)</td></tr>
 <tr class="memdesc:a5c550b2e0e880d9be179ada62e3d99e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a mapped PBO pointer to the async loader for conversion.  <br /></td></tr>
 <tr class="separator:a5c550b2e0e880d9be179ada62e3d99e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9ef6b50fc1358023da343b3b6d281a" id="r_a7a9ef6b50fc1358023da343b3b6d281a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8h.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a7a9ef6b50fc1358023da343b3b6d281a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels the current request if it is waiting for a PBO.  <br /></td></tr>
+<tr class="separator:a7a9ef6b50fc1358023da343b3b6d281a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Threaded asynchronous file loader for heavy assets (HDR, textures). </p>
@@ -361,6 +364,32 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a7a9ef6b50fc1358023da343b3b6d281a" name="a7a9ef6b50fc1358023da343b3b6d281a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9ef6b50fc1358023da343b3b6d281a">&#9670;&#160;</a></span>async_loader_cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_cancel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cancels the current request if it is waiting for a PBO. </p>
+<p>Use this if the main thread fails to map a PBO and cannot proceed. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>The loader instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aa0330860c0daf9333351d3e5204501c6" name="aa0330860c0daf9333351d3e5204501c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa0330860c0daf9333351d3e5204501c6">&#9670;&#160;</a></span>async_loader_create()</h2>
 

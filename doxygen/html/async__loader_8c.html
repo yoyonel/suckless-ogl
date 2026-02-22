@@ -305,6 +305,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5c550b2e0e880d9be179ada62e3d99e3" id="r_a5c550b2e0e880d9be179ada62e3d99e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3">async_loader_provide_pbo</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader, void *mapped_ptr, GLuint pbo_id)</td></tr>
 <tr class="memdesc:a5c550b2e0e880d9be179ada62e3d99e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a mapped PBO pointer to the async loader for conversion.  <br /></td></tr>
 <tr class="separator:a5c550b2e0e880d9be179ada62e3d99e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9ef6b50fc1358023da343b3b6d281a" id="r_a7a9ef6b50fc1358023da343b3b6d281a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a">async_loader_cancel</a> (<a class="el" href="structAsyncLoader.html">AsyncLoader</a> *loader)</td></tr>
+<tr class="memdesc:a7a9ef6b50fc1358023da343b3b6d281a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels the current request if it is waiting for a PBO.  <br /></td></tr>
+<tr class="separator:a7a9ef6b50fc1358023da343b3b6d281a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a3024ccd4a9af5109d24e6c57565d74a1" name="a3024ccd4a9af5109d24e6c57565d74a1"></a>
@@ -472,6 +475,32 @@ Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="async__loader_8c_a16575f1339fc5e116f7f49ec520ac793_cgraph.svg" width="100%" height="456"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
+
+</div>
+</div>
+<a id="a7a9ef6b50fc1358023da343b3b6d281a" name="a7a9ef6b50fc1358023da343b3b6d281a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a9ef6b50fc1358023da343b3b6d281a">&#9670;&#160;</a></span>async_loader_cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void async_loader_cancel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td>
+          <td class="paramname"><em>loader</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cancels the current request if it is waiting for a PBO. </p>
+<p>Use this if the main thread fails to map a PBO and cannot proceed. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loader</td><td>The loader instance. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

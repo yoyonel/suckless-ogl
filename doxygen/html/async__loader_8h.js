@@ -11,6 +11,7 @@ var async__loader_8h =
       [ "ASYNC_READY", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a0f63b531554194e976a0e8d8770e095a", null ],
       [ "ASYNC_FAILED", "async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209a8f6009b69a6d7e075ca1109a58de7435", null ]
     ] ],
+    [ "async_loader_cancel", "async__loader_8h.html#a7a9ef6b50fc1358023da343b3b6d281a", null ],
     [ "async_loader_create", "async__loader_8h.html#aa0330860c0daf9333351d3e5204501c6", null ],
     [ "async_loader_destroy", "async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564", null ],
     [ "async_loader_poll", "async__loader_8h.html#a6de1e12f1acee74c563ec68d926092eb", null ],

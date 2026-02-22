@@ -1,21 +1,23 @@
 <map id="app_update" name="app_update">
-<area shape="rect" id="Node000001" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="5,656,104,681"/>
+<area shape="rect" id="Node000001" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="5,681,104,707"/>
 <area shape="rect" id="Node000002" href="$app__env_8c.html#a2a1c34e50280775f9d66d3052b54b5ff" title="Finalizes the HDR texture upload once the async loader is ready." alt="" coords="152,333,377,359"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="62,654,246,369,250,372,67,657"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="61,680,246,369,251,372,66,683"/>
 <area shape="rect" id="Node000007" href="$app__env_8c.html#a9b671bcba6f5af06cc8408efb65fb0f2" title="Processes the current state of the IBL generation state machine." alt="" coords="181,566,348,606"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="81,653,151,622,188,608,190,613,153,627,83,658"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="69,679,105,651,151,622,182,608,184,613,153,627,108,656,72,683"/>
 <area shape="rect" id="Node000036" href="$app__env_8c.html#a12c7b3e3e97c1122f55fca553c798228" title="Updates the environment transition." alt="" coords="433,736,600,761"/>
-<area shape="poly" id="edge48_Node000001_Node000036" title=" " alt="" coords="104,655,162,645,232,641,306,647,343,655,379,668,395,680,404,694,413,708,427,721,441,729,438,733,424,726,408,711,400,697,391,683,376,672,342,660,306,652,232,646,162,651,105,660"/>
-<area shape="rect" id="Node000037" href="$async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" title="Polls the loader for any completed requests." alt="" coords="195,681,334,707"/>
-<area shape="poly" id="edge51_Node000001_Node000037" title=" " alt="" coords="104,672,182,681,181,687,104,677"/>
-<area shape="rect" id="Node000038" href="$async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" title="Provides a mapped PBO pointer to the async loader for conversion." alt="" coords="167,731,362,756"/>
-<area shape="poly" id="edge52_Node000001_Node000038" title=" " alt="" coords="78,679,112,699,153,717,178,725,176,730,151,722,110,703,75,684"/>
-<area shape="rect" id="Node000039" href="$texture_8c.html#aab7453443bd88ad6c923d608ec066a28" title="Ensures a PBO is allocated with sufficient size." alt="" coords="189,780,340,805"/>
-<area shape="poly" id="edge53_Node000001_Node000039" title=" " alt="" coords="66,680,101,723,125,747,153,766,177,777,175,782,151,771,122,751,97,727,62,683"/>
-<area shape="rect" id="Node000040" href="$texture_8c.html#a0d3c44efbe21ce365f8726603776fab5" title="Maps a PBO for writing." alt="" coords="197,829,333,855"/>
-<area shape="poly" id="edge54_Node000001_Node000040" title=" " alt="" coords="63,680,74,709,93,746,120,784,153,816,184,830,182,835,151,820,116,788,89,749,70,711,58,682"/>
-<area shape="rect" id="Node000041" href="$texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359" title="Pre&#45;allocates VRAM for an HDR texture (glTexStorage2D only)." alt="" coords="428,219,605,244"/>
-<area shape="poly" id="edge55_Node000001_Node000041" title=" " alt="" coords="53,656,53,595,63,505,75,456,93,406,117,360,150,320,178,297,210,277,278,250,348,234,414,228,414,233,349,240,279,255,212,282,181,301,154,324,122,363,98,409,80,457,69,506,58,596,58,656"/>
+<area shape="poly" id="edge48_Node000001_Node000036" title=" " alt="" coords="89,679,146,662,220,649,260,647,300,648,340,655,379,668,395,680,404,694,413,708,427,721,441,729,438,733,424,726,408,711,400,697,391,683,376,672,339,660,300,653,260,652,221,654,148,667,91,684"/>
+<area shape="rect" id="Node000037" href="$async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a" title="Cancels the current request if it is waiting for a PBO." alt="" coords="186,681,343,707"/>
+<area shape="poly" id="edge51_Node000001_Node000037" title=" " alt="" coords="104,691,172,691,172,697,104,697"/>
+<area shape="rect" id="Node000038" href="$async__loader_8c.html#a6de1e12f1acee74c563ec68d926092eb" title="Polls the loader for any completed requests." alt="" coords="195,731,334,756"/>
+<area shape="poly" id="edge52_Node000001_Node000038" title=" " alt="" coords="103,704,153,717,189,725,188,730,151,722,102,709"/>
+<area shape="rect" id="Node000039" href="$async__loader_8c.html#a5c550b2e0e880d9be179ada62e3d99e3" title="Provides a mapped PBO pointer to the async loader for conversion." alt="" coords="167,780,362,805"/>
+<area shape="poly" id="edge53_Node000001_Node000039" title=" " alt="" coords="70,705,106,736,153,766,171,773,169,778,151,771,102,740,67,709"/>
+<area shape="rect" id="Node000040" href="$texture_8c.html#aab7453443bd88ad6c923d608ec066a28" title="Ensures a PBO is allocated with sufficient size." alt="" coords="189,829,340,855"/>
+<area shape="poly" id="edge54_Node000001_Node000040" title=" " alt="" coords="64,706,97,760,123,790,153,816,178,827,175,832,151,820,119,794,93,763,60,708"/>
+<area shape="rect" id="Node000041" href="$texture_8c.html#a0d3c44efbe21ce365f8726603776fab5" title="Maps a PBO for writing." alt="" coords="197,879,333,904"/>
+<area shape="poly" id="edge55_Node000001_Node000041" title=" " alt="" coords="62,706,72,739,90,782,117,828,134,848,153,865,184,880,182,885,151,870,130,852,113,831,85,785,67,741,57,708"/>
+<area shape="rect" id="Node000042" href="$texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359" title="Pre&#45;allocates VRAM for an HDR texture (glTexStorage2D only)." alt="" coords="428,219,605,244"/>
+<area shape="poly" id="edge56_Node000001_Node000042" title=" " alt="" coords="55,681,65,607,85,499,113,391,131,349,150,320,178,296,209,277,277,249,348,234,414,227,414,233,349,239,279,255,212,282,181,301,154,324,135,351,118,393,90,500,71,608,60,682"/>
 <area shape="rect" id="Node000003" href="$ibl__coordinator_8c.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3" title="Starts the IBL generation process for a new HDR texture." alt="" coords="439,333,595,359"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="378,343,425,343,425,349,378,349"/>
 <area shape="rect" id="Node000005" href="$texture_8c.html#a9b2e1a73489371d72362f97552ad57a8" title="Finalizes HDR upload from a PBO (Unmap &#45;&gt; Upload &#45;&gt; Mipmaps)." alt="" coords="443,269,591,309"/>
@@ -95,5 +97,5 @@
 <area shape="poly" id="edge45_Node000034_Node000027" title=" " alt="" coords="1065,289,1108,304,1166,340,1213,381,1210,385,1163,345,1106,308,1063,294"/>
 <area shape="poly" id="edge49_Node000036_Node000010" title=" " alt="" coords="567,733,678,705,680,710,568,739"/>
 <area shape="poly" id="edge50_Node000036_Node000012" title=" " alt="" coords="601,746,655,746,655,751,601,751"/>
-<area shape="poly" id="edge56_Node000041_Node000006" title=" " alt="" coords="606,229,649,229,649,234,606,234"/>
+<area shape="poly" id="edge57_Node000042_Node000006" title=" " alt="" coords="606,229,649,229,649,234,606,234"/>
 </map>
