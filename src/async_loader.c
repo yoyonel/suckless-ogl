@@ -426,3 +426,37 @@ void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
 	TracyCZoneEnd(ctx);
 #endif
 }
+
+void async_loader_cancel(AsyncLoader* loader)
+{
+	if (!loader) {
+		return;
+	}
+#ifdef TRACY_ENABLE
+	TracyCZoneN(ctx, "async_loader_cancel", 1);
+	TracyCZoneN(mtx_ctx, "Cancel Mutex Lock", 1);
+#endif
+	pthread_mutex_lock(&loader->request_mutex);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(mtx_ctx);
+#endif
+
+	if (loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
+		/* Set state to FAILED to break the worker loop */
+		loader->current_request.state = ASYNC_FAILED;
+		transition_tracy_state(ASYNC_FAILED);
+		pthread_cond_signal(&loader->request_cond); /* Wake up worker */
+		LOG_INFO("suckless-ogl.async",
+		         "Request cancelled by main thread: %s",
+		         loader->current_request.path);
+	} else {
+		LOG_ERROR("suckless-ogl.async",
+		          "Attempted to cancel request but state is %d",
+		          loader->current_request.state);
+	}
+
+	pthread_mutex_unlock(&loader->request_mutex);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(ctx);
+#endif
+}

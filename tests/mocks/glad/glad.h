@@ -216,6 +216,9 @@ void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size,
 
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
                               GLint* params);
+void* glMapBuffer(GLenum target, GLenum access);
+void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
+                       GLbitfield access);
 GLboolean glUnmapBuffer(GLenum target);
 
 #endif

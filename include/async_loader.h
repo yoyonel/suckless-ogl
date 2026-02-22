@@ -104,4 +104,12 @@ bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req);
 void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
                               GLuint pbo_id);
 
+/**
+ * @brief Cancels the current request if it is waiting for a PBO.
+ *
+ * Use this if the main thread fails to map a PBO and cannot proceed.
+ * @param loader The loader instance.
+ */
+void async_loader_cancel(AsyncLoader* loader);
+
 #endif /* ASYNC_LOADER_H */
