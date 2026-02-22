@@ -30,12 +30,21 @@ typedef struct {
 	GLuint instance_ssbo;        /**< SSBO for input/reordered instances. */
 	GLuint index_ssbo;           /**< SSBO for sorting proxy indices. */
 	GLuint sorted_instance_ssbo; /**< SSBO for permutation result. */
-	SphereSortEntry* entries;    /**< Scratchpad for CPU sorting. */
+
+	/* Cached uniform locations (resolved once at init). */
+	GLint loc_stage;     /**< u_stage uniform. */
+	GLint loc_count;     /**< u_count uniform. */
+	GLint loc_count_pot; /**< u_count_pot uniform. */
+	GLint loc_cam;       /**< u_cam_pos uniform. */
+	GLint loc_j;         /**< u_j uniform. */
+	GLint loc_k;         /**< u_k uniform. */
+
+	SphereSortEntry* entries;       /**< Scratchpad for CPU sorting. */
 	SphereSortEntry* entries_aux;   /**< Aux scratchpad for Radix Sort. */
 	SphereInstance* temp_instances; /**< Scratchpad for reordering. */
-	int capacity;     /**< Current allocated size of SSBOs (GPU). */
-	int cpu_capacity; /**< Current allocated size of CPU scratchpads. */
-	int min_capacity; /**< Minimum capacity to maintain. */
+	int ssbo_capacity; /**< Current allocated size of SSBOs (GPU). */
+	int cpu_capacity;  /**< Current allocated size of CPU scratchpads. */
+	int min_capacity;  /**< Minimum capacity to maintain. */
 } SphereSorter;
 
 /**

@@ -666,6 +666,7 @@ void app_render(App* app)
 					        app->camera.position);
 					break;
 				case SORTING_MODE_GPU_BITONIC:
+				default:
 					sorted_ssbo = sphere_sorter_sort_gpu(
 					    &app->sphere_sorter,
 					    app->sphere_instances,

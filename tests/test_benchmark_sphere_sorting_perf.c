@@ -40,7 +40,7 @@ void sphere_sorter_sort_baseline(SphereSorter* sorter,
 	}
 
 	/* Ensure scratchpad capacity */
-	if (count > sorter->min_capacity && count > sorter->capacity) {
+	if (count > sorter->min_capacity && count > sorter->ssbo_capacity) {
 		void* new_entries = realloc(
 		    sorter->entries, (size_t)count * sizeof(SphereSortEntry));
 		void* new_temp =

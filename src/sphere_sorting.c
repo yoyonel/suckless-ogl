@@ -4,13 +4,18 @@
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
 #include "shader.h"
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Verify that C struct matches the GLSL layout (128 bytes). */
+enum { EXPECTED_SPHERE_INSTANCE_SIZE = 128 };
+_Static_assert(sizeof(SphereInstance) == EXPECTED_SPHERE_INSTANCE_SIZE,
+               "SphereInstance size must match GLSL std430 layout (128 B)");
 
 enum { WORKGROUP_SIZE = 1024 };
 enum { DEFAULT_MIN_CAPACITY = 64 };
 enum { MAX_SINGLE_PASS_COUNT = 1024 };
-enum { RADIX_PASSES = 4 };
 enum { RADIX_BITS_PER_PASS = 8 };
 enum { RADIX_BUCKETS = 256 };
 enum { RADIX_SHIFT_LIMIT = 32 };
@@ -18,14 +23,12 @@ enum { RADIX_MASK = 0xFFU };
 static const uint32_t FLOAT_SIGN_MASK = 0x80000000U;
 static const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU;
 
-static const unsigned int BIT_SHIFT_1 = 1U;
-static const unsigned int BIT_SHIFT_2 = 2U;
-static const unsigned int BIT_SHIFT_4 = 4U;
+/** Bit-shift constants for next_pow2 (named to satisfy linter). */
 static const unsigned int BIT_SHIFT_8 = 8U;
 static const unsigned int BIT_SHIFT_16 = 16U;
-static const unsigned int INITIAL_SORT_STEP = 2U;
-static const size_t GPU_ENTRY_SIZE =
-    8; /* Size of Entry struct in shader: int (4) + float (4) */
+
+/** Size of the Entry struct in the compute shader: int (4) + float (4). */
+static const size_t GPU_ENTRY_SIZE = 8;
 
 static int next_pow2(int val)
 {
@@ -34,13 +37,86 @@ static int next_pow2(int val)
 	}
 	unsigned int res = (unsigned int)val;
 	res--;
-	res |= res >> BIT_SHIFT_1;
-	res |= res >> BIT_SHIFT_2;
-	res |= res >> BIT_SHIFT_4;
+	res |= res >> 1U;
+	res |= res >> 2U;
+	res |= res >> 4U;
 	res |= res >> BIT_SHIFT_8;
 	res |= res >> BIT_SHIFT_16;
 	res++;
 	return (int)res;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Shared helpers                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * @brief Grow CPU scratchpads to hold at least @p count elements.
+ * @return true on success, false on allocation failure.
+ */
+static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
+{
+	if (count <= sorter->cpu_capacity) {
+		return true;
+	}
+
+	void* new_entries = NULL;
+	void* new_aux = NULL;
+	void* new_temp = NULL;
+
+	if (posix_memalign(&new_entries, SIMD_ALIGNMENT,
+	                   (size_t)count * sizeof(SphereSortEntry)) != 0) {
+		new_entries = NULL;
+	}
+	if (posix_memalign(&new_aux, SIMD_ALIGNMENT,
+	                   (size_t)count * sizeof(SphereSortEntry)) != 0) {
+		new_aux = NULL;
+	}
+	if (posix_memalign(&new_temp, SIMD_ALIGNMENT,
+	                   (size_t)count * sizeof(SphereInstance)) != 0) {
+		new_temp = NULL;
+	}
+
+	if (!new_entries || !new_aux || !new_temp) {
+		LOG_ERROR("suckless-ogl.sorter",
+		          "CPU sort scratchpad allocation failed");
+		free(new_entries);
+		free(new_aux);
+		free(new_temp);
+		return false;
+	}
+
+	/* These are per-frame scratchpads — no need to preserve old data. */
+	free(sorter->entries);
+	free(sorter->entries_aux);
+	free(sorter->temp_instances);
+
+	sorter->entries = (SphereSortEntry*)new_entries;
+	sorter->entries_aux = (SphereSortEntry*)new_aux;
+	sorter->temp_instances = (SphereInstance*)new_temp;
+	sorter->cpu_capacity = count;
+	return true;
+}
+
+/**
+ * @brief Upload @p count sorted instances from the CPU temp buffer to the SSBO.
+ * @return The SSBO handle containing the data.
+ */
+static GLuint upload_sorted_to_ssbo(SphereSorter* sorter, int count)
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
+	if (count > sorter->ssbo_capacity) {
+		glBufferData(GL_SHADER_STORAGE_BUFFER,
+		             (GLsizeiptr)(count * sizeof(SphereInstance)),
+		             sorter->temp_instances, GL_DYNAMIC_DRAW);
+		sorter->ssbo_capacity = count;
+	} else {
+		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
+		                (GLsizeiptr)(count * sizeof(SphereInstance)),
+		                sorter->temp_instances);
+	}
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	return sorter->instance_ssbo;
 }
 
 void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
@@ -51,10 +127,22 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 		LOG_ERROR("SphereSorter", "Failed to load compute shader");
 	}
 
+	/* Cache uniform locations once. */
+	sorter->loc_stage =
+	    glGetUniformLocation(sorter->compute_program, "u_stage");
+	sorter->loc_count =
+	    glGetUniformLocation(sorter->compute_program, "u_count");
+	sorter->loc_count_pot =
+	    glGetUniformLocation(sorter->compute_program, "u_count_pot");
+	sorter->loc_cam =
+	    glGetUniformLocation(sorter->compute_program, "u_cam_pos");
+	sorter->loc_j = glGetUniformLocation(sorter->compute_program, "u_j");
+	sorter->loc_k = glGetUniformLocation(sorter->compute_program, "u_k");
+
 	glGenBuffers(1, &sorter->instance_ssbo);
 	glGenBuffers(1, &sorter->index_ssbo);
 	glGenBuffers(1, &sorter->sorted_instance_ssbo);
-	sorter->capacity = 0;
+	sorter->ssbo_capacity = 0;
 	sorter->min_capacity =
 	    initial_capacity > 0 ? initial_capacity : DEFAULT_MIN_CAPACITY;
 	sorter->cpu_capacity = sorter->min_capacity;
@@ -89,7 +177,7 @@ void sphere_sorter_cleanup(SphereSorter* sorter)
 	sorter->entries = NULL;
 	sorter->entries_aux = NULL;
 	sorter->temp_instances = NULL;
-	sorter->capacity = 0;
+	sorter->ssbo_capacity = 0;
 	sorter->cpu_capacity = 0;
 	sorter->min_capacity = 0;
 }
@@ -105,19 +193,17 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	/* 1. Ensure SSBO Capacity (Power of Two) */
 	int count_pot = next_pow2(count);
 	if (count_pot < sorter->min_capacity) {
-		count_pot = sorter->min_capacity;
-		count_pot = next_pow2(count_pot);
+		count_pot = next_pow2(sorter->min_capacity);
 	}
 
 	/* 2. Resize buffers if needed */
-	if (count_pot > sorter->capacity) {
+	if (count_pot > sorter->ssbo_capacity) {
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
 		glBufferData(GL_SHADER_STORAGE_BUFFER,
 		             (GLsizeiptr)(count_pot * sizeof(SphereInstance)),
 		             NULL, GL_DYNAMIC_DRAW);
 
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->index_ssbo);
-		/* GPU Entry is 8 bytes (int index, float depth) */
 		glBufferData(GL_SHADER_STORAGE_BUFFER,
 		             (GLsizeiptr)(count_pot * GPU_ENTRY_SIZE), NULL,
 		             GL_DYNAMIC_DRAW);
@@ -128,7 +214,7 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 		             (GLsizeiptr)(count_pot * sizeof(SphereInstance)),
 		             NULL, GL_DYNAMIC_DRAW);
 
-		sorter->capacity = count_pot;
+		sorter->ssbo_capacity = count_pot;
 	}
 
 	/* 3. Upload Data to instance_ssbo */
@@ -137,28 +223,17 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	                (GLsizeiptr)(count * sizeof(SphereInstance)),
 	                instances);
 
-	/* 4. Dispatch Compute */
+	/* 4. Dispatch Compute (using cached uniform locations) */
 	glUseProgram(sorter->compute_program);
 
-	GLint loc_stage =
-	    glGetUniformLocation(sorter->compute_program, "u_stage");
-	GLint loc_count =
-	    glGetUniformLocation(sorter->compute_program, "u_count");
-	GLint loc_count_pot =
-	    glGetUniformLocation(sorter->compute_program, "u_count_pot");
-	GLint loc_cam =
-	    glGetUniformLocation(sorter->compute_program, "u_cam_pos");
-	GLint loc_j = glGetUniformLocation(sorter->compute_program, "u_j");
-	GLint loc_k = glGetUniformLocation(sorter->compute_program, "u_k");
-
-	if (loc_count >= 0) {
-		glUniform1i(loc_count, count);
+	if (sorter->loc_count >= 0) {
+		glUniform1i(sorter->loc_count, count);
 	}
-	if (loc_count_pot >= 0) {
-		glUniform1i(loc_count_pot, count_pot);
+	if (sorter->loc_count_pot >= 0) {
+		glUniform1i(sorter->loc_count_pot, count_pot);
 	}
-	if (loc_cam >= 0) {
-		glUniform3fv(loc_cam, 1, camera_pos);
+	if (sorter->loc_cam >= 0) {
+		glUniform3fv(sorter->loc_cam, 1, camera_pos);
 	}
 
 	/* Bind SSBOs: 0: instances, 1: entries, 2: sorted_instances */
@@ -171,10 +246,10 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 	/* --- OPTIMIZATION: Single-Pass Shared Memory Sort --- */
 	if (u_count_pot <= MAX_SINGLE_PASS_COUNT) {
-		if (loc_stage >= 0) {
-			glUniform1i(loc_stage, 3); /* Stage 3: Single Pass */
+		if (sorter->loc_stage >= 0) {
+			glUniform1i(sorter->loc_stage,
+			            3); /* Stage 3: Single Pass */
 		}
-		/* Dispatch exactly one workgroup */
 		glDispatchCompute(1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
@@ -187,46 +262,40 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	    (u_count_pot + WORKGROUP_SIZE - 1U) / WORKGROUP_SIZE;
 
 	/* 4a. PREPARE Stage (u_stage = 0): Compute depths and fill indices */
-	if (loc_stage >= 0) {
-		glUniform1i(loc_stage, 0);
+	if (sorter->loc_stage >= 0) {
+		glUniform1i(sorter->loc_stage, 0);
 	}
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	/* 4b. SORT Stage (u_stage = 1): Bitonic Sort on entries (indices) */
-	if (loc_stage >= 0) {
-		glUniform1i(loc_stage, 1);
+	if (sorter->loc_stage >= 0) {
+		glUniform1i(sorter->loc_stage, 1);
 	}
 
-	for (unsigned int k = INITIAL_SORT_STEP; k <= u_count_pot;
-	     k <<= BIT_SHIFT_1) {
-		for (unsigned int j = k >> BIT_SHIFT_1; j > 0U;
-		     j >>= BIT_SHIFT_1) {
-			if (loc_j >= 0) {
-				glUniform1i(loc_j, (int)j);
+	for (unsigned int k = 2U; k <= u_count_pot; k <<= 1U) {
+		for (unsigned int j = k >> 1U; j > 0U; j >>= 1U) {
+			if (sorter->loc_j >= 0) {
+				glUniform1i(sorter->loc_j, (int)j);
 			}
-			if (loc_k >= 0) {
-				glUniform1i(loc_k, (int)k);
+			if (sorter->loc_k >= 0) {
+				glUniform1i(sorter->loc_k, (int)k);
 			}
 			glDispatchCompute(num_groups, 1, 1);
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		}
 	}
 
-	/* 4c. PERMUTE Stage (u_stage = 2): Reorder instances into
-	 * sorted_instance_ssbo */
-	if (loc_stage >= 0) {
-		glUniform1i(loc_stage, 2);
+	/* 4c. PERMUTE Stage (u_stage = 2): Reorder instances */
+	if (sorter->loc_stage >= 0) {
+		glUniform1i(sorter->loc_stage, 2);
 	}
-	/* Permute only needs num_groups based on actual count, but count_pot is
-	 * safe */
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	glUseProgram(0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	/* Return the buffer that now contains the reordered instances */
 	return sorter->sorted_instance_ssbo;
 }
 static int compare_sphere_entries(const void* lhs, const void* rhs)
@@ -252,52 +321,11 @@ GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
 		return sorter->instance_ssbo;
 	}
 
-	/* 1. Ensure scratchpad capacity */
-	if (count > sorter->cpu_capacity) {
-		/* We use posix_memalign + manual copy to avoid alignment issues
-		 * with realloc */
-		void* new_entries = NULL;
-		void* new_aux = NULL;
-		void* new_temp = NULL;
-
-		if (posix_memalign(&new_entries, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereSortEntry)) !=
-		    0) {
-			new_entries = NULL;
-		}
-		if (posix_memalign(&new_aux, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereSortEntry)) !=
-		    0) {
-			new_aux = NULL;
-		}
-		if (posix_memalign(&new_temp, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereInstance)) !=
-		    0) {
-			new_temp = NULL;
-		}
-
-		if (!new_entries || !new_aux || !new_temp) {
-			LOG_ERROR("suckless-ogl.sorter",
-			          "CPU sort scratchpad allocation failed");
-			free(new_entries);
-			free(new_aux);
-			free(new_temp);
-			return sorter->instance_ssbo;
-		}
-
-		/* We don't need to copy old data as these are scratchpads
-		 * for the current frame ONLY. */
-		free(sorter->entries);
-		free(sorter->entries_aux);
-		free(sorter->temp_instances);
-
-		sorter->entries = (SphereSortEntry*)new_entries;
-		sorter->entries_aux = (SphereSortEntry*)new_aux;
-		sorter->temp_instances = (SphereInstance*)new_temp;
-		sorter->cpu_capacity = count;
+	if (!ensure_cpu_capacity(sorter, count)) {
+		return sorter->instance_ssbo;
 	}
 
-	/* Final safety check */
+	/* Safety check */
 	if (!sorter->entries || !sorter->temp_instances) {
 		LOG_ERROR("suckless-ogl.sorter",
 		          "CPU sort scratchpads are NULL");
@@ -325,20 +353,7 @@ GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
 	}
 
 	/* 5. Upload to GPU */
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
-	if (count > sorter->capacity) {
-		glBufferData(GL_SHADER_STORAGE_BUFFER,
-		             (GLsizeiptr)(count * sizeof(SphereInstance)),
-		             sorter->temp_instances, GL_DYNAMIC_DRAW);
-		sorter->capacity = count;
-	} else {
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
-		                (GLsizeiptr)(count * sizeof(SphereInstance)),
-		                sorter->temp_instances);
-	}
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	return sorter->instance_ssbo;
+	return upload_sorted_to_ssbo(sorter, count);
 }
 
 /**
@@ -366,43 +381,8 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 		return sorter->instance_ssbo;
 	}
 
-	/* 1. Ensure scratchpad capacity */
-	if (count > sorter->cpu_capacity) {
-		void* new_entries = NULL;
-		void* new_aux = NULL;
-		void* new_temp = NULL;
-
-		if (posix_memalign(&new_entries, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereSortEntry)) !=
-		    0) {
-			new_entries = NULL;
-		}
-		if (posix_memalign(&new_aux, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereSortEntry)) !=
-		    0) {
-			new_aux = NULL;
-		}
-		if (posix_memalign(&new_temp, SIMD_ALIGNMENT,
-		                   (size_t)count * sizeof(SphereInstance)) !=
-		    0) {
-			new_temp = NULL;
-		}
-
-		if (!new_entries || !new_aux || !new_temp) {
-			free(new_entries);
-			free(new_aux);
-			free(new_temp);
-			return sorter->instance_ssbo;
-		}
-
-		free(sorter->entries);
-		free(sorter->entries_aux);
-		free(sorter->temp_instances);
-
-		sorter->entries = (SphereSortEntry*)new_entries;
-		sorter->entries_aux = (SphereSortEntry*)new_aux;
-		sorter->temp_instances = (SphereInstance*)new_temp;
-		sorter->cpu_capacity = count;
+	if (!ensure_cpu_capacity(sorter, count)) {
+		return sorter->instance_ssbo;
 	}
 
 	if (!sorter->entries || !sorter->entries_aux) {
@@ -410,14 +390,15 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 	}
 
 	/* 2. Prepare Entries (calculate depth and convert to sortable uint) */
-	/* We'll use SphereSortEntry.depth as the key (overlaid as uint32_t) */
 	for (int i = 0; i < count; i++) {
 		float depth = glm_vec3_distance2((float*)instances[i].model[3],
 		                                 (float*)camera_pos);
 		sorter->entries[i].original_index = i;
-		/* Use union/casting to store uint inside the float field */
-		uint32_t* key_ptr = (uint32_t*)&sorter->entries[i].depth;
-		*key_ptr = float_to_sortable_uint(depth);
+		/* Use memcpy to write the sortable key into the depth field
+		 * without violating strict aliasing. */
+		uint32_t key = float_to_sortable_uint(depth);
+		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+		memcpy(&sorter->entries[i].depth, &key, sizeof(uint32_t));
 	}
 
 	/* 3. Radix Sort (4 passes of 8 bits) */
@@ -469,18 +450,5 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 	}
 
 	/* 5. Upload to GPU */
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
-	if (count > sorter->capacity) {
-		glBufferData(GL_SHADER_STORAGE_BUFFER,
-		             (GLsizeiptr)(count * sizeof(SphereInstance)),
-		             sorter->temp_instances, GL_DYNAMIC_DRAW);
-		sorter->capacity = count;
-	} else {
-		glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
-		                (GLsizeiptr)(count * sizeof(SphereInstance)),
-		                sorter->temp_instances);
-	}
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	return sorter->instance_ssbo;
+	return upload_sorted_to_ssbo(sorter, count);
 }

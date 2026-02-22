@@ -58,7 +58,8 @@ typedef enum {
 typedef enum {
 	SORTING_MODE_CPU_QSORT = 0,
 	SORTING_MODE_CPU_RADIX,
-	SORTING_MODE_GPU_BITONIC
+	SORTING_MODE_GPU_BITONIC,
+	SORTING_MODE_COUNT /**< Sentinel — must remain last. */
 } SortingMode;
 
 /**

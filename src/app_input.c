@@ -621,7 +621,8 @@ void handle_app_input(App* app, int key, int mods)
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_O:
-			app->sorting_mode = (app->sorting_mode + 1) % 3;
+			app->sorting_mode =
+			    (app->sorting_mode + 1) % SORTING_MODE_COUNT;
 			const char* mode_name = "Unknown";
 			const char* notif_name = "Sort: Unknown";
 
@@ -637,6 +638,8 @@ void handle_app_input(App* app, int key, int mods)
 				case SORTING_MODE_GPU_BITONIC:
 					mode_name = "GPU (Bitonic)";
 					notif_name = "Sort: GPU (Bitonic)";
+					break;
+				default:
 					break;
 			}
 
