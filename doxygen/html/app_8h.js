@@ -6,6 +6,12 @@ var app_8h =
     [ "App", "structApp.html", "structApp" ],
     [ "TRACY_SCREENSHOT_HEIGHT", "app_8h.html#a895ec888aa709e89ca4a83f777235343", null ],
     [ "TRACY_SCREENSHOT_WIDTH", "app_8h.html#a1c3f645cdb2e95fad70014638acef749", null ],
+    [ "SortingMode", "app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1", [
+      [ "SORTING_MODE_CPU_QSORT", "app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0", null ],
+      [ "SORTING_MODE_CPU_RADIX", "app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120", null ],
+      [ "SORTING_MODE_GPU_BITONIC", "app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad", null ],
+      [ "SORTING_MODE_COUNT", "app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1", null ]
+    ] ],
     [ "TransitionState", "app_8h.html#a1e019cb397af76f46ed7eb54267cfb03", [
       [ "TRANSITION_IDLE", "app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4", null ],
       [ "TRANSITION_LOADING", "app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2", null ],

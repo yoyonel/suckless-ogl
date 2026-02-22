@@ -8,5 +8,6 @@ var billboard__rendering_8h =
     [ "billboard_group_draw_debug_quads", "billboard__rendering_8h.html#a2f5f403a6fe0038b60acfeebd3ae9b7c", null ],
     [ "billboard_group_init", "billboard__rendering_8h.html#a2e879f800244b637740be72363feeb04", null ],
     [ "billboard_group_prepare", "billboard__rendering_8h.html#ac2460cc8c0b2f53a206ac95146ac5923", null ],
-    [ "billboard_group_update", "billboard__rendering_8h.html#aecab702995b02efd4da86127c5c34d08", null ]
+    [ "billboard_group_update", "billboard__rendering_8h.html#aecab702995b02efd4da86127c5c34d08", null ],
+    [ "billboard_group_update_from_buffer", "billboard__rendering_8h.html#ae5de263a9690fe980c5c71c5bb2fa9e4", null ]
 ];

@@ -260,7 +260,6 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
@@ -320,6 +319,13 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a1e019cb397af76f46ed7eb54267cfb03"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the environment map transition.  <a href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">More...</a><br /></td></tr>
 <tr class="separator:a1e019cb397af76f46ed7eb54267cfb03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac88ebd5c5caa1b7a2710e32788e69c1" id="r_aac88ebd5c5caa1b7a2710e32788e69c1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a> { <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0">SORTING_MODE_CPU_QSORT</a> = 0
+, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120">SORTING_MODE_CPU_RADIX</a>
+, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad">SORTING_MODE_GPU_BITONIC</a>
+, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1">SORTING_MODE_COUNT</a>
+ }</td></tr>
+<tr class="memdesc:aac88ebd5c5caa1b7a2710e32788e69c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorting algorithms for transparent billboards.  <a href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">More...</a><br /></td></tr>
+<tr class="separator:aac88ebd5c5caa1b7a2710e32788e69c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -372,6 +378,29 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="aac88ebd5c5caa1b7a2710e32788e69c1" name="aac88ebd5c5caa1b7a2710e32788e69c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac88ebd5c5caa1b7a2710e32788e69c1">&#9670;&#160;</a></span>SortingMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorting algorithms for transparent billboards. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0" name="aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0"></a>SORTING_MODE_CPU_QSORT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120" name="aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120"></a>SORTING_MODE_CPU_RADIX&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad" name="aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad"></a>SORTING_MODE_GPU_BITONIC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1" name="aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1"></a>SORTING_MODE_COUNT&#160;</td><td class="fielddoc"><p>Sentinel — must remain last. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a id="a1e019cb397af76f46ed7eb54267cfb03" name="a1e019cb397af76f46ed7eb54267cfb03"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e019cb397af76f46ed7eb54267cfb03">&#9670;&#160;</a></span>TransitionState</h2>
 

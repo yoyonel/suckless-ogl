@@ -20,6 +20,7 @@ var dir_95c752037a97b41030102703686a0a90 =
     [ "postprocess.frag", "postprocess_8frag.html", "postprocess_8frag" ],
     [ "postprocess.vert", "postprocess_8vert.html", "postprocess_8vert" ],
     [ "projection_utils.glsl", "projection__utils_8glsl.html", "projection__utils_8glsl" ],
+    [ "sphere_sort.glsl", "sphere__sort_8glsl.html", "sphere__sort_8glsl" ],
     [ "ui.frag", "ui_8frag.html", "ui_8frag" ],
     [ "ui.vert", "ui_8vert.html", "ui_8vert" ],
     [ "ui_spinner.frag", "ui__spinner_8frag.html", "ui__spinner_8frag" ],

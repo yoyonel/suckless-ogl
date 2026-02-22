@@ -10,9 +10,8 @@ var searchData=
   ['icosahedron_5fvertex_5fcount_7',['ICOSAHEDRON_VERTEX_COUNT',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fcea6146e19be1ba08d03a7cd419cef6bf22',1,'icosphere.c']]],
   ['index_5fshift_8',['INDEX_SHIFT',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fceaa24be6570a0e4f5604c47521bed974c5',1,'icosphere.c']]],
   ['info_5flog_5fsize_9',['INFO_LOG_SIZE',['../shader_8c.html#aabfcbcb5ac86a1edac4035264bc7d2b8a452257118dc4009bf289a99b738d1288',1,'shader.c']]],
-  ['initial_5fcapacity_10',['INITIAL_CAPACITY',['../sphere__sorting_8c.html#a458e651af6690959efa2afb96be7d609a7824ef724eb0d455d925e585eb107156',1,'sphere_sorting.c']]],
-  ['initial_5fsubdivisions_11',['INITIAL_SUBDIVISIONS',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a4dcc3f43b13b159296f85b7d6d293a4b',1,'app_settings.h']]],
-  ['initial_5fuint_5fcapacity_12',['INITIAL_UINT_CAPACITY',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fceaa2a9070dd99320b9bc4f897c47220926',1,'icosphere.c']]],
-  ['initial_5fvec3_5fcapacity_13',['INITIAL_VEC3_CAPACITY',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fcea329acb3ae88741fba4e792489782463e',1,'icosphere.c']]],
-  ['instance_5fattr_5fstart_14',['INSTANCE_ATTR_START',['../gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06cae627525491a141e81f7479d7fffb4038',1,'gl_common.h']]]
+  ['initial_5fsubdivisions_10',['INITIAL_SUBDIVISIONS',['../group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a4dcc3f43b13b159296f85b7d6d293a4b',1,'app_settings.h']]],
+  ['initial_5fuint_5fcapacity_11',['INITIAL_UINT_CAPACITY',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fceaa2a9070dd99320b9bc4f897c47220926',1,'icosphere.c']]],
+  ['initial_5fvec3_5fcapacity_12',['INITIAL_VEC3_CAPACITY',['../icosphere_8c.html#aaf105ae5beaca1dee30ae54530691fcea329acb3ae88741fba4e792489782463e',1,'icosphere.c']]],
+  ['instance_5fattr_5fstart_13',['INSTANCE_ATTR_START',['../gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06cae627525491a141e81f7479d7fffb4038',1,'gl_common.h']]]
 ];

@@ -275,9 +275,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a159532007839ad93c627f7173c755616" id="r_a159532007839ad93c627f7173c755616"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8h.html#a159532007839ad93c627f7173c755616">sphere_sorter_cleanup</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter)</td></tr>
 <tr class="memdesc:a159532007839ad93c627f7173c755616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the sorter context.  <br /></td></tr>
 <tr class="separator:a159532007839ad93c627f7173c755616"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af67b8aec8040d3efd46de936313aeb2d" id="r_af67b8aec8040d3efd46de936313aeb2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8h.html#af67b8aec8040d3efd46de936313aeb2d">sphere_sorter_sort</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, <a class="el" href="structSphereInstance.html">SphereInstance</a> **instances_ptr, int count, vec3 camera_pos)</td></tr>
-<tr class="memdesc:af67b8aec8040d3efd46de936313aeb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth).  <br /></td></tr>
-<tr class="separator:af67b8aec8040d3efd46de936313aeb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b1931d3ca9613a3f9cb779c42d51336" id="r_a1b1931d3ca9613a3f9cb779c42d51336"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8h.html#a1b1931d3ca9613a3f9cb779c42d51336">sphere_sorter_sort_gpu</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a1b1931d3ca9613a3f9cb779c42d51336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on GPU.  <br /></td></tr>
+<tr class="separator:a1b1931d3ca9613a3f9cb779c42d51336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c8f41ff57b420b02e547264f3a593ba" id="r_a9c8f41ff57b420b02e547264f3a593ba"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba">sphere_sorter_sort_cpu</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a9c8f41ff57b420b02e547264f3a593ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on CPU.  <br /></td></tr>
+<tr class="separator:a9c8f41ff57b420b02e547264f3a593ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb08c8f2f8876b56e8e5249aee59e6e1" id="r_afb08c8f2f8876b56e8e5249aee59e6e1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8h.html#afb08c8f2f8876b56e8e5249aee59e6e1">sphere_sorter_sort_cpu_radix</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:afb08c8f2f8876b56e8e5249aee59e6e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) using Radix Sort.  <br /></td></tr>
+<tr class="separator:afb08c8f2f8876b56e8e5249aee59e6e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Back-to-front sorting for transparent geometry. </p>
@@ -343,17 +349,22 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8h_ac8261ad4dd8402eed788cdcd12116946_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
 
 </div>
 </div>
-<a id="af67b8aec8040d3efd46de936313aeb2d" name="af67b8aec8040d3efd46de936313aeb2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af67b8aec8040d3efd46de936313aeb2d">&#9670;&#160;</a></span>sphere_sorter_sort()</h2>
+<a id="a9c8f41ff57b420b02e547264f3a593ba" name="a9c8f41ff57b420b02e547264f3a593ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c8f41ff57b420b02e547264f3a593ba">&#9670;&#160;</a></span>sphere_sorter_sort_cpu()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void sphere_sorter_sort </td>
+          <td class="memname">GLuint sphere_sorter_sort_cpu </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
           <td class="paramname"><em>sorter</em>, </td>
@@ -361,8 +372,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structSphereInstance.html">SphereInstance</a> **&#160;</td>
-          <td class="paramname"><em>instances_ptr</em>, </td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -373,7 +384,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vec3&#160;</td>
+          <td class="paramtype">const vec3&#160;</td>
           <td class="paramname"><em>camera_pos</em>&#160;</td>
         </tr>
         <tr>
@@ -384,22 +395,137 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sorts the array of instances Back-to-Front (descending depth). </p>
-<p>This function Reorders the 'instances' array using a temporary buffer to avoid extra copies. It swaps the pointer provided by <code>instances_ptr</code> with its internal buffer.</p>
-<p>The provided <code>instances_ptr</code> will point to a buffer that is at least as large as the <code>initial_capacity</code> passed to <code>sphere_sorter_init</code>, or large enough for <code>count</code> instances, whichever is greater.</p>
+<p>Sorts the array of instances Back-to-Front (descending depth) on CPU. </p>
+<p>Uses qsort on the host and uploads the result to the SSBO.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
-    <tr><td class="paramname">instances_ptr</td><td>Pointer to the array pointer to sort. The pointer *instances_ptr will be updated to point to the sorted array. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances (will be copied and sorted internally). </td></tr>
     <tr><td class="paramname">count</td><td>Active element count. </td></tr>
-    <tr><td class="paramname">camera_pos</td><td>World-space viewer position (for depth calculation). </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8h_af67b8aec8040d3efd46de936313aeb2d_cgraph.svg" width="362" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8h_a9c8f41ff57b420b02e547264f3a593ba_cgraph.svg" width="415" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="afb08c8f2f8876b56e8e5249aee59e6e1" name="afb08c8f2f8876b56e8e5249aee59e6e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb08c8f2f8876b56e8e5249aee59e6e1">&#9670;&#160;</a></span>sphere_sorter_sort_cpu_radix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint sphere_sorter_sort_cpu_radix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) using Radix Sort. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position (for depth). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8h_afb08c8f2f8876b56e8e5249aee59e6e1_cgraph.svg" width="372" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a1b1931d3ca9613a3f9cb779c42d51336" name="a1b1931d3ca9613a3f9cb779c42d51336"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b1931d3ca9613a3f9cb779c42d51336">&#9670;&#160;</a></span>sphere_sorter_sort_gpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint sphere_sorter_sort_gpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) on GPU. </p>
+<p>Uploads instances to an SSBO, sorts them using a compute shader, and prepares them for rendering.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Pointer to the array of instances to upload. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8h_a1b1931d3ca9613a3f9cb779c42d51336_cgraph.svg" width="327" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>

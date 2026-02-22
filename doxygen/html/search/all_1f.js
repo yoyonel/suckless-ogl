@@ -25,7 +25,8 @@ var searchData=
   ['wireframe_22',['wireframe',['../structApp.html#a66119ddc8fec7b0ff658340bcf2561f0',1,'App']]],
   ['without_20trigonometry_23',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
   ['worker_5fthread_24',['worker_thread',['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader']]],
-  ['world_5fup_25',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
-  ['worldpos_26',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]],
-  ['write_5findex_27',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]
+  ['workgroup_5fsize_25',['WORKGROUP_SIZE',['../sphere__sorting_8c.html#a1f9aebf1de3ebbf4283a4dcf73308562a977681261e84b7671049e4d74c29552e',1,'sphere_sorting.c']]],
+  ['world_5fup_26',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
+  ['worldpos_27',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]],
+  ['write_5findex_28',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]
 ];

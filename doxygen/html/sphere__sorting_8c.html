@@ -236,7 +236,8 @@ $(document).ready(function(){initNavTree('sphere__sorting_8c.html',''); initResi
 <div class="header">
   <div class="summary">
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">sphere_sorting.c File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -244,8 +245,8 @@ $(document).ready(function(){initNavTree('sphere__sorting_8c.html',''); initResi
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &lt;cglm/types.h&gt;</code><br />
-<code>#include &lt;cglm/vec3.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -256,23 +257,74 @@ Include dependency graph for sphere_sorting.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a458e651af6690959efa2afb96be7d609" id="r_a458e651af6690959efa2afb96be7d609"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a458e651af6690959efa2afb96be7d609a7824ef724eb0d455d925e585eb107156">INITIAL_CAPACITY</a> = 64
+<tr class="memitem:a458e651af6690959efa2afb96be7d609" id="r_a458e651af6690959efa2afb96be7d609"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a458e651af6690959efa2afb96be7d609a3d24f3bd15551e76fb73dc53915c550b">EXPECTED_SPHERE_INSTANCE_SIZE</a> = 128
  }</td></tr>
 <tr class="separator:a458e651af6690959efa2afb96be7d609"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f9aebf1de3ebbf4283a4dcf73308562" id="r_a1f9aebf1de3ebbf4283a4dcf73308562"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a1f9aebf1de3ebbf4283a4dcf73308562a977681261e84b7671049e4d74c29552e">WORKGROUP_SIZE</a> = 1024
+ }</td></tr>
+<tr class="separator:a1f9aebf1de3ebbf4283a4dcf73308562"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77867ab4129f63159b37bca3b652a798" id="r_a77867ab4129f63159b37bca3b652a798"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a77867ab4129f63159b37bca3b652a798acbe96d34bad52c1c1c6fa3663f66ff43">DEFAULT_MIN_CAPACITY</a> = 64
+ }</td></tr>
+<tr class="separator:a77867ab4129f63159b37bca3b652a798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16685eea158879e41b101ca3634de462" id="r_a16685eea158879e41b101ca3634de462"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a16685eea158879e41b101ca3634de462af8df5c1debfe68fac8947ff4a8cbcb36">MAX_SINGLE_PASS_COUNT</a> = 1024
+ }</td></tr>
+<tr class="separator:a16685eea158879e41b101ca3634de462"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2970898e8a43ce21e1cc510d49f1b89d" id="r_a2970898e8a43ce21e1cc510d49f1b89d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a2970898e8a43ce21e1cc510d49f1b89dad26222a07cb422b43370dc72182b72cd">RADIX_BITS_PER_PASS</a> = 8
+ }</td></tr>
+<tr class="separator:a2970898e8a43ce21e1cc510d49f1b89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa231099d07583c3ed0981e0bb665f55" id="r_afa231099d07583c3ed0981e0bb665f55"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#afa231099d07583c3ed0981e0bb665f55aeae28fcea22c1ab335c08f7d63bb35a7">RADIX_BUCKETS</a> = 256
+ }</td></tr>
+<tr class="separator:afa231099d07583c3ed0981e0bb665f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a394b3903fbf00ba2b6243f60689a5a5f" id="r_a394b3903fbf00ba2b6243f60689a5a5f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#a394b3903fbf00ba2b6243f60689a5a5fab66a8307e63dad074f39fc2c2f1eb971">RADIX_SHIFT_LIMIT</a> = 32
+ }</td></tr>
+<tr class="separator:a394b3903fbf00ba2b6243f60689a5a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac205be2172292384dd687b5471a87edd" id="r_ac205be2172292384dd687b5471a87edd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="sphere__sorting_8c.html#ac205be2172292384dd687b5471a87eddad8da0cb042e3227f3d9a7bf544fab0cb">RADIX_MASK</a> = 0xFFU
+ }</td></tr>
+<tr class="separator:ac205be2172292384dd687b5471a87edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a08dfce9fe777760c2f33cbb3d71ee2bd" id="r_a08dfce9fe777760c2f33cbb3d71ee2bd"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a08dfce9fe777760c2f33cbb3d71ee2bd">compare_depth_desc</a> (const void *lhs, const void *rhs)</td></tr>
-<tr class="separator:a08dfce9fe777760c2f33cbb3d71ee2bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dcb764e029c15c8bb949432cdc6b88b" id="r_a8dcb764e029c15c8bb949432cdc6b88b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b">next_pow2</a> (int val)</td></tr>
+<tr class="separator:a8dcb764e029c15c8bb949432cdc6b88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88e5cba2551791a7bcb53abf2e02e305" id="r_a88e5cba2551791a7bcb53abf2e02e305"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305">ensure_cpu_capacity</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, int count)</td></tr>
+<tr class="memdesc:a88e5cba2551791a7bcb53abf2e02e305"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grow CPU scratchpads to hold at least <code>count</code> elements.  <br /></td></tr>
+<tr class="separator:a88e5cba2551791a7bcb53abf2e02e305"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab58f7a4a3d93d58b169574ff8e95079d" id="r_ab58f7a4a3d93d58b169574ff8e95079d"><td class="memItemLeft" align="right" valign="top">static GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#ab58f7a4a3d93d58b169574ff8e95079d">upload_sorted_to_ssbo</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, int count)</td></tr>
+<tr class="memdesc:ab58f7a4a3d93d58b169574ff8e95079d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upload <code>count</code> sorted instances from the CPU temp buffer to the SSBO.  <br /></td></tr>
+<tr class="separator:ab58f7a4a3d93d58b169574ff8e95079d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8261ad4dd8402eed788cdcd12116946" id="r_ac8261ad4dd8402eed788cdcd12116946"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorter_init</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, int initial_capacity)</td></tr>
 <tr class="memdesc:ac8261ad4dd8402eed788cdcd12116946"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates internal buffers for the sorter.  <br /></td></tr>
 <tr class="separator:ac8261ad4dd8402eed788cdcd12116946"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a159532007839ad93c627f7173c755616" id="r_a159532007839ad93c627f7173c755616"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a159532007839ad93c627f7173c755616">sphere_sorter_cleanup</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter)</td></tr>
 <tr class="memdesc:a159532007839ad93c627f7173c755616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the sorter context.  <br /></td></tr>
 <tr class="separator:a159532007839ad93c627f7173c755616"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af67b8aec8040d3efd46de936313aeb2d" id="r_af67b8aec8040d3efd46de936313aeb2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#af67b8aec8040d3efd46de936313aeb2d">sphere_sorter_sort</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, <a class="el" href="structSphereInstance.html">SphereInstance</a> **instances_ptr, int count, vec3 camera_pos)</td></tr>
-<tr class="memdesc:af67b8aec8040d3efd46de936313aeb2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth).  <br /></td></tr>
-<tr class="separator:af67b8aec8040d3efd46de936313aeb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b1931d3ca9613a3f9cb779c42d51336" id="r_a1b1931d3ca9613a3f9cb779c42d51336"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a1b1931d3ca9613a3f9cb779c42d51336">sphere_sorter_sort_gpu</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a1b1931d3ca9613a3f9cb779c42d51336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on GPU.  <br /></td></tr>
+<tr class="separator:a1b1931d3ca9613a3f9cb779c42d51336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57be5e118fd5533df2275e84d89e1843" id="r_a57be5e118fd5533df2275e84d89e1843"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843">compare_sphere_entries</a> (const void *lhs, const void *rhs)</td></tr>
+<tr class="separator:a57be5e118fd5533df2275e84d89e1843"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c8f41ff57b420b02e547264f3a593ba" id="r_a9c8f41ff57b420b02e547264f3a593ba"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a9c8f41ff57b420b02e547264f3a593ba">sphere_sorter_sort_cpu</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a9c8f41ff57b420b02e547264f3a593ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on CPU.  <br /></td></tr>
+<tr class="separator:a9c8f41ff57b420b02e547264f3a593ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d5aab931453148c66e46823323759de" id="r_a5d5aab931453148c66e46823323759de"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de">float_to_sortable_uint</a> (float f_val)</td></tr>
+<tr class="memdesc:a5d5aab931453148c66e46823323759de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using integer radix sort.  <br /></td></tr>
+<tr class="separator:a5d5aab931453148c66e46823323759de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb08c8f2f8876b56e8e5249aee59e6e1" id="r_afb08c8f2f8876b56e8e5249aee59e6e1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#afb08c8f2f8876b56e8e5249aee59e6e1">sphere_sorter_sort_cpu_radix</a> (<a class="el" href="structSphereSorter.html">SphereSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:afb08c8f2f8876b56e8e5249aee59e6e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) using Radix Sort.  <br /></td></tr>
+<tr class="separator:afb08c8f2f8876b56e8e5249aee59e6e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aec8224722de5e61973f9e3b8078d365d" id="r_aec8224722de5e61973f9e3b8078d365d"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#aec8224722de5e61973f9e3b8078d365d">FLOAT_SIGN_MASK</a> = 0x80000000U</td></tr>
+<tr class="separator:aec8224722de5e61973f9e3b8078d365d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa24402addbc33eefed827c01a79243c7" id="r_aa24402addbc33eefed827c01a79243c7"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#aa24402addbc33eefed827c01a79243c7">FLOAT_COMPLEMENT_MASK</a> = 0xFFFFFFFFU</td></tr>
+<tr class="separator:aa24402addbc33eefed827c01a79243c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab504c79c02fbbbb3b5f723fc5e70e1b0" id="r_ab504c79c02fbbbb3b5f723fc5e70e1b0"><td class="memItemLeft" align="right" valign="top">static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#ab504c79c02fbbbb3b5f723fc5e70e1b0">BIT_SHIFT_8</a> = 8U</td></tr>
+<tr class="separator:ab504c79c02fbbbb3b5f723fc5e70e1b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3fa2312fad06af4b08eccb275556a8" id="r_acb3fa2312fad06af4b08eccb275556a8"><td class="memItemLeft" align="right" valign="top">static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#acb3fa2312fad06af4b08eccb275556a8">BIT_SHIFT_16</a> = 16U</td></tr>
+<tr class="separator:acb3fa2312fad06af4b08eccb275556a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a01d56be5ca4245c6ebd28f0b7458e6" id="r_a3a01d56be5ca4245c6ebd28f0b7458e6"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="sphere__sorting_8c.html#a3a01d56be5ca4245c6ebd28f0b7458e6">GPU_ENTRY_SIZE</a> = 8</td></tr>
+<tr class="separator:a3a01d56be5ca4245c6ebd28f0b7458e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a458e651af6690959efa2afb96be7d609" name="a458e651af6690959efa2afb96be7d609"></a>
@@ -287,14 +339,133 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a458e651af6690959efa2afb96be7d609a7824ef724eb0d455d925e585eb107156" name="a458e651af6690959efa2afb96be7d609a7824ef724eb0d455d925e585eb107156"></a>INITIAL_CAPACITY&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a458e651af6690959efa2afb96be7d609a3d24f3bd15551e76fb73dc53915c550b" name="a458e651af6690959efa2afb96be7d609a3d24f3bd15551e76fb73dc53915c550b"></a>EXPECTED_SPHERE_INSTANCE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a1f9aebf1de3ebbf4283a4dcf73308562" name="a1f9aebf1de3ebbf4283a4dcf73308562"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f9aebf1de3ebbf4283a4dcf73308562">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1f9aebf1de3ebbf4283a4dcf73308562a977681261e84b7671049e4d74c29552e" name="a1f9aebf1de3ebbf4283a4dcf73308562a977681261e84b7671049e4d74c29552e"></a>WORKGROUP_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a77867ab4129f63159b37bca3b652a798" name="a77867ab4129f63159b37bca3b652a798"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77867ab4129f63159b37bca3b652a798">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a77867ab4129f63159b37bca3b652a798acbe96d34bad52c1c1c6fa3663f66ff43" name="a77867ab4129f63159b37bca3b652a798acbe96d34bad52c1c1c6fa3663f66ff43"></a>DEFAULT_MIN_CAPACITY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a16685eea158879e41b101ca3634de462" name="a16685eea158879e41b101ca3634de462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16685eea158879e41b101ca3634de462">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16685eea158879e41b101ca3634de462af8df5c1debfe68fac8947ff4a8cbcb36" name="a16685eea158879e41b101ca3634de462af8df5c1debfe68fac8947ff4a8cbcb36"></a>MAX_SINGLE_PASS_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a2970898e8a43ce21e1cc510d49f1b89d" name="a2970898e8a43ce21e1cc510d49f1b89d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2970898e8a43ce21e1cc510d49f1b89d">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2970898e8a43ce21e1cc510d49f1b89dad26222a07cb422b43370dc72182b72cd" name="a2970898e8a43ce21e1cc510d49f1b89dad26222a07cb422b43370dc72182b72cd"></a>RADIX_BITS_PER_PASS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="afa231099d07583c3ed0981e0bb665f55" name="afa231099d07583c3ed0981e0bb665f55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa231099d07583c3ed0981e0bb665f55">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afa231099d07583c3ed0981e0bb665f55aeae28fcea22c1ab335c08f7d63bb35a7" name="afa231099d07583c3ed0981e0bb665f55aeae28fcea22c1ab335c08f7d63bb35a7"></a>RADIX_BUCKETS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a394b3903fbf00ba2b6243f60689a5a5f" name="a394b3903fbf00ba2b6243f60689a5a5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a394b3903fbf00ba2b6243f60689a5a5f">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a394b3903fbf00ba2b6243f60689a5a5fab66a8307e63dad074f39fc2c2f1eb971" name="a394b3903fbf00ba2b6243f60689a5a5fab66a8307e63dad074f39fc2c2f1eb971"></a>RADIX_SHIFT_LIMIT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ac205be2172292384dd687b5471a87edd" name="ac205be2172292384dd687b5471a87edd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac205be2172292384dd687b5471a87edd">&#9670;&#160;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac205be2172292384dd687b5471a87eddad8da0cb042e3227f3d9a7bf544fab0cb" name="ac205be2172292384dd687b5471a87eddad8da0cb042e3227f3d9a7bf544fab0cb"></a>RADIX_MASK&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a08dfce9fe777760c2f33cbb3d71ee2bd" name="a08dfce9fe777760c2f33cbb3d71ee2bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08dfce9fe777760c2f33cbb3d71ee2bd">&#9670;&#160;</a></span>compare_depth_desc()</h2>
+<a id="a57be5e118fd5533df2275e84d89e1843" name="a57be5e118fd5533df2275e84d89e1843"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57be5e118fd5533df2275e84d89e1843">&#9670;&#160;</a></span>compare_sphere_entries()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -303,7 +474,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int compare_depth_desc </td>
+          <td class="memname">static int compare_sphere_entries </td>
           <td>(</td>
           <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>lhs</em>, </td>
@@ -318,6 +489,99 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88e5cba2551791a7bcb53abf2e02e305" name="a88e5cba2551791a7bcb53abf2e02e305"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88e5cba2551791a7bcb53abf2e02e305">&#9670;&#160;</a></span>ensure_cpu_capacity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool ensure_cpu_capacity </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Grow CPU scratchpads to hold at least <code>count</code> elements. </p>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on allocation failure. </dd></dl>
+
+</div>
+</div>
+<a id="a5d5aab931453148c66e46823323759de" name="a5d5aab931453148c66e46823323759de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d5aab931453148c66e46823323759de">&#9670;&#160;</a></span>float_to_sortable_uint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static uint32_t float_to_sortable_uint </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>f_val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using integer radix sort. </p>
+
+</div>
+</div>
+<a id="a8dcb764e029c15c8bb949432cdc6b88b" name="a8dcb764e029c15c8bb949432cdc6b88b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dcb764e029c15c8bb949432cdc6b88b">&#9670;&#160;</a></span>next_pow2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int next_pow2 </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -389,17 +653,22 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8c_ac8261ad4dd8402eed788cdcd12116946_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+</div>
 
 </div>
 </div>
-<a id="af67b8aec8040d3efd46de936313aeb2d" name="af67b8aec8040d3efd46de936313aeb2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af67b8aec8040d3efd46de936313aeb2d">&#9670;&#160;</a></span>sphere_sorter_sort()</h2>
+<a id="a9c8f41ff57b420b02e547264f3a593ba" name="a9c8f41ff57b420b02e547264f3a593ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c8f41ff57b420b02e547264f3a593ba">&#9670;&#160;</a></span>sphere_sorter_sort_cpu()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void sphere_sorter_sort </td>
+          <td class="memname">GLuint sphere_sorter_sort_cpu </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
           <td class="paramname"><em>sorter</em>, </td>
@@ -407,8 +676,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structSphereInstance.html">SphereInstance</a> **&#160;</td>
-          <td class="paramname"><em>instances_ptr</em>, </td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -419,7 +688,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vec3&#160;</td>
+          <td class="paramtype">const vec3&#160;</td>
           <td class="paramname"><em>camera_pos</em>&#160;</td>
         </tr>
         <tr>
@@ -430,23 +699,290 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sorts the array of instances Back-to-Front (descending depth). </p>
-<p>This function Reorders the 'instances' array using a temporary buffer to avoid extra copies. It swaps the pointer provided by <code>instances_ptr</code> with its internal buffer.</p>
-<p>The provided <code>instances_ptr</code> will point to a buffer that is at least as large as the <code>initial_capacity</code> passed to <code>sphere_sorter_init</code>, or large enough for <code>count</code> instances, whichever is greater.</p>
+<p>Sorts the array of instances Back-to-Front (descending depth) on CPU. </p>
+<p>Uses qsort on the host and uploads the result to the SSBO.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
-    <tr><td class="paramname">instances_ptr</td><td>Pointer to the array pointer to sort. The pointer *instances_ptr will be updated to point to the sorted array. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances (will be copied and sorted internally). </td></tr>
     <tr><td class="paramname">count</td><td>Active element count. </td></tr>
-    <tr><td class="paramname">camera_pos</td><td>World-space viewer position (for depth calculation). </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8c_af67b8aec8040d3efd46de936313aeb2d_cgraph.svg" width="362" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8c_a9c8f41ff57b420b02e547264f3a593ba_cgraph.svg" width="415" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
+
+</div>
+</div>
+<a id="afb08c8f2f8876b56e8e5249aee59e6e1" name="afb08c8f2f8876b56e8e5249aee59e6e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb08c8f2f8876b56e8e5249aee59e6e1">&#9670;&#160;</a></span>sphere_sorter_sort_cpu_radix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint sphere_sorter_sort_cpu_radix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) using Radix Sort. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position (for depth). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8c_afb08c8f2f8876b56e8e5249aee59e6e1_cgraph.svg" width="372" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="a1b1931d3ca9613a3f9cb779c42d51336" name="a1b1931d3ca9613a3f9cb779c42d51336"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b1931d3ca9613a3f9cb779c42d51336">&#9670;&#160;</a></span>sphere_sorter_sort_gpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint sphere_sorter_sort_gpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) on GPU. </p>
+<p>Uploads instances to an SSBO, sorts them using a compute shader, and prepares them for rendering.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Pointer to the array of instances to upload. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__sorting_8c_a1b1931d3ca9613a3f9cb779c42d51336_cgraph.svg" width="327" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+
+</div>
+</div>
+<a id="ab58f7a4a3d93d58b169574ff8e95079d" name="ab58f7a4a3d93d58b169574ff8e95079d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab58f7a4a3d93d58b169574ff8e95079d">&#9670;&#160;</a></span>upload_sorted_to_ssbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static GLuint upload_sorted_to_ssbo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereSorter.html">SphereSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Upload <code>count</code> sorted instances from the CPU temp buffer to the SSBO. </p>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the data. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="acb3fa2312fad06af4b08eccb275556a8" name="acb3fa2312fad06af4b08eccb275556a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb3fa2312fad06af4b08eccb275556a8">&#9670;&#160;</a></span>BIT_SHIFT_16</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned int BIT_SHIFT_16 = 16U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab504c79c02fbbbb3b5f723fc5e70e1b0" name="ab504c79c02fbbbb3b5f723fc5e70e1b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab504c79c02fbbbb3b5f723fc5e70e1b0">&#9670;&#160;</a></span>BIT_SHIFT_8</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned int BIT_SHIFT_8 = 8U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Bit-shift constants for next_pow2 (named to satisfy linter). </p>
+
+</div>
+</div>
+<a id="aa24402addbc33eefed827c01a79243c7" name="aa24402addbc33eefed827c01a79243c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa24402addbc33eefed827c01a79243c7">&#9670;&#160;</a></span>FLOAT_COMPLEMENT_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aec8224722de5e61973f9e3b8078d365d" name="aec8224722de5e61973f9e3b8078d365d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec8224722de5e61973f9e3b8078d365d">&#9670;&#160;</a></span>FLOAT_SIGN_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t FLOAT_SIGN_MASK = 0x80000000U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a01d56be5ca4245c6ebd28f0b7458e6" name="a3a01d56be5ca4245c6ebd28f0b7458e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a01d56be5ca4245c6ebd28f0b7458e6">&#9670;&#160;</a></span>GPU_ENTRY_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t GPU_ENTRY_SIZE = 8</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Size of the <a class="el" href="structEntry.html">Entry</a> struct in the compute shader: int (4) + float (4). </p>
 
 </div>
 </div>

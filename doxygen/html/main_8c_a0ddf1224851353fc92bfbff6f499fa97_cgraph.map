@@ -6,10 +6,10 @@
 <area shape="poly" id="edge22_Node000001_Node000038" title=" " alt="" coords="59,1564,107,1547,131,1539,132,1544,109,1552,61,1569"/>
 <area shape="rect" id="Node000193" href="$app_8c.html#a1d3b9d4294ec4a01762c962902b9063d" title="Enters the main application rendering and event loop." alt="" coords="145,1562,219,1588"/>
 <area shape="poly" id="edge52_Node000001_Node000193" title=" " alt="" coords="60,1572,131,1572,131,1578,60,1578"/>
-<area shape="rect" id="Node000330" href="$cli_8c.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,1612,243,1637"/>
-<area shape="poly" id="edge53_Node000001_Node000330" title=" " alt="" coords="61,1581,130,1605,128,1610,59,1586"/>
-<area shape="rect" id="Node000332" href="$tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,1662,256,1702"/>
-<area shape="poly" id="edge54_Node000001_Node000332" title=" " alt="" coords="46,1586,73,1616,110,1646,120,1653,117,1657,106,1651,70,1619,42,1590"/>
+<area shape="rect" id="Node000336" href="$cli_8c.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,1612,243,1637"/>
+<area shape="poly" id="edge53_Node000001_Node000336" title=" " alt="" coords="61,1581,130,1605,128,1610,59,1586"/>
+<area shape="rect" id="Node000338" href="$tracy__manager_8c.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,1662,256,1702"/>
+<area shape="poly" id="edge54_Node000001_Node000338" title=" " alt="" coords="46,1586,73,1616,110,1646,120,1653,117,1657,106,1651,70,1619,42,1590"/>
 <area shape="rect" id="Node000003" href="$adaptive__sampler_8c.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="775,241,972,266"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="182,471,194,384,218,254,235,187,254,126,276,77,302,45,338,23,376,10,415,4,455,4,495,10,536,22,615,56,690,100,757,149,851,229,848,234,754,153,687,105,613,61,534,27,494,16,454,9,415,9,377,15,340,28,306,49,281,80,259,128,240,188,223,255,199,385,187,472"/>
 <area shape="rect" id="Node000004" href="$app_8c.html#aed69b4dca42013e74012d76616a8e683" title=" " alt="" coords="325,60,499,85"/>
@@ -54,16 +54,16 @@
 <area shape="poly" id="edge24_Node000038_Node000040" title=" " alt="" coords="182,1513,191,1411,212,1256,228,1175,248,1102,273,1042,287,1020,302,1004,339,981,377,967,416,962,457,964,498,973,539,987,619,1028,694,1081,761,1136,853,1228,850,1231,757,1140,691,1085,616,1033,537,992,496,978,456,970,416,967,378,972,341,986,306,1008,291,1023,277,1045,253,1103,233,1176,217,1257,196,1412,187,1513"/>
 <area shape="rect" id="Node000042" href="$app__scene_8c.html#a168371b77780ac21966da9f77039d3b7" title="Initializes instancing resources (buffers, sorting structures)." alt="" coords="338,1018,486,1044"/>
 <area shape="poly" id="edge25_Node000038_Node000042" title=" " alt="" coords="182,1513,195,1422,219,1283,235,1211,255,1144,277,1090,302,1053,324,1039,327,1043,306,1057,282,1092,260,1146,241,1212,224,1284,200,1422,187,1513"/>
-<area shape="rect" id="Node000053" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="338,1068,486,1093"/>
-<area shape="poly" id="edge26_Node000038_Node000053" title=" " alt="" coords="180,1513,181,1441,185,1389,194,1330,208,1269,230,1208,261,1152,302,1102,324,1088,327,1093,306,1106,265,1155,235,1210,213,1271,199,1331,190,1389,186,1441,185,1513"/>
-<area shape="rect" id="Node000058" href="$app__env_8c.html#aaf888ef9851eecc3a98700e168300f51" title="Scans the assets directory for HDR environment maps." alt="" coords="339,1117,485,1142"/>
-<area shape="poly" id="edge27_Node000038_Node000058" title=" " alt="" coords="181,1513,184,1448,200,1351,215,1297,236,1244,265,1195,302,1152,325,1138,328,1142,306,1156,269,1198,241,1246,220,1299,205,1352,189,1449,186,1513"/>
-<area shape="rect" id="Node000060" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="304,1166,520,1192"/>
-<area shape="poly" id="edge28_Node000038_Node000060" title=" " alt="" coords="181,1513,188,1456,206,1371,221,1325,242,1280,269,1237,302,1201,308,1197,311,1201,306,1205,273,1241,246,1282,226,1327,211,1373,193,1456,187,1513"/>
-<area shape="rect" id="Node000061" href="$async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6" title="Creates and initializes a new async loader instance." alt="" coords="334,1216,490,1241"/>
-<area shape="poly" id="edge29_Node000038_Node000061" title=" " alt="" coords="182,1513,191,1463,212,1392,227,1353,247,1316,272,1281,302,1250,320,1240,322,1244,306,1255,276,1284,252,1318,232,1356,217,1394,197,1464,188,1514"/>
-<area shape="rect" id="Node000074" href="$pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="339,1265,485,1290"/>
-<area shape="poly" id="edge30_Node000038_Node000074" title=" " alt="" coords="184,1512,196,1470,219,1413,253,1351,276,1324,302,1300,325,1287,327,1292,306,1304,280,1327,258,1355,223,1415,201,1472,189,1513"/>
+<area shape="rect" id="Node000069" href="$app__env_8c.html#adb532f71626e9898396208f225c364e9" title="Starts an asynchronous load of an environment map." alt="" coords="338,1068,486,1093"/>
+<area shape="poly" id="edge26_Node000038_Node000069" title=" " alt="" coords="180,1513,181,1441,185,1389,194,1330,208,1269,230,1208,261,1152,302,1102,324,1088,327,1093,306,1106,265,1155,235,1210,213,1271,199,1331,190,1389,186,1441,185,1513"/>
+<area shape="rect" id="Node000073" href="$app__env_8c.html#aaf888ef9851eecc3a98700e168300f51" title="Scans the assets directory for HDR environment maps." alt="" coords="339,1117,485,1142"/>
+<area shape="poly" id="edge27_Node000038_Node000073" title=" " alt="" coords="181,1513,184,1448,200,1351,215,1297,236,1244,265,1195,302,1152,325,1138,328,1142,306,1156,269,1198,241,1246,220,1299,205,1352,189,1449,186,1513"/>
+<area shape="rect" id="Node000075" href="$app__scene_8c.html#a5284b774e468b86778063e89fd57b5e3" title="Updates the instancing mode based on current application settings." alt="" coords="304,1166,520,1192"/>
+<area shape="poly" id="edge28_Node000038_Node000075" title=" " alt="" coords="181,1513,188,1456,206,1371,221,1325,242,1280,269,1237,302,1201,308,1197,311,1201,306,1205,273,1241,246,1282,226,1327,211,1373,193,1456,187,1513"/>
+<area shape="rect" id="Node000076" href="$async__loader_8c.html#aa0330860c0daf9333351d3e5204501c6" title="Creates and initializes a new async loader instance." alt="" coords="334,1216,490,1241"/>
+<area shape="poly" id="edge29_Node000038_Node000076" title=" " alt="" coords="182,1513,191,1463,212,1392,227,1353,247,1316,272,1281,302,1250,320,1240,322,1244,306,1255,276,1284,252,1318,232,1356,217,1394,197,1464,188,1514"/>
+<area shape="rect" id="Node000086" href="$pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="339,1265,485,1290"/>
+<area shape="poly" id="edge30_Node000038_Node000086" title=" " alt="" coords="184,1512,196,1470,219,1413,253,1351,276,1324,302,1300,325,1287,327,1292,306,1304,280,1327,258,1355,223,1415,201,1472,189,1513"/>
 <area shape="rect" id="Node000088" href="$camera_8c.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="363,1314,461,1340"/>
 <area shape="poly" id="edge31_Node000038_Node000088" title=" " alt="" coords="186,1512,201,1478,225,1434,259,1388,302,1349,325,1338,348,1330,350,1335,327,1342,306,1353,263,1391,230,1437,206,1481,191,1514"/>
 <area shape="rect" id="Node000090" href="$effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153" title="Initializes the benchmark (call once at startup)." alt="" coords="329,1364,495,1389"/>
