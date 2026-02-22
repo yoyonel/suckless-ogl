@@ -71,7 +71,7 @@ void test_SphereSorter_Init_ShouldAllocateBuffers(void)
 	TEST_ASSERT_NOT_NULL(sorter.entries);
 	TEST_ASSERT_NOT_NULL(sorter.entries_aux);
 	TEST_ASSERT_NOT_NULL(sorter.temp_instances);
-	TEST_ASSERT_EQUAL_INT(0, sorter.capacity);
+	TEST_ASSERT_EQUAL_INT(0, sorter.ssbo_capacity);
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.cpu_capacity);
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.min_capacity);
 
@@ -86,7 +86,7 @@ void test_SphereSorter_Cleanup_ShouldFreeBuffers(void)
 
 	TEST_ASSERT_NULL(sorter.entries);
 	TEST_ASSERT_NULL(sorter.temp_instances);
-	TEST_ASSERT_EQUAL_INT(0, sorter.capacity);
+	TEST_ASSERT_EQUAL_INT(0, sorter.ssbo_capacity);
 	TEST_ASSERT_EQUAL_INT(0, sorter.min_capacity);
 }
 
@@ -225,8 +225,8 @@ void test_SphereSorter_CapacitySync_ShouldNotCrash(void)
 	SphereSorter sorter;
 	sphere_sorter_init(&sorter, SMALL_CAPACITY);
 
-	/* Simulate GPU path growing 'capacity' to 100 */
-	sorter.capacity = 100;
+	/* Simulate GPU path growing 'ssbo_capacity' to 100 */
+	sorter.ssbo_capacity = 100;
 
 	/* Now use CPU path with count 50.
 	 * If it relies blindly on 'capacity', it might not realloc its
