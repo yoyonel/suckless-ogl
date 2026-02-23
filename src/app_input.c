@@ -180,19 +180,19 @@ static void handle_camera_toggle(App* app)
 	                     NOTIF_DUR_NORMAL);
 }
 
-static void handle_f_key_input(App* app, int key, int mods)
+static bool handle_f_key_input(App* app, int key, int mods)
 {
 	switch (key) {
 		case GLFW_KEY_F1:
 			handle_overlay_input(app);
-			break;
+			return true;
 		case GLFW_KEY_F2:
 			app->show_help = !app->show_help;
 			action_notifier_push(
 			    &app->notifier,
 			    app->show_help ? "Help: ON" : "Help: OFF",
 			    NOTIF_DUR_NORMAL);
-			break;
+			return true;
 		case GLFW_KEY_F3:
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				/* Toggle Position */
@@ -223,7 +223,7 @@ static void handle_f_key_input(App* app, int key, int mods)
 				                         : "Timeline: OFF",
 				                     NOTIF_DUR_NORMAL);
 			}
-			break;
+			return true;
 		case GLFW_KEY_F4:
 			app->log_gpu_metrics = !app->log_gpu_metrics;
 			LOG_INFO("suckless-ogl.app", "Log GPU Metrics: %s",
@@ -233,10 +233,10 @@ static void handle_f_key_input(App* app, int key, int mods)
 			                         ? "Log Metrics: ON"
 			                         : "Log Metrics: OFF",
 			                     NOTIF_DUR_NORMAL);
-			break;
+			return true;
 		case GLFW_KEY_F5:
 			handle_pbr_debug_mode(app);
-			break;
+			return true;
 		case GLFW_KEY_F9:
 			if (app->perf_mode_active) {
 				perf_mode_request_end(&app->perf_context);
@@ -260,9 +260,9 @@ static void handle_f_key_input(App* app, int key, int mods)
 			    "suckless-ogl.app", "Performance Mode: %s (%s)",
 			    app->perf_mode_active ? "ON" : "OFF",
 			    perf_mode_get_state_string(&app->perf_context));
-			break;
+			return true;
 		default:
-			break;
+			return false;
 	}
 }
 
@@ -312,8 +312,9 @@ static void handle_system_key_input(App* app, int key, int mods)
 void handle_app_input(App* app, int key, int mods)
 {
 	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
-		handle_f_key_input(app, key, mods);
-		return;
+		if (handle_f_key_input(app, key, mods)) {
+			return;
+		}
 	}
 
 	switch (key) {
