@@ -466,10 +466,10 @@ Functions</h2></td></tr>
 <p>Hybrid measurement with DEBUG-level console logging. </p>
 <p>Like HYBRID_MEASURE_LOG but demotes console output to LOG_DEBUG. Tracy zones are still emitted. Captures GPU elapsed ms into <code>var_name</code>.</p>
 <p>Usage: </p><div class="fragment"><div class="line">  <a class="code hl_define" href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">HYBRID_MEASURE_DEBUG_MS</a>(gpu_ms, <span class="stringliteral">&quot;Progressive IBL: Specular Mip 0 Slice</span></div>
-<div class="line"><span class="stringliteral">1/24&quot;</span>) { <a class="code hl_function" href="pbr_8h.html#a3565e3f9822026deb79279a47a6a5973">pbr_prefilter_mip</a>(...);</div>
+<div class="line"><span class="stringliteral">1/24&quot;</span>) { <a class="code hl_function" href="pbr_8h.html#a2e45982e37b3d9cbcaa5454ddbb5a660">pbr_prefilter_mip</a>(...);</div>
 <div class="line">  }</div>
 <div class="line">  <span class="comment">// gpu_ms now contains the GPU time in milliseconds</span></div>
-<div class="ttc" id="apbr_8h_html_a3565e3f9822026deb79279a47a6a5973"><div class="ttname"><a href="pbr_8h.html#a3565e3f9822026deb79279a47a6a5973">pbr_prefilter_mip</a></div><div class="ttdeci">void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex, int width, int height, int level, int total_levels, int slice_index, int total_slices, float threshold)</div><div class="ttdoc">Computes a single slice or mip-level for progressive pre-filtering.</div><div class="ttdef"><b>Definition</b> pbr.c:31</div></div>
+<div class="ttc" id="apbr_8h_html_a2e45982e37b3d9cbcaa5454ddbb5a660"><div class="ttname"><a href="pbr_8h.html#a2e45982e37b3d9cbcaa5454ddbb5a660">pbr_prefilter_mip</a></div><div class="ttdeci">void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms *uniforms, GLuint env_hdr_tex, GLuint dest_tex, int width, int height, int level, int total_levels, int slice_index, int total_slices, float threshold)</div><div class="ttdoc">Computes a single slice or mip-level for progressive pre-filtering.</div><div class="ttdef"><b>Definition</b> pbr.c:63</div></div>
 <div class="ttc" id="aperf__timer_8h_html_afc24452fa4cd12c093c41f487c21f701"><div class="ttname"><a href="perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701">HYBRID_MEASURE_DEBUG_MS</a></div><div class="ttdeci">#define HYBRID_MEASURE_DEBUG_MS(var_name, label)</div><div class="ttdoc">Hybrid measurement with DEBUG-level console logging.</div><div class="ttdef"><b>Definition</b> perf_timer.h:229</div></div>
 </div><!-- fragment --> 
 </div>

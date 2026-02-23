@@ -256,27 +256,36 @@ Include dependency graph for pbr.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a01b429d5a8f495e2e01428fc05cb7610" id="r_a01b429d5a8f495e2e01428fc05cb7610"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a01b429d5a8f495e2e01428fc05cb7610">pbr_get_spec_uniforms</a> (GLuint shader, <a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> *out)</td></tr>
+<tr class="memdesc:a01b429d5a8f495e2e01428fc05cb7610"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves uniform locations for the specular prefilter shader.  <br /></td></tr>
+<tr class="separator:a01b429d5a8f495e2e01428fc05cb7610"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe447daec33b49a4068deabf4f2cd96c" id="r_afe447daec33b49a4068deabf4f2cd96c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#afe447daec33b49a4068deabf4f2cd96c">pbr_get_irr_uniforms</a> (GLuint shader, <a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> *out)</td></tr>
+<tr class="memdesc:afe447daec33b49a4068deabf4f2cd96c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves uniform locations for the irradiance convolution shader.  <br /></td></tr>
+<tr class="separator:afe447daec33b49a4068deabf4f2cd96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a519c59fa558fb2c7776e78be5944464e" id="r_a519c59fa558fb2c7776e78be5944464e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a519c59fa558fb2c7776e78be5944464e">pbr_get_lum_uniforms</a> (GLuint shader, <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *out)</td></tr>
+<tr class="memdesc:a519c59fa558fb2c7776e78be5944464e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves uniform locations for the luminance reduction shader.  <br /></td></tr>
+<tr class="separator:a519c59fa558fb2c7776e78be5944464e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71941da15aee302848216a21ec1cc846" id="r_a71941da15aee302848216a21ec1cc846"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a71941da15aee302848216a21ec1cc846">pbr_prefilter_init</a> (int width, int height)</td></tr>
 <tr class="memdesc:a71941da15aee302848216a21ec1cc846"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a texture for progressive specular pre-filtering.  <br /></td></tr>
 <tr class="separator:a71941da15aee302848216a21ec1cc846"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3565e3f9822026deb79279a47a6a5973" id="r_a3565e3f9822026deb79279a47a6a5973"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a3565e3f9822026deb79279a47a6a5973">pbr_prefilter_mip</a> (GLuint shader, GLuint env_hdr_tex, GLuint dest_tex, int width, int height, int level, int total_levels, int slice_index, int total_slices, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
-<tr class="memdesc:a3565e3f9822026deb79279a47a6a5973"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a single slice or mip-level for progressive pre-filtering.  <br /></td></tr>
-<tr class="separator:a3565e3f9822026deb79279a47a6a5973"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e45982e37b3d9cbcaa5454ddbb5a660" id="r_a2e45982e37b3d9cbcaa5454ddbb5a660"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a2e45982e37b3d9cbcaa5454ddbb5a660">pbr_prefilter_mip</a> (GLuint shader, const <a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> *uniforms, GLuint env_hdr_tex, GLuint dest_tex, int width, int height, int level, int total_levels, int slice_index, int total_slices, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
+<tr class="memdesc:a2e45982e37b3d9cbcaa5454ddbb5a660"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a single slice or mip-level for progressive pre-filtering.  <br /></td></tr>
+<tr class="separator:a2e45982e37b3d9cbcaa5454ddbb5a660"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81934f611c746e22958d99a325ea692f" id="r_a81934f611c746e22958d99a325ea692f"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a81934f611c746e22958d99a325ea692f">build_prefiltered_specular_map</a> (GLuint shader, GLuint env_hdr_tex, int width, int height, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
 <tr class="memdesc:a81934f611c746e22958d99a325ea692f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a pre-filtered specular environment map in a single pass.  <br /></td></tr>
 <tr class="separator:a81934f611c746e22958d99a325ea692f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae7b31749ecdf5e4a064b8bd0d4f74c7" id="r_aae7b31749ecdf5e4a064b8bd0d4f74c7"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7">pbr_irradiance_init</a> (int size)</td></tr>
 <tr class="memdesc:aae7b31749ecdf5e4a064b8bd0d4f74c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a texture for progressive irradiance computation.  <br /></td></tr>
 <tr class="separator:aae7b31749ecdf5e4a064b8bd0d4f74c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1360d7bdc52318d5925e02496a2220a8" id="r_a1360d7bdc52318d5925e02496a2220a8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a1360d7bdc52318d5925e02496a2220a8">pbr_irradiance_slice_compute</a> (GLuint shader, GLuint env_hdr_tex, GLuint dest_tex, int size, int slice_index, int total_slices, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
-<tr class="memdesc:a1360d7bdc52318d5925e02496a2220a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes one face/slice of the irradiance map.  <br /></td></tr>
-<tr class="separator:a1360d7bdc52318d5925e02496a2220a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a719d0f0fa9fdb9a743885fc82c617162" id="r_a719d0f0fa9fdb9a743885fc82c617162"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a719d0f0fa9fdb9a743885fc82c617162">pbr_irradiance_slice_compute</a> (GLuint shader, const <a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> *uniforms, GLuint env_hdr_tex, GLuint dest_tex, int size, int slice_index, int total_slices, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
+<tr class="memdesc:a719d0f0fa9fdb9a743885fc82c617162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes one face/slice of the irradiance map.  <br /></td></tr>
+<tr class="separator:a719d0f0fa9fdb9a743885fc82c617162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a380eba0f8cc7fc6c292073aa718c7097" id="r_a380eba0f8cc7fc6c292073aa718c7097"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a> (GLuint shader, GLuint env_hdr_tex, int size, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
 <tr class="memdesc:a380eba0f8cc7fc6c292073aa718c7097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an irradiance map (diffuse IBL) in a single pass.  <br /></td></tr>
 <tr class="separator:a380eba0f8cc7fc6c292073aa718c7097"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a140101db4510256465465aa1cda511eb" id="r_a140101db4510256465465aa1cda511eb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a140101db4510256465465aa1cda511eb">compute_mean_luminance_gpu</a> (GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width, int height, float clamp_multiplier, GLuint ssbos[2])</td></tr>
-<tr class="memdesc:a140101db4510256465465aa1cda511eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the average luminance of an HDR texture on the GPU.  <br /></td></tr>
-<tr class="separator:a140101db4510256465465aa1cda511eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab61b6f57e66b82e7a0a907754b92391f" id="r_ab61b6f57e66b82e7a0a907754b92391f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#ab61b6f57e66b82e7a0a907754b92391f">compute_mean_luminance_gpu</a> (GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width, int height, float clamp_multiplier, GLuint ssbos[2], const <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *uniforms)</td></tr>
+<tr class="memdesc:ab61b6f57e66b82e7a0a907754b92391f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the average luminance of an HDR texture on the GPU.  <br /></td></tr>
+<tr class="separator:ab61b6f57e66b82e7a0a907754b92391f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a626c9aaaa1dea8809b7f5c9a745aac55" id="r_a626c9aaaa1dea8809b7f5c9a745aac55"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55">build_brdf_lut_map</a> (int size)</td></tr>
 <tr class="memdesc:a626c9aaaa1dea8809b7f5c9a745aac55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates the 2D BRDF Integration Look-Up Table.  <br /></td></tr>
 <tr class="separator:a626c9aaaa1dea8809b7f5c9a745aac55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -381,7 +390,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="pbr_8c_a380eba0f8cc7fc6c292073aa718c7097_cgraph.svg" width="368" height="51"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="pbr_8c_a380eba0f8cc7fc6c292073aa718c7097_cgraph.svg" width="379" height="102"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
@@ -445,13 +454,13 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="pbr_8c_a81934f611c746e22958d99a325ea692f_cgraph.svg" width="614" height="94"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="pbr_8c_a81934f611c746e22958d99a325ea692f_cgraph.svg" width="654" height="135"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 
 </div>
 </div>
-<a id="a140101db4510256465465aa1cda511eb" name="a140101db4510256465465aa1cda511eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a140101db4510256465465aa1cda511eb">&#9670;&#160;</a></span>compute_mean_luminance_gpu()</h2>
+<a id="ab61b6f57e66b82e7a0a907754b92391f" name="ab61b6f57e66b82e7a0a907754b92391f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab61b6f57e66b82e7a0a907754b92391f">&#9670;&#160;</a></span>compute_mean_luminance_gpu()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -496,7 +505,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>ssbos</em>[2]&#160;</td>
+          <td class="paramname"><em>ssbos</em>[2], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *&#160;</td>
+          <td class="paramname"><em>uniforms</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -516,10 +531,122 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">height</td><td>Texture height. </td></tr>
     <tr><td class="paramname">clamp_multiplier</td><td>Value to clamp extreme pixels. </td></tr>
     <tr><td class="paramname">ssbos</td><td>Pair of SSBO handles for intermediate and final results. </td></tr>
+    <tr><td class="paramname">uniforms</td><td>Cached uniform locations for pass 2. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Average luminance value. </dd></dl>
+
+</div>
+</div>
+<a id="afe447daec33b49a4068deabf4f2cd96c" name="afe447daec33b49a4068deabf4f2cd96c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe447daec33b49a4068deabf4f2cd96c">&#9670;&#160;</a></span>pbr_get_irr_uniforms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pbr_get_irr_uniforms </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> *&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves uniform locations for the irradiance convolution shader. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>The shader program. </td></tr>
+    <tr><td class="paramname">out</td><td>Pointer to the struct to populate. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a519c59fa558fb2c7776e78be5944464e" name="a519c59fa558fb2c7776e78be5944464e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a519c59fa558fb2c7776e78be5944464e">&#9670;&#160;</a></span>pbr_get_lum_uniforms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pbr_get_lum_uniforms </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves uniform locations for the luminance reduction shader. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>The shader program. </td></tr>
+    <tr><td class="paramname">out</td><td>Pointer to the struct to populate. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a01b429d5a8f495e2e01428fc05cb7610" name="a01b429d5a8f495e2e01428fc05cb7610"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01b429d5a8f495e2e01428fc05cb7610">&#9670;&#160;</a></span>pbr_get_spec_uniforms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void pbr_get_spec_uniforms </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> *&#160;</td>
+          <td class="paramname"><em>out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieves uniform locations for the specular prefilter shader. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shader</td><td>The shader program. </td></tr>
+    <tr><td class="paramname">out</td><td>Pointer to the struct to populate. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -555,8 +682,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a1360d7bdc52318d5925e02496a2220a8" name="a1360d7bdc52318d5925e02496a2220a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1360d7bdc52318d5925e02496a2220a8">&#9670;&#160;</a></span>pbr_irradiance_slice_compute()</h2>
+<a id="a719d0f0fa9fdb9a743885fc82c617162" name="a719d0f0fa9fdb9a743885fc82c617162"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a719d0f0fa9fdb9a743885fc82c617162">&#9670;&#160;</a></span>pbr_irradiance_slice_compute()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -566,6 +693,12 @@ Here is the call graph for this function:</div>
           <td>(</td>
           <td class="paramtype">GLuint&#160;</td>
           <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> *&#160;</td>
+          <td class="paramname"><em>uniforms</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -615,6 +748,7 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">shader</td><td>Compute shader. </td></tr>
+    <tr><td class="paramname">uniforms</td><td>Cached uniform locations. </td></tr>
     <tr><td class="paramname">env_hdr_tex</td><td>Source HDR map. </td></tr>
     <tr><td class="paramname">dest_tex</td><td>Destination cubemap. </td></tr>
     <tr><td class="paramname">size</td><td>Resolution. </td></tr>
@@ -671,8 +805,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a3565e3f9822026deb79279a47a6a5973" name="a3565e3f9822026deb79279a47a6a5973"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3565e3f9822026deb79279a47a6a5973">&#9670;&#160;</a></span>pbr_prefilter_mip()</h2>
+<a id="a2e45982e37b3d9cbcaa5454ddbb5a660" name="a2e45982e37b3d9cbcaa5454ddbb5a660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e45982e37b3d9cbcaa5454ddbb5a660">&#9670;&#160;</a></span>pbr_prefilter_mip()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -682,6 +816,12 @@ Here is the call graph for this function:</div>
           <td>(</td>
           <td class="paramtype">GLuint&#160;</td>
           <td class="paramname"><em>shader</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> *&#160;</td>
+          <td class="paramname"><em>uniforms</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -749,6 +889,7 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">shader</td><td>Compute shader. </td></tr>
+    <tr><td class="paramname">uniforms</td><td>Cached uniform locations. </td></tr>
     <tr><td class="paramname">env_hdr_tex</td><td>Source HDR map. </td></tr>
     <tr><td class="paramname">dest_tex</td><td>Destination cubemap. </td></tr>
     <tr><td class="paramname">width</td><td>Current level width. </td></tr>

@@ -29,10 +29,11 @@ var searchData=
   ['inv_5fpi_26',['INV_PI',['../pbr__functions_8glsl.html#aba5e6db48fdfc9b9cb18c368295bd224',1,'pbr_functions.glsl']]],
   ['invatan_27',['invAtan',['../background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80',1,'background.frag']]],
   ['iridiance_5fmap_5fsize_28',['IRIDIANCE_MAP_SIZE',['../group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743',1,'app_settings.h']]],
-  ['irradiance_5fmap_29',['irradiance_map',['../structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed',1,'BillboardUniforms::irradiance_map'],['../structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b',1,'InstancedUniforms::irradiance_map']]],
-  ['irradiance_5ftex_30',['irradiance_tex',['../structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09',1,'App']]],
-  ['irradiancemap_31',['irradiancemap',['../pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_instanced.frag']]],
-  ['is_5ffirst_5fload_32',['is_first_load',['../structApp.html#a5113726436bc601bb7eac489894799a9',1,'App']]],
-  ['is_5ffullscreen_33',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],
-  ['is_5foptimized_34',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]]
+  ['irr_5funiforms_29',['irr_uniforms',['../structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e',1,'IBLCoordinator']]],
+  ['irradiance_5fmap_30',['irradiance_map',['../structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed',1,'BillboardUniforms::irradiance_map'],['../structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b',1,'InstancedUniforms::irradiance_map']]],
+  ['irradiance_5ftex_31',['irradiance_tex',['../structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09',1,'App']]],
+  ['irradiancemap_32',['irradiancemap',['../pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_instanced.frag']]],
+  ['is_5ffirst_5fload_33',['is_first_load',['../structApp.html#a5113726436bc601bb7eac489894799a9',1,'App']]],
+  ['is_5ffullscreen_34',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],
+  ['is_5foptimized_35',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]]
 ];

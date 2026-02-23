@@ -26,5 +26,6 @@ var searchData=
   ['lum_5fhistogram_5fmap_5fsize_23',['LUM_HISTOGRAM_MAP_SIZE',['../group__Histogram.html#ga5b7733b97b0a83c87d8520332ab513ce',1,'app_settings.h']]],
   ['lum_5fhistogram_5fsize_24',['LUM_HISTOGRAM_SIZE',['../group__Histogram.html#ga84ba93c3ecc3ca425398e20ade0f1abc',1,'app_settings.h']]],
   ['lum_5fssbo_25',['lum_ssbo',['../structApp.html#a3d92b6d7427fe49f91737f6bbcae083d',1,'App::lum_ssbo'],['../structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70',1,'IBLCoordinator::lum_ssbo']]],
-  ['luminance_5fepsilon_26',['LUMINANCE_EPSILON',['../app__ui_8c.html#a2f98977b6b578bddebc5e2d078b7baca',1,'app_ui.c']]]
+  ['lum_5funiforms_26',['lum_uniforms',['../structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2',1,'IBLCoordinator']]],
+  ['luminance_5fepsilon_27',['LUMINANCE_EPSILON',['../app__ui_8c.html#a2f98977b6b578bddebc5e2d078b7baca',1,'app_ui.c']]]
 ];

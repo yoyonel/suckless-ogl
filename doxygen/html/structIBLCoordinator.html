@@ -248,7 +248,7 @@ $(document).ready(function(){initNavTree('structIBLCoordinator.html',''); initRe
 <div class="dynheader">
 Collaboration diagram for IBLCoordinator:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structIBLCoordinator__coll__graph.svg" width="158" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structIBLCoordinator__coll__graph.svg" width="590" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
@@ -285,6 +285,12 @@ Data Fields</h2></td></tr>
 <tr class="separator:abe4fa9a642288dbcdf707f378a6108c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a558216b46bac01e44c7dbbcda27d7f70" id="r_a558216b46bac01e44c7dbbcda27d7f70"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70">lum_ssbo</a> [2]</td></tr>
 <tr class="separator:a558216b46bac01e44c7dbbcda27d7f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8a3c6a002c92639218e6c394ea2998d" id="r_ab8a3c6a002c92639218e6c394ea2998d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">spec_uniforms</a></td></tr>
+<tr class="separator:ab8a3c6a002c92639218e6c394ea2998d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37cf9dd1cf7fdda6b709b93b9ba4b89e" id="r_a37cf9dd1cf7fdda6b709b93b9ba4b89e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e">irr_uniforms</a></td></tr>
+<tr class="separator:a37cf9dd1cf7fdda6b709b93b9ba4b89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a141b4082137f347576387dbc495f2" id="r_a43a141b4082137f347576387dbc495f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2">lum_uniforms</a></td></tr>
+<tr class="separator:a43a141b4082137f347576387dbc495f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa91b497d73f575bc292be18acaffdc76" id="r_aa91b497d73f575bc292be18acaffdc76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfTimer.html">PerfTimer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76">global_timer</a></td></tr>
 <tr class="separator:aa91b497d73f575bc292be18acaffdc76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac80feec6db7c68ff02c0ee21d741f0c3" id="r_ac80feec6db7c68ff02c0ee21d741f0c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfTimer.html">PerfTimer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">stage_timer</a></td></tr>
@@ -361,6 +367,21 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a37cf9dd1cf7fdda6b709b93b9ba4b89e" name="a37cf9dd1cf7fdda6b709b93b9ba4b89e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37cf9dd1cf7fdda6b709b93b9ba4b89e">&#9670;&#160;</a></span>irr_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRIrrUniforms.html">PBRIrrUniforms</a> IBLCoordinator::irr_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for irradiance shader. </p>
+
+</div>
+</div>
 <a id="a558216b46bac01e44c7dbbcda27d7f70" name="a558216b46bac01e44c7dbbcda27d7f70"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a558216b46bac01e44c7dbbcda27d7f70">&#9670;&#160;</a></span>lum_ssbo</h2>
 
@@ -373,6 +394,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>SSBOs for luminance reduction. </p>
+
+</div>
+</div>
+<a id="a43a141b4082137f347576387dbc495f2" name="a43a141b4082137f347576387dbc495f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a141b4082137f347576387dbc495f2">&#9670;&#160;</a></span>lum_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> IBLCoordinator::lum_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for luminance shader. </p>
 
 </div>
 </div>
@@ -478,6 +514,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Specular pre-filter compute shader. </p>
+
+</div>
+</div>
+<a id="ab8a3c6a002c92639218e6c394ea2998d" name="ab8a3c6a002c92639218e6c394ea2998d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a3c6a002c92639218e6c394ea2998d">&#9670;&#160;</a></span>spec_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a> IBLCoordinator::spec_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached uniforms for specular shader. </p>
 
 </div>
 </div>

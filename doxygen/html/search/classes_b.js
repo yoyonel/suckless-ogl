@@ -1,11 +1,14 @@
 var searchData=
 [
-  ['pbrmaterial_0',['PBRMaterial',['../structPBRMaterial.html',1,'']]],
-  ['pcg32_1',['Pcg32',['../structPcg32.html',1,'']]],
-  ['perfmodecontext_2',['PerfModeContext',['../structPerfModeContext.html',1,'']]],
-  ['perftimer_3',['PerfTimer',['../structPerfTimer.html',1,'']]],
-  ['postprocess_4',['PostProcess',['../structPostProcess.html',1,'']]],
-  ['postprocessinputcontext_5',['PostProcessInputContext',['../structPostProcessInputContext.html',1,'']]],
-  ['postprocesspreset_6',['PostProcessPreset',['../structPostProcessPreset.html',1,'']]],
-  ['postprocessubo_7',['PostProcessUBO',['../structPostProcessUBO.html',1,'']]]
+  ['pbrirruniforms_0',['PBRIrrUniforms',['../structPBRIrrUniforms.html',1,'']]],
+  ['pbrlumuniforms_1',['PBRLumUniforms',['../structPBRLumUniforms.html',1,'']]],
+  ['pbrmaterial_2',['PBRMaterial',['../structPBRMaterial.html',1,'']]],
+  ['pbrspecuniforms_3',['PBRSpecUniforms',['../structPBRSpecUniforms.html',1,'']]],
+  ['pcg32_4',['Pcg32',['../structPcg32.html',1,'']]],
+  ['perfmodecontext_5',['PerfModeContext',['../structPerfModeContext.html',1,'']]],
+  ['perftimer_6',['PerfTimer',['../structPerfTimer.html',1,'']]],
+  ['postprocess_7',['PostProcess',['../structPostProcess.html',1,'']]],
+  ['postprocessinputcontext_8',['PostProcessInputContext',['../structPostProcessInputContext.html',1,'']]],
+  ['postprocesspreset_9',['PostProcessPreset',['../structPostProcessPreset.html',1,'']]],
+  ['postprocessubo_10',['PostProcessUBO',['../structPostProcessUBO.html',1,'']]]
 ];
