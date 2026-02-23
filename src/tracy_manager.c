@@ -60,6 +60,7 @@ void tracy_manager_cleanup(TracyManager* mgr)
 
 void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 {
+	TracyCZoneN(ctx, "Tracy Screenshot Update", 1);
 	/* 1. Send previous frame's screenshot (already in PBO) */
 	static bool first_frame = true;
 	if (!first_frame) {
@@ -98,6 +99,7 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 
 	/* 3. Ping-pong */
 	mgr->screenshot_pbo_idx = (mgr->screenshot_pbo_idx + 1) % 2;
+	TracyCZoneEnd(ctx);
 }
 
 void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)

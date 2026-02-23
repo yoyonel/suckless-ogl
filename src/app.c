@@ -38,8 +38,12 @@ static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 #include "shader.h"
 #include "skybox.h"
 #include "texture.h"
+#include "tracy_gpu.h"
 #include "ui.h"
 #include "window.h"
+#ifdef TRACY_ENABLE
+#include "../deps/tracy/public/tracy/TracyC.h"
+#endif
 #include <GLFW/glfw3.h>
 
 int app_init(App* app, int width, int height, const char* title)
@@ -444,6 +448,16 @@ void app_run(App* app)
 {
 	int last_subdiv = -1;
 	while (!glfwWindowShouldClose(app->window)) {
+		{
+#ifdef TRACY_ENABLE
+			TracyCZoneN(poll_ctx, "GLFW PollEvents (Start)", 1);
+#endif
+			glfwPollEvents();
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(poll_ctx);
+#endif
+		}
+
 		app->frame_count++;
 		double current_time = glfwGetTime();
 		app->delta_time = current_time - app->last_frame_time;
@@ -491,16 +505,56 @@ void app_run(App* app)
 			last_subdiv = app->subdivisions;
 		}
 
-		app_update(app);
-		app_render(app);
-
-		tracy_manager_update_screenshots(&app->tracy_mgr, app);
-
-		glfwSwapBuffers(app->window);
+		{
 #ifdef TRACY_ENABLE
-		tracy_gpu_collect();
+			TracyCZoneN(update_ctx, "App Update", 1);
 #endif
-		glfwPollEvents();
+			app_update(app);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(update_ctx);
+#endif
+		}
+
+		{
+#ifdef TRACY_ENABLE
+			TracyCZoneN(render_ctx, "App Render", 1);
+#endif
+			app_render(app);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(render_ctx);
+#endif
+		}
+
+		{
+#ifdef TRACY_ENABLE
+			TracyCZoneN(tracy_mark_ctx, "Tracy Mark/Screenshots",
+			            1);
+#endif
+			tracy_manager_update_screenshots(&app->tracy_mgr, app);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(tracy_mark_ctx);
+#endif
+		}
+
+		{
+#ifdef TRACY_ENABLE
+			TracyCZoneN(swap_ctx, "GLFW SwapBuffers", 1);
+#endif
+			glfwSwapBuffers(app->window);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(swap_ctx);
+#endif
+		}
+
+		{
+#ifdef TRACY_ENABLE
+			TracyCZoneN(gpu_collect_ctx, "Tracy GPU Collect", 1);
+#endif
+			tracy_gpu_collect();
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(gpu_collect_ctx);
+#endif
+		}
 	}
 }
 
