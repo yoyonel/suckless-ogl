@@ -1,6 +1,7 @@
 #include "ibl_coordinator.h"
 #include "mock_gl_standalone.h"
 #include "unity.h"
+#include <stdbool.h>
 #include <string.h>
 
 /* --- Stubs for PBR and PerfTimer dependencies --- */
@@ -156,20 +157,24 @@ GLuint build_brdf_lut_map(int size)
 	(void)size;
 	return TEST_BRDF_ID;
 }
-float compute_mean_luminance_gpu(
-    GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width,
-    int height,
-    // NOLINTNEXTLINE(readability-non-const-parameter)
-    float clamp_multiplier, GLuint ssbos[2], const PBRLumUniforms* uniforms)
+void compute_mean_luminance_gpu_start(GLuint shader_pass1, GLuint shader_pass2,
+                                      GLuint hdr_tex, int width, int height,
+                                      GLuint ssbos[2],
+                                      const PBRLumUniforms* uniforms)
 {
 	(void)shader_pass1;
 	(void)shader_pass2;
 	(void)hdr_tex;
 	(void)width;
 	(void)height;
-	(void)clamp_multiplier;
 	(void)ssbos;
 	(void)uniforms;
+}
+
+float compute_mean_luminance_gpu_result(GLuint ssbos[2], float clamp_multiplier)
+{
+	(void)ssbos;
+	(void)clamp_multiplier;
 	return TEST_LUMINANCE;
 }
 
@@ -230,9 +235,13 @@ void test_ibl_coordinator_full_cycle(void)
 	/* We expect transitions: LUMINANCE -> SPEC_INIT -> SPEC_MIPS -> ... ->
 	 * IRRADIANCE -> DONE */
 	int steps = 0;
+	bool visited_wait_state = false;
 	while (g_coord.state != IBL_STATE_DONE && steps < MAX_STEPS) {
 		IBLState prev_state = g_coord.state;
 		(void)prev_state; /* unused var suppression */
+		if (g_coord.state == IBL_STATE_LUMINANCE_WAIT) {
+			visited_wait_state = true;
+		}
 		ibl_coordinator_update(&g_coord, (uint64_t)steps);
 		steps++;
 
@@ -241,6 +250,7 @@ void test_ibl_coordinator_full_cycle(void)
 		                 g_coord.state <= IBL_STATE_DONE);
 	}
 
+	TEST_ASSERT_TRUE(visited_wait_state);
 	TEST_ASSERT_EQUAL(IBL_STATE_DONE, g_coord.state);
 	TEST_ASSERT_TRUE(steps < MAX_STEPS);
 

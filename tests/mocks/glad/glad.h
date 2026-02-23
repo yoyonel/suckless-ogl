@@ -2,6 +2,7 @@
 #define __glad_h_
 
 #include <stddef.h>
+#include <stdint.h>
 
 typedef unsigned int GLuint;
 typedef unsigned int GLenum;
@@ -13,6 +14,9 @@ typedef float GLfloat;
 typedef long GLsizeiptr;
 typedef long GLintptr;
 typedef unsigned int GLbitfield;
+typedef uint64_t GLuint64;
+typedef int64_t GLint64;
+typedef struct __GLsync* GLsync;
 
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
@@ -97,6 +101,14 @@ typedef unsigned int GLbitfield;
 #define GL_TEXTURE_WIDTH 0x1000
 #define GL_TEXTURE_HEIGHT 0x1001
 #define GL_TEXTURE_INTERNAL_FORMAT 0x1003
+
+#define GL_SYNC_GPU_COMMANDS_COMPLETE 0x9117
+#define GL_SYNC_FLUSH_COMMANDS_BIT 0x00000001
+#define GL_TIMEOUT_IGNORED 0xFFFFFFFFFFFFFFFFull
+#define GL_ALREADY_SIGNALED 0x911A
+#define GL_TIMEOUT_EXPIRED 0x911B
+#define GL_CONDITION_SATISFIED 0x911C
+#define GL_WAIT_FAILED 0x911D
 
 GLuint glCreateShader(GLenum type);
 void glShaderSource(GLuint shader, GLsizei count, const GLchar** string,
@@ -189,11 +201,6 @@ void glPolygonMode(GLenum face, GLenum mode);
 void glBlendFunc(GLenum sfactor, GLenum dfactor);
 GLenum glCheckFramebufferStatus(GLenum target);
 
-#include <stdint.h>
-
-typedef uint64_t GLuint64;
-typedef int64_t GLint64;
-
 void glGenQueries(GLsizei n, GLuint* ids);
 void glDeleteQueries(GLsizei n, const GLuint* ids);
 void glQueryCounter(GLuint id, GLenum target);
@@ -220,5 +227,9 @@ void* glMapBuffer(GLenum target, GLenum access);
 void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
                        GLbitfield access);
 GLboolean glUnmapBuffer(GLenum target);
+
+GLsync glFenceSync(GLenum condition, GLbitfield flags);
+GLenum glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout);
+void glDeleteSync(GLsync sync);
 
 #endif

@@ -21,10 +21,11 @@
 typedef enum {
 	IBL_STATE_IDLE = 0,  /**< Application is waiting for a request. */
 	IBL_STATE_LUMINANCE, /**< GPU-side analysis of HDR mean luminance. */
-	IBL_STATE_SPECULAR_INIT, /**< Preparation of specular map textures. */
-	IBL_STATE_SPECULAR_MIPS, /**< Sliced pre-filtering of specular levels.
-	                          */
-	IBL_STATE_IRRADIANCE,    /**< Sliced convolution of irradiance map. */
+	IBL_STATE_LUMINANCE_WAIT, /**< Waiting for luminance GPU result. */
+	IBL_STATE_SPECULAR_INIT,  /**< Preparation of specular map textures. */
+	IBL_STATE_SPECULAR_MIPS,  /**< Sliced pre-filtering of specular levels.
+	                           */
+	IBL_STATE_IRRADIANCE,     /**< Sliced convolution of irradiance map. */
 	IBL_STATE_DONE /**< Resource cleanup and texture activation. */
 } IBLState;
 
@@ -35,6 +36,7 @@ typedef enum {
 typedef struct {
 	/* --- State Machine --- */
 	IBLState state;    /**< Current processing phase. */
+	GLsync lum_sync;   /**< Sync object for luminance readback. */
 	int current_mip;   /**< Mip level being computed. */
 	int total_mips;    /**< Target mip count. */
 	int width;         /**< Source texture width. */

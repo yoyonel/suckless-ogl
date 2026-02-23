@@ -271,18 +271,17 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 	return irr_tex;
 }
 
-float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
-                                 GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2],
-                                 const PBRLumUniforms* uniforms)
+void compute_mean_luminance_gpu_start(GLuint shader_pass1, GLuint shader_pass2,
+                                      GLuint hdr_tex, int width, int height,
+                                      GLuint ssbos[2],
+                                      const PBRLumUniforms* uniforms)
 {
 	if (shader_pass1 == 0 || shader_pass2 == 0) {
-		return 0.0F;
+		return;
 	}
 
-	float mean = 0.0F;
-	HYBRID_FUNC_TIMER("IBL: Luminance Reduction");
-	GL_SCOPE_DEBUG_GROUP("IBL: Luminance Reduction");
+	HYBRID_FUNC_TIMER("IBL: Luminance Reduction Start");
+	GL_SCOPE_DEBUG_GROUP("IBL: Luminance Reduction Start");
 
 	uint32_t group_x = ((uint32_t)width + (COMPUTE_GROUP_SIZE_LUM - 1)) /
 	                   COMPUTE_GROUP_SIZE_LUM;
@@ -359,13 +358,16 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 
 		glDispatchCompute(1, 1, 1);
 		glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT);
-
-		/* Fetch result robustly without mapping overhead for a single
-		 * float */
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
-		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float),
-		                   &mean);
 	}
+}
+
+float compute_mean_luminance_gpu_result(GLuint ssbos[2], float clamp_multiplier)
+{
+	float mean = 0.0F;
+	/* Fetch result robustly without mapping overhead for a single
+	 * float */
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbos[1]);
+	glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float), &mean);
 
 	return mean * clamp_multiplier;
 }

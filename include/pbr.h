@@ -164,9 +164,25 @@ GLuint build_brdf_lut_map(int size);
  * @param uniforms Cached uniform locations for pass 2.
  * @return Average luminance value.
  */
-float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
-                                 GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2],
-                                 const PBRLumUniforms* uniforms);
+/**
+ * @brief Starts the GPU computation for mean luminance (non-blocking).
+ * Dispatches compute shaders but does NOT wait for results.
+ * Caller should issue a memory barrier or fence sync after calling this.
+ */
+void compute_mean_luminance_gpu_start(GLuint shader_pass1, GLuint shader_pass2,
+                                      GLuint hdr_tex, int width, int height,
+                                      GLuint ssbos[2],
+                                      const PBRLumUniforms* uniforms);
+
+/**
+ * @brief Reads the result of mean luminance computation from the SSBO.
+ * This function should be called only after the GPU has finished the
+ * computation started by compute_mean_luminance_gpu_start.
+ * @param ssbos The SSBOs used in the computation.
+ * @param clamp_multiplier Multiplier to apply to the result.
+ * @return The computed mean luminance.
+ */
+float compute_mean_luminance_gpu_result(GLuint ssbos[2],
+                                        float clamp_multiplier);
 
 #endif /* PBR_H */
