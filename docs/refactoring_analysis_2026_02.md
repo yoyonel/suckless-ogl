@@ -8,7 +8,7 @@ This report evaluates the massive refactoring of the IBL (Image-Based Lighting) 
 
 The refactoring transforms a blocking IBL generation into a **progressive, state-driven workflow**.
 
-- **Internal States**: `LUMINANCE` → `SPEC_INIT` → `SPEC_MIPS` → `IRRADIANCE` → `DONE`.
+- **Internal States**: `LUMINANCE` → `LUMINANCE_WAIT` → `SPEC_INIT` → `SPEC_MIPS` → `IRRADIANCE` → `DONE`.
 - **Slicing Mechanism**: Work is divided into "slices" (e.g., 24 for Mip 0, 8 for Mip 1).
 - **Fallback Logic**: Detection of software renderers (llvmpipe) automatically disables slicing to avoid state transition overhead, ensuring consistent behavior across hardware.
 - **Resource Ownership**: Strict "Transfer of Ownership" via `ibl_coordinator_get_results`. Once retrieved, the handles are nulled in the coordinator, preventing double-free or stale usage.
