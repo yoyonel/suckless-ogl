@@ -3,14 +3,11 @@
 #include "async_loader.h"
 #include "ibl_coordinator.h"
 #include "log.h"
-#include "pbr.h"
-#include "perf_timer.h"
 #include "postprocess.h"
 #include "texture.h"
 #include "utils.h"
 #include <dirent.h>
 #include <float.h>
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,48 +92,69 @@ int app_load_env_map(App* app, const char* filename)
 	return 0;
 }
 
-void app_finalize_environment_load(App* app, AsyncRequest* req)
+void app_process_env_map_loading_step(App* app)
 {
-	/* If half_data is NULL, we assume PBO was used. */
-	if (!req || (!req->half_data && !req->pbo_mapped_ptr)) {
-		/* Note: We use pbo_mapped_ptr as a flag here, even if it's
-		 * logically a pointer */
-		LOG_ERROR("suckless-ogl.app", "Async request data is NULL!");
-		app->env_map_loading = 0;
+	if (app->env_map_loading_step == 0) {
 		return;
 	}
 
-	/* 3. Upload texture to GPU (Main thread) */
-	/* Note: req->half_data is already converted to FP16 by the
-	 * async loader
-	 */
-	LOG_INFO("suckless-ogl.app", "Finalizing environment load (GPU)...");
-	GLuint hdr_tex = texture_upload_hdr_from_pbo(
-	    req->pbo_id, req->width, req->height, app->recycled_hdr_tex);
+	AsyncRequest* req = &app->current_env_req;
 
-	/* If the upload returned a new ID (or the reused one), clear
-	 * the recycled handle from App state so we don't accidentally
-	 * double-free it later.
-	 */
-	if (hdr_tex != 0) {
-		app->recycled_hdr_tex = 0;
+	if (app->env_map_loading_step == 1) {
+		/* Step 1: Upload texture to GPU (No Mipmaps) */
+		if (!req->half_data && !req->pbo_mapped_ptr) {
+			LOG_ERROR("suckless-ogl.app",
+			          "Async request data is NULL!");
+			app->env_map_loading = 0;
+			app->env_map_loading_step = 0;
+			return;
+		}
+
+		LOG_INFO("suckless-ogl.app",
+		         "Finalizing environment load (Step 1/3): Upload...");
+		app->pending_env_tex = texture_upload_hdr_from_pbo(
+		    req->pbo_id, req->width, req->height,
+		    app->recycled_hdr_tex);
+
+		if (app->pending_env_tex != 0) {
+			app->recycled_hdr_tex = 0;
+		}
+
+		if (req->half_data) {
+			free(req->half_data);
+			req->half_data = NULL;
+		}
+
+		app->env_map_loading_step = 2; /* Next frame */
+
+	} else if (app->env_map_loading_step == 2) {
+		/* Step 2: Generate Mipmaps */
+		LOG_INFO("suckless-ogl.app",
+		         "Finalizing environment load (Step 2/3): Mipmaps...");
+		if (app->pending_env_tex) {
+			texture_generate_hdr_mipmap(app->pending_env_tex);
+			app->env_map_loading_step = 3; /* Next frame */
+		} else {
+			LOG_ERROR("suckless-ogl.app",
+			          "Failed to create texture from HDR data!");
+			app->env_map_loading = 0;
+			app->env_map_loading_step = 0;
+		}
+
+	} else if (app->env_map_loading_step == 3) {
+		/* Step 3: Start IBL Coordinator */
+		LOG_INFO(
+		    "suckless-ogl.app",
+		    "Finalizing environment load (Step 3/3): Start IBL...");
+		if (app->pending_env_tex) {
+			ibl_coordinator_start(&app->ibl_coord,
+			                      app->pending_env_tex, req->width,
+			                      req->height);
+			app->pending_env_tex = 0;
+		}
+		app->env_map_loading = 0;
+		app->env_map_loading_step = 0;
 	}
-
-	/* 4. Free CPU memory (now that upload is done/queued) */
-	if (req->half_data) {
-		free(req->half_data);
-		req->half_data = NULL;
-	}
-
-	if (hdr_tex) {
-		ibl_coordinator_start(&app->ibl_coord, hdr_tex, req->width,
-		                      req->height);
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to create texture from HDR data!");
-	}
-
-	app->env_map_loading = 0;
 }
 
 int app_trigger_env_transition(App* app, const char* filename)

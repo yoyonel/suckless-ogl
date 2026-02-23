@@ -61,6 +61,13 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
                                    GLuint reuse_tex_id);
 
 /**
+ * @brief Generates mipmaps for an HDR texture.
+ *
+ * @param tex The OpenGL ID of the texture.
+ */
+void texture_generate_hdr_mipmap(GLuint tex);
+
+/**
  * @brief Decodes an HDR image into RAM without uploading to GPU.
  *
  * Useful for asynchronous loading or CPU-side processing.
