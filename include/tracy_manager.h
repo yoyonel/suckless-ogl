@@ -20,6 +20,7 @@ typedef struct App App;
 typedef struct TracyManager {
 #ifdef TRACY_ENABLE
 	GLuint screenshot_pbo[2];
+	GLsync screenshot_sync[2];
 	GLuint screenshot_fbo;
 	GLuint screenshot_tex;
 	int screenshot_pbo_idx;

@@ -42,6 +42,8 @@ void tracy_manager_init(TracyManager* mgr, int width, int height)
 	}
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	mgr->screenshot_pbo_idx = 0;
+	mgr->screenshot_sync[0] = 0;
+	mgr->screenshot_sync[1] = 0;
 
 	/* Initialize encapsulated state */
 	mgr->active_state_ctx.id = 0;
@@ -53,6 +55,12 @@ void tracy_manager_cleanup(TracyManager* mgr)
 	glDeleteTextures(1, &mgr->screenshot_tex);
 	glDeleteFramebuffers(1, &mgr->screenshot_fbo);
 	glDeleteBuffers(2, mgr->screenshot_pbo);
+	if (mgr->screenshot_sync[0]) {
+		glDeleteSync(mgr->screenshot_sync[0]);
+	}
+	if (mgr->screenshot_sync[1]) {
+		glDeleteSync(mgr->screenshot_sync[1]);
+	}
 
 	tracy_manager_async_end(mgr);
 	pthread_mutex_destroy(&mgr->transition_mutex);
@@ -65,14 +73,37 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 	static bool first_frame = true;
 	if (!first_frame) {
 		int read_idx = (mgr->screenshot_pbo_idx + 1) % 2;
-		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             mgr->screenshot_pbo[read_idx]);
-		void* pbo_ptr = NULL;
-		pbo_ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-		if (pbo_ptr) {
-			tracy_gpu_screenshot(pbo_ptr, TRACY_SCREENSHOT_WIDTH,
-			                     TRACY_SCREENSHOT_HEIGHT);
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		bool ready_to_read = true;
+
+		if (mgr->screenshot_sync[read_idx]) {
+			GLenum wait_res = glClientWaitSync(
+			    mgr->screenshot_sync[read_idx], 0, 0);
+			if (wait_res == GL_TIMEOUT_EXPIRED ||
+			    wait_res == GL_WAIT_FAILED) {
+				ready_to_read = false;
+				TracyCMessageC("Screenshot skip (GPU stall)",
+				               27, 0xFFAA00);
+				/* Log periodically or in debug to avoid spam */
+				/* LOG_WARN("suckless-ogl.tracy", "Screenshot
+				 * PBO not ready, skipping frame."); */
+			} else {
+				glDeleteSync(mgr->screenshot_sync[read_idx]);
+				mgr->screenshot_sync[read_idx] = 0;
+			}
+		}
+
+		if (ready_to_read) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             mgr->screenshot_pbo[read_idx]);
+			void* pbo_ptr = NULL;
+			pbo_ptr =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (pbo_ptr) {
+				tracy_gpu_screenshot(pbo_ptr,
+				                     TRACY_SCREENSHOT_WIDTH,
+				                     TRACY_SCREENSHOT_HEIGHT);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
 		}
 	}
 	first_frame = false;
@@ -88,7 +119,6 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 	                  TRACY_SCREENSHOT_WIDTH, TRACY_SCREENSHOT_HEIGHT,
 	                  GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-	/* Then read from the small FBO into PBO */
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, mgr->screenshot_fbo);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER,
 	             mgr->screenshot_pbo[mgr->screenshot_pbo_idx]);
@@ -96,6 +126,13 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 	             GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/* Create sync object before moving to next frame */
+	if (mgr->screenshot_sync[mgr->screenshot_pbo_idx]) {
+		glDeleteSync(mgr->screenshot_sync[mgr->screenshot_pbo_idx]);
+	}
+	mgr->screenshot_sync[mgr->screenshot_pbo_idx] =
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
 	/* 3. Ping-pong */
 	mgr->screenshot_pbo_idx = (mgr->screenshot_pbo_idx + 1) % 2;
