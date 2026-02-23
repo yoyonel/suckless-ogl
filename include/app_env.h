@@ -65,12 +65,10 @@ int app_load_env_map(App* app, const char* filename);
 void app_process_ibl_state_machine(App* app);
 
 /**
- * @brief Finalizes the HDR texture upload once the async loader is ready.
+ * @brief Processes the multi-frame HDR environment loading state machine.
  * @param app Pointer to the application state.
- * @param req Pointer to the completed async request.
- * @note Transitions the IBL context into the processing phase.
  */
-void app_finalize_environment_load(App* app, AsyncRequest* req);
+void app_process_env_map_loading_step(App* app);
 
 /**
  * @brief Updates the environment transition.

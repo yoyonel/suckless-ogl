@@ -290,13 +290,19 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	{
-		TRACE_GPU_SCOPE("GenMipmapHDR", TRACY_COLOR_MIPMAP_GEN);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return TRANSFER_OWNERSHIP(tex);
+}
+
+void texture_generate_hdr_mipmap(GLuint tex)
+{
+	if (tex == 0) {
+		return;
+	}
+	TRACE_GPU_SCOPE("GenMipmapHDR", TRACY_COLOR_MIPMAP_GEN);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // NOLINTNEXTLINE(readability-function-cognitive-complexity)

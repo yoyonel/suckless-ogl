@@ -174,6 +174,9 @@ typedef struct App {
 	int hdr_count;            /**< Number of available environment maps. */
 	int current_hdr_index;    /**< Index of active HDR in file list. */
 	int env_map_loading;      /**< Async lock for HDR loading. */
+	int env_map_loading_step; /**< Multi-frame loading step counter. */
+	AsyncRequest
+	    current_env_req;  /**< Currently processing async request. */
 	int perf_mode_active; /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
@@ -204,6 +207,7 @@ typedef struct App {
 	GLsizeiptr upload_pbo_size[2];
 	int pending_prealloc_w; /**< Deferred pre-alloc width (0=none). */
 	int pending_prealloc_h; /**< Deferred pre-alloc height. */
+	GLuint pending_env_tex; /**< Texture being assembled before IBL. */
 
 	/**< Recycled texture for next load. */
 	GLuint spec_prefiltered_tex; /**< Active Specular map. */

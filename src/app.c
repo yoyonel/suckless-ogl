@@ -612,13 +612,16 @@ void app_update(App* app)
 				async_loader_cancel(app->async_loader);
 			}
 		} else if (req.state == ASYNC_READY) {
-			/* Step 2: Upload from PBO (or legacy CPU buffer) */
-			app_finalize_environment_load(app, &req);
-			if (req.half_data) {
-				free(req.half_data); /* Legacy path cleanup */
-			}
+			/* Step 2: Begin multi-frame finalize process */
+			app->current_env_req = req;
+			app->env_map_loading_step = 1;
 		}
 	}
+
+	if (app->env_map_loading_step > 0) {
+		app_process_env_map_loading_step(app);
+	}
+
 	app_process_ibl_state_machine(app);
 	app_update_transition(app);
 }
