@@ -55,8 +55,10 @@ typedef struct {
 	GLuint shader_lum_pass2; /**< Luminance reduction pass 2. */
 	GLuint lum_ssbo[2];      /**< SSBOs for luminance reduction. */
 
-	PBRSpecUniforms spec_uniforms; /**< Cached uniforms for specular shader. */
-	PBRIrrUniforms irr_uniforms;   /**< Cached uniforms for irradiance shader. */
+	PBRSpecUniforms
+	    spec_uniforms; /**< Cached uniforms for specular shader. */
+	PBRIrrUniforms
+	    irr_uniforms; /**< Cached uniforms for irradiance shader. */
 
 	/* --- Performance Metrics --- */
 	PerfTimer global_timer; /**< Benchmarking for the entire process. */

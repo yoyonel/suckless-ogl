@@ -261,8 +261,7 @@ static IBLState process_specular_mips(IBLCoordinator* coord,
 		{
 			pbr_prefilter_mip(
 			    coord->shader_spmap, &coord->spec_uniforms,
-			    coord->pending_hdr_tex,
-			    coord->pending_spec_tex,
+			    coord->pending_hdr_tex, coord->pending_spec_tex,
 			    PREFILTERED_SPECULAR_MAP_SIZE,
 			    PREFILTERED_SPECULAR_MAP_SIZE, coord->current_mip,
 			    coord->total_mips, coord->current_slice,
