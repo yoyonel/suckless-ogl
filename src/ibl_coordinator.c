@@ -231,9 +231,9 @@ static IBLState process_luminance_wait(IBLCoordinator* coord,
 		         "[Frame %llu] Progressive IBL: Luminance Wait — "
 		         "wall: %.2f ms",
 		         frame, perf_timer_elapsed_ms(&coord->stage_timer));
+	}
 
-		return IBL_STATE_SPECULAR_INIT;
-	} else if (result == GL_WAIT_FAILED) {
+	if (result == GL_WAIT_FAILED) {
 		/* Error? Fallback */
 		LOG_WARN("suckless-ogl.ibl", "glClientWaitSync failed");
 		glDeleteSync(coord->lum_sync);
