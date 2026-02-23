@@ -17,7 +17,7 @@ var searchData=
   ['banding_5fmode_5fluminance_14',['BANDING_MODE_LUMINANCE',['../postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89',1,'postprocess.h']]],
   ['banding_5fmode_5fperceptual_15',['BANDING_MODE_PERCEPTUAL',['../postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da',1,'postprocess.h']]],
   ['banding_5fperceptual_5fgamma_16',['banding_perceptual_gamma',['../structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19',1,'PostProcessUBO']]],
-  ['banding_5fstyle_5fidx_17',['banding_style_idx',['../structApp.html#aab91b42730f97499e1457891cc1ffe12',1,'App']]],
+  ['banding_5fpreset_5fidx_17',['banding_preset_idx',['../structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20',1,'PostProcess']]],
   ['bandingmode_18',['BandingMode',['../postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2',1,'postprocess.h']]],
   ['bandingparams_19',['BandingParams',['../structBandingParams.html',1,'']]],
   ['bar_5fradius_5ffactor_20',['BAR_RADIUS_FACTOR',['../gpu__profiler__ui_8c.html#a63834086f414f93a5af7b7b19c8f0751',1,'gpu_profiler_ui.c']]],

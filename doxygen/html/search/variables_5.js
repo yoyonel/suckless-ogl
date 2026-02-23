@@ -2,7 +2,7 @@ var searchData=
 [
   ['edge_5fthreshold_0',['edge_threshold',['../structFXAAParams.html#a209c6ebc3c9fad68bebc654d163d646c',1,'FXAAParams']]],
   ['edge_5fthreshold_5fmin_1',['edge_threshold_min',['../structFXAAParams.html#a0a67abc60de11de94115d6ed9b134d2a',1,'FXAAParams']]],
-  ['effect_5fbench_2',['effect_bench',['../structApp.html#a421525fe2e3ce5106baf043c7371ff9f',1,'App']]],
+  ['effect_5fbench_2',['effect_bench',['../structApp.html#a421525fe2e3ce5106baf043c7371ff9f',1,'App::effect_bench'],['../structPostProcessInputContext.html#adcafa882d4573685917c3c36375f5555',1,'PostProcessInputContext::effect_bench']]],
   ['effect_5fbit_3',['effect_bit',['../structEffectBenchResult.html#a52e4e89dae932aba6c2ea471e959639d',1,'EffectBenchResult']]],
   ['effect_5fcount_4',['effect_count',['../structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6',1,'EffectBenchmark']]],
   ['effects_5',['effects',['../structEffectBenchmark.html#aaeab2d353d3589ed0f1262e7c4585446',1,'EffectBenchmark']]],

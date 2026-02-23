@@ -53,6 +53,7 @@ var annotated_dup =
     [ "PerfModeContext", "structPerfModeContext.html", "structPerfModeContext" ],
     [ "PerfTimer", "structPerfTimer.html", "structPerfTimer" ],
     [ "PostProcess", "structPostProcess.html", "structPostProcess" ],
+    [ "PostProcessInputContext", "structPostProcessInputContext.html", "structPostProcessInputContext" ],
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
     [ "Shader", "structShader.html", "structShader" ],

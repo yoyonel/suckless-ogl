@@ -30,6 +30,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "perf_mode.c", "perf__mode_8c.html", "perf__mode_8c" ],
     [ "perf_timer.c", "perf__timer_8c.html", "perf__timer_8c" ],
     [ "postprocess.c", "postprocess_8c.html", "postprocess_8c" ],
+    [ "postprocess_input.c", "postprocess__input_8c.html", "postprocess__input_8c" ],
     [ "render_utils.c", "render__utils_8c.html", "render__utils_8c" ],
     [ "shader.c", "shader_8c.html", "shader_8c" ],
     [ "simd_utils.c", "simd__utils_8c.html", "simd__utils_8c" ],

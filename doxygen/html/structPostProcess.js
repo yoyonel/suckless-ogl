@@ -4,6 +4,7 @@ var structPostProcess =
     [ "auto_exposure", "structPostProcess.html#a8362e441c1070f454241f61975e5be5c", null ],
     [ "auto_exposure_fx", "structPostProcess.html#a3e461c228e9958518b604890bcfb198b", null ],
     [ "banding", "structPostProcess.html#af411419ec733b3e01c935b9f646d1a82", null ],
+    [ "banding_preset_idx", "structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20", null ],
     [ "bloom", "structPostProcess.html#ad2439be6cfa64d705a75e26ec5f0f725", null ],
     [ "bloom_fx", "structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6", null ],
     [ "chrom_abbr", "structPostProcess.html#a9a1e8a0d6ba0fb13446fb3b665a8af01", null ],

@@ -2,7 +2,6 @@ var structApp =
 [
     [ "async_loader", "structApp.html#ae23d2d96f024e64c81f150041c6f93af", null ],
     [ "auto_threshold", "structApp.html#ac8b20fbebeaf70dc1997a147f257b9d9", null ],
-    [ "banding_style_idx", "structApp.html#aab91b42730f97499e1457891cc1ffe12", null ],
     [ "billboard_group", "structApp.html#a4d8db3a4c86d8b82f37909123c38aa2f", null ],
     [ "billboard_mode", "structApp.html#a6bc15ff36f21479259ce139ecaab6a05", null ],
     [ "billboard_uniforms", "structApp.html#a2f4f2869b23c9eacc6b9836b96af4463", null ],

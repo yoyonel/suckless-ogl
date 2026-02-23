@@ -8,7 +8,7 @@ var searchData=
   ['white_5fclip_5',['white_clip',['../structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a',1,'TonemapParams']]],
   ['whitebalanceparams_6',['WhiteBalanceParams',['../structWhiteBalanceParams.html',1,'']]],
   ['width_7',['width',['../structApp.html#a2c90198ed2171c619f0f3b9eb49d005a',1,'App::width'],['../structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51',1,'AsyncRequest::width'],['../structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1',1,'IBLCoordinator::width'],['../structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3',1,'PostProcess::width']]],
-  ['window_8',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App']]],
+  ['window_8',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App::window'],['../structPostProcessInputContext.html#a0264051c4b66c1eb3fc8aa670e109268',1,'PostProcessInputContext::window']]],
   ['window_2ec_9',['window.c',['../window_8c.html',1,'']]],
   ['window_2eh_10',['window.h',['../window_8h.html',1,'']]],
   ['window_5fcreate_11',['window_create',['../window_8c.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c'],['../window_8h.html#acfd354d9948652de8c5f2f51e69347c6',1,'window_create(int width, int height, const char *title, int samples):&#160;window.c']]],
@@ -25,7 +25,7 @@ var searchData=
   ['wireframe_22',['wireframe',['../structApp.html#a66119ddc8fec7b0ff658340bcf2561f0',1,'App']]],
   ['without_20trigonometry_23',['Finding Tangent Normals (Without Trigonometry)',['../md_docs_2billboard__optimization.html#autotoc_md4',1,'']]],
   ['worker_5fthread_24',['worker_thread',['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader']]],
-  ['workgroup_5fsize_25',['WORKGROUP_SIZE',['../sphere__sorting_8c.html#a1f9aebf1de3ebbf4283a4dcf73308562a977681261e84b7671049e4d74c29552e',1,'sphere_sorting.c']]],
+  ['workgroup_5fsize_25',['WORKGROUP_SIZE',['../sphere__sorting_8c.html#a77867ab4129f63159b37bca3b652a798a977681261e84b7671049e4d74c29552e',1,'sphere_sorting.c']]],
   ['world_5fup_26',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
   ['worldpos_27',['worldpos',['../pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d',1,'WorldPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_instanced.vert'],['../pbr__ibl__ssbo_8vert.html#a40a54042e7011c70f327a189b55c2453',1,'WorldPos:&#160;pbr_ibl_ssbo.vert']]],
   ['write_5findex_28',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]

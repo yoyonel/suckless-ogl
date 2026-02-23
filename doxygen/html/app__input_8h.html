@@ -273,12 +273,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a588f02e0bebbc36ff133173dd0392713" id="r_a588f02e0bebbc36ff133173dd0392713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a588f02e0bebbc36ff133173dd0392713">handle_app_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="memdesc:a588f02e0bebbc36ff133173dd0392713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches application-level logic for key inputs.  <br /></td></tr>
 <tr class="separator:a588f02e0bebbc36ff133173dd0392713"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b000326b1ad4008a3c22a3c1800652d" id="r_a0b000326b1ad4008a3c22a3c1800652d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a0b000326b1ad4008a3c22a3c1800652d">handle_preset_input</a> (<a class="el" href="structApp.html">App</a> *app, int key)</td></tr>
-<tr class="memdesc:a0b000326b1ad4008a3c22a3c1800652d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for switching post-processing presets.  <br /></td></tr>
-<tr class="separator:a0b000326b1ad4008a3c22a3c1800652d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23cc3bda145f0197aef87ff97a54cf8f" id="r_a23cc3bda145f0197aef87ff97a54cf8f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a23cc3bda145f0197aef87ff97a54cf8f">handle_postprocess_input</a> (<a class="el" href="structApp.html">App</a> *app, int key)</td></tr>
-<tr class="memdesc:a23cc3bda145f0197aef87ff97a54cf8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for toggling individual effects (Vignette, Bloom, etc.).  <br /></td></tr>
-<tr class="separator:a23cc3bda145f0197aef87ff97a54cf8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bd036fc9913a0b441d5a2121daf0f0e" id="r_a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a5bd036fc9913a0b441d5a2121daf0f0e">app_handle_env_input</a> (<a class="el" href="structApp.html">App</a> *app, int action, int mods, int key)</td></tr>
 <tr class="memdesc:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for cycling environment maps.  <br /></td></tr>
 <tr class="separator:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -518,90 +512,6 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a588f02e0bebbc36ff133173dd0392713_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="a23cc3bda145f0197aef87ff97a54cf8f" name="a23cc3bda145f0197aef87ff97a54cf8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a23cc3bda145f0197aef87ff97a54cf8f">&#9670;&#160;</a></span>handle_postprocess_input()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void handle_postprocess_input </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>key</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Handles input for toggling individual effects (Vignette, Bloom, etc.). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-    <tr><td class="paramname">key</td><td>Function key or shortcut. </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a23cc3bda145f0197aef87ff97a54cf8f_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
-</div>
-
-</div>
-</div>
-<a id="a0b000326b1ad4008a3c22a3c1800652d" name="a0b000326b1ad4008a3c22a3c1800652d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b000326b1ad4008a3c22a3c1800652d">&#9670;&#160;</a></span>handle_preset_input()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void handle_preset_input </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>key</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Handles input for switching post-processing presets. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-    <tr><td class="paramname">key</td><td>Numeric key code (0-9). </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a0b000326b1ad4008a3c22a3c1800652d_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
 </div>
 
 </div>

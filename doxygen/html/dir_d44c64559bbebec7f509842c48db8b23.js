@@ -33,6 +33,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "perf_mode.h", "perf__mode_8h.html", "perf__mode_8h" ],
     [ "perf_timer.h", "perf__timer_8h.html", "perf__timer_8h" ],
     [ "postprocess.h", "postprocess_8h.html", "postprocess_8h" ],
+    [ "postprocess_input.h", "postprocess__input_8h.html", "postprocess__input_8h" ],
     [ "postprocess_presets.h", "postprocess__presets_8h.html", "postprocess__presets_8h" ],
     [ "profiler.h", "profiler_8h.html", "profiler_8h" ],
     [ "render_utils.h", "render__utils_8h.html", "render__utils_8h" ],

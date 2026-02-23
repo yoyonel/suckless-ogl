@@ -1,10 +1,10 @@
 var searchData=
 [
   ['radius_0',['radius',['../ui_8frag.html#af4e95f531207631a73d76280e9c80e94',1,'ui.frag']]],
-  ['radix_5fbits_5fper_5fpass_1',['RADIX_BITS_PER_PASS',['../sphere__sorting_8c.html#a2970898e8a43ce21e1cc510d49f1b89dad26222a07cb422b43370dc72182b72cd',1,'sphere_sorting.c']]],
-  ['radix_5fbuckets_2',['RADIX_BUCKETS',['../sphere__sorting_8c.html#afa231099d07583c3ed0981e0bb665f55aeae28fcea22c1ab335c08f7d63bb35a7',1,'sphere_sorting.c']]],
-  ['radix_5fmask_3',['RADIX_MASK',['../sphere__sorting_8c.html#ac205be2172292384dd687b5471a87eddad8da0cb042e3227f3d9a7bf544fab0cb',1,'sphere_sorting.c']]],
-  ['radix_5fshift_5flimit_4',['RADIX_SHIFT_LIMIT',['../sphere__sorting_8c.html#a394b3903fbf00ba2b6243f60689a5a5fab66a8307e63dad074f39fc2c2f1eb971',1,'sphere_sorting.c']]],
+  ['radix_5fbits_5fper_5fpass_1',['RADIX_BITS_PER_PASS',['../sphere__sorting_8c.html#afa231099d07583c3ed0981e0bb665f55ad26222a07cb422b43370dc72182b72cd',1,'sphere_sorting.c']]],
+  ['radix_5fbuckets_2',['RADIX_BUCKETS',['../sphere__sorting_8c.html#a394b3903fbf00ba2b6243f60689a5a5faeae28fcea22c1ab335c08f7d63bb35a7',1,'sphere_sorting.c']]],
+  ['radix_5fmask_3',['RADIX_MASK',['../sphere__sorting_8c.html#a157d5577a5b2f5986037d0d09c7dc77dad8da0cb042e3227f3d9a7bf544fab0cb',1,'sphere_sorting.c']]],
+  ['radix_5fshift_5flimit_4',['RADIX_SHIFT_LIMIT',['../sphere__sorting_8c.html#ac205be2172292384dd687b5471a87eddab66a8307e63dad074f39fc2c2f1eb971',1,'sphere_sorting.c']]],
   ['raii_5fsatisfy_5ffile_5',['RAII_SATISFY_FILE',['../utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c',1,'utils.h']]],
   ['raii_5fsatisfy_5ffree_6',['RAII_SATISFY_FREE',['../utils_8h.html#a564c7a8df26c5d2ea991c2285332a857',1,'utils.h']]],
   ['random_7',['random',['../common_8glsl.html#ae2c6b819473651005ad8e61e47c3aaf8',1,'common.glsl']]],
@@ -42,7 +42,7 @@ var searchData=
   ['request_5fmutex_39',['request_mutex',['../structAsyncLoader.html#a6d002824c4d54f63263a4194f4ba2144',1,'AsyncLoader']]],
   ['reset_5faccumulator_40',['reset_accumulator',['../effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01',1,'effect_benchmark.c']]],
   ['resolve_5fand_5fparse_5finclude_41',['resolve_and_parse_include',['../shader_8c.html#ac15799adabb256a48435e8b899baae35',1,'shader.c']]],
-  ['resolved_5fpath_5fbuffer_5fsize_42',['RESOLVED_PATH_BUFFER_SIZE',['../shader_8c.html#a4caf8d8f829279fba122163d961608a4a63b1dfadb89175941f78629653841b52',1,'shader.c']]],
+  ['resolved_5fpath_5fbuffer_5fsize_42',['RESOLVED_PATH_BUFFER_SIZE',['../shader_8c.html#a96a58e29e8dbf2b5bdeb775cba46556ea63b1dfadb89175941f78629653841b52',1,'shader.c']]],
   ['result_5fcount_43',['result_count',['../structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf',1,'EffectBenchmark']]],
   ['results_44',['results',['../md_docs_2billboard__optimization.html#autotoc_md6',1,'Implementation Results'],['../structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855',1,'EffectBenchmark::results']]],
   ['rgb_5fcomponents_45',['RGB_COMPONENTS',['../material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a0c7b6f51af7759eefe1d6ee71bc9a421',1,'material.c']]],

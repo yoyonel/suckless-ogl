@@ -7,7 +7,7 @@ var searchData=
   ['white_5fbalance_4',['white_balance',['../structPostProcess.html#aaac67359cd05c2eb46134105e71ea043',1,'PostProcess::white_balance'],['../structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d',1,'PostProcessPreset::white_balance']]],
   ['white_5fclip_5',['white_clip',['../structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a',1,'TonemapParams']]],
   ['width_6',['width',['../structApp.html#a2c90198ed2171c619f0f3b9eb49d005a',1,'App::width'],['../structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51',1,'AsyncRequest::width'],['../structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1',1,'IBLCoordinator::width'],['../structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3',1,'PostProcess::width']]],
-  ['window_7',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App']]],
+  ['window_7',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App::window'],['../structPostProcessInputContext.html#a0264051c4b66c1eb3fc8aa670e109268',1,'PostProcessInputContext::window']]],
   ['window_5fduration_8',['window_duration',['../structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7',1,'AdaptiveSampler']]],
   ['window_5fend_5fframe_9',['window_end_frame',['../structAdaptiveSampler.html#a5c5722c6a15025f2d559a5ed359a9804',1,'AdaptiveSampler']]],
   ['window_5fstart_5fframe_10',['window_start_frame',['../structAdaptiveSampler.html#a3cbc132e731af568472de68a8015c637',1,'AdaptiveSampler']]],

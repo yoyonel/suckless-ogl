@@ -8,7 +8,7 @@ var searchData=
   ['banding_5flevels_5',['banding_levels',['../structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10',1,'PostProcessUBO']]],
   ['banding_5fmode_6',['banding_mode',['../structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f',1,'PostProcessUBO']]],
   ['banding_5fperceptual_5fgamma_7',['banding_perceptual_gamma',['../structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19',1,'PostProcessUBO']]],
-  ['banding_5fstyle_5fidx_8',['banding_style_idx',['../structApp.html#aab91b42730f97499e1457891cc1ffe12',1,'App']]],
+  ['banding_5fpreset_5fidx_8',['banding_preset_idx',['../structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20',1,'PostProcess']]],
   ['bar_5fradius_5ffactor_9',['BAR_RADIUS_FACTOR',['../gpu__profiler__ui_8c.html#a63834086f414f93a5af7b7b19c8f0751',1,'gpu_profiler_ui.c']]],
   ['baseline_5fmean_5fms_10',['baseline_mean_ms',['../structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3',1,'EffectBenchmark']]],
   ['baseline_5fstddev_5fms_11',['baseline_stddev_ms',['../structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6',1,'EffectBenchmark']]],
