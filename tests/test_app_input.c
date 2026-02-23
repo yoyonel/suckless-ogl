@@ -153,6 +153,58 @@ void test_handle_postprocess_input_exhaustive(void)
 	handle_app_input(test_app, GLFW_KEY_KP_ADD, 0);
 	TEST_ASSERT_TRUE(test_app->postprocess.exposure.exposure > exp_before);
 
+	/* Complex toggles (SHIFT) */
+	/* Motion Blur Debug Cycle */
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_MOTION_BLUR_DEBUG));
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
+	                                         POSTFX_MOTION_BLUR_DEBUG));
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_VECTOR_FIELD_DEBUG));
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
+	                                         POSTFX_VECTOR_FIELD_DEBUG));
+
+	/* FXAA Toggle and Debug */
+	handle_app_input(test_app, GLFW_KEY_X, 0);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA));
+	handle_app_input(test_app, GLFW_KEY_X, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA_DEBUG));
+
+	/* DOF Debug */
+	handle_app_input(test_app, GLFW_KEY_H, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_DOF_DEBUG));
+
+	/* Auto Exposure Debug */
+	handle_app_input(test_app, GLFW_KEY_J, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_EXPOSURE_DEBUG));
+
+	/* Stencil Debug */
+	handle_app_input(test_app, GLFW_KEY_F6, 0);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_STENCIL_DEBUG));
+
+	/* Presets 2-6 */
+	handle_app_input(test_app, GLFW_KEY_2, 0);
+	handle_app_input(test_app, GLFW_KEY_3, 0);
+	handle_app_input(test_app, GLFW_KEY_4, 0);
+	handle_app_input(test_app, GLFW_KEY_5, 0);
+	handle_app_input(test_app, GLFW_KEY_6, 0);
+
+	/* Banding Style Cycle (trigger multiple times) */
+	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(test_app, GLFW_KEY_7, 0);
+
+	/* Benchmark (multiple times for 'already running' branch) */
+	handle_app_input(test_app, GLFW_KEY_8, 0);
+	handle_app_input(test_app, GLFW_KEY_8, 0);
+
 	/* Reload (just logs) */
 	handle_app_input(test_app, GLFW_KEY_R, 0);
 }
