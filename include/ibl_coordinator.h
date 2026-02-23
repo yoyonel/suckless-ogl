@@ -11,6 +11,7 @@
 #define IBL_COORDINATOR_H
 
 #include "gl_common.h"
+#include "pbr.h"
 #include "perf_timer.h"
 
 /**
@@ -53,6 +54,13 @@ typedef struct {
 	GLuint shader_lum_pass1; /**< Luminance reduction pass 1. */
 	GLuint shader_lum_pass2; /**< Luminance reduction pass 2. */
 	GLuint lum_ssbo[2];      /**< SSBOs for luminance reduction. */
+
+	PBRSpecUniforms
+	    spec_uniforms; /**< Cached uniforms for specular shader. */
+	PBRIrrUniforms
+	    irr_uniforms; /**< Cached uniforms for irradiance shader. */
+	PBRLumUniforms
+	    lum_uniforms; /**< Cached uniforms for luminance shader. */
 
 	/* --- Performance Metrics --- */
 	PerfTimer global_timer; /**< Benchmarking for the entire process. */

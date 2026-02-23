@@ -107,11 +107,13 @@ GLuint pbr_prefilter_init(int width, int height)
 	(void)height;
 	return TEST_SHADER_ID;
 }
-void pbr_prefilter_mip(GLuint shader, GLuint env, GLuint dest, int width,
-                       int height, int level, int total, int slice, int slices,
+void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms* uniforms,
+                       GLuint env, GLuint dest, int width, int height,
+                       int level, int total, int slice, int slices,
                        float threshold)
 {
 	(void)shader;
+	(void)uniforms;
 	(void)env;
 	(void)dest;
 	(void)width;
@@ -136,11 +138,12 @@ GLuint pbr_irradiance_init(int size)
 	(void)size;
 	return TEST_IRRADIANCE_ID;
 }
-void pbr_irradiance_slice_compute(GLuint shader, GLuint env, GLuint dest,
-                                  int size, int slice, int slices,
-                                  float threshold)
+void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
+                                  GLuint env, GLuint dest, int size, int slice,
+                                  int slices, float threshold)
 {
 	(void)shader;
+	(void)uniforms;
 	(void)env;
 	(void)dest;
 	(void)size;
@@ -157,7 +160,7 @@ float compute_mean_luminance_gpu(
     GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width,
     int height,
     // NOLINTNEXTLINE(readability-non-const-parameter)
-    float clamp_multiplier, GLuint ssbos[2])
+    float clamp_multiplier, GLuint ssbos[2], const PBRLumUniforms* uniforms)
 {
 	(void)shader_pass1;
 	(void)shader_pass2;
@@ -166,7 +169,32 @@ float compute_mean_luminance_gpu(
 	(void)height;
 	(void)clamp_multiplier;
 	(void)ssbos;
+	(void)uniforms;
 	return TEST_LUMINANCE;
+}
+
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out)
+{
+	(void)shader;
+	if (out) {
+		memset(out, 0, sizeof(*out));
+	}
+}
+
+void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out)
+{
+	(void)shader;
+	if (out) {
+		memset(out, 0, sizeof(*out));
+	}
+}
+
+void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
+{
+	(void)shader;
+	if (out) {
+		memset(out, 0, sizeof(*out));
+	}
 }
 /* ------------------------------------------------ */
 

@@ -17,6 +17,38 @@ static const GLuint BINDING_ENV_MAP = 0;
 static const GLuint BINDING_DEST_TEXTURE = 1;
 static const GLuint COMPUTE_DISPATCH_Z_ONCE = 1;
 
+void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out)
+{
+	if (!out) {
+		return;
+	}
+	out->u_env_map = glGetUniformLocation(shader, "envMap");
+	out->u_roughness = glGetUniformLocation(shader, "roughnessValue");
+	out->u_mip = glGetUniformLocation(shader, "currentMipLevel");
+	out->u_threshold = glGetUniformLocation(shader, "clampThreshold");
+	out->u_offset_y = glGetUniformLocation(shader, "u_offset_y");
+	out->u_max_y = glGetUniformLocation(shader, "u_max_y");
+}
+
+void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
+{
+	if (!out) {
+		return;
+	}
+	out->u_threshold = glGetUniformLocation(shader, "clamp_threshold");
+	out->u_offset_y = glGetUniformLocation(shader, "u_offset_y");
+	out->u_max_y = glGetUniformLocation(shader, "u_max_y");
+}
+
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out)
+{
+	if (!out) {
+		return;
+	}
+	out->u_numGroups = glGetUniformLocation(shader, "numGroups");
+	out->u_numPixels = glGetUniformLocation(shader, "numPixels");
+}
+
 GLuint pbr_prefilter_init(int width, int height)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
@@ -28,27 +60,21 @@ GLuint pbr_prefilter_init(int width, int height)
 	return tex;
 }
 
-void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
-                       int width, int height, int level, int total_levels,
-                       int slice_index, int total_slices, float threshold)
+void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms* uniforms,
+                       GLuint env_hdr_tex, GLuint dest_tex, int width,
+                       int height, int level, int total_levels, int slice_index,
+                       int total_slices, float threshold)
 {
-	if (shader == 0 || dest_tex == 0) {
+	if (shader == 0 || dest_tex == 0 || !uniforms) {
 		return;
 	}
 
 	GL_SCOPE_USE_PROGRAM(shader);
 
 	/* Set uniforms */
-	GLint u_env_map = glGetUniformLocation(shader, "envMap");
-	if (u_env_map >= 0) {
-		glUniform1i(u_env_map, (GLint)BINDING_ENV_MAP);
+	if (uniforms->u_env_map >= 0) {
+		glUniform1i(uniforms->u_env_map, (GLint)BINDING_ENV_MAP);
 	}
-
-	GLint u_roughness = glGetUniformLocation(shader, "roughnessValue");
-	GLint u_mip = glGetUniformLocation(shader, "currentMipLevel");
-	GLint u_threshold = glGetUniformLocation(shader, "clampThreshold");
-	GLint u_offset_y = glGetUniformLocation(shader, "u_offset_y");
-	GLint u_max_y = glGetUniformLocation(shader, "u_max_y");
 
 	uint32_t mip_w = (uint32_t)width >> (uint32_t)level;
 	uint32_t mip_h = (uint32_t)height >> (uint32_t)level;
@@ -61,14 +87,14 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 	}
 
 	float roughness = (float)level / (float)(total_levels - 1);
-	if (u_roughness >= 0) {
-		glUniform1f(u_roughness, roughness);
+	if (uniforms->u_roughness >= 0) {
+		glUniform1f(uniforms->u_roughness, roughness);
 	}
-	if (u_mip >= 0) {
-		glUniform1i(u_mip, level);
+	if (uniforms->u_mip >= 0) {
+		glUniform1i(uniforms->u_mip, level);
 	}
-	if (u_threshold >= 0) {
-		glUniform1f(u_threshold, threshold);
+	if (uniforms->u_threshold >= 0) {
+		glUniform1f(uniforms->u_threshold, threshold);
 	}
 
 	int lines_per_slice = ((int)mip_h + total_slices - 1) / total_slices;
@@ -83,11 +109,11 @@ void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
 		return;
 	}
 
-	if (u_offset_y >= 0) {
-		glUniform1i(u_offset_y, y_start);
+	if (uniforms->u_offset_y >= 0) {
+		glUniform1i(uniforms->u_offset_y, y_start);
 	}
-	if (u_max_y >= 0) {
-		glUniform1i(u_max_y, y_end);
+	if (uniforms->u_max_y >= 0) {
+		glUniform1i(uniforms->u_max_y, y_end);
 	}
 
 	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
@@ -126,9 +152,13 @@ GLuint build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex,
 	GLuint spec_tex = pbr_prefilter_init(width, height);
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
 
+	PBRSpecUniforms uniforms;
+	pbr_get_spec_uniforms(shader, &uniforms);
+
 	for (int level = 0; level < levels; level++) {
-		pbr_prefilter_mip(shader, env_hdr_tex, spec_tex, width, height,
-		                  level, levels, 0, 1, threshold);
+		pbr_prefilter_mip(shader, &uniforms, env_hdr_tex, spec_tex,
+		                  width, height, level, levels, 0, 1,
+		                  threshold);
 	}
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -145,21 +175,20 @@ GLuint pbr_irradiance_init(int size)
 	return tex;
 }
 
-void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
-                                  GLuint dest_tex, int size, int slice_index,
-                                  int total_slices, float threshold)
+void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
+                                  GLuint env_hdr_tex, GLuint dest_tex, int size,
+                                  int slice_index, int total_slices,
+                                  float threshold)
 {
-	if (shader == 0 || dest_tex == 0 || total_slices <= 0) {
+	if (shader == 0 || dest_tex == 0 || total_slices <= 0 || !uniforms) {
 		return;
 	}
 
 	GL_SCOPE_USE_PROGRAM(shader);
-	GLint u_threshold = glGetUniformLocation(shader, "clamp_threshold");
-	if (u_threshold >= 0) {
-		glUniform1f(u_threshold, threshold);
+	if (uniforms->u_threshold >= 0) {
+		glUniform1f(uniforms->u_threshold, threshold);
 	}
 
-	GLint u_offset_y = glGetUniformLocation(shader, "u_offset_y");
 	int lines_per_slice = (size + total_slices - 1) / total_slices;
 	int y_start = slice_index * lines_per_slice;
 	int y_end = y_start + lines_per_slice;
@@ -172,13 +201,12 @@ void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
 		return;
 	}
 
-	GLint u_max_y = glGetUniformLocation(shader, "u_max_y");
-	if (u_max_y >= 0) {
-		glUniform1i(u_max_y, y_end);
+	if (uniforms->u_max_y >= 0) {
+		glUniform1i(uniforms->u_max_y, y_end);
 	}
 
-	if (u_offset_y >= 0) {
-		glUniform1i(u_offset_y, y_start);
+	if (uniforms->u_offset_y >= 0) {
+		glUniform1i(uniforms->u_offset_y, y_start);
 	}
 
 	glActiveTexture(GL_TEXTURE0 + BINDING_ENV_MAP);
@@ -217,10 +245,11 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 
 	{
 		GL_SCOPE_USE_PROGRAM(shader);
-		GLint u_threshold =
-		    glGetUniformLocation(shader, "clamp_threshold");
-		if (u_threshold >= 0) {
-			glUniform1f(u_threshold, threshold);
+		PBRIrrUniforms uniforms;
+		pbr_get_irr_uniforms(shader, &uniforms);
+
+		if (uniforms.u_threshold >= 0) {
+			glUniform1f(uniforms.u_threshold, threshold);
 		}
 
 		glActiveTexture(GL_TEXTURE0);
@@ -244,7 +273,8 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2])
+                                 float clamp_multiplier, GLuint ssbos[2],
+                                 const PBRLumUniforms* uniforms)
 {
 	if (shader_pass1 == 0 || shader_pass2 == 0) {
 		return 0.0F;
@@ -304,15 +334,24 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	/* Pass 2: Final reduction to single float */
 	{
 		GL_SCOPE_USE_PROGRAM(shader_pass2);
-		GLint u_numGroups =
-		    glGetUniformLocation(shader_pass2, "numGroups");
-		if (u_numGroups >= 0) {
-			glUniform1ui(u_numGroups, num_groups);
-		}
-		GLint u_numPixels =
-		    glGetUniformLocation(shader_pass2, "numPixels");
-		if (u_numPixels >= 0) {
-			glUniform1ui(u_numPixels, num_pixels);
+		if (uniforms) {
+			if (uniforms->u_numGroups >= 0) {
+				glUniform1ui(uniforms->u_numGroups, num_groups);
+			}
+			if (uniforms->u_numPixels >= 0) {
+				glUniform1ui(uniforms->u_numPixels, num_pixels);
+			}
+		} else {
+			GLint u_numGroups =
+			    glGetUniformLocation(shader_pass2, "numGroups");
+			if (u_numGroups >= 0) {
+				glUniform1ui(u_numGroups, num_groups);
+			}
+			GLint u_numPixels =
+			    glGetUniformLocation(shader_pass2, "numPixels");
+			if (u_numPixels >= 0) {
+				glUniform1ui(u_numPixels, num_pixels);
+			}
 		}
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbos[0]);

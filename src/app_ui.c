@@ -9,6 +9,9 @@
 #include "render_utils.h"
 #include "ui.h"
 #include "utils.h"
+#ifdef TRACY_ENABLE
+#include "../deps/tracy/public/tracy/TracyC.h"
+#endif
 #include <GLFW/glfw3.h>
 #include <cglm/types.h>
 #include <cglm/vec3.h>
@@ -114,10 +117,16 @@ void app_draw_help_overlay(App* app)
 void draw_exposure_debug_text(App* app)
 {
 	float exposure_val = 0.0F;
+#ifdef TRACY_ENABLE
+	TracyCZoneN(ctx, "AE Sync Readback (glGetTexImage)", 1);
+#endif
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.exposure_tex);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, &exposure_val);
 	glBindTexture(GL_TEXTURE_2D, 0);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(ctx);
+#endif
 
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	float luminance =
@@ -152,6 +161,9 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 
 	int processed = 0;
 	if (lum_data) {
+#ifdef TRACY_ENABLE
+		TracyCZoneN(ctx, "Histogram Map & Process", 1);
+#endif
 		for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
 			float val = lum_data[i];
 			if (val < *min_lum) {
@@ -175,6 +187,9 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 			buckets[idx]++;
 		}
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(ctx);
+#endif
 		processed = 1;
 	}
 
@@ -344,13 +359,25 @@ void app_render_ui(App* app)
 			ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
 			                          GL_READ_ONLY);
 			if (ptr) {
+#ifdef TRACY_ENABLE
+				TracyCZoneN(ctx, "AE PBO Map (Sync Wait)", 1);
+#endif
 				app->current_exposure = *ptr;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+#ifdef TRACY_ENABLE
+				TracyCZoneEnd(ctx);
+#endif
 			}
 			glBindTexture(
 			    GL_TEXTURE_2D,
 			    app->postprocess.auto_exposure_fx.exposure_tex);
+#ifdef TRACY_ENABLE
+			TracyCZoneN(ctx2, "AE Fetch Trigger", 1);
+#endif
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(ctx2);
+#endif
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 			exposure_val = app->current_exposure;

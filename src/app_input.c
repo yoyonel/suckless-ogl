@@ -21,6 +21,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef TRACY_ENABLE
+#include <tracy/TracyC.h>
+#endif
 
 enum { PBR_DEBUG_MODE_COUNT = 9 };
 
@@ -237,7 +240,10 @@ static bool handle_f_key_input(App* app, int key, int mods)
 		case GLFW_KEY_F5:
 			handle_pbr_debug_mode(app);
 			return true;
-		case GLFW_KEY_F9:
+		case GLFW_KEY_F9: {
+#ifdef TRACY_ENABLE
+			TracyCZoneN(f9_zone, "Input: F9 (Performance Mode)", 1);
+#endif
 			if (app->perf_mode_active) {
 				perf_mode_request_end(&app->perf_context);
 				app->perf_mode_active = 0;
@@ -260,7 +266,11 @@ static bool handle_f_key_input(App* app, int key, int mods)
 			    "suckless-ogl.app", "Performance Mode: %s (%s)",
 			    app->perf_mode_active ? "ON" : "OFF",
 			    perf_mode_get_state_string(&app->perf_context));
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(f9_zone);
+#endif
 			return true;
+		}
 		default:
 			return false;
 	}

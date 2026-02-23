@@ -13,6 +13,56 @@
 #include "gl_common.h"
 
 /**
+ * @brief Cached uniform locations for specular prefiltering shader.
+ */
+typedef struct {
+	GLint u_env_map;
+	GLint u_roughness;
+	GLint u_mip;
+	GLint u_threshold;
+	GLint u_offset_y;
+	GLint u_max_y;
+} PBRSpecUniforms;
+
+/**
+ * @brief Cached uniform locations for radiance convolution shader.
+ */
+typedef struct {
+	GLint u_threshold;
+	GLint u_offset_y;
+	GLint u_max_y;
+} PBRIrrUniforms;
+
+/**
+ * @brief Cached uniform locations for luminance reduction shader.
+ */
+typedef struct {
+	GLint u_numGroups;
+	GLint u_numPixels;
+} PBRLumUniforms;
+
+/**
+ * @brief Retrieves uniform locations for the specular prefilter shader.
+ * @param shader The shader program.
+ * @param out Pointer to the struct to populate.
+ */
+void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out);
+
+/**
+ * @brief Retrieves uniform locations for the irradiance convolution shader.
+ * @param shader The shader program.
+ * @param out Pointer to the struct to populate.
+ */
+void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out);
+
+/**
+ * @brief Retrieves uniform locations for the luminance reduction shader.
+ * @param shader The shader program.
+ * @param out Pointer to the struct to populate.
+ */
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out);
+
+/**
  * @brief Generates a pre-filtered specular environment map in a single pass.
  * @param shader Prefiltering compute shader.
  * @param env_hdr_tex Source HDR environment map.
@@ -35,6 +85,7 @@ GLuint pbr_prefilter_init(int width, int height);
 /**
  * @brief Computes a single slice or mip-level for progressive pre-filtering.
  * @param shader Compute shader.
+ * @param uniforms Cached uniform locations.
  * @param env_hdr_tex Source HDR map.
  * @param dest_tex Destination cubemap.
  * @param width Current level width.
@@ -49,9 +100,10 @@ GLuint pbr_prefilter_init(int width, int height);
  *       glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all
  *       slices have been dispatched.
  */
-void pbr_prefilter_mip(GLuint shader, GLuint env_hdr_tex, GLuint dest_tex,
-                       int width, int height, int level, int total_levels,
-                       int slice_index, int total_slices, float threshold);
+void pbr_prefilter_mip(GLuint shader, const PBRSpecUniforms* uniforms,
+                       GLuint env_hdr_tex, GLuint dest_tex, int width,
+                       int height, int level, int total_levels, int slice_index,
+                       int total_slices, float threshold);
 
 /**
  * @brief Generates an irradiance map (diffuse IBL) in a single pass.
@@ -74,6 +126,7 @@ GLuint pbr_irradiance_init(int size);
 /**
  * @brief Computes one face/slice of the irradiance map.
  * @param shader Compute shader.
+ * @param uniforms Cached uniform locations.
  * @param env_hdr_tex Source HDR map.
  * @param dest_tex Destination cubemap.
  * @param size Resolution.
@@ -85,9 +138,10 @@ GLuint pbr_irradiance_init(int size);
  *       glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT) once after all
  *       slices have been dispatched.
  */
-void pbr_irradiance_slice_compute(GLuint shader, GLuint env_hdr_tex,
-                                  GLuint dest_tex, int size, int slice_index,
-                                  int total_slices, float threshold);
+void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
+                                  GLuint env_hdr_tex, GLuint dest_tex, int size,
+                                  int slice_index, int total_slices,
+                                  float threshold);
 
 /**
  * @brief Generates the 2D BRDF Integration Look-Up Table.
@@ -107,10 +161,12 @@ GLuint build_brdf_lut_map(int size);
  * @param height Texture height.
  * @param clamp_multiplier Value to clamp extreme pixels.
  * @param ssbos Pair of SSBO handles for intermediate and final results.
+ * @param uniforms Cached uniform locations for pass 2.
  * @return Average luminance value.
  */
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2]);
+                                 float clamp_multiplier, GLuint ssbos[2],
+                                 const PBRLumUniforms* uniforms);
 
 #endif /* PBR_H */
