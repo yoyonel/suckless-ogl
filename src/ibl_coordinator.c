@@ -147,6 +147,10 @@ void ibl_coordinator_cleanup(IBLCoordinator* coord)
 
 void ibl_coordinator_reset(IBLCoordinator* coord)
 {
+	if (coord->lum_sync) {
+		glDeleteSync(coord->lum_sync);
+		coord->lum_sync = 0;
+	}
 	if (coord->pending_hdr_tex) {
 		glDeleteTextures(1, &coord->pending_hdr_tex);
 		coord->pending_hdr_tex = 0;
@@ -183,23 +187,63 @@ static IBLState process_luminance(IBLCoordinator* coord,
 	{
 		LOG_INFO("suckless-ogl.ibl", "[Frame %llu] - Luminance...",
 		         frame);
-		coord->threshold = compute_mean_luminance_gpu(
+		compute_mean_luminance_gpu_start(
 		    coord->shader_lum_pass1, coord->shader_lum_pass2,
 		    coord->pending_hdr_tex, coord->width, coord->height,
-		    DEFAULT_CLAMP_MULTIPLIER, coord->lum_ssbo,
-		    &coord->lum_uniforms);
+		    coord->lum_ssbo, &coord->lum_uniforms);
 	}
 
-	if (coord->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
-	    isnan(coord->threshold) || isinf(coord->threshold)) {
+	/* Create fence to wait for completion */
+	if (coord->lum_sync) {
+		glDeleteSync(coord->lum_sync);
+	}
+	coord->lum_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+	return IBL_STATE_LUMINANCE_WAIT;
+}
+
+static IBLState process_luminance_wait(IBLCoordinator* coord,
+                                       unsigned long long frame)
+{
+	if (!coord->lum_sync) {
+		/* Should not happen, but safe fallback */
+		return IBL_STATE_SPECULAR_INIT;
+	}
+
+	/* Check if GPU is done. 0 timeout because we don't want to block */
+	GLenum result =
+	    glClientWaitSync(coord->lum_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+
+	if (result == GL_ALREADY_SIGNALED || result == GL_CONDITION_SATISFIED) {
+		/* Ready */
+		glDeleteSync(coord->lum_sync);
+		coord->lum_sync = 0;
+
+		coord->threshold = compute_mean_luminance_gpu_result(
+		    coord->lum_ssbo, DEFAULT_CLAMP_MULTIPLIER);
+
+		if (coord->threshold < IBL_THRESHOLD_FALLBACK_MIN ||
+		    isnan(coord->threshold) || isinf(coord->threshold)) {
+			coord->threshold = DEFAULT_AUTO_THRESHOLD;
+		}
+
+		LOG_INFO("suckless-ogl.ibl",
+		         "[Frame %llu] Progressive IBL: Luminance Wait — "
+		         "wall: %.2f ms",
+		         frame, perf_timer_elapsed_ms(&coord->stage_timer));
+
+		return IBL_STATE_SPECULAR_INIT;
+	} else if (result == GL_WAIT_FAILED) {
+		/* Error? Fallback */
+		LOG_WARN("suckless-ogl.ibl", "glClientWaitSync failed");
+		glDeleteSync(coord->lum_sync);
+		coord->lum_sync = 0;
 		coord->threshold = DEFAULT_AUTO_THRESHOLD;
+		return IBL_STATE_SPECULAR_INIT;
 	}
 
-	LOG_INFO("suckless-ogl.ibl",
-	         "[Frame %llu] Progressive IBL: Luminance — "
-	         "wall: %.2f ms",
-	         frame, perf_timer_elapsed_ms(&coord->stage_timer));
-	return IBL_STATE_SPECULAR_INIT;
+	/* Not ready yet, check again next frame */
+	return IBL_STATE_LUMINANCE_WAIT;
 }
 
 static IBLState process_specular_init(IBLCoordinator* coord,
@@ -328,6 +372,10 @@ IBLState ibl_coordinator_update(IBLCoordinator* coord, uint64_t frame_count)
 	switch (coord->state) {
 		case IBL_STATE_LUMINANCE:
 			coord->state = process_luminance(coord, frame);
+			break;
+
+		case IBL_STATE_LUMINANCE_WAIT:
+			coord->state = process_luminance_wait(coord, frame);
 			break;
 
 		case IBL_STATE_SPECULAR_INIT:

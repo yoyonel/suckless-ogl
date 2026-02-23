@@ -400,6 +400,29 @@ void glUniform1i(GLint location, GLint v0)
 	(void)location;
 	(void)v0;
 }
+
+GLsync glFenceSync(GLenum condition, GLbitfield flags)
+{
+	(void)condition;
+	(void)flags;
+	/* Return a dummy non-NULL pointer */
+	static int dummy_sync;
+	return (GLsync)&dummy_sync;
+}
+
+GLenum glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
+{
+	(void)sync;
+	(void)flags;
+	(void)timeout;
+	/* Always return satisfied to simulate immediate completion in tests */
+	return GL_CONDITION_SATISFIED;
+}
+
+void glDeleteSync(GLsync sync)
+{
+	(void)sync;
+}
 void glUniform1f(GLint location, float v0)
 {
 	(void)location;
