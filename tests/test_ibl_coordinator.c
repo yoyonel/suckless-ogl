@@ -160,7 +160,7 @@ float compute_mean_luminance_gpu(
     GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width,
     int height,
     // NOLINTNEXTLINE(readability-non-const-parameter)
-    float clamp_multiplier, GLuint ssbos[2])
+    float clamp_multiplier, GLuint ssbos[2], const PBRLumUniforms* uniforms)
 {
 	(void)shader_pass1;
 	(void)shader_pass2;
@@ -169,7 +169,16 @@ float compute_mean_luminance_gpu(
 	(void)height;
 	(void)clamp_multiplier;
 	(void)ssbos;
+	(void)uniforms;
 	return TEST_LUMINANCE;
+}
+
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out)
+{
+	(void)shader;
+	if (out) {
+		memset(out, 0, sizeof(*out));
+	}
 }
 
 void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out)

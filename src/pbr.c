@@ -40,6 +40,15 @@ void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
 	out->u_max_y = glGetUniformLocation(shader, "u_max_y");
 }
 
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out)
+{
+	if (!out) {
+		return;
+	}
+	out->u_numGroups = glGetUniformLocation(shader, "numGroups");
+	out->u_numPixels = glGetUniformLocation(shader, "numPixels");
+}
+
 GLuint pbr_prefilter_init(int width, int height)
 {
 	int levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
@@ -264,7 +273,8 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2])
+                                 float clamp_multiplier, GLuint ssbos[2],
+                                 const PBRLumUniforms* uniforms)
 {
 	if (shader_pass1 == 0 || shader_pass2 == 0) {
 		return 0.0F;
@@ -324,15 +334,24 @@ float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
 	/* Pass 2: Final reduction to single float */
 	{
 		GL_SCOPE_USE_PROGRAM(shader_pass2);
-		GLint u_numGroups =
-		    glGetUniformLocation(shader_pass2, "numGroups");
-		if (u_numGroups >= 0) {
-			glUniform1ui(u_numGroups, num_groups);
-		}
-		GLint u_numPixels =
-		    glGetUniformLocation(shader_pass2, "numPixels");
-		if (u_numPixels >= 0) {
-			glUniform1ui(u_numPixels, num_pixels);
+		if (uniforms) {
+			if (uniforms->u_numGroups >= 0) {
+				glUniform1ui(uniforms->u_numGroups, num_groups);
+			}
+			if (uniforms->u_numPixels >= 0) {
+				glUniform1ui(uniforms->u_numPixels, num_pixels);
+			}
+		} else {
+			GLint u_numGroups =
+			    glGetUniformLocation(shader_pass2, "numGroups");
+			if (u_numGroups >= 0) {
+				glUniform1ui(u_numGroups, num_groups);
+			}
+			GLint u_numPixels =
+			    glGetUniformLocation(shader_pass2, "numPixels");
+			if (u_numPixels >= 0) {
+				glUniform1ui(u_numPixels, num_pixels);
+			}
 		}
 
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbos[0]);

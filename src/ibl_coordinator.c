@@ -132,6 +132,7 @@ void ibl_coordinator_init(IBLCoordinator* coord, GLuint shader_spmap,
 
 	pbr_get_spec_uniforms(shader_spmap, &coord->spec_uniforms);
 	pbr_get_irr_uniforms(shader_irmap, &coord->irr_uniforms);
+	pbr_get_lum_uniforms(shader_lum_pass2, &coord->lum_uniforms);
 }
 
 void ibl_coordinator_cleanup(IBLCoordinator* coord)
@@ -185,7 +186,8 @@ static IBLState process_luminance(IBLCoordinator* coord,
 		coord->threshold = compute_mean_luminance_gpu(
 		    coord->shader_lum_pass1, coord->shader_lum_pass2,
 		    coord->pending_hdr_tex, coord->width, coord->height,
-		    DEFAULT_CLAMP_MULTIPLIER, coord->lum_ssbo);
+		    DEFAULT_CLAMP_MULTIPLIER, coord->lum_ssbo,
+		    &coord->lum_uniforms);
 	}
 
 	if (coord->threshold < IBL_THRESHOLD_FALLBACK_MIN ||

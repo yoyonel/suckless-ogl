@@ -59,6 +59,8 @@ typedef struct {
 	    spec_uniforms; /**< Cached uniforms for specular shader. */
 	PBRIrrUniforms
 	    irr_uniforms; /**< Cached uniforms for irradiance shader. */
+	PBRLumUniforms
+	    lum_uniforms; /**< Cached uniforms for luminance shader. */
 
 	/* --- Performance Metrics --- */
 	PerfTimer global_timer; /**< Benchmarking for the entire process. */

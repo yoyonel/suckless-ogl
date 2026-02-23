@@ -25,13 +25,21 @@ typedef struct {
 } PBRSpecUniforms;
 
 /**
- * @brief Cached uniform locations for irradiance convolution shader.
+ * @brief Cached uniform locations for radiance convolution shader.
  */
 typedef struct {
 	GLint u_threshold;
 	GLint u_offset_y;
 	GLint u_max_y;
 } PBRIrrUniforms;
+
+/**
+ * @brief Cached uniform locations for luminance reduction shader.
+ */
+typedef struct {
+	GLint u_numGroups;
+	GLint u_numPixels;
+} PBRLumUniforms;
 
 /**
  * @brief Retrieves uniform locations for the specular prefilter shader.
@@ -46,6 +54,13 @@ void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out);
  * @param out Pointer to the struct to populate.
  */
 void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out);
+
+/**
+ * @brief Retrieves uniform locations for the luminance reduction shader.
+ * @param shader The shader program.
+ * @param out Pointer to the struct to populate.
+ */
+void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out);
 
 /**
  * @brief Generates a pre-filtered specular environment map in a single pass.
@@ -146,10 +161,12 @@ GLuint build_brdf_lut_map(int size);
  * @param height Texture height.
  * @param clamp_multiplier Value to clamp extreme pixels.
  * @param ssbos Pair of SSBO handles for intermediate and final results.
+ * @param uniforms Cached uniform locations for pass 2.
  * @return Average luminance value.
  */
 float compute_mean_luminance_gpu(GLuint shader_pass1, GLuint shader_pass2,
                                  GLuint hdr_tex, int width, int height,
-                                 float clamp_multiplier, GLuint ssbos[2]);
+                                 float clamp_multiplier, GLuint ssbos[2],
+                                 const PBRLumUniforms* uniforms);
 
 #endif /* PBR_H */
