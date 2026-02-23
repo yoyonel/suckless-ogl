@@ -50,6 +50,7 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->compiled_flags = ~0U;
 
 	post_processing->shader_cache_count = 0;
+	post_processing->banding_preset_idx = 0;
 
 	/* Paramètres par défaut */
 	post_processing->vignette.intensity = DEFAULT_VIGNETTE_INTENSITY;

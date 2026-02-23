@@ -69,20 +69,6 @@ void handle_app_input(App* app, int key, int mods);
 /* --- Internal Logic Bridge Functions --- */
 
 /**
- * @brief Handles input for switching post-processing presets.
- * @param app Pointer to the application state.
- * @param key Numeric key code (0-9).
- */
-void handle_preset_input(App* app, int key);
-
-/**
- * @brief Handles input for toggling individual effects (Vignette, Bloom, etc.).
- * @param app Pointer to the application state.
- * @param key Function key or shortcut.
- */
-void handle_postprocess_input(App* app, int key);
-
-/**
  * @brief Handles input for cycling environment maps.
  * @param app Pointer to the application state.
  * @param action GLFW action (Press/Release).

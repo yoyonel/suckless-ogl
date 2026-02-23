@@ -101,22 +101,18 @@ void test_handle_app_input_exhaustive(void)
 	TEST_ASSERT_EQUAL((initial_debug + 1) % 9, test_app->pbr_debug_mode);
 
 	/* Banding Styles (cycle) */
-	test_app->banding_style_idx = 0;
-	/* First press enables banding and sets idx to 0 */
+	/* First press enables banding and sets idx to 0 (Linear) */
 	handle_app_input(test_app, GLFW_KEY_7, 0);
-	TEST_ASSERT_EQUAL(0, test_app->banding_style_idx);
+	TEST_ASSERT_EQUAL(BANDING_MODE_LINEAR,
+	                  test_app->postprocess.banding.mode);
 	/* Enable banding manually to test cycle */
 	postprocess_enable(&test_app->postprocess, POSTFX_BANDING);
 	handle_app_input(test_app, GLFW_KEY_7, 0);
-	TEST_ASSERT_EQUAL(1, test_app->banding_style_idx);
+	TEST_ASSERT_EQUAL(BANDING_MODE_DITHERED,
+	                  test_app->postprocess.banding.mode);
 	handle_app_input(test_app, GLFW_KEY_7, 0);
-	TEST_ASSERT_EQUAL(2, test_app->banding_style_idx);
-
-	/* Banding Presets */
-	test_app->banding_style_idx = 0;
-	handle_app_input(test_app, GLFW_KEY_9, 0);
-	/* If disabled, it should set idx to 0 and apply preset */
-	TEST_ASSERT_EQUAL(0, test_app->banding_style_idx);
+	TEST_ASSERT_EQUAL(BANDING_MODE_PERCEPTUAL,
+	                  test_app->postprocess.banding.mode);
 
 	/* Benchmark */
 	handle_app_input(test_app, GLFW_KEY_8, 0);
@@ -135,30 +131,82 @@ void test_handle_app_input_exhaustive(void)
 void test_handle_postprocess_input_exhaustive(void)
 {
 	/* Basic toggles */
-	handle_postprocess_input(test_app, GLFW_KEY_V);
+	handle_app_input(test_app, GLFW_KEY_V, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_VIGNETTE));
-	handle_postprocess_input(test_app, GLFW_KEY_G);
+	handle_app_input(test_app, GLFW_KEY_G, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_GRAIN));
-	handle_postprocess_input(test_app, GLFW_KEY_B);
+	handle_app_input(test_app, GLFW_KEY_B, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_BLOOM));
-	handle_postprocess_input(test_app, GLFW_KEY_M);
+	handle_app_input(test_app, GLFW_KEY_M, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_MOTION_BLUR));
 
 	/* Reset */
-	handle_postprocess_input(test_app, GLFW_KEY_0);
+	handle_app_input(test_app, GLFW_KEY_0, 0);
 	/* Check some default values */
 
 	/* Exposure */
 	float exp_before = test_app->postprocess.exposure.exposure;
-	handle_postprocess_input(test_app, GLFW_KEY_KP_ADD);
+	handle_app_input(test_app, GLFW_KEY_KP_ADD, 0);
 	TEST_ASSERT_TRUE(test_app->postprocess.exposure.exposure > exp_before);
 
+	/* Complex toggles (SHIFT) */
+	/* Motion Blur Debug Cycle */
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_MOTION_BLUR_DEBUG));
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
+	                                         POSTFX_MOTION_BLUR_DEBUG));
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_VECTOR_FIELD_DEBUG));
+	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
+	                                         POSTFX_VECTOR_FIELD_DEBUG));
+
+	/* FXAA Toggle and Debug */
+	handle_app_input(test_app, GLFW_KEY_X, 0);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA));
+	handle_app_input(test_app, GLFW_KEY_X, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA_DEBUG));
+
+	/* DOF Debug */
+	handle_app_input(test_app, GLFW_KEY_H, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(
+	    postprocess_is_enabled(&test_app->postprocess, POSTFX_DOF_DEBUG));
+
+	/* Auto Exposure Debug */
+	handle_app_input(test_app, GLFW_KEY_J, GLFW_MOD_SHIFT);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_EXPOSURE_DEBUG));
+
+	/* Stencil Debug */
+	handle_app_input(test_app, GLFW_KEY_F6, 0);
+	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
+	                                        POSTFX_STENCIL_DEBUG));
+
+	/* Presets 2-6 */
+	handle_app_input(test_app, GLFW_KEY_2, 0);
+	handle_app_input(test_app, GLFW_KEY_3, 0);
+	handle_app_input(test_app, GLFW_KEY_4, 0);
+	handle_app_input(test_app, GLFW_KEY_5, 0);
+	handle_app_input(test_app, GLFW_KEY_6, 0);
+
+	/* Banding Style Cycle (trigger multiple times) */
+	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(test_app, GLFW_KEY_7, 0);
+
+	/* Benchmark (multiple times for 'already running' branch) */
+	handle_app_input(test_app, GLFW_KEY_8, 0);
+	handle_app_input(test_app, GLFW_KEY_8, 0);
+
 	/* Reload (just logs) */
-	handle_postprocess_input(test_app, GLFW_KEY_R);
+	handle_app_input(test_app, GLFW_KEY_R, 0);
 }
 
 /**
