@@ -117,6 +117,7 @@ set(SOURCES
     src/perf_mode.c
     src/perf_timer.c
     src/postprocess.c
+    src/postprocess_input.c
     src/render_utils.c
     src/shader.c
     src/simd_utils.c

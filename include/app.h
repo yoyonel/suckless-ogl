@@ -173,7 +173,6 @@ typedef struct App {
 	SortingMode sorting_mode; /**< Selected sorting algorithm. */
 	int hdr_count;            /**< Number of available environment maps. */
 	int current_hdr_index;    /**< Index of active HDR in file list. */
-	int banding_style_idx;    /**< Cycle index for banding styles. */
 	int env_map_loading;      /**< Async lock for HDR loading. */
 	int perf_mode_active; /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */

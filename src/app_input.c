@@ -12,6 +12,7 @@
 #include "mem.h"
 #include "perf_mode.h"
 #include "postprocess.h" /* Explicit include for types */
+#include "postprocess_input.h"
 #include "postprocess_presets.h"
 #include "utils.h"
 #include "window.h"
@@ -37,175 +38,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	postprocess_resize(&app->postprocess, width, height);
 }
 
-void handle_preset_input(App* app, int key)
-{
-	switch (key) {
-		case GLFW_KEY_1: /* Preset: Aucun */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
-			LOG_INFO("suckless-ogl.app",
-			         "Style: Aucun (rendu pur) - Exposure: %.2f",
-			         app->auto_threshold);
-			action_notifier_push(&app->notifier,
-			                     "Style: Pure Render",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_2: /* Preset: Subtle */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_SUBTLE);
-			LOG_INFO("suckless-ogl.app", "Style: Subtle");
-			action_notifier_push(&app->notifier, "Style: Subtle",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_3: /* Preset: Cinématique */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_CINEMATIC);
-			LOG_INFO("suckless-ogl.app", "Style: Cinématique");
-			action_notifier_push(&app->notifier, "Style: Cinematic",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_4: /* Preset: Vintage */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_VINTAGE);
-			LOG_INFO("suckless-ogl.app", "Style: Vintage");
-			action_notifier_push(&app->notifier, "Style: Vintage",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_5: /* Style: "Matrix" */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_MATRIX);
-			LOG_INFO("suckless-ogl.app", "Style: Matrix Grading");
-			action_notifier_push(&app->notifier, "Style: Matrix",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_6: /* Style: "Noir et Blanc Contrasté" */
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_BW_CONTRAST);
-			LOG_INFO("suckless-ogl.app", "Style: Noir & Blanc");
-			action_notifier_push(&app->notifier,
-			                     "Style: B&W Contrast",
-			                     NOTIF_DUR_LONG);
-			break;
-		case GLFW_KEY_7: { /* Style Cycle: All Banding Styles */
-			const PostProcessPreset* banding_presets[] = {
-			    &PRESET_POSTERIZED,  /* 1. Posterization */
-			    &PRESET_RETRO,       /* 2. Dithered */
-			    &PRESET_ANALOG,      /* 3. Perceptual */
-			    &PRESET_CHANNEL_GFX, /* 4. Channel */
-			    &PRESET_BLUEPRINT    /* 5. Blueprint */
-			};
-			const char* banding_names[] = {
-			    "Posterization (Pop Art)",
-			    "Retro Computing (Dithered)", "Analog (Perceptual)",
-			    "CGA/VGA Style (Channel)", "Blueprint (Luminance)"};
-			int num_styles = sizeof(banding_presets) /
-			                 sizeof(banding_presets[0]);
-
-			/* Check if banding is currently off, if so, start at
-			   idx 0. Else cycle to next. */
-			if (!postprocess_is_enabled(&app->postprocess,
-			                            POSTFX_BANDING)) {
-				app->banding_style_idx = 0;
-			} else {
-				app->banding_style_idx =
-				    (app->banding_style_idx + 1) % num_styles;
-			}
-
-			postprocess_apply_preset(
-			    &app->postprocess,
-			    banding_presets[app->banding_style_idx]);
-			LOG_INFO("suckless-ogl.app",
-			         "Banding Style [%d/%d]: %s",
-			         app->banding_style_idx + 1, num_styles,
-			         banding_names[app->banding_style_idx]);
-
-			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(
-			    buf, sizeof(buf), "Banding: %s",
-			    banding_names[app->banding_style_idx]);
-			action_notifier_push(&app->notifier, buf,
-			                     NOTIF_DUR_LONG);
-			break;
-		}
-		case GLFW_KEY_8:
-			if (!effect_benchmark_is_running(&app->effect_bench)) {
-				effect_benchmark_start(&app->effect_bench);
-				action_notifier_push(&app->notifier,
-				                     "FX Benchmark: Started",
-				                     NOTIF_DUR_LONG);
-			} else {
-				action_notifier_push(
-				    &app->notifier,
-				    "FX Benchmark: Already running",
-				    NOTIF_DUR_NORMAL);
-			}
-			break;
-		case GLFW_KEY_0:
-		case GLFW_KEY_KP_0:
-			postprocess_apply_preset(&app->postprocess,
-			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(&app->postprocess,
-			                         app->auto_threshold);
-			LOG_INFO("suckless-ogl.app",
-			         "Color Grading: Reset to Defaults");
-			action_notifier_push(&app->notifier,
-			                     "FX: Reset to Defaults",
-			                     NOTIF_DUR_LONG);
-			break;
-		default:
-			break;
-	}
-}
-
-static void toggle_postfx(App* app, PostProcessEffect feature, const char* name)
-{
-	postprocess_toggle(&app->postprocess, feature);
-	int enabled = postprocess_is_enabled(&app->postprocess, feature);
-	LOG_INFO("suckless-ogl.app", "%s: %s", name, enabled ? "ON" : "OFF");
-
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "%s: %s", name,
-	                    enabled ? "ON" : "OFF");
-	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
-}
-
-static void toggle_postfx_complex(App* app, PostProcessEffect feature,
-                                  PostProcessEffect debug_feature,
-                                  const char* name, const char* debug_name)
-{
-	if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
-	    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-		toggle_postfx(app, debug_feature, debug_name);
-	} else {
-		toggle_postfx(app, feature, name);
-	}
-}
-
-static void handle_exposure_input(App* app, int key)
-{
-	float current = app->postprocess.exposure.exposure;
-	float next_val = current;
-
-	if (key == GLFW_KEY_KP_ADD) {
-		next_val += DEFAULT_EXPOSURE_STEP;
-	} else if (key == GLFW_KEY_KP_SUBTRACT) {
-		next_val = (current > DEFAULT_MIN_EXPOSURE)
-		               ? current - DEFAULT_EXPOSURE_STEP
-		               : DEFAULT_MIN_EXPOSURE;
-	}
-
-	postprocess_set_exposure(&app->postprocess, next_val);
-	LOG_INFO("suckless-ogl.app", "Exposure: %.2f",
-	         app->postprocess.exposure.exposure);
-
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "Exposure: %.2f",
-	                    app->postprocess.exposure.exposure);
-	action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
-}
-
 static void handle_pbr_debug_mode(App* app)
 {
 	app->pbr_debug_mode = (app->pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
@@ -220,91 +52,6 @@ static void handle_pbr_debug_mode(App* app)
 	(void)safe_snprintf(buf, sizeof(buf), "Debug: %s",
 	                    modeNames[app->pbr_debug_mode]);
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
-}
-
-void handle_postprocess_input(App* app, int key)
-{
-	switch (key) {
-		case GLFW_KEY_V:
-			toggle_postfx(app, POSTFX_VIGNETTE, "Vignette");
-			break;
-		case GLFW_KEY_G:
-			toggle_postfx(app, POSTFX_GRAIN, "Grain");
-			break;
-		case GLFW_KEY_B:
-			toggle_postfx(app, POSTFX_BLOOM, "Bloom");
-			break;
-		case GLFW_KEY_H:
-			toggle_postfx_complex(app, POSTFX_DOF, POSTFX_DOF_DEBUG,
-			                      "DOF", "DOF DEBUG");
-			break;
-		case GLFW_KEY_M:
-			if (glfwGetKey(app->window, GLFW_KEY_LEFT_SHIFT) ==
-			        GLFW_PRESS ||
-			    glfwGetKey(app->window, GLFW_KEY_RIGHT_SHIFT) ==
-			        GLFW_PRESS) {
-				/* SHIFT+M: Cycle Debug Views: Off → MB Debug
-				   → Vector Field → Off */
-				int mb_dbg = postprocess_is_enabled(
-				    &app->postprocess,
-				    POSTFX_MOTION_BLUR_DEBUG);
-				int vf_dbg = postprocess_is_enabled(
-				    &app->postprocess,
-				    POSTFX_VECTOR_FIELD_DEBUG);
-
-				const char* mode_name = NULL;
-				if (!mb_dbg && !vf_dbg) {
-					/* Off → Motion Blur Debug */
-					postprocess_enable(
-					    &app->postprocess,
-					    POSTFX_MOTION_BLUR_DEBUG);
-					mode_name = "Motion Blur Debug (RG)";
-				} else if (mb_dbg) {
-					/* MB Debug → Vector Field */
-					postprocess_disable(
-					    &app->postprocess,
-					    POSTFX_MOTION_BLUR_DEBUG);
-					postprocess_enable(
-					    &app->postprocess,
-					    POSTFX_VECTOR_FIELD_DEBUG);
-					mode_name = "Vector Field Debug";
-				} else {
-					/* Vector Field → Off */
-					postprocess_disable(
-					    &app->postprocess,
-					    POSTFX_VECTOR_FIELD_DEBUG);
-					mode_name = "Debug: OFF";
-				}
-				LOG_INFO("suckless-ogl.app",
-				         "Velocity Debug: %s", mode_name);
-				action_notifier_push(&app->notifier, mode_name,
-				                     NOTIF_DUR_NORMAL);
-			} else {
-				/* M: Toggle Motion Blur */
-				toggle_postfx(app, POSTFX_MOTION_BLUR,
-				              "Motion Blur");
-			}
-			break;
-		case GLFW_KEY_R:
-			LOG_INFO("suckless-ogl.app",
-			         "Shader reloading not implemented yet");
-			action_notifier_push(&app->notifier,
-			                     "Hot-Reload: Not Implemented",
-			                     NOTIF_DUR_NORMAL);
-			break;
-		case GLFW_KEY_KP_ADD:
-		case GLFW_KEY_KP_SUBTRACT:
-			handle_exposure_input(app, key);
-			break;
-		case GLFW_KEY_J:
-			toggle_postfx_complex(
-			    app, POSTFX_AUTO_EXPOSURE, POSTFX_EXPOSURE_DEBUG,
-			    "Auto Exposure", "Auto Exposure Debug");
-			break;
-		default:
-			handle_preset_input(app, key);
-			break;
-	}
 }
 
 void app_handle_env_input(App* app, int action, int mods, int key)
@@ -433,30 +180,6 @@ static void handle_camera_toggle(App* app)
 	                     NOTIF_DUR_NORMAL);
 }
 
-static void handle_fxaa_input(App* app, int mods)
-{
-	if (check_flag(mods, GLFW_MOD_SHIFT)) {
-		postprocess_toggle(&app->postprocess, POSTFX_FXAA_DEBUG);
-		int enabled = postprocess_is_enabled(&app->postprocess,
-		                                     POSTFX_FXAA_DEBUG);
-		LOG_INFO("suckless-ogl.app", "FXAA Debug: %s",
-		         enabled ? "ON" : "OFF");
-		action_notifier_push(
-		    &app->notifier,
-		    enabled ? "FXAA Debug: ON" : "FXAA Debug: OFF",
-		    NOTIF_DUR_NORMAL);
-	} else {
-		postprocess_toggle(&app->postprocess, POSTFX_FXAA);
-		int enabled =
-		    postprocess_is_enabled(&app->postprocess, POSTFX_FXAA);
-		LOG_INFO("suckless-ogl.app", "FXAA: %s",
-		         enabled ? "ON" : "OFF");
-		action_notifier_push(&app->notifier,
-		                     enabled ? "FXAA: ON" : "FXAA: OFF",
-		                     NOTIF_DUR_NORMAL);
-	}
-}
-
 static void handle_f_key_input(App* app, int key, int mods)
 {
 	switch (key) {
@@ -513,10 +236,6 @@ static void handle_f_key_input(App* app, int key, int mods)
 			break;
 		case GLFW_KEY_F5:
 			handle_pbr_debug_mode(app);
-			break;
-		case GLFW_KEY_F6:
-			toggle_postfx(app, POSTFX_STENCIL_DEBUG,
-			              "Stencil Debug");
 			break;
 		case GLFW_KEY_F9:
 			if (app->perf_mode_active) {
@@ -676,13 +395,16 @@ void handle_app_input(App* app, int key, int mods)
 			    app->show_envmap ? "Skybox: ON" : "Skybox: OFF",
 			    NOTIF_DUR_NORMAL);
 			break;
-		case GLFW_KEY_X:
-			handle_fxaa_input(app, mods);
-			break;
 		default:
-			handle_postprocess_input(app, key);
 			break;
 	}
+
+	PostProcessInputContext pp_ctx = {.postprocess = &app->postprocess,
+	                                  .notifier = &app->notifier,
+	                                  .effect_bench = &app->effect_bench,
+	                                  .auto_threshold = app->auto_threshold,
+	                                  .window = app->window};
+	postprocess_input_handle_key(&pp_ctx, key, mods);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
