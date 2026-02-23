@@ -367,6 +367,7 @@ typedef struct PostProcess {
 	int shader_cache_count;
 
 	GPUProfiler* gpu_profiler;
+	int banding_preset_idx; /**< Internal index for preset cycling. */
 } PostProcess;
 
 /* --- Lifecycle --- */
