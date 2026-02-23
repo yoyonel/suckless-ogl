@@ -15,6 +15,9 @@
 #include <string.h>
 #include <sys/resource.h>
 #include <unistd.h>
+#ifdef TRACY_ENABLE
+#include <tracy/TracyC.h>
+#endif
 
 /* Optional GameMode integration */
 #ifdef HAVE_GAMEMODE
@@ -140,18 +143,31 @@ static int activate_gamemode(PerfModeContext* ctx)
 	 * or just generally active (status 1), we consider it a success.
 	 * This happens when the app is launched via 'gamemoderun'. */
 	if (status > 0) {
+#ifdef TRACY_ENABLE
+		TracyCZoneN(ctx_zone, "GameMode Activate (Already Active)", 1);
+		TracyCZoneEnd(ctx_zone);
+#endif
 		ctx->state = PERF_MODE_GAMEMODE;
 		LOG_INFO("suckless-ogl.perf",
 		         "GameMode already active (status: %d)", status);
 		return 0;
 	}
 
+#ifdef TRACY_ENABLE
+	TracyCZoneN(req_zone, "GameMode Request Start (D-Bus Call)", 1);
+#endif
 	if (gamemode_request_start() == 0) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(req_zone);
+#endif
 		ctx->state = PERF_MODE_GAMEMODE;
 		LOG_INFO("suckless-ogl.perf", "GameMode activated (status: %d)",
 		         gamemode_query_status());
 		return 0;
 	}
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(req_zone);
+#endif
 
 	const char* err = gamemode_error_string();
 	LOG_WARN("suckless-ogl.perf",
@@ -255,55 +271,91 @@ static int deactivate_native(PerfModeContext* ctx)
 
 int perf_mode_request_start(PerfModeContext* ctx)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(perf_zone, "Perf Mode Request Start", 1);
+#endif
 	if (!ctx || !ctx->initialized) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(perf_zone);
+#endif
 		LOG_WARN("suckless-ogl.perf",
 		         "Performance mode not initialized");
 		return -1;
 	}
 
 	if (ctx->state != PERF_MODE_OFF && ctx->state != PERF_MODE_ERROR) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(perf_zone);
+#endif
 		LOG_DEBUG("suckless-ogl.perf",
 		          "Performance mode already active");
 		return 0;
 	}
 
+	int result = -1;
 	switch (ctx->backend) {
 		case PERF_BACKEND_GAMEMODE:
 			if (activate_gamemode(ctx) == 0) {
-				return 0;
+				result = 0;
+				break;
 			}
 			/* Fall through to try native */
 			/* fallthrough */
 		case PERF_BACKEND_NATIVE:
-			return activate_native(ctx);
+			result = activate_native(ctx);
+			break;
 		case PERF_BACKEND_NONE:
 		default:
 			LOG_WARN("suckless-ogl.perf",
 			         "No backend available for activation");
-			return -1;
+			result = -1;
+			break;
 	}
+
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(perf_zone);
+#endif
+	return result;
 }
 
 int perf_mode_request_end(PerfModeContext* ctx)
 {
+#ifdef TRACY_ENABLE
+	TracyCZoneN(perf_zone, "Perf Mode Request End", 1);
+#endif
 	if (!ctx || !ctx->initialized) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(perf_zone);
+#endif
 		return -1;
 	}
 
 	if (ctx->state == PERF_MODE_OFF) {
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(perf_zone);
+#endif
 		return 0;
 	}
 
+	int result = -1;
 	switch (ctx->state) {
 		case PERF_MODE_GAMEMODE:
-			return deactivate_gamemode(ctx);
+			result = deactivate_gamemode(ctx);
+			break;
 		case PERF_MODE_NATIVE_SCHED:
 		case PERF_MODE_NATIVE_NICE:
-			return deactivate_native(ctx);
+			result = deactivate_native(ctx);
+			break;
 		default:
 			ctx->state = PERF_MODE_OFF;
-			return 0;
+			result = 0;
+			break;
 	}
+
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(perf_zone);
+#endif
+	return result;
 }
 
 void perf_mode_cleanup(PerfModeContext* ctx)
