@@ -143,13 +143,11 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 				*banding_idx = (*banding_idx + 1) % num_styles;
 			}
 
-			postprocess_apply_preset(
-			    ctx->postprocess,
-			    banding_presets[*banding_idx]);
+			postprocess_apply_preset(ctx->postprocess,
+			                         banding_presets[*banding_idx]);
 			LOG_INFO("suckless-ogl.postprocess",
-			         "Banding Style [%d/%d]: %s",
-			         *banding_idx + 1, num_styles,
-			         banding_names[*banding_idx]);
+			         "Banding Style [%d/%d]: %s", *banding_idx + 1,
+			         num_styles, banding_names[*banding_idx]);
 
 			char buf[NOTIF_BUF_SIZE];
 			(void)safe_snprintf(buf, sizeof(buf), "Banding: %s",

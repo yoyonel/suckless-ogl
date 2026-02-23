@@ -103,7 +103,8 @@ void test_handle_app_input_exhaustive(void)
 	/* Banding Styles (cycle) */
 	/* First press enables banding and sets idx to 0 (Linear) */
 	handle_app_input(test_app, GLFW_KEY_7, 0);
-	TEST_ASSERT_EQUAL(BANDING_MODE_LINEAR, test_app->postprocess.banding.mode);
+	TEST_ASSERT_EQUAL(BANDING_MODE_LINEAR,
+	                  test_app->postprocess.banding.mode);
 	/* Enable banding manually to test cycle */
 	postprocess_enable(&test_app->postprocess, POSTFX_BANDING);
 	handle_app_input(test_app, GLFW_KEY_7, 0);
