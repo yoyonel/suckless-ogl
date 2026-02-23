@@ -11,7 +11,8 @@ The goal was to move from a blocking synchronous load (100ms - 800ms freeze) to 
 
 1. **Disk Load (Separate Thread)**: The `.hdr` file is loaded and decoded (stb_image) in a dedicated thread (`async_loader.c`).
 2. **GPU Upload (Main Thread)**: Once ready, raw data is uploaded to VRAM (HDR texture).
-3. **IBL Generation (Progressive)**: A state machine (`app_process_ibl_state_machine`) drives the compute shaders step-by-step to generate:
+3. **IBL Generation (Progressive)**: A state machine (`ibl_coordinator_update`) drives the compute shaders step-by-step to generate:
+    * Mean Luminance (Async GPU readback via `glFenceSync`).
     * Irradiance Map (Diffuse).
     * Specular Prefiltered Map (Reflection).
 4. **Swap (Double Buffering)**: We use "Pending" textures. The old environment remains displayed until the new one is 100% ready.
@@ -48,15 +49,32 @@ void main_task() {
 
 ## 3. Optimized Configuration (Adaptive Slicing)
 
-To reconcile **fluidity** (no freeze) and **overall speed** (fast loading), we use an adaptive strategy based on the workload weight.
+To reconcile **fluidity** (no freeze) and **overall speed** (fast loading), we use an adaptive strategy based on the workload weight, combined with asynchronous GPU readbacks.
 
-### A. Irradiance Map (64x64)
+### A. Mean Luminance (Async Readback)
 
-- **Strategy**: Constant slicing.
+Computing the mean luminance is necessary to adjust brightness automatically, but reading the result back to the CPU can cause a significant pipeline stall (`glGetBufferSubData`).
+
+* **Strategy**: Asynchronous readback.
+* **Implementation**: We dispatch the compute shader and insert a `glFenceSync`. The state machine enters `IBL_STATE_LUMINANCE_WAIT`. In subsequent frames, `glClientWaitSync(..., 0)` is used to poll the GPU non-blockingly. Once the data is ready, we read it instantly without stalling.
+
+### B. Mipmap Generation (`glGenerateMipmap`)
+
+Before IBL computation begins, the uploaded HDR texture must have its mipmap chain generated.
+
+* **Strategy**: Isolated Frame.
+* **Cost**: ~40ms (on a 4K HDR image).
+* **Limitation**: `glGenerateMipmap` is a monolithic OpenGL function. It cannot be sliced or interrupted. It forces the GPU to read, downscale, and write 13 levels of high-precision floating-point data in a single massive operation.
+* **Result**: This creates a single irreducible frame "spike" (~24 FPS for one frame). It is voluntarily isolated on its own dedicated frame to prevent compounding with upload (`glTexSubImage2D`) or IBL Compute Shaders.
+
+### C. Irradiance Map (64x64)
+
+* **Strategy**: Constant slicing.
+
 * **Slicing**: 12 Slices.
 * **Cost**: ~5ms / slice.
 
-### B. Specular Map (1024x1024)
+### D. Specular Map (1024x1024)
 
 This is the heaviest part. The cost per mipmap decreases exponentially.
 
@@ -223,13 +241,14 @@ continuously without stalls.
 ## 5. Global Performance
 
 With this architecture on a discrete GPU:
+
 * **FPS**: Remains fluid (~30+ FPS during IBL generation).
 * **Total Time**: A complete environment transition takes about **850ms to 950ms** (with 24+8+12 slices).
 * **Perceived Latency**: Near-zero thanks to continuous display of the old environment during computation.
 
 ## 6. Key Files
 
-* `src/app_env.c`: Contains the State Machine (`app_process_ibl_state_machine`) and the deferred barrier in `IBL_STATE_DONE`.
+* `src/ibl_coordinator.c`: Contains the State Machine (`ibl_coordinator_update`) and the deferred barrier in `IBL_STATE_DONE`.
 * `src/pbr.c`: Implements sliced compute dispatches (`pbr_prefilter_mip`, `pbr_irradiance_slice_compute`) — no internal barriers.
 * `include/pbr.h`: API documentation with `@note` about caller barrier responsibility.
 * `shaders/IBL/*.glsl`: Shaders modified to support `u_offset_y` and `u_max_y`.
