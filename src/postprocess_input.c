@@ -8,12 +8,6 @@
 
 enum { NOTIF_BUF_SIZE = 128 };
 
-static int* get_banding_style_idx(void)
-{
-	static int idx = 0;
-	return &idx;
-}
-
 static void toggle_postfx(const PostProcessInputContext* ctx,
                           PostProcessEffect feature, const char* name)
 {
@@ -28,13 +22,12 @@ static void toggle_postfx(const PostProcessInputContext* ctx,
 	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_NORMAL);
 }
 
-static void toggle_postfx_complex(const PostProcessInputContext* ctx,
+static void toggle_postfx_complex(const PostProcessInputContext* ctx, int mods,
                                   PostProcessEffect feature,
                                   PostProcessEffect debug_feature,
                                   const char* name, const char* debug_name)
 {
-	if (glfwGetKey(ctx->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
-	    glfwGetKey(ctx->window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
 		toggle_postfx(ctx, debug_feature, debug_name);
 	} else {
 		toggle_postfx(ctx, feature, name);
@@ -135,23 +128,31 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 
 			/* Check if banding is currently off, if so, start at
 			   idx 0. Else cycle to next. */
-			int* banding_idx = get_banding_style_idx();
 			if (!postprocess_is_enabled(ctx->postprocess,
 			                            POSTFX_BANDING)) {
-				*banding_idx = 0;
+				ctx->postprocess->banding_preset_idx = 0;
 			} else {
-				*banding_idx = (*banding_idx + 1) % num_styles;
+				ctx->postprocess->banding_preset_idx =
+				    (ctx->postprocess->banding_preset_idx + 1) %
+				    num_styles;
 			}
 
-			postprocess_apply_preset(ctx->postprocess,
-			                         banding_presets[*banding_idx]);
+			postprocess_apply_preset(
+			    ctx->postprocess,
+			    banding_presets[ctx->postprocess
+			                        ->banding_preset_idx]);
 			LOG_INFO("suckless-ogl.postprocess",
-			         "Banding Style [%d/%d]: %s", *banding_idx + 1,
-			         num_styles, banding_names[*banding_idx]);
+			         "Banding Style [%d/%d]: %s",
+			         ctx->postprocess->banding_preset_idx + 1,
+			         num_styles,
+			         banding_names[ctx->postprocess
+			                           ->banding_preset_idx]);
 
 			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(buf, sizeof(buf), "Banding: %s",
-			                    banding_names[*banding_idx]);
+			(void)safe_snprintf(
+			    buf, sizeof(buf), "Banding: %s",
+			    banding_names[ctx->postprocess
+			                      ->banding_preset_idx]);
 			action_notifier_push(ctx->notifier, buf,
 			                     NOTIF_DUR_LONG);
 			break;
@@ -230,14 +231,12 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			toggle_postfx(ctx, POSTFX_BLOOM, "Bloom");
 			break;
 		case GLFW_KEY_H:
-			toggle_postfx_complex(ctx, POSTFX_DOF, POSTFX_DOF_DEBUG,
-			                      "DOF", "DOF DEBUG");
+			toggle_postfx_complex(ctx, mods, POSTFX_DOF,
+			                      POSTFX_DOF_DEBUG, "DOF",
+			                      "DOF DEBUG");
 			break;
 		case GLFW_KEY_M:
-			if (glfwGetKey(ctx->window, GLFW_KEY_LEFT_SHIFT) ==
-			        GLFW_PRESS ||
-			    glfwGetKey(ctx->window, GLFW_KEY_RIGHT_SHIFT) ==
-			        GLFW_PRESS) {
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				/* SHIFT+M: Cycle Debug Views: Off → MB Debug
 				   → Vector Field → Off */
 				int mb_dbg = postprocess_is_enabled(
@@ -291,9 +290,10 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			handle_exposure_input(ctx, key);
 			break;
 		case GLFW_KEY_J:
-			toggle_postfx_complex(
-			    ctx, POSTFX_AUTO_EXPOSURE, POSTFX_EXPOSURE_DEBUG,
-			    "Auto Exposure", "Auto Exposure Debug");
+			toggle_postfx_complex(ctx, mods, POSTFX_AUTO_EXPOSURE,
+			                      POSTFX_EXPOSURE_DEBUG,
+			                      "Auto Exposure",
+			                      "Auto Exposure Debug");
 			break;
 		case GLFW_KEY_F6:
 			toggle_postfx(ctx, POSTFX_STENCIL_DEBUG,
