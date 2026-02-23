@@ -129,6 +129,9 @@ void ibl_coordinator_init(IBLCoordinator* coord, GLuint shader_spmap,
 	coord->shader_irmap = shader_irmap;
 	coord->shader_lum_pass1 = shader_lum_pass1;
 	coord->shader_lum_pass2 = shader_lum_pass2;
+
+	pbr_get_spec_uniforms(shader_spmap, &coord->spec_uniforms);
+	pbr_get_irr_uniforms(shader_irmap, &coord->irr_uniforms);
 }
 
 void ibl_coordinator_cleanup(IBLCoordinator* coord)
@@ -227,7 +230,8 @@ static IBLState process_specular_mips(IBLCoordinator* coord,
 			for (int mip = coord->current_mip;
 			     mip < coord->total_mips; ++mip) {
 				pbr_prefilter_mip(
-				    coord->shader_spmap, coord->pending_hdr_tex,
+				    coord->shader_spmap, &coord->spec_uniforms,
+				    coord->pending_hdr_tex,
 				    coord->pending_spec_tex,
 				    PREFILTERED_SPECULAR_MAP_SIZE,
 				    PREFILTERED_SPECULAR_MAP_SIZE, mip,
@@ -256,7 +260,8 @@ static IBLState process_specular_mips(IBLCoordinator* coord,
 		HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
 		{
 			pbr_prefilter_mip(
-			    coord->shader_spmap, coord->pending_hdr_tex,
+			    coord->shader_spmap, &coord->spec_uniforms,
+			    coord->pending_hdr_tex,
 			    coord->pending_spec_tex,
 			    PREFILTERED_SPECULAR_MAP_SIZE,
 			    PREFILTERED_SPECULAR_MAP_SIZE, coord->current_mip,
@@ -296,10 +301,10 @@ static IBLState process_irradiance(IBLCoordinator* coord,
 	HYBRID_MEASURE_DEBUG_MS(gpu_ms, label)
 	{
 		pbr_irradiance_slice_compute(
-		    coord->shader_irmap, coord->pending_hdr_tex,
-		    coord->pending_irr_tex, IRIDIANCE_MAP_SIZE,
-		    coord->current_slice, coord->total_slices,
-		    coord->threshold);
+		    coord->shader_irmap, &coord->irr_uniforms,
+		    coord->pending_hdr_tex, coord->pending_irr_tex,
+		    IRIDIANCE_MAP_SIZE, coord->current_slice,
+		    coord->total_slices, coord->threshold);
 	}
 	ibl_stats_accumulate(coord, gpu_ms);
 
