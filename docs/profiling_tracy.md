@@ -44,6 +44,14 @@ This guide explains how to read and analyze the profiling data captured with Tra
   - Is it a long disk read?
   - Is it a heavy CPU calculation?
 
+### Analyzing "Screenshot Skip (GPU Stall)" Messages
+
+If you see an orange message saying `Screenshot skip (GPU stall)`:
+
+- **What it means**: The GPU is currently overwhelmed (e.g., executing heavy Compute Shaders like IBL generation). The CPU tried to capture a frame using `glReadPixels` into a PBO, but the GPU hasn't even finished drawing the previous frame yet.
+- **Why we skip**: Instead of blocking the CPU for 40ms with `glMapBuffer` to wait for the GPU, the application uses an asynchronous check (`glFenceSync` + `glClientWaitSync` with a 0 timeout). If the GPU isn't ready, the screenshot is dropped to maintain a fluid CPU profiling timeline.
+- **When it happens**: Typically during the first seconds of loading a new environment (`Async Status` = `IDLE` after a `LOADING` phase), as the `IBLCoordinator` slices heavy PBR compute workloads across multiple frames.
+
 ## 3. Hybrid Profiling Identifiers
 
 When using the `HYBRID_MEASURE_LOG` macro, you will see specific zones in the timeline designed to separate CPU work from GPU waits:
