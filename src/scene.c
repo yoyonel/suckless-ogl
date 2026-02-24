@@ -338,6 +338,46 @@ int scene_init(Scene* scene)
 	return 1;
 }
 
+static void scene_cleanup_shaders(Scene* scene)
+{
+	SHADER_SAFE_DESTROY(scene->pbr_instanced_shader);
+	SHADER_SAFE_DESTROY(scene->pbr_billboard_shader);
+#ifdef USE_SSBO_RENDERING
+	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
+#endif
+
+	SHADER_SAFE_DESTROY(scene->debug_shader);
+	SHADER_SAFE_DESTROY(scene->debug_line_shader);
+	SHADER_SAFE_DESTROY(scene->skybox_shader);
+	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
+	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
+	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass1);
+	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
+}
+
+static void scene_cleanup_gpu_resources(Scene* scene)
+{
+	GL_SAFE_DELETE_VAO(scene->sphere_vao);
+	GL_SAFE_DELETE_VAO(scene->empty_vao);
+
+	GL_SAFE_DELETE_BUFFER(scene->sphere_vbo);
+	GL_SAFE_DELETE_BUFFER(scene->sphere_nbo);
+	GL_SAFE_DELETE_BUFFER(scene->sphere_ebo);
+	GL_SAFE_DELETE_BUFFER(scene->wire_cube_vbo);
+	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
+	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);
+	GL_SAFE_DELETE_BUFFERS(2, scene->lum_ssbo);
+
+	GL_SAFE_DELETE_TEXTURE(scene->hdr_texture);
+	GL_SAFE_DELETE_TEXTURE(scene->recycled_hdr_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->brdf_lut_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->spec_prefiltered_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->irradiance_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->dummy_black_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->dummy_white_tex);
+	GL_SAFE_DELETE_TEXTURE(scene->transition_snapshot_tex);
+}
+
 void scene_cleanup(Scene* scene)
 {
 	if (!scene) {
@@ -364,39 +404,8 @@ void scene_cleanup(Scene* scene)
 		scene->material_lib = NULL;
 	}
 
-	SHADER_SAFE_DESTROY(scene->pbr_instanced_shader);
-	SHADER_SAFE_DESTROY(scene->pbr_billboard_shader);
-#ifdef USE_SSBO_RENDERING
-	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
-#endif
-
-	SHADER_SAFE_DESTROY(scene->debug_shader);
-	SHADER_SAFE_DESTROY(scene->debug_line_shader);
-	SHADER_SAFE_DESTROY(scene->skybox_shader);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass1);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
-
-	GL_SAFE_DELETE_VAO(scene->sphere_vao);
-	GL_SAFE_DELETE_VAO(scene->empty_vao);
-
-	GL_SAFE_DELETE_BUFFER(scene->sphere_vbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_nbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_ebo);
-	GL_SAFE_DELETE_BUFFER(scene->wire_cube_vbo);
-	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
-	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);
-	GL_SAFE_DELETE_BUFFERS(2, scene->lum_ssbo);
-
-	GL_SAFE_DELETE_TEXTURE(scene->hdr_texture);
-	GL_SAFE_DELETE_TEXTURE(scene->recycled_hdr_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->brdf_lut_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->spec_prefiltered_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->irradiance_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->dummy_black_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->dummy_white_tex);
-	GL_SAFE_DELETE_TEXTURE(scene->transition_snapshot_tex);
+	scene_cleanup_shaders(scene);
+	scene_cleanup_gpu_resources(scene);
 
 	ibl_coordinator_cleanup(&scene->ibl_coord);
 
