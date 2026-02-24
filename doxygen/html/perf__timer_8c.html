@@ -256,8 +256,6 @@ Include dependency graph for perf_timer.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a369266c24eacffb87046522897a570d5" id="r_a369266c24eacffb87046522897a570d5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8c.html#a369266c24eacffb87046522897a570d5">_GNU_SOURCE</a></td></tr>
-<tr class="separator:a369266c24eacffb87046522897a570d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ba438b43f9a8f56d29013b7cb9a9f23" id="r_a4ba438b43f9a8f56d29013b7cb9a9f23"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8c.html#a4ba438b43f9a8f56d29013b7cb9a9f23">HYBRID_STOP_BODY</a>(log_fn)</td></tr>
 <tr class="separator:a4ba438b43f9a8f56d29013b7cb9a9f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47fc3098dc9e5d7cbad12e51ba771e55" id="r_a47fc3098dc9e5d7cbad12e51ba771e55"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="perf__timer_8c.html#a47fc3098dc9e5d7cbad12e51ba771e55">TRACY_HYBRID_STOP_PREAMBLE</a>(timer)&#160;&#160;&#160;((void)0)</td></tr>
@@ -328,20 +326,6 @@ Variables</h2></td></tr>
 <tr class="separator:af3cae720fc1135a209f44a3fd29deab9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a369266c24eacffb87046522897a570d5" name="a369266c24eacffb87046522897a570d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a369266c24eacffb87046522897a570d5">&#9670;&#160;</a></span>_GNU_SOURCE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define _GNU_SOURCE</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a4ba438b43f9a8f56d29013b7cb9a9f23" name="a4ba438b43f9a8f56d29013b7cb9a9f23"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ba438b43f9a8f56d29013b7cb9a9f23">&#9670;&#160;</a></span>HYBRID_STOP_BODY</h2>
 
@@ -365,9 +349,9 @@ Variables</h2></td></tr>
 <div class="line">           label, _cpu_ms, _gpu_ms);                                       \</div>
 <div class="line">    TRACY_HYBRID_STOP_POSTAMBLE(timer, label, _cpu_ms, _gpu_ms);           \</div>
 <div class="line">    gpu_timer_cleanup(&amp;timer-&gt;gpu)</div>
-<div class="ttc" id="aperf__timer_8c_html_a0d2ae17973105f843bf88f6f7be496bc"><div class="ttname"><a href="perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a></div><div class="ttdeci">double perf_timer_elapsed_ms(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in milliseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:47</div></div>
-<div class="ttc" id="aperf__timer_8c_html_a248eca7078cf6b01ea1d0a65f3863774"><div class="ttname"><a href="perf__timer_8c.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a></div><div class="ttdeci">double gpu_timer_elapsed_ms(GPUTimer *timer, int wait_for_result)</div><div class="ttdoc">Stops the GPU timer and retrieves the result.</div><div class="ttdef"><b>Definition</b> perf_timer.c:118</div></div>
-<div class="ttc" id="aperf__timer_8c_html_a47fc3098dc9e5d7cbad12e51ba771e55"><div class="ttname"><a href="perf__timer_8c.html#a47fc3098dc9e5d7cbad12e51ba771e55">TRACY_HYBRID_STOP_PREAMBLE</a></div><div class="ttdeci">#define TRACY_HYBRID_STOP_PREAMBLE(timer)</div><div class="ttdef"><b>Definition</b> perf_timer.c:286</div></div>
+<div class="ttc" id="aperf__timer_8c_html_a0d2ae17973105f843bf88f6f7be496bc"><div class="ttname"><a href="perf__timer_8c.html#a0d2ae17973105f843bf88f6f7be496bc">perf_timer_elapsed_ms</a></div><div class="ttdeci">double perf_timer_elapsed_ms(PerfTimer *timer)</div><div class="ttdoc">Stops the timer and returns elapsed time in milliseconds.</div><div class="ttdef"><b>Definition</b> perf_timer.c:44</div></div>
+<div class="ttc" id="aperf__timer_8c_html_a248eca7078cf6b01ea1d0a65f3863774"><div class="ttname"><a href="perf__timer_8c.html#a248eca7078cf6b01ea1d0a65f3863774">gpu_timer_elapsed_ms</a></div><div class="ttdeci">double gpu_timer_elapsed_ms(GPUTimer *timer, int wait_for_result)</div><div class="ttdoc">Stops the GPU timer and retrieves the result.</div><div class="ttdef"><b>Definition</b> perf_timer.c:115</div></div>
+<div class="ttc" id="aperf__timer_8c_html_a47fc3098dc9e5d7cbad12e51ba771e55"><div class="ttname"><a href="perf__timer_8c.html#a47fc3098dc9e5d7cbad12e51ba771e55">TRACY_HYBRID_STOP_PREAMBLE</a></div><div class="ttdeci">#define TRACY_HYBRID_STOP_PREAMBLE(timer)</div><div class="ttdef"><b>Definition</b> perf_timer.c:283</div></div>
 </div><!-- fragment -->
 </div>
 </div>

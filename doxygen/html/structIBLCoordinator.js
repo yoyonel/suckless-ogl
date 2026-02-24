@@ -6,6 +6,7 @@ var structIBLCoordinator =
     [ "height", "structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe", null ],
     [ "irr_uniforms", "structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e", null ],
     [ "lum_ssbo", "structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70", null ],
+    [ "lum_sync", "structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f", null ],
     [ "lum_uniforms", "structIBLCoordinator.html#a43a141b4082137f347576387dbc495f2", null ],
     [ "pending_hdr_tex", "structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02", null ],
     [ "pending_irr_tex", "structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c", null ],

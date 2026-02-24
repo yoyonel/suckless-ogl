@@ -347,6 +347,10 @@ Data Fields</h2></td></tr>
 <tr class="separator:ab1a4d26d5463ca7af068c982243a29c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d1c33bce3c61e2020c4fe4633c7431c" id="r_a0d1c33bce3c61e2020c4fe4633c7431c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a0d1c33bce3c61e2020c4fe4633c7431c">env_map_loading</a></td></tr>
 <tr class="separator:a0d1c33bce3c61e2020c4fe4633c7431c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4269751e8048af7e9b6ade15bd591525" id="r_a4269751e8048af7e9b6ade15bd591525"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a4269751e8048af7e9b6ade15bd591525">env_map_loading_step</a></td></tr>
+<tr class="separator:a4269751e8048af7e9b6ade15bd591525"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a851ca1f79d640da0ec812795d9b037fb" id="r_a851ca1f79d640da0ec812795d9b037fb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAsyncRequest.html">AsyncRequest</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a851ca1f79d640da0ec812795d9b037fb">current_env_req</a></td></tr>
+<tr class="separator:a851ca1f79d640da0ec812795d9b037fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbbb3edb5a04e49632863b966d86291e" id="r_adbbb3edb5a04e49632863b966d86291e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#adbbb3edb5a04e49632863b966d86291e">perf_mode_active</a></td></tr>
 <tr class="separator:adbbb3edb5a04e49632863b966d86291e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad161a791db6d39211bac35640b1f4d81" id="r_ad161a791db6d39211bac35640b1f4d81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfModeContext.html">PerfModeContext</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#ad161a791db6d39211bac35640b1f4d81">perf_context</a></td></tr>
@@ -399,6 +403,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:acd40ec5077b6ef301a42fc0ed6227c29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf92adb94e6f343e46201e4a8d96864e" id="r_adf92adb94e6f343e46201e4a8d96864e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#adf92adb94e6f343e46201e4a8d96864e">pending_prealloc_h</a></td></tr>
 <tr class="separator:adf92adb94e6f343e46201e4a8d96864e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15d2a5000a2b385a5aad78ba19959079" id="r_a15d2a5000a2b385a5aad78ba19959079"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a15d2a5000a2b385a5aad78ba19959079">pending_env_tex</a></td></tr>
+<tr class="separator:a15d2a5000a2b385a5aad78ba19959079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c6cf68c46efaf0ab7de9800ea0b3dbc" id="r_a8c6cf68c46efaf0ab7de9800ea0b3dbc"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a8c6cf68c46efaf0ab7de9800ea0b3dbc">spec_prefiltered_tex</a></td></tr>
 <tr class="separator:a8c6cf68c46efaf0ab7de9800ea0b3dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cdbbffd7d0e304f6b6dbf2d7c7e0a09" id="r_a3cdbbffd7d0e304f6b6dbf2d7c7e0a09"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09">irradiance_tex</a></td></tr>
@@ -571,6 +577,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Pause camera movement. </p>
+
+</div>
+</div>
+<a id="a851ca1f79d640da0ec812795d9b037fb" name="a851ca1f79d640da0ec812795d9b037fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a851ca1f79d640da0ec812795d9b037fb">&#9670;&#160;</a></span>current_env_req</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAsyncRequest.html">AsyncRequest</a> App::current_env_req</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Currently processing async request. </p>
 
 </div>
 </div>
@@ -751,6 +772,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Async lock for HDR loading. </p>
+
+</div>
+</div>
+<a id="a4269751e8048af7e9b6ade15bd591525" name="a4269751e8048af7e9b6ade15bd591525"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4269751e8048af7e9b6ade15bd591525">&#9670;&#160;</a></span>env_map_loading_step</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int App::env_map_loading_step</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Multi-frame loading step counter. </p>
 
 </div>
 </div>
@@ -1157,6 +1193,21 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a15d2a5000a2b385a5aad78ba19959079" name="a15d2a5000a2b385a5aad78ba19959079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15d2a5000a2b385a5aad78ba19959079">&#9670;&#160;</a></span>pending_env_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint App::pending_env_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Texture being assembled before IBL. Recycled texture for next load. </p>
+
+</div>
+</div>
 <a id="adf92adb94e6f343e46201e4a8d96864e" name="adf92adb94e6f343e46201e4a8d96864e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adf92adb94e6f343e46201e4a8d96864e">&#9670;&#160;</a></span>pending_prealloc_h</h2>
 
@@ -1168,7 +1219,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Deferred pre-alloc height. Recycled texture for next load. </p>
+<p>Deferred pre-alloc height. </p>
 
 </div>
 </div>

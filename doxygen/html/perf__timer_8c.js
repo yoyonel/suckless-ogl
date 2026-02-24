@@ -1,6 +1,5 @@
 var perf__timer_8c =
 [
-    [ "_GNU_SOURCE", "perf__timer_8c.html#a369266c24eacffb87046522897a570d5", null ],
     [ "HYBRID_STOP_BODY", "perf__timer_8c.html#a4ba438b43f9a8f56d29013b7cb9a9f23", null ],
     [ "TRACY_HYBRID_STOP_POSTAMBLE", "perf__timer_8c.html#a187843770789c4fe72da7849689f2cb7", null ],
     [ "TRACY_HYBRID_STOP_PREAMBLE", "perf__timer_8c.html#a47fc3098dc9e5d7cbad12e51ba771e55", null ],

@@ -25,12 +25,13 @@ var searchData=
   ['cpu_22',['cpu',['../structHybridTimer.html#a59b948e79a518d1c899cddf21fa0fd67',1,'HybridTimer']]],
   ['cpu_5fcapacity_23',['cpu_capacity',['../structSphereSorter.html#a9c34a0c96693451b7e4ce877e15bc6bf',1,'SphereSorter']]],
   ['current_5feffect_5fidx_24',['current_effect_idx',['../structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d',1,'EffectBenchmark']]],
-  ['current_5fexposure_25',['current_exposure',['../structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9',1,'App']]],
-  ['current_5fhdr_5findex_26',['current_hdr_index',['../structApp.html#ab1a4d26d5463ca7af068c982243a29c2',1,'App']]],
-  ['current_5fmip_27',['current_mip',['../structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def',1,'IBLCoordinator']]],
-  ['current_5frequest_28',['current_request',['../structAsyncLoader.html#abe97105817d49e395021799eade9d865',1,'AsyncLoader']]],
-  ['current_5fslice_29',['current_slice',['../structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193',1,'IBLCoordinator']]],
-  ['current_5fstage_5findex_30',['current_stage_index',['../structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be',1,'GPUProfiler']]],
-  ['currentclippos_31',['currentclippos',['../pbr__ibl__billboard_8frag.html#a2bbf023aeafe138e0e3a8b8b2f867602',1,'CurrentClipPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a80ee2f989c0542d4487b3806dfb0a6a1',1,'CurrentClipPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#a2bbf023aeafe138e0e3a8b8b2f867602',1,'CurrentClipPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a80ee2f989c0542d4487b3806dfb0a6a1',1,'CurrentClipPos:&#160;pbr_ibl_instanced.vert']]],
-  ['cursor_5fy_32',['cursor_y',['../structUILayout.html#a692c37340a75ca97fb112f2402e0bd23',1,'UILayout']]]
+  ['current_5fenv_5freq_25',['current_env_req',['../structApp.html#a851ca1f79d640da0ec812795d9b037fb',1,'App']]],
+  ['current_5fexposure_26',['current_exposure',['../structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9',1,'App']]],
+  ['current_5fhdr_5findex_27',['current_hdr_index',['../structApp.html#ab1a4d26d5463ca7af068c982243a29c2',1,'App']]],
+  ['current_5fmip_28',['current_mip',['../structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def',1,'IBLCoordinator']]],
+  ['current_5frequest_29',['current_request',['../structAsyncLoader.html#abe97105817d49e395021799eade9d865',1,'AsyncLoader']]],
+  ['current_5fslice_30',['current_slice',['../structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193',1,'IBLCoordinator']]],
+  ['current_5fstage_5findex_31',['current_stage_index',['../structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be',1,'GPUProfiler']]],
+  ['currentclippos_32',['currentclippos',['../pbr__ibl__billboard_8frag.html#a2bbf023aeafe138e0e3a8b8b2f867602',1,'CurrentClipPos:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__billboard_8vert.html#a80ee2f989c0542d4487b3806dfb0a6a1',1,'CurrentClipPos:&#160;pbr_ibl_billboard.vert'],['../pbr__ibl__instanced_8frag.html#a2bbf023aeafe138e0e3a8b8b2f867602',1,'CurrentClipPos:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__instanced_8vert.html#a80ee2f989c0542d4487b3806dfb0a6a1',1,'CurrentClipPos:&#160;pbr_ibl_instanced.vert']]],
+  ['cursor_5fy_33',['cursor_y',['../structUILayout.html#a692c37340a75ca97fb112f2402e0bd23',1,'UILayout']]]
 ];

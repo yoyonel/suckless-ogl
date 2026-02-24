@@ -16,6 +16,7 @@ var ibl__coordinator_8c =
     [ "is_software_renderer", "ibl__coordinator_8c.html#ac7967759b1ba80b70a7d1bba2dfa753e", null ],
     [ "process_irradiance", "ibl__coordinator_8c.html#aa548dc7694895fdd9c9f75c4e95482cb", null ],
     [ "process_luminance", "ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2", null ],
+    [ "process_luminance_wait", "ibl__coordinator_8c.html#a60e618f4adff2efc497ca8e74e6c88ce", null ],
     [ "process_specular_init", "ibl__coordinator_8c.html#aeca35c868d46274d0d55fc83628a3cce", null ],
     [ "process_specular_mips", "ibl__coordinator_8c.html#a54892dd4ffc15e478031926ea1cdc068", null ],
     [ "IBL_IRRADIANCE_HARDWARE_SLICES", "ibl__coordinator_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45", null ],

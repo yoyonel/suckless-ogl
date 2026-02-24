@@ -283,9 +283,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a380eba0f8cc7fc6c292073aa718c7097" id="r_a380eba0f8cc7fc6c292073aa718c7097"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a380eba0f8cc7fc6c292073aa718c7097">build_irradiance_map</a> (GLuint shader, GLuint env_hdr_tex, int size, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
 <tr class="memdesc:a380eba0f8cc7fc6c292073aa718c7097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an irradiance map (diffuse IBL) in a single pass.  <br /></td></tr>
 <tr class="separator:a380eba0f8cc7fc6c292073aa718c7097"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab61b6f57e66b82e7a0a907754b92391f" id="r_ab61b6f57e66b82e7a0a907754b92391f"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#ab61b6f57e66b82e7a0a907754b92391f">compute_mean_luminance_gpu</a> (GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width, int height, float clamp_multiplier, GLuint ssbos[2], const <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *uniforms)</td></tr>
-<tr class="memdesc:ab61b6f57e66b82e7a0a907754b92391f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the average luminance of an HDR texture on the GPU.  <br /></td></tr>
-<tr class="separator:ab61b6f57e66b82e7a0a907754b92391f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7b8c646322f8f6704017540c02955eb" id="r_ad7b8c646322f8f6704017540c02955eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#ad7b8c646322f8f6704017540c02955eb">compute_mean_luminance_gpu_start</a> (GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width, int height, GLuint ssbos[2], const <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *uniforms)</td></tr>
+<tr class="memdesc:ad7b8c646322f8f6704017540c02955eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the average luminance of an HDR texture on the GPU.  <br /></td></tr>
+<tr class="separator:ad7b8c646322f8f6704017540c02955eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89b17db36764dc52b1a2bb46a8280d1c" id="r_a89b17db36764dc52b1a2bb46a8280d1c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c">compute_mean_luminance_gpu_result</a> (GLuint ssbos[2], float clamp_multiplier)</td></tr>
+<tr class="memdesc:a89b17db36764dc52b1a2bb46a8280d1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the result of mean luminance computation from the SSBO. This function should be called only after the GPU has finished the computation started by compute_mean_luminance_gpu_start.  <br /></td></tr>
+<tr class="separator:a89b17db36764dc52b1a2bb46a8280d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a626c9aaaa1dea8809b7f5c9a745aac55" id="r_a626c9aaaa1dea8809b7f5c9a745aac55"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55">build_brdf_lut_map</a> (int size)</td></tr>
 <tr class="memdesc:a626c9aaaa1dea8809b7f5c9a745aac55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates the 2D BRDF Integration Look-Up Table.  <br /></td></tr>
 <tr class="separator:a626c9aaaa1dea8809b7f5c9a745aac55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -459,14 +462,52 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="ab61b6f57e66b82e7a0a907754b92391f" name="ab61b6f57e66b82e7a0a907754b92391f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab61b6f57e66b82e7a0a907754b92391f">&#9670;&#160;</a></span>compute_mean_luminance_gpu()</h2>
+<a id="a89b17db36764dc52b1a2bb46a8280d1c" name="a89b17db36764dc52b1a2bb46a8280d1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89b17db36764dc52b1a2bb46a8280d1c">&#9670;&#160;</a></span>compute_mean_luminance_gpu_result()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float compute_mean_luminance_gpu </td>
+          <td class="memname">float compute_mean_luminance_gpu_result </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>ssbos</em>[2], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>clamp_multiplier</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the result of mean luminance computation from the SSBO. This function should be called only after the GPU has finished the computation started by compute_mean_luminance_gpu_start. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ssbos</td><td>The SSBOs used in the computation. </td></tr>
+    <tr><td class="paramname">clamp_multiplier</td><td>Multiplier to apply to the result. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The computed mean luminance. </dd></dl>
+
+</div>
+</div>
+<a id="ad7b8c646322f8f6704017540c02955eb" name="ad7b8c646322f8f6704017540c02955eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7b8c646322f8f6704017540c02955eb">&#9670;&#160;</a></span>compute_mean_luminance_gpu_start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void compute_mean_luminance_gpu_start </td>
           <td>(</td>
           <td class="paramtype">GLuint&#160;</td>
           <td class="paramname"><em>shader_pass1</em>, </td>
@@ -494,12 +535,6 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>clamp_multiplier</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -535,7 +570,8 @@ Here is the call graph for this function:</div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Average luminance value. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Average luminance value.</dd></dl>
+<p>Starts the GPU computation for mean luminance (non-blocking). Dispatches compute shaders but does NOT wait for results. Caller should issue a memory barrier or fence sync after calling this. </p>
 
 </div>
 </div>

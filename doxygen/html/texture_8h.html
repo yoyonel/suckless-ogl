@@ -278,6 +278,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a9b2e1a73489371d72362f97552ad57a8" id="r_a9b2e1a73489371d72362f97552ad57a8"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a9b2e1a73489371d72362f97552ad57a8">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, int width, int height, GLuint reuse_tex_id)</td></tr>
 <tr class="memdesc:a9b2e1a73489371d72362f97552ad57a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <br /></td></tr>
 <tr class="separator:a9b2e1a73489371d72362f97552ad57a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec66cef20e7ef9260fd363ab5408a594" id="r_aec66cef20e7ef9260fd363ab5408a594"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#aec66cef20e7ef9260fd363ab5408a594">texture_generate_hdr_mipmap</a> (GLuint tex)</td></tr>
+<tr class="memdesc:aec66cef20e7ef9260fd363ab5408a594"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates mipmaps for an HDR texture.  <br /></td></tr>
+<tr class="separator:aec66cef20e7ef9260fd363ab5408a594"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c821497ea20a5b74199e3080c0f4a1c" id="r_a4c821497ea20a5b74199e3080c0f4a1c"><td class="memItemLeft" align="right" valign="top">float *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8h.html#a4c821497ea20a5b74199e3080c0f4a1c">texture_load_pixels</a> (const char *path, int *width, int *height, int *channels)</td></tr>
 <tr class="memdesc:a4c821497ea20a5b74199e3080c0f4a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decodes an HDR image into RAM without uploading to GPU.  <br /></td></tr>
 <tr class="separator:a4c821497ea20a5b74199e3080c0f4a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,6 +345,32 @@ Functions</h2></td></tr>
     <tr><td class="paramname">pbo_id</td><td>Pointer to the PBO ID (generated if 0). </td></tr>
     <tr><td class="paramname">current_size</td><td>Pointer to the currently tracking size (updated on realloc). </td></tr>
     <tr><td class="paramname">required_size</td><td>The minimum size needed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aec66cef20e7ef9260fd363ab5408a594" name="aec66cef20e7ef9260fd363ab5408a594"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec66cef20e7ef9260fd363ab5408a594">&#9670;&#160;</a></span>texture_generate_hdr_mipmap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void texture_generate_hdr_mipmap </td>
+          <td>(</td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>tex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates mipmaps for an HDR texture. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tex</td><td>The OpenGL ID of the texture. </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,6 +1,5 @@
 var log_8c =
 [
-    [ "_GNU_SOURCE", "log_8c.html#a369266c24eacffb87046522897a570d5", null ],
     [ "level_to_string", "log_8c.html#a008707c8596c7f48969d541cf5a6fa30", null ],
     [ "log_get_level", "log_8c.html#ae5099953981ab6c18721857fd2f8d6fc", null ],
     [ "log_init", "log_8c.html#a8cbf849de9da0b561bc201d34343e63b", null ],

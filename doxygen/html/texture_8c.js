@@ -1,6 +1,7 @@
 var texture_8c =
 [
     [ "texture_ensure_pbo", "texture_8c.html#aab7453443bd88ad6c923d608ec066a28", null ],
+    [ "texture_generate_hdr_mipmap", "texture_8c.html#aec66cef20e7ef9260fd363ab5408a594", null ],
     [ "texture_load_pixels", "texture_8c.html#a4c821497ea20a5b74199e3080c0f4a1c", null ],
     [ "texture_map_pbo", "texture_8c.html#a0d3c44efbe21ce365f8726603776fab5", null ],
     [ "texture_matches_hdr", "texture_8c.html#aba2936ced854edf19507c84b2e008b88", null ],

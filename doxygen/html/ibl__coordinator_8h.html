@@ -271,10 +271,11 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a57e898a48bf9e63709f7774eb98bb0ea" id="r_a57e898a48bf9e63709f7774eb98bb0ea"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0ea">IBLState</a> { <br />
 &#160;&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3">IBL_STATE_IDLE</a> = 0
 , <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61">IBL_STATE_LUMINANCE</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79">IBL_STATE_LUMINANCE_WAIT</a>
 , <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e">IBL_STATE_SPECULAR_INIT</a>
-, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a>
 , <br />
-&#160;&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a>
+&#160;&#160;<a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa6230fb57df3507608efb859d8ec601aa">IBL_STATE_SPECULAR_MIPS</a>
+, <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaacb8960efec120b453ba94fd894b1dc1d">IBL_STATE_IRRADIANCE</a>
 , <a class="el" href="ibl__coordinator_8h.html#a57e898a48bf9e63709f7774eb98bb0eaa86c04def64dcb516592da70fa3be4b24">IBL_STATE_DONE</a>
 <br />
  }</td></tr>
@@ -323,6 +324,8 @@ Functions</h2></td></tr>
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3" name="a57e898a48bf9e63709f7774eb98bb0eaa85db0fd8d0693edcef820d6f45ec7fd3"></a>IBL_STATE_IDLE&#160;</td><td class="fielddoc"><p>Application is waiting for a request. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61" name="a57e898a48bf9e63709f7774eb98bb0eaacd376fa69906363b69d4fb8f490edb61"></a>IBL_STATE_LUMINANCE&#160;</td><td class="fielddoc"><p>GPU-side analysis of HDR mean luminance. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79" name="a57e898a48bf9e63709f7774eb98bb0eaae5670c931b87651952df149aaabc4b79"></a>IBL_STATE_LUMINANCE_WAIT&#160;</td><td class="fielddoc"><p>Waiting for luminance GPU result. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e" name="a57e898a48bf9e63709f7774eb98bb0eaa4db0c759550aeafd8f9c4b523b39c85e"></a>IBL_STATE_SPECULAR_INIT&#160;</td><td class="fielddoc"><p>Preparation of specular map textures. </p>
 </td></tr>
