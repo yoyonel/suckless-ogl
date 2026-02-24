@@ -237,7 +237,6 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">app.h File Reference</div></div>
 </div><!--header-->
@@ -247,20 +246,17 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="adaptive__sampler_8h_source.html">adaptive_sampler.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fps_8h_source.html">fps.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="icosphere_8h_source.html">icosphere.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="effect__benchmark_8h_source.html">effect_benchmark.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="fps_8h_source.html">fps.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler__ui_8h_source.html">gpu_profiler_ui.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
@@ -269,7 +265,6 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="app__env_8h_source.html">app_env.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__input_8h_source.html">app_input.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="app__scene_8h_source.html">app_scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__ui_8h_source.html">app_ui.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for app.h:</div>
@@ -286,15 +281,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached uniform locations for PBR instanced rendering.  <a href="structInstancedUniforms.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDebugUniforms.html">DebugUniforms</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached uniform locations for debug line rendering.  <a href="structDebugUniforms.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached uniform locations for billboard rendering.  <a href="structBillboardUniforms.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structApp.html">App</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The central state container for the entire application.  <a href="structApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -305,27 +291,6 @@ Macros</h2></td></tr>
 <tr class="separator:a1c3f645cdb2e95fad70014638acef749"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a895ec888aa709e89ca4a83f777235343" id="r_a895ec888aa709e89ca4a83f777235343"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a895ec888aa709e89ca4a83f777235343">TRACY_SCREENSHOT_HEIGHT</a>&#160;&#160;&#160;180</td></tr>
 <tr class="separator:a895ec888aa709e89ca4a83f777235343"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a1e019cb397af76f46ed7eb54267cfb03" id="r_a1e019cb397af76f46ed7eb54267cfb03"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a> { <br />
-&#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4">TRANSITION_IDLE</a> = 0
-, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2">TRANSITION_LOADING</a>
-, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39">TRANSITION_WAIT_IBL</a>
-, <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4">TRANSITION_FADE_OUT</a>
-, <br />
-&#160;&#160;<a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22">TRANSITION_FADE_IN</a>
-<br />
- }</td></tr>
-<tr class="memdesc:a1e019cb397af76f46ed7eb54267cfb03"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the environment map transition.  <a href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">More...</a><br /></td></tr>
-<tr class="separator:a1e019cb397af76f46ed7eb54267cfb03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac88ebd5c5caa1b7a2710e32788e69c1" id="r_aac88ebd5c5caa1b7a2710e32788e69c1"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a> { <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0">SORTING_MODE_CPU_QSORT</a> = 0
-, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120">SORTING_MODE_CPU_RADIX</a>
-, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad">SORTING_MODE_GPU_BITONIC</a>
-, <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1">SORTING_MODE_COUNT</a>
- }</td></tr>
-<tr class="memdesc:aac88ebd5c5caa1b7a2710e32788e69c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorting algorithms for transparent billboards.  <a href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">More...</a><br /></td></tr>
-<tr class="separator:aac88ebd5c5caa1b7a2710e32788e69c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -347,7 +312,7 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Core application module and state container. </p>
-<p>This header defines the main <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> structure and the high-level orchestration API. It integrates all sub-modules (UI, Input, Env, Scene) for the final executable. </p>
+<p>This header defines the main <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> structure and the high-level orchestration API. It integrates all sub-modules (UI, Input, Env, <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>) for the final executable. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a895ec888aa709e89ca4a83f777235343" name="a895ec888aa709e89ca4a83f777235343"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a895ec888aa709e89ca4a83f777235343">&#9670;&#160;</a></span>TRACY_SCREENSHOT_HEIGHT</h2>
@@ -374,57 +339,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="aac88ebd5c5caa1b7a2710e32788e69c1" name="aac88ebd5c5caa1b7a2710e32788e69c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac88ebd5c5caa1b7a2710e32788e69c1">&#9670;&#160;</a></span>SortingMode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="app_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sorting algorithms for transparent billboards. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0" name="aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0"></a>SORTING_MODE_CPU_QSORT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120" name="aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120"></a>SORTING_MODE_CPU_RADIX&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad" name="aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad"></a>SORTING_MODE_GPU_BITONIC&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1" name="aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1"></a>SORTING_MODE_COUNT&#160;</td><td class="fielddoc"><p>Sentinel — must remain last. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
-<a id="a1e019cb397af76f46ed7eb54267cfb03" name="a1e019cb397af76f46ed7eb54267cfb03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e019cb397af76f46ed7eb54267cfb03">&#9670;&#160;</a></span>TransitionState</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="app_8h.html#a1e019cb397af76f46ed7eb54267cfb03">TransitionState</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>States for the environment map transition. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4" name="a1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4"></a>TRANSITION_IDLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2" name="a1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2"></a>TRANSITION_LOADING&#160;</td><td class="fielddoc"><p>Background loading while scene visible. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39" name="a1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39"></a>TRANSITION_WAIT_IBL&#160;</td><td class="fielddoc"><p>Stay Black (e.g. initial load). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4" name="a1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4"></a>TRANSITION_FADE_OUT&#160;</td><td class="fielddoc"><p>Old scene -&gt; Black. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22" name="a1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22"></a>TRANSITION_FADE_IN&#160;</td><td class="fielddoc"><p>Black -&gt; New scene. </p>
-</td></tr>
-</table>
 
 </div>
 </div>

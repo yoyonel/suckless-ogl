@@ -1,0 +1,63 @@
+<map id="scene_render" name="scene_render">
+<area shape="rect" id="Node000001" title="Renders the scene." alt="" coords="5,643,115,668"/>
+<area shape="rect" id="Node000002" href="$billboard__rendering_8c.html#ae5de263a9690fe980c5c71c5bb2fa9e4" title="Updates instance data on the GPU by copying from another GPU buffer (e.g. SSBO)." alt="" coords="171,282,346,322"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="59,642,63,586,76,504,89,458,107,413,131,370,161,332,165,328,168,332,165,336,135,373,112,415,94,460,82,505,68,587,64,642"/>
+<area shape="rect" id="Node000003" href="$scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a" title=" " alt="" coords="169,347,349,372"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="68,641,239,382,244,385,72,644"/>
+<area shape="rect" id="Node000015" href="$scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2" title=" " alt="" coords="169,520,348,545"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="75,640,114,611,161,578,216,549,218,554,164,583,117,615,79,645"/>
+<area shape="rect" id="Node000018" href="$skybox_8c.html#a536ba7358b462e00242dcee43f6483c4" title="Renders the skybox to the current framebuffer." alt="" coords="200,593,317,619"/>
+<area shape="poly" id="edge22_Node000001_Node000018" title=" " alt="" coords="111,640,193,619,194,625,112,645"/>
+<area shape="rect" id="Node000019" href="$sphere__sorting_8c.html#a9c8f41ff57b420b02e547264f3a593ba" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on CPU." alt="" coords="172,692,345,717"/>
+<area shape="poly" id="edge24_Node000001_Node000019" title=" " alt="" coords="112,665,194,686,193,691,111,671"/>
+<area shape="rect" id="Node000023" href="$sphere__sorting_8c.html#afb08c8f2f8876b56e8e5249aee59e6e1" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) using Radix Sort." alt="" coords="187,742,330,782"/>
+<area shape="poly" id="edge28_Node000001_Node000023" title=" " alt="" coords="78,666,116,696,164,726,181,734,178,739,161,731,113,700,75,670"/>
+<area shape="rect" id="Node000025" href="$sphere__sorting_8c.html#a1b1931d3ca9613a3f9cb779c42d51336" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on GPU." alt="" coords="171,807,346,832"/>
+<area shape="poly" id="edge32_Node000001_Node000025" title=" " alt="" coords="69,667,104,728,131,762,164,792,176,799,174,804,161,796,127,766,99,730,65,670"/>
+<area shape="rect" id="Node000027" href="$scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54" title=" " alt="" coords="163,856,355,881"/>
+<area shape="poly" id="edge34_Node000001_Node000027" title=" " alt="" coords="67,667,78,702,97,749,125,799,143,822,164,841,174,848,171,852,161,845,140,825,121,802,92,752,73,704,62,669"/>
+<area shape="rect" id="Node000004" href="$billboard__rendering_8c.html#a5a12a5448656197b1da5248f2787da94" title="Executes the instanced draw call for all billboards in the group." alt="" coords="433,5,595,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="337,344,353,332,376,297,384,261,382,225,375,189,369,152,367,115,376,78,401,42,418,28,421,33,405,45,381,80,372,116,374,151,381,188,388,224,389,261,381,299,357,336,340,349"/>
+<area shape="rect" id="Node000005" href="$billboard__rendering_8c.html#afa635ea0d13d0604b1d5d507d1313e8c" title="Draws wireframe boxes for each instance." alt="" coords="433,55,595,95"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="336,344,353,332,372,305,380,277,380,250,376,221,373,193,373,164,381,135,401,106,418,91,422,96,405,109,386,137,378,164,378,192,382,221,385,249,385,278,377,307,357,336,340,349"/>
+<area shape="rect" id="Node000006" href="$billboard__rendering_8c.html#a3af9088559e98707680a4e7168dc8c3f" title="Draws filled quads for each instance (for debug transparency)." alt="" coords="433,119,595,159"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="335,344,353,332,368,313,375,293,376,253,378,211,385,190,401,169,419,156,422,160,405,173,390,193,383,212,382,253,380,294,372,315,357,336,338,349"/>
+<area shape="rect" id="Node000007" href="$billboard__rendering_8c.html#a2f5f403a6fe0038b60acfeebd3ae9b7c" title="Draws wireframe quads for each instance." alt="" coords="433,183,595,223"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="332,344,353,332,364,321,370,309,376,284,382,259,389,246,401,233,419,222,422,226,404,237,394,249,387,261,381,285,375,311,368,324,356,336,335,349"/>
+<area shape="rect" id="Node000008" href="$render__utils_8c.html#a46e8c525ba0c0e1535cd2667b419a56c" title="Safely binds a texture to a specific unit, using a fallback if needed." alt="" coords="403,347,625,372"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="349,357,389,357,389,362,349,362"/>
+<area shape="rect" id="Node000009" href="$shader_8c.html#a52a09bf0e2b9843dffb619da33cce191" title=" " alt="" coords="443,396,585,421"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="326,369,435,391,434,396,325,375"/>
+<area shape="rect" id="Node000010" href="$shader_8c.html#ae3dae1b87c4546baa4d8a15731aeb11d" title=" " alt="" coords="434,445,594,471"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="282,370,336,400,404,430,433,439,431,444,402,435,334,405,280,375"/>
+<area shape="rect" id="Node000011" href="$shader_8c.html#a943266649f093c843f87fcfd86a9872f" title=" " alt="" coords="435,248,593,273"/>
+<area shape="poly" id="edge10_Node000003_Node000011" title=" " alt="" coords="325,344,353,332,368,320,376,308,386,295,401,282,421,274,423,278,404,287,390,298,381,311,371,324,356,336,327,349"/>
+<area shape="rect" id="Node000012" href="$shader_8c.html#a768d1f5ad9d92eb365f9f9c9dd050b7a" title=" " alt="" coords="435,495,593,520"/>
+<area shape="poly" id="edge11_Node000003_Node000012" title=" " alt="" coords="273,370,325,424,363,454,404,480,423,488,421,493,401,484,360,458,322,428,269,374"/>
+<area shape="rect" id="Node000013" href="$shader_8c.html#a3f165d2eafe768b4471f297b05b8db37" title=" " alt="" coords="435,297,593,323"/>
+<area shape="poly" id="edge12_Node000003_Node000013" title=" " alt="" coords="325,344,434,323,435,328,326,349"/>
+<area shape="rect" id="Node000014" href="$shader_8c.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="466,544,562,569"/>
+<area shape="poly" id="edge13_Node000003_Node000014" title=" " alt="" coords="269,371,288,403,318,447,357,491,404,529,428,540,453,548,452,553,426,545,401,534,353,495,314,450,284,406,264,373"/>
+<area shape="poly" id="edge16_Node000015_Node000008" title=" " alt="" coords="266,518,317,452,356,413,401,381,415,374,417,379,404,386,360,417,321,456,270,521"/>
+<area shape="poly" id="edge17_Node000015_Node000009" title=" " alt="" coords="273,518,327,475,363,451,402,430,428,421,430,426,404,435,366,455,330,479,276,522"/>
+<area shape="poly" id="edge18_Node000015_Node000010" title=" " alt="" coords="292,517,402,479,434,471,435,476,403,485,293,522"/>
+<area shape="poly" id="edge19_Node000015_Node000012" title=" " alt="" coords="348,521,421,514,422,519,348,526"/>
+<area shape="poly" id="edge20_Node000015_Node000014" title=" " alt="" coords="348,538,453,548,452,554,348,544"/>
+<area shape="rect" id="Node000016" href="$instanced__rendering_8c.html#af70d42b318f921586735530dc3a533e5" title="Executes an indexed instanced draw call." alt="" coords="430,593,598,619"/>
+<area shape="poly" id="edge15_Node000015_Node000016" title=" " alt="" coords="296,543,403,578,440,588,439,593,402,583,294,548"/>
+<area shape="rect" id="Node000017" href="$ssbo__rendering_8c.html#a286490847ce95171c2e25ac6adf3d8ed" title="Renders the group using instanced drawing." alt="" coords="447,643,581,668"/>
+<area shape="poly" id="edge21_Node000015_Node000017" title=" " alt="" coords="292,543,324,559,356,579,371,592,380,605,389,617,404,628,434,640,432,645,401,632,386,620,376,608,367,596,353,583,322,563,290,548"/>
+<area shape="poly" id="edge23_Node000018_Node000014" title=" " alt="" coords="317,592,452,566,453,571,318,597"/>
+<area shape="rect" id="Node000020" href="$sphere__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843" title=" " alt="" coords="423,692,605,717"/>
+<area shape="poly" id="edge25_Node000019_Node000020" title=" " alt="" coords="346,702,409,702,409,707,346,707"/>
+<area shape="rect" id="Node000021" href="$sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305" title="Grow CPU scratchpads to hold at least count elements." alt="" coords="435,741,593,767"/>
+<area shape="poly" id="edge26_Node000019_Node000021" title=" " alt="" coords="326,715,435,736,434,741,325,720"/>
+<area shape="rect" id="Node000022" href="$sphere__sorting_8c.html#ab58f7a4a3d93d58b169574ff8e95079d" title="Upload count sorted instances from the CPU temp buffer to the SSBO." alt="" coords="429,791,599,816"/>
+<area shape="poly" id="edge27_Node000019_Node000022" title=" " alt="" coords="327,715,356,728,371,740,381,753,390,765,404,776,421,784,419,789,401,780,386,768,376,756,368,744,353,732,324,720"/>
+<area shape="poly" id="edge29_Node000023_Node000021" title=" " alt="" coords="330,757,421,754,421,760,330,762"/>
+<area shape="poly" id="edge31_Node000023_Node000022" title=" " alt="" coords="330,771,422,786,421,791,330,776"/>
+<area shape="rect" id="Node000024" href="$sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de" title="Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using inte..." alt="" coords="433,840,595,865"/>
+<area shape="poly" id="edge30_Node000023_Node000024" title=" " alt="" coords="328,780,356,792,380,809,404,825,427,834,425,839,401,830,377,813,353,796,326,785"/>
+<area shape="rect" id="Node000026" href="$sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b" title=" " alt="" coords="467,889,561,915"/>
+<area shape="poly" id="edge33_Node000025_Node000026" title=" " alt="" coords="325,830,356,841,380,859,404,876,454,891,453,896,401,880,377,863,353,846,323,835"/>
+</map>

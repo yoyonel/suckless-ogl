@@ -6,7 +6,7 @@ var searchData=
   ['recording_5fcount_3',['recording_count',['../structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d',1,'GPUProfiler']]],
   ['rectsize_4',['rectSize',['../ui_8frag.html#a18570ad379d15b700b388ce9bde8b0ce',1,'ui.frag']]],
   ['recursion_5fdepth_5',['recursion_depth',['../structIncludeContext.html#a345b684fcf0fc4c2ffb5f54d27515ec9',1,'IncludeContext']]],
-  ['recycled_5fhdr_5ftex_6',['recycled_hdr_tex',['../structApp.html#ae5e7e7231f1bb4ad6cde6efab91dfa9d',1,'App']]],
+  ['recycled_5fhdr_5ftex_6',['recycled_hdr_tex',['../structScene.html#a606909f5d607437bdd11f2a9c7b43378',1,'Scene']]],
   ['renderer_7',['renderer',['../structGPUInfo.html#a4da36b59d887870f6c2f6aff9c17961c',1,'GPUInfo']]],
   ['request_5fcond_8',['request_cond',['../structAsyncLoader.html#a54bf2270f213ea632e0cf188a573f756',1,'AsyncLoader']]],
   ['request_5fmutex_9',['request_mutex',['../structAsyncLoader.html#a6d002824c4d54f63263a4194f4ba2144',1,'AsyncLoader']]],

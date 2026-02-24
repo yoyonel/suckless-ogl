@@ -1,39 +1,44 @@
 <map id="include/instanced_rendering.h" name="include/instanced_rendering.h">
-<area shape="rect" id="Node000001" title="Mesh&#45;based instanced rendering for spheres." alt="" coords="559,5,777,31"/>
-<area shape="rect" id="Node000002" href="$app_8h.html" title="Core application module and state container." alt="" coords="251,152,360,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="545,23,463,28,381,38,311,55,286,67,269,80,263,97,268,116,281,134,295,150,291,154,276,138,263,118,257,97,264,77,283,62,310,50,380,33,462,23,545,18"/>
-<area shape="rect" id="Node000003" href="$app_8c.html" title=" " alt="" coords="5,225,85,251"/>
-<area shape="poly" id="edge19_Node000001_Node000003" title=" " alt="" coords="546,27,405,44,330,60,257,81,224,95,193,113,135,154,88,195,58,227,54,223,85,192,131,150,190,108,222,90,255,76,328,54,404,39,545,22"/>
-<area shape="rect" id="Node000006" href="$app__scene_8c.html" title=" " alt="" coords="804,225,929,251"/>
-<area shape="poly" id="edge20_Node000001_Node000006" title=" " alt="" coords="714,34,752,52,793,78,831,110,860,151,867,170,870,191,871,225,865,225,865,191,862,172,855,153,827,114,789,82,749,57,712,39"/>
-<area shape="rect" id="Node000010" href="$billboard__rendering_8h.html" title="View&#45;aligned quad rendering (billboarding) for optimized sphere drawing." alt="" coords="279,79,489,104"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="610,37,431,81,429,76,609,31"/>
-<area shape="rect" id="Node000011" href="$billboard__rendering_8c.html" title=" " alt="" coords="435,152,618,177"/>
-<area shape="poly" id="edge21_Node000001_Node000011" title=" " alt="" coords="692,40,712,71,715,89,709,105,691,125,668,140,619,158,617,153,666,135,687,121,704,103,710,88,707,73,688,43"/>
-<area shape="rect" id="Node000012" href="$sphere__sorting_8h.html" title="Back&#45;to&#45;front sorting for transparent geometry." alt="" coords="513,79,695,104"/>
-<area shape="poly" id="edge14_Node000001_Node000012" title=" " alt="" coords="650,43,616,80,612,77,646,39"/>
-<area shape="rect" id="Node000013" href="$sphere__sorting_8c.html" title=" " alt="" coords="693,152,845,177"/>
-<area shape="poly" id="edge23_Node000001_Node000013" title=" " alt="" coords="706,36,731,54,753,77,762,96,768,117,772,152,767,152,763,118,757,98,748,80,728,57,703,40"/>
-<area shape="rect" id="Node000014" href="$instanced__rendering_8c.html" title=" " alt="" coords="921,79,1109,104"/>
-<area shape="poly" id="edge22_Node000001_Node000014" title=" " alt="" coords="738,31,959,76,958,81,737,36"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="251,184,86,228,85,223,250,178"/>
-<area shape="rect" id="Node000004" href="$app__env_8c.html" title=" " alt="" coords="110,225,221,251"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="272,186,189,227,187,223,269,181"/>
-<area shape="rect" id="Node000005" href="$app__input_8c.html" title=" " alt="" coords="245,225,365,251"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="308,191,308,225,303,225,303,191"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="374,174,379,175,586,199,792,223,804,224,804,230,792,228,585,204,378,180,373,179"/>
-<area shape="rect" id="Node000007" href="$app__ui_8c.html" title=" " alt="" coords="389,225,488,251"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="340,181,418,223,416,227,337,186"/>
-<area shape="rect" id="Node000008" href="$main_8c.html" title=" " alt="" coords="513,225,602,251"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="360,179,517,223,516,228,358,184"/>
-<area shape="rect" id="Node000009" href="$tracy__manager_8c.html" title=" " alt="" coords="626,225,779,251"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="374,176,639,223,638,228,373,181"/>
-<area shape="poly" id="edge10_Node000010_Node000002" title=" " alt="" coords="363,115,320,154,316,150,359,111"/>
-<area shape="poly" id="edge11_Node000010_Node000003" title=" " alt="" coords="321,110,256,129,188,154,117,192,63,227,60,223,114,188,186,150,254,124,320,105"/>
-<area shape="poly" id="edge12_Node000010_Node000006" title=" " alt="" coords="391,117,403,148,412,163,424,175,455,191,497,201,602,213,709,217,792,223,804,224,804,230,792,228,709,223,601,218,496,207,453,196,421,180,408,166,398,151,386,118"/>
-<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="420,108,505,149,502,154,418,112"/>
-<area shape="poly" id="edge15_Node000012_Node000002" title=" " alt="" coords="543,110,354,154,353,149,542,105"/>
-<area shape="poly" id="edge16_Node000012_Node000003" title=" " alt="" coords="505,109,356,131,239,155,211,166,182,180,72,228,70,223,180,175,208,161,238,149,355,126,504,103"/>
-<area shape="poly" id="edge17_Node000012_Node000006" title=" " alt="" coords="622,114,648,146,683,175,712,191,744,204,805,223,804,228,742,209,710,196,680,180,644,149,618,117"/>
-<area shape="poly" id="edge18_Node000012_Node000013" title=" " alt="" coords="644,107,743,149,741,154,642,112"/>
+<area shape="rect" id="Node000001" title="Mesh&#45;based instanced rendering for spheres." alt="" coords="258,5,475,31"/>
+<area shape="rect" id="Node000002" href="$billboard__rendering_8h.html" title="View&#45;aligned quad rendering (billboarding) for optimized sphere drawing." alt="" coords="191,79,401,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="347,43,309,80,306,77,344,39"/>
+<area shape="rect" id="Node000003" href="$scene_8h.html" title=" " alt="" coords="411,152,533,177"/>
+<area shape="poly" id="edge16_Node000001_Node000003" title=" " alt="" coords="387,40,416,77,467,150,462,153,411,80,383,43"/>
+<area shape="rect" id="Node000005" href="$app_8c.html" title=" " alt="" coords="391,299,471,324"/>
+<area shape="poly" id="edge23_Node000001_Node000005" title=" " alt="" coords="245,30,123,48,73,63,40,81,21,103,10,126,10,150,22,176,59,215,104,247,154,270,207,287,259,298,309,304,391,308,390,314,309,310,258,303,205,292,152,275,102,251,56,220,18,179,5,152,5,125,16,100,37,77,71,58,122,43,244,25"/>
+<area shape="rect" id="Node000011" href="$scene_8c.html" title=" " alt="" coords="318,225,413,251"/>
+<area shape="poly" id="edge26_Node000001_Node000011" title=" " alt="" coords="259,35,164,54,119,68,79,84,48,102,29,124,26,135,26,148,31,161,41,176,59,189,86,201,161,218,245,228,318,233,318,238,244,233,160,223,85,206,56,194,37,179,26,164,21,149,20,135,25,121,44,98,76,79,117,63,163,49,258,30"/>
+<area shape="rect" id="Node000012" href="$billboard__rendering_8c.html" title=" " alt="" coords="51,152,234,177"/>
+<area shape="poly" id="edge24_Node000001_Node000012" title=" " alt="" coords="267,37,221,54,181,81,167,97,157,117,147,152,142,151,152,115,162,94,177,77,219,49,265,32"/>
+<area shape="rect" id="Node000013" href="$sphere__sorting_8h.html" title="Back&#45;to&#45;front sorting for transparent geometry." alt="" coords="476,79,657,104"/>
+<area shape="poly" id="edge17_Node000001_Node000013" title=" " alt="" coords="413,33,535,76,533,81,411,38"/>
+<area shape="rect" id="Node000014" href="$sphere__sorting_8c.html" title=" " alt="" coords="659,152,811,177"/>
+<area shape="poly" id="edge27_Node000001_Node000014" title=" " alt="" coords="489,21,535,28,582,39,628,55,671,76,692,93,709,114,732,150,727,153,705,117,688,97,668,81,626,59,580,44,534,33,488,26"/>
+<area shape="rect" id="Node000015" href="$instanced__rendering_8c.html" title=" " alt="" coords="733,79,921,104"/>
+<area shape="poly" id="edge25_Node000001_Node000015" title=" " alt="" coords="455,30,753,76,752,81,454,35"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="338,107,444,149,442,154,336,112"/>
+<area shape="poly" id="edge13_Node000002_Node000005" title=" " alt="" coords="293,118,289,147,288,181,293,217,308,249,325,268,346,282,391,300,389,305,343,287,321,272,303,252,288,218,283,182,284,147,288,117"/>
+<area shape="poly" id="edge15_Node000002_Node000011" title=" " alt="" coords="310,116,362,224,357,226,305,118"/>
+<area shape="poly" id="edge14_Node000002_Node000012" title=" " alt="" coords="260,112,169,154,167,149,258,107"/>
+<area shape="rect" id="Node000004" href="$app_8h.html" title="Core application module and state container." alt="" coords="629,225,739,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="520,179,651,223,649,228,518,184"/>
+<area shape="poly" id="edge10_Node000003_Node000005" title=" " alt="" coords="468,192,437,299,432,298,462,190"/>
+<area shape="rect" id="Node000007" href="$app__input_8c.html" title=" " alt="" coords="495,299,615,324"/>
+<area shape="poly" id="edge11_Node000003_Node000007" title=" " alt="" coords="488,188,550,297,546,300,483,191"/>
+<area shape="poly" id="edge12_Node000003_Node000011" title=" " alt="" coords="445,187,384,227,381,223,442,183"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="631,257,472,301,470,296,630,252"/>
+<area shape="rect" id="Node000006" href="$app__env_8c.html" title=" " alt="" coords="930,299,1041,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="746,251,937,296,936,301,745,256"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="652,260,577,301,575,296,650,255"/>
+<area shape="rect" id="Node000008" href="$app__ui_8c.html" title=" " alt="" coords="1065,299,1164,324"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="753,247,1054,296,1066,298,1065,303,1053,301,752,252"/>
+<area shape="rect" id="Node000009" href="$main_8c.html" title=" " alt="" coords="639,299,729,324"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="687,264,687,299,681,299,681,264"/>
+<area shape="rect" id="Node000010" href="$tracy__manager_8c.html" title=" " alt="" coords="753,299,906,324"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="721,254,807,296,805,301,719,259"/>
+<area shape="poly" id="edge19_Node000013_Node000003" title=" " alt="" coords="542,114,489,154,486,150,539,110"/>
+<area shape="poly" id="edge18_Node000013_Node000004" title=" " alt="" coords="587,113,677,223,673,227,583,117"/>
+<area shape="poly" id="edge20_Node000013_Node000005" title=" " alt="" coords="566,118,560,148,548,179,524,217,496,251,446,301,442,297,492,248,519,214,543,176,555,146,561,117"/>
+<area shape="poly" id="edge21_Node000013_Node000011" title=" " alt="" coords="483,110,439,127,401,154,388,171,379,190,369,226,364,224,374,188,383,168,397,150,436,123,481,105"/>
+<area shape="poly" id="edge22_Node000013_Node000014" title=" " alt="" coords="607,107,708,149,706,154,605,112"/>
 </map>

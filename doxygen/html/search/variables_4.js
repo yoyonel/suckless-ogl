@@ -1,12 +1,12 @@
 var searchData=
 [
   ['data_0',['data',['../structUintArray.html#a5f32c89924c028f47649a51a8a113e05',1,'UintArray::data'],['../structLoadedBuffer.html#aab42ed78eb04e97315cb610877f4e0ae',1,'LoadedBuffer::data'],['../structVec3Array.html#abcb4235ab88d08c79c7583c8abaa59e4',1,'Vec3Array::data']]],
-  ['debug_5fline_5fshader_1',['debug_line_shader',['../structApp.html#a120d6946ca46137fa064117620dce551',1,'App']]],
+  ['debug_5fline_5fshader_1',['debug_line_shader',['../structScene.html#a1de43da8d37a4d86731078cf0593fcf0',1,'Scene']]],
   ['debug_5fmode_2',['debug_mode',['../structInstancedUniforms.html#a10826da1a338e48552f1a5f1b4018e45',1,'InstancedUniforms::debug_mode'],['../structBillboardUniforms.html#ad5b53914685903e90dd9f57753f699b3',1,'BillboardUniforms::debug_mode']]],
   ['debug_5forange_5fcolor_3',['DEBUG_ORANGE_COLOR',['../app__ui_8c.html#ad1f3586315e20b83affb3ed2018dbaef',1,'app_ui.c']]],
-  ['debug_5fshader_4',['debug_shader',['../structApp.html#a593e6f8848c12d61961f9e4e3b3b2a7c',1,'App']]],
+  ['debug_5fshader_4',['debug_shader',['../structScene.html#a896b30612f7921d033a63e983cc04d02',1,'Scene']]],
   ['debug_5ftext_5fy_5foffset_5',['DEBUG_TEXT_Y_OFFSET',['../app__ui_8c.html#ae527e2f8b8f74a9ae74728cf7e1eef0e',1,'app_ui.c']]],
-  ['debug_5funiforms_6',['debug_uniforms',['../structApp.html#a4bf451db2f01a23c893a6f0f17cb2f99',1,'App']]],
+  ['debug_5funiforms_6',['debug_uniforms',['../structScene.html#a49fd2adaae51e86db305a341efab4fdb',1,'Scene']]],
   ['debug_5fview_5fbits_7',['DEBUG_VIEW_BITS',['../effect__benchmark_8c.html#aad4decdb1046f72a12447643599656be',1,'effect_benchmark.c']]],
   ['debugmode_8',['debugmode',['../pbr__ibl__instanced_8frag.html#abaa039aa7232ce6ca78b8b31ff6fe556',1,'debugMode:&#160;pbr_ibl_instanced.frag'],['../pbr__ibl__billboard_8frag.html#abaa039aa7232ce6ca78b8b31ff6fe556',1,'debugMode:&#160;pbr_ibl_billboard.frag']]],
   ['decay_5ffactor_9',['decay_factor',['../structFpsCounter.html#a34e1065e92b525c81d91b2f58bac1173',1,'FpsCounter']]],
@@ -51,8 +51,8 @@ var searchData=
   ['dof_5ffocal_5fdistance_48',['dof_focal_distance',['../structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f',1,'PostProcessUBO']]],
   ['dof_5ffocal_5frange_49',['dof_focal_range',['../structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37',1,'PostProcessUBO']]],
   ['dof_5ffx_50',['dof_fx',['../structPostProcess.html#a5614c55f1fd52a32d3cfcaf5d40471b9',1,'PostProcess']]],
-  ['dummy_5fblack_5ftex_51',['dummy_black_tex',['../structApp.html#aa3dbad0c2109393a24a52307083d5cfa',1,'App::dummy_black_tex'],['../structPostProcess.html#a6ea1b406d08c336650597d8f17498a50',1,'PostProcess::dummy_black_tex']]],
-  ['dummy_5fwhite_5ftex_52',['dummy_white_tex',['../structApp.html#a62b2b5b4043ecf44fa494ca7e3af45ad',1,'App']]],
+  ['dummy_5fblack_5ftex_51',['dummy_black_tex',['../structPostProcess.html#a6ea1b406d08c336650597d8f17498a50',1,'PostProcess::dummy_black_tex'],['../structScene.html#a9230b9a4001e368b3c8291954e182aff',1,'Scene::dummy_black_tex']]],
+  ['dummy_5fwhite_5ftex_52',['dummy_white_tex',['../structScene.html#afe6107ed9611c6497b5336d3947e3310',1,'Scene']]],
   ['duration_5fms_53',['duration_ms',['../structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61',1,'GPUStage']]],
   ['duration_5fsampler_54',['duration_sampler',['../structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342',1,'GPUStage']]]
 ];

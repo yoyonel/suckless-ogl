@@ -5,7 +5,7 @@ var searchData=
   ['g_5flog_5flevel_2',['g_log_level',['../log_8c.html#af9d04d44ddd24cd181c91561df230cee',1,'log.c']]],
   ['gain_3',['gain',['../structColorGradingParams.html#a96692cdb4e1d9f93c5b65dd129a73825',1,'ColorGradingParams']]],
   ['gamma_4',['gamma',['../structColorGradingParams.html#a60c4e1aee5f6f26fa98eee89f5924dd2',1,'ColorGradingParams']]],
-  ['geometry_5',['geometry',['../structApp.html#a8f1346c71680ddd9b34a30915cd4295f',1,'App']]],
+  ['geometry_5',['geometry',['../structScene.html#ad301901a87741c2b2ad7660c752877bd',1,'Scene']]],
   ['global_5falpha_6',['global_alpha',['../structGPUProfilerUI.html#aa3aea768c0e27a27328b09024161b676',1,'GPUProfilerUI']]],
   ['global_5ftimer_7',['global_timer',['../structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76',1,'IBLCoordinator']]],
   ['globalalpha_8',['globalAlpha',['../ui_8frag.html#ab00cb5853fceb069c22f0e877646ea43',1,'ui.frag']]],

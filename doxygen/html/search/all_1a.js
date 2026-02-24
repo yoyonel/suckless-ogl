@@ -14,7 +14,7 @@ var searchData=
   ['recording_5fcount_11',['recording_count',['../structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d',1,'GPUProfiler']]],
   ['rectsize_12',['rectSize',['../ui_8frag.html#a18570ad379d15b700b388ce9bde8b0ce',1,'ui.frag']]],
   ['recursion_5fdepth_13',['recursion_depth',['../structIncludeContext.html#a345b684fcf0fc4c2ffb5f54d27515ec9',1,'IncludeContext']]],
-  ['recycled_5fhdr_5ftex_14',['recycled_hdr_tex',['../structApp.html#ae5e7e7231f1bb4ad6cde6efab91dfa9d',1,'App']]],
+  ['recycled_5fhdr_5ftex_14',['recycled_hdr_tex',['../structScene.html#a606909f5d607437bdd11f2a9c7b43378',1,'Scene']]],
   ['reference_20graphs_15',['API Reference &amp; Graphs',['../index.html',1,'']]],
   ['references_16',['References',['../md_docs_2billboard__optimization.html#autotoc_md15',1,'']]],
   ['render_5futils_2ec_17',['render_utils.c',['../render__utils_8c.html',1,'']]],

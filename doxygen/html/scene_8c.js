@@ -1,0 +1,27 @@
+var scene_8c =
+[
+    [ "MIN", "scene_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f", null ],
+    [ "compare_strings", "scene_8c.html#a8af94b56d6cef5f5143fd60907cb02f9", null ],
+    [ "scene_cleanup", "scene_8c.html#a544a31d29501a2854aee06c6011ec62d", null ],
+    [ "scene_cleanup_buffers", "scene_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d", null ],
+    [ "scene_cleanup_geometry_buffers", "scene_8c.html#a24bdb02de96abeaa6a2fbdc577022c24", null ],
+    [ "scene_cleanup_gpu_resources", "scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3", null ],
+    [ "scene_cleanup_pbr_shaders", "scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10", null ],
+    [ "scene_cleanup_shaders", "scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9", null ],
+    [ "scene_cleanup_textures", "scene_8c.html#a5d03299a2403acf2110589d4800f4b95", null ],
+    [ "scene_init", "scene_8c.html#ab37b3774644a51065a47e884ffc5e649", null ],
+    [ "scene_init_billboard_shader", "scene_8c.html#a3582b10c2ed28f888e173f6e65e62791", null ],
+    [ "scene_init_compute_resources", "scene_8c.html#ae1059056f3f15c15286cfec8e2ec2092", null ],
+    [ "scene_init_core_shaders", "scene_8c.html#abedb2b011728be61992e91d4a17dcdc6", null ],
+    [ "scene_init_instanced_shader", "scene_8c.html#a2c42faa2abd070918407798043140e3f", null ],
+    [ "scene_init_instancing", "scene_8c.html#a20db65b57334ddf3116de362f8e91af8", null ],
+    [ "scene_init_state", "scene_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb", null ],
+    [ "scene_render", "scene_8c.html#afacc27c12aee6cc929dfe2ccd4cc9406", null ],
+    [ "scene_render_billboards", "scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a", null ],
+    [ "scene_render_instanced", "scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2", null ],
+    [ "scene_scan_hdr_files", "scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972", null ],
+    [ "scene_update_gpu_buffers", "scene_8c.html#a97b3fbf4a92687b0b76a08b452daa63e", null ],
+    [ "stencil_begin_object_pass", "scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54", null ],
+    [ "HDR_EXTENSION", "scene_8c.html#addf3c4a8a43f871218486c07bbb28461", null ],
+    [ "HDR_TEXTURE_PATH", "scene_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3", null ]
+];

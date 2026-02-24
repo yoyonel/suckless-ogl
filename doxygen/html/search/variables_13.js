@@ -38,6 +38,6 @@ var searchData=
   ['transition_5falpha_35',['transition_alpha',['../structApp.html#a57e759e0783f3e53ec2fe4ec2ee47c03',1,'App']]],
   ['transition_5fduration_36',['transition_duration',['../structApp.html#a7f6b4a59ac7b9ddc64777118da5db285',1,'App']]],
   ['transition_5fprogress_37',['transition_progress',['../structGPUProfiler.html#a56882ff9250097d7543563e49c2db015',1,'GPUProfiler']]],
-  ['transition_5fsnapshot_5ftex_38',['transition_snapshot_tex',['../structApp.html#a73af719b80b8a0dc0be96e0545841815',1,'App']]],
+  ['transition_5fsnapshot_5ftex_38',['transition_snapshot_tex',['../structScene.html#abef61822b04cc32c8799ba9138dd0996',1,'Scene']]],
   ['transition_5fstate_39',['transition_state',['../structApp.html#aa708166b1a760930edb229dee6db3ce1',1,'App']]]
 ];

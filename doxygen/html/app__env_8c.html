@@ -248,7 +248,6 @@ $(document).ready(function(){initNavTree('app__env_8c.html',''); initResizable()
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
-<code>#include &lt;dirent.h&gt;</code><br />
 <code>#include &lt;float.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
@@ -261,11 +260,6 @@ Include dependency graph for app_env.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8af94b56d6cef5f5143fd60907cb02f9" id="r_a8af94b56d6cef5f5143fd60907cb02f9"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a8af94b56d6cef5f5143fd60907cb02f9">compare_strings</a> (const void *string_a, const void *string_b)</td></tr>
-<tr class="separator:a8af94b56d6cef5f5143fd60907cb02f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf888ef9851eecc3a98700e168300f51" id="r_aaf888ef9851eecc3a98700e168300f51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#aaf888ef9851eecc3a98700e168300f51">app_scan_hdr_files</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="memdesc:aaf888ef9851eecc3a98700e168300f51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scans the assets directory for HDR environment maps.  <br /></td></tr>
-<tr class="separator:aaf888ef9851eecc3a98700e168300f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb532f71626e9898396208f225c364e9" id="r_adb532f71626e9898396208f225c364e9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#adb532f71626e9898396208f225c364e9">app_load_env_map</a> (<a class="el" href="structApp.html">App</a> *app, const char *filename)</td></tr>
 <tr class="memdesc:adb532f71626e9898396208f225c364e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts an asynchronous load of an environment map.  <br /></td></tr>
 <tr class="separator:adb532f71626e9898396208f225c364e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,10 +286,6 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a73c65b37118d1d96e00ce15fb7e4b6d3" id="r_a73c65b37118d1d96e00ce15fb7e4b6d3"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#a73c65b37118d1d96e00ce15fb7e4b6d3">HDR_TEXTURE_PATH</a> = &quot;assets/textures/hdr&quot;</td></tr>
-<tr class="separator:a73c65b37118d1d96e00ce15fb7e4b6d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addf3c4a8a43f871218486c07bbb28461" id="r_addf3c4a8a43f871218486c07bbb28461"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#addf3c4a8a43f871218486c07bbb28461">HDR_EXTENSION</a> = &quot;.hdr&quot;</td></tr>
-<tr class="separator:addf3c4a8a43f871218486c07bbb28461"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf85965108ddb048b66205bcd09d87b6" id="r_acf85965108ddb048b66205bcd09d87b6"><td class="memItemLeft" align="right" valign="top">static const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__env_8c.html#acf85965108ddb048b66205bcd09d87b6">MAX_PATH_LENGTH</a> = 256</td></tr>
 <tr class="separator:acf85965108ddb048b66205bcd09d87b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -405,38 +395,6 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="aaf888ef9851eecc3a98700e168300f51" name="aaf888ef9851eecc3a98700e168300f51"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf888ef9851eecc3a98700e168300f51">&#9670;&#160;</a></span>app_scan_hdr_files()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void app_scan_hdr_files </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Scans the assets directory for HDR environment maps. </p>
-<p>Populates the list of available files in the application state. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd>Fills app-&gt;hdr_files and app-&gt;hdr_count. </dd></dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__env_8c_aaf888ef9851eecc3a98700e168300f51_cgraph.svg" width="335" height="36"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-
-</div>
-</div>
 <a id="a3f8407133e946387ed973afb98955c5c" name="a3f8407133e946387ed973afb98955c5c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3f8407133e946387ed973afb98955c5c">&#9670;&#160;</a></span>app_trigger_env_transition()</h2>
 
@@ -526,42 +484,6 @@ Here is the call graph for this function:</div>
           <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8af94b56d6cef5f5143fd60907cb02f9" name="a8af94b56d6cef5f5143fd60907cb02f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8af94b56d6cef5f5143fd60907cb02f9">&#9670;&#160;</a></span>compare_strings()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static int compare_strings </td>
-          <td>(</td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>string_a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const void *&#160;</td>
-          <td class="paramname"><em>string_b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -695,50 +617,6 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="addf3c4a8a43f871218486c07bbb28461" name="addf3c4a8a43f871218486c07bbb28461"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addf3c4a8a43f871218486c07bbb28461">&#9670;&#160;</a></span>HDR_EXTENSION</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* const HDR_EXTENSION = &quot;.hdr&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a73c65b37118d1d96e00ce15fb7e4b6d3" name="a73c65b37118d1d96e00ce15fb7e4b6d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73c65b37118d1d96e00ce15fb7e4b6d3">&#9670;&#160;</a></span>HDR_TEXTURE_PATH</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const char* const HDR_TEXTURE_PATH = &quot;assets/textures/hdr&quot;</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="acf85965108ddb048b66205bcd09d87b6" name="acf85965108ddb048b66205bcd09d87b6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf85965108ddb048b66205bcd09d87b6">&#9670;&#160;</a></span>MAX_PATH_LENGTH</h2>
 

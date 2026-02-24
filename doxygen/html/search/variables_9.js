@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ibl_5fcoord_0',['ibl_coord',['../structApp.html#a225558272f41ea1f76113d7e4f586412',1,'App']]],
+  ['ibl_5fcoord_0',['ibl_coord',['../structScene.html#afb33c450fd5349271fcbf6ef282498da',1,'Scene']]],
   ['ibl_5firradiance_5fhardware_5fslices_1',['IBL_IRRADIANCE_HARDWARE_SLICES',['../ibl__coordinator_8c.html#a50f2c8aeca54eeb71bd72a8fdeaf1c45',1,'ibl_coordinator.c']]],
   ['ibl_5flog_5flabel_5fsize_2',['IBL_LOG_LABEL_SIZE',['../ibl__coordinator_8c.html#aa5ac2b4f077bc45d4ea556539a84db38',1,'ibl_coordinator.c']]],
   ['ibl_5fsoftware_5ffallback_5fslices_3',['IBL_SOFTWARE_FALLBACK_SLICES',['../ibl__coordinator_8c.html#a6494d63e0ff1eb4d9ec732a056ab655c',1,'ibl_coordinator.c']]],
@@ -20,8 +20,8 @@ var searchData=
   ['instance_5fcount_17',['instance_count',['../structBillboardGroup.html#a8f89d6fd42c03ce1bf1f7b4c1b2e9aab',1,'BillboardGroup::instance_count'],['../structInstancedGroup.html#a77bc4bf9643744a6f8837a583b9f5237',1,'InstancedGroup::instance_count'],['../structSSBOGroup.html#a9ecc6353d561eeb1c521d0fca1260d32',1,'SSBOGroup::instance_count']]],
   ['instance_5fssbo_18',['instance_ssbo',['../structSphereSorter.html#a7fcbbb2107014ba9588957e52e9d6667',1,'SphereSorter']]],
   ['instance_5fvbo_19',['instance_vbo',['../structInstancedGroup.html#a72212d073a8f1139834b646f466750f4',1,'InstancedGroup::instance_vbo'],['../structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77',1,'BillboardGroup::instance_vbo']]],
-  ['instanced_5fgroup_20',['instanced_group',['../structApp.html#a2ce8560fb41d73b278518669de8e7e54',1,'App']]],
-  ['instanced_5funiforms_21',['instanced_uniforms',['../structApp.html#a2c64ad6ac05adb0bc1020ceb640ede40',1,'App']]],
+  ['instanced_5fgroup_20',['instanced_group',['../structScene.html#ae7d6fc5a84cd03ad435946e8841cedad',1,'Scene']]],
+  ['instanced_5funiforms_21',['instanced_uniforms',['../structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f',1,'Scene']]],
   ['intensity_22',['intensity',['../structGrainParams.html#aa4897c87dbd8c4110503a4fb7d5304a6',1,'GrainParams::intensity'],['../structVignetteParams.html#af9f66376e2484c96e86f2418e9885e8f',1,'VignetteParams::intensity']]],
   ['intensity_5fhighlights_23',['intensity_highlights',['../structGrainParams.html#a4bfc5e3c5127242d9eac2516bd39d8f7',1,'GrainParams']]],
   ['intensity_5fmidtones_24',['intensity_midtones',['../structGrainParams.html#a5e968a3c61cdb03ea6d1751fdac683ce',1,'GrainParams']]],
@@ -31,7 +31,7 @@ var searchData=
   ['iridiance_5fmap_5fsize_28',['IRIDIANCE_MAP_SIZE',['../group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743',1,'app_settings.h']]],
   ['irr_5funiforms_29',['irr_uniforms',['../structIBLCoordinator.html#a37cf9dd1cf7fdda6b709b93b9ba4b89e',1,'IBLCoordinator']]],
   ['irradiance_5fmap_30',['irradiance_map',['../structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed',1,'BillboardUniforms::irradiance_map'],['../structInstancedUniforms.html#a9dc453c6b3f382ea9fd87f58a5b6320b',1,'InstancedUniforms::irradiance_map']]],
-  ['irradiance_5ftex_31',['irradiance_tex',['../structApp.html#a3cdbbffd7d0e304f6b6dbf2d7c7e0a09',1,'App']]],
+  ['irradiance_5ftex_31',['irradiance_tex',['../structScene.html#a87c367403d591b6b1919a8d92d9bb68d',1,'Scene']]],
   ['irradiancemap_32',['irradiancemap',['../pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_billboard.frag'],['../pbr__ibl__instanced_8frag.html#a317edb6278f8ecb22dd5f771eb813623',1,'irradianceMap:&#160;pbr_ibl_instanced.frag']]],
   ['is_5ffirst_5fload_33',['is_first_load',['../structApp.html#a5113726436bc601bb7eac489894799a9',1,'App']]],
   ['is_5ffullscreen_34',['is_fullscreen',['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App']]],

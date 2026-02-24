@@ -4,7 +4,7 @@ var searchData=
   ['mant_5fmask_1',['MANT_MASK',['../simd__utils_8c.html#a814a9682cd8de55bb93ee89566af0149',1,'simd_utils.c']]],
   ['mant_5fshift_5fdiff_2',['MANT_SHIFT_DIFF',['../simd__utils_8c.html#a8bbed6212f461e6df24192674963aef7',1,'simd_utils.c']]],
   ['margin_5fy_3',['MARGIN_Y',['../gpu__profiler__ui_8c.html#acc00a78ce96d4bb641995567512e20ff',1,'gpu_profiler_ui.c']]],
-  ['material_5flib_4',['material_lib',['../structApp.html#a64496c91714395d84b9c6ec831be7ee5',1,'App']]],
+  ['material_5flib_4',['material_lib',['../structScene.html#a8e5068f97bbee1f5c72cc9dfce3e6ab0',1,'Scene']]],
   ['materials_5',['materials',['../structMaterialLib.html#a1421f7bc086ca3e77678beba8fe2c37f',1,'MaterialLib']]],
   ['max_5fcamera_5fdistance_6',['MAX_CAMERA_DISTANCE',['../group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae',1,'app_settings.h']]],
   ['max_5fenv_5flod_7',['MAX_ENV_LOD',['../group__Environment.html#ga49fb4d7500162560be451c22d8544de5',1,'app_settings.h']]],

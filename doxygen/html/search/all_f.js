@@ -6,7 +6,7 @@ var searchData=
   ['gain_3',['gain',['../structColorGradingParams.html#a96692cdb4e1d9f93c5b65dd129a73825',1,'ColorGradingParams']]],
   ['gamma_4',['gamma',['../structColorGradingParams.html#a60c4e1aee5f6f26fa98eee89f5924dd2',1,'ColorGradingParams']]],
   ['generation_5',['Geometry Generation',['../group__Geometry.html',1,'']]],
-  ['geometry_6',['geometry',['../structApp.html#a8f1346c71680ddd9b34a30915cd4295f',1,'App']]],
+  ['geometry_6',['geometry',['../structScene.html#ad301901a87741c2b2ad7660c752877bd',1,'Scene']]],
   ['geometry_20generation_7',['Geometry Generation',['../group__Geometry.html',1,'']]],
   ['geometry_20xz_20plane_8',['Geometry (XZ Plane)',['../md_docs_2billboard__optimization.html#autotoc_md3',1,'']]],
   ['get_5fdir_5ffrom_5fpath_9',['get_dir_from_path',['../shader_8c.html#af175eada3763b4ece51e0344ee4a0da0',1,'shader.c']]],

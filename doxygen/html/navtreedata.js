@@ -79,15 +79,15 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"billboard__rendering_8c.html#a2e879f800244b637740be72363feeb04",
-"gl__debug_8h.html",
-"icosphere_8c.html#a51591cf51bdd6c1f6015532422e7770e",
-"pbr__ibl__instanced_8vert.html#acdef7a1fd863a6d3770c1268cb06add3",
-"postprocess__input_8h_source.html",
-"structApp.html#a225558272f41ea1f76113d7e4f586412",
-"structGPUProfiler.html",
-"structPostProcessUBO.html#a775f7afa7348f5b96c8f199cf0cfe433",
-"ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a"
+"bloom__upsample_8frag.html#a54baa6c59f107ffa02d72d3bb6747231",
+"globals_i.html",
+"instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884",
+"perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e",
+"render__utils_8c.html#a60b35229c13299bba83a2d47ed4c1013",
+"structApp.html#a24598a67c7334e2d8116c4cb3f1a7e5a",
+"structGPUStageRAII.html",
+"structScene.html",
+"ui_8h.html#af4b8d38bd43df2b9b59611b054408f74"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

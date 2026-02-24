@@ -27,7 +27,7 @@ var searchData=
   ['current_5feffect_5fidx_24',['current_effect_idx',['../structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d',1,'EffectBenchmark']]],
   ['current_5fenv_5freq_25',['current_env_req',['../structApp.html#a851ca1f79d640da0ec812795d9b037fb',1,'App']]],
   ['current_5fexposure_26',['current_exposure',['../structApp.html#a6c3d3f190ee68cb587cc37f18dfca5e9',1,'App']]],
-  ['current_5fhdr_5findex_27',['current_hdr_index',['../structApp.html#ab1a4d26d5463ca7af068c982243a29c2',1,'App']]],
+  ['current_5fhdr_5findex_27',['current_hdr_index',['../structScene.html#a49964588aac3d2398c4f589c1c9f2d0a',1,'Scene']]],
   ['current_5fmip_28',['current_mip',['../structIBLCoordinator.html#a818d7b51bbb57fb8ebbc5d80a8740def',1,'IBLCoordinator']]],
   ['current_5frequest_29',['current_request',['../structAsyncLoader.html#abe97105817d49e395021799eade9d865',1,'AsyncLoader']]],
   ['current_5fslice_30',['current_slice',['../structIBLCoordinator.html#a10da02b0b88ef2d95100507a4fd04193',1,'IBLCoordinator']]],

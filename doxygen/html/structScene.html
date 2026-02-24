@@ -1,0 +1,1089 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Scene Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+  jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="topics.html"><span>Topics</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect"                onmouseover="return searchBox.OnSearchSelectShow()"                onmouseout="return searchBox.OnSearchSelectHide()">&#160;</span>
+          <input type="text" id="MSearchField" value="" placeholder="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('structScene.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle"><div class="title">Scene Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Encapsulates all 3D scene data, geometry, and rendering state.  
+ <a href="structScene.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="scene_8h_source.html">scene.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for Scene:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="structScene__coll__graph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div></div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:ad301901a87741c2b2ad7660c752877bd" id="r_ad301901a87741c2b2ad7660c752877bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ad301901a87741c2b2ad7660c752877bd">geometry</a></td></tr>
+<tr class="separator:ad301901a87741c2b2ad7660c752877bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7d6fc5a84cd03ad435946e8841cedad" id="r_ae7d6fc5a84cd03ad435946e8841cedad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstancedGroup.html">InstancedGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae7d6fc5a84cd03ad435946e8841cedad">instanced_group</a></td></tr>
+<tr class="separator:ae7d6fc5a84cd03ad435946e8841cedad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1108ce3d3c22801c2a346c2d42d93ee8" id="r_a1108ce3d3c22801c2a346c2d42d93ee8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBillboardGroup.html">BillboardGroup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a1108ce3d3c22801c2a346c2d42d93ee8">billboard_group</a></td></tr>
+<tr class="separator:a1108ce3d3c22801c2a346c2d42d93ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62cff0524fd7647c63bd991622587c36" id="r_a62cff0524fd7647c63bd991622587c36"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSphereSorter.html">SphereSorter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a62cff0524fd7647c63bd991622587c36">sphere_sorter</a></td></tr>
+<tr class="separator:a62cff0524fd7647c63bd991622587c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fb0e29cd355adce1c6348f6304507b0" id="r_a8fb0e29cd355adce1c6348f6304507b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a8fb0e29cd355adce1c6348f6304507b0">sphere_instances</a></td></tr>
+<tr class="separator:a8fb0e29cd355adce1c6348f6304507b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af7f2d638e93fa251d6e0fa95c709cc" id="r_a7af7f2d638e93fa251d6e0fa95c709cc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a7af7f2d638e93fa251d6e0fa95c709cc">sphere_instance_count</a></td></tr>
+<tr class="separator:a7af7f2d638e93fa251d6e0fa95c709cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d44e91b19d9417ecabe9d4c01f715f1" id="r_a0d44e91b19d9417ecabe9d4c01f715f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSkybox.html">Skybox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a0d44e91b19d9417ecabe9d4c01f715f1">skybox</a></td></tr>
+<tr class="separator:a0d44e91b19d9417ecabe9d4c01f715f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5068f97bbee1f5c72cc9dfce3e6ab0" id="r_a8e5068f97bbee1f5c72cc9dfce3e6ab0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMaterialLib.html">MaterialLib</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a8e5068f97bbee1f5c72cc9dfce3e6ab0">material_lib</a></td></tr>
+<tr class="separator:a8e5068f97bbee1f5c72cc9dfce3e6ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae342887e9c7f68fb7d67ad5b61bf8420" id="r_ae342887e9c7f68fb7d67ad5b61bf8420"><td class="memItemLeft" align="right" valign="top">char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae342887e9c7f68fb7d67ad5b61bf8420">hdr_files</a></td></tr>
+<tr class="separator:ae342887e9c7f68fb7d67ad5b61bf8420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82f7aa8bcae11baa53fd9d281a4de486" id="r_a82f7aa8bcae11baa53fd9d281a4de486"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a82f7aa8bcae11baa53fd9d281a4de486">hdr_count</a></td></tr>
+<tr class="separator:a82f7aa8bcae11baa53fd9d281a4de486"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49964588aac3d2398c4f589c1c9f2d0a" id="r_a49964588aac3d2398c4f589c1c9f2d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a49964588aac3d2398c4f589c1c9f2d0a">current_hdr_index</a></td></tr>
+<tr class="separator:a49964588aac3d2398c4f589c1c9f2d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb33c450fd5349271fcbf6ef282498da" id="r_afb33c450fd5349271fcbf6ef282498da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#afb33c450fd5349271fcbf6ef282498da">ibl_coord</a></td></tr>
+<tr class="separator:afb33c450fd5349271fcbf6ef282498da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a278672880c9534ed393007884e01e872" id="r_a278672880c9534ed393007884e01e872"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a278672880c9534ed393007884e01e872">pbr_instanced_shader</a></td></tr>
+<tr class="separator:a278672880c9534ed393007884e01e872"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a963fa306ad4c6a1745d0419a3698df32" id="r_a963fa306ad4c6a1745d0419a3698df32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a963fa306ad4c6a1745d0419a3698df32">pbr_billboard_shader</a></td></tr>
+<tr class="separator:a963fa306ad4c6a1745d0419a3698df32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a896b30612f7921d033a63e983cc04d02" id="r_a896b30612f7921d033a63e983cc04d02"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a896b30612f7921d033a63e983cc04d02">debug_shader</a></td></tr>
+<tr class="separator:a896b30612f7921d033a63e983cc04d02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1de43da8d37a4d86731078cf0593fcf0" id="r_a1de43da8d37a4d86731078cf0593fcf0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a1de43da8d37a4d86731078cf0593fcf0">debug_line_shader</a></td></tr>
+<tr class="separator:a1de43da8d37a4d86731078cf0593fcf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1784804cde60f3b5baea704da6bb988" id="r_ac1784804cde60f3b5baea704da6bb988"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ac1784804cde60f3b5baea704da6bb988">skybox_shader</a></td></tr>
+<tr class="separator:ac1784804cde60f3b5baea704da6bb988"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9e6fed64be97b01c4cd849b1a56cdea" id="r_ae9e6fed64be97b01c4cd849b1a56cdea"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae9e6fed64be97b01c4cd849b1a56cdea">sphere_vao</a></td></tr>
+<tr class="separator:ae9e6fed64be97b01c4cd849b1a56cdea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affff999023bb3936a2e625629a29b0be" id="r_affff999023bb3936a2e625629a29b0be"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#affff999023bb3936a2e625629a29b0be">sphere_vbo</a></td></tr>
+<tr class="separator:affff999023bb3936a2e625629a29b0be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7c20bb9075e9c4b4639eb1176108ae7" id="r_ae7c20bb9075e9c4b4639eb1176108ae7"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae7c20bb9075e9c4b4639eb1176108ae7">sphere_nbo</a></td></tr>
+<tr class="separator:ae7c20bb9075e9c4b4639eb1176108ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4e277adb39a677028625e5948a8513e" id="r_ae4e277adb39a677028625e5948a8513e"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae4e277adb39a677028625e5948a8513e">sphere_ebo</a></td></tr>
+<tr class="separator:ae4e277adb39a677028625e5948a8513e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0dac4c2a74b1a604666ca3017c49a73" id="r_af0dac4c2a74b1a604666ca3017c49a73"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#af0dac4c2a74b1a604666ca3017c49a73">quad_vbo</a></td></tr>
+<tr class="separator:af0dac4c2a74b1a604666ca3017c49a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae60c52bbdaa90bfc0139619469f12a13" id="r_ae60c52bbdaa90bfc0139619469f12a13"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae60c52bbdaa90bfc0139619469f12a13">wire_cube_vbo</a></td></tr>
+<tr class="separator:ae60c52bbdaa90bfc0139619469f12a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11763573f4e2779706ec30d78a126872" id="r_a11763573f4e2779706ec30d78a126872"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a11763573f4e2779706ec30d78a126872">wire_quad_vbo</a></td></tr>
+<tr class="separator:a11763573f4e2779706ec30d78a126872"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51beb08b2468288563d0a7c4db51717a" id="r_a51beb08b2468288563d0a7c4db51717a"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a51beb08b2468288563d0a7c4db51717a">hdr_texture</a></td></tr>
+<tr class="separator:a51beb08b2468288563d0a7c4db51717a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a606909f5d607437bdd11f2a9c7b43378" id="r_a606909f5d607437bdd11f2a9c7b43378"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a606909f5d607437bdd11f2a9c7b43378">recycled_hdr_tex</a></td></tr>
+<tr class="separator:a606909f5d607437bdd11f2a9c7b43378"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ee995666133cc13650add76abcda8af" id="r_a3ee995666133cc13650add76abcda8af"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a3ee995666133cc13650add76abcda8af">spec_prefiltered_tex</a></td></tr>
+<tr class="separator:a3ee995666133cc13650add76abcda8af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87c367403d591b6b1919a8d92d9bb68d" id="r_a87c367403d591b6b1919a8d92d9bb68d"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a87c367403d591b6b1919a8d92d9bb68d">irradiance_tex</a></td></tr>
+<tr class="separator:a87c367403d591b6b1919a8d92d9bb68d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7a1b0230df515278d99b1b5add95cf1" id="r_ab7a1b0230df515278d99b1b5add95cf1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ab7a1b0230df515278d99b1b5add95cf1">brdf_lut_tex</a></td></tr>
+<tr class="separator:ab7a1b0230df515278d99b1b5add95cf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03c8dd70df346a0d4a5951afd5a6ee33" id="r_a03c8dd70df346a0d4a5951afd5a6ee33"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a03c8dd70df346a0d4a5951afd5a6ee33">empty_vao</a></td></tr>
+<tr class="separator:a03c8dd70df346a0d4a5951afd5a6ee33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb4ff37f1825886c24ae005fb82037d1" id="r_afb4ff37f1825886c24ae005fb82037d1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#afb4ff37f1825886c24ae005fb82037d1">shader_spmap</a></td></tr>
+<tr class="separator:afb4ff37f1825886c24ae005fb82037d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3a7e2349cf38e24aed8fdc8b4580b7b" id="r_ad3a7e2349cf38e24aed8fdc8b4580b7b"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ad3a7e2349cf38e24aed8fdc8b4580b7b">shader_irmap</a></td></tr>
+<tr class="separator:ad3a7e2349cf38e24aed8fdc8b4580b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16003a795d87f198bd0837de8257d6a8" id="r_a16003a795d87f198bd0837de8257d6a8"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a16003a795d87f198bd0837de8257d6a8">shader_lum_pass1</a></td></tr>
+<tr class="separator:a16003a795d87f198bd0837de8257d6a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d6dc5a9ef8fa0c35060866d22402a06" id="r_a8d6dc5a9ef8fa0c35060866d22402a06"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a8d6dc5a9ef8fa0c35060866d22402a06">shader_lum_pass2</a></td></tr>
+<tr class="separator:a8d6dc5a9ef8fa0c35060866d22402a06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9230b9a4001e368b3c8291954e182aff" id="r_a9230b9a4001e368b3c8291954e182aff"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a9230b9a4001e368b3c8291954e182aff">dummy_black_tex</a></td></tr>
+<tr class="separator:a9230b9a4001e368b3c8291954e182aff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe6107ed9611c6497b5336d3947e3310" id="r_afe6107ed9611c6497b5336d3947e3310"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#afe6107ed9611c6497b5336d3947e3310">dummy_white_tex</a></td></tr>
+<tr class="separator:afe6107ed9611c6497b5336d3947e3310"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37847e95781840a840af5a08112e6673" id="r_a37847e95781840a840af5a08112e6673"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a37847e95781840a840af5a08112e6673">lum_ssbo</a> [2]</td></tr>
+<tr class="separator:a37847e95781840a840af5a08112e6673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abef61822b04cc32c8799ba9138dd0996" id="r_abef61822b04cc32c8799ba9138dd0996"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#abef61822b04cc32c8799ba9138dd0996">transition_snapshot_tex</a></td></tr>
+<tr class="separator:abef61822b04cc32c8799ba9138dd0996"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7244b4a9b48c72027c9c3c2a030b8c5" id="r_ae7244b4a9b48c72027c9c3c2a030b8c5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae7244b4a9b48c72027c9c3c2a030b8c5">wireframe</a></td></tr>
+<tr class="separator:ae7244b4a9b48c72027c9c3c2a030b8c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8fcc2996ea8ea2a31ca3d53ba7481de" id="r_ab8fcc2996ea8ea2a31ca3d53ba7481de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ab8fcc2996ea8ea2a31ca3d53ba7481de">billboard_mode</a></td></tr>
+<tr class="separator:ab8fcc2996ea8ea2a31ca3d53ba7481de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a021aca187df5cebae56ecb1a5286ca9a" id="r_a021aca187df5cebae56ecb1a5286ca9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a021aca187df5cebae56ecb1a5286ca9a">sorting_mode</a></td></tr>
+<tr class="separator:a021aca187df5cebae56ecb1a5286ca9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80f642024beb20d09fcc2ee15d33744" id="r_ac80f642024beb20d09fcc2ee15d33744"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ac80f642024beb20d09fcc2ee15d33744">pbr_debug_mode</a></td></tr>
+<tr class="separator:ac80f642024beb20d09fcc2ee15d33744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a365027ddce9dabf851566fa1a853140d" id="r_a365027ddce9dabf851566fa1a853140d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a365027ddce9dabf851566fa1a853140d">show_envmap</a></td></tr>
+<tr class="separator:a365027ddce9dabf851566fa1a853140d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5276004b427bf870610a6265c263b987" id="r_a5276004b427bf870610a6265c263b987"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a5276004b427bf870610a6265c263b987">env_lod</a></td></tr>
+<tr class="separator:a5276004b427bf870610a6265c263b987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33d1964d8a1f5096d06147fa910791f5" id="r_a33d1964d8a1f5096d06147fa910791f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a33d1964d8a1f5096d06147fa910791f5">subdivisions</a></td></tr>
+<tr class="separator:a33d1964d8a1f5096d06147fa910791f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe2548d91bae8e908c5f2e8e2b9e0a8a" id="r_abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a">billboard_uniforms</a></td></tr>
+<tr class="separator:abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24297c4f9eb1b50fcdb2496a41b26e0f" id="r_a24297c4f9eb1b50fcdb2496a41b26e0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f">instanced_uniforms</a></td></tr>
+<tr class="separator:a24297c4f9eb1b50fcdb2496a41b26e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49fd2adaae51e86db305a341efab4fdb" id="r_a49fd2adaae51e86db305a341efab4fdb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDebugUniforms.html">DebugUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a49fd2adaae51e86db305a341efab4fdb">debug_uniforms</a></td></tr>
+<tr class="separator:a49fd2adaae51e86db305a341efab4fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Encapsulates all 3D scene data, geometry, and rendering state. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a1108ce3d3c22801c2a346c2d42d93ee8" name="a1108ce3d3c22801c2a346c2d42d93ee8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1108ce3d3c22801c2a346c2d42d93ee8">&#9670;&#160;</a></span>billboard_group</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structBillboardGroup.html">BillboardGroup</a> Scene::billboard_group</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Managed buffers for billboards. </p>
+
+</div>
+</div>
+<a id="ab8fcc2996ea8ea2a31ca3d53ba7481de" name="ab8fcc2996ea8ea2a31ca3d53ba7481de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8fcc2996ea8ea2a31ca3d53ba7481de">&#9670;&#160;</a></span>billboard_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::billboard_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Toggle for billboard rendering path. </p>
+
+</div>
+</div>
+<a id="abe2548d91bae8e908c5f2e8e2b9e0a8a" name="abe2548d91bae8e908c5f2e8e2b9e0a8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe2548d91bae8e908c5f2e8e2b9e0a8a">&#9670;&#160;</a></span>billboard_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a> Scene::billboard_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
+
+</div>
+</div>
+<a id="ab7a1b0230df515278d99b1b5add95cf1" name="ab7a1b0230df515278d99b1b5add95cf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7a1b0230df515278d99b1b5add95cf1">&#9670;&#160;</a></span>brdf_lut_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::brdf_lut_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared BRDF lookup table. </p>
+
+</div>
+</div>
+<a id="a49964588aac3d2398c4f589c1c9f2d0a" name="a49964588aac3d2398c4f589c1c9f2d0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49964588aac3d2398c4f589c1c9f2d0a">&#9670;&#160;</a></span>current_hdr_index</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::current_hdr_index</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Index of active HDR in file list. </p>
+
+</div>
+</div>
+<a id="a1de43da8d37a4d86731078cf0593fcf0" name="a1de43da8d37a4d86731078cf0593fcf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1de43da8d37a4d86731078cf0593fcf0">&#9670;&#160;</a></span>debug_line_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* Scene::debug_line_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> for wireframe lines. </p>
+
+</div>
+</div>
+<a id="a896b30612f7921d033a63e983cc04d02" name="a896b30612f7921d033a63e983cc04d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a896b30612f7921d033a63e983cc04d02">&#9670;&#160;</a></span>debug_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* Scene::debug_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Generic debug/visualization shader. </p>
+
+</div>
+</div>
+<a id="a49fd2adaae51e86db305a341efab4fdb" name="a49fd2adaae51e86db305a341efab4fdb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49fd2adaae51e86db305a341efab4fdb">&#9670;&#160;</a></span>debug_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structDebugUniforms.html">DebugUniforms</a> Scene::debug_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
+
+</div>
+</div>
+<a id="a9230b9a4001e368b3c8291954e182aff" name="a9230b9a4001e368b3c8291954e182aff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9230b9a4001e368b3c8291954e182aff">&#9670;&#160;</a></span>dummy_black_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::dummy_black_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Safe fallback (0,0,0,1). </p>
+
+</div>
+</div>
+<a id="afe6107ed9611c6497b5336d3947e3310" name="afe6107ed9611c6497b5336d3947e3310"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe6107ed9611c6497b5336d3947e3310">&#9670;&#160;</a></span>dummy_white_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::dummy_white_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Safe fallback (1,1,1,1). </p>
+
+</div>
+</div>
+<a id="a03c8dd70df346a0d4a5951afd5a6ee33" name="a03c8dd70df346a0d4a5951afd5a6ee33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03c8dd70df346a0d4a5951afd5a6ee33">&#9670;&#160;</a></span>empty_vao</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::empty_vao</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Vertex-less drawing VAO. </p>
+
+</div>
+</div>
+<a id="a5276004b427bf870610a6265c263b987" name="a5276004b427bf870610a6265c263b987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5276004b427bf870610a6265c263b987">&#9670;&#160;</a></span>env_lod</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Scene::env_lod</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="structSkybox.html" title="Persistent state and resource handles for the environment renderer.">Skybox</a> blurriness. </p>
+
+</div>
+</div>
+<a id="ad301901a87741c2b2ad7660c752877bd" name="ad301901a87741c2b2ad7660c752877bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad301901a87741c2b2ad7660c752877bd">&#9670;&#160;</a></span>geometry</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structIcosphereGeometry.html">IcosphereGeometry</a> Scene::geometry</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>High-poly sphere mesh data. </p>
+
+</div>
+</div>
+<a id="a82f7aa8bcae11baa53fd9d281a4de486" name="a82f7aa8bcae11baa53fd9d281a4de486"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82f7aa8bcae11baa53fd9d281a4de486">&#9670;&#160;</a></span>hdr_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::hdr_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Number of available environment maps. </p>
+
+</div>
+</div>
+<a id="ae342887e9c7f68fb7d67ad5b61bf8420" name="ae342887e9c7f68fb7d67ad5b61bf8420"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae342887e9c7f68fb7d67ad5b61bf8420">&#9670;&#160;</a></span>hdr_files</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char** Scene::hdr_files</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>List of found HDR files in assets. </p>
+
+</div>
+</div>
+<a id="a51beb08b2468288563d0a7c4db51717a" name="a51beb08b2468288563d0a7c4db51717a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51beb08b2468288563d0a7c4db51717a">&#9670;&#160;</a></span>hdr_texture</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::hdr_texture</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active HDR cubemap. </p>
+
+</div>
+</div>
+<a id="afb33c450fd5349271fcbf6ef282498da" name="afb33c450fd5349271fcbf6ef282498da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb33c450fd5349271fcbf6ef282498da">&#9670;&#160;</a></span>ibl_coord</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> Scene::ibl_coord</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>IBL state machine (Compute shaders owned by <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>). </p>
+
+</div>
+</div>
+<a id="ae7d6fc5a84cd03ad435946e8841cedad" name="ae7d6fc5a84cd03ad435946e8841cedad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7d6fc5a84cd03ad435946e8841cedad">&#9670;&#160;</a></span>instanced_group</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structInstancedGroup.html">InstancedGroup</a> Scene::instanced_group</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Managed buffers for opaque spheres. </p>
+
+</div>
+</div>
+<a id="a24297c4f9eb1b50fcdb2496a41b26e0f" name="a24297c4f9eb1b50fcdb2496a41b26e0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24297c4f9eb1b50fcdb2496a41b26e0f">&#9670;&#160;</a></span>instanced_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a> Scene::instanced_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
+
+</div>
+</div>
+<a id="a87c367403d591b6b1919a8d92d9bb68d" name="a87c367403d591b6b1919a8d92d9bb68d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87c367403d591b6b1919a8d92d9bb68d">&#9670;&#160;</a></span>irradiance_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::irradiance_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active Irradiance map. </p>
+
+</div>
+</div>
+<a id="a37847e95781840a840af5a08112e6673" name="a37847e95781840a840af5a08112e6673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37847e95781840a840af5a08112e6673">&#9670;&#160;</a></span>lum_ssbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::lum_ssbo[2]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Double-buffered storage for luminance. </p>
+
+</div>
+</div>
+<a id="a8e5068f97bbee1f5c72cc9dfce3e6ab0" name="a8e5068f97bbee1f5c72cc9dfce3e6ab0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e5068f97bbee1f5c72cc9dfce3e6ab0">&#9670;&#160;</a></span>material_lib</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMaterialLib.html">MaterialLib</a>* Scene::material_lib</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Loaded material presets. </p>
+
+</div>
+</div>
+<a id="a963fa306ad4c6a1745d0419a3698df32" name="a963fa306ad4c6a1745d0419a3698df32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a963fa306ad4c6a1745d0419a3698df32">&#9670;&#160;</a></span>pbr_billboard_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* Scene::pbr_billboard_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> for volumetric/alpha spheres. </p>
+
+</div>
+</div>
+<a id="ac80f642024beb20d09fcc2ee15d33744" name="ac80f642024beb20d09fcc2ee15d33744"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac80f642024beb20d09fcc2ee15d33744">&#9670;&#160;</a></span>pbr_debug_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::pbr_debug_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Swap to wireframe/normal/roughness </p>
+
+</div>
+</div>
+<a id="a278672880c9534ed393007884e01e872" name="a278672880c9534ed393007884e01e872"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a278672880c9534ed393007884e01e872">&#9670;&#160;</a></span>pbr_instanced_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* Scene::pbr_instanced_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared PBR shader for opaque geo. </p>
+
+</div>
+</div>
+<a id="af0dac4c2a74b1a604666ca3017c49a73" name="af0dac4c2a74b1a604666ca3017c49a73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0dac4c2a74b1a604666ca3017c49a73">&#9670;&#160;</a></span>quad_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::quad_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared full-screen quad (FSQ). </p>
+
+</div>
+</div>
+<a id="a606909f5d607437bdd11f2a9c7b43378" name="a606909f5d607437bdd11f2a9c7b43378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a606909f5d607437bdd11f2a9c7b43378">&#9670;&#160;</a></span>recycled_hdr_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::recycled_hdr_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Recycled texture for next load. </p>
+
+</div>
+</div>
+<a id="ad3a7e2349cf38e24aed8fdc8b4580b7b" name="ad3a7e2349cf38e24aed8fdc8b4580b7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3a7e2349cf38e24aed8fdc8b4580b7b">&#9670;&#160;</a></span>shader_irmap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::shader_irmap</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal IBL irradiance shader. </p>
+
+</div>
+</div>
+<a id="a16003a795d87f198bd0837de8257d6a8" name="a16003a795d87f198bd0837de8257d6a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16003a795d87f198bd0837de8257d6a8">&#9670;&#160;</a></span>shader_lum_pass1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::shader_lum_pass1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance downsample pass. </p>
+
+</div>
+</div>
+<a id="a8d6dc5a9ef8fa0c35060866d22402a06" name="a8d6dc5a9ef8fa0c35060866d22402a06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6dc5a9ef8fa0c35060866d22402a06">&#9670;&#160;</a></span>shader_lum_pass2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::shader_lum_pass2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Mean luminance compute pass. </p>
+
+</div>
+</div>
+<a id="afb4ff37f1825886c24ae005fb82037d1" name="afb4ff37f1825886c24ae005fb82037d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb4ff37f1825886c24ae005fb82037d1">&#9670;&#160;</a></span>shader_spmap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::shader_spmap</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal IBL specular shader. </p>
+
+</div>
+</div>
+<a id="a365027ddce9dabf851566fa1a853140d" name="a365027ddce9dabf851566fa1a853140d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a365027ddce9dabf851566fa1a853140d">&#9670;&#160;</a></span>show_envmap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::show_envmap</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Draw skybox toggle. </p>
+
+</div>
+</div>
+<a id="a0d44e91b19d9417ecabe9d4c01f715f1" name="a0d44e91b19d9417ecabe9d4c01f715f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d44e91b19d9417ecabe9d4c01f715f1">&#9670;&#160;</a></span>skybox</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSkybox.html">Skybox</a> Scene::skybox</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Environment renderer (Shaders owned by <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>). </p>
+
+</div>
+</div>
+<a id="ac1784804cde60f3b5baea704da6bb988" name="ac1784804cde60f3b5baea704da6bb988"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1784804cde60f3b5baea704da6bb988">&#9670;&#160;</a></span>skybox_shader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structShader.html">Shader</a>* Scene::skybox_shader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="structSkybox.html" title="Persistent state and resource handles for the environment renderer.">Skybox</a> shader wrapper. </p>
+
+</div>
+</div>
+<a id="a021aca187df5cebae56ecb1a5286ca9a" name="a021aca187df5cebae56ecb1a5286ca9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a021aca187df5cebae56ecb1a5286ca9a">&#9670;&#160;</a></span>sorting_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1">SortingMode</a> Scene::sorting_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Selected sorting algorithm. </p>
+
+</div>
+</div>
+<a id="a3ee995666133cc13650add76abcda8af" name="a3ee995666133cc13650add76abcda8af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ee995666133cc13650add76abcda8af">&#9670;&#160;</a></span>spec_prefiltered_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::spec_prefiltered_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active Specular map. </p>
+
+</div>
+</div>
+<a id="ae4e277adb39a677028625e5948a8513e" name="ae4e277adb39a677028625e5948a8513e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4e277adb39a677028625e5948a8513e">&#9670;&#160;</a></span>sphere_ebo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::sphere_ebo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared index buffer. </p>
+
+</div>
+</div>
+<a id="a7af7f2d638e93fa251d6e0fa95c709cc" name="a7af7f2d638e93fa251d6e0fa95c709cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af7f2d638e93fa251d6e0fa95c709cc">&#9670;&#160;</a></span>sphere_instance_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::sphere_instance_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active sphere count. </p>
+
+</div>
+</div>
+<a id="a8fb0e29cd355adce1c6348f6304507b0" name="a8fb0e29cd355adce1c6348f6304507b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fb0e29cd355adce1c6348f6304507b0">&#9670;&#160;</a></span>sphere_instances</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSphereInstance.html">SphereInstance</a>* Scene::sphere_instances</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Persistent array for sorting. </p>
+
+</div>
+</div>
+<a id="ae7c20bb9075e9c4b4639eb1176108ae7" name="ae7c20bb9075e9c4b4639eb1176108ae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7c20bb9075e9c4b4639eb1176108ae7">&#9670;&#160;</a></span>sphere_nbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::sphere_nbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared normal buffer. </p>
+
+</div>
+</div>
+<a id="a62cff0524fd7647c63bd991622587c36" name="a62cff0524fd7647c63bd991622587c36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62cff0524fd7647c63bd991622587c36">&#9670;&#160;</a></span>sphere_sorter</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSphereSorter.html">SphereSorter</a> Scene::sphere_sorter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sorter for alpha blending. </p>
+
+</div>
+</div>
+<a id="ae9e6fed64be97b01c4cd849b1a56cdea" name="ae9e6fed64be97b01c4cd849b1a56cdea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9e6fed64be97b01c4cd849b1a56cdea">&#9670;&#160;</a></span>sphere_vao</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::sphere_vao</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared geometry VAO. </p>
+
+</div>
+</div>
+<a id="affff999023bb3936a2e625629a29b0be" name="affff999023bb3936a2e625629a29b0be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affff999023bb3936a2e625629a29b0be">&#9670;&#160;</a></span>sphere_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::sphere_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared vertex buffer. </p>
+
+</div>
+</div>
+<a id="a33d1964d8a1f5096d06147fa910791f5" name="a33d1964d8a1f5096d06147fa910791f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33d1964d8a1f5096d06147fa910791f5">&#9670;&#160;</a></span>subdivisions</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::subdivisions</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>LOD of the shared icosphere. </p>
+
+</div>
+</div>
+<a id="abef61822b04cc32c8799ba9138dd0996" name="abef61822b04cc32c8799ba9138dd0996"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abef61822b04cc32c8799ba9138dd0996">&#9670;&#160;</a></span>transition_snapshot_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::transition_snapshot_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>For crossfade mode. </p>
+
+</div>
+</div>
+<a id="ae60c52bbdaa90bfc0139619469f12a13" name="ae60c52bbdaa90bfc0139619469f12a13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae60c52bbdaa90bfc0139619469f12a13">&#9670;&#160;</a></span>wire_cube_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::wire_cube_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe cube. </p>
+
+</div>
+</div>
+<a id="a11763573f4e2779706ec30d78a126872" name="a11763573f4e2779706ec30d78a126872"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11763573f4e2779706ec30d78a126872">&#9670;&#160;</a></span>wire_quad_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::wire_quad_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe quad. </p>
+
+</div>
+</div>
+<a id="ae7244b4a9b48c72027c9c3c2a030b8c5" name="ae7244b4a9b48c72027c9c3c2a030b8c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7244b4a9b48c72027c9c3c2a030b8c5">&#9670;&#160;</a></span>wireframe</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::wireframe</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>OpenGL wireframe mode toggle. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="scene_8h_source.html">scene.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structScene.html">Scene</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>
