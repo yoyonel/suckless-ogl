@@ -355,7 +355,7 @@ static void scene_cleanup_shaders(Scene* scene)
 	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
 }
 
-static void scene_cleanup_gpu_resources(Scene* scene)
+static void scene_cleanup_buffers(Scene* scene)
 {
 	GL_SAFE_DELETE_VAO(scene->sphere_vao);
 	GL_SAFE_DELETE_VAO(scene->empty_vao);
@@ -367,7 +367,10 @@ static void scene_cleanup_gpu_resources(Scene* scene)
 	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);
 	GL_SAFE_DELETE_BUFFERS(2, scene->lum_ssbo);
+}
 
+static void scene_cleanup_textures(Scene* scene)
+{
 	GL_SAFE_DELETE_TEXTURE(scene->hdr_texture);
 	GL_SAFE_DELETE_TEXTURE(scene->recycled_hdr_tex);
 	GL_SAFE_DELETE_TEXTURE(scene->brdf_lut_tex);
@@ -376,6 +379,12 @@ static void scene_cleanup_gpu_resources(Scene* scene)
 	GL_SAFE_DELETE_TEXTURE(scene->dummy_black_tex);
 	GL_SAFE_DELETE_TEXTURE(scene->dummy_white_tex);
 	GL_SAFE_DELETE_TEXTURE(scene->transition_snapshot_tex);
+}
+
+static void scene_cleanup_gpu_resources(Scene* scene)
+{
+	scene_cleanup_buffers(scene);
+	scene_cleanup_textures(scene);
 }
 
 void scene_cleanup(Scene* scene)
