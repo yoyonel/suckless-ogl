@@ -8,11 +8,9 @@
 #include "instanced_rendering.h"
 #include "log.h"
 #include "material.h"
-#include "mem.h"
 #include "render_utils.h"
 #include "shader.h"
 #include "sphere_sorting.h"
-#include "texture.h"
 #include "utils.h"
 #include <cglm/cglm.h>
 #include <dirent.h>
@@ -187,7 +185,7 @@ static void scene_init_ssbo(Scene* scene)
 }
 #endif
 
-int scene_init(Scene* scene)
+static void scene_init_state(Scene* scene)
 {
 	scene->subdivisions = INITIAL_SUBDIVISIONS;
 	scene->wireframe = 0;
@@ -215,7 +213,10 @@ int scene_init(Scene* scene)
 	scene_scan_hdr_files(scene);
 	// Initial load of default map is handled by app or caller
 	// We just setup the state here.
+}
 
+static int scene_init_core_shaders(Scene* scene)
+{
 	scene->skybox_shader =
 	    shader_load("shaders/background.vert", "shaders/background.frag");
 	if (!scene->skybox_shader) {
@@ -233,9 +234,11 @@ int scene_init(Scene* scene)
 	if (!scene->debug_line_shader) {
 		return 0;
 	}
+	return 1;
+}
 
-	render_utils_create_empty_vao(&scene->empty_vao);
-
+static int scene_init_billboard_shader(Scene* scene)
+{
 	scene->pbr_billboard_shader = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
 	if (!scene->pbr_billboard_shader) {
@@ -261,6 +264,81 @@ int scene_init(Scene* scene)
 	                                "previousViewProj");
 	scene->billboard_uniforms.u_screen_size = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "u_screenSize");
+	return 1;
+}
+
+static int scene_init_compute_resources(Scene* scene)
+{
+	scene->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
+	scene->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
+	scene->shader_lum_pass1 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
+	scene->shader_lum_pass2 =
+	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
+
+	if (!scene->shader_spmap || !scene->shader_irmap ||
+	    !scene->shader_lum_pass1 || !scene->shader_lum_pass2) {
+		return 0;
+	}
+
+	ibl_coordinator_init(&scene->ibl_coord, scene->shader_spmap,
+	                     scene->shader_irmap, scene->shader_lum_pass1,
+	                     scene->shader_lum_pass2);
+	return 1;
+}
+
+static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
+{
+#ifdef USE_SSBO_RENDERING
+	scene_init_ssbo(scene);
+	scene->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
+	                                     "shaders/pbr_ibl_instanced.frag");
+	if (!scene->pbr_ssbo_shader) {
+		return 0;
+	}
+	*out_shader = scene->pbr_ssbo_shader;
+#else
+	scene_init_instancing(scene);
+	scene->pbr_instanced_shader = shader_load(
+	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
+	if (!scene->pbr_instanced_shader) {
+		return 0;
+	}
+	*out_shader = scene->pbr_instanced_shader;
+#endif
+
+	scene->instanced_uniforms.irradiance_map =
+	    shader_get_uniform_location(*out_shader, "irradianceMap");
+	scene->instanced_uniforms.prefilter_map =
+	    shader_get_uniform_location(*out_shader, "prefilterMap");
+	scene->instanced_uniforms.brdf_lut =
+	    shader_get_uniform_location(*out_shader, "brdfLUT");
+	scene->instanced_uniforms.debug_mode =
+	    shader_get_uniform_location(*out_shader, "debugMode");
+	scene->instanced_uniforms.cam_pos =
+	    shader_get_uniform_location(*out_shader, "camPos");
+	scene->instanced_uniforms.projection =
+	    shader_get_uniform_location(*out_shader, "projection");
+	scene->instanced_uniforms.view =
+	    shader_get_uniform_location(*out_shader, "view");
+	scene->instanced_uniforms.previous_view_proj =
+	    shader_get_uniform_location(*out_shader, "previousViewProj");
+	return 1;
+}
+
+int scene_init(Scene* scene)
+{
+	scene_init_state(scene);
+
+	if (!scene_init_core_shaders(scene)) {
+		return 0;
+	}
+
+	render_utils_create_empty_vao(&scene->empty_vao);
+
+	if (!scene_init_billboard_shader(scene)) {
+		return 0;
+	}
 
 	render_utils_create_quad_vbo(&scene->quad_vbo);
 	render_utils_create_wire_cube_vbo(&scene->wire_cube_vbo);
@@ -276,51 +354,14 @@ int scene_init(Scene* scene)
 	scene->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
-	scene->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
-	scene->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
-	scene->shader_lum_pass1 =
-	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
-	scene->shader_lum_pass2 =
-	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
-
-	ibl_coordinator_init(&scene->ibl_coord, scene->shader_spmap,
-	                     scene->shader_irmap, scene->shader_lum_pass1,
-	                     scene->shader_lum_pass2);
-
-#ifdef USE_SSBO_RENDERING
-	scene_init_ssbo(scene);
-	scene->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
-	                                     "shaders/pbr_ibl_instanced.frag");
-	if (!scene->pbr_ssbo_shader) {
+	if (!scene_init_compute_resources(scene)) {
 		return 0;
 	}
-	Shader* inst_shader = scene->pbr_ssbo_shader;
-#else
-	scene_init_instancing(scene);
-	scene->pbr_instanced_shader = shader_load(
-	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
-	if (!scene->pbr_instanced_shader) {
+
+	Shader* inst_shader = NULL;
+	if (!scene_init_instanced_shader(scene, &inst_shader)) {
 		return 0;
 	}
-	Shader* inst_shader = scene->pbr_instanced_shader;
-#endif
-
-	scene->instanced_uniforms.irradiance_map =
-	    shader_get_uniform_location(inst_shader, "irradianceMap");
-	scene->instanced_uniforms.prefilter_map =
-	    shader_get_uniform_location(inst_shader, "prefilterMap");
-	scene->instanced_uniforms.brdf_lut =
-	    shader_get_uniform_location(inst_shader, "brdfLUT");
-	scene->instanced_uniforms.debug_mode =
-	    shader_get_uniform_location(inst_shader, "debugMode");
-	scene->instanced_uniforms.cam_pos =
-	    shader_get_uniform_location(inst_shader, "camPos");
-	scene->instanced_uniforms.projection =
-	    shader_get_uniform_location(inst_shader, "projection");
-	scene->instanced_uniforms.view =
-	    shader_get_uniform_location(inst_shader, "view");
-	scene->instanced_uniforms.previous_view_proj =
-	    shader_get_uniform_location(inst_shader, "previousViewProj");
 
 	scene->debug_uniforms.projection =
 	    shader_get_uniform_location(scene->debug_line_shader, "projection");
@@ -338,31 +379,41 @@ int scene_init(Scene* scene)
 	return 1;
 }
 
-static void scene_cleanup_shaders(Scene* scene)
+static void scene_cleanup_pbr_shaders(Scene* scene)
 {
 	SHADER_SAFE_DESTROY(scene->pbr_instanced_shader);
 	SHADER_SAFE_DESTROY(scene->pbr_billboard_shader);
 #ifdef USE_SSBO_RENDERING
 	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
 #endif
+	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
+	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
+}
+
+static void scene_cleanup_shaders(Scene* scene)
+{
+	scene_cleanup_pbr_shaders(scene);
 
 	SHADER_SAFE_DESTROY(scene->debug_shader);
 	SHADER_SAFE_DESTROY(scene->debug_line_shader);
 	SHADER_SAFE_DESTROY(scene->skybox_shader);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
 	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass1);
 	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
 }
 
-static void scene_cleanup_buffers(Scene* scene)
+static void scene_cleanup_geometry_buffers(Scene* scene)
 {
 	GL_SAFE_DELETE_VAO(scene->sphere_vao);
-	GL_SAFE_DELETE_VAO(scene->empty_vao);
-
 	GL_SAFE_DELETE_BUFFER(scene->sphere_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->sphere_nbo);
 	GL_SAFE_DELETE_BUFFER(scene->sphere_ebo);
+}
+
+static void scene_cleanup_buffers(Scene* scene)
+{
+	scene_cleanup_geometry_buffers(scene);
+
+	GL_SAFE_DELETE_VAO(scene->empty_vao);
 	GL_SAFE_DELETE_BUFFER(scene->wire_cube_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);

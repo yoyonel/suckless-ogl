@@ -94,12 +94,13 @@ typedef struct Scene {
 	int sphere_instance_count;        /**< Active sphere count. */
 #endif
 
-	Skybox skybox;             /**< Environment renderer. */
+	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
 	MaterialLib* material_lib; /**< Loaded material presets. */
 	char** hdr_files;          /**< List of found HDR files in assets. */
 	int hdr_count;             /**< Number of available environment maps. */
 	int current_hdr_index;     /**< Index of active HDR in file list. */
-	IBLCoordinator ibl_coord;  /**< IBL Loader state machine. */
+	IBLCoordinator ibl_coord;  /**< IBL state machine (Compute shaders owned
+	                              by Scene). */
 
 	/* --- Shaders --- */
 	Shader* pbr_instanced_shader; /**< Shared PBR shader for opaque geo. */
