@@ -1,6 +1,3 @@
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE  // NOLINT
-#endif
 #include "log.h"
 
 #include "tracy_log.h"
