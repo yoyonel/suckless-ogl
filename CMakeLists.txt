@@ -93,7 +93,6 @@ set(SOURCES
     src/app_env.c
     src/app_input.c
     src/app_metrics.c
-    src/app_scene.c
     src/app_ui.c
     src/async_loader.c
     src/billboard_rendering.c
@@ -119,6 +118,7 @@ set(SOURCES
     src/postprocess.c
     src/postprocess_input.c
     src/render_utils.c
+    src/scene.c
     src/shader.c
     src/simd_utils.c
     src/skybox.c

@@ -87,18 +87,19 @@ void test_handle_app_input_exhaustive(void)
 	handle_app_input(test_app, GLFW_KEY_F4, 0);
 	TEST_ASSERT_TRUE(test_app->log_gpu_metrics);
 	handle_app_input(test_app, GLFW_KEY_Z, 0);
-	TEST_ASSERT_TRUE(test_app->wireframe);
+	TEST_ASSERT_TRUE(test_app->scene.wireframe);
 	handle_app_input(test_app, GLFW_KEY_C, 0);
 	TEST_ASSERT_TRUE(test_app->camera_enabled);
 	handle_app_input(test_app, GLFW_KEY_L, 0);
-	TEST_ASSERT_TRUE(test_app->billboard_mode);
+	TEST_ASSERT_TRUE(test_app->scene.billboard_mode);
 	handle_app_input(test_app, GLFW_KEY_K, 0);
-	TEST_ASSERT_TRUE(test_app->show_envmap);
+	TEST_ASSERT_TRUE(test_app->scene.show_envmap);
 
 	/* PBR Debug Modes (cycle) */
-	int initial_debug = test_app->pbr_debug_mode;
+	int initial_debug = test_app->scene.pbr_debug_mode;
 	handle_app_input(test_app, GLFW_KEY_F5, 0);
-	TEST_ASSERT_EQUAL((initial_debug + 1) % 9, test_app->pbr_debug_mode);
+	TEST_ASSERT_EQUAL((initial_debug + 1) % 9,
+	                  test_app->scene.pbr_debug_mode);
 
 	/* Banding Styles (cycle) */
 	/* First press enables banding and sets idx to 0 (Linear) */
@@ -277,11 +278,11 @@ void test_key_callback_dispatch(void)
  */
 void test_subdiv_input(void)
 {
-	test_app->subdivisions = 2;
+	test_app->scene.subdivisions = 2;
 	handle_app_input(test_app, GLFW_KEY_UP, 0);
-	TEST_ASSERT_EQUAL(3, test_app->subdivisions);
+	TEST_ASSERT_EQUAL(3, test_app->scene.subdivisions);
 	handle_app_input(test_app, GLFW_KEY_DOWN, 0);
-	TEST_ASSERT_EQUAL(2, test_app->subdivisions);
+	TEST_ASSERT_EQUAL(2, test_app->scene.subdivisions);
 }
 
 /**

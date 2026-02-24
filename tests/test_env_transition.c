@@ -61,7 +61,7 @@ void test_transition_initial_state(void)
 {
 	g_test_app->transition_state = TRANSITION_WAIT_IBL;
 	g_test_app->transition_alpha = 1.0F;
-	g_test_app->ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
@@ -77,7 +77,7 @@ void test_transition_crossfade_flow(void)
 {
 	g_test_app->env_transition_mode = ENV_TRANSITION_CROSSFADE;
 	g_test_app->transition_state = TRANSITION_LOADING;
-	g_test_app->ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
@@ -87,7 +87,7 @@ void test_transition_crossfade_flow(void)
 	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->transition_alpha);
 	/* Snapshot texture should have been generated */
 	TEST_ASSERT_NOT_EQUAL(TEXTURE_ID_ZERO,
-	                      g_test_app->transition_snapshot_tex);
+	                      g_test_app->scene.transition_snapshot_tex);
 }
 
 /**
@@ -97,7 +97,7 @@ void test_transition_black_screen_flow(void)
 {
 	g_test_app->env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
 	g_test_app->transition_state = TRANSITION_LOADING;
-	g_test_app->ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);

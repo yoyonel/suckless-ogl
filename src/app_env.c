@@ -6,64 +6,12 @@
 #include "postprocess.h"
 #include "texture.h"
 #include "utils.h"
-#include <dirent.h>
 #include <float.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static const char* const HDR_TEXTURE_PATH = "assets/textures/hdr";
-static const char* const HDR_EXTENSION = ".hdr";
-
 static const int MAX_PATH_LENGTH = 256;
-
-static int compare_strings(const void* string_a, const void* string_b)
-{
-	return strcmp(*(const char**)string_a, *(const char**)string_b);
-}
-
-void app_scan_hdr_files(App* app)
-{
-	app->hdr_count = 0;
-	app->hdr_files = NULL;
-	app->current_hdr_index = -1;
-
-	DIR* dir_handle = NULL;
-	struct dirent* entry = NULL;
-	dir_handle = opendir(HDR_TEXTURE_PATH);
-	if (dir_handle) {
-		while ((entry = readdir(dir_handle)) != NULL) {
-			char* dot = strrchr(entry->d_name, '.');
-			if (dot && strcmp(dot, HDR_EXTENSION) == 0) {
-				char** new_files =
-				    realloc(app->hdr_files,
-				            (size_t)(app->hdr_count + 1) *
-				                sizeof(char*));
-				if (new_files) {
-					app->hdr_files = new_files;
-					app->hdr_count++;
-					app->hdr_files[app->hdr_count - 1] =
-					    strdup(entry->d_name);
-				} else {
-					LOG_ERROR(
-					    "suckless-ogl.app",
-					    "Failed to realloc memory for "
-					    "HDR files");
-				}
-			}
-		}
-		closedir(dir_handle);
-
-		if (app->hdr_count > 1) {
-			qsort(app->hdr_files, (size_t)app->hdr_count,
-			      sizeof(char*), compare_strings);
-		}
-	} else {
-		LOG_ERROR("suckless-ogl.app",
-		          "Failed to open assets/textures/hdr directory!");
-	}
-	LOG_INFO("suckless-ogl.app", "Found %d HDR files.", app->hdr_count);
-}
 
 int app_load_env_map(App* app, const char* filename)
 {
@@ -114,10 +62,10 @@ void app_process_env_map_loading_step(App* app)
 		         "Finalizing environment load (Step 1/3): Upload...");
 		app->pending_env_tex = texture_upload_hdr_from_pbo(
 		    req->pbo_id, req->width, req->height,
-		    app->recycled_hdr_tex);
+		    app->scene.recycled_hdr_tex);
 
 		if (app->pending_env_tex != 0) {
-			app->recycled_hdr_tex = 0;
+			app->scene.recycled_hdr_tex = 0;
 		}
 
 		if (req->half_data) {
@@ -147,7 +95,7 @@ void app_process_env_map_loading_step(App* app)
 		    "suckless-ogl.app",
 		    "Finalizing environment load (Step 3/3): Start IBL...");
 		if (app->pending_env_tex) {
-			ibl_coordinator_start(&app->ibl_coord,
+			ibl_coordinator_start(&app->scene.ibl_coord,
 			                      app->pending_env_tex, req->width,
 			                      req->height);
 			app->pending_env_tex = 0;
@@ -173,10 +121,10 @@ int app_trigger_env_transition(App* app, const char* filename)
 
 static void capture_snapshot(App* app)
 {
-	if (app->transition_snapshot_tex == 0) {
-		glGenTextures(1, &app->transition_snapshot_tex);
+	if (app->scene.transition_snapshot_tex == 0) {
+		glGenTextures(1, &app->scene.transition_snapshot_tex);
 	}
-	glBindTexture(GL_TEXTURE_2D, app->transition_snapshot_tex);
+	glBindTexture(GL_TEXTURE_2D, app->scene.transition_snapshot_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, app->width, app->height, 0,
 	             GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, app->width,
@@ -194,26 +142,26 @@ static void finalize_ibl_swap(App* app, GLuint hdr_tex, GLuint spec_tex,
 	app->auto_threshold = threshold;
 
 	/* Recycle the old HDR texture instead of deleting it */
-	if (app->hdr_texture) {
-		if (app->recycled_hdr_tex) {
+	if (app->scene.hdr_texture) {
+		if (app->scene.recycled_hdr_tex) {
 			/* If we already have one (weird edge case),
 			 * delete the old one */
-			glDeleteTextures(1, &app->recycled_hdr_tex);
+			glDeleteTextures(1, &app->scene.recycled_hdr_tex);
 		}
-		app->recycled_hdr_tex = app->hdr_texture;
-		/* app->hdr_texture will be overwritten below */
+		app->scene.recycled_hdr_tex = app->scene.hdr_texture;
+		/* app->scene.hdr_texture will be overwritten below */
 	}
 
-	if (app->spec_prefiltered_tex) {
-		glDeleteTextures(1, &app->spec_prefiltered_tex);
+	if (app->scene.spec_prefiltered_tex) {
+		glDeleteTextures(1, &app->scene.spec_prefiltered_tex);
 	}
-	if (app->irradiance_tex) {
-		glDeleteTextures(1, &app->irradiance_tex);
+	if (app->scene.irradiance_tex) {
+		glDeleteTextures(1, &app->scene.irradiance_tex);
 	}
 
-	app->hdr_texture = hdr_tex;
-	app->spec_prefiltered_tex = spec_tex;
-	app->irradiance_tex = irr_tex;
+	app->scene.hdr_texture = hdr_tex;
+	app->scene.spec_prefiltered_tex = spec_tex;
+	app->scene.irradiance_tex = irr_tex;
 
 	LOG_INFO("suckless-ogl.app", "[Frame %llu] Environment swap finalized.",
 	         (unsigned long long)app->frame_count);
@@ -226,8 +174,8 @@ static void handle_ibl_done_wait_state(App* app)
 	GLuint irr_tex = 0;
 	float threshold = 0.0F;
 
-	if (ibl_coordinator_get_results(&app->ibl_coord, &hdr_tex, &spec_tex,
-	                                &irr_tex, &threshold)) {
+	if (ibl_coordinator_get_results(&app->scene.ibl_coord, &hdr_tex,
+	                                &spec_tex, &irr_tex, &threshold)) {
 		finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex, threshold);
 		app->transition_state = TRANSITION_FADE_IN;
 		app->transition_alpha = 1.0F;
@@ -248,7 +196,7 @@ static void handle_ibl_done_loading_state(App* app)
 		GLuint irr_tex = 0;
 		float threshold = 0.0F;
 
-		if (ibl_coordinator_get_results(&app->ibl_coord, &hdr_tex,
+		if (ibl_coordinator_get_results(&app->scene.ibl_coord, &hdr_tex,
 		                                &spec_tex, &irr_tex,
 		                                &threshold)) {
 			capture_snapshot(app);
@@ -263,7 +211,7 @@ static void handle_ibl_done_loading_state(App* app)
 void app_process_ibl_state_machine(App* app)
 {
 	IBLState state =
-	    ibl_coordinator_update(&app->ibl_coord, app->frame_count);
+	    ibl_coordinator_update(&app->scene.ibl_coord, app->frame_count);
 
 	if (state == IBL_STATE_DONE) {
 		if (app->transition_state == TRANSITION_WAIT_IBL) {
@@ -294,8 +242,8 @@ void app_update_transition(App* app)
 				GLuint irr_tex = 0;
 				float threshold = 0.0F;
 				if (ibl_coordinator_get_results(
-				        &app->ibl_coord, &hdr_tex, &spec_tex,
-				        &irr_tex, &threshold)) {
+				        &app->scene.ibl_coord, &hdr_tex,
+				        &spec_tex, &irr_tex, &threshold)) {
 					finalize_ibl_swap(app, hdr_tex,
 					                  spec_tex, irr_tex,
 					                  threshold);
