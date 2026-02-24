@@ -3,7 +3,6 @@
 #include "action_notifier.h"
 #include "app.h"
 #include "app_env.h"
-#include "app_scene.h"
 #include "app_settings.h"
 #include "camera.h"
 #include "camera_input.h"
@@ -14,6 +13,7 @@
 #include "postprocess.h" /* Explicit include for types */
 #include "postprocess_input.h"
 #include "postprocess_presets.h"
+#include "scene.h"
 #include "utils.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
@@ -43,17 +43,18 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 static void handle_pbr_debug_mode(App* app)
 {
-	app->pbr_debug_mode = (app->pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
+	app->scene.pbr_debug_mode =
+	    (app->scene.pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
 	const char* modeNames[] = {
 	    "Final PBR",         "Albedo",           "Normal",
 	    "Metallic",          "Roughness",        "AO",
 	    "Irradiance (Diff)", "Prefilter (Spec)", "BRDF LUT"};
 	LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
-	         modeNames[app->pbr_debug_mode]);
+	         modeNames[app->scene.pbr_debug_mode]);
 
 	char buf[NOTIF_BUF_SIZE];
 	(void)safe_snprintf(buf, sizeof(buf), "Debug: %s",
-	                    modeNames[app->pbr_debug_mode]);
+	                    modeNames[app->scene.pbr_debug_mode]);
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
 }
 
@@ -64,26 +65,29 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 	}
 	if (key == GLFW_KEY_PAGE_UP) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			app->env_lod += LOD_STEP;
-			if (app->env_lod > MAX_ENV_LOD) {
-				app->env_lod = MAX_ENV_LOD;
+			app->scene.env_lod += LOD_STEP;
+			if (app->scene.env_lod > MAX_ENV_LOD) {
+				app->scene.env_lod = MAX_ENV_LOD;
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         app->env_lod);
+			         app->scene.env_lod);
 			char lod_buf[NOTIF_BUF_SIZE];
 			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
-			                    "Env LOD: %.1F", app->env_lod);
+			                    "Env LOD: %.1F",
+			                    app->scene.env_lod);
 			action_notifier_push(&app->notifier, lod_buf,
 			                     NOTIF_DUR_SHORT);
-		} else if (app->hdr_count > 1) {
-			app->current_hdr_index =
-			    (app->current_hdr_index + 1) % app->hdr_count;
+		} else if (app->scene.hdr_count > 1) {
+			app->scene.current_hdr_index =
+			    (app->scene.current_hdr_index + 1) %
+			    app->scene.hdr_count;
 			app_trigger_env_transition(
-			    app, app->hdr_files[app->current_hdr_index]);
+			    app,
+			    app->scene.hdr_files[app->scene.current_hdr_index]);
 
 			char buf[NOTIF_BUF_SIZE];
 			const char* filename =
-			    app->hdr_files[app->current_hdr_index];
+			    app->scene.hdr_files[app->scene.current_hdr_index];
 			/* Try to strip path if possible for cleaner display */
 			const char* last_slash = strrchr(filename, '/');
 			if (last_slash) {
@@ -96,28 +100,31 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			app->env_lod -= LOD_STEP;
-			if (app->env_lod < MIN_ENV_LOD) {
-				app->env_lod = MIN_ENV_LOD;
+			app->scene.env_lod -= LOD_STEP;
+			if (app->scene.env_lod < MIN_ENV_LOD) {
+				app->scene.env_lod = MIN_ENV_LOD;
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         app->env_lod);
+			         app->scene.env_lod);
 			char lod_buf[NOTIF_BUF_SIZE];
 			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
-			                    "Env LOD: %.1F", app->env_lod);
+			                    "Env LOD: %.1F",
+			                    app->scene.env_lod);
 			action_notifier_push(&app->notifier, lod_buf,
 			                     NOTIF_DUR_SHORT);
-		} else if (app->hdr_count > 1) {
-			app->current_hdr_index--;
-			if (app->current_hdr_index < 0) {
-				app->current_hdr_index = app->hdr_count - 1;
+		} else if (app->scene.hdr_count > 1) {
+			app->scene.current_hdr_index--;
+			if (app->scene.current_hdr_index < 0) {
+				app->scene.current_hdr_index =
+				    app->scene.hdr_count - 1;
 			}
 			app_trigger_env_transition(
-			    app, app->hdr_files[app->current_hdr_index]);
+			    app,
+			    app->scene.hdr_files[app->scene.current_hdr_index]);
 
 			char buf[NOTIF_BUF_SIZE];
 			const char* filename =
-			    app->hdr_files[app->current_hdr_index];
+			    app->scene.hdr_files[app->scene.current_hdr_index];
 			const char* last_slash = strrchr(filename, '/');
 			if (last_slash) {
 				filename = last_slash + 1;
@@ -150,18 +157,19 @@ static void handle_overlay_input(App* app)
 static void handle_subdiv_input(App* app, int key)
 {
 	int changed = 0;
-	if (key == GLFW_KEY_UP && app->subdivisions < MAX_SUBDIV) {
-		app->subdivisions++;
+	if (key == GLFW_KEY_UP && app->scene.subdivisions < MAX_SUBDIV) {
+		app->scene.subdivisions++;
 		changed = 1;
-	} else if (key == GLFW_KEY_DOWN && app->subdivisions > MIN_SUBDIV) {
-		app->subdivisions--;
+	} else if (key == GLFW_KEY_DOWN &&
+	           app->scene.subdivisions > MIN_SUBDIV) {
+		app->scene.subdivisions--;
 		changed = 1;
 	}
 
 	if (changed) {
 		char buf[NOTIF_BUF_SIZE];
 		(void)safe_snprintf(buf, sizeof(buf), "Subdiv: %d",
-		                    app->subdivisions);
+		                    app->scene.subdivisions);
 		action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
 	}
 }
@@ -285,11 +293,12 @@ static void handle_system_key_input(App* app, int key, int mods)
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_Z:
-			app->wireframe = !app->wireframe;
-			action_notifier_push(
-			    &app->notifier,
-			    app->wireframe ? "Wireframe: ON" : "Wireframe: OFF",
-			    NOTIF_DUR_NORMAL);
+			app->scene.wireframe = !app->scene.wireframe;
+			action_notifier_push(&app->notifier,
+			                     app->scene.wireframe
+			                         ? "Wireframe: ON"
+			                         : "Wireframe: OFF",
+			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_UP:
 		case GLFW_KEY_DOWN:
@@ -301,7 +310,7 @@ static void handle_system_key_input(App* app, int key, int mods)
 		case GLFW_KEY_SPACE:
 			camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE,
 			            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
-			app->env_lod = DEFAULT_ENV_LOD;
+			app->scene.env_lod = DEFAULT_ENV_LOD;
 			LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
 			action_notifier_push(&app->notifier,
 			                     "Camera & LOD Reset",
@@ -340,23 +349,24 @@ void handle_app_input(App* app, int key, int mods)
 			handle_system_key_input(app, key, mods);
 			break;
 		case GLFW_KEY_L:
-			app->billboard_mode = !app->billboard_mode;
-			app_update_instancing_mode(app);
+			app->scene.billboard_mode = !app->scene.billboard_mode;
+			// app_update_instancing_mode(app) was empty and
+			// removed.
 			LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
-			         app->billboard_mode ? "ON" : "OFF");
+			         app->scene.billboard_mode ? "ON" : "OFF");
 			action_notifier_push(&app->notifier,
-			                     app->billboard_mode
+			                     app->scene.billboard_mode
 			                         ? "Billboards: ON"
 			                         : "Billboards: OFF",
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_O:
-			app->sorting_mode =
-			    (app->sorting_mode + 1) % SORTING_MODE_COUNT;
+			app->scene.sorting_mode =
+			    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
 			const char* mode_name = "Unknown";
 			const char* notif_name = "Sort: Unknown";
 
-			switch (app->sorting_mode) {
+			switch (app->scene.sorting_mode) {
 				case SORTING_MODE_CPU_QSORT:
 					mode_name = "CPU (qsort)";
 					notif_name = "Sort: CPU (qsort)";
@@ -398,13 +408,14 @@ void handle_app_input(App* app, int key, int mods)
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_K:
-			app->show_envmap = !app->show_envmap;
+			app->scene.show_envmap = !app->scene.show_envmap;
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
-			         app->show_envmap ? "ON" : "OFF");
-			action_notifier_push(
-			    &app->notifier,
-			    app->show_envmap ? "Skybox: ON" : "Skybox: OFF",
-			    NOTIF_DUR_NORMAL);
+			         app->scene.show_envmap ? "ON" : "OFF");
+			action_notifier_push(&app->notifier,
+			                     app->scene.show_envmap
+			                         ? "Skybox: ON"
+			                         : "Skybox: OFF",
+			                     NOTIF_DUR_NORMAL);
 			break;
 		default:
 			break;

@@ -1,8 +1,8 @@
 #define _POSIX_C_SOURCE 199309L
 #include "app.h"
-#include "app_scene.h"
 #include "gl_common.h"
 #include "main.h"
+#include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -47,8 +47,8 @@ void tearDown(void)
 void test_stencil_depth_consistency(void)
 {
 	/* 1. Ensure geometry is loaded */
-	icosphere_generate(&g_test_app.geometry, 3);
-	app_update_gpu_buffers(&g_test_app);
+	icosphere_generate(&g_test_app.scene.geometry, 3);
+	scene_update_gpu_buffers(&g_test_app.scene);
 
 	/* 2. Set camera to look at center area */
 	g_test_app.camera.position[0] = 0.0F;

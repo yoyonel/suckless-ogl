@@ -4,18 +4,31 @@
 #include "adaptive_sampler.h"
 #include "app_env.h"
 #include "app_input.h"
-#include "app_scene.h"
 #include "app_settings.h"
 #include "app_ui.h"
+#include "async_loader.h"
 #include "billboard_rendering.h"
+#include "camera.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "glad/glad.h"
 #include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include "log.h"
+#include "material.h"
+#include "pbr.h"
+#include "perf_mode.h"
+#include "postprocess.h"
 #include "render_utils.h"
+#include "scene.h"
+#include "shader.h"
+#include "skybox.h"
 #include "sphere_sorting.h"
+#include "texture.h"
+#include "tracy_gpu.h"
+#include "ui.h"
+#include "window.h"
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
@@ -24,50 +37,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
-#ifdef USE_SSBO_RENDERING
-#include "ssbo_rendering.h"
-#endif
-#include "async_loader.h"
-#include "camera.h"
-#include "log.h"
-#include "material.h"
-#include "pbr.h"
-#include "perf_mode.h"
-#include "postprocess.h"
-#include "shader.h"
-#include "skybox.h"
-#include "texture.h"
-#include "tracy_gpu.h"
-#include "ui.h"
-#include "window.h"
 #ifdef TRACY_ENABLE
 #include "../deps/tracy/public/tracy/TracyC.h"
 #endif
 #include <GLFW/glfw3.h>
 
+static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
+
 int app_init(App* app, int width, int height, const char* title)
 {
 	app->width = width;
 	app->height = height;
-	app->subdivisions = INITIAL_SUBDIVISIONS;
-	app->wireframe = false;
 
 	app->camera_enabled = true;
-	app->env_lod = DEFAULT_ENV_LOD;
 	app->show_info_overlay = true;
 	app->show_exposure_debug = false;
 	app->text_overlay_mode = 0;
-	app->pbr_debug_mode = 0;
 	app->is_fullscreen = false;
 	app->show_help = false;
-	app->show_envmap = true;
-	app->billboard_mode = true;
-	app->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	app->is_first_load = true;
-
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(&app->sphere_sorter, 0, sizeof(SphereSorter));
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -111,14 +99,9 @@ int app_init(App* app, int width, int height, const char* title)
 	app->transition_alpha = 1.0F;
 	app->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
 	app->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
-	app->transition_snapshot_tex = 0;
 	app->is_first_load = 1;
 
 	app->current_exposure = 1.0F;
-	app->dummy_black_tex =
-	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
-	app->dummy_white_tex =
-	    render_utils_create_color_texture(1.0F, 1.0F, 1.0F, 1.0F);
 
 	glGenBuffers(2, app->upload_pbo);
 	app->upload_pbo_idx = 0;
@@ -132,87 +115,33 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	app->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
 	app->async_loader = async_loader_create(&app->tracy_mgr);
 	if (!app->async_loader) {
 		return 0;
 	}
 
-	app_scan_hdr_files(app);
-	if (app->hdr_count > 0) {
+	if (!scene_init(&app->scene)) {
+		return 0;
+	}
+
+	/* Initial HDR load */
+	if (app->scene.hdr_count > 0) {
 		int default_idx = 0;
-		for (int i = 0; i < app->hdr_count; i++) {
-			if (strcmp(app->hdr_files[i], DEFAULT_ENV_FILENAME) ==
-			    0) {
+		for (int i = 0; i < app->scene.hdr_count; i++) {
+			if (strcmp(app->scene.hdr_files[i],
+			           DEFAULT_ENV_FILENAME) == 0) {
 				default_idx = i;
 				break;
 			}
 		}
-		app->current_hdr_index = default_idx;
-		app_load_env_map(app, app->hdr_files[default_idx]);
+		app->scene.current_hdr_index = default_idx;
+		app_load_env_map(app, app->scene.hdr_files[default_idx]);
 	}
 
 	app->u_metallic = DEFAULT_METALLIC;
 	app->u_roughness = DEFAULT_ROUGHNESS;
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
-
-	app->skybox_shader =
-	    shader_load("shaders/background.vert", "shaders/background.frag");
-	if (!app->skybox_shader) {
-		return 0;
-	}
-
-	app->debug_shader =
-	    shader_load("shaders/debug_tex.vert", "shaders/debug_tex.frag");
-	if (!app->debug_shader) {
-		return 0;
-	}
-
-	app->debug_line_shader =
-	    shader_load("shaders/debug_line.vert", "shaders/debug_line.frag");
-	if (!app->debug_line_shader) {
-		return 0;
-	}
-
-	render_utils_create_empty_vao(&app->empty_vao);
-
-	app->pbr_billboard_shader = shader_load(
-	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
-	if (!app->pbr_billboard_shader) {
-		return 0;
-	}
-
-	app->billboard_uniforms.irradiance_map = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "irradianceMap");
-	app->billboard_uniforms.prefilter_map = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "prefilterMap");
-	app->billboard_uniforms.brdf_lut =
-	    shader_get_uniform_location(app->pbr_billboard_shader, "brdfLUT");
-	app->billboard_uniforms.debug_mode =
-	    shader_get_uniform_location(app->pbr_billboard_shader, "debugMode");
-	app->billboard_uniforms.cam_pos =
-	    shader_get_uniform_location(app->pbr_billboard_shader, "camPos");
-	app->billboard_uniforms.projection = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "projection");
-	app->billboard_uniforms.view =
-	    shader_get_uniform_location(app->pbr_billboard_shader, "view");
-	app->billboard_uniforms.previous_view_proj =
-	    shader_get_uniform_location(app->pbr_billboard_shader,
-	                                "previousViewProj");
-	app->billboard_uniforms.u_screen_size = shader_get_uniform_location(
-	    app->pbr_billboard_shader, "u_screenSize");
-
-	render_utils_create_quad_vbo(&app->quad_vbo);
-	render_utils_create_wire_cube_vbo(&app->wire_cube_vbo);
-	render_utils_create_wire_quad_vbo(&app->wire_quad_vbo);
-	skybox_init(&app->skybox, app->skybox_shader);
-	icosphere_init(&app->geometry);
-
-	glGenVertexArrays(1, &app->sphere_vao);
-	glGenBuffers(1, &app->sphere_vbo);
-	glGenBuffers(1, &app->sphere_nbo);
-	glGenBuffers(1, &app->sphere_ebo);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -223,74 +152,13 @@ int app_init(App* app, int width, int height, const char* title)
 
 	ui_init(&app->ui, "assets/fonts/FiraCode-Regular.ttf",
 	        DEFAULT_FONT_SIZE);
-	app->material_lib =
-	    material_load_presets("assets/materials/pbr_materials.json");
-
-	app->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
-	app->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
-	app->shader_lum_pass1 =
-	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
-	app->shader_lum_pass2 =
-	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
-
-	ibl_coordinator_init(&app->ibl_coord, app->shader_spmap,
-	                     app->shader_irmap, app->shader_lum_pass1,
-	                     app->shader_lum_pass2);
-
-#ifdef USE_SSBO_RENDERING
-	app_init_ssbo(app);
-	app->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
-	                                   "shaders/pbr_ibl_instanced.frag");
-	if (!app->pbr_ssbo_shader) {
-		return 0;
-	}
-	Shader* inst_shader = app->pbr_ssbo_shader;
-#else
-	app_init_instancing(app);
-	app->pbr_instanced_shader = shader_load(
-	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
-	if (!app->pbr_instanced_shader) {
-		return 0;
-	}
-	app_update_instancing_mode(app);
-	Shader* inst_shader = app->pbr_instanced_shader;
-#endif
-
-	app->instanced_uniforms.irradiance_map =
-	    shader_get_uniform_location(inst_shader, "irradianceMap");
-	app->instanced_uniforms.prefilter_map =
-	    shader_get_uniform_location(inst_shader, "prefilterMap");
-	app->instanced_uniforms.brdf_lut =
-	    shader_get_uniform_location(inst_shader, "brdfLUT");
-	app->instanced_uniforms.debug_mode =
-	    shader_get_uniform_location(inst_shader, "debugMode");
-	app->instanced_uniforms.cam_pos =
-	    shader_get_uniform_location(inst_shader, "camPos");
-	app->instanced_uniforms.projection =
-	    shader_get_uniform_location(inst_shader, "projection");
-	app->instanced_uniforms.view =
-	    shader_get_uniform_location(inst_shader, "view");
-	app->instanced_uniforms.previous_view_proj =
-	    shader_get_uniform_location(inst_shader, "previousViewProj");
-
-	app->debug_uniforms.projection =
-	    shader_get_uniform_location(app->debug_line_shader, "projection");
-	app->debug_uniforms.view =
-	    shader_get_uniform_location(app->debug_line_shader, "view");
-	app->debug_uniforms.u_stippled =
-	    shader_get_uniform_location(app->debug_line_shader, "u_stippled");
-	app->debug_uniforms.u_billboard_mode = shader_get_uniform_location(
-	    app->debug_line_shader, "u_billboardMode");
-	app->debug_uniforms.u_use_instance_col = shader_get_uniform_location(
-	    app->debug_line_shader, "u_useInstanceColor");
-	app->debug_uniforms.u_color =
-	    shader_get_uniform_location(app->debug_line_shader, "u_color");
 
 	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
 	                      height)) {
 		return 0;
 	}
-	postprocess_set_dummy_textures(&app->postprocess, app->dummy_black_tex);
+	postprocess_set_dummy_textures(&app->postprocess,
+	                               app->scene.dummy_black_tex);
 	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
 	postprocess_enable(&app->postprocess, POSTFX_FXAA);
 
@@ -311,80 +179,6 @@ int app_init(App* app, int width, int height, const char* title)
 	return 1;
 }
 
-static void app_cleanup_rendering_groups(App* app)
-{
-	icosphere_free(&app->geometry);
-	skybox_cleanup(&app->skybox);
-#ifdef USE_TRANSPARENT_BILLBOARDS
-	if (app->sphere_instances) {
-		free(app->sphere_instances);
-		app->sphere_instances = NULL;
-	}
-	sphere_sorter_cleanup(&app->sphere_sorter);
-#endif
-	instanced_group_cleanup(&app->instanced_group);
-	billboard_group_cleanup(&app->billboard_group);
-#ifdef USE_SSBO_RENDERING
-	ssbo_group_cleanup(&app->ssbo_group);
-#endif
-}
-
-static void app_cleanup_pbr_shaders(App* app)
-{
-	SHADER_SAFE_DESTROY(app->pbr_instanced_shader);
-	SHADER_SAFE_DESTROY(app->pbr_billboard_shader);
-#ifdef USE_SSBO_RENDERING
-	SHADER_SAFE_DESTROY(app->pbr_ssbo_shader);
-#endif
-}
-
-static void app_cleanup_util_shaders(App* app)
-{
-	SHADER_SAFE_DESTROY(app->debug_shader);
-	SHADER_SAFE_DESTROY(app->debug_line_shader);
-	SHADER_SAFE_DESTROY(app->skybox_shader);
-	GL_SAFE_DELETE_PROGRAM(app->shader_spmap);
-	GL_SAFE_DELETE_PROGRAM(app->shader_irmap);
-	GL_SAFE_DELETE_PROGRAM(app->shader_lum_pass1);
-	GL_SAFE_DELETE_PROGRAM(app->shader_lum_pass2);
-}
-
-static void app_cleanup_gpu_vaos(App* app)
-{
-	GL_SAFE_DELETE_VAO(app->sphere_vao);
-	GL_SAFE_DELETE_VAO(app->empty_vao);
-}
-
-static void app_cleanup_gpu_vbos(App* app)
-{
-	GL_SAFE_DELETE_BUFFER(app->sphere_vbo);
-	GL_SAFE_DELETE_BUFFER(app->sphere_nbo);
-	GL_SAFE_DELETE_BUFFER(app->sphere_ebo);
-	GL_SAFE_DELETE_BUFFER(app->wire_cube_vbo);
-	GL_SAFE_DELETE_BUFFER(app->wire_quad_vbo);
-	GL_SAFE_DELETE_BUFFER(app->quad_vbo);
-	GL_SAFE_DELETE_BUFFERS(2, app->lum_ssbo);
-}
-
-static void app_cleanup_gpu_textures(App* app)
-{
-	GL_SAFE_DELETE_TEXTURE(app->hdr_texture);
-	GL_SAFE_DELETE_TEXTURE(app->recycled_hdr_tex);
-	GL_SAFE_DELETE_TEXTURE(app->brdf_lut_tex);
-	GL_SAFE_DELETE_TEXTURE(app->spec_prefiltered_tex);
-	GL_SAFE_DELETE_TEXTURE(app->irradiance_tex);
-	GL_SAFE_DELETE_TEXTURE(app->dummy_black_tex);
-	GL_SAFE_DELETE_TEXTURE(app->dummy_white_tex);
-	GL_SAFE_DELETE_TEXTURE(app->transition_snapshot_tex);
-}
-
-static void app_cleanup_gpu_pbos(App* app)
-{
-	GL_SAFE_DELETE_BUFFER(app->exposure_pbo);
-	GL_SAFE_DELETE_BUFFER(app->histogram_pbo);
-	GL_SAFE_DELETE_BUFFERS(2, app->upload_pbo);
-}
-
 void app_cleanup(App* app)
 {
 	if (!app) {
@@ -400,34 +194,15 @@ void app_cleanup(App* app)
 	app->async_loader = NULL;
 
 	/* 2. Scene / Rendering groups */
-	app_cleanup_rendering_groups(app);
-
-	if (app->material_lib) {
-		material_free_lib(app->material_lib);
-		app->material_lib = NULL;
-	}
+	scene_cleanup(&app->scene);
 
 	/* 3. Common low-level resources */
-	app_cleanup_pbr_shaders(app);
-	app_cleanup_util_shaders(app);
-	app_cleanup_gpu_vaos(app);
-	app_cleanup_gpu_vbos(app);
-	app_cleanup_gpu_textures(app);
-	app_cleanup_gpu_pbos(app);
-
-	ibl_coordinator_cleanup(&app->ibl_coord);
+	GL_SAFE_DELETE_BUFFER(app->exposure_pbo);
+	GL_SAFE_DELETE_BUFFER(app->histogram_pbo);
+	GL_SAFE_DELETE_BUFFERS(2, app->upload_pbo);
 
 	adaptive_sampler_cleanup(&app->fps_sampler);
 
-	if (app->hdr_files) {
-		for (int i = 0; i < app->hdr_count; i++) {
-			free(app->hdr_files[i]);
-			app->hdr_files[i] = NULL;
-		}
-		free(app->hdr_files);
-		app->hdr_files = NULL;
-		app->hdr_count = 0;
-	}
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 		app->lum_histogram_buffer = NULL;
@@ -491,18 +266,21 @@ void app_run(App* app)
 		    (app->camera.pitch_target - app->camera.pitch) * alpha;
 		camera_update_vectors(&app->camera);
 
-		if (app->subdivisions != last_subdiv) {
-			icosphere_generate(&app->geometry, app->subdivisions);
-			app_update_gpu_buffers(app);
+		if (app->scene.subdivisions != last_subdiv) {
+			icosphere_generate(&app->scene.geometry,
+			                   app->scene.subdivisions);
+			scene_update_gpu_buffers(&app->scene);
+
 #ifdef USE_SSBO_RENDERING
-			ssbo_group_bind_mesh(&app->ssbo_group, app->sphere_vbo,
-			                     app->sphere_nbo, app->sphere_ebo);
+			ssbo_group_bind_mesh(
+			    &app->scene.ssbo_group, app->scene.sphere_vbo,
+			    app->scene.sphere_nbo, app->scene.sphere_ebo);
 #else
 			instanced_group_bind_mesh(
-			    &app->instanced_group, app->sphere_vbo,
-			    app->sphere_nbo, app->sphere_ebo);
+			    &app->scene.instanced_group, app->scene.sphere_vbo,
+			    app->scene.sphere_nbo, app->scene.sphere_ebo);
 #endif
-			last_subdiv = app->subdivisions;
+			last_subdiv = app->scene.subdivisions;
 		}
 
 		{
@@ -565,9 +343,9 @@ void app_update(App* app)
 	 * frame as PBO Setup & Map.
 	 */
 	if (app->pending_prealloc_w > 0) {
-		app->recycled_hdr_tex = texture_preallocate_hdr(
+		app->scene.recycled_hdr_tex = texture_preallocate_hdr(
 		    app->pending_prealloc_w, app->pending_prealloc_h,
-		    app->recycled_hdr_tex);
+		    app->scene.recycled_hdr_tex);
 		app->pending_prealloc_w = 0;
 		app->pending_prealloc_h = 0;
 	}
@@ -626,20 +404,8 @@ void app_update(App* app)
 	app_update_transition(app);
 }
 
-static inline void stencil_begin_object_pass(void)
-{
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-}
-
 void app_render(App* app)
 {
-	// 1. Signaler le début de la frame pour traiter les résultats
-	// précédents
-	// 1. Signaler le début de la frame pour traiter les résultats
-	// précédents
 	bool profiling_enabled =
 	    app->timeline_ui.visible || app->log_gpu_metrics ||
 	    effect_benchmark_is_running(&app->effect_bench);
@@ -681,118 +447,9 @@ void app_render(App* app)
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
-#ifdef USE_TRANSPARENT_BILLBOARDS
-	if (app->show_envmap) {
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "EnvMap",
-		                   GPU_PROFILER_ENV_COLOR);
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glDisable(GL_DEPTH_TEST);
-		skybox_render(&app->skybox, app->skybox_shader,
-		              app->hdr_texture, app->dummy_black_tex,
-		              inv_view_proj, app->env_lod);
-		glEnable(GL_DEPTH_TEST);
-	}
-
-	{
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
-		                   GPU_PROFILER_SCENE_COLOR);
-
-		stencil_begin_object_pass();
-
-		if (app->billboard_mode) {
-			GLuint sorted_ssbo = 0;
-			switch (app->sorting_mode) {
-				case SORTING_MODE_CPU_QSORT:
-					sorted_ssbo = sphere_sorter_sort_cpu(
-					    &app->sphere_sorter,
-					    app->sphere_instances,
-					    app->sphere_instance_count,
-					    app->camera.position);
-					break;
-				case SORTING_MODE_CPU_RADIX:
-					sorted_ssbo =
-					    sphere_sorter_sort_cpu_radix(
-					        &app->sphere_sorter,
-					        app->sphere_instances,
-					        app->sphere_instance_count,
-					        app->camera.position);
-					break;
-				case SORTING_MODE_GPU_BITONIC:
-				default:
-					sorted_ssbo = sphere_sorter_sort_gpu(
-					    &app->sphere_sorter,
-					    app->sphere_instances,
-					    app->sphere_instance_count,
-					    app->camera.position);
-					break;
-			}
-			billboard_group_update_from_buffer(
-			    &app->billboard_group, sorted_ssbo,
-			    app->sphere_instance_count);
-
-			// 1. Activer le Blending UNIQUEMENT pour la couleur
-			// (Attachment 0) Cela permet à ton 'edgeFactor' de
-			// lisser les bords de la sphère
-			glEnablei(GL_BLEND, 0);
-
-			// 2. Configurer l'équation de blend (toujours globale
-			// ou par index si besoin) Pour l'alpha blending
-			// classique (lissage des bords)
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-			// 3. DÉSACTIVER explicitement le Blending pour la
-			// vélocité (Attachment 1) C'est la clé : le buffer de
-			// vélocité recevra les valeurs brutes du shader sans
-			// être multipliées par l'alpha ou mixées avec le noir
-			// du fond.
-			glDisablei(GL_BLEND, 1);
-
-			app_render_billboards(app, view, proj, camera_pos);
-
-			// Nettoyage après rendu (Optionnel mais propre)
-			glDisablei(GL_BLEND, 0);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK,
-			              app->wireframe ? GL_LINE : GL_FILL);
-
-			app_render_instanced(app, view, proj, camera_pos);
-
-			if (app->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-		}
-
-		glDisable(GL_STENCIL_TEST);
-	}
-#else
-	{
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "Spheres",
-		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
-
-		stencil_begin_object_pass();
-
-		if (app->billboard_mode) {
-			app_render_billboards(app, view, proj, camera_pos);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK,
-			              app->wireframe ? GL_LINE : GL_FILL);
-			app_render_instanced(app, view, proj, camera_pos);
-
-			if (app->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-		}
-
-		glDisable(GL_STENCIL_TEST);
-
-		if (app->show_envmap) {
-			skybox_render(&app->skybox, app->skybox_shader,
-			              app->hdr_texture, app->dummy_black_tex,
-			              inv_view_proj, app->env_lod);
-		}
-	}
-#endif
+	scene_render(&app->scene, view, proj, camera_pos,
+	             app->postprocess.motion_blur_fx.previous_view_proj,
+	             app->width, app->height);
 
 	postprocess_end(&app->postprocess);
 
@@ -808,30 +465,30 @@ void app_render(App* app)
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisable(GL_DEPTH_TEST);
 
-			shader_use(app->debug_shader);
-			shader_set_int(app->debug_shader, "u_tex", 0);
-			shader_set_float(app->debug_shader, "u_alpha",
+			shader_use(app->scene.debug_shader);
+			shader_set_int(app->scene.debug_shader, "u_tex", 0);
+			shader_set_float(app->scene.debug_shader, "u_alpha",
 			                 app->transition_alpha);
-			shader_set_int(app->debug_shader, "u_bypass_processing",
-			               1);
-			shader_set_float(app->debug_shader, "lod", 0.0F);
+			shader_set_int(app->scene.debug_shader,
+			               "u_bypass_processing", 1);
+			shader_set_float(app->scene.debug_shader, "lod", 0.0F);
 
 			glActiveTexture(GL_TEXTURE0);
 			if (app->env_transition_mode ==
 			        ENV_TRANSITION_CROSSFADE &&
-			    app->transition_snapshot_tex != 0 &&
+			    app->scene.transition_snapshot_tex != 0 &&
 			    app->transition_state == TRANSITION_FADE_IN) {
 				/* Crossfade: Bind snapshot texture */
 				glBindTexture(GL_TEXTURE_2D,
-				              app->transition_snapshot_tex);
+				              app->scene.transition_snapshot_tex);
 			} else {
 				/* Black Screen / Initial Load: Bind dummy black
 				 */
 				glBindTexture(GL_TEXTURE_2D,
-				              app->dummy_black_tex);
+				              app->scene.dummy_black_tex);
 			}
 
-			glBindVertexArray(app->quad_vbo);
+			glBindVertexArray(app->scene.quad_vbo);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			glBindVertexArray(0);
 

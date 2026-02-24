@@ -341,11 +341,12 @@ void app_render_ui(App* app)
 	}
 
 	/* 3. Environment - shown in modes 2, 3 */
-	if (app->text_overlay_mode >= 2 && app->hdr_count > 0 &&
-	    app->current_hdr_index >= 0) {
+	if (app->text_overlay_mode >= 2 && app->scene.hdr_count > 0 &&
+	    app->scene.current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(env_text, sizeof(env_text), "Env: %s",
-		                    app->hdr_files[app->current_hdr_index]);
+		(void)safe_snprintf(
+		    env_text, sizeof(env_text), "Env: %s",
+		    app->scene.hdr_files[app->scene.current_hdr_index]);
 		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
 	}
 
@@ -392,7 +393,8 @@ void app_render_ui(App* app)
 	}
 
 	/* 5. IBL Processing Indicator */
-	if (app->ibl_coord.state != IBL_STATE_IDLE || app->env_map_loading) {
+	if (app->scene.ibl_coord.state != IBL_STATE_IDLE ||
+	    app->env_map_loading) {
 		char loading_text[UI_LOADING_TEXT_SIZE];
 		const char* status = (app->env_map_loading != 0)
 		                         ? "Loading HDR"

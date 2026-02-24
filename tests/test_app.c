@@ -1,9 +1,9 @@
 #define _POSIX_C_SOURCE 199309L
 #include "app.h"
-#include "app_scene.h"
 #include "camera.h"
 #include "icosphere.h"
 #include "main.h"
+#include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -72,7 +72,7 @@ void setUp(void)
 		// Wait for async HDR texture load AND transition to finish
 		int timeout = POLL_TIMEOUT_ITERATIONS;
 		double last_time = glfwGetTime();
-		while ((g_test_app.hdr_texture == 0 ||
+		while ((g_test_app.scene.hdr_texture == 0 ||
 		        g_test_app.transition_state != TRANSITION_IDLE) &&
 		       timeout-- > 0) {
 			double current_time = glfwGetTime();
@@ -86,8 +86,8 @@ void setUp(void)
 		}
 
 		// Cache the loaded texture for subsequent tests
-		if (g_test_app.hdr_texture != 0) {
-			g_cached_hdr_texture = g_test_app.hdr_texture;
+		if (g_test_app.scene.hdr_texture != 0) {
+			g_cached_hdr_texture = g_test_app.scene.hdr_texture;
 		}
 
 		// Initialize PBOs for async pixel readback (optimization#2)
@@ -108,7 +108,7 @@ void setUp(void)
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	} else if (g_cached_hdr_texture != 0) {
 		// Reuse cached texture for subsequent tests
-		g_test_app.hdr_texture = g_cached_hdr_texture;
+		g_test_app.scene.hdr_texture = g_cached_hdr_texture;
 	}
 }
 
@@ -246,12 +246,13 @@ void test_app_render_multi_view(void)
 	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
 
 	// Texture should already be loaded and cached from setUp()
-	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.hdr_texture,
+	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.scene.hdr_texture,
 	                              "HDR texture never loaded");
 
 	// Generate geometry
-	icosphere_generate(&g_test_app.geometry, g_test_app.subdivisions);
-	app_update_gpu_buffers(&g_test_app);
+	icosphere_generate(&g_test_app.scene.geometry,
+	                   g_test_app.scene.subdivisions);
+	scene_update_gpu_buffers(&g_test_app.scene);
 
 	size_t pixel_data_size =
 	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);

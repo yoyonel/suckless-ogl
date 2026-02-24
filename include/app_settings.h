@@ -150,6 +150,18 @@ typedef enum {
 	ENV_TRANSITION_BLACK_SCREEN
 } EnvTransitionMode;
 
+/**
+ * @enum TransitionState
+ * @brief States for the environment map transition.
+ */
+typedef enum {
+	TRANSITION_IDLE = 0,
+	TRANSITION_LOADING,  /**< Background loading while scene visible. */
+	TRANSITION_WAIT_IBL, /**< Stay Black (e.g. initial load). */
+	TRANSITION_FADE_OUT, /**< Old scene -> Black. */
+	TRANSITION_FADE_IN   /**< Black -> New scene. */
+} TransitionState;
+
 static const float DEFAULT_ENV_TRANSITION_DURATION = 0.25F;
 static const int DEFAULT_ENV_TRANSITION_MODE = ENV_TRANSITION_CROSSFADE;
 /** @} */
