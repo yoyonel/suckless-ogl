@@ -479,8 +479,9 @@ void app_render(App* app)
 			    app->scene.transition_snapshot_tex != 0 &&
 			    app->transition_state == TRANSITION_FADE_IN) {
 				/* Crossfade: Bind snapshot texture */
-				glBindTexture(GL_TEXTURE_2D,
-				              app->scene.transition_snapshot_tex);
+				glBindTexture(
+				    GL_TEXTURE_2D,
+				    app->scene.transition_snapshot_tex);
 			} else {
 				/* Black Screen / Initial Load: Bind dummy black
 				 */
