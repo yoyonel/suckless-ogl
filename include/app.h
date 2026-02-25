@@ -1,12 +1,3 @@
-/**
- * @file app.h
- * @brief Core application module and state container.
- *
- * This header defines the main App structure and the high-level orchestration
- * API. It integrates all sub-modules (UI, Input, Env, Scene) for the final
- * executable.
- */
-
 #ifndef APP_H
 #define APP_H
 
@@ -20,13 +11,9 @@
 #include "gl_common.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
-#include "material.h"
 #include "perf_mode.h"
 #include "postprocess.h"
 #include "scene.h"
-#include "shader.h"
-#include "skybox.h"
-#include "sphere_sorting.h"
 #include "tracy_manager.h"
 #include "ui.h"
 #include <cglm/cglm.h>
@@ -41,19 +28,15 @@ typedef struct AsyncLoader
 /**
  * @struct App
  * @brief The central state container for the entire application.
- *
- * This struct encapsulates all sub-systems, GPU handles, and configuration
- * flags. It is typically allocated with SIMD alignment (via `aligned_alloc`)
- * as many child structs use `vec4` (SIMD).
  */
 typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
-	Scene scene;                 /**< The 3D scene. */
-	PostProcess postprocess;     /**< Main post-processing pipeline. */
-	GLFWwindow* window;          /**< The GLFW window context. */
-	double last_frame_time;      /**< Absolute time of last frame start. */
-	double delta_time;           /**< Time elapsed since last frame. */
-	uint64_t frame_count;        /**< Monotonic frame counter. */
+	Scene scene;             /**< The 3D scene (Includes GI Probe Grid). */
+	PostProcess postprocess; /**< Main post-processing pipeline. */
+	GLFWwindow* window;      /**< The GLFW window context. */
+	double last_frame_time;  /**< Absolute time of last frame start. */
+	double delta_time;       /**< Time elapsed since last frame. */
+	uint64_t frame_count;    /**< Monotonic frame counter. */
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
 	/* --- Sub-Modules (RAII/In-Place) --- */
@@ -63,7 +46,6 @@ typedef struct App {
 	GPUProfilerUI timeline_ui;
 	UIContext ui; /**< Overlay and text rendering state. */
 
-	/* --- Sub-Modules (RAII/In-Place) --- */
 	Camera camera; /**< View/Proj state. */
 
 	/* --- App State Flags and Values --- */
@@ -112,43 +94,32 @@ typedef struct App {
 
 /**
  * @brief Fully initializes the application state, window, and OpenGL context.
- * @param app Pointer to the aligned App struct.
- * @param width Window width.
- * @param height Window height.
- * @param title Window title.
- * @return 1 on success, 0 on fatal error.
  */
 int app_init(App* app, int width, int height, const char* title);
 
 /**
  * @brief Safely releases all GPU and CPU resources held by the application.
- * @param app Pointer to the application state.
  */
 void app_cleanup(App* app);
 
 /**
  * @brief Enters the main application rendering and event loop.
- * @param app Pointer to the application state.
- * @note Blocks until the window is closed.
  */
 void app_run(App* app);
 
 /**
  * @brief One-frame logic update (physics, timers, camera).
- * @param app Pointer to the application state.
  */
 void app_update(App* app);
 
 /**
  * @brief One-frame rendering orchestration.
- * @param app Pointer to the application state.
  */
 void app_render(App* app);
 
 #include "app_input.h"
 #include "app_ui.h"
 
-#define TRACY_SCREENSHOT_WIDTH 320
-#define TRACY_SCREENSHOT_HEIGHT 180
+enum { TRACY_SCREENSHOT_WIDTH = 320, TRACY_SCREENSHOT_HEIGHT = 180 };
 
 #endif /* APP_H */

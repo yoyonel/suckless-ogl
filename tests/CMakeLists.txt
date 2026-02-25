@@ -60,6 +60,8 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_precision\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -463,3 +465,39 @@ target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
 )
 target_link_libraries(test_benchmark_sphere_sorting_perf PRIVATE cglm m)
 add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_sorting_perf)
+
+# =============================================================================
+# SH MATH PRECISION TEST (STANDALONE)
+# =============================================================================
+add_executable(test_sh_precision
+    test_sh_precision.c
+    ${CMAKE_SOURCE_DIR}/src/sh_math.c
+)
+target_include_directories(test_sh_precision PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(test_sh_precision PRIVATE cglm m)
+add_test(NAME test_sh_precision COMMAND test_sh_precision)
+
+# =============================================================================
+# SH INTEGRATION TEST (MOCKED)
+# =============================================================================
+add_executable(test_sh_integration
+    test_sh_integration.c
+    ${CMAKE_SOURCE_DIR}/src/sh_math.c
+    ${CMAKE_SOURCE_DIR}/src/light_probes.c
+    ${CMAKE_SOURCE_DIR}/src/render_utils.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/perf_timer.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+)
+target_include_directories(test_sh_integration PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+)
+target_link_libraries(test_sh_integration PRIVATE cglm m pthread)
+add_test(NAME test_sh_integration COMMAND test_sh_integration)

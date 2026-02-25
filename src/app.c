@@ -7,24 +7,14 @@
 #include "app_settings.h"
 #include "app_ui.h"
 #include "async_loader.h"
-#include "billboard_rendering.h"
 #include "camera.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "glad/glad.h"
-#include "ibl_coordinator.h"
-#include "icosphere.h"
-#include "instanced_rendering.h"
 #include "log.h"
-#include "material.h"
-#include "pbr.h"
 #include "perf_mode.h"
 #include "postprocess.h"
-#include "render_utils.h"
 #include "scene.h"
-#include "shader.h"
-#include "skybox.h"
-#include "sphere_sorting.h"
 #include "texture.h"
 #include "tracy_gpu.h"
 #include "ui.h"
@@ -36,7 +26,6 @@
 #include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>
-
 #ifdef TRACY_ENABLE
 #include "../deps/tracy/public/tracy/TracyC.h"
 #endif
@@ -142,7 +131,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_roughness = DEFAULT_ROUGHNESS;
 	app->u_ao = DEFAULT_AO;
 	app->u_exposure = DEFAULT_EXPOSURE;
-
 	glEnable(GL_DEPTH_TEST);
 
 	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);

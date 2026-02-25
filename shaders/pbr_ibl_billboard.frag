@@ -110,7 +110,7 @@ void main()
 	vec3 V = -rayDir;
 	if (debugMode != 0) {
 		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
-		                      debugMode);
+		                      debugMode, sphereHitPos);
 	} else {
 		vec3 R_vec = reflect(-V, N);
 		float NdotV = max(dot(N, V), 0.0);
@@ -120,7 +120,7 @@ void main()
 
 		color = compute_IBL_PBR_Advanced(
 		    N, V, R_vec, F0, NdotV, Albedo, Metallic,
-		    max(analytic_roughness, 0.04), AO);
+		    max(analytic_roughness, 0.04), AO, sphereHitPos);
 	}
 
 	// Apply Edge AA

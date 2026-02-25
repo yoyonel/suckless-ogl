@@ -7,6 +7,7 @@
 #include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include "light_probes.h"
 #include "material.h"
 #include "shader.h"
 #include "skybox.h"
@@ -43,6 +44,12 @@ typedef struct {
 	GLint projection;         /**< Location of 'projection' */
 	GLint view;               /**< Location of 'view' */
 	GLint previous_view_proj; /**< Location of 'previousViewProj' */
+	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
+	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
+	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
+	GLint use_gi;             /**< Location of 'u_UseGI' */
+	GLint
+	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } InstancedUniforms;
 
 /**
@@ -72,6 +79,12 @@ typedef struct {
 	GLint view;               /**< Location of 'view' */
 	GLint previous_view_proj; /**< Location of 'previousViewProj' */
 	GLint u_screen_size;      /**< Location of 'u_screenSize' */
+	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
+	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
+	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
+	GLint use_gi;             /**< Location of 'u_UseGI' */
+	GLint
+	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } BillboardUniforms;
 
 /**
@@ -101,6 +114,7 @@ typedef struct Scene {
 	int current_hdr_index;     /**< Index of active HDR in file list. */
 	IBLCoordinator ibl_coord;  /**< IBL state machine (Compute shaders owned
 	                              by Scene). */
+	LightProbeGrid probe_grid; /**< Global Illumination spatial grid. */
 
 	/* --- Shaders --- */
 	Shader* pbr_instanced_shader; /**< Shared PBR shader for opaque geo. */
@@ -144,6 +158,8 @@ typedef struct Scene {
 	int show_envmap;          /**< Draw skybox toggle. */
 	float env_lod;            /**< Skybox blurriness. */
 	int subdivisions;         /**< LOD of the shared icosphere. */
+	int gi_enabled;           /**< Toggle GI effect. */
+	int show_probe_grid;      /**< Debug visualization of probes. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
