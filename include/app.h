@@ -12,6 +12,7 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
+#include "app_env.h"
 #include "async_loader.h"
 #include "camera.h"
 #include "effect_benchmark.h"
@@ -76,22 +77,12 @@ typedef struct App {
 	int saved_x, saved_y;          /**< Cached pos for window restore. */
 	int saved_width, saved_height; /**< Cached size for window restore. */
 	int camera_enabled;            /**< Pause camera movement. */
-	int env_map_loading;           /**< Async lock for HDR loading. */
-	int env_map_loading_step;      /**< Multi-frame loading step counter. */
-	AsyncRequest
-	    current_env_req;  /**< Currently processing async request. */
+	EnvManager env_mgr;            /**< Environment/IBL state. */
 	int perf_mode_active; /**< Performance/GameMode optimization active. */
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
-
-	/* --- Environment Transition --- */
-	TransitionState transition_state;
-	float transition_alpha;
-	float transition_duration;
-	int is_first_load;
-	int env_transition_mode; /**< EnvTransitionMode. */
 
 	/* --- Global GPU Resources --- */
 	GLuint upload_pbo[2];
@@ -99,7 +90,6 @@ typedef struct App {
 	GLsizeiptr upload_pbo_size[2];
 	int pending_prealloc_w; /**< Deferred pre-alloc width (0=none). */
 	int pending_prealloc_h; /**< Deferred pre-alloc height. */
-	GLuint pending_env_tex; /**< Texture being assembled before IBL. */
 
 	GLuint exposure_pbo; /**< Pixel Buffer Object for mean luma readback. */
 	GLuint histogram_pbo;   /**< Pixel Buffer Object for luminance histogram
@@ -155,7 +145,6 @@ void app_update(App* app);
  */
 void app_render(App* app);
 
-#include "app_env.h"
 #include "app_input.h"
 #include "app_ui.h"
 

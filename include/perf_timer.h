@@ -259,9 +259,9 @@ static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii)
  *   }
  * @endcode
  */
-#define HYBRID_FUNC_TIMER(label)                                    \
-	HybridTimerRAII _h_raii                                     \
-	    __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
-	        perf_hybrid_start(), label}
+#define HYBRID_FUNC_TIMER(label)                                \
+	HybridTimerRAII _h_raii                                 \
+	    __attribute__((cleanup(hybrid_timer_cleanup_raii))) \
+	    __attribute__((unused)) = {perf_hybrid_start(), label}
 
 #endif /* PERF_TIMER_H */

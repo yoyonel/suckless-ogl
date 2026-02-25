@@ -389,21 +389,22 @@ void handle_app_input(App* app, int key, int mods)
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_T:
-			app->env_transition_mode =
-			    (app->env_transition_mode + 1) % 2;
-			LOG_INFO(
-			    "suckless-ogl.app",
-			    "Environment Transition Mode: %s",
-			    app->env_transition_mode == ENV_TRANSITION_CROSSFADE
-			        ? "CROSSFADE"
-			        : "BLACK_SCREEN");
+			app->env_mgr.env_transition_mode =
+			    (app->env_mgr.env_transition_mode + 1) % 2;
+			LOG_INFO("suckless-ogl.app",
+			         "Environment Transition Mode: %s",
+			         app->env_mgr.env_transition_mode ==
+			                 ENV_TRANSITION_CROSSFADE
+			             ? "CROSSFADE"
+			             : "BLACK_SCREEN");
 			char transition_buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(
-			    transition_buf, sizeof(transition_buf),
-			    "Transition: %s",
-			    app->env_transition_mode == ENV_TRANSITION_CROSSFADE
-			        ? "CROSSFADE"
-			        : "BLACK_SCREEN");
+			(void)safe_snprintf(transition_buf,
+			                    sizeof(transition_buf),
+			                    "Transition: %s",
+			                    app->env_mgr.env_transition_mode ==
+			                            ENV_TRANSITION_CROSSFADE
+			                        ? "CROSSFADE"
+			                        : "BLACK_SCREEN");
 			action_notifier_push(&app->notifier, transition_buf,
 			                     NOTIF_DUR_NORMAL);
 			break;

@@ -394,9 +394,9 @@ void app_render_ui(App* app)
 
 	/* 5. IBL Processing Indicator */
 	if (app->scene.ibl_coord.state != IBL_STATE_IDLE ||
-	    app->env_map_loading) {
+	    app->env_mgr.env_map_loading) {
 		char loading_text[UI_LOADING_TEXT_SIZE];
-		const char* status = (app->env_map_loading != 0)
+		const char* status = (app->env_mgr.env_map_loading != 0)
 		                         ? "Loading HDR"
 		                         : "Generating IBL";
 		(void)safe_snprintf(loading_text, sizeof(loading_text), "%s",

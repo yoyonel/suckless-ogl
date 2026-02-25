@@ -212,6 +212,15 @@ void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
 			    ___tracy_emit_zone_begin(&srcloc, active);
 			break;
 		}
+		default: {
+			/* Fallback for unknown states */
+			static const struct ___tracy_source_location_data
+			    srcloc = {"Async UNKNOWN", __func__, TracyFile,
+			              (uint32_t)__LINE__, color_idle};
+			mgr->active_state_ctx =
+			    ___tracy_emit_zone_begin(&srcloc, active);
+			break;
+		}
 	}
 	TracyCFiberLeave;
 	pthread_mutex_unlock(&mgr->transition_mutex);

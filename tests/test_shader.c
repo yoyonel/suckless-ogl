@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
 
 static GLFWwindow* window = NULL;
 
@@ -116,16 +117,20 @@ void test_shader_read_file_fread_fail(void)
 	/* Create a valid file */
 	write_file(path, content);
 
-	/* Make file unreadable: fopen succeeds, fread fails */
-	(void)chmod(path, PERM_NONE);
-
-	char* src = shader_read_file(path);
-
-	/* fread error path must return NULL */
-	TEST_ASSERT_NULL(src);
+	/* Make file unreadable by EVERYONE to ensure fopen fails */
+	/* Note: If running as root (e.g. in some docker containers),
+	   root bypasses permissions. In that case, we skip the assertion. */
+	if (getuid() == 0) {
+		TEST_IGNORE_MESSAGE(
+		    "Skipping permission test (running as root)");
+	} else {
+		(void)chmod(path, 0000);
+		char* src = shader_read_file(path);
+		TEST_ASSERT_NULL(src);
+	}
 
 	/* Restore permissions for cleanup */
-	(void)chmod(path, PERM_READ_WRITE);
+	(void)chmod(path, 0644);
 	(void)remove(path);
 }
 

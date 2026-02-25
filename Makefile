@@ -2,6 +2,7 @@
 
 BUILD_DIR := build
 CMAKE := cmake
+EXTRA_CMAKE_FLAGS :=
 
 # On définit BOX pour garder la configuration de ton env local
 BOX := clang-dev
@@ -241,7 +242,7 @@ $(BUILD_COV_DIR):
 
 coverage: $(BUILD_COV_DIR)
 	@echo "Building with coverage instrumentation..."
-	@$(DISTROBOX) $(CMAKE) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+	@$(DISTROBOX) $(CMAKE) $(EXTRA_CMAKE_FLAGS) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
 
 	@echo "Running tests to generate profile data..."
@@ -307,7 +308,7 @@ perf: profile
 asan:
 	@echo "Building with AddressSanitizer (ASan)..."
 	@mkdir -p $(BUILD_ASAN_DIR)
-	@$(DISTROBOX) $(CMAKE) -B $(BUILD_ASAN_DIR) \
+	@$(DISTROBOX) $(CMAKE) $(EXTRA_CMAKE_FLAGS) -B $(BUILD_ASAN_DIR) \
 		-DCMAKE_BUILD_TYPE=Debug \
 		-DENABLE_ASAN=ON \
 		-DENABLE_UNITY_BUILD=OFF \
@@ -326,6 +327,19 @@ IMAGE_NAME := suckless-ogl
 docker-build:
 	$(CONTAINER_ENGINE) build \
 		-t $(IMAGE_NAME) .
+
+# --- CI Docker Integration ---
+CI_IMAGE_NAME := suckless-ogl-ci:local
+
+ci-docker-build:
+	$(CONTAINER_ENGINE) build \
+		-t $(CI_IMAGE_NAME) \
+		-f .github/workflows/Dockerfile.ci .
+
+ci-docker-test: ci-docker-build
+	@echo "Running shader test inside the CI container (verifying non-root permissions)..."
+	@$(CONTAINER_ENGINE) run --rm -v $(CURDIR):/workspace $(CI_IMAGE_NAME) \
+		sh -c "cmake $(EXTRA_CMAKE_FLAGS) -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
 
 docker-build-no-cache:
 	$(CONTAINER_ENGINE) build \
