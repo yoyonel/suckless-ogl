@@ -158,18 +158,20 @@ static inline void gpu_stage_cleanup_raii(GPUStageRAII* stage_raii)
  * @brief Scoped GPU profiling stage. Automatically ends on scope exit.
  */
 #ifdef TRACY_ENABLE
-#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
-	TracyCZoneN(_tracy_ctx##__LINE__, name, 1);                            \
-	void* _tracy_gpu_ctx##__LINE__ =                                       \
-	    tracy_gpu_zone_begin(name, __func__, __FILE__, __LINE__, color);   \
-	GPUStageRAII _stage_raii##__LINE__                                     \
-	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {               \
-	        profiler_ptr, _tracy_ctx##__LINE__, _tracy_gpu_ctx##__LINE__}; \
+#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                        \
+	TracyCZoneN(_tracy_ctx##__LINE__, name, 1);                          \
+	void* _tracy_gpu_ctx##__LINE__ =                                     \
+	    tracy_gpu_zone_begin(name, __func__, __FILE__, __LINE__, color); \
+	GPUStageRAII _stage_raii##__LINE__                                   \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii)))                 \
+	    __attribute__((unused)) = {profiler_ptr, _tracy_ctx##__LINE__,   \
+	                               _tracy_gpu_ctx##__LINE__};            \
 	gpu_profiler_start_stage(profiler_ptr, name, color)
 #else
-#define GPU_STAGE_PROFILER(profiler_ptr, name, color)                          \
-	GPUStageRAII _stage_raii##__LINE__                                     \
-	    __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
+#define GPU_STAGE_PROFILER(profiler_ptr, name, color)        \
+	GPUStageRAII _stage_raii##__LINE__                   \
+	    __attribute__((cleanup(gpu_stage_cleanup_raii))) \
+	    __attribute__((unused)) = {profiler_ptr};        \
 	gpu_profiler_start_stage(profiler_ptr, name, color)
 #endif
 

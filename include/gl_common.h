@@ -68,7 +68,8 @@ static inline void cleanup_gl_debug_group(const char** dummy)
 #define GL_SCOPE_DEBUG_GROUP(name)                                  \
 	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name); \
 	const char* _gl_dbg_##__LINE__                              \
-	    __attribute__((cleanup(cleanup_gl_debug_group))) = name
+	    __attribute__((cleanup(cleanup_gl_debug_group)))        \
+	    __attribute__((unused)) = name
 
 /**
  * @brief RAII-style cleanup for OpenGL shader program binding.
@@ -84,10 +85,11 @@ static inline void cleanup_gl_use_program(const GLuint* dummy)
  * scope.
  * @param prog Shader program handle.
  */
-#define GL_SCOPE_USE_PROGRAM(prog) \
-	glUseProgram(prog);        \
-	GLuint _gl_prog_##__LINE__ \
-	    __attribute__((cleanup(cleanup_gl_use_program))) = prog
+#define GL_SCOPE_USE_PROGRAM(prog)                           \
+	glUseProgram(prog);                                  \
+	GLuint _gl_prog_##__LINE__                           \
+	    __attribute__((cleanup(cleanup_gl_use_program))) \
+	    __attribute__((unused)) = prog
 
 /**
  * @brief RAII-style cleanup for OpenGL textures.
