@@ -32,6 +32,17 @@ typedef enum {
 } SortingMode;
 
 /**
+ * @enum GIMode
+ * @brief Global Illumination sampling methods.
+ */
+typedef enum {
+	GI_MODE_OFF = 0,
+	GI_MODE_3D_TEX,
+	GI_MODE_SSBO,
+	GI_MODE_COUNT
+} GIMode;
+
+/**
  * @struct InstancedUniforms
  * @brief Cached uniform locations for PBR instanced rendering.
  */
@@ -47,7 +58,7 @@ typedef struct {
 	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
 	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
 	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
-	GLint use_gi;             /**< Location of 'u_UseGI' */
+	GLint gi_mode;            /**< Location of 'u_GIMode' */
 	GLint
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } InstancedUniforms;
@@ -82,7 +93,7 @@ typedef struct {
 	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
 	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
 	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
-	GLint use_gi;             /**< Location of 'u_UseGI' */
+	GLint gi_mode;            /**< Location of 'u_GIMode' */
 	GLint
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } BillboardUniforms;
@@ -158,7 +169,7 @@ typedef struct Scene {
 	int show_envmap;          /**< Draw skybox toggle. */
 	float env_lod;            /**< Skybox blurriness. */
 	int subdivisions;         /**< LOD of the shared icosphere. */
-	int gi_enabled;           /**< Toggle GI effect. */
+	GIMode gi_mode;           /**< Selected GI sampling method. */
 	int show_probe_grid;      /**< Debug visualization of probes. */
 
 	/* --- Uniform Caches --- */

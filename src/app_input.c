@@ -299,13 +299,15 @@ static void handle_y_key_input(App* app, int mods)
 		    app->scene.show_probe_grid ? "Probes: ON" : "Probes: OFF",
 		    NOTIF_DUR_NORMAL);
 	} else {
-		app->scene.gi_enabled = !app->scene.gi_enabled;
-		LOG_INFO("suckless-ogl.app", "GI 1-Bounce: %s",
-		         app->scene.gi_enabled ? "ON" : "OFF");
-		action_notifier_push(
-		    &app->notifier,
-		    app->scene.gi_enabled ? "GI: ON" : "GI: OFF",
-		    NOTIF_DUR_NORMAL);
+		app->scene.gi_mode = (app->scene.gi_mode + 1) % GI_MODE_COUNT;
+		const char* mode_names[] = {"OFF", "3D Texture", "SSBO"};
+		LOG_INFO("suckless-ogl.app", "GI Mode: %s",
+		         mode_names[app->scene.gi_mode]);
+
+		char buf[NOTIF_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "GI: %s",
+		                    mode_names[app->scene.gi_mode]);
+		action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
 	}
 }
 
