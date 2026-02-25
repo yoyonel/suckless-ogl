@@ -6,15 +6,6 @@ This document details the automated Continuous Integration and Continuous Deploy
 
 The pipeline is defined in `.github/workflows/main.yml`. It ensures code quality, runs tests, generates documentation, and handles automated releases.
 
-### Runner Environment
-
-To minimize setup time, the pipeline uses a custom Docker-based runner environment instead of installing dependencies manually on every run:
-
-- **Custom Container**: `ghcr.io/${{ github.repository }}-ci:latest`
-- **Definition**: Managed in `.github/workflows/Dockerfile.ci`.
-- **Automation**: The image is automatically rebuilt and pushed to the GitHub Container Registry (GHCR) by `.github/workflows/ci-image.yml` whenever the Dockerfile is modified.
-- **Benefits**: Reduces environment setup time from **~8 minutes** to **< 1 minute** by consolidating Mesa, Xvfb, Doxygen, and Python dependencies.
-
 ## Triggers
 
 The workflow is triggered automatically events:

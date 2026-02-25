@@ -6,6 +6,30 @@
  * and manages the state machine for progressive Image-Based Lighting (IBL)
  * updates.
  *
+ * \dot
+ * digraph IBLState {
+ *   rankdir=LR;
+ *   dpi=72;
+ *   node [shape=ellipse, style=filled, fillcolor="#f8f8f8",
+ * fontname="Helvetica", fontsize=9]; edge [fontname="Helvetica", fontsize=9];
+ *
+ *   IDLE [shape=doublecircle, fillcolor="#e0e0e0"];
+ *   LUMINANCE [label="Luminance\nPass"];
+ *   SPEC_INIT [label="Specular\nInit"];
+ *   SPEC_MIPS [label="Specular\nMips"];
+ *   IRRADIANCE [label="Irradiance\nPass"];
+ *   DONE [shape=doublecircle, fillcolor="#ccffcc", label="DONE"];
+ *
+ *   IDLE -> LUMINANCE [label="New HDR Loaded"];
+ *   LUMINANCE -> SPEC_INIT [label="Auto-Exposure"];
+ *   SPEC_INIT -> SPEC_MIPS [label="Alloc"];
+ *   SPEC_MIPS -> SPEC_MIPS [label="Next Mip/Slice"];
+ *   SPEC_MIPS -> IRRADIANCE [label="All Mips"];
+ *   IRRADIANCE -> IRRADIANCE [label="Next Slice"];
+ *   IRRADIANCE -> DONE [label="Finished"];
+ *   DONE -> IDLE [label="Swap & Cleanup"];
+ * }
+ * \enddot
  */
 
 #ifndef APP_ENV_H
@@ -18,24 +42,12 @@
 typedef struct App App;
 
 /**
- * @enum EnvLoadingStep
- * @brief Steps for the multi-frame HDR environment loading process.
- */
-typedef enum {
-	ENV_LOAD_IDLE = 0,
-	ENV_LOAD_UPLOAD,  /**< Step 1: Upload texture to GPU. */
-	ENV_LOAD_MIPMAPS, /**< Step 2: Generate Mipmaps. */
-	ENV_LOAD_IBL      /**< Step 3: Start IBL Coordinator. */
-} EnvLoadingStep;
-
-/**
  * @struct EnvManager
  * @brief Encapsulates state for environment loading, transitions, and IBL.
  */
 typedef struct EnvManager {
-	int env_map_loading; /**< Async lock for HDR loading. */
-	EnvLoadingStep
-	    env_map_loading_step; /**< Multi-frame loading step counter. */
+	int env_map_loading;      /**< Async lock for HDR loading. */
+	int env_map_loading_step; /**< Multi-frame loading step counter. */
 	AsyncRequest
 	    current_env_req; /**< Currently processing async request. */
 	TransitionState transition_state;
