@@ -2,7 +2,9 @@ name: Build and Push CI Image
 
 on:
   push:
-    branches: ["master", "main"]
+    paths:
+      - '.github/workflows/Dockerfile.ci'
+  pull_request:
     paths:
       - '.github/workflows/Dockerfile.ci'
   workflow_dispatch:
@@ -35,7 +37,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || contains(github.ref, 'refactor-env-manager') }}
             type=sha,format=short
 
       - name: Build and push Docker image
