@@ -6,7 +6,7 @@ var structEffectBenchmark =
     [ "bit", "structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb", null ],
     [ "current_effect_idx", "structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d", null ],
     [ "effect_count", "structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6", null ],
-    [ "effects", "structEffectBenchmark.html#aaeab2d353d3589ed0f1262e7c4585446", null ],
+    [ "effects", "structEffectBenchmark.html#a1076524e552f0400ec0f8f946d0c4455", null ],
     [ "frame_counter", "structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca", null ],
     [ "name", "structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c", null ],
     [ "phase", "structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943", null ],

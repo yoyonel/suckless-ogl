@@ -252,15 +252,12 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
-<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">app.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Core application module and state container.  
-<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="action__notifier_8h_source.html">action_notifier.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="adaptive__sampler_8h_source.html">adaptive_sampler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__env_8h_source.html">app_env.h</a>&quot;</code><br />
@@ -271,13 +268,9 @@ $(document).ready(function(){initNavTree('app_8h.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler__ui_8h_source.html">gpu_profiler_ui.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="tracy__manager_8h_source.html">tracy_manager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ui_8h_source.html">ui.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
@@ -304,12 +297,12 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The central state container for the entire application.  <a href="structApp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a1c3f645cdb2e95fad70014638acef749"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a1c3f645cdb2e95fad70014638acef749">TRACY_SCREENSHOT_WIDTH</a>&#160;&#160;&#160;320</td></tr>
-<tr class="separator:a1c3f645cdb2e95fad70014638acef749"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a895ec888aa709e89ca4a83f777235343"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app_8h.html#a895ec888aa709e89ca4a83f777235343">TRACY_SCREENSHOT_HEIGHT</a>&#160;&#160;&#160;180</td></tr>
-<tr class="separator:a895ec888aa709e89ca4a83f777235343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a06fc87d81c62e9abb8790b6e5713c55b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba5125f4f857a47c47ea2035f0da2ae3ff">TRACY_SCREENSHOT_WIDTH</a> = 320
+, <a class="el" href="app_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba98c4f32842059fdbf6edf383e5a0b35c">TRACY_SCREENSHOT_HEIGHT</a> = 180
+ }</td></tr>
+<tr class="separator:a06fc87d81c62e9abb8790b6e5713c55b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -329,35 +322,22 @@ Functions</h2></td></tr>
 <tr class="memdesc:a296499ce009ce4939c9c75ba738373dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">One-frame rendering orchestration.  <a href="app_8h.html#a296499ce009ce4939c9c75ba738373dd">More...</a><br /></td></tr>
 <tr class="separator:a296499ce009ce4939c9c75ba738373dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Core application module and state container. </p>
-<p>This header defines the main <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> structure and the high-level orchestration API. It integrates all sub-modules (UI, Input, Env, <a class="el" href="structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state.">Scene</a>) for the final executable. </p>
-</div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a895ec888aa709e89ca4a83f777235343"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a895ec888aa709e89ca4a83f777235343">&#9670;&nbsp;</a></span>TRACY_SCREENSHOT_HEIGHT</h2>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a06fc87d81c62e9abb8790b6e5713c55b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06fc87d81c62e9abb8790b6e5713c55b">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRACY_SCREENSHOT_HEIGHT&#160;&#160;&#160;180</td>
+          <td class="memname">anonymous enum</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1c3f645cdb2e95fad70014638acef749"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c3f645cdb2e95fad70014638acef749">&#9670;&nbsp;</a></span>TRACY_SCREENSHOT_WIDTH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TRACY_SCREENSHOT_WIDTH&#160;&#160;&#160;320</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a06fc87d81c62e9abb8790b6e5713c55ba5125f4f857a47c47ea2035f0da2ae3ff"></a>TRACY_SCREENSHOT_WIDTH&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a06fc87d81c62e9abb8790b6e5713c55ba98c4f32842059fdbf6edf383e5a0b35c"></a>TRACY_SCREENSHOT_HEIGHT&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>
@@ -379,12 +359,6 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Safely releases all GPU and CPU resources held by the application. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -433,16 +407,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Fully initializes the application state, window, and OpenGL context. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the aligned <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> struct. </td></tr>
-    <tr><td class="paramname">width</td><td>Window width. </td></tr>
-    <tr><td class="paramname">height</td><td>Window height. </td></tr>
-    <tr><td class="paramname">title</td><td>Window title. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 on success, 0 on fatal error. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -469,12 +433,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>One-frame rendering orchestration. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -501,13 +459,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Enters the main application rendering and event loop. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd>Blocks until the window is closed. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -534,12 +485,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>One-frame logic update (physics, timers, camera). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">

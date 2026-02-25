@@ -47,6 +47,8 @@ var app__settings_8h =
     [ "GPU_PROFILER_COMPOSITE_COLOR", "app__settings_8h.html#aefa79da2c8228eec514a28467923a07d", null ],
     [ "GPU_PROFILER_DOF_COLOR", "app__settings_8h.html#ac8514b41b0bfb22f696feac256ac0607", null ],
     [ "GPU_PROFILER_ENV_COLOR", "app__settings_8h.html#a077b530bc1be19ecc056d48a6d4793f3", null ],
+    [ "GPU_PROFILER_GI_DEBUG_COLOR", "app__settings_8h.html#a623ee165a10838fc9e485ff1b11e3aeb", null ],
+    [ "GPU_PROFILER_GI_SYNC_COLOR", "app__settings_8h.html#a49240777a1bd99a5c407b803d454e768", null ],
     [ "GPU_PROFILER_MOTION_BLUR_COLOR", "app__settings_8h.html#a2bc152ef4d2da90b79cdaebf10581816", null ],
     [ "GPU_PROFILER_POSTPROCESS_COLOR", "app__settings_8h.html#abd0c592d103323ccce000e5d19984d4f", null ],
     [ "GPU_PROFILER_ROW_HEIGHT", "app__settings_8h.html#a38fa5cee53311a3ed73706c471efced4", null ],

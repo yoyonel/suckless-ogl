@@ -11,6 +11,7 @@ var app__input_8c =
     [ "handle_pbr_debug_mode", "app__input_8c.html#afb03f1c912b8d6ee442c51f99cccf89c", null ],
     [ "handle_subdiv_input", "app__input_8c.html#a18f4841f6aa0703c4b80ae627bb8bacd", null ],
     [ "handle_system_key_input", "app__input_8c.html#a626b17296c88e804d1a3e4c6c702d526", null ],
+    [ "handle_y_key_input", "app__input_8c.html#a4f475bca27fa1c22163a3904a8385547", null ],
     [ "key_callback", "app__input_8c.html#a286930f4e8ede059b83ff6eafa2ff718", null ],
     [ "mouse_callback", "app__input_8c.html#af4ca2891044ac10a664b8d83ce590f1f", null ],
     [ "scroll_callback", "app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea", null ]

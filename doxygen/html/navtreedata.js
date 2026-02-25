@@ -82,15 +82,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"bloom__upsample_8frag.html#a54baa6c59f107ffa02d72d3bb6747231",
-"globals_h.html",
-"ibl__coordinator_8c.html#aa5ac2b4f077bc45d4ea556539a84db38",
-"pbr__ibl__billboard_8vert.html#a959e045b08445d0b6572b578becc6962",
-"postprocess_8h.html#aa6015b9293bcf3bebdebc87307513cd8",
-"sphere__sorting_8h.html#a159532007839ad93c627f7173c755616",
-"structEnvManager.html#a56f6c95940e65b8e764a4c5c5b1b8969",
-"structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272",
-"tracy__manager_8c.html#adc9e196a3269007d3a737cb578d9215a"
+"bloom__upsample_8frag.html#a4caec1245a11a388981d2112932ad7b3",
+"globals_d.html",
+"group__UI.html#gab74ea829a42607b55b37fd0986bf30ab",
+"pbr_8c.html#aae7b31749ecdf5e4a064b8bd0d4f74c7",
+"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0",
+"sh__probe_8glsl.html#af04047712aec8d8c3f2534dc77c02e01",
+"structBillboardGroup.html",
+"structIcosphereGeometry.html",
+"structScene.html#a8d6dc5a9ef8fa0c35060866d22402a06",
+"ui__spinner_8vert.html#acdef7a1fd863a6d3770c1268cb06add3"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

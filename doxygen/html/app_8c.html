@@ -265,24 +265,14 @@ $(document).ready(function(){initNavTree('app_8c.html',''); initResizable(); });
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__ui_8h_source.html">app_ui.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="async__loader_8h_source.html">async_loader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="fps_8h_source.html">fps.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="icosphere_8h_source.html">icosphere.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="pbr_8h_source.html">pbr.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="texture_8h_source.html">texture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="tracy__gpu_8h_source.html">tracy_gpu.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ui_8h_source.html">ui.h</a>&quot;</code><br />
@@ -343,12 +333,6 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Safely releases all GPU and CPU resources held by the application. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -397,16 +381,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Fully initializes the application state, window, and OpenGL context. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the aligned <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> struct. </td></tr>
-    <tr><td class="paramname">width</td><td>Window width. </td></tr>
-    <tr><td class="paramname">height</td><td>Window height. </td></tr>
-    <tr><td class="paramname">title</td><td>Window title. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 on success, 0 on fatal error. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -433,12 +407,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>One-frame rendering orchestration. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -465,13 +433,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Enters the main application rendering and event loop. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section note"><dt>Note</dt><dd>Blocks until the window is closed. </dd></dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
@@ -498,12 +459,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>One-frame logic update (physics, timers, camera). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">

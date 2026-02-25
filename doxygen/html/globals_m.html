@@ -254,6 +254,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
       <li><a href="globals_v.html#index_v"><span>v</span></a></li>
       <li><a href="globals_w.html#index_w"><span>w</span></a></li>
       <li><a href="globals_x.html#index_x"><span>x</span></a></li>
+      <li><a href="globals_y.html#index_y"><span>y</span></a></li>
       <li><a href="globals_z.html#index_z"><span>z</span></a></li>
     </ul>
   </div>
@@ -295,8 +296,13 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 <li>m_inv_view_proj
 : <a class="el" href="background_8vert.html#ad50a2c57dcb46e83c90768720ce847e4">background.vert</a>
 </li>
+<li>M_PI
+: <a class="el" href="light__probes_8c.html#ae71449b1cc6e6250b91f539153a7a0d3">light_probes.c</a>
+, <a class="el" href="sh__math_8c.html#ae71449b1cc6e6250b91f539153a7a0d3">sh_math.c</a>
+</li>
 <li>main()
-: <a class="el" href="ui__spinner_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">ui_spinner.vert</a>
+: <a class="el" href="main_8c.html#a0ddf1224851353fc92bfbff6f499fa97">main.c</a>
+, <a class="el" href="ui__spinner_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">ui_spinner.vert</a>
 , <a class="el" href="ui__spinner_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">ui_spinner.frag</a>
 , <a class="el" href="ui_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">ui.vert</a>
 , <a class="el" href="ui_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">ui.frag</a>
@@ -307,18 +313,19 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 , <a class="el" href="pbr__ibl__instanced_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">pbr_ibl_instanced.vert</a>
 , <a class="el" href="pbr__ibl__instanced_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">pbr_ibl_instanced.frag</a>
 , <a class="el" href="pbr__ibl__billboard_8vert.html#af531c69ba8fc890839949fb7b71a4c45">pbr_ibl_billboard.vert</a>
+, <a class="el" href="pbr__ibl__billboard_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">pbr_ibl_billboard.frag</a>
+, <a class="el" href="bloom__prefilter_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">bloom_prefilter.frag</a>
 , <a class="el" href="lum__downsample_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">lum_downsample.frag</a>
-, <a class="el" href="main_8c.html#a0ddf1224851353fc92bfbff6f499fa97">main.c</a>
 , <a class="el" href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">background.frag</a>
 , <a class="el" href="background_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">background.vert</a>
 , <a class="el" href="bloom__downsample_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">bloom_downsample.frag</a>
-, <a class="el" href="bloom__prefilter_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">bloom_prefilter.frag</a>
-, <a class="el" href="debug__line_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">debug_line.frag</a>
-, <a class="el" href="pbr__ibl__billboard_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">pbr_ibl_billboard.frag</a>
-, <a class="el" href="debug__tex_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">debug_tex.vert</a>
-, <a class="el" href="debug__line_8vert.html#af531c69ba8fc890839949fb7b71a4c45">debug_line.vert</a>
 , <a class="el" href="bloom__upsample_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">bloom_upsample.frag</a>
+, <a class="el" href="debug__line_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">debug_line.frag</a>
+, <a class="el" href="debug__line_8vert.html#af531c69ba8fc890839949fb7b71a4c45">debug_line.vert</a>
+, <a class="el" href="debug__probe_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">debug_probe.frag</a>
+, <a class="el" href="debug__probe_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">debug_probe.vert</a>
 , <a class="el" href="debug__tex_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">debug_tex.frag</a>
+, <a class="el" href="debug__tex_8vert.html#acdef7a1fd863a6d3770c1268cb06add3">debug_tex.vert</a>
 </li>
 <li>make_glyph_quad()
 : <a class="el" href="ui_8c.html#a8d8220e7d7899791fe745aec49f72e6d">ui.c</a>
@@ -359,10 +366,10 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 : <a class="el" href="group__Camera.html#ga827bc2ba868d77a659e8ec4736e856ae">app_settings.h</a>
 </li>
 <li>MAX_DEFINE_LENGTH
-: <a class="el" href="postprocess_8c.html#ae4d5251432e1a9e6803c0240cc492e18ae2d8bf19c4a749e8099783aff02acd67">postprocess.c</a>
+: <a class="el" href="postprocess_8c.html#aac34dfe6c6b73b43a4656c9dce041034ae2d8bf19c4a749e8099783aff02acd67">postprocess.c</a>
 </li>
 <li>MAX_DEFINES
-: <a class="el" href="shader_8c.html#a458e651af6690959efa2afb96be7d609a91ae2ad4b58ea1f33cd3254403970818">shader.c</a>
+: <a class="el" href="shader_8c.html#a2970898e8a43ce21e1cc510d49f1b89da91ae2ad4b58ea1f33cd3254403970818">shader.c</a>
 </li>
 <li>MAX_ENV_LOD
 : <a class="el" href="group__Environment.html#ga49fb4d7500162560be451c22d8544de5">app_settings.h</a>
@@ -383,13 +390,13 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 : <a class="el" href="pbr_8c.html#aeec0e4121b2f13da5d4c37deb40952b6">pbr.c</a>
 </li>
 <li>MAX_INCLUDE_DEPTH
-: <a class="el" href="shader_8c.html#a0944a4353780132eeab7b06e3e42291da34143976b450ff92e89581ba34a4debf">shader.c</a>
+: <a class="el" href="shader_8c.html#ab48899087cc647f0f791ed0c459adc53a34143976b450ff92e89581ba34a4debf">shader.c</a>
 </li>
 <li>MAX_MATERIAL_CONFIG_SIZE
-: <a class="el" href="material_8c.html#af9bdc3014f3d54c426b6d2df10de4960a3ef23592467efdce9ca509f61c0f6128">material.c</a>
+: <a class="el" href="material_8c.html#aaf8fd5f0e57d456151c951e0f3715fc4a3ef23592467efdce9ca509f61c0f6128">material.c</a>
 </li>
 <li>MAX_MATERIAL_COUNT
-: <a class="el" href="material_8c.html#adb49720dc49f7d4e4cf9adbf2948e409a791194604c51f810416b76a9035095c8">material.c</a>
+: <a class="el" href="material_8c.html#a94798fdadfbf49a7c658ace669a1d310a791194604c51f810416b76a9035095c8">material.c</a>
 </li>
 <li>MAX_MATERIAL_NAME_LENGTH
 : <a class="el" href="material_8h.html#a728306606bf7f90fe837ffec267ef497">material.h</a>
@@ -398,28 +405,28 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 : <a class="el" href="app__env_8c.html#acf85965108ddb048b66205bcd09d87b6">app_env.c</a>
 </li>
 <li>MAX_SHADER_DEFINES
-: <a class="el" href="postprocess_8c.html#ae4d5251432e1a9e6803c0240cc492e18a288123cc32f90d11ebff0279deb35e6d">postprocess.c</a>
+: <a class="el" href="postprocess_8c.html#aac34dfe6c6b73b43a4656c9dce041034a288123cc32f90d11ebff0279deb35e6d">postprocess.c</a>
 </li>
 <li>MAX_SHADER_NAME_LEN
-: <a class="el" href="shader_8c.html#aac34dfe6c6b73b43a4656c9dce041034a75751c824ae3bf41e5fe22118a79c341">shader.c</a>
+: <a class="el" href="shader_8c.html#a4caf8d8f829279fba122163d961608a4a75751c824ae3bf41e5fe22118a79c341">shader.c</a>
 </li>
 <li>MAX_SHADER_SOURCE_SIZE
-: <a class="el" href="shader_8c.html#a4790f45dcc812c1b00184a2edccdddf5ad0b512e0ee8b214855ee8781e7b04c62">shader.c</a>
+: <a class="el" href="shader_8c.html#a458e651af6690959efa2afb96be7d609ad0b512e0ee8b214855ee8781e7b04c62">shader.c</a>
 </li>
 <li>MAX_SINGLE_PASS_COUNT
-: <a class="el" href="sphere__sorting_8c.html#a2970898e8a43ce21e1cc510d49f1b89daf8df5c1debfe68fac8947ff4a8cbcb36">sphere_sorting.c</a>
+: <a class="el" href="sphere__sorting_8c.html#a157d5577a5b2f5986037d0d09c7dc77daf8df5c1debfe68fac8947ff4a8cbcb36">sphere_sorting.c</a>
 </li>
 <li>MAX_SUBDIV
-: <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7ac846edb36b9f557d22d6a1166f02f344">app_settings.h</a>
+: <a class="el" href="group__Geometry.html#gga99fb83031ce9923c84392b4e92f956b5ac846edb36b9f557d22d6a1166f02f344">app_settings.h</a>
 </li>
 <li>MAX_TEXTURE_DIMENSION
-: <a class="el" href="texture_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a554cc0f6069d6004d10af477e1507957">texture.h</a>
+: <a class="el" href="texture_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a554cc0f6069d6004d10af477e1507957">texture.h</a>
 </li>
 <li>MAX_TEXTURE_FILE_SIZE
-: <a class="el" href="texture_8c.html#a1fb9092bcdeada2d206bdc74afbbe122a0d3aebca00d51ee1340e5b60c9d2eba4">texture.c</a>
+: <a class="el" href="texture_8c.html#af715e26dfffd1f8de1c18449e2770cffa0d3aebca00d51ee1340e5b60c9d2eba4">texture.c</a>
 </li>
 <li>MAX_VERTEX_ATTRIBS_BASELINE
-: <a class="el" href="gl__common_8h.html#abc6126af1d45847bc59afa0aa3216b04a0305c7ac38f33f9eebc608633b2fc732">gl_common.h</a>
+: <a class="el" href="gl__common_8h.html#adc29c2ff13d900c2f185ee95427fb06ca0305c7ac38f33f9eebc608633b2fc732">gl_common.h</a>
 </li>
 <li>Metallic
 : <a class="el" href="pbr__ibl__billboard_8frag.html#a0a8957af51bf8d3e6ca6b94f408ef8ba">pbr_ibl_billboard.frag</a>
@@ -433,15 +440,15 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 , <a class="el" href="metric__stack_8c.html#ac3d85b0faf7c29d266a9474cc8a92ec3">metric_stack.c</a>
 </li>
 <li>metric_stack_init()
-: <a class="el" href="metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8">metric_stack.h</a>
-, <a class="el" href="metric__stack_8c.html#ac1f754389be64551e5ce2cc276220db8">metric_stack.c</a>
+: <a class="el" href="metric__stack_8c.html#ac1f754389be64551e5ce2cc276220db8">metric_stack.c</a>
+, <a class="el" href="metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8">metric_stack.h</a>
 </li>
 <li>METRIC_STACK_MAX_DEPTH
 : <a class="el" href="metric__stack_8h.html#ab7c522a3bae2d2a42d74ea6212c15ded">metric_stack.h</a>
 </li>
 <li>metric_stack_peek()
-: <a class="el" href="metric__stack_8c.html#a0c362d644bc694f5fc6f1e3ee3c52d01">metric_stack.c</a>
-, <a class="el" href="metric__stack_8h.html#a0c362d644bc694f5fc6f1e3ee3c52d01">metric_stack.h</a>
+: <a class="el" href="metric__stack_8h.html#a0c362d644bc694f5fc6f1e3ee3c52d01">metric_stack.h</a>
+, <a class="el" href="metric__stack_8c.html#a0c362d644bc694f5fc6f1e3ee3c52d01">metric_stack.c</a>
 </li>
 <li>metric_stack_pop()
 : <a class="el" href="metric__stack_8h.html#aa8f8c6a6a6c2ff5a5ffc57a2ac0a6e38">metric_stack.h</a>
@@ -452,7 +459,7 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 , <a class="el" href="metric__stack_8c.html#a2ded7ba643487d09d6e60c751357ae42">metric_stack.c</a>
 </li>
 <li>MILLI_DIVISOR
-: <a class="el" href="log_8c.html#a6b7b47dd702d9e331586d485013fd1eaa490d7b93a43f9c7422bb90f9fdb1556f">log.c</a>
+: <a class="el" href="log_8c.html#a39fca1837c5ce7715cbf571669660c13a490d7b93a43f9c7422bb90f9fdb1556f">log.c</a>
 </li>
 <li>MILLISECONDS
 : <a class="el" href="fps_8c.html#a8758f6ac43d20bbf87f1079fdcef817a">fps.c</a>
@@ -473,7 +480,7 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 : <a class="el" href="gpu__profiler__ui_8c.html#aff86e01a027445b88533494da73fb54f">gpu_profiler_ui.c</a>
 </li>
 <li>MIN_SUBDIV
-: <a class="el" href="group__Geometry.html#ggadf764cbdea00d65edcd07bb9953ad2b7a6abbd2a2e390ed49e79692e2cd617e7e">app_settings.h</a>
+: <a class="el" href="group__Geometry.html#gga99fb83031ce9923c84392b4e92f956b5a6abbd2a2e390ed49e79692e2cd617e7e">app_settings.h</a>
 </li>
 <li>MIN_VISIBLE_ALPHA_GLOBAL
 : <a class="el" href="gpu__profiler__ui_8c.html#a4130f3a3337890017442b3dc6b8b779a">gpu_profiler_ui.c</a>
@@ -492,10 +499,10 @@ $(document).ready(function(){initNavTree('globals_m.html',''); initResizable(); 
 : <a class="el" href="effect__benchmark_8c.html#a98c842b52ffe344288b6e38b12417baa">effect_benchmark.c</a>
 </li>
 <li>MSG_BUF_SIZE
-: <a class="el" href="async__loader_8c.html#a05589fbab0657f08285ebdfe93f5ec9ea11a5639b207ef5cd10cd0962ace3eede">async_loader.c</a>
+: <a class="el" href="async__loader_8c.html#aaf105ae5beaca1dee30ae54530691fcea11a5639b207ef5cd10cd0962ace3eede">async_loader.c</a>
 </li>
 <li>MSG_BUFFER_SIZE
-: <a class="el" href="log_8c.html#a6b7b47dd702d9e331586d485013fd1eaa6a5dd49e581491233eb9ddb60aca3b2d">log.c</a>
+: <a class="el" href="log_8c.html#a39fca1837c5ce7715cbf571669660c13a6a5dd49e581491233eb9ddb60aca3b2d">log.c</a>
 </li>
 </ul>
 </div><!-- contents -->

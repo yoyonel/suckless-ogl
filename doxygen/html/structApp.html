@@ -368,7 +368,6 @@ Data Fields</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The central state container for the entire application. </p>
-<p>This struct encapsulates all sub-systems, GPU handles, and configuration flags. It is typically allocated with SIMD alignment (via <code>aligned_alloc</code>) as many child structs use <code>vec4</code> (SIMD). </p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="ae23d2d96f024e64c81f150041c6f93af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae23d2d96f024e64c81f150041c6f93af">&#9670;&nbsp;</a></span>async_loader</h2>
@@ -828,7 +827,7 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The 3D scene. </p>
+<p>The 3D scene (Includes GI Probe Grid). </p>
 
 </div>
 </div>

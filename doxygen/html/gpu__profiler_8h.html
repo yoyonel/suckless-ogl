@@ -384,10 +384,10 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">    <a class="code" href="structGPUStageRAII.html">GPUStageRAII</a> _stage_raii##__LINE__                   \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a>))) \</div>
 <div class="line">        __attribute__((unused)) = {profiler_ptr};        \</div>
-<div class="line">    gpu_profiler_start_stage(profiler_ptr, name, <a class="code" href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>)</div>
+<div class="line">    gpu_profiler_start_stage(profiler_ptr, name, <a class="code" href="debug__probe_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>)</div>
+<div class="ttc" id="adebug__probe_8frag_html_a0a3e99eab94835ffca469f09cb4a24ef"><div class="ttname"><a href="debug__probe_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a></div><div class="ttdeci">out vec4 color</div><div class="ttdef"><b>Definition:</b> debug_probe.frag:8</div></div>
 <div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:148</div></div>
 <div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:139</div></div>
-<div class="ttc" id="aui_8frag_html_a0a3e99eab94835ffca469f09cb4a24ef"><div class="ttname"><a href="ui_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a></div><div class="ttdeci">out vec4 color</div><div class="ttdef"><b>Definition:</b> ui.frag:3</div></div>
 </div><!-- fragment -->
 <p>Scoped GPU profiling stage. Automatically ends on scope exit. </p>
 

@@ -266,11 +266,9 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <code>#include &quot;<a class="el" href="camera__input_8h_source.html">camera_input.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="mem_8h_source.html">mem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__input_8h_source.html">postprocess_input.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="postprocess__presets_8h_source.html">postprocess_presets.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="window_8h_source.html">window.h</a>&quot;</code><br />
@@ -288,12 +286,12 @@ Include dependency graph for app_input.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a385c44f6fb256e5716a2302a5b940388"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a385c44f6fb256e5716a2302a5b940388a46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 9
+<tr class="memitem:a05589fbab0657f08285ebdfe93f5ec9e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a05589fbab0657f08285ebdfe93f5ec9ea46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 10
  }</td></tr>
-<tr class="separator:a385c44f6fb256e5716a2302a5b940388"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abc5c98fcc1211af2b80116dd6e0a035d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#abc5c98fcc1211af2b80116dd6e0a035da4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
+<tr class="separator:a05589fbab0657f08285ebdfe93f5ec9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16af7b253440dadd46a80a4b9fddba4d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a16af7b253440dadd46a80a4b9fddba4da4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
  }</td></tr>
-<tr class="separator:abc5c98fcc1211af2b80116dd6e0a035d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a16af7b253440dadd46a80a4b9fddba4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -313,6 +311,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8f2a339cb07f464d7404ae746b0dc910"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada90ac6ee9bccf491734774c490e9046"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#ada90ac6ee9bccf491734774c490e9046">handle_f_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="separator:ada90ac6ee9bccf491734774c490e9046"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f475bca27fa1c22163a3904a8385547"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a4f475bca27fa1c22163a3904a8385547">handle_y_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int mods)</td></tr>
+<tr class="separator:a4f475bca27fa1c22163a3904a8385547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a626b17296c88e804d1a3e4c6c702d526"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a626b17296c88e804d1a3e4c6c702d526">handle_system_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="separator:a626b17296c88e804d1a3e4c6c702d526"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a588f02e0bebbc36ff133173dd0392713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a588f02e0bebbc36ff133173dd0392713">handle_app_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
@@ -335,8 +335,8 @@ Functions</h2></td></tr>
 <tr class="separator:a9ad0dce8449731259f77702aeba8e457"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a385c44f6fb256e5716a2302a5b940388"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a385c44f6fb256e5716a2302a5b940388">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a05589fbab0657f08285ebdfe93f5ec9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05589fbab0657f08285ebdfe93f5ec9e">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -347,13 +347,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a385c44f6fb256e5716a2302a5b940388a46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a05589fbab0657f08285ebdfe93f5ec9ea46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="abc5c98fcc1211af2b80116dd6e0a035d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc5c98fcc1211af2b80116dd6e0a035d">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a16af7b253440dadd46a80a4b9fddba4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16af7b253440dadd46a80a4b9fddba4d">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,7 +364,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="abc5c98fcc1211af2b80116dd6e0a035da4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16af7b253440dadd46a80a4b9fddba4da4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -831,6 +831,48 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a626b17296c88e804d1a3e4c6c702d526_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a4f475bca27fa1c22163a3904a8385547"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f475bca27fa1c22163a3904a8385547">&#9670;&nbsp;</a></span>handle_y_key_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_y_key_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a4f475bca27fa1c22163a3904a8385547_cgraph.svg" width="516" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
