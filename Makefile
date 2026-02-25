@@ -338,7 +338,7 @@ ci-docker-build:
 ci-docker-test: ci-docker-build
 	@echo "Running shader test inside the CI container (verifying non-root permissions)..."
 	@$(CONTAINER_ENGINE) run --rm -v $(CURDIR):/workspace $(CI_IMAGE_NAME) \
-		sh -c "cmake -B build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build build-ci --target test_shader && ./build-ci/tests/test_shader"
+		sh -c "cmake -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
 
 docker-build-no-cache:
 	$(CONTAINER_ENGINE) build \

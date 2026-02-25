@@ -121,7 +121,8 @@ void test_shader_read_file_fread_fail(void)
 	/* Note: If running as root (e.g. in some docker containers),
 	   root bypasses permissions. In that case, we skip the assertion. */
 	if (getuid() == 0) {
-		TEST_IGNORE_MESSAGE("Skipping permission test (running as root)");
+		TEST_IGNORE_MESSAGE(
+		    "Skipping permission test (running as root)");
 	} else {
 		(void)chmod(path, 0000);
 		char* src = shader_read_file(path);
