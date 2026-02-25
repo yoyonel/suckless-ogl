@@ -37,7 +37,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || contains(github.ref, 'refactor-env-manager') }}
+            type=raw,value=latest,enable=true
             type=sha,format=short
 
       - name: Build and push Docker image
