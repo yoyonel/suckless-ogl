@@ -72,9 +72,10 @@ void setUp(void)
 		// Wait for async HDR texture load AND transition to finish
 		int timeout = POLL_TIMEOUT_ITERATIONS;
 		double last_time = glfwGetTime();
-		while ((g_test_app.scene.hdr_texture == 0 ||
-		        g_test_app.transition_state != TRANSITION_IDLE) &&
-		       timeout-- > 0) {
+		while (
+		    (g_test_app.scene.hdr_texture == 0 ||
+		     g_test_app.env_mgr.transition_state != TRANSITION_IDLE) &&
+		    timeout-- > 0) {
 			double current_time = glfwGetTime();
 			g_test_app.delta_time = current_time - last_time;
 			last_time = current_time;

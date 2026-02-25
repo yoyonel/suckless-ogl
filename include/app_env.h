@@ -35,8 +35,28 @@
 #ifndef APP_ENV_H
 #define APP_ENV_H
 
+#include "app_settings.h"
+#include "async_loader.h"
+#include "gl_common.h"
+
 typedef struct App App;
-typedef struct AsyncRequest AsyncRequest;
+
+/**
+ * @struct EnvManager
+ * @brief Encapsulates state for environment loading, transitions, and IBL.
+ */
+typedef struct EnvManager {
+	int env_map_loading;      /**< Async lock for HDR loading. */
+	int env_map_loading_step; /**< Multi-frame loading step counter. */
+	AsyncRequest
+	    current_env_req; /**< Currently processing async request. */
+	TransitionState transition_state;
+	float transition_alpha;
+	float transition_duration;
+	int is_first_load;
+	int env_transition_mode; /**< EnvTransitionMode. */
+	GLuint pending_env_tex;  /**< Texture being assembled before IBL. */
+} EnvManager;
 
 /**
  * @brief Scans the assets directory for HDR environment maps.

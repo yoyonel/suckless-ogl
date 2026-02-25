@@ -55,7 +55,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->text_overlay_mode = 0;
 	app->is_fullscreen = false;
 	app->show_help = false;
-	app->is_first_load = true;
+	app->env_mgr.is_first_load = true;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -95,11 +95,11 @@ int app_init(App* app, int width, int height, const char* title)
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
 	 */
-	app->transition_state = TRANSITION_WAIT_IBL;
-	app->transition_alpha = 1.0F;
-	app->transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
-	app->env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
-	app->is_first_load = 1;
+	app->env_mgr.transition_state = TRANSITION_WAIT_IBL;
+	app->env_mgr.transition_alpha = 1.0F;
+	app->env_mgr.transition_duration = DEFAULT_ENV_TRANSITION_DURATION;
+	app->env_mgr.env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
+	app->env_mgr.is_first_load = 1;
 
 	app->current_exposure = 1.0F;
 
@@ -391,12 +391,12 @@ void app_update(App* app)
 			}
 		} else if (req.state == ASYNC_READY) {
 			/* Step 2: Begin multi-frame finalize process */
-			app->current_env_req = req;
-			app->env_map_loading_step = 1;
+			app->env_mgr.current_env_req = req;
+			app->env_mgr.env_map_loading_step = 1;
 		}
 	}
 
-	if (app->env_map_loading_step > 0) {
+	if (app->env_mgr.env_map_loading_step > 0) {
 		app_process_env_map_loading_step(app);
 	}
 
@@ -460,7 +460,7 @@ void app_render(App* app)
 		                   GPU_PROFILER_UI_COLOR);
 
 		/* Render Transition Overlay */
-		if (app->transition_state != TRANSITION_IDLE) {
+		if (app->env_mgr.transition_state != TRANSITION_IDLE) {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisable(GL_DEPTH_TEST);
@@ -468,16 +468,17 @@ void app_render(App* app)
 			shader_use(app->scene.debug_shader);
 			shader_set_int(app->scene.debug_shader, "u_tex", 0);
 			shader_set_float(app->scene.debug_shader, "u_alpha",
-			                 app->transition_alpha);
+			                 app->env_mgr.transition_alpha);
 			shader_set_int(app->scene.debug_shader,
 			               "u_bypass_processing", 1);
 			shader_set_float(app->scene.debug_shader, "lod", 0.0F);
 
 			glActiveTexture(GL_TEXTURE0);
-			if (app->env_transition_mode ==
+			if (app->env_mgr.env_transition_mode ==
 			        ENV_TRANSITION_CROSSFADE &&
 			    app->scene.transition_snapshot_tex != 0 &&
-			    app->transition_state == TRANSITION_FADE_IN) {
+			    app->env_mgr.transition_state ==
+			        TRANSITION_FADE_IN) {
 				/* Crossfade: Bind snapshot texture */
 				glBindTexture(
 				    GL_TEXTURE_2D,

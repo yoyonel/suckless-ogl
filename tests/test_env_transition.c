@@ -41,8 +41,8 @@ void setUp(void)
 
 	g_test_app->width = WINDOW_WIDTH;
 	g_test_app->height = WINDOW_HEIGHT;
-	g_test_app->transition_duration = TRANSITION_DURATION;
-	g_test_app->env_transition_mode = ENV_TRANSITION_CROSSFADE;
+	g_test_app->env_mgr.transition_duration = TRANSITION_DURATION;
+	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_CROSSFADE;
 }
 
 void tearDown(void)
@@ -59,15 +59,16 @@ void tearDown(void)
  */
 void test_transition_initial_state(void)
 {
-	g_test_app->transition_state = TRANSITION_WAIT_IBL;
-	g_test_app->transition_alpha = 1.0F;
+	g_test_app->env_mgr.transition_state = TRANSITION_WAIT_IBL;
+	g_test_app->env_mgr.transition_alpha = 1.0F;
 	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
 
 	/* Should move to FADE_IN */
-	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN, g_test_app->transition_state);
+	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
+	                  g_test_app->env_mgr.transition_state);
 }
 
 /**
@@ -75,16 +76,17 @@ void test_transition_initial_state(void)
  */
 void test_transition_crossfade_flow(void)
 {
-	g_test_app->env_transition_mode = ENV_TRANSITION_CROSSFADE;
-	g_test_app->transition_state = TRANSITION_LOADING;
+	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_CROSSFADE;
+	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
 	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
 
 	/* In Crossfade, Done -> FADE_IN immediately */
-	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN, g_test_app->transition_state);
-	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->transition_alpha);
+	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
+	                  g_test_app->env_mgr.transition_state);
+	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->env_mgr.transition_alpha);
 	/* Snapshot texture should have been generated */
 	TEST_ASSERT_NOT_EQUAL(TEXTURE_ID_ZERO,
 	                      g_test_app->scene.transition_snapshot_tex);
@@ -95,16 +97,17 @@ void test_transition_crossfade_flow(void)
  */
 void test_transition_black_screen_flow(void)
 {
-	g_test_app->env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
-	g_test_app->transition_state = TRANSITION_LOADING;
+	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
+	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
 	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	app_process_ibl_state_machine(g_test_app);
 
 	/* In Black Screen, Done -> FADE_OUT */
-	TEST_ASSERT_EQUAL(TRANSITION_FADE_OUT, g_test_app->transition_state);
-	TEST_ASSERT_EQUAL_FLOAT(0.0F, g_test_app->transition_alpha);
+	TEST_ASSERT_EQUAL(TRANSITION_FADE_OUT,
+	                  g_test_app->env_mgr.transition_state);
+	TEST_ASSERT_EQUAL_FLOAT(0.0F, g_test_app->env_mgr.transition_alpha);
 
 	/* Simulate Fade Out completion */
 	static const double FADE_OUT_DURATION_FACTOR = 2.0;
@@ -113,7 +116,8 @@ void test_transition_black_screen_flow(void)
 	app_update_transition(g_test_app);
 
 	/* Should move to FADE_IN after swap */
-	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN, g_test_app->transition_state);
+	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
+	                  g_test_app->env_mgr.transition_state);
 }
 
 int main(void)
