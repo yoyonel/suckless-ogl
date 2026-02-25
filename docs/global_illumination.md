@@ -34,9 +34,11 @@ sequenceDiagram
    - Chaque frame, le thread principal vérifie (via un `trylock`) si un nouveau calcul de SH est disponible.
    - Si oui, les données sont envoyées au GPU via un **Shader Storage Buffer Object (SSBO)**, minimisant l'overhead CPU vers GPU.
 3. **Échantillonnage (Fragment Shader)**:
-   - Lors de l'évaluation PBR, si la GI est activée (via une *Uniform*), le fragment calcule sa position par rapport à la grille.
-   - Il sélectionne les 8 sondes qui forment le "voxel" dans lequel il se trouve et évalue l'irradiance pour sa normale.
-   - Il interpole alors linéairement (Trilinear Interpolation) la couleur des 8 évaluations pour obtenir un résultat final très doux, supprimant le *banding* et les sauts abrupts de luminosité.
+   - Lors de l'évaluation PBR, si la GI est activée, le fragment calcule sa position par rapport à la grille.
+   - Deux méthodes d'échantillonnage sont disponibles :
+     - **Textures 3D (Hardware)** : Utilise 7 textures 3D avec interpolation trilinéaire matérielle. C'est la méthode la plus performante.
+     - **SSBO (Software)** : Accède directement au buffer de sondes et effectue l'interpolation trilinéaire manuellement dans le shader.
+   - Le résultat est une irradiance douce et continue.
 
 ---
 
@@ -111,17 +113,39 @@ $$
 
 Le shader (`sh_probe.glsl`) et la partie mathématiques CPU (`sh_math.c`) évaluent ces coefficients de la même manière que la théorie originale formalisée par **Ramamoorthi et Hanrahan**.
 
-### Alignement Mémoire (SSBO)
+### Méthodes de Stockage & Échantillonnage GPU
 
-Chacun des 9 coefficients est stocké sous forme de `vec4` (donc 16 bytes chacun) dans une structure mémoire `std430` pour satisfaire les stricts prérequis d'alignement du GPU :
+Le système supporte deux modes de transfert et d'échantillonnage, commutables à la volée.
+
+#### 1. Textures 3D (Hardware Interpolation)
+
+Chacun des 9 coefficients est packé dans un ensemble de 7 textures 3D `RGBA16F`. Cela permet de déléguer l'interpolation trilinéaire à l'unité de texture du GPU.
+
+- **Avantage** : Performance maximale, interpolation gratuite.
+- **Inconvénient** : Nécessite un packing complexe CPU-side (7 textures).
 
 ```glsl
-struct LightProbe {
- vec4 coeffs[9];
+// sh_probe.glsl
+uniform sampler3D u_SHTexture0; // ... à 6
+vec3 uvw = (local_pos * vec3(u_ProbeGridDim - 1) + 0.5) / vec3(u_ProbeGridDim);
+vec4 t0 = texture(u_SHTexture0, uvw); // ...
+```
+
+#### 2. SSBO (Software Interpolation)
+
+Les données sont envoyées brutes dans un **Shader Storage Buffer Object (SSBO)**. Le shader effectue alors les 8 lectures et les interpolations `mix()` manuellement.
+
+- **Avantage** : Transfert immédiat sans packing, alignement `std430` simple.
+- **Inconvénient** : Plus coûteux en instructions shader et accès mémoire.
+
+```glsl
+// sh_probe.glsl
+layout(std430, binding = 3) readonly buffer ProbeBuffer {
+ LightProbe probes[];
 };
 ```
 
-La consommation globale (par exemple pour une grille 9x9x1) reste très modeste ($81 \times 9 \times 16 = 11.6$ Ko), permettant un transfert GPU quasi instantané.
+Chacun des 9 coefficients est stocké sous forme de `vec4` (16 bytes) pour satisfaire les prérequis d'alignement `std430`.
 
 ---
 
@@ -131,5 +155,5 @@ L'approche de la GI dans Suckless-OGL par sondes d'irradiance procure un ajout v
 
 **Raccourcis en cours d'exécution** :
 
-- `Y` : Bascule l'activation de la GI à l'écran (1-Bounce vs 0-Bounce).
+- `Y` : Cycle entre les modes de GI : **Textures 3D** -> **SSBO** -> **Désactivé**.
 - `Shift + Y` : Affiche les sondes de la grille sous la forme de sphères lumineuses de debug (Debug Probes Draw).

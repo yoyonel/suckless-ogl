@@ -217,7 +217,7 @@ static void scene_init_state(Scene* scene)
 	scene->show_envmap = 1;
 	scene->billboard_mode = 1;
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
-	scene->gi_enabled = 0;
+	scene->gi_mode = GI_MODE_OFF;
 	scene->show_probe_grid = 0;
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
@@ -297,8 +297,8 @@ static int scene_init_billboard_shader(Scene* scene)
 	    scene->pbr_billboard_shader, "u_ProbeGridMax");
 	scene->billboard_uniforms.probe_grid_dim = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "u_ProbeGridDim");
-	scene->billboard_uniforms.use_gi =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "u_UseGI");
+	scene->billboard_uniforms.gi_mode = shader_get_uniform_location(
+	    scene->pbr_billboard_shader, "u_GIMode");
 
 	/* Set Billboard SH Sampler Indices (units 8-14) */
 	{
@@ -385,8 +385,8 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 	    shader_get_uniform_location(*out_shader, "u_ProbeGridMax");
 	scene->instanced_uniforms.probe_grid_dim =
 	    shader_get_uniform_location(*out_shader, "u_ProbeGridDim");
-	scene->instanced_uniforms.use_gi =
-	    shader_get_uniform_location(*out_shader, "u_UseGI");
+	scene->instanced_uniforms.gi_mode =
+	    shader_get_uniform_location(*out_shader, "u_GIMode");
 
 	/* Set Instanced SH Sampler Indices (units 8-14) */
 	{
@@ -639,7 +639,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		            scene->probe_grid.grid_dim[1],
 		            scene->probe_grid.grid_dim[2]);
 	}
-	shader_set_int_loc(scene->billboard_uniforms.use_gi, scene->gi_enabled);
+	shader_set_int_loc(scene->billboard_uniforms.gi_mode,
+	                   (int)scene->gi_mode);
 
 	/* Bind SH Textures */
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
@@ -647,6 +648,9 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
 		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
 	}
+
+	/* Bind Probe SSBO for GI Mode 2 (SSBO) */
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, scene->probe_grid.ssbo);
 
 	/* Debug Visualization Constants */
 	const float debug_fill_alpha = 0.10F;
@@ -759,7 +763,8 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 		            scene->probe_grid.grid_dim[1],
 		            scene->probe_grid.grid_dim[2]);
 	}
-	shader_set_int_loc(scene->instanced_uniforms.use_gi, scene->gi_enabled);
+	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
+	                   (int)scene->gi_mode);
 
 	/* Bind SH Textures */
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
@@ -767,6 +772,9 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
 		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
 	}
+
+	/* Bind Probe SSBO for GI Mode 2 (SSBO) */
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, scene->probe_grid.ssbo);
 
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&scene->ssbo_group, scene->geometry.indices.size);
@@ -793,7 +801,7 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 	glm_mat4_inv(view_proj, inv_view_proj);
 
 	/* GI Probe SSBO sync — must happen before Spheres read it */
-	if (scene->gi_enabled || scene->show_probe_grid) {
+	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
 		light_probe_grid_sync(&scene->probe_grid);
 	}
 

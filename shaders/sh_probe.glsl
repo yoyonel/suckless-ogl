@@ -3,7 +3,7 @@
 uniform vec3 u_ProbeGridMin;
 uniform vec3 u_ProbeGridMax;
 uniform ivec3 u_ProbeGridDim;
-uniform int u_UseGI;
+uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
 
 /* 7x 3D textures for SH coefficients (Units 8-14)
    - Tex 0-5: Coeffs 0-7 (RGBA16F, each holds 4 channels)
@@ -16,6 +16,15 @@ uniform sampler3D u_SHTexture3;
 uniform sampler3D u_SHTexture4;
 uniform sampler3D u_SHTexture5;
 uniform sampler3D u_SHTexture6;
+
+struct LightProbe {
+	vec4 coeffs[9];
+};
+
+layout(std430, binding = 3) readonly buffer ProbeBuffer
+{
+	LightProbe probes[];
+};
 
 // SH Constants (from sh_math.h)
 const float Y00 = 0.28209479177387814347;   // 0.5 * sqrt(1/pi)
@@ -85,11 +94,78 @@ vec3 eval_sh_irradiance_packed(vec3 normal, vec4 t0, vec4 t1, vec4 t2, vec4 t3,
 	return max(color, vec3(0.0));
 }
 
+vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
+{
+	vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
+	vec3 local_pos = worldPos - u_ProbeGridMin;
+	vec3 t = local_pos / max(grid_size, vec3(0.001));
+
+	// Calculate base probe index and interpolation weights
+	vec3 float_idx = t * vec3(max(u_ProbeGridDim - ivec3(1), ivec3(1)));
+	ivec3 base_idx = min(ivec3(floor(float_idx)),
+	                     max(u_ProbeGridDim - ivec3(2), ivec3(0)));
+	vec3 weights = float_idx - vec3(base_idx);
+	weights = clamp(weights, 0.0, 1.0);
+
+	vec4 interpolated_coeffs[9];
+	for (int j = 0; j < 9; ++j) {
+		interpolated_coeffs[j] = vec4(0.0);
+	}
+
+	for (int i = 0; i < 8; ++i) {
+		ivec3 offset = ivec3(i & 1, (i >> 1) & 1, (i >> 2) & 1);
+		ivec3 p = clamp(base_idx + offset, ivec3(0),
+		                u_ProbeGridDim - ivec3(1));
+		int idx = (p.z * u_ProbeGridDim.y * u_ProbeGridDim.x) +
+		          (p.y * u_ProbeGridDim.x) + p.x;
+
+		float w = 1.0;
+		w *= (offset.x == 0) ? (1.0 - weights.x) : weights.x;
+		w *= (offset.y == 0) ? (1.0 - weights.y) : weights.y;
+		w *= (offset.z == 0) ? (1.0 - weights.z) : weights.z;
+
+		for (int j = 0; j < 9; ++j) {
+			interpolated_coeffs[j] += probes[idx].coeffs[j] * w;
+		}
+	}
+
+	float x = normal.x;
+	float y = normal.y;
+	float z = normal.z;
+
+	float c00 = Y00;
+	float c1n1 = Y1n1 * y;
+	float c10 = Y10 * z;
+	float c11 = Y11 * x;
+	float c2n2 = Y2n2 * x * y;
+	float c2n1 = Y2n1 * y * z;
+	float c20 = Y20 * (3.0 * z * z - 1.0);
+	float c21 = Y21 * x * z;
+	float c22 = Y22 * (x * x - y * y);
+
+	vec3 color = vec3(0.0);
+	color += interpolated_coeffs[0].rgb * (A0 * c00);
+	color += interpolated_coeffs[1].rgb * (A1 * c1n1);
+	color += interpolated_coeffs[2].rgb * (A1 * c10);
+	color += interpolated_coeffs[3].rgb * (A1 * c11);
+	color += interpolated_coeffs[4].rgb * (A2 * c2n2);
+	color += interpolated_coeffs[5].rgb * (A2 * c2n1);
+	color += interpolated_coeffs[6].rgb * (A2 * c20);
+	color += interpolated_coeffs[7].rgb * (A2 * c21);
+	color += interpolated_coeffs[8].rgb * (A2 * c22);
+
+	return max(color, vec3(0.0));
+}
+
 vec3 get_probe_irradiance(vec3 N, vec3 worldPos)
 {
-	if (u_UseGI == 0 || u_ProbeGridDim.x <= 0 || u_ProbeGridDim.y <= 0 ||
+	if (u_GIMode == 0 || u_ProbeGridDim.x <= 0 || u_ProbeGridDim.y <= 0 ||
 	    u_ProbeGridDim.z <= 0) {
 		return vec3(0.0);
+	}
+
+	if (u_GIMode == 2) {
+		return eval_sh_irradiance_ssbo(N, worldPos);
 	}
 
 	vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
