@@ -50,7 +50,6 @@ jobs:
 
   # --- JOB 2 : TESTS, COUVERTURE ET CAPTURES VISUELLES (LENT) ---
   test-and-coverage:
-    needs: lint-and-format
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
@@ -123,7 +122,6 @@ jobs:
 
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
   documentation:
-    needs: lint-and-format
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
@@ -198,7 +196,7 @@ jobs:
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
-    needs: test-and-coverage
+    needs: [lint-and-format, test-and-coverage]
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
