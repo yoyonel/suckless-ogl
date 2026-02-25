@@ -21,6 +21,7 @@ layout(std430, binding = 0) readonly buffer InstanceBuffer
 /* Uniforms globaux */
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 previousViewProj;
 
 /* Outputs vers le fragment shader */
 out vec3 WorldPos;
@@ -29,6 +30,9 @@ out vec3 Albedo;
 out float Metallic;
 out float Roughness;
 out float AO;
+
+out vec4 CurrentClipPos;
+out vec4 PreviousClipPos;
 
 void main()
 {
@@ -49,5 +53,8 @@ void main()
 	Roughness = inst.roughness;
 	AO = inst.ao;
 
-	gl_Position = projection * view * worldPos;
+	CurrentClipPos = projection * view * worldPos;
+	PreviousClipPos = previousViewProj * worldPos;
+
+	gl_Position = CurrentClipPos;
 }

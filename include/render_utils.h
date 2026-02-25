@@ -237,7 +237,16 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 typedef struct {
 	GLboolean depth_enabled;
 	GLboolean blend_enabled;
+	GLboolean cull_face_enabled;
+	GLboolean scissor_test_enabled;
+	GLboolean stencil_test_enabled;
+	GLboolean depth_mask;
 	GLint polygon_mode[2];
+	GLint blend_src_rgb;
+	GLint blend_dst_rgb;
+	GLint blend_src_alpha;
+	GLint blend_dst_alpha;
+	GLint depth_func;
 } GLStateBackup;
 
 /**

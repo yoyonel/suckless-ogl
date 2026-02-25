@@ -318,7 +318,19 @@ GLStateBackup render_utils_save_state(void)
 	GLStateBackup state;
 	state.depth_enabled = glIsEnabled(GL_DEPTH_TEST);
 	state.blend_enabled = glIsEnabled(GL_BLEND);
+	state.cull_face_enabled = glIsEnabled(GL_CULL_FACE);
+	state.scissor_test_enabled = glIsEnabled(GL_SCISSOR_TEST);
+	state.stencil_test_enabled = glIsEnabled(GL_STENCIL_TEST);
+
+	glGetBooleanv(GL_DEPTH_WRITEMASK, &state.depth_mask);
+	glGetIntegerv(GL_DEPTH_FUNC, &state.depth_func);
 	glGetIntegerv(GL_POLYGON_MODE, state.polygon_mode);
+
+	glGetIntegerv(GL_BLEND_SRC_RGB, &state.blend_src_rgb);
+	glGetIntegerv(GL_BLEND_DST_RGB, &state.blend_dst_rgb);
+	glGetIntegerv(GL_BLEND_SRC_ALPHA, &state.blend_src_alpha);
+	glGetIntegerv(GL_BLEND_DST_ALPHA, &state.blend_dst_alpha);
+
 	return state;
 }
 
@@ -336,7 +348,33 @@ void render_utils_restore_state(const GLStateBackup* state)
 		glDisable(GL_BLEND);
 	}
 
-	glPolygonMode(GL_FRONT_AND_BACK, state->polygon_mode[0]);
+	if (state->cull_face_enabled != 0U) {
+		glEnable(GL_CULL_FACE);
+	} else {
+		glDisable(GL_CULL_FACE);
+	}
+
+	if (state->scissor_test_enabled != 0U) {
+		glEnable(GL_SCISSOR_TEST);
+	} else {
+		glDisable(GL_SCISSOR_TEST);
+	}
+
+	if (state->stencil_test_enabled != 0U) {
+		glEnable(GL_STENCIL_TEST);
+	} else {
+		glDisable(GL_STENCIL_TEST);
+	}
+
+	glDepthMask(state->depth_mask);
+	glDepthFunc((GLenum)state->depth_func);
+
+	glPolygonMode(GL_FRONT, (GLenum)state->polygon_mode[0]);
+	glPolygonMode(GL_BACK, (GLenum)state->polygon_mode[1]);
+
+	glBlendFuncSeparate(
+	    (GLenum)state->blend_src_rgb, (GLenum)state->blend_dst_rgb,
+	    (GLenum)state->blend_src_alpha, (GLenum)state->blend_dst_alpha);
 }
 
 void render_utils_setup_ui_state(void)

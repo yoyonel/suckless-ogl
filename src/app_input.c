@@ -290,7 +290,7 @@ static bool handle_f_key_input(App* app, int key, int mods)
 
 static void handle_y_key_input(App* app, int mods)
 {
-	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
 		app->scene.show_probe_grid = !app->scene.show_probe_grid;
 		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
 		         app->scene.show_probe_grid ? "ON" : "OFF");
@@ -355,6 +355,91 @@ static void handle_system_key_input(App* app, int key, int mods)
 	}
 }
 
+static void handle_billboard_mode_input(App* app)
+{
+	app->scene.billboard_mode = !app->scene.billboard_mode;
+	LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
+	         app->scene.billboard_mode ? "ON" : "OFF");
+	action_notifier_push(
+	    &app->notifier,
+	    app->scene.billboard_mode ? "Billboards: ON" : "Billboards: OFF",
+	    NOTIF_DUR_NORMAL);
+}
+
+static void handle_bvh_debug_input(App* app, int mods)
+{
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		app->scene.show_bvh_debug = !app->scene.show_bvh_debug;
+		LOG_INFO("suckless-ogl.app", "BVH Debug: %s",
+		         app->scene.show_bvh_debug ? "ON" : "OFF");
+		action_notifier_push(
+		    &app->notifier,
+		    app->scene.show_bvh_debug ? "BVH: ON" : "BVH: OFF",
+		    NOTIF_DUR_NORMAL);
+	} else if (check_flag(mods, GLFW_MOD_ALT)) {
+		app->scene.bvh_debug_depth =
+		    (app->scene.bvh_debug_depth + 1) % MAX_BVH_DEBUG_DEPTH;
+		char buf[NOTIF_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "BVH Depth: %d",
+		                    app->scene.bvh_debug_depth);
+		action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
+	} else {
+		app->scene.sorting_mode =
+		    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
+		const char* mode_name = "Unknown";
+		const char* notif_name = "Sort: Unknown";
+
+		switch (app->scene.sorting_mode) {
+			case SORTING_MODE_CPU_QSORT:
+				mode_name = "CPU (qsort)";
+				notif_name = "Sort: CPU (qsort)";
+				break;
+			case SORTING_MODE_CPU_RADIX:
+				mode_name = "CPU (Radix)";
+				notif_name = "Sort: CPU (Radix)";
+				break;
+			case SORTING_MODE_GPU_BITONIC:
+				mode_name = "GPU (Bitonic)";
+				notif_name = "Sort: GPU (Bitonic)";
+				break;
+			default:
+				break;
+		}
+
+		LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s", mode_name);
+		action_notifier_push(&app->notifier, notif_name,
+		                     NOTIF_DUR_NORMAL);
+	}
+}
+
+static void handle_transition_mode_input(App* app)
+{
+	app->env_mgr.env_transition_mode =
+	    (app->env_mgr.env_transition_mode + 1) % 2;
+	LOG_INFO("suckless-ogl.app", "Environment Transition Mode: %s",
+	         app->env_mgr.env_transition_mode == ENV_TRANSITION_CROSSFADE
+	             ? "CROSSFADE"
+	             : "BLACK_SCREEN");
+	char transition_buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(
+	    transition_buf, sizeof(transition_buf), "Transition: %s",
+	    app->env_mgr.env_transition_mode == ENV_TRANSITION_CROSSFADE
+	        ? "CROSSFADE"
+	        : "BLACK_SCREEN");
+	action_notifier_push(&app->notifier, transition_buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_envmap_toggle_input(App* app)
+{
+	app->scene.show_envmap = !app->scene.show_envmap;
+	LOG_INFO("suckless-ogl.app", "Envmap: %s",
+	         app->scene.show_envmap ? "ON" : "OFF");
+	action_notifier_push(
+	    &app->notifier,
+	    app->scene.show_envmap ? "Skybox: ON" : "Skybox: OFF",
+	    NOTIF_DUR_NORMAL);
+}
+
 void handle_app_input(App* app, int key, int mods)
 {
 	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
@@ -379,74 +464,16 @@ void handle_app_input(App* app, int key, int mods)
 			handle_y_key_input(app, mods);
 			break;
 		case GLFW_KEY_L:
-			app->scene.billboard_mode = !app->scene.billboard_mode;
-			// app_update_instancing_mode(app) was empty and
-			// removed.
-			LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
-			         app->scene.billboard_mode ? "ON" : "OFF");
-			action_notifier_push(&app->notifier,
-			                     app->scene.billboard_mode
-			                         ? "Billboards: ON"
-			                         : "Billboards: OFF",
-			                     NOTIF_DUR_NORMAL);
+			handle_billboard_mode_input(app);
 			break;
 		case GLFW_KEY_O:
-			app->scene.sorting_mode =
-			    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
-			const char* mode_name = "Unknown";
-			const char* notif_name = "Sort: Unknown";
-
-			switch (app->scene.sorting_mode) {
-				case SORTING_MODE_CPU_QSORT:
-					mode_name = "CPU (qsort)";
-					notif_name = "Sort: CPU (qsort)";
-					break;
-				case SORTING_MODE_CPU_RADIX:
-					mode_name = "CPU (Radix)";
-					notif_name = "Sort: CPU (Radix)";
-					break;
-				case SORTING_MODE_GPU_BITONIC:
-					mode_name = "GPU (Bitonic)";
-					notif_name = "Sort: GPU (Bitonic)";
-					break;
-				default:
-					break;
-			}
-
-			LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s",
-			         mode_name);
-			action_notifier_push(&app->notifier, notif_name,
-			                     NOTIF_DUR_NORMAL);
+			handle_bvh_debug_input(app, mods);
 			break;
 		case GLFW_KEY_T:
-			app->env_mgr.env_transition_mode =
-			    (app->env_mgr.env_transition_mode + 1) % 2;
-			LOG_INFO("suckless-ogl.app",
-			         "Environment Transition Mode: %s",
-			         app->env_mgr.env_transition_mode ==
-			                 ENV_TRANSITION_CROSSFADE
-			             ? "CROSSFADE"
-			             : "BLACK_SCREEN");
-			char transition_buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(transition_buf,
-			                    sizeof(transition_buf),
-			                    "Transition: %s",
-			                    app->env_mgr.env_transition_mode ==
-			                            ENV_TRANSITION_CROSSFADE
-			                        ? "CROSSFADE"
-			                        : "BLACK_SCREEN");
-			action_notifier_push(&app->notifier, transition_buf,
-			                     NOTIF_DUR_NORMAL);
+			handle_transition_mode_input(app);
 			break;
 		case GLFW_KEY_K:
-			app->scene.show_envmap = !app->scene.show_envmap;
-			LOG_INFO("suckless-ogl.app", "Envmap: %s",
-			         app->scene.show_envmap ? "ON" : "OFF");
-			action_notifier_push(&app->notifier,
-			                     app->scene.show_envmap
-			                         ? "Skybox: ON"
-			                         : "Skybox: OFF",
-			                     NOTIF_DUR_NORMAL);
+			handle_envmap_toggle_input(app);
 			break;
 		default:
 			break;

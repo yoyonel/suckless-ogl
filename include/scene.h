@@ -30,6 +30,7 @@ typedef enum {
 	SORTING_MODE_GPU_BITONIC,
 	SORTING_MODE_COUNT /**< Sentinel — must remain last. */
 } SortingMode;
+enum { MAX_BVH_DEBUG_DEPTH = 15 };
 
 /**
  * @enum GIMode
@@ -68,12 +69,14 @@ typedef struct {
  * @brief Cached uniform locations for debug line rendering.
  */
 typedef struct {
-	GLint projection;         /**< Location of 'projection' */
-	GLint view;               /**< Location of 'view' */
-	GLint u_stippled;         /**< Location of 'u_stippled' */
-	GLint u_billboard_mode;   /**< Location of 'u_billboardMode' */
-	GLint u_use_instance_col; /**< Location of 'u_useInstanceColor' */
-	GLint u_color;            /**< Location of 'u_color' */
+	GLint projection;          /**< Location of 'projection' */
+	GLint view;                /**< Location of 'view' */
+	GLint u_stippled;          /**< Location of 'u_stippled' */
+	GLint u_billboard_mode;    /**< Location of 'u_billboardMode' */
+	GLint u_use_instance_col;  /**< Location of 'u_useInstanceColor' */
+	GLint u_color;             /**< Location of 'u_color' */
+	GLint u_model;             /**< Location of 'model' */
+	GLint u_use_instance_data; /**< Location of 'u_useInstanceData' */
 } DebugUniforms;
 
 /**
@@ -118,6 +121,8 @@ typedef struct Scene {
 	int sphere_instance_count;        /**< Active sphere count. */
 #endif
 
+	LBVH lbvh; /**< Linear BVH for raytracing optimizations. */
+
 	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
 	MaterialLib* material_lib; /**< Loaded material presets. */
 	char** hdr_files;          /**< List of found HDR files in assets. */
@@ -145,6 +150,7 @@ typedef struct Scene {
 	GLuint sphere_ebo;           /**< Shared index buffer. */
 	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
 	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
+	GLuint wire_cube_vao;        /**< VAO for wireframe cube geometry. */
 	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
 	GLuint hdr_texture;          /**< Active HDR cubemap. */
 	GLuint recycled_hdr_tex;     /**< Recycled texture for next load. */
@@ -171,6 +177,8 @@ typedef struct Scene {
 	int subdivisions;         /**< LOD of the shared icosphere. */
 	GIMode gi_mode;           /**< Selected GI sampling method. */
 	int show_probe_grid;      /**< Debug visualization of probes. */
+	int show_bvh_debug;       /**< Fast debug visualization of the LBVH. */
+	int bvh_debug_depth;      /**< Max depth of BVH nodes to show. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */

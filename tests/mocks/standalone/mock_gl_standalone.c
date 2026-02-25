@@ -189,6 +189,12 @@ void glGetIntegerv(GLenum pname, GLint* data)
 		}
 	}
 }
+void glGetBooleanv(GLenum pname, GLboolean* data)
+{
+	(void)pname;
+	if (data)
+		*data = GL_FALSE;
+}
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
                               GLint* params)
 {
@@ -574,6 +580,25 @@ void glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 	(void)y;
 	(void)width;
 	(void)height;
+}
+
+void glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB,
+                         GLenum sfactorAlpha, GLenum dfactorAlpha)
+{
+	(void)sfactorRGB;
+	(void)dfactorRGB;
+	(void)sfactorAlpha;
+	(void)dfactorAlpha;
+}
+
+void glDepthMask(GLboolean flag)
+{
+	(void)flag;
+}
+
+void glDepthFunc(GLenum func)
+{
+	(void)func;
 }
 
 void glGenQueries(GLsizei n, GLuint* ids)

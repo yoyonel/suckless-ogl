@@ -23,6 +23,21 @@ enum { RADIX_MASK = 0xFFU };
 static const uint32_t FLOAT_SIGN_MASK = 0x80000000U;
 static const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU;
 
+enum {
+	MORTON_10BIT_MASK = 0x3FFU,
+	MORTON_EXPAND_MASK1 = 0xFF0000FFU,
+	MORTON_EXPAND_MASK2 = 0x0F00F00FU,
+	MORTON_EXPAND_MASK3 = 0xC30C30C3U,
+	MORTON_EXPAND_MASK4 = 0x49249249U,
+
+	MORTON_EXPAND_FACTOR1 = 0x00010001U,
+	MORTON_EXPAND_FACTOR2 = 0x00000101U,
+	MORTON_EXPAND_FACTOR3 = 0x00000011U,
+	MORTON_EXPAND_FACTOR4 = 0x00000005U
+};
+
+static const float MORTON_SCALE = 1023.0F;
+
 /** Bit-shift constants for next_pow2 (named to satisfy linter). */
 static const unsigned int BIT_SHIFT_8 = 8U;
 static const unsigned int BIT_SHIFT_16 = 16U;
@@ -298,6 +313,302 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 	return sorter->sorted_instance_ssbo;
 }
+
+/* ----------------------------------------------------------------------------
+ * Morton Codes (Z-Order Curve) Utilities
+ * ------------------------------------------------------------------------- */
+
+/**
+ * @brief Expands 10 bits of a 32-bit integer to 30 bits.
+ * Bits at 00000009876543210 become 009008007...001000.
+ */
+static uint32_t expand_bits(uint32_t val)
+{
+	uint32_t res = val & MORTON_10BIT_MASK;
+	res = (res * MORTON_EXPAND_FACTOR1) & MORTON_EXPAND_MASK1;
+	res = (res * MORTON_EXPAND_FACTOR2) & MORTON_EXPAND_MASK2;
+	res = (res * MORTON_EXPAND_FACTOR3) & MORTON_EXPAND_MASK3;
+	res = (res * MORTON_EXPAND_FACTOR4) & MORTON_EXPAND_MASK4;
+	return res;
+}
+
+uint32_t calculate_morton_3d(const vec3 pos, const vec3 scene_min,
+                             const vec3 scene_max)
+{
+	/* Normalize pos to [0, 1023] range */
+	float norm_x =
+	    glm_clamp((pos[0] - scene_min[0]) / (scene_max[0] - scene_min[0]),
+	              0.0F, 1.0F);
+	float norm_y =
+	    glm_clamp((pos[1] - scene_min[1]) / (scene_max[1] - scene_min[1]),
+	              0.0F, 1.0F);
+	float norm_z =
+	    glm_clamp((pos[2] - scene_min[2]) / (scene_max[2] - scene_min[2]),
+	              0.0F, 1.0F);
+
+	uint32_t val_ix = (uint32_t)(norm_x * MORTON_SCALE);
+	uint32_t val_iy = (uint32_t)(norm_y * MORTON_SCALE);
+	uint32_t val_iz = (uint32_t)(norm_z * MORTON_SCALE);
+
+	return (expand_bits(val_ix) << 0U) | (expand_bits(val_iy) << 1U) |
+	       (expand_bits(val_iz) << 2U);
+}
+
+/* ----------------------------------------------------------------------------
+ * LBVH Initialization & Cleanup
+ * ------------------------------------------------------------------------- */
+
+int lbvh_init(LBVH* bvh, int initial_capacity)
+{
+	if (!bvh) {
+		return 0;
+	}
+	bvh->capacity = initial_capacity;
+	bvh->node_count = 0;
+	bvh->nodes =
+	    (LBVHNode*)calloc((size_t)initial_capacity, sizeof(LBVHNode));
+	return bvh->nodes != NULL;
+}
+
+void lbvh_cleanup(LBVH* bvh)
+{
+	if (!bvh) {
+		return;
+	}
+	if (bvh->nodes) {
+		free(bvh->nodes);
+	}
+	bvh->nodes = NULL;
+	bvh->node_count = 0;
+	bvh->capacity = 0;
+}
+/* ----------------------------------------------------------------------------
+ * LBVH Construction logic
+ * ------------------------------------------------------------------------- */
+
+typedef struct {
+	uint32_t code;
+	int orig_idx;
+} SortProxy;
+
+static int compare_proxies(const void* lhs, const void* rhs)
+{
+	uint32_t val_lhs = ((const SortProxy*)lhs)->code;
+	uint32_t val_rhs = ((const SortProxy*)rhs)->code;
+	return (val_lhs < val_rhs) ? -1 : (val_lhs > val_rhs);
+}
+
+static int find_split(const uint32_t* codes, int first, int last)
+{
+	uint32_t first_code = codes[first];
+	uint32_t last_code = codes[last];
+
+	if (first_code == last_code) {
+		return (int)((unsigned int)(first + last) >> 1U);
+	}
+
+	/* Find the highest bit that differs (CLZ variant) */
+	uint32_t common_prefix = __builtin_clz(first_code ^ last_code);
+
+	/* Binary search for the split point */
+	int split = first;
+	int step = last - first;
+
+	do {
+		step = (int)((unsigned int)(step + 1) >> 1U);
+		int new_split = split + step;
+		if (new_split < last) {
+			const uint32_t split_code = codes[new_split];
+			const uint32_t diff = first_code ^ split_code;
+			if (diff != 0) {
+				const uint32_t split_prefix =
+				    (uint32_t)__builtin_clz(diff);
+				if (split_prefix > common_prefix) {
+					split = new_split;
+				}
+			} else {
+				split = new_split;
+			}
+		}
+	} while (step > 1);
+
+	return split;
+}
+
+static void compute_aabb(const SphereInstance* instance, float out_min[3],
+                         float out_max[3])
+{
+	/* Center is at model[3] */
+	vec3 center;
+	glm_vec3_copy((float*)instance->model[3], center);
+
+	/* Radius is the scale (assuming uniform scaling) */
+	float radius = glm_vec3_distance((float*)instance->model[0],
+	                                 (vec3){0.0F, 0.0F, 0.0F});
+
+	out_min[0] = center[0] - radius;
+	out_min[1] = center[1] - radius;
+	out_min[2] = center[2] - radius;
+	out_max[0] = center[0] + radius;
+	out_max[1] = center[1] + radius;
+	out_max[2] = center[2] + radius;
+}
+
+static int generate_hierarchy(LBVH* bvh, const uint32_t* codes,
+                              const SphereInstance* sorted_spheres, int first,
+                              int last)
+{
+	typedef struct {
+		int first_idx, last_idx;
+		int node_idx;
+		bool left_resolved;
+	} BuildStackFrame;
+
+	enum { BUILD_STACK_CAPACITY = 128 };
+	BuildStackFrame stack[BUILD_STACK_CAPACITY];
+	int stack_ptr = 0;
+
+	const int root_idx = bvh->node_count++;
+	stack[stack_ptr++] = (BuildStackFrame){first, last, root_idx, false};
+
+	while (stack_ptr > 0) {
+		BuildStackFrame* frame = &stack[stack_ptr - 1];
+		const int first_idx = frame->first_idx;
+		const int last_idx = frame->last_idx;
+		const int n_idx = frame->node_idx;
+		LBVHNode* node_ptr = &bvh->nodes[n_idx];
+
+		if (first_idx == last_idx) {
+			/* Leaf node */
+			compute_aabb(&sorted_spheres[first_idx],
+			             (float*)node_ptr->aabb_min,
+			             (float*)node_ptr->aabb_max);
+			node_ptr->aabb_min[3] = -1.0F; /* No left child */
+			node_ptr->aabb_max[3] =
+			    (float)first_idx; /* Index to sorted spheres */
+			node_ptr->object_idx = first_idx;
+			stack_ptr--;
+			continue;
+		}
+
+		if (!frame->left_resolved) {
+			/* First visit: generate split and push left child */
+			const int split =
+			    find_split(codes, first_idx, last_idx);
+			const int left_idx = bvh->node_count++;
+			node_ptr->aabb_min[3] = (float)left_idx;
+			frame->left_resolved = true;
+
+			if (stack_ptr < BUILD_STACK_CAPACITY) {
+				stack[stack_ptr++] = (BuildStackFrame){
+				    first_idx, split, left_idx, false};
+			}
+		} else {
+			/* Second visit: push right child */
+			const int split =
+			    find_split(codes, first_idx, last_idx);
+			const int right_idx = bvh->node_count++;
+			node_ptr->aabb_max[3] = (float)right_idx;
+			node_ptr->object_idx = -1;
+
+			/* After returning from children, we need to merge
+			 * AABBs. But iterative approach requires post-order
+			 * logic. Let's simplify: compute AABBs in a separate
+			 * bottom-up pass.
+			 */
+			if (stack_ptr < BUILD_STACK_CAPACITY) {
+				stack_ptr--;
+				stack[stack_ptr++] = (BuildStackFrame){
+				    split + 1, last_idx, right_idx, false};
+			}
+		}
+	}
+
+	/* Bottom-up AABB merge pass */
+	for (int i = bvh->node_count - 1; i >= 0; i--) {
+		LBVHNode* node_ptr_bottom = &bvh->nodes[i];
+		if (node_ptr_bottom->aabb_min[3] >= 0.0F) {
+			const int left_idx_bottom =
+			    (int)node_ptr_bottom->aabb_min[3];
+			const int right_idx_bottom =
+			    (int)node_ptr_bottom->aabb_max[3];
+			const LBVHNode* left_node =
+			    &bvh->nodes[left_idx_bottom];
+			const LBVHNode* right_node =
+			    &bvh->nodes[right_idx_bottom];
+			for (int j = 0; j < 3; j++) {
+				node_ptr_bottom->aabb_min[j] =
+				    fminf(left_node->aabb_min[j],
+				          right_node->aabb_min[j]);
+				node_ptr_bottom->aabb_max[j] =
+				    fmaxf(left_node->aabb_max[j],
+				          right_node->aabb_max[j]);
+			}
+		}
+	}
+
+	return root_idx;
+}
+
+void lbvh_build(LBVH* bvh, SphereInstance* instances, int count)
+{
+	if (!bvh || !bvh->nodes || !instances || count <= 0) {
+		return;
+	}
+
+	/* 1. Pre-calculate Morton codes for all spheres */
+	vec3 scene_min = {-100.0F, -100.0F, -100.0F};
+	vec3 scene_max = {100.0F, 100.0F, 100.0F};
+
+	uint32_t* codes = (uint32_t*)malloc((size_t)count * sizeof(uint32_t));
+	if (!codes) {
+		return;
+	}
+
+	for (int i = 0; i < count; i++) {
+		vec3 center = {instances[i].model[3][0],
+		               instances[i].model[3][1],
+		               instances[i].model[3][2]};
+		codes[i] = calculate_morton_3d(center, scene_min, scene_max);
+	}
+
+	/* 2. Sort spheres by Morton code */
+	SortProxy* proxies =
+	    (SortProxy*)malloc((size_t)count * sizeof(SortProxy));
+	if (!proxies) {
+		free(codes);
+		return;
+	}
+
+	for (int i = 0; i < count; i++) {
+		proxies[i].code = codes[i];
+		proxies[i].orig_idx = i;
+	}
+
+	qsort(proxies, (size_t)count, sizeof(SortProxy), compare_proxies);
+
+	SphereInstance* sorted_spheres = NULL;
+	if (posix_memalign((void**)&sorted_spheres, SIMD_ALIGNMENT,
+	                   (size_t)count * sizeof(SphereInstance)) != 0 ||
+	    !sorted_spheres) {
+		free(proxies);
+		free(codes);
+		return;
+	}
+
+	for (int i = 0; i < count; i++) {
+		codes[i] = proxies[i].code;
+		sorted_spheres[i] = instances[proxies[i].orig_idx];
+	}
+
+	/* 3. Build the tree recursively */
+	bvh->node_count = 0;
+	generate_hierarchy(bvh, codes, sorted_spheres, 0, count - 1);
+
+	free(proxies);
+	free(sorted_spheres);
+	free(codes);
+}
 static int compare_sphere_entries(const void* lhs, const void* rhs)
 {
 	const SphereSortEntry* entry_lhs = (const SphereSortEntry*)lhs;
@@ -429,9 +740,9 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 			uint32_t key = 0;
 			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 			memcpy(&key, &current_in[i].depth, sizeof(uint32_t));
-			unsigned int bucket =
-			    ((unsigned int)key >> (unsigned int)shift) &
-			    (unsigned int)RADIX_MASK;
+			unsigned int bucket = 0;
+			bucket = ((unsigned int)key >> (unsigned int)shift) &
+			         (unsigned int)RADIX_MASK;
 			current_out[offsets[bucket]++] = current_in[i];
 		}
 

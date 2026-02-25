@@ -24,6 +24,11 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
+static const int DEFAULT_BVH_DEBUG_DEPTH = 10;
+static const float HALF = 0.5F;
+static const float DEBUG_AABB_ALPHA = 0.4F;
+static const int WIRE_CUBE_VERTEX_COUNT = 24;
+
 static const char* const HDR_TEXTURE_PATH = "assets/textures/hdr";
 static const char* const HDR_EXTENSION = ".hdr";
 
@@ -75,6 +80,28 @@ static void scene_scan_hdr_files(Scene* scene)
 	LOG_INFO("suckless-ogl.scene", "Found %d HDR files.", scene->hdr_count);
 }
 
+static void scene_init_billboard_and_sorting(Scene* scene,
+                                             const SphereInstance* data,
+                                             int count)
+{
+	billboard_group_init(&scene->billboard_group, data, count);
+	billboard_group_prepare(&scene->billboard_group, scene->quad_vbo,
+	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	void* raw_mem = NULL;
+	if (posix_memalign(&raw_mem, SIMD_ALIGNMENT,
+	                   sizeof(SphereInstance) * (size_t)count) == 0) {
+		scene->sphere_instances = (SphereInstance*)raw_mem;
+		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+		memcpy(scene->sphere_instances, data,
+		       sizeof(SphereInstance) * (size_t)count);
+		scene->sphere_instance_count = count;
+		sphere_sorter_init(&scene->sphere_sorter, count);
+	}
+#endif
+}
+
 static void scene_init_instancing(Scene* scene)
 {
 	const int total_count =
@@ -104,7 +131,16 @@ static void scene_init_instancing(Scene* scene)
 		                    (grid_w * HALF_OFFSET_MULTIPLIER);
 		const float pos_y = -(((float)grid_y * spacing) -
 		                      (grid_h * HALF_OFFSET_MULTIPLIER));
-		vec3 position = {pos_x, pos_y, 0.0F};
+
+		/* Add deterministic jitter in depth [-1.0, 1.0] based on index
+		 */
+		const float jitter_z =
+		    (((float)((i * 1103515245U + 12345U) & 0x7FFFFFFFU) /
+		      2147483647.0F) *
+		     2.0F) -
+		    1.0F;
+
+		vec3 position = {pos_x, pos_y, jitter_z};
 		// NOLINTNEXTLINE(misc-include-cleaner)
 		glm_translate(data[i].model, position);
 		PBRMaterial* mat = &scene->material_lib->materials[i];
@@ -116,26 +152,10 @@ static void scene_init_instancing(Scene* scene)
 
 	instanced_group_init(&scene->instanced_group, data, total_count);
 
-#ifdef USE_TRANSPARENT_BILLBOARDS
-	// Use posix_memalign for consistency and to avoid implicit declaration
-	// issues
-	void* raw_mem = NULL;
-	if (posix_memalign(&raw_mem, SIMD_ALIGNMENT,
-	                   sizeof(SphereInstance) * (size_t)total_count) == 0) {
-		scene->sphere_instances = (SphereInstance*)raw_mem;
-		safe_memcpy(scene->sphere_instances,
-		            sizeof(SphereInstance) * (size_t)total_count, data,
-		            sizeof(SphereInstance) * (size_t)total_count);
-		scene->sphere_instance_count = total_count;
-		sphere_sorter_init(&scene->sphere_sorter, total_count);
-	}
-#endif
-
 	instanced_group_bind_mesh(&scene->instanced_group, scene->sphere_vbo,
 	                          scene->sphere_nbo, scene->sphere_ebo);
-	billboard_group_init(&scene->billboard_group, data, total_count);
-	billboard_group_prepare(&scene->billboard_group, scene->quad_vbo,
-	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
+
+	scene_init_billboard_and_sorting(scene, data, total_count);
 
 	/* Initialize Light Probe Grid with Scene Data */
 	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
@@ -163,11 +183,13 @@ static void scene_init_ssbo(Scene* scene)
 	const float grid_w = (float)(cols - 1) * spacing;
 	const float grid_h = (float)(rows - 1) * spacing;
 
-	SphereInstanceSSBO* data =
-	    malloc(sizeof(SphereInstanceSSBO) * (size_t)total_count);
-	if (!data) {
+	SphereInstanceSSBO* data = NULL;
+	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
+	                   sizeof(SphereInstanceSSBO) * (size_t)total_count) !=
+	        0 ||
+	    !data) {
 		LOG_ERROR("suckless-ogl.scene",
-		          "Failed to allocate memory for SSBO");
+		          "Failed to allocate aligned memory for SSBO");
 		return;
 	}
 
@@ -179,7 +201,16 @@ static void scene_init_ssbo(Scene* scene)
 		                    (grid_w * HALF_OFFSET_MULTIPLIER);
 		const float pos_y = -(((float)grid_y * spacing) -
 		                      (grid_h * HALF_OFFSET_MULTIPLIER));
-		vec3 position = {pos_x, pos_y, 0.0F};
+
+		/* Add deterministic jitter in depth [-1.0, 1.0] based on index
+		 */
+		const float jitter_z =
+		    (((float)((i * 1103515245U + 12345U) & 0x7FFFFFFFU) /
+		      2147483647.0F) *
+		     2.0F) -
+		    1.0F;
+
+		vec3 position = {pos_x, pos_y, jitter_z};
 		glm_translate(data[i].model, position);
 		PBRMaterial* mat = &scene->material_lib->materials[i];
 		glm_vec3_copy(mat->albedo, data[i].albedo);
@@ -204,6 +235,22 @@ static void scene_init_ssbo(Scene* scene)
 	                              DEFAULT_SPACING * HALF_OFFSET_MULTIPLIER);
 	light_probe_grid_update_async(&scene->probe_grid);
 
+	/* Unify initialization for LBVH and Billboard rendering */
+	SphereInstance* cpu_data = NULL;
+	if (posix_memalign((void**)&cpu_data, SIMD_ALIGNMENT,
+	                   sizeof(SphereInstance) * (size_t)total_count) == 0 &&
+	    cpu_data) {
+		for (int i = 0; i < total_count; i++) {
+			glm_mat4_copy(data[i].model, cpu_data[i].model);
+			glm_vec3_copy(data[i].albedo, cpu_data[i].albedo);
+			cpu_data[i].metallic = data[i].metallic;
+			cpu_data[i].roughness = data[i].roughness;
+			cpu_data[i].ao = data[i].ao;
+		}
+		scene_init_billboard_and_sorting(scene, cpu_data, total_count);
+		free(cpu_data);
+	}
+
 	free(data);
 }
 #endif
@@ -219,6 +266,10 @@ static void scene_init_state(Scene* scene)
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->gi_mode = GI_MODE_OFF;
 	scene->show_probe_grid = 0;
+	scene->show_bvh_debug = 0;
+	scene->bvh_debug_depth = DEFAULT_BVH_DEBUG_DEPTH;
+
+	lbvh_init(&scene->lbvh, DEFAULT_COLS * DEFAULT_COLS * 2);
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
@@ -424,6 +475,14 @@ int scene_init(Scene* scene)
 
 	render_utils_create_quad_vbo(&scene->quad_vbo);
 	render_utils_create_wire_cube_vbo(&scene->wire_cube_vbo);
+
+	glGenVertexArrays(1, &scene->wire_cube_vao);
+	glBindVertexArray(scene->wire_cube_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->wire_cube_vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
+
 	render_utils_create_wire_quad_vbo(&scene->wire_quad_vbo);
 	skybox_init(&scene->skybox, scene->skybox_shader);
 	icosphere_init(&scene->geometry);
@@ -469,6 +528,10 @@ int scene_init(Scene* scene)
 	    scene->debug_line_shader, "u_useInstanceColor");
 	scene->debug_uniforms.u_color =
 	    shader_get_uniform_location(scene->debug_line_shader, "u_color");
+	scene->debug_uniforms.u_model =
+	    shader_get_uniform_location(scene->debug_line_shader, "model");
+	scene->debug_uniforms.u_use_instance_data = shader_get_uniform_location(
+	    scene->debug_line_shader, "u_useInstanceData");
 
 	return 1;
 }
@@ -508,6 +571,7 @@ static void scene_cleanup_buffers(Scene* scene)
 	scene_cleanup_geometry_buffers(scene);
 
 	GL_SAFE_DELETE_VAO(scene->empty_vao);
+	GL_SAFE_DELETE_VAO(scene->wire_cube_vao);
 	GL_SAFE_DELETE_BUFFER(scene->wire_cube_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);
@@ -563,6 +627,7 @@ void scene_cleanup(Scene* scene)
 
 	ibl_coordinator_cleanup(&scene->ibl_coord);
 	light_probe_grid_cleanup(&scene->probe_grid);
+	lbvh_cleanup(&scene->lbvh);
 
 	if (scene->hdr_files) {
 		for (int i = 0; i < scene->hdr_count; i++) {
@@ -684,6 +749,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
 		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
 		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 1);
+		shader_set_int_loc(scene->debug_uniforms.u_use_instance_data,
+		                   1);
 		/* Alpha 0.10 for transparency */
 		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
 		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_fill);
@@ -701,6 +768,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
 		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
 		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 0);
+		shader_set_int_loc(scene->debug_uniforms.u_use_instance_data,
+		                   1);
 		float color_quad[4] = {0.0F, 1.0F, 0.0F, 1.0F};
 		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_quad);
 		billboard_group_draw_debug_quads(&scene->billboard_group);
@@ -719,6 +788,98 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 	}
+}
+
+static void scene_render_bvh_debug(Scene* scene, mat4 view, mat4 proj)
+{
+	(void)view;
+	if (scene->lbvh.node_count == 0) {
+		return;
+	}
+
+	const GLStateBackup saved_state = render_utils_save_state();
+
+	glDisable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthMask(GL_FALSE);
+
+	shader_use(scene->debug_line_shader);
+	shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
+	shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 0);
+	shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 0);
+	shader_set_int_loc(scene->debug_uniforms.u_use_instance_data, 0);
+
+	shader_set_mat4_loc(scene->debug_uniforms.projection, (float*)proj);
+	shader_set_mat4_loc(scene->debug_uniforms.view, (float*)view);
+
+	/* Iterative traversal with stack */
+	typedef struct {
+		int node_idx;
+		int depth;
+	} StackFrame;
+
+	enum { BVH_DEBUG_STACK_CAPACITY = 64 };
+	StackFrame stack[BVH_DEBUG_STACK_CAPACITY];
+	const int stack_safety_margin = 2;
+	int stack_ptr = 0;
+
+	stack[stack_ptr++] = (StackFrame){0, 0};
+
+	while (stack_ptr > 0) {
+		StackFrame frame = stack[--stack_ptr];
+		int node_idx = frame.node_idx;
+		int depth = frame.depth;
+
+		if (node_idx < 0 || node_idx >= scene->lbvh.node_count ||
+		    depth > scene->bvh_debug_depth) {
+			continue;
+		}
+
+		LBVHNode* node = &scene->lbvh.nodes[node_idx];
+
+		/* Draw node AABB */
+		vec3 node_center;
+		vec3 node_size;
+		for (int i = 0; i < 3; i++) {
+			node_center[i] =
+			    (node->aabb_min[i] + node->aabb_max[i]) * HALF;
+			node_size[i] = node->aabb_max[i] - node->aabb_min[i];
+		}
+
+		mat4 model_matrix;
+		glm_mat4_identity(model_matrix);
+		glm_translate(model_matrix, node_center);
+		vec3 half_size;
+		glm_vec3_scale(node_size, HALF, half_size);
+		glm_scale(model_matrix, half_size);
+
+		shader_set_mat4_loc(scene->debug_uniforms.u_model,
+		                    (float*)model_matrix);
+
+		/* Color based on depth */
+		const float depth_ratio =
+		    (float)depth / (float)(scene->bvh_debug_depth + 1);
+		vec4 debug_color = {1.0F - depth_ratio, depth_ratio, HALF,
+		                    DEBUG_AABB_ALPHA};
+		shader_set_vec4_loc(scene->debug_uniforms.u_color, debug_color);
+
+		/* Use wireframe cube VAO */
+		glBindVertexArray(scene->wire_cube_vao);
+		glDrawArrays(GL_LINES, 0, WIRE_CUBE_VERTEX_COUNT);
+
+		/* Push children if internal node */
+		if (node->aabb_min[3] >= 0.0F &&
+		    stack_ptr <
+		        (BVH_DEBUG_STACK_CAPACITY - stack_safety_margin)) {
+			stack[stack_ptr++] =
+			    (StackFrame){(int)node->aabb_max[3], depth + 1};
+			stack[stack_ptr++] =
+			    (StackFrame){(int)node->aabb_min[3], depth + 1};
+		}
+	}
+
+	render_utils_restore_state(&saved_state);
 }
 
 static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
@@ -849,6 +1010,10 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			    &scene->billboard_group, sorted_ssbo,
 			    scene->sphere_instance_count);
 
+			/* Update LBVH on CPU */
+			lbvh_build(&scene->lbvh, scene->sphere_instances,
+			           scene->sphere_instance_count);
+
 			glEnablei(GL_BLEND, 0);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisablei(GL_BLEND, 1);
@@ -858,6 +1023,10 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			                        height);
 
 			glDisablei(GL_BLEND, 0);
+
+			if (scene->show_bvh_debug) {
+				scene_render_bvh_debug(scene, view, proj);
+			}
 		} else {
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
@@ -876,22 +1045,12 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 	{
 		stencil_begin_object_pass();
 
-		if (scene->billboard_mode) {
-			scene_render_billboards(scene, view, proj, camera_pos,
-			                        previous_view_proj, width,
-			                        height);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK,
-			              scene->wireframe ? GL_LINE : GL_FILL);
-			scene_render_instanced(scene, view, proj, camera_pos,
-			                       previous_view_proj);
-
-			if (scene->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
+		if (scene->wireframe) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
+	}
 
-		glDisable(GL_STENCIL_TEST);
+	glDisable(GL_STENCIL_TEST);
 
 #endif
 

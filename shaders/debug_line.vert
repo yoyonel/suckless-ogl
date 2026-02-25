@@ -8,6 +8,8 @@ layout(location = 6) in vec3 aAlbedo;
 uniform mat4 view;
 uniform mat4 projection;
 uniform bool u_billboardMode;
+uniform mat4 model;
+uniform bool u_useInstanceData;
 
 out vec3 vWorldPos;
 out vec3 vAlbedo;
@@ -17,21 +19,28 @@ out vec3 vAlbedo;
     void
     main()
 {
+	mat4 finalModel;
+	if (u_useInstanceData) {
+		finalModel = aModel;
+	} else {
+		finalModel = model;
+	}
+
 	vec3 worldPos;
 
 	if (u_billboardMode) {
 		// Billboard Logic
-		float maxScale = length(vec3(aModel[0]));
+		float maxScale = length(vec3(finalModel[0]));
 		float sphereRadius = maxScale;
-		vec3 sphereCenter = vec3(aModel[3]);
+		vec3 sphereCenter = vec3(finalModel[3]);
 
 		vec4 clipPos;
 		computeBillboardSphere(aPos, sphereCenter, sphereRadius, view,
 		                       projection, clipPos, worldPos);
 		gl_Position = clipPos;
 	} else {
-		// Standard Instanced Mesh (Box)
-		worldPos = vec3(aModel * vec4(aPos, 1.0));
+		// Standard Mesh (Box or others)
+		worldPos = vec3(finalModel * vec4(aPos, 1.0));
 		gl_Position = projection * view * vec4(worldPos, 1.0);
 	}
 

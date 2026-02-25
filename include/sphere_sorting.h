@@ -13,6 +13,25 @@
 #include <cglm/cglm.h>
 
 /**
+ * LBVHNode representing a bounding volume hierarchy node.
+ * GPU-friendly layout (128 bytes total if aligned).
+ */
+typedef struct {
+	vec4 aabb_min;  /**< min.xyz, left_child.w */
+	vec4 aabb_max;  /**< max.xyz, right_child.w (or -1 if leaf) */
+	int object_idx; /**< Index of the sphere in the sorted instance buffer.
+	                 */
+	int padding[3];
+} LBVHNode;
+
+typedef struct {
+	LBVHNode* nodes; /**< Flat array of tree nodes (2*N - 1 capacity). */
+	int node_count;  /**< Actual number of used nodes. */
+	int capacity;    /**< Max nodes allocated. */
+} LBVH;
+#include <cglm/cglm.h>
+
+/**
  * @struct SphereSortEntry
  * @brief Lightweight proxy for sorting data without moving large structs.
  */
@@ -46,6 +65,34 @@ typedef struct {
 	int cpu_capacity;  /**< Current allocated size of CPU scratchpads. */
 	int min_capacity;  /**< Minimum capacity to maintain. */
 } SphereSorter;
+
+/**
+ * @brief Initialize a LBVH structure.
+ * @param bvh The LBVH to initialize.
+ * @param initial_capacity Minimum number of nodes to support (should be 2*N-1).
+ * @return 1 on success, 0 on failure.
+ */
+int lbvh_init(LBVH* bvh, int initial_capacity);
+
+/**
+ * @brief Clean up LBVH resources.
+ * @param bvh The LBVH to clean up.
+ */
+void lbvh_cleanup(LBVH* bvh);
+
+/**
+ * @brief Build a Morton-based Linear BVH from a sorted set of spheres.
+ * @param bvh The LBVH to build into.
+ * @param instances Array of sphere instances (must be sorted by Morton code).
+ * @param count Number of spheres.
+ */
+void lbvh_build(LBVH* bvh, SphereInstance* instances, int count);
+
+/**
+ * @brief Calculate a 30-bit Morton code for a 3D point.
+ */
+uint32_t calculate_morton_3d(const vec3 pos, const vec3 scene_min,
+                             const vec3 scene_max);
 
 /**
  * @brief Allocates internal buffers for the sorter.

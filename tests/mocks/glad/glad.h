@@ -114,6 +114,16 @@ typedef struct __GLsync* GLsync;
 #define GL_TEXTURE_WIDTH 0x1000
 #define GL_TEXTURE_HEIGHT 0x1001
 #define GL_TEXTURE_INTERNAL_FORMAT 0x1003
+#define GL_DEPTH_WRITEMASK 0x0B72
+#define GL_DEPTH_FUNC 0x0B74
+#define GL_BLEND_SRC_RGB 0x80C9
+#define GL_BLEND_DST_RGB 0x80C8
+#define GL_BLEND_SRC_ALPHA 0x80CB
+#define GL_BLEND_DST_ALPHA 0x80CA
+#define GL_SCISSOR_TEST 0x0C11
+#define GL_STENCIL_TEST 0x0B90
+#define GL_FRONT 0x0404
+#define GL_BACK 0x0405
 
 #define GL_SYNC_GPU_COMMANDS_COMPLETE 0x9117
 #define GL_SYNC_FLUSH_COMMANDS_BIT 0x00000001
@@ -147,6 +157,7 @@ void glGenerateMipmap(GLenum target);
 GLenum glGetError(void);
 const GLchar* glGetString(GLenum name);
 void glGetIntegerv(GLenum pname, GLint* data);
+void glGetBooleanv(GLenum pname, GLboolean* data);
 void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
                               GLint* params);
 
@@ -232,6 +243,10 @@ GLenum glCheckFramebufferStatus(GLenum target);
 void glClear(GLbitfield mask);
 void glClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);
+void glBlendFuncSeparate(GLenum sfactorRGB, GLenum dfactorRGB,
+                         GLenum sfactorAlpha, GLenum dfactorAlpha);
+void glDepthMask(GLboolean flag);
+void glDepthFunc(GLenum func);
 
 void glGenQueries(GLsizei n, GLuint* ids);
 void glDeleteQueries(GLsizei n, const GLuint* ids);

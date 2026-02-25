@@ -651,6 +651,7 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 		shader_set_int(grid->aabb_shader, "u_billboardMode", 0);
 		shader_set_int(grid->aabb_shader, "u_stippled", 0);
 		shader_set_int(grid->aabb_shader, "u_useInstanceColor", 0);
+		shader_set_int(grid->aabb_shader, "u_useInstanceData", 0);
 		float yellow[4] = {1.0F, 1.0F, 0.0F, 1.0F};
 		shader_set_vec4(grid->aabb_shader, "u_color", yellow);
 
@@ -667,13 +668,8 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 		glm_translate(model, center);
 		glm_scale(model, size);
 
-		/* The debug_line shader expects aModel at location 2 as an
-		 * attribute. Since we're rendering a single box, we can just
-		 * use glVertexAttrib to set a constant value for the model
-		 * matrix. */
-		for (int i = 0; i < 4; i++) {
-			glVertexAttrib4fv(2 + i, (const float*)model[i]);
-		}
+		shader_set_mat4(grid->aabb_shader, "model",
+		                (const float*)model);
 
 		glBindVertexArray(grid->aabb_vao);
 		glDrawArrays(GL_LINES, 0, GI_WIRE_CUBE_VERTICES);
