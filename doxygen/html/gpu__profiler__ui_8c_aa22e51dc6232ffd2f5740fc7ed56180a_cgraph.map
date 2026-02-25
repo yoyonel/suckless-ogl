@@ -1,49 +1,20 @@
 <map id="gpu_profiler_ui_draw" name="gpu_profiler_ui_draw">
-<area shape="rect" id="Node000001" title="Renders the GPU timeline using the provided UI context." alt="" coords="5,207,163,232"/>
-<area shape="rect" id="Node000002" href="$gpu__profiler__ui_8c.html#a9b6c2b2384f308fa84ba23481d65afdf" title=" " alt="" coords="241,108,345,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,204,150,174,210,142,228,135,230,140,212,147,152,178,105,209"/>
-<area shape="rect" id="Node000003" href="$utils_8c.html#aca6393fbdcd75a7379484de0a7604136" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="240,157,347,183"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="138,204,226,183,227,188,139,209"/>
-<area shape="rect" id="Node000004" href="$ui_8c.html#af4b8d38bd43df2b9b59611b054408f74" title="Draws a rounded rectangle with custom alpha." alt="" coords="211,207,376,232"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="163,217,197,217,197,222,163,222"/>
-<area shape="rect" id="Node000016" href="$ui_8c.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="229,256,358,281"/>
-<area shape="poly" id="edge19_Node000001_Node000016" title=" " alt="" coords="139,229,226,250,225,255,138,235"/>
-<area shape="rect" id="Node000018" href="$ui_8c.html#a26db48bb6063f3f76fd3a3227b3acb4b" title="Measures the width of a text string in pixels." alt="" coords="228,305,359,331"/>
-<area shape="poly" id="edge29_Node000001_Node000018" title=" " alt="" coords="105,230,152,260,212,292,230,299,228,304,210,296,150,265,102,234"/>
-<area shape="rect" id="Node000005" href="$render__utils_8c.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="437,253,589,293"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="347,230,424,248,423,254,346,235"/>
-<area shape="rect" id="Node000006" href="$render__utils_8c.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="424,317,601,343"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="352,230,378,242,394,258,402,273,411,288,426,303,438,310,436,314,422,307,406,292,398,276,389,261,374,247,350,234"/>
-<area shape="rect" id="Node000007" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="429,367,596,392"/>
-<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="358,230,378,243,390,257,397,271,402,300,408,327,414,340,426,353,431,358,428,362,422,357,410,343,403,329,397,301,392,273,386,260,374,247,355,234"/>
-<area shape="rect" id="Node000008" href="$shader_8c.html#aed5502c74325481ebafdd9dfc49cf8db" title=" " alt="" coords="448,416,577,441"/>
-<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="360,230,378,243,393,263,401,284,402,325,404,365,411,384,426,403,437,411,434,416,422,407,407,386,399,366,397,325,395,285,389,266,374,247,357,234"/>
-<area shape="rect" id="Node000011" href="$shader_8c.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="454,55,571,80"/>
-<area shape="poly" id="edge10_Node000004_Node000011" title=" " alt="" coords="354,204,374,192,385,180,392,168,397,142,403,115,410,102,422,89,440,78,442,83,426,93,415,105,408,117,402,143,397,169,390,183,378,196,357,209"/>
-<area shape="rect" id="Node000012" href="$shader_8c.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="445,104,580,129"/>
-<area shape="poly" id="edge12_Node000004_Node000012" title=" " alt="" coords="349,204,375,192,389,179,398,166,407,152,422,138,434,132,437,137,426,143,411,155,402,169,393,183,377,196,351,209"/>
-<area shape="rect" id="Node000013" href="$shader_8c.html#a5efe31c76255dd6965da8b2e1fdfd442" title=" " alt="" coords="447,5,578,31"/>
-<area shape="poly" id="edge14_Node000004_Node000013" title=" " alt="" coords="356,204,374,192,388,174,395,156,397,118,399,79,407,59,422,40,434,31,437,36,426,44,412,62,405,80,402,118,400,157,393,176,378,196,359,209"/>
-<area shape="rect" id="Node000014" href="$shader_8c.html#a7034c467af5884ca4950b6957eb84ff2" title=" " alt="" coords="447,153,578,179"/>
-<area shape="poly" id="edge16_Node000004_Node000014" title=" " alt="" coords="346,204,446,179,447,185,347,209"/>
-<area shape="rect" id="Node000015" href="$shader_8c.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="465,203,561,228"/>
-<area shape="poly" id="edge18_Node000004_Node000015" title=" " alt="" coords="377,215,451,214,451,219,377,220"/>
-<area shape="rect" id="Node000009" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="649,97,801,137"/>
-<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="576,416,600,403,626,375,649,343,683,274,705,205,717,150,722,151,710,207,688,276,653,346,630,378,603,407,579,421"/>
-<area shape="rect" id="Node000010" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="849,104,999,129"/>
-<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="802,114,836,114,836,119,802,119"/>
-<area shape="poly" id="edge11_Node000011_Node000009" title=" " alt="" coords="569,77,636,93,635,99,567,83"/>
-<area shape="poly" id="edge13_Node000012_Node000009" title=" " alt="" coords="580,114,636,114,636,119,580,119"/>
-<area shape="poly" id="edge15_Node000013_Node000009" title=" " alt="" coords="570,28,602,40,646,62,686,86,683,91,644,67,600,44,568,33"/>
-<area shape="poly" id="edge17_Node000014_Node000009" title=" " alt="" coords="567,151,635,135,636,140,569,156"/>
-<area shape="poly" id="edge21_Node000016_Node000005" title=" " alt="" coords="359,267,423,268,423,274,358,273"/>
-<area shape="poly" id="edge22_Node000016_Node000006" title=" " alt="" coords="340,279,454,311,453,316,339,284"/>
-<area shape="poly" id="edge23_Node000016_Node000007" title=" " alt="" coords="353,279,378,292,394,308,402,324,410,339,426,353,435,359,433,363,422,357,406,342,398,326,389,311,374,296,350,284"/>
-<area shape="poly" id="edge24_Node000016_Node000008" title=" " alt="" coords="358,279,378,292,390,306,397,321,402,349,408,377,414,390,426,403,437,411,434,415,422,407,410,393,403,378,397,350,392,322,386,309,374,296,355,284"/>
-<area shape="poly" id="edge25_Node000016_Node000011" title=" " alt="" coords="357,255,374,243,388,224,395,206,397,168,399,129,407,109,422,89,440,77,443,82,426,93,412,111,405,130,402,168,400,207,393,227,378,247,360,259"/>
-<area shape="poly" id="edge26_Node000016_Node000012" title=" " alt="" coords="357,254,374,243,385,230,392,218,397,192,403,165,410,152,422,139,431,132,434,137,426,143,415,155,408,167,402,193,397,220,390,234,378,247,360,258"/>
-<area shape="poly" id="edge27_Node000016_Node000014" title=" " alt="" coords="352,253,375,242,389,229,398,216,407,202,422,188,434,181,437,186,426,192,411,205,402,219,393,233,377,247,354,258"/>
-<area shape="poly" id="edge28_Node000016_Node000015" title=" " alt="" coords="346,253,451,227,452,233,347,258"/>
-<area shape="rect" id="Node000017" href="$ui_8c.html#a8d8220e7d7899791fe745aec49f72e6d" title=" " alt="" coords="443,465,583,491"/>
-<area shape="poly" id="edge20_Node000016_Node000017" title=" " alt="" coords="360,279,378,292,393,313,401,333,402,374,404,414,411,433,426,452,432,457,429,461,422,456,407,436,399,415,397,374,395,334,389,315,374,296,357,284"/>
+<area shape="rect" id="node1" title="Renders the GPU timeline using the provided UI context." alt="" coords="5,212,163,239"/>
+<area shape="rect" id="node2" href="$gpu__profiler__ui_8c.html#a9b6c2b2384f308fa84ba23481d65afdf" title=" " alt="" coords="241,111,345,137"/>
+<area shape="rect" id="node3" href="$utils_8h.html#aca6393fbdcd75a7379484de0a7604136" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="240,161,347,188"/>
+<area shape="rect" id="node4" href="$ui_8h.html#af4b8d38bd43df2b9b59611b054408f74" title="Draws a rounded rectangle with custom alpha." alt="" coords="211,212,376,239"/>
+<area shape="rect" id="node16" href="$ui_8h.html#a74067bc67d31c6d82fa3b548a3729670" title="Draws text with custom alpha transparency." alt="" coords="229,263,358,289"/>
+<area shape="rect" id="node18" href="$ui_8h.html#a26db48bb6063f3f76fd3a3227b3acb4b" title="Measures the width of a text string in pixels." alt="" coords="228,313,359,340"/>
+<area shape="rect" id="node5" href="$render__utils_8h.html#aa6820952026feea828b06074d33f0a96" title="Restores OpenGL state from a backup struct." alt="" coords="437,259,589,301"/>
+<area shape="rect" id="node6" href="$render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9" title="Saves current OpenGL state to a backup struct." alt="" coords="424,325,601,352"/>
+<area shape="rect" id="node7" href="$ui_8c.html#a05f2c5e6678bcb2f958195dcab774062" title=" " alt="" coords="429,376,596,403"/>
+<area shape="rect" id="node8" href="$shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db" title=" " alt="" coords="448,427,577,453"/>
+<area shape="rect" id="node11" href="$shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="454,56,571,83"/>
+<area shape="rect" id="node12" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="445,107,580,133"/>
+<area shape="rect" id="node13" href="$shader_8h.html#a5efe31c76255dd6965da8b2e1fdfd442" title=" " alt="" coords="447,5,578,32"/>
+<area shape="rect" id="node14" href="$shader_8h.html#a7034c467af5884ca4950b6957eb84ff2" title=" " alt="" coords="447,157,578,184"/>
+<area shape="rect" id="node15" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="465,208,561,235"/>
+<area shape="rect" id="node9" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="649,99,801,141"/>
+<area shape="rect" id="node10" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="849,107,999,133"/>
+<area shape="rect" id="node17" href="$ui_8c.html#a8d8220e7d7899791fe745aec49f72e6d" title=" " alt="" coords="443,477,583,504"/>
 </map>

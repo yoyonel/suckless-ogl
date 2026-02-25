@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['offset_0',['offset',['../structColorGradingParams.html#aef2056f6ab8806d8afcb039f6aad33f9',1,'ColorGradingParams']]],
-  ['offset_5fsampler_1',['offset_sampler',['../structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d',1,'GPUStage']]],
-  ['optimization_2',['Exact Sphere AABB Optimization',['../md_docs_2billboard__optimization.html',1,'']]],
-  ['original_5findex_3',['original_index',['../structSphereSortEntry.html#aed13255308b43481740f760886695969',1,'SphereSortEntry']]],
-  ['original_5fnice_4',['original_nice',['../structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686',1,'PerfModeContext']]],
-  ['original_5fparam_5',['original_param',['../structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924',1,'PerfModeContext']]],
-  ['original_5fpolicy_6',['original_policy',['../structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39',1,'PerfModeContext']]]
+  ['x_1657',['x',['../structUIVertex.html#abc4f881f9b18241439050f050fce487e',1,'UIVertex']]],
+  ['x_1658',['X',['../icosphere_8c.html#a207fd5507206d307cd63f95374fcd00d',1,'icosphere.c']]],
+  ['x0_1659',['x0',['../structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9',1,'GlyphInfo']]],
+  ['x1_1660',['x1',['../structGlyphInfo.html#a2e1c51a272e5a5590a2b456db512add8',1,'GlyphInfo']]],
+  ['x_5foff_1661',['x_off',['../structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d',1,'GlyphInfo']]]
 ];

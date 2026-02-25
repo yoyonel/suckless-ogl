@@ -23,6 +23,7 @@ var annotated_dup =
     [ "EffectEntry", "structEffectEntry.html", "structEffectEntry" ],
     [ "EffectMetadata", "structEffectMetadata.html", "structEffectMetadata" ],
     [ "Entry", "structEntry.html", "structEntry" ],
+    [ "EnvManager", "structEnvManager.html", "structEnvManager" ],
     [ "ExposureParams", "structExposureParams.html", "structExposureParams" ],
     [ "FpsCounter", "structFpsCounter.html", "structFpsCounter" ],
     [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],

@@ -1,14 +1,11 @@
 var searchData=
 [
-  ['finalize_5fibl_5fswap_0',['finalize_ibl_swap',['../app__env_8c.html#a67f5c84994c652d02a1228bc442fcd0c',1,'app_env.c']]],
-  ['find_5fcomposite_5fduration_1',['find_composite_duration',['../effect__benchmark_8c.html#a733a99a378a7c1dd5155e7f8521a7a15',1,'effect_benchmark.c']]],
-  ['find_5fshader_5fin_5fcache_2',['find_shader_in_cache',['../postprocess_8c.html#aed006d7906b9c51301116c84de7e3de0',1,'postprocess.c']]],
-  ['float_5fto_5fhalf_5fsoft_3',['float_to_half_soft',['../simd__utils_8c.html#a839aa1475cc59c051f1e10be7ffe4b23',1,'simd_utils.c']]],
-  ['float_5fto_5fsortable_5fuint_4',['float_to_sortable_uint',['../sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de',1,'sphere_sorting.c']]],
-  ['format_5fmissed_5fframes_5',['format_missed_frames',['../app__metrics_8c.html#a6d0a8fe3b32e75dd8bd3e099ce114fda',1,'app_metrics.c']]],
-  ['format_5frelative_5fpercentages_6',['format_relative_percentages',['../app__metrics_8c.html#a50ed697036e98c335b5bd41c5a8d8df4',1,'app_metrics.c']]],
-  ['fps_5finit_7',['fps_init',['../fps_8h.html#a6502614d8abf01ccea0eacbf993a89c0',1,'fps_init(FpsCounter *fps, float decay, double log_interval):&#160;fps.c'],['../fps_8c.html#a6502614d8abf01ccea0eacbf993a89c0',1,'fps_init(FpsCounter *fps, float decay, double log_interval):&#160;fps.c']]],
-  ['fps_5fupdate_8',['fps_update',['../fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635',1,'fps_update(FpsCounter *fps, double delta_time, double current_time):&#160;fps.c'],['../fps_8c.html#a2d1f254700ad6cb8e2e7096a88029635',1,'fps_update(FpsCounter *fps, double delta_time, double current_time):&#160;fps.c']]],
-  ['framebuffer_5fsize_5fcallback_9',['framebuffer_size_callback',['../app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac',1,'framebuffer_size_callback(GLFWwindow *window, int width, int height):&#160;app_input.c'],['../app__input_8c.html#a5180f7bf2b71421af837035824a8c8ac',1,'framebuffer_size_callback(GLFWwindow *window, int width, int height):&#160;app_input.c']]],
-  ['fresnelschlickroughness_10',['fresnelSchlickRoughness',['../pbr__functions_8glsl.html#a9535dbe6fb313fa2e4c7d615a9c49431',1,'pbr_functions.glsl']]]
+  ['edge_5fhash_5ffree_1980',['edge_hash_free',['../icosphere_8c.html#ae03bb94117c96b3c6b629a914dde98cd',1,'icosphere.c']]],
+  ['edge_5fhash_5finit_1981',['edge_hash_init',['../icosphere_8c.html#aa6488726ac1005a991370448ff17cce0',1,'icosphere.c']]],
+  ['effect_5fbenchmark_5finit_1982',['effect_benchmark_init',['../effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153',1,'effect_benchmark_init(EffectBenchmark *bench, PostProcess *postprocess, GPUProfiler *profiler):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#ab2258d0fffc9b1ed65bf0e0310341153',1,'effect_benchmark_init(EffectBenchmark *bench, PostProcess *postprocess, GPUProfiler *profiler):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fis_5frunning_1983',['effect_benchmark_is_running',['../effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0',1,'effect_benchmark_is_running(const EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#a464b97790ca4fcafceaf5aeb93e5f1e0',1,'effect_benchmark_is_running(const EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5flog_5fresults_1984',['effect_benchmark_log_results',['../effect__benchmark_8h.html#a392e325c2453fe315ac40f4f4a1194a3',1,'effect_benchmark_log_results(const EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#a392e325c2453fe315ac40f4f4a1194a3',1,'effect_benchmark_log_results(const EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fstart_1985',['effect_benchmark_start',['../effect__benchmark_8h.html#aa2cc8b49697d1f8554bc69ce6c5a77d2',1,'effect_benchmark_start(EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#aa2cc8b49697d1f8554bc69ce6c5a77d2',1,'effect_benchmark_start(EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['effect_5fbenchmark_5fupdate_1986',['effect_benchmark_update',['../effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb',1,'effect_benchmark_update(EffectBenchmark *bench):&#160;effect_benchmark.c'],['../effect__benchmark_8c.html#ace04d12739b82c375dbef5ebc4a6c4eb',1,'effect_benchmark_update(EffectBenchmark *bench):&#160;effect_benchmark.c']]],
+  ['ensure_5fcpu_5fcapacity_1987',['ensure_cpu_capacity',['../sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305',1,'sphere_sorting.c']]]
 ];

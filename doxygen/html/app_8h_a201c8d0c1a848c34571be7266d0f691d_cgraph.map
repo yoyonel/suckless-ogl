@@ -1,75 +1,38 @@
 <map id="app_cleanup" name="app_cleanup">
-<area shape="rect" id="Node000001" title="Safely releases all GPU and CPU resources held by the application." alt="" coords="5,266,109,291"/>
-<area shape="rect" id="Node000002" href="$adaptive__sampler_8c.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="663,42,861,67"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,265,66,226,83,173,112,118,132,94,156,75,224,40,298,18,374,6,451,3,525,6,593,14,703,36,702,41,592,20,524,12,451,8,375,11,299,23,226,45,159,79,136,98,116,121,88,175,71,227,63,266"/>
-<area shape="rect" id="Node000003" href="$async__loader_8c.html#a8f4ca9abf78e333d8d7ca5762db31564" title="Destroys the async loader and frees resources." alt="" coords="165,90,329,115"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="62,264,95,202,122,165,156,132,180,118,183,122,159,136,126,168,100,205,66,267"/>
-<area shape="rect" id="Node000004" href="$gpu__profiler_8c.html#a99aa06bd6e69115f881711abc461984e" title="Cleans up GPU resources." alt="" coords="415,92,572,118"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="65,264,101,220,127,196,156,176,200,159,263,143,401,116,402,121,264,148,202,164,159,181,130,200,105,224,69,267"/>
-<area shape="rect" id="Node000005" href="$gpu__profiler__ui_8c.html#aa5843b14190f472881eb53b6aa0cb4f0" title="Cleans up GPU resources used by the UI." alt="" coords="159,191,335,216"/>
-<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="79,263,156,225,178,218,180,223,158,230,82,268"/>
-<area shape="rect" id="Node000006" href="$perf__mode_8c.html#a93ee859004a75de69605d3984f7ea2f2" title="Clean up performance mode resources." alt="" coords="171,240,322,266"/>
-<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="109,269,157,262,158,267,110,274"/>
-<area shape="rect" id="Node000010" href="$postprocess_8c.html#a9ad5053871c219c0dd7585fab39c18b0" title="Releases all GPU and CPU resources." alt="" coords="167,290,326,315"/>
-<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="110,282,154,288,153,293,109,287"/>
-<area shape="rect" id="Node000015" href="$scene_8c.html#a544a31d29501a2854aee06c6011ec62d" title="Cleans up scene resources." alt="" coords="187,487,306,512"/>
-<area shape="poly" id="edge16_Node000001_Node000015" title=" " alt="" coords="72,290,228,475,224,478,68,293"/>
-<area shape="rect" id="Node000033" href="$tracy__manager_8c.html#a165df50ba6be5436b945f2b65e112b5a" title="Cleanup TracyManager resources." alt="" coords="157,536,336,562"/>
-<area shape="poly" id="edge34_Node000001_Node000033" title=" " alt="" coords="63,291,70,335,86,397,115,464,135,495,159,522,166,527,163,531,156,526,130,498,110,467,81,399,64,336,57,292"/>
-<area shape="rect" id="Node000034" href="$ui_8c.html#a5c138218fecc5ed14d4ade5e6948d5cb" title="Releases UI resources." alt="" coords="201,586,292,611"/>
-<area shape="poly" id="edge35_Node000001_Node000034" title=" " alt="" coords="62,291,66,343,80,418,92,459,109,500,131,538,159,571,173,581,189,588,187,593,171,586,156,575,127,541,104,502,87,461,74,419,61,343,56,291"/>
-<area shape="rect" id="Node000036" href="$window_8c.html#ad31b45f175d070f99c1a82cb93b2c82d" title=" " alt="" coords="183,635,311,660"/>
-<area shape="poly" id="edge37_Node000001_Node000036" title=" " alt="" coords="61,291,62,350,74,439,86,487,103,536,128,581,159,620,172,630,169,634,155,624,123,584,99,538,81,489,69,440,57,350,56,291"/>
-<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="561,90,680,67,681,72,562,95"/>
-<area shape="poly" id="edge6_Node000005_Node000004" title=" " alt="" coords="292,188,335,169,348,159,358,148,367,137,383,127,400,119,402,124,385,131,371,141,362,151,352,163,337,174,294,193"/>
-<area shape="rect" id="Node000007" href="$perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a" title="Request deactivation of performance mode." alt="" coords="404,142,583,167"/>
-<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="307,238,335,225,349,214,358,201,367,188,383,176,397,169,399,174,385,181,371,192,362,204,353,217,337,230,309,243"/>
-<area shape="rect" id="Node000008" href="$perf__mode_8c.html#aceef0f4621470222733f17aba42c69b0" title="Deactivate GameMode backend." alt="" coords="676,92,848,118"/>
-<area shape="poly" id="edge9_Node000007_Node000008" title=" " alt="" coords="563,139,678,118,679,123,564,144"/>
-<area shape="rect" id="Node000009" href="$perf__mode_8c.html#ae7d534a6d1e90285fdd2cb6f262ebbec" title="Deactivate native Linux scheduler." alt="" coords="693,142,831,167"/>
-<area shape="poly" id="edge10_Node000007_Node000009" title=" " alt="" coords="583,152,679,152,679,157,583,157"/>
-<area shape="rect" id="Node000011" href="$postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a" title=" " alt="" coords="416,191,571,216"/>
-<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="307,287,335,275,349,263,358,250,367,238,383,225,402,217,404,221,385,230,371,241,362,254,353,266,337,279,309,292"/>
-<area shape="rect" id="Node000013" href="$postprocess_8c.html#a92a070b5127b9df932264982e8a2d455" title=" " alt="" coords="413,240,573,266"/>
-<area shape="poly" id="edge14_Node000010_Node000013" title=" " alt="" coords="310,287,415,266,416,271,311,292"/>
-<area shape="rect" id="Node000014" href="$postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1" title=" " alt="" coords="419,290,567,315"/>
-<area shape="poly" id="edge15_Node000010_Node000014" title=" " alt="" coords="326,300,406,300,406,305,326,305"/>
-<area shape="rect" id="Node000012" href="$render__utils_8c.html#a46e8c525ba0c0e1535cd2667b419a56c" title="Safely binds a texture to a specific unit, using a fallback if needed." alt="" coords="651,191,873,216"/>
-<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="571,201,636,201,636,206,571,206"/>
-<area shape="rect" id="Node000016" href="$billboard__rendering_8c.html#afe9bff73b698b1f2017877983fbf3f4c" title="Releases all GPU resources allocated for the billboard group." alt="" coords="403,339,584,364"/>
-<area shape="poly" id="edge17_Node000015_Node000016" title=" " alt="" coords="256,485,306,430,342,399,383,373,398,366,400,371,385,378,345,404,310,434,260,489"/>
-<area shape="rect" id="Node000017" href="$ibl__coordinator_8c.html#a7af04c7b19cdf6fd658af855351f19ad" title="Cleanups any pending resources held by the coordinator." alt="" coords="405,388,582,414"/>
-<area shape="poly" id="edge18_Node000015_Node000017" title=" " alt="" coords="266,485,317,454,383,422,407,415,409,420,385,427,320,458,268,489"/>
-<area shape="rect" id="Node000019" href="$icosphere_8c.html#a5d46fa05e1dc89e653b23558a202774f" title="Frees all dynamic memory in the icosphere container." alt="" coords="434,438,553,463"/>
-<area shape="poly" id="edge20_Node000015_Node000019" title=" " alt="" coords="306,485,420,462,421,467,307,490"/>
-<area shape="rect" id="Node000022" href="$instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884" title="Releases all GPU resources for the instanced group." alt="" coords="400,487,587,512"/>
-<area shape="poly" id="edge23_Node000015_Node000022" title=" " alt="" coords="306,497,386,497,386,502,306,502"/>
-<area shape="rect" id="Node000023" href="$material_8c.html#aa231f444b37b3b2f771ad22b78b2acb3" title="Frees all memory associated with a material library." alt="" coords="427,536,560,562"/>
-<area shape="poly" id="edge24_Node000015_Node000023" title=" " alt="" coords="307,509,417,531,416,536,306,514"/>
-<area shape="rect" id="Node000024" href="$scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3" title=" " alt="" coords="384,586,603,611"/>
-<area shape="poly" id="edge25_Node000015_Node000024" title=" " alt="" coords="307,508,337,521,353,534,362,547,371,559,385,571,402,579,400,583,383,575,367,563,358,550,349,538,335,526,305,513"/>
-<area shape="rect" id="Node000028" href="$scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9" title=" " alt="" coords="405,635,581,660"/>
-<area shape="poly" id="edge29_Node000015_Node000028" title=" " alt="" coords="308,506,338,521,349,534,356,547,362,573,368,597,375,609,386,620,395,627,392,631,382,624,370,612,363,599,357,574,351,549,345,537,334,526,305,510"/>
-<area shape="rect" id="Node000030" href="$skybox_8c.html#a426022a6fba8e5f57863e91b5ce3a3a0" title="Cleans up GPU resources." alt="" coords="430,684,557,710"/>
-<area shape="poly" id="edge31_Node000015_Node000030" title=" " alt="" coords="307,504,323,511,338,522,353,540,360,560,362,598,365,635,372,652,386,670,401,680,418,687,415,692,398,685,382,674,367,655,359,636,357,598,355,561,348,543,334,526,321,516,305,509"/>
-<area shape="rect" id="Node000031" href="$sphere__sorting_8c.html#a159532007839ad93c627f7173c755616" title="Destroys the sorter context." alt="" coords="409,734,578,759"/>
-<area shape="poly" id="edge32_Node000015_Node000031" title=" " alt="" coords="307,504,324,511,338,522,356,547,364,573,365,598,362,624,360,649,361,673,368,697,386,720,398,730,395,734,382,724,364,699,355,674,354,649,357,623,359,598,358,574,351,549,334,525,321,515,305,509"/>
-<area shape="rect" id="Node000032" href="$ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f" title="Releases GPU resources." alt="" coords="416,783,571,808"/>
-<area shape="poly" id="edge33_Node000015_Node000032" title=" " alt="" coords="307,503,324,511,338,522,359,553,367,585,367,617,362,649,357,680,357,710,365,740,386,770,405,783,402,788,382,773,360,742,352,711,352,679,357,648,361,617,362,586,354,556,334,525,321,515,305,508"/>
-<area shape="rect" id="Node000018" href="$ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0" title="Resets the coordinator to IDLE state." alt="" coords="683,388,841,414"/>
-<area shape="poly" id="edge19_Node000017_Node000018" title=" " alt="" coords="582,398,669,398,669,404,582,404"/>
-<area shape="rect" id="Node000020" href="$icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62" title="Frees the internal buffer of a UintArray." alt="" coords="705,438,819,463"/>
-<area shape="poly" id="edge21_Node000019_Node000020" title=" " alt="" coords="553,448,691,448,691,453,553,453"/>
-<area shape="rect" id="Node000021" href="$icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a" title="Frees the internal buffer of a Vec3Array." alt="" coords="702,487,822,512"/>
-<area shape="poly" id="edge22_Node000019_Node000021" title=" " alt="" coords="554,458,689,484,688,489,553,464"/>
-<area shape="rect" id="Node000025" href="$scene_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d" title=" " alt="" coords="677,536,847,562"/>
-<area shape="poly" id="edge26_Node000024_Node000025" title=" " alt="" coords="563,583,678,562,679,567,564,588"/>
-<area shape="rect" id="Node000027" href="$scene_8c.html#a5d03299a2403acf2110589d4800f4b95" title=" " alt="" coords="673,586,851,611"/>
-<area shape="poly" id="edge28_Node000024_Node000027" title=" " alt="" coords="603,596,659,596,659,601,603,601"/>
-<area shape="rect" id="Node000026" href="$scene_8c.html#a24bdb02de96abeaa6a2fbdc577022c24" title=" " alt="" coords="921,529,1109,569"/>
-<area shape="poly" id="edge27_Node000025_Node000026" title=" " alt="" coords="847,546,907,546,907,552,847,552"/>
-<area shape="rect" id="Node000029" href="$scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10" title=" " alt="" coords="660,635,864,660"/>
-<area shape="poly" id="edge30_Node000028_Node000029" title=" " alt="" coords="581,645,646,645,646,650,581,650"/>
-<area shape="rect" id="Node000035" href="$shader_8c.html#a54bf3663058663ec7530cd1a0a1af00b" title="Destroys the shader wrapper and deletes the GL program." alt="" coords="432,832,555,858"/>
-<area shape="poly" id="edge36_Node000034_Node000035" title=" " alt="" coords="293,599,317,606,338,620,356,646,364,671,365,697,362,722,360,747,361,772,368,796,386,819,401,830,420,838,418,843,399,835,382,823,364,798,355,773,354,747,357,722,359,697,358,672,351,648,334,624,314,611,291,604"/>
+<area shape="rect" id="node1" title="Safely releases all GPU and CPU resources held by the application." alt="" coords="5,267,109,294"/>
+<area shape="rect" id="node2" href="$adaptive__sampler_8h.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="663,39,861,66"/>
+<area shape="rect" id="node3" href="$async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564" title="Destroys the async loader and frees resources." alt="" coords="165,90,329,117"/>
+<area shape="rect" id="node4" href="$gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e" title="Cleans up GPU resources." alt="" coords="415,90,572,117"/>
+<area shape="rect" id="node5" href="$gpu__profiler__ui_8h.html#aa5843b14190f472881eb53b6aa0cb4f0" title="Cleans up GPU resources used by the UI." alt="" coords="159,191,335,218"/>
+<area shape="rect" id="node6" href="$perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2" title="Clean up performance mode resources." alt="" coords="171,242,322,269"/>
+<area shape="rect" id="node10" href="$postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0" title="Releases all GPU and CPU resources." alt="" coords="167,293,326,319"/>
+<area shape="rect" id="node15" href="$scene_8h.html#a544a31d29501a2854aee06c6011ec62d" title="Cleans up scene resources." alt="" coords="187,495,306,522"/>
+<area shape="rect" id="node33" href="$tracy__manager_8h.html#a165df50ba6be5436b945f2b65e112b5a" title="Cleanup TracyManager resources." alt="" coords="157,546,336,573"/>
+<area shape="rect" id="node34" href="$ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb" title="Releases UI resources." alt="" coords="201,597,292,623"/>
+<area shape="rect" id="node36" href="$window_8h.html#ad31b45f175d070f99c1a82cb93b2c82d" title=" " alt="" coords="183,647,311,674"/>
+<area shape="rect" id="node7" href="$perf__mode_8c.html#a8a498514effcc3a3fa67efdcd6530a8a" title="Request deactivation of performance mode." alt="" coords="404,141,583,167"/>
+<area shape="rect" id="node8" href="$perf__mode_8c.html#aceef0f4621470222733f17aba42c69b0" title="Deactivate GameMode backend." alt="" coords="676,90,848,117"/>
+<area shape="rect" id="node9" href="$perf__mode_8c.html#ae7d534a6d1e90285fdd2cb6f262ebbec" title="Deactivate native Linux scheduler." alt="" coords="693,141,831,167"/>
+<area shape="rect" id="node11" href="$postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a" title=" " alt="" coords="416,191,571,218"/>
+<area shape="rect" id="node13" href="$postprocess_8c.html#a92a070b5127b9df932264982e8a2d455" title=" " alt="" coords="413,242,573,269"/>
+<area shape="rect" id="node14" href="$postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1" title=" " alt="" coords="419,293,567,319"/>
+<area shape="rect" id="node12" href="$render__utils_8h.html#a46e8c525ba0c0e1535cd2667b419a56c" title="Safely binds a texture to a specific unit, using a fallback if needed." alt="" coords="651,191,873,218"/>
+<area shape="rect" id="node16" href="$billboard__rendering_8h.html#afe9bff73b698b1f2017877983fbf3f4c" title="Releases all GPU resources allocated for the billboard group." alt="" coords="403,343,584,370"/>
+<area shape="rect" id="node17" href="$ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad" title="Cleanups any pending resources held by the coordinator." alt="" coords="405,394,582,421"/>
+<area shape="rect" id="node19" href="$icosphere_8h.html#a5d46fa05e1dc89e653b23558a202774f" title="Frees all dynamic memory in the icosphere container." alt="" coords="434,445,553,471"/>
+<area shape="rect" id="node22" href="$instanced__rendering_8h.html#a1c3f138d496ea038ba38d988c71d6884" title="Releases all GPU resources for the instanced group." alt="" coords="400,495,587,522"/>
+<area shape="rect" id="node23" href="$material_8h.html#aa231f444b37b3b2f771ad22b78b2acb3" title="Frees all memory associated with a material library." alt="" coords="427,546,560,573"/>
+<area shape="rect" id="node24" href="$scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3" title=" " alt="" coords="384,597,603,623"/>
+<area shape="rect" id="node28" href="$scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9" title=" " alt="" coords="405,647,581,674"/>
+<area shape="rect" id="node30" href="$skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0" title="Cleans up GPU resources." alt="" coords="430,698,557,725"/>
+<area shape="rect" id="node31" href="$sphere__sorting_8h.html#a159532007839ad93c627f7173c755616" title="Destroys the sorter context." alt="" coords="409,749,578,775"/>
+<area shape="rect" id="node32" href="$ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f" title="Releases GPU resources." alt="" coords="416,799,571,826"/>
+<area shape="rect" id="node18" href="$ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0" title="Resets the coordinator to IDLE state." alt="" coords="683,394,841,421"/>
+<area shape="rect" id="node20" href="$icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62" title="Frees the internal buffer of a UintArray." alt="" coords="705,445,819,471"/>
+<area shape="rect" id="node21" href="$icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a" title="Frees the internal buffer of a Vec3Array." alt="" coords="702,495,822,522"/>
+<area shape="rect" id="node25" href="$scene_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d" title=" " alt="" coords="677,546,847,573"/>
+<area shape="rect" id="node27" href="$scene_8c.html#a5d03299a2403acf2110589d4800f4b95" title=" " alt="" coords="673,597,851,623"/>
+<area shape="rect" id="node26" href="$scene_8c.html#a24bdb02de96abeaa6a2fbdc577022c24" title=" " alt="" coords="921,539,1109,580"/>
+<area shape="rect" id="node29" href="$scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10" title=" " alt="" coords="660,647,864,674"/>
+<area shape="rect" id="node35" href="$shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b" title="Destroys the shader wrapper and deletes the GL program." alt="" coords="432,850,555,877"/>
 </map>

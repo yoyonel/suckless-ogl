@@ -26,33 +26,36 @@ var NAVTREE =
 [
   [ "Suckless OGL", "index.html", [
     [ "Back to Docs", "../../index.html", null ],
-    [ "API Reference & Graphs", "index.html", "index" ],
-    [ "Exact Sphere AABB Optimization", "md_docs_2billboard__optimization.html", [
-      [ "The Problem", "md_docs_2billboard__optimization.html#autotoc_md1", null ],
-      [ "The Exact Solution: Tangent Planes", "md_docs_2billboard__optimization.html#autotoc_md2", [
-        [ "Geometry (XZ Plane)", "md_docs_2billboard__optimization.html#autotoc_md3", null ],
-        [ "Finding Tangent Normals (Without Trigonometry)", "md_docs_2billboard__optimization.html#autotoc_md4", null ],
-        [ "Projection to NDC", "md_docs_2billboard__optimization.html#autotoc_md5", null ]
+    [ "API Reference & Graphs", "index.html", [
+      [ "Navigation", "index.html#autotoc_md21", null ],
+      [ "Key Modules", "index.html#autotoc_md22", null ]
+    ] ],
+    [ "Exact Sphere AABB Optimization", "md_docs_billboard_optimization.html", [
+      [ "The Problem", "md_docs_billboard_optimization.html#autotoc_md1", null ],
+      [ "The Exact Solution: Tangent Planes", "md_docs_billboard_optimization.html#autotoc_md2", [
+        [ "Geometry (XZ Plane)", "md_docs_billboard_optimization.html#autotoc_md3", null ],
+        [ "Finding Tangent Normals (Without Trigonometry)", "md_docs_billboard_optimization.html#autotoc_md4", null ],
+        [ "Projection to NDC", "md_docs_billboard_optimization.html#autotoc_md5", null ]
       ] ],
-      [ "Implementation Results", "md_docs_2billboard__optimization.html#autotoc_md6", null ],
-      [ "Robustness Handling", "md_docs_2billboard__optimization.html#autotoc_md7", [
-        [ "1. Camera Plane Singularity", "md_docs_2billboard__optimization.html#autotoc_md8", null ],
-        [ "2. Back-Projection Culling", "md_docs_2billboard__optimization.html#autotoc_md9", null ],
-        [ "3. Conservative Depth", "md_docs_2billboard__optimization.html#autotoc_md10", null ],
-        [ "4. Numerical Stability: Avoiding Silhouette Jitter", "md_docs_2billboard__optimization.html#autotoc_md11", null ],
-        [ "5. Inside-Sphere Epsilon Robustness", "md_docs_2billboard__optimization.html#autotoc_md12", null ],
-        [ "6. Code Structure: Shared Projection Scale Factors", "md_docs_2billboard__optimization.html#autotoc_md13", null ],
-        [ "7. The Mesh vs. Math Paradox (Understanding Diff Maps)", "md_docs_2billboard__optimization.html#autotoc_md14", null ]
+      [ "Implementation Results", "md_docs_billboard_optimization.html#autotoc_md6", null ],
+      [ "Robustness Handling", "md_docs_billboard_optimization.html#autotoc_md7", [
+        [ "1. Camera Plane Singularity", "md_docs_billboard_optimization.html#autotoc_md8", null ],
+        [ "2. Back-Projection Culling", "md_docs_billboard_optimization.html#autotoc_md9", null ],
+        [ "3. Conservative Depth", "md_docs_billboard_optimization.html#autotoc_md10", null ],
+        [ "4. Numerical Stability: Avoiding Silhouette Jitter", "md_docs_billboard_optimization.html#autotoc_md11", null ],
+        [ "5. Inside-Sphere Epsilon Robustness", "md_docs_billboard_optimization.html#autotoc_md12", null ],
+        [ "6. Code Structure: Shared Projection Scale Factors", "md_docs_billboard_optimization.html#autotoc_md13", null ],
+        [ "7. The Mesh vs. Math Paradox (Understanding Diff Maps)", "md_docs_billboard_optimization.html#autotoc_md14", null ]
       ] ],
-      [ "References", "md_docs_2billboard__optimization.html#autotoc_md15", [
-        [ "Visual Illustration", "md_docs_2billboard__optimization.html#autotoc_md16", null ]
+      [ "References", "md_docs_billboard_optimization.html#autotoc_md15", [
+        [ "Visual Illustration", "md_docs_billboard_optimization.html#autotoc_md16", null ]
       ] ],
-      [ "Changelog", "md_docs_2billboard__optimization.html#autotoc_md18", [
-        [ "2026-02-08 — Robustness Audit & Fixes", "md_docs_2billboard__optimization.html#autotoc_md19", null ]
+      [ "Changelog", "md_docs_billboard_optimization.html#autotoc_md18", [
+        [ "2026-02-08 — Robustness Audit & Fixes", "md_docs_billboard_optimization.html#autotoc_md19", null ]
       ] ]
     ] ],
     [ "Deprecated List", "deprecated.html", null ],
-    [ "Topics", "topics.html", "topics" ],
+    [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
       [ "Data Structure Index", "classes.html", null ],
@@ -80,14 +83,14 @@ var NAVTREEINDEX =
 [
 "../../index.html",
 "bloom__upsample_8frag.html#a54baa6c59f107ffa02d72d3bb6747231",
-"globals_i.html",
-"instanced__rendering_8c.html#a1c3f138d496ea038ba38d988c71d6884",
-"perf__mode_8h.html#a24bb58cfa7928d93310def4391d3394e",
-"render__utils_8c.html#a60b35229c13299bba83a2d47ed4c1013",
-"structApp.html#a24598a67c7334e2d8116c4cb3f1a7e5a",
-"structGPUStageRAII.html",
-"structScene.html",
-"ui_8h.html#af4b8d38bd43df2b9b59611b054408f74"
+"globals_h.html",
+"ibl__coordinator_8c.html#aa5ac2b4f077bc45d4ea556539a84db38",
+"pbr__ibl__billboard_8vert.html#a959e045b08445d0b6572b578becc6962",
+"postprocess_8h.html#aa6015b9293bcf3bebdebc87307513cd8",
+"sphere__sorting_8h.html#a159532007839ad93c627f7173c755616",
+"structEnvManager.html#a56f6c95940e65b8e764a4c5c5b1b8969",
+"structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272",
+"tracy__manager_8c.html#adc9e196a3269007d3a737cb578d9215a"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,5 +1,6 @@
 var sphere__sorting_8c =
 [
+    [ "_Static_assert", "sphere__sorting_8c.html#afb01139cbc167de435d4e49cc3e293ec", null ],
     [ "compare_sphere_entries", "sphere__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843", null ],
     [ "ensure_cpu_capacity", "sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305", null ],
     [ "float_to_sortable_uint", "sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de", null ],
