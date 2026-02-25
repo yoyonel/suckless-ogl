@@ -52,12 +52,19 @@ RUN pip3 install --no-cache-dir \
     tzdata
 
 # 3. Environment Setup
+RUN useradd -m -u 1001 ciuser && \
+    mkdir -p /home/ciuser/.cache/cltcache && \
+    chown -R ciuser:ciuser /home/ciuser
+
 # Add ~/.local/bin to PATH for cltcache and other pip-installed tools
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH="/home/ciuser/.local/bin:${PATH}"
 
 # Enable CLTCACHE by default for CI speed
-ENV CLTCACHE_DIR="/root/.cache/cltcache"
+ENV CLTCACHE_DIR="/home/ciuser/.cache/cltcache"
 
 WORKDIR /workspace
+RUN chown ciuser:ciuser /workspace
+
+USER ciuser
 
 CMD ["/bin/bash"]
