@@ -8,11 +8,9 @@
 #include "camera_input.h"
 #include "glad/glad.h"
 #include "log.h"
-#include "mem.h"
 #include "perf_mode.h"
 #include "postprocess.h" /* Explicit include for types */
 #include "postprocess_input.h"
-#include "postprocess_presets.h"
 #include "scene.h"
 #include "utils.h"
 #include "window.h"
@@ -25,7 +23,7 @@
 #include <tracy/TracyC.h>
 #endif
 
-enum { PBR_DEBUG_MODE_COUNT = 9 };
+enum { PBR_DEBUG_MODE_COUNT = 10 };
 
 /* Notification constants */
 enum { NOTIF_BUF_SIZE = 128 };
@@ -45,10 +43,16 @@ static void handle_pbr_debug_mode(App* app)
 {
 	app->scene.pbr_debug_mode =
 	    (app->scene.pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
-	const char* modeNames[] = {
-	    "Final PBR",         "Albedo",           "Normal",
-	    "Metallic",          "Roughness",        "AO",
-	    "Irradiance (Diff)", "Prefilter (Spec)", "BRDF LUT"};
+	const char* modeNames[] = {"Final PBR",
+	                           "Albedo",
+	                           "Normal",
+	                           "Metallic",
+	                           "Roughness",
+	                           "AO",
+	                           "Irradiance (Diff)",
+	                           "Prefilter (Spec)",
+	                           "BRDF LUT",
+	                           "1-Bounce GI (Probes)"};
 	LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
 	         modeNames[app->scene.pbr_debug_mode]);
 
@@ -284,6 +288,27 @@ static bool handle_f_key_input(App* app, int key, int mods)
 	}
 }
 
+static void handle_y_key_input(App* app, int mods)
+{
+	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
+		app->scene.show_probe_grid = !app->scene.show_probe_grid;
+		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
+		         app->scene.show_probe_grid ? "ON" : "OFF");
+		action_notifier_push(
+		    &app->notifier,
+		    app->scene.show_probe_grid ? "Probes: ON" : "Probes: OFF",
+		    NOTIF_DUR_NORMAL);
+	} else {
+		app->scene.gi_enabled = !app->scene.gi_enabled;
+		LOG_INFO("suckless-ogl.app", "GI 1-Bounce: %s",
+		         app->scene.gi_enabled ? "ON" : "OFF");
+		action_notifier_push(
+		    &app->notifier,
+		    app->scene.gi_enabled ? "GI: ON" : "GI: OFF",
+		    NOTIF_DUR_NORMAL);
+	}
+}
+
 static void handle_system_key_input(App* app, int key, int mods)
 {
 	switch (key) {
@@ -347,6 +372,9 @@ void handle_app_input(App* app, int key, int mods)
 		case GLFW_KEY_PAGE_DOWN:
 		case GLFW_KEY_F:
 			handle_system_key_input(app, key, mods);
+			break;
+		case GLFW_KEY_Y:
+			handle_y_key_input(app, mods);
 			break;
 		case GLFW_KEY_L:
 			app->scene.billboard_mode = !app->scene.billboard_mode;

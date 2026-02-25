@@ -248,6 +248,10 @@ static const int GPU_PROFILER_COMPOSITE_COLOR =
 static const int GPU_PROFILER_POSTPROCESS_COLOR =
     0xB48EAD;                                      /* Nord Aurora Purple */
 static const int GPU_PROFILER_UI_COLOR = 0x4C566A; /* Nord Polar Night Gray */
+static const int GPU_PROFILER_GI_SYNC_COLOR =
+    0x8FBCBB; /* Nord Frost Teal — SSBO upload */
+static const int GPU_PROFILER_GI_DEBUG_COLOR =
+    0xB48EAD; /* Nord Aurora Purple — debug probe draw */
 
 /* --- Capture Settings --- */
 static const float GPU_PROFILER_WINDOW_DURATION_S =

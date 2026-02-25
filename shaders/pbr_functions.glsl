@@ -2,6 +2,8 @@
 // Common PBR & IBL Functions
 // ----------------------------------------------------------------------------
 
+@header "sh_probe.glsl";
+
 const float PI = 3.14159265359;
 const float INV_PI = 0.31830988618;
 const float EPSILON = 1e-6;
@@ -34,7 +36,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 // ----------------------------------------------------------------------------
 vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
                               vec3 albedo, float metallic, float roughness,
-                              float ao)
+                              float ao, vec3 worldPos)
 {
 	vec3 F = fresnelSchlickRoughness(NdotV, F0, roughness);
 
@@ -43,6 +45,10 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
 	vec3 kD = (1.0 - kS) * (1.0 - metallic);
 	vec3 irradiance = textureLod(irradianceMap, dirToUV(N), 0.0).rgb;
 	irradiance = max(irradiance, vec3(0.0));
+
+	/* Add SH Probe Irradiance */
+	irradiance += get_probe_irradiance(N, worldPos);
+
 	vec3 diffuse = irradiance * albedo;
 
 	// --- SPECULAR IBL (Split-Sum) ---
@@ -122,7 +128,7 @@ float compute_roughness_clamping(vec3 N, float roughness)
 // Master Function: Compute Shading
 // ----------------------------------------------------------------------------
 vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
-                 float ao)
+                 float ao, vec3 worldPos)
 {
 	vec3 R = reflect(-V, N);
 	float NdotV = max(dot(N, V), 0.0);
@@ -133,13 +139,14 @@ vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 	clamped_roughness = max(clamped_roughness, 0.04);
 
 	// 2. Compute PBR
-	vec3 color = compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, albedo,
-	                                      metallic, clamped_roughness, ao);
+	vec3 color =
+	    compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, albedo, metallic,
+	                             clamped_roughness, ao, worldPos);
 	return color;
 }
 
 vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
-                   float ao, int debugMode)
+                   float ao, int debugMode, vec3 worldPos)
 {
 	vec3 color = vec3(0.0);
 	// 3. Debug Overrides
@@ -157,7 +164,7 @@ vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 		else if (debugMode == 6) {
 			vec3 irradiance =
 			    textureLod(irradianceMap, dirToUV(N), 0.0).rgb;
-			color = pow(irradiance, vec3(1.0 / 2.2));
+			color = irradiance;
 		} else if (debugMode == 7) {
 			vec3 R = reflect(-V, N);
 			const float MAX_REFLECTION_LOD = 4.0;
@@ -165,7 +172,7 @@ vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 			    textureLod(prefilterMap, dirToUV(R),
 			               roughness * MAX_REFLECTION_LOD)
 			        .rgb;
-			color = pow(prefiltered, vec3(1.0 / 2.2));
+			color = prefiltered;
 		} else if (debugMode == 8) {
 			float NdotV = max(dot(N, V), 0.0);
 			vec2 brdfUV = vec2(NdotV, roughness);
@@ -173,6 +180,10 @@ vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 			brdfUV =
 			    brdfUV * (texSize - 1.0) / texSize + 0.5 / texSize;
 			color = vec3(texture(brdfLUT, brdfUV).rg, 0.0);
+		} else if (debugMode == 9) {
+			// 1-Bounce GI (Light Probes)
+			vec3 irradiance = get_probe_irradiance(N, worldPos);
+			color = irradiance;
 		}
 	}
 	return color;

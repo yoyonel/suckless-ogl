@@ -26,10 +26,11 @@ void main()
 	vec3 N = normalize(Normal);
 	vec3 V = normalize(camPos - WorldPos);
 
-	vec3 color = (debugMode != 0)
-	                 ? compute_debug(N, V, Albedo, Metallic, Roughness, AO,
-	                                 debugMode)
-	                 : compute_pbr(N, V, Albedo, Metallic, Roughness, AO);
+	vec3 color =
+	    (debugMode != 0)
+	        ? compute_debug(N, V, Albedo, Metallic, Roughness, AO,
+	                        debugMode, WorldPos)
+	        : compute_pbr(N, V, Albedo, Metallic, Roughness, AO, WorldPos);
 
 	// Store Luma in Alpha for FXAA (using sqrt approx for Gamma)
 	float luma = dot(sqrt(color), vec3(0.299, 0.587, 0.114));

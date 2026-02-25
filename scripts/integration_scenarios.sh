@@ -50,6 +50,16 @@ run_scenario_full() {
     for i in {1..6}; do xdotool key --delay 500 $i; done
     xdotool key --delay 500 2 # Style: Subtle
 
+    # 8.b GI Diffuse 1-Bounce
+    echo "=> Testing GI Diffuse 1-Bounce"
+    for i in {1..3}; do xdotool key --delay 500 y; done
+
+    # 8.a Debug view on GI
+    echo "=> Debug view on GI"
+    xdotool key --delay 500 shift+y
+    sleep 1
+    xdotool key --delay 500 shift+y
+
     # 3. Post-Process Effects
     echo "=> Toggling Effects"
     xdotool key --delay 500 v # Vignette OFF
@@ -75,7 +85,7 @@ run_scenario_full() {
 
     # 5. PBR Debug Modes
     echo "=> Cycling PBR Debug Modes (F5)"
-    for i in {1..9}; do xdotool key --delay 300 F5; done
+    for i in {1..10}; do xdotool key --delay 300 F5; done
 
     # 6. Performance Mode
     echo "=> Toggling Performance Mode (F9)"

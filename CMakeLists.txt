@@ -107,6 +107,7 @@ set(SOURCES
     src/ibl_coordinator.c
     src/icosphere.c
     src/instanced_rendering.c
+    src/light_probes.c
     src/io.c
     src/log.c
     src/main.c
@@ -120,6 +121,7 @@ set(SOURCES
     src/render_utils.c
     src/scene.c
     src/shader.c
+    src/sh_math.c
     src/simd_utils.c
     src/skybox.c
     src/sphere_sorting.c

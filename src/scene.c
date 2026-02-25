@@ -136,6 +136,18 @@ static void scene_init_instancing(Scene* scene)
 	billboard_group_init(&scene->billboard_group, data, total_count);
 	billboard_group_prepare(&scene->billboard_group, scene->quad_vbo,
 	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
+
+	/* Initialize Light Probe Grid with Scene Data */
+	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
+	                           sizeof(SphereInstance));
+
+	/* Initialize Light Probe Grid Bounding Box with Scene Data */
+	light_probe_grid_compute_aabb(&scene->probe_grid, data, total_count,
+	                              sizeof(SphereInstance),
+	                              DEFAULT_SPACING * HALF_OFFSET_MULTIPLIER);
+	/* Trigger initial async calculation */
+	light_probe_grid_update_async(&scene->probe_grid);
+
 	free(data);
 }
 
@@ -181,6 +193,17 @@ static void scene_init_ssbo(Scene* scene)
 	ssbo_group_init(&scene->ssbo_group, data, total_count);
 	ssbo_group_bind_mesh(&scene->ssbo_group, scene->sphere_vbo,
 	                     scene->sphere_nbo, scene->sphere_ebo);
+
+	/* Initialize Light Probe Grid with Scene Data (SSBO Mode) */
+	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
+	                           sizeof(SphereInstanceSSBO));
+
+	/* Initialize Light Probe Grid Bounding Box with Scene Data */
+	light_probe_grid_compute_aabb(&scene->probe_grid, data, total_count,
+	                              sizeof(SphereInstanceSSBO),
+	                              DEFAULT_SPACING * HALF_OFFSET_MULTIPLIER);
+	light_probe_grid_update_async(&scene->probe_grid);
+
 	free(data);
 }
 #endif
@@ -194,6 +217,8 @@ static void scene_init_state(Scene* scene)
 	scene->show_envmap = 1;
 	scene->billboard_mode = 1;
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
+	scene->gi_enabled = 0;
+	scene->show_probe_grid = 0;
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
@@ -264,6 +289,35 @@ static int scene_init_billboard_shader(Scene* scene)
 	                                "previousViewProj");
 	scene->billboard_uniforms.u_screen_size = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "u_screenSize");
+
+	/* Probe Grid */
+	scene->billboard_uniforms.probe_grid_min = shader_get_uniform_location(
+	    scene->pbr_billboard_shader, "u_ProbeGridMin");
+	scene->billboard_uniforms.probe_grid_max = shader_get_uniform_location(
+	    scene->pbr_billboard_shader, "u_ProbeGridMax");
+	scene->billboard_uniforms.probe_grid_dim = shader_get_uniform_location(
+	    scene->pbr_billboard_shader, "u_ProbeGridDim");
+	scene->billboard_uniforms.use_gi =
+	    shader_get_uniform_location(scene->pbr_billboard_shader, "u_UseGI");
+
+	/* Set Billboard SH Sampler Indices (units 8-14) */
+	{
+		shader_use(scene->pbr_billboard_shader);
+		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+			enum { MAX_UNIFORM_NAME_LEN = 32 };
+			char name[MAX_UNIFORM_NAME_LEN];
+			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
+			                    i);
+			scene->billboard_uniforms.sh_textures[i] =
+			    shader_get_uniform_location(
+			        scene->pbr_billboard_shader, name);
+			if (scene->billboard_uniforms.sh_textures[i] != -1) {
+				glUniform1i(
+				    scene->billboard_uniforms.sh_textures[i],
+				    TEXTURE_UNIT_SH_START + i);
+			}
+		}
+	}
 	return 1;
 }
 
@@ -323,6 +377,34 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 	    shader_get_uniform_location(*out_shader, "view");
 	scene->instanced_uniforms.previous_view_proj =
 	    shader_get_uniform_location(*out_shader, "previousViewProj");
+
+	/* Probe Grid Uniforms */
+	scene->instanced_uniforms.probe_grid_min =
+	    shader_get_uniform_location(*out_shader, "u_ProbeGridMin");
+	scene->instanced_uniforms.probe_grid_max =
+	    shader_get_uniform_location(*out_shader, "u_ProbeGridMax");
+	scene->instanced_uniforms.probe_grid_dim =
+	    shader_get_uniform_location(*out_shader, "u_ProbeGridDim");
+	scene->instanced_uniforms.use_gi =
+	    shader_get_uniform_location(*out_shader, "u_UseGI");
+
+	/* Set Instanced SH Sampler Indices (units 8-14) */
+	{
+		shader_use(*out_shader);
+		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+			enum { MAX_UNIFORM_NAME_LEN = 32 };
+			char name[MAX_UNIFORM_NAME_LEN];
+			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
+			                    i);
+			scene->instanced_uniforms.sh_textures[i] =
+			    shader_get_uniform_location(*out_shader, name);
+			if (scene->instanced_uniforms.sh_textures[i] != -1) {
+				glUniform1i(
+				    scene->instanced_uniforms.sh_textures[i],
+				    TEXTURE_UNIT_SH_START + i);
+			}
+		}
+	}
 	return 1;
 }
 
@@ -356,6 +438,18 @@ int scene_init(Scene* scene)
 
 	if (!scene_init_compute_resources(scene)) {
 		return 0;
+	}
+
+	/* Initialize Probe Grid: dense grid covering the full sphere extent. */
+	{
+		int sphere_count = scene->material_lib->count;
+		if (sphere_count > (DEFAULT_COLS * DEFAULT_COLS)) {
+			sphere_count = DEFAULT_COLS * DEFAULT_COLS;
+		}
+		const int pcols = DEFAULT_COLS;
+		const int prows = (sphere_count + pcols - 1) / pcols;
+		light_probe_grid_init(&scene->probe_grid, (2 * pcols) + 1,
+		                      (2 * prows) + 1, 3);
 	}
 
 	Shader* inst_shader = NULL;
@@ -468,6 +562,7 @@ void scene_cleanup(Scene* scene)
 	scene_cleanup_gpu_resources(scene);
 
 	ibl_coordinator_cleanup(&scene->ibl_coord);
+	light_probe_grid_cleanup(&scene->probe_grid);
 
 	if (scene->hdr_files) {
 		for (int i = 0; i < scene->hdr_count; i++) {
@@ -531,6 +626,27 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	float screen_size[2] = {(float)width, (float)height};
 	shader_set_vec2_loc(scene->billboard_uniforms.u_screen_size,
 	                    screen_size);
+
+	/* Probe Grid spatial bounds and GI Toggle */
+	shader_set_vec3_loc(scene->billboard_uniforms.probe_grid_min,
+	                    scene->probe_grid.aabb_min);
+	shader_set_vec3_loc(scene->billboard_uniforms.probe_grid_max,
+	                    scene->probe_grid.aabb_max);
+
+	if (scene->billboard_uniforms.probe_grid_dim != -1) {
+		glUniform3i(scene->billboard_uniforms.probe_grid_dim,
+		            scene->probe_grid.grid_dim[0],
+		            scene->probe_grid.grid_dim[1],
+		            scene->probe_grid.grid_dim[2]);
+	}
+	shader_set_int_loc(scene->billboard_uniforms.use_gi, scene->gi_enabled);
+
+	/* Bind SH Textures */
+	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+		glActiveTexture(
+		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
+		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
+	}
 
 	/* Debug Visualization Constants */
 	const float debug_fill_alpha = 0.10F;
@@ -631,6 +747,27 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
 	                    (float*)previous_view_proj);
 
+	/* Probe Grid spatial bounds and GI Toggle */
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
+	                    scene->probe_grid.aabb_min);
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
+	                    scene->probe_grid.aabb_max);
+
+	if (scene->instanced_uniforms.probe_grid_dim != -1) {
+		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
+		            scene->probe_grid.grid_dim[0],
+		            scene->probe_grid.grid_dim[1],
+		            scene->probe_grid.grid_dim[2]);
+	}
+	shader_set_int_loc(scene->instanced_uniforms.use_gi, scene->gi_enabled);
+
+	/* Bind SH Textures */
+	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+		glActiveTexture(
+		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
+		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
+	}
+
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&scene->ssbo_group, scene->geometry.indices.size);
 #else
@@ -654,6 +791,11 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 	mat4 inv_view_proj;
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
+
+	/* GI Probe SSBO sync — must happen before Spheres read it */
+	if (scene->gi_enabled || scene->show_probe_grid) {
+		light_probe_grid_sync(&scene->probe_grid);
+	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->show_envmap) {
@@ -743,12 +885,9 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 
 		glDisable(GL_STENCIL_TEST);
 
-		if (scene->show_envmap) {
-			skybox_render(&scene->skybox, scene->skybox_shader,
-			              scene->hdr_texture,
-			              scene->dummy_black_tex, inv_view_proj,
-			              scene->env_lod);
-		}
-	}
 #endif
+
+	if (scene->show_probe_grid) {
+		light_probe_render_debug(&scene->probe_grid, view, proj);
+	}
 }
