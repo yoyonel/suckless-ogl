@@ -32,6 +32,7 @@ py_run := `
 `
 
 xvfb_wrapper := ".github/workflows/scripts/run_test_with_xvfb.sh"
+extra_cmake_flags := ""
 
 # Default target
 default:
@@ -43,7 +44,7 @@ default:
 
 # Configure CMake (Debug build)
 configure:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON
+    @{{distrobox}} cmake {{extra_cmake_flags}} -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON
 
 # Build the project (Debug)
 build:
@@ -181,7 +182,7 @@ test-integration-asan: asan
 # Generate HTML code coverage report (llvm-cov)
 coverage:
     @echo "Building with coverage instrumentation..."
-    @{{distrobox}} cmake -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+    @{{distrobox}} cmake {{extra_cmake_flags}} -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     @{{distrobox}} cmake --build build-coverage --parallel
     @echo "Running tests to generate profile data..."
     @{{distrobox}} sh -c "LLVM_PROFILE_FILE='{{justfile_directory()}}/build-coverage/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir build-coverage --output-on-failure"
@@ -259,7 +260,7 @@ ci-docker-build:
 ci-docker-test: ci-docker-build
     @echo "Running shader test inside the CI container (verifying non-root permissions)..."
     @docker run --rm -v {{justfile_directory()}}:/workspace suckless-ogl-ci:local \
-        sh -c "cmake -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
+        sh -c "cmake {{extra_cmake_flags}} -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
 
 # Generate and verify Doxygen documentation
 docs:
