@@ -23,11 +23,18 @@ jobs:
   # --- JOB 1 : QUALITÉ ET LINT (RAPIDE) ---
   lint-and-format:
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install linting tools via pip
+        run: |
+          pip install clang-format==19.1.7 ruff cltcache
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Cache Clang-Tidy Results
         uses: actions/cache@v4
@@ -38,13 +45,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cltcache-
 
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Run Format & Lint
         run: |
-          git config --global --add safe.directory '*'
           clang-format --version
           make format CONTAINER_RUN=""
           git diff --exit-code || (echo "❌ Format error" && exit 1)
-          # Linting stays strict, but we pass the handle to allow build to continue
           make lint CONTAINER_RUN=""
           make lint-full CONTAINER_RUN=""
 
@@ -52,16 +61,30 @@ jobs:
   test-and-coverage:
     needs: lint-and-format
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Make test wrapper executable
+      - name: Install Dependencies
         run: |
-          git config --global --add safe.directory '*'
-          chmod +x .github/workflows/scripts/run_test_with_xvfb.sh
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake clang llvm \
+            libgl1-mesa-dev libglew-dev libglfw3-dev \
+            xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
+            imagemagick gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
+
+      - name: Make test wrapper executable
+        run: chmod +x .github/workflows/scripts/run_test_with_xvfb.sh
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python tools
+        run: pip install ruff pytest pytest-cov
 
       - name: Run Python Tests
         run: make test-python
@@ -69,12 +92,8 @@ jobs:
       - name: Run Coverage and Tests
         id: run_tests
         run: |
-          # Exécution des tests via Xvfb avec suppression des warnings RAII
-          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage \
-            CONTAINER_RUN="" \
-            CC="clang" \
-            CXX="clang++" \
-            CMAKE="cmake -DCMAKE_C_FLAGS=-Wno-unused-variable -DCMAKE_CXX_FLAGS=-Wno-unused-variable"
+          # Exécution des tests via Xvfb
+          xvfb-run -a -s "-screen 0 1920x1080x24" make coverage CONTAINER_RUN="" CC=clang CXX=clang++
 
 
       - name: Generate Visual Artifacts
@@ -124,17 +143,25 @@ jobs:
   documentation:
     needs: lint-and-format
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          fetch-depth: 0
-      - name: Generate and Verify Docs
+      - name: Install Documentation Tools
         run: |
-          git config --global --add safe.directory '*'
-          make docs CONTAINER_RUN="" \
-            CMAKE="cmake -DCMAKE_C_FLAGS=-Wno-unused-variable -DCMAKE_CXX_FLAGS=-Wno-unused-variable"
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Python Dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Generate and Verify Docs
+        run: make docs CONTAINER_RUN=""
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -202,24 +229,22 @@ jobs:
     needs: test-and-coverage
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}-ci:latest
     strategy:
       matrix:
         build_type: [Release, Profiling, UltraRelease]
     steps:
       - uses: actions/checkout@v4
+      - name: Install Deps
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Build
         run: |
-          git config --global --add safe.directory '*'
           FLAGS=""
           BTYPE=${{ matrix.build_type }}
           if [ "$BTYPE" == "UltraRelease" ]; then
             BTYPE="Release"
             FLAGS="-DENABLE_UNITY_BUILD=ON -DENABLE_NATIVE_ARCH=ON -DENABLE_AGGRESSIVE_MATH=ON"
           fi
-          cmake -B build -DCMAKE_BUILD_TYPE=$BTYPE $FLAGS \
-            -DCMAKE_C_FLAGS="-Wno-unused-variable" \
-            -DCMAKE_CXX_FLAGS="-Wno-unused-variable"
+          cmake -B build -DCMAKE_BUILD_TYPE=$BTYPE $FLAGS
           cmake --build build --parallel $(nproc)
           mv build/app build/app-${{ matrix.build_type }}
       - name: Upload Binaries
@@ -260,3 +285,4 @@ jobs:
           files: artifacts/app-*/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# Force CI Refresh - Fix Container Issue

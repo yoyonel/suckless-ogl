@@ -7,13 +7,24 @@
 #include "app_settings.h"
 #include "app_ui.h"
 #include "async_loader.h"
+#include "billboard_rendering.h"
+#include "camera.h"
+#include "fps.h"
+#include "gl_common.h"
+#include "glad/glad.h"
+#include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
 #include "log.h"
+#include "material.h"
+#include "pbr.h"
 #include "perf_mode.h"
 #include "postprocess.h"
+#include "render_utils.h"
 #include "scene.h"
 #include "shader.h"
+#include "skybox.h"
+#include "sphere_sorting.h"
 #include "texture.h"
 #include "tracy_gpu.h"
 #include "ui.h"
@@ -381,11 +392,11 @@ void app_update(App* app)
 		} else if (req.state == ASYNC_READY) {
 			/* Step 2: Begin multi-frame finalize process */
 			app->env_mgr.current_env_req = req;
-			app->env_mgr.env_map_loading_step = ENV_LOAD_UPLOAD;
+			app->env_mgr.env_map_loading_step = 1;
 		}
 	}
 
-	if (app->env_mgr.env_map_loading_step != ENV_LOAD_IDLE) {
+	if (app->env_mgr.env_map_loading_step > 0) {
 		app_process_env_map_loading_step(app);
 	}
 
