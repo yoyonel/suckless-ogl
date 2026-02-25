@@ -327,6 +327,19 @@ docker-build:
 	$(CONTAINER_ENGINE) build \
 		-t $(IMAGE_NAME) .
 
+# --- CI Docker Integration ---
+CI_IMAGE_NAME := suckless-ogl-ci:local
+
+ci-docker-build:
+	$(CONTAINER_ENGINE) build \
+		-t $(CI_IMAGE_NAME) \
+		-f .github/workflows/Dockerfile.ci .
+
+ci-docker-test: ci-docker-build
+	@echo "Running shader test inside the CI container (verifying non-root permissions)..."
+	@$(CONTAINER_ENGINE) run --rm -v $(CURDIR):/workspace $(CI_IMAGE_NAME) \
+		sh -c "cmake -B build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build build-ci --target test_shader && ./build-ci/tests/test_shader"
+
 docker-build-no-cache:
 	$(CONTAINER_ENGINE) build \
 		--no-cache \

@@ -251,6 +251,16 @@ test-python:
 docker-build:
     @docker build -t suckless-ogl .
 
+# Build the CI Docker image
+ci-docker-build:
+    @docker build -t suckless-ogl-ci:local -f .github/workflows/Dockerfile.ci .
+
+# Run shader test inside the CI container (verifying non-root permissions)
+ci-docker-test: ci-docker-build
+    @echo "Running shader test inside the CI container (verifying non-root permissions)..."
+    @docker run --rm -v {{justfile_directory()}}:/workspace suckless-ogl-ci:local \
+        sh -c "cmake -B build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build build-ci --target test_shader && ./build-ci/tests/test_shader"
+
 # Generate and verify Doxygen documentation
 docs:
     @echo "Building MkDocs documentation..."
