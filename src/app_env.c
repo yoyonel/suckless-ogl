@@ -236,23 +236,23 @@ void app_update_transition(App* app)
 			app->env_mgr.transition_alpha +=
 			    (float)app->delta_time /
 			    app->env_mgr.transition_duration;
-			if (app->env_mgr.transition_alpha >= 1.0F) {
-				app->env_mgr.transition_alpha = 1.0F;
+			if (app->env_mgr.transition_alpha < 1.0F) {
+				break;
+			}
+			app->env_mgr.transition_alpha = 1.0F;
 
-				/* BLACK SCREEN SWAP HAPPENS HERE */
-				GLuint hdr_tex = 0;
-				GLuint spec_tex = 0;
-				GLuint irr_tex = 0;
-				float threshold = 0.0F;
-				if (ibl_coordinator_get_results(
-				        &app->scene.ibl_coord, &hdr_tex,
-				        &spec_tex, &irr_tex, &threshold)) {
-					finalize_ibl_swap(app, hdr_tex,
-					                  spec_tex, irr_tex,
-					                  threshold);
-					app->env_mgr.transition_state =
-					    TRANSITION_FADE_IN;
-				}
+			/* BLACK SCREEN SWAP HAPPENS HERE */
+			GLuint hdr_tex = 0;
+			GLuint spec_tex = 0;
+			GLuint irr_tex = 0;
+			float threshold = 0.0F;
+			if (ibl_coordinator_get_results(&app->scene.ibl_coord,
+			                                &hdr_tex, &spec_tex,
+			                                &irr_tex, &threshold)) {
+				finalize_ibl_swap(app, hdr_tex, spec_tex,
+				                  irr_tex, threshold);
+				app->env_mgr.transition_state =
+				    TRANSITION_FADE_IN;
 			}
 			break;
 
