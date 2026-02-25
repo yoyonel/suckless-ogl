@@ -17,6 +17,22 @@ The goal was to move from a blocking synchronous load (100ms - 800ms freeze) to 
     * Specular Prefiltered Map (Reflection).
 4. **Swap (Double Buffering)**: We use "Pending" textures. The old environment remains displayed until the new one is 100% ready.
 
+### IBL Generation State Machine
+
+The progressive generation is governed by a state machine to ensure asynchronous execution across multiple frames.
+
+```mermaid
+stateDiagram-v2
+    [*] --> LUMINANCE : New HDR Loaded
+    LUMINANCE --> SPEC_INIT : Auto-Exposure
+    SPEC_INIT --> SPEC_MIPS : Alloc
+    SPEC_MIPS --> SPEC_MIPS : Next Mip/Slice
+    SPEC_MIPS --> IRRADIANCE : All Mips
+    IRRADIANCE --> IRRADIANCE : Next Slice
+    IRRADIANCE --> DONE : Finished
+    DONE --> [*] : Swap & Cleanup
+```
+
 ---
 
 ## 2. "Slicing" Strategy

@@ -42,19 +42,19 @@ int app_load_env_map(App* app, const char* filename)
 
 void app_process_env_map_loading_step(App* app)
 {
-	if (app->env_mgr.env_map_loading_step == 0) {
+	if (app->env_mgr.env_map_loading_step == ENV_LOAD_IDLE) {
 		return;
 	}
 
 	AsyncRequest* req = &app->env_mgr.current_env_req;
 
-	if (app->env_mgr.env_map_loading_step == 1) {
+	if (app->env_mgr.env_map_loading_step == ENV_LOAD_UPLOAD) {
 		/* Step 1: Upload texture to GPU (No Mipmaps) */
 		if (!req->half_data && !req->pbo_mapped_ptr) {
 			LOG_ERROR("suckless-ogl.app",
 			          "Async request data is NULL!");
 			app->env_mgr.env_map_loading = 0;
-			app->env_mgr.env_map_loading_step = 0;
+			app->env_mgr.env_map_loading_step = ENV_LOAD_IDLE;
 			return;
 		}
 
@@ -73,24 +73,26 @@ void app_process_env_map_loading_step(App* app)
 			req->half_data = NULL;
 		}
 
-		app->env_mgr.env_map_loading_step = 2; /* Next frame */
+		app->env_mgr.env_map_loading_step =
+		    ENV_LOAD_MIPMAPS; /* Next frame */
 
-	} else if (app->env_mgr.env_map_loading_step == 2) {
+	} else if (app->env_mgr.env_map_loading_step == ENV_LOAD_MIPMAPS) {
 		/* Step 2: Generate Mipmaps */
 		LOG_INFO("suckless-ogl.app",
 		         "Finalizing environment load (Step 2/3): Mipmaps...");
 		if (app->env_mgr.pending_env_tex) {
 			texture_generate_hdr_mipmap(
 			    app->env_mgr.pending_env_tex);
-			app->env_mgr.env_map_loading_step = 3; /* Next frame */
+			app->env_mgr.env_map_loading_step =
+			    ENV_LOAD_IBL; /* Next frame */
 		} else {
 			LOG_ERROR("suckless-ogl.app",
 			          "Failed to create texture from HDR data!");
 			app->env_mgr.env_map_loading = 0;
-			app->env_mgr.env_map_loading_step = 0;
+			app->env_mgr.env_map_loading_step = ENV_LOAD_IDLE;
 		}
 
-	} else if (app->env_mgr.env_map_loading_step == 3) {
+	} else if (app->env_mgr.env_map_loading_step == ENV_LOAD_IBL) {
 		/* Step 3: Start IBL Coordinator */
 		LOG_INFO(
 		    "suckless-ogl.app",
@@ -102,7 +104,7 @@ void app_process_env_map_loading_step(App* app)
 			app->env_mgr.pending_env_tex = 0;
 		}
 		app->env_mgr.env_map_loading = 0;
-		app->env_mgr.env_map_loading_step = 0;
+		app->env_mgr.env_map_loading_step = ENV_LOAD_IDLE;
 	}
 }
 
@@ -168,7 +170,7 @@ static void finalize_ibl_swap(App* app, GLuint hdr_tex, GLuint spec_tex,
 	         (unsigned long long)app->frame_count);
 }
 
-static void handle_ibl_done_wait_state(App* app)
+static int try_apply_ibl_results(App* app)
 {
 	GLuint hdr_tex = 0;
 	GLuint spec_tex = 0;
@@ -178,6 +180,14 @@ static void handle_ibl_done_wait_state(App* app)
 	if (ibl_coordinator_get_results(&app->scene.ibl_coord, &hdr_tex,
 	                                &spec_tex, &irr_tex, &threshold)) {
 		finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex, threshold);
+		return 1;
+	}
+	return 0;
+}
+
+static void handle_ibl_done_wait_state(App* app)
+{
+	if (try_apply_ibl_results(app)) {
 		app->env_mgr.transition_state = TRANSITION_FADE_IN;
 		app->env_mgr.transition_alpha = 1.0F;
 	}
@@ -192,17 +202,8 @@ static void handle_ibl_done_loading_state(App* app)
 		app->env_mgr.transition_alpha = 0.0F;
 	} else {
 		/* Crossfade mode: Capture, swap and fade in */
-		GLuint hdr_tex = 0;
-		GLuint spec_tex = 0;
-		GLuint irr_tex = 0;
-		float threshold = 0.0F;
-
-		if (ibl_coordinator_get_results(&app->scene.ibl_coord, &hdr_tex,
-		                                &spec_tex, &irr_tex,
-		                                &threshold)) {
-			capture_snapshot(app);
-			finalize_ibl_swap(app, hdr_tex, spec_tex, irr_tex,
-			                  threshold);
+		capture_snapshot(app);
+		if (try_apply_ibl_results(app)) {
 			app->env_mgr.transition_state = TRANSITION_FADE_IN;
 			app->env_mgr.transition_alpha = 1.0F;
 		}
@@ -240,16 +241,7 @@ void app_update_transition(App* app)
 				app->env_mgr.transition_alpha = 1.0F;
 
 				/* BLACK SCREEN SWAP HAPPENS HERE */
-				GLuint hdr_tex = 0;
-				GLuint spec_tex = 0;
-				GLuint irr_tex = 0;
-				float threshold = 0.0F;
-				if (ibl_coordinator_get_results(
-				        &app->scene.ibl_coord, &hdr_tex,
-				        &spec_tex, &irr_tex, &threshold)) {
-					finalize_ibl_swap(app, hdr_tex,
-					                  spec_tex, irr_tex,
-					                  threshold);
+				if (try_apply_ibl_results(app)) {
 					app->env_mgr.transition_state =
 					    TRANSITION_FADE_IN;
 				}
