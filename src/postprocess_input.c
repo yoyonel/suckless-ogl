@@ -3,7 +3,6 @@
 #include "log.h"
 #include "postprocess_presets.h"
 #include "utils.h"
-#include <stdio.h>
 #include <string.h>
 
 enum { NOTIF_BUF_SIZE = 128 };
@@ -236,48 +235,45 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			                      "DOF DEBUG");
 			break;
 		case GLFW_KEY_M:
-			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				/* SHIFT+M: Cycle Debug Views: Off → MB Debug
-				   → Vector Field → Off */
-				int mb_dbg = postprocess_is_enabled(
-				    ctx->postprocess, POSTFX_MOTION_BLUR_DEBUG);
-				int vf_dbg = postprocess_is_enabled(
-				    ctx->postprocess,
-				    POSTFX_VECTOR_FIELD_DEBUG);
-
-				const char* mode_name = NULL;
-				if (!mb_dbg && !vf_dbg) {
-					/* Off → Motion Blur Debug */
-					postprocess_enable(
-					    ctx->postprocess,
-					    POSTFX_MOTION_BLUR_DEBUG);
-					mode_name = "Motion Blur Debug (RG)";
-				} else if (mb_dbg) {
-					/* MB Debug → Vector Field */
-					postprocess_disable(
-					    ctx->postprocess,
-					    POSTFX_MOTION_BLUR_DEBUG);
-					postprocess_enable(
-					    ctx->postprocess,
-					    POSTFX_VECTOR_FIELD_DEBUG);
-					mode_name = "Vector Field Debug";
-				} else {
-					/* Vector Field → Off */
-					postprocess_disable(
-					    ctx->postprocess,
-					    POSTFX_VECTOR_FIELD_DEBUG);
-					mode_name = "Debug: OFF";
-				}
-				LOG_INFO("suckless-ogl.postprocess",
-				         "Velocity Debug: %s", mode_name);
-				action_notifier_push(ctx->notifier, mode_name,
-				                     NOTIF_DUR_NORMAL);
-			} else {
+			if (!check_flag(mods, GLFW_MOD_SHIFT)) {
 				/* M: Toggle Motion Blur */
 				toggle_postfx(ctx, POSTFX_MOTION_BLUR,
 				              "Motion Blur");
+				break;
 			}
+
+			/* SHIFT+M: Cycle Debug Views: Off → MB Debug
+			   → Vector Field → Off */
+			int mb_dbg = postprocess_is_enabled(
+			    ctx->postprocess, POSTFX_MOTION_BLUR_DEBUG);
+			int vf_dbg = postprocess_is_enabled(
+			    ctx->postprocess, POSTFX_VECTOR_FIELD_DEBUG);
+
+			const char* mode_name = NULL;
+			if (!mb_dbg && !vf_dbg) {
+				/* Off → Motion Blur Debug */
+				postprocess_enable(ctx->postprocess,
+				                   POSTFX_MOTION_BLUR_DEBUG);
+				mode_name = "Motion Blur Debug (RG)";
+			} else if (mb_dbg) {
+				/* MB Debug → Vector Field */
+				postprocess_disable(ctx->postprocess,
+				                    POSTFX_MOTION_BLUR_DEBUG);
+				postprocess_enable(ctx->postprocess,
+				                   POSTFX_VECTOR_FIELD_DEBUG);
+				mode_name = "Vector Field Debug";
+			} else {
+				/* Vector Field → Off */
+				postprocess_disable(ctx->postprocess,
+				                    POSTFX_VECTOR_FIELD_DEBUG);
+				mode_name = "Debug: OFF";
+			}
+			LOG_INFO("suckless-ogl.postprocess",
+			         "Velocity Debug: %s", mode_name);
+			action_notifier_push(ctx->notifier, mode_name,
+			                     NOTIF_DUR_NORMAL);
 			break;
+
 		case GLFW_KEY_R:
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Shader reloading not implemented yet");

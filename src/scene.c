@@ -38,39 +38,39 @@ static void scene_scan_hdr_files(Scene* scene)
 	scene->hdr_files = NULL;
 	scene->current_hdr_index = -1;
 
-	DIR* dir_handle = NULL;
-	struct dirent* entry = NULL;
-	dir_handle = opendir(HDR_TEXTURE_PATH);
-	if (dir_handle) {
-		while ((entry = readdir(dir_handle)) != NULL) {
-			char* dot = strrchr(entry->d_name, '.');
-			if (dot && strcmp(dot, HDR_EXTENSION) == 0) {
-				char** new_files =
-				    realloc(scene->hdr_files,
-				            (size_t)(scene->hdr_count + 1) *
-				                sizeof(char*));
-				if (new_files) {
-					scene->hdr_files = new_files;
-					scene->hdr_count++;
-					scene->hdr_files[scene->hdr_count - 1] =
-					    strdup(entry->d_name);
-				} else {
-					LOG_ERROR(
-					    "suckless-ogl.scene",
-					    "Failed to realloc memory for "
-					    "HDR files");
-				}
-			}
-		}
-		closedir(dir_handle);
-
-		if (scene->hdr_count > 1) {
-			qsort(scene->hdr_files, (size_t)scene->hdr_count,
-			      sizeof(char*), compare_strings);
-		}
-	} else {
+	DIR* dir_handle = opendir(HDR_TEXTURE_PATH);
+	if (!dir_handle) {
 		LOG_ERROR("suckless-ogl.scene",
 		          "Failed to open assets/textures/hdr directory!");
+		return;
+	}
+
+	struct dirent* entry = NULL;
+	while ((entry = readdir(dir_handle)) != NULL) {
+		char* dot = strrchr(entry->d_name, '.');
+		if (!dot || strcmp(dot, HDR_EXTENSION) != 0) {
+			continue;
+		}
+
+		size_t new_count = (size_t)scene->hdr_count + 1;
+		char** new_files =
+		    realloc(scene->hdr_files, new_count * sizeof(char*));
+
+		if (!new_files) {
+			LOG_ERROR("suckless-ogl.scene",
+			          "Failed to realloc memory for HDR files");
+			continue;
+		}
+
+		scene->hdr_files = new_files;
+		scene->hdr_count++;
+		scene->hdr_files[scene->hdr_count - 1] = strdup(entry->d_name);
+	}
+	closedir(dir_handle);
+
+	if (scene->hdr_count > 1) {
+		qsort(scene->hdr_files, (size_t)scene->hdr_count, sizeof(char*),
+		      compare_strings);
 	}
 	LOG_INFO("suckless-ogl.scene", "Found %d HDR files.", scene->hdr_count);
 }
