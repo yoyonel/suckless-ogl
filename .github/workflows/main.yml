@@ -23,18 +23,11 @@ jobs:
   # --- JOB 1 : QUALITÉ ET LINT (RAPIDE) ---
   lint-and-format:
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install linting tools via pip
-        run: |
-          pip install clang-format==19.1.7 ruff cltcache
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Cache Clang-Tidy Results
         uses: actions/cache@v4
@@ -45,10 +38,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cltcache-
 
-      - name: Install Build Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglew-dev libglfw3-dev cmake clang-tidy gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Run Format & Lint
         run: |
           clang-format --version
@@ -61,30 +50,14 @@ jobs:
   test-and-coverage:
     needs: lint-and-format
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential cmake clang llvm \
-            libgl1-mesa-dev libglew-dev libglfw3-dev \
-            xorg-dev xvfb libgl1-mesa-dri mesa-vulkan-drivers \
-            imagemagick gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
-
       - name: Make test wrapper executable
         run: chmod +x .github/workflows/scripts/run_test_with_xvfb.sh
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Python tools
-        run: pip install ruff pytest pytest-cov
 
       - name: Run Python Tests
         run: make test-python
@@ -143,19 +116,11 @@ jobs:
   documentation:
     needs: lint-and-format
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install Documentation Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install Python Dependencies
-        run: pip install -r requirements-dev.txt
       - name: Generate and Verify Docs
         run: make docs CONTAINER_RUN=""
       - name: Upload Documentation Artifact
@@ -225,13 +190,12 @@ jobs:
     needs: test-and-coverage
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}-ci:latest
     strategy:
       matrix:
         build_type: [Release, Profiling, UltraRelease]
     steps:
       - uses: actions/checkout@v4
-      - name: Install Deps
-        run: sudo apt-get update && sudo apt-get install -y build-essential cmake libgl1-mesa-dev libglew-dev libglfw3-dev gamemode-dev libxinerama-dev libxcursor-dev libxi-dev libxrandr-dev
       - name: Build
         run: |
           FLAGS=""

@@ -1,0 +1,61 @@
+# CI Container for Suckless-OGL
+# Consolidates all dependencies to speed up GitHub Actions setup.
+
+FROM ubuntu:22.04
+
+# Avoid interactive prompts during apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 1. Install System Dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    clang \
+    llvm \
+    clang-tidy \
+    git \
+    libgl1-mesa-dev \
+    libglew-dev \
+    libglfw3-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    libxi-dev \
+    libxrandr-dev \
+    xorg-dev \
+    xvfb \
+    libgl1-mesa-dri \
+    mesa-vulkan-drivers \
+    imagemagick \
+    gamemode-dev \
+    doxygen \
+    graphviz \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install Python Tools Consistently
+# Using requirements-dev.txt logic + specific CI versions
+RUN pip3 install --no-cache-dir \
+    clang-format==19.1.7 \
+    ruff \
+    cltcache \
+    pytest \
+    pytest-cov \
+    mkdocs \
+    mkdocs-material \
+    mkdocs-kroki-plugin \
+    mkdocs-git-revision-date-localized-plugin \
+    mkdocs-redirects \
+    mkdocs-glightbox
+
+# 3. Environment Setup
+# Add ~/.local/bin to PATH for cltcache and other pip-installed tools
+ENV PATH="/root/.local/bin:${PATH}"
+
+# Enable CLTCACHE by default for CI speed
+ENV CLTCACHE_DIR="/root/.cache/cltcache"
+
+WORKDIR /workspace
+
+CMD ["/bin/bash"]
