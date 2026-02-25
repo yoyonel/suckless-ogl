@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
-      EXTRA_CMAKE_FLAGS: "-DCMAKE_C_FLAGS=-Wno-unused-variable -DCMAKE_CXX_FLAGS=-Wno-unused-variable"
+      EXTRA_CMAKE_FLAGS: ""
     steps:
       - uses: actions/checkout@v4
         with:
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
-      EXTRA_CMAKE_FLAGS: "-DCMAKE_C_FLAGS=-Wno-unused-variable -DCMAKE_CXX_FLAGS=-Wno-unused-variable"
+      EXTRA_CMAKE_FLAGS: ""
     steps:
       - uses: actions/checkout@v4
         with:
@@ -206,7 +206,7 @@ jobs:
       matrix:
         build_type: [Release, Profiling, UltraRelease]
     env:
-      EXTRA_CMAKE_FLAGS: "-DCMAKE_C_FLAGS=-Wno-unused-variable -DCMAKE_CXX_FLAGS=-Wno-unused-variable"
+      EXTRA_CMAKE_FLAGS: ""
     steps:
       - uses: actions/checkout@v4
       - name: Build
