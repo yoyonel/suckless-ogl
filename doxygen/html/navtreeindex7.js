@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a":[5,0,7,2],
 "structBillboardGroup.html":[5,0,8],
 "structBillboardGroup.html#a0f1ee45eb564eb4deb4aafb5d533b1b8":[5,0,8,5],
 "structBillboardGroup.html#a3b991938c07080e0bf4ad67480aef9ec":[5,0,8,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3":[5,0,40,20],
 "structIBLCoordinator.html#ad1f25c18ba792980024cb1198cac93fe":[5,0,40,3],
 "structIBLCoordinator.html#ad744f5faa761586f5a4ee2e2c15ef0a5":[5,0,40,12],
-"structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0":[5,0,40,21],
-"structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02":[5,0,40,8]
+"structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0":[5,0,40,21]
 };

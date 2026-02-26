@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"sh__probe_8glsl.html#ae983ca5ff558cf0d904c82d0cd92efe9":[6,0,3,22,27],
 "sh__probe_8glsl.html#af04047712aec8d8c3f2534dc77c02e01":[6,0,3,22,8],
 "sh__probe_8glsl.html#af76936b4f5273c1c4f09fb3586560fa9":[6,0,3,22,25],
 "sh__probe_8glsl.html#afac44123b2d0866a73909c4b045b11c8":[6,0,3,22,22],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "structBandingParams.html#a6f07e58f1087e2b9084a4bd1bd00dfca":[5,0,7,1],
 "structBandingParams.html#a707399c42e148f4cc80e4fae913a3545":[5,0,7,4],
 "structBandingParams.html#aa949d5261987719efd3daba118bdb954":[5,0,7,0],
-"structBandingParams.html#abe1b9fd9ce235a12d724975d876064e8":[5,0,7,3],
-"structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a":[5,0,7,2]
+"structBandingParams.html#abe1b9fd9ce235a12d724975d876064e8":[5,0,7,3]
 };

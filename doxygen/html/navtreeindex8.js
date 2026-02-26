@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02":[5,0,40,8],
 "structIcosphereGeometry.html":[5,0,41],
 "structIcosphereGeometry.html#a218971388f05bbd0fd68d80ee59a27ab":[5,0,41,0],
 "structIcosphereGeometry.html#a2eb01262bd1bba34ac84f192f6c366af":[5,0,41,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "structScene.html#a62cff0524fd7647c63bd991622587c36":[5,0,62,43],
 "structScene.html#a7af7f2d638e93fa251d6e0fa95c709cc":[5,0,62,40],
 "structScene.html#a82f7aa8bcae11baa53fd9d281a4de486":[5,0,62,14],
-"structScene.html#a87c367403d591b6b1919a8d92d9bb68d":[5,0,62,20],
-"structScene.html#a896b30612f7921d033a63e983cc04d02":[5,0,62,6]
+"structScene.html#a87c367403d591b6b1919a8d92d9bb68d":[5,0,62,20]
 };

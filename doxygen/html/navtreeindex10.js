@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"ui__spinner_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1":[6,0,3,27,3],
 "ui__spinner_8vert.html#acdef7a1fd863a6d3770c1268cb06add3":[6,0,3,27,1],
 "ui__spinner_8vert.html#ad26c259b5f27a8b9b9bc2b424d897c5e":[6,0,3,27,4],
 "utils_8c.html":[6,0,4,44],
