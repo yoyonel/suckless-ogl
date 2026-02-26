@@ -2,10 +2,10 @@
 
 #include "action_notifier.h"
 #include "app.h"
-#include "app_env.h"
 #include "app_settings.h"
 #include "camera.h"
 #include "camera_input.h"
+#include "env_manager.h"
 #include "glad/glad.h"
 #include "log.h"
 #include "perf_mode.h"
@@ -85,8 +85,8 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			app->scene.current_hdr_index =
 			    (app->scene.current_hdr_index + 1) %
 			    app->scene.hdr_count;
-			app_trigger_env_transition(
-			    app,
+			env_manager_trigger_transition(
+			    &app->env_mgr, app->async_loader,
 			    app->scene.hdr_files[app->scene.current_hdr_index]);
 
 			char buf[NOTIF_BUF_SIZE];
@@ -122,8 +122,8 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 				app->scene.current_hdr_index =
 				    app->scene.hdr_count - 1;
 			}
-			app_trigger_env_transition(
-			    app,
+			env_manager_trigger_transition(
+			    &app->env_mgr, app->async_loader,
 			    app->scene.hdr_files[app->scene.current_hdr_index]);
 
 			char buf[NOTIF_BUF_SIZE];

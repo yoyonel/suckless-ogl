@@ -2,7 +2,6 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
-#include "app_env.h"
 #include "app_input.h"
 #include "app_settings.h"
 #include "app_ui.h"
@@ -124,7 +123,8 @@ int app_init(App* app, int width, int height, const char* title)
 			}
 		}
 		app->scene.current_hdr_index = default_idx;
-		app_load_env_map(app, app->scene.hdr_files[default_idx]);
+		env_manager_load(&app->env_mgr, app->async_loader,
+		                 app->scene.hdr_files[default_idx]);
 	}
 
 	app->u_metallic = DEFAULT_METALLIC;
@@ -385,11 +385,17 @@ void app_update(App* app)
 	}
 
 	if (app->env_mgr.env_map_loading_step > 0) {
-		app_process_env_map_loading_step(app);
+		env_manager_process_loading_step(&app->env_mgr,
+		                                 &app->scene.recycled_hdr_tex,
+		                                 &app->scene.ibl_coord);
 	}
 
-	app_process_ibl_state_machine(app);
-	app_update_transition(app);
+	env_manager_update_ibl(&app->env_mgr, &app->scene, &app->postprocess,
+	                       &app->auto_threshold, app->frame_count,
+	                       app->width, app->height);
+	env_manager_update_transition(&app->env_mgr, &app->scene,
+	                              &app->postprocess, &app->auto_threshold,
+	                              app->delta_time, app->frame_count);
 }
 
 void app_render(App* app)
@@ -448,43 +454,7 @@ void app_render(App* app)
 		                   GPU_PROFILER_UI_COLOR);
 
 		/* Render Transition Overlay */
-		if (app->env_mgr.transition_state != TRANSITION_IDLE) {
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDisable(GL_DEPTH_TEST);
-
-			shader_use(app->scene.debug_shader);
-			shader_set_int(app->scene.debug_shader, "u_tex", 0);
-			shader_set_float(app->scene.debug_shader, "u_alpha",
-			                 app->env_mgr.transition_alpha);
-			shader_set_int(app->scene.debug_shader,
-			               "u_bypass_processing", 1);
-			shader_set_float(app->scene.debug_shader, "lod", 0.0F);
-
-			glActiveTexture(GL_TEXTURE0);
-			if (app->env_mgr.env_transition_mode ==
-			        ENV_TRANSITION_CROSSFADE &&
-			    app->scene.transition_snapshot_tex != 0 &&
-			    app->env_mgr.transition_state ==
-			        TRANSITION_FADE_IN) {
-				/* Crossfade: Bind snapshot texture */
-				glBindTexture(
-				    GL_TEXTURE_2D,
-				    app->scene.transition_snapshot_tex);
-			} else {
-				/* Black Screen / Initial Load: Bind dummy black
-				 */
-				glBindTexture(GL_TEXTURE_2D,
-				              app->scene.dummy_black_tex);
-			}
-
-			glBindVertexArray(app->scene.quad_vbo);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			glBindVertexArray(0);
-
-			glEnable(GL_DEPTH_TEST);
-			glDisable(GL_BLEND);
-		}
+		env_manager_render_overlay(&app->env_mgr, &app->scene);
 
 		app_render_ui(app);
 	}
