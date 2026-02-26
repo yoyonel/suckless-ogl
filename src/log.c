@@ -145,7 +145,7 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	FILE* out = (level >= LOG_LEVEL_ERROR) ? stderr : stdout;
 	(void)fputs(prefix, out);
 
-	va_list args;
+	va_list args = {0};
 	va_start(args, format);
 
 	char msg_buf[MSG_BUFFER_SIZE];

@@ -24,11 +24,11 @@
 
 bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 {
-	if (!buf || !buf_size) {
+	if (!buf || !buf_size || !format) {
 		return false;
 	}
 
-	va_list args;
+	va_list args = {0};
 	va_start(args, format);
 	bool result = safe_vsnprintf(buf, buf_size, format, args);
 	va_end(args);
@@ -43,7 +43,10 @@ bool safe_vsnprintf(char* buf, size_t buf_size, const char* format,
 		return false;
 	}
 
-	int result = vsnprintf(buf, buf_size, format, args);
+	va_list args_copy = {0};
+	va_copy(args_copy, args);
+	int result = vsnprintf(buf, buf_size, format, args_copy);
+	va_end(args_copy);
 	return (result >= 0 && (size_t)result < buf_size);
 }
 
