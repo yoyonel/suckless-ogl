@@ -3,9 +3,7 @@
 #include "unity.h"
 #include <math.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static Camera cam;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static mat4 view_matrix;
 
 static const float DEFAULT_INIT_X = 0.0F;
@@ -46,14 +44,10 @@ void test_camera_initialization(void)
 {
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_INIT_YAW, cam.yaw);
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_INIT_PITCH, cam.pitch);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_CAMERA_SPEED, cam.velocity);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_CAMERA_SENSITIVITY, cam.sensitivity);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_CAMERA_ZOOM, cam.zoom);
 	TEST_ASSERT_EQUAL_FLOAT(0.0F, cam.physics_accumulator);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_FIXED_TIMESTEP, cam.fixed_timestep);
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_INIT_X, cam.position[0]);
 	TEST_ASSERT_EQUAL_FLOAT(DEFAULT_INIT_Z, cam.position[1]);
@@ -154,9 +148,7 @@ void test_camera_get_view_matrix_not_null(void)
 	camera_get_view_matrix(&cam, view_matrix);
 	// Vérifie que la matrice n'est pas nulle
 	int is_zero = 1;
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	for (int i = 0; i < 4; i++) {
-		// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		for (int j = 0; j < 4; j++) {
 			if (fabsf(view_matrix[i][j]) > 0.001F) {
 				is_zero = 0;

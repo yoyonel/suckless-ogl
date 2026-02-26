@@ -25,7 +25,6 @@ void test_fps_counter_initialization(void)
 {
 	FpsCounter fps;
 	fps_init(&fps, DECAY_FACTOR, LOG_INTERVAL);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(DECAY_FACTOR, fps.decay_factor);
 	// Ne pas tester log_interval car Unity n'a pas le support double par
 	// défaut

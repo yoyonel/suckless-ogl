@@ -304,5 +304,3 @@ void texture_generate_hdr_mipmap(GLuint tex)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)

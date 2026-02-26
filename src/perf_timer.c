@@ -2,8 +2,6 @@
 
 #include "log.h"
 #include "utils.h"
-#include <stdio.h>
-#include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
 #ifdef TRACY_ENABLE
 #include <tracy/TracyC.h>
@@ -37,7 +35,6 @@ void perf_timer_start(PerfTimer* timer)
 	if (timer == NULL) {
 		return;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->start);
 }
 
@@ -46,7 +43,6 @@ double perf_timer_elapsed_ms(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
@@ -62,7 +58,6 @@ double perf_timer_elapsed_us(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =
@@ -78,7 +73,6 @@ double perf_timer_elapsed_s(PerfTimer* timer)
 	if (timer == NULL) {
 		return 0.0;
 	}
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	(void)clock_gettime(CLOCK_MONOTONIC, &timer->end);
 
 	const double seconds =

@@ -42,7 +42,6 @@ void convert_float_to_half_simd(const float* src, uint16_t* dst, size_t count)
 		__m256 v_fp32 = _mm256_loadu_ps(&src[idx]);
 
 		/* Convert to 8 half-floats (16-bit * 8 = 128 bits) */
-		/* NOLINTNEXTLINE(readability-magic-numbers) */
 		__m128i v_fp16 = _mm256_cvtps_ph(v_fp32, F16C_ROUND_MODE);
 
 		/* Store 128 bits (8 shorts) to destination */

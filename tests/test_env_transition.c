@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static App* g_test_app = NULL;
 
 static const int WINDOW_WIDTH = 640;

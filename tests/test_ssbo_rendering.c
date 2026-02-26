@@ -2,9 +2,9 @@
 #include "gl_common.h"
 #include "ssbo_rendering.h"
 #include "unity.h"
+#include "utils.h"
 #include <string.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
 
 static const int INSTANCE_COUNT = 2;
@@ -52,8 +52,7 @@ void test_ssbo_rendering_init_cleanup(void)
 
 	SSBOGroup group;
 	SphereInstanceSSBO instances[INSTANCE_COUNT];
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(instances, 0, sizeof(instances));
+	(void)safe_memset(instances, sizeof(instances), 0, sizeof(instances));
 
 	ssbo_group_init(&group, instances, INSTANCE_COUNT);
 	ssbo_group_cleanup(&group);

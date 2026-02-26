@@ -7,6 +7,7 @@
 #include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
+#include "lbvh.h"
 #include "light_probes.h"
 #include "material.h"
 #include "shader.h"

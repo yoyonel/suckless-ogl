@@ -50,7 +50,6 @@ void test_cli_very_long_arg(void)
 	size_t size = CLI_LONG_ARG_SIZE;
 	char* long_arg = (char*)malloc(size + 1);
 	TEST_ASSERT_NOT_NULL(long_arg);
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
 	(void)memset(long_arg, FILL_CHAR, size);
 	long_arg[size] = '\0';
 

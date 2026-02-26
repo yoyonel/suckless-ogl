@@ -7,7 +7,6 @@
 #include <cglm/types.h>
 #include <stdio.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
 
 static const int TEST_WINDOW_WIDTH = 1;
@@ -87,14 +86,12 @@ void test_ui_layout_stacking(void)
 
 	ui_layout_init(&layout, &ui_ctx, 0.0F, start_y, padding, UI_WIDTH,
 	               UI_HEIGHT);
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(start_y, layout.cursor_y);
 
 	/* Adding text should advance cursor by font_size + padding */
 	ui_layout_text(&layout, "Item 1", (vec3){1, 1, 1}); /* Mock call */
 
 	float expected_y = start_y + ui_ctx.font_size + padding;
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(expected_y, layout.cursor_y);
 
 	/* Separator should add exact space */
@@ -102,7 +99,6 @@ void test_ui_layout_stacking(void)
 	ui_layout_separator(&layout, space);
 
 	expected_y += space;
-	// NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	TEST_ASSERT_EQUAL_FLOAT(expected_y, layout.cursor_y);
 }
 

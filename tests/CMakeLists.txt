@@ -62,6 +62,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_precision\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_lbvh\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -379,6 +380,7 @@ add_test(NAME test_ibl_coordinator
 add_executable(test_benchmark_sphere_sorting
     test_benchmark_sphere_sorting.c
     ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
@@ -472,6 +474,7 @@ add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_s
 add_executable(test_sh_precision
     test_sh_precision.c
     ${CMAKE_SOURCE_DIR}/src/sh_math.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
 )
 target_include_directories(test_sh_precision PRIVATE
     ${CMAKE_SOURCE_DIR}/src
@@ -501,3 +504,25 @@ target_include_directories(test_sh_integration PRIVATE
 )
 target_link_libraries(test_sh_integration PRIVATE cglm m pthread)
 add_test(NAME test_sh_integration COMMAND test_sh_integration)
+
+# =============================================================================
+# LBVH TESTS (MOCKED)
+# =============================================================================
+add_executable(test_lbvh
+    test_lbvh.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/lbvh.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+target_include_directories(test_lbvh PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+target_link_libraries(test_lbvh PRIVATE cglm m)
+add_test(NAME test_lbvh COMMAND test_lbvh)

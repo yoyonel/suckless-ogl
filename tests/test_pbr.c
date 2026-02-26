@@ -3,7 +3,6 @@
 #include "pbr.h"
 #include "unity.h"
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
 
 static const int TEST_WINDOW_SIZE = 1;

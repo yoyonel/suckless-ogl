@@ -16,17 +16,12 @@
 #include <time.h>
 
 // Instance App partagée entre tous les tests
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static App g_test_app;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static bool g_app_initialized = false;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLuint g_cached_hdr_texture = 0;
 
 // PBO for async glReadPixels (double buffering)
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLuint g_pbo[2] = {0, 0};
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static int g_pbo_index = 0;
 
 static const int POLL_TIMEOUT_ITERATIONS = 1000;

@@ -61,6 +61,9 @@ else()
     message(STATUS "SSBO rendering: DISABLED (using legacy instanced rendering)")
 endif()
 
+# Global definitions to avoid "reserved identifier" lints and enable POSIX features
+add_compile_definitions(_GNU_SOURCE _POSIX_C_SOURCE=200809L)
+
 # Option pour activer le debug synchrone (tueur de performance)
 option(DEBUG_SYNCHRONOUS "Enable synchronous OpenGL debug output" OFF)
 if(DEBUG_SYNCHRONOUS)
@@ -107,6 +110,7 @@ set(SOURCES
     src/ibl_coordinator.c
     src/icosphere.c
     src/instanced_rendering.c
+    src/lbvh.c
     src/light_probes.c
     src/io.c
     src/log.c
@@ -403,7 +407,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
-    target_compile_definitions(app PRIVATE _GNU_SOURCE)
+    # target_compile_definitions(app PRIVATE _GNU_SOURCE _POSIX_C_SOURCE=200809L) # Now global
 endif()
 
 if(ENABLE_SHADER_OPTIMIZATION)

@@ -1,5 +1,6 @@
 // tests/test_sphere_sorting.c
 #define _POSIX_C_SOURCE 200809L /* For posix_memalign */
+#include "lbvh.h"
 #include "sphere_sorting.h"
 #include "unity.h"
 #include <cglm/cglm.h>

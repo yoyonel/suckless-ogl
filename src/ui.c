@@ -348,7 +348,6 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 	render_utils_restore_state(&saved_state);
 }
 
-// NOLINTNEXTLINE(readability-identifier-length)
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,
                   int screen_height)
@@ -505,11 +504,8 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	/* Model Matrix Construction (GPU Rotation) */
 	mat4 model;
 	glm_mat4_identity(model);
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_translate(model, (vec3){center_x, center_y, 0.0F});
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_rotate(model, angle, (vec3){0.0F, 0.0F, 1.0F});
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	glm_scale(model, (vec3){size, size, 1.0F});
 	shader_set_mat4(ui_context->spinner_shader, "model", (float*)model);
 
@@ -549,7 +545,6 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	render_utils_restore_state(&saved_state);
 }
 
-// NOLINTNEXTLINE(readability-identifier-length)
 void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
                           float width, float height, float radius,
                           const vec3 color, float alpha, int screen_width,

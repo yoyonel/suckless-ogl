@@ -1,8 +1,7 @@
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 #include "sh_math.h"
 
+#include "utils.h"
 #include <math.h>
-#include <string.h>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -28,14 +27,26 @@
 #define A0 3.14159265359f /* PI */
 #define A1 2.09439510239f /* 2PI/3 */
 #define A2 0.78539816339f /* PI/4 */
+static const float THREE = 3.0F;
+static const float ONE = 1.0F;
+enum {
+	SH_BAND0_0 = 0,
+	SH_BAND1_0 = 1,
+	SH_BAND1_1 = 2,
+	SH_BAND1_2 = 3,
+	SH_BAND2_0 = 4,
+	SH_BAND2_1 = 5,
+	SH_BAND2_2 = 6,
+	SH_BAND2_3 = 7,
+	SH_BAND2_4 = 8
+};
 
 void sh_zero(SH9* sh_ptr)
 {
 	if (!sh_ptr) {
 		return;
 	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(sh_ptr, 0, sizeof(SH9));
+	(void)safe_memset(sh_ptr, sizeof(SH9), 0, sizeof(SH9));
 }
 
 void sh_project_directional(const vec3 dir, const vec3 color, SH9* out_sh)
@@ -55,7 +66,7 @@ void sh_project_directional(const vec3 dir, const vec3 color, SH9* out_sh)
 	float L11 = Y11 * dir_x;
 	float L2n2 = Y2n2 * dir_x * dir_y;
 	float L2n1 = Y2n1 * dir_y * dir_z;
-	float L20 = Y20 * (3.0F * dir_z * dir_z - 1.0F);
+	float L20 = Y20 * (THREE * dir_z * dir_z - ONE);
 	float L21 = Y21 * dir_x * dir_z;
 	float L22 = Y22 * (dir_x * dir_x - dir_y * dir_y);
 
@@ -63,19 +74,19 @@ void sh_project_directional(const vec3 dir, const vec3 color, SH9* out_sh)
 	/* We multiply by the light color */
 
 	/* Band 0 */
-	glm_vec3_muladds((float*)color, L00, out_sh->coeffs[0]);
+	glm_vec3_muladds((float*)color, L00, out_sh->coeffs[SH_BAND0_0]);
 
 	/* Band 1 */
-	glm_vec3_muladds((float*)color, L1n1, out_sh->coeffs[1]);
-	glm_vec3_muladds((float*)color, L10, out_sh->coeffs[2]);
-	glm_vec3_muladds((float*)color, L11, out_sh->coeffs[3]);
+	glm_vec3_muladds((float*)color, L1n1, out_sh->coeffs[SH_BAND1_0]);
+	glm_vec3_muladds((float*)color, L10, out_sh->coeffs[SH_BAND1_1]);
+	glm_vec3_muladds((float*)color, L11, out_sh->coeffs[SH_BAND1_2]);
 
 	/* Band 2 */
-	glm_vec3_muladds((float*)color, L2n2, out_sh->coeffs[4]);
-	glm_vec3_muladds((float*)color, L2n1, out_sh->coeffs[5]);
-	glm_vec3_muladds((float*)color, L20, out_sh->coeffs[6]);
-	glm_vec3_muladds((float*)color, L21, out_sh->coeffs[7]);
-	glm_vec3_muladds((float*)color, L22, out_sh->coeffs[8]);
+	glm_vec3_muladds((float*)color, L2n2, out_sh->coeffs[SH_BAND2_0]);
+	glm_vec3_muladds((float*)color, L2n1, out_sh->coeffs[SH_BAND2_1]);
+	glm_vec3_muladds((float*)color, L20, out_sh->coeffs[SH_BAND2_2]);
+	glm_vec3_muladds((float*)color, L21, out_sh->coeffs[SH_BAND2_3]);
+	glm_vec3_muladds((float*)color, L22, out_sh->coeffs[SH_BAND2_4]);
 }
 
 void sh_eval_irradiance(const vec3 normal, const SH9* sh_ptr, vec3 out_color)
@@ -95,7 +106,7 @@ void sh_eval_irradiance(const vec3 normal, const SH9* sh_ptr, vec3 out_color)
 	float c11 = Y11 * norm_x;
 	float c2n2 = Y2n2 * norm_x * norm_y;
 	float c2n1 = Y2n1 * norm_y * norm_z;
-	float c20 = Y20 * (3.0F * norm_z * norm_z - 1.0F);
+	float c20 = Y20 * (THREE * norm_z * norm_z - ONE);
 	float c21 = Y21 * norm_x * norm_z;
 	float c22 = Y22 * (norm_x * norm_x - norm_y * norm_y);
 
@@ -105,18 +116,25 @@ void sh_eval_irradiance(const vec3 normal, const SH9* sh_ptr, vec3 out_color)
 	/* Initialize with Band 0 */
 	/* Cast to (vec3) (float*) to avoid const warnings and type mismatches
 	 */
-	glm_vec3_scale((float*)sh_ptr->coeffs[0], A0 * c00, out_color);
+	glm_vec3_scale((float*)sh_ptr->coeffs[SH_BAND0_0], A0 * c00, out_color);
 
 	/* Band 1 */
-	glm_vec3_muladds((float*)sh_ptr->coeffs[1], A1 * c1n1, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[2], A1 * c10, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[3], A1 * c11, out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND1_0], A1 * c1n1,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND1_1], A1 * c10,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND1_2], A1 * c11,
+	                 out_color);
 
 	/* Band 2 */
-	glm_vec3_muladds((float*)sh_ptr->coeffs[4], A2 * c2n2, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[5], A2 * c2n1, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[6], A2 * c20, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[7], A2 * c21, out_color);
-	glm_vec3_muladds((float*)sh_ptr->coeffs[8], A2 * c22, out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND2_0], A2 * c2n2,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND2_1], A2 * c2n1,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND2_2], A2 * c20,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND2_3], A2 * c21,
+	                 out_color);
+	glm_vec3_muladds((float*)sh_ptr->coeffs[SH_BAND2_4], A2 * c22,
+	                 out_color);
 }
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)

@@ -50,9 +50,7 @@ static void assert_capture_contains(const char* expected_level,
 }
 
 // Global backup for stderr/stdout
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 int stderr_backup = -1;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 int stdout_backup = -1;
 
 void redirect_streams(void)

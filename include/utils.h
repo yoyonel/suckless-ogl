@@ -25,6 +25,12 @@ __attribute__((format(printf, 3, 4))) bool safe_snprintf(char* buf,
                                                          ...);
 
 /**
+ * @brief Safe wrapper around vsnprintf.
+ */
+bool safe_vsnprintf(char* buf, size_t buf_size, const char* format,
+                    va_list args);
+
+/**
  * @brief Bitwise flag check helper.
  */
 static inline bool check_flag(int value, int flag)

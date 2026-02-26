@@ -93,9 +93,9 @@ static void scene_init_billboard_and_sorting(Scene* scene,
 	if (posix_memalign(&raw_mem, SIMD_ALIGNMENT,
 	                   sizeof(SphereInstance) * (size_t)count) == 0) {
 		scene->sphere_instances = (SphereInstance*)raw_mem;
-		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		memcpy(scene->sphere_instances, data,
-		       sizeof(SphereInstance) * (size_t)count);
+		(void)safe_memcpy(scene->sphere_instances,
+		                  sizeof(SphereInstance) * (size_t)count, data,
+		                  sizeof(SphereInstance) * (size_t)count);
 		scene->sphere_instance_count = count;
 		sphere_sorter_init(&scene->sphere_sorter, count);
 	}
@@ -114,7 +114,6 @@ static void scene_init_instancing(Scene* scene)
 	const float grid_h = (float)(rows - 1) * spacing;
 
 	SphereInstance* data = NULL;
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
 	                   sizeof(SphereInstance) * (size_t)total_count) != 0 ||
 	    !data) {
@@ -141,7 +140,6 @@ static void scene_init_instancing(Scene* scene)
 		    1.0F;
 
 		vec3 position = {pos_x, pos_y, jitter_z};
-		// NOLINTNEXTLINE(misc-include-cleaner)
 		glm_translate(data[i].model, position);
 		PBRMaterial* mat = &scene->material_lib->materials[i];
 		glm_vec3_copy(mat->albedo, data[i].albedo);
@@ -271,8 +269,8 @@ static void scene_init_state(Scene* scene)
 
 	lbvh_init(&scene->lbvh, DEFAULT_COLS * DEFAULT_COLS * 2);
 
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
+	(void)safe_memset(&scene->sphere_sorter, sizeof(SphereSorter), 0,
+	                  sizeof(SphereSorter));
 
 	scene->dummy_black_tex =
 	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);

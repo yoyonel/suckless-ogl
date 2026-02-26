@@ -33,7 +33,6 @@ void test_benchmark_ascii_plot(void)
 	// Ensure capacity
 	if (sampler.capacity < SAMPLER_CAPACITY) {
 		sampler.capacity = SAMPLER_CAPACITY;
-		// NOLINTNEXTLINE(bugprone-sizeof-expression)
 		sampler.samples = (AdaptiveSampleItem*)realloc(
 		    sampler.samples,
 		    sizeof(AdaptiveSampleItem) * sampler.capacity);

@@ -5,7 +5,9 @@
 
 #include "utils.h"
 
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef __clang__
@@ -20,9 +22,6 @@
 #pragma clang diagnostic ignored "-Wunknown-warning-option"
 #endif
 
-// NOLINTBEGIN(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
-// clang-analyzer-valist.Uninitialized)
-
 bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 {
 	if (!buf || !buf_size) {
@@ -31,9 +30,20 @@ bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 
 	va_list args;
 	va_start(args, format);
-	int result = vsnprintf(buf, buf_size, format, args);
+	bool result = safe_vsnprintf(buf, buf_size, format, args);
 	va_end(args);
 
+	return result;
+}
+
+bool safe_vsnprintf(char* buf, size_t buf_size, const char* format,
+                    va_list args)
+{
+	if (!buf || !buf_size || !format) {
+		return false;
+	}
+
+	int result = vsnprintf(buf, buf_size, format, args);
 	return (result >= 0 && (size_t)result < buf_size);
 }
 
@@ -50,8 +60,7 @@ bool safe_memcpy(void* dest, size_t dest_size, const void* src, size_t count)
 	if (!dest || !src || dest_size < count) {
 		return false;
 	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memcpy(dest, src, count);
+	__builtin_memcpy(dest, src, count);
 	return true;
 }
 
@@ -60,8 +69,7 @@ bool safe_memset(void* dest, size_t dest_size, int value, size_t count)
 	if (!dest || dest_size < count) {
 		return false;
 	}
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(dest, value, count);
+	__builtin_memset(dest, value, count);
 	return true;
 }
 
@@ -77,8 +85,7 @@ void safe_strncpy(char* dest, size_t dest_size, const char* src,
 		copy_len = dest_size - 1;
 	}
 
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)strncpy(dest, src, copy_len);
+	__builtin_strncpy(dest, src, copy_len);
 	dest[copy_len] = '\0';
 }
 
@@ -94,11 +101,13 @@ void safe_strncat(char* dest, size_t dest_size, const char* src)
 	}
 
 	size_t remaining = dest_size - current_len - 1;
-	(void)strncat(dest, src, remaining);
+	size_t src_len = strlen(src);
+	if (src_len > remaining) {
+		src_len = remaining;
+	}
+	__builtin_memcpy(dest + current_len, src, src_len);
+	dest[current_len + src_len] = '\0';
 }
-
-// NOLINTEND(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
-// clang-analyzer-valist.Uninitialized)
 
 #ifdef __clang__
 #pragma clang diagnostic pop

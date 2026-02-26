@@ -66,8 +66,8 @@ enum { RESOLVED_PATH_BUFFER_SIZE = 512 };
 enum { HEADER_TAG_LEN = 7 };
 
 /* Forward declaration */
-static bool process_source(IncludeContext* ctx, const char* current_file_src,
-                           const char* current_file_path);
+static bool process_source(IncludeContext* ctx, const char* root_src,
+                           const char* root_path);
 
 static void ctx_add_buffer(IncludeContext* ctx, char* data)
 {
@@ -160,52 +160,48 @@ static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
 }
 
 /*
- * Helper to resolve and parse an included file.
- * Returns true on success, false on error.
+ * Helper to resolve and load an included file content.
+ * Returns the allocated buffer (must be added to ctx buffers) or NULL on error.
+ * out_resolved_path must be at least RESOLVED_PATH_BUFFER_SIZE.
  */
-// NOLINTNEXTLINE(misc-no-recursion)
-static bool resolve_and_parse_include(IncludeContext* ctx,
-                                      const char* path_term,
-                                      const char* current_file_path)
+static char* load_include_source(const char* path_term,
+                                 const char* current_file_path,
+                                 char* out_resolved_path)
 {
 	if (!is_safe_relative_path(path_term)) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Security Violation: Unsafe include path detected: "
 		          "%s (in %s)",
 		          path_term, current_file_path);
-		return false;
+		return NULL;
 	}
 
 	/* Resolve relative path */
 	char current_dir[PATH_BUFFER_SIZE];
 	if (!get_dir_from_path(current_file_path, current_dir,
 	                       sizeof(current_dir))) {
-		return false;
+		return NULL;
 	}
 
-	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
-	if (!safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
+	if (!safe_snprintf(out_resolved_path, RESOLVED_PATH_BUFFER_SIZE, "%s%s",
 	                   current_dir, path_term)) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Include path too long: %s (dir) + %s (term)",
 		          current_dir, path_term);
-		return false;
+		return NULL;
 	}
 
 	/* Load the included file */
 	char* include_src =
-	    io_read_file(resolved_path, MAX_SHADER_SOURCE_SIZE, NULL);
+	    io_read_file(out_resolved_path, MAX_SHADER_SOURCE_SIZE, NULL);
 	if (!include_src) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Failed to resolve include: %s (in %s)", path_term,
 		          current_file_path);
-		return false;
+		return NULL;
 	}
 
-	ctx_add_buffer(ctx, include_src);
-
-	/* Recursively process the included content */
-	return process_source(ctx, include_src, resolved_path);
+	return include_src;
 }
 
 /*
@@ -262,33 +258,41 @@ static const char* parse_include_path(const char* args, char* out_path,
 	return end_of_line;
 }
 
-/* Recursive function to process text and resolve @header */
-// NOLINTNEXTLINE(misc-no-recursion)
-static bool process_source(IncludeContext* ctx, const char* current_file_src,
-                           const char* current_file_path)
+typedef struct {
+	const char* source;
+	const char* cursor;
+	char file_path[RESOLVED_PATH_BUFFER_SIZE];
+} ProcessingState;
+
+/* Iterative function to process text and resolve @header */
+static bool process_source(IncludeContext* ctx, const char* root_src,
+                           const char* root_path)
 {
-	if (ctx->recursion_depth > MAX_INCLUDE_DEPTH) {
-		LOG_ERROR("suckless-ogl.shader",
-		          "Max include depth exceeded at: %s",
-		          current_file_path);
-		return false;
-	}
+	ProcessingState stack[MAX_INCLUDE_DEPTH];
+	int top = 0;
 
-	ctx->recursion_depth++;
-	const char* cursor = current_file_src;
+	stack[top].source = root_src;
+	stack[top].cursor = root_src;
+	safe_strncpy(stack[top].file_path, sizeof(stack[top].file_path),
+	             root_path, strlen(root_path));
 
-	while (cursor && *cursor) {
+	while (top >= 0) {
+		ProcessingState* frame = &stack[top];
+		const char* cursor = frame->cursor;
+
 		const char* next_tag = strstr(cursor, "@header");
 		if (!next_tag) {
+			/* No more includes in this file */
 			if (!ctx_add_chunk(ctx, cursor, strlen(cursor))) {
 				return false;
 			}
-			break;
+			top--;
+			continue;
 		}
 
 		/* Check valid start of line */
 		bool at_line_start =
-		    (next_tag == current_file_src) || (*(next_tag - 1) == '\n');
+		    (next_tag == frame->source) || (*(next_tag - 1) == '\n');
 
 		if (!at_line_start) {
 			size_t len =
@@ -296,7 +300,7 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 			if (!ctx_add_chunk(ctx, cursor, len)) {
 				return false;
 			}
-			cursor = next_tag + HEADER_TAG_LEN;
+			frame->cursor = next_tag + HEADER_TAG_LEN;
 			continue;
 		}
 
@@ -315,18 +319,37 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 			return false;
 		}
 
-		if (!resolve_and_parse_include(ctx, raw_inc_path,
-		                               current_file_path)) {
+		/* Update current frame's cursor to after the @header line */
+		const char* next_cursor = end_of_line;
+		if (*next_cursor == '\n') {
+			next_cursor++;
+		}
+		frame->cursor = next_cursor;
+
+		/* Push NEW frame for the included file */
+		if (top + 1 >= MAX_INCLUDE_DEPTH) {
+			LOG_ERROR("suckless-ogl.shader",
+			          "Max include depth exceeded at: %s",
+			          frame->file_path);
 			return false;
 		}
 
-		cursor = end_of_line;
-		if (*cursor == '\n') {
-			cursor++;
+		char resolved[RESOLVED_PATH_BUFFER_SIZE];
+		char* include_src = load_include_source(
+		    raw_inc_path, frame->file_path, resolved);
+		if (!include_src) {
+			return false;
 		}
+
+		ctx_add_buffer(ctx, include_src);
+
+		top++;
+		stack[top].source = include_src;
+		stack[top].cursor = include_src;
+		safe_strncpy(stack[top].file_path, sizeof(stack[top].file_path),
+		             resolved, strlen(resolved));
 	}
 
-	ctx->recursion_depth--;
 	return true;
 }
 

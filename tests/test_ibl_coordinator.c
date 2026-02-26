@@ -203,14 +203,12 @@ void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
 }
 /* ------------------------------------------------ */
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static IBLCoordinator g_coord;
 
 void setUp(void)
 {
 	mock_gl_reset_calls();
 	/* Ensure clean state */
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(&g_coord, 0, sizeof(g_coord));
 }
 

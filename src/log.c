@@ -15,6 +15,12 @@
 #include <time.h>
 #include <unistd.h>
 
+struct LogState {
+	LogLevel level;
+	bool initialized;
+	LogCallback callback;
+};
+
 enum {
 	MILLI_DIVISOR = 1000000,
 	PREFIX_BUFFER_SIZE = 128,
@@ -22,12 +28,11 @@ enum {
 	MSG_BUFFER_SIZE = 1024
 };
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static LogLevel g_log_level = LOG_LEVEL_INFO;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static bool g_log_initialized = false;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static LogCallback g_log_callback = NULL;
+static struct LogState* get_log_state(void)
+{
+	static struct LogState state = {LOG_LEVEL_INFO, false, NULL};
+	return &state;
+}
 
 static LogLevel string_to_level(const char* str)
 {
@@ -54,7 +59,8 @@ static LogLevel string_to_level(const char* str)
 
 static void log_init(void)
 {
-	if (g_log_initialized) {
+	struct LogState* state = get_log_state();
+	if (state->initialized) {
 		return;
 	}
 
@@ -62,10 +68,10 @@ static void log_init(void)
 	if (env_level) {
 		LogLevel level = string_to_level(env_level);
 		if (level != LOG_LEVEL_NOTSET) {
-			g_log_level = level;
+			state->level = level;
 		}
 	}
-	g_log_initialized = true;
+	state->initialized = true;
 }
 
 static const char* level_to_string(LogLevel level)
@@ -88,35 +94,36 @@ static const char* level_to_string(LogLevel level)
 
 void log_set_level(LogLevel level)
 {
-	g_log_level = level;
-	g_log_initialized = true;  // Manual override bypasses env init
+	struct LogState* state = get_log_state();
+	state->level = level;
+	state->initialized = true;  // Manual override bypasses env init
 }
 
 void log_set_callback(LogCallback callback)
 {
-	g_log_callback = callback;
+	get_log_state()->callback = callback;
 }
 
 LogLevel log_get_level(void)
 {
-	if (!g_log_initialized) {
+	struct LogState* state = get_log_state();
+	if (!state->initialized) {
 		log_init();
 	}
-	return g_log_level;
+	return state->level;
 }
 
 void log_message(LogLevel level, const char* tag, const char* format, ...)
 {
-	if (!g_log_initialized) {
+	if (!get_log_state()->initialized) {
 		log_init();
 	}
 
-	if (level < g_log_level) {
+	if (level < get_log_state()->level) {
 		return;
 	}
 
 	struct timespec ts_now = {0, 0};
-	// NOLINTNEXTLINE(misc-include-cleaner)
 	if (clock_gettime(CLOCK_REALTIME, &ts_now) != 0) {
 		ts_now.tv_sec = 0;
 		ts_now.tv_nsec = 0;
@@ -142,16 +149,15 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 	va_start(args, format);
 
 	char msg_buf[MSG_BUFFER_SIZE];
-	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized,clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	(void)vsnprintf(msg_buf, sizeof(msg_buf), format, args);
+	(void)safe_vsnprintf(msg_buf, sizeof(msg_buf), format, args);
 
-	if (g_log_callback) {
-		g_log_callback(level, tag, msg_buf);
+	struct LogState* state = get_log_state();
+	if (state->callback) {
+		state->callback(level, tag, msg_buf);
 	}
 
 	tracy_log_message(level, msg_buf);
 
-	// NOLINTNEXTLINE(clang-analyzer-valist.Uninitialized)
 	(void)fputs(msg_buf, out);
 	va_end(args);
 

@@ -9,7 +9,6 @@
 #include <string.h>
 #include <time.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static GLFWwindow* test_window = NULL;
 
 static const int MAP_SIZE = 64;
