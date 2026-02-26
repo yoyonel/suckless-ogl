@@ -54,7 +54,7 @@ BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan
+.PHONY: all clean clean-all rebuild run help format lint lint-clean lint-full lint-ci lint-full-ci deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan
 
 all: $(BUILD_DIR)/Makefile
 	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
@@ -330,6 +330,7 @@ docker-build:
 
 # --- CI Docker Integration ---
 CI_IMAGE_NAME := suckless-ogl-ci:local
+CI_REGISTRY_IMAGE := ghcr.io/yoyonel/suckless-ogl-ci:latest
 
 ci-docker-build:
 	$(CONTAINER_ENGINE) build \
@@ -340,6 +341,43 @@ ci-docker-test: ci-docker-build
 	@echo "Running shader test inside the CI container (verifying non-root permissions)..."
 	@$(CONTAINER_ENGINE) run --rm -v $(CURDIR):/workspace $(CI_IMAGE_NAME) \
 		sh -c "cmake $(EXTRA_CMAKE_FLAGS) -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
+
+# Lint using the published CI image (no local toolchain needed)
+# Build happens fully inside the container at /tmp/build-ci
+lint-ci:
+	@echo "[CI] Pulling latest CI image..."
+	@$(CONTAINER_ENGINE) pull $(CI_REGISTRY_IMAGE)
+	@echo "[CI] Running lint inside CI container..."
+	@$(CONTAINER_ENGINE) run --rm \
+		-v $(CURDIR):/workspace:z \
+		$(CI_REGISTRY_IMAGE) \
+		bash -c "\
+			cmake -B /tmp/build-ci -S /workspace \
+				-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+				-DCMAKE_BUILD_TYPE=Debug \
+				-G 'Unix Makefiles' > /dev/null && \
+			cmake --build /tmp/build-ci --target glad --parallel \$(nproc) > /dev/null && \
+			python3 /workspace/scripts/lint_incremental.py /tmp/build-ci --cache-dir /tmp/lint-cache-ci"
+	@echo "✓ CI lint passed"
+
+# Full lint using the published CI image (Tracy + SSBO features enabled)
+lint-full-ci:
+	@echo "[CI] Pulling latest CI image..."
+	@$(CONTAINER_ENGINE) pull $(CI_REGISTRY_IMAGE)
+	@echo "[CI] Running full lint inside CI container..."
+	@$(CONTAINER_ENGINE) run --rm \
+		-v $(CURDIR):/workspace:z \
+		$(CI_REGISTRY_IMAGE) \
+		bash -c "\
+			cmake -B /tmp/build-ci-full -S /workspace \
+				-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+				-DCMAKE_BUILD_TYPE=Debug \
+				-DENABLE_TRACY=ON \
+				-DUSE_SSBO_RENDERING=ON \
+				-G 'Unix Makefiles' > /dev/null && \
+			cmake --build /tmp/build-ci-full --target glad --parallel \$(nproc) > /dev/null && \
+			python3 /workspace/scripts/lint_incremental.py /tmp/build-ci-full --cache-dir /tmp/lint-cache-ci-full"
+	@echo "✓ CI full lint passed"
 
 docker-build-no-cache:
 	$(CONTAINER_ENGINE) build \
@@ -442,6 +480,8 @@ help:
 	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
+	@echo "  lint-ci    - Lint using the published CI Docker image (no local toolchain)"
+	@echo "  lint-full-ci - Full lint (Tracy+SSBO) using the published CI Docker image"
 	@echo "  help       - Show this help message"
 
 # --- Release Build (Max Speed) ---

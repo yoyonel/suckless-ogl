@@ -262,6 +262,47 @@ ci-docker-test: ci-docker-build
     @docker run --rm -v {{justfile_directory()}}:/workspace suckless-ogl-ci:local \
         sh -c "cmake {{extra_cmake_flags}} -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
 
+# Auto-detect container engine (podman preferred, fallback to docker)
+ci_engine := `command -v podman 2>/dev/null || command -v docker 2>/dev/null`
+ci_registry_image := "ghcr.io/yoyonel/suckless-ogl-ci:latest"
+
+# Lint using the published CI Docker image (no local toolchain needed)
+lint-ci:
+    @echo "[CI] Pulling latest CI image..."
+    @{{ci_engine}} pull {{ci_registry_image}}
+    @echo "[CI] Running lint inside CI container..."
+    @{{ci_engine}} run --rm \
+        -v {{justfile_directory()}}:/workspace:z \
+        {{ci_registry_image}} \
+        bash -c "\
+            cmake -B /tmp/build-ci -S /workspace \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -G 'Unix Makefiles' > /dev/null && \
+            cmake --build /tmp/build-ci --target glad --parallel \$(nproc) > /dev/null && \
+            python3 /workspace/scripts/lint_incremental.py /tmp/build-ci --cache-dir /tmp/lint-cache-ci"
+    @echo "✓ CI lint passed"
+
+# Full lint (Tracy + SSBO) using the published CI Docker image
+lint-full-ci:
+    @echo "[CI] Pulling latest CI image..."
+    @{{ci_engine}} pull {{ci_registry_image}}
+    @echo "[CI] Running full lint inside CI container..."
+    @{{ci_engine}} run --rm \
+        -v {{justfile_directory()}}:/workspace:z \
+        {{ci_registry_image}} \
+        bash -c "\
+            cmake -B /tmp/build-ci-full -S /workspace \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DENABLE_TRACY=ON \
+                -DUSE_SSBO_RENDERING=ON \
+                -G 'Unix Makefiles' > /dev/null && \
+            cmake --build /tmp/build-ci-full --target glad --parallel \$(nproc) > /dev/null && \
+            python3 /workspace/scripts/lint_incremental.py /tmp/build-ci-full --cache-dir /tmp/lint-cache-ci-full"
+    @echo "✓ CI full lint passed"
+
+
 # Generate and verify Doxygen documentation
 docs:
     @echo "Building MkDocs documentation..."
