@@ -4,13 +4,18 @@ import sys
 import subprocess
 import glob
 import time
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 
+# Parse arguments
+_parser = argparse.ArgumentParser(add_help=False)
+_parser.add_argument("build_dir", nargs="?", default="build")
+_parser.add_argument("--cache-dir", default=None,
+                     help="Override lint cache directory (useful in containers)")
+_args, _ = _parser.parse_known_args()
+
 # Configuration
-if len(sys.argv) > 1:
-    BUILD_DIR = sys.argv[1]
-else:
-    BUILD_DIR = "build"
+BUILD_DIR = _args.build_dir
 
 src_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIRS = [os.path.join(src_root, "src")]
@@ -19,7 +24,10 @@ SRC_DIRS = [os.path.join(src_root, "src")]
 # e.g., build -> .lint_cache_build
 #       .lint_full -> .lint_cache_.lint_full
 build_dir_name = os.path.basename(os.path.normpath(BUILD_DIR))
-CACHE_DIR = os.path.join(src_root, f".lint_cache_{build_dir_name}")
+if _args.cache_dir:
+    CACHE_DIR = _args.cache_dir
+else:
+    CACHE_DIR = os.path.join(src_root, f".lint_cache_{build_dir_name}")
 
 COMPILE_COMMANDS = os.path.join(BUILD_DIR, "compile_commands.json")
 CLANG_TIDY_CONFIG = os.path.join(src_root, ".clang-tidy")
