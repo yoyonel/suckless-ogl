@@ -90,7 +90,7 @@ set(SOURCES
     src/action_notifier.c
     src/adaptive_sampler.c
     src/app.c
-    src/app_env.c
+    src/env_manager.c
     src/app_input.c
     src/app_metrics.c
     src/app_ui.c

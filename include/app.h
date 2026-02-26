@@ -3,10 +3,10 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
-#include "app_env.h"
 #include "async_loader.h"
 #include "camera.h"
 #include "effect_benchmark.h"
+#include "env_manager.h"
 #include "fps.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
