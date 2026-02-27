@@ -20,6 +20,7 @@
 #endif
 
 #define USE_SH_BAKE_FACTORS 1
+#define SH_COEFF_COUNT 9
 
 /*
  * GI 1-Bounce Configuration
@@ -56,6 +57,15 @@ enum {
 };
 #define GI_HALF 0.5F
 #define GI_ZERO 0.0F
+
+typedef struct {
+	vec3 pos;
+	float radius;
+	float min_d_sq;      // Distance minimale au carré
+	float max_d_sq;      // Distance maximale au carré
+	float diffuse_base;  // Facteur pré-calculé
+	const float* albedo;
+} CachedSphere;
 
 /* Helper to get position from POD */
 static void get_sphere_pos(const SphereInstance_POD* sphere, vec3 dest)
@@ -163,48 +173,43 @@ void light_probe_grid_free_cpu(LightProbeGrid* grid)
 	pthread_cond_destroy(&grid->cond);
 }
 
-static void compute_probe_sh(const SphereInstance_POD* local_scene,
-                             int local_count, vec3 probe_pos, SH9* sh_data)
+static void compute_probe_sh(const CachedSphere* cached_scene, int local_count,
+                             vec3 probe_pos, SH9* sh_data)
 {
 	for (int sphere_idx = 0; sphere_idx < local_count; sphere_idx++) {
-		const SphereInstance_POD* sphere = &local_scene[sphere_idx];
-		vec3 sphere_pos;
-		get_sphere_pos(sphere, sphere_pos);
-		float radius = get_sphere_radius(sphere);
+		const CachedSphere* sphere = &cached_scene[sphere_idx];
 
 		vec3 delta;
-		glm_vec3_sub(probe_pos, sphere_pos, delta);
+		glm_vec3_sub(probe_pos, (float*)sphere->pos, delta);
 		float dist_sq = glm_vec3_norm2(delta);
 
 		/* Early-out: coincident or inside sphere */
 		if (dist_sq < GI_EPSILON) {
 			continue;
 		}
-		float dist = sqrtf(dist_sq);
 
 		/* Too close: SH ringing */
-		float min_d = GI_MIN_DIST_RADII * radius;
-		if (dist < min_d) {
+		if (dist_sq < sphere->min_d_sq) {
 			continue;
 		}
 
 		/* Too far: negligible */
-		float max_d = GI_MAX_DIST_RADII * radius;
-		if (dist > max_d) {
+		if (dist_sq > sphere->max_d_sq) {
 			continue;
 		}
 
-		/* Form factor: r^2 / d^2 */
-		float form_factor = (radius * radius) / dist_sq;
+		float dist = sqrtf(dist_sq);
+
+		/* Form factor: r^2 / d^2 (r^2 is already baked in diffuse_base)
+		 */
+		float form_factor = 1.0F / dist_sq;
 
 		/* Direction probe → sphere */
 		vec3 dir;
-		glm_vec3_sub(sphere_pos, probe_pos, dir);
-		glm_vec3_scale(dir, 1.0F / dist, dir);
+		glm_vec3_scale(delta, -1.0F / dist, dir);
 
 		/* Metals don't bounce diffuse light */
-		float diffuse = (1.0F - (sphere->metallic * 0.0F)) *
-		                form_factor * GI_BOUNCE_SCALE;
+		float diffuse = sphere->diffuse_base * form_factor;
 
 		vec3 radiance;
 		glm_vec3_scale((float*)sphere->albedo, diffuse, radiance);
@@ -214,18 +219,15 @@ static void compute_probe_sh(const SphereInstance_POD* local_scene,
 }
 
 static int is_probe_inside_sphere(vec3 probe_pos,
-                                  const SphereInstance_POD* local_scene,
+                                  const CachedSphere* cached_scene,
                                   int local_count)
 {
 	for (int sphere_idx = 0; sphere_idx < local_count; sphere_idx++) {
-		const SphereInstance_POD* sphere = &local_scene[sphere_idx];
-		vec3 sphere_pos;
-		get_sphere_pos(sphere, sphere_pos);
-		float radius = get_sphere_radius(sphere);
+		const CachedSphere* sphere = &cached_scene[sphere_idx];
 
 		vec3 delta;
-		glm_vec3_sub(probe_pos, sphere_pos, delta);
-		if (glm_vec3_norm2(delta) < (radius * radius)) {
+		glm_vec3_sub(probe_pos, (float*)sphere->pos, delta);
+		if (glm_vec3_norm2(delta) < (sphere->radius * sphere->radius)) {
 			return 1;
 		}
 	}
@@ -233,9 +235,10 @@ static int is_probe_inside_sphere(vec3 probe_pos,
 }
 
 #ifdef USE_SH_BAKE_FACTORS
-static void light_probe_worker_compute_probe(
-    LightProbeGrid* grid, int grid_x, int grid_y, int grid_z,
-    const SphereInstance_POD* local_scene, int local_count)
+static void light_probe_worker_compute_probe(LightProbeGrid* grid, int grid_x,
+                                             int grid_y, int grid_z,
+                                             const CachedSphere* cached_scene,
+                                             int local_count)
 {
 	int idx = (grid_z * grid->grid_dim[1] * grid->grid_dim[0]) +
 	          (grid_y * grid->grid_dim[0]) + grid_x;
@@ -245,39 +248,40 @@ static void light_probe_worker_compute_probe(
 	probe_pos[1] = grid->aabb_min[1] + ((float)grid_y * grid->cell_size[1]);
 	probe_pos[2] = grid->aabb_min[2] + ((float)grid_z * grid->cell_size[2]);
 
-	if (is_probe_inside_sphere(probe_pos, local_scene, local_count)) {
+	if (is_probe_inside_sphere(probe_pos, cached_scene, local_count)) {
 		grid->probes[idx].sh_data.coeffs[0][3] = -1.0F;
 		return;
 	}
 
 	// Calcul de base des harmoniques (inchangé)
-	compute_probe_sh(local_scene, local_count, probe_pos,
+	compute_probe_sh(cached_scene, local_count, probe_pos,
 	                 &grid->probes[idx].sh_data);
 
 	/* --- NOUVEAU : Cuisson des constantes (A * Y) --- */
-	static const float SH_BAKE_FACTORS[9] = {
-	    0.88622692545f, /* L00:  A0 * Y00 */
-	    1.02332670794f, /* L1-1: A1 * Y1n1 */
-	    1.02332670794f, /* L10:  A1 * Y10 */
-	    1.02332670794f, /* L11:  A1 * Y11 */
-	    0.85808553081f, /* L2-2: A2 * Y2n2 */
-	    0.85808553081f, /* L2-1: A2 * Y2n1 */
-	    0.24770795610f, /* L20:  A2 * Y20 */
-	    0.85808553081f, /* L21:  A2 * Y21 */
-	    0.42904276540f  /* L22:  A2 * Y22 */
+	static const float SH_BAKE_FACTORS[SH_COEFF_COUNT] = {
+	    0.88622692545F, /* L00:  A0 * Y00 */
+	    1.02332670794F, /* L1-1: A1 * Y1n1 */
+	    1.02332670794F, /* L10:  A1 * Y10 */
+	    1.02332670794F, /* L11:  A1 * Y11 */
+	    0.85808553081F, /* L2-2: A2 * Y2n2 */
+	    0.85808553081F, /* L2-1: A2 * Y2n1 */
+	    0.24770795610F, /* L20:  A2 * Y20 */
+	    0.85808553081F, /* L21:  A2 * Y21 */
+	    0.42904276540F  /* L22:  A2 * Y22 */
 	};
 
 	// On multiplie directement les canaux RGB de chaque coefficient
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < SH_COEFF_COUNT; i++) {
 		grid->probes[idx].sh_data.coeffs[i][0] *= SH_BAKE_FACTORS[i];
 		grid->probes[idx].sh_data.coeffs[i][1] *= SH_BAKE_FACTORS[i];
 		grid->probes[idx].sh_data.coeffs[i][2] *= SH_BAKE_FACTORS[i];
 	}
 }
 #else
-static void light_probe_worker_compute_probe(
-    LightProbeGrid* grid, int grid_x, int grid_y, int grid_z,
-    const SphereInstance_POD* local_scene, int local_count)
+static void light_probe_worker_compute_probe(LightProbeGrid* grid, int grid_x,
+                                             int grid_y, int grid_z,
+                                             const CachedSphere* cached_scene,
+                                             int local_count)
 {
 	int idx = (grid_z * grid->grid_dim[1] * grid->grid_dim[0]) +
 	          (grid_y * grid->grid_dim[0]) + grid_x;
@@ -291,17 +295,43 @@ static void light_probe_worker_compute_probe(
 	 * half-spacing away from centers. Mark
 	 * as invalid/skip if inside sphere for
 	 * robustness. */
-	if (is_probe_inside_sphere(probe_pos, local_scene, local_count)) {
+	if (is_probe_inside_sphere(probe_pos, cached_scene, local_count)) {
 		/* Mark as invalid for debug
 		 * shader */
 		grid->probes[idx].sh_data.coeffs[0][3] = -1.0F;
 		return;
 	}
 
-	compute_probe_sh(local_scene, local_count, probe_pos,
+	compute_probe_sh(cached_scene, local_count, probe_pos,
 	                 &grid->probes[idx].sh_data);
 }
 #endif
+
+static void* precompute_cached_spheres(SphereInstance_POD* local_scene,
+                                       int local_count)
+{
+	CachedSphere* cached_scene = malloc(local_count * sizeof(CachedSphere));
+	for (int i = 0; i < local_count; i++) {
+		get_sphere_pos(&local_scene[i], cached_scene[i].pos);
+		float radius = get_sphere_radius(&local_scene[i]);
+		cached_scene[i].radius = radius;
+
+		// On précalcule les distances au carré pour éviter les
+		// sqrt() plus tard
+		cached_scene[i].min_d_sq =
+		    (GI_MIN_DIST_RADII * radius) * (GI_MIN_DIST_RADII * radius);
+		cached_scene[i].max_d_sq =
+		    (GI_MAX_DIST_RADII * radius) * (GI_MAX_DIST_RADII * radius);
+
+		// Le (sphere->metallic * 0.0F) semble être un
+		// placeholder, je le garde tel quel
+		cached_scene[i].diffuse_base =
+		    (1.0F - (local_scene[i].metallic * 0.0F)) *
+		    (radius * radius) * GI_BOUNCE_SCALE;
+		cached_scene[i].albedo = local_scene[i].albedo;
+	}
+	return cached_scene;
+}
 
 static void* light_probe_worker(void* arg)
 {
@@ -355,6 +385,9 @@ static void* light_probe_worker(void* arg)
 		    (size_t)grid->total_probes * sizeof(LightProbe), 0,
 		    (size_t)grid->total_probes * sizeof(LightProbe));
 
+		CachedSphere* cached_scene =
+		    precompute_cached_spheres(local_scene, local_count);
+
 		for (int grid_z = 0; grid_z < grid->grid_dim[2]; grid_z++) {
 			for (int grid_y = 0; grid_y < grid->grid_dim[1];
 			     grid_y++) {
@@ -362,12 +395,13 @@ static void* light_probe_worker(void* arg)
 				     grid_x++) {
 					light_probe_worker_compute_probe(
 					    grid, grid_x, grid_y, grid_z,
-					    local_scene, local_count);
+					    cached_scene, local_count);
 				}
 			}
 		}
 
 		free(local_scene);
+		free(cached_scene);
 
 		double worker_ms = perf_timer_elapsed_ms(&worker_timer);
 		LOG_DEBUG("perf.gi",
@@ -666,6 +700,25 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 
 	shader_set_vec3(grid->debug_shader, "u_ProbeGridMin", grid->aabb_min);
 	shader_set_vec3(grid->debug_shader, "u_ProbeGridMax", grid->aabb_max);
+
+	vec3 grid_size;
+	glm_vec3_sub(grid->aabb_max, grid->aabb_min, grid_size);
+
+	vec3 grid_scale;
+	grid_scale[0] = (grid->grid_dim[0] > 1)
+	                    ? (float)(grid->grid_dim[0] - 1) /
+	                          fmaxf(grid_size[0], GI_EPSILON)
+	                    : 0.0F;
+	grid_scale[1] = (grid->grid_dim[1] > 1)
+	                    ? (float)(grid->grid_dim[1] - 1) /
+	                          fmaxf(grid_size[1], GI_EPSILON)
+	                    : 0.0F;
+	grid_scale[2] = (grid->grid_dim[2] > 1)
+	                    ? (float)(grid->grid_dim[2] - 1) /
+	                          fmaxf(grid_size[2], GI_EPSILON)
+	                    : 0.0F;
+
+	shader_set_vec3(grid->debug_shader, "u_GridToIdxScale", grid_scale);
 
 	GLint loc_dim =
 	    shader_get_uniform_location(grid->debug_shader, "u_ProbeGridDim");

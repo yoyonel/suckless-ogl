@@ -94,6 +94,7 @@ typedef struct {
 	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
 	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
 	GLint gi_mode;            /**< Location of 'u_GIMode' */
+	GLint grid_to_idx_scale;  /**< Location of 'u_GridToIdxScale' */
 	GLint
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } BillboardUniforms;

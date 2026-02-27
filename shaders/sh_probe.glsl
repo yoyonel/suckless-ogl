@@ -4,6 +4,7 @@ uniform vec3 u_ProbeGridMin;
 uniform vec3 u_ProbeGridMax;
 uniform ivec3 u_ProbeGridDim;
 uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
+uniform vec3 u_GridToIdxScale;
 
 /* 7x 3D textures for SH coefficients (Units 8-14)
    - Tex 0-5: Coeffs 0-7 (RGBA16F, each holds 4 channels)
@@ -197,12 +198,22 @@ vec3 eval_sh_irradiance_packed(vec3 normal, vec4 t0, vec4 t1, vec4 t2, vec4 t3,
 
 vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
 {
-	vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
-	vec3 local_pos = worldPos - u_ProbeGridMin;
-	vec3 t = local_pos / max(grid_size, vec3(0.001));
+	// vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
+	// vec3 local_pos = worldPos - u_ProbeGridMin;
+	// vec3 t = local_pos / max(grid_size, vec3(0.001));
 
-	// Calculate base probe index and interpolation weights
-	vec3 float_idx = t * vec3(max(u_ProbeGridDim - ivec3(1), ivec3(1)));
+	// // Calculate base probe index and interpolation weights
+	// vec3 float_idx = t * vec3(max(u_ProbeGridDim - ivec3(1), ivec3(1)));
+
+	vec3 local_pos = worldPos - u_ProbeGridMin;
+	vec3 float_idx = local_pos * u_GridToIdxScale;
+
+	// Dans la fonction sampler3D, t s'obtient simplement par :
+	vec3 t =
+	    local_pos / max(u_ProbeGridMax - u_ProbeGridMin,
+	                    vec3(0.001));  // Le compilateur optimisera le max()
+	                                   // car ce sont des uniforms
+
 	ivec3 base_idx = min(ivec3(floor(float_idx)),
 	                     max(u_ProbeGridDim - ivec3(2), ivec3(0)));
 	vec3 weights = float_idx - vec3(base_idx);
