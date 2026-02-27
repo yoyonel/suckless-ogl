@@ -299,6 +299,9 @@ static int scene_init_billboard_shader(Scene* scene)
 	    scene->pbr_billboard_shader, "u_ProbeGridDim");
 	scene->billboard_uniforms.gi_mode = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "u_GIMode");
+	scene->billboard_uniforms.grid_to_idx_scale =
+	    shader_get_uniform_location(scene->pbr_billboard_shader,
+	                                "u_GridToIdxScale");
 
 	/* Set Billboard SH Sampler Indices (units 8-14) */
 	{
