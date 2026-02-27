@@ -19,6 +19,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define USE_SH_BAKE_FACTORS 1
+
 /*
  * GI 1-Bounce Configuration
  *
@@ -230,6 +232,49 @@ static int is_probe_inside_sphere(vec3 probe_pos,
 	return 0;
 }
 
+#ifdef USE_SH_BAKE_FACTORS
+static void light_probe_worker_compute_probe(
+    LightProbeGrid* grid, int grid_x, int grid_y, int grid_z,
+    const SphereInstance_POD* local_scene, int local_count)
+{
+	int idx = (grid_z * grid->grid_dim[1] * grid->grid_dim[0]) +
+	          (grid_y * grid->grid_dim[0]) + grid_x;
+
+	vec3 probe_pos;
+	probe_pos[0] = grid->aabb_min[0] + ((float)grid_x * grid->cell_size[0]);
+	probe_pos[1] = grid->aabb_min[1] + ((float)grid_y * grid->cell_size[1]);
+	probe_pos[2] = grid->aabb_min[2] + ((float)grid_z * grid->cell_size[2]);
+
+	if (is_probe_inside_sphere(probe_pos, local_scene, local_count)) {
+		grid->probes[idx].sh_data.coeffs[0][3] = -1.0F;
+		return;
+	}
+
+	// Calcul de base des harmoniques (inchangé)
+	compute_probe_sh(local_scene, local_count, probe_pos,
+	                 &grid->probes[idx].sh_data);
+
+	/* --- NOUVEAU : Cuisson des constantes (A * Y) --- */
+	static const float SH_BAKE_FACTORS[9] = {
+	    0.88622692545f, /* L00:  A0 * Y00 */
+	    1.02332670794f, /* L1-1: A1 * Y1n1 */
+	    1.02332670794f, /* L10:  A1 * Y10 */
+	    1.02332670794f, /* L11:  A1 * Y11 */
+	    0.85808553081f, /* L2-2: A2 * Y2n2 */
+	    0.85808553081f, /* L2-1: A2 * Y2n1 */
+	    0.24770795610f, /* L20:  A2 * Y20 */
+	    0.85808553081f, /* L21:  A2 * Y21 */
+	    0.42904276540f  /* L22:  A2 * Y22 */
+	};
+
+	// On multiplie directement les canaux RGB de chaque coefficient
+	for (int i = 0; i < 9; i++) {
+		grid->probes[idx].sh_data.coeffs[i][0] *= SH_BAKE_FACTORS[i];
+		grid->probes[idx].sh_data.coeffs[i][1] *= SH_BAKE_FACTORS[i];
+		grid->probes[idx].sh_data.coeffs[i][2] *= SH_BAKE_FACTORS[i];
+	}
+}
+#else
 static void light_probe_worker_compute_probe(
     LightProbeGrid* grid, int grid_x, int grid_y, int grid_z,
     const SphereInstance_POD* local_scene, int local_count)
@@ -256,6 +301,7 @@ static void light_probe_worker_compute_probe(
 	compute_probe_sh(local_scene, local_count, probe_pos,
 	                 &grid->probes[idx].sh_data);
 }
+#endif
 
 static void* light_probe_worker(void* arg)
 {
@@ -486,7 +532,7 @@ void light_probe_grid_sync(LightProbeGrid* grid)
 	float* pack_buffer = malloc(float_count * sizeof(float));
 
 	if (pack_buffer) {
-		const int mapping[SH_TEXTURE_COUNT][4][2] = {
+		static const int mapping[SH_TEXTURE_COUNT][4][2] = {
 		    /* {coeff_idx, channel_idx} */
 		    {{0, 0}, {0, 1}, {0, 2}, {1, 0}},  /* Tex 0 */
 		    {{1, 1}, {1, 2}, {2, 0}, {2, 1}},  /* Tex 1 */

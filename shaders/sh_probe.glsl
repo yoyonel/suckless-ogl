@@ -41,6 +41,107 @@ const float A0 = 3.14159265359;
 const float A1 = 2.09439510239;
 const float A2 = 0.78539816339;
 
+#define USE_SH_BAKE_FACTORS
+
+#ifdef USE_SH_BAKE_FACTORS
+vec3 eval_sh_irradiance_packed(vec3 normal, vec4 t0, vec4 t1, vec4 t2, vec4 t3,
+                               vec4 t4, vec4 t5, vec4 t6)
+{
+	float x = normal.x;
+	float y = normal.y;
+	float z = normal.z;
+
+	vec3 L[9];
+	/* TEX 0: {0,0}, {0,1}, {0,2}, {1,0} */
+	L[0] = t0.rgb;
+	L[1].r = t0.a;
+	/* TEX 1: {1,1}, {1,2}, {2,0}, {2,1} */
+	L[1].gb = t1.rg;
+	L[2].rg = t1.ba;
+	/* TEX 2: {2,2}, {3,0}, {3,1}, {3,2} */
+	L[2].b = t2.r;
+	L[3] = t2.gba;
+	/* TEX 3: {4,0}, {4,1}, {4,2}, {5,0} */
+	L[4] = t3.rgb;
+	L[5].r = t3.a;
+	/* TEX 4: {5,1}, {5,2}, {6,0}, {6,1} */
+	L[5].gb = t4.rg;
+	L[6].rg = t4.ba;
+	/* TEX 5: {6,2}, {7,0}, {7,1}, {7,2} */
+	L[6].b = t5.r;
+	L[7] = t5.gba;
+	/* TEX 6: {8,0}, {8,1}, {8,2}, {-1,-1} */
+	L[8] = t6.rgb;
+
+	vec3 color = L[0];  // L[0] multiplié par 1.0
+	color += L[1] * y;
+	color += L[2] * z;
+	color += L[3] * x;
+	color += L[4] * (x * y);
+	color += L[5] * (y * z);
+	color += L[6] * (3.0 * z * z - 1.0);
+	color += L[7] * (x * z);
+	color += L[8] * (x * x - y * y);
+
+	return max(color, vec3(0.0));
+}
+
+vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
+{
+	vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
+	vec3 local_pos = worldPos - u_ProbeGridMin;
+	vec3 t = local_pos / max(grid_size, vec3(0.001));
+
+	// Calculate base probe index and interpolation weights
+	vec3 float_idx = t * vec3(max(u_ProbeGridDim - ivec3(1), ivec3(1)));
+	ivec3 base_idx = min(ivec3(floor(float_idx)),
+	                     max(u_ProbeGridDim - ivec3(2), ivec3(0)));
+
+	vec3 weights = float_idx - vec3(base_idx);
+	weights = clamp(weights, 0.0, 1.0);
+
+	vec4 interpolated_coeffs[9];
+	for (int j = 0; j < 9; ++j) {
+		interpolated_coeffs[j] = vec4(0.0);
+	}
+
+	for (int i = 0; i < 8; ++i) {
+		ivec3 offset = ivec3(i & 1, (i >> 1) & 1, (i >> 2) & 1);
+		ivec3 p = clamp(base_idx + offset, ivec3(0),
+		                u_ProbeGridDim - ivec3(1));
+
+		int idx = (p.z * u_ProbeGridDim.y * u_ProbeGridDim.x) +
+		          (p.y * u_ProbeGridDim.x) + p.x;
+
+		// mix(x, y, a) retourne x quand a=0, et y quand a=1.
+		// vec3(offset) contient exactement des 0.0 ou des 1.0
+		vec3 w3 = mix(1.0 - weights, weights, vec3(offset));
+		float w = w3.x * w3.y * w3.z;
+
+		for (int j = 0; j < 9; ++j) {
+			interpolated_coeffs[j] += probes[idx].coeffs[j] * w;
+		}
+	}
+
+	float x = normal.x;
+	float y = normal.y;
+	float z = normal.z;
+
+	// Reconstruction ultra-rapide avec les coefficients "cuits"
+	vec3 color =
+	    interpolated_coeffs[0].rgb;  // Multiplié implicitement par 1.0
+	color += interpolated_coeffs[1].rgb * y;
+	color += interpolated_coeffs[2].rgb * z;
+	color += interpolated_coeffs[3].rgb * x;
+	color += interpolated_coeffs[4].rgb * (x * y);
+	color += interpolated_coeffs[5].rgb * (y * z);
+	color += interpolated_coeffs[6].rgb * (3.0 * z * z - 1.0);
+	color += interpolated_coeffs[7].rgb * (x * z);
+	color += interpolated_coeffs[8].rgb * (x * x - y * y);
+
+	return max(color, vec3(0.0));
+}
+#else
 vec3 eval_sh_irradiance_packed(vec3 normal, vec4 t0, vec4 t1, vec4 t2, vec4 t3,
                                vec4 t4, vec4 t5, vec4 t6)
 {
@@ -119,10 +220,10 @@ vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
 		int idx = (p.z * u_ProbeGridDim.y * u_ProbeGridDim.x) +
 		          (p.y * u_ProbeGridDim.x) + p.x;
 
-		float w = 1.0;
-		w *= (offset.x == 0) ? (1.0 - weights.x) : weights.x;
-		w *= (offset.y == 0) ? (1.0 - weights.y) : weights.y;
-		w *= (offset.z == 0) ? (1.0 - weights.z) : weights.z;
+		// mix(x, y, a) retourne x quand a=0, et y quand a=1.
+		// vec3(offset) contient exactement des 0.0 ou des 1.0
+		vec3 w3 = mix(1.0 - weights, weights, vec3(offset));
+		float w = w3.x * w3.y * w3.z;
 
 		for (int j = 0; j < 9; ++j) {
 			interpolated_coeffs[j] += probes[idx].coeffs[j] * w;
@@ -156,6 +257,7 @@ vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
 
 	return max(color, vec3(0.0));
 }
+#endif
 
 vec3 get_probe_irradiance(vec3 N, vec3 worldPos)
 {
