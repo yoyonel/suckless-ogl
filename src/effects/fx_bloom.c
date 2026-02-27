@@ -1,4 +1,4 @@
-#include "fx_bloom.h"
+#include "effects/fx_bloom.h"
 
 #include "gl_common.h"
 #include "log.h"
