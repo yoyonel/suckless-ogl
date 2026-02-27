@@ -1,4 +1,4 @@
-#include "fx_auto_exposure.h"
+#include "effects/fx_auto_exposure.h"
 
 #include "app_settings.h"
 #include "gl_common.h"

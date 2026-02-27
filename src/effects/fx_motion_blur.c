@@ -1,4 +1,4 @@
-#include "fx_motion_blur.h"
+#include "effects/fx_motion_blur.h"
 
 #include "gl_common.h"
 #include "log.h"
