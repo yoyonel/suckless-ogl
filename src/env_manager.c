@@ -27,8 +27,8 @@ int env_manager_load(EnvManager* mgr, AsyncLoader* loader, const char* filename)
 	}
 
 	char path[MAX_PATH_LENGTH];
-	if (!safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
-	                   filename)) {
+	if (safe_snprintf(path, sizeof(path), "assets/textures/hdr/%s",
+	                  filename) < 0) {
 		LOG_ERROR("suckless-ogl.env", "Filename too long: %s",
 		          filename);
 		return false;

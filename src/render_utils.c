@@ -223,9 +223,9 @@ void render_utils_generate_gpu_identifier(const char* vendor,
 	    (renderer && renderer[0] != '\0') ? renderer : "gpu";
 
 	char raw[GPU_IDENTIFIER_RAW_BUF_SIZE];
-	if (!safe_snprintf(raw, GPU_IDENTIFIER_RAW_BUF_SIZE, "%s_%s", v_str,
-	                   r_str)) {
-		safe_snprintf(buffer, size, "%s", "unknown_gpu");
+	if (safe_snprintf(raw, GPU_IDENTIFIER_RAW_BUF_SIZE, "%s_%s", v_str,
+	                  r_str) < 0) {
+		(void)safe_snprintf(buffer, size, "%s", "unknown_gpu");
 		return;
 	}
 

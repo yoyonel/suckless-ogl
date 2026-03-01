@@ -261,21 +261,21 @@ HybridTimer perf_hybrid_start(void)
 
 #define TRACY_HYBRID_STOP_SYNC_END() TracyCZoneEnd(_sync_ctx)
 
-#define TRACY_HYBRID_STOP_POSTAMBLE(timer, label, cpu_ms, gpu_ms)        \
-	do {                                                             \
-		if (label) {                                             \
-			TracyCZoneName((timer)->tracy_ctx, (label),      \
-			               strlen(label));                   \
-		}                                                        \
-		char _buf[LABEL_BUFFER_SIZE];                            \
-		if (safe_snprintf(_buf, sizeof(_buf),                    \
-		                  "CPU: %.2fms | GPU: %.3fms", (cpu_ms), \
-		                  (gpu_ms))) {                           \
-			TracyCZoneText((timer)->tracy_ctx, _buf,         \
-			               strlen(_buf));                    \
-		}                                                        \
-		TracyCZoneEnd((timer)->tracy_ctx);                       \
-		TracyCFiberLeave;                                        \
+#define TRACY_HYBRID_STOP_POSTAMBLE(timer, label, cpu_ms, gpu_ms)              \
+	do {                                                                   \
+		if (label) {                                                   \
+			TracyCZoneName((timer)->tracy_ctx, (label),            \
+			               strlen(label));                         \
+		}                                                              \
+		char _buf[LABEL_BUFFER_SIZE];                                  \
+		int res = safe_snprintf(_buf, sizeof(_buf),                    \
+		                        "CPU: %.2fms | GPU: %.3fms", (cpu_ms), \
+		                        (gpu_ms));                             \
+		if (res >= 0) {                                                \
+			TracyCZoneText((timer)->tracy_ctx, _buf, (size_t)res); \
+		}                                                              \
+		TracyCZoneEnd((timer)->tracy_ctx);                             \
+		TracyCFiberLeave;                                              \
 	} while (0)
 
 #else /* !TRACY_ENABLE */
