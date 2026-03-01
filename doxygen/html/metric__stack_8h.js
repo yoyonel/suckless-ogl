@@ -1,7 +1,6 @@
 var metric__stack_8h =
 [
     [ "MetricStack", "structMetricStack.html", "structMetricStack" ],
-    [ "METRIC_STACK_MAX_DEPTH", "metric__stack_8h.html#ab7c522a3bae2d2a42d74ea6212c15ded", null ],
     [ "metric_stack_get_depth", "metric__stack_8h.html#ac3d85b0faf7c29d266a9474cc8a92ec3", null ],
     [ "metric_stack_init", "metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8", null ],
     [ "metric_stack_peek", "metric__stack_8h.html#a0c362d644bc694f5fc6f1e3ee3c52d01", null ],

@@ -726,105 +726,105 @@ var sectionId = 'dynsection-1';
 <!-- Node231 -->
 <g id="node42" class="node">
 <title>Node231</title>
-<g id="a_node42"><a xlink:href="app_8c.html#a296499ce009ce4939c9c75ba738373dd" target="_top" xlink:title="One&#45;frame rendering orchestration.">
-<polygon fill="white" stroke="red" points="266,-228.5 266,-247.5 337,-247.5 337,-228.5 266,-228.5"/>
-<text text-anchor="middle" x="301.5" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">app_render</text>
+<g id="a_node42"><a xlink:href="app_8c.html#ad74ca828f85941cd20bc12561b854dcb" target="_top" xlink:title="One&#45;frame logic update (physics, timers, camera).">
+<polygon fill="white" stroke="red" points="264.5,-228.5 264.5,-247.5 338.5,-247.5 338.5,-228.5 264.5,-228.5"/>
+<text text-anchor="middle" x="301.5" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">app_update</text>
 </a>
 </g>
 </g>
 <!-- Node224&#45;&gt;Node231 -->
 <g id="edge45" class="edge">
 <title>Node224&#45;&gt;Node231</title>
-<path fill="none" stroke="midnightblue" d="M160.7,-238C186.33,-238 225.21,-238 255.46,-238"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="255.77,-241.5 265.77,-238 255.77,-234.5 255.77,-241.5"/>
+<path fill="none" stroke="midnightblue" d="M160.7,-238C185.92,-238 223.96,-238 253.99,-238"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="254.25,-241.5 264.25,-238 254.25,-234.5 254.25,-241.5"/>
 </g>
-<!-- Node323 -->
+<!-- Node270 -->
 <g id="node43" class="node">
-<title>Node323</title>
-<g id="a_node43"><a xlink:href="app_8c.html#ad74ca828f85941cd20bc12561b854dcb" target="_top" xlink:title="One&#45;frame logic update (physics, timers, camera).">
-<polygon fill="white" stroke="red" points="264.5,-190.5 264.5,-209.5 338.5,-209.5 338.5,-190.5 264.5,-190.5"/>
-<text text-anchor="middle" x="301.5" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">app_update</text>
+<title>Node270</title>
+<g id="a_node43"><a xlink:href="camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" target="_top" xlink:title="Performs one fixed&#45;step physics update.">
+<polygon fill="white" stroke="black" points="241,-190.5 241,-209.5 362,-209.5 362,-190.5 241,-190.5"/>
+<text text-anchor="middle" x="301.5" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">camera_fixed_update</text>
 </a>
 </g>
 </g>
-<!-- Node224&#45;&gt;Node323 -->
+<!-- Node224&#45;&gt;Node270 -->
 <g id="edge46" class="edge">
-<title>Node224&#45;&gt;Node323</title>
-<path fill="none" stroke="midnightblue" d="M160.7,-231.81C186.03,-226.05 224.29,-217.34 254.39,-210.49"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="255.27,-213.88 264.25,-208.25 253.72,-207.05 255.27,-213.88"/>
+<title>Node224&#45;&gt;Node270</title>
+<path fill="none" stroke="midnightblue" d="M160.7,-231.81C184.43,-226.41 219.51,-218.43 248.6,-211.81"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="249.63,-215.16 258.6,-209.53 248.08,-208.34 249.63,-215.16"/>
 </g>
-<!-- Node362 -->
+<!-- Node271 -->
 <g id="node44" class="node">
-<title>Node362</title>
-<g id="a_node44"><a xlink:href="camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" target="_top" xlink:title="Performs one fixed&#45;step physics update.">
-<polygon fill="white" stroke="black" points="241,-152.5 241,-171.5 362,-171.5 362,-152.5 241,-152.5"/>
-<text text-anchor="middle" x="301.5" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">camera_fixed_update</text>
+<title>Node271</title>
+<g id="a_node44"><a xlink:href="camera_8h.html#aa47646370ef1804643d987edb53fe2f7" target="_top" xlink:title="Recalculates front, right, and up vectors from yaw and pitch.">
+<polygon fill="white" stroke="black" points="234.5,-152.5 234.5,-171.5 368.5,-171.5 368.5,-152.5 234.5,-152.5"/>
+<text text-anchor="middle" x="301.5" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">camera_update_vectors</text>
 </a>
 </g>
 </g>
-<!-- Node224&#45;&gt;Node362 -->
+<!-- Node224&#45;&gt;Node271 -->
 <g id="edge47" class="edge">
-<title>Node224&#45;&gt;Node362</title>
+<title>Node224&#45;&gt;Node271</title>
 <path fill="none" stroke="midnightblue" d="M160.73,-231.31C169.83,-228.37 179.75,-224.33 188,-219 207.54,-206.37 203.9,-192.72 224,-181 227.72,-178.83 231.69,-176.9 235.78,-175.2"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="237.34,-178.35 245.5,-171.6 234.91,-171.79 237.34,-178.35"/>
 </g>
-<!-- Node363 -->
+<!-- Node272 -->
 <g id="node45" class="node">
-<title>Node363</title>
-<g id="a_node45"><a xlink:href="camera_8h.html#aa47646370ef1804643d987edb53fe2f7" target="_top" xlink:title="Recalculates front, right, and up vectors from yaw and pitch.">
-<polygon fill="white" stroke="black" points="234.5,-114.5 234.5,-133.5 368.5,-133.5 368.5,-114.5 234.5,-114.5"/>
-<text text-anchor="middle" x="301.5" y="-121.5" font-family="Helvetica,sans-Serif" font-size="10.00">camera_update_vectors</text>
+<title>Node272</title>
+<g id="a_node45"><a xlink:href="fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="red" points="266,-114.5 266,-133.5 337,-133.5 337,-114.5 266,-114.5"/>
+<text text-anchor="middle" x="301.5" y="-121.5" font-family="Helvetica,sans-Serif" font-size="10.00">fps_update</text>
 </a>
 </g>
 </g>
-<!-- Node224&#45;&gt;Node363 -->
+<!-- Node224&#45;&gt;Node272 -->
 <g id="edge48" class="edge">
-<title>Node224&#45;&gt;Node363</title>
-<path fill="none" stroke="midnightblue" d="M160.68,-233.06C170.2,-230.23 180.4,-225.83 188,-219 215.8,-194.02 195.08,-166.67 224,-143 226.04,-141.33 228.2,-139.81 230.46,-138.41"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="232.33,-141.38 239.59,-133.66 229.1,-135.18 232.33,-141.38"/>
+<title>Node224&#45;&gt;Node272</title>
+<path fill="none" stroke="midnightblue" d="M160.68,-233.06C170.2,-230.23 180.4,-225.83 188,-219 215.8,-194.02 195.08,-166.67 224,-143 233.09,-135.56 244.69,-130.97 256.09,-128.16"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="256.9,-131.57 265.99,-126.12 255.49,-124.71 256.9,-131.57"/>
 </g>
-<!-- Node364 -->
+<!-- Node278 -->
 <g id="node46" class="node">
-<title>Node364</title>
-<g id="a_node46"><a xlink:href="fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="red" points="266,-76.5 266,-95.5 337,-95.5 337,-76.5 266,-76.5"/>
-<text text-anchor="middle" x="301.5" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">fps_update</text>
+<title>Node278</title>
+<g id="a_node46"><a xlink:href="icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" target="_top" xlink:title="Generates icosphere mesh data for a specified subdivision level.">
+<polygon fill="white" stroke="red" points="245,-76.5 245,-95.5 358,-95.5 358,-76.5 245,-76.5"/>
+<text text-anchor="middle" x="301.5" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">icosphere_generate</text>
 </a>
 </g>
 </g>
-<!-- Node224&#45;&gt;Node364 -->
+<!-- Node224&#45;&gt;Node278 -->
 <g id="edge49" class="edge">
-<title>Node224&#45;&gt;Node364</title>
-<path fill="none" stroke="midnightblue" d="M160.65,-233.77C170.39,-231.01 180.74,-226.48 188,-219 225.01,-180.88 185.27,-141.38 224,-105 232.64,-96.88 244.19,-92.08 255.7,-89.29"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="256.58,-92.68 265.72,-87.31 255.23,-85.81 256.58,-92.68"/>
-</g>
-<!-- Node368 -->
-<g id="node47" class="node">
-<title>Node368</title>
-<g id="a_node47"><a xlink:href="icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" target="_top" xlink:title="Generates icosphere mesh data for a specified subdivision level.">
-<polygon fill="white" stroke="red" points="245,-38.5 245,-57.5 358,-57.5 358,-38.5 245,-38.5"/>
-<text text-anchor="middle" x="301.5" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00">icosphere_generate</text>
-</a>
-</g>
-</g>
-<!-- Node224&#45;&gt;Node368 -->
-<g id="edge50" class="edge">
-<title>Node224&#45;&gt;Node368</title>
-<path fill="none" stroke="midnightblue" d="M160.66,-234.12C170.52,-231.41 180.95,-226.81 188,-219 234.5,-167.45 175.18,-116.36 224,-67 227.43,-63.53 231.38,-60.66 235.65,-58.29"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="237.17,-61.45 244.79,-54.09 234.24,-55.09 237.17,-61.45"/>
+<title>Node224&#45;&gt;Node278</title>
+<path fill="none" stroke="midnightblue" d="M160.65,-233.77C170.39,-231.01 180.74,-226.48 188,-219 225.01,-180.88 185.27,-141.38 224,-105 227.4,-101.8 231.26,-99.12 235.38,-96.87"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="237.11,-99.93 244.77,-92.62 234.22,-93.56 237.11,-99.93"/>
 </g>
 <!-- Node195 -->
-<g id="node48" class="node">
+<g id="node47" class="node">
 <title>Node195</title>
-<g id="a_node48"><a xlink:href="instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4" target="_top" xlink:title="Binds a procedural mesh (e.g., icosphere) to the instanced group.">
-<polygon fill="white" stroke="red" points="224,-0.5 224,-19.5 379,-19.5 379,-0.5 224,-0.5"/>
-<text text-anchor="middle" x="301.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_bind_mesh</text>
+<g id="a_node47"><a xlink:href="instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4" target="_top" xlink:title="Binds a procedural mesh (e.g., icosphere) to the instanced group.">
+<polygon fill="white" stroke="red" points="224,-38.5 224,-57.5 379,-57.5 379,-38.5 224,-38.5"/>
+<text text-anchor="middle" x="301.5" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_bind_mesh</text>
 </a>
 </g>
 </g>
 <!-- Node224&#45;&gt;Node195 -->
-<g id="edge51" class="edge">
+<g id="edge50" class="edge">
 <title>Node224&#45;&gt;Node195</title>
+<path fill="none" stroke="midnightblue" d="M160.66,-234.12C170.52,-231.41 180.95,-226.81 188,-219 234.5,-167.45 175.18,-116.36 224,-67 225.29,-65.7 226.66,-64.48 228.08,-63.34"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="230.39,-66.01 236.88,-57.63 226.58,-60.14 230.39,-66.01"/>
+</g>
+<!-- Node287 -->
+<g id="node48" class="node">
+<title>Node287</title>
+<g id="a_node48"><a xlink:href="postprocess_8h.html#ae22c24f5c64568dcf1908a579312ed60" target="_top" xlink:title="Increments internal clocks.">
+<polygon fill="white" stroke="black" points="230.5,-0.5 230.5,-19.5 372.5,-19.5 372.5,-0.5 230.5,-0.5"/>
+<text text-anchor="middle" x="301.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">postprocess_update_time</text>
+</a>
+</g>
+</g>
+<!-- Node224&#45;&gt;Node287 -->
+<g id="edge51" class="edge">
+<title>Node224&#45;&gt;Node287</title>
 <path fill="none" stroke="midnightblue" d="M160.56,-234.36C170.53,-231.69 181.07,-227.05 188,-219 244.11,-153.89 164.96,-91.46 224,-29 225.23,-27.7 226.53,-26.49 227.89,-25.35"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="230,-28.15 236.33,-19.65 226.08,-22.35 230,-28.15"/>
 </g>

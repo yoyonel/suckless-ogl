@@ -1,8 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76":[5,0,41,2],
-"structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4":[5,0,41,19],
-"structIBLCoordinator.html#aabe82399c187f13ee5fb1c7cec1f243a":[5,0,41,11],
 "structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c":[5,0,41,9],
 "structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d":[5,0,41,15],
 "structIBLCoordinator.html#abe4fa9a642288dbcdf707f378a6108c4":[5,0,41,13],
@@ -80,7 +77,7 @@ var NAVTREEINDEX8 =
 "structMaterialLib.html#a8951aab4be6950b1bbf5aac0686e1820":[5,0,50,0],
 "structMetricStack.html":[5,0,51],
 "structMetricStack.html#a1efbff4d0974864c6e07fe75e13eeb7d":[5,0,51,0],
-"structMetricStack.html#a6e8f639a61b6046f8d3d6e15fb98df13":[5,0,51,1],
+"structMetricStack.html#a3f2ed238f489aac47c071e4ff9a8798e":[5,0,51,1],
 "structPBRIrrUniforms.html":[5,0,52],
 "structPBRIrrUniforms.html#a966cafd4f3faabcd9901611a6917d839":[5,0,52,0],
 "structPBRIrrUniforms.html#aacb9b5d9768c29642f6d67d8d4b705f8":[5,0,52,2],
@@ -145,6 +142,7 @@ var NAVTREEINDEX8 =
 "structPostProcess.html#ad1ef49a6b253f10b01e92851768891d6":[5,0,59,6],
 "structPostProcess.html#ad2439be6cfa64d705a75e26ec5f0f725":[5,0,59,5],
 "structPostProcess.html#ad295fa8bdbe10ab35d122decf9b77ba5":[5,0,59,24],
+"structPostProcess.html#ad513e43923202af8c87980b65e9b14e3":[5,0,59,31],
 "structPostProcess.html#ae49ebd9e9dd9845b9c781c534530998d":[5,0,59,38],
 "structPostProcess.html#aed8a881b891092e31be0394895d9ef0c":[5,0,59,28],
 "structPostProcess.html#aee637f0f73fa3be5d55847ea7ebed24e":[5,0,59,25],
@@ -154,7 +152,6 @@ var NAVTREEINDEX8 =
 "structPostProcess.html#af90a6604c8211ecd0d8bfb61854c6c3f":[5,0,59,10],
 "structPostProcess.html#afb71aa02b237fe2666213becfa342d31":[5,0,59,34],
 "structPostProcess.html#afc4b24420a5dbf1fe0a0095d788dfcd8":[5,0,59,8],
-"structPostProcess.html#aff22ef6e948aaca5d016f2db72839bd9":[5,0,59,31],
 "structPostProcessInputContext.html":[5,0,60],
 "structPostProcessInputContext.html#a0264051c4b66c1eb3fc8aa670e109268":[5,0,60,4],
 "structPostProcessInputContext.html#a6ad68e3f482c8b02dc410f925ccfbf5e":[5,0,60,0],
@@ -249,5 +246,8 @@ var NAVTREEINDEX8 =
 "structScene.html#a278672880c9534ed393007884e01e872":[5,0,63,25],
 "structScene.html#a2bfed78163b907505fe6fcdbca173127":[5,0,63,34],
 "structScene.html#a33d1964d8a1f5096d06147fa910791f5":[5,0,63,46],
-"structScene.html#a365027ddce9dabf851566fa1a853140d":[5,0,63,33]
+"structScene.html#a365027ddce9dabf851566fa1a853140d":[5,0,63,33],
+"structScene.html#a37847e95781840a840af5a08112e6673":[5,0,63,21],
+"structScene.html#a3ee995666133cc13650add76abcda8af":[5,0,63,38],
+"structScene.html#a49964588aac3d2398c4f589c1c9f2d0a":[5,0,63,4]
 };

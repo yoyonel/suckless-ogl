@@ -32,6 +32,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "postprocess.c", "postprocess_8c.html", "postprocess_8c" ],
     [ "postprocess_input.c", "postprocess__input_8c.html", "postprocess__input_8c" ],
     [ "render_utils.c", "render__utils_8c.html", "render__utils_8c" ],
+    [ "renderer.c", "renderer_8c.html", "renderer_8c" ],
     [ "scene.c", "scene_8c.html", "scene_8c" ],
     [ "sh_math.c", "sh__math_8c.html", "sh__math_8c" ],
     [ "shader.c", "shader_8c.html", "shader_8c" ],

@@ -82,16 +82,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"camera_8h.html#a44fc6216c4aa4dbaea8299798e3cc29f",
-"globals_defs.html",
-"group__UI.html#gab74ea829a42607b55b37fd0986bf30ab",
-"pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c",
-"postprocess_8h.html",
-"sh__probe_8glsl.html#abb9977a0ac90dfc1d1e10bdff6ef4a4a",
-"structBandingParams.html#a707399c42e148f4cc80e4fae913a3545",
-"structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76",
-"structScene.html#a37847e95781840a840af5a08112e6673",
-"ui_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1"
+"camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7",
+"globals_enum.html",
+"group__UI.html#gabfa53e97d39b21b0639f934b842101a8",
+"pbr_8c.html#afaf8e347ba781b760c16e0e3f32fa74e",
+"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062",
+"sh__probe_8glsl.html#add944c2af48d7a8c0bdf95e2e36edfa7",
+"structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a",
+"structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c",
+"structScene.html#a49fd2adaae51e86db305a341efab4fdb",
+"ui__spinner_8frag.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

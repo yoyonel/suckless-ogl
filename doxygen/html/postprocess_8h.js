@@ -13,7 +13,6 @@ var postprocess_8h =
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
     [ "PostProcess", "structPostProcess.html", "structPostProcess" ],
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
-    [ "BLOOM_MIP_LEVELS", "postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504", null ],
     [ "DEFAULT_ACTIVE_EFFECTS", "postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d", null ],
     [ "DEFAULT_BANDING_LEVELS", "postprocess_8h.html#a917e9af207be1811116e495774c4f546", null ],
     [ "DEFAULT_BLOOM_INTENSITY", "postprocess_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918", null ],
@@ -42,7 +41,6 @@ var postprocess_8h =
     [ "DEFAULT_VIGNETTE_SMOOTHNESS", "postprocess_8h.html#a24987b89075e8bfcef95322a2f55da3a", null ],
     [ "DEFAULT_WB_TEMP", "postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e", null ],
     [ "DEFAULT_WB_TINT", "postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2", null ],
-    [ "SHADER_CACHE_SIZE", "postprocess_8h.html#a7916ecb91c4706924f97811382cddd61", null ],
     [ "BandingMode", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2", [
       [ "BANDING_MODE_LINEAR", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a", null ],
       [ "BANDING_MODE_DITHERED", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc", null ],

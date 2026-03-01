@@ -387,10 +387,6 @@ Macros</h2></td></tr>
 <tr class="memitem:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">DEFAULT_ACTIVE_EFFECTS</a></td></tr>
 <tr class="memdesc:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default mask of active effects.  <a href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">More...</a><br /></td></tr>
 <tr class="separator:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1ede330dd77f97e5c77493de096d504"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa1ede330dd77f97e5c77493de096d504">BLOOM_MIP_LEVELS</a>&#160;&#160;&#160;5</td></tr>
-<tr class="separator:aa1ede330dd77f97e5c77493de096d504"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7916ecb91c4706924f97811382cddd61"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a7916ecb91c4706924f97811382cddd61">SHADER_CACHE_SIZE</a>&#160;&#160;&#160;64</td></tr>
-<tr class="separator:a7916ecb91c4706924f97811382cddd61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -431,6 +427,9 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a1d814419b634cf8406ae065aea9a2ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Styles of color quantization.  <a href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">More...</a><br /></td></tr>
 <tr class="separator:a1d814419b634cf8406ae065aea9a2ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16af7b253440dadd46a80a4b9fddba4d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="postprocess_8h.html#a16af7b253440dadd46a80a4b9fddba4da9337d358c52b7f56750005f4028cc504">SHADER_CACHE_SIZE</a> = 64
+ }</td></tr>
+<tr class="separator:a16af7b253440dadd46a80a4b9fddba4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -518,20 +517,6 @@ Functions</h2></td></tr>
 <div class="textblock"><p>High-level post-processing pipeline and effects. </p>
 <p>This module manages the multi-pass post-processing pipeline, including blooming, auto-exposure, color grading, motion blur, and tone mapping. It uses a centralized Uniform Buffer Object (UBO) for settings. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="aa1ede330dd77f97e5c77493de096d504"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa1ede330dd77f97e5c77493de096d504">&#9670;&nbsp;</a></span>BLOOM_MIP_LEVELS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define BLOOM_MIP_LEVELS&#160;&#160;&#160;5</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a1c16e8ea94b93cbf379ceca837be3d2d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c16e8ea94b93cbf379ceca837be3d2d">&#9670;&nbsp;</a></span>DEFAULT_ACTIVE_EFFECTS</h2>
 
@@ -936,21 +921,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7916ecb91c4706924f97811382cddd61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7916ecb91c4706924f97811382cddd61">&#9670;&nbsp;</a></span>SHADER_CACHE_SIZE</h2>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a16af7b253440dadd46a80a4b9fddba4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16af7b253440dadd46a80a4b9fddba4d">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define SHADER_CACHE_SIZE&#160;&#160;&#160;64</td>
+          <td class="memname">anonymous enum</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16af7b253440dadd46a80a4b9fddba4da9337d358c52b7f56750005f4028cc504"></a>SHADER_CACHE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a1d814419b634cf8406ae065aea9a2ad2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1d814419b634cf8406ae065aea9a2ad2">&#9670;&nbsp;</a></span>BandingMode</h2>
 

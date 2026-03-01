@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['render_5futils_2ec_1962',['render_utils.c',['../render__utils_8c.html',1,'']]],
-  ['render_5futils_2eh_1963',['render_utils.h',['../render__utils_8h.html',1,'']]]
+  ['render_5futils_2ec_1966',['render_utils.c',['../render__utils_8c.html',1,'']]],
+  ['render_5futils_2eh_1967',['render_utils.h',['../render__utils_8h.html',1,'']]],
+  ['renderer_2ec_1968',['renderer.c',['../renderer_8c.html',1,'']]],
+  ['renderer_2eh_1969',['renderer.h',['../renderer_8h.html',1,'']]]
 ];

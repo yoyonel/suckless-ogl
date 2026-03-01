@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['whitebalanceparams_1870',['WhiteBalanceParams',['../structWhiteBalanceParams.html',1,'']]]
+  ['whitebalanceparams_1874',['WhiteBalanceParams',['../structWhiteBalanceParams.html',1,'']]]
 ];

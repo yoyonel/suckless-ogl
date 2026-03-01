@@ -5,7 +5,7 @@ var structGPUStage =
     [ "depth", "structGPUStage.html#a38657e9f22b67f1096addca91bd5a5e2", null ],
     [ "duration_ms", "structGPUStage.html#a26b8409ed5dc093e414b72ee9a62df61", null ],
     [ "duration_sampler", "structGPUStage.html#a50ea37f2d46f129e3d9ced9179078342", null ],
-    [ "name", "structGPUStage.html#ab9b6b9fe3b834a439e410227914d9d93", null ],
+    [ "name", "structGPUStage.html#a2de1e5fda6f1272093bbbf71a412455a", null ],
     [ "offset_sampler", "structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d", null ],
     [ "parent_index", "structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021", null ],
     [ "prev_alpha", "structGPUStage.html#acf997b2d5dffa4e9011d2acb9d822e60", null ],

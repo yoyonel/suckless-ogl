@@ -37,6 +37,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "postprocess_presets.h", "postprocess__presets_8h.html", "postprocess__presets_8h" ],
     [ "profiler.h", "profiler_8h.html", "profiler_8h" ],
     [ "render_utils.h", "render__utils_8h.html", "render__utils_8h" ],
+    [ "renderer.h", "renderer_8h.html", "renderer_8h" ],
     [ "scene.h", "scene_8h.html", "scene_8h" ],
     [ "sh_math.h", "sh__math_8h.html", "sh__math_8h" ],
     [ "shader.h", "shader_8h.html", "shader_8h" ],

@@ -1,7 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"camera_8h.html#a44fc6216c4aa4dbaea8299798e3cc29f":[6,0,2,9,13],
-"camera_8h.html#a45db274ac303f18d569efb85b1e5a284":[6,0,2,9,2],
 "camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7":[6,0,2,9,20],
 "camera_8h.html#a6b99cda8dc39c208a7eb0c433fc54fd0":[6,0,2,9,4],
 "camera_8h.html#a6ea673eb9cc74d05f8ddef371a019e8a":[6,0,2,9,16],
@@ -249,5 +247,7 @@ var NAVTREEINDEX1 =
 "globals_a.html":[6,1,0,1],
 "globals_b.html":[6,1,0,2],
 "globals_c.html":[6,1,0,3],
-"globals_d.html":[6,1,0,4]
+"globals_d.html":[6,1,0,4],
+"globals_defs.html":[6,1,6],
+"globals_e.html":[6,1,0,5]
 };
