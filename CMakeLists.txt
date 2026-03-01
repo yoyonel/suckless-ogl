@@ -403,7 +403,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
-    target_compile_definitions(app PRIVATE _GNU_SOURCE)
+    target_compile_definitions(app PRIVATE _GNU_SOURCE _POSIX_C_SOURCE=200809L)
 endif()
 
 if(ENABLE_SHADER_OPTIMIZATION)

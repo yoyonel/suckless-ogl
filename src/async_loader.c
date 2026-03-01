@@ -1,11 +1,11 @@
-#include "utils.h"
-#define _POSIX_C_SOURCE 200809L  // NOLINT(cert-dcl37-c,cert-dcl51-cpp)
 #include "async_loader.h"
+
 #include "log.h"
 #include "perf_timer.h"
 #include "simd_utils.h"
 #include "texture.h"
 #include "tracy_manager.h"
+#include "utils.h"
 #include <pthread.h>
 #include <stb_image.h>
 #include <stdbool.h>
