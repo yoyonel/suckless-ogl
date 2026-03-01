@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#define METRIC_STACK_MAX_DEPTH 32
+enum { METRIC_STACK_MAX_DEPTH = 32 };
 
 typedef struct {
 	int stack[METRIC_STACK_MAX_DEPTH];

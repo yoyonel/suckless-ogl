@@ -13,6 +13,7 @@
 #include "log.h"
 #include "perf_mode.h"
 #include "postprocess.h"
+#include "renderer.h"
 #include "scene.h"
 #include "texture.h"
 #include "tracy_gpu.h"
@@ -285,7 +286,12 @@ void app_run(App* app)
 #ifdef TRACY_ENABLE
 			TracyCZoneN(render_ctx, "App Render", 1);
 #endif
-			app_render(app);
+			renderer_draw_frame(
+			    app, &app->scene, &app->postprocess, &app->camera,
+			    &app->gpu_profiler, &app->timeline_ui,
+			    &app->env_mgr, &app->notifier, &app->effect_bench,
+			    app->width, app->height, app->delta_time,
+			    app->frame_count, app->log_gpu_metrics);
 #ifdef TRACY_ENABLE
 			TracyCZoneEnd(render_ctx);
 #endif
@@ -396,72 +402,4 @@ void app_update(App* app)
 	env_manager_update_transition(&app->env_mgr, &app->scene,
 	                              &app->postprocess, &app->auto_threshold,
 	                              app->delta_time, app->frame_count);
-}
-
-void app_render(App* app)
-{
-	bool profiling_enabled =
-	    app->timeline_ui.visible || app->log_gpu_metrics ||
-	    effect_benchmark_is_running(&app->effect_bench);
-	gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
-	gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
-
-#ifdef TRACY_ENABLE
-	TracyCFrameMark;
-#endif
-
-	/* Effect benchmark: read previous frame's profiler results */
-	if (effect_benchmark_update(&app->effect_bench)) {
-		action_notifier_push(&app->notifier,
-		                     "FX Benchmark: Done (see log)",
-		                     NOTIF_DUR_LONG);
-	}
-
-	// 2. Démarrer la mesure globale de la frame
-	GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
-	                   GPU_PROFILER_TOTAL_FRAME_COLOR);
-
-	postprocess_begin(&app->postprocess);
-	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
-
-	mat4 view;
-	mat4 proj;
-	mat4 view_proj;
-	mat4 inv_view_proj;
-	vec3 camera_pos = {app->camera.position[0], app->camera.position[1],
-	                   app->camera.position[2]};
-	camera_get_view_matrix(&app->camera, view);
-	if (app->height > 0) {
-		glm_perspective(glm_rad(app->camera.zoom),
-		                (float)app->width / (float)app->height,
-		                NEAR_PLANE, FAR_PLANE, proj);
-	} else {
-		glm_mat4_identity(proj);
-	}
-	glm_mat4_mul(proj, view, view_proj);
-	glm_mat4_inv(view_proj, inv_view_proj);
-
-	scene_render(&app->scene, view, proj, camera_pos,
-	             app->postprocess.motion_blur_fx.previous_view_proj,
-	             app->width, app->height);
-
-	postprocess_end(&app->postprocess);
-
-	postprocess_update_matrices(&app->postprocess, view_proj);
-
-	{
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "UI Overlay",
-		                   GPU_PROFILER_UI_COLOR);
-
-		/* Render Transition Overlay */
-		env_manager_render_overlay(&app->env_mgr, &app->scene);
-
-		app_render_ui(app);
-	}
-
-	// 4. Logique d'affichage et animations
-	double current_time = glfwGetTime();
-	gpu_profiler_ui_update(&app->timeline_ui, &app->gpu_profiler,
-	                       app->delta_time, current_time,
-	                       (bool)app->log_gpu_metrics);
 }

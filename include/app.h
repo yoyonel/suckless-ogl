@@ -112,11 +112,6 @@ void app_run(App* app);
  */
 void app_update(App* app);
 
-/**
- * @brief One-frame rendering orchestration.
- */
-void app_render(App* app);
-
 #include "app_input.h"
 #include "app_ui.h"
 
