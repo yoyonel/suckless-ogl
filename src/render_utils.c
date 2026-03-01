@@ -153,9 +153,7 @@ void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 
 	/* TexCoords */
 	glEnableVertexAttribArray(1);
-	/* clang-format off */
-	const void* tex_offset = (const void*)(uintptr_t)TEX_COORD_OFFSET; /* NOLINT(performance-no-int-to-ptr) */
-	/* clang-format on */
+	const void* tex_offset = utils_buffer_offset(TEX_COORD_OFFSET);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
 	                      tex_offset);
 	glVertexAttribDivisor(1, 0);
@@ -282,9 +280,8 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 
 	/* mat4 model (Locations 2, 3, 4, 5) */
 	for (int i = 0; i < 4; i++) {
-		/* clang-format off */
-		const void* m_offset = (const void*)(uintptr_t)(i * 4 * sizeof(float)); /* NOLINT(performance-no-int-to-ptr) */
-		/* clang-format on */
+		const void* m_offset =
+		    utils_buffer_offset(i * 4 * sizeof(float));
 		glEnableVertexAttribArray(index_vattrib);
 		glVertexAttribPointer(index_vattrib, 4, GL_FLOAT, GL_FALSE,
 		                      stride, m_offset);
@@ -294,9 +291,7 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 
 	/* Albedo (6) */
 	glEnableVertexAttribArray(index_vattrib);
-	/* clang-format off */
-	const void* a_offset = (const void*)(uintptr_t)offset_albedo; /* NOLINT(performance-no-int-to-ptr) */
-	/* clang-format on */
+	const void* a_offset = utils_buffer_offset(offset_albedo);
 	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
 	                      a_offset);
 	glVertexAttribDivisor(index_vattrib, 1);
@@ -305,7 +300,7 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 	/* PBR (7) */
 	glEnableVertexAttribArray(index_vattrib);
 	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
-	                      BUFFER_OFFSET(offset_metallic));
+	                      utils_buffer_offset(offset_metallic));
 	glVertexAttribDivisor(index_vattrib, 1);
 }
 

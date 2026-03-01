@@ -17,11 +17,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-/** @brief Macro to offset a pointer by a byte amount (useful for EBO/VBO
- * offsets). */
-#define BUFFER_OFFSET(offset) \
-	((void*)(uintptr_t)(offset))  // NOLINT(performance-no-int-to-ptr)
-
 /** @brief Minimum number of vertex attributes guaranteed by OpenGL 3.3+. */
 enum { MAX_VERTEX_ATTRIBS_BASELINE = 16 };
 
