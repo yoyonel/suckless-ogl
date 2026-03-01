@@ -345,9 +345,10 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 	}
 
 	size_t total_defines_len = 0;
+	const size_t define_overhead =
+	    (sizeof("#define ") - 1) + (sizeof("\n") - 1);
 	for (int i = 0; i < count; i++) {
-		total_defines_len +=
-		    strlen("#define ") + strlen(defines[i]) + strlen("\n");
+		total_defines_len += define_overhead + strlen(defines[i]);
 	}
 
 	size_t new_size = file_size + total_defines_len + 1;
