@@ -85,13 +85,13 @@ var NAVTREEINDEX =
 "camera_8h.html#a33463fa28ecfda9a7afb4fa571ae058a",
 "globals_c.html",
 "group__UI.html#gab0c2612771e8100aa0c566bbe5e43558",
-"pbr_8c.html#aa491eae0c7780d7ceee29175380adc09",
-"postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b",
-"sh__probe_8glsl.html#ae983ca5ff558cf0d904c82d0cd92efe9",
-"structBandingParams.html#ad234ebb29369c4ae1fee05ec7382ee2a",
-"structIBLCoordinator.html#afddb06c4d125ddd47cf5ee7107c55f02",
-"structScene.html#a896b30612f7921d033a63e983cc04d02",
-"ui__spinner_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1"
+"pbr_8c.html#a764e470d5b315a2fc1bfdcad6183545b",
+"postprocess_8frag.html#acdef7a1fd863a6d3770c1268cb06add3",
+"sh__probe_8glsl.html#aa636d07c616fadeb225c331ee2defc64",
+"structBandingParams.html",
+"structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0",
+"structScene.html#a33d1964d8a1f5096d06147fa910791f5",
+"ui_8vert.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

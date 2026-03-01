@@ -1,52 +1,52 @@
 <map id="scene_init" name="scene_init">
-<area shape="rect" id="node1" title="Initializes the scene resources." alt="" coords="5,620,93,647"/>
-<area shape="rect" id="node2" href="$icosphere_8h.html#a98ec73bfde90923b7425adee892c7529" title="Initializes icosphere geometry buffers." alt="" coords="175,56,289,83"/>
-<area shape="rect" id="node5" href="$light__probes_8h.html#a27b0e33c943a86a3cbf620b5619244bf" title="Initializes the grid structure, creates SSBO, and starts worker thread." alt="" coords="155,209,309,236"/>
-<area shape="rect" id="node14" href="$render__utils_8h.html#a60b35229c13299bba83a2d47ed4c1013" title="Creates a wireframe Unit Cube VBO (GL_LINES)." alt="" coords="397,107,543,149"/>
-<area shape="rect" id="node15" href="$material_8h.html#a4e89b59710fd25b3d3615e4511008986" title="Loads a set of material presets from a configuration file." alt="" coords="149,871,315,897"/>
-<area shape="rect" id="node24" href="$render__utils_8h.html#a98a336c2498940402d85cac4b93e71a7" title="Creates an empty Vertex Array Object (VAO)." alt="" coords="159,922,305,963"/>
-<area shape="rect" id="node25" href="$render__utils_8h.html#a691eca4a993c57791a056d182eeeda68" title="Creates a standard centered Quad VBO." alt="" coords="159,987,305,1029"/>
-<area shape="rect" id="node26" href="$render__utils_8h.html#aa370bd3e8bd4ca7c706c84d4c5505688" title="Creates a wireframe Quad VBO (GL_LINE_LOOP)." alt="" coords="159,1053,305,1094"/>
-<area shape="rect" id="node27" href="$scene_8c.html#a3582b10c2ed28f888e173f6e65e62791" title=" " alt="" coords="156,529,308,570"/>
-<area shape="rect" id="node28" href="$shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="394,579,546,621"/>
-<area shape="rect" id="node33" href="$scene_8c.html#ae1059056f3f15c15286cfec8e2ec2092" title=" " alt="" coords="156,703,308,745"/>
-<area shape="rect" id="node40" href="$scene_8c.html#abedb2b011728be61992e91d4a17dcdc6" title=" " alt="" coords="141,412,323,439"/>
-<area shape="rect" id="node41" href="$scene_8c.html#a2c42faa2abd070918407798043140e3f" title=" " alt="" coords="153,463,311,505"/>
-<area shape="rect" id="node45" href="$scene_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb" title=" " alt="" coords="168,820,296,847"/>
-<area shape="rect" id="node49" href="$skybox_8h.html#ad8084984d6dafbe33c871117733efacf" title="Initializes skybox geometry and caches uniform locations." alt="" coords="184,645,280,672"/>
-<area shape="rect" id="node3" href="$icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6" title="Initializes a UintArray with zeroed fields." alt="" coords="415,5,525,32"/>
-<area shape="rect" id="node4" href="$icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d" title="Initializes a Vec3Array with zeroed fields." alt="" coords="413,56,527,83"/>
-<area shape="rect" id="node6" href="$light__probes_8c.html#a3b0de5a5962e8f8e7a1c47a2177cedf0" title="Initializes the grid structure (CPU only)." alt="" coords="377,173,563,200"/>
-<area shape="rect" id="node7" href="$light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5" title=" " alt="" coords="397,224,543,251"/>
-<area shape="rect" id="node8" href="$light__probes_8c.html#a1a028494cc8424d6c4c76a0ff3bd2f1f" title=" " alt="" coords="641,57,787,98"/>
-<area shape="rect" id="node9" href="$perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="627,123,801,149"/>
-<area shape="rect" id="node10" href="$perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="651,173,777,200"/>
-<area shape="rect" id="node11" href="$utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332" title="memcpy wrapper with bounds checking." alt="" coords="657,224,771,251"/>
-<area shape="rect" id="node12" href="$utils_8h.html#aa0d7c61e364406aa652f12a630642256" title="memset wrapper with bounds checking." alt="" coords="659,477,769,504"/>
-<area shape="rect" id="node13" href="$utils_8h.html#aca6393fbdcd75a7379484de0a7604136" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="868,401,975,428"/>
-<area shape="rect" id="node16" href="$material_8c.html#a8862dab388da94800a1d4fa6bbc4f625" title=" " alt="" coords="399,980,541,1007"/>
-<area shape="rect" id="node17" href="$io_8h.html#abc65c80f0bd0b33e7cf1128e6b0731cb" title="Reads an entire file into a null&#45;terminated string." alt="" coords="421,1031,519,1057"/>
-<area shape="rect" id="node20" href="$material_8c.html#ab29b44b2deb74423e0b2836b77e0b040" title=" " alt="" coords="371,1107,569,1133"/>
-<area shape="rect" id="node18" href="$utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1" title="Validates a relative path to prevent arbitrary file access." alt="" coords="633,980,795,1007"/>
-<area shape="rect" id="node19" href="$utils_8h.html#aa17d18069f6b28bc27de7af0f1961171" title="calloc wrapper with zero&#45;size check." alt="" coords="667,1031,761,1057"/>
-<area shape="rect" id="node21" href="$material_8c.html#aef3a2c69f116490ba40deda62991392d" title=" " alt="" coords="639,1183,789,1209"/>
-<area shape="rect" id="node22" href="$material_8c.html#a4c9ce1d8ed49f869fa54e5d74f743610" title=" " alt="" coords="632,1081,796,1108"/>
-<area shape="rect" id="node23" href="$material_8c.html#ad1fb3541d5c2228e4792bce21c582b19" title=" " alt="" coords="617,1132,811,1159"/>
-<area shape="rect" id="node30" href="$shader_8h.html#ab37c4a413a068f69399c7b755b9f9254" title="Loads a linked program and caches all its active uniforms." alt="" coords="419,427,521,453"/>
-<area shape="rect" id="node32" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="422,477,518,504"/>
-<area shape="rect" id="node29" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="639,587,789,613"/>
-<area shape="rect" id="node31" href="$shader_8c.html#a4e5e290bb3ee9bc8ebb158bcff2f584f" title="Special loader that injects #define directives before compilation." alt="" coords="619,427,809,453"/>
-<area shape="rect" id="node34" href="$ibl__coordinator_8h.html#ad747589adbee4869476d732ee75ba20c" title="Initializes the IBL coordinator with necessary shader resources." alt="" coords="397,711,543,737"/>
-<area shape="rect" id="node38" href="$shader_8h.html#a261eeb4f63e33c6cf31350b32eb97ff9" title="Helper to load a compute program from disk." alt="" coords="631,871,797,897"/>
-<area shape="rect" id="node35" href="$pbr_8h.html#afe447daec33b49a4068deabf4f2cd96c" title="Retrieves uniform locations for the irradiance convolution shader." alt="" coords="635,660,793,687"/>
-<area shape="rect" id="node36" href="$pbr_8h.html#a519c59fa558fb2c7776e78be5944464e" title="Retrieves uniform locations for the luminance reduction shader." alt="" coords="630,711,798,737"/>
-<area shape="rect" id="node37" href="$pbr_8h.html#a01b429d5a8f495e2e01428fc05cb7610" title="Retrieves uniform locations for the specular prefilter shader." alt="" coords="627,761,801,788"/>
-<area shape="rect" id="node39" href="$shader_8c.html#a8e2f3d3cd026d62964de6bc23968a5cd" title="Compiles a single shader stage from a file." alt="" coords="859,871,984,897"/>
-<area shape="rect" id="node42" href="$scene_8c.html#a20db65b57334ddf3116de362f8e91af8" title=" " alt="" coords="389,300,551,327"/>
-<area shape="rect" id="node43" href="$billboard__rendering_8h.html#a2e879f800244b637740be72363feeb04" title="Initializes the billboard group and allocates GPU memory." alt="" coords="639,275,789,301"/>
-<area shape="rect" id="node44" href="$billboard__rendering_8h.html#ac2460cc8c0b2f53a206ac95146ac5923" title="Prepares the VAO by linking a shared quad VBO with internal instance data." alt="" coords="624,325,804,352"/>
-<area shape="rect" id="node46" href="$pbr_8h.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="397,929,543,956"/>
-<area shape="rect" id="node47" href="$render__utils_8h.html#acb93c5e9986da209ae59c3e07e9c1bf4" title="Creates a 1x1 floating&#45;point texture of a specific color." alt="" coords="397,813,543,854"/>
-<area shape="rect" id="node48" href="$scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972" title=" " alt="" coords="391,879,549,905"/>
-<area shape="rect" id="node50" href="$render__utils_8h.html#a7c76878a56fc26dedd3af3595f12626e" title="Creates a Full&#45;Screen Quad VAO and VBO." alt="" coords="397,645,543,686"/>
+<area shape="rect" id="node1" title="Initializes the scene resources." alt="" coords="5,637,93,663"/>
+<area shape="rect" id="node2" href="$icosphere_8h.html#a98ec73bfde90923b7425adee892c7529" title="Initializes icosphere geometry buffers." alt="" coords="175,81,289,107"/>
+<area shape="rect" id="node5" href="$light__probes_8h.html#a27b0e33c943a86a3cbf620b5619244bf" title="Initializes the grid structure, creates SSBO, and starts worker thread." alt="" coords="155,234,309,261"/>
+<area shape="rect" id="node15" href="$render__utils_8h.html#a60b35229c13299bba83a2d47ed4c1013" title="Creates a wireframe Unit Cube VBO (GL_LINES)." alt="" coords="397,132,543,173"/>
+<area shape="rect" id="node16" href="$material_8h.html#a4e89b59710fd25b3d3615e4511008986" title="Loads a set of material presets from a configuration file." alt="" coords="149,895,315,922"/>
+<area shape="rect" id="node25" href="$render__utils_8h.html#a98a336c2498940402d85cac4b93e71a7" title="Creates an empty Vertex Array Object (VAO)." alt="" coords="159,947,305,988"/>
+<area shape="rect" id="node26" href="$render__utils_8h.html#a691eca4a993c57791a056d182eeeda68" title="Creates a standard centered Quad VBO." alt="" coords="159,1012,305,1053"/>
+<area shape="rect" id="node27" href="$render__utils_8h.html#aa370bd3e8bd4ca7c706c84d4c5505688" title="Creates a wireframe Quad VBO (GL_LINE_LOOP)." alt="" coords="159,1077,305,1119"/>
+<area shape="rect" id="node28" href="$scene_8c.html#a3582b10c2ed28f888e173f6e65e62791" title=" " alt="" coords="156,545,308,587"/>
+<area shape="rect" id="node29" href="$shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="394,604,546,645"/>
+<area shape="rect" id="node34" href="$scene_8c.html#ae1059056f3f15c15286cfec8e2ec2092" title=" " alt="" coords="156,728,308,769"/>
+<area shape="rect" id="node41" href="$scene_8c.html#abedb2b011728be61992e91d4a17dcdc6" title=" " alt="" coords="141,414,323,441"/>
+<area shape="rect" id="node42" href="$scene_8c.html#a2c42faa2abd070918407798043140e3f" title=" " alt="" coords="153,472,311,513"/>
+<area shape="rect" id="node45" href="$scene_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb" title=" " alt="" coords="168,845,296,871"/>
+<area shape="rect" id="node49" href="$skybox_8h.html#ad8084984d6dafbe33c871117733efacf" title="Initializes skybox geometry and caches uniform locations." alt="" coords="184,662,280,689"/>
+<area shape="rect" id="node3" href="$icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6" title="Initializes a UintArray with zeroed fields." alt="" coords="415,30,525,57"/>
+<area shape="rect" id="node4" href="$icosphere_8c.html#ac300d42875ee9e7db317f5f3bdedd91d" title="Initializes a Vec3Array with zeroed fields." alt="" coords="413,81,527,107"/>
+<area shape="rect" id="node6" href="$light__probes_8c.html#a3b0de5a5962e8f8e7a1c47a2177cedf0" title="Initializes the grid structure (CPU only)." alt="" coords="377,198,563,225"/>
+<area shape="rect" id="node7" href="$light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5" title=" " alt="" coords="397,249,543,275"/>
+<area shape="rect" id="node8" href="$light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12" title=" " alt="" coords="649,5,796,47"/>
+<area shape="rect" id="node9" href="$perf__timer_8h.html#a0d2ae17973105f843bf88f6f7be496bc" title="Stops the timer and returns elapsed time in milliseconds." alt="" coords="635,71,810,98"/>
+<area shape="rect" id="node10" href="$perf__timer_8h.html#a2fe19c18f13ab8077e83373abd1a00f5" title="Starts the CPU timer." alt="" coords="659,122,786,149"/>
+<area shape="rect" id="node11" href="$light__probes_8c.html#a5733f69942faa6b841b0a7dd65b01f8d" title=" " alt="" coords="617,173,828,199"/>
+<area shape="rect" id="node12" href="$utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332" title="memcpy wrapper with bounds checking." alt="" coords="665,274,780,301"/>
+<area shape="rect" id="node13" href="$utils_8h.html#aa0d7c61e364406aa652f12a630642256" title="memset wrapper with bounds checking." alt="" coords="667,325,778,351"/>
+<area shape="rect" id="node14" href="$utils_8h.html#aca6393fbdcd75a7379484de0a7604136" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="885,451,992,478"/>
+<area shape="rect" id="node17" href="$material_8c.html#a8862dab388da94800a1d4fa6bbc4f625" title=" " alt="" coords="399,1005,541,1031"/>
+<area shape="rect" id="node18" href="$io_8h.html#abc65c80f0bd0b33e7cf1128e6b0731cb" title="Reads an entire file into a null&#45;terminated string." alt="" coords="421,1055,519,1082"/>
+<area shape="rect" id="node21" href="$material_8c.html#ab29b44b2deb74423e0b2836b77e0b040" title=" " alt="" coords="371,1131,569,1158"/>
+<area shape="rect" id="node19" href="$utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1" title="Validates a relative path to prevent arbitrary file access." alt="" coords="642,1005,803,1031"/>
+<area shape="rect" id="node20" href="$utils_8h.html#aa17d18069f6b28bc27de7af0f1961171" title="calloc wrapper with zero&#45;size check." alt="" coords="675,1055,770,1082"/>
+<area shape="rect" id="node22" href="$material_8c.html#aef3a2c69f116490ba40deda62991392d" title=" " alt="" coords="647,1157,798,1183"/>
+<area shape="rect" id="node23" href="$material_8c.html#a4c9ce1d8ed49f869fa54e5d74f743610" title=" " alt="" coords="641,1207,805,1234"/>
+<area shape="rect" id="node24" href="$material_8c.html#ad1fb3541d5c2228e4792bce21c582b19" title=" " alt="" coords="626,1106,819,1133"/>
+<area shape="rect" id="node31" href="$shader_8h.html#ab37c4a413a068f69399c7b755b9f9254" title="Loads a linked program and caches all its active uniforms." alt="" coords="419,401,521,427"/>
+<area shape="rect" id="node33" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="422,502,518,529"/>
+<area shape="rect" id="node30" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="648,611,797,638"/>
+<area shape="rect" id="node32" href="$shader_8c.html#a4e5e290bb3ee9bc8ebb158bcff2f584f" title="Special loader that injects #define directives before compilation." alt="" coords="627,426,818,453"/>
+<area shape="rect" id="node35" href="$ibl__coordinator_8h.html#ad747589adbee4869476d732ee75ba20c" title="Initializes the IBL coordinator with necessary shader resources." alt="" coords="397,735,543,762"/>
+<area shape="rect" id="node39" href="$shader_8h.html#a261eeb4f63e33c6cf31350b32eb97ff9" title="Helper to load a compute program from disk." alt="" coords="640,895,805,922"/>
+<area shape="rect" id="node36" href="$pbr_8h.html#afe447daec33b49a4068deabf4f2cd96c" title="Retrieves uniform locations for the irradiance convolution shader." alt="" coords="644,685,801,711"/>
+<area shape="rect" id="node37" href="$pbr_8h.html#a519c59fa558fb2c7776e78be5944464e" title="Retrieves uniform locations for the luminance reduction shader." alt="" coords="639,735,807,762"/>
+<area shape="rect" id="node38" href="$pbr_8h.html#a01b429d5a8f495e2e01428fc05cb7610" title="Retrieves uniform locations for the specular prefilter shader." alt="" coords="636,786,809,813"/>
+<area shape="rect" id="node40" href="$shader_8c.html#a8e2f3d3cd026d62964de6bc23968a5cd" title="Compiles a single shader stage from a file." alt="" coords="876,895,1001,922"/>
+<area shape="rect" id="node43" href="$scene_8c.html#a20db65b57334ddf3116de362f8e91af8" title=" " alt="" coords="389,350,551,377"/>
+<area shape="rect" id="node44" href="$billboard__rendering_8h.html#a2e879f800244b637740be72363feeb04" title="Initializes the billboard group and allocates GPU memory." alt="" coords="647,375,798,402"/>
+<area shape="rect" id="node46" href="$pbr_8h.html#a626c9aaaa1dea8809b7f5c9a745aac55" title="Generates the 2D BRDF Integration Look&#45;Up Table." alt="" coords="397,954,543,981"/>
+<area shape="rect" id="node47" href="$render__utils_8h.html#acb93c5e9986da209ae59c3e07e9c1bf4" title="Creates a 1x1 floating&#45;point texture of a specific color." alt="" coords="397,837,543,879"/>
+<area shape="rect" id="node48" href="$scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972" title=" " alt="" coords="391,903,549,930"/>
+<area shape="rect" id="node50" href="$render__utils_8h.html#a7c76878a56fc26dedd3af3595f12626e" title="Creates a Full&#45;Screen Quad VAO and VBO." alt="" coords="397,669,543,711"/>
 </map>

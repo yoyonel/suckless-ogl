@@ -1,6 +1,7 @@
 var sh__probe_8glsl =
 [
     [ "LightProbe", "structLightProbe.html", "structLightProbe" ],
+    [ "USE_SH_BAKE_FACTORS", "sh__probe_8glsl.html#a43a3c5d2c87cf7cee5f60e3502852d6d", null ],
     [ "eval_sh_irradiance_packed", "sh__probe_8glsl.html#aa636d07c616fadeb225c331ee2defc64", null ],
     [ "eval_sh_irradiance_ssbo", "sh__probe_8glsl.html#a220cb331696d76d66f242cdce7c8f993", null ],
     [ "get_probe_irradiance", "sh__probe_8glsl.html#a90dd6fc14cc170aa54402a9aa987760a", null ],
@@ -9,6 +10,7 @@ var sh__probe_8glsl =
     [ "A1", "sh__probe_8glsl.html#a87a46c9a128ea86b5b6656cfe07ecb05", null ],
     [ "A2", "sh__probe_8glsl.html#abb9977a0ac90dfc1d1e10bdff6ef4a4a", null ],
     [ "u_GIMode", "sh__probe_8glsl.html#af04047712aec8d8c3f2534dc77c02e01", null ],
+    [ "u_GridToIdxScale", "sh__probe_8glsl.html#a75e68475467f13dafd53d3f201c715dd", null ],
     [ "u_ProbeGridDim", "sh__probe_8glsl.html#a8c5eb2e65808402947507e4fd3535b44", null ],
     [ "u_ProbeGridMax", "sh__probe_8glsl.html#a43f269743f084a2d428d78fa731ac535", null ],
     [ "u_ProbeGridMin", "sh__probe_8glsl.html#a8e2ff78de1610b1e4d549cc0099d4880", null ],

@@ -251,6 +251,7 @@ $(document).ready(function(){initNavTree('light__probes_8c.html',''); initResiza
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -276,10 +277,19 @@ Include dependency graph for light_probes.c:</div>
 </div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCachedSphere.html">CachedSphere</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ae71449b1cc6e6250b91f539153a7a0d3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#ae71449b1cc6e6250b91f539153a7a0d3">M_PI</a>&#160;&#160;&#160;3.14159265358979323846</td></tr>
 <tr class="separator:ae71449b1cc6e6250b91f539153a7a0d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43a3c5d2c87cf7cee5f60e3502852d6d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a43a3c5d2c87cf7cee5f60e3502852d6d">USE_SH_BAKE_FACTORS</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a43a3c5d2c87cf7cee5f60e3502852d6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5a6429b639acc6c76b9a7f59ed59572"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#aa5a6429b639acc6c76b9a7f59ed59572">SH_COEFF_COUNT</a>&#160;&#160;&#160;9</td></tr>
+<tr class="separator:aa5a6429b639acc6c76b9a7f59ed59572"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58e005cf8b962a80a0964376dbec202b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a58e005cf8b962a80a0964376dbec202b">GI_BOUNCE_SCALE</a>&#160;&#160;&#160;2.0F</td></tr>
 <tr class="separator:a58e005cf8b962a80a0964376dbec202b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a914ef7f00117754d0910e9f0c7f60894"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a914ef7f00117754d0910e9f0c7f60894">GI_MIN_DIST_RADII</a>&#160;&#160;&#160;1.05F</td></tr>
@@ -317,12 +327,14 @@ Functions</h2></td></tr>
 <tr class="memitem:af2faf1cd11e22b3cedfba8ea055224df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df">light_probe_grid_free_cpu</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
 <tr class="memdesc:af2faf1cd11e22b3cedfba8ea055224df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up CPU resources.  <a href="light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df">More...</a><br /></td></tr>
 <tr class="separator:af2faf1cd11e22b3cedfba8ea055224df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d7e237076d142803cdfc37d4dde458b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a9d7e237076d142803cdfc37d4dde458b">compute_probe_sh</a> (const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *local_scene, int local_count, vec3 probe_pos, <a class="el" href="structSH9.html">SH9</a> *sh_data)</td></tr>
-<tr class="separator:a9d7e237076d142803cdfc37d4dde458b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01aa2c71df70a1d04d8f8eacc7ad372a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a01aa2c71df70a1d04d8f8eacc7ad372a">is_probe_inside_sphere</a> (vec3 probe_pos, const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *local_scene, int local_count)</td></tr>
-<tr class="separator:a01aa2c71df70a1d04d8f8eacc7ad372a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a028494cc8424d6c4c76a0ff3bd2f1f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a1a028494cc8424d6c4c76a0ff3bd2f1f">light_probe_worker_compute_probe</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int grid_x, int grid_y, int grid_z, const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *local_scene, int local_count)</td></tr>
-<tr class="separator:a1a028494cc8424d6c4c76a0ff3bd2f1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c10cfc74aacb0946926259cbd7610fd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a5c10cfc74aacb0946926259cbd7610fd">compute_probe_sh</a> (const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count, vec3 probe_pos, <a class="el" href="structSH9.html">SH9</a> *sh_data)</td></tr>
+<tr class="separator:a5c10cfc74aacb0946926259cbd7610fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abde5719c10df3a99d455b1664addce2a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#abde5719c10df3a99d455b1664addce2a">is_probe_inside_sphere</a> (vec3 probe_pos, const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count)</td></tr>
+<tr class="separator:abde5719c10df3a99d455b1664addce2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e903f61e016f1bb69fc006c5b73ad12"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12">light_probe_worker_compute_probe</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int grid_x, int grid_y, int grid_z, const <a class="el" href="structCachedSphere.html">CachedSphere</a> *cached_scene, int local_count)</td></tr>
+<tr class="separator:a1e903f61e016f1bb69fc006c5b73ad12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5733f69942faa6b841b0a7dd65b01f8d"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a5733f69942faa6b841b0a7dd65b01f8d">precompute_cached_spheres</a> (<a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *local_scene, int local_count)</td></tr>
+<tr class="separator:a5733f69942faa6b841b0a7dd65b01f8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a717fb0537d37b3a34cc1321510dabcb5"><td class="memItemLeft" align="right" valign="top">static void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5">light_probe_worker</a> (void *arg)</td></tr>
 <tr class="separator:a717fb0537d37b3a34cc1321510dabcb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27b0e33c943a86a3cbf620b5619244bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8c.html#a27b0e33c943a86a3cbf620b5619244bf">light_probe_grid_init</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, int dim_x, int dim_y, int dim_z)</td></tr>
@@ -446,6 +458,34 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="aa5a6429b639acc6c76b9a7f59ed59572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a6429b639acc6c76b9a7f59ed59572">&#9670;&nbsp;</a></span>SH_COEFF_COUNT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SH_COEFF_COUNT&#160;&#160;&#160;9</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a43a3c5d2c87cf7cee5f60e3502852d6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a3c5d2c87cf7cee5f60e3502852d6d">&#9670;&nbsp;</a></span>USE_SH_BAKE_FACTORS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define USE_SH_BAKE_FACTORS&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="aae05225933a42f81e7c4a9fb286596f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aae05225933a42f81e7c4a9fb286596f9">&#9670;&nbsp;</a></span>anonymous enum</h2>
@@ -468,8 +508,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a9d7e237076d142803cdfc37d4dde458b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d7e237076d142803cdfc37d4dde458b">&#9670;&nbsp;</a></span>compute_probe_sh()</h2>
+<a id="a5c10cfc74aacb0946926259cbd7610fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c10cfc74aacb0946926259cbd7610fd">&#9670;&nbsp;</a></span>compute_probe_sh()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -480,8 +520,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static void compute_probe_sh </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *&#160;</td>
-          <td class="paramname"><em>local_scene</em>, </td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -516,7 +556,7 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a9d7e237076d142803cdfc37d4dde458b_cgraph.svg" width="370" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a5c10cfc74aacb0946926259cbd7610fd_cgraph.svg" width="370" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -584,8 +624,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a01aa2c71df70a1d04d8f8eacc7ad372a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01aa2c71df70a1d04d8f8eacc7ad372a">&#9670;&nbsp;</a></span>is_probe_inside_sphere()</h2>
+<a id="abde5719c10df3a99d455b1664addce2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abde5719c10df3a99d455b1664addce2a">&#9670;&nbsp;</a></span>is_probe_inside_sphere()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -602,8 +642,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *&#160;</td>
-          <td class="paramname"><em>local_scene</em>, </td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -623,12 +663,6 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a01aa2c71df70a1d04d8f8eacc7ad372a_cgraph.svg" width="375" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
-</div>
-</div>
 
 </div>
 </div>
@@ -783,7 +817,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a27b0e33c943a86a3cbf620b5619244bf_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a27b0e33c943a86a3cbf620b5619244bf_cgraph.svg" width="100%" height="581"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1042,14 +1076,14 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a717fb0537d37b3a34cc1321510dabcb5_cgraph.svg" width="100%" height="543"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a717fb0537d37b3a34cc1321510dabcb5_cgraph.svg" width="100%" height="581"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a1a028494cc8424d6c4c76a0ff3bd2f1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a028494cc8424d6c4c76a0ff3bd2f1f">&#9670;&nbsp;</a></span>light_probe_worker_compute_probe()</h2>
+<a id="a1e903f61e016f1bb69fc006c5b73ad12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e903f61e016f1bb69fc006c5b73ad12">&#9670;&nbsp;</a></span>light_probe_worker_compute_probe()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1084,7 +1118,49 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structCachedSphere.html">CachedSphere</a> *&#160;</td>
+          <td class="paramname"><em>cached_scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>local_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a1e903f61e016f1bb69fc006c5b73ad12_cgraph.svg" width="594" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5733f69942faa6b841b0a7dd65b01f8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5733f69942faa6b841b0a7dd65b01f8d">&#9670;&nbsp;</a></span>precompute_cached_spheres()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void* precompute_cached_spheres </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a> *&#160;</td>
           <td class="paramname"><em>local_scene</em>, </td>
         </tr>
         <tr>
@@ -1108,7 +1184,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a1a028494cc8424d6c4c76a0ff3bd2f1f_cgraph.svg" width="594" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="light__probes_8c_a5733f69942faa6b841b0a7dd65b01f8d_cgraph.svg" width="411" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

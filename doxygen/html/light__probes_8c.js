@@ -1,5 +1,6 @@
 var light__probes_8c =
 [
+    [ "CachedSphere", "structCachedSphere.html", "structCachedSphere" ],
     [ "GI_BOUNCE_SCALE", "light__probes_8c.html#a58e005cf8b962a80a0964376dbec202b", null ],
     [ "GI_EPSILON", "light__probes_8c.html#ada31c354822314d7a24f3506360adfbd", null ],
     [ "GI_HALF", "light__probes_8c.html#ac304b4e77cc08a0e58d568419bc63491", null ],
@@ -7,10 +8,12 @@ var light__probes_8c =
     [ "GI_MIN_DIST_RADII", "light__probes_8c.html#a914ef7f00117754d0910e9f0c7f60894", null ],
     [ "GI_ZERO", "light__probes_8c.html#aedf6403f1f3fb1760777e3c196dca3d2", null ],
     [ "M_PI", "light__probes_8c.html#ae71449b1cc6e6250b91f539153a7a0d3", null ],
-    [ "compute_probe_sh", "light__probes_8c.html#a9d7e237076d142803cdfc37d4dde458b", null ],
+    [ "SH_COEFF_COUNT", "light__probes_8c.html#aa5a6429b639acc6c76b9a7f59ed59572", null ],
+    [ "USE_SH_BAKE_FACTORS", "light__probes_8c.html#a43a3c5d2c87cf7cee5f60e3502852d6d", null ],
+    [ "compute_probe_sh", "light__probes_8c.html#a5c10cfc74aacb0946926259cbd7610fd", null ],
     [ "get_sphere_pos", "light__probes_8c.html#a1b4f94a86c083d61f890fda97ef2fe16", null ],
     [ "get_sphere_radius", "light__probes_8c.html#aae0f4052ea12af0778e9eaf89ba58610", null ],
-    [ "is_probe_inside_sphere", "light__probes_8c.html#a01aa2c71df70a1d04d8f8eacc7ad372a", null ],
+    [ "is_probe_inside_sphere", "light__probes_8c.html#abde5719c10df3a99d455b1664addce2a", null ],
     [ "light_probe_grid_cleanup", "light__probes_8c.html#a6c8fc97128572ecc44171194266abf88", null ],
     [ "light_probe_grid_compute_aabb", "light__probes_8c.html#a1b221eea19814ee6e47b8d1ec8a05400", null ],
     [ "light_probe_grid_free_cpu", "light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df", null ],
@@ -22,5 +25,6 @@ var light__probes_8c =
     [ "light_probe_grid_update_async", "light__probes_8c.html#a97344a57a3a68fb6c2e832f1fb3086cd", null ],
     [ "light_probe_render_debug", "light__probes_8c.html#ad70cf99a2b574df78d64d174738aea1f", null ],
     [ "light_probe_worker", "light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5", null ],
-    [ "light_probe_worker_compute_probe", "light__probes_8c.html#a1a028494cc8424d6c4c76a0ff3bd2f1f", null ]
+    [ "light_probe_worker_compute_probe", "light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12", null ],
+    [ "precompute_cached_spheres", "light__probes_8c.html#a5733f69942faa6b841b0a7dd65b01f8d", null ]
 ];

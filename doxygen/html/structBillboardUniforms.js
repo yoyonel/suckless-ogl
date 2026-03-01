@@ -4,6 +4,7 @@ var structBillboardUniforms =
     [ "cam_pos", "structBillboardUniforms.html#abc3b6bb0c173dd027bc0d7e3d91711d7", null ],
     [ "debug_mode", "structBillboardUniforms.html#ad5b53914685903e90dd9f57753f699b3", null ],
     [ "gi_mode", "structBillboardUniforms.html#a90c1d6ef5f2720d34e6f86cfe5c20ad4", null ],
+    [ "grid_to_idx_scale", "structBillboardUniforms.html#a1f8440ce2d7f0a77b2eb310af6daad2c", null ],
     [ "irradiance_map", "structBillboardUniforms.html#a276d9721ca22a86d14a7576756bafbed", null ],
     [ "prefilter_map", "structBillboardUniforms.html#ae16eb1f3082382d6ece3ed479cb11d74", null ],
     [ "previous_view_proj", "structBillboardUniforms.html#ad6cebd6fae77c13a07c8baa243b2f3e7", null ],

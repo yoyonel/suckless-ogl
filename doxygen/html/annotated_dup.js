@@ -10,6 +10,7 @@ var annotated_dup =
     [ "BandingParams", "structBandingParams.html", "structBandingParams" ],
     [ "BillboardGroup", "structBillboardGroup.html", "structBillboardGroup" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
+    [ "CachedSphere", "structCachedSphere.html", "structCachedSphere" ],
     [ "Camera", "structCamera.html", "structCamera" ],
     [ "ChromAbberationParams", "structChromAbberationParams.html", "structChromAbberationParams" ],
     [ "Chunk", "structChunk.html", "structChunk" ],
