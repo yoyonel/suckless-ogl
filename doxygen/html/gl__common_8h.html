@@ -282,9 +282,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd">BUFFER_OFFSET</a>(offset)&#160;&#160;&#160;	((void*)(uintptr_t)(offset))</td></tr>
-<tr class="memdesc:a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to offset a pointer by a byte amount (useful for EBO/VBO offsets).  <a href="gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd">More...</a><br /></td></tr>
-<tr class="separator:a2789ab28bb84a9a9f553c45e4eedbdfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">GL_DEBUG_PUSH</a>(name)&#160;&#160;&#160;	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name)</td></tr>
 <tr class="memdesc:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a debug group to the OpenGL command stream for debugging tools.  <a href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">More...</a><br /></td></tr>
 <tr class="separator:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -355,26 +352,6 @@ Functions</h2></td></tr>
 <div class="textblock"><p>Common OpenGL definitions, RAII helpers, and utilities. </p>
 <p>This header ensures correct inclusion order for GLAD and GLFW, and provides C-style RAII macros using the <code>__cleanup__</code> attribute. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a2789ab28bb84a9a9f553c45e4eedbdfd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2789ab28bb84a9a9f553c45e4eedbdfd">&#9670;&nbsp;</a></span>BUFFER_OFFSET</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define BUFFER_OFFSET</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">offset</td><td>)</td>
-          <td>&#160;&#160;&#160;	((void*)(uintptr_t)(offset))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Macro to offset a pointer by a byte amount (useful for EBO/VBO offsets). </p>
-
-</div>
-</div>
 <a id="a74a399d3e71315d0d06000c63b41aea9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a74a399d3e71315d0d06000c63b41aea9">&#9670;&nbsp;</a></span>CLEANUP_TEXTURE</h2>
 
@@ -649,7 +626,7 @@ Functions</h2></td></tr>
 <div class="line">    const <span class="keywordtype">char</span>* _gl_dbg_##__LINE__                              \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a>)))        \</div>
 <div class="line">        __attribute__((unused)) = name</div>
-<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:58</div></div>
+<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:53</div></div>
 </div><!-- fragment -->
 <p>Scoped OpenGL debug group. Automatically pops when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -680,7 +657,7 @@ Functions</h2></td></tr>
 <div class="line">    GLuint _gl_prog_##__LINE__                           \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a>))) \</div>
 <div class="line">        __attribute__((unused)) = prog</div>
-<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:77</div></div>
+<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:72</div></div>
 </div><!-- fragment -->
 <p>Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>

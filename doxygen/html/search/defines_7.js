@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['hybrid_5ffunc_5ftimer_3500',['HYBRID_FUNC_TIMER',['../perf__timer_8h.html#aad9c1d6c0afa04bfd26ab833806b67b5',1,'perf_timer.h']]],
-  ['hybrid_5fmeasure_5fdebug_5fms_3501',['HYBRID_MEASURE_DEBUG_MS',['../perf__timer_8h.html#afc24452fa4cd12c093c41f487c21f701',1,'perf_timer.h']]],
-  ['hybrid_5fmeasure_5flog_3502',['HYBRID_MEASURE_LOG',['../perf__timer_8h.html#a2890bfff296f02d391c9c90a2d8e5005',1,'perf_timer.h']]],
-  ['hybrid_5fstop_5fbody_3503',['HYBRID_STOP_BODY',['../perf__timer_8c.html#a4ba438b43f9a8f56d29013b7cb9a9f23',1,'perf_timer.c']]]
+  ['log_5fcritical_3502',['LOG_CRITICAL',['../log_8h.html#a82cf4fca40fe4a352203d39a075ae721',1,'log.h']]],
+  ['log_5fdebug_3503',['LOG_DEBUG',['../log_8h.html#a86952bc1b765abd64f032f9f6fce9fe3',1,'log.h']]],
+  ['log_5ferror_3504',['LOG_ERROR',['../log_8h.html#a53c554c9625bc6ee2727f52091346c17',1,'log.h']]],
+  ['log_5finfo_3505',['LOG_INFO',['../log_8h.html#a4ec0b91afc0eca2e85c60b528628b8cc',1,'log.h']]],
+  ['log_5ftag_3506',['LOG_TAG',['../gl__debug_8c.html#a7ce0df38eb467e59f209470c8f5ac4e6',1,'gl_debug.c']]],
+  ['log_5fwarn_3507',['LOG_WARN',['../log_8h.html#a63330e5e329bed8646b5421a8ef25f75',1,'log.h']]],
+  ['log_5fwarning_3508',['LOG_WARNING',['../log_8h.html#ac46831f8b7dcbb3ea18630a8b2af834d',1,'log.h']]]
 ];

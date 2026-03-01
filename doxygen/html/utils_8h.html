@@ -262,13 +262,15 @@ $(document).ready(function(){initNavTree('utils_8h.html',''); initResizable(); }
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdarg.h&gt;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for utils.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="utils_8h__incl.svg" width="474" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="utils_8h__incl.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -300,6 +302,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">utils_buffer_offset</a> (size_t offset)</td></tr>
+<tr class="memdesc:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets.  <a href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">More...</a><br /></td></tr>
+<tr class="separator:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca6393fbdcd75a7379484de0a7604136"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aca6393fbdcd75a7379484de0a7604136">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
 <tr class="memdesc:aca6393fbdcd75a7379484de0a7604136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8h.html#aca6393fbdcd75a7379484de0a7604136">More...</a><br /></td></tr>
 <tr class="separator:aca6393fbdcd75a7379484de0a7604136"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -843,6 +848,33 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ae197851a258ffbaf4a1d82ee9a3a03ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae197851a258ffbaf4a1d82ee9a3a03ab">&#9670;&nbsp;</a></span>utils_buffer_offset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* utils_buffer_offset </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">offset</td><td>The byte offset to cast. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A void pointer representing the offset. </dd></dl>
 
 </div>
 </div>

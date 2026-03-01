@@ -13,6 +13,5 @@ var searchData=
   ['_5fpad8_10',['_pad8',['../structPostProcessUBO.html#a4cc529c8e1f1bdbfb6ff8a2690a23d87',1,'PostProcessUBO']]],
   ['_5fpad9_11',['_pad9',['../structPostProcessUBO.html#a849d02c11676f16bd0e100e08318655b',1,'PostProcessUBO']]],
   ['_5fpadding_12',['_padding',['../structSphereInstanceSSBO.html#ad85153e7c453578678358c0f087cc203',1,'SphereInstanceSSBO::_padding()'],['../structInstanceData.html#ade478f607ce09375d68994c7d71d796b',1,'InstanceData::_padding()']]],
-  ['_5fposix_5fc_5fsource_13',['_POSIX_C_SOURCE',['../async__loader_8c.html#a3024ccd4a9af5109d24e6c57565d74a1',1,'async_loader.c']]],
-  ['_5fstatic_5fassert_14',['_Static_assert',['../sphere__sorting_8c.html#afb01139cbc167de435d4e49cc3e293ec',1,'sphere_sorting.c']]]
+  ['_5fstatic_5fassert_13',['_Static_assert',['../sphere__sorting_8c.html#afb01139cbc167de435d4e49cc3e293ec',1,'sphere_sorting.c']]]
 ];

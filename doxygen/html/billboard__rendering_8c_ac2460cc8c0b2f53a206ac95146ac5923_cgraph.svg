@@ -46,7 +46,7 @@ if (edges && edges.length) {
         </defs>
 
 <script type="text/javascript">
-var viewWidth = 662;
+var viewWidth = 802;
 var viewHeight = 39;
 var sectionId = 'dynsection-1';
 </script>
@@ -54,7 +54,7 @@ var sectionId = 'dynsection-1';
 <svg id="graph" class="graph">
 <g id="viewport">
 <title>billboard_group_prepare</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-35 658,-35 658,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-35 798,-35 798,4 -4,4"/>
 <!-- Node1 -->
 <g id="node1" class="node">
 <title>Node1</title>
@@ -110,6 +110,21 @@ var sectionId = 'dynsection-1';
 <title>Node3&#45;&gt;Node4</title>
 <path fill="none" stroke="midnightblue" d="M464.05,-15.5C472.42,-15.5 481.06,-15.5 489.66,-15.5"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="489.71,-19 499.71,-15.5 489.71,-12 489.71,-19"/>
+</g>
+<!-- Node5 -->
+<g id="node5" class="node">
+<title>Node5</title>
+<g id="a_node5"><a xlink:href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab" target="_top" xlink:title="Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets.">
+<polygon fill="white" stroke="black" points="690,-6 690,-25 794,-25 794,-6 690,-6"/>
+<text text-anchor="middle" x="742" y="-13" font-family="Helvetica,sans-Serif" font-size="10.00">utils_buffer_offset</text>
+</a>
+</g>
+</g>
+<!-- Node4&#45;&gt;Node5 -->
+<g id="edge4" class="edge">
+<title>Node4&#45;&gt;Node5</title>
+<path fill="none" stroke="midnightblue" d="M654.25,-15.5C662.85,-15.5 671.53,-15.5 679.9,-15.5"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="679.93,-19 689.93,-15.5 679.93,-12 679.93,-19"/>
 </g>
 </g>
 </svg>

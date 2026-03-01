@@ -1,7 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0":[5,0,41,18],
-"structIBLCoordinator.html#a943239b7bca0a0799ce9f1138625421f":[5,0,41,6],
 "structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76":[5,0,41,2],
 "structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4":[5,0,41,19],
 "structIBLCoordinator.html#aabe82399c187f13ee5fb1c7cec1f243a":[5,0,41,11],
@@ -249,5 +247,7 @@ var NAVTREEINDEX8 =
 "structScene.html#a1de43da8d37a4d86731078cf0593fcf0":[5,0,63,5],
 "structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f":[5,0,63,19],
 "structScene.html#a278672880c9534ed393007884e01e872":[5,0,63,25],
-"structScene.html#a2bfed78163b907505fe6fcdbca173127":[5,0,63,34]
+"structScene.html#a2bfed78163b907505fe6fcdbca173127":[5,0,63,34],
+"structScene.html#a33d1964d8a1f5096d06147fa910791f5":[5,0,63,46],
+"structScene.html#a365027ddce9dabf851566fa1a853140d":[5,0,63,33]
 };

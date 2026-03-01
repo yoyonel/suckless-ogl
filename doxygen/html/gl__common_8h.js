@@ -1,6 +1,5 @@
 var gl__common_8h =
 [
-    [ "BUFFER_OFFSET", "gl__common_8h.html#a2789ab28bb84a9a9f553c45e4eedbdfd", null ],
     [ "CLEANUP_TEXTURE", "gl__common_8h.html#a74a399d3e71315d0d06000c63b41aea9", null ],
     [ "GL_DEBUG_POP", "gl__common_8h.html#a3d7fc097a36ed065cc4c5813cb63c4a0", null ],
     [ "GL_DEBUG_PUSH", "gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812", null ],

@@ -7,5 +7,6 @@ var utils_8c =
     [ "safe_memset", "utils_8c.html#aa0d7c61e364406aa652f12a630642256", null ],
     [ "safe_snprintf", "utils_8c.html#aca6393fbdcd75a7379484de0a7604136", null ],
     [ "safe_strncat", "utils_8c.html#a7da5d8902e26bfe1fcb9e660e1677ea3", null ],
-    [ "safe_strncpy", "utils_8c.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ]
+    [ "safe_strncpy", "utils_8c.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ],
+    [ "utils_buffer_offset", "utils_8c.html#ae197851a258ffbaf4a1d82ee9a3a03ab", null ]
 ];

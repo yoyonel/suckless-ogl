@@ -82,16 +82,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"camera_8h.html#a33463fa28ecfda9a7afb4fa571ae058a",
-"globals_c.html",
-"group__UI.html#gab0c2612771e8100aa0c566bbe5e43558",
-"pbr_8c.html#a764e470d5b315a2fc1bfdcad6183545b",
-"postprocess_8frag.html#acdef7a1fd863a6d3770c1268cb06add3",
-"sh__probe_8glsl.html#aa636d07c616fadeb225c331ee2defc64",
-"structBandingParams.html",
-"structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0",
-"structScene.html#a33d1964d8a1f5096d06147fa910791f5",
-"ui_8vert.html"
+"camera_8h.html#a44fc6216c4aa4dbaea8299798e3cc29f",
+"globals_defs.html",
+"group__UI.html#gab74ea829a42607b55b37fd0986bf30ab",
+"pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c",
+"postprocess_8h.html",
+"sh__probe_8glsl.html#abb9977a0ac90dfc1d1e10bdff6ef4a4a",
+"structBandingParams.html#a707399c42e148f4cc80e4fae913a3545",
+"structIBLCoordinator.html#aa91b497d73f575bc292be18acaffdc76",
+"structScene.html#a37847e95781840a840af5a08112e6673",
+"ui_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,7 +1,6 @@
 var async__loader_8c =
 [
     [ "AsyncLoader", "structAsyncLoader.html", "structAsyncLoader" ],
-    [ "_POSIX_C_SOURCE", "async__loader_8c.html#a3024ccd4a9af5109d24e6c57565d74a1", null ],
     [ "cleanup_tracy_states", "async__loader_8c.html#afeedc868310865204c7be3df933c55d0", null ],
     [ "transition_tracy_state", "async__loader_8c.html#a6374e46a70774e488a1ef33cb66a5414", null ],
     [ "async_handle_io", "async__loader_8c.html#a9523c8b4c688acd08f95fb3dc993e80e", null ],
