@@ -41,8 +41,9 @@ static bool async_load_data(const char* path, float** out_data, int* width,
 #ifdef TRACY_ENABLE
 	double load_ms = perf_timer_elapsed_ms(&disk_timer);
 	char msg[MSG_BUF_SIZE];
-	if (safe_snprintf(msg, sizeof(msg), "Load: %.2f ms", load_ms)) {
-		TracyCMessage(msg, strlen(msg));
+	int res = safe_snprintf(msg, sizeof(msg), "Load: %.2f ms", load_ms);
+	if (res >= 0) {
+		TracyCMessage(msg, (size_t)res);
 	}
 	TracyCZoneEnd(work_ctx);
 #endif
@@ -174,10 +175,11 @@ static void* async_worker_func(void* arg)
 			double queue_time =
 			    now - loader->current_request.submission_time;
 			char msg[MSG_BUF_SIZE];
-			if (safe_snprintf(msg, sizeof(msg),
-			                  "Queuing delay: %.2f ms",
-			                  queue_time)) {
-				TracyCMessage(msg, strlen(msg));
+			int res =
+			    safe_snprintf(msg, sizeof(msg),
+			                  "Queuing delay: %.2f ms", queue_time);
+			if (res >= 0) {
+				TracyCMessage(msg, (size_t)res);
 			}
 #endif
 			has_work = true;
@@ -315,9 +317,9 @@ bool async_loader_request(AsyncLoader* loader, const char* path)
 			loader->current_request.float_data = NULL;
 		}
 
-		if (!safe_snprintf(loader->current_request.path,
-		                   sizeof(loader->current_request.path), "%s",
-		                   path)) {
+		if (safe_snprintf(loader->current_request.path,
+		                  sizeof(loader->current_request.path), "%s",
+		                  path) < 0) {
 			LOG_ERROR("suckless-ogl.async", "Path too long: %s",
 			          path);
 			loader->current_request.state = ASYNC_IDLE;

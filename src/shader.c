@@ -150,7 +150,7 @@ static bool get_dir_from_path(const char* path, char* out_dir, size_t size)
 		}
 		out_dir[len] = '\0';
 	} else {
-		if (!safe_snprintf(out_dir, size, "./")) {
+		if (safe_snprintf(out_dir, size, "./") < 0) {
 			LOG_ERROR("suckless-ogl.shader",
 			          "Failed to set default directory");
 			return false;
@@ -184,8 +184,8 @@ static bool resolve_and_parse_include(IncludeContext* ctx,
 	}
 
 	char resolved_path[RESOLVED_PATH_BUFFER_SIZE];
-	if (!safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
-	                   current_dir, path_term)) {
+	if (safe_snprintf(resolved_path, sizeof(resolved_path), "%s%s",
+	                  current_dir, path_term) < 0) {
 		LOG_ERROR("suckless-ogl.shader",
 		          "Include path too long: %s (dir) + %s (term)",
 		          current_dir, path_term);
@@ -388,11 +388,11 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 	/* 2. Insert Defines */
 	size_t current_offset = insertion_point;
 	for (int i = 0; i < count; i++) {
-		if (safe_snprintf(modified_source + current_offset,
-		                  new_size - current_offset, "#define %s\n",
-		                  defines[i])) {
-			current_offset +=
-			    strlen(modified_source + current_offset);
+		int res = safe_snprintf(modified_source + current_offset,
+		                        new_size - current_offset,
+		                        "#define %s\n", defines[i]);
+		if (res >= 0) {
+			current_offset += (size_t)res;
 		}
 	}
 
@@ -562,8 +562,8 @@ GLuint shader_load_program_with_defines(const char* vertex_path,
 
 	if (program != 0) {
 		char name[SHADER_LABEL_BUFFER_SIZE];
-		safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
-		              fragment_path);
+		(void)safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
+		                    fragment_path);
 		glObjectLabel(GL_PROGRAM, program, -1, name);
 
 		GLint binary_length = 0;
@@ -703,8 +703,8 @@ Shader* shader_load_with_defines(const char* vertex_path,
 
 	/* Construct a name from paths */
 	char name[MAX_SHADER_NAME_LEN];
-	safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
-	              fragment_path);
+	(void)safe_snprintf(name, sizeof(name), "%s + %s", vertex_path,
+	                    fragment_path);
 
 	return shader_create_from_program(program, name);
 }

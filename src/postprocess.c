@@ -1014,11 +1014,11 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	char buffer[MAX_SHADER_DEFINES][MAX_DEFINE_LENGTH];
 
 	for (size_t i = 0; i < EFFECT_COUNT; i++) {
-		if (!safe_snprintf(
+		if (safe_snprintf(
 		        buffer[count], sizeof(buffer[count]), "%s %d",
 		        ALL_EFFECTS[i].define_name,
 		        ((static_flags & (unsigned int)ALL_EFFECTS[i].flag) !=
-		         0))) {
+		         0)) < 0) {
 			LOG_ERROR("suckless-ogl.postprocess",
 			          "Failed to format shader define");
 			return;

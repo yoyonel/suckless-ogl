@@ -27,12 +27,13 @@ void* utils_buffer_offset(size_t offset);
  * @param buf Destination buffer.
  * @param buf_size Buffer capacity.
  * @param format Printf-style format string.
- * @return true if string was fully written, false if truncated or error.
+ * @return number of characters written (excluding null terminator) on success,
+ *         -1 if truncated or error.
  */
-__attribute__((format(printf, 3, 4))) bool safe_snprintf(char* buf,
-                                                         size_t buf_size,
-                                                         const char* format,
-                                                         ...);
+__attribute__((format(printf, 3, 4))) int safe_snprintf(char* buf,
+                                                        size_t buf_size,
+                                                        const char* format,
+                                                        ...);
 
 /**
  * @brief Bitwise flag check helper.

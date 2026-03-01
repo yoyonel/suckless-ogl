@@ -23,10 +23,10 @@
 // NOLINTBEGIN(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
 // clang-analyzer-valist.Uninitialized)
 
-bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
+int safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 {
 	if (!buf || !buf_size) {
-		return false;
+		return -1;
 	}
 
 	va_list args;
@@ -34,7 +34,10 @@ bool safe_snprintf(char* buf, size_t buf_size, const char* format, ...)
 	int result = vsnprintf(buf, buf_size, format, args);
 	va_end(args);
 
-	return (result >= 0 && (size_t)result < buf_size);
+	if (result >= 0 && (size_t)result < buf_size) {
+		return result;
+	}
+	return -1;
 }
 
 void* safe_calloc(size_t num, size_t size)
