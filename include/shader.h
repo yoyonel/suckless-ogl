@@ -8,7 +8,8 @@
 
 #include "gl_common.h"
 #include <stdbool.h>
-#define SHADER_WARNING_THROTTLE_LIMIT 10
+
+enum { SHADER_WARNING_THROTTLE_LIMIT = 10 };
 
 /**
  * @brief Compiles a single shader stage from a file.

@@ -202,8 +202,6 @@ typedef struct {
 	vec3 channel_levels;    /**< Independent RGB levels. */
 } BandingParams;
 
-#define BLOOM_MIP_LEVELS 5
-
 /**
  * @struct ShaderCacheEntry
  * @brief Cache entry for optimized shaders.
@@ -213,7 +211,7 @@ typedef struct {
 	Shader* shader;
 } ShaderCacheEntry;
 
-#define SHADER_CACHE_SIZE 64
+enum { SHADER_CACHE_SIZE = 64 };
 
 /**
  * @struct PostProcessUBO

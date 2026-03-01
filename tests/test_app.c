@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "icosphere.h"
 #include "main.h"
+#include "renderer.h"
 #include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
@@ -278,7 +279,13 @@ void test_app_render_multi_view(void)
 		camera_update_vectors(&g_test_app.camera);
 
 		// Render
-		app_render(&g_test_app);
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
 		// Async capture using PBO (optimization#2)
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);

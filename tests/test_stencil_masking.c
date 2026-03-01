@@ -2,6 +2,7 @@
 #include "app.h"
 #include "gl_common.h"
 #include "main.h"
+#include "renderer.h"
 #include "scene.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
@@ -65,7 +66,13 @@ void test_stencil_depth_consistency(void)
 	}
 
 	/* 4. Render a frame */
-	app_render(&g_test_app);
+	renderer_draw_frame(&g_test_app, &g_test_app.scene,
+	                    &g_test_app.postprocess, &g_test_app.camera,
+	                    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
+	                    &g_test_app.env_mgr, &g_test_app.notifier,
+	                    &g_test_app.effect_bench, g_test_app.width,
+	                    g_test_app.height, g_test_app.delta_time,
+	                    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
 	/* 5. Bind the scene FBO to read from it */
 	glBindFramebuffer(GL_FRAMEBUFFER, g_test_app.postprocess.scene_fbo);

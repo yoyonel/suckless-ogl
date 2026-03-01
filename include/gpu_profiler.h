@@ -11,9 +11,11 @@
 #include "tracy_gpu.h"
 #endif
 
-#define MAX_GPU_STAGES 32
-#define MAX_GPU_STAGE_NAME 32
-#define GPU_QUERY_BUFFER_COUNT 2
+enum {
+	MAX_GPU_STAGES = 32,
+	MAX_GPU_STAGE_NAME = 32,
+	GPU_QUERY_BUFFER_COUNT = 2
+};
 
 /* --- Capture Settings --- */
 #include "app_settings.h"

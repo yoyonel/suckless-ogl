@@ -134,6 +134,7 @@ set(SOURCES
     src/ui.c
     src/utils.c
     src/window.c
+    src/renderer.c
     src/effects/fx_auto_exposure.c
     src/effects/fx_bloom.c
     src/effects/fx_dof.c
