@@ -5,7 +5,7 @@ var utils_8c =
     [ "safe_calloc", "utils_8c.html#aa17d18069f6b28bc27de7af0f1961171", null ],
     [ "safe_memcpy", "utils_8c.html#abeb736cfb3c1a73ff0b6c3fabc20b332", null ],
     [ "safe_memset", "utils_8c.html#aa0d7c61e364406aa652f12a630642256", null ],
-    [ "safe_snprintf", "utils_8c.html#aca6393fbdcd75a7379484de0a7604136", null ],
+    [ "safe_snprintf", "utils_8c.html#a6d506638d7043eb273a2a357591d3086", null ],
     [ "safe_strncat", "utils_8c.html#a7da5d8902e26bfe1fcb9e660e1677ea3", null ],
     [ "safe_strncpy", "utils_8c.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075", null ],
     [ "utils_buffer_offset", "utils_8c.html#ae197851a258ffbaf4a1d82ee9a3a03ab", null ]

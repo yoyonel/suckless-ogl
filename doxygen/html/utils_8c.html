@@ -271,9 +271,9 @@ Include dependency graph for utils.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aca6393fbdcd75a7379484de0a7604136"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8c.html#aca6393fbdcd75a7379484de0a7604136">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
-<tr class="memdesc:aca6393fbdcd75a7379484de0a7604136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8c.html#aca6393fbdcd75a7379484de0a7604136">More...</a><br /></td></tr>
-<tr class="separator:aca6393fbdcd75a7379484de0a7604136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d506638d7043eb273a2a357591d3086"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8c.html#a6d506638d7043eb273a2a357591d3086">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
+<tr class="memdesc:a6d506638d7043eb273a2a357591d3086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8c.html#a6d506638d7043eb273a2a357591d3086">More...</a><br /></td></tr>
+<tr class="separator:a6d506638d7043eb273a2a357591d3086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa17d18069f6b28bc27de7af0f1961171"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8c.html#aa17d18069f6b28bc27de7af0f1961171">safe_calloc</a> (size_t num, size_t size)</td></tr>
 <tr class="memdesc:aa17d18069f6b28bc27de7af0f1961171"><td class="mdescLeft">&#160;</td><td class="mdescRight">calloc wrapper with zero-size check.  <a href="utils_8c.html#aa17d18069f6b28bc27de7af0f1961171">More...</a><br /></td></tr>
 <tr class="separator:aa17d18069f6b28bc27de7af0f1961171"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -472,14 +472,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aca6393fbdcd75a7379484de0a7604136"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca6393fbdcd75a7379484de0a7604136">&#9670;&nbsp;</a></span>safe_snprintf()</h2>
+<a id="a6d506638d7043eb273a2a357591d3086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d506638d7043eb273a2a357591d3086">&#9670;&nbsp;</a></span>safe_snprintf()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool safe_snprintf </td>
+          <td class="memname">int safe_snprintf </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>buf</em>, </td>
@@ -519,7 +519,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>true if string was fully written, false if truncated or error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>number of characters written (excluding null terminator) on success, -1 if truncated or error. </dd></dl>
 
 </div>
 </div>

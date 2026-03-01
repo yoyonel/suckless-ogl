@@ -305,9 +305,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">utils_buffer_offset</a> (size_t offset)</td></tr>
 <tr class="memdesc:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets.  <a href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">More...</a><br /></td></tr>
 <tr class="separator:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca6393fbdcd75a7379484de0a7604136"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aca6393fbdcd75a7379484de0a7604136">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
-<tr class="memdesc:aca6393fbdcd75a7379484de0a7604136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8h.html#aca6393fbdcd75a7379484de0a7604136">More...</a><br /></td></tr>
-<tr class="separator:aca6393fbdcd75a7379484de0a7604136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d506638d7043eb273a2a357591d3086"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a6d506638d7043eb273a2a357591d3086">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
+<tr class="memdesc:a6d506638d7043eb273a2a357591d3086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8h.html#a6d506638d7043eb273a2a357591d3086">More...</a><br /></td></tr>
+<tr class="separator:a6d506638d7043eb273a2a357591d3086"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe907a059a85eecc3b288d41b903d5e7"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abe907a059a85eecc3b288d41b903d5e7">check_flag</a> (int value, int flag)</td></tr>
 <tr class="memdesc:abe907a059a85eecc3b288d41b903d5e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitwise flag check helper.  <a href="utils_8h.html#abe907a059a85eecc3b288d41b903d5e7">More...</a><br /></td></tr>
 <tr class="separator:abe907a059a85eecc3b288d41b903d5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -705,14 +705,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aca6393fbdcd75a7379484de0a7604136"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca6393fbdcd75a7379484de0a7604136">&#9670;&nbsp;</a></span>safe_snprintf()</h2>
+<a id="a6d506638d7043eb273a2a357591d3086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d506638d7043eb273a2a357591d3086">&#9670;&nbsp;</a></span>safe_snprintf()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool safe_snprintf </td>
+          <td class="memname">int safe_snprintf </td>
           <td>(</td>
           <td class="paramtype">char *&#160;</td>
           <td class="paramname"><em>buf</em>, </td>
@@ -752,7 +752,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>true if string was fully written, false if truncated or error. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>number of characters written (excluding null terminator) on success, -1 if truncated or error. </dd></dl>
 
 </div>
 </div>
