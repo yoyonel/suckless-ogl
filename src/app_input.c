@@ -64,14 +64,12 @@ static void handle_pbr_debug_mode(App* app)
 
 static void handle_aa_mode_input(App* app)
 {
-	app->scene.aa_mode = (app->scene.aa_mode + 1) % 2;
-	const char* mode_names[] = {"Screen-space", "Curvature-based"};
-	LOG_INFO("suckless-ogl.app", "Specular AA Mode: %s",
-	         mode_names[app->scene.aa_mode]);
+	app->scene.aa_mode = (app->scene.aa_mode + 1) % AA_MODE_COUNT;
+	const char* mode_name = aa_mode_to_string(app->scene.aa_mode);
+	LOG_INFO("suckless-ogl.app", "Specular AA Mode: %s", mode_name);
 
 	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "AA Mode: %s",
-	                    mode_names[app->scene.aa_mode]);
+	(void)safe_snprintf(buf, sizeof(buf), "AA Mode: %s", mode_name);
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
 }
 

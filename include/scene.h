@@ -43,6 +43,16 @@ typedef enum {
 } GIMode;
 
 /**
+ * @enum AAMode
+ * @brief Specular Anti-Aliasing modes.
+ */
+typedef enum {
+	AA_MODE_SCREEN_SPACE = 0,
+	AA_MODE_CURVATURE,
+	AA_MODE_COUNT
+} AAMode;
+
+/**
  * @struct InstancedUniforms
  * @brief Cached uniform locations for PBR instanced rendering.
  */
@@ -177,7 +187,7 @@ typedef struct Scene {
 	GIMode gi_mode;           /**< Selected GI sampling method. */
 	int show_probe_grid;      /**< Debug visualization of probes. */
 	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
-	int aa_mode; /**< AA Mode: 0: Screen-space, 1: Curvature. */
+	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
@@ -198,6 +208,13 @@ int scene_init(Scene* scene);
  * @param scene Pointer to the scene structure.
  */
 void scene_cleanup(Scene* scene);
+
+/**
+ * @brief Returns a string representation of the AA mode.
+ * @param mode The AA mode.
+ * @return String representation.
+ */
+const char* aa_mode_to_string(AAMode mode);
 
 /**
  * @brief Renders the scene.

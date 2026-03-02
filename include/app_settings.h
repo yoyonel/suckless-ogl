@@ -145,7 +145,7 @@ static const int IRIDIANCE_MAP_SIZE =
 static const int BRDF_LUT_MAP_SIZE =
     512; /**< Size of the BRDF Lookup Texture (Generated once). */
 static const int DEFAULT_SPECULAR_AA_ENABLED =
-    1; /**< Toggle for Screen-Space Specular Anti-Aliasing. */
+    1; /**< Toggle for Curvature-based Specular Anti-Aliasing. */
 /* Environment Transition Mode */
 typedef enum {
 	ENV_TRANSITION_CROSSFADE = 0,
