@@ -33,7 +33,7 @@
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
-int app_init(App* app, int width, int height, const char* title)
+int app_init(App* app, int width, int height, const char* title, GraphicsAPI api)
 {
 	app->width = width;
 	app->height = height;
@@ -49,8 +49,14 @@ int app_init(App* app, int width, int height, const char* title)
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
 
-	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
+	app->window = window_create(width, height, title, DEFAULT_SAMPLES, api);
 	if (!app->window) {
+		return 0;
+	}
+
+	if (!rhi_init(&app->rhi, api, app->window)) {
+		LOG_ERROR("suckless-ogl.app", "Failed to initialize RHI");
+		window_destroy(app->window);
 		return 0;
 	}
 
@@ -173,6 +179,8 @@ void app_cleanup(App* app)
 	if (!app) {
 		return;
 	}
+
+	rhi_cleanup(&app->rhi);
 
 	/* 1. High-level systems first (may depend on textures/shaders) */
 	ui_destroy(&app->ui);

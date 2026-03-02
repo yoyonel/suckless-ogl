@@ -14,11 +14,11 @@ int main(int argc, char* argv[])
 {
 	tracy_manager_init_global();
 
-	CliAction action = cli_handle_args(argc, argv);
-	if (action == CLI_ACTION_EXIT_SUCCESS) {
+	CliResult cli_result = cli_handle_args(argc, argv);
+	if (cli_result.action == CLI_ACTION_EXIT_SUCCESS) {
 		return EXIT_SUCCESS;
 	}
-	if (action == CLI_ACTION_EXIT_FAILURE) {
+	if (cli_result.action == CLI_ACTION_EXIT_FAILURE) {
 		return EXIT_FAILURE;
 	}
 
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 	}
 	*app = (App){0};
 
-	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong")) {
+	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong", cli_result.api)) {
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to initialize application");
 		app_cleanup(app);

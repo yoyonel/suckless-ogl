@@ -30,7 +30,7 @@ void setUp(void)
 {
 	if (!g_app_initialized) {
 		int result = app_init(&g_test_app, TEST_WIDTH, TEST_HEIGHT,
-		                      "Stencil Test");
+		                      "Stencil Test", API_OPENGL);
 		TEST_ASSERT_EQUAL_INT(1, result);
 		g_app_initialized = true;
 	}

@@ -16,6 +16,7 @@
 #include "scene.h"
 #include "tracy_manager.h"
 #include "ui.h"
+#include "rhi.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
@@ -88,6 +89,8 @@ typedef struct App {
 	float current_exposure; /**< Integrated GPU exposure value. */
 
 	AsyncLoader* async_loader; /**< Background asset loader context. */
+
+	RHIContext rhi;
 } App;
 
 /* --- Core Control Flow --- */
@@ -95,7 +98,7 @@ typedef struct App {
 /**
  * @brief Fully initializes the application state, window, and OpenGL context.
  */
-int app_init(App* app, int width, int height, const char* title);
+int app_init(App* app, int width, int height, const char* title, GraphicsAPI api);
 
 /**
  * @brief Safely releases all GPU and CPU resources held by the application.

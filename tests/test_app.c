@@ -66,7 +66,7 @@ void setUp(void)
 	// Initialiser une seule fois pour tous les tests
 	if (!g_app_initialized) {
 		int result = app_init(&g_test_app, WINDOW_WIDTH, WINDOW_HEIGHT,
-		                      "Integration Test");
+		                      "Integration Test", API_OPENGL);
 		TEST_ASSERT_EQUAL_INT(1, result);
 		g_app_initialized = true;
 

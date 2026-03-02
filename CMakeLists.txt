@@ -134,6 +134,7 @@ set(SOURCES
     src/ui.c
     src/utils.c
     src/window.c
+    src/rhi.c
     src/renderer.c
     src/effects/fx_auto_exposure.c
     src/effects/fx_bloom.c
@@ -338,11 +339,13 @@ endif()
 
 # Link avec la version statique de cJSON
 find_package(Threads REQUIRED)
+find_package(Vulkan REQUIRED)
 target_link_libraries(app PRIVATE
     cglm
     glad
     cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
     ${GLFW3_LIBRARIES}
+    Vulkan::Vulkan
     m
     dl
     Threads::Threads

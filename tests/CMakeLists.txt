@@ -5,7 +5,8 @@
 # CONFIGURATION COMMUNE
 # =============================================================================
 
-set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
+find_package(Vulkan REQUIRED)
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Vulkan::Vulkan m dl)
 set(TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
 
 if(ENABLE_TRACY)

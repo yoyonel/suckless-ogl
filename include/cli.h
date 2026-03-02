@@ -6,6 +6,8 @@
 #ifndef CLI_H
 #define CLI_H
 
+#include "rhi.h"
+
 /**
  * @enum CliAction
  * @brief Directive for the application after parsing arguments.
@@ -19,6 +21,15 @@ typedef enum {
 } CliAction;
 
 /**
+ * @struct CliResult
+ * @brief The result of parsing command-line arguments.
+ */
+typedef struct {
+	CliAction action;
+	GraphicsAPI api;
+} CliResult;
+
+/**
  * @brief Parses command-line arguments and determines the next action.
  *
  * @param argc Number of arguments.
@@ -27,6 +38,6 @@ typedef enum {
  *
  * @see main.c
  */
-CliAction cli_handle_args(int argc, char* argv[]);
+CliResult cli_handle_args(int argc, char* argv[]);
 
 #endif /* CLI_H */

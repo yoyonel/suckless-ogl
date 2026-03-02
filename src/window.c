@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
-GLFWwindow* window_create(int width, int height, const char* title, int samples)
+GLFWwindow* window_create(int width, int height, const char* title, int samples, GraphicsAPI api)
 {
 	/* Initialize GLFW */
 	if (!glfwInit()) {
@@ -15,15 +15,19 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 		return NULL;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	if (api == API_OPENGL) {
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-	if (samples > 1) {
-		glfwWindowHint(GLFW_SAMPLES, samples);
+		if (samples > 1) {
+			glfwWindowHint(GLFW_SAMPLES, samples);
+		}
+	} else if (api == API_VULKAN) {
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	}
 
 	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -33,26 +37,30 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 		return NULL;
 	}
 
-	glfwMakeContextCurrent(window);
+	if (api == API_OPENGL) {
+		glfwMakeContextCurrent(window);
 
-	/* Initialize GLAD */
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		LOG_ERROR("suckless-ogl.window", "Failed to initialize GLAD");
-		glfwDestroyWindow(window);
-		glfwTerminate();
-		return NULL;
+		/* Initialize GLAD */
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+			LOG_ERROR("suckless-ogl.window", "Failed to initialize GLAD");
+			glfwDestroyWindow(window);
+			glfwTerminate();
+			return NULL;
+		}
+
+		/* Initialize OpenGL Debug */
+		setup_opengl_debug();
+
+		/* Log Context Info */
+		int major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
+		int minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
+		LOG_INFO("suckless-ogl.window", "Context Version: %d.%d", major, minor);
+		GPUInfo gpu_info = render_utils_get_gpu_info();
+		LOG_INFO("suckless-ogl.window", "Renderer: %s", gpu_info.renderer);
+		LOG_INFO("suckless-ogl.window", "Version: %s", gpu_info.version);
+	} else if (api == API_VULKAN) {
+		LOG_INFO("suckless-ogl.window", "Created window for Vulkan");
 	}
-
-	/* Initialize OpenGL Debug */
-	setup_opengl_debug();
-
-	/* Log Context Info */
-	int major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
-	int minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
-	LOG_INFO("suckless-ogl.window", "Context Version: %d.%d", major, minor);
-	GPUInfo gpu_info = render_utils_get_gpu_info();
-	LOG_INFO("suckless-ogl.window", "Renderer: %s", gpu_info.renderer);
-	LOG_INFO("suckless-ogl.window", "Version: %s", gpu_info.version);
 
 	return window;
 }
