@@ -151,8 +151,8 @@ static bool texture_matches_hdr(int width, int height)
 	                         &existing_h);
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT,
 	                         &existing_fmt);
-	return existing_w == width && existing_h == height &&
-	       existing_fmt == GL_RGBA16F;
+	return (existing_w == width && existing_h == height &&
+	        existing_fmt == GL_RGBA16F) != 0;
 }
 
 GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)

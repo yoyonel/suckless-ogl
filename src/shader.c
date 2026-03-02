@@ -287,8 +287,8 @@ static bool process_source(IncludeContext* ctx, const char* current_file_src,
 		}
 
 		/* Check valid start of line */
-		bool at_line_start =
-		    (next_tag == current_file_src) || (*(next_tag - 1) == '\n');
+		bool at_line_start = ((next_tag == current_file_src) ||
+		                      ((*(next_tag - 1) == '\n') != 0)) != 0;
 
 		if (!at_line_start) {
 			size_t len =
@@ -411,8 +411,8 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 
 enum { MAX_DEFINES = 32 };
 
-char* shader_read_file_with_defines(const char* path, const char** defines,
-                                    int count)
+static char* shader_read_file_with_defines(const char* path,
+                                           const char** defines, int count)
 {
 	/* 1. Load root file */
 	CLEANUP_FREE char* root_src =
@@ -491,8 +491,8 @@ char* shader_read_file(const char* path)
 	return shader_read_file_with_defines(path, NULL, 0);
 }
 
-GLuint shader_compile_with_defines(const char* path, GLenum type,
-                                   const char** defines, int count)
+static GLuint shader_compile_with_defines(const char* path, GLenum type,
+                                          const char** defines, int count)
 {
 	char* src = shader_read_file_with_defines(path, defines, count);
 	if (!src) {
@@ -525,9 +525,9 @@ GLuint shader_compile(const char* path, GLenum type)
 	return shader_compile_with_defines(path, type, NULL, 0);
 }
 
-GLuint shader_load_program_with_defines(const char* vertex_path,
-                                        const char* fragment_path,
-                                        const char** defines, int count)
+static GLuint shader_load_program_with_defines(const char* vertex_path,
+                                               const char* fragment_path,
+                                               const char** defines, int count)
 {
 	GLuint vertex_shader = shader_compile_with_defines(
 	    vertex_path, GL_VERTEX_SHADER, defines, count);

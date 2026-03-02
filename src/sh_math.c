@@ -55,9 +55,9 @@ void sh_project_directional(const vec3 dir, const vec3 color, SH9* out_sh)
 	float L11 = Y11 * dir_x;
 	float L2n2 = Y2n2 * dir_x * dir_y;
 	float L2n1 = Y2n1 * dir_y * dir_z;
-	float L20 = Y20 * (3.0F * dir_z * dir_z - 1.0F);
+	float L20 = Y20 * ((3.0F * dir_z * dir_z) - 1.0F);
 	float L21 = Y21 * dir_x * dir_z;
-	float L22 = Y22 * (dir_x * dir_x - dir_y * dir_y);
+	float L22 = Y22 * ((dir_x * dir_x) - (dir_y * dir_y));
 
 	/* Accumulate into coefficients */
 	/* We multiply by the light color */
@@ -95,9 +95,9 @@ void sh_eval_irradiance(const vec3 normal, const SH9* sh_ptr, vec3 out_color)
 	float c11 = Y11 * norm_x;
 	float c2n2 = Y2n2 * norm_x * norm_y;
 	float c2n1 = Y2n1 * norm_y * norm_z;
-	float c20 = Y20 * (3.0F * norm_z * norm_z - 1.0F);
+	float c20 = Y20 * ((3.0F * norm_z * norm_z) - 1.0F);
 	float c21 = Y21 * norm_x * norm_z;
-	float c22 = Y22 * (norm_x * norm_x - norm_y * norm_y);
+	float c22 = Y22 * ((norm_x * norm_x) - (norm_y * norm_y));
 
 	/* Apply Cosine Convolution Coefficients (A_l) */
 	/* Irradiance E(n) = sum(A_l * L_lm * Y_lm(n)) */

@@ -180,9 +180,9 @@ bool effect_benchmark_start(EffectBenchmark* bench)
 
 bool effect_benchmark_is_running(const EffectBenchmark* bench)
 {
-	return bench->phase == BENCH_BASELINE ||
-	       bench->phase == BENCH_STABILIZE ||
-	       bench->phase == BENCH_EFFECT_TEST;
+	return (bench->phase == BENCH_BASELINE ||
+	        bench->phase == BENCH_STABILIZE ||
+	        bench->phase == BENCH_EFFECT_TEST) != 0;
 }
 
 bool effect_benchmark_update(EffectBenchmark* bench)

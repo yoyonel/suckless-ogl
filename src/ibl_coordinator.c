@@ -11,7 +11,6 @@
 #include "utils.h"
 #include <float.h>
 #include <math.h>
-#include <stdio.h>
 #include <string.h>
 
 /**
@@ -51,30 +50,38 @@ static bool is_software_renderer(void)
 	if (!renderer) {
 		return false;
 	}
-	return strstr(renderer, "llvmpipe") != NULL ||
-	       strstr(renderer, "softpipe") != NULL ||
-	       strstr(renderer, "swrast") != NULL;
+	return (strstr(renderer, "llvmpipe") != NULL ||
+	        strstr(renderer, "softpipe") != NULL ||
+	        strstr(renderer, "swrast") != NULL) != 0;
 }
 
 static int ibl_irradiance_slices(void)
 {
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_IRRADIANCE_HARDWARE_SLICES;
+	if (is_software_renderer()) {
+		return IBL_SOFTWARE_FALLBACK_SLICES;
+	}
+	return IBL_IRRADIANCE_HARDWARE_SLICES;
 }
 static int ibl_specular_mip0_slices(void)
 {
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_SPECULAR_MIP0_HARDWARE_SLICES;
+	if (is_software_renderer()) {
+		return IBL_SOFTWARE_FALLBACK_SLICES;
+	}
+	return IBL_SPECULAR_MIP0_HARDWARE_SLICES;
 }
 static int ibl_specular_mip1_slices(void)
 {
-	return is_software_renderer() ? IBL_SOFTWARE_FALLBACK_SLICES
-	                              : IBL_SPECULAR_MIP1_HARDWARE_SLICES;
+	if (is_software_renderer()) {
+		return IBL_SOFTWARE_FALLBACK_SLICES;
+	}
+	return IBL_SPECULAR_MIP1_HARDWARE_SLICES;
 }
 static int ibl_specular_mips_grouping_start(void)
 {
-	return is_software_renderer() ? IBL_SOFTWARE_MIP_GROUPING_START_MIP
-	                              : IBL_SPECULAR_MIP_GROUPING_START_MIP;
+	if (is_software_renderer()) {
+		return IBL_SOFTWARE_MIP_GROUPING_START_MIP;
+	}
+	return IBL_SPECULAR_MIP_GROUPING_START_MIP;
 }
 
 /** @brief Reset stage timing statistics for a new IBL stage. */

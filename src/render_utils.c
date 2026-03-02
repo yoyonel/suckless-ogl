@@ -202,7 +202,7 @@ static void append_sanitized_char(char raw_char, char* buffer, size_t* dst_idx,
 	// Handle separators: convert to underscore, but avoid leading or
 	// consecutive underscores
 	bool is_sep = (unsigned_char == ' ' || unsigned_char == '_' ||
-	               unsigned_char == '-' || unsigned_char == '.');
+	               unsigned_char == '-' || unsigned_char == '.') != 0;
 	if (is_sep && *dst_idx > 0 && buffer[*dst_idx - 1] != '_') {
 		buffer[(*dst_idx)++] = '_';
 	}
