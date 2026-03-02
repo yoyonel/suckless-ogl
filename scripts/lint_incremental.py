@@ -24,6 +24,33 @@ CACHE_DIR = os.path.join(src_root, f".lint_cache_{build_dir_name}")
 COMPILE_COMMANDS = os.path.join(BUILD_DIR, "compile_commands.json")
 CLANG_TIDY_CONFIG = os.path.join(src_root, ".clang-tidy")
 
+def find_clang_tidy():
+    """Detect available clang-tidy binary."""
+    # 1. Check environment variable
+    env_bin = os.environ.get("CLANG_TIDY")
+    if env_bin:
+        return env_bin
+
+    # 2. Check standard command
+    try:
+        subprocess.run(["clang-tidy", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+        return "clang-tidy"
+    except (subprocess.CalledProcessError, OSError):
+        pass
+
+    # 3. Check versioned binaries (descending order)
+    for version in range(22, 13, -1):
+        binary = f"clang-tidy-{version}"
+        try:
+            subprocess.run([binary, "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
+            return binary
+        except (subprocess.CalledProcessError, OSError):
+            continue
+
+    return "clang-tidy" # Fallback
+
+CLANG_TIDY_BIN = find_clang_tidy()
+
 def detect_path_prefix():
     """Detect path prefix mismatch between filesystem and compile_commands.json.
 
@@ -89,7 +116,7 @@ def run_clang_tidy(file_path):
     """Runs clang-tidy on a single file."""
     # Normalize path to match compile_commands.json (handles /var/home vs /home)
     normalized_path = normalize_path_for_clang_tidy(file_path)
-    cmd = ["clang-tidy-17", "-p", BUILD_DIR, "-quiet", normalized_path]
+    cmd = [CLANG_TIDY_BIN, "-p", BUILD_DIR, "-quiet", normalized_path]
 
     try:
         # Capture output.
