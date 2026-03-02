@@ -95,6 +95,7 @@ set(SOURCES
     src/app_metrics.c
     src/app_ui.c
     src/async_loader.c
+    src/async_coordinator.c
     src/billboard_rendering.c
     src/camera.c
     src/camera_input.c

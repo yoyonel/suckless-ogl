@@ -211,8 +211,10 @@ static void destroy_framebuffer(PostProcess* post_processing)
 	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
 	 * resize
 	 */
-	render_utils_bind_texture_safe(GL_TEXTURE0, 0,
-	                               post_processing->dummy_black_tex);
+	if (post_processing->dummy_black_tex) {
+		render_utils_bind_texture_safe(
+		    GL_TEXTURE0, 0, post_processing->dummy_black_tex);
+	}
 }
 
 static void destroy_screen_quad(PostProcess* post_processing)

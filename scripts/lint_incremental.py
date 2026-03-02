@@ -89,7 +89,7 @@ def run_clang_tidy(file_path):
     """Runs clang-tidy on a single file."""
     # Normalize path to match compile_commands.json (handles /var/home vs /home)
     normalized_path = normalize_path_for_clang_tidy(file_path)
-    cmd = ["run-clang-tidy", "-p", BUILD_DIR, "-quiet", normalized_path]
+    cmd = ["clang-tidy-17", "-p", BUILD_DIR, "-quiet", normalized_path]
 
     try:
         # Capture output.

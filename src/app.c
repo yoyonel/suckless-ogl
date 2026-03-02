@@ -93,10 +93,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->current_exposure = 1.0F;
 
-	glGenBuffers(2, app->upload_pbo);
-	app->upload_pbo_idx = 0;
-	app->upload_pbo_size[0] = 0;
-	app->upload_pbo_size[1] = 0;
+	async_coordinator_init(&app->async_coord);
 
 	app->lum_histogram_buffer =
 	    malloc((size_t)(LUM_HISTOGRAM_MAP_SIZE * LUM_HISTOGRAM_MAP_SIZE) *
@@ -189,7 +186,8 @@ void app_cleanup(App* app)
 	/* 3. Common low-level resources */
 	GL_SAFE_DELETE_BUFFER(app->exposure_pbo);
 	GL_SAFE_DELETE_BUFFER(app->histogram_pbo);
-	GL_SAFE_DELETE_BUFFERS(2, app->upload_pbo);
+
+	async_coordinator_cleanup(&app->async_coord);
 
 	adaptive_sampler_cleanup(&app->fps_sampler);
 
@@ -337,58 +335,21 @@ void app_update(App* app)
 	 * PBO setup, so glTexImage2D doesn't pile up on the same
 	 * frame as PBO Setup & Map.
 	 */
-	if (app->pending_prealloc_w > 0) {
-		app->scene.recycled_hdr_tex = texture_preallocate_hdr(
-		    app->pending_prealloc_w, app->pending_prealloc_h,
-		    app->scene.recycled_hdr_tex);
-		app->pending_prealloc_w = 0;
-		app->pending_prealloc_h = 0;
+	if (app->async_coord.pending_prealloc_w > 0) {
+		app->scene.recycled_hdr_tex =
+		    texture_preallocate_hdr(app->async_coord.pending_prealloc_w,
+		                            app->async_coord.pending_prealloc_h,
+		                            app->scene.recycled_hdr_tex);
+		app->async_coord.pending_prealloc_w = 0;
+		app->async_coord.pending_prealloc_h = 0;
 	}
 
-	AsyncRequest req;
-	if (async_loader_poll(app->async_loader, &req)) {
-		if (req.state == ASYNC_WAITING_FOR_PBO) {
-			/* Step 1: Main thread provides mapped PBO */
-			/* Use ping-pong index to avoid stalling on previous
-			 * frame's upload */
-			int pbo_idx = app->upload_pbo_idx;
-			size_t size = (size_t)req.width * (size_t)req.height *
-			              4 * sizeof(uint16_t);
-#ifdef TRACY_ENABLE
-			TracyCZoneN(pbo_ctx, "PBO Setup & Map", 1);
-#endif
-			texture_ensure_pbo(&app->upload_pbo[pbo_idx],
-			                   &app->upload_pbo_size[pbo_idx],
-			                   (GLsizeiptr)size);
-			void* ptr =
-			    texture_map_pbo(app->upload_pbo[pbo_idx], size);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(pbo_ctx);
-#endif
-			if (ptr) {
-				async_loader_provide_pbo(
-				    app->async_loader, ptr,
-				    app->upload_pbo[pbo_idx]);
-				/* Advance index for next request */
-				app->upload_pbo_idx =
-				    (app->upload_pbo_idx + 1) % 2;
-
-				/* Schedule deferred pre-allocation for
-				 * NEXT frame. This spreads glTexStorage2D
-				 * cost away from PBO setup.
-				 */
-				app->pending_prealloc_w = req.width;
-				app->pending_prealloc_h = req.height;
-			} else {
-				LOG_ERROR("suckless-ogl.app",
-				          "Failed to map PBO for async upload");
-				async_loader_cancel(app->async_loader);
-			}
-		} else if (req.state == ASYNC_READY) {
-			/* Step 2: Begin multi-frame finalize process */
-			app->env_mgr.current_env_req = req;
-			app->env_mgr.env_map_loading_step = 1;
-		}
+	AsyncRequest ready_req;
+	if (async_coordinator_update(&app->async_coord, app->async_loader,
+	                             &ready_req)) {
+		/* Step 2: Begin multi-frame finalize process */
+		app->env_mgr.current_env_req = ready_req;
+		app->env_mgr.env_map_loading_step = 1;
 	}
 
 	if (app->env_mgr.env_map_loading_step > 0) {
