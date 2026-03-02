@@ -3,6 +3,7 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
+#include "async/async_coordinator.h"
 #include "async_loader.h"
 #include "camera.h"
 #include "effect_benchmark.h"
@@ -67,12 +68,6 @@ typedef struct App {
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
 
 	/* --- Global GPU Resources --- */
-	GLuint upload_pbo[2];
-	int upload_pbo_idx;
-	GLsizeiptr upload_pbo_size[2];
-	int pending_prealloc_w; /**< Deferred pre-alloc width (0=none). */
-	int pending_prealloc_h; /**< Deferred pre-alloc height. */
-
 	GLuint exposure_pbo; /**< Pixel Buffer Object for mean luma readback. */
 	GLuint histogram_pbo;   /**< Pixel Buffer Object for luminance histogram
 	                           readback. */
@@ -88,6 +83,8 @@ typedef struct App {
 	float current_exposure; /**< Integrated GPU exposure value. */
 
 	AsyncLoader* async_loader; /**< Background asset loader context. */
+	AsyncCoordinator
+	    async_coord; /**< Manages PBO allocation & async synchronization. */
 } App;
 
 /* --- Core Control Flow --- */

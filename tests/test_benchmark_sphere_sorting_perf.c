@@ -98,10 +98,15 @@ int main(void)
 	SphereInstance* instances_baseline = NULL;
 	SphereInstance* instances_optimized = NULL;
 
-	posix_memalign((void**)&instances_baseline, SIMD_ALIGNMENT,
-	               COUNT * sizeof(SphereInstance));
-	posix_memalign((void**)&instances_optimized, SIMD_ALIGNMENT,
-	               COUNT * sizeof(SphereInstance));
+	if (posix_memalign((void**)&instances_baseline, SIMD_ALIGNMENT,
+	                   COUNT * sizeof(SphereInstance)) != 0) {
+		return 1;
+	}
+	if (posix_memalign((void**)&instances_optimized, SIMD_ALIGNMENT,
+	                   COUNT * sizeof(SphereInstance)) != 0) {
+		free(instances_baseline);
+		return 1;
+	}
 
 	/* Initialize data */
 	for (int i = 0; i < COUNT; ++i) {
