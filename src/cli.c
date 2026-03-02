@@ -8,7 +8,8 @@ static void print_help(const char* prog_name)
 	(void)printf("Usage: %s [options]\n\n", prog_name);
 	(void)printf("Options:\n");
 	(void)printf("  -h, --help      Show this help message and exit\n");
-	(void)printf("  --api <name>    Choose graphics API (opengl, vulkan)\n\n");
+	(void)printf(
+	    "  --api <name>    Choose graphics API (opengl, vulkan)\n\n");
 	(void)printf("Environment Variables:\n");
 	(void)printf("  OGL_LOG_LEVEL   Set the logging level\n");
 	(void)printf(
@@ -38,17 +39,19 @@ CliResult cli_handle_args(int argc, char* argv[])
 				} else if (strcmp(api_name, "vulkan") == 0) {
 					result.api = API_VULKAN;
 				} else {
-					(void)fprintf(stderr,
-					              "Error: Unknown API '%s'\n\n",
-					              api_name);
+					(void)fprintf(
+					    stderr,
+					    "Error: Unknown API '%s'\n\n",
+					    api_name);
 					print_help(argv[0]);
 					result.action = CLI_ACTION_EXIT_FAILURE;
 					return result;
 				}
 				i++; /* Skip next argument */
 			} else {
-				(void)fputs("Error: Missing argument for --api\n\n",
-				            stderr);
+				(void)fputs(
+				    "Error: Missing argument for --api\n\n",
+				    stderr);
 				print_help(argv[0]);
 				result.action = CLI_ACTION_EXIT_FAILURE;
 				return result;

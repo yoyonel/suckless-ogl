@@ -23,25 +23,29 @@ void test_cli_no_args(void)
 void test_cli_help_short(void)
 {
 	char* argv[] = {"app", "-h"};
-	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_SUCCESS, cli_handle_args(2, argv).action);
+	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_SUCCESS,
+	                  cli_handle_args(2, argv).action);
 }
 
 void test_cli_help_long(void)
 {
 	char* argv[] = {"app", "--help"};
-	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_SUCCESS, cli_handle_args(2, argv).action);
+	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_SUCCESS,
+	                  cli_handle_args(2, argv).action);
 }
 
 void test_cli_unknown_arg(void)
 {
 	char* argv[] = {"app", "--unknown"};
-	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE, cli_handle_args(2, argv).action);
+	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE,
+	                  cli_handle_args(2, argv).action);
 }
 
 void test_cli_partial_match(void)
 {
 	char* argv[] = {"app", "--h"};
-	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE, cli_handle_args(2, argv).action);
+	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE,
+	                  cli_handle_args(2, argv).action);
 }
 
 void test_cli_api_arg(void)
@@ -77,7 +81,8 @@ void test_cli_very_long_arg(void)
 
 	char* argv[] = {"app", long_arg};
 	/* Should fail gracefully (exit failure) without crashing */
-	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE, cli_handle_args(2, argv).action);
+	TEST_ASSERT_EQUAL(CLI_ACTION_EXIT_FAILURE,
+	                  cli_handle_args(2, argv).action);
 	free(long_arg);
 }
 

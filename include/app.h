@@ -13,10 +13,10 @@
 #include "gpu_profiler_ui.h"
 #include "perf_mode.h"
 #include "postprocess.h"
+#include "rhi.h"
 #include "scene.h"
 #include "tracy_manager.h"
 #include "ui.h"
-#include "rhi.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
@@ -98,7 +98,8 @@ typedef struct App {
 /**
  * @brief Fully initializes the application state, window, and OpenGL context.
  */
-int app_init(App* app, int width, int height, const char* title, GraphicsAPI api);
+int app_init(App* app, int width, int height, const char* title,
+             GraphicsAPI api);
 
 /**
  * @brief Safely releases all GPU and CPU resources held by the application.

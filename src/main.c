@@ -30,7 +30,8 @@ int main(int argc, char* argv[])
 	}
 	*app = (App){0};
 
-	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong", cli_result.api)) {
+	if (!app_init(app, WINDOW_WIDTH, WINDOW_HEIGHT, "Icosphere Phong",
+	              cli_result.api)) {
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to initialize application");
 		app_cleanup(app);

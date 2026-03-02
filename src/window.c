@@ -7,7 +7,8 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 
-GLFWwindow* window_create(int width, int height, const char* title, int samples, GraphicsAPI api)
+GLFWwindow* window_create(int width, int height, const char* title, int samples,
+                          GraphicsAPI api)
 {
 	/* Initialize GLFW */
 	if (!glfwInit()) {
@@ -42,7 +43,8 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples,
 
 		/* Initialize GLAD */
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-			LOG_ERROR("suckless-ogl.window", "Failed to initialize GLAD");
+			LOG_ERROR("suckless-ogl.window",
+			          "Failed to initialize GLAD");
 			glfwDestroyWindow(window);
 			glfwTerminate();
 			return NULL;
@@ -52,12 +54,17 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples,
 		setup_opengl_debug();
 
 		/* Log Context Info */
-		int major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
-		int minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
-		LOG_INFO("suckless-ogl.window", "Context Version: %d.%d", major, minor);
+		int major =
+		    glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
+		int minor =
+		    glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
+		LOG_INFO("suckless-ogl.window", "Context Version: %d.%d", major,
+		         minor);
 		GPUInfo gpu_info = render_utils_get_gpu_info();
-		LOG_INFO("suckless-ogl.window", "Renderer: %s", gpu_info.renderer);
-		LOG_INFO("suckless-ogl.window", "Version: %s", gpu_info.version);
+		LOG_INFO("suckless-ogl.window", "Renderer: %s",
+		         gpu_info.renderer);
+		LOG_INFO("suckless-ogl.window", "Version: %s",
+		         gpu_info.version);
 	} else if (api == API_VULKAN) {
 		LOG_INFO("suckless-ogl.window", "Created window for Vulkan");
 	}

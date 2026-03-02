@@ -33,7 +33,8 @@
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
-int app_init(App* app, int width, int height, const char* title, GraphicsAPI api)
+int app_init(App* app, int width, int height, const char* title,
+             GraphicsAPI api)
 {
 	app->width = width;
 	app->height = height;

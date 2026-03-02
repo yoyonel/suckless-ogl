@@ -15,8 +15,8 @@ typedef struct GLFWwindow GLFWwindow;
  * @param api The graphics API (OpenGL or Vulkan)
  * @return Pointer to the created window, or NULL on failure.
  */
-GLFWwindow* window_create(int width, int height, const char* title,
-                          int samples, GraphicsAPI api);
+GLFWwindow* window_create(int width, int height, const char* title, int samples,
+                          GraphicsAPI api);
 
 /**
  * Destroys the window and terminates GLFW.
