@@ -233,6 +233,10 @@ test/%:
 			fi; \
 		fi' || $(MAKE) --no-print-directory test-list
 
+# Regenerate test reference images
+test-gen-refs: all
+	@GEN_REFS=1 .github/workflows/scripts/run_test_with_xvfb.sh $(BUILD_DIR)/tests/test_app
+
 # Code Coverage (improved version with summary)
 BUILD_COV_DIR := build-coverage
 REPORT_DIR := $(BUILD_COV_DIR)/coverage_report
@@ -442,6 +446,7 @@ help:
 	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
+	@echo "  test-gen-refs - Regenerate test reference images"
 	@echo "  help       - Show this help message"
 
 # --- Release Build (Max Speed) ---

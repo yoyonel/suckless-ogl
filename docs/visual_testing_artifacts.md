@@ -41,7 +41,7 @@ When a Visual Regression Report shows failures:
 1. **Check the Difference Map**: If the deltas are concentrated at geometric edges or in smooth gradients (PBR centers), it is likely a precision delta.
 2. **Verify PR Intent**: If the PR modified PBR math or synchronization, a delta is expected.
 3. **Update Reference**: If the PR is visually correct but fails the automated threshold due to the reasons above, update the references in `tests/ref_*.png`.
-    * Run `GEN_REFS=1 tests/run_test_with_xvfb.sh build/tests/test_app` to regenerate all 6 faces locally.
+    * Run `GEN_REFS=1 .github/workflows/scripts/run_test_with_xvfb.sh build/tests/test_app` to regenerate all 6 faces locally.
     * Commit the updated PNG files.
 
 ## Multi-View (Cube) Regression
