@@ -1,52 +1,52 @@
 <map id="main" name="main">
-<area shape="rect" id="node1" title=" " alt="" coords="5,1956,60,1983"/>
-<area shape="rect" id="node2" href="$app_8h.html#a201c8d0c1a848c34571be7266d0f691d" title="Safely releases all GPU and CPU resources held by the application." alt="" coords="130,271,234,298"/>
-<area shape="rect" id="node13" href="$app_8h.html#a3fba3cd076f4d3741e107df1f4d69c39" title="Fully initializes the application state, window, and OpenGL context." alt="" coords="145,1107,219,1134"/>
-<area shape="rect" id="node37" href="$app_8h.html#a1d3b9d4294ec4a01762c962902b9063d" title="Enters the main application rendering and event loop." alt="" coords="145,1956,219,1983"/>
-<area shape="rect" id="node49" href="$cli_8h.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,2007,243,2034"/>
-<area shape="rect" id="node50" href="$tracy__manager_8h.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,2058,256,2100"/>
-<area shape="rect" id="node3" href="$adaptive__sampler_8h.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="764,68,961,95"/>
-<area shape="rect" id="node4" href="$async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564" title="Destroys the async loader and frees resources." alt="" coords="325,68,489,95"/>
-<area shape="rect" id="node5" href="$gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e" title="Cleans up GPU resources." alt="" coords="559,119,716,146"/>
-<area shape="rect" id="node6" href="$gpu__profiler__ui_8h.html#aa5843b14190f472881eb53b6aa0cb4f0" title="Cleans up GPU resources used by the UI." alt="" coords="319,170,495,196"/>
-<area shape="rect" id="node7" href="$perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2" title="Clean up performance mode resources." alt="" coords="332,220,483,247"/>
-<area shape="rect" id="node8" href="$postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0" title="Releases all GPU and CPU resources." alt="" coords="328,271,487,298"/>
-<area shape="rect" id="node9" href="$scene_8h.html#a544a31d29501a2854aee06c6011ec62d" title="Cleans up scene resources." alt="" coords="348,322,467,348"/>
-<area shape="rect" id="node10" href="$tracy__manager_8h.html#a165df50ba6be5436b945f2b65e112b5a" title="Cleanup TracyManager resources." alt="" coords="318,372,497,399"/>
-<area shape="rect" id="node11" href="$ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb" title="Releases UI resources." alt="" coords="362,423,453,450"/>
-<area shape="rect" id="node12" href="$window_8h.html#ad31b45f175d070f99c1a82cb93b2c82d" title=" " alt="" coords="343,474,471,500"/>
-<area shape="rect" id="node14" href="$action__notifier_8h.html#a2f4e4f6564af9cf640cc72c6e8a002f0" title="Initializes the notifier." alt="" coords="336,524,479,551"/>
-<area shape="rect" id="node15" href="$adaptive__sampler_8h.html#a479da41e7acc65d784109c444eed40e7" title="Initializes the adaptive sampler." alt="" coords="779,752,946,779"/>
-<area shape="rect" id="node16" href="$async__loader_8h.html#aaa24a1b8651cb587df266bc1a55a015f" title="Creates and initializes a new async loader instance." alt="" coords="329,626,485,652"/>
-<area shape="rect" id="node17" href="$camera_8h.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="358,676,457,703"/>
-<area shape="rect" id="node18" href="$effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153" title="Initializes the benchmark (call once at startup)." alt="" coords="324,727,491,754"/>
-<area shape="rect" id="node19" href="$env__manager_8h.html#ad4d555f76a7025a1376e21ab6fb077ce" title="Starts an asynchronous load of an environment map." alt="" coords="334,778,481,804"/>
-<area shape="rect" id="node20" href="$fps_8h.html#a6502614d8abf01ccea0eacbf993a89c0" title=" " alt="" coords="372,828,443,855"/>
-<area shape="rect" id="node21" href="$app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac" title="Primary GLFW framebuffer size callback." alt="" coords="311,879,504,906"/>
-<area shape="rect" id="node22" href="$gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0" title="Initializes the GPU profiler." alt="" coords="574,930,701,956"/>
-<area shape="rect" id="node23" href="$gpu__profiler__ui_8h.html#aed68b1cca30d6c8812275e6756233fa8" title="Initializes the GPU timeline UI state." alt="" coords="334,980,481,1007"/>
-<area shape="rect" id="node24" href="$app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718" title="Primary GLFW key callback." alt="" coords="354,1031,461,1058"/>
-<area shape="rect" id="node25" href="$app__input_8h.html#af4ca2891044ac10a664b8d83ce590f1f" title="Primary GLFW mouse position callback." alt="" coords="344,1082,471,1108"/>
-<area shape="rect" id="node26" href="$perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505" title="Initialize the performance mode subsystem." alt="" coords="347,1132,467,1159"/>
-<area shape="rect" id="node27" href="$postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="328,1184,487,1225"/>
-<area shape="rect" id="node28" href="$postprocess_8h.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="332,1250,483,1276"/>
-<area shape="rect" id="node29" href="$postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b" title="Initializes the post&#45;processing pipeline." alt="" coords="343,1300,471,1327"/>
-<area shape="rect" id="node30" href="$postprocess_8h.html#a47114280aafaff716053e0b12be92dca" title="Internal helper to set fallback textures." alt="" coords="315,1352,499,1393"/>
-<area shape="rect" id="node31" href="$postprocess_8h.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="310,1418,505,1444"/>
-<area shape="rect" id="node32" href="$scene_8h.html#ab37b3774644a51065a47e884ffc5e649" title="Initializes the scene resources." alt="" coords="363,1468,451,1495"/>
-<area shape="rect" id="node33" href="$app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea" title="Primary GLFW scroll callback." alt="" coords="348,1519,467,1546"/>
-<area shape="rect" id="node34" href="$tracy__manager_8h.html#a6eb1bd30b5bd993a46af5c06232ef4f8" title="Initialize a TracyManager instance." alt="" coords="333,1570,481,1596"/>
-<area shape="rect" id="node35" href="$ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712" title="Initializes the UI system." alt="" coords="376,1620,439,1647"/>
-<area shape="rect" id="node36" href="$window_8h.html#a128a5d8ec24e20109240171317add4f8" title=" " alt="" coords="347,1671,467,1698"/>
-<area shape="rect" id="node38" href="$action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3" title="Updates notification timers." alt="" coords="324,1722,491,1748"/>
-<area shape="rect" id="node39" href="$adaptive__sampler_8h.html#a92cd04e246adba77f07ca2f80ea011b2" title="Checks if the current sampling window has concluded." alt="" coords="329,1773,486,1814"/>
-<area shape="rect" id="node40" href="$adaptive__sampler_8h.html#a80236a4368c7457d556fd3c4efb8862c" title="Resets the sampler state for a new window." alt="" coords="318,1839,497,1866"/>
-<area shape="rect" id="node41" href="$adaptive__sampler_8h.html#ad2f0f93f086b9307988505e079a65e3f" title="Determines if a sample should be taken this frame based on probability." alt="" coords="313,1890,502,1932"/>
-<area shape="rect" id="node42" href="$app_8c.html#ad74ca828f85941cd20bc12561b854dcb" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="358,1956,457,1983"/>
-<area shape="rect" id="node43" href="$camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" title="Performs one fixed&#45;step physics update." alt="" coords="327,2007,488,2034"/>
-<area shape="rect" id="node44" href="$camera_8h.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="318,2058,497,2084"/>
-<area shape="rect" id="node45" href="$fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" title=" " alt="" coords="360,2108,455,2135"/>
-<area shape="rect" id="node46" href="$icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" title="Generates icosphere mesh data for a specified subdivision level." alt="" coords="332,2159,483,2186"/>
-<area shape="rect" id="node47" href="$instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4" title="Binds a procedural mesh (e.g., icosphere) to the instanced group." alt="" coords="304,2210,511,2236"/>
-<area shape="rect" id="node48" href="$postprocess_8h.html#ae22c24f5c64568dcf1908a579312ed60" title="Increments internal clocks." alt="" coords="313,2260,502,2287"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,1996,60,2023"/>
+<area shape="rect" id="node2" href="$app_8h.html#a201c8d0c1a848c34571be7266d0f691d" title="Safely releases all GPU and CPU resources held by the application." alt="" coords="130,293,234,320"/>
+<area shape="rect" id="node14" href="$app_8h.html#a3fba3cd076f4d3741e107df1f4d69c39" title="Fully initializes the application state, window, and OpenGL context." alt="" coords="145,1180,219,1207"/>
+<area shape="rect" id="node39" href="$app_8h.html#a1d3b9d4294ec4a01762c962902b9063d" title="Enters the main application rendering and event loop." alt="" coords="145,1996,219,2023"/>
+<area shape="rect" id="node49" href="$cli_8h.html#ade80bb1e3d8493bc52be073640a39288" title="Parses command&#45;line arguments and determines the next action." alt="" coords="121,2047,243,2073"/>
+<area shape="rect" id="node50" href="$tracy__manager_8h.html#a9a2c28d0ab2a805063e8c7abaa79869a" title="Global Tracy initialization (cJSON hooks, etc). Must be called as early as possible in main()." alt="" coords="108,2098,256,2139"/>
+<area shape="rect" id="node3" href="$adaptive__sampler_8h.html#a366c5fb6efce2525a95d122ea847a845" title="Frees all dynamic memory associated with the sampler." alt="" coords="756,91,953,117"/>
+<area shape="rect" id="node4" href="$async__coordinator_8c.html#a4add1f2b06ca0a26f4150fb29dbbd0a2" title=" " alt="" coords="304,65,503,92"/>
+<area shape="rect" id="node5" href="$async__loader_8h.html#a8f4ca9abf78e333d8d7ca5762db31564" title="Destroys the async loader and frees resources." alt="" coords="321,116,485,143"/>
+<area shape="rect" id="node6" href="$gpu__profiler_8h.html#a99aa06bd6e69115f881711abc461984e" title="Cleans up GPU resources." alt="" coords="551,167,708,193"/>
+<area shape="rect" id="node7" href="$gpu__profiler__ui_8h.html#aa5843b14190f472881eb53b6aa0cb4f0" title="Cleans up GPU resources used by the UI." alt="" coords="315,217,491,244"/>
+<area shape="rect" id="node8" href="$perf__mode_8h.html#a93ee859004a75de69605d3984f7ea2f2" title="Clean up performance mode resources." alt="" coords="328,268,479,295"/>
+<area shape="rect" id="node9" href="$postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0" title="Releases all GPU and CPU resources." alt="" coords="324,319,483,345"/>
+<area shape="rect" id="node10" href="$scene_8h.html#a544a31d29501a2854aee06c6011ec62d" title="Cleans up scene resources." alt="" coords="344,369,463,396"/>
+<area shape="rect" id="node11" href="$tracy__manager_8h.html#a165df50ba6be5436b945f2b65e112b5a" title="Cleanup TracyManager resources." alt="" coords="314,420,493,447"/>
+<area shape="rect" id="node12" href="$ui_8h.html#a5c138218fecc5ed14d4ade5e6948d5cb" title="Releases UI resources." alt="" coords="358,471,449,497"/>
+<area shape="rect" id="node13" href="$window_8h.html#ad31b45f175d070f99c1a82cb93b2c82d" title=" " alt="" coords="339,521,467,548"/>
+<area shape="rect" id="node15" href="$action__notifier_8h.html#a2f4e4f6564af9cf640cc72c6e8a002f0" title="Initializes the notifier." alt="" coords="332,572,475,599"/>
+<area shape="rect" id="node16" href="$adaptive__sampler_8h.html#a479da41e7acc65d784109c444eed40e7" title="Initializes the adaptive sampler." alt="" coords="771,825,938,852"/>
+<area shape="rect" id="node17" href="$async__coordinator_8c.html#af9540d6eb9850b053c595a4e2e9611a9" title=" " alt="" coords="319,673,488,700"/>
+<area shape="rect" id="node18" href="$async__loader_8h.html#aaa24a1b8651cb587df266bc1a55a015f" title="Creates and initializes a new async loader instance." alt="" coords="325,724,481,751"/>
+<area shape="rect" id="node19" href="$camera_8h.html#a0c924b5985fb3aa4ace810b139bd7018" title="Initializes the camera with default values." alt="" coords="354,775,453,801"/>
+<area shape="rect" id="node20" href="$effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153" title="Initializes the benchmark (call once at startup)." alt="" coords="320,825,487,852"/>
+<area shape="rect" id="node21" href="$env__manager_8h.html#ad4d555f76a7025a1376e21ab6fb077ce" title="Starts an asynchronous load of an environment map." alt="" coords="330,876,477,903"/>
+<area shape="rect" id="node22" href="$fps_8h.html#a6502614d8abf01ccea0eacbf993a89c0" title=" " alt="" coords="368,927,439,953"/>
+<area shape="rect" id="node23" href="$app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac" title="Primary GLFW framebuffer size callback." alt="" coords="307,977,500,1004"/>
+<area shape="rect" id="node24" href="$gpu__profiler_8h.html#a80772be366a911115ff01dc5d9bcd4f0" title="Initializes the GPU profiler." alt="" coords="566,1028,693,1055"/>
+<area shape="rect" id="node25" href="$gpu__profiler__ui_8h.html#aed68b1cca30d6c8812275e6756233fa8" title="Initializes the GPU timeline UI state." alt="" coords="330,1079,477,1105"/>
+<area shape="rect" id="node26" href="$app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718" title="Primary GLFW key callback." alt="" coords="350,1129,457,1156"/>
+<area shape="rect" id="node27" href="$app__input_8h.html#af4ca2891044ac10a664b8d83ce590f1f" title="Primary GLFW mouse position callback." alt="" coords="340,1180,467,1207"/>
+<area shape="rect" id="node28" href="$perf__mode_8h.html#a154025c04a9fa8a639eeb948e58e2505" title="Initialize the performance mode subsystem." alt="" coords="343,1231,463,1257"/>
+<area shape="rect" id="node29" href="$postprocess_8h.html#aefd09528f2a616bdde219a7f5683847c" title="Compiles a specialized Uber&#45;shader for maximum performance." alt="" coords="324,1282,483,1323"/>
+<area shape="rect" id="node30" href="$postprocess_8h.html#a881dafb2be086301f57008f8c73f545b" title="Enables a specific effect." alt="" coords="328,1348,479,1375"/>
+<area shape="rect" id="node31" href="$postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b" title="Initializes the post&#45;processing pipeline." alt="" coords="339,1399,467,1425"/>
+<area shape="rect" id="node32" href="$postprocess_8h.html#a47114280aafaff716053e0b12be92dca" title="Internal helper to set fallback textures." alt="" coords="311,1450,495,1491"/>
+<area shape="rect" id="node33" href="$postprocess_8h.html#a791edfadb846c4f16be12dad6e4c2a6a" title=" " alt="" coords="306,1516,501,1543"/>
+<area shape="rect" id="node34" href="$scene_8h.html#ab37b3774644a51065a47e884ffc5e649" title="Initializes the scene resources." alt="" coords="359,1567,447,1593"/>
+<area shape="rect" id="node35" href="$app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea" title="Primary GLFW scroll callback." alt="" coords="344,1617,463,1644"/>
+<area shape="rect" id="node36" href="$tracy__manager_8h.html#a6eb1bd30b5bd993a46af5c06232ef4f8" title="Initialize a TracyManager instance." alt="" coords="329,1668,477,1695"/>
+<area shape="rect" id="node37" href="$ui_8h.html#ad120cc592f289ed7dd085d8d90b9a712" title="Initializes the UI system." alt="" coords="372,1719,435,1745"/>
+<area shape="rect" id="node38" href="$window_8h.html#a128a5d8ec24e20109240171317add4f8" title=" " alt="" coords="343,1769,463,1796"/>
+<area shape="rect" id="node40" href="$action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3" title="Updates notification timers." alt="" coords="320,1820,487,1847"/>
+<area shape="rect" id="node41" href="$adaptive__sampler_8h.html#a92cd04e246adba77f07ca2f80ea011b2" title="Checks if the current sampling window has concluded." alt="" coords="325,1871,482,1913"/>
+<area shape="rect" id="node42" href="$adaptive__sampler_8h.html#a80236a4368c7457d556fd3c4efb8862c" title="Resets the sampler state for a new window." alt="" coords="314,1937,493,1964"/>
+<area shape="rect" id="node43" href="$adaptive__sampler_8h.html#ad2f0f93f086b9307988505e079a65e3f" title="Determines if a sample should be taken this frame based on probability." alt="" coords="309,1989,498,2030"/>
+<area shape="rect" id="node44" href="$app_8c.html#ad74ca828f85941cd20bc12561b854dcb" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="354,2055,453,2081"/>
+<area shape="rect" id="node45" href="$camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" title="Performs one fixed&#45;step physics update." alt="" coords="323,2105,484,2132"/>
+<area shape="rect" id="node46" href="$camera_8h.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="314,2156,493,2183"/>
+<area shape="rect" id="node47" href="$fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" title=" " alt="" coords="356,2207,451,2233"/>
+<area shape="rect" id="node48" href="$icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" title="Generates icosphere mesh data for a specified subdivision level." alt="" coords="328,2257,479,2284"/>
 </map>

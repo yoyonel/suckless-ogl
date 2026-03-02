@@ -6,6 +6,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "app_input.c", "app__input_8c.html", "app__input_8c" ],
     [ "app_metrics.c", "app__metrics_8c.html", "app__metrics_8c" ],
     [ "app_ui.c", "app__ui_8c.html", "app__ui_8c" ],
+    [ "async_coordinator.c", "async__coordinator_8c.html", "async__coordinator_8c" ],
     [ "async_loader.c", "async__loader_8c.html", "async__loader_8c" ],
     [ "billboard_rendering.c", "billboard__rendering_8c.html", "billboard__rendering_8c" ],
     [ "camera.c", "camera_8c.html", "camera_8c" ],

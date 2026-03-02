@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['zoom_3262',['zoom',['../structCamera.html#a21fc9e142b104d8e94126657abaa075f',1,'Camera']]],
-  ['zoom_5fstep_3263',['ZOOM_STEP',['../group__Camera.html#gaca15edfc96188569083e68b587c2e09b',1,'app_settings.h']]]
+  ['zoom_3263',['zoom',['../structCamera.html#a21fc9e142b104d8e94126657abaa075f',1,'Camera']]],
+  ['zoom_5fstep_3264',['ZOOM_STEP',['../group__Camera.html#gaca15edfc96188569083e68b587c2e09b',1,'app_settings.h']]]
 ];

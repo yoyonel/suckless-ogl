@@ -1,5 +1,6 @@
 var structApp =
 [
+    [ "async_coord", "structApp.html#aaf171711fa39a8318d0bd376a1c3775a", null ],
     [ "async_loader", "structApp.html#ae23d2d96f024e64c81f150041c6f93af", null ],
     [ "auto_threshold", "structApp.html#ac8b20fbebeaf70dc1997a147f257b9d9", null ],
     [ "camera", "structApp.html#a07804dc0323b7096e4fb77546c67ec25", null ],
@@ -21,8 +22,6 @@ var structApp =
     [ "lum_histogram_buffer", "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a", null ],
     [ "lum_ssbo", "structApp.html#a3d92b6d7427fe49f91737f6bbcae083d", null ],
     [ "notifier", "structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5", null ],
-    [ "pending_prealloc_h", "structApp.html#adf92adb94e6f343e46201e4a8d96864e", null ],
-    [ "pending_prealloc_w", "structApp.html#acd40ec5077b6ef301a42fc0ed6227c29", null ],
     [ "perf_context", "structApp.html#ad161a791db6d39211bac35640b1f4d81", null ],
     [ "perf_mode_active", "structApp.html#adbbb3edb5a04e49632863b966d86291e", null ],
     [ "postprocess", "structApp.html#a8578e2324ad0fa6a1cdac64e91f5aaa6", null ],
@@ -42,9 +41,6 @@ var structApp =
     [ "u_metallic", "structApp.html#a5f8d7250b5676f0babc40055e8184580", null ],
     [ "u_roughness", "structApp.html#a05c8b971ea75c65f19686a057df48059", null ],
     [ "ui", "structApp.html#a79339486198010ad85e84500148933bf", null ],
-    [ "upload_pbo", "structApp.html#a6ae7c438512c1c648d560f5853375062", null ],
-    [ "upload_pbo_idx", "structApp.html#a898d2038eeef6ee0c5d7ef839997b969", null ],
-    [ "upload_pbo_size", "structApp.html#a5a9653930b09e0e716bb159215788b43", null ],
     [ "width", "structApp.html#a2c90198ed2171c619f0f3b9eb49d005a", null ],
     [ "window", "structApp.html#a86cbfdc5598162e909b9f3a25ae1b350", null ]
 ];
