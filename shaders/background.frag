@@ -21,7 +21,7 @@ vec2 SampleEquirectangular(vec3 v)
 void main()
 {
 	vec2 uv = SampleEquirectangular(normalize(RayDir));
-	vec3 envColor = textureLod(environmentMap, uv, 0.0).rgb;
+	vec3 envColor = textureLod(environmentMap, uv, blur_lod).rgb;
 
 	/* Sanitize NaN/Inf (Branchless-ish) */
 	/* isnan is the only one needing replacement. isinf is handled by min */

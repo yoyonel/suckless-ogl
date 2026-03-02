@@ -91,12 +91,8 @@ vec3 eval_sh_irradiance_packed(vec3 normal, vec4 t0, vec4 t1, vec4 t2, vec4 t3,
 
 vec3 eval_sh_irradiance_ssbo(vec3 normal, vec3 worldPos)
 {
-	vec3 grid_size = u_ProbeGridMax - u_ProbeGridMin;
 	vec3 local_pos = worldPos - u_ProbeGridMin;
-	vec3 t = local_pos / max(grid_size, vec3(0.001));
-
-	// Calculate base probe index and interpolation weights
-	vec3 float_idx = t * vec3(max(u_ProbeGridDim - ivec3(1), ivec3(1)));
+	vec3 float_idx = local_pos * u_GridToIdxScale;
 	ivec3 base_idx = min(ivec3(floor(float_idx)),
 	                     max(u_ProbeGridDim - ivec3(2), ivec3(0)));
 
