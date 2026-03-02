@@ -62,6 +62,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_precision\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -501,3 +502,21 @@ target_include_directories(test_sh_integration PRIVATE
 )
 target_link_libraries(test_sh_integration PRIVATE cglm m pthread)
 add_test(NAME test_sh_integration COMMAND test_sh_integration)
+
+# =============================================================================
+# ASYNC COORDINATOR TEST (MOCKED)
+# =============================================================================
+add_executable(test_async_coordinator
+    test_async_coordinator.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/src/async_coordinator.c
+)
+target_include_directories(test_async_coordinator PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${unity_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+)
+target_link_libraries(test_async_coordinator PRIVATE cglm m)
+add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
