@@ -165,6 +165,10 @@ test pattern="": build
             fi'; \
     fi
 
+# Regenerate test reference images
+test-gen-refs: build
+    @GEN_REFS=1 {{xvfb_wrapper}} {{build_dir}}/tests/test_app
+
 # List all available tests
 test-list:
     @{{distrobox}} ctest --test-dir {{build_dir}} -N 2>/dev/null | grep "Test #" | sed "s/.*: //"
