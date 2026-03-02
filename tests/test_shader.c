@@ -175,10 +175,6 @@ void test_shader_read_file_with_defines(void)
 	write_file("test_defines.vert", src);
 
 	const char* defines[] = {"ENABLE_FOO", "ENABLE_BAR 1"};
-	// External declarations for function not in header (helper test)
-	extern char* shader_read_file_with_defines(
-	    const char* path, const char** defines, int count);
-
 	char* content = shader_read_file_with_defines("test_defines.vert",
 	                                              defines, DEFINES_COUNT);
 	TEST_ASSERT_NOT_NULL(content);

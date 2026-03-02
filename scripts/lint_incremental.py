@@ -166,8 +166,13 @@ def main():
 
     # Parallel execution
     # CPU count + 2 is a common heuristic for I/O + CPU bound tasks
+    # But locally we limit to nproc - 2 for responsiveness
     cpu_count = os.cpu_count() or 1
-    max_workers = cpu_count + 2
+    if os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS"):
+        max_workers = cpu_count + 2
+    else:
+        # Local: nproc - 2, min 1
+        max_workers = max(1, cpu_count - 2)
 
     failed_files = []
 

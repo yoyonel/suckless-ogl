@@ -5,6 +5,14 @@ set shell := ["bash", "-c"]
 
 # Build variables
 build_dir := "build"
+# Job count: nproc - 2 locally (min 1), all cores in CI
+nprocs := `
+    if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ]; then
+        nproc
+    else
+        N=$(nproc); if [ "$N" -gt 2 ]; then echo $((N - 2)); else echo 1; fi
+    fi
+`
 distrobox := `
     if command -v distrobox >/dev/null 2>&1 && distrobox list --no-color 2>/dev/null | grep -w "clang-dev" >/dev/null; then
         echo "distrobox enter clang-dev --"
@@ -49,7 +57,7 @@ configure:
 # Build the project (Debug)
 build:
     @if [ ! -d {{build_dir}} ]; then just configure; fi
-    @{{distrobox}} cmake --build {{build_dir}} --parallel
+    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
 
 # Completely remove the build directory
 clean-all:
@@ -71,7 +79,7 @@ run-soft: build
 # Build for Maximum Speed (-O3, Native, FastMath, Stripped)
 release:
     @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Release -DENABLE_NATIVE_ARCH=ON
-    @{{distrobox}} cmake --build {{build_dir}} --parallel
+    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
 
 # Build and run in Release mode
 run-release: release
@@ -83,7 +91,7 @@ ultra-release:
         -DENABLE_UNITY_BUILD=ON \
         -DENABLE_NATIVE_ARCH=ON \
         -DENABLE_AGGRESSIVE_MATH=ON
-    @{{distrobox}} cmake --build build-ultra --parallel
+    @{{distrobox}} cmake --build build-ultra --parallel {{nprocs}}
 
 # Build and run in UltraRelease mode
 run-ultra-release: ultra-release
@@ -92,7 +100,7 @@ run-ultra-release: ultra-release
 # Build for Minimum Size (-Os, Stripped)
 small:
     @{{distrobox}} cmake -B build-small -DCMAKE_BUILD_TYPE=MinSizeRel
-    @{{distrobox}} cmake --build build-small --parallel
+    @{{distrobox}} cmake --build build-small --parallel {{nprocs}}
     @ls -lh build-small/app
 
 # Build and run the application in small mode
@@ -102,7 +110,7 @@ run-small: small
 # Build with SSBO rendering (alternative path)
 build-ssbo:
     @{{distrobox}} cmake -B build-ssbo -DCMAKE_BUILD_TYPE=Debug -DUSE_SSBO=ON
-    @{{distrobox}} cmake --build build-ssbo --parallel
+    @{{distrobox}} cmake --build build-ssbo --parallel {{nprocs}}
 
 # Build and run with SSBO rendering
 run-ssbo: build-ssbo
@@ -115,7 +123,7 @@ clean-ssbo:
 # Build with Synchronous Debug (SLOW but safe)
 build-sync:
     @{{distrobox}} cmake -B build-sync -DCMAKE_BUILD_TYPE=Debug -DENABLE_Gx_SYNC=ON
-    @{{distrobox}} cmake --build build-sync --parallel
+    @{{distrobox}} cmake --build build-sync --parallel {{nprocs}}
 
 # Build and run with Synchronous Debug
 run-sync: build-sync
@@ -128,7 +136,7 @@ clean-sync:
 # Build with optimizations and debug symbols (for profiling)
 profile:
     @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
-    @{{distrobox}} cmake --build {{build_dir}} --parallel
+    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
 
 # Build and run Linux 'perf' profiler (requires root/capabilities)
 perf: profile
@@ -187,7 +195,7 @@ test-integration-asan: asan
 coverage:
     @echo "Building with coverage instrumentation..."
     @{{distrobox}} cmake {{extra_cmake_flags}} -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-    @{{distrobox}} cmake --build build-coverage --parallel
+    @{{distrobox}} cmake --build build-coverage --parallel {{nprocs}}
     @echo "Running tests to generate profile data..."
     @{{distrobox}} sh -c "LLVM_PROFILE_FILE='{{justfile_directory()}}/build-coverage/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir build-coverage --output-on-failure"
     @echo "Merging profile data..."
@@ -213,7 +221,7 @@ asan:
     @echo "Building with AddressSanitizer (ASan)..."
     @mkdir -p build-asan
     @{{distrobox}} cmake -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
-    @{{distrobox}} cmake --build build-asan --parallel
+    @{{distrobox}} cmake --build build-asan --parallel {{nprocs}}
 
 # Run Valgrind (Default) to detect leaks/errors
 memcheck: build
@@ -296,7 +304,7 @@ docs-serve:
 # Format code using clang-format and ruff
 format:
     @echo "Formatting C and Shader files..."
-    @{{distrobox}} sh -c 'find src include tests shaders -name "_deps" -prune -o -name "*.c" -print -o -name "*.h" -print -o -name "*.glsl" -print -o -name "*.vert" -print -o -name "*.frag" -print | xargs -P $(nproc) clang-format -i'
+    @{{distrobox}} sh -c 'find src include tests shaders -name "_deps" -prune -o -name "*.c" -print -o -name "*.h" -print -o -name "*.glsl" -print -o -name "*.vert" -print -o -name "*.frag" -print | xargs -P {{nprocs}} clang-format -i'
     @echo "Formatting Python scripts..."
     @{{distrobox}} ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
@@ -342,7 +350,7 @@ build-tracy-server:
     @echo "Building Tracy Profiler Server (Legacy/X11: {{tracy_legacy}})..."
     @mkdir -p deps/tracy/profiler/build
     @{{distrobox}} cmake -B deps/tracy/profiler/build -S deps/tracy/profiler -DCMAKE_BUILD_TYPE=Release -DLEGACY={{tracy_legacy}}
-    @{{distrobox}} cmake --build deps/tracy/profiler/build --parallel
+    @{{distrobox}} cmake --build deps/tracy/profiler/build --parallel {{nprocs}}
 
 # Run Tracy Server
 tracy-server:
@@ -355,12 +363,12 @@ run-tracy: build-tracy
 # Build application with Tracy enabled
 build-tracy:
     @{{distrobox}} cmake -B build-tracy -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
-    @{{distrobox}} cmake --build build-tracy --parallel
+    @{{distrobox}} cmake --build build-tracy --parallel {{nprocs}}
 
 # Build with Tracy AND AddressSanitizer
 build-tracy-asan:
     @{{distrobox}} cmake -B build-tracy-asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
-    @{{distrobox}} cmake --build build-tracy-asan --parallel
+    @{{distrobox}} cmake --build build-tracy-asan --parallel {{nprocs}}
 
 # Run integration test with Tracy AND ASan
 test-integration-tracy-asan: build-tracy-asan
@@ -370,7 +378,7 @@ test-integration-tracy-asan: build-tracy-asan
 # Build with Tracy in Release mode
 build-tracy-release:
     @{{distrobox}} cmake -B build-tracy-release -DCMAKE_BUILD_TYPE=Release -DENABLE_TRACY=ON
-    @{{distrobox}} cmake --build build-tracy-release --parallel
+    @{{distrobox}} cmake --build build-tracy-release --parallel {{nprocs}}
 
 # Run integration test with Tracy in Release mode
 test-integration-tracy-release: build-tracy-release
