@@ -197,7 +197,7 @@ void gpu_profiler_ui_update(GPUProfilerUI* profiler_ui,
 
 	if (app_metrics_log_gpu_stats(live_profiler, current_time,
 	                              should_log_metrics)) {
-		bool display_updated[MAX_GPU_STAGES] = {0};
+		bool display_updated[MAX_GPU_STAGES] = {false};
 
 		gpu_profiler_ui_compact_stages(profiler_ui);
 
@@ -372,7 +372,11 @@ void gpu_profiler_ui_draw(GPUProfilerUI* profiler_ui, UIContext* ctx,
 
 void gpu_profiler_ui_toggle_visibility(GPUProfilerUI* profiler_ui)
 {
-	profiler_ui->visible = !profiler_ui->visible;
+	if (profiler_ui->visible) {
+		profiler_ui->visible = false;
+	} else {
+		profiler_ui->visible = true;
+	}
 }
 
 void gpu_profiler_ui_toggle_position(GPUProfilerUI* profiler_ui)

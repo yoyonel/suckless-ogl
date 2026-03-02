@@ -14,8 +14,9 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
                          double delta_time, uint64_t frame_count,
                          int log_gpu_metrics)
 {
-	bool profiling_enabled = timeline_ui->visible || log_gpu_metrics ||
-	                         effect_benchmark_is_running(effect_bench);
+	bool profiling_enabled =
+	    (timeline_ui->visible || log_gpu_metrics != 0 ||
+	     effect_benchmark_is_running(effect_bench)) != 0;
 	gpu_profiler_set_enabled(profiler, profiling_enabled);
 	gpu_profiler_begin_frame(profiler, frame_count);
 
