@@ -56,8 +56,17 @@ BUILD_ASAN_DIR := build-asan
 
 .PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan
 
+# Job count: nproc - 2 locally (min 1), all cores in CI
+ifneq ($(CI),)
+    NPROCS := $(shell nproc)
+else ifneq ($(GITHUB_ACTIONS),)
+    NPROCS := $(shell nproc)
+else
+    NPROCS := $(shell N=$$(nproc); if [ "$$N" -gt 2 ]; then echo $$(($$N - 2)); else echo 1; fi)
+endif
+
 all: $(BUILD_DIR)/Makefile
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_DIR) --parallel $(NPROCS)
 
 $(BUILD_DIR)/Makefile:
 	@mkdir -p $(BUILD_DIR)
@@ -179,7 +188,7 @@ $(LINT_FULL_JSON): CMakeLists.txt Makefile
 
 lint-full: $(LINT_FULL_JSON)
 	@echo "Ensuring generated headers are ready..."
-	@$(DISTROBOX) $(CMAKE) --build $(LINT_FULL_DIR) --target glad --parallel $(shell nproc) > /dev/null
+	@$(DISTROBOX) $(CMAKE) --build $(LINT_FULL_DIR) --target glad --parallel $(NPROCS) > /dev/null
 	@echo "Linting C code (Full Coverage)..."
 	@$(DISTROBOX) python3 scripts/lint_incremental.py $(LINT_FULL_DIR)
 	@echo "✓ Full linting passed"
@@ -247,7 +256,7 @@ $(BUILD_COV_DIR):
 coverage: $(BUILD_COV_DIR)
 	@echo "Building with coverage instrumentation..."
 	@$(DISTROBOX) $(CMAKE) $(EXTRA_CMAKE_FLAGS) -B $(BUILD_COV_DIR) -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_COV_DIR) --parallel $(NPROCS)
 
 	@echo "Running tests to generate profile data..."
 	@$(DISTROBOX) sh -c "LLVM_PROFILE_FILE='$(CURDIR)/$(BUILD_COV_DIR)/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir $(BUILD_COV_DIR) --output-on-failure"
@@ -301,7 +310,7 @@ profile:
 	@echo "Building for profiling (RelWithDebInfo + LTO)..."
 	@mkdir -p $(BUILD_PROF_DIR)
 	@$(DISTROBOX) $(CMAKE) -B $(BUILD_PROF_DIR) -DCMAKE_BUILD_TYPE=Profiling
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_PROF_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_PROF_DIR) --parallel $(NPROCS)
 
 perf: profile
 	@echo "Running perf record..."
@@ -317,7 +326,7 @@ asan:
 		-DENABLE_ASAN=ON \
 		-DENABLE_UNITY_BUILD=OFF \
 		-G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_ASAN_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_ASAN_DIR) --parallel $(NPROCS)
 
 run-asan: asan
 	@echo "Running with AddressSanitizer..."
@@ -387,7 +396,7 @@ build-ssbo:
 	@echo "Building with SSBO rendering enabled..."
 	@mkdir -p build-ssbo
 	@$(DISTROBOX) $(CMAKE) -B build-ssbo -DUSE_SSBO_RENDERING=ON -G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build build-ssbo --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build build-ssbo --parallel $(NPROCS)
 
 run-ssbo: build-ssbo
 	@./build-ssbo/app
@@ -403,7 +412,7 @@ build-sync:
 	@echo "Building with Synchronous Debug enabled (SLOW)..."
 	@mkdir -p build-sync
 	@$(DISTROBOX) $(CMAKE) -B build-sync -DDEBUG_SYNCHRONOUS=ON -G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build build-sync --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build build-sync --parallel $(NPROCS)
 
 run-sync: build-sync
 	@./build-sync/app
@@ -460,7 +469,7 @@ release:
 		-DENABLE_UNITY_BUILD=ON \
 		-DENABLE_SHADER_OPTIMIZATION=ON \
 		-G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(NPROCS)
 	@echo "Stripping binary..."
 	@$(DISTROBOX) strip --strip-all $(BUILD_REL_DIR)/app
 	@echo "Done. Binary is at $(BUILD_REL_DIR)/app"
@@ -497,7 +506,7 @@ debug-release:
 		-DENABLE_AGGRESSIVE_MATH=ON \
 		-DENABLE_UNITY_BUILD=ON \
 		-G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_REL_DIR) --parallel $(NPROCS)
 	@echo "Done. Binary is at $(BUILD_REL_DIR)/app (Not stripped)"
 	@du -h $(BUILD_REL_DIR)/app
 
@@ -510,7 +519,7 @@ small:
 		-DENABLE_NATIVE_ARCH=OFF \
 		-DENABLE_AGGRESSIVE_MATH=ON \
 		-G "Unix Makefiles"
-	@$(DISTROBOX) $(CMAKE) --build $(BUILD_SMALL_DIR) --parallel $(shell nproc)
+	@$(DISTROBOX) $(CMAKE) --build $(BUILD_SMALL_DIR) --parallel $(NPROCS)
 	@echo "Stripping binary..."
 	@$(DISTROBOX) strip --strip-all $(BUILD_SMALL_DIR)/app
 	@echo "Done. Binary is at $(BUILD_SMALL_DIR)/app"

@@ -411,8 +411,8 @@ static char* inject_defines_into_source(const char* buffer, size_t file_size,
 
 enum { MAX_DEFINES = 32 };
 
-static char* shader_read_file_with_defines(const char* path,
-                                           const char** defines, int count)
+char* shader_read_file_with_defines(const char* path, const char** defines,
+                                    int count)
 {
 	/* 1. Load root file */
 	CLEANUP_FREE char* root_src =

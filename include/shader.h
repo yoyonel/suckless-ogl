@@ -29,6 +29,16 @@ GLuint shader_compile(const char* path, GLenum type);
 char* shader_read_file(const char* path);
 
 /**
+ * @brief Reads a shader file and injects defines.
+ * @param path Path to source.
+ * @param defines Array of macro strings.
+ * @param count Number of macros.
+ * @return Heap-allocated result.
+ */
+char* shader_read_file_with_defines(const char* path, const char** defines,
+                                    int count);
+
+/**
  * @brief Helper to load a classic Vertex+Fragment program from disk.
  * @return GLuint program handle.
  */
