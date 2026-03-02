@@ -217,7 +217,7 @@ static void scene_init_state(Scene* scene)
 	scene->show_envmap = 1;
 	scene->billboard_mode = 1;
 	scene->specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
-	scene->aa_mode = 0;  // Default: Screen-space
+	scene->aa_mode = AA_MODE_CURVATURE;
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->gi_mode = GI_MODE_OFF;
 	scene->show_probe_grid = 0;
@@ -586,6 +586,18 @@ void scene_cleanup(Scene* scene)
 		free(scene->hdr_files);
 		scene->hdr_files = NULL;
 		scene->hdr_count = 0;
+	}
+}
+
+const char* aa_mode_to_string(AAMode mode)
+{
+	switch (mode) {
+		case AA_MODE_SCREEN_SPACE:
+			return "Screen-space";
+		case AA_MODE_CURVATURE:
+			return "Curvature-based";
+		default:
+			return "Unknown";
 	}
 }
 
