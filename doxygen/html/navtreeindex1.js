@@ -1,5 +1,8 @@
 var NAVTREEINDEX1 =
 {
+"camera_8h.html#a33463fa28ecfda9a7afb4fa571ae058a":[6,0,2,9,12],
+"camera_8h.html#a44fc6216c4aa4dbaea8299798e3cc29f":[6,0,2,9,13],
+"camera_8h.html#a45db274ac303f18d569efb85b1e5a284":[6,0,2,9,2],
 "camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7":[6,0,2,9,20],
 "camera_8h.html#a6b99cda8dc39c208a7eb0c433fc54fd0":[6,0,2,9,4],
 "camera_8h.html#a6ea673eb9cc74d05f8ddef371a019e8a":[6,0,2,9,16],
@@ -184,8 +187,8 @@ var NAVTREEINDEX1 =
 "functions_t.html":[5,2,0,18],
 "functions_u.html":[5,2,0,19],
 "functions_v.html":[5,2,0,20],
-"functions_vars.html":[5,2,1,0],
 "functions_vars.html":[5,2,1],
+"functions_vars.html":[5,2,1,0],
 "functions_vars_a.html":[5,2,1,1],
 "functions_vars_b.html":[5,2,1,2],
 "functions_vars_c.html":[5,2,1,3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX1 =
 "globals.html":[6,1,0,0],
 "globals_a.html":[6,1,0,1],
 "globals_b.html":[6,1,0,2],
-"globals_c.html":[6,1,0,3],
-"globals_d.html":[6,1,0,4],
-"globals_defs.html":[6,1,6],
-"globals_e.html":[6,1,0,5]
+"globals_c.html":[6,1,0,3]
 };

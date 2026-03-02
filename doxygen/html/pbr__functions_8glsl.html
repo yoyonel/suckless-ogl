@@ -266,12 +266,14 @@ Functions</h2></td></tr>
 <tr class="separator:a9535dbe6fb313fa2e4c7d615a9c49431"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3d305a6b29ae770f36de317a12b8f32"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#ab3d305a6b29ae770f36de317a12b8f32">compute_IBL_PBR_Advanced</a> (vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV, vec3 albedo, float metallic, float roughness, float ao, vec3 worldPos)</td></tr>
 <tr class="separator:ab3d305a6b29ae770f36de317a12b8f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f52ef963cd31a16bd245cbd52d6ad85"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#a3f52ef963cd31a16bd245cbd52d6ad85">compute_roughness_clamping_screenspace</a> (vec3 N, float roughness)</td></tr>
-<tr class="separator:a3f52ef963cd31a16bd245cbd52d6ad85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8723d708ee1b0ffb3986fdc191181a37"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#a8723d708ee1b0ffb3986fdc191181a37">compute_specular_aa_roughness</a> (vec3 N, float roughness, float projectedCurvature)</td></tr>
+<tr class="separator:a8723d708ee1b0ffb3986fdc191181a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a6859bf1e5b783e80da8f6fa0b92c44"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#a8a6859bf1e5b783e80da8f6fa0b92c44">compute_roughness_clamping_analytic</a> (float roughness, float curvature)</td></tr>
 <tr class="separator:a8a6859bf1e5b783e80da8f6fa0b92c44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9ce0a4229648f673fc49510d90878af"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#ac9ce0a4229648f673fc49510d90878af">compute_roughness_clamping</a> (vec3 N, float roughness)</td></tr>
 <tr class="separator:ac9ce0a4229648f673fc49510d90878af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d0ccb760291492eb6f7799620e68369"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#a3d0ccb760291492eb6f7799620e68369">compute_pbr_stable</a> (vec3 N, vec3 V, vec3 albedo, float metallic, float roughness, float ao, vec3 worldPos, float curvature)</td></tr>
+<tr class="separator:a3d0ccb760291492eb6f7799620e68369"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ef1750be8e7ae99458ad1f24d47e7d"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#a49ef1750be8e7ae99458ad1f24d47e7d">compute_pbr</a> (vec3 N, vec3 V, vec3 albedo, float metallic, float roughness, float ao, vec3 worldPos)</td></tr>
 <tr class="separator:a49ef1750be8e7ae99458ad1f24d47e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac09e000bb011c60d5497779ad123a3eb"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr__functions_8glsl.html#ac09e000bb011c60d5497779ad123a3eb">compute_debug</a> (vec3 N, vec3 V, vec3 albedo, float metallic, float roughness, float ao, int <a class="el" href="pbr__ibl__instanced_8frag.html#abaa039aa7232ce6ca78b8b31ff6fe556">debugMode</a>, vec3 worldPos)</td></tr>
@@ -505,6 +507,76 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a3d0ccb760291492eb6f7799620e68369"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d0ccb760291492eb6f7799620e68369">&#9670;&nbsp;</a></span>compute_pbr_stable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vec3 compute_pbr_stable </td>
+          <td>(</td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>N</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>V</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>albedo</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>metallic</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>roughness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>ao</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vec3&#160;</td>
+          <td class="paramname"><em>worldPos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>curvature</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="pbr__functions_8glsl_a3d0ccb760291492eb6f7799620e68369_cgraph.svg" width="100%" height="426"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="ac9ce0a4229648f673fc49510d90878af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac9ce0a4229648f673fc49510d90878af">&#9670;&nbsp;</a></span>compute_roughness_clamping()</h2>
 
@@ -568,14 +640,14 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a3f52ef963cd31a16bd245cbd52d6ad85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f52ef963cd31a16bd245cbd52d6ad85">&#9670;&nbsp;</a></span>compute_roughness_clamping_screenspace()</h2>
+<a id="a8723d708ee1b0ffb3986fdc191181a37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8723d708ee1b0ffb3986fdc191181a37">&#9670;&nbsp;</a></span>compute_specular_aa_roughness()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float compute_roughness_clamping_screenspace </td>
+          <td class="memname">float compute_specular_aa_roughness </td>
           <td>(</td>
           <td class="paramtype">vec3&#160;</td>
           <td class="paramname"><em>N</em>, </td>
@@ -584,7 +656,13 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>roughness</em>&#160;</td>
+          <td class="paramname"><em>roughness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>projectedCurvature</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -595,7 +673,14 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 <p>Generic Screen-Space Roughness Clamping (Hardware Dependent) </p><dl class="section note"><dt>Note</dt><dd>This uses GPU derivatives (dFdx/dFdy) which differ between vendors. </dd>
 <dd>
-Currently disabled to ensure bit-perfect "ISO" rendering across GPUs. </dd></dl>
+Currently disabled to ensure bit-perfect "ISO" rendering across GPUs. Screen-Space Specular Semi-Analytic Anti-Aliasing. Uses the Varef (Variance-based Roughness) technique. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">N</td><td>Normal vector in world space. </td></tr>
+    <tr><td class="paramname">roughness</td><td>Perceptual roughness (0-1). </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

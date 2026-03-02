@@ -308,6 +308,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abe28559559e7c42dcb17881a0f4c73a5"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#abe28559559e7c42dcb17881a0f4c73a5">shader_read_file</a> (const char *path)</td></tr>
 <tr class="memdesc:abe28559559e7c42dcb17881a0f4c73a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a shader file into RAM, processing all includes.  <a href="shader_8h.html#abe28559559e7c42dcb17881a0f4c73a5">More...</a><br /></td></tr>
 <tr class="separator:abe28559559e7c42dcb17881a0f4c73a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af23bbd523d928bb8a9d43c19a3a3dc82"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#af23bbd523d928bb8a9d43c19a3a3dc82">shader_read_file_with_defines</a> (const char *path, const char **defines, int count)</td></tr>
+<tr class="memdesc:af23bbd523d928bb8a9d43c19a3a3dc82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a shader file and injects defines.  <a href="shader_8h.html#af23bbd523d928bb8a9d43c19a3a3dc82">More...</a><br /></td></tr>
+<tr class="separator:af23bbd523d928bb8a9d43c19a3a3dc82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae08327f08826fb5e44e6c5a1627433e4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader_load_program</a> (const char *vertex_path, const char *fragment_path)</td></tr>
 <tr class="memdesc:ae08327f08826fb5e44e6c5a1627433e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to load a classic Vertex+Fragment program from disk.  <a href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">More...</a><br /></td></tr>
 <tr class="separator:ae08327f08826fb5e44e6c5a1627433e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -746,6 +749,57 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8h_abe28559559e7c42dcb17881a0f4c73a5_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af23bbd523d928bb8a9d43c19a3a3dc82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af23bbd523d928bb8a9d43c19a3a3dc82">&#9670;&nbsp;</a></span>shader_read_file_with_defines()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* shader_read_file_with_defines </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char **&#160;</td>
+          <td class="paramname"><em>defines</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads a shader file and injects defines. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path to source. </td></tr>
+    <tr><td class="paramname">defines</td><td>Array of macro strings. </td></tr>
+    <tr><td class="paramname">count</td><td>Number of macros. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Heap-allocated result. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="shader_8h_af23bbd523d928bb8a9d43c19a3a3dc82_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

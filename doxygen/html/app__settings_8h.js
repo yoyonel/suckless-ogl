@@ -39,6 +39,7 @@ var app__settings_8h =
     [ "DEFAULT_MIN_EXPOSURE", "group__PostProcess.html#ga91e3ffaced831fb8bf9736d8a9fc6ef2", null ],
     [ "DEFAULT_ROUGHNESS", "group__PBR.html#ga24993c1c760aaefd485e66d419bcce3a", null ],
     [ "DEFAULT_SPACING", "group__UI.html#gabfa53e97d39b21b0639f934b842101a8", null ],
+    [ "DEFAULT_SPECULAR_AA_ENABLED", "group__Environment.html#gaedfe2be4dbb67d6d192a2ee45511bf26", null ],
     [ "DEFAULT_STENCIL_MASK", "group__Renderer.html#gaa21ac8099a8b2310e9a42661d676cc51", null ],
     [ "FAR_PLANE", "group__Camera.html#ga2d35f44872925de0fd08ca7b35145af6", null ],
     [ "FOV_ANGLE", "group__Camera.html#gacb82af743656992de4acd8347d2a55bc", null ],

@@ -12,5 +12,7 @@ var structInstancedUniforms =
     [ "probe_grid_min", "structInstancedUniforms.html#ac822ab03edf6759741926077ec4bb10c", null ],
     [ "projection", "structInstancedUniforms.html#af9b84adb504164380adc9e590a44e483", null ],
     [ "sh_textures", "structInstancedUniforms.html#a45102246fffcb58399776dd6405d1ab4", null ],
+    [ "u_aa_mode", "structInstancedUniforms.html#a4337c339a6d36f1ff526419f8cde95ff", null ],
+    [ "u_specular_aa_enabled", "structInstancedUniforms.html#a2c1edcb9dffd7aab175cb74aaa95fca4", null ],
     [ "view", "structInstancedUniforms.html#a7d5908f5c55f06578e403dbcd1a81335", null ]
 ];

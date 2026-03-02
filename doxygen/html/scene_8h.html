@@ -316,6 +316,12 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a77089f19a96b4dfc89e234b29626a85f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Global Illumination sampling methods.  <a href="scene_8h.html#a77089f19a96b4dfc89e234b29626a85f">More...</a><br /></td></tr>
 <tr class="separator:a77089f19a96b4dfc89e234b29626a85f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a111471ae82d90ada8c12655b0b4f909e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a> { <a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909eadb95af9dc37b555fd5dcf0056c685e61">AA_MODE_SCREEN_SPACE</a> = 0
+, <a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909eaa26f434253d716f3b95abc1f4cce109d">AA_MODE_CURVATURE</a>
+, <a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909eac73f627804160eaf1fe635cc9a390be7">AA_MODE_COUNT</a>
+ }</td></tr>
+<tr class="memdesc:a111471ae82d90ada8c12655b0b4f909e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specular Anti-Aliasing modes.  <a href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">More...</a><br /></td></tr>
+<tr class="separator:a111471ae82d90ada8c12655b0b4f909e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -325,6 +331,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a544a31d29501a2854aee06c6011ec62d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a544a31d29501a2854aee06c6011ec62d">scene_cleanup</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:a544a31d29501a2854aee06c6011ec62d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up scene resources.  <a href="scene_8h.html#a544a31d29501a2854aee06c6011ec62d">More...</a><br /></td></tr>
 <tr class="separator:a544a31d29501a2854aee06c6011ec62d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad63ee708be73ae184d1233ad69cf077f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#ad63ee708be73ae184d1233ad69cf077f">aa_mode_to_string</a> (<a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a> mode)</td></tr>
+<tr class="memdesc:ad63ee708be73ae184d1233ad69cf077f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string representation of the AA mode.  <a href="scene_8h.html#ad63ee708be73ae184d1233ad69cf077f">More...</a><br /></td></tr>
+<tr class="separator:ad63ee708be73ae184d1233ad69cf077f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406">scene_render</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 <a class="el" href="pbr__ibl__ssbo_8vert.html#a7ab66495f9aae7ab34147735223f7c6d">view</a>, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height)</td></tr>
 <tr class="memdesc:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the scene.  <a href="scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406">More...</a><br /></td></tr>
 <tr class="separator:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -333,6 +342,27 @@ Functions</h2></td></tr>
 <tr class="separator:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a111471ae82d90ada8c12655b0b4f909e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a111471ae82d90ada8c12655b0b4f909e">&#9670;&nbsp;</a></span>AAMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Specular Anti-Aliasing modes. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a111471ae82d90ada8c12655b0b4f909eadb95af9dc37b555fd5dcf0056c685e61"></a>AA_MODE_SCREEN_SPACE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a111471ae82d90ada8c12655b0b4f909eaa26f434253d716f3b95abc1f4cce109d"></a>AA_MODE_CURVATURE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a111471ae82d90ada8c12655b0b4f909eac73f627804160eaf1fe635cc9a390be7"></a>AA_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="a77089f19a96b4dfc89e234b29626a85f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77089f19a96b4dfc89e234b29626a85f">&#9670;&nbsp;</a></span>GIMode</h2>
 
@@ -379,6 +409,33 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ad63ee708be73ae184d1233ad69cf077f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad63ee708be73ae184d1233ad69cf077f">&#9670;&nbsp;</a></span>aa_mode_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* aa_mode_to_string </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a string representation of the AA mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>The AA mode. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>String representation. </dd></dl>
+
+</div>
+</div>
 <a id="a544a31d29501a2854aee06c6011ec62d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a544a31d29501a2854aee06c6011ec62d">&#9670;&nbsp;</a></span>scene_cleanup()</h2>
 

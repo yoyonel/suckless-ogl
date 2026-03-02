@@ -1,5 +1,6 @@
 var structScene =
 [
+    [ "aa_mode", "structScene.html#a305181f32e249fc80b71c0e6310f63d9", null ],
     [ "billboard_group", "structScene.html#a1108ce3d3c22801c2a346c2d42d93ee8", null ],
     [ "billboard_mode", "structScene.html#ab8fcc2996ea8ea2a31ca3d53ba7481de", null ],
     [ "billboard_uniforms", "structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a", null ],
@@ -39,6 +40,7 @@ var structScene =
     [ "skybox_shader", "structScene.html#ac1784804cde60f3b5baea704da6bb988", null ],
     [ "sorting_mode", "structScene.html#a021aca187df5cebae56ecb1a5286ca9a", null ],
     [ "spec_prefiltered_tex", "structScene.html#a3ee995666133cc13650add76abcda8af", null ],
+    [ "specular_aa_enabled", "structScene.html#a8341a40ddae1fff0b3c637190499b3a8", null ],
     [ "sphere_ebo", "structScene.html#ae4e277adb39a677028625e5948a8513e", null ],
     [ "sphere_instance_count", "structScene.html#a7af7f2d638e93fa251d6e0fa95c709cc", null ],
     [ "sphere_instances", "structScene.html#a8fb0e29cd355adce1c6348f6304507b0", null ],

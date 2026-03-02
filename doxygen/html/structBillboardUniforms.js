@@ -13,6 +13,8 @@ var structBillboardUniforms =
     [ "probe_grid_min", "structBillboardUniforms.html#a6bba2db0066c2cefb1594b8fe4e21945", null ],
     [ "projection", "structBillboardUniforms.html#a74876f2a87677e81b2d434ab5822acf6", null ],
     [ "sh_textures", "structBillboardUniforms.html#a21361381527b46bd31aa0a6807a51bc2", null ],
+    [ "u_aa_mode", "structBillboardUniforms.html#a451a4f4d1dbd2715ec59197008447b8e", null ],
     [ "u_screen_size", "structBillboardUniforms.html#a088a5ced5fbd09a16aec9d0ca7447fe2", null ],
+    [ "u_specular_aa_enabled", "structBillboardUniforms.html#a1a115614689c71f44aaa488710e2f9aa", null ],
     [ "view", "structBillboardUniforms.html#af146937e2d532b09bfbbb943385b6c30", null ]
 ];

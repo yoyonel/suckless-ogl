@@ -4,6 +4,11 @@ var scene_8h =
     [ "DebugUniforms", "structDebugUniforms.html", "structDebugUniforms" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
     [ "Scene", "structScene.html", "structScene" ],
+    [ "AAMode", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909e", [
+      [ "AA_MODE_SCREEN_SPACE", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909eadb95af9dc37b555fd5dcf0056c685e61", null ],
+      [ "AA_MODE_CURVATURE", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909eaa26f434253d716f3b95abc1f4cce109d", null ],
+      [ "AA_MODE_COUNT", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909eac73f627804160eaf1fe635cc9a390be7", null ]
+    ] ],
     [ "GIMode", "scene_8h.html#a77089f19a96b4dfc89e234b29626a85f", [
       [ "GI_MODE_OFF", "scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa9b40f870d3b7b4152e252bc8212abf8d", null ],
       [ "GI_MODE_3D_TEX", "scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa78c9618ee8bd96d6765e64fc81b86c0f", null ],
@@ -16,6 +21,7 @@ var scene_8h =
       [ "SORTING_MODE_GPU_BITONIC", "scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad", null ],
       [ "SORTING_MODE_COUNT", "scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1", null ]
     ] ],
+    [ "aa_mode_to_string", "scene_8h.html#ad63ee708be73ae184d1233ad69cf077f", null ],
     [ "scene_cleanup", "scene_8h.html#a544a31d29501a2854aee06c6011ec62d", null ],
     [ "scene_init", "scene_8h.html#ab37b3774644a51065a47e884ffc5e649", null ],
     [ "scene_render", "scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406", null ],

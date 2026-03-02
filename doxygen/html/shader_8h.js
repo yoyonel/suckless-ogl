@@ -12,6 +12,7 @@ var shader_8h =
     [ "shader_load_program", "shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4", null ],
     [ "shader_load_with_defines", "shader_8h.html#a4e5e290bb3ee9bc8ebb158bcff2f584f", null ],
     [ "shader_read_file", "shader_8h.html#abe28559559e7c42dcb17881a0f4c73a5", null ],
+    [ "shader_read_file_with_defines", "shader_8h.html#af23bbd523d928bb8a9d43c19a3a3dc82", null ],
     [ "shader_set_float", "shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db", null ],
     [ "shader_set_float_loc", "shader_8h.html#a6dbb432c3ea627138ba521cf748b7f18", null ],
     [ "shader_set_int", "shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32", null ],
