@@ -216,6 +216,8 @@ static void scene_init_state(Scene* scene)
 	scene->pbr_debug_mode = 0;
 	scene->show_envmap = 1;
 	scene->billboard_mode = 1;
+	scene->specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
+	scene->aa_mode = 0;  // Default: Screen-space
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->gi_mode = GI_MODE_OFF;
 	scene->show_probe_grid = 0;
@@ -289,6 +291,11 @@ static int scene_init_billboard_shader(Scene* scene)
 	                                "previousViewProj");
 	scene->billboard_uniforms.u_screen_size = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "u_screenSize");
+	scene->billboard_uniforms.u_specular_aa_enabled =
+	    shader_get_uniform_location(scene->pbr_billboard_shader,
+	                                "u_specularAAEnabled");
+	scene->billboard_uniforms.u_aa_mode = shader_get_uniform_location(
+	    scene->pbr_billboard_shader, "u_aaMode");
 
 	/* Probe Grid */
 	scene->billboard_uniforms.probe_grid_min = shader_get_uniform_location(
@@ -380,6 +387,10 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 	    shader_get_uniform_location(*out_shader, "view");
 	scene->instanced_uniforms.previous_view_proj =
 	    shader_get_uniform_location(*out_shader, "previousViewProj");
+	scene->instanced_uniforms.u_specular_aa_enabled =
+	    shader_get_uniform_location(*out_shader, "u_specularAAEnabled");
+	scene->instanced_uniforms.u_aa_mode =
+	    shader_get_uniform_location(*out_shader, "u_aaMode");
 
 	/* Probe Grid Uniforms */
 	scene->instanced_uniforms.probe_grid_min =
@@ -630,6 +641,15 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	shader_set_vec2_loc(scene->billboard_uniforms.u_screen_size,
 	                    screen_size);
 
+	if (scene->billboard_uniforms.u_specular_aa_enabled != -1) {
+		glUniform1i(scene->billboard_uniforms.u_specular_aa_enabled,
+		            scene->specular_aa_enabled);
+	}
+	if (scene->billboard_uniforms.u_aa_mode != -1) {
+		glUniform1i(scene->billboard_uniforms.u_aa_mode,
+		            scene->aa_mode);
+	}
+
 	/* Probe Grid spatial bounds and GI Toggle */
 	shader_set_vec3_loc(scene->billboard_uniforms.probe_grid_min,
 	                    scene->probe_grid.aabb_min);
@@ -753,6 +773,15 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 	shader_set_mat4_loc(scene->instanced_uniforms.view, (float*)view);
 	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
 	                    (float*)previous_view_proj);
+
+	if (scene->instanced_uniforms.u_specular_aa_enabled != -1) {
+		glUniform1i(scene->instanced_uniforms.u_specular_aa_enabled,
+		            scene->specular_aa_enabled);
+	}
+	if (scene->instanced_uniforms.u_aa_mode != -1) {
+		glUniform1i(scene->instanced_uniforms.u_aa_mode,
+		            scene->aa_mode);
+	}
 
 	/* Probe Grid spatial bounds and GI Toggle */
 	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,

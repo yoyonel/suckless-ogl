@@ -112,15 +112,15 @@ void main()
 		color = compute_debug(N, V, Albedo, Metallic, Roughness, AO,
 		                      debugMode, sphereHitPos);
 	} else {
-		vec3 R_vec = reflect(-V, N);
-		float NdotV = max(dot(N, V), 0.0);
-		vec3 F0 = mix(vec3(0.04), Albedo, Metallic);
-		float analytic_roughness = compute_roughness_clamping_analytic(
-		    Roughness, 1.0 / SphereRadius);
+		// Analytical Curvature AA for sphere:
+		// The normal variation per pixel is pixelSizeWorld /
+		// SphereRadius.
+		float projectedCurvature =
+		    pixelSizeWorld / max(1e-4, SphereRadius);
 
-		color = compute_IBL_PBR_Advanced(
-		    N, V, R_vec, F0, NdotV, Albedo, Metallic,
-		    max(analytic_roughness, 0.04), AO, sphereHitPos);
+		color =
+		    compute_pbr_stable(N, V, Albedo, Metallic, Roughness, AO,
+		                       sphereHitPos, projectedCurvature);
 	}
 
 	// Apply Edge AA

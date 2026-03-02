@@ -2,6 +2,7 @@
 // Common PBR & IBL Functions
 // ----------------------------------------------------------------------------
 
+// Include shared uniforms
 @header "sh_probe.glsl";
 
 const float PI = 3.14159265359;
@@ -88,17 +89,38 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
  * @note This uses GPU derivatives (dFdx/dFdy) which differ between vendors.
  * @note Currently disabled to ensure bit-perfect "ISO" rendering across GPUs.
  */
-float compute_roughness_clamping_screenspace(vec3 N, float roughness)
+/**
+ * Screen-Space Specular Semi-Analytic Anti-Aliasing.
+ * Uses the Varef (Variance-based Roughness) technique.
+ * @param N Normal vector in world space.
+ * @param roughness Perceptual roughness (0-1).
+ */
+float compute_specular_aa_roughness(vec3 N, float roughness,
+                                    float projectedCurvature)
 {
-	vec3 dNdx = dFdx(N);
-	vec3 dNdy = dFdy(N);
-	float maxVariation = max(dot(dNdx, dNdx), dot(dNdy, dNdy));
+	float variance = 0.0;
+	if (u_aaMode == 1) {
+		// Curvature-based variance (Analytic).
+		// projectedCurvature should be (pixelSizeInWorldSpace /
+		// GeoRadius).
+		variance = 50.00 * (projectedCurvature * projectedCurvature);
+	} else {
+		// Derivative-based variance (Screen-space).
+		vec3 dNdx = dFdx(N);
+		vec3 dNdy = dFdy(N);
 
-	// Saturate extreme values to prevent halos on NVIDIA GPUs
-	maxVariation = min(maxVariation, 1.0);
+		// Multiplier 50.00 to match user's extreme stability
+		// requirement.
+		variance = 50.00 * max(dot(dNdx, dNdx), dot(dNdy, dNdy));
+	}
 
-	// Standard Toksvig-like factor for PBR AA
-	return max(roughness, pow(maxVariation, 0.5));
+	// Cap the variance to prevent "exploding" roughness at geometric
+	// silhouettes
+	variance = min(variance, 0.1);
+
+	// Varef: Add variance to the microfacet distribution variance
+	// (roughness^2).
+	return sqrt(clamp(roughness * roughness + variance, 0.0, 1.0));
 }
 
 /**
@@ -127,15 +149,20 @@ float compute_roughness_clamping(vec3 N, float roughness)
 // ----------------------------------------------------------------------------
 // Master Function: Compute Shading
 // ----------------------------------------------------------------------------
-vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
-                 float ao, vec3 worldPos)
+vec3 compute_pbr_stable(vec3 N, vec3 V, vec3 albedo, float metallic,
+                        float roughness, float ao, vec3 worldPos,
+                        float curvature)
 {
 	vec3 R = reflect(-V, N);
 	float NdotV = max(dot(N, V), 0.0);
 	vec3 F0 = mix(vec3(0.04), albedo, metallic);
 
-	// 1. Roughness clamping
-	float clamped_roughness = compute_roughness_clamping(N, roughness);
+	// 1. Roughness anti-aliasing
+	float clamped_roughness = roughness;
+	if (u_specularAAEnabled) {
+		clamped_roughness =
+		    compute_specular_aa_roughness(N, roughness, curvature);
+	}
 	clamped_roughness = max(clamped_roughness, 0.04);
 
 	// 2. Compute PBR
@@ -143,6 +170,14 @@ vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
 	    compute_IBL_PBR_Advanced(N, V, R, F0, NdotV, albedo, metallic,
 	                             clamped_roughness, ao, worldPos);
 	return color;
+}
+
+// Wrapper for generic PBR without explicit curvature
+vec3 compute_pbr(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
+                 float ao, vec3 worldPos)
+{
+	return compute_pbr_stable(N, V, albedo, metallic, roughness, ao,
+	                          worldPos, 0.0);
 }
 
 vec3 compute_debug(vec3 N, vec3 V, vec3 albedo, float metallic, float roughness,
