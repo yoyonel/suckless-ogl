@@ -47,18 +47,20 @@ typedef enum {
  * @brief Cached uniform locations for PBR instanced rendering.
  */
 typedef struct {
-	GLint irradiance_map;     /**< Location of 'irradianceMap' */
-	GLint prefilter_map;      /**< Location of 'prefilterMap' */
-	GLint brdf_lut;           /**< Location of 'brdfLUT' */
-	GLint debug_mode;         /**< Location of 'debugMode' */
-	GLint cam_pos;            /**< Location of 'camPos' */
-	GLint projection;         /**< Location of 'projection' */
-	GLint view;               /**< Location of 'view' */
-	GLint previous_view_proj; /**< Location of 'previousViewProj' */
-	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
-	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
-	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
-	GLint gi_mode;            /**< Location of 'u_GIMode' */
+	GLint irradiance_map;        /**< Location of 'irradianceMap' */
+	GLint prefilter_map;         /**< Location of 'prefilterMap' */
+	GLint brdf_lut;              /**< Location of 'brdfLUT' */
+	GLint debug_mode;            /**< Location of 'debugMode' */
+	GLint cam_pos;               /**< Location of 'camPos' */
+	GLint projection;            /**< Location of 'projection' */
+	GLint view;                  /**< Location of 'view' */
+	GLint previous_view_proj;    /**< Location of 'previousViewProj' */
+	GLint probe_grid_min;        /**< Location of 'u_ProbeGridMin' */
+	GLint probe_grid_max;        /**< Location of 'u_ProbeGridMax' */
+	GLint probe_grid_dim;        /**< Location of 'u_ProbeGridDim' */
+	GLint gi_mode;               /**< Location of 'u_GIMode' */
+	GLint u_specular_aa_enabled; /**< Location of 'u_specularAAEnabled' */
+	GLint u_aa_mode;             /**< Location of 'u_aaMode' */
 	GLint
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } InstancedUniforms;
@@ -81,20 +83,22 @@ typedef struct {
  * @brief Cached uniform locations for billboard rendering.
  */
 typedef struct {
-	GLint irradiance_map;     /**< Location of 'irradianceMap' */
-	GLint prefilter_map;      /**< Location of 'prefilterMap' */
-	GLint brdf_lut;           /**< Location of 'brdfLUT' */
-	GLint debug_mode;         /**< Location of 'debugMode' */
-	GLint cam_pos;            /**< Location of 'camPos' */
-	GLint projection;         /**< Location of 'projection' */
-	GLint view;               /**< Location of 'view' */
-	GLint previous_view_proj; /**< Location of 'previousViewProj' */
-	GLint u_screen_size;      /**< Location of 'u_screenSize' */
-	GLint probe_grid_min;     /**< Location of 'u_ProbeGridMin' */
-	GLint probe_grid_max;     /**< Location of 'u_ProbeGridMax' */
-	GLint probe_grid_dim;     /**< Location of 'u_ProbeGridDim' */
-	GLint gi_mode;            /**< Location of 'u_GIMode' */
-	GLint grid_to_idx_scale;  /**< Location of 'u_GridToIdxScale' */
+	GLint irradiance_map;        /**< Location of 'irradianceMap' */
+	GLint prefilter_map;         /**< Location of 'prefilterMap' */
+	GLint brdf_lut;              /**< Location of 'brdfLUT' */
+	GLint debug_mode;            /**< Location of 'debugMode' */
+	GLint cam_pos;               /**< Location of 'camPos' */
+	GLint projection;            /**< Location of 'projection' */
+	GLint view;                  /**< Location of 'view' */
+	GLint previous_view_proj;    /**< Location of 'previousViewProj' */
+	GLint u_screen_size;         /**< Location of 'u_screenSize' */
+	GLint probe_grid_min;        /**< Location of 'u_ProbeGridMin' */
+	GLint probe_grid_max;        /**< Location of 'u_ProbeGridMax' */
+	GLint probe_grid_dim;        /**< Location of 'u_ProbeGridDim' */
+	GLint gi_mode;               /**< Location of 'u_GIMode' */
+	GLint grid_to_idx_scale;     /**< Location of 'u_GridToIdxScale' */
+	GLint u_specular_aa_enabled; /**< Location of 'u_specularAAEnabled' */
+	GLint u_aa_mode;             /**< Location of 'u_aaMode' */
 	GLint
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } BillboardUniforms;
@@ -172,6 +176,8 @@ typedef struct Scene {
 	int subdivisions;         /**< LOD of the shared icosphere. */
 	GIMode gi_mode;           /**< Selected GI sampling method. */
 	int show_probe_grid;      /**< Debug visualization of probes. */
+	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
+	int aa_mode; /**< AA Mode: 0: Screen-space, 1: Curvature. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */

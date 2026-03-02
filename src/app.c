@@ -44,6 +44,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->text_overlay_mode = 0;
 	app->is_fullscreen = false;
 	app->show_help = false;
+	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,

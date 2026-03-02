@@ -5,6 +5,8 @@ uniform vec3 u_ProbeGridMax;
 uniform ivec3 u_ProbeGridDim;
 uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
 uniform vec3 u_GridToIdxScale;
+uniform bool u_specularAAEnabled;
+uniform int u_aaMode;  // 0: Screen-space, 1: Curvature
 
 /* 7x 3D textures for SH coefficients (Units 8-14)
    - Tex 0-5: Coeffs 0-7 (RGBA16F, each holds 4 channels)

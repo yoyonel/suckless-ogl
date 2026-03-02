@@ -62,6 +62,19 @@ static void handle_pbr_debug_mode(App* app)
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
 }
 
+static void handle_aa_mode_input(App* app)
+{
+	app->scene.aa_mode = (app->scene.aa_mode + 1) % 2;
+	const char* mode_names[] = {"Screen-space", "Curvature-based"};
+	LOG_INFO("suckless-ogl.app", "Specular AA Mode: %s",
+	         mode_names[app->scene.aa_mode]);
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "AA Mode: %s",
+	                    mode_names[app->scene.aa_mode]);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
 void app_handle_env_input(App* app, int action, int mods, int key)
 {
 	if (action != GLFW_PRESS && action != GLFW_REPEAT) {
@@ -437,6 +450,20 @@ void handle_app_input(App* app, int key, int mods)
 			                        : "BLACK_SCREEN");
 			action_notifier_push(&app->notifier, transition_buf,
 			                     NOTIF_DUR_NORMAL);
+			break;
+		case GLFW_KEY_N:
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
+				handle_aa_mode_input(app);
+			} else {
+				app->scene.specular_aa_enabled =
+				    !app->scene.specular_aa_enabled;
+				action_notifier_push(
+				    &app->notifier,
+				    app->scene.specular_aa_enabled
+				        ? "Specular AA: ON"
+				        : "Specular AA: OFF",
+				    NOTIF_DUR_SHORT);
+			}
 			break;
 		case GLFW_KEY_K:
 			app->scene.show_envmap = !app->scene.show_envmap;
