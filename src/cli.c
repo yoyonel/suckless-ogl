@@ -31,7 +31,9 @@ CliResult cli_handle_args(int argc, char* argv[])
 			print_help(argv[0]);
 			result.action = CLI_ACTION_EXIT_SUCCESS;
 			return result;
-		} else if (strcmp(argv[i], "--api") == 0) {
+		}
+
+		if (strcmp(argv[i], "--api") == 0) {
 			if (i + 1 < argc) {
 				const char* api_name = argv[i + 1];
 				if (strcmp(api_name, "opengl") == 0) {
@@ -39,10 +41,10 @@ CliResult cli_handle_args(int argc, char* argv[])
 				} else if (strcmp(api_name, "vulkan") == 0) {
 					result.api = API_VULKAN;
 				} else {
-					(void)fprintf(
-					    stderr,
-					    "Error: Unknown API '%s'\n\n",
-					    api_name);
+					(void)fputs("Error: Unknown API '",
+					            stderr);
+					(void)fputs(api_name, stderr);
+					(void)fputs("'\n\n", stderr);
 					print_help(argv[0]);
 					result.action = CLI_ACTION_EXIT_FAILURE;
 					return result;
@@ -56,15 +58,16 @@ CliResult cli_handle_args(int argc, char* argv[])
 				result.action = CLI_ACTION_EXIT_FAILURE;
 				return result;
 			}
-		} else {
-			/* Unrecognized option */
-			(void)fputs("Error: Unknown option '", stderr);
-			(void)fputs(argv[i], stderr);
-			(void)fputs("'\n\n", stderr);
-			print_help(argv[0]);
-			result.action = CLI_ACTION_EXIT_FAILURE;
-			return result;
+			continue;
 		}
+
+		/* Unrecognized option */
+		(void)fputs("Error: Unknown option '", stderr);
+		(void)fputs(argv[i], stderr);
+		(void)fputs("'\n\n", stderr);
+		print_help(argv[0]);
+		result.action = CLI_ACTION_EXIT_FAILURE;
+		return result;
 	}
 
 	return result;
