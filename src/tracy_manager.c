@@ -34,18 +34,17 @@ void tracy_manager_init(TracyManager* mgr, int width, int height)
 	render_utils_check_framebuffer("Tracy Screenshot FBO");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glGenBuffers(2, mgr->screenshot_pbo);
-	for (int i = 0; i < 2; i++) {
+	glGenBuffers(TRACY_PBO_COUNT, mgr->screenshot_pbo);
+	for (int i = 0; i < TRACY_PBO_COUNT; i++) {
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, mgr->screenshot_pbo[i]);
 		glBufferData(
 		    GL_PIXEL_PACK_BUFFER,
 		    TRACY_SCREENSHOT_WIDTH * TRACY_SCREENSHOT_HEIGHT * 4, NULL,
 		    GL_STREAM_READ);
+		mgr->screenshot_sync[i] = 0;
 	}
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	mgr->screenshot_pbo_idx = 0;
-	mgr->screenshot_sync[0] = 0;
-	mgr->screenshot_sync[1] = 0;
 
 	/* Initialize encapsulated state */
 	mgr->active_state_ctx.id = 0;
@@ -56,12 +55,12 @@ void tracy_manager_cleanup(TracyManager* mgr)
 {
 	glDeleteTextures(1, &mgr->screenshot_tex);
 	glDeleteFramebuffers(1, &mgr->screenshot_fbo);
-	glDeleteBuffers(2, mgr->screenshot_pbo);
-	if (mgr->screenshot_sync[0]) {
-		glDeleteSync(mgr->screenshot_sync[0]);
-	}
-	if (mgr->screenshot_sync[1]) {
-		glDeleteSync(mgr->screenshot_sync[1]);
+	glDeleteBuffers(TRACY_PBO_COUNT, mgr->screenshot_pbo);
+	for (int i = 0; i < TRACY_PBO_COUNT; i++) {
+		if (mgr->screenshot_sync[i]) {
+			glDeleteSync(mgr->screenshot_sync[i]);
+			mgr->screenshot_sync[i] = 0;
+		}
 	}
 
 	tracy_manager_async_end(mgr);
@@ -72,43 +71,35 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 {
 	PROFILE_ZONE(ctx, "Tracy Screenshot Update");
 	/* 1. Send previous frame's screenshot (already in PBO) */
-	static bool first_frame = true;
-	if (!first_frame) {
-		int read_idx = (mgr->screenshot_pbo_idx + 1) % 2;
-		bool ready_to_read = true;
+	int read_idx = (mgr->screenshot_pbo_idx + 1) % TRACY_PBO_COUNT;
+	bool ready_to_read = false;
 
-		if (mgr->screenshot_sync[read_idx]) {
-			GLenum wait_res = glClientWaitSync(
-			    mgr->screenshot_sync[read_idx], 0, 0);
-			if (wait_res == GL_TIMEOUT_EXPIRED ||
-			    wait_res == GL_WAIT_FAILED) {
-				ready_to_read = false;
-				TracyCMessageC("Screenshot skip (GPU stall)",
-				               27, 0xFFAA00);
-				/* Log periodically or in debug to avoid spam */
-				/* LOG_WARN("suckless-ogl.tracy", "Screenshot
-				 * PBO not ready, skipping frame."); */
-			} else {
-				glDeleteSync(mgr->screenshot_sync[read_idx]);
-				mgr->screenshot_sync[read_idx] = 0;
-			}
-		}
-
-		if (ready_to_read) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER,
-			             mgr->screenshot_pbo[read_idx]);
-			void* pbo_ptr = NULL;
-			pbo_ptr =
-			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-			if (pbo_ptr) {
-				tracy_gpu_screenshot(pbo_ptr,
-				                     TRACY_SCREENSHOT_WIDTH,
-				                     TRACY_SCREENSHOT_HEIGHT);
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-			}
+	if (mgr->screenshot_sync[read_idx]) {
+		GLenum wait_res =
+		    glClientWaitSync(mgr->screenshot_sync[read_idx],
+		                     GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+		if (wait_res == GL_TIMEOUT_EXPIRED ||
+		    wait_res == GL_WAIT_FAILED) {
+			ready_to_read = false;
+			PROFILE_MESSAGE_C("Screenshot skip (GPU stall)", 27,
+			                  0xFFAA00);
+		} else {
+			ready_to_read = true;
+			glDeleteSync(mgr->screenshot_sync[read_idx]);
+			mgr->screenshot_sync[read_idx] = 0;
 		}
 	}
-	first_frame = false;
+
+	if (ready_to_read) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             mgr->screenshot_pbo[read_idx]);
+		void* pbo_ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		if (pbo_ptr) {
+			tracy_gpu_screenshot(pbo_ptr, TRACY_SCREENSHOT_WIDTH,
+			                     TRACY_SCREENSHOT_HEIGHT);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		}
+	}
 
 	/* 2. Start new screenshot capture for current frame */
 	glDisable(GL_SCISSOR_TEST);
@@ -137,7 +128,8 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
 	/* 3. Ping-pong */
-	mgr->screenshot_pbo_idx = (mgr->screenshot_pbo_idx + 1) % 2;
+	mgr->screenshot_pbo_idx =
+	    (mgr->screenshot_pbo_idx + 1) % TRACY_PBO_COUNT;
 	PROFILE_ZONE_END(ctx);
 }
 
@@ -151,7 +143,7 @@ void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
 	const uint32_t color_failed = 0xFF0000;
 
 	pthread_mutex_lock(&mgr->transition_mutex);
-	TracyCFiberEnter("Async Status");
+	PROFILE_FIBER_ENTER("Async Status");
 	if (mgr->active_state_ctx.id != 0) {
 		PROFILE_ZONE_END(mgr->active_state_ctx);
 		mgr->active_state_ctx.id = 0;
@@ -224,7 +216,7 @@ void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
 			break;
 		}
 	}
-	TracyCFiberLeave;
+	PROFILE_FIBER_LEAVE;
 	pthread_mutex_unlock(&mgr->transition_mutex);
 }
 
@@ -232,10 +224,10 @@ void tracy_manager_async_end(TracyManager* mgr)
 {
 	pthread_mutex_lock(&mgr->transition_mutex);
 	if (mgr->active_state_ctx.id != 0) {
-		TracyCFiberEnter("Async Status");
+		PROFILE_FIBER_ENTER("Async Status");
 		PROFILE_ZONE_END(mgr->active_state_ctx);
 		mgr->active_state_ctx.id = 0;
-		TracyCFiberLeave;
+		PROFILE_FIBER_LEAVE;
 	}
 	pthread_mutex_unlock(&mgr->transition_mutex);
 }
