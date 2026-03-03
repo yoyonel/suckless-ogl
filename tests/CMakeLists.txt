@@ -63,6 +63,8 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_precision\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_security\\.c$")
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -80,7 +82,6 @@ set(OPENGL_TESTS
     test_fxaa_synthetic
     test_render_utils
     test_benchmark_histogram
-    test_texture_security
     test_gpu_profiler
     test_app_input
     test_app_metrics
@@ -520,3 +521,49 @@ target_include_directories(test_async_coordinator PRIVATE
 )
 target_link_libraries(test_async_coordinator PRIVATE cglm m)
 add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
+
+# =============================================================================
+# ASYNC LOADER TEST (MOCKED)
+# =============================================================================
+add_executable(test_async_loader
+    test_async_loader.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/src/async_loader.c
+    ${CMAKE_SOURCE_DIR}/src/perf_timer.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+target_include_directories(test_async_loader PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${unity_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+    ${stb_SOURCE_DIR}
+)
+target_compile_definitions(test_async_loader PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
+target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
+add_test(NAME test_async_loader COMMAND test_async_loader)
+# =============================================================================
+# TEXTURE SECURITY TEST (MOCKED)
+# =============================================================================
+add_executable(test_texture_security
+    test_texture_security.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/src/texture.c
+    ${CMAKE_SOURCE_DIR}/src/log.c
+    ${CMAKE_SOURCE_DIR}/src/tracy_log.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/io.c
+    ${CMAKE_SOURCE_DIR}/src/stb_image_impl.c
+)
+target_include_directories(test_texture_security PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${unity_SOURCE_DIR}/src
+    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+    ${stb_SOURCE_DIR}
+)
+target_compile_definitions(test_texture_security PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
+target_link_libraries(test_texture_security PRIVATE cglm m pthread dl)
+add_test(NAME test_texture_security COMMAND test_texture_security)
