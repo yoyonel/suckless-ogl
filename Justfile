@@ -135,13 +135,29 @@ clean-sync:
 
 # Build with optimizations and debug symbols (for profiling)
 profile:
-    @{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
-    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
+    @{{distrobox}} cmake -B build-profile -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
+    @{{distrobox}} cmake --build build-profile --parallel {{nprocs}}
+    @echo ""
+    @echo "📊 Profile Build Verification Summary:"
+    @{{distrobox}} sh -c ' \
+    if [ -f build-profile/app ]; then \
+        if file build-profile/app | grep -q "not stripped"; then echo "  ✓ Symbols: Not stripped"; else echo "  ✗ Symbols: Stripped!"; fi; \
+        if nm -C build-profile/app 2>/dev/null | grep -q " T main"; then echo "  ✓ Symbols: Function names found"; else echo "  ✗ Symbols: Function names missing!"; fi; \
+        if readelf -S build-profile/app 2>/dev/null | grep -q ".debug_info"; then echo "  ✓ Debug: .debug_info section present"; else echo "  ✗ Debug: .debug_info section missing!"; fi; \
+        if readelf -S build-profile/app 2>/dev/null | grep -q ".debug_line"; then echo "  ✓ Debug: .debug_line section present"; else echo "  ✗ Debug: .debug_line section missing!"; fi; \
+    else \
+        echo "  ✗ Error: build-profile/app not found."; \
+    fi'
+    @echo ""
 
 # Build and run Linux 'perf' profiler (requires root/capabilities)
 perf: profile
-    @{{distrobox}} perf record -g {{build_dir}}/app
+    @{{distrobox}} perf record -g build-profile/app
     @{{distrobox}} perf report
+
+# Clean profiling build
+clean-profile:
+    @rm -rf build-profile
 
 # =============================================================================
 # Testing & QA
