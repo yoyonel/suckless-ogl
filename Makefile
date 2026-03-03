@@ -496,6 +496,15 @@ test-integration-asan: asan
 	@chmod +x scripts/test_integration_asan.sh
 	@bash scripts/test_integration_asan.sh
 
+# --- Performance Verification (ApiTrace) ---
+test-apitrace: all
+	@chmod +x scripts/verify_apitrace_perf.sh
+	@bash scripts/verify_apitrace_perf.sh "$(APITRACE_BIN)"
+
+test-integration-apitrace: all
+	@chmod +x scripts/test_integration_apitrace.sh
+	@bash scripts/test_integration_apitrace.sh "$(APITRACE_BIN)"
+
 # --- Debug Release Build (For Segfault Hunting) ---
 debug-release:
 	@echo "Building for Debug Release (Release + Symbols + No Strip)..."

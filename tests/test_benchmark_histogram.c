@@ -84,12 +84,15 @@ void test_benchmark_histogram(void)
 	App app = {0};
 	app.postprocess.auto_exposure_fx.downsample_tex = tex;
 
-	// Initialize PBO for the test
-	glGenBuffers(1, &app.histogram_pbo);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app.histogram_pbo);
-	glBufferData(GL_PIXEL_PACK_BUFFER,
-	             MAP_SIZE * MAP_SIZE * (GLsizeiptr)sizeof(float), NULL,
-	             GL_STREAM_READ);
+	// Initialize PBOs for the test
+	glGenBuffers(2, app.histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app.histogram_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER,
+		             MAP_SIZE * MAP_SIZE * (GLsizeiptr)sizeof(float),
+		             NULL, GL_STREAM_READ);
+		app.histogram_sync[i] = NULL;
+	}
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 	// Output buffers
@@ -104,6 +107,7 @@ void test_benchmark_histogram(void)
 	// Benchmark
 	clock_t start = clock();
 	for (int i = 0; i < ITERATIONS; i++) {
+		app.frame_count = (uint64_t)i;
 		compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
 		                            &max_lum);
 	}
@@ -114,6 +118,16 @@ void test_benchmark_histogram(void)
 	printf("Benchmark Result: %d iterations took %.2f ms (%.4f ms/call)\n",
 	       ITERATIONS, cpu_time_used, cpu_time_used / ITERATIONS);
 
+	// Final blocking wait to ensure we have data for verification
+	int last_idx = (int)((ITERATIONS) % 2);
+	if (app.histogram_sync[last_idx]) {
+		glClientWaitSync(app.histogram_sync[last_idx],
+		                 GL_SYNC_FLUSH_COMMANDS_BIT, 1000000000);  // 1s
+	}
+	app.frame_count = (uint64_t)ITERATIONS;
+	compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
+	                            &max_lum);
+
 	// Verify
 	int total_buckets = 0;
 	for (int i = 0; i < HISTO_SIZE; i++) {
@@ -123,7 +137,12 @@ void test_benchmark_histogram(void)
 
 	// Cleanup
 	glDeleteTextures(1, &tex);
-	glDeleteBuffers(1, &app.histogram_pbo);
+	glDeleteBuffers(2, app.histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		if (app.histogram_sync[i]) {
+			glDeleteSync(app.histogram_sync[i]);
+		}
+	}
 }
 
 int main(void)

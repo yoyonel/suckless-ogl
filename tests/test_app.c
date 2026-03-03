@@ -29,6 +29,8 @@ static GLuint g_cached_hdr_texture = 0;
 static GLuint g_pbo[2] = {0, 0};
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 static int g_pbo_index = 0;
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static GLsync g_pbo_sync[2] = {NULL, NULL};
 
 static const int POLL_TIMEOUT_ITERATIONS = 1000;
 static const long NANOSLEEP_DURATION = 10000000L;
@@ -299,8 +301,19 @@ void test_app_render_multi_view(void)
 		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
 		             GL_UNSIGNED_BYTE, 0);
 
+		// Fence the read
+		if (g_pbo_sync[current_pbo]) {
+			glDeleteSync(g_pbo_sync[current_pbo]);
+		}
+		g_pbo_sync[current_pbo] =
+		    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
 		// Process first frame immediately (no previous frame)
 		if (i == 0) {
+			// Must wait for current fence
+			glClientWaitSync(g_pbo_sync[current_pbo],
+			                 GL_SYNC_FLUSH_COMMANDS_BIT,
+			                 1000000000);
 			void* mapped =
 			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 			if (mapped) {
@@ -334,6 +347,12 @@ void test_app_render_multi_view(void)
 
 		// Map previous frame's PBO (which should now be ready)
 		if (i > 0) {
+			// Wait for previous fence
+			if (g_pbo_sync[next_pbo]) {
+				glClientWaitSync(g_pbo_sync[next_pbo],
+				                 GL_SYNC_FLUSH_COMMANDS_BIT,
+				                 1000000000);
+			}
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[next_pbo]);
 			void* mapped =
 			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
@@ -379,6 +398,11 @@ void test_app_render_multi_view(void)
 	// Read the last frame from the PBO (we're one frame behind)
 	if (NUM_VIEWPOINTS > 0) {
 		int last_pbo = (g_pbo_index + 1) % 2;
+		if (g_pbo_sync[last_pbo]) {
+			glClientWaitSync(g_pbo_sync[last_pbo],
+			                 GL_SYNC_FLUSH_COMMANDS_BIT,
+			                 1000000000);
+		}
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[last_pbo]);
 		void* mapped = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 		if (mapped) {
@@ -440,6 +464,12 @@ int main(void)
 			glDeleteBuffers(2, g_pbo);
 			g_pbo[0] = 0;
 			g_pbo[1] = 0;
+		}
+		for (int i = 0; i < 2; i++) {
+			if (g_pbo_sync[i]) {
+				glDeleteSync(g_pbo_sync[i]);
+				g_pbo_sync[i] = NULL;
+			}
 		}
 		app_cleanup(&g_test_app);
 	}

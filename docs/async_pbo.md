@@ -264,6 +264,28 @@ We split texture initialization across 3 frames and removed `glGetError()` sync 
 
 **Result**: Worst-case frame spike reduced from ~60ms to ~20-30ms. With texture reuse (same dimensions), the pre-allocation frame is a no-op.
 
+## Asynchronous Performance Readbacks (Exposure & Histogram)
+
+The same PBO principle is applied in reverse for **GPU-to-CPU readbacks** (Auto-Exposure and Histogram).
+
+### The Challenge
+
+`glReadPixels` or `glGetTexImage` without PBOs will stall the CPU until the GPU finishes rendering the frame and transfers the data. This typically costs **1-2ms per call** even for small data.
+
+### The Implementation
+
+We use **Double-Buffered PBOs + Sync Fences**:
+
+1. **Trigger Phase (Frame N)**:
+   - Call `glGetTexImage` into `pbo[idx]`.
+   - Insert a fence: `sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)`.
+2. **Read Phase (Frame N+1)**:
+   - Check the fence: `glClientWaitSync(sync[!idx], ..., 0)`.
+   - If `GL_ALREADY_SIGNALED` or `GL_CONDITION_SATISFIED`, map the PBO and read.
+   - If not signaled, **skip the update** for this frame. This prevents the CPU from ever stalling at the cost of 1 extra frame of latency for HUD values.
+
+**Result**: Exposure calculation and histogram extraction cost **< 0.05ms** on the CPU, regardless of scene complexity.
+
 ## Code References
 
 - **`src/app.c`**: Manages the PBO array loop and deferred pre-allocation in `app_update`. Fields: `pending_prealloc_w`, `pending_prealloc_h`.

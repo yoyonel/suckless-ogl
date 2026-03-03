@@ -34,13 +34,6 @@ void app_render_ui(App* app);
 /* --- Internal helper functions --- */
 
 /**
- * @brief Draws exposure-specific debug text.
- * @param app Pointer to the application state.
- * @note Modifies the current UI context state.
- */
-void draw_exposure_debug_text(App* app);
-
-/**
  * @brief Computes the luminance histogram from current frame data.
  *
  * Scans the luminance buffer to populate buckets for visualization.
@@ -53,16 +46,5 @@ void draw_exposure_debug_text(App* app);
  */
 int compute_luminance_histogram(App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum);
-
-/**
- * @brief Renders the luminance histogram as a graph on screen.
- * @param app Pointer to the application state.
- * @param buckets Array containing histogram data.
- * @param size Number of buckets in the array.
- * @param min_lum Minimum luminance value in the histogram.
- * @param max_lum Maximum luminance value in the histogram.
- */
-void draw_luminance_histogram_graph(App* app, const int* buckets, int size,
-                                    float min_lum, float max_lum);
 
 #endif /* APP_UI_H */

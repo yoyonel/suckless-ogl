@@ -31,3 +31,28 @@ To avoid polluting the logs with excessive warnings, the system maps OpenGL mess
 - **[ERROR]**: Needs immediate attention.
 - **[WARNING]**: Should be investigated. Often points to non-optimal usage (e.g., "Buffer object usage hint is STATIC_DRAW but is being updated frequently").
 - **[INFO]**: Generally safe to ignore unless you are debugging a specific resource issue (e.g., "Texture object 4 created").
+
+## Performance Debugging with ApiTrace
+
+The engine is integrated with **ApiTrace** to detect GPU-side performance bottlenecks and driver-level stalls.
+
+### Automated Checks
+
+Performance verification is automated and integrated into the build system:
+
+- **`just test-apitrace`**: Runs the unit test suite under ApiTrace and fails if any "performance issue" or "stall" warnings are detected in the command stream.
+- **`just test-integration-apitrace`**: Launches the main application, executes a full user scenario (Page Up/Down, F-keys, camera move), and analyzes the resulting trace for regressions.
+
+### Interpreting Stalls
+
+The automation looks for specific driver warnings, such as:
+> `api performance issue 1: memory mapping a busy "buffer" BO stalled and took 1.379 ms.`
+
+If such an error occurs, it means the CPU is waiting for the GPU before it can continue, which kills the framerate. Fixes usually involve double-buffering resources or using `GLsync` fences (see [GPU Synchronization Guide](./gpu-rendering-synchronization.md)).
+
+### Manual Investigation
+
+If the automated tests fail, you can investigate the trace manually:
+
+1. `make qapitrace`: Launches the ApiTrace GUI to inspect the offending frame and command.
+2. `make replay`: Replays the trace to verify visual consistency.

@@ -42,6 +42,10 @@ py_run := `
 xvfb_wrapper := ".github/workflows/scripts/run_test_with_xvfb.sh"
 extra_cmake_flags := ""
 
+# ApiTrace configuration
+apitrace_dir := env_var("HOME") / ".local/apitrace-latest-Linux"
+apitrace_bin := apitrace_dir / "bin/apitrace"
+
 # Default target
 default:
     @just --list
@@ -206,6 +210,16 @@ test-integration: release
 test-integration-asan: asan
     @{{distrobox}} chmod +x scripts/test_integration_asan.sh
     @{{distrobox}} bash scripts/test_integration_asan.sh
+
+# Run programmatic ApiTrace performance verification
+test-apitrace: build
+    @chmod +x scripts/verify_apitrace_perf.sh
+    @./scripts/verify_apitrace_perf.sh {{apitrace_bin}}
+
+# Run full integration test with ApiTrace analysis
+test-integration-apitrace: build
+    @chmod +x scripts/test_integration_apitrace.sh
+    @./scripts/test_integration_apitrace.sh {{apitrace_bin}}
 
 # Generate HTML code coverage report (llvm-cov)
 coverage:

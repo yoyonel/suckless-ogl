@@ -4,7 +4,6 @@
 **Status**: Resolved
 **Impact**: Critical - Visual quality consistency across GPU vendors
 
-
 ## Executive Summary
 
 Investigation and resolution of rendering differences between Intel and NVIDIA GPUs in the suckless-ogl PBR renderer. Issues manifested as white halos and incorrect FXAA edge blending on NVIDIA hardware.
@@ -38,6 +37,7 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 **Problem**: `dFdx()`/`dFdy()` produce different values on Intel vs NVIDIA, causing extreme roughness values at edges on NVIDIA.
 
 **Attempted Fixes**:
+
 1. ❌ Threshold 0.1 → 0.5: Reduced but didn't eliminate halos
 2. ❌ Saturation `min(maxVariation, 1.0)`: Still visible artifacts
 3. ✅ **Complete removal**: Achieved visual parity
@@ -65,10 +65,12 @@ float compute_roughness_clamping(vec3 N_val, float roughness_val)
 ## Trade-offs
 
 ### Lost
+
 - Geometric anti-aliasing on curved surfaces
 - Specular aliasing prevention on very smooth metals
 
 ### Gained
+
 - ✅ Cross-vendor consistency
 - ✅ Predictable behavior
 - ✅ Simplified shader code
@@ -92,6 +94,7 @@ A key finding during this synchronization effort was the trade-off between using
 ## Validation Results
 
 ### Visual Inspection
+
 ```
 Before:  Intel ✅  |  NVIDIA ❌ (halos, buggy FXAA)
 After:   Intel ✅  |  NVIDIA ✅ (identical rendering)
@@ -113,6 +116,43 @@ Target values based on correct Intel HD 4600 behavior (Sphere Pattern):
 
 - `shaders/postprocess/fxaa.glsl`
 - `shaders/pbr_functions.glsl`
+
+## PBO Mapping Synchronization (Implicit vs. Explicit)
+
+One of the most elusive performance issues in OpenGL is the **implicit synchronization** that occurs during `glMapBuffer`.
+
+### The Symptom
+
+ApiTrace reports: `api performance issue 1: memory mapping a busy "buffer" BO stalled and took 1.379 ms.`
+
+### The Cause
+
+If you try to map a buffer that is currently being used by a pending GPU command (like a `glReadPixels` or `glTexSubImage2D`), the driver must pause the CPU until that command is finished. Even "unsynchronized" mapping can sometimes stall if the buffer hasn't been properly fenced.
+
+### The Fix: Explicit Fencing (`GLsync`)
+
+Instead of letting the driver guess, we use explicit synchronization:
+
+1. **Fence after Command**:
+
+   ```c
+   glReadPixels(...);
+   app->sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+   ```
+
+2. **Wait before Map**:
+
+   ```c
+   // Non-blocking wait (timeout 0)
+   GLenum status = glClientWaitSync(app->sync[!idx], GL_SYNC_FLUSH_COMMANDS_BIT, 0);
+   if (status != GL_TIMEOUT_EXPIRED) {
+       void* ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+       // ... process ...
+       glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+   }
+   ```
+
+By checking the fence with a zero timeout, we ensure that if the GPU is still busy, the CPU simply skips the logic for that frame instead of waiting. This is crucial for maintaining a high and stable frame rate.
 
 ## References
 
