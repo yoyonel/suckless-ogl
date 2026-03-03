@@ -10,14 +10,12 @@
 #include "perf_mode.h"
 
 #include "log.h"
+#include "profiler.h"
 #include <errno.h>
 #include <sched.h>
 #include <string.h>
 #include <sys/resource.h>
 #include <unistd.h>
-#ifdef TRACY_ENABLE
-#include <tracy/TracyC.h>
-#endif
 
 /* Optional GameMode integration */
 #ifdef HAVE_GAMEMODE
@@ -143,31 +141,23 @@ static int activate_gamemode(PerfModeContext* ctx)
 	 * or just generally active (status 1), we consider it a success.
 	 * This happens when the app is launched via 'gamemoderun'. */
 	if (status > 0) {
-#ifdef TRACY_ENABLE
-		TracyCZoneN(ctx_zone, "GameMode Activate (Already Active)", 1);
-		TracyCZoneEnd(ctx_zone);
-#endif
+		PROFILE_ZONE_I(ctx_zone, "GameMode Activate (Already Active)");
+		PROFILE_ZONE_END(ctx_zone);
 		ctx->state = PERF_MODE_GAMEMODE;
 		LOG_INFO("suckless-ogl.perf",
 		         "GameMode already active (status: %d)", status);
 		return 0;
 	}
 
-#ifdef TRACY_ENABLE
-	TracyCZoneN(req_zone, "GameMode Request Start (D-Bus Call)", 1);
-#endif
+	PROFILE_ZONE(req_zone, "GameMode Request Start (D-Bus Call)");
 	if (gamemode_request_start() == 0) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(req_zone);
-#endif
+		PROFILE_ZONE_END(req_zone);
 		ctx->state = PERF_MODE_GAMEMODE;
 		LOG_INFO("suckless-ogl.perf", "GameMode activated (status: %d)",
 		         gamemode_query_status());
 		return 0;
 	}
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(req_zone);
-#endif
+	PROFILE_ZONE_END(req_zone);
 
 	const char* err = gamemode_error_string();
 	LOG_WARN("suckless-ogl.perf",
@@ -230,9 +220,9 @@ static int activate_native(PerfModeContext* ctx)
 		return 0;
 	}
 
-	LOG_WARN("suckless-ogl.perf",
-	         "Native activation failed: %s (try sudo or CAP_SYS_NICE)",
-	         strerror(errno));
+	LOG_INFO(
+	    "suckless-ogl.perf",
+	    "Native activation unavailable (requires sudo or CAP_SYS_NICE)");
 	ctx->state = PERF_MODE_ERROR;
 	return -1;
 }
@@ -271,22 +261,16 @@ static int deactivate_native(PerfModeContext* ctx)
 
 int perf_mode_request_start(PerfModeContext* ctx)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(perf_zone, "Perf Mode Request Start", 1);
-#endif
+	PROFILE_ZONE(perf_zone, "Perf Mode Request Start");
 	if (!ctx || !ctx->initialized) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(perf_zone);
-#endif
+		PROFILE_ZONE_END(perf_zone);
 		LOG_WARN("suckless-ogl.perf",
 		         "Performance mode not initialized");
 		return -1;
 	}
 
 	if (ctx->state != PERF_MODE_OFF && ctx->state != PERF_MODE_ERROR) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(perf_zone);
-#endif
+		PROFILE_ZONE_END(perf_zone);
 		LOG_DEBUG("suckless-ogl.perf",
 		          "Performance mode already active");
 		return 0;
@@ -312,28 +296,20 @@ int perf_mode_request_start(PerfModeContext* ctx)
 			break;
 	}
 
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(perf_zone);
-#endif
+	PROFILE_ZONE_END(perf_zone);
 	return result;
 }
 
 int perf_mode_request_end(PerfModeContext* ctx)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(perf_zone, "Perf Mode Request End", 1);
-#endif
+	PROFILE_ZONE(perf_zone, "Perf Mode Request End");
 	if (!ctx || !ctx->initialized) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(perf_zone);
-#endif
+		PROFILE_ZONE_END(perf_zone);
 		return -1;
 	}
 
 	if (ctx->state == PERF_MODE_OFF) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(perf_zone);
-#endif
+		PROFILE_ZONE_END(perf_zone);
 		return 0;
 	}
 
@@ -352,9 +328,7 @@ int perf_mode_request_end(PerfModeContext* ctx)
 			break;
 	}
 
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(perf_zone);
-#endif
+	PROFILE_ZONE_END(perf_zone);
 	return result;
 }
 
@@ -398,7 +372,7 @@ const char* perf_mode_get_state_string(const PerfModeContext* ctx)
 		case PERF_MODE_NATIVE_NICE:
 			return "Nice";
 		case PERF_MODE_ERROR:
-			return "Error";
+			return "Unavailable";
 		default:
 			return "Unknown";
 	}
