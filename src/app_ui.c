@@ -48,9 +48,6 @@ static const size_t UI_LOADING_TEXT_SIZE = 64;
 
 void app_draw_help_overlay(App* app)
 {
-	const GLStateBackup saved_state = render_utils_save_state();
-	render_utils_setup_ui_state();
-
 	static const float HELP_START_X = 20.0F;
 	static const float HELP_START_Y = 60.0F;
 	static const float HELP_PADDING = 5.0F;
@@ -71,7 +68,7 @@ void app_draw_help_overlay(App* app)
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
-	/* Section: Features */
+	/* Section: Features --- */
 	ui_layout_text(&layout, "--- Features ---", HELP_COLOR);
 	ui_layout_text(&layout, "[F1] Cycle Text Overlays", HELP_COLOR);
 	ui_layout_text(&layout, "[F2] Toggle Help", HELP_COLOR);
@@ -89,14 +86,14 @@ void app_draw_help_overlay(App* app)
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
-	/* Section: Environment */
+	/* Section: Environment --- */
 	ui_layout_text(&layout, "--- Environment ---", HELP_COLOR);
 	ui_layout_text(&layout, "[PgUp/PgDn] Change HDR", HELP_COLOR);
 	ui_layout_text(&layout, "[Shift + PgUp/PgDn] Blur HDR", HELP_COLOR);
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
-	/* Section: Post-Process Styles */
+	/* Section: Post-Process Styles --- */
 	ui_layout_text(&layout, "--- Styles (Numpad) ---", HELP_COLOR);
 	ui_layout_text(&layout, "[1] Default (Clean)", HELP_COLOR);
 	ui_layout_text(&layout, "[2] Subtle", HELP_COLOR);
@@ -108,12 +105,10 @@ void app_draw_help_overlay(App* app)
 
 	ui_layout_separator(&layout, HELP_SECTION_PADDING);
 
-	/* Section: System */
+	/* Section: System --- */
 	ui_layout_text(&layout, "--- System ---", HELP_COLOR);
 	ui_layout_text(&layout, "[F9] Toggle Performance Mode", HELP_COLOR);
 	ui_layout_text(&layout, "[F12] Take Screenshot", HELP_COLOR);
-
-	render_utils_restore_state(&saved_state);
 }
 
 void draw_exposure_debug_text(App* app)
@@ -260,9 +255,6 @@ void app_draw_debug_overlay(App* app)
 {
 	/* Auto Exposure Debug Text */
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
-		const GLStateBackup saved_state = render_utils_save_state();
-		render_utils_setup_ui_state();
-
 		draw_exposure_debug_text(app);
 
 		/* -----------------------
@@ -278,16 +270,14 @@ void app_draw_debug_overlay(App* app)
 			draw_luminance_histogram_graph(app, buckets, HISTO_SIZE,
 			                               min_lum, max_lum);
 		}
-
-		/* Cleanup */
-		render_utils_restore_state(&saved_state);
 	}
 }
 
 void app_render_ui(App* app)
 {
-	const GLStateBackup saved_state = render_utils_save_state();
-	render_utils_setup_ui_state();
+	/* Wrap everything in a single batch to minimize draw calls and state
+	 * switches. Note: ui_begin saves state and ui_end restores it. */
+	ui_begin(&app->ui, app->width, app->height);
 
 	/* --- Draw Main Info Overlay --- */
 	UILayout layout;
@@ -424,8 +414,6 @@ void app_render_ui(App* app)
 		                app->height);
 	}
 
-	render_utils_restore_state(&saved_state);
-
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
 		app_draw_debug_overlay(app);
 	}
@@ -438,4 +426,7 @@ void app_render_ui(App* app)
 	                     app->height);
 
 	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);
+
+	/* End global batch (restores state) */
+	ui_end(&app->ui);
 }
