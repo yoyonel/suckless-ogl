@@ -227,10 +227,10 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	glUseProgram(sorter->compute_program);
 
 	if (sorter->loc_count >= 0) {
-		glUniform1i(sorter->loc_count, count);
+		glUniform1ui(sorter->loc_count, (unsigned int)count);
 	}
 	if (sorter->loc_count_pot >= 0) {
-		glUniform1i(sorter->loc_count_pot, count_pot);
+		glUniform1ui(sorter->loc_count_pot, (unsigned int)count_pot);
 	}
 	if (sorter->loc_cam >= 0) {
 		glUniform3fv(sorter->loc_cam, 1, camera_pos);
@@ -247,8 +247,8 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	/* --- OPTIMIZATION: Single-Pass Shared Memory Sort --- */
 	if (u_count_pot <= MAX_SINGLE_PASS_COUNT) {
 		if (sorter->loc_stage >= 0) {
-			glUniform1i(sorter->loc_stage,
-			            3); /* Stage 3: Single Pass */
+			glUniform1ui(sorter->loc_stage,
+			             3U); /* Stage 3: Single Pass */
 		}
 		glDispatchCompute(1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -263,23 +263,23 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 	/* 4a. PREPARE Stage (u_stage = 0): Compute depths and fill indices */
 	if (sorter->loc_stage >= 0) {
-		glUniform1i(sorter->loc_stage, 0);
+		glUniform1ui(sorter->loc_stage, 0U);
 	}
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	/* 4b. SORT Stage (u_stage = 1): Bitonic Sort on entries (indices) */
 	if (sorter->loc_stage >= 0) {
-		glUniform1i(sorter->loc_stage, 1);
+		glUniform1ui(sorter->loc_stage, 1U);
 	}
 
 	for (unsigned int k = 2U; k <= u_count_pot; k <<= 1U) {
 		for (unsigned int j = k >> 1U; j > 0U; j >>= 1U) {
 			if (sorter->loc_j >= 0) {
-				glUniform1i(sorter->loc_j, (int)j);
+				glUniform1ui(sorter->loc_j, j);
 			}
 			if (sorter->loc_k >= 0) {
-				glUniform1i(sorter->loc_k, (int)k);
+				glUniform1ui(sorter->loc_k, k);
 			}
 			glDispatchCompute(num_groups, 1, 1);
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -288,7 +288,7 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 	/* 4c. PERMUTE Stage (u_stage = 2): Reorder instances */
 	if (sorter->loc_stage >= 0) {
-		glUniform1i(sorter->loc_stage, 2);
+		glUniform1ui(sorter->loc_stage, 2U);
 	}
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);

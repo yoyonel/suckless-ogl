@@ -32,14 +32,14 @@ layout(std430, binding = 2) buffer SortedBuffer
 	SphereInstance sorted_instances[];
 };
 
-uniform int u_stage;      // 0: Prepare, 1: Sort, 2: Permute, 3: Single-Pass
-uniform int u_count;      // Actual count
-uniform int u_count_pot;  // Power of two count
+uniform uint u_stage;      // 0: Prepare, 1: Sort, 2: Permute, 3: Single-Pass
+uniform uint u_count;      // Actual count
+uniform uint u_count_pot;  // Power of two count
 uniform vec3 u_cam_pos;
 
 // For sort stage
-uniform int u_j;
-uniform int u_k;
+uniform uint u_j;
+uniform uint u_k;
 
 shared Entry s_entries[1024];
 
@@ -47,7 +47,7 @@ void main()
 {
 	uint i = gl_GlobalInvocationID.x;
 
-	if (u_stage == 3) {
+	if (u_stage == 3u) {
 		// --- SINGLE PASS SHARED MEMORY MODE (For count <= 1024) ---
 		// 1. Load / Prepare
 		if (i < u_count_pot) {
@@ -94,7 +94,7 @@ void main()
 		// 3. Permute / Final Writeback
 		if (i < u_count) {
 			int original_idx = s_entries[i].index;
-			if (original_idx >= 0 && original_idx < u_count) {
+			if (original_idx >= 0 && uint(original_idx) < u_count) {
 				sorted_instances[i] = instances[original_idx];
 			}
 		}
@@ -102,7 +102,7 @@ void main()
 	}
 
 	// --- MULTI-PASS GLOBAL MEMORY MODE ---
-	if (u_stage == 0) {
+	if (u_stage == 0u) {
 		if (i >= u_count_pot)
 			return;
 		// PREPARE stage: Calculate depth for valid items once
@@ -117,7 +117,7 @@ void main()
 			entries[i].depth = -1.0;
 			entries[i].index = -1;
 		}
-	} else if (u_stage == 1) {
+	} else if (u_stage == 1u) {
 		if (i >= u_count_pot)
 			return;
 		// SORT stage: Bitonic Sort on entries
@@ -142,12 +142,12 @@ void main()
 				entries[ixj] = temp;
 			}
 		}
-	} else if (u_stage == 2) {
+	} else if (u_stage == 2u) {
 		if (i >= u_count)
 			return;
 		// PERMUTE stage: Reorder instances based on sorted entries
 		int original_idx = entries[i].index;
-		if (original_idx >= 0 && original_idx < u_count) {
+		if (original_idx >= 0 && uint(original_idx) < u_count) {
 			sorted_instances[i] = instances[original_idx];
 		}
 	}
