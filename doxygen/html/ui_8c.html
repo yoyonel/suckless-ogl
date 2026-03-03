@@ -284,8 +284,6 @@ Include dependency graph for ui.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIVertex.html">UIVertex</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIQuad.html">UIQuad</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -297,9 +295,9 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="separator:ad3f72dd84eefcfe643a0a210388d8d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa36b7f9e66f38c879887c8f0996c33e4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4">VertexConfig</a> { <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a8a116a65d8d34b1de85f3a387e5e61de">QUAD_VERTICES_COUNT</a> = 6
-, <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98">VERTEX_COMPONENTS</a> = 4
+, <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98">VERTEX_COMPONENTS</a> = 12
 , <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa">VERTICES_PER_QUAD</a> = 6
-, <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4">FLOATS_PER_VERTEX</a> = 4
+, <a class="el" href="ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4af97462b21a89d319efdf5cf0a287dbe4">FLOATS_PER_VERTEX</a> = 12
  }</td></tr>
 <tr class="separator:aa36b7f9e66f38c879887c8f0996c33e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -311,11 +309,20 @@ Functions</h2></td></tr>
 <tr class="separator:adea4af1dfed2a306c55f45c26e117280"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38379b82fe44d3fc5826c8a9ed606cf5"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a38379b82fe44d3fc5826c8a9ed606cf5">setup_vertex_buffers</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context)</td></tr>
 <tr class="separator:a38379b82fe44d3fc5826c8a9ed606cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d8220e7d7899791fe745aec49f72e6d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structUIQuad.html">UIQuad</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a8d8220e7d7899791fe745aec49f72e6d">make_glyph_quad</a> (const <a class="el" href="structGlyphInfo.html">GlyphInfo</a> *glyph, float render_x, float render_y)</td></tr>
-<tr class="separator:a8d8220e7d7899791fe745aec49f72e6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66e6a628599695a5b11237d545349213"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structUIQuad.html">UIQuad</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a66e6a628599695a5b11237d545349213">make_glyph_quad</a> (const <a class="el" href="structGlyphInfo.html">GlyphInfo</a> *glyph, float render_x, float render_y, const vec3 <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>, float alpha)</td></tr>
+<tr class="separator:a66e6a628599695a5b11237d545349213"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad120cc592f289ed7dd085d8d90b9a712"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712">ui_init</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *font_path, float font_size)</td></tr>
 <tr class="memdesc:ad120cc592f289ed7dd085d8d90b9a712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the UI system.  <a href="ui_8c.html#ad120cc592f289ed7dd085d8d90b9a712">More...</a><br /></td></tr>
 <tr class="separator:ad120cc592f289ed7dd085d8d90b9a712"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5356c389352db784027765ad0ef3aca5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#a5356c389352db784027765ad0ef3aca5">ui_begin</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, int screen_width, int screen_height)</td></tr>
+<tr class="memdesc:a5356c389352db784027765ad0ef3aca5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begins a new UI batch.  <a href="ui_8c.html#a5356c389352db784027765ad0ef3aca5">More...</a><br /></td></tr>
+<tr class="separator:a5356c389352db784027765ad0ef3aca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4b289c41e0a12611f72f031dda9bccd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd">ui_flush</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context)</td></tr>
+<tr class="memdesc:aa4b289c41e0a12611f72f031dda9bccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes the current UI batch to the GPU.  <a href="ui_8c.html#aa4b289c41e0a12611f72f031dda9bccd">More...</a><br /></td></tr>
+<tr class="separator:aa4b289c41e0a12611f72f031dda9bccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afefa2b11544b44d05a8d2652e4e4883c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c">ui_end</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context)</td></tr>
+<tr class="memdesc:afefa2b11544b44d05a8d2652e4e4883c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends the current UI batch and restores OpenGL state.  <a href="ui_8c.html#afefa2b11544b44d05a8d2652e4e4883c">More...</a><br /></td></tr>
+<tr class="separator:afefa2b11544b44d05a8d2652e4e4883c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa12b42bbbbca85f3404c48a9534aa7ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac">ui_draw_text</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, const char *<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, float pos_x, float pos_y, const vec3 <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:aa12b42bbbbca85f3404c48a9534aa7ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a single text string at a specific coordinate.  <a href="ui_8c.html#aa12b42bbbbca85f3404c48a9534aa7ac">More...</a><br /></td></tr>
 <tr class="separator:aa12b42bbbbca85f3404c48a9534aa7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -346,7 +353,7 @@ Functions</h2></td></tr>
 <tr class="memitem:af0a3c0de038ae56e7e6344cdfdd15bba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af0a3c0de038ae56e7e6344cdfdd15bba">ui_draw_spinner</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, float center_x, float center_y, float size, float angle, const vec3 <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:af0a3c0de038ae56e7e6344cdfdd15bba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a rotating loading spinner.  <a href="ui_8c.html#af0a3c0de038ae56e7e6344cdfdd15bba">More...</a><br /></td></tr>
 <tr class="separator:af0a3c0de038ae56e7e6344cdfdd15bba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4b8d38bd43df2b9b59611b054408f74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af4b8d38bd43df2b9b59611b054408f74">ui_draw_rounded_rect</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, float rect_x, float rect_y, float width, float height, float <a class="el" href="ui_8frag.html#af4e95f531207631a73d76280e9c80e94">radius</a>, const vec3 <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>, float alpha, int screen_width, int screen_height)</td></tr>
+<tr class="memitem:af4b8d38bd43df2b9b59611b054408f74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#af4b8d38bd43df2b9b59611b054408f74">ui_draw_rounded_rect</a> (<a class="el" href="structUIContext.html">UIContext</a> *ui_context, float rect_x, float rect_y, float width, float height, float radius, const vec3 <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>, float alpha, int screen_width, int screen_height)</td></tr>
 <tr class="memdesc:af4b8d38bd43df2b9b59611b054408f74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a rounded rectangle with custom alpha.  <a href="ui_8c.html#af4b8d38bd43df2b9b59611b054408f74">More...</a><br /></td></tr>
 <tr class="separator:af4b8d38bd43df2b9b59611b054408f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -364,6 +371,8 @@ Variables</h2></td></tr>
 <tr class="separator:a42d60159b1f7fbfbff679ea27494cfdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa091a07662c10c5d3b8eaaf4774d7ab5"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#aa091a07662c10c5d3b8eaaf4774d7ab5">UI_QUAD_MIN</a> = 0.0F</td></tr>
 <tr class="separator:aa091a07662c10c5d3b8eaaf4774d7ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada114a43ba5ef5da89f16bfd867c8065"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGLStateBackup.html">GLStateBackup</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ui_8c.html#ada114a43ba5ef5da89f16bfd867c8065">g_ui_saved_state</a></td></tr>
+<tr class="separator:ada114a43ba5ef5da89f16bfd867c8065"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="ad3f72dd84eefcfe643a0a210388d8d27"></a>
@@ -448,8 +457,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a8d8220e7d7899791fe745aec49f72e6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d8220e7d7899791fe745aec49f72e6d">&#9670;&nbsp;</a></span>make_glyph_quad()</h2>
+<a id="a66e6a628599695a5b11237d545349213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66e6a628599695a5b11237d545349213">&#9670;&nbsp;</a></span>make_glyph_quad()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -473,7 +482,19 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>render_y</em>&#160;</td>
+          <td class="paramname"><em>render_y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>alpha</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -539,6 +560,62 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ui_8c_a38379b82fe44d3fc5826c8a9ed606cf5_cgraph.svg" width="356" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a5356c389352db784027765ad0ef3aca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5356c389352db784027765ad0ef3aca5">&#9670;&nbsp;</a></span>ui_begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ui_begin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_context</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>screen_height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Begins a new UI batch. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ui_context</td><td>Pointer to the UI context. </td></tr>
+    <tr><td class="paramname">screen_width</td><td>Current window width. </td></tr>
+    <tr><td class="paramname">screen_height</td><td>Current window height. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ui_8c_a5356c389352db784027765ad0ef3aca5_cgraph.svg" width="314" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
@@ -640,7 +717,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ae939146f2938232fc48f970745ecf26a_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_ae939146f2938232fc48f970745ecf26a_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -718,7 +795,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a092e3880109fbbe26972f6c5e3866c17_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a092e3880109fbbe26972f6c5e3866c17_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -802,7 +879,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af4b8d38bd43df2b9b59611b054408f74_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af4b8d38bd43df2b9b59611b054408f74_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -874,7 +951,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af0a3c0de038ae56e7e6344cdfdd15bba_cgraph.svg" width="100%" height="530"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_af0a3c0de038ae56e7e6344cdfdd15bba_cgraph.svg" width="100%" height="557"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -940,7 +1017,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aa12b42bbbbca85f3404c48a9534aa7ac_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_aa12b42bbbbca85f3404c48a9534aa7ac_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1012,7 +1089,71 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a74067bc67d31c6d82fa3b548a3729670_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a74067bc67d31c6d82fa3b548a3729670_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="afefa2b11544b44d05a8d2652e4e4883c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afefa2b11544b44d05a8d2652e4e4883c">&#9670;&nbsp;</a></span>ui_end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ui_end </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ends the current UI batch and restores OpenGL state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ui_context</td><td>Pointer to the UI context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_afefa2b11544b44d05a8d2652e4e4883c_cgraph.svg" width="100%" height="397"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aa4b289c41e0a12611f72f031dda9bccd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4b289c41e0a12611f72f031dda9bccd">&#9670;&nbsp;</a></span>ui_flush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ui_flush </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structUIContext.html">UIContext</a> *&#160;</td>
+          <td class="paramname"><em>ui_context</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Flushes the current UI batch to the GPU. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ui_context</td><td>Pointer to the UI context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="ui_8c_aa4b289c41e0a12611f72f031dda9bccd_cgraph.svg" width="663" height="96"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -1207,7 +1348,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a741fab59d05880f3bf5362d101833451_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="ui_8c_a741fab59d05880f3bf5362d101833451_cgraph.svg" width="100%" height="473"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1285,6 +1426,28 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const float FONT_BASELINE_OFFSET = 30.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada114a43ba5ef5da89f16bfd867c8065"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada114a43ba5ef5da89f16bfd867c8065">&#9670;&nbsp;</a></span>g_ui_saved_state</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGLStateBackup.html">GLStateBackup</a> g_ui_saved_state</td>
         </tr>
       </table>
   </td>

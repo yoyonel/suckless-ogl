@@ -265,7 +265,7 @@ $(document).ready(function(){initNavTree('structUIContext.html',''); initResizab
 <div class="dynheader">
 Collaboration diagram for UIContext:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structUIContext__coll__graph.svg" width="239" height="231"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structUIContext__coll__graph.svg" width="370" height="231"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -285,10 +285,65 @@ Data Fields</h2></td></tr>
 <tr class="separator:a062dcd89e0d44d274b207da86b1b2d04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe9242e20056a2f326d67392255c81a0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#abe9242e20056a2f326d67392255c81a0">font_size</a></td></tr>
 <tr class="separator:abe9242e20056a2f326d67392255c81a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade1389ff1a918ac87c3409be4b0163c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structUIVertex.html">UIVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#ade1389ff1a918ac87c3409be4b0163c2">batch_vertices</a> [8192]</td></tr>
+<tr class="separator:ade1389ff1a918ac87c3409be4b0163c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1bd151216d7ef55bd7bf781b4a47c47"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#ad1bd151216d7ef55bd7bf781b4a47c47">batch_count</a></td></tr>
+<tr class="separator:ad1bd151216d7ef55bd7bf781b4a47c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77c1f1660c195297bb0cf2172c9f081a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#a77c1f1660c195297bb0cf2172c9f081a">current_screen_width</a></td></tr>
+<tr class="separator:a77c1f1660c195297bb0cf2172c9f081a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4107aff07820adb38b338d426e6a434"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#ab4107aff07820adb38b338d426e6a434">current_screen_height</a></td></tr>
+<tr class="separator:ab4107aff07820adb38b338d426e6a434"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b6688815354ec56144a864e7f4dfd0d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUIContext.html#a4b6688815354ec56144a864e7f4dfd0d">batch_active</a></td></tr>
+<tr class="separator:a4b6688815354ec56144a864e7f4dfd0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Persistent state for the UI system. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a id="a4b6688815354ec56144a864e7f4dfd0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b6688815354ec56144a864e7f4dfd0d">&#9670;&nbsp;</a></span>batch_active</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int UIContext::batch_active</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Is a batch currently active? </p>
+
+</div>
+</div>
+<a id="ad1bd151216d7ef55bd7bf781b4a47c47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1bd151216d7ef55bd7bf781b4a47c47">&#9670;&nbsp;</a></span>batch_count</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int UIContext::batch_count</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Current vertex count in batch </p>
+
+</div>
+</div>
+<a id="ade1389ff1a918ac87c3409be4b0163c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade1389ff1a918ac87c3409be4b0163c2">&#9670;&nbsp;</a></span>batch_vertices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structUIVertex.html">UIVertex</a> UIContext::batch_vertices[8192]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Batch buffer </p>
+
+</div>
+</div>
 <a id="a062dcd89e0d44d274b207da86b1b2d04"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a062dcd89e0d44d274b207da86b1b2d04">&#9670;&nbsp;</a></span>cdata</h2>
 
@@ -301,6 +356,36 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Metrics for ASCII 32 - 126. </p>
+
+</div>
+</div>
+<a id="ab4107aff07820adb38b338d426e6a434"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4107aff07820adb38b338d426e6a434">&#9670;&nbsp;</a></span>current_screen_height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int UIContext::current_screen_height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Screen height for current batch </p>
+
+</div>
+</div>
+<a id="a77c1f1660c195297bb0cf2172c9f081a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77c1f1660c195297bb0cf2172c9f081a">&#9670;&nbsp;</a></span>current_screen_width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int UIContext::current_screen_width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Screen width for current batch </p>
 
 </div>
 </div>

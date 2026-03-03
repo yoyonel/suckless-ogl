@@ -2369,10 +2369,12 @@
 <h3 id="build-the-image">Build the Image<a class="headerlink" href="#build-the-image" title="Permanent link">¶</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>make<span class="w"> </span>docker-build
 </span></code></pre></div>
-<p>This creates an optimized container image with:
-- Multi-stage build (builder + minimal runtime)
-- CMake build cache persistence
-- Xvfb for headless OpenGL rendering</p>
+<p>This creates an optimized container image with:</p>
+<ul>
+<li>Multi-stage build (builder + minimal runtime)</li>
+<li>CMake build cache persistence</li>
+<li>Xvfb for headless OpenGL rendering</li>
+</ul>
 <h3 id="run-the-application">Run the Application<a class="headerlink" href="#run-the-application" title="Permanent link">¶</a></h3>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>docker-run
 </span></code></pre></div>
@@ -2409,9 +2411,11 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <li>Non-root user (<code>appuser</code>) for security</li>
 <li>Contains only: binary, assets, shaders, entrypoint script</li>
 </ul>
-<p><strong>Image size comparison:</strong>
-- Builder stage: ~1.2 GB (with full toolchain)
-- Final runtime image: ~400 MB (minimal dependencies)</p>
+<p><strong>Image size comparison:</strong></p>
+<ul>
+<li>Builder stage: ~1.2 GB (with full toolchain)</li>
+<li>Final runtime image: ~400 MB (minimal dependencies)</li>
+</ul>
 <h3 id="headless-rendering-with-xvfb">Headless Rendering with Xvfb<a class="headerlink" href="#headless-rendering-with-xvfb" title="Permanent link">¶</a></h3>
 <p>The <a href="https://github.com/yoyonel/suckless-ogl/blob/main/entrypoint.sh"><code>entrypoint.sh</code></a> script manages virtual display:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="ch">#!/bin/bash</span>
@@ -2433,10 +2437,12 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 </span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1"># Cleanup</span>
 </span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="nb">kill</span><span class="w"> </span><span class="nv">$XVFB_PID</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
 </span></code></pre></div>
-<p>This enables:
-- <strong>CI/CD testing</strong> without physical display
-- <strong>Headless rendering</strong> for automated screenshots/validation
-- <strong>Consistent environment</strong> across different systems</p>
+<p>This enables:</p>
+<ul>
+<li><strong>CI/CD testing</strong> without physical display</li>
+<li><strong>Headless rendering</strong> for automated screenshots/validation</li>
+<li><strong>Consistent environment</strong> across different systems</li>
+</ul>
 <h3 id="build-cache-optimization">Build Cache Optimization<a class="headerlink" href="#build-cache-optimization" title="Permanent link">¶</a></h3>
 <p>The <code>.dockerignore</code> file excludes unnecessary files from the build context:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>build/          # Build artifacts
@@ -2453,20 +2459,28 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <tr>
 <th>Target</th>
 <th>Description</th>
+<th><code>make</code></th>
+<th><code>just</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>make docker-build</code></td>
+<td>Build Image</td>
 <td>Build image with layer caching</td>
+<td><code>docker-build</code></td>
+<td><code>docker-build</code></td>
 </tr>
 <tr>
-<td><code>make docker-build-no-cache</code></td>
-<td>Force full rebuild (ignores cache)</td>
+<td>Build No Cache</td>
+<td>Force full rebuild</td>
+<td><code>docker-build-no-cache</code></td>
+<td><code>docker-build-no-cache</code></td>
 </tr>
 <tr>
-<td><code>make docker-run</code></td>
-<td>Run with X11 forwarding to host</td>
+<td>Run App</td>
+<td>Run with X11 forwarding</td>
+<td><code>docker-run</code></td>
+<td><code>docker-run</code></td>
 </tr>
 </tbody>
 </table>
@@ -2476,20 +2490,28 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <tr>
 <th>Target</th>
 <th>Description</th>
+<th><code>make</code></th>
+<th><code>just</code></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>make docker-clean</code></td>
+<td>Clean Dangling</td>
 <td>Remove dangling images</td>
+<td><code>docker-clean</code></td>
+<td><code>docker-clean</code></td>
 </tr>
 <tr>
-<td><code>make docker-clean-all</code></td>
-<td>Prune all unused images and cache</td>
+<td>Clean All</td>
+<td>Prune all images and cache</td>
+<td><code>docker-clean-all</code></td>
+<td><code>docker-clean-all</code></td>
 </tr>
 <tr>
-<td><code>make docker-usage</code></td>
-<td>Show disk usage statistics</td>
+<td>Disk Usage</td>
+<td>Show disk usage stats</td>
+<td><code>docker-usage</code></td>
+<td><code>docker-usage</code></td>
 </tr>
 </tbody>
 </table>
@@ -2531,7 +2553,8 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <ul>
 <li><code>--cap-add=SYS_NICE</code>: Allows the container to set real-time scheduling policies.</li>
 <li><code>--ulimit rtprio=99</code>: Allows the non-root <code>appuser</code> to request real-time priority.</li>
-<li><strong>D-Bus Mounting</strong>: Essential for <code>libgamemode</code> to communicate with the host's GameMode daemon.
+<li><strong>D-Bus Mounting</strong>: Essential for <code>libgamemode</code> to communicate with the host's GameMode daemon.</li>
+</ul>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>&gt; [!WARNING]
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>&gt; X11 forwarding requires `xhost +local:` which temporarily disables access control. This is handled automatically by the Makefile.
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
@@ -2546,8 +2569,7 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 </span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>export DOCKER_BUILDKIT=1
 </span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
 </span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a># Podman (enabled by default)
-</span></code></pre></div></li>
-</ul>
+</span></code></pre></div>
 <h3 id="xvfb-fails-to-start">Xvfb Fails to Start<a class="headerlink" href="#xvfb-fails-to-start" title="Permanent link">¶</a></h3>
 <p>Check if port :99 is available:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>suckless-ogl<span class="w"> </span>/bin/bash
@@ -2593,7 +2615,7 @@ The cache mount persists CMake's build directory between builds, dramatically sp
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 14:05:23 UTC">February 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 3, 2026 15:09:49 UTC">March 3, 2026</span>
   </span>
 
     

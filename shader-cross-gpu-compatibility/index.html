@@ -1346,6 +1346,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pitfall-4-mixed-bitwise-operator-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pitfall 4: Mixed Bitwise Operator Types
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2305,14 +2316,14 @@
 <h3 id="2-pre-calculate-and-store-values">2. Pre-Calculate and Store Values<a class="headerlink" href="#2-pre-calculate-and-store-values" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Recalculating the same value multiple times can accumulate precision errors differently.</p>
 <p><strong>Solution</strong>: Calculate once, store in unused texture channels (e.g., alpha).</p>
-<p><strong>Example</strong>:
-</p><div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Fragment shader (once)</span>
+<p><strong>Example</strong>:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Fragment shader (once)</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">luma_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">color_val</span><span class="p">),</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.2126</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7152</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0722</span><span class="p">));</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">FragColor_out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">color_val</span><span class="p">,</span><span class="w"> </span><span class="n">luma_val</span><span class="p">);</span><span class="w">  </span><span class="c1">// Store in alpha</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">// Post-processing (reuse)</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kt">float</span><span class="w"> </span><span class="n">stored_luma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">tex_sampler</span><span class="p">,</span><span class="w"> </span><span class="n">uv_coords</span><span class="p">).</span><span class="n">a</span><span class="p">;</span><span class="w">  </span><span class="c1">// Consistent across vendors</span>
-</span></code></pre></div><p></p>
+</span></code></pre></div>
 <h3 id="3-use-explicit-precision-qualifiers-mobilewebgl">3. Use Explicit Precision Qualifiers (Mobile/WebGL)<a class="headerlink" href="#3-use-explicit-precision-qualifiers-mobilewebgl" title="Permanent link">¶</a></h3>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#ifdef GL_ES</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">precision</span><span class="w"> </span><span class="k">highp</span><span class="w"> </span><span class="kt">float</span><span class="p">;</span>
@@ -2349,16 +2360,23 @@
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="kt">float</span><span class="w"> </span><span class="n">better_sqrt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">variation</span><span class="p">);</span><span class="w">     </span><span class="c1">// Square root</span>
 </span></code></pre></div>
 <h3 id="pitfall-3-derivatives-in-divergent-branches">Pitfall 3: Derivatives in Divergent Branches<a class="headerlink" href="#pitfall-3-derivatives-in-divergent-branches" title="Permanent link">¶</a></h3>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// BAD: Undefined behavior</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">someCondition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">dx_val_bad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dFdx</span><span class="p">(</span><span class="n">value_val</span><span class="p">);</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="p">}</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// GOOD: Compute before branching</span>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kt">float</span><span class="w"> </span><span class="n">dx_precomputed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dFdx</span><span class="p">(</span><span class="n">value_val</span><span class="p">);</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">someCondition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="c1">// Use dx_precomputed</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="p">}</span>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// GOOD: Compute before branching</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">dx_precomputed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dFdx</span><span class="p">(</span><span class="n">value_val</span><span class="p">);</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">someCondition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="c1">// Use dx_precomputed</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="pitfall-4-mixed-bitwise-operator-types">Pitfall 4: Mixed Bitwise Operator Types<a class="headerlink" href="#pitfall-4-mixed-bitwise-operator-types" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Some drivers do not support implicit <code>int</code> -&gt; <code>uint</code> conversions for bitwise operators (<code>&amp;</code>, <code>|</code>, <code>^</code>).</p>
+<p><strong>Recommendation</strong>: Always use explicit literals (e.g., <code>0x1u</code>) or casts when mixing types in bitwise operations.</p>
+<p><strong>Example</strong>:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Warning/Error on some drivers</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kt">uint</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_uint</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x1</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// Portable</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kt">uint</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_uint</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x1</span><span class="n">u</span><span class="p">;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// OR</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="kt">uint</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_uint</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="kt">uint</span><span class="p">(</span><span class="n">some_int</span><span class="p">);</span>
 </span></code></pre></div>
 <h2 id="testing-workflow">Testing Workflow<a class="headerlink" href="#testing-workflow" title="Permanent link">¶</a></h2>
 <ol>
@@ -2368,27 +2386,31 @@
 <li><strong>Driver Versions</strong>: Test with different driver releases</li>
 </ol>
 <h3 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">¶</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Visual diff</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>compare<span class="w"> </span>intel.png<span class="w"> </span>nvidia.png<span class="w"> </span>diff.png
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># ApiTrace</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>apitrace<span class="w"> </span>trace<span class="w"> </span>./app
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>apitrace<span class="w"> </span>replay<span class="w"> </span>app.trace
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Visual diff</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>compare<span class="w"> </span>intel.png<span class="w"> </span>nvidia.png<span class="w"> </span>diff.png
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># ApiTrace</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>apitrace<span class="w"> </span>trace<span class="w"> </span>./app
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>apitrace<span class="w"> </span>replay<span class="w"> </span>app.trace
 </span></code></pre></div>
 <h2 id="when-to-use-derivatives">When to Use Derivatives<a class="headerlink" href="#when-to-use-derivatives" title="Permanent link">¶</a></h2>
-<p>✅ <strong>Safe uses</strong>:
-- Debug visualization (where exact parity is not required)
-- Non-critical effects (optional grain, etc.)
-- Explicitly documented vendor-specific behavior</p>
-<p>❌ <strong>Avoid for</strong>:
-- Core rendering logic where cross-GPU "Difference Maps" must be clean
-- Anti-aliasing (prefer FXAA or Analytic smoothing)
-- Material property adjustments (use <code>MIN_ROUGHNESS</code> constants)</p>
+<p>✅ <strong>Safe uses</strong>:</p>
+<ul>
+<li>Debug visualization (where exact parity is not required)</li>
+<li>Non-critical effects (optional grain, etc.)</li>
+<li>Explicitly documented vendor-specific behavior</li>
+</ul>
+<p>❌ <strong>Avoid for</strong>:</p>
+<ul>
+<li>Core rendering logic where cross-GPU "Difference Maps" must be clean</li>
+<li>Anti-aliasing (prefer FXAA or Analytic smoothing)</li>
+<li>Material property adjustments (use <code>MIN_ROUGHNESS</code> constants)</li>
+</ul>
 <h2 id="implementation-example-analytic-edge-smoothing">Implementation Example: Analytic Edge Smoothing<a class="headerlink" href="#implementation-example-analytic-edge-smoothing" title="Permanent link">¶</a></h2>
 <p>Instead of <code>fwidth(h)</code>:</p>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// h = discriminant (0 at edge)</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">// analyticFwidth = footprint of pixel in h-space</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">edgeFactor_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">analyticFwidth</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// h = discriminant (0 at edge)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">// analyticFwidth = footprint of pixel in h-space</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">edgeFactor_val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">analyticFwidth</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
 </span></code></pre></div>
 <p>See <a href="https://github.com/yoyonel/suckless-ogl/blob/main/shaders/pbr_ibl_billboard.frag">pbr_ibl_billboard.frag</a> for a production example.</p>
 <p>More details on why testing artifacts appear in CI can be found in <a href="../visual_testing_artifacts/">Visual Testing &amp; Regression Artifacts</a>.</p>
@@ -2418,7 +2440,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 09:50:52 UTC">February 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 3, 2026 15:09:49 UTC">March 3, 2026</span>
   </span>
 
     

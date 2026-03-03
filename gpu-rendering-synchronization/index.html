@@ -1251,6 +1251,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#pbo-mapping-synchronization-implicit-vs-explicit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PBO Mapping Synchronization (Implicit vs. Explicit)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PBO Mapping Synchronization (Implicit vs. Explicit)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-symptom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Symptom
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-cause" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Cause
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-fix-explicit-fencing-glsync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Fix: Explicit Fencing (GLsync)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#references" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2319,10 +2369,12 @@
 <h3 id="issue-2-derivative-based-roughness-clamping">Issue 2: Derivative-Based Roughness Clamping<a class="headerlink" href="#issue-2-derivative-based-roughness-clamping" title="Permanent link">¶</a></h3>
 <p><strong>File</strong>: <code>shaders/pbr_functions.glsl</code> (Lines 76-100)</p>
 <p><strong>Problem</strong>: <code>dFdx()</code>/<code>dFdy()</code> produce different values on Intel vs NVIDIA, causing extreme roughness values at edges on NVIDIA.</p>
-<p><strong>Attempted Fixes</strong>:
-1. ❌ Threshold 0.1 → 0.5: Reduced but didn't eliminate halos
-2. ❌ Saturation <code>min(maxVariation, 1.0)</code>: Still visible artifacts
-3. ✅ <strong>Complete removal</strong>: Achieved visual parity</p>
+<p><strong>Attempted Fixes</strong>:</p>
+<ol>
+<li>❌ Threshold 0.1 → 0.5: Reduced but didn't eliminate halos</li>
+<li>❌ Saturation <code>min(maxVariation, 1.0)</code>: Still visible artifacts</li>
+<li>✅ <strong>Complete removal</strong>: Achieved visual parity</li>
+</ol>
 <p><strong>Final Solution</strong>: Disabled roughness clamping entirely.</p>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">compute_roughness_clamping</span><span class="p">(</span><span class="kt">vec3</span><span class="w"> </span><span class="n">N_val</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">roughness_val</span><span class="p">)</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span>
@@ -2447,6 +2499,32 @@
 <li><code>shaders/postprocess/fxaa.glsl</code></li>
 <li><code>shaders/pbr_functions.glsl</code></li>
 </ul>
+<h2 id="pbo-mapping-synchronization-implicit-vs-explicit">PBO Mapping Synchronization (Implicit vs. Explicit)<a class="headerlink" href="#pbo-mapping-synchronization-implicit-vs-explicit" title="Permanent link">¶</a></h2>
+<p>One of the most elusive performance issues in OpenGL is the <strong>implicit synchronization</strong> that occurs during <code>glMapBuffer</code>.</p>
+<h3 id="the-symptom">The Symptom<a class="headerlink" href="#the-symptom" title="Permanent link">¶</a></h3>
+<p>ApiTrace reports: <code>api performance issue 1: memory mapping a busy "buffer" BO stalled and took 1.379 ms.</code></p>
+<h3 id="the-cause">The Cause<a class="headerlink" href="#the-cause" title="Permanent link">¶</a></h3>
+<p>If you try to map a buffer that is currently being used by a pending GPU command (like a <code>glReadPixels</code> or <code>glTexSubImage2D</code>), the driver must pause the CPU until that command is finished. Even "unsynchronized" mapping can sometimes stall if the buffer hasn't been properly fenced.</p>
+<h3 id="the-fix-explicit-fencing-glsync">The Fix: Explicit Fencing (<code>GLsync</code>)<a class="headerlink" href="#the-fix-explicit-fencing-glsync" title="Permanent link">¶</a></h3>
+<p>Instead of letting the driver guess, we use explicit synchronization:</p>
+<ol>
+<li><strong>Fence after Command</strong>:</li>
+</ol>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">glReadPixels</span><span class="p">(...);</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">app</span><span class="o">-&gt;</span><span class="n">sync</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glFenceSync</span><span class="p">(</span><span class="n">GL_SYNC_GPU_COMMANDS_COMPLETE</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span></code></pre></div>
+<ol>
+<li><strong>Wait before Map</strong>:</li>
+</ol>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Non-blocking wait (timeout 0)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">GLenum</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glClientWaitSync</span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">sync</span><span class="p">[</span><span class="o">!</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">GL_SYNC_FLUSH_COMMANDS_BIT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">GL_TIMEOUT_EXPIRED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glMapBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_PACK_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="n">GL_READ_ONLY</span><span class="p">);</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="c1">// ... process ...</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">glUnmapBuffer</span><span class="p">(</span><span class="n">GL_PIXEL_PACK_BUFFER</span><span class="p">);</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>By checking the fence with a zero timeout, we ensure that if the GPU is still busy, the CPU simply skips the logic for that frame instead of waiting. This is crucial for maintaining a high and stable frame rate.</p>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
 <ul>
 <li><a href="../shader-cross-gpu-compatibility/">shader-cross-gpu-compatibility.md</a> - General guidelines</li>
@@ -2473,7 +2551,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 2, 2026 23:27:58 UTC">February 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 3, 2026 14:30:47 UTC">March 3, 2026</span>
   </span>
 
     

@@ -1474,6 +1474,45 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#asynchronous-performance-readbacks-exposure-histogram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asynchronous Performance Readbacks (Exposure &amp; Histogram)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Asynchronous Performance Readbacks (Exposure &amp; Histogram)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-challenge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Challenge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#code-references" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2638,6 +2677,22 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
 <li><strong><code>glTexImage2D(level 0)</code> replaces <code>glTexStorage2D(13 levels)</code></strong>: lighter allocation, mip chain deferred</li>
 </ul>
 <p><strong>Result</strong>: Worst-case frame spike reduced from ~60ms to ~20-30ms. With texture reuse (same dimensions), the pre-allocation frame is a no-op.</p>
+<h2 id="asynchronous-performance-readbacks-exposure-histogram">Asynchronous Performance Readbacks (Exposure &amp; Histogram)<a class="headerlink" href="#asynchronous-performance-readbacks-exposure-histogram" title="Permanent link">¶</a></h2>
+<p>The same PBO principle is applied in reverse for <strong>GPU-to-CPU readbacks</strong> (Auto-Exposure and Histogram).</p>
+<h3 id="the-challenge">The Challenge<a class="headerlink" href="#the-challenge" title="Permanent link">¶</a></h3>
+<p><code>glReadPixels</code> or <code>glGetTexImage</code> without PBOs will stall the CPU until the GPU finishes rendering the frame and transfers the data. This typically costs <strong>1-2ms per call</strong> even for small data.</p>
+<h3 id="the-implementation">The Implementation<a class="headerlink" href="#the-implementation" title="Permanent link">¶</a></h3>
+<p>We use <strong>Double-Buffered PBOs + Sync Fences</strong>:</p>
+<ol>
+<li><strong>Trigger Phase (Frame N)</strong>:</li>
+<li>Call <code>glGetTexImage</code> into <code>pbo[idx]</code>.</li>
+<li>Insert a fence: <code>sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)</code>.</li>
+<li><strong>Read Phase (Frame N+1)</strong>:</li>
+<li>Check the fence: <code>glClientWaitSync(sync[!idx], ..., 0)</code>.</li>
+<li>If <code>GL_ALREADY_SIGNALED</code> or <code>GL_CONDITION_SATISFIED</code>, map the PBO and read.</li>
+<li>If not signaled, <strong>skip the update</strong> for this frame. This prevents the CPU from ever stalling at the cost of 1 extra frame of latency for HUD values.</li>
+</ol>
+<p><strong>Result</strong>: Exposure calculation and histogram extraction cost <strong>&lt; 0.05ms</strong> on the CPU, regardless of scene complexity.</p>
 <h2 id="code-references">Code References<a class="headerlink" href="#code-references" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong><code>src/app.c</code></strong>: Manages the PBO array loop and deferred pre-allocation in <code>app_update</code>. Fields: <code>pending_prealloc_w</code>, <code>pending_prealloc_h</code>.</li>
@@ -2666,7 +2721,7 @@ This allows us to use <code>GL_MAP_UNSYNCHRONIZED_BIT</code>, which tells the dr
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 19, 2026 12:22:24 UTC">February 19, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 3, 2026 14:30:47 UTC">March 3, 2026</span>
   </span>
 
     
