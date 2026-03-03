@@ -10,8 +10,7 @@
 #ifndef PERF_TIMER_H
 #define PERF_TIMER_H
 
-#include <glad/glad.h>
-
+#include "gl_common.h"
 #include <time.h>
 
 /**
