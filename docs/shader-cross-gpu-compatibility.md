@@ -23,6 +23,7 @@ Best practices for writing OpenGL shaders that produce consistent results across
 **Solution**: Calculate once, store in unused texture channels (e.g., alpha).
 
 **Example**:
+
 ```glsl
 // Fragment shader (once)
 float luma_val = dot(sqrt(color_val), vec3(0.2126, 0.7152, 0.0722));
@@ -89,16 +90,29 @@ float better_sqrt = sqrt(variation);     // Square root
 ### Pitfall 3: Derivatives in Divergent Branches
 
 ```glsl
-// BAD: Undefined behavior
-if (someCondition) {
-    float dx_val_bad = dFdx(value_val);
-}
-
 // GOOD: Compute before branching
 float dx_precomputed = dFdx(value_val);
 if (someCondition) {
     // Use dx_precomputed
 }
+```
+
+### Pitfall 4: Mixed Bitwise Operator Types
+
+**Problem**: Some drivers do not support implicit `int` -> `uint` conversions for bitwise operators (`&`, `|`, `^`).
+
+**Recommendation**: Always use explicit literals (e.g., `0x1u`) or casts when mixing types in bitwise operations.
+
+**Example**:
+
+```glsl
+// Warning/Error on some drivers
+uint result = some_uint & 0x1;
+
+// Portable
+uint result = some_uint & 0x1u;
+// OR
+uint result = some_uint & uint(some_int);
 ```
 
 ## Testing Workflow
@@ -122,11 +136,13 @@ apitrace replay app.trace
 ## When to Use Derivatives
 
 ✅ **Safe uses**:
+
 - Debug visualization (where exact parity is not required)
 - Non-critical effects (optional grain, etc.)
 - Explicitly documented vendor-specific behavior
 
 ❌ **Avoid for**:
+
 - Core rendering logic where cross-GPU "Difference Maps" must be clean
 - Anti-aliasing (prefer FXAA or Analytic smoothing)
 - Material property adjustments (use `MIN_ROUGHNESS` constants)
