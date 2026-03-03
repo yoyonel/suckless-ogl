@@ -49,6 +49,9 @@ Here is a mapping of common `make` commands to their `just` equivalents:
 | **Lint** | `make lint` | `just lint` | Runs clang-tidy and ruff |
 | **Format** | `make format` | `just format` | Runs clang-format and ruff |
 | **Docs** | `make docs` | `just docs` | Builds MkDocs + Doxygen |
+| **Docker Build** | `make docker-build` | `just docker-build` | Multi-stage production build |
+| **Docker Run** | `make docker-run` | `just docker-run` | Run with X11 forwarding |
+| **Docker Prune** | `make docker-clean-all` | `just docker-clean-all` | Clean all containers/images/cache |
 
 ## Advanced Usage
 

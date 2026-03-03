@@ -16,6 +16,7 @@ make docker-build
 ```
 
 This creates an optimized container image with:
+
 - Multi-stage build (builder + minimal runtime)
 - CMake build cache persistence
 - Xvfb for headless OpenGL rendering
@@ -35,6 +36,7 @@ Runs the application in a container with X11 forwarding to your host display.
 The [`Dockerfile`](https://github.com/yoyonel/suckless-ogl/blob/main/Dockerfile) uses two stages:
 
 #### Stage 1: Builder (fedora:41)
+
 - Full development toolchain (clang, cmake, ninja, git)
 - **BuildKit cache mount** on `/src/build` for incremental builds
 - Compiles in Release mode with parallel build
@@ -53,6 +55,7 @@ RUN --mount=type=cache,target=/src/build \
 > The cache mount persists CMake's build directory between builds, dramatically speeding up rebuilds by reusing compiled object files and fetched dependencies.
 
 #### Stage 2: Runtime (fedora:41)
+
 - Minimal runtime dependencies only:
   - `glfw` - Window and input handling
   - `mesa-*` - OpenGL drivers
@@ -63,6 +66,7 @@ RUN --mount=type=cache,target=/src/build \
 - Contains only: binary, assets, shaders, entrypoint script
 
 **Image size comparison:**
+
 - Builder stage: ~1.2 GB (with full toolchain)
 - Final runtime image: ~400 MB (minimal dependencies)
 
@@ -92,6 +96,7 @@ kill $XVFB_PID 2>/dev/null || true
 ```
 
 This enables:
+
 - **CI/CD testing** without physical display
 - **Headless rendering** for automated screenshots/validation
 - **Consistent environment** across different systems
@@ -114,19 +119,19 @@ This reduces context size and speeds up `docker build`.
 
 ### Build Targets
 
-| Target | Description |
-|--------|-------------|
-| `make docker-build` | Build image with layer caching |
-| `make docker-build-no-cache` | Force full rebuild (ignores cache) |
-| `make docker-run` | Run with X11 forwarding to host |
+| Target | Description | `make` | `just` |
+|--------|-------------|--------|--------|
+| Build Image | Build image with layer caching | `docker-build` | `docker-build` |
+| Build No Cache | Force full rebuild | `docker-build-no-cache` | `docker-build-no-cache` |
+| Run App | Run with X11 forwarding | `docker-run` | `docker-run` |
 
 ### Maintenance Targets
 
-| Target | Description |
-|--------|-------------|
-| `make docker-clean` | Remove dangling images |
-| `make docker-clean-all` | Prune all unused images and cache |
-| `make docker-usage` | Show disk usage statistics |
+| Target | Description | `make` | `just` |
+|--------|-------------|--------|--------|
+| Clean Dangling | Remove dangling images | `docker-clean` | `docker-clean` |
+| Clean All | Prune all images and cache | `docker-clean-all` | `docker-clean-all` |
+| Disk Usage | Show disk usage stats | `docker-usage` | `docker-usage` |
 
 ## Advanced Usage
 
@@ -184,6 +189,7 @@ To enable **Performance Mode** (SCHED_FIFO) and GameMode inside the container, s
 - `--cap-add=SYS_NICE`: Allows the container to set real-time scheduling policies.
 - `--ulimit rtprio=99`: Allows the non-root `appuser` to request real-time priority.
 - **D-Bus Mounting**: Essential for `libgamemode` to communicate with the host's GameMode daemon.
+
 ```
 
 > [!WARNING]
