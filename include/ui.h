@@ -26,6 +26,22 @@ typedef struct {
 	float advance;        /**< Horizontal spacing to the next char. */
 } GlyphInfo;
 
+/** @brief Maximum number of vertices per UI batch. */
+#define UI_MAX_BATCH_VERTICES 8192
+
+/**
+ * @struct UIVertex
+ * @brief Vertex data for the batch renderer.
+ */
+typedef struct {
+	float x, y;
+	float u, v;
+	float r, g, b, a;
+	float mode;  // 0=solid, 1=text, 2=rounded
+	float rect_size_x, rect_size_y;
+	float radius;
+} UIVertex;
+
 /**
  * @struct UIContext
  * @brief Persistent state for the UI system.
@@ -38,6 +54,11 @@ typedef struct {
 	GLuint vao, vbo;    /**< Geometry buffers. */
 	GlyphInfo cdata[ASCII_CHAR_COUNT]; /**< Metrics for ASCII 32 - 126. */
 	float font_size;                   /**< Global scaling factor. */
+	UIVertex batch_vertices[UI_MAX_BATCH_VERTICES]; /**< Batch buffer */
+	int batch_count;           /**< Current vertex count in batch */
+	int current_screen_width;  /**< Screen width for current batch */
+	int current_screen_height; /**< Screen height for current batch */
+	int batch_active;          /**< Is a batch currently active? */
 } UIContext;
 
 /**
@@ -67,6 +88,28 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size);
  * @param ui_context Pointer to the struct.
  */
 void ui_destroy(UIContext* ui_context);
+
+/* --- Batch API --- */
+
+/**
+ * @brief Begins a new UI batch.
+ * @param ui_context Pointer to the UI context.
+ * @param screen_width Current window width.
+ * @param screen_height Current window height.
+ */
+void ui_begin(UIContext* ui_context, int screen_width, int screen_height);
+
+/**
+ * @brief Flushes the current UI batch to the GPU.
+ * @param ui_context Pointer to the UI context.
+ */
+void ui_flush(UIContext* ui_context);
+
+/**
+ * @brief Ends the current UI batch and restores OpenGL state.
+ * @param ui_context Pointer to the UI context.
+ */
+void ui_end(UIContext* ui_context);
 
 /* --- Layout API --- */
 

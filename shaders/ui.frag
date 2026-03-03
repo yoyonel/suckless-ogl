@@ -1,26 +1,25 @@
 #version 330 core
 in vec2 TexCoords;
+in vec4 vColor;
+in float vMode;
+in vec3 vRoundedParams;
+
 out vec4 color;
 
 uniform sampler2D text;  // L'atlas de la font
-uniform vec3 textColor;  // La couleur passée depuis le C
-
-uniform int useTexture;  // 1 = Text (Atlas), 0 = Solid Rect
-
-uniform float globalAlpha;  // Transparence globale (0.0 - 1.0)
-
-uniform vec2 rectSize;  // Dimensions en pixels
-uniform float radius;   // Rayon des coins
 
 void main()
 {
-	float finalAlpha = globalAlpha;
+	float finalAlpha = vColor.a;
 
-	if (useTexture == 1) {
+	// vMode: 0.0 = Solid Rect, 1.0 = Text, 2.0 = Rounded Rect
+	if (vMode > 0.5 && vMode < 1.5) {
 		/* Font Atlas */
 		finalAlpha *= texture(text, TexCoords).r;
-	} else if (useTexture == 2) {
+	} else if (vMode > 1.5) {
 		/* Rounded Rect (SDF) */
+		vec2 rectSize = vRoundedParams.xy;
+		float radius = vRoundedParams.z;
 		// Coordonnées locales en pixels, centrées
 		vec2 p = (TexCoords * rectSize) - (rectSize * 0.5);
 		vec2 b = (rectSize * 0.5) - vec2(radius);
@@ -35,7 +34,7 @@ void main()
 		finalAlpha *= alpha;
 	}
 
-	color = vec4(textColor, finalAlpha);
+	color = vec4(vColor.rgb, finalAlpha);
 
 	if (color.a < 0.001)
 		discard;
