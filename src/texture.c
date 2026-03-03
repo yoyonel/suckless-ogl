@@ -199,6 +199,59 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)
 	return tex;
 }
 
+static GLuint texture_reuse_or_create_hdr(int width, int height, GLuint reuse_tex_id, bool* is_reused, int* levels_out)
+{
+	GLuint tex = 0;
+	*is_reused = false;
+
+	/* Calculate levels */
+	int levels = 1;
+	if (width > 0 || height > 0) {
+		levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
+	}
+	*levels_out = levels;
+
+	/* Attempt to reuse existing texture */
+	if (reuse_tex_id != 0) {
+		glBindTexture(GL_TEXTURE_2D, reuse_tex_id);
+		if (texture_matches_hdr(width, height)) {
+			tex = reuse_tex_id;
+			*is_reused = true;
+			LOG_INFO("suckless-ogl.texture",
+			         "Reusing cached HDR texture ID %u (%dx%d)",
+			         tex, width, height);
+			return tex;
+		}
+		LOG_INFO("suckless-ogl.texture",
+		         "Recycled texture ID %u mismatch. Deleting.",
+		         reuse_tex_id);
+		glDeleteTextures(1, &reuse_tex_id);
+	}
+
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	return tex;
+}
+
+static bool texture_allocate_storage_hdr(int width, int height, int levels)
+{
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	{
+		TRACE_GPU_SCOPE("TexStorageHDR", TRACY_COLOR_TEXTURE_STORAGE);
+		glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
+	}
+
+#ifndef NDEBUG
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR) {
+		LOG_ERROR("suckless-ogl.texture",
+		          "GL error after glTexStorage2D: 0x%x", err);
+		return false;
+	}
+#endif
+	return true;
+}
+
 GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
                                    GLuint reuse_tex_id)
 {
@@ -212,53 +265,15 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
 		return 0;
 	}
 
-	GLuint CLEANUP_TEXTURE tex = 0;
 	bool is_reused = false;
-
-	/* Calculate levels */
 	int levels = 1;
-	if (width > 0 || height > 0) {
-		levels =
-		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
-	}
-
-	/* Attempt to reuse existing texture */
-	if (reuse_tex_id != 0) {
-		glBindTexture(GL_TEXTURE_2D, reuse_tex_id);
-		if (texture_matches_hdr(width, height)) {
-			tex = reuse_tex_id;
-			is_reused = true;
-			LOG_INFO("suckless-ogl.texture",
-			         "Reusing cached HDR texture ID %u (%dx%d)",
-			         tex, width, height);
-		} else {
-			LOG_INFO("suckless-ogl.texture",
-			         "Recycled texture ID %u mismatch. Deleting.",
-			         reuse_tex_id);
-			glDeleteTextures(1, &reuse_tex_id);
-		}
-	}
+	GLuint CLEANUP_TEXTURE tex =
+	    texture_reuse_or_create_hdr(width, height, reuse_tex_id, &is_reused, &levels);
 
 	if (!is_reused) {
-		glGenTextures(1, &tex);
-		glBindTexture(GL_TEXTURE_2D, tex);
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		{
-			TRACE_GPU_SCOPE("TexStorageHDR",
-			                TRACY_COLOR_TEXTURE_STORAGE);
-			glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width,
-			               height);
-		}
-
-#ifndef NDEBUG
-		GLenum err = glGetError();
-		if (err != GL_NO_ERROR) {
-			LOG_ERROR("suckless-ogl.texture",
-			          "GL error after glTexStorage2D: 0x%x", err);
+		if (!texture_allocate_storage_hdr(width, height, levels)) {
 			return 0;
 		}
-#endif
 	} else {
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	}
