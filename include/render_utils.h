@@ -1,8 +1,7 @@
 #ifndef RENDER_UTILS_H
 #define RENDER_UTILS_H
 
-#include <glad/glad.h>
-
+#include "gl_common.h"
 #include <stddef.h>
 
 /**

@@ -9,8 +9,7 @@
 #ifndef ASYNC_LOADER_H
 #define ASYNC_LOADER_H
 
-#include <glad/glad.h>
-
+#include "gl_common.h"
 #include <stdbool.h>
 
 /** @brief Maximum path length for an asynchronous load request. */
