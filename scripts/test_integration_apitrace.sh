@@ -41,8 +41,8 @@ WID=$(xdotool search --sync --onlyvisible --name "$WINDOW_NAME" 2>/dev/null | he
 focus_window "$WID"
 
 # 4. Run GUI Scenario
-echo "[*] Running Integration Test Scenario (Minimal)..."
-run_scenario_minimal
+echo "[*] Running Integration Test Scenario (Full)..."
+run_scenario_full
 
 # 5. Wait for app to finish (usually Escape in scenario ends it)
 if wait $APP_PID; then
