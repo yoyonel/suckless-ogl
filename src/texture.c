@@ -199,7 +199,9 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex)
 	return tex;
 }
 
-static GLuint texture_reuse_or_create_hdr(int width, int height, GLuint reuse_tex_id, bool* is_reused, int* levels_out)
+static GLuint texture_reuse_or_create_hdr(int width, int height,
+                                          GLuint reuse_tex_id, bool* is_reused,
+                                          int* levels_out)
 {
 	GLuint tex = 0;
 	*is_reused = false;
@@ -207,7 +209,8 @@ static GLuint texture_reuse_or_create_hdr(int width, int height, GLuint reuse_te
 	/* Calculate levels */
 	int levels = 1;
 	if (width > 0 || height > 0) {
-		levels = (int)floor(log2(fmax((double)width, (double)height))) + 1;
+		levels =
+		    (int)floor(log2(fmax((double)width, (double)height))) + 1;
 	}
 	*levels_out = levels;
 
@@ -238,7 +241,8 @@ static bool texture_allocate_storage_hdr(int width, int height, int levels)
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	{
 		TRACE_GPU_SCOPE("TexStorageHDR", TRACY_COLOR_TEXTURE_STORAGE);
-		glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width, height);
+		glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA16F, width,
+		               height);
 	}
 
 #ifndef NDEBUG
@@ -267,8 +271,8 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
 
 	bool is_reused = false;
 	int levels = 1;
-	GLuint CLEANUP_TEXTURE tex =
-	    texture_reuse_or_create_hdr(width, height, reuse_tex_id, &is_reused, &levels);
+	GLuint CLEANUP_TEXTURE tex = texture_reuse_or_create_hdr(
+	    width, height, reuse_tex_id, &is_reused, &levels);
 
 	if (!is_reused) {
 		if (!texture_allocate_storage_hdr(width, height, levels)) {
