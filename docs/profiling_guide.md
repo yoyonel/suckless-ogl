@@ -31,6 +31,7 @@ make apitrace
 ```
 
 This will:
+
 1. Build the application in "Profile" mode (without high-level debug overhead).
 2. Use `apitrace trace` to record all OpenGL calls into `build-profile/app.trace`.
 
@@ -45,6 +46,7 @@ make trace-perf
 ```
 
 This command runs `scripts/trace_analyze.py` which produces two tables:
+
 1. **Performance by Shader (Cumulative)**: Groups all calls by shader name/label.
 2. **Debug Groups (Per Instance)**: Shows the chronological execution of marked blocks (e.g., IBL generation steps).
 
@@ -68,6 +70,7 @@ python3 scripts/trace_analyze.py build-profile/app.trace
 ```
 
 ### Script Logic
+
 - **Regex Parsing**: The script parses `apitrace dump` to extract `glObjectLabel` (to name shaders) and `glGetQueryObjectui64v` (to get manual timestamps).
 - **Matching**: It looks for query result fetches that happen immediately after a debug group ends to measure that group's duration.
 - **Nested Sums**: If a parent debug group doesn't have its own timer, the script sums up the durations of its direct children (marked with `*` in the table).
@@ -80,19 +83,33 @@ To make a new feature measurable:
 
 1. **Label your shaders**: Use `shader_set_label(shader, "Description")` in C.
 2. **Add debug groups**:
+
    ```c
    GL_PUSH_GROUP("My Complex Task", 0);
    // ... GPU calls ...
    GL_POP_GROUP();
    ```
+
 3. **Add fine-grained timers (Optional)**:
    The engine automatically attempts to capture timestamps around critical IBL sections. See `src/pbr.c` for examples.
 
 ---
 
-## 6. Developing the Tool
+## 7. Automated Performance Regression Detection (CI/CD)
+
+To prevent performance regressions from entering the codebase, we use automated ApiTrace analysis:
+
+- **Unit-Level (`just test-apitrace`)**: Records a trace of the integration suite (`test_app`) and greps for "performance issue" or "stall" messages.
+- **Full-Integration (`just test-integration-apitrace`)**: Records a trace of the **main application** while simulating user input via `xdotool`. This is the most comprehensive check, covering environment swaps, post-processing toggles, and UI interactions.
+
+If these tests fail with `❌ Validation failed: Performance issues found in trace`, it usually indicates a new GPU stall has been introduced.
+
+---
+
+## 8. Developing the Tool
 
 The analysis script is fully tested:
+
 - **Linting**: `make lint` (uses Ruff).
 - **Formatting**: `make format` (uses Ruff).
 - **Tests**: `make test-python` (uses Pytest).

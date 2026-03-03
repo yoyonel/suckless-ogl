@@ -67,17 +67,24 @@ int app_init(App* app, int width, int height, const char* title)
 		                 GLFW_CURSOR_DISABLED);
 	}
 
-	glGenBuffers(1, &app->exposure_pbo);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-	glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL, GL_STREAM_READ);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+	/* Initialize Exposure PBOs */
+	glGenBuffers(2, app->exposure_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL,
+		             GL_STREAM_READ);
+		app->exposure_sync[i] = NULL;
+	}
 
-	/* Initialize Histogram PBO (64x64 floats) */
-	glGenBuffers(1, &app->histogram_pbo);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo);
-	glBufferData(GL_PIXEL_PACK_BUFFER,
-	             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)), NULL,
-	             GL_STREAM_READ);
+	/* Initialize Histogram PBOs (64x64 floats) */
+	glGenBuffers(2, app->histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER,
+		             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)),
+		             NULL, GL_STREAM_READ);
+		app->histogram_sync[i] = NULL;
+	}
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	/* Initialize Tracy Manager */
 	tracy_manager_init(&app->tracy_mgr, width, height);
@@ -184,8 +191,18 @@ void app_cleanup(App* app)
 	scene_cleanup(&app->scene);
 
 	/* 3. Common low-level resources */
-	GL_SAFE_DELETE_BUFFER(app->exposure_pbo);
-	GL_SAFE_DELETE_BUFFER(app->histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		GL_SAFE_DELETE_BUFFER(app->exposure_pbo[i]);
+		GL_SAFE_DELETE_BUFFER(app->histogram_pbo[i]);
+		if (app->exposure_sync[i]) {
+			glDeleteSync(app->exposure_sync[i]);
+			app->exposure_sync[i] = NULL;
+		}
+		if (app->histogram_sync[i]) {
+			glDeleteSync(app->histogram_sync[i]);
+			app->histogram_sync[i] = NULL;
+		}
+	}
 
 	async_coordinator_cleanup(&app->async_coord);
 

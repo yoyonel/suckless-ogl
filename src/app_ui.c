@@ -111,7 +111,7 @@ void app_draw_help_overlay(App* app)
 	ui_layout_text(&layout, "[F12] Take Screenshot", HELP_COLOR);
 }
 
-void draw_exposure_debug_text(App* app)
+static void draw_exposure_debug_text(App* app)
 {
 	float exposure_val = 0.0F;
 #ifdef TRACY_ENABLE
@@ -138,6 +138,69 @@ void draw_exposure_debug_text(App* app)
 	             (float*)DEBUG_ORANGE_COLOR, app->width, app->height);
 }
 
+static void process_histogram_data(int* buckets, int size, float* min_lum,
+                                   float* max_lum, const float* lum_data)
+{
+	for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
+		float val = lum_data[i];
+		if (val < *min_lum) {
+			*min_lum = val;
+		}
+		if (val > *max_lum) {
+			*max_lum = val;
+		}
+
+		static const float RANGE_OFFSET = 5.0F;
+		static const float RANGE_SCALE = 10.0F;
+		float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
+		int idx = (int)(norm * (float)size);
+		if (idx < 0) {
+			idx = 0;
+		}
+		if (idx >= size) {
+			idx = size - 1;
+		}
+
+		buckets[idx]++;
+	}
+}
+
+static int handle_histogram_readback(App* app, int* buckets, int size,
+                                     float* min_lum, float* max_lum)
+{
+	int read_idx = (int)(app->frame_count % 2);
+	if (!app->histogram_sync[read_idx]) {
+		return 0;
+	}
+
+	GLenum res = glClientWaitSync(app->histogram_sync[read_idx], 0, 0);
+	if (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED) {
+		return 0;
+	}
+
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo[read_idx]);
+	float* lum_data =
+	    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
+	int processed = 0;
+	if (lum_data) {
+#ifdef TRACY_ENABLE
+		TracyCZoneN(ctx, "Histogram Process", 1);
+#endif
+		process_histogram_data(buckets, size, min_lum, max_lum,
+		                       lum_data);
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+#ifdef TRACY_ENABLE
+		TracyCZoneEnd(ctx);
+#endif
+		processed = 1;
+	}
+
+	glDeleteSync(app->histogram_sync[read_idx]);
+	app->histogram_sync[read_idx] = NULL;
+	return processed;
+}
+
 int compute_luminance_histogram(App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum)
 {
@@ -151,57 +214,27 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 	*min_lum = HISTO_MIN_INIT;
 	*max_lum = HISTO_MAX_INIT;
 
-	/* Bind PBO and map buffer (Read Previous Frame) */
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo);
-	float* lum_data = NULL;
-	lum_data = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-
-	int processed = 0;
-	if (lum_data) {
-#ifdef TRACY_ENABLE
-		TracyCZoneN(ctx, "Histogram Map & Process", 1);
-#endif
-		for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
-			float val = lum_data[i];
-			if (val < *min_lum) {
-				*min_lum = val;
-			}
-			if (val > *max_lum) {
-				*max_lum = val;
-			}
-
-			static const float RANGE_OFFSET = 5.0F;
-			static const float RANGE_SCALE = 10.0F;
-			float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
-			int idx = (int)(norm * (float)size);
-			if (idx < 0) {
-				idx = 0;
-			}
-			if (idx >= size) {
-				idx = size - 1;
-			}
-
-			buckets[idx]++;
-		}
-		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(ctx);
-#endif
-		processed = 1;
-	}
+	int processed =
+	    handle_histogram_readback(app, buckets, size, min_lum, max_lum);
 
 	/* Trigger Async Transfer (For Next Frame) */
+	int write_idx = (int)((app->frame_count + 1) % 2);
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.downsample_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0); /* Offset 0 */
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo[write_idx]);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+	app->histogram_sync[write_idx] =
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 	return processed;
 }
 
-void draw_luminance_histogram_graph(App* app, const int* buckets, int size,
-                                    float min_lum, float max_lum)
+static void draw_luminance_histogram_graph(App* app, const int* buckets,
+                                           int size, float min_lum,
+                                           float max_lum)
 {
 	static const float GRAPH_POS_X = 20.0F;
 	static const float GRAPH_POS_Y_OFF = 200.0F;
@@ -273,146 +306,155 @@ void app_draw_debug_overlay(App* app)
 	}
 }
 
-void app_render_ui(App* app)
+static void draw_main_info_overlay(App* app, UILayout* layout)
 {
-	/* Wrap everything in a single batch to minimize draw calls and state
-	 * switches. Note: ui_begin saves state and ui_end restores it. */
-	ui_begin(&app->ui, app->width, app->height);
-
-	/* --- Draw Main Info Overlay --- */
-	UILayout layout;
-	/* Start slightly offset from top-left */
-	ui_layout_init(&layout, &app->ui, DEFAULT_FONT_OFFSET_X,
-	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
-	               app->height);
-
-	/* Conditional text overlay rendering based on text_overlay_mode
-	 */
-	if (app->text_overlay_mode >= 1) {
-		static const float MS_PER_SECOND = 1000.0F;
-		char fps_text[MAX_FPS_TEXT_LENGTH];
-		float current_fps = 0.0F;
-		float frame_time_ms = 0.0F;
-
-		if (app->fps_counter.average_frame_time > 0.0F) {
-			current_fps =
-			    1.0F / (float)app->fps_counter.average_frame_time;
-			frame_time_ms =
-			    (float)app->fps_counter.average_frame_time *
-			    MS_PER_SECOND;
-		}
-
-		(void)safe_snprintf(fps_text, sizeof(fps_text),
-		                    "FPS: %.1f (%.2f ms)", current_fps,
-		                    frame_time_ms);
-
-		ui_layout_text(&layout, fps_text, DEFAULT_FONT_COLOR);
-
-		/* Adaptive Sampler Debug */
-		if (app->text_overlay_mode >= 2) {
-			static const size_t AVG_TEXT_SIZE = 64;
-			char avg_text[AVG_TEXT_SIZE];
-			float sampled_avg =
-			    adaptive_sampler_get_average(&app->fps_sampler);
-
-			/* Show numerical average */
-			(void)safe_snprintf(avg_text, sizeof(avg_text),
-			                    "Sampled Avg: %.2f", sampled_avg);
-			ui_layout_text(&layout, avg_text, DEFAULT_FONT_COLOR);
-		}
+	if (app->text_overlay_mode < 1) {
+		return;
 	}
 
-	/* 2. Position - shown in modes 1, 2, 3 */
-	if (app->text_overlay_mode >= 1) {
-		char pos_text[DEBUG_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(
-		    pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-		    app->camera.position[0], app->camera.position[1],
-		    app->camera.position[2]);
-		ui_layout_text(&layout, pos_text, DEFAULT_FONT_COLOR);
+	/* 1. FPS & Sampler */
+	static const float MS_PER_SECOND = 1000.0F;
+	char fps_text[MAX_FPS_TEXT_LENGTH];
+	float current_fps = 0.0F;
+	float frame_time_ms = 0.0F;
+
+	if (app->fps_counter.average_frame_time > 0.0F) {
+		current_fps = 1.0F / (float)app->fps_counter.average_frame_time;
+		frame_time_ms =
+		    (float)app->fps_counter.average_frame_time * MS_PER_SECOND;
 	}
 
-	/* 3. Environment - shown in modes 2, 3 */
+	(void)safe_snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
+	                    current_fps, frame_time_ms);
+	ui_layout_text(layout, fps_text, DEFAULT_FONT_COLOR);
+
+	if (app->text_overlay_mode >= 2) {
+		static const size_t AVG_TEXT_SIZE = 64;
+		char avg_text[AVG_TEXT_SIZE];
+		float sampled_avg =
+		    adaptive_sampler_get_average(&app->fps_sampler);
+		(void)safe_snprintf(avg_text, sizeof(avg_text),
+		                    "Sampled Avg: %.2f", sampled_avg);
+		ui_layout_text(layout, avg_text, DEFAULT_FONT_COLOR);
+	}
+
+	/* 2. Position */
+	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
+	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
+	                    app->camera.position[0], app->camera.position[1],
+	                    app->camera.position[2]);
+	ui_layout_text(layout, pos_text, DEFAULT_FONT_COLOR);
+
+	/* 3. Environment */
 	if (app->text_overlay_mode >= 2 && app->scene.hdr_count > 0 &&
 	    app->scene.current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		(void)safe_snprintf(
 		    env_text, sizeof(env_text), "Env: %s",
 		    app->scene.hdr_files[app->scene.current_hdr_index]);
-		ui_layout_text(&layout, env_text, ENV_TEXT_COLOR);
+		ui_layout_text(layout, env_text, ENV_TEXT_COLOR);
+	}
+}
+
+static void handle_exposure_readback(App* app)
+{
+	int read_idx = (int)(app->frame_count % 2);
+	if (!app->exposure_sync[read_idx]) {
+		return;
 	}
 
-	/* 4. Exposure - shown in mode 3 only */
-	if (app->text_overlay_mode >= 3) {
-		float exposure_val = 0.0F;
-		if (postprocess_is_enabled(&app->postprocess,
-		                           POSTFX_AUTO_EXPOSURE)) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo);
-			float* ptr = NULL;
-			ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
-			                          GL_READ_ONLY);
-			if (ptr) {
-#ifdef TRACY_ENABLE
-				TracyCZoneN(ctx, "AE PBO Map (Sync Wait)", 1);
-#endif
-				app->current_exposure = *ptr;
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-#ifdef TRACY_ENABLE
-				TracyCZoneEnd(ctx);
-#endif
-			}
-			glBindTexture(
-			    GL_TEXTURE_2D,
-			    app->postprocess.auto_exposure_fx.exposure_tex);
-#ifdef TRACY_ENABLE
-			TracyCZoneN(ctx2, "AE Fetch Trigger", 1);
-#endif
-			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(ctx2);
-#endif
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-			exposure_val = app->current_exposure;
-		} else {
-			exposure_val = app->postprocess.exposure.exposure;
+	GLenum res = glClientWaitSync(app->exposure_sync[read_idx], 0, 0);
+	if (res == GL_ALREADY_SIGNALED || res == GL_CONDITION_SATISFIED) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo[read_idx]);
+		float* ptr =
+		    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		if (ptr) {
+			app->current_exposure = *ptr;
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 		}
+		glDeleteSync(app->exposure_sync[read_idx]);
+		app->exposure_sync[read_idx] = NULL;
+	}
+}
 
-		char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
-		(void)safe_snprintf(exposure_text, sizeof(exposure_text),
-		                    "Exposure: %.3f", exposure_val);
-		ui_layout_text(&layout, exposure_text, ENV_TEXT_COLOR);
+static void trigger_exposure_readback(App* app)
+{
+	int write_idx = (int)((app->frame_count + 1) % 2);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo[write_idx]);
+	glBindTexture(GL_TEXTURE_2D,
+	              app->postprocess.auto_exposure_fx.exposure_tex);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+	app->exposure_sync[write_idx] =
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+static void draw_exposure_overlay(App* app, UILayout* layout)
+{
+	if (app->text_overlay_mode < 3) {
+		return;
 	}
 
-	/* 5. IBL Processing Indicator */
-	if (app->scene.ibl_coord.state != IBL_STATE_IDLE ||
-	    app->env_mgr.env_map_loading) {
-		char loading_text[UI_LOADING_TEXT_SIZE];
-		const char* status = (app->env_mgr.env_map_loading != 0)
-		                         ? "Loading HDR"
-		                         : "Generating IBL";
-		(void)safe_snprintf(loading_text, sizeof(loading_text), "%s",
-		                    status);
-
-		float text_width =
-		    (float)strlen(loading_text) * UI_LOADING_TEXT_WIDTH_FACTOR;
-		float spinner_size = UI_SPINNER_SIZE;
-		float center_x = (float)app->width * UI_CENTER_FACTOR;
-		float center_y = (float)app->height * UI_CENTER_FACTOR;
-		float text_x = center_x - (text_width * UI_CENTER_FACTOR);
-		float text_y =
-		    center_y + (spinner_size * UI_TEXT_OFFSET_FACTOR);
-
-		ui_draw_text(&app->ui, loading_text, text_x, text_y,
-		             (float*)HISTO_BAR_COLOR_BLUE, app->width,
-		             app->height);
-
-		double current_time = glfwGetTime();
-		float angle = (float)current_time * (float)UI_SPINNER_SPEED;
-		ui_draw_spinner(&app->ui, center_x, center_y, spinner_size,
-		                angle, (float*)UI_SPINNER_COLOR, app->width,
-		                app->height);
+	float exposure_val = 0.0F;
+	if (postprocess_is_enabled(&app->postprocess, POSTFX_AUTO_EXPOSURE)) {
+		handle_exposure_readback(app);
+		trigger_exposure_readback(app);
+		exposure_val = app->current_exposure;
+	} else {
+		exposure_val = app->postprocess.exposure.exposure;
 	}
+
+	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
+	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
+	                    "Exposure: %.3f", exposure_val);
+	ui_layout_text(layout, exposure_text, ENV_TEXT_COLOR);
+}
+
+static void draw_loading_indicator(App* app)
+{
+	if (app->scene.ibl_coord.state == IBL_STATE_IDLE &&
+	    !app->env_mgr.env_map_loading) {
+		return;
+	}
+
+	char loading_text[UI_LOADING_TEXT_SIZE];
+	const char* status = (app->env_mgr.env_map_loading != 0)
+	                         ? "Loading HDR"
+	                         : "Generating IBL";
+	(void)safe_snprintf(loading_text, sizeof(loading_text), "%s", status);
+
+	float text_width =
+	    (float)strlen(loading_text) * UI_LOADING_TEXT_WIDTH_FACTOR;
+	float center_x = (float)app->width * UI_CENTER_FACTOR;
+	float center_y = (float)app->height * UI_CENTER_FACTOR;
+	float text_x = center_x - (text_width * UI_CENTER_FACTOR);
+	float text_y = center_y + (UI_SPINNER_SIZE * UI_TEXT_OFFSET_FACTOR);
+
+	ui_draw_text(&app->ui, loading_text, text_x, text_y,
+	             (float*)HISTO_BAR_COLOR_BLUE, app->width, app->height);
+
+	double current_time = glfwGetTime();
+	float angle = (float)current_time * (float)UI_SPINNER_SPEED;
+	ui_draw_spinner(&app->ui, center_x, center_y, UI_SPINNER_SIZE, angle,
+	                (float*)UI_SPINNER_COLOR, app->width, app->height);
+}
+
+void app_render_ui(App* app)
+{
+	/* Wrap everything in a single batch to minimize draw calls and state
+	 * switches. Note: ui_begin saves state and ui_end restores it. */
+	ui_begin(&app->ui, app->width, app->height);
+
+	UILayout layout;
+	ui_layout_init(&layout, &app->ui, DEFAULT_FONT_OFFSET_X,
+	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
+	               app->height);
+
+	draw_main_info_overlay(app, &layout);
+	draw_exposure_overlay(app, &layout);
+	draw_loading_indicator(app);
 
 	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
 		app_draw_debug_overlay(app);
@@ -424,7 +466,6 @@ void app_render_ui(App* app)
 
 	gpu_profiler_ui_draw(&app->timeline_ui, &app->ui, app->width,
 	                     app->height);
-
 	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);
 
 	/* End global batch (restores state) */

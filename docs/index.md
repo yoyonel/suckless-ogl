@@ -49,8 +49,8 @@ The build is configured with the following settings:
 | `make run` | Launches the DEBUG version. |
 | `make run-release` | Launches the RELEASE version. |
 | `make test` | Runs the unit test suite via `ctest`. |
-| `make test/name` | Runs a single test (e.g. `make test/test_stencil_masking`). |
-| `make test-list` | Lists all available test names. |
+| `make test-apitrace` | Automated lightweight performance check. |
+| `make test-integration-apitrace` | Automated full app integration scenario check. |
 | `make format` | Applies `clang-format` formatting on `src`, `include`, and `tests`. |
 | `make lint` | Runs `clang-tidy` static analysis on source files. |
 | `make coverage` | Generates a complete HTML report via `llvm-cov` in `build-coverage/`. |

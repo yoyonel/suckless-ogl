@@ -42,7 +42,9 @@ Here is a mapping of common `make` commands to their `just` equivalents:
 | **Clean** | `make clean` | `just clean` | CMake clean |
 | **Clean All** | `make clean-all` | `just clean-all` | Removes build directory completely |
 | **Test All** | `make test` | `just test` | Runs all tests |
-| **Test Specific** | `make test/<name>` | `just test <name>` | Runs matching tests (pattern supported) |
+| **Test Specific** | `make test/<name>` | `just test <name>` | Runs matching tests |
+| **ApiTrace Unit** | `make test-apitrace` | `just test-apitrace` | Automated performance check |
+| **ApiTrace Integr** | `make test-integration-apitrace` | `just test-integration-apitrace` | Full app scenario check |
 | **Coverage** | `make coverage` | `just coverage` | Generates HTML report |
 | **Lint** | `make lint` | `just lint` | Runs clang-tidy and ruff |
 | **Format** | `make format` | `just format` | Runs clang-format and ruff |
@@ -83,7 +85,10 @@ This command automatically:
 - **Coverage**: `just coverage` - Builds with instrumentation and generates a report in `build-coverage/coverage_report/index.html`.
 - **Valgrind**: `just memcheck` - Runs the app under Valgrind.
 - **Perf**: `just perf` - Runs Linux `perf` profiler (requires privileges).
-- **ApiTrace**: `just trace-perf` - Analyzes GPU trace.
+- **ApiTrace Performance**:
+  - `just test-apitrace`: Automated lightweight unit-test level check.
+  - `just test-integration-apitrace`: Automated full application scenario check with user interaction.
+  - `just trace-perf`: Legacy manual analysis of GPU trace.
 
 ### Dependency Management & Environment
 
