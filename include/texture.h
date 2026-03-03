@@ -57,8 +57,8 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex);
  * @param reuse_tex_id Existing texture ID to update/reuse.
  * @return GLuint The texture ID (new or reused).
  */
-GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
-                                   GLuint reuse_tex_id);
+GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
+                                   int height, GLuint reuse_tex_id);
 
 /**
  * @brief Generates mipmaps for an HDR texture.
