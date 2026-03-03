@@ -46,6 +46,11 @@ extra_cmake_flags := ""
 apitrace_dir := env_var("HOME") / ".local/apitrace-latest-Linux"
 apitrace_bin := apitrace_dir / "bin/apitrace"
 
+# Container engine detection
+container_engine := `command -v docker >/dev/null 2>&1 && echo docker || echo podman`
+image_name := "suckless-ogl"
+ci_image_name := "suckless-ogl-ci:local"
+
 # Default target
 default:
     @just --list
@@ -292,17 +297,52 @@ test-python:
 
 # Build the Docker image
 docker-build:
-    @docker build -t suckless-ogl .
+    @{{container_engine}} build -t {{image_name}} .
+
+# Build the Docker image without cache
+docker-build-no-cache:
+    @{{container_engine}} build --no-cache -t {{image_name}} .
 
 # Build the CI Docker image
 ci-docker-build:
-    @docker build -t suckless-ogl-ci:local -f .github/workflows/Dockerfile.ci .
+    @{{container_engine}} build -t {{ci_image_name}} -f .github/workflows/Dockerfile.ci .
 
 # Run shader test inside the CI container (verifying non-root permissions)
 ci-docker-test: ci-docker-build
     @echo "Running shader test inside the CI container (verifying non-root permissions)..."
-    @docker run --rm -v {{justfile_directory()}}:/workspace suckless-ogl-ci:local \
+    @{{container_engine}} run --rm -v {{justfile_directory()}}:/workspace {{ci_image_name}} \
         sh -c "cmake {{extra_cmake_flags}} -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
+
+# Run the application container with X11 forwarding
+docker-run:
+    @echo "Running Container with X11 forwarding..."
+    @xhost +local: > /dev/null 2>&1 || true
+    @{{container_engine}} run --rm -it \
+        --cap-add=SYS_NICE \
+        --ulimit rtprio=99 \
+        --security-opt label=disable \
+        --network host \
+        -e DISPLAY={{env_var("DISPLAY")}} \
+        -e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
+        -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
+        -v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+        {{image_name}} /bin/bash -c "export DISPLAY={{env_var("DISPLAY")}} && ./app"
+
+# Clean dangling images
+docker-clean:
+    @echo "Cleaning dangling images..."
+    @{{container_engine}} image prune -f
+
+# Clean all unused images and build cache
+docker-clean-all:
+    @echo "Cleaning all unused images and cache..."
+    @{{container_engine}} system prune -a -f
+
+# Show disk usage for the container engine
+docker-usage:
+    @echo "{{container_engine}} disk usage:"
+    @{{container_engine}} system df
 
 # Generate and verify Doxygen documentation
 docs:
