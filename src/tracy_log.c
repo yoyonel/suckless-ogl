@@ -1,7 +1,6 @@
 #include "tracy_log.h"
 
-#ifdef TRACY_ENABLE
-#include "tracy/TracyC.h"
+#include "profiler.h"
 #include <string.h>
 
 void tracy_log_message(LogLevel level, const char* msg)
@@ -35,12 +34,5 @@ void tracy_log_message(LogLevel level, const char* msg)
 		default:
 			break;
 	}
-	TracyCMessageC(msg, strlen(msg), color);
+	PROFILE_MESSAGE_C(msg, strlen(msg), color);
 }
-#else
-void tracy_log_message(LogLevel level, const char* msg)
-{
-	(void)level;
-	(void)msg;
-}
-#endif

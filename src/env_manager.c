@@ -66,10 +66,17 @@ void env_manager_process_loading_step(EnvManager* mgr, GLuint* recycled_hdr_tex,
 		LOG_INFO("suckless-ogl.env",
 		         "Finalizing environment load (Step 1/3): Upload...");
 		mgr->pending_env_tex = texture_upload_hdr_from_pbo(
-		    req->pbo_id, req->width, req->height, *recycled_hdr_tex);
+		    req->pbo_id, req->pbo_mapped_ptr, req->width, req->height,
+		    *recycled_hdr_tex);
 
 		if (mgr->pending_env_tex != 0) {
 			*recycled_hdr_tex = 0;
+		}
+
+		/* If this was a CPU fallback (malloc), free the buffer now */
+		if (req->pbo_id == 0 && req->pbo_mapped_ptr != NULL) {
+			free(req->pbo_mapped_ptr);
+			req->pbo_mapped_ptr = NULL;
 		}
 
 		if (req->half_data) {

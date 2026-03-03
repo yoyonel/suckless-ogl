@@ -11,6 +11,7 @@
 #include "perf_mode.h"
 #include "postprocess.h" /* Explicit include for types */
 #include "postprocess_input.h"
+#include "profiler.h"
 #include "scene.h"
 #include "utils.h"
 #include "window.h"
@@ -19,9 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TRACY_ENABLE
-#include <tracy/TracyC.h>
-#endif
 
 enum { PBR_DEBUG_MODE_COUNT = 10 };
 
@@ -234,9 +232,7 @@ static void handle_f3_input(App* app, int mods)
 
 static void handle_f9_input(App* app)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(f9_zone, "Input: F9 (Performance Mode)", 1);
-#endif
+	PROFILE_ZONE(f9_zone, "Input: F9 (Performance Mode)");
 	if (app->perf_mode_active != 0) {
 		perf_mode_request_end(&app->perf_context);
 		app->perf_mode_active = 0;
@@ -254,9 +250,7 @@ static void handle_f9_input(App* app)
 	LOG_INFO("suckless-ogl.app", "Performance Mode: %s (%s)",
 	         (app->perf_mode_active != 0) ? "ON" : "OFF",
 	         perf_mode_get_state_string(&app->perf_context));
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(f9_zone);
-#endif
+	PROFILE_ZONE_END(f9_zone);
 }
 
 static bool handle_f_key_input(App* app, int key, int mods)

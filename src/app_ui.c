@@ -6,12 +6,10 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "postprocess.h"
+#include "profiler.h"
 #include "render_utils.h"
 #include "ui.h"
 #include "utils.h"
-#ifdef TRACY_ENABLE
-#include "../deps/tracy/public/tracy/TracyC.h"
-#endif
 #include <GLFW/glfw3.h>
 #include <cglm/types.h>
 #include <cglm/vec3.h>
@@ -129,16 +127,12 @@ void app_draw_help_overlay(App* app)
 static void draw_exposure_debug_text(App* app)
 {
 	float exposure_val = 0.0F;
-#ifdef TRACY_ENABLE
-	TracyCZoneN(ctx, "AE Sync Readback (glGetTexImage)", 1);
-#endif
+	PROFILE_ZONE(ctx, "AE Sync Readback (glGetTexImage)");
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.exposure_tex);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, &exposure_val);
 	glBindTexture(GL_TEXTURE_2D, 0);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(ctx);
-#endif
+	PROFILE_ZONE_END(ctx);
 
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	float luminance =
@@ -199,15 +193,11 @@ static int handle_histogram_readback(App* app, int* buckets, int size,
 
 	int processed = 0;
 	if (lum_data) {
-#ifdef TRACY_ENABLE
-		TracyCZoneN(ctx, "Histogram Process", 1);
-#endif
+		PROFILE_ZONE(ctx, "Histogram Process");
 		process_histogram_data(buckets, size, min_lum, max_lum,
 		                       lum_data);
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(ctx);
-#endif
+		PROFILE_ZONE_END(ctx);
 		processed = 1;
 	}
 

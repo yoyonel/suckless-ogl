@@ -4,6 +4,7 @@
 #include "log.h"
 #include "profiler.h"
 #include "texture.h"
+#include <stdlib.h>
 
 void async_coordinator_init(AsyncCoordinator* coord)
 {
@@ -53,18 +54,25 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 			if (ptr) {
 				async_loader_provide_pbo(
 				    loader, ptr, coord->upload_pbo[pbo_idx]);
-				/* Advance index for next request */
 				coord->upload_pbo_idx =
 				    (coord->upload_pbo_idx + 1) % 2;
 
-				/* Let caller know that we expect a
-				 * pre-allocation cost in the near future */
 				coord->pending_prealloc_w = req.width;
 				coord->pending_prealloc_h = req.height;
 			} else {
-				LOG_ERROR("suckless-ogl.async",
-				          "Failed to map PBO for async upload");
-				async_loader_cancel(loader);
+				LOG_WARN("suckless-ogl.async",
+				         "PBO mapping failed, falling back to "
+				         "CPU memory");
+				void* fallback_ptr = malloc(size);
+				if (fallback_ptr) {
+					async_loader_provide_pbo(
+					    loader, fallback_ptr, 0);
+				} else {
+					LOG_ERROR(
+					    "suckless-ogl.async",
+					    "CPU fallback allocation failed!");
+					async_loader_cancel(loader);
+				}
 			}
 		} else if (req.state == ASYNC_READY) {
 			/* Request is fully ready to be processed */

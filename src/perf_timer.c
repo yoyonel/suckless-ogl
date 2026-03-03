@@ -1,13 +1,11 @@
 #include "perf_timer.h"
 
 #include "log.h"
+#include "profiler.h"
 #include "utils.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
-#ifdef TRACY_ENABLE
-#include <tracy/TracyC.h>
-#endif
 
 // ============================================================================
 // Time conversion constants
@@ -219,10 +217,10 @@ HybridTimer perf_hybrid_start(void)
 	gpu_timer_start(&timer_struct.gpu);
 
 #ifdef TRACY_ENABLE
-	TracyCFiberEnter("Hybrid Perf");
+	PROFILE_FIBER_ENTER("Hybrid Perf");
 	timer_struct.tracy_ctx = ___tracy_emit_zone_begin(&HYBRID_SRCLOC, 1);
 	timer_struct.host_ctx = ___tracy_emit_zone_begin(&HOST_SRCLOC, 1);
-	TracyCFiberLeave;
+	PROFILE_FIBER_LEAVE;
 #endif
 
 	return timer_struct;
@@ -254,12 +252,12 @@ HybridTimer perf_hybrid_start(void)
  */
 #ifdef TRACY_ENABLE
 
-#define TRACY_HYBRID_STOP_PREAMBLE(timer) \
-	TracyCFiberEnter("Hybrid Perf");  \
-	TracyCZoneEnd((timer)->host_ctx); \
+#define TRACY_HYBRID_STOP_PREAMBLE(timer)    \
+	PROFILE_FIBER_ENTER("Hybrid Perf");  \
+	PROFILE_ZONE_END((timer)->host_ctx); \
 	TracyCZoneCtx _sync_ctx = ___tracy_emit_zone_begin(&SYNC_SRCLOC, 1)
 
-#define TRACY_HYBRID_STOP_SYNC_END() TracyCZoneEnd(_sync_ctx)
+#define TRACY_HYBRID_STOP_SYNC_END() PROFILE_ZONE_END(_sync_ctx)
 
 #define TRACY_HYBRID_STOP_POSTAMBLE(timer, label, cpu_ms, gpu_ms)              \
 	do {                                                                   \
@@ -272,10 +270,11 @@ HybridTimer perf_hybrid_start(void)
 		                        "CPU: %.2fms | GPU: %.3fms", (cpu_ms), \
 		                        (gpu_ms));                             \
 		if (res >= 0) {                                                \
-			TracyCZoneText((timer)->tracy_ctx, _buf, (size_t)res); \
+			PROFILE_ZONE_TEXT((timer)->tracy_ctx, _buf,            \
+			                  (size_t)res);                        \
 		}                                                              \
-		TracyCZoneEnd((timer)->tracy_ctx);                             \
-		TracyCFiberLeave;                                              \
+		PROFILE_ZONE_END((timer)->tracy_ctx);                          \
+		PROFILE_FIBER_LEAVE;                                           \
 	} while (0)
 
 #else /* !TRACY_ENABLE */
