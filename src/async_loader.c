@@ -2,6 +2,7 @@
 
 #include "log.h"
 #include "perf_timer.h"
+#include "profiler.h"
 #include "simd_utils.h"
 #include "texture.h"
 #include "tracy_manager.h"
@@ -31,22 +32,20 @@ struct AsyncLoader {
 static bool async_load_data(const char* path, float** out_data, int* width,
                             int* height, int* channels)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(work_ctx, "I/O & Docoding", 1);
-	TracyCMessage(path, strlen(path));
-#endif
+	PROFILE_ZONE(work_ctx, "I/O & Decoding");
+	PROFILE_MESSAGE(path, strlen(path));
+
 	PerfTimer disk_timer;
 	perf_timer_start(&disk_timer);
 	*out_data = texture_load_pixels(path, width, height, channels);
-#ifdef TRACY_ENABLE
+
 	double load_ms = perf_timer_elapsed_ms(&disk_timer);
 	char msg[MSG_BUF_SIZE];
 	int res = safe_snprintf(msg, sizeof(msg), "Load: %.2f ms", load_ms);
 	if (res >= 0) {
-		TracyCMessage(msg, (size_t)res);
+		PROFILE_MESSAGE(msg, (size_t)res);
 	}
-	TracyCZoneEnd(work_ctx);
-#endif
+	PROFILE_ZONE_END(work_ctx);
 	return *out_data != NULL;
 }
 
@@ -60,9 +59,7 @@ static void async_perform_conversion(AsyncLoader* loader)
 
 	pthread_mutex_unlock(&loader->request_mutex);
 
-#ifdef TRACY_ENABLE
-	TracyCZoneN(conv_ctx, "Float->Half Convert", 1);
-#endif
+	PROFILE_ZONE(conv_ctx, "Float->Half Convert");
 	size_t pixel_count = (size_t)width * (size_t)height * 4;
 
 	/* Perform conversion directly into mapped PBO memory */
@@ -76,9 +73,7 @@ static void async_perform_conversion(AsyncLoader* loader)
 		stbi_image_free(src_data);
 	}
 
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(conv_ctx);
-#endif
+	PROFILE_ZONE_END(conv_ctx);
 	/* Re-acquire mutex to update state */
 	pthread_mutex_lock(&loader->request_mutex);
 
@@ -142,16 +137,12 @@ static void* async_worker_func(void* arg)
 {
 	AsyncLoader* loader = (AsyncLoader*)arg;
 
-#ifdef TRACY_ENABLE
-	TracyCSetThreadName("Async Loader");
-#endif
+	PROFILE_THREAD_NAME("Async Loader");
 
 	pthread_mutex_lock(&loader->request_mutex);
 	while (loader->running) {
 		while (loader->running && !loader->has_pending_work) {
-#ifdef TRACY_ENABLE
-			TracyCMessageL("Waiting for work...");
-#endif
+			PROFILE_MESSAGE_L("Waiting for work...");
 			pthread_cond_wait(&loader->request_cond,
 			                  &loader->request_mutex);
 		}
@@ -170,7 +161,6 @@ static void* async_worker_func(void* arg)
 			loader->current_request.state = ASYNC_LOADING;
 			transition_tracy_state(ASYNC_LOADING);
 
-#ifdef TRACY_ENABLE
 			double now = perf_timer_elapsed_ms(&loader->sys_timer);
 			double queue_time =
 			    now - loader->current_request.submission_time;
@@ -179,9 +169,8 @@ static void* async_worker_func(void* arg)
 			    safe_snprintf(msg, sizeof(msg),
 			                  "Queuing delay: %.2f ms", queue_time);
 			if (res >= 0) {
-				TracyCMessage(msg, (size_t)res);
+				PROFILE_MESSAGE(msg, (size_t)res);
 			}
-#endif
 			has_work = true;
 		}
 
@@ -283,25 +272,18 @@ void async_loader_destroy(AsyncLoader* loader)
 
 bool async_loader_request(AsyncLoader* loader, const char* path)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(req_ctx, "async_loader_request", 1);
-	TracyCMessage(path, path ? strlen(path) : 0);
-#endif
+	PROFILE_ZONE(req_ctx, "async_loader_request");
+	PROFILE_MESSAGE(path, path ? strlen(path) : 0);
+
 	if (!loader || !path) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(req_ctx);
-#endif
+		PROFILE_ZONE_END(req_ctx);
 		return false;
 	}
 
 	bool accepted = false;
-#ifdef TRACY_ENABLE
-	TracyCZoneN(mtx_ctx, "Request Mutex Lock", 1);
-#endif
+	PROFILE_ZONE(mtx_ctx, "Request Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(mtx_ctx);
-#endif
+	PROFILE_ZONE_END(mtx_ctx);
 
 	/* Only accept if idle or failed (retry) */
 	if (loader->current_request.state == ASYNC_IDLE ||
@@ -336,32 +318,22 @@ bool async_loader_request(AsyncLoader* loader, const char* path)
 	}
 
 	pthread_mutex_unlock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(req_ctx);
-#endif
+	PROFILE_ZONE_END(req_ctx);
 	return accepted;
 }
 
 bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(poll_ctx, "async_loader_poll", 1);
-#endif
+	PROFILE_ZONE(poll_ctx, "async_loader_poll");
 	if (!loader || !out_req) {
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(poll_ctx);
-#endif
+		PROFILE_ZONE_END(poll_ctx);
 		return false;
 	}
 
 	bool result = false;
-#ifdef TRACY_ENABLE
-	TracyCZoneN(mtx_ctx, "Poll Mutex Lock", 1);
-#endif
+	PROFILE_ZONE(mtx_ctx, "Poll Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(mtx_ctx);
-#endif
+	PROFILE_ZONE_END(mtx_ctx);
 
 	if (loader->current_request.state == ASYNC_READY ||
 	    loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
@@ -389,9 +361,7 @@ bool async_loader_poll(AsyncLoader* loader, AsyncRequest* out_req)
 	}
 
 	pthread_mutex_unlock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(poll_ctx);
-#endif
+	PROFILE_ZONE_END(poll_ctx);
 	return result;
 }
 
@@ -401,14 +371,10 @@ void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
 	if (!loader) {
 		return;
 	}
-#ifdef TRACY_ENABLE
-	TracyCZoneN(ctx, "async_loader_provide_pbo", 1);
-	TracyCZoneN(mtx_ctx, "Provide PBO Mutex Lock", 1);
-#endif
+	PROFILE_ZONE(ctx, "async_loader_provide_pbo");
+	PROFILE_ZONE(mtx_ctx, "Provide PBO Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(mtx_ctx);
-#endif
+	PROFILE_ZONE_END(mtx_ctx);
 
 	if (loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
 		loader->current_request.pbo_mapped_ptr = mapped_ptr;
@@ -424,9 +390,7 @@ void async_loader_provide_pbo(AsyncLoader* loader, void* mapped_ptr,
 	}
 
 	pthread_mutex_unlock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(ctx);
-#endif
+	PROFILE_ZONE_END(ctx);
 }
 
 void async_loader_cancel(AsyncLoader* loader)
@@ -434,14 +398,10 @@ void async_loader_cancel(AsyncLoader* loader)
 	if (!loader) {
 		return;
 	}
-#ifdef TRACY_ENABLE
-	TracyCZoneN(ctx, "async_loader_cancel", 1);
-	TracyCZoneN(mtx_ctx, "Cancel Mutex Lock", 1);
-#endif
+	PROFILE_ZONE(ctx, "async_loader_cancel");
+	PROFILE_ZONE(mtx_ctx, "Cancel Mutex Lock");
 	pthread_mutex_lock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(mtx_ctx);
-#endif
+	PROFILE_ZONE_END(mtx_ctx);
 
 	if (loader->current_request.state == ASYNC_WAITING_FOR_PBO) {
 		/* Set state to FAILED to break the worker loop */
@@ -458,7 +418,5 @@ void async_loader_cancel(AsyncLoader* loader)
 	}
 
 	pthread_mutex_unlock(&loader->request_mutex);
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(ctx);
-#endif
+	PROFILE_ZONE_END(ctx);
 }

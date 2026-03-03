@@ -3,6 +3,7 @@
 #include "app_ui.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
+#include "profiler.h"
 #include <GLFW/glfw3.h>
 #include <cglm/cglm.h>
 
@@ -20,9 +21,7 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	gpu_profiler_set_enabled(profiler, profiling_enabled);
 	gpu_profiler_begin_frame(profiler, frame_count);
 
-#ifdef TRACY_ENABLE
-	TracyCFrameMark;
-#endif
+	PROFILE_FRAME_MARK;
 
 	/* Effect benchmark: read previous frame's profiler results */
 	if (effect_benchmark_update(effect_bench)) {

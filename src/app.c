@@ -13,12 +13,14 @@
 #include "log.h"
 #include "perf_mode.h"
 #include "postprocess.h"
+#include "profiler.h"
 #include "renderer.h"
 #include "scene.h"
 #include "texture.h"
 #include "tracy_gpu.h"
 #include "ui.h"
 #include "window.h"
+#include <GLFW/glfw3.h>
 #include <cglm/cam.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
@@ -26,10 +28,6 @@
 #include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TRACY_ENABLE
-#include "../deps/tracy/public/tracy/TracyC.h"
-#endif
-#include <GLFW/glfw3.h>
 
 static const char* const DEFAULT_ENV_FILENAME = "env.hdr";
 
@@ -229,13 +227,9 @@ void app_run(App* app)
 	int last_subdiv = -1;
 	while (!glfwWindowShouldClose(app->window)) {
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(poll_ctx, "GLFW PollEvents (Start)", 1);
-#endif
+			PROFILE_ZONE(poll_ctx, "GLFW PollEvents (Start)");
 			glfwPollEvents();
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(poll_ctx);
-#endif
+			PROFILE_ZONE_END(poll_ctx);
 		}
 
 		app->frame_count++;
@@ -289,59 +283,38 @@ void app_run(App* app)
 		}
 
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(update_ctx, "App Update", 1);
-#endif
+			PROFILE_ZONE(update_ctx, "App Update");
 			app_update(app);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(update_ctx);
-#endif
+			PROFILE_ZONE_END(update_ctx);
 		}
 
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(render_ctx, "App Render", 1);
-#endif
+			PROFILE_ZONE(render_ctx, "App Render");
 			renderer_draw_frame(
 			    app, &app->scene, &app->postprocess, &app->camera,
 			    &app->gpu_profiler, &app->timeline_ui,
 			    &app->env_mgr, &app->notifier, &app->effect_bench,
 			    app->width, app->height, app->delta_time,
 			    app->frame_count, app->log_gpu_metrics);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(render_ctx);
-#endif
+			PROFILE_ZONE_END(render_ctx);
 		}
 
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(tracy_mark_ctx, "Tracy Mark/Screenshots",
-			            1);
-#endif
+			PROFILE_ZONE(tracy_mark_ctx, "Tracy Mark/Screenshots");
 			tracy_manager_update_screenshots(&app->tracy_mgr, app);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(tracy_mark_ctx);
-#endif
+			PROFILE_ZONE_END(tracy_mark_ctx);
 		}
 
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(swap_ctx, "GLFW SwapBuffers", 1);
-#endif
+			PROFILE_ZONE(swap_ctx, "GLFW SwapBuffers");
 			glfwSwapBuffers(app->window);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(swap_ctx);
-#endif
+			PROFILE_ZONE_END(swap_ctx);
 		}
 
 		{
-#ifdef TRACY_ENABLE
-			TracyCZoneN(gpu_collect_ctx, "Tracy GPU Collect", 1);
-#endif
+			PROFILE_ZONE(gpu_collect_ctx, "Tracy GPU Collect");
 			tracy_gpu_collect();
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(gpu_collect_ctx);
-#endif
+			PROFILE_ZONE_END(gpu_collect_ctx);
 		}
 	}
 }

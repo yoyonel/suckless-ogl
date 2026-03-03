@@ -35,9 +35,7 @@ enum {
 /* Compute Shader Constants */
 enum { POSTPROCESS_COMPUTE_GROUP_SIZE = 16 };
 
-#ifdef TRACY_ENABLE
-#include "../deps/tracy/public/tracy/TracyC.h"
-#endif
+#include "profiler.h"
 
 int postprocess_init(PostProcess* post_processing,
                      GPUProfiler* external_profiler, int width, int height)
@@ -992,9 +990,7 @@ static void update_current_shader(PostProcess* post_processing,
 void postprocess_compile_optimized(PostProcess* post_processing,
                                    unsigned int static_flags)
 {
-#ifdef TRACY_ENABLE
-	TracyCZoneN(ctx, "PostProcess Compile Optimized", 1);
-#endif
+	PROFILE_ZONE(ctx, "PostProcess Compile Optimized");
 	/* Check cache first */
 	Shader* cached = find_shader_in_cache(post_processing, static_flags);
 	if (cached) {
@@ -1005,9 +1001,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 			         static_flags);
 		}
 		post_processing->compiled_flags = static_flags;
-#ifdef TRACY_ENABLE
-		TracyCZoneEnd(ctx);
-#endif
+		PROFILE_ZONE_END(ctx);
 		return;
 	}
 
@@ -1067,9 +1061,7 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to compile optimized shader");
 	}
-#ifdef TRACY_ENABLE
-	TracyCZoneEnd(ctx);
-#endif
+	PROFILE_ZONE_END(ctx);
 }
 
 void postprocess_use_dynamic(PostProcess* post_processing)
