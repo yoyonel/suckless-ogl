@@ -271,7 +271,7 @@ $(document).ready(function(){initNavTree('texture_8c.html',''); initResizable();
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for texture.c:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="texture_8c__incl.svg" width="100%" height="552"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="texture_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -302,9 +302,9 @@ Functions</h2></td></tr>
 <tr class="separator:a87a5326d68a2497f0b4bd7afbca69139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4fa58847422e51db4b6960239724bf2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#ae4fa58847422e51db4b6960239724bf2">texture_allocate_storage_hdr</a> (int width, int height, int levels)</td></tr>
 <tr class="separator:ae4fa58847422e51db4b6960239724bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b2e1a73489371d72362f97552ad57a8"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a9b2e1a73489371d72362f97552ad57a8">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, int width, int height, GLuint reuse_tex_id)</td></tr>
-<tr class="memdesc:a9b2e1a73489371d72362f97552ad57a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <a href="texture_8c.html#a9b2e1a73489371d72362f97552ad57a8">More...</a><br /></td></tr>
-<tr class="separator:a9b2e1a73489371d72362f97552ad57a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, void *ptr, int width, int height, GLuint reuse_tex_id)</td></tr>
+<tr class="memdesc:a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <a href="texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3">More...</a><br /></td></tr>
+<tr class="separator:a59a6aeb7e1f2eef3491ac07ba4f6f9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec66cef20e7ef9260fd363ab5408a594"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aec66cef20e7ef9260fd363ab5408a594">texture_generate_hdr_mipmap</a> (GLuint tex)</td></tr>
 <tr class="memdesc:aec66cef20e7ef9260fd363ab5408a594"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates mipmaps for an HDR texture.  <a href="texture_8c.html#aec66cef20e7ef9260fd363ab5408a594">More...</a><br /></td></tr>
 <tr class="separator:aec66cef20e7ef9260fd363ab5408a594"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -700,8 +700,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a9b2e1a73489371d72362f97552ad57a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b2e1a73489371d72362f97552ad57a8">&#9670;&nbsp;</a></span>texture_upload_hdr_from_pbo()</h2>
+<a id="a59a6aeb7e1f2eef3491ac07ba4f6f9e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59a6aeb7e1f2eef3491ac07ba4f6f9e3">&#9670;&nbsp;</a></span>texture_upload_hdr_from_pbo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -711,6 +711,12 @@ Here is the call graph for this function:</div>
           <td>(</td>
           <td class="paramtype">GLuint&#160;</td>
           <td class="paramname"><em>pbo_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -752,7 +758,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a9b2e1a73489371d72362f97552ad57a8_cgraph.svg" width="627" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a59a6aeb7e1f2eef3491ac07ba4f6f9e3_cgraph.svg" width="627" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

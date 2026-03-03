@@ -256,17 +256,18 @@ $(document).ready(function(){initNavTree('profiler_8h.html',''); initResizable()
 <div class="title">profiler.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for profiler.h:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="profiler_8h__incl.svg" width="100%" height="496"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="profiler_8h__incl.svg" width="100%" height="552"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="profiler_8h__dep__incl.svg" width="142" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="profiler_8h__dep__incl.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div>
@@ -274,26 +275,286 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a37db01bc784df6f94ceee2922d978a6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a37db01bc784df6f94ceee2922d978a6c">TRACE_FRAME_MARK</a></td></tr>
-<tr class="separator:a37db01bc784df6f94ceee2922d978a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2332915d6466fe4bc9e37e63e9812b9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#ac2332915d6466fe4bc9e37e63e9812b9">TRACE_ZONE_BEGIN</a>(name)</td></tr>
-<tr class="separator:ac2332915d6466fe4bc9e37e63e9812b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38789f06d77bc519021ffff104d137d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a38789f06d77bc519021ffff104d137d6">TRACE_ZONE_END</a>(ctx)</td></tr>
-<tr class="separator:a38789f06d77bc519021ffff104d137d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9fca9f5f2fdcab4a6f5e01df77d4447"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#ab9fca9f5f2fdcab4a6f5e01df77d4447">PROFILE_FRAME_MARK</a>&#160;&#160;&#160;((void)0)</td></tr>
+<tr class="separator:ab9fca9f5f2fdcab4a6f5e01df77d4447"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a112dc416eb8d587bca286937a7503010"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a112dc416eb8d587bca286937a7503010">PROFILE_ZONE</a>(ctx,  name)</td></tr>
+<tr class="separator:a112dc416eb8d587bca286937a7503010"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7dac9c859ba75607250c9e785953004"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#ae7dac9c859ba75607250c9e785953004">PROFILE_ZONE_I</a>(ctx,  name)</td></tr>
+<tr class="separator:ae7dac9c859ba75607250c9e785953004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c67bcdda1b69cdadf6a350b998d1b6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a0c67bcdda1b69cdadf6a350b998d1b6e">PROFILE_ZONE_TEXT</a>(ctx,  <a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>,  len)&#160;&#160;&#160;	((void)(ctx), (void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len))</td></tr>
+<tr class="separator:a0c67bcdda1b69cdadf6a350b998d1b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46997d39034fb02d50a70dbf8a15d7de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a46997d39034fb02d50a70dbf8a15d7de">PROFILE_ZONE_END</a>(ctx)&#160;&#160;&#160;((void)(ctx))</td></tr>
+<tr class="separator:a46997d39034fb02d50a70dbf8a15d7de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fe425db14ead24864df278c3de34398"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a2fe425db14ead24864df278c3de34398">PROFILE_MESSAGE</a>(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>,  len)&#160;&#160;&#160;((void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len))</td></tr>
+<tr class="separator:a2fe425db14ead24864df278c3de34398"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad447ad60e3368d590e1e00eaaf7b3b26"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#ad447ad60e3368d590e1e00eaaf7b3b26">PROFILE_MESSAGE_L</a>(literal)&#160;&#160;&#160;((void)(literal))</td></tr>
+<tr class="separator:ad447ad60e3368d590e1e00eaaf7b3b26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02e5f6ba30455bb2498056432fcbd2a2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a02e5f6ba30455bb2498056432fcbd2a2">PROFILE_MESSAGE_C</a>(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>,  len,  <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)&#160;&#160;&#160;	((void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len), (void)(<a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>))</td></tr>
+<tr class="separator:a02e5f6ba30455bb2498056432fcbd2a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54646d658e6badad80239d653e55b754"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a54646d658e6badad80239d653e55b754">PROFILE_THREAD_NAME</a>(name)&#160;&#160;&#160;((void)(name))</td></tr>
+<tr class="separator:a54646d658e6badad80239d653e55b754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae71d1f1907f3753a6dc82b4dce3b5bfa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#ae71d1f1907f3753a6dc82b4dce3b5bfa">PROFILE_FIBER_ENTER</a>(name)&#160;&#160;&#160;((void)(name))</td></tr>
+<tr class="separator:ae71d1f1907f3753a6dc82b4dce3b5bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c1814fda5752080ba3e6cf84d6da87a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a9c1814fda5752080ba3e6cf84d6da87a">PROFILE_FIBER_LEAVE</a>&#160;&#160;&#160;((void)0)</td></tr>
+<tr class="separator:a9c1814fda5752080ba3e6cf84d6da87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fd39fa9260950863afb945feda3a396"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a3fd39fa9260950863afb945feda3a396">TRACE_GPU_STAGE</a>(profiler_ptr,  name,  <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)&#160;&#160;&#160;	<a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">GPU_STAGE_PROFILER</a>(profiler_ptr, name, <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)</td></tr>
 <tr class="separator:a3fd39fa9260950863afb945feda3a396"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d9bb2a3f5e7d0570b4f89b84e7d9275"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="profiler_8h.html#a1d9bb2a3f5e7d0570b4f89b84e7d9275">TRACE_GPU_SCOPE</a>(name,  <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)&#160;&#160;&#160;<a class="el" href="profiler_8h.html#a3fd39fa9260950863afb945feda3a396">TRACE_GPU_STAGE</a>(NULL, name, <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)</td></tr>
 <tr class="separator:a1d9bb2a3f5e7d0570b4f89b84e7d9275"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a37db01bc784df6f94ceee2922d978a6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37db01bc784df6f94ceee2922d978a6c">&#9670;&nbsp;</a></span>TRACE_FRAME_MARK</h2>
+<a id="ae71d1f1907f3753a6dc82b4dce3b5bfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae71d1f1907f3753a6dc82b4dce3b5bfa">&#9670;&nbsp;</a></span>PROFILE_FIBER_ENTER</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define TRACE_FRAME_MARK</td>
+          <td class="memname">#define PROFILE_FIBER_ENTER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name</td><td>)</td>
+          <td>&#160;&#160;&#160;((void)(name))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9c1814fda5752080ba3e6cf84d6da87a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c1814fda5752080ba3e6cf84d6da87a">&#9670;&nbsp;</a></span>PROFILE_FIBER_LEAVE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_FIBER_LEAVE&#160;&#160;&#160;((void)0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab9fca9f5f2fdcab4a6f5e01df77d4447"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9fca9f5f2fdcab4a6f5e01df77d4447">&#9670;&nbsp;</a></span>PROFILE_FRAME_MARK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_FRAME_MARK&#160;&#160;&#160;((void)0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2fe425db14ead24864df278c3de34398"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fe425db14ead24864df278c3de34398">&#9670;&nbsp;</a></span>PROFILE_MESSAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_MESSAGE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">len&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;((void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a02e5f6ba30455bb2498056432fcbd2a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02e5f6ba30455bb2498056432fcbd2a2">&#9670;&nbsp;</a></span>PROFILE_MESSAGE_C</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_MESSAGE_C</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">len, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;	((void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len), (void)(<a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad447ad60e3368d590e1e00eaaf7b3b26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad447ad60e3368d590e1e00eaaf7b3b26">&#9670;&nbsp;</a></span>PROFILE_MESSAGE_L</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_MESSAGE_L</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">literal</td><td>)</td>
+          <td>&#160;&#160;&#160;((void)(literal))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a54646d658e6badad80239d653e55b754"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54646d658e6badad80239d653e55b754">&#9670;&nbsp;</a></span>PROFILE_THREAD_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_THREAD_NAME</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name</td><td>)</td>
+          <td>&#160;&#160;&#160;((void)(name))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a112dc416eb8d587bca286937a7503010"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a112dc416eb8d587bca286937a7503010">&#9670;&nbsp;</a></span>PROFILE_ZONE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_ZONE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ctx, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">int</span> ctx = 0;            \</div>
+<div class="line">    (void)(ctx);            \</div>
+<div class="line">    (void)(name)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a46997d39034fb02d50a70dbf8a15d7de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46997d39034fb02d50a70dbf8a15d7de">&#9670;&nbsp;</a></span>PROFILE_ZONE_END</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_ZONE_END</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ctx</td><td>)</td>
+          <td>&#160;&#160;&#160;((void)(ctx))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7dac9c859ba75607250c9e785953004"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7dac9c859ba75607250c9e785953004">&#9670;&nbsp;</a></span>PROFILE_ZONE_I</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_ZONE_I</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ctx, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">name&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordtype">int</span> ctx = 0;              \</div>
+<div class="line">    (void)(ctx);              \</div>
+<div class="line">    (void)(name)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a0c67bcdda1b69cdadf6a350b998d1b6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c67bcdda1b69cdadf6a350b998d1b6e">&#9670;&nbsp;</a></span>PROFILE_ZONE_TEXT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PROFILE_ZONE_TEXT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ctx, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">len&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;	((void)(ctx), (void)(<a class="el" href="ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871">text</a>), (void)(len))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -356,42 +617,6 @@ Macros</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td>&#160;&#160;&#160;	<a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">GPU_STAGE_PROFILER</a>(profiler_ptr, name, <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac2332915d6466fe4bc9e37e63e9812b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac2332915d6466fe4bc9e37e63e9812b9">&#9670;&nbsp;</a></span>TRACE_ZONE_BEGIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TRACE_ZONE_BEGIN</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">name</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a38789f06d77bc519021ffff104d137d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38789f06d77bc519021ffff104d137d6">&#9670;&nbsp;</a></span>TRACE_ZONE_END</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define TRACE_ZONE_END</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">ctx</td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

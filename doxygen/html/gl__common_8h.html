@@ -626,7 +626,7 @@ Functions</h2></td></tr>
 <div class="line">    const <span class="keywordtype">char</span>* _gl_dbg_##__LINE__                              \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a>)))        \</div>
 <div class="line">        __attribute__((unused)) = name</div>
-<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:53</div></div>
+<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:144</div></div>
 </div><!-- fragment -->
 <p>Scoped OpenGL debug group. Automatically pops when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -657,7 +657,7 @@ Functions</h2></td></tr>
 <div class="line">    GLuint _gl_prog_##__LINE__                           \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a>))) \</div>
 <div class="line">        __attribute__((unused)) = prog</div>
-<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:72</div></div>
+<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:163</div></div>
 </div><!-- fragment -->
 <p>Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>

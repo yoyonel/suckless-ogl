@@ -5,5 +5,5 @@ var texture_8h =
     [ "texture_load_pixels", "texture_8h.html#a641bc6f349107081a917f3e1fc64ce4d", null ],
     [ "texture_map_pbo", "texture_8h.html#afec05d3cced4a706d8ed525d78fdbc45", null ],
     [ "texture_preallocate_hdr", "texture_8h.html#aeaaf787b6ecd6938e78ec390d6749359", null ],
-    [ "texture_upload_hdr_from_pbo", "texture_8h.html#a9b2e1a73489371d72362f97552ad57a8", null ]
+    [ "texture_upload_hdr_from_pbo", "texture_8h.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3", null ]
 ];

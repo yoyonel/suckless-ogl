@@ -8,7 +8,7 @@ var texture_8c =
     [ "texture_matches_hdr", "texture_8c.html#aba2936ced854edf19507c84b2e008b88", null ],
     [ "texture_preallocate_hdr", "texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359", null ],
     [ "texture_reuse_or_create_hdr", "texture_8c.html#a87a5326d68a2497f0b4bd7afbca69139", null ],
-    [ "texture_upload_hdr_from_pbo", "texture_8c.html#a9b2e1a73489371d72362f97552ad57a8", null ],
+    [ "texture_upload_hdr_from_pbo", "texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3", null ],
     [ "TRACY_COLOR_MIPMAP_GEN", "texture_8c.html#a7aefbbaa4db5045ab98544632bb689e3", null ],
     [ "TRACY_COLOR_TEXTURE_STORAGE", "texture_8c.html#ae2bce177ad7e5edf264488115901a2b2", null ],
     [ "TRACY_COLOR_TEXTURE_UPLOAD", "texture_8c.html#af6ab67ecd2fee0eec421544f3346bcea", null ],

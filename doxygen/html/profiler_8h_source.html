@@ -257,39 +257,67 @@ $(document).ready(function(){initNavTree('profiler_8h_source.html',''); initResi
 <a href="profiler_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef PROFILER_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define PROFILER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">/* --- Tracy Toggle --- */</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">// #define TRACY_ENABLE</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;../deps/tracy/public/tracy/TracyC.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">/* Frame Mark */</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define TRACE_FRAME_MARK TracyCFrameMark</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">/* GPU Stages (Legacy mapping if needed, or Tracy GPU marks) */</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">/* For now, we keep manual GPUProfiler for UI, but Tracy for CPU zones */</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#define TRACE_ZONE_BEGIN(name) TracyCZoneN(ctx, name, 1)</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define TRACE_ZONE_END(ctx) TracyCZoneEnd(ctx)</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">/* Scoped Zones (C doesn&#39;t have RAII, so we use BEGIN/END) */</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">// Note: TracyC.h defines TracyCZone, TracyCZoneEnd etc.</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">/* --- Tracy Toggle --- */</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">// #define TRACY_ENABLE</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#ifdef TRACY_ENABLE</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;../deps/tracy/public/tracy/TracyC.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">/* Frame Mark */</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define PROFILE_FRAME_MARK TracyCFrameMark</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">/* CPU Zones */</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define PROFILE_ZONE(ctx, name) TracyCZoneN(ctx, name, 1)</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define PROFILE_ZONE_I(ctx, name) TracyCZoneN(ctx, name, 0)</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define PROFILE_ZONE_TEXT(ctx, text, len) TracyCZoneText(ctx, text, len)</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define PROFILE_ZONE_END(ctx) TracyCZoneEnd(ctx)</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment">/* Legacy / Dummy macros */</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="profiler_8h.html#a37db01bc784df6f94ceee2922d978a6c">   23</a></span>&#160;<span class="preprocessor">#define TRACE_FRAME_MARK</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="profiler_8h.html#ac2332915d6466fe4bc9e37e63e9812b9">   24</a></span>&#160;<span class="preprocessor">#define TRACE_ZONE_BEGIN(name)</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="profiler_8h.html#a38789f06d77bc519021ffff104d137d6">   25</a></span>&#160;<span class="preprocessor">#define TRACE_ZONE_END(ctx)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">/* Native GPU Stages (Always on for the in-app timeline) */</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gpu__profiler_8h.html">gpu_profiler.h</a>&quot;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="profiler_8h.html#a3fd39fa9260950863afb945feda3a396">   30</a></span>&#160;<span class="preprocessor">#define TRACE_GPU_STAGE(profiler_ptr, name, color) \</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">    GPU_STAGE_PROFILER(profiler_ptr, name, color)</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">/* Helper for scoped GPU+CPU tracing without a profiler instance */</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="profiler_8h.html#a1d9bb2a3f5e7d0570b4f89b84e7d9275">   34</a></span>&#160;<span class="preprocessor">#define TRACE_GPU_SCOPE(name, color) TRACE_GPU_STAGE(NULL, name, color)</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// PROFILER_H</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">/* Messaging and Threads */</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE(text, len) TracyCMessage(text, len)</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE_L(literal) TracyCMessageL(literal)</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE_C(text, len, color) TracyCMessageC(text, len, color)</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#define PROFILE_THREAD_NAME(name) TracyCSetThreadName(name)</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">/* Fibers (for async state tracking) */</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define PROFILE_FIBER_ENTER(name) TracyCFiberEnter(name)</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define PROFILE_FIBER_LEAVE TracyCFiberLeave</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">/* Legacy / Dummy macros */</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="profiler_8h.html#ab9fca9f5f2fdcab4a6f5e01df77d4447">   33</a></span>&#160;<span class="preprocessor">#define PROFILE_FRAME_MARK ((void)0)</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="profiler_8h.html#a112dc416eb8d587bca286937a7503010">   35</a></span>&#160;<span class="preprocessor">#define PROFILE_ZONE(ctx, name) \</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">    int ctx = 0;            \</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">    (void)(ctx);            \</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">    (void)(name)</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="profiler_8h.html#ae7dac9c859ba75607250c9e785953004">   39</a></span>&#160;<span class="preprocessor">#define PROFILE_ZONE_I(ctx, name) \</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">    int ctx = 0;              \</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">    (void)(ctx);              \</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">    (void)(name)</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="profiler_8h.html#a0c67bcdda1b69cdadf6a350b998d1b6e">   43</a></span>&#160;<span class="preprocessor">#define PROFILE_ZONE_TEXT(ctx, text, len) \</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">    ((void)(ctx), (void)(text), (void)(len))</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="profiler_8h.html#a46997d39034fb02d50a70dbf8a15d7de">   45</a></span>&#160;<span class="preprocessor">#define PROFILE_ZONE_END(ctx) ((void)(ctx))</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="profiler_8h.html#a2fe425db14ead24864df278c3de34398">   46</a></span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE(text, len) ((void)(text), (void)(len))</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="profiler_8h.html#ad447ad60e3368d590e1e00eaaf7b3b26">   47</a></span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE_L(literal) ((void)(literal))</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="profiler_8h.html#a02e5f6ba30455bb2498056432fcbd2a2">   48</a></span>&#160;<span class="preprocessor">#define PROFILE_MESSAGE_C(text, len, color) \</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">    ((void)(text), (void)(len), (void)(color))</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="profiler_8h.html#a54646d658e6badad80239d653e55b754">   50</a></span>&#160;<span class="preprocessor">#define PROFILE_THREAD_NAME(name) ((void)(name))</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="profiler_8h.html#ae71d1f1907f3753a6dc82b4dce3b5bfa">   51</a></span>&#160;<span class="preprocessor">#define PROFILE_FIBER_ENTER(name) ((void)(name))</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="profiler_8h.html#a9c1814fda5752080ba3e6cf84d6da87a">   52</a></span>&#160;<span class="preprocessor">#define PROFILE_FIBER_LEAVE ((void)0)</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">/* Native GPU Stages (Always on for the in-app timeline) */</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gpu__profiler_8h.html">gpu_profiler.h</a>&quot;</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="profiler_8h.html#a3fd39fa9260950863afb945feda3a396">   57</a></span>&#160;<span class="preprocessor">#define TRACE_GPU_STAGE(profiler_ptr, name, color) \</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">    GPU_STAGE_PROFILER(profiler_ptr, name, color)</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment">/* Helper for scoped GPU+CPU tracing without a profiler instance */</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="profiler_8h.html#a1d9bb2a3f5e7d0570b4f89b84e7d9275">   61</a></span>&#160;<span class="preprocessor">#define TRACE_GPU_SCOPE(name, color) TRACE_GPU_STAGE(NULL, name, color)</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// PROFILER_H</span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
 <div class="ttc" id="agpu__profiler_8h_html"><div class="ttname"><a href="gpu__profiler_8h.html">gpu_profiler.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
