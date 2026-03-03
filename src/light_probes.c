@@ -4,6 +4,7 @@
 
 #include "log.h"
 #include "perf_timer.h"
+#include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
 #include "utils.h"
@@ -11,9 +12,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef TRACY_ENABLE
-#include <tracy/TracyC.h>
-#endif
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -337,9 +335,7 @@ static void* light_probe_worker(void* arg)
 {
 	LightProbeGrid* grid = (LightProbeGrid*)arg;
 
-#ifdef TRACY_ENABLE
-	TracyCSetThreadName("GI Probe Worker");
-#endif
+	PROFILE_THREAD_NAME("GI Probe Worker");
 
 	while (1) {
 		pthread_mutex_lock(&grid->mutex);
@@ -374,9 +370,7 @@ static void* light_probe_worker(void* arg)
 			continue;
 		}
 
-#ifdef TRACY_ENABLE
-		TracyCZoneN(gi_compute_ctx, "GI SH Compute", 1);
-#endif
+		PROFILE_ZONE(gi_compute_ctx, "GI SH Compute");
 		PerfTimer worker_timer;
 		perf_timer_start(&worker_timer);
 
@@ -407,17 +401,13 @@ static void* light_probe_worker(void* arg)
 		LOG_DEBUG("perf.gi",
 		          "GI SH Compute: %.2f ms (%d probes, %d spheres)",
 		          worker_ms, grid->total_probes, local_count);
-#ifdef TRACY_ENABLE
-		{
-			char buf[GI_LOG_BUF_SIZE];
-			(void)safe_snprintf(buf, sizeof(buf),
-			                    "%.2f ms | %d probes x %d spheres",
-			                    worker_ms, grid->total_probes,
-			                    local_count);
-			TracyCZoneText(gi_compute_ctx, buf, strlen(buf));
-			TracyCZoneEnd(gi_compute_ctx);
-		}
-#endif
+
+		char buf[GI_LOG_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf),
+		                    "%.2f ms | %d probes x %d spheres",
+		                    worker_ms, grid->total_probes, local_count);
+		PROFILE_ZONE_TEXT(gi_compute_ctx, buf, strlen(buf));
+		PROFILE_ZONE_END(gi_compute_ctx);
 
 		pthread_mutex_lock(&grid->mutex);
 		grid->results_ready = 1;
@@ -678,17 +668,13 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 		return;
 	}
 
-#ifdef TRACY_ENABLE
-	TracyCZoneN(debug_ctx, "GI Debug Probes Draw", 1);
-#endif
+	PROFILE_ZONE(debug_ctx, "GI Debug Probes Draw");
 
 	if (grid->debug_shader == NULL) {
 		grid->debug_shader = shader_load("shaders/debug_probe.vert",
 		                                 "shaders/debug_probe.frag");
 		if (!grid->debug_shader) {
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(debug_ctx);
-#endif
+			PROFILE_ZONE_END(debug_ctx);
 			return;
 		}
 	}
@@ -700,25 +686,6 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 
 	shader_set_vec3(grid->debug_shader, "u_ProbeGridMin", grid->aabb_min);
 	shader_set_vec3(grid->debug_shader, "u_ProbeGridMax", grid->aabb_max);
-
-	vec3 grid_size;
-	glm_vec3_sub(grid->aabb_max, grid->aabb_min, grid_size);
-
-	vec3 grid_scale;
-	grid_scale[0] = (grid->grid_dim[0] > 1)
-	                    ? (float)(grid->grid_dim[0] - 1) /
-	                          fmaxf(grid_size[0], GI_EPSILON)
-	                    : 0.0F;
-	grid_scale[1] = (grid->grid_dim[1] > 1)
-	                    ? (float)(grid->grid_dim[1] - 1) /
-	                          fmaxf(grid_size[1], GI_EPSILON)
-	                    : 0.0F;
-	grid_scale[2] = (grid->grid_dim[2] > 1)
-	                    ? (float)(grid->grid_dim[2] - 1) /
-	                          fmaxf(grid_size[2], GI_EPSILON)
-	                    : 0.0F;
-
-	shader_set_vec3(grid->debug_shader, "u_GridToIdxScale", grid_scale);
 
 	GLint loc_dim =
 	    shader_get_uniform_location(grid->debug_shader, "u_ProbeGridDim");
@@ -781,13 +748,9 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 
 	glUseProgram(0);
 
-#ifdef TRACY_ENABLE
-	{
-		char buf[GI_SMALL_LOG_BUF_SIZE];
-		(void)safe_snprintf(buf, sizeof(buf), "%d instances",
-		                    grid->total_probes);
-		TracyCZoneText(debug_ctx, buf, strlen(buf));
-		TracyCZoneEnd(debug_ctx);
-	}
-#endif
+	char buf[GI_SMALL_LOG_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "%d instances",
+	                    grid->total_probes);
+	PROFILE_ZONE_TEXT(debug_ctx, buf, strlen(buf));
+	PROFILE_ZONE_END(debug_ctx);
 }
