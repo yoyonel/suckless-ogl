@@ -68,7 +68,7 @@ void tracy_manager_cleanup(TracyManager* mgr)
 
 void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 {
-	TracyCZoneN(ctx, "Tracy Screenshot Update", 1);
+	PROFILE_ZONE(ctx, "Tracy Screenshot Update");
 	/* 1. Send previous frame's screenshot (already in PBO) */
 	static bool first_frame = true;
 	if (!first_frame) {
@@ -136,7 +136,7 @@ void tracy_manager_update_screenshots(TracyManager* mgr, App* app)
 
 	/* 3. Ping-pong */
 	mgr->screenshot_pbo_idx = (mgr->screenshot_pbo_idx + 1) % 2;
-	TracyCZoneEnd(ctx);
+	PROFILE_ZONE_END(ctx);
 }
 
 void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
@@ -151,7 +151,7 @@ void tracy_manager_async_transition(TracyManager* mgr, AsyncState new_state)
 	pthread_mutex_lock(&mgr->transition_mutex);
 	TracyCFiberEnter("Async Status");
 	if (mgr->active_state_ctx.id != 0) {
-		TracyCZoneEnd(mgr->active_state_ctx);
+		PROFILE_ZONE_END(mgr->active_state_ctx);
 		mgr->active_state_ctx.id = 0;
 	}
 
@@ -231,7 +231,7 @@ void tracy_manager_async_end(TracyManager* mgr)
 	pthread_mutex_lock(&mgr->transition_mutex);
 	if (mgr->active_state_ctx.id != 0) {
 		TracyCFiberEnter("Async Status");
-		TracyCZoneEnd(mgr->active_state_ctx);
+		PROFILE_ZONE_END(mgr->active_state_ctx);
 		mgr->active_state_ctx.id = 0;
 		TracyCFiberLeave;
 	}

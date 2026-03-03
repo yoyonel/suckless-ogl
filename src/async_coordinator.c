@@ -2,11 +2,8 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "profiler.h"
 #include "texture.h"
-
-#ifdef TRACY_ENABLE
-#include "../deps/tracy/public/tracy/TracyC.h"
-#endif
 
 void async_coordinator_init(AsyncCoordinator* coord)
 {
@@ -46,17 +43,13 @@ bool async_coordinator_update(AsyncCoordinator* coord, AsyncLoader* loader,
 			int pbo_idx = coord->upload_pbo_idx;
 			size_t size = (size_t)req.width * (size_t)req.height *
 			              4 * sizeof(uint16_t);
-#ifdef TRACY_ENABLE
-			TracyCZoneN(pbo_ctx, "PBO Setup & Map", 1);
-#endif
+			PROFILE_ZONE(pbo_ctx, "PBO Setup & Map");
 			texture_ensure_pbo(&coord->upload_pbo[pbo_idx],
 			                   &coord->upload_pbo_size[pbo_idx],
 			                   (GLsizeiptr)size);
 			void* ptr =
 			    texture_map_pbo(coord->upload_pbo[pbo_idx], size);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(pbo_ctx);
-#endif
+			PROFILE_ZONE_END(pbo_ctx);
 			if (ptr) {
 				async_loader_provide_pbo(
 				    loader, ptr, coord->upload_pbo[pbo_idx]);

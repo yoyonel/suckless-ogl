@@ -16,13 +16,19 @@
 #define TRACE_ZONE_END(ctx) TracyCZoneEnd(ctx)
 
 /* Scoped Zones (C doesn't have RAII, so we use BEGIN/END) */
-// Note: TracyC.h defines TracyCZone, TracyCZoneEnd etc.
+#define PROFILE_ZONE(ctx, name) TracyCZoneN(ctx, name, 1)
+#define PROFILE_ZONE_TEXT(ctx, text, len) TracyCZoneText(ctx, text, len)
+#define PROFILE_ZONE_END(ctx) TracyCZoneEnd(ctx)
 
 #else
 /* Legacy / Dummy macros */
 #define TRACE_FRAME_MARK
 #define TRACE_ZONE_BEGIN(name)
 #define TRACE_ZONE_END(ctx)
+
+#define PROFILE_ZONE(ctx, name) (void)0
+#define PROFILE_ZONE_TEXT(ctx, text, len) (void)0
+#define PROFILE_ZONE_END(ctx) (void)0
 #endif
 
 /* Native GPU Stages (Always on for the in-app timeline) */

@@ -20,7 +20,6 @@ check_dependencies() {
         exit 1
     fi
 }
-
 check_dependencies
 
 if [ ! -f "$APP_PATH" ]; then
