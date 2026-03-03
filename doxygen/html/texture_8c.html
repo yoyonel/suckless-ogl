@@ -298,6 +298,10 @@ Functions</h2></td></tr>
 <tr class="memitem:aeaaf787b6ecd6938e78ec390d6749359"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359">texture_preallocate_hdr</a> (int width, int height, GLuint old_tex)</td></tr>
 <tr class="memdesc:aeaaf787b6ecd6938e78ec390d6749359"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pre-allocates VRAM for an HDR texture (glTexStorage2D only).  <a href="texture_8c.html#aeaaf787b6ecd6938e78ec390d6749359">More...</a><br /></td></tr>
 <tr class="separator:aeaaf787b6ecd6938e78ec390d6749359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87a5326d68a2497f0b4bd7afbca69139"><td class="memItemLeft" align="right" valign="top">static GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a87a5326d68a2497f0b4bd7afbca69139">texture_reuse_or_create_hdr</a> (int width, int height, GLuint reuse_tex_id, bool *is_reused, int *levels_out)</td></tr>
+<tr class="separator:a87a5326d68a2497f0b4bd7afbca69139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4fa58847422e51db4b6960239724bf2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#ae4fa58847422e51db4b6960239724bf2">texture_allocate_storage_hdr</a> (int width, int height, int levels)</td></tr>
+<tr class="separator:ae4fa58847422e51db4b6960239724bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b2e1a73489371d72362f97552ad57a8"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="texture_8c.html#a9b2e1a73489371d72362f97552ad57a8">texture_upload_hdr_from_pbo</a> (GLuint pbo_id, int width, int height, GLuint reuse_tex_id)</td></tr>
 <tr class="memdesc:a9b2e1a73489371d72362f97552ad57a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps).  <a href="texture_8c.html#a9b2e1a73489371d72362f97552ad57a8">More...</a><br /></td></tr>
 <tr class="separator:a9b2e1a73489371d72362f97552ad57a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,6 +339,48 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ae4fa58847422e51db4b6960239724bf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4fa58847422e51db4b6960239724bf2">&#9670;&nbsp;</a></span>texture_allocate_storage_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool texture_allocate_storage_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aab7453443bd88ad6c923d608ec066a28"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab7453443bd88ad6c923d608ec066a28">&#9670;&nbsp;</a></span>texture_ensure_pbo()</h2>
 
@@ -594,6 +640,66 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a87a5326d68a2497f0b4bd7afbca69139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87a5326d68a2497f0b4bd7afbca69139">&#9670;&nbsp;</a></span>texture_reuse_or_create_hdr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static GLuint texture_reuse_or_create_hdr </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>reuse_tex_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>is_reused</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>levels_out</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a87a5326d68a2497f0b4bd7afbca69139_cgraph.svg" width="427" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a9b2e1a73489371d72362f97552ad57a8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b2e1a73489371d72362f97552ad57a8">&#9670;&nbsp;</a></span>texture_upload_hdr_from_pbo()</h2>
 
@@ -646,7 +752,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a9b2e1a73489371d72362f97552ad57a8_cgraph.svg" width="367" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="texture_8c_a9b2e1a73489371d72362f97552ad57a8_cgraph.svg" width="627" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

@@ -1,5 +1,7 @@
 var NAVTREEINDEX10 =
 {
+"ui_8frag.html#ad862d9f4c79cc8ec2ff12893a9714871":[6,0,3,24,6],
+"ui_8frag.html#adb6203a8043c2972954e4c20c7841d8a":[6,0,3,24,7],
 "ui_8frag.html#af4e95f531207631a73d76280e9c80e94":[6,0,3,24,3],
 "ui_8h.html":[6,0,2,49],
 "ui_8h.html#a04ff141f59212601e740294c9159dbe7":[6,0,2,49,12],
