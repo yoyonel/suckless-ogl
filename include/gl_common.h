@@ -9,11 +9,102 @@
 #ifndef GL_COMMON_H
 #define GL_COMMON_H
 
-/* IMPORTANT: GLAD must be included before any OpenGL headers */
+#ifndef GL_COMMON_NO_GLAD
 #include "glad/glad.h"
+#else
+#ifndef GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_NONE
+#endif
+/* Minimal GL types fallback */
+typedef unsigned int GLuint;
+typedef int GLint;
+typedef unsigned int GLenum;
+typedef int GLsizei;
+typedef float GLfloat;
+typedef unsigned char GLboolean;
+typedef long GLsizeiptr;
+typedef long GLintptr;
+typedef void* GLsync;
+typedef unsigned long long GLuint64;
+typedef char GLchar;
+typedef unsigned int GLbitfield;
 
-/* Now we can include GLFW which may pull in OpenGL headers */
+#define GL_TRUE 1
+#define GL_FALSE 0
+#define GL_TEXTURE_2D 0x0DE1
+#define GL_TEXTURE_MIN_FILTER 0x2801
+#define GL_TEXTURE_MAG_FILTER 0x2800
+#define GL_TEXTURE_WRAP_S 0x2802
+#define GL_TEXTURE_WRAP_T 0x2803
+#define GL_TEXTURE_WIDTH 0x1000
+#define GL_TEXTURE_HEIGHT 0x1001
+#define GL_TEXTURE_INTERNAL_FORMAT 0x1003
+#define GL_LINEAR 0x2601
+#define GL_LINEAR_MIPMAP_LINEAR 0x2703
+#define GL_CLAMP_TO_EDGE 0x812F
+#define GL_REPEAT 0x2901
+#define GL_RGBA32F 0x8814
+#define GL_RGBA16F 0x881A
+#define GL_RGBA 0x1908
+#define GL_FLOAT 0x1406
+#define GL_HALF_FLOAT 0x140B
+#define GL_PIXEL_UNPACK_BUFFER 0x88EC
+#define GL_STREAM_DRAW 0x88E0
+#define GL_WRITE_ONLY 0x88B9
+#define GL_UNPACK_ALIGNMENT 0x0CF5
+#define GL_NO_ERROR 0
+#define GL_DEBUG_SOURCE_APPLICATION 0x824A
+
+#define GL_MAP_UNSYNCHRONIZED_BIT 0x0020
+#define GL_MAP_WRITE_BIT 0x0010
+#define GL_MAP_INVALIDATE_BUFFER_BIT 0x0008
+#define GL_TIMESTAMP 0x8E28
+#define GL_QUERY_RESULT 0x8866
+#define GL_QUERY_RESULT_AVAILABLE 0x8867
+#define GL_TIME_ELAPSED 0x88BF
+
+/* Prototype declarations for mocks */
+GLenum glGetError(void);
+void glGenTextures(GLsizei n, GLuint* ids);
+void glBindTexture(GLenum target, GLuint id);
+void glPixelStorei(GLenum pname, GLint param);
+void glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat,
+                    GLsizei width, GLsizei height);
+void glTexImage2D(GLenum t, GLint l, GLint i, GLsizei w, GLsizei h, GLint b,
+                  GLenum f, GLenum ty, const void* p);
+void glTexSubImage2D(GLenum t, GLint l, GLint x, GLint y, GLsizei w, GLsizei h,
+                     GLenum f, GLenum ty, const void* p);
+void glTexParameteri(GLenum target, GLenum pname, GLint param);
+void glGenerateMipmap(GLenum target);
+void glDeleteTextures(GLsizei n, const GLuint* ids);
+void glActiveTexture(GLenum texture);
+void glGenBuffers(GLsizei n, GLuint* buffers);
+void glBindBuffer(GLenum target, GLuint buffer);
+void glBufferData(GLenum target, GLsizeiptr size, const void* data,
+                  GLenum usage);
+void glDeleteBuffers(GLsizei n, const GLuint* buffers);
+void* glMapBuffer(GLenum target, GLenum access);
+void* glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length,
+                       GLbitfield access);
+GLboolean glUnmapBuffer(GLenum target);
+void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
+                              GLint* params);
+void glGenQueries(GLsizei n, GLuint* ids);
+void glDeleteQueries(GLsizei n, const GLuint* ids);
+void glQueryCounter(GLuint id, GLenum target);
+void glGetQueryObjectiv(GLuint id, GLenum pname, GLint* params);
+void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64* params);
+void glFlush(void);
+void glFinish(void);
+void glUseProgram(GLuint program);
+void glPopDebugGroup(void);
+void glPushDebugGroup(GLenum source, GLuint id, GLsizei length,
+                      const GLchar* message);
+#endif
+
+#ifndef GL_COMMON_NO_GLFW
 #include <GLFW/glfw3.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 

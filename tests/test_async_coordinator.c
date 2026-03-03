@@ -172,23 +172,33 @@ void test_AsyncCoordinator_Update_ShouldHandleReadyRequest(void)
 	async_loader_destroy(loader);
 }
 
-void test_AsyncCoordinator_Update_ShouldHandleMapFailure(void)
+void test_AsyncCoordinator_Update_ShouldHandleMapFallback(void)
 {
 	AsyncCoordinator coord = {0};
 	AsyncLoader* loader = async_loader_create(NULL);
 	AsyncRequest out_req = {0};
 
-	coord.upload_pbo[0] = 666; /* Magic ID to trigger mock failure */
+	coord.upload_pbo[0] = 666; /* Magic ID to trigger mock map failure */
 	coord.upload_pbo_idx = 0;
 
 	loader->has_req = true;
 	loader->current_req.state = ASYNC_WAITING_FOR_PBO;
+	loader->current_req.width = 128;
+	loader->current_req.height = 128;
 
 	bool ready = async_coordinator_update(&coord, loader, &out_req);
 
 	TEST_ASSERT_FALSE(ready);
-	TEST_ASSERT_FALSE(loader->pbo_provided);
-	TEST_ASSERT_TRUE(loader->cancelled);
+	/* Should fall back to CPU memory */
+	TEST_ASSERT_TRUE(loader->pbo_provided);
+	TEST_ASSERT_EQUAL_UINT(0, loader->provided_pbo);
+	TEST_ASSERT_NOT_NULL(loader->provided_ptr);
+	TEST_ASSERT_FALSE(loader->cancelled);
+
+	/* Clean up fallback pointer if it was allocated */
+	if (loader->provided_ptr) {
+		free(loader->provided_ptr);
+	}
 
 	async_loader_destroy(loader);
 }
@@ -199,6 +209,6 @@ int main(void)
 	RUN_TEST(test_AsyncCoordinator_Init_ShouldSetDefaults);
 	RUN_TEST(test_AsyncCoordinator_Update_ShouldHandlePBORequest);
 	RUN_TEST(test_AsyncCoordinator_Update_ShouldHandleReadyRequest);
-	RUN_TEST(test_AsyncCoordinator_Update_ShouldHandleMapFailure);
+	RUN_TEST(test_AsyncCoordinator_Update_ShouldHandleMapFallback);
 	return UNITY_END();
 }
