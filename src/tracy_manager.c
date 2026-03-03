@@ -1,6 +1,8 @@
 #include "tracy_manager.h"
 
 #include "app.h"
+#include "profiler.h"
+
 #ifdef TRACY_ENABLE
 
 #include "mem.h"
