@@ -14,6 +14,13 @@ SCRIPT_DIR=$(dirname "$0")
 source "$SCRIPT_DIR/integration_utils.sh"
 source "$SCRIPT_DIR/integration_scenarios.sh"
 
+check_dependencies() {
+    if ! command -v "$APITRACE_BIN" >/dev/null 2>&1; then
+        echo "❌ Error: apitrace binary not found or not executable: $APITRACE_BIN"
+        exit 1
+    fi
+}
+
 check_dependencies
 
 if [ ! -f "$APP_PATH" ]; then

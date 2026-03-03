@@ -44,7 +44,7 @@ extra_cmake_flags := ""
 
 # ApiTrace configuration
 apitrace_dir := env_var("HOME") / ".local/apitrace-latest-Linux"
-apitrace_bin := apitrace_dir / "bin/apitrace"
+apitrace_bin := `if [ -f "{{apitrace_dir}}/bin/apitrace" ]; then echo "{{apitrace_dir}}/bin/apitrace"; else echo "apitrace"; fi`
 
 # Container engine detection
 container_engine := `command -v docker >/dev/null 2>&1 && echo docker || echo podman`
@@ -218,13 +218,13 @@ test-integration-asan: asan
 
 # Run programmatic ApiTrace performance verification
 test-apitrace: build
-    @chmod +x scripts/verify_apitrace_perf.sh
-    @./scripts/verify_apitrace_perf.sh {{apitrace_bin}}
+    @{{distrobox}} chmod +x scripts/verify_apitrace_perf.sh
+    @{{distrobox}} ./scripts/verify_apitrace_perf.sh {{apitrace_bin}}
 
 # Run full integration test with ApiTrace analysis
 test-integration-apitrace: build
-    @chmod +x scripts/test_integration_apitrace.sh
-    @./scripts/test_integration_apitrace.sh {{apitrace_bin}}
+    @{{distrobox}} chmod +x scripts/test_integration_apitrace.sh
+    @{{distrobox}} ./scripts/test_integration_apitrace.sh {{apitrace_bin}}
 
 # Generate HTML code coverage report (llvm-cov)
 coverage:
