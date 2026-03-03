@@ -256,8 +256,8 @@ static bool texture_allocate_storage_hdr(int width, int height, int levels)
 	return true;
 }
 
-GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
-                                   GLuint reuse_tex_id)
+GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, void* ptr, int width,
+                                   int height, GLuint reuse_tex_id)
 {
 	TRACE_GPU_SCOPE("TextureUploadHDR_PBO",
 	                TRACY_COLOR_TEXTURE_UPLOAD_FULL);
@@ -282,24 +282,28 @@ GLuint texture_upload_hdr_from_pbo(GLuint pbo_id, int width, int height,
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	}
 
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo_id);
-	if (!glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER)) {
-		LOG_ERROR("suckless-ogl.texture",
-		          "Failed to unmap PBO %u! Data might be corrupted.",
-		          pbo_id);
-		/* Continue anyway? Or return 0? safest is to return 0 or try to
-		 * re-upload? For now just log error. */
+	const void* upload_ptr = ptr;
+	if (pbo_id != 0) {
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo_id);
+		if (!glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER)) {
+			LOG_ERROR(
+			    "suckless-ogl.texture",
+			    "Failed to unmap PBO %u! Data might be corrupted.",
+			    pbo_id);
+		}
+		upload_ptr = 0; /* Offset in PBO */
 	}
 
 	{
 		TRACE_GPU_SCOPE("TexUploadHDR_SubImage",
 		                TRACY_COLOR_TEXTURE_UPLOAD);
-		/* Offset 0 in PBO */
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
-		                GL_HALF_FLOAT, 0);
+		                GL_HALF_FLOAT, upload_ptr);
 	}
 
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+	if (pbo_id != 0) {
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+	}
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 

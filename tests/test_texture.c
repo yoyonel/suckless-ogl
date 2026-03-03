@@ -99,7 +99,7 @@ void test_texture_integration_success(void)
 	memcpy(mapped, half_data, (size_t)pbo_size);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-	GLuint tex = texture_upload_hdr_from_pbo(pbo, width, height, 0);
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0);
 	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
@@ -140,7 +140,7 @@ void test_texture_upload_hdr_properties(void)
 	memcpy(mapped, half_data, (size_t)pbo_size);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
-	GLuint tex = texture_upload_hdr_from_pbo(pbo, width, height, 0);
+	GLuint tex = texture_upload_hdr_from_pbo(pbo, mapped, width, height, 0);
 	glDeleteBuffers(1, &pbo);
 	free(data);
 	free(half_data);
