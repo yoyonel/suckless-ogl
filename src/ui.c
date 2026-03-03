@@ -28,9 +28,9 @@ enum FontAtlasConfig {
 
 enum VertexConfig {
 	QUAD_VERTICES_COUNT = 6,
-	VERTEX_COMPONENTS = 4,  // x, y, u, v
+	VERTEX_COMPONENTS = 12,  // x, y, u, v, r, g, b, a, mode, w, h, radius
 	VERTICES_PER_QUAD = 6,
-	FLOATS_PER_VERTEX = 4
+	FLOATS_PER_VERTEX = 12
 };
 
 static const float FONT_ATLAS_SIZE_F = 512.0F;
@@ -44,15 +44,15 @@ static const float UI_QUAD_MIN = 0.0F;
 // ============================================================================
 
 typedef struct {
-	float x;
-	float y;
-	float u;
-	float v;
-} UIVertex;
-
-typedef struct {
 	UIVertex vertices[QUAD_VERTICES_COUNT];
 } UIQuad;
+
+// ============================================================================
+// Batch Rendering State
+// ============================================================================
+
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static GLStateBackup g_ui_saved_state;
 
 // ============================================================================
 // OpenGL State Management
@@ -131,14 +131,38 @@ static int setup_vertex_buffers(UIContext* ui_context)
 	glBindVertexArray(ui_context->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
-	const GLsizeiptr vbo_size = (GLsizeiptr)sizeof(UIQuad);
+	const GLsizeiptr vbo_size =
+	    (GLsizeiptr)(UI_MAX_BATCH_VERTICES * sizeof(UIVertex));
 	glBufferData(GL_ARRAY_BUFFER, vbo_size, NULL, GL_DYNAMIC_DRAW);
 
-	// Position (x, y) + TexCoords (u, v)
+	// Ensure layout matches UIVertex exactly (12 floats)
+	const GLsizei stride = (GLsizei)(sizeof(UIVertex));
+
+	// Position (x, y)
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, FLOATS_PER_VERTEX, GL_FLOAT, GL_FALSE,
-	                      (GLsizei)(FLOATS_PER_VERTEX * sizeof(float)),
-	                      (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride,
+	                      (void*)offsetof(UIVertex, x));
+
+	// TexCoords (u, v)
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride,
+	                      utils_buffer_offset(offsetof(UIVertex, u)));
+
+	// Color (r, g, b, a)
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, stride,
+	                      utils_buffer_offset(offsetof(UIVertex, r)));
+
+	// Mode (1 float)
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, stride,
+	                      utils_buffer_offset(offsetof(UIVertex, mode)));
+
+	// Rounded params (w, h, radius)
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(
+	    4, 3, GL_FLOAT, GL_FALSE, stride,
+	    utils_buffer_offset(offsetof(UIVertex, rect_size_x)));
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -151,7 +175,7 @@ static int setup_vertex_buffers(UIContext* ui_context)
 // ============================================================================
 
 static UIQuad make_glyph_quad(const GlyphInfo* glyph, float render_x,
-                              float render_y)
+                              float render_y, const vec3 color, float alpha)
 {
 	const float width = glyph->w;
 	const float height = glyph->h;
@@ -160,17 +184,29 @@ static UIQuad make_glyph_quad(const GlyphInfo* glyph, float render_x,
 	const float right = render_x + width;
 	const float bottom = render_y + height;
 
+	const float col_r = color[0];
+	const float col_g = color[1];
+	const float col_b = color[2];
+	const float col_a = alpha;
+	const float mode = 1.0F; /* Text */
+
 	UIQuad quad = {
 	    .vertices = {
-	        // Triangle 1
-	        {left, bottom, glyph->x0, glyph->y1},  // Bottom-left
-	        {left, top, glyph->x0, glyph->y0},     // Top-left
-	        {right, top, glyph->x1, glyph->y0},    // Top-right
+	        /* Triangle 1 */
+	        {left, bottom, glyph->x0, glyph->y1, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {left, top, glyph->x0, glyph->y0, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-left */
+	        {right, top, glyph->x1, glyph->y0, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
 
-	        // Triangle 2
-	        {left, bottom, glyph->x0, glyph->y1},  // Bottom-left
-	        {right, top, glyph->x1, glyph->y0},    // Top-right
-	        {right, bottom, glyph->x1, glyph->y1}  // Bottom-right
+	        /* Triangle 2 */
+	        {left, bottom, glyph->x0, glyph->y1, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {right, top, glyph->x1, glyph->y0, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
+	        {right, bottom, glyph->x1, glyph->y1, col_r, col_g, col_b,
+	         col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
 	    }};
 
 	return quad;
@@ -194,6 +230,8 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	ui_context->vao = 0;
 	ui_context->vbo = 0;
 	ui_context->font_size = font_size;
+	ui_context->batch_count = 0;
+	ui_context->batch_active = 0;
 	for (int i = 0; i < FONT_CHAR_COUNT; i++) {
 		ui_context->cdata[i] = (GlyphInfo){0};
 	}
@@ -244,6 +282,73 @@ int ui_init(UIContext* ui_context, const char* font_path, float font_size)
 	return 1;
 }
 
+void ui_begin(UIContext* ui_context, int screen_width, int screen_height)
+{
+	if (ui_context == NULL) {
+		return;
+	}
+
+	if (ui_context->batch_active) {
+		LOG_WARNING("ui",
+		            "ui_begin called while a batch is already active.");
+		return;
+	}
+
+	g_ui_saved_state = render_utils_save_state();
+	setup_ui_render_state();
+
+	ui_context->current_screen_width = screen_width;
+	ui_context->current_screen_height = screen_height;
+	ui_context->batch_count = 0;
+	ui_context->batch_active = 1;
+}
+
+void ui_flush(UIContext* ui_context)
+{
+	if (ui_context == NULL || ui_context->batch_count == 0) {
+		return;
+	}
+
+	shader_use(ui_context->shader);
+
+	mat4 projection;
+	glm_ortho(0.0F, (float)ui_context->current_screen_width,
+	          (float)ui_context->current_screen_height, 0.0F, -1.0F, 1.0F,
+	          projection);
+
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	glBufferSubData(
+	    GL_ARRAY_BUFFER, 0,
+	    (GLsizeiptr)(ui_context->batch_count * sizeof(UIVertex)),
+	    ui_context->batch_vertices);
+
+	glDrawArrays(GL_TRIANGLES, 0, ui_context->batch_count);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
+
+	ui_context->batch_count = 0;
+}
+
+void ui_end(UIContext* ui_context)
+{
+	if (ui_context == NULL || !ui_context->batch_active) {
+		return;
+	}
+
+	ui_flush(ui_context);
+	render_utils_restore_state(&g_ui_saved_state);
+	ui_context->batch_active = 0;
+}
+
 void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
                   float pos_y, const vec3 color, int screen_width,
                   int screen_height)
@@ -283,30 +388,11 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 		return;
 	}
 
-	// Save and setup OpenGL state
-	const GLStateBackup saved_state = render_utils_save_state();
-	setup_ui_render_state();
-
-	// Activate shader
-	shader_use(ui_context->shader);
-
-	// Setup orthographic projection
-	mat4 projection;
-	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
-	          1.0F, projection);
-
-	// Upload uniforms
-	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
-	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
-	shader_set_float(ui_context->shader, "globalAlpha", alpha);
-	shader_set_int(ui_context->shader, "useTexture",
-	               1); /* Enable Texture for Text */
-
-	// Bind texture and vertex array
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
-	glBindVertexArray(ui_context->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+	int auto_batch = 0;
+	if (!ui_context->batch_active) {
+		ui_begin(ui_context, screen_width, screen_height);
+		auto_batch = 1;
+	}
 
 	// Render each character
 	float current_x = pos_x;
@@ -327,25 +413,27 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 		const float render_y =
 		    pos_y + glyph->y_off + FONT_BASELINE_OFFSET;
 
-		// Generate and upload quad
-		const UIQuad quad = make_glyph_quad(glyph, render_x, render_y);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+		// Check if batch is full
+		if (ui_context->batch_count + VERTICES_PER_QUAD >
+		    UI_MAX_BATCH_VERTICES) {
+			ui_flush(ui_context);
+		}
 
-		// Draw
-		glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+		// Generate and append quad
+		const UIQuad quad =
+		    make_glyph_quad(glyph, render_x, render_y, color, alpha);
+		for (int i = 0; i < VERTICES_PER_QUAD; i++) {
+			ui_context->batch_vertices[ui_context->batch_count++] =
+			    quad.vertices[i];
+		}
 
 		// Advance cursor
 		current_x += glyph->advance;
 	}
 
-	// Cleanup
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUseProgram(0);
-
-	// Restore OpenGL state
-	render_utils_restore_state(&saved_state);
+	if (auto_batch) {
+		ui_end(ui_context);
+	}
 }
 
 // NOLINTNEXTLINE(readability-identifier-length)
@@ -365,58 +453,51 @@ void ui_draw_rect_ex(UIContext* ui_context, float rect_x, float rect_y,
 		return;
 	}
 
-	// Save and setup OpenGL state
-	const GLStateBackup saved_state = render_utils_save_state();
-	setup_ui_render_state();
+	int auto_batch = 0;
+	if (!ui_context->batch_active) {
+		ui_begin(ui_context, screen_width, screen_height);
+		auto_batch = 1;
+	}
 
-	// Activate shader
-	shader_use(ui_context->shader);
+	if (ui_context->batch_count + VERTICES_PER_QUAD >
+	    UI_MAX_BATCH_VERTICES) {
+		ui_flush(ui_context);
+	}
 
-	// Setup orthographic projection
-	mat4 projection;
-	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
-	          1.0F, projection);
-
-	// Upload uniforms
-	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
-	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
-	shader_set_float(ui_context->shader, "globalAlpha", alpha);
-	shader_set_int(ui_context->shader, "useTexture",
-	               0); /* Disable Texture for Rect */
-
-	// Bind vertex array (No texture binding needed, but VAO is
-	// required) We bind texture even if ignored to silence driver
-	// warnings about Unit
-	// 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
-	glBindVertexArray(ui_context->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+	const float col_r = color[0];
+	const float col_g = color[1];
+	const float col_b = color[2];
+	const float col_a = alpha;
+	const float mode = 0.0F; /* Solid */
 
 	/* Construct Quad manually */
 	UIQuad quad = {
 	    .vertices = {
-	        // Triangle 1
-	        {rect_x, rect_y + height, 0.0F, 1.0F},  // Bottom-left
-	        {rect_x, rect_y, 0.0F, 0.0F},           // Top-left
-	        {rect_x + width, rect_y, 1.0F, 0.0F},   // Top-right
+	        /* Triangle 1 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
+	         0.0F, 0.0F, 0.0F}, /* Top-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
 
-	        // Triangle 2
-	        {rect_x, rect_y + height, 0.0F, 1.0F},         // Bottom-left
-	        {rect_x + width, rect_y, 1.0F, 0.0F},          // Top-right
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F}  // Bottom-right
+	        /* Triangle 2 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
+	         col_b, col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
 	    }};
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
-	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
+		ui_context->batch_vertices[ui_context->batch_count++] =
+		    quad.vertices[i];
+	}
 
-	// Cleanup
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glUseProgram(0);
-
-	// Restore OpenGL state
-	render_utils_restore_state(&saved_state);
+	if (auto_batch) {
+		ui_end(ui_context);
+	}
 }
 
 void ui_destroy(UIContext* ui_context)
@@ -491,6 +572,11 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 		return;
 	}
 
+	// Flush the active batch before changing shader and state
+	if (ui_context->batch_active) {
+		ui_flush(ui_context);
+	}
+
 	const GLStateBackup saved_state = render_utils_save_state();
 	setup_ui_render_state();
 
@@ -518,25 +604,27 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	glBindVertexArray(ui_context->vao);
 	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
 
-	/* Unit Quad centered at 0,0 (-0.5 to 0.5) */
-	/* We use the same VBO layout but push a static unit quad */
-	UIQuad quad = {.vertices = {
-	                   /* Triangle 1 */
-	                   {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
-	                    UI_QUAD_TEX_MAX}, /* TL */
-	                   {-UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_MIN,
-	                    UI_QUAD_MIN}, /* BL */
-	                   {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF,
-	                    UI_QUAD_TEX_MAX, UI_QUAD_MIN}, /* BR */
+	// Construct the unit quad using UIVertex layout (only pos and tex
+	// matter here, color is uniform for spinner, mode etc are ignored by
+	// spinner shader) We just zero out the rest
+	UIQuad quad = {
+	    .vertices = {
+	        /* Triangle 1 */
+	        {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
+	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0}, /* TL */
+	        {-UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_MIN, UI_QUAD_MIN,
+	         0, 0, 0, 0, 0, 0, 0, 0}, /* BL */
+	        {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
+	         UI_QUAD_MIN, 0, 0, 0, 0, 0, 0, 0, 0}, /* BR */
 
-	                   /* Triangle 2 */
-	                   {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
-	                    UI_QUAD_TEX_MAX}, /* TL */
-	                   {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF,
-	                    UI_QUAD_TEX_MAX, UI_QUAD_MIN}, /* BR */
-	                   {UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
-	                    UI_QUAD_TEX_MAX} /* TR */
-	               }};
+	        /* Triangle 2 */
+	        {-UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_MIN,
+	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0}, /* TL */
+	        {UI_QUAD_POS_HALF, -UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
+	         UI_QUAD_MIN, 0, 0, 0, 0, 0, 0, 0, 0}, /* BR */
+	        {UI_QUAD_POS_HALF, UI_QUAD_POS_HALF, UI_QUAD_TEX_MAX,
+	         UI_QUAD_TEX_MAX, 0, 0, 0, 0, 0, 0, 0, 0} /* TR */
+	    }};
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
 	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
@@ -559,57 +647,49 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 		return;
 	}
 
-	// Save and setup OpenGL state
-	const GLStateBackup saved_state = render_utils_save_state();
-	setup_ui_render_state();
+	int auto_batch = 0;
+	if (!ui_context->batch_active) {
+		ui_begin(ui_context, screen_width, screen_height);
+		auto_batch = 1;
+	}
 
-	// Activate shader
-	shader_use(ui_context->shader);
+	if (ui_context->batch_count + VERTICES_PER_QUAD >
+	    UI_MAX_BATCH_VERTICES) {
+		ui_flush(ui_context);
+	}
 
-	// Setup orthographic projection
-	mat4 projection;
-	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
-	          1.0F, projection);
-
-	// Upload uniforms
-	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
-	shader_set_vec3(ui_context->shader, "textColor", (float*)color);
-	shader_set_float(ui_context->shader, "globalAlpha", alpha);
-	shader_set_int(ui_context->shader, "useTexture", 2); /* Rounded Mode */
-
-	/* Rounded specific unifiorms */
-	float size[2] = {width, height};
-	shader_set_vec2(ui_context->shader, "rectSize", size);
-
-	shader_set_float(ui_context->shader, "radius", radius);
-
-	// Bind vertex array
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
-	glBindVertexArray(ui_context->vao);
-	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+	const float col_r = color[0];
+	const float col_g = color[1];
+	const float col_b = color[2];
+	const float col_a = alpha;
+	const float mode = 2.0F; /* Rounded Rect */
 
 	/* Construct Quad manually */
 	UIQuad quad = {
 	    .vertices = {
-	        // Triangle 1
-	        {rect_x, rect_y + height, 0.0F, 1.0F},  // Bottom-left
-	        {rect_x, rect_y, 0.0F, 0.0F},           // Top-left
-	        {rect_x + width, rect_y, 1.0F, 0.0F},   // Top-right
+	        /* Triangle 1 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, width, height, radius}, /* Bottom-left */
+	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
+	         width, height, radius}, /* Top-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, width, height, radius}, /* Top-right */
 
-	        // Triangle 2
-	        {rect_x, rect_y + height, 0.0F, 1.0F},         // Bottom-left
-	        {rect_x + width, rect_y, 1.0F, 0.0F},          // Top-right
-	        {rect_x + width, rect_y + height, 1.0F, 1.0F}  // Bottom-right
+	        /* Triangle 2 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, width, height, radius}, /* Bottom-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, width, height, radius}, /* Top-right */
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
+	         col_b, col_a, mode, width, height, radius} /* Bottom-right */
 	    }};
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
-	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
+		ui_context->batch_vertices[ui_context->batch_count++] =
+		    quad.vertices[i];
+	}
 
-	// Cleanup
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glUseProgram(0);
-
-	render_utils_restore_state(&saved_state);
+	if (auto_batch) {
+		ui_end(ui_context);
+	}
 }
