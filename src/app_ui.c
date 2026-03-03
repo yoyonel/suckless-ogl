@@ -19,6 +19,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* --- Forward Declarations (Internal) --- */
+static void draw_exposure_debug_text(App* app);
+static void process_histogram_data(int* buckets, int size, float* min_lum,
+                                   float* max_lum, const float* lum_data);
+static int handle_histogram_readback(App* app, int* buckets, int size,
+                                     float* min_lum, float* max_lum);
+static void draw_luminance_histogram_graph(App* app, const int* buckets,
+                                           int size, float min_lum,
+                                           float max_lum);
+static void draw_main_info_overlay(App* app, UILayout* layout);
+static void handle_exposure_readback(App* app);
+static void trigger_exposure_readback(App* app);
+static void draw_exposure_overlay(App* app, UILayout* layout);
+static void draw_loading_indicator(App* app);
+
 enum {
 	DEBUG_TEXT_BUFFER_SIZE = 128,
 	RANGE_TEXT_BUFFER_SIZE = 64,
