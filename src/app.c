@@ -2,6 +2,7 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
+#include "app_binding.h"
 #include "app_input.h"
 #include "app_settings.h"
 #include "app_ui.h"
@@ -10,7 +11,6 @@
 #include "fps.h"
 #include "gl_common.h"
 #include "glad/glad.h"
-#include "log.h"
 #include "perf_mode.h"
 #include "postprocess.h"
 #include "profiler.h"
@@ -44,6 +44,21 @@ int app_init(App* app, int width, int height, const char* title)
 	app->show_help = false;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
+
+	/* Initialize Help UI state */
+	app_binding_registry_init(&app->binding_registry);
+	app->help_hovered_key = -1;
+	app->help_pressed_key = -1;
+	app->help_pressed_mods = 0;
+	app->help_press_timer = 0.0;
+
+	/* Default Keyboard UI Configuration */
+	app->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
+	app->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
+	app->kbd_config.key_radius = DEFAULT_KBD_KEY_RADIUS;
+	app->kbd_config.label_scale = DEFAULT_KBD_LABEL_SCALE;
+	app->kbd_config.title_y_offset = DEFAULT_KBD_TITLE_Y_OFFSET;
+	app->kbd_config.detail_y_offset = DEFAULT_KBD_DETAIL_Y_OFFSET;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -209,6 +224,14 @@ void app_run(App* app)
 		                               (float)app->delta_time,
 		                               current_time, app->frame_count);
 		action_notifier_update(&app->notifier, (float)app->delta_time);
+
+		if (app->help_press_timer > 0.0) {
+			app->help_press_timer -= app->delta_time;
+			if (app->help_press_timer < 0.0) {
+				app->help_press_timer = 0.0;
+				app->help_pressed_key = -1;
+			}
+		}
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
 		                                 current_time)) {
