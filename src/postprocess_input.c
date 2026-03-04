@@ -234,6 +234,10 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			                      POSTFX_DOF_DEBUG, "DOF",
 			                      "DOF DEBUG");
 			break;
+		case GLFW_KEY_U:
+			toggle_postfx(ctx, POSTFX_CHROM_ABBR,
+			              "Chromatic Aberration");
+			break;
 		case GLFW_KEY_M:
 			if (!check_flag(mods, GLFW_MOD_SHIFT)) {
 				/* M: Toggle Motion Blur */

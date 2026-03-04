@@ -1,0 +1,190 @@
+#include "app_binding.h"
+
+#include <stddef.h>
+
+enum { MAX_BINDINGS = 128 };
+
+static void add_binding_impl(AppBindingRegistry* registry, int key, int mods,
+                             const char* action, const char* desc,
+                             BindingCategory cat, BindingType type)
+{
+	if (registry->count >= MAX_APP_BINDINGS) {
+		return;
+	}
+	AppBinding* binding = &registry->bindings[registry->count++];
+	binding->key = key;
+	binding->mods = mods;
+	binding->action = action;
+	binding->desc = desc;
+	binding->category = cat;
+	binding->type = type;
+}
+
+void app_binding_registry_init(AppBindingRegistry* registry)
+{
+	registry->count = 0;
+
+#define add_binding(k, m, a, d, c, t) \
+	add_binding_impl(registry, k, m, a, d, c, t)
+
+	/* Movement */
+	add_binding(GLFW_KEY_W, 0, "Move Forward", "Moves the camera forward.",
+	            BINDING_CAT_MOVEMENT, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_S, 0, "Move Backward",
+	            "Moves the camera backward.", BINDING_CAT_MOVEMENT,
+	            BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_A, 0, "Move Left",
+	            "Strafe the camera to the left.", BINDING_CAT_MOVEMENT,
+	            BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_D, 0, "Move Right",
+	            "Strafe the camera to the right.", BINDING_CAT_MOVEMENT,
+	            BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_Q, 0, "Move Up", "Moves the camera upwards.",
+	            BINDING_CAT_MOVEMENT, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_E, 0, "Move Down", "Moves the camera downwards.",
+	            BINDING_CAT_MOVEMENT, BINDING_TYPE_ACTION);
+
+	/* Visuals */
+	add_binding(GLFW_KEY_Z, 0, "Toggle Wireframe",
+	            "Toggles polygonal wireframe rendering mode.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_L, 0, "Toggle Billboards",
+	            "Toggles billboard instancing mode for spheres.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_Y, 0, "Cycle GI Mode",
+	            "Cycles between different Global Illumination methods.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_Y, GLFW_MOD_SHIFT, "Toggle Probes",
+	            "Shows the 3D grid of Global Illumination probes.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_K, 0, "Toggle Skybox",
+	            "Shows or hides the environment map/skybox.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(
+	    GLFW_KEY_F5, 0, "Cycle PBR Debug",
+	    "Cycles through PBR material channels (Albedo, Normals, etc).",
+	    BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+
+	/* PostFX */
+	add_binding(GLFW_KEY_B, 0, "Toggle Bloom",
+	            "Toggles the bloom/glow effect.", BINDING_CAT_POSTFX,
+	            BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_M, 0, "Toggle Motion Blur",
+	            "Toggles the velocity-based motion blur.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_M, GLFW_MOD_SHIFT, "Cycle MB Debug",
+	            "Cycles through motion blur and velocity debug views.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_J, 0, "Toggle Auto-Exposure",
+	            "Enables or disables automatic scene exposure.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_J, GLFW_MOD_SHIFT, "Exposure Debug",
+	            "Shows the luminance histogram for auto-exposure tuning.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_V, 0, "Toggle Vignette",
+	            "Toggles the dark border vignette effect.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_G, 0, "Toggle Grain",
+	            "Toggles film grain noise effect.", BINDING_CAT_POSTFX,
+	            BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_X, 0, "Toggle FXAA",
+	            "Toggles Fast Approximate Anti-Aliasing.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_N, 0, "Toggle SSAO",
+	            "Toggles Screen Space Ambient Occlusion.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_U, 0, "Toggle Chromatic",
+	            "Toggles chromatic aberration effect.", BINDING_CAT_POSTFX,
+	            BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_7, 0, "Style: Banding",
+	            "Cycles through banding and posterization styles.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_8, 0, "FX Benchmark",
+	            "Starts/Stops the effects performance benchmark.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_1, 0, "Style: Clean",
+	            "Resets all post-processing to a pure, clean state.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_2, 0, "Style: Subtle",
+	            "Applies a subtle, natural color grading.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_3, 0, "Style: Cinematic",
+	            "Applies a high-contrast cinematic film look.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_4, 0, "Style: Vintage",
+	            "Applies a faded, vintage photographic style.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_5, 0, "Style: Matrix",
+	            "Applies a green-tinted digital 'Matrix' style.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_6, 0, "Style: Noir",
+	            "Applies a high-contrast black and white look.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_0, 0, "Reset PostFX",
+	            "Resets all effects and exposure to default values.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_ACTION);
+
+	/* System */
+	add_binding(GLFW_KEY_F1, 0, "Cycle Overlays",
+	            "Cycles through different debug information overlays.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_F2, 0, "Toggle Help",
+	            "Shows or hides this interactive keyboard help.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F3, 0, "Toggle Profiler",
+	            "Toggles the GPU timeline profiler visibility.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F4, 0, "Log GPU Metrics",
+	            "Toggles logging of GPU metrics to the console.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F6, 0, "Stencil Debug",
+	            "Toggles stencil buffer debug visualization.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F9, 0, "Toggle Perf Mode",
+	            "Toggles Performance Mode (disables heavy effects).",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F12, 0, "Take Screenshot",
+	            "Saves the current frame as a PNG image.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_O, 0, "Cycle Sorting",
+	            "Cycles through sphere sorting algorithms (CPU/GPU).",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_T, 0, "Env Transition",
+	            "Cycles through environment transition modes.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_SPACE, 0, "Reset Camera",
+	            "Resets camera position and environment settings.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_ESCAPE, 0, "Exit", "Closes the application.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
+
+#undef add_binding
+}
+
+const AppBinding* app_binding_registry_get(const AppBindingRegistry* registry,
+                                           int key, int mods)
+{
+	for (int i = 0; i < registry->count; i++) {
+		if (registry->bindings[i].key == key &&
+		    registry->bindings[i].mods == mods) {
+			return &registry->bindings[i];
+		}
+	}
+	return NULL;
+}
+
+int app_binding_registry_get_count(const AppBindingRegistry* registry)
+{
+	return registry->count;
+}
+
+const AppBinding* app_binding_registry_at(const AppBindingRegistry* registry,
+                                          int index)
+{
+	if (index < 0 || index >= registry->count) {
+		return NULL;
+	}
+	return &registry->bindings[index];
+}
