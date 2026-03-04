@@ -9,6 +9,15 @@
 #ifndef APP_UI_H
 #define APP_UI_H
 
+typedef struct {
+	float key_size;
+	float key_padding;
+	float key_radius;
+	float label_scale;
+	float title_y_offset;
+	float detail_y_offset;
+} KeyboardLayoutConfig;
+
 typedef struct App App;
 
 /**
