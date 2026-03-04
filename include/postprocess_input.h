@@ -17,8 +17,7 @@ typedef struct {
 	PostProcess* postprocess; /**< The post-processing pipeline state. */
 	ActionNotifier* notifier; /**< System for user feedback messages. */
 	EffectBenchmark* effect_bench; /**< Benchmarking tool state. */
-	float auto_threshold; /**< Current auto-exposure target value. */
-	GLFWwindow* window;   /**< Window handle for modifier checks. */
+	GLFWwindow* window; /**< Window handle for modifier checks. */
 } PostProcessInputContext;
 
 /**

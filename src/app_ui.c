@@ -6,29 +6,15 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "postprocess.h"
-#include "profiler.h"
-#include "render_utils.h"
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
-#include <cglm/types.h>
-#include <cglm/vec3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 /* --- Forward Declarations (Internal) --- */
-static void draw_exposure_debug_text(App* app);
-static void process_histogram_data(int* buckets, int size, float* min_lum,
-                                   float* max_lum, const float* lum_data);
-static int handle_histogram_readback(App* app, int* buckets, int size,
-                                     float* min_lum, float* max_lum);
-static void draw_luminance_histogram_graph(App* app, const int* buckets,
-                                           int size, float min_lum,
-                                           float max_lum);
 static void draw_main_info_overlay(App* app, UILayout* layout);
-static void handle_exposure_readback(App* app);
-static void trigger_exposure_readback(App* app);
 static void draw_exposure_overlay(App* app, UILayout* layout);
 static void draw_loading_indicator(App* app);
 
@@ -126,13 +112,7 @@ void app_draw_help_overlay(App* app)
 
 static void draw_exposure_debug_text(App* app)
 {
-	float exposure_val = 0.0F;
-	PROFILE_ZONE(ctx, "AE Sync Readback (glGetTexImage)");
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.exposure_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, &exposure_val);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	PROFILE_ZONE_END(ctx);
+	float exposure_val = postprocess_get_exposure(&app->postprocess);
 
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	float luminance =
@@ -147,100 +127,7 @@ static void draw_exposure_debug_text(App* app)
 	             (float*)DEBUG_ORANGE_COLOR, app->width, app->height);
 }
 
-static void process_histogram_data(int* buckets, int size, float* min_lum,
-                                   float* max_lum, const float* lum_data)
-{
-	for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
-		float val = lum_data[i];
-		if (val < *min_lum) {
-			*min_lum = val;
-		}
-		if (val > *max_lum) {
-			*max_lum = val;
-		}
-
-		static const float RANGE_OFFSET = 5.0F;
-		static const float RANGE_SCALE = 10.0F;
-		float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
-		int idx = (int)(norm * (float)size);
-		if (idx < 0) {
-			idx = 0;
-		}
-		if (idx >= size) {
-			idx = size - 1;
-		}
-
-		buckets[idx]++;
-	}
-}
-
-static int handle_histogram_readback(App* app, int* buckets, int size,
-                                     float* min_lum, float* max_lum)
-{
-	int read_idx = (int)(app->frame_count % 2);
-	GLsync current_sync =
-	    postprocess_get_histogram_sync(&app->postprocess, read_idx);
-	if (!current_sync) {
-		return 0;
-	}
-
-	GLenum res = glClientWaitSync(current_sync, 0, 0);
-	if (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED) {
-		return 0;
-	}
-
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_histogram_pbo(
-	                                       &app->postprocess, read_idx));
-	float* lum_data =
-	    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-
-	int processed = 0;
-	if (lum_data) {
-		PROFILE_ZONE(ctx, "Histogram Process");
-		process_histogram_data(buckets, size, min_lum, max_lum,
-		                       lum_data);
-		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-		PROFILE_ZONE_END(ctx);
-		processed = 1;
-	}
-
-	glDeleteSync(current_sync);
-	postprocess_set_histogram_sync(&app->postprocess, read_idx, NULL);
-	return processed;
-}
-
-int compute_luminance_histogram(App* app, int* buckets, int size,
-                                float* min_lum, float* max_lum)
-{
-	/* Initialize buckets */
-	for (int i = 0; i < size; i++) {
-		buckets[i] = 0;
-	}
-
-	static const float HISTO_MIN_INIT = 1000.0F;
-	static const float HISTO_MAX_INIT = -1000.0F;
-	*min_lum = HISTO_MIN_INIT;
-	*max_lum = HISTO_MAX_INIT;
-
-	int processed =
-	    handle_histogram_readback(app, buckets, size, min_lum, max_lum);
-
-	/* Trigger Async Transfer (For Next Frame) */
-	int write_idx = (int)((app->frame_count + 1) % 2);
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.downsample_tex);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_histogram_pbo(
-	                                       &app->postprocess, write_idx));
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-	postprocess_set_histogram_sync(
-	    &app->postprocess, write_idx,
-	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-	return processed;
-}
+/* All histogram logic moved to PostProcess */
 
 static void draw_luminance_histogram_graph(App* app, const int* buckets,
                                            int size, float min_lum,
@@ -308,8 +195,9 @@ void app_draw_debug_overlay(App* app)
 		float min_lum = 0.0F;
 		float max_lum = 0.0F;
 
-		if (compute_luminance_histogram(app, buckets, HISTO_SIZE,
-		                                &min_lum, &max_lum) != 0) {
+		if (postprocess_compute_luminance_histogram(
+		        &app->postprocess, app->frame_count, buckets,
+		        HISTO_SIZE, &min_lum, &max_lum) != 0) {
 			draw_luminance_histogram_graph(app, buckets, HISTO_SIZE,
 			                               min_lum, max_lum);
 		}
@@ -366,47 +254,7 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 	}
 }
 
-static void handle_exposure_readback(App* app)
-{
-	int read_idx = (int)(app->frame_count % 2);
-	GLsync current_sync =
-	    postprocess_get_exposure_sync(&app->postprocess, read_idx);
-	if (!current_sync) {
-		return;
-	}
-
-	GLenum res = glClientWaitSync(current_sync, 0, 0);
-	if (res == GL_ALREADY_SIGNALED || res == GL_CONDITION_SATISFIED) {
-		glBindBuffer(
-		    GL_PIXEL_PACK_BUFFER,
-		    postprocess_get_exposure_pbo(&app->postprocess, read_idx));
-		float* ptr =
-		    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-		if (ptr) {
-			app->current_exposure = *ptr;
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-		}
-		glDeleteSync(current_sync);
-		postprocess_set_exposure_sync(&app->postprocess, read_idx,
-		                              NULL);
-	}
-}
-
-static void trigger_exposure_readback(App* app)
-{
-	int write_idx = (int)((app->frame_count + 1) % 2);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_exposure_pbo(
-	                                       &app->postprocess, write_idx));
-	glBindTexture(GL_TEXTURE_2D,
-	              app->postprocess.auto_exposure_fx.exposure_tex);
-	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-	postprocess_set_exposure_sync(
-	    &app->postprocess, write_idx,
-	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-}
+/* Readbacks now handled in PostProcess */
 
 static void draw_exposure_overlay(App* app, UILayout* layout)
 {
@@ -414,14 +262,7 @@ static void draw_exposure_overlay(App* app, UILayout* layout)
 		return;
 	}
 
-	float exposure_val = 0.0F;
-	if (postprocess_is_enabled(&app->postprocess, POSTFX_AUTO_EXPOSURE)) {
-		handle_exposure_readback(app);
-		trigger_exposure_readback(app);
-		exposure_val = app->current_exposure;
-	} else {
-		exposure_val = app->postprocess.exposure.exposure;
-	}
+	float exposure_val = postprocess_get_exposure(&app->postprocess);
 
 	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
