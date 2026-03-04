@@ -472,7 +472,6 @@ void handle_app_input(App* app, int key, int mods)
 	PostProcessInputContext pp_ctx = {.postprocess = &app->postprocess,
 	                                  .notifier = &app->notifier,
 	                                  .effect_bench = &app->effect_bench,
-	                                  .auto_threshold = app->auto_threshold,
 	                                  .window = app->window};
 	postprocess_input_handle_key(&pp_ctx, key, mods);
 }

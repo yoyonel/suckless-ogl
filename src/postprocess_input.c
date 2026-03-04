@@ -62,11 +62,11 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 		case GLFW_KEY_1: /* Preset: Aucun */
 			postprocess_apply_preset(ctx->postprocess,
 			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(ctx->postprocess,
-			                         ctx->auto_threshold);
+			postprocess_set_exposure(
+			    ctx->postprocess, ctx->postprocess->auto_threshold);
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Style: Aucun (rendu pur) - Exposure: %.2f",
-			         ctx->auto_threshold);
+			         ctx->postprocess->auto_threshold);
 			action_notifier_push(ctx->notifier,
 			                     "Style: Pure Render",
 			                     NOTIF_DUR_LONG);
@@ -174,8 +174,8 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 		case GLFW_KEY_KP_0:
 			postprocess_apply_preset(ctx->postprocess,
 			                         &PRESET_DEFAULT);
-			postprocess_set_exposure(ctx->postprocess,
-			                         ctx->auto_threshold);
+			postprocess_set_exposure(
+			    ctx->postprocess, ctx->postprocess->auto_threshold);
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Color Grading: Reset to Defaults");
 			action_notifier_push(ctx->notifier,
