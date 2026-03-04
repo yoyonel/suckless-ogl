@@ -290,6 +290,22 @@ static bool handle_f_key_input(App* app, int key, int mods)
 		case GLFW_KEY_F9:
 			handle_f9_input(app);
 			return true;
+		case GLFW_KEY_F12: {
+			enum { FILENAME_BUF_SIZE = 64 };
+			char filename[FILENAME_BUF_SIZE];
+			time_t now = time(NULL);
+			struct tm* time_info = localtime(&now);
+			(void)strftime(filename, sizeof(filename),
+			               "screenshot_%Y%m%d_%H%M%S.png",
+			               time_info);
+			app_save_png_frame(app, filename);
+			char msg[NOTIF_BUF_SIZE];
+			(void)safe_snprintf(msg, sizeof(msg),
+			                    "Screenshot saved: %s", filename);
+			action_notifier_push(&app->notifier, msg,
+			                     NOTIF_DUR_LONG);
+			return true;
+		}
 		default:
 			return false;
 	}

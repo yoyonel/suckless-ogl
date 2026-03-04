@@ -43,6 +43,9 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	            BINDING_CAT_MOVEMENT, BINDING_TYPE_ACTION);
 	add_binding(GLFW_KEY_E, 0, "Move Down", "Moves the camera downwards.",
 	            BINDING_CAT_MOVEMENT, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_C, 0, "Camera Control",
+	            "Toggles mouse-driven camera orientation control.",
+	            BINDING_CAT_MOVEMENT, BINDING_TYPE_TOGGLE);
 
 	/* Visuals */
 	add_binding(GLFW_KEY_Z, 0, "Toggle Wireframe",
@@ -64,6 +67,25 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	    GLFW_KEY_F5, 0, "Cycle PBR Debug",
 	    "Cycles through PBR material channels (Albedo, Normals, etc).",
 	    BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_UP, 0, "Increase Subdiv",
+	            "Increases the geometric detail of spheres (Subdivisions).",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_DOWN, 0, "Decrease Subdiv",
+	            "Decreases the geometric detail of spheres (Subdivisions).",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_PAGE_UP, 0, "Next HDR Map",
+	            "Cycles to the next high dynamic range environment map.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(
+	    GLFW_KEY_PAGE_DOWN, 0, "Prev HDR Map",
+	    "Cycles to the previous high dynamic range environment map.",
+	    BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_PAGE_UP, GLFW_MOD_SHIFT, "Env LOD Up",
+	            "Increases the blurriness (LOD) of the environment map.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_PAGE_DOWN, GLFW_MOD_SHIFT, "Env LOD Down",
+	            "Decreases the blurriness (LOD) of the environment map.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
 
 	/* PostFX */
 	add_binding(GLFW_KEY_B, 0, "Toggle Bloom",
@@ -89,12 +111,21 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	            BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_H, GLFW_MOD_SHIFT, "Toggle DOF Debug",
+	            "Shows focus areas for Depth of Field tuning.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_X, 0, "Toggle FXAA",
 	            "Toggles Fast Approximate Anti-Aliasing.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
-	add_binding(GLFW_KEY_N, 0, "Toggle SSAO",
-	            "Toggles Screen Space Ambient Occlusion.",
+	add_binding(GLFW_KEY_X, GLFW_MOD_SHIFT, "Toggle FXAA Debug",
+	            "Shows edges detected by the FXAA algorithm.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_N, 0, "Toggle Specular AA",
+	            "Toggles anti-aliasing for specular highlights.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_N, GLFW_MOD_SHIFT, "Cycle AA Mode",
+	            "Cycles through available anti-aliasing methods.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_U, 0, "Toggle Chromatic",
 	            "Toggles chromatic aberration effect.", BINDING_CAT_POSTFX,
 	            BINDING_TYPE_TOGGLE);
@@ -125,6 +156,15 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_0, 0, "Reset PostFX",
 	            "Resets all effects and exposure to default values.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_KP_0, 0, "Reset PostFX (KP)",
+	            "Resets all effects and exposure to default values.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_KP_ADD, 0, "Increase Exposure",
+	            "Manually increases the virtual camera exposure.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_KP_SUBTRACT, 0, "Decrease Exposure",
+	            "Manually decreases the virtual camera exposure.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
 
 	/* System */
 	add_binding(GLFW_KEY_F1, 0, "Cycle Overlays",
@@ -158,6 +198,15 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	            "Resets camera position and environment settings.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
 	add_binding(GLFW_KEY_ESCAPE, 0, "Exit", "Closes the application.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_F, 0, "Toggle Fullscreen",
+	            "Toggles between windowed and fullscreen mode.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_P, 0, "Quick Capture",
+	            "Saves current frame to 'capture_frame.png'.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
+	add_binding(GLFW_KEY_R, 0, "Hot-Reload Shaders",
+	            "Attempts to recompile all shaders during runtime.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
 
 #undef add_binding
