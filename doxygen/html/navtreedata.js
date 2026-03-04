@@ -82,16 +82,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"camera_8c.html#aa9ec3674fcdecefa4f1f1502def1463c",
-"gl__debug_8c.html#a92c2ec42b6384cbe584117219166124a",
-"group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b",
-"pbr_8c.html#a380eba0f8cc7fc6c292073aa718c7097",
-"postprocess_8c.html#af9ffdf20fb030aea3399700fc094f1c1",
-"sh__math_8h.html#aa5dfe8e54e41814ae3a17368661d493b",
-"structApp.html#adbbb3edb5a04e49632863b966d86291e",
-"structGrainParams.html",
-"structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f",
-"ui_8c.html#a74067bc67d31c6d82fa3b548a3729670"
+"camera_8h.html#a1e3038fdc7dbfe49dc7967731c8f0980",
+"globals.html",
+"group__UI.html#ga61ad7d74466ad9984eda81fa6ee673f2",
+"pbr_8c.html#a719d0f0fa9fdb9a743885fc82c617162",
+"postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20",
+"sh__math_8c.html#a0d158f1e3af2ab523eb8423db3e5bd6e",
+"structApp.html#a90dac3c1153b09925cace5205c06889b",
+"structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c",
+"structPostProcessUBO.html#a9338c978ff5e60f94297a6c68ed6ae73",
+"tracy__manager_8h.html#a165df50ba6be5436b945f2b65e112b5a"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

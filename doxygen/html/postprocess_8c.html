@@ -332,6 +332,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a47114280aafaff716053e0b12be92dca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a47114280aafaff716053e0b12be92dca">postprocess_set_dummy_textures</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, GLuint dummy_black)</td></tr>
 <tr class="memdesc:a47114280aafaff716053e0b12be92dca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal helper to set fallback textures.  <a href="postprocess_8c.html#a47114280aafaff716053e0b12be92dca">More...</a><br /></td></tr>
 <tr class="separator:a47114280aafaff716053e0b12be92dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af62e61b8713282f8cebd249842aca9a8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#af62e61b8713282f8cebd249842aca9a8">destroy_readback_buffers</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:af62e61b8713282f8cebd249842aca9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cfe0c64852a8c67546ac134edeb4471"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a2cfe0c64852a8c67546ac134edeb4471">destroy_cached_shaders</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:a2cfe0c64852a8c67546ac134edeb4471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ad5053871c219c0dd7585fab39c18b0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a9ad5053871c219c0dd7585fab39c18b0">postprocess_cleanup</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
 <tr class="memdesc:a9ad5053871c219c0dd7585fab39c18b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all GPU and CPU resources.  <a href="postprocess_8c.html#a9ad5053871c219c0dd7585fab39c18b0">More...</a><br /></td></tr>
 <tr class="separator:a9ad5053871c219c0dd7585fab39c18b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -398,6 +402,31 @@ Functions</h2></td></tr>
 <tr class="memitem:ae22c24f5c64568dcf1908a579312ed60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#ae22c24f5c64568dcf1908a579312ed60">postprocess_update_time</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float delta_time)</td></tr>
 <tr class="memdesc:ae22c24f5c64568dcf1908a579312ed60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Increments internal clocks.  <a href="postprocess_8c.html#ae22c24f5c64568dcf1908a579312ed60">More...</a><br /></td></tr>
 <tr class="separator:ae22c24f5c64568dcf1908a579312ed60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1dcf193be9d7f15c27cffd3ff0db611"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aa1dcf193be9d7f15c27cffd3ff0db611">postprocess_get_exposure_pbo</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index)</td></tr>
+<tr class="separator:aa1dcf193be9d7f15c27cffd3ff0db611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e8b6b0e9bf0223724fc753271afe815"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a0e8b6b0e9bf0223724fc753271afe815">postprocess_get_histogram_pbo</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index)</td></tr>
+<tr class="separator:a0e8b6b0e9bf0223724fc753271afe815"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaac7681f1f0ded622ce21a46004eeb2c"><td class="memItemLeft" align="right" valign="top">GLsync&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aaac7681f1f0ded622ce21a46004eeb2c">postprocess_get_exposure_sync</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index)</td></tr>
+<tr class="separator:aaac7681f1f0ded622ce21a46004eeb2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a660027e7d28669260ff0bff0b4a7306b"><td class="memItemLeft" align="right" valign="top">GLsync&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a660027e7d28669260ff0bff0b4a7306b">postprocess_get_histogram_sync</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index)</td></tr>
+<tr class="separator:a660027e7d28669260ff0bff0b4a7306b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77ce2b60d9546666ff36ee12c97091a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a77ce2b60d9546666ff36ee12c97091a0">postprocess_set_exposure_sync</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index, GLsync sync)</td></tr>
+<tr class="separator:a77ce2b60d9546666ff36ee12c97091a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8295f28676867d00e43d1378968bd0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aa8295f28676867d00e43d1378968bd0b">postprocess_set_histogram_sync</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int index, GLsync sync)</td></tr>
+<tr class="separator:aa8295f28676867d00e43d1378968bd0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e499403ff87148f7455391b3ee508be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a4e499403ff87148f7455391b3ee508be">postprocess_update_readbacks</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, uint64_t frame_count)</td></tr>
+<tr class="memdesc:a4e499403ff87148f7455391b3ee508be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates all async GPU readbacks (Exposure, Histogram). Handles PBO mapping and Sync management internally to avoid CPU stalls.  <a href="postprocess_8c.html#a4e499403ff87148f7455391b3ee508be">More...</a><br /></td></tr>
+<tr class="separator:a4e499403ff87148f7455391b3ee508be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecbf3590a5f6119f5093284c9319ead3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aecbf3590a5f6119f5093284c9319ead3">postprocess_set_exposure_target</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float <a class="el" href="bloom__prefilter_8frag.html#a35dfb7e5bccf3b9aa48afd382d15ddda">threshold</a>)</td></tr>
+<tr class="memdesc:aecbf3590a5f6119f5093284c9319ead3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the target exposure threshold for AE.  <a href="postprocess_8c.html#aecbf3590a5f6119f5093284c9319ead3">More...</a><br /></td></tr>
+<tr class="separator:aecbf3590a5f6119f5093284c9319ead3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa758809c3a68ce2353cc5ea65fe262fb"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aa758809c3a68ce2353cc5ea65fe262fb">fill_histogram_buckets</a> (const float *lum_data, int *buckets, int size, float *min_lum, float *max_lum)</td></tr>
+<tr class="separator:aa758809c3a68ce2353cc5ea65fe262fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7a0afabddcd3ae0966dfe3faefe89e2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#aa7a0afabddcd3ae0966dfe3faefe89e2">trigger_histogram_readback</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, int write_idx)</td></tr>
+<tr class="separator:aa7a0afabddcd3ae0966dfe3faefe89e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64b64ebb4ca6f29eeacf2c9fbea97423"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a64b64ebb4ca6f29eeacf2c9fbea97423">postprocess_compute_luminance_histogram</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, uint64_t frame_count, int *buckets, int size, float *min_lum, float *max_lum)</td></tr>
+<tr class="memdesc:a64b64ebb4ca6f29eeacf2c9fbea97423"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the luminance histogram from the GPU readback.  <a href="postprocess_8c.html#a64b64ebb4ca6f29eeacf2c9fbea97423">More...</a><br /></td></tr>
+<tr class="separator:a64b64ebb4ca6f29eeacf2c9fbea97423"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ca4160d60435cb54320bbcc68d0d95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a86ca4160d60435cb54320bbcc68d0d95">postprocess_update_matrices</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, mat4 view_proj)</td></tr>
 <tr class="memdesc:a86ca4160d60435cb54320bbcc68d0d95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates view-projection matrices for effects requiring depth-reconstruction.  <a href="postprocess_8c.html#a86ca4160d60435cb54320bbcc68d0d95">More...</a><br /></td></tr>
 <tr class="separator:a86ca4160d60435cb54320bbcc68d0d95"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -530,6 +559,32 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a2cfe0c64852a8c67546ac134edeb4471"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cfe0c64852a8c67546ac134edeb4471">&#9670;&nbsp;</a></span>destroy_cached_shaders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void destroy_cached_shaders </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1696aa61a279d5a08b8639a245e9035a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1696aa61a279d5a08b8639a245e9035a">&#9670;&nbsp;</a></span>destroy_framebuffer()</h2>
 
@@ -562,6 +617,32 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="af62e61b8713282f8cebd249842aca9a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af62e61b8713282f8cebd249842aca9a8">&#9670;&nbsp;</a></span>destroy_readback_buffers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void destroy_readback_buffers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a92a070b5127b9df932264982e8a2d455"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a92a070b5127b9df932264982e8a2d455">&#9670;&nbsp;</a></span>destroy_screen_quad()</h2>
 
@@ -577,6 +658,60 @@ Here is the call graph for this function:</div>
           <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
           <td class="paramname"><em>post_processing</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa758809c3a68ce2353cc5ea65fe262fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa758809c3a68ce2353cc5ea65fe262fb">&#9670;&nbsp;</a></span>fill_histogram_buckets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void fill_histogram_buckets </td>
+          <td>(</td>
+          <td class="paramtype">const float *&#160;</td>
+          <td class="paramname"><em>lum_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>buckets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>min_lum</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>max_lum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -776,7 +911,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_a9ad5053871c219c0dd7585fab39c18b0_cgraph.svg" width="648" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8c_a9ad5053871c219c0dd7585fab39c18b0_cgraph.svg" width="100%" height="480"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -820,6 +955,67 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8c_aefd09528f2a616bdde219a7f5683847c_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a64b64ebb4ca6f29eeacf2c9fbea97423"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64b64ebb4ca6f29eeacf2c9fbea97423">&#9670;&nbsp;</a></span>postprocess_compute_luminance_histogram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int postprocess_compute_luminance_histogram </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>buckets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>min_lum</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>max_lum</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the luminance histogram from the GPU readback. </p>
+<dl class="section return"><dt>Returns</dt><dd>1 if buckets were updated, 0 otherwise. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_a64b64ebb4ca6f29eeacf2c9fbea97423_cgraph.svg" width="435" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -935,6 +1131,124 @@ Here is the call graph for this function:</div>
           <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
           <td class="paramname"><em>post_processing</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_abc341dd9baaf0c15b099d5ad9c076f2b_cgraph.svg" width="431" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aa1dcf193be9d7f15c27cffd3ff0db611"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1dcf193be9d7f15c27cffd3ff0db611">&#9670;&nbsp;</a></span>postprocess_get_exposure_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint postprocess_get_exposure_pbo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaac7681f1f0ded622ce21a46004eeb2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaac7681f1f0ded622ce21a46004eeb2c">&#9670;&nbsp;</a></span>postprocess_get_exposure_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLsync postprocess_get_exposure_sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e8b6b0e9bf0223724fc753271afe815"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e8b6b0e9bf0223724fc753271afe815">&#9670;&nbsp;</a></span>postprocess_get_histogram_pbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint postprocess_get_histogram_pbo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a660027e7d28669260ff0bff0b4a7306b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a660027e7d28669260ff0bff0b4a7306b">&#9670;&nbsp;</a></span>postprocess_get_histogram_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLsync postprocess_get_histogram_sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1511,6 +1825,76 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a77ce2b60d9546666ff36ee12c97091a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77ce2b60d9546666ff36ee12c97091a0">&#9670;&nbsp;</a></span>postprocess_set_exposure_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_exposure_sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsync&#160;</td>
+          <td class="paramname"><em>sync</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aecbf3590a5f6119f5093284c9319ead3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecbf3590a5f6119f5093284c9319ead3">&#9670;&nbsp;</a></span>postprocess_set_exposure_target()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_exposure_target </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates the target exposure threshold for AE. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_aecbf3590a5f6119f5093284c9319ead3_cgraph.svg" width="448" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="aebaafeb093d652eb93e6f91a55a60566"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aebaafeb093d652eb93e6f91a55a60566">&#9670;&nbsp;</a></span>postprocess_set_fxaa()</h2>
 
@@ -1592,6 +1976,40 @@ Here is the call graph for this function:</div>
           <td></td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>intensity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa8295f28676867d00e43d1378968bd0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8295f28676867d00e43d1378968bd0b">&#9670;&nbsp;</a></span>postprocess_set_histogram_sync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_histogram_sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLsync&#160;</td>
+          <td class="paramname"><em>sync</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1802,6 +2220,42 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a4e499403ff87148f7455391b3ee508be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e499403ff87148f7455391b3ee508be">&#9670;&nbsp;</a></span>postprocess_update_readbacks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_update_readbacks </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>frame_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates all async GPU readbacks (Exposure, Histogram). Handles PBO mapping and Sync management internally to avoid CPU stalls. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_a4e499403ff87148f7455391b3ee508be_cgraph.svg" width="388" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="ae22c24f5c64568dcf1908a579312ed60"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae22c24f5c64568dcf1908a579312ed60">&#9670;&nbsp;</a></span>postprocess_update_time()</h2>
 
@@ -1902,6 +2356,42 @@ Here is the call graph for this function:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess_8c_ad37e66750c245e76eacbbfacfdfa2464_cgraph.svg" width="100%" height="372"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
+
+</div>
+</div>
+<a id="aa7a0afabddcd3ae0966dfe3faefe89e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7a0afabddcd3ae0966dfe3faefe89e2">&#9670;&nbsp;</a></span>trigger_histogram_readback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void trigger_histogram_readback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>write_idx</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
