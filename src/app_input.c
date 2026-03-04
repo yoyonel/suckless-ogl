@@ -253,6 +253,14 @@ static void handle_f9_input(App* app)
 	PROFILE_ZONE_END(f9_zone);
 }
 
+static void app_toggle_help(App* app)
+{
+	app->show_help = !app->show_help;
+	action_notifier_push(&app->notifier,
+	                     app->show_help ? "Help: ON" : "Help: OFF",
+	                     NOTIF_DUR_NORMAL);
+}
+
 static bool handle_f_key_input(App* app, int key, int mods)
 {
 	switch (key) {
@@ -260,11 +268,7 @@ static bool handle_f_key_input(App* app, int key, int mods)
 			handle_overlay_input(app);
 			return true;
 		case GLFW_KEY_F2:
-			app->show_help = !app->show_help;
-			action_notifier_push(
-			    &app->notifier,
-			    app->show_help ? "Help: ON" : "Help: OFF",
-			    NOTIF_DUR_NORMAL);
+			app_toggle_help(app);
 			return true;
 		case GLFW_KEY_F3:
 			handle_f3_input(app, mods);
@@ -483,12 +487,30 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	App* app = (App*)glfwGetWindowUserPointer(window);
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
-			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			if (app->show_help) {
+				app_toggle_help(app);
+			} else {
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
+			}
+		} else if (app->show_help) {
+			/* Dry-run mode: intercept keys except for Close/Toggle
+			 * keys */
+			if (key == GLFW_KEY_F2) {
+				handle_app_input(app, key, mods);
+			} else {
+				app->help_pressed_key = key;
+				app->help_pressed_mods = mods;
+				app->help_press_timer =
+				    (double)HELP_PRESS_DURATION; /* Highlight
+				                                    duration */
+			}
 		} else {
 			handle_app_input(app, key, mods);
 		}
 	}
-	camera_input_handle_key(&app->camera, key, action);
+	if (!app->show_help) {
+		camera_input_handle_key(&app->camera, key, action);
+	}
 }
 
 void app_toggle_fullscreen(App* app, GLFWwindow* window)
