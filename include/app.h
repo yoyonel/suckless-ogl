@@ -68,16 +68,8 @@ typedef struct App {
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
 
 	/* --- Global GPU Resources --- */
-	GLuint
-	    exposure_pbo[2]; /**< Pixel Buffer Object for mean luma readback. */
-	GLuint histogram_pbo[2];  /**< Pixel Buffer Object for luminance
-	                             histogram  readback. */
-	GLsync exposure_sync[2];  /**< Sync objects to avoid CPU stalls on
-	                             exposure  readback. */
-	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
-	                             histogram readback. */
-	GLuint lum_ssbo[2];       /**< Double-buffered storage for luminance. */
-	TracyManager tracy_mgr;   /**< Tracy instrumentation manager. */
+	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
+	TracyManager tracy_mgr; /**< Tracy instrumentation manager. */
 
 	/* --- Global Configuration Uniforms --- */
 	float u_metallic;       /**< Override metallic for all objects. */
