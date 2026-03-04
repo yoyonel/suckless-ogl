@@ -178,16 +178,19 @@ static int handle_histogram_readback(App* app, int* buckets, int size,
                                      float* min_lum, float* max_lum)
 {
 	int read_idx = (int)(app->frame_count % 2);
-	if (!app->histogram_sync[read_idx]) {
+	GLsync current_sync =
+	    postprocess_get_histogram_sync(&app->postprocess, read_idx);
+	if (!current_sync) {
 		return 0;
 	}
 
-	GLenum res = glClientWaitSync(app->histogram_sync[read_idx], 0, 0);
+	GLenum res = glClientWaitSync(current_sync, 0, 0);
 	if (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED) {
 		return 0;
 	}
 
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo[read_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_histogram_pbo(
+	                                       &app->postprocess, read_idx));
 	float* lum_data =
 	    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
@@ -201,8 +204,8 @@ static int handle_histogram_readback(App* app, int* buckets, int size,
 		processed = 1;
 	}
 
-	glDeleteSync(app->histogram_sync[read_idx]);
-	app->histogram_sync[read_idx] = NULL;
+	glDeleteSync(current_sync);
+	postprocess_set_histogram_sync(&app->postprocess, read_idx, NULL);
 	return processed;
 }
 
@@ -226,10 +229,12 @@ int compute_luminance_histogram(App* app, int* buckets, int size,
 	int write_idx = (int)((app->frame_count + 1) % 2);
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.downsample_tex);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->histogram_pbo[write_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_histogram_pbo(
+	                                       &app->postprocess, write_idx));
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-	app->histogram_sync[write_idx] =
-	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+	postprocess_set_histogram_sync(
+	    &app->postprocess, write_idx,
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
@@ -364,33 +369,40 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 static void handle_exposure_readback(App* app)
 {
 	int read_idx = (int)(app->frame_count % 2);
-	if (!app->exposure_sync[read_idx]) {
+	GLsync current_sync =
+	    postprocess_get_exposure_sync(&app->postprocess, read_idx);
+	if (!current_sync) {
 		return;
 	}
 
-	GLenum res = glClientWaitSync(app->exposure_sync[read_idx], 0, 0);
+	GLenum res = glClientWaitSync(current_sync, 0, 0);
 	if (res == GL_ALREADY_SIGNALED || res == GL_CONDITION_SATISFIED) {
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo[read_idx]);
+		glBindBuffer(
+		    GL_PIXEL_PACK_BUFFER,
+		    postprocess_get_exposure_pbo(&app->postprocess, read_idx));
 		float* ptr =
 		    (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 		if (ptr) {
 			app->current_exposure = *ptr;
 			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 		}
-		glDeleteSync(app->exposure_sync[read_idx]);
-		app->exposure_sync[read_idx] = NULL;
+		glDeleteSync(current_sync);
+		postprocess_set_exposure_sync(&app->postprocess, read_idx,
+		                              NULL);
 	}
 }
 
 static void trigger_exposure_readback(App* app)
 {
 	int write_idx = (int)((app->frame_count + 1) % 2);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, app->exposure_pbo[write_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_exposure_pbo(
+	                                       &app->postprocess, write_idx));
 	glBindTexture(GL_TEXTURE_2D,
 	              app->postprocess.auto_exposure_fx.exposure_tex);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-	app->exposure_sync[write_idx] =
-	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+	postprocess_set_exposure_sync(
+	    &app->postprocess, write_idx,
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);

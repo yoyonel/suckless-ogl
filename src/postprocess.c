@@ -114,6 +114,28 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->fxaa.edge_threshold_min =
 	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
 
+	/* Initialize Exposure PBOs */
+	glGenBuffers(2, post_processing->exposure_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             post_processing->exposure_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL,
+		             GL_STREAM_READ);
+		post_processing->exposure_sync[i] = NULL;
+	}
+
+	/* Initialize Histogram PBOs (64x64 floats) */
+	glGenBuffers(2, post_processing->histogram_pbo);
+	for (int i = 0; i < 2; i++) {
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             post_processing->histogram_pbo[i]);
+		glBufferData(GL_PIXEL_PACK_BUFFER,
+		             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)),
+		             NULL, GL_STREAM_READ);
+		post_processing->histogram_sync[i] = NULL;
+	}
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
 	/* Initialisation Banding */
 	post_processing->banding.mode = BANDING_MODE_LINEAR;
 	post_processing->banding.levels = DEFAULT_BANDING_LEVELS;
@@ -221,12 +243,43 @@ static void destroy_screen_quad(PostProcess* post_processing)
 	GL_SAFE_DELETE_BUFFER(post_processing->screen_quad_vbo);
 }
 
+static void destroy_readback_buffers(PostProcess* post_processing)
+{
+	for (int i = 0; i < 2; i++) {
+		GL_SAFE_DELETE_BUFFER(post_processing->exposure_pbo[i]);
+		GL_SAFE_DELETE_BUFFER(post_processing->histogram_pbo[i]);
+		if (post_processing->exposure_sync[i]) {
+			glDeleteSync(post_processing->exposure_sync[i]);
+			post_processing->exposure_sync[i] = NULL;
+		}
+		if (post_processing->histogram_sync[i]) {
+			glDeleteSync(post_processing->histogram_sync[i]);
+			post_processing->histogram_sync[i] = NULL;
+		}
+	}
+}
+
+static void destroy_cached_shaders(PostProcess* post_processing)
+{
+	/* Destroy cached shaders */
+	for (int i = 0; i < post_processing->shader_cache_count; i++) {
+		if (post_processing->shader_cache[i].shader) {
+			/* SHADER_SAFE_DESTROY will handle internal program +
+			 * struct free */
+			SHADER_SAFE_DESTROY(
+			    post_processing->shader_cache[i].shader);
+		}
+	}
+	post_processing->shader_cache_count = 0;
+}
+
 void postprocess_cleanup(PostProcess* post_processing)
 {
 	if (!post_processing) {
 		return;
 	}
 
+	destroy_readback_buffers(post_processing);
 	destroy_framebuffer(post_processing);
 	destroy_screen_quad(post_processing);
 
@@ -239,16 +292,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 		post_processing->postprocess_shader = NULL;
 	}
 
-	/* Destroy cached shaders */
-	for (int i = 0; i < post_processing->shader_cache_count; i++) {
-		if (post_processing->shader_cache[i].shader) {
-			/* SHADER_SAFE_DESTROY will handle internal program +
-			 * struct free */
-			SHADER_SAFE_DESTROY(
-			    post_processing->shader_cache[i].shader);
-		}
-	}
-	post_processing->shader_cache_count = 0;
+	destroy_cached_shaders(post_processing);
 
 	/* Destroy postprocess_shader if it wasn't in the cache */
 	SHADER_SAFE_DESTROY(post_processing->postprocess_shader);
@@ -779,6 +823,38 @@ void postprocess_update_time(PostProcess* post_processing, float delta_time)
 	post_processing->time += delta_time;
 	post_processing->delta_time =
 	    delta_time; /* Save dt for compute shader */
+}
+
+GLuint postprocess_get_exposure_pbo(PostProcess* post_processing, int index)
+{
+	return post_processing->exposure_pbo[index];
+}
+
+GLuint postprocess_get_histogram_pbo(PostProcess* post_processing, int index)
+{
+	return post_processing->histogram_pbo[index];
+}
+
+GLsync postprocess_get_exposure_sync(PostProcess* post_processing, int index)
+{
+	return post_processing->exposure_sync[index];
+}
+
+GLsync postprocess_get_histogram_sync(PostProcess* post_processing, int index)
+{
+	return post_processing->histogram_sync[index];
+}
+
+void postprocess_set_exposure_sync(PostProcess* post_processing, int index,
+                                   GLsync sync)
+{
+	post_processing->exposure_sync[index] = sync;
+}
+
+void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
+                                    GLsync sync)
+{
+	post_processing->histogram_sync[index] = sync;
 }
 
 void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
