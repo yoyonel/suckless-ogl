@@ -103,15 +103,17 @@ void test_benchmark_histogram(void)
 	float max_lum = 0.0F;
 
 	// Warmup
-	compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
-	                            &max_lum);
+	postprocess_compute_luminance_histogram(&app.postprocess,
+	                                        app.frame_count, buckets,
+	                                        HISTO_SIZE, &min_lum, &max_lum);
 
 	// Benchmark
 	clock_t start = clock();
 	for (int i = 0; i < ITERATIONS; i++) {
 		app.frame_count = (uint64_t)i;
-		compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
-		                            &max_lum);
+		postprocess_compute_luminance_histogram(
+		    &app.postprocess, app.frame_count, buckets, HISTO_SIZE,
+		    &min_lum, &max_lum);
 	}
 	clock_t end = clock();
 	double cpu_time_used =
@@ -129,8 +131,9 @@ void test_benchmark_histogram(void)
 		                 1000000000);  // 1s
 	}
 	app.frame_count = (uint64_t)ITERATIONS;
-	compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
-	                            &max_lum);
+	postprocess_compute_luminance_histogram(&app.postprocess,
+	                                        app.frame_count, buckets,
+	                                        HISTO_SIZE, &min_lum, &max_lum);
 
 	// Verify
 	int total_buckets = 0;

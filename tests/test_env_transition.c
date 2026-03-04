@@ -66,8 +66,7 @@ void test_transition_initial_state(void)
 	/* Simulate state machine processing */
 	env_manager_update_ibl(
 	    &g_test_app->env_mgr, &g_test_app->scene, &g_test_app->postprocess,
-	    &g_test_app->auto_threshold, g_test_app->frame_count,
-	    g_test_app->width, g_test_app->height);
+	    g_test_app->frame_count, g_test_app->width, g_test_app->height);
 
 	/* Should move to FADE_IN */
 	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
@@ -86,8 +85,7 @@ void test_transition_crossfade_flow(void)
 	/* Simulate state machine processing */
 	env_manager_update_ibl(
 	    &g_test_app->env_mgr, &g_test_app->scene, &g_test_app->postprocess,
-	    &g_test_app->auto_threshold, g_test_app->frame_count,
-	    g_test_app->width, g_test_app->height);
+	    g_test_app->frame_count, g_test_app->width, g_test_app->height);
 
 	/* In Crossfade, Done -> FADE_IN immediately */
 	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
@@ -110,8 +108,7 @@ void test_transition_black_screen_flow(void)
 	/* Simulate state machine processing */
 	env_manager_update_ibl(
 	    &g_test_app->env_mgr, &g_test_app->scene, &g_test_app->postprocess,
-	    &g_test_app->auto_threshold, g_test_app->frame_count,
-	    g_test_app->width, g_test_app->height);
+	    g_test_app->frame_count, g_test_app->width, g_test_app->height);
 
 	/* In Black Screen, Done -> FADE_OUT */
 	TEST_ASSERT_EQUAL(TRANSITION_FADE_OUT,
@@ -122,9 +119,9 @@ void test_transition_black_screen_flow(void)
 	static const double FADE_OUT_DURATION_FACTOR = 2.0;
 	g_test_app->delta_time =
 	    (double)TRANSITION_DURATION * FADE_OUT_DURATION_FACTOR;
-	env_manager_update_transition(
-	    &g_test_app->env_mgr, &g_test_app->scene, &g_test_app->postprocess,
-	    &g_test_app->auto_threshold, g_test_app->delta_time, 0);
+	env_manager_update_transition(&g_test_app->env_mgr, &g_test_app->scene,
+	                              &g_test_app->postprocess,
+	                              g_test_app->delta_time, 0);
 
 	/* Should move to FADE_IN after swap */
 	TEST_ASSERT_EQUAL(TRANSITION_FADE_IN,
