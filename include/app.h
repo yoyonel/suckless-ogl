@@ -3,6 +3,8 @@
 
 #include "action_notifier.h"
 #include "adaptive_sampler.h"
+#include "app_binding.h"
+#include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
 #include "camera.h"
@@ -46,6 +48,7 @@ typedef struct App {
 	GPUProfiler gpu_profiler;
 	GPUProfilerUI timeline_ui;
 	UIContext ui; /**< Overlay and text rendering state. */
+	AppBindingRegistry binding_registry;
 
 	Camera camera; /**< View/Proj state. */
 
@@ -67,6 +70,13 @@ typedef struct App {
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
 
+	/* --- Help UI State --- */
+	int help_hovered_key;  /**< Key currently hovered in help layout. */
+	int help_pressed_key;  /**< Key currently pressed (dry-run) in help. */
+	int help_pressed_mods; /**< Modifiers currently pressed (dry-run) in
+	                          help. */
+	double help_press_timer; /**< Timer for highlighting pressed key. */
+
 	/* --- Global GPU Resources --- */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
 	TracyManager tracy_mgr; /**< Tracy instrumentation manager. */
@@ -80,6 +90,8 @@ typedef struct App {
 	AsyncLoader* async_loader; /**< Background asset loader context. */
 	AsyncCoordinator
 	    async_coord; /**< Manages PBO allocation & async synchronization. */
+
+	KeyboardLayoutConfig kbd_config; /**< Sizing and style for help UI. */
 } App;
 
 /* --- Core Control Flow --- */
@@ -105,7 +117,6 @@ void app_run(App* app);
 void app_update(App* app);
 
 #include "app_input.h"
-#include "app_ui.h"
 
 enum { TRACY_SCREENSHOT_WIDTH = 320, TRACY_SCREENSHOT_HEIGHT = 180 };
 
