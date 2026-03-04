@@ -377,6 +377,9 @@ typedef struct PostProcess {
 	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
 	                             histogram readback. */
 
+	float current_exposure; /**< Cached exposure from GPU readback. */
+	float auto_threshold;   /**< Dynamic exposure target. */
+	uint64_t frame_count; /**< Internal frame counter for readback sync. */
 } PostProcess;
 
 /* --- Lifecycle --- */
@@ -538,5 +541,27 @@ void postprocess_set_exposure_sync(PostProcess* post_processing, int index,
                                    GLsync sync);
 void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
                                     GLsync sync);
+
+/**
+ * @brief Updates all async GPU readbacks (Exposure, Histogram).
+ * Handles PBO mapping and Sync management internally to avoid CPU stalls.
+ */
+void postprocess_update_readbacks(PostProcess* post_processing,
+                                  uint64_t frame_count);
+
+/**
+ * @brief Updates the target exposure threshold for AE.
+ */
+void postprocess_set_exposure_target(PostProcess* post_processing,
+                                     float threshold);
+
+/**
+ * @brief Computes the luminance histogram from the GPU readback.
+ * @return 1 if buckets were updated, 0 otherwise.
+ */
+int postprocess_compute_luminance_histogram(PostProcess* post_processing,
+                                            uint64_t frame_count, int* buckets,
+                                            int size, float* min_lum,
+                                            float* max_lum);
 
 #endif /* POSTPROCESS_H */
