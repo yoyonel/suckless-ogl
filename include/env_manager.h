@@ -80,8 +80,8 @@ int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
  * @param height Current window height (for snapshot).
  */
 void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
-                            PostProcess* postproc, float* auto_threshold,
-                            uint64_t frame_count, int width, int height);
+                            PostProcess* postproc, uint64_t frame_count,
+                            int width, int height);
 
 /**
  * @brief Updates the environment transition animation.
@@ -93,8 +93,8 @@ void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
  * @param frame_count Current frame count.
  */
 void env_manager_update_transition(EnvManager* mgr, Scene* scene,
-                                   PostProcess* postproc, float* auto_threshold,
-                                   double delta_time, uint64_t frame_count);
+                                   PostProcess* postproc, double delta_time,
+                                   uint64_t frame_count);
 
 /**
  * @brief Renders the transition overlay (fade/crossfade).
