@@ -100,6 +100,8 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->auto_exposure.speed_up = EXPOSURE_SPEED_UP;
 	post_processing->auto_exposure.speed_down = EXPOSURE_SPEED_DOWN;
 	post_processing->auto_exposure.key_value = EXPOSURE_DEFAULT_KEY_VALUE;
+	post_processing->current_exposure = 1.0F;
+	post_processing->auto_threshold = 1.0F;
 
 	/* Initialisation Motion Blur */
 	if (!fx_motion_blur_init(post_processing)) {
@@ -472,7 +474,12 @@ void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
 
 float postprocess_get_exposure(PostProcess* post_processing)
 {
-	return fx_auto_exposure_get_current_exposure(post_processing);
+	/* Return the cached value from the last async readback to avoid
+	 * synchronous GPU stalls. If AE is disabled, return manual exposure. */
+	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
+		return post_processing->current_exposure;
+	}
+	return post_processing->exposure.exposure;
 }
 
 void postprocess_set_auto_exposure(PostProcess* post_processing,
@@ -618,6 +625,20 @@ void postprocess_end(PostProcess* post_processing)
 		                   "Auto Exposure",
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
 		fx_auto_exposure_render(post_processing);
+
+		/* Trigger Async Readback for current frame (will be ready in
+		 * next frames) */
+		int write_idx = (int)((post_processing->frame_count + 1) % 2);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,
+		             post_processing->exposure_pbo[write_idx]);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->auto_exposure_fx.exposure_tex);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+		post_processing->exposure_sync[write_idx] =
+		    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 	}
 
 	/* Motion Blur Pre-Pass (Compute) - Also needed for debug modes */
@@ -855,6 +876,133 @@ void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
                                     GLsync sync)
 {
 	post_processing->histogram_sync[index] = sync;
+}
+
+void postprocess_update_readbacks(PostProcess* post_processing,
+                                  uint64_t frame_count)
+{
+	post_processing->frame_count = frame_count;
+
+	if (!postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
+		return;
+	}
+
+	int read_idx = (int)(frame_count % 2);
+	GLsync current_sync = post_processing->exposure_sync[read_idx];
+
+	if (current_sync) {
+		GLenum res = glClientWaitSync(current_sync, 0, 0);
+		if (res == GL_ALREADY_SIGNALED ||
+		    res == GL_CONDITION_SATISFIED) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             post_processing->exposure_pbo[read_idx]);
+			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
+			                                 GL_READ_ONLY);
+			if (ptr) {
+				post_processing->current_exposure = *ptr;
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
+			glDeleteSync(current_sync);
+			post_processing->exposure_sync[read_idx] = NULL;
+		}
+	}
+}
+
+void postprocess_set_exposure_target(PostProcess* post_processing,
+                                     float threshold)
+{
+	post_processing->auto_threshold = threshold;
+	postprocess_set_exposure(post_processing, threshold);
+}
+
+static void fill_histogram_buckets(const float* lum_data, int* buckets,
+                                   int size, float* min_lum, float* max_lum)
+{
+	for (int i = 0; i < LUM_HISTOGRAM_SIZE; i++) {
+		float val = lum_data[i];
+		if (val < *min_lum) {
+			*min_lum = val;
+		}
+		if (val > *max_lum) {
+			*max_lum = val;
+		}
+
+		static const float RANGE_OFFSET = 5.0F;
+		static const float RANGE_SCALE = 10.0F;
+		float norm = (val + RANGE_OFFSET) / RANGE_SCALE;
+		int idx = (int)(norm * (float)size);
+		if (idx < 0) {
+			idx = 0;
+		}
+		if (idx >= size) {
+			idx = size - 1;
+		}
+		buckets[idx]++;
+	}
+}
+
+static void trigger_histogram_readback(PostProcess* post_processing,
+                                       int write_idx)
+{
+	glBindTexture(GL_TEXTURE_2D,
+	              post_processing->auto_exposure_fx.downsample_tex);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER,
+	             post_processing->histogram_pbo[write_idx]);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+	post_processing->histogram_sync[write_idx] =
+	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+int postprocess_compute_luminance_histogram(PostProcess* post_processing,
+                                            uint64_t frame_count, int* buckets,
+                                            int size, float* min_lum,
+                                            float* max_lum)
+{
+	/* Initialize buckets */
+	for (int i = 0; i < size; i++) {
+		buckets[i] = 0;
+	}
+
+	static const float HISTO_MIN_INIT = 1000.0F;
+	static const float HISTO_MAX_INIT = -1000.0F;
+	*min_lum = HISTO_MIN_INIT;
+	*max_lum = HISTO_MAX_INIT;
+
+	int read_idx = (int)(frame_count % 2);
+	GLsync current_sync = post_processing->histogram_sync[read_idx];
+
+	int processed = 0;
+	if (current_sync) {
+		GLenum res = glClientWaitSync(current_sync, 0, 0);
+		if (res == GL_ALREADY_SIGNALED ||
+		    res == GL_CONDITION_SATISFIED) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             post_processing->histogram_pbo[read_idx]);
+			float* lum_data = (float*)glMapBuffer(
+			    GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
+			if (lum_data) {
+				fill_histogram_buckets(lum_data, buckets, size,
+				                       min_lum, max_lum);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+				processed = 1;
+			}
+
+			glDeleteSync(current_sync);
+			post_processing->histogram_sync[read_idx] = NULL;
+		}
+	}
+
+	/* Trigger Async Transfer for Next Slot if not already pending */
+	int write_idx = (int)((frame_count + 1) % 2);
+	if (!post_processing->histogram_sync[write_idx]) {
+		trigger_histogram_readback(post_processing, write_idx);
+	}
+
+	return processed;
 }
 
 void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
