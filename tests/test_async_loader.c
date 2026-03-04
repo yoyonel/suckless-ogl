@@ -1,6 +1,10 @@
 #define _POSIX_C_SOURCE 199309L
+#ifndef GL_COMMON_NO_GLAD
 #define GL_COMMON_NO_GLAD
+#endif
+#ifndef GL_COMMON_NO_GLFW
 #define GL_COMMON_NO_GLFW
+#endif
 
 #include "async_loader.h"
 #include "gl_common.h"
