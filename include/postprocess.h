@@ -366,6 +366,17 @@ typedef struct PostProcess {
 
 	GPUProfiler* gpu_profiler;
 	int banding_preset_idx; /**< Internal index for preset cycling. */
+
+	/* --- Exposure Readback --- */
+	GLuint
+	    exposure_pbo[2]; /**< Pixel Buffer Object for mean luma readback. */
+	GLuint histogram_pbo[2];  /**< Pixel Buffer Object for luminance
+	                             histogram  readback. */
+	GLsync exposure_sync[2];  /**< Sync objects to avoid CPU stalls on
+	                             exposure  readback. */
+	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
+	                             histogram readback. */
+
 } PostProcess;
 
 /* --- Lifecycle --- */
@@ -518,5 +529,14 @@ void postprocess_end(PostProcess* post_processing);
  * @param delta_time SECONDS elapsed since last frame.
  */
 void postprocess_update_time(PostProcess* post_processing, float delta_time);
+
+GLuint postprocess_get_exposure_pbo(PostProcess* post_processing, int index);
+GLuint postprocess_get_histogram_pbo(PostProcess* post_processing, int index);
+GLsync postprocess_get_exposure_sync(PostProcess* post_processing, int index);
+GLsync postprocess_get_histogram_sync(PostProcess* post_processing, int index);
+void postprocess_set_exposure_sync(PostProcess* post_processing, int index,
+                                   GLsync sync);
+void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
+                                    GLsync sync);
 
 #endif /* POSTPROCESS_H */
