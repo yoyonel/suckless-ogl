@@ -20,6 +20,7 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	     effect_benchmark_is_running(effect_bench)) != 0;
 	gpu_profiler_set_enabled(profiler, profiling_enabled);
 	gpu_profiler_begin_frame(profiler, frame_count);
+	postprocess_update_readbacks(postprocess, frame_count);
 
 	PROFILE_FRAME_MARK;
 

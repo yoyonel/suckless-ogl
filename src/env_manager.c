@@ -146,12 +146,10 @@ static void capture_snapshot(Scene* scene, int width, int height)
 }
 
 static void finalize_ibl_swap(Scene* scene, PostProcess* postproc,
-                              float* auto_threshold, GLuint hdr_tex,
-                              GLuint spec_tex, GLuint irr_tex, float threshold,
-                              uint64_t frame_count)
+                              GLuint hdr_tex, GLuint spec_tex, GLuint irr_tex,
+                              float threshold, uint64_t frame_count)
 {
-	postprocess_set_exposure(postproc, threshold);
-	*auto_threshold = threshold;
+	postprocess_set_exposure_target(postproc, threshold);
 
 	/* Recycle the old HDR texture instead of deleting it */
 	if (scene->hdr_texture) {
@@ -181,7 +179,6 @@ static void finalize_ibl_swap(Scene* scene, PostProcess* postproc,
 
 static void handle_ibl_done_wait_state(EnvManager* mgr, Scene* scene,
                                        PostProcess* postproc,
-                                       float* auto_threshold,
                                        uint64_t frame_count)
 {
 	GLuint hdr_tex = 0;
@@ -191,8 +188,8 @@ static void handle_ibl_done_wait_state(EnvManager* mgr, Scene* scene,
 
 	if (ibl_coordinator_get_results(&scene->ibl_coord, &hdr_tex, &spec_tex,
 	                                &irr_tex, &threshold)) {
-		finalize_ibl_swap(scene, postproc, auto_threshold, hdr_tex,
-		                  spec_tex, irr_tex, threshold, frame_count);
+		finalize_ibl_swap(scene, postproc, hdr_tex, spec_tex, irr_tex,
+		                  threshold, frame_count);
 		mgr->transition_state = TRANSITION_FADE_IN;
 		mgr->transition_alpha = 1.0F;
 	}
@@ -200,7 +197,6 @@ static void handle_ibl_done_wait_state(EnvManager* mgr, Scene* scene,
 
 static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
                                           PostProcess* postproc,
-                                          float* auto_threshold,
                                           uint64_t frame_count, int width,
                                           int height)
 {
@@ -220,9 +216,8 @@ static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
 		                                &spec_tex, &irr_tex,
 		                                &threshold)) {
 			capture_snapshot(scene, width, height);
-			finalize_ibl_swap(scene, postproc, auto_threshold,
-			                  hdr_tex, spec_tex, irr_tex, threshold,
-			                  frame_count);
+			finalize_ibl_swap(scene, postproc, hdr_tex, spec_tex,
+			                  irr_tex, threshold, frame_count);
 			mgr->transition_state = TRANSITION_FADE_IN;
 			mgr->transition_alpha = 1.0F;
 		}
@@ -230,26 +225,25 @@ static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
 }
 
 void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
-                            PostProcess* postproc, float* auto_threshold,
-                            uint64_t frame_count, int width, int height)
+                            PostProcess* postproc, uint64_t frame_count,
+                            int width, int height)
 {
 	IBLState state = ibl_coordinator_update(&scene->ibl_coord, frame_count);
 
 	if (state == IBL_STATE_DONE) {
 		if (mgr->transition_state == TRANSITION_WAIT_IBL) {
 			handle_ibl_done_wait_state(mgr, scene, postproc,
-			                           auto_threshold, frame_count);
+			                           frame_count);
 		} else if (mgr->transition_state == TRANSITION_LOADING) {
 			handle_ibl_done_loading_state(
-			    mgr, scene, postproc, auto_threshold, frame_count,
-			    width, height);
+			    mgr, scene, postproc, frame_count, width, height);
 		}
 	}
 }
 
 void env_manager_update_transition(EnvManager* mgr, Scene* scene,
-                                   PostProcess* postproc, float* auto_threshold,
-                                   double delta_time, uint64_t frame_count)
+                                   PostProcess* postproc, double delta_time,
+                                   uint64_t frame_count)
 {
 	switch (mgr->transition_state) {
 		case TRANSITION_IDLE:
@@ -273,9 +267,9 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
 			if (ibl_coordinator_get_results(&scene->ibl_coord,
 			                                &hdr_tex, &spec_tex,
 			                                &irr_tex, &threshold)) {
-				finalize_ibl_swap(
-				    scene, postproc, auto_threshold, hdr_tex,
-				    spec_tex, irr_tex, threshold, frame_count);
+				finalize_ibl_swap(scene, postproc, hdr_tex,
+				                  spec_tex, irr_tex, threshold,
+				                  frame_count);
 				mgr->transition_state = TRANSITION_FADE_IN;
 			}
 			break;

@@ -72,12 +72,10 @@ typedef struct App {
 	TracyManager tracy_mgr; /**< Tracy instrumentation manager. */
 
 	/* --- Global Configuration Uniforms --- */
-	float u_metallic;       /**< Override metallic for all objects. */
-	float u_roughness;      /**< Override roughness for all objects. */
-	float u_ao;             /**< Override AO for all objects. */
-	float u_exposure;       /**< Manual exposure compensation. */
-	float auto_threshold;   /**< Dynamic exposure target. */
-	float current_exposure; /**< Integrated GPU exposure value. */
+	float u_metallic;  /**< Override metallic for all objects. */
+	float u_roughness; /**< Override roughness for all objects. */
+	float u_ao;        /**< Override AO for all objects. */
+	float u_exposure;  /**< Manual exposure compensation. */
 
 	AsyncLoader* async_loader; /**< Background asset loader context. */
 	AsyncCoordinator

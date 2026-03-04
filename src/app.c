@@ -77,8 +77,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->env_mgr.env_transition_mode = DEFAULT_ENV_TRANSITION_MODE;
 	app->env_mgr.is_first_load = 1;
 
-	app->current_exposure = 1.0F;
-
 	async_coordinator_init(&app->async_coord);
 
 	app->lum_histogram_buffer =
@@ -132,7 +130,8 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 	postprocess_set_dummy_textures(&app->postprocess,
 	                               app->scene.dummy_black_tex);
-	postprocess_set_exposure(&app->postprocess, app->auto_threshold);
+	postprocess_set_exposure(&app->postprocess,
+	                         app->postprocess.auto_threshold);
 	postprocess_enable(&app->postprocess, POSTFX_FXAA);
 
 #ifdef ENABLE_SHADER_OPTIMIZATION
@@ -318,9 +317,8 @@ void app_update(App* app)
 	}
 
 	env_manager_update_ibl(&app->env_mgr, &app->scene, &app->postprocess,
-	                       &app->auto_threshold, app->frame_count,
-	                       app->width, app->height);
+	                       app->frame_count, app->width, app->height);
 	env_manager_update_transition(&app->env_mgr, &app->scene,
-	                              &app->postprocess, &app->auto_threshold,
-	                              app->delta_time, app->frame_count);
+	                              &app->postprocess, app->delta_time,
+	                              app->frame_count);
 }
