@@ -208,6 +208,15 @@ static const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F}; /**< White text. */
 static const vec3 DEFAULT_FONT_SHADOW_COLOR = {0.0F, 0.0F,
                                                0.0F}; /**< Black shadow. */
 static const int MAX_FPS_TEXT_LENGTH = 64;
+static const float HELP_PRESS_DURATION = 2.0F;
+
+/* Keyboard Layout Help UI Defaults */
+static const float DEFAULT_KBD_KEY_SIZE = 55.0F;
+static const float DEFAULT_KBD_KEY_PADDING = 5.0F;
+static const float DEFAULT_KBD_KEY_RADIUS = 8.0F;
+static const float DEFAULT_KBD_LABEL_SCALE = 0.55F;
+static const float DEFAULT_KBD_TITLE_Y_OFFSET = 70.0F;
+static const float DEFAULT_KBD_DETAIL_Y_OFFSET = 50.0F;
 /** @} */
 
 /**
