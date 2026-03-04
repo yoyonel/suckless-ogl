@@ -87,7 +87,9 @@ void test_benchmark_histogram(void)
 	// Initialize PBOs for the test
 	glGenBuffers(2, app.postprocess.histogram_pbo);
 	for (int i = 0; i < 2; i++) {
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, postprocess_get_histogram_pbo(&app.postprocess, i));
+		glBindBuffer(
+		    GL_PIXEL_PACK_BUFFER,
+		    postprocess_get_histogram_pbo(&app.postprocess, i));
 		glBufferData(GL_PIXEL_PACK_BUFFER,
 		             MAP_SIZE * MAP_SIZE * (GLsizeiptr)sizeof(float),
 		             NULL, GL_STREAM_READ);
@@ -120,10 +122,11 @@ void test_benchmark_histogram(void)
 
 	// Final blocking wait to ensure we have data for verification
 	int last_idx = (int)((ITERATIONS) % 2);
-	GLsync last_sync = postprocess_get_histogram_sync(&app.postprocess, last_idx);
+	GLsync last_sync =
+	    postprocess_get_histogram_sync(&app.postprocess, last_idx);
 	if (last_sync) {
-		glClientWaitSync(last_sync,
-		                 GL_SYNC_FLUSH_COMMANDS_BIT, 1000000000);  // 1s
+		glClientWaitSync(last_sync, GL_SYNC_FLUSH_COMMANDS_BIT,
+		                 1000000000);  // 1s
 	}
 	app.frame_count = (uint64_t)ITERATIONS;
 	compute_luminance_histogram(&app, buckets, HISTO_SIZE, &min_lum,
@@ -140,7 +143,8 @@ void test_benchmark_histogram(void)
 	glDeleteTextures(1, &tex);
 	glDeleteBuffers(2, app.postprocess.histogram_pbo);
 	for (int i = 0; i < 2; i++) {
-		GLsync current_sync = postprocess_get_histogram_sync(&app.postprocess, i);
+		GLsync current_sync =
+		    postprocess_get_histogram_sync(&app.postprocess, i);
 		if (current_sync) {
 			glDeleteSync(current_sync);
 		}
