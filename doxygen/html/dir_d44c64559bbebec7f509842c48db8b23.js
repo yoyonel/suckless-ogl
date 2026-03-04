@@ -3,6 +3,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "action_notifier.h", "action__notifier_8h.html", "action__notifier_8h" ],
     [ "adaptive_sampler.h", "adaptive__sampler_8h.html", "adaptive__sampler_8h" ],
     [ "app.h", "app_8h.html", "app_8h" ],
+    [ "app_binding.h", "app__binding_8h.html", "app__binding_8h" ],
     [ "app_input.h", "app__input_8h.html", "app__input_8h" ],
     [ "app_metrics.h", "app__metrics_8h.html", "app__metrics_8h" ],
     [ "app_settings.h", "app__settings_8h.html", "app__settings_8h" ],

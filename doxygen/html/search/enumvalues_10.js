@@ -1,13 +1,14 @@
 var searchData=
 [
-  ['texture_5funit_5fsh_5fstart_3511',['TEXTURE_UNIT_SH_START',['../light__probes_8h.html#abc5c98fcc1211af2b80116dd6e0a035dae6175c419e0953c95223e089783137b1',1,'light_probes.h']]],
-  ['time_5fbuf_5fsize_3512',['TIME_BUF_SIZE',['../gpu__profiler__ui_8c.html#a39fca1837c5ce7715cbf571669660c13aa3c09595391d094d235e7a7d12566308',1,'gpu_profiler_ui.c']]],
-  ['time_5fbuffer_5fsize_3513',['TIME_BUFFER_SIZE',['../log_8c.html#a7ff5f2dff38e7639981794c43dc9167baa9180b3f0d8722645ebcd8c9ab60fa70',1,'log.c']]],
-  ['tracy_5fscreenshot_5fheight_3514',['TRACY_SCREENSHOT_HEIGHT',['../app_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba98c4f32842059fdbf6edf383e5a0b35c',1,'app.h']]],
-  ['tracy_5fscreenshot_5fwidth_3515',['TRACY_SCREENSHOT_WIDTH',['../app_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba5125f4f857a47c47ea2035f0da2ae3ff',1,'app.h']]],
-  ['transition_5ffade_5fin_3516',['TRANSITION_FADE_IN',['../group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22',1,'app_settings.h']]],
-  ['transition_5ffade_5fout_3517',['TRANSITION_FADE_OUT',['../group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03aef6c00d2ed4038ea71607d87192ac8d4',1,'app_settings.h']]],
-  ['transition_5fidle_3518',['TRANSITION_IDLE',['../group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03a1771342b86824aeb7c44dfaec95a28c4',1,'app_settings.h']]],
-  ['transition_5floading_3519',['TRANSITION_LOADING',['../group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2',1,'app_settings.h']]],
-  ['transition_5fwait_5fibl_3520',['TRANSITION_WAIT_IBL',['../group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03a80f3c4fac194d8a934651af60a971b39',1,'app_settings.h']]]
+  ['screen_5fquad_5fvertex_5fcount_3663',['SCREEN_QUAD_VERTEX_COUNT',['../gl__common_8h.html#abed82baf7f470b522273a3e37c24c600a726b6f2464109ad63235993e0fd37631',1,'gl_common.h']]],
+  ['sh_5ftexture_5fcount_3664',['SH_TEXTURE_COUNT',['../light__probes_8h.html#abc5c98fcc1211af2b80116dd6e0a035da5d6ff6546c5072f21b7dca2a5b52752e',1,'light_probes.h']]],
+  ['shader_5fcache_5fsize_3665',['SHADER_CACHE_SIZE',['../postprocess_8h.html#aba01db17f4a2bfbc3db60dc172972a25a9337d358c52b7f56750005f4028cc504',1,'postprocess.h']]],
+  ['shader_5flabel_5fbuffer_5fsize_3666',['SHADER_LABEL_BUFFER_SIZE',['../shader_8c.html#afa231099d07583c3ed0981e0bb665f55a392912e5ab211e28c877a7cc3b56b0f5',1,'shader.c']]],
+  ['shader_5fwarning_5fthrottle_5flimit_3667',['SHADER_WARNING_THROTTLE_LIMIT',['../shader_8h.html#aaf105ae5beaca1dee30ae54530691fcea2892c37b844f2481c736a4ee2e196e36',1,'shader.h']]],
+  ['simd_5falignment_3668',['SIMD_ALIGNMENT',['../gl__common_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a7619557dd412e4f5e4416d11b1c40d42',1,'gl_common.h']]],
+  ['sorting_5fmode_5fcount_3669',['SORTING_MODE_COUNT',['../scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1',1,'scene.h']]],
+  ['sorting_5fmode_5fcpu_5fqsort_3670',['SORTING_MODE_CPU_QSORT',['../scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a57db8e8e68485464d3403fdb31b212c0',1,'scene.h']]],
+  ['sorting_5fmode_5fcpu_5fradix_3671',['SORTING_MODE_CPU_RADIX',['../scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a5c55e0f368d30465b593925d13754120',1,'scene.h']]],
+  ['sorting_5fmode_5fgpu_5fbitonic_3672',['SORTING_MODE_GPU_BITONIC',['../scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad',1,'scene.h']]],
+  ['sync_5fattr_5fstart_3673',['SYNC_ATTR_START',['../gl__common_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da8fc307a473aac724f3230b8a1bc02449',1,'gl_common.h']]]
 ];

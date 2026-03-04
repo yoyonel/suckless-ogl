@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['whitebalanceparams_1930',['WhiteBalanceParams',['../structWhiteBalanceParams.html',1,'']]]
+  ['vec3array_2013',['Vec3Array',['../structVec3Array.html',1,'']]],
+  ['vignetteparams_2014',['VignetteParams',['../structVignetteParams.html',1,'']]]
 ];

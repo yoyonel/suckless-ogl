@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['vertex_5fcomponents_3522',['VERTEX_COMPONENTS',['../ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4a849c8f34c6992088171540ff5049dd98',1,'ui.c']]],
-  ['vertices_5fper_5fquad_3523',['VERTICES_PER_QUAD',['../ui_8c.html#aa36b7f9e66f38c879887c8f0996c33e4afb262b298a7f536d34a4faa03c3494fa',1,'ui.c']]]
+  ['us_5fper_5fs_3684',['US_PER_S',['../perf__timer_8c.html#a9ed84cf150d465178ffa7febed1c7eaead5371dfcf90e9eda0600059428f1a985',1,'perf_timer.c']]]
 ];

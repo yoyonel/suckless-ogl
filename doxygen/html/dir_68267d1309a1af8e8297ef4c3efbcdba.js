@@ -3,6 +3,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "action_notifier.c", "action__notifier_8c.html", "action__notifier_8c" ],
     [ "adaptive_sampler.c", "adaptive__sampler_8c.html", "adaptive__sampler_8c" ],
     [ "app.c", "app_8c.html", "app_8c" ],
+    [ "app_binding.c", "app__binding_8c.html", "app__binding_8c" ],
     [ "app_input.c", "app__input_8c.html", "app__input_8c" ],
     [ "app_metrics.c", "app__metrics_8c.html", "app__metrics_8c" ],
     [ "app_ui.c", "app__ui_8c.html", "app__ui_8c" ],
