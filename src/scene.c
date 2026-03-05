@@ -8,12 +8,13 @@
 #include "instanced_rendering.h"
 #include "log.h"
 #include "material.h"
+#include "platform/platform_fs.h"
+#include "platform/platform_utils.h"
 #include "render_utils.h"
 #include "shader.h"
 #include "sphere_sorting.h"
 #include "utils.h"
 #include <cglm/cglm.h>
-#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,41 +33,52 @@ static int compare_strings(const void* string_a, const void* string_b)
 	return strcmp(*(const char**)string_a, *(const char**)string_b);
 }
 
+struct HdrScanContext {
+	Scene* scene;
+};
+
+static void scene_hdr_file_callback(const char* filename, bool is_dir,
+                                    void* user_data)
+{
+	if (is_dir) {
+		return;
+	}
+
+	struct HdrScanContext* ctx = (struct HdrScanContext*)user_data;
+	Scene* scene = ctx->scene;
+
+	const char* dot = strrchr(filename, '.');
+	if (!dot || strcmp(dot, HDR_EXTENSION) != 0) {
+		return;
+	}
+
+	size_t new_count = (size_t)scene->hdr_count + 1;
+	char** new_files = realloc(scene->hdr_files, new_count * sizeof(char*));
+
+	if (!new_files) {
+		LOG_ERROR("suckless-ogl.scene",
+		          "Failed to realloc memory for HDR files");
+		return;
+	}
+
+	scene->hdr_files = new_files;
+	scene->hdr_count++;
+	scene->hdr_files[scene->hdr_count - 1] = strdup(filename);
+}
+
 static void scene_scan_hdr_files(Scene* scene)
 {
 	scene->hdr_count = 0;
 	scene->hdr_files = NULL;
 	scene->current_hdr_index = -1;
 
-	DIR* dir_handle = opendir(HDR_TEXTURE_PATH);
-	if (!dir_handle) {
+	struct HdrScanContext ctx = {scene};
+	if (!platform_dir_list(HDR_TEXTURE_PATH, scene_hdr_file_callback,
+	                       &ctx)) {
 		LOG_ERROR("suckless-ogl.scene",
 		          "Failed to open assets/textures/hdr directory!");
 		return;
 	}
-
-	struct dirent* entry = NULL;
-	while ((entry = readdir(dir_handle)) != NULL) {
-		char* dot = strrchr(entry->d_name, '.');
-		if (!dot || strcmp(dot, HDR_EXTENSION) != 0) {
-			continue;
-		}
-
-		size_t new_count = (size_t)scene->hdr_count + 1;
-		char** new_files =
-		    realloc(scene->hdr_files, new_count * sizeof(char*));
-
-		if (!new_files) {
-			LOG_ERROR("suckless-ogl.scene",
-			          "Failed to realloc memory for HDR files");
-			continue;
-		}
-
-		scene->hdr_files = new_files;
-		scene->hdr_count++;
-		scene->hdr_files[scene->hdr_count - 1] = strdup(entry->d_name);
-	}
-	closedir(dir_handle);
 
 	if (scene->hdr_count > 1) {
 		qsort(scene->hdr_files, (size_t)scene->hdr_count, sizeof(char*),
@@ -86,11 +98,9 @@ static void scene_init_instancing(Scene* scene)
 	const float grid_w = (float)(cols - 1) * spacing;
 	const float grid_h = (float)(rows - 1) * spacing;
 
-	SphereInstance* data = NULL;
-	// NOLINTNEXTLINE(misc-include-cleaner)
-	if (posix_memalign((void**)&data, SIMD_ALIGNMENT,
-	                   sizeof(SphereInstance) * (size_t)total_count) != 0 ||
-	    !data) {
+	SphereInstance* data = (SphereInstance*)platform_aligned_alloc(
+	    sizeof(SphereInstance) * (size_t)total_count, SIMD_ALIGNMENT);
+	if (!data) {
 		LOG_ERROR("suckless-ogl.scene",
 		          "Failed to allocate aligned memory for instancing");
 		return;
@@ -117,11 +127,10 @@ static void scene_init_instancing(Scene* scene)
 	instanced_group_init(&scene->instanced_group, data, total_count);
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	// Use posix_memalign for consistency and to avoid implicit declaration
-	// issues
-	void* raw_mem = NULL;
-	if (posix_memalign(&raw_mem, SIMD_ALIGNMENT,
-	                   sizeof(SphereInstance) * (size_t)total_count) == 0) {
+	// Use platform_aligned_alloc for portability and consistency
+	void* raw_mem = platform_aligned_alloc(
+	    sizeof(SphereInstance) * (size_t)total_count, SIMD_ALIGNMENT);
+	if (raw_mem) {
 		scene->sphere_instances = (SphereInstance*)raw_mem;
 		safe_memcpy(scene->sphere_instances,
 		            sizeof(SphereInstance) * (size_t)total_count, data,
@@ -556,7 +565,7 @@ void scene_cleanup(Scene* scene)
 	skybox_cleanup(&scene->skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->sphere_instances) {
-		free(scene->sphere_instances);
+		platform_aligned_free(scene->sphere_instances);
 		scene->sphere_instances = NULL;
 	}
 	sphere_sorter_cleanup(&scene->sphere_sorter);
