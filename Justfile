@@ -458,3 +458,26 @@ test-integration-tracy-release: build-tracy-release
 # Run application with Tracy enabled in Release mode
 run-tracy-release: build-tracy-release
     @./build-tracy-release/app
+# =============================================================================
+# Windows / Cross-Compilation (MinGW + Wine)
+# =============================================================================
+
+build_win_dir := "build-win"
+
+# Configure for Windows (MinGW)
+configure-win:
+    @cmake -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -B {{build_win_dir}} .
+
+# Build for Windows
+build-win:
+    @if [ ! -d {{build_win_dir}} ]; then just configure-win; fi
+    @cmake --build {{build_win_dir}} --parallel {{nprocs}}
+
+# Run for Windows via Wine
+run-win: build-win
+    @wine {{build_win_dir}}/app.exe
+
+# Run integration tests for Windows via Wine
+test-win: build-win
+    @chmod +x scripts/test_integration_generic.sh
+    @./scripts/test_integration_generic.sh wine {{build_win_dir}}/app.exe

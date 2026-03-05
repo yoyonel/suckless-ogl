@@ -11,11 +11,13 @@
 
 #include "log.h"
 #include "profiler.h"
+#include <string.h>
+#ifdef __linux__
 #include <errno.h>
 #include <sched.h>
-#include <string.h>
 #include <sys/resource.h>
 #include <unistd.h>
+#endif
 
 /* Optional GameMode integration */
 #ifdef HAVE_GAMEMODE
@@ -55,6 +57,7 @@ static int detect_gamemode(void)
  */
 static int detect_native_capabilities(void)
 {
+#ifdef __linux__
 	/* Check if we have CAP_SYS_NICE or are root */
 	if (geteuid() == 0) {
 		LOG_INFO("suckless-ogl.perf",
@@ -78,6 +81,9 @@ static int detect_native_capabilities(void)
 	LOG_INFO("suckless-ogl.perf",
 	         "Native nice available (may need privileges for effect)");
 	return 2;
+#else
+	return 0;  // Not implemented for other platforms yet
+#endif
 }
 
 int perf_mode_init(PerfModeContext* ctx)
@@ -97,6 +103,7 @@ int perf_mode_init(PerfModeContext* ctx)
 	ctx->original_nice = 0;
 
 	/* Save original scheduling state */
+#ifdef __linux__
 	ctx->original_policy = sched_getscheduler(0);
 	if (sched_getparam(0, &ctx->original_param) != 0) {
 		ctx->original_param.sched_priority = 0;
@@ -106,6 +113,7 @@ int perf_mode_init(PerfModeContext* ctx)
 	if (errno != 0) {
 		ctx->original_nice = 0;
 	}
+#endif
 
 	/* Detect available backends */
 	if (detect_gamemode()) {
@@ -196,6 +204,7 @@ static int deactivate_gamemode(PerfModeContext* ctx)
  */
 static int activate_native(PerfModeContext* ctx)
 {
+#ifdef __linux__
 	struct sched_param param = {// NOLINT(misc-include-cleaner)
 	                            .sched_priority = PERF_RT_PRIORITY};
 
@@ -225,6 +234,10 @@ static int activate_native(PerfModeContext* ctx)
 	    "Native activation unavailable (requires sudo or CAP_SYS_NICE)");
 	ctx->state = PERF_MODE_ERROR;
 	return -1;
+#else
+	(void)ctx;
+	return -1;
+#endif
 }
 
 /**
@@ -236,6 +249,7 @@ static int deactivate_native(PerfModeContext* ctx)
 {
 	int result = 0;
 
+#ifdef __linux__
 	if (ctx->state == PERF_MODE_NATIVE_SCHED) {
 		/* Restore original scheduler */
 		if (sched_setscheduler(0, ctx->original_policy,
@@ -253,6 +267,7 @@ static int deactivate_native(PerfModeContext* ctx)
 			result = -1;
 		}
 	}
+#endif
 
 	ctx->state = PERF_MODE_OFF;
 	LOG_INFO("suckless-ogl.perf", "Native mode deactivated");

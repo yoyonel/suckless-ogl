@@ -3,6 +3,7 @@
 #include "gl_common.h"           /* For SIMD_ALIGNMENT */
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
+#include "platform/platform_utils.h"
 #include "shader.h"
 #include <stdbool.h>
 #include <stdlib.h>
@@ -64,32 +65,26 @@ static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
 	void* new_aux = NULL;
 	void* new_temp = NULL;
 
-	if (posix_memalign(&new_entries, SIMD_ALIGNMENT,
-	                   (size_t)count * sizeof(SphereSortEntry)) != 0) {
-		new_entries = NULL;
-	}
-	if (posix_memalign(&new_aux, SIMD_ALIGNMENT,
-	                   (size_t)count * sizeof(SphereSortEntry)) != 0) {
-		new_aux = NULL;
-	}
-	if (posix_memalign(&new_temp, SIMD_ALIGNMENT,
-	                   (size_t)count * sizeof(SphereInstance)) != 0) {
-		new_temp = NULL;
-	}
+	new_entries = platform_aligned_alloc(
+	    (size_t)count * sizeof(SphereSortEntry), SIMD_ALIGNMENT);
+	new_aux = platform_aligned_alloc(
+	    (size_t)count * sizeof(SphereSortEntry), SIMD_ALIGNMENT);
+	new_temp = platform_aligned_alloc(
+	    (size_t)count * sizeof(SphereInstance), SIMD_ALIGNMENT);
 
 	if (!new_entries || !new_aux || !new_temp) {
 		LOG_ERROR("suckless-ogl.sorter",
 		          "CPU sort scratchpad allocation failed");
-		free(new_entries);
-		free(new_aux);
-		free(new_temp);
+		platform_aligned_free(new_entries);
+		platform_aligned_free(new_aux);
+		platform_aligned_free(new_temp);
 		return false;
 	}
 
 	/* These are per-frame scratchpads — no need to preserve old data. */
-	free(sorter->entries);
-	free(sorter->entries_aux);
-	free(sorter->temp_instances);
+	platform_aligned_free(sorter->entries);
+	platform_aligned_free(sorter->entries_aux);
+	platform_aligned_free(sorter->temp_instances);
 
 	sorter->entries = (SphereSortEntry*)new_entries;
 	sorter->entries_aux = (SphereSortEntry*)new_aux;
@@ -148,21 +143,15 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 	sorter->cpu_capacity = sorter->min_capacity;
 
 	/* Pre-allocate scratchpad for CPU sorting with SIMD alignment */
-	if (posix_memalign(
-	        (void**)&sorter->entries, SIMD_ALIGNMENT,
-	        (size_t)sorter->min_capacity * sizeof(SphereSortEntry)) != 0) {
-		sorter->entries = NULL;
-	}
-	if (posix_memalign(
-	        (void**)&sorter->entries_aux, SIMD_ALIGNMENT,
-	        (size_t)sorter->min_capacity * sizeof(SphereSortEntry)) != 0) {
-		sorter->entries_aux = NULL;
-	}
-	if (posix_memalign(
-	        (void**)&sorter->temp_instances, SIMD_ALIGNMENT,
-	        (size_t)sorter->min_capacity * sizeof(SphereInstance)) != 0) {
-		sorter->temp_instances = NULL;
-	}
+	sorter->entries = (SphereSortEntry*)platform_aligned_alloc(
+	    (size_t)sorter->min_capacity * sizeof(SphereSortEntry),
+	    SIMD_ALIGNMENT);
+	sorter->entries_aux = (SphereSortEntry*)platform_aligned_alloc(
+	    (size_t)sorter->min_capacity * sizeof(SphereSortEntry),
+	    SIMD_ALIGNMENT);
+	sorter->temp_instances = (SphereInstance*)platform_aligned_alloc(
+	    (size_t)sorter->min_capacity * sizeof(SphereInstance),
+	    SIMD_ALIGNMENT);
 }
 
 void sphere_sorter_cleanup(SphereSorter* sorter)
@@ -171,9 +160,9 @@ void sphere_sorter_cleanup(SphereSorter* sorter)
 	GL_SAFE_DELETE_BUFFER(sorter->index_ssbo);
 	GL_SAFE_DELETE_BUFFER(sorter->sorted_instance_ssbo);
 	GL_SAFE_DELETE_PROGRAM(sorter->compute_program);
-	free(sorter->entries);
-	free(sorter->entries_aux);
-	free(sorter->temp_instances);
+	platform_aligned_free(sorter->entries);
+	platform_aligned_free(sorter->entries_aux);
+	platform_aligned_free(sorter->temp_instances);
 	sorter->entries = NULL;
 	sorter->entries_aux = NULL;
 	sorter->temp_instances = NULL;
