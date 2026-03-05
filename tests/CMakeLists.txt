@@ -5,8 +5,19 @@
 # CONFIGURATION COMMUNE
 # =============================================================================
 
-set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} m dl)
-set(TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include ${stb_SOURCE_DIR} ${cjson_SOURCE_DIR})
+set(TEST_COMMON_LIBS unity cglm glad cjson ${GLFW3_LIBRARIES} Threads::Threads)
+if(UNIX)
+    list(APPEND TEST_COMMON_LIBS m dl)
+endif()
+set(TEST_INCLUDE_DIRS
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${cjson_SOURCE_DIR}
+    ${glfw_SOURCE_DIR}/include
+    ${glad_BINARY_DIR}/include
+    ${cglm_SOURCE_DIR}/include
+)
 
 if(ENABLE_TRACY)
     list(APPEND TEST_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/deps/tracy/public")
@@ -65,6 +76,16 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_security\\.c$")
+
+# Exclure les tests spécifiques à POSIX sur Windows
+if(WIN32)
+    message(STATUS "Excluding POSIX-only tests from Windows build")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_log\\.c$")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader_perf\\.c$")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader\\.c$")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_api\\.c$")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_uniforms_loc\\.c$")
+endif()
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
 set(OPENGL_TESTS
@@ -273,6 +294,8 @@ add_executable(test_gpu_profiler_repro
     ${CMAKE_SOURCE_DIR}/src/tracy_log.c
     ${CMAKE_SOURCE_DIR}/src/metric_stack.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
 )
 if(ENABLE_TRACY)
     target_sources(test_gpu_profiler_repro PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -354,6 +377,8 @@ add_executable(test_ibl_coordinator
     ${CMAKE_SOURCE_DIR}/src/log.c
     ${CMAKE_SOURCE_DIR}/src/tracy_log.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
 )
 if(ENABLE_TRACY)
     target_sources(test_ibl_coordinator PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
@@ -384,7 +409,9 @@ add_executable(test_benchmark_sphere_sorting
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
+target_sources(test_benchmark_sphere_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
 
 target_include_directories(test_benchmark_sphere_sorting PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
@@ -436,7 +463,9 @@ add_executable(test_sphere_sorting
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
     ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
+target_sources(test_sphere_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
 target_include_directories(test_sphere_sorting PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
@@ -457,6 +486,7 @@ add_executable(test_benchmark_sphere_sorting_perf
     ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
+target_sources(test_benchmark_sphere_sorting_perf PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
 target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
@@ -517,7 +547,8 @@ target_include_directories(test_async_coordinator PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${unity_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+    ${glad_BINARY_DIR}/include
+    ${glfw_SOURCE_DIR}/include
 )
 target_link_libraries(test_async_coordinator PRIVATE cglm m)
 add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
@@ -531,17 +562,23 @@ add_executable(test_async_loader
     ${CMAKE_SOURCE_DIR}/src/async_loader.c
     ${CMAKE_SOURCE_DIR}/src/perf_timer.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
 target_include_directories(test_async_loader PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${unity_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+    ${glad_BINARY_DIR}/include
     ${stb_SOURCE_DIR}
 )
 target_compile_definitions(test_async_loader PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
-target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
+if(UNIX)
+    target_link_libraries(test_async_loader PRIVATE cglm m pthread dl)
+else()
+    target_link_libraries(test_async_loader PRIVATE cglm pthread)
+endif()
 add_test(NAME test_async_loader COMMAND test_async_loader)
 # =============================================================================
 # TEXTURE SECURITY TEST (MOCKED)
@@ -555,15 +592,21 @@ add_executable(test_texture_security
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/io.c
     ${CMAKE_SOURCE_DIR}/src/stb_image_impl.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_time.c
 )
 target_include_directories(test_texture_security PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/include
     ${unity_SOURCE_DIR}/src
-    ${CMAKE_BINARY_DIR}/_deps/glad-build/include
+    ${glad_BINARY_DIR}/include
     ${stb_SOURCE_DIR}
 )
 target_compile_definitions(test_texture_security PRIVATE GL_COMMON_NO_GLFW GL_COMMON_NO_GLAD)
-target_link_libraries(test_texture_security PRIVATE cglm m pthread dl)
+if(UNIX)
+    target_link_libraries(test_texture_security PRIVATE cglm m pthread dl)
+else()
+    target_link_libraries(test_texture_security PRIVATE cglm pthread)
+endif()
 add_test(NAME test_texture_security COMMAND test_texture_security)
