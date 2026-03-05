@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed":[6,0,2,45,4],
 "ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b":[6,0,2,45,2],
 "ssbo__rendering_8h.html#a73e2cabf9e00de5334f443463ccee660":[6,0,2,45,5],
 "ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f":[6,0,2,45,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "structEffectEntry.html":[5,0,23],
 "structEffectEntry.html#a2b1fcbb5687fc282c3cebcae8b0afc84":[5,0,23,0],
 "structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6":[5,0,23,1],
-"structEffectMetadata.html":[5,0,24],
-"structEffectMetadata.html#a12901db32eca74ecd4106bf6e24f0711":[5,0,24,0]
+"structEffectMetadata.html":[5,0,24]
 };
