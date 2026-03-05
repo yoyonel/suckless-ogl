@@ -251,6 +251,7 @@ $(document).ready(function(){initNavTree('scene_8c.html',''); initResizable(); }
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -267,12 +268,13 @@ $(document).ready(function(){initNavTree('scene_8c.html',''); initResizable(); }
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_fs.h&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
-<code>#include &lt;dirent.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
 <code>#include &lt;string.h&gt;</code><br />
@@ -283,6 +285,11 @@ Include dependency graph for scene.c:</div>
 </div>
 </div>
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHdrScanContext.html">HdrScanContext</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a3acffbd305ee72dcd4593c0d8af64a4f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f">MIN</a>(a,  b)&#160;&#160;&#160;((a) &lt; (b) ? (a) : (b))</td></tr>
@@ -292,6 +299,8 @@ Macros</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a8af94b56d6cef5f5143fd60907cb02f9"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a8af94b56d6cef5f5143fd60907cb02f9">compare_strings</a> (const void *string_a, const void *string_b)</td></tr>
 <tr class="separator:a8af94b56d6cef5f5143fd60907cb02f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ddc0b6b8c680fd1a2562f7ae1ecec40"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a0ddc0b6b8c680fd1a2562f7ae1ecec40">scene_hdr_file_callback</a> (const char *filename, bool is_dir, void *user_data)</td></tr>
+<tr class="separator:a0ddc0b6b8c680fd1a2562f7ae1ecec40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c6e924f776610ef26f3d2923fb5d972"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972">scene_scan_hdr_files</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="separator:a8c6e924f776610ef26f3d2923fb5d972"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20db65b57334ddf3116de362f8e91af8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a20db65b57334ddf3116de362f8e91af8">scene_init_instancing</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
@@ -635,6 +644,48 @@ Here is the call graph for this function:</div>
           <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
           <td class="paramname"><em>scene</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0ddc0b6b8c680fd1a2562f7ae1ecec40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ddc0b6b8c680fd1a2562f7ae1ecec40">&#9670;&nbsp;</a></span>scene_hdr_file_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void scene_hdr_file_callback </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>is_dir</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>user_data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1117,7 +1168,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a8c6e924f776610ef26f3d2923fb5d972_cgraph.svg" width="348" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a8c6e924f776610ef26f3d2923fb5d972_cgraph.svg" width="394" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
