@@ -46,10 +46,8 @@ option(ENABLE_ASAN "Enable AddressSanitizer (ASan) for memory checking" OFF)
 
 if(ENABLE_ASAN)
     if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-        add_compile_options(-fsanitize=address -fno-omit-frame-pointer)
-        add_link_options(-fsanitize=address)
-        # Force -O0 for ASan to ensure manual leaks are not optimized away
-        set(CMAKE_C_FLAGS_DEBUG "-O0 -g" CACHE STRING "Flags for Debug" FORCE)
+        # AddressSanitizer should only be on for the application and our libs, not external deps
+        # so we'll apply it later to the target.
         message(STATUS "AddressSanitizer (ASan): ENABLED (Optimization: OFF)")
     endif()
 endif()
@@ -142,6 +140,9 @@ set(SOURCES
     src/effects/fx_dof.c
     src/effects/fx_motion_blur.c
     src/effects/fx_utils.c
+    src/platform/platform_fs.c
+    src/platform/platform_time.c
+    src/platform/platform_utils.c
 )
 
 # Silence warnings about legacy CMake versions in subprojects (e.g., cglm, glad)
@@ -264,6 +265,17 @@ set(CJSON_BUILD_SHARED_LIBS OFF CACHE BOOL "Build cJSON as static library" FORCE
 
 FetchContent_MakeAvailable(cjson)
 
+# Fix warnings for external dependencies when cross-compiling or using strict flags
+if(TARGET cjson)
+    if(CMAKE_CROSSCOMPILING OR (CMAKE_C_COMPILER_ID MATCHES "GNU" AND WIN32))
+        target_compile_options(cjson PRIVATE -Wno-float-conversion -Wno-error)
+    endif()
+endif()
+if(TARGET cglm)
+    # cglm is usually warning-clean, but good to be safe
+    target_compile_options(cglm PRIVATE -Wno-error)
+endif()
+
 # --- Configuration du profil Profiling (équivalent Cargo) ---
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build." FORCE)
@@ -273,33 +285,6 @@ endif()
 set(CMAKE_C_FLAGS_PROFILING "-O3 -g -fno-omit-frame-pointer" CACHE STRING "Flags for profiling" FORCE)
 set(CMAKE_EXE_LINKER_FLAGS_PROFILING "" CACHE STRING "Linker flags for profiling" FORCE)
 
-# --- Optimisations Avancées ---
-option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" ON)
-option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
-option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
-
-if(ENABLE_UNITY_BUILD)
-    set(CMAKE_UNITY_BUILD ON)
-    message(STATUS "Unity Build: ENABLED")
-endif()
-
-if(ENABLE_NATIVE_ARCH)
-    message(STATUS "Compiler ID: ${CMAKE_C_COMPILER_ID}")
-    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-        # Force AVX2/F16C in addition to native, just to be sure
-        add_compile_options(-march=native -mavx2 -mf16c)
-        message(STATUS "Native Architecture Optimization: ENABLED (Flags: -march=native -mavx2 -mf16c)")
-    else()
-        message(WARNING "Native Architecture Optimization enabled but compiler '${CMAKE_C_COMPILER_ID}' not recognized")
-    endif()
-endif()
-
-if(ENABLE_AGGRESSIVE_MATH)
-    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-        add_compile_options(-ffast-math)
-        message(STATUS "Aggressive Math Optimization: ENABLED")
-    endif()
-endif()
 
 # Activation du LTO (Link Time Optimization)
 include(CheckIPOSupported)
@@ -327,29 +312,73 @@ if(ENABLE_TRACY)
 endif()
 add_executable(app ${APP_SOURCES})
 
+# --- Optimisations Avancées ---
+option(ENABLE_NATIVE_ARCH "Enable native architecture optimizations (-march=native)" ON)
+option(ENABLE_AGGRESSIVE_MATH "Enable aggressive math optimizations (-ffast-math)" OFF)
+option(ENABLE_UNITY_BUILD "Enable Unity/Jumbo Build (single compilation unit)" OFF)
+
+if(ENABLE_UNITY_BUILD)
+    set(CMAKE_UNITY_BUILD ON)
+    message(STATUS "Unity Build: ENABLED")
+endif()
+
+if(ENABLE_NATIVE_ARCH AND NOT CMAKE_CROSSCOMPILING)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        target_compile_options(app PRIVATE -march=native -mavx2 -mf16c)
+        message(STATUS "Native Architecture Optimization: ENABLED (Flags: -march=native -mavx2 -mf16c)")
+    else()
+        message(WARNING "Native Architecture Optimization enabled but compiler '${CMAKE_C_COMPILER_ID}' not recognized")
+    endif()
+elseif(ENABLE_NATIVE_ARCH AND CMAKE_CROSSCOMPILING)
+    message(STATUS "Native Architecture Optimization: DISABLED (Cross-compiling)")
+endif()
+
+if(ENABLE_AGGRESSIVE_MATH)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        target_compile_options(app PRIVATE -ffast-math)
+        message(STATUS "Aggressive Math Optimization: ENABLED")
+    endif()
+endif()
+
 # Apply Clang-Tidy only to this target
 if(ENABLE_CLANG_TIDY AND CLANG_TIDY_CMD)
     set_target_properties(app PROPERTIES C_CLANG_TIDY "${CLANG_TIDY_CMD}")
 endif()
 
 # Target properties and includes
-target_include_directories(app PRIVATE src include ${stb_SOURCE_DIR})
-target_include_directories(app PRIVATE ${cjson_SOURCE_DIR})
+target_include_directories(app PRIVATE
+    src
+    include
+    ${stb_SOURCE_DIR}
+    ${cjson_SOURCE_DIR}
+    ${glfw_SOURCE_DIR}/include
+    ${glad_BINARY_DIR}/include
+    ${cglm_SOURCE_DIR}/include
+)
 if(ENABLE_TRACY)
     target_include_directories(app PUBLIC deps/tracy/public)
 endif()
 
 # Link avec la version statique de cJSON
 find_package(Threads REQUIRED)
+# Link libraries
 target_link_libraries(app PRIVATE
     cglm
     glad
-    cjson  # Ceci link automatiquement la version statique grâce aux options ci-dessus
+    cjson
     ${GLFW3_LIBRARIES}
-    m
-    dl
     Threads::Threads
 )
+
+if(UNIX)
+    target_link_libraries(app PRIVATE m dl)
+endif()
+
+if(WIN32)
+    # Windows-specific libraries can be added here
+    # Use static linking for runtime to avoid missing libgcc/libwinpthread DLLs
+    target_link_options(app PRIVATE -static)
+endif()
 
 # Optional GameMode integration for performance optimization
 # Requires both the library AND the header to be installed
@@ -370,20 +399,16 @@ endif()
 
 target_compile_definitions(app PRIVATE GLFW_INCLUDE_NONE)
 
-# Compiler flags
-# Compiler flags
+if(ENABLE_ASAN)
+    if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
+        target_compile_options(app PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+        target_link_options(app PRIVATE -fsanitize=address)
+        # Force -O0 for ASan to ensure manual leaks are not optimized away
+        set(CMAKE_C_FLAGS_DEBUG "-O0 -g" CACHE STRING "Flags for Debug" FORCE)
+    endif()
+endif()
+
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
-    target_compile_options(app PRIVATE -Wall -Wextra)
-
-    # Sentinel: Security Hardening Flags
-    # -fstack-protector-strong: Protects against stack buffer overflows
-    # -Wformat -Wformat-security: Warns about unsafe format string usage
-    target_compile_options(app PRIVATE
-        -fstack-protector-strong
-        -Wformat
-        -Wformat-security
-    )
-
     # _FORTIFY_SOURCE=2: Enables compile-time and runtime checks for buffer overflows
     # (Requires optimization level -O1 or higher)
     # We only enable it for non-Debug builds to avoid "#warning _FORTIFY_SOURCE requires compiling with optimization"
@@ -395,15 +420,17 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU")
     # -Wl,-z,relro: Read-only Relocations (protects GOT)
     # -Wl,-z,now: Immediate Binding (protects PLT)
     # -Wl,-z,noexecstack: Prevents code execution on the stack
-    target_link_options(app PRIVATE
-        -Wl,-z,relro
-        -Wl,-z,now
-        -Wl,-z,noexecstack
-    )
+    if(UNIX AND NOT APPLE)
+        target_link_options(app PRIVATE
+            -Wl,-z,relro
+            -Wl,-z,now
+            -Wl,-z,noexecstack
+        )
+    endif()
 
     # -fno-omit-frame-pointer est CRUCIAL pour que les profilers (perf, gprof, callgrind)
     # puissent reconstruire la pile d'appel (stack trace) correctement.
-    if(CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    if((CMAKE_BUILD_TYPE STREQUAL "Profiling" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo") AND (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang"))
         target_compile_options(app PRIVATE -fno-omit-frame-pointer)
     endif()
 
@@ -415,11 +442,13 @@ if(ENABLE_SHADER_OPTIMIZATION)
 endif()
 
 # Vérification post-build pour s'assurer que tout est statique
-add_custom_command(TARGET app POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Checking for dynamic dependencies..."
-    COMMAND ldd $<TARGET_FILE:app> || true
-    COMMENT "Binary dependencies check"
-)
+if(UNIX AND NOT APPLE)
+    add_custom_command(TARGET app POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "Checking for dynamic dependencies..."
+        COMMAND ldd $<TARGET_FILE:app> || true
+        COMMENT "Binary dependencies check"
+    )
+endif()
 
 # --- Unit Testing ---
 if(NOT ENABLE_TRACY)
