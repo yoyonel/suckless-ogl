@@ -68,16 +68,16 @@ void convert_float_to_half_simd(const float* src, uint16_t* dst, size_t count)
 static const uint32_t SIGN_MASK = 0x80000000U;
 static const uint32_t EXP_MASK = 0x7F800000U;
 static const uint32_t MANT_MASK = 0x007FFFFFU;
-static const uint32_t EXP_SHIFT = 23U;
+static const int EXP_SHIFT = 23;
 static const int EXP_BIAS_F32 = 127;
 static const int EXP_BIAS_F16 = 15;
 static const int EXP_MAX_F16 = 31;
-static const uint32_t EXP_MAX_F32 = 255U;
-static const uint32_t MANT_SHIFT_DIFF = 13U; /* 23 - 10 */
-static const uint32_t HALF_MANT_SHIFT = 10U;
+static const int EXP_MAX_F32 = 255;
+static const int MANT_SHIFT_DIFF = 13; /* 23 - 10 */
+static const int HALF_MANT_SHIFT = 10;
 static const uint16_t HALF_QNAN_BIT = 0x0200U;
 /* 31 - 15 */
-static const uint32_t HALF_SIGN_SHIFT = 16U;
+static const int HALF_SIGN_SHIFT = 16;
 
 static uint16_t float_to_half_soft(float value)
 {

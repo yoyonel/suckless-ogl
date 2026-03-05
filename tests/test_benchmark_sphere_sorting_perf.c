@@ -1,6 +1,6 @@
+#define _POSIX_C_SOURCE 200809L
 #include "gl_common.h"
 #include "instanced_rendering.h"
-#include "platform/platform_utils.h"
 #include "sphere_sorting.h"
 #include <cglm/cglm.h>
 #include <stdio.h>
@@ -98,14 +98,13 @@ int main(void)
 	SphereInstance* instances_baseline = NULL;
 	SphereInstance* instances_optimized = NULL;
 
-	instances_baseline = (SphereInstance*)platform_aligned_alloc(
-	    COUNT * sizeof(SphereInstance), SIMD_ALIGNMENT);
-	instances_optimized = (SphereInstance*)platform_aligned_alloc(
-	    COUNT * sizeof(SphereInstance), SIMD_ALIGNMENT);
-
-	if (!instances_baseline || !instances_optimized) {
-		platform_aligned_free(instances_baseline);
-		platform_aligned_free(instances_optimized);
+	if (posix_memalign((void**)&instances_baseline, SIMD_ALIGNMENT,
+	                   COUNT * sizeof(SphereInstance)) != 0) {
+		return 1;
+	}
+	if (posix_memalign((void**)&instances_optimized, SIMD_ALIGNMENT,
+	                   COUNT * sizeof(SphereInstance)) != 0) {
+		free(instances_baseline);
 		return 1;
 	}
 
@@ -154,8 +153,8 @@ int main(void)
 	sphere_sorter_cleanup(&sorter_optimized);
 
 	/* Free the buffers we allocated initially */
-	platform_aligned_free(instances_baseline);
-	platform_aligned_free(instances_optimized);
+	free(instances_baseline);
+	free(instances_optimized);
 
 	return 0;
 }

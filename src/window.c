@@ -25,7 +25,6 @@ GLFWwindow* window_create(int width, int height, const char* title, int samples)
 	if (samples > 1) {
 		glfwWindowHint(GLFW_SAMPLES, samples);
 	}
-	glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);
 
 	GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!window) {

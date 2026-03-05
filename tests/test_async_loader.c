@@ -9,7 +9,6 @@
 #include "async_loader.h"
 #include "gl_common.h"
 #include "log.h"
-#include "platform/platform_time.h"
 #include "profiler.h"
 #include <pthread.h>
 #include <stdbool.h>
@@ -124,7 +123,10 @@ void gpu_profiler_end_stage(GPUProfiler* profiler)
 
 static void sleep_ms(long milliseconds)
 {
-	platform_sleep_ms((uint32_t)milliseconds);
+	struct timespec req;
+	req.tv_sec = milliseconds / 1000L;
+	req.tv_nsec = (milliseconds % 1000L) * 1000000L;
+	nanosleep(&req, NULL);
 }
 
 /* --- Tests --- */

@@ -1,4 +1,5 @@
-#include "platform/platform_utils.h"
+// tests/test_sphere_sorting.c
+#define _POSIX_C_SOURCE 200809L /* For posix_memalign */
 #include "sphere_sorting.h"
 #include "unity.h"
 #include <cglm/cglm.h>
@@ -32,12 +33,12 @@ static SphereInstance* create_dummy_instances(int count, int min_capacity)
 {
 	int alloc_count = (count > min_capacity) ? count : min_capacity;
 	SphereInstance* instances = NULL;
-	/* Use platform_aligned_alloc to match sorter allocation strategy */
+	/* Use posix_memalign to match sorter allocation strategy (safe for
+	 * swapping) */
 	/* SIMD_ALIGNMENT is available via sphere_sorting.h ->
 	 * instanced_rendering.h -> gl_common.h */
-	instances = (SphereInstance*)platform_aligned_alloc(
-	    (size_t)alloc_count * sizeof(SphereInstance), SIMD_ALIGNMENT);
-	if (!instances) {
+	if (posix_memalign((void**)&instances, SIMD_ALIGNMENT,
+	                   (size_t)alloc_count * sizeof(SphereInstance)) != 0) {
 		return NULL;
 	}
 	memset(instances, 0, (size_t)alloc_count * sizeof(SphereInstance));
@@ -144,7 +145,7 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_A,
 	                         sorter.temp_instances[2].roughness);
 
-	platform_aligned_free(instances);
+	free(instances);
 	sphere_sorter_cleanup(&sorter);
 }
 
@@ -194,7 +195,7 @@ void test_SphereSorter_SortRadix_ShouldOrderBackToFront(void)
 	TEST_ASSERT_FLOAT_WITHIN(TOLERANCE, ROUGHNESS_A,
 	                         sorter.temp_instances[2].roughness);
 
-	platform_aligned_free(instances);
+	free(instances);
 	sphere_sorter_cleanup(&sorter);
 }
 
@@ -215,7 +216,7 @@ void test_SphereSorter_Resize_ShouldHandleMoreThanCapacity(void)
 	/* Check that capacity grew */
 	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
 
-	platform_aligned_free(instances);
+	free(instances);
 	sphere_sorter_cleanup(&sorter);
 }
 
@@ -240,7 +241,7 @@ void test_SphereSorter_CapacitySync_ShouldNotCrash(void)
 
 	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
 
-	platform_aligned_free(instances);
+	free(instances);
 	sphere_sorter_cleanup(&sorter);
 }
 

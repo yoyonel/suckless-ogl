@@ -550,21 +550,6 @@ void app_toggle_fullscreen(App* app, GLFWwindow* window)
 		app->is_fullscreen = 0;
 		LOG_INFO("suckless-ogl.app", "Switched to windowed");
 	}
-	glfwFocusWindow(window);
-
-	/* Force Wine/OS to re-capture the cursor after monitor switch */
-	if (app->camera_enabled) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-		int width = 0;
-		int height = 0;
-		glfwGetWindowSize(window, &width, &height);
-		glfwSetCursorPos(window, (double)(width / 2),
-		                 (double)(height / 2));
-
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		app->camera.first_mouse = 1;
-	}
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)

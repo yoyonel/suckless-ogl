@@ -309,15 +309,6 @@ void postprocess_cleanup(PostProcess* post_processing)
 
 void postprocess_resize(PostProcess* post_processing, int width, int height)
 {
-	/* Ensure dimensions are at least 1 to avoid OpenGL errors (e.g., during
-	 * window minimization) */
-	if (width < 1) {
-		width = 1;
-	}
-	if (height < 1) {
-		height = 1;
-	}
-
 	if (post_processing->width == width &&
 	    post_processing->height == height) {
 		return;

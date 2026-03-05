@@ -1,7 +1,5 @@
 #include "log.h"
 
-#include "platform/platform_time.h"
-#include "platform/platform_utils.h"
 #include "tracy_log.h"
 #include "utils.h"
 #include <stdarg.h>
@@ -9,7 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
 #include <time.h>
+#include <unistd.h>
 
 enum {
 	MILLI_DIVISOR = 1000000,
@@ -111,22 +112,25 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 		return;
 	}
 
-	int64_t sec = 0;
-	int64_t nsec = 0;
-	platform_get_time_precise(&sec, &nsec);
+	struct timespec ts_now = {0, 0};
+	// NOLINTNEXTLINE(misc-include-cleaner)
+	if (clock_gettime(CLOCK_REALTIME, &ts_now) != 0) {
+		ts_now.tv_sec = 0;
+		ts_now.tv_nsec = 0;
+	}
 
-	struct tm* tm_info = localtime((const time_t*)&sec);
+	struct tm* tm_info = localtime(&ts_now.tv_sec);
 	char time_buf[TIME_BUFFER_SIZE];
 	(void)strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S",
 	               tm_info);
 
 	char prefix[PREFIX_BUFFER_SIZE];
-	int32_t pid = platform_get_pid();
-	uint64_t tid = platform_get_tid();
+	pid_t pid = getpid();
+	long tid = syscall(SYS_gettid);
 	(void)safe_snprintf(prefix, sizeof(prefix),
-	                    "%s,%03ld [%d:%lu] - %s - %-8s - ", time_buf,
-	                    (long)(nsec / MILLI_DIVISOR), (int)pid,
-	                    (unsigned long)tid, tag, level_to_string(level));
+	                    "%s,%03ld [%d:%ld] - %s - %-8s - ", time_buf,
+	                    ts_now.tv_nsec / MILLI_DIVISOR, pid, tid, tag,
+	                    level_to_string(level));
 
 	FILE* out = (level >= LOG_LEVEL_ERROR) ? stderr : stdout;
 	(void)fputs(prefix, out);

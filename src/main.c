@@ -5,7 +5,6 @@
 #include "gl_common.h"
 #include "log.h"
 #include "mem.h"
-#include "platform/platform_utils.h"
 #include "tracy_manager.h"
 #include <cJSON.h>
 #include <stdlib.h>
@@ -23,8 +22,8 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
-	App* app = (App*)platform_aligned_alloc(sizeof(App), SIMD_ALIGNMENT);
-	if (!app) {
+	App* app = NULL;
+	if (posix_memalign((void**)&app, SIMD_ALIGNMENT, sizeof(App)) != 0) {
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to allocate memory for application");
 		return EXIT_FAILURE;
@@ -35,14 +34,14 @@ int main(int argc, char* argv[])
 		LOG_ERROR("suckless-ogl.main",
 		          "Failed to initialize application");
 		app_cleanup(app);
-		platform_aligned_free(app);
+		free(app);
 		return EXIT_FAILURE;
 	}
 
 	app_run(app);
 
 	app_cleanup(app);
-	platform_aligned_free(app);
+	free(app);
 
 	return EXIT_SUCCESS;
 }
