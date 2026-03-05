@@ -1,6 +1,7 @@
 #include "effects/fx_dof.h"
 
 #include "effects/fx_bloom.h"
+#include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
 #include "postprocess.h"
@@ -64,31 +65,22 @@ int fx_dof_resize(PostProcess* post_processing)
 		dof_height = 1;
 	}
 
+	FXTextureConfig dof_config = {.width = dof_width,
+	                              .height = dof_height,
+	                              .internal_format = GL_R11F_G11F_B10F,
+	                              .format = GL_RGB,
+	                              .type = GL_FLOAT,
+	                              .min_filter = GL_LINEAR,
+	                              .mag_filter = GL_LINEAR,
+	                              .wrap_s = GL_CLAMP_TO_EDGE,
+	                              .wrap_t = GL_CLAMP_TO_EDGE,
+	                              .initial_data = NULL};
+
 	/* Create/Resize Texture (R11F_G11F_B10F is sufficient for bokeh) */
-	if (dof->blur_tex) {
-		glDeleteTextures(1, &dof->blur_tex);
-	}
-	glGenTextures(1, &dof->blur_tex);
-	glBindTexture(GL_TEXTURE_2D, dof->blur_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	fx_utils_create_texture(&dof->blur_tex, &dof_config);
 
 	/* Create/Resize Temp Texture for Ping-Pong */
-	if (dof->temp_tex) {
-		glDeleteTextures(1, &dof->temp_tex);
-	}
-	glGenTextures(1, &dof->temp_tex);
-	glBindTexture(GL_TEXTURE_2D, dof->temp_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, dof_width, dof_height,
-	             0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	fx_utils_create_texture(&dof->temp_tex, &dof_config);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, dof->fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,

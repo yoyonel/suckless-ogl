@@ -1,5 +1,6 @@
 #include "effects/fx_bloom.h"
 
+#include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
 #include "postprocess.h"
@@ -58,18 +59,18 @@ int fx_bloom_init(PostProcess* post_processing)
 		bloom->mips[i].width = width;
 		bloom->mips[i].height = height;
 
-		glGenTextures(1, &bloom->mips[i].texture);
-		glBindTexture(GL_TEXTURE_2D, bloom->mips[i].texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R11F_G11F_B10F, width, height,
-		             0, GL_RGB, GL_FLOAT, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		                GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-		                GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-		                GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-		                GL_CLAMP_TO_EDGE);
+		FXTextureConfig tex_config = {
+		    .width = width,
+		    .height = height,
+		    .internal_format = GL_R11F_G11F_B10F,
+		    .format = GL_RGB,
+		    .type = GL_FLOAT,
+		    .min_filter = GL_LINEAR,
+		    .mag_filter = GL_LINEAR,
+		    .wrap_s = GL_CLAMP_TO_EDGE,
+		    .wrap_t = GL_CLAMP_TO_EDGE,
+		    .initial_data = NULL};
+		fx_utils_create_texture(&bloom->mips[i].texture, &tex_config);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
