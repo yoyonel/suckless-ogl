@@ -7,7 +7,6 @@ permissions:
   id-token: write
 
 on:
-  workflow_dispatch: # Permet le lancement manuel via UI ou `gh workflow run`
   push:
     # On ne lance au push QUE sur master pour mettre à jour le site officiel et les releases
     branches: ["master", "main"]
