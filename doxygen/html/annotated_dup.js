@@ -41,7 +41,6 @@ var annotated_dup =
     [ "GPUStageRAII", "structGPUStageRAII.html", "structGPUStageRAII" ],
     [ "GPUTimer", "structGPUTimer.html", "structGPUTimer" ],
     [ "GrainParams", "structGrainParams.html", "structGrainParams" ],
-    [ "HdrScanContext", "structHdrScanContext.html", "structHdrScanContext" ],
     [ "HybridTimer", "structHybridTimer.html", "structHybridTimer" ],
     [ "HybridTimerRAII", "structHybridTimerRAII.html", "structHybridTimerRAII" ],
     [ "IBLCoordinator", "structIBLCoordinator.html", "structIBLCoordinator" ],
