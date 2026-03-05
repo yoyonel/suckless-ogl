@@ -1,6 +1,7 @@
 #include "effects/fx_auto_exposure.h"
 
 #include "app_settings.h"
+#include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
 #include "postprocess.h"
@@ -18,14 +19,17 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	glGenFramebuffers(1, &auto_exp->downsample_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
 
-	glGenTextures(1, &auto_exp->downsample_tex);
-	glBindTexture(GL_TEXTURE_2D, auto_exp->downsample_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16F, LUM_HISTOGRAM_MAP_SIZE,
-	             LUM_HISTOGRAM_MAP_SIZE, 0, GL_RED, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	FXTextureConfig ds_config = {.width = LUM_HISTOGRAM_MAP_SIZE,
+	                             .height = LUM_HISTOGRAM_MAP_SIZE,
+	                             .internal_format = GL_R16F,
+	                             .format = GL_RED,
+	                             .type = GL_FLOAT,
+	                             .min_filter = GL_LINEAR,
+	                             .mag_filter = GL_LINEAR,
+	                             .wrap_s = GL_CLAMP_TO_EDGE,
+	                             .wrap_t = GL_CLAMP_TO_EDGE,
+	                             .initial_data = NULL};
+	fx_utils_create_texture(&auto_exp->downsample_tex, &ds_config);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, auto_exp->downsample_tex, 0);
@@ -39,15 +43,18 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	}
 
 	/* 2. Adaptation Storage (1x1 RGBA32F) */
-	glGenTextures(1, &auto_exp->exposure_tex);
-	glBindTexture(GL_TEXTURE_2D, auto_exp->exposure_tex);
-
 	float initialValues[4] = {EXPOSURE_INITIAL_VAL, 0.0F, 0.0F, 1.0F};
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 1, 1, 0, GL_RGBA, GL_FLOAT,
-	             initialValues);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	FXTextureConfig exp_config = {.width = 1,
+	                              .height = 1,
+	                              .internal_format = GL_RGBA32F,
+	                              .format = GL_RGBA,
+	                              .type = GL_FLOAT,
+	                              .min_filter = GL_NEAREST,
+	                              .mag_filter = GL_NEAREST,
+	                              .wrap_s = GL_CLAMP_TO_EDGE,
+	                              .wrap_t = GL_CLAMP_TO_EDGE,
+	                              .initial_data = initialValues};
+	fx_utils_create_texture(&auto_exp->exposure_tex, &exp_config);
 
 	/* 3. Load Shaders */
 	auto_exp->downsample_shader = shader_load(

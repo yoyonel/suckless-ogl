@@ -1,5 +1,6 @@
 #include "effects/fx_motion_blur.h"
 
+#include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
 #include "postprocess.h"
@@ -87,31 +88,22 @@ int fx_motion_blur_resize(PostProcess* post_processing)
 		tile_height = 1;
 	}
 
+	FXTextureConfig mb_config = {.width = tile_width,
+	                             .height = tile_height,
+	                             .internal_format = GL_RG16F,
+	                             .format = GL_RG,
+	                             .type = GL_FLOAT,
+	                             .min_filter = GL_NEAREST,
+	                             .mag_filter = GL_NEAREST,
+	                             .wrap_s = GL_CLAMP_TO_EDGE,
+	                             .wrap_t = GL_CLAMP_TO_EDGE,
+	                             .initial_data = NULL};
+
 	/* Tile Max Texture (RG16F) */
-	if (mb_fx->tile_max_tex) {
-		glDeleteTextures(1, &mb_fx->tile_max_tex);
-	}
-	glGenTextures(1, &mb_fx->tile_max_tex);
-	glBindTexture(GL_TEXTURE_2D, mb_fx->tile_max_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, tile_width, tile_height, 0,
-	             GL_RG, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	fx_utils_create_texture(&mb_fx->tile_max_tex, &mb_config);
 
 	/* Neighbor Max Texture (RG16F) */
-	if (mb_fx->neighbor_max_tex) {
-		glDeleteTextures(1, &mb_fx->neighbor_max_tex);
-	}
-	glGenTextures(1, &mb_fx->neighbor_max_tex);
-	glBindTexture(GL_TEXTURE_2D, mb_fx->neighbor_max_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, tile_width, tile_height, 0,
-	             GL_RG, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	fx_utils_create_texture(&mb_fx->neighbor_max_tex, &mb_config);
 
 	return 1;
 }
