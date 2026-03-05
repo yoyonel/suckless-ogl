@@ -1,10 +1,16 @@
 #!/bin/bash
 set -eo pipefail
 
-# Usage: ./test_integration_generic.sh <path_to_app>
+# Usage: ./test_integration_generic.sh [RUNNER] <path_to_app>
+RUNNER=""
+if [ "$1" == "wine" ]; then
+    RUNNER="wine"
+    shift
+fi
+
 if [ -z "$1" ]; then
     echo "Error: No application path provided."
-    echo "Usage: $0 <path_to_app>"
+    echo "Usage: $0 [RUNNER] <path_to_app>"
     exit 1
 fi
 
@@ -31,7 +37,7 @@ export LSAN_OPTIONS="suppressions=lsan.supp"
 
 # Run the app in background, but capture its PID correctly
 # We use a subshell to background the app and the redirection
-( $APP_PATH 2>&1 | tee $LOG_FILE ) &
+( $RUNNER $APP_PATH 2>&1 | tee $LOG_FILE ) &
 APP_PID=$!
 
 if ! wait_for_window_start $APP_PID "$WINDOW_NAME"; then
