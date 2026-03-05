@@ -225,35 +225,9 @@ jobs:
           name: app-${{ matrix.build_type }}
           path: build/app-${{ matrix.build_type }}
 
-  # --- JOB 4 : BUILD DE PRODUCTION WINDOWS ---
-  build-production-windows:
-    needs: [lint-and-format, test-and-coverage]
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install MinGW and Dependencies
-        run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
-      - name: Build Windows Release
-        run: |
-          git config --global --add safe.directory '*'
-          # Install rust just tool
-          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-          # Run the cross-compilation target specifying UltraRelease/Release
-          # 'just build-win' uses the default Profile=Debug. Let's explicitly invoke cmake
-          # with UltraRelease for the final artifact using the toolchain.
-          cmake -B build-win -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_NATIVE_ARCH=ON
-          cmake --build build-win --parallel $(nproc)
-          mv build-win/app.exe build-win/app-Windows-Release.exe
-      - name: Upload Windows Binary
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-Windows-Release
-          path: build-win/app-Windows-Release.exe
-
   # --- JOB 5 : RELEASE ---
   release:
-    needs: [build-production, build-production-windows]
+    needs: build-production
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
