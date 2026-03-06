@@ -142,6 +142,12 @@ jobs:
           name: doxygen-docs
           path: site/
 
+      - name: Setup Node.js
+        if: github.event_name == 'pull_request'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Deploy Documentation Preview (Pull Request)
         if: github.event_name == 'pull_request'
         env:
