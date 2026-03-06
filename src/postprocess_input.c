@@ -15,10 +15,8 @@ static void toggle_postfx(const PostProcessInputContext* ctx,
 	LOG_INFO("suckless-ogl.postprocess", "%s: %s", name,
 	         enabled ? "ON" : "OFF");
 
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "%s: %s", name,
-	                    enabled ? "ON" : "OFF");
-	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_NORMAL);
+	action_notifier_pushf(ctx->notifier, NOTIF_DUR_NORMAL, "%s: %s", name,
+	                      enabled ? "ON" : "OFF");
 }
 
 static void toggle_postfx_complex(const PostProcessInputContext* ctx, int mods,
@@ -50,10 +48,8 @@ static void handle_exposure_input(const PostProcessInputContext* ctx, int key)
 	LOG_INFO("suckless-ogl.postprocess", "Exposure: %.2f",
 	         ctx->postprocess->exposure.exposure);
 
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "Exposure: %.2f",
-	                    ctx->postprocess->exposure.exposure);
-	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_SHORT);
+	action_notifier_pushf(ctx->notifier, NOTIF_DUR_SHORT, "Exposure: %.2f",
+	                      ctx->postprocess->exposure.exposure);
 }
 
 static void handle_preset_input(const PostProcessInputContext* ctx, int key)
@@ -147,13 +143,10 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 			         banding_names[ctx->postprocess
 			                           ->banding_preset_idx]);
 
-			char buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(
-			    buf, sizeof(buf), "Banding: %s",
+			action_notifier_pushf(
+			    ctx->notifier, NOTIF_DUR_LONG, "Banding: %s",
 			    banding_names[ctx->postprocess
 			                      ->banding_preset_idx]);
-			action_notifier_push(ctx->notifier, buf,
-			                     NOTIF_DUR_LONG);
 			break;
 		}
 		case GLFW_KEY_8:

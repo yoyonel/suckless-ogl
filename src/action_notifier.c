@@ -4,6 +4,8 @@
 #include "ui.h"
 #include "utils.h"
 #include <cglm/types.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 void action_notifier_init(ActionNotifier* notifier)
 {
@@ -47,6 +49,26 @@ void action_notifier_push(ActionNotifier* notifier, const char* text,
 	note->active = 1;
 
 	LOG_DEBUG("action_notifier", "Pushed: %s", text);
+}
+
+void action_notifier_pushf(ActionNotifier* notifier, float duration,
+                           const char* format, ...)
+{
+	if (!notifier || !format) {
+		return;
+	}
+
+	char buf[MAX_ACTION_TEXT_LENGTH];
+	va_list args;
+	va_start(args, format);
+	int ret = safe_vsnprintf(buf, sizeof(buf), format, args);
+	va_end(args);
+
+	if (ret < 0) {
+		return;
+	}
+
+	action_notifier_push(notifier, buf, duration);
 }
 
 void action_notifier_update(ActionNotifier* notifier, float delta_time)

@@ -55,10 +55,8 @@ static void handle_pbr_debug_mode(App* app)
 	LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
 	         modeNames[app->scene.pbr_debug_mode]);
 
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "Debug: %s",
-	                    modeNames[app->scene.pbr_debug_mode]);
-	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
+	action_notifier_pushf(&app->notifier, NOTIF_DUR_LONG, "Debug: %s",
+	                      modeNames[app->scene.pbr_debug_mode]);
 }
 
 static void handle_aa_mode_input(App* app)
@@ -67,9 +65,8 @@ static void handle_aa_mode_input(App* app)
 	const char* mode_name = aa_mode_to_string(app->scene.aa_mode);
 	LOG_INFO("suckless-ogl.app", "Specular AA Mode: %s", mode_name);
 
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "AA Mode: %s", mode_name);
-	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+	action_notifier_pushf(&app->notifier, NOTIF_DUR_NORMAL, "AA Mode: %s",
+	                      mode_name);
 }
 
 void app_handle_env_input(App* app, int action, int mods, int key)
@@ -85,32 +82,25 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->scene.env_lod);
-			char lod_buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
-			                    "Env LOD: %.1F",
-			                    app->scene.env_lod);
-			action_notifier_push(&app->notifier, lod_buf,
-			                     NOTIF_DUR_SHORT);
+			action_notifier_pushf(&app->notifier, NOTIF_DUR_SHORT,
+			                      "Env LOD: %.1F",
+			                      app->scene.env_lod);
 		} else if (app->scene.hdr_count > 1) {
 			app->scene.current_hdr_index =
 			    (app->scene.current_hdr_index + 1) %
 			    app->scene.hdr_count;
-			env_manager_trigger_transition(
-			    &app->env_mgr, app->async_loader,
-			    app->scene.hdr_files[app->scene.current_hdr_index]);
-
-			char buf[NOTIF_BUF_SIZE];
 			const char* filename =
 			    app->scene.hdr_files[app->scene.current_hdr_index];
+			env_manager_trigger_transition(
+			    &app->env_mgr, app->async_loader, filename);
+
 			/* Try to strip path if possible for cleaner display */
 			const char* last_slash = strrchr(filename, '/');
 			if (last_slash) {
 				filename = last_slash + 1;
 			}
-			(void)safe_snprintf(buf, sizeof(buf), "HDR: %s",
-			                    filename);
-			action_notifier_push(&app->notifier, buf,
-			                     NOTIF_DUR_LONG);
+			action_notifier_pushf(&app->notifier, NOTIF_DUR_LONG,
+			                      "HDR: %s", filename);
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
@@ -120,33 +110,26 @@ void app_handle_env_input(App* app, int action, int mods, int key)
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
 			         app->scene.env_lod);
-			char lod_buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
-			                    "Env LOD: %.1F",
-			                    app->scene.env_lod);
-			action_notifier_push(&app->notifier, lod_buf,
-			                     NOTIF_DUR_SHORT);
+			action_notifier_pushf(&app->notifier, NOTIF_DUR_SHORT,
+			                      "Env LOD: %.1F",
+			                      app->scene.env_lod);
 		} else if (app->scene.hdr_count > 1) {
 			app->scene.current_hdr_index--;
 			if (app->scene.current_hdr_index < 0) {
 				app->scene.current_hdr_index =
 				    app->scene.hdr_count - 1;
 			}
-			env_manager_trigger_transition(
-			    &app->env_mgr, app->async_loader,
-			    app->scene.hdr_files[app->scene.current_hdr_index]);
-
-			char buf[NOTIF_BUF_SIZE];
 			const char* filename =
 			    app->scene.hdr_files[app->scene.current_hdr_index];
+			env_manager_trigger_transition(
+			    &app->env_mgr, app->async_loader, filename);
+
 			const char* last_slash = strrchr(filename, '/');
 			if (last_slash) {
 				filename = last_slash + 1;
 			}
-			(void)safe_snprintf(buf, sizeof(buf), "HDR: %s",
-			                    filename);
-			action_notifier_push(&app->notifier, buf,
-			                     NOTIF_DUR_LONG);
+			action_notifier_pushf(&app->notifier, NOTIF_DUR_LONG,
+			                      "HDR: %s", filename);
 		}
 	}
 }
@@ -163,10 +146,8 @@ static void handle_overlay_input(App* app)
 	LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
 	         mode_names[app->overlay.text_overlay_mode]);
 
-	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "Overlay: %s",
-	                    mode_names[app->overlay.text_overlay_mode]);
-	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
+	action_notifier_pushf(&app->notifier, NOTIF_DUR_LONG, "Overlay: %s",
+	                      mode_names[app->overlay.text_overlay_mode]);
 }
 
 static void handle_subdiv_input(App* app, int key)
@@ -182,10 +163,8 @@ static void handle_subdiv_input(App* app, int key)
 	}
 
 	if (changed) {
-		char buf[NOTIF_BUF_SIZE];
-		(void)safe_snprintf(buf, sizeof(buf), "Subdiv: %d",
-		                    app->scene.subdivisions);
-		action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
+		action_notifier_pushf(&app->notifier, NOTIF_DUR_SHORT,
+		                      "Subdiv: %d", app->scene.subdivisions);
 	}
 }
 
@@ -216,9 +195,8 @@ static void handle_f3_input(App* app, int mods)
 		    (app->timeline_ui.position == 0) ? "TOP" : "BOTTOM";
 		LOG_INFO("suckless-ogl.app", "Timeline Position: %s", pos_str);
 
-		char msg[NOTIF_BUF_SIZE];
-		(void)safe_snprintf(msg, sizeof(msg), "Timeline: %s", pos_str);
-		action_notifier_push(&app->notifier, msg, NOTIF_DUR_NORMAL);
+		action_notifier_pushf(&app->notifier, NOTIF_DUR_NORMAL,
+		                      "Timeline: %s", pos_str);
 	} else {
 		/* Toggle Visibility */
 		gpu_profiler_ui_toggle_visibility(&app->timeline_ui);
@@ -243,11 +221,9 @@ static void handle_f9_input(App* app)
 	} else {
 		app->perf_mode_active =
 		    (perf_mode_request_start(&app->perf_context) == 0) ? 1 : 0;
-		char buf[NOTIF_BUF_SIZE];
-		(void)safe_snprintf(
-		    buf, sizeof(buf), "Perf Mode: ON (%s)",
+		action_notifier_pushf(
+		    &app->notifier, NOTIF_DUR_LONG, "Perf Mode: ON (%s)",
 		    perf_mode_get_state_string(&app->perf_context));
-		action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
 	}
 	LOG_INFO("suckless-ogl.app", "Performance Mode: %s (%s)",
 	         (app->perf_mode_active != 0) ? "ON" : "OFF",
@@ -301,11 +277,8 @@ static bool handle_f_key_input(App* app, int key, int mods)
 			               "screenshot_%Y%m%d_%H%M%S.png",
 			               time_info);
 			app_save_png_frame(app, filename);
-			char msg[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(msg, sizeof(msg),
-			                    "Screenshot saved: %s", filename);
-			action_notifier_push(&app->notifier, msg,
-			                     NOTIF_DUR_LONG);
+			action_notifier_pushf(&app->notifier, NOTIF_DUR_LONG,
+			                      "Screenshot saved: %s", filename);
 			return true;
 		}
 		default:
@@ -329,10 +302,8 @@ static void handle_y_key_input(App* app, int mods)
 		LOG_INFO("suckless-ogl.app", "GI Mode: %s",
 		         mode_names[app->scene.gi_mode]);
 
-		char buf[NOTIF_BUF_SIZE];
-		(void)safe_snprintf(buf, sizeof(buf), "GI: %s",
-		                    mode_names[app->scene.gi_mode]);
-		action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+		action_notifier_pushf(&app->notifier, NOTIF_DUR_NORMAL,
+		                      "GI: %s", mode_names[app->scene.gi_mode]);
 	}
 }
 
@@ -452,16 +423,12 @@ void handle_app_input(App* app, int key, int mods)
 			                 ENV_TRANSITION_CROSSFADE
 			             ? "CROSSFADE"
 			             : "BLACK_SCREEN");
-			char transition_buf[NOTIF_BUF_SIZE];
-			(void)safe_snprintf(transition_buf,
-			                    sizeof(transition_buf),
-			                    "Transition: %s",
-			                    app->env_mgr.env_transition_mode ==
-			                            ENV_TRANSITION_CROSSFADE
-			                        ? "CROSSFADE"
-			                        : "BLACK_SCREEN");
-			action_notifier_push(&app->notifier, transition_buf,
-			                     NOTIF_DUR_NORMAL);
+			action_notifier_pushf(
+			    &app->notifier, NOTIF_DUR_NORMAL, "Transition: %s",
+			    app->env_mgr.env_transition_mode ==
+			            ENV_TRANSITION_CROSSFADE
+			        ? "CROSSFADE"
+			        : "BLACK_SCREEN");
 			break;
 		case GLFW_KEY_N:
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {

@@ -58,6 +58,16 @@ void action_notifier_push(ActionNotifier* notifier, const char* text,
                           float duration);
 
 /**
+ * @brief Adds a formatted notification message.
+ * @param notifier Pointer to the notifier.
+ * @param duration Duration in seconds.
+ * @param format Printf-style format string.
+ * @param ... Format arguments.
+ */
+void action_notifier_pushf(ActionNotifier* notifier, float duration,
+                           const char* format, ...);
+
+/**
  * @brief Updates notification timers.
  * @param notifier Pointer to the notifier.
  * @param delta_time Delta time since last update (seconds).
