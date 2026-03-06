@@ -54,7 +54,7 @@ BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan build-win test-win
 
 # Job count: nproc - 2 locally (min 1), all cores in CI
 ifneq ($(CI),)
@@ -533,3 +533,15 @@ small:
 	@$(DISTROBOX) strip --strip-all $(BUILD_SMALL_DIR)/app
 	@echo "Done. Binary is at $(BUILD_SMALL_DIR)/app"
 	@du -h $(BUILD_SMALL_DIR)/app
+# --- Windows / Cross-Compilation (MinGW + Wine) ---
+BUILD_WIN_DIR := build-win
+
+build-win:
+	@echo "Building for Windows (MinGW)..."
+	@mkdir -p $(BUILD_WIN_DIR)
+	@$(CMAKE) -B $(BUILD_WIN_DIR) -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug
+	@$(CMAKE) --build $(BUILD_WIN_DIR) --parallel $(NPROCS)
+
+test-win: build-win
+	@echo "Running Windows unit tests under Wine..."
+	@WINEPREFIX=$(HOME)/.wine WINEDEBUG=-all TEST_RUNNER_PREFIX="wine64" ctest --test-dir $(BUILD_WIN_DIR) --output-on-failure

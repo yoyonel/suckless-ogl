@@ -466,7 +466,7 @@ build_win_dir := "build-win"
 
 # Configure for Windows (MinGW)
 configure-win:
-    @cmake -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -B {{build_win_dir}} .
+    @cmake -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -B {{build_win_dir}} -DBUILD_TESTS=ON .
 
 # Build for Windows
 build-win:
@@ -481,3 +481,10 @@ run-win: build-win
 test-win: build-win
     @chmod +x scripts/test_integration_generic.sh
     @./scripts/test_integration_generic.sh wine {{build_win_dir}}/app.exe
+
+# Run unit tests for Windows via Wine (parity with CI)
+test-win-unit: build-win
+    @export WINEPREFIX=$HOME/.wine; \
+     export WINEDEBUG=-all; \
+     export TEST_RUNNER_PREFIX="wine64"; \
+     ctest --test-dir {{build_win_dir}} --output-on-failure
