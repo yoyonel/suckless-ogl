@@ -8,6 +8,7 @@
 
 #ifndef APP_UI_H
 #define APP_UI_H
+#include "ui.h"
 
 typedef struct {
 	float key_size;
@@ -17,6 +18,21 @@ typedef struct {
 	float title_y_offset;
 	float detail_y_offset;
 } KeyboardLayoutConfig;
+
+typedef struct {
+	UIContext ui;
+	KeyboardLayoutConfig kbd_config;
+
+	int show_help;
+	int show_info_overlay;
+	int text_overlay_mode;
+	int show_exposure_debug;
+
+	int help_hovered_key;
+	int help_pressed_key;
+	int help_pressed_mods;
+	double help_press_timer;
+} AppUIOverlay;
 
 typedef struct App App;
 
@@ -55,5 +71,9 @@ void app_render_ui(App* app);
  */
 int compute_luminance_histogram(App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum);
+
+void app_ui_init(AppUIOverlay* overlay);
+void app_ui_cleanup(AppUIOverlay* overlay);
+void app_ui_update(AppUIOverlay* overlay, double delta_time);
 
 #endif /* APP_UI_H */

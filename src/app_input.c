@@ -157,13 +157,14 @@ static void handle_overlay_input(App* app)
 	    "FPS + Position + Envmap + Exposure"};
 	static const int mode_count =
 	    sizeof(mode_names) / sizeof(mode_names[0]);
-	app->text_overlay_mode = (app->text_overlay_mode + 1) % mode_count;
+	app->overlay.text_overlay_mode =
+	    (app->overlay.text_overlay_mode + 1) % mode_count;
 	LOG_INFO("suckless-ogl.app", "Text Overlay: %s",
-	         mode_names[app->text_overlay_mode]);
+	         mode_names[app->overlay.text_overlay_mode]);
 
 	char buf[NOTIF_BUF_SIZE];
 	(void)safe_snprintf(buf, sizeof(buf), "Overlay: %s",
-	                    mode_names[app->text_overlay_mode]);
+	                    mode_names[app->overlay.text_overlay_mode]);
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
 }
 
@@ -255,9 +256,9 @@ static void handle_f9_input(App* app)
 
 static void app_toggle_help(App* app)
 {
-	app->show_help = !app->show_help;
+	app->overlay.show_help = !app->overlay.show_help;
 	action_notifier_push(&app->notifier,
-	                     app->show_help ? "Help: ON" : "Help: OFF",
+	                     app->overlay.show_help ? "Help: ON" : "Help: OFF",
 	                     NOTIF_DUR_NORMAL);
 }
 
@@ -534,20 +535,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	App* app = (App*)glfwGetWindowUserPointer(window);
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
-			if (app->show_help) {
+			if (app->overlay.show_help) {
 				app_toggle_help(app);
 			} else {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
-		} else if (app->show_help) {
+		} else if (app->overlay.show_help) {
 			/* Dry-run mode: intercept keys except for Close/Toggle
 			 * keys */
 			if (key == GLFW_KEY_F2) {
 				handle_app_input(app, key, mods);
 			} else {
-				app->help_pressed_key = key;
-				app->help_pressed_mods = mods;
-				app->help_press_timer =
+				app->overlay.help_pressed_key = key;
+				app->overlay.help_pressed_mods = mods;
+				app->overlay.help_press_timer =
 				    (double)HELP_PRESS_DURATION; /* Highlight
 				                                    duration */
 			}
@@ -555,7 +556,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			handle_app_input(app, key, mods);
 		}
 	}
-	if (!app->show_help) {
+	if (!app->overlay.show_help) {
 		camera_input_handle_key(&app->camera, key, action);
 	}
 }
