@@ -1,5 +1,6 @@
 var scene_8c =
 [
+    [ "HdrScanContext", "structHdrScanContext.html", "structHdrScanContext" ],
     [ "MIN", "scene_8c.html#a3acffbd305ee72dcd4593c0d8af64a4f", null ],
     [ "aa_mode_to_string", "scene_8c.html#ad63ee708be73ae184d1233ad69cf077f", null ],
     [ "compare_strings", "scene_8c.html#a8af94b56d6cef5f5143fd60907cb02f9", null ],
@@ -10,6 +11,7 @@ var scene_8c =
     [ "scene_cleanup_pbr_shaders", "scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10", null ],
     [ "scene_cleanup_shaders", "scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9", null ],
     [ "scene_cleanup_textures", "scene_8c.html#a5d03299a2403acf2110589d4800f4b95", null ],
+    [ "scene_hdr_file_callback", "scene_8c.html#a0ddc0b6b8c680fd1a2562f7ae1ecec40", null ],
     [ "scene_init", "scene_8c.html#ab37b3774644a51065a47e884ffc5e649", null ],
     [ "scene_init_billboard_shader", "scene_8c.html#a3582b10c2ed28f888e173f6e65e62791", null ],
     [ "scene_init_compute_resources", "scene_8c.html#ae1059056f3f15c15286cfec8e2ec2092", null ],
