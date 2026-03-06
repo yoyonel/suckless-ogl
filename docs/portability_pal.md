@@ -113,6 +113,22 @@ The project uses GitHub Actions to ensure cross-platform compatibility and produ
 
 Every push to `master` and every Pull Request triggers a Windows cross-compilation job using MinGW. This ensures that portability is maintained and no Windows-specific regressions are introduced.
 
+### Local Windows Testing via Wine
+
+If you develop on Linux and want to test the Windows build locally, you can use the provided `just` targets. These targets rely on your `clang-dev` distrobox environment having `mingw` and `wine` installed.
+
+1. **Install Dependencies:** Enter your distrobox and install MinGW-w64 and Wine (e.g., on Fedora/Bazzite):
+   ```bash
+   distrobox enter clang-dev
+   sudo dnf install -y mingw64-gcc mingw64-gcc-c++ wine
+   ```
+2. **Run Windows Targets:** Use the `just` commands suffixed with `-win`. The Justfile automatically uses the distrobox container for these commands.
+   * `just configure-win`: Configure the CMake build using the `toolchain-mingw.cmake` file.
+   * `just build-win`: Build the Windows executables (`.exe`).
+   * `just run-win`: Run the compiled Windows application via Wine.
+   * `just test-win`: Run the integration tests via Wine.
+   * `just test-win-unit`: Run the CTest unit test suite via Wine.
+
 ### Nightly Releases
 
 The CI pipeline automatically generates a **Nightly Build** release.

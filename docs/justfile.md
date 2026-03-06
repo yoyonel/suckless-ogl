@@ -52,6 +52,11 @@ Here is a mapping of common `make` commands to their `just` equivalents:
 | **Docker Build** | `make docker-build` | `just docker-build` | Multi-stage production build |
 | **Docker Run** | `make docker-run` | `just docker-run` | Run with X11 forwarding |
 | **Docker Prune** | `make docker-clean-all` | `just docker-clean-all` | Clean all containers/images/cache |
+| **Windows Config** | `-` | `just configure-win` | Configure CMake for MinGW cross-compilation |
+| **Windows Build** | `-` | `just build-win` | Builds the application for Windows (.exe) |
+| **Windows Run** | `-` | `just run-win` | Runs the Windows application via Wine |
+| **Windows Test** | `-` | `just test-win` | Runs integration tests via Wine |
+| **Windows Unit Test** | `-` | `just test-win-unit` | Runs unit tests (CTest) via Wine |
 
 ## Advanced Usage
 
