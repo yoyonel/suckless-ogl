@@ -34,9 +34,14 @@ sleep 1
 export DISPLAY=:${DISPLAY_NUM}
 
 # Exécuter le test
-# Exécuter le test
+
+# Auto-détection du runner si c'est un exécutable Windows (.exe) et que le runner n'est pas défini
+if [[ "$TEST_EXEC" == *.exe ]] && [ -z "$TEST_RUNNER_PREFIX" ]; then
+    TEST_RUNNER_PREFIX="wine64"
+fi
+
 if [ -n "$TEST_RUNNER_PREFIX" ]; then
-    # Fallback wine64 -> wine si nécessaire (par ex. sur dev local sans wine64 alias)
+    # Fallback wine64 -> wine si wine64 n'est pas disponible (cas fréquent en local)
     if [ "$TEST_RUNNER_PREFIX" = "wine64" ] && ! command -v wine64 &> /dev/null && command -v wine &> /dev/null; then
         TEST_RUNNER_PREFIX="wine"
     fi

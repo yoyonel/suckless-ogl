@@ -24,5 +24,5 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
-# Optional: Link everything statically for easier deployment under Wine/Windows
-# set(CMAKE_EXE_LINKER_FLAGS "-static")
+# Link everything statically for easier deployment under Wine/Windows
+set(CMAKE_EXE_LINKER_FLAGS "-static")
