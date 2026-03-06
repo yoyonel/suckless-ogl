@@ -37,28 +37,12 @@ int app_init(App* app, int width, int height, const char* title)
 	app->height = height;
 
 	app->camera_enabled = true;
-	app->show_info_overlay = true;
-	app->show_exposure_debug = false;
-	app->text_overlay_mode = 0;
 	app->is_fullscreen = false;
-	app->show_help = false;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
 	/* Initialize Help UI state */
 	app_binding_registry_init(&app->binding_registry);
-	app->help_hovered_key = -1;
-	app->help_pressed_key = -1;
-	app->help_pressed_mods = 0;
-	app->help_press_timer = 0.0;
-
-	/* Default Keyboard UI Configuration */
-	app->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
-	app->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
-	app->kbd_config.key_radius = DEFAULT_KBD_KEY_RADIUS;
-	app->kbd_config.label_scale = DEFAULT_KBD_LABEL_SCALE;
-	app->kbd_config.title_y_offset = DEFAULT_KBD_TITLE_Y_OFFSET;
-	app->kbd_config.detail_y_offset = DEFAULT_KBD_DETAIL_Y_OFFSET;
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
@@ -135,9 +119,7 @@ int app_init(App* app, int width, int height, const char* title)
 	adaptive_sampler_init(&app->fps_sampler, DEFAULT_FPS_WINDOW,
 	                      DEFAULT_FPS_SAMPLER_SIZE, DEFAULT_FPS_TARGET);
 	app->last_frame_time = glfwGetTime();
-
-	ui_init(&app->ui, "assets/fonts/FiraCode-Regular.ttf",
-	        DEFAULT_FONT_SIZE);
+	app_ui_init(&app->overlay);
 
 	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
 	                      height)) {
@@ -173,7 +155,7 @@ void app_cleanup(App* app)
 	}
 
 	/* 1. High-level systems first (may depend on textures/shaders) */
-	ui_destroy(&app->ui);
+	app_ui_cleanup(&app->overlay);
 	postprocess_cleanup(&app->postprocess);
 
 	/* Async Loader Shutdown before other resources */
@@ -225,13 +207,7 @@ void app_run(App* app)
 		                               current_time, app->frame_count);
 		action_notifier_update(&app->notifier, (float)app->delta_time);
 
-		if (app->help_press_timer > 0.0) {
-			app->help_press_timer -= app->delta_time;
-			if (app->help_press_timer < 0.0) {
-				app->help_press_timer = 0.0;
-				app->help_pressed_key = -1;
-			}
-		}
+		app_ui_update(&app->overlay, app->delta_time);
 
 		if (adaptive_sampler_is_finished(&app->fps_sampler,
 		                                 current_time)) {

@@ -77,11 +77,11 @@ void test_framebuffer_size_callback(void)
 void test_handle_app_input_exhaustive(void)
 {
 	/* Base toggles */
-	int val_before = test_app->text_overlay_mode;
+	int val_before = test_app->overlay.text_overlay_mode;
 	handle_app_input(test_app, GLFW_KEY_F1, 0);
-	TEST_ASSERT_EQUAL(1, test_app->text_overlay_mode);
+	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 	handle_app_input(test_app, GLFW_KEY_F2, 0);
-	TEST_ASSERT_TRUE(test_app->show_help);
+	TEST_ASSERT_TRUE(test_app->overlay.show_help);
 	handle_app_input(test_app, GLFW_KEY_F3, 0);
 	TEST_ASSERT_TRUE(test_app->timeline_ui.visible);
 	handle_app_input(test_app, GLFW_KEY_F4, 0);
@@ -260,13 +260,13 @@ void test_mouse_and_scroll_exhaustive(void)
 void test_key_callback_dispatch(void)
 {
 	/* key_callback should dispatch to handle_app_input */
-	test_app->text_overlay_mode = 0;
+	test_app->overlay.text_overlay_mode = 0;
 	key_callback(test_app->window, GLFW_KEY_F1, 0, GLFW_PRESS, 0);
-	TEST_ASSERT_EQUAL(1, test_app->text_overlay_mode);
+	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 
 	/* Release should be ignored for these toggles but covered */
 	key_callback(test_app->window, GLFW_KEY_F1, 0, GLFW_RELEASE, 0);
-	TEST_ASSERT_EQUAL(1, test_app->text_overlay_mode);
+	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 }
 
 /**

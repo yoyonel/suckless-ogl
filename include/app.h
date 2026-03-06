@@ -47,7 +47,7 @@ typedef struct App {
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
 	GPUProfiler gpu_profiler;
 	GPUProfilerUI timeline_ui;
-	UIContext ui; /**< Overlay and text rendering state. */
+	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 	AppBindingRegistry binding_registry;
 
 	Camera camera; /**< View/Proj state. */
@@ -56,10 +56,6 @@ typedef struct App {
 	int width;                     /**< Current window/viewport width. */
 	int height;                    /**< Current window/viewport height. */
 	int is_fullscreen;             /**< Fullscreen toggle state. */
-	int show_exposure_debug;       /**< Enable auto-exposure histogram. */
-	int show_help;                 /**< Overlay help text. */
-	int show_info_overlay;         /**< Show FPS and stats. */
-	int text_overlay_mode;         /**< Verbosity level of text UI. */
 	int saved_x, saved_y;          /**< Cached pos for window restore. */
 	int saved_width, saved_height; /**< Cached size for window restore. */
 	int camera_enabled;            /**< Pause camera movement. */
@@ -69,13 +65,6 @@ typedef struct App {
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
-
-	/* --- Help UI State --- */
-	int help_hovered_key;  /**< Key currently hovered in help layout. */
-	int help_pressed_key;  /**< Key currently pressed (dry-run) in help. */
-	int help_pressed_mods; /**< Modifiers currently pressed (dry-run) in
-	                          help. */
-	double help_press_timer; /**< Timer for highlighting pressed key. */
 
 	/* --- Global GPU Resources --- */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
@@ -91,7 +80,6 @@ typedef struct App {
 	AsyncCoordinator
 	    async_coord; /**< Manages PBO allocation & async synchronization. */
 
-	KeyboardLayoutConfig kbd_config; /**< Sizing and style for help UI. */
 } App;
 
 /* --- Core Control Flow --- */

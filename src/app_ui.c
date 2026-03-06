@@ -15,6 +15,42 @@
 #include <stdlib.h>
 #include <string.h>
 
+void app_ui_init(AppUIOverlay* overlay)
+{
+	overlay->show_help = false;
+	overlay->show_info_overlay = true;
+	overlay->show_exposure_debug = false;
+	overlay->text_overlay_mode = 0;
+	overlay->help_hovered_key = -1;
+	overlay->help_pressed_key = -1;
+	overlay->help_pressed_mods = 0;
+	overlay->help_press_timer = 0.0;
+	overlay->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
+	overlay->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
+	overlay->kbd_config.key_radius = DEFAULT_KBD_KEY_RADIUS;
+	overlay->kbd_config.label_scale = DEFAULT_KBD_LABEL_SCALE;
+	overlay->kbd_config.title_y_offset = DEFAULT_KBD_TITLE_Y_OFFSET;
+	overlay->kbd_config.detail_y_offset = DEFAULT_KBD_DETAIL_Y_OFFSET;
+	ui_init(&overlay->ui, "assets/fonts/FiraCode-Regular.ttf",
+	        DEFAULT_FONT_SIZE);
+}
+
+void app_ui_cleanup(AppUIOverlay* overlay)
+{
+	ui_destroy(&overlay->ui);
+}
+
+void app_ui_update(AppUIOverlay* overlay, double delta_time)
+{
+	if (overlay->help_press_timer > 0.0) {
+		overlay->help_press_timer -= delta_time;
+		if (overlay->help_press_timer < 0.0) {
+			overlay->help_press_timer = 0.0;
+			overlay->help_pressed_key = -1;
+		}
+	}
+}
+
 /* --- Forward Declarations (Internal) --- */
 static void draw_exposure_overlay(App* app, UILayout* layout);
 static void draw_loading_indicator(App* app);
@@ -148,8 +184,9 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
 static void draw_text_centered(App* app, const char* text, float pos_x,
                                float pos_y)
 {
-	float text_w = ui_measure_text(&app->ui, text);
-	ui_draw_text(&app->ui, text, pos_x - (text_w * UI_CENTER_FACTOR),
+	float text_w = ui_measure_text(&app->overlay.ui, text);
+	ui_draw_text(&app->overlay.ui, text,
+	             pos_x - (text_w * UI_CENTER_FACTOR),
 	             pos_y - (DEFAULT_FONT_SIZE * UI_CENTER_FACTOR),
 	             (float*)DEFAULT_FONT_COLOR, app->width, app->height);
 }
@@ -157,9 +194,10 @@ static void draw_text_centered(App* app, const char* text, float pos_x,
 static void draw_key(App* app, const KeyPos* pos, float pos_x, float pos_y,
                      const vec3 base_col, bool has_binding, bool is_pressed)
 {
-	float key_w = (pos->width * app->kbd_config.key_size) +
-	              ((pos->width - 1.0F) * app->kbd_config.key_padding);
-	float key_h = app->kbd_config.key_size;
+	float key_w =
+	    (pos->width * app->overlay.kbd_config.key_size) +
+	    ((pos->width - 1.0F) * app->overlay.kbd_config.key_padding);
+	float key_h = app->overlay.kbd_config.key_size;
 
 	vec3 col;
 	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, col);
@@ -173,9 +211,9 @@ static void draw_key(App* app, const KeyPos* pos, float pos_x, float pos_y,
 		alpha = KEY_HOVER_ALPHA;
 	}
 
-	ui_draw_rounded_rect(&app->ui, pos_x, pos_y, key_w, key_h,
-	                     app->kbd_config.key_radius, col, alpha, app->width,
-	                     app->height);
+	ui_draw_rounded_rect(&app->overlay.ui, pos_x, pos_y, key_w, key_h,
+	                     app->overlay.kbd_config.key_radius, col, alpha,
+	                     app->width, app->height);
 
 	/* Label */
 	float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
@@ -188,7 +226,7 @@ static void draw_key(App* app, const KeyPos* pos, float pos_x, float pos_y,
 	glfwGetCursorPos(app->window, &mouse_x, &mouse_y);
 	if (mouse_x >= (double)pos_x && mouse_x <= (double)(pos_x + key_w) &&
 	    mouse_y >= (double)pos_y && mouse_y <= (double)(pos_y + key_h)) {
-		app->help_hovered_key = pos->key;
+		app->overlay.help_hovered_key = pos->key;
 	}
 }
 
@@ -249,26 +287,26 @@ static bool is_modifier_relevant(int key, int pressed_key, int pressed_mods)
 
 void app_draw_help_overlay(App* app)
 {
-	if (!app->show_help) {
+	if (!app->overlay.show_help) {
 		return;
 	}
 
 	/* Center the keyboard layout */
-	const float total_w =
-	    16.5F * (app->kbd_config.key_size + app->kbd_config.key_padding);
-	const float total_h =
-	    6.0F * (app->kbd_config.key_size + app->kbd_config.key_padding);
+	const float total_w = 16.5F * (app->overlay.kbd_config.key_size +
+	                               app->overlay.kbd_config.key_padding);
+	const float total_h = 6.0F * (app->overlay.kbd_config.key_size +
+	                              app->overlay.kbd_config.key_padding);
 
 	const float start_x = ((float)app->width - total_w) * UI_CENTER_FACTOR;
 	const float start_y = ((float)app->height - total_h) * UI_CENTER_FACTOR;
 
 	/* Background Overlay */
-	ui_draw_rect_ex(&app->ui, 0.0F, 0.0F, (float)app->width,
+	ui_draw_rect_ex(&app->overlay.ui, 0.0F, 0.0F, (float)app->width,
 	                (float)app->height, (float*)HELP_BG_COLOR,
 	                HELP_BG_ALPHA, app->width, app->height);
 
 	/* Exit Hint */
-	ui_draw_text_ex(&app->ui, "[ESC] TO EXIT HELP",
+	ui_draw_text_ex(&app->overlay.ui, "[ESC] TO EXIT HELP",
 	                (float)app->width - HELP_EXIT_HINT_X_OFF,
 	                (float)app->height - HELP_EXIT_HINT_Y_OFF,
 	                (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, app->width,
@@ -277,21 +315,22 @@ void app_draw_help_overlay(App* app)
 	/* Title */
 	draw_text_centered(app, "--- APPLICATION HELP (Dry-Run Mode) ---",
 	                   (float)app->width * UI_CENTER_FACTOR,
-	                   start_y - app->kbd_config.title_y_offset);
+	                   start_y - app->overlay.kbd_config.title_y_offset);
 
 	/* Color Legend */
 	const float legend_y =
-	    start_y - (app->kbd_config.title_y_offset * LEGEND_Y_FACTOR);
+	    start_y -
+	    (app->overlay.kbd_config.title_y_offset * LEGEND_Y_FACTOR);
 	const float legend_x_start = (float)app->width * LEGEND_X_START_FACTOR;
 	const float legend_step = (float)app->width * LEGEND_STEP_FACTOR;
 
-	ui_draw_text_ex(&app->ui, "Toggle (On/Off)", legend_x_start, legend_y,
-	                (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, app->width,
-	                app->height);
-	ui_draw_text_ex(&app->ui, "Cycle", legend_x_start + legend_step,
+	ui_draw_text_ex(&app->overlay.ui, "Toggle (On/Off)", legend_x_start,
+	                legend_y, (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA,
+	                app->width, app->height);
+	ui_draw_text_ex(&app->overlay.ui, "Cycle", legend_x_start + legend_step,
 	                legend_y, (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA,
 	                app->width, app->height);
-	ui_draw_text_ex(&app->ui, "Combination (Shift+)",
+	ui_draw_text_ex(&app->overlay.ui, "Combination (Shift+)",
 	                legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT),
 	                legend_y, (float*)KEY_COLOR_COMBINATION,
 	                HELP_TEXT_ALPHA, app->width, app->height);
@@ -302,7 +341,7 @@ void app_draw_help_overlay(App* app)
 static void draw_help_overlay_keys(App* app, float start_x, float start_y,
                                    float total_h)
 {
-	app->help_hovered_key = -1;
+	app->overlay.help_hovered_key = -1;
 
 	const unsigned int num_keys =
 	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
@@ -310,12 +349,13 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 	for (unsigned int i = 0; i < num_keys; i++) {
 		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
 		const float kx_pos =
-		    start_x + (kpos->x_off * (app->kbd_config.key_size +
-		                              app->kbd_config.key_padding));
+		    start_x +
+		    (kpos->x_off * (app->overlay.kbd_config.key_size +
+		                    app->overlay.kbd_config.key_padding));
 		const float ky_pos =
 		    start_y +
-		    ((float)kpos->row *
-		     (app->kbd_config.key_size + app->kbd_config.key_padding));
+		    ((float)kpos->row * (app->overlay.kbd_config.key_size +
+		                         app->overlay.kbd_config.key_padding));
 
 		/* Hit test for mouse interaction & color coding */
 		vec3 base_col;
@@ -323,12 +363,12 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 		get_key_base_color(&app->binding_registry, kpos->key, base_col,
 		                   &has_binding);
 
-		bool is_pressed = (app->help_pressed_key == kpos->key);
+		bool is_pressed = (app->overlay.help_pressed_key == kpos->key);
 
 		/* Also highlight modifiers if they are part of a combination */
-		if (!is_pressed &&
-		    is_modifier_relevant(kpos->key, app->help_pressed_key,
-		                         app->help_pressed_mods)) {
+		if (!is_pressed && is_modifier_relevant(
+		                       kpos->key, app->overlay.help_pressed_key,
+		                       app->overlay.help_pressed_mods)) {
 			is_pressed = true;
 		}
 
@@ -337,15 +377,15 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 	}
 
 	/* Show details for hovered or pressed key */
-	const int target_key = (app->help_pressed_key != -1)
-	                           ? app->help_pressed_key
-	                           : app->help_hovered_key;
+	const int target_key = (app->overlay.help_pressed_key != -1)
+	                           ? app->overlay.help_pressed_key
+	                           : app->overlay.help_hovered_key;
 	if (target_key != -1) {
 		const AppBinding* binding = NULL;
-		if (app->help_pressed_key != -1) {
+		if (app->overlay.help_pressed_key != -1) {
 			binding = app_binding_registry_get(
 			    &app->binding_registry, target_key,
-			    app->help_pressed_mods);
+			    app->overlay.help_pressed_mods);
 		}
 
 		if (binding == NULL) {
@@ -361,7 +401,8 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 		if (binding != NULL) {
 			/* Show detailed description below help */
 			const float detail_y =
-			    start_y + total_h + app->kbd_config.detail_y_offset;
+			    start_y + total_h +
+			    app->overlay.kbd_config.detail_y_offset;
 			char buf[KEYBOARD_BUFFER_SIZE];
 			char mod_str[MODIFIER_BUFFER_SIZE] = "";
 
@@ -397,7 +438,7 @@ static void draw_exposure_debug_text(App* app)
 	                    "Auto Exposure: %.4f | Scene Lum: %.4f",
 	                    exposure_val, luminance);
 
-	ui_draw_text(&app->ui, debug_text, DEFAULT_FONT_OFFSET_X,
+	ui_draw_text(&app->overlay.ui, debug_text, DEFAULT_FONT_OFFSET_X,
 	             DEFAULT_FONT_OFFSET_Y + DEBUG_TEXT_Y_OFFSET,
 	             (float*)DEBUG_ORANGE_COLOR, app->width, app->height);
 }
@@ -418,7 +459,7 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
 	const float bar_w = graph_w / (float)size;
 
 	/* Background */
-	ui_draw_rect(&app->ui, graph_x, graph_y, graph_w, graph_h,
+	ui_draw_rect(&app->overlay.ui, graph_x, graph_y, graph_w, graph_h,
 	             (vec3){0.0F, 0.0F, 0.0F}, app->width, app->height);
 
 	/* Find peak for scaling */
@@ -446,15 +487,15 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
 			glm_vec3_copy((float*)HISTO_BAR_COLOR_RED, bar_col);
 		}
 
-		ui_draw_rect(&app->ui, bx_pos, by_pos, bar_w, bar_h, bar_col,
-		             app->width, app->height);
+		ui_draw_rect(&app->overlay.ui, bx_pos, by_pos, bar_w, bar_h,
+		             bar_col, app->width, app->height);
 	}
 
 	/* Labels for min/max */
 	char range_text[RANGE_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(range_text, sizeof(range_text), "%.2f .. %.2f",
 	                    min_lum, max_lum);
-	ui_draw_text(&app->ui, range_text, graph_x,
+	ui_draw_text(&app->overlay.ui, range_text, graph_x,
 	             graph_y + graph_h + GRAPH_TEXT_PADDING, GRAPH_TEXT_COLOR,
 	             app->width, app->height);
 }
@@ -477,7 +518,7 @@ void app_draw_debug_overlay(App* app)
 
 static void draw_main_info_overlay(App* app, UILayout* layout)
 {
-	if (app->text_overlay_mode < 1) {
+	if (app->overlay.text_overlay_mode < 1) {
 		return;
 	}
 
@@ -497,7 +538,7 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 	                    current_fps, frame_time_ms);
 	ui_layout_text(layout, fps_text, DEFAULT_FONT_COLOR);
 
-	if (app->text_overlay_mode >= 2) {
+	if (app->overlay.text_overlay_mode >= 2) {
 		static const size_t AVG_TEXT_SIZE = 64;
 		char avg_text[AVG_TEXT_SIZE];
 		float sampled_avg =
@@ -515,7 +556,7 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 	ui_layout_text(layout, pos_text, DEFAULT_FONT_COLOR);
 
 	/* 3. Environment */
-	if (app->text_overlay_mode >= 2 && app->scene.hdr_count > 0 &&
+	if (app->overlay.text_overlay_mode >= 2 && app->scene.hdr_count > 0 &&
 	    app->scene.current_hdr_index >= 0) {
 		char env_text[ENV_TEXT_BUFFER_SIZE];
 		(void)safe_snprintf(
@@ -527,7 +568,7 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 
 static void draw_exposure_overlay(App* app, UILayout* layout)
 {
-	if (app->text_overlay_mode < 3) {
+	if (app->overlay.text_overlay_mode < 3) {
 		return;
 	}
 
@@ -559,13 +600,14 @@ static void draw_loading_indicator(App* app)
 	float text_x = center_x - (text_width * UI_CENTER_FACTOR);
 	float text_y = center_y + (UI_SPINNER_SIZE * UI_TEXT_OFFSET_FACTOR);
 
-	ui_draw_text(&app->ui, loading_text, text_x, text_y,
+	ui_draw_text(&app->overlay.ui, loading_text, text_x, text_y,
 	             (float*)HISTO_BAR_COLOR_BLUE, app->width, app->height);
 
 	double current_time = glfwGetTime();
 	float angle = (float)current_time * (float)UI_SPINNER_SPEED;
-	ui_draw_spinner(&app->ui, center_x, center_y, UI_SPINNER_SIZE, angle,
-	                (float*)UI_SPINNER_COLOR, app->width, app->height);
+	ui_draw_spinner(&app->overlay.ui, center_x, center_y, UI_SPINNER_SIZE,
+	                angle, (float*)UI_SPINNER_COLOR, app->width,
+	                app->height);
 }
 
 void app_render_ui(App* app)
@@ -573,10 +615,10 @@ void app_render_ui(App* app)
 	/* Wrap everything in a single batch to minimize draw
 	 * calls and state switches. Note: ui_begin saves state
 	 * and ui_end restores it. */
-	ui_begin(&app->ui, app->width, app->height);
+	ui_begin(&app->overlay.ui, app->width, app->height);
 
 	UILayout layout;
-	ui_layout_init(&layout, &app->ui, DEFAULT_FONT_OFFSET_X,
+	ui_layout_init(&layout, &app->overlay.ui, DEFAULT_FONT_OFFSET_X,
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
@@ -588,14 +630,15 @@ void app_render_ui(App* app)
 		app_draw_debug_overlay(app);
 	}
 
-	if (app->show_help) {
+	if (app->overlay.show_help) {
 		app_draw_help_overlay(app);
 	}
 
-	gpu_profiler_ui_draw(&app->timeline_ui, &app->ui, app->width,
+	gpu_profiler_ui_draw(&app->timeline_ui, &app->overlay.ui, app->width,
 	                     app->height);
-	action_notifier_draw(&app->notifier, &app->ui, app->width, app->height);
+	action_notifier_draw(&app->notifier, &app->overlay.ui, app->width,
+	                     app->height);
 
 	/* End global batch (restores state) */
-	ui_end(&app->ui);
+	ui_end(&app->overlay.ui);
 }
