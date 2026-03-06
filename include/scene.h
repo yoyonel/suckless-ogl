@@ -9,14 +9,12 @@
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "material.h"
+#include "scene_renderer.h"
 #include "shader.h"
 #include "skybox.h"
 #include "sphere_sorting.h"
-#include <cglm/cglm.h>
-
-#ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
-#endif
+#include <cglm/cglm.h>
 
 typedef struct PostProcess PostProcess;
 
@@ -113,25 +111,24 @@ typedef struct {
 	    sh_textures[SH_TEXTURE_COUNT]; /**< Locations of 'u_SHTexture0-6' */
 } BillboardUniforms;
 
+typedef struct Scene Scene;
+
 /**
  * @struct Scene
  * @brief Encapsulates all 3D scene data, geometry, and rendering state.
  */
 typedef struct Scene {
 	/* --- Geometry & Meshes --- */
-	IcosphereGeometry geometry; /**< High-poly sphere mesh data. */
-	InstancedGroup
-	    instanced_group; /**< Managed buffers for opaque spheres. */
-	BillboardGroup billboard_group; /**< Managed buffers for billboards. */
-#ifdef USE_SSBO_RENDERING
-	SSBOGroup ssbo_group; /**< SSBO rendering context. */
-#endif
+	IcosphereGeometry geometry;     /**< High-poly sphere mesh data. */
+	InstancedGroup instanced_group; /**< Buffers for opaque spheres. */
+	BillboardGroup billboard_group; /**< Buffers for billboards. */
+	SSBOGroup ssbo_group;           /**< SSBO rendering context. */
 
-#ifdef USE_TRANSPARENT_BILLBOARDS
 	SphereSorter sphere_sorter;       /**< Sorter for alpha blending. */
 	SphereInstance* sphere_instances; /**< Persistent array for sorting. */
 	int sphere_instance_count;        /**< Active sphere count. */
-#endif
+
+	const SceneRenderer* renderer; /**< Active rendering strategy. */
 
 	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
 	MaterialLib* material_lib; /**< Loaded material presets. */
@@ -145,10 +142,8 @@ typedef struct Scene {
 	/* --- Shaders --- */
 	Shader* pbr_instanced_shader; /**< Shared PBR shader for opaque geo. */
 	Shader*
-	    pbr_billboard_shader; /**< Shader for volumetric/alpha spheres. */
-#ifdef USE_SSBO_RENDERING
-	Shader* pbr_ssbo_shader; /**< Optimized SSBO shader. */
-#endif
+	    pbr_billboard_shader;  /**< Shader for volumetric/alpha spheres. */
+	Shader* pbr_ssbo_shader;   /**< Optimized SSBO shader. */
 	Shader* debug_shader;      /**< Generic debug/visualization shader. */
 	Shader* debug_line_shader; /**< Shader for wireframe lines. */
 	Shader* skybox_shader;     /**< Skybox shader wrapper. */

@@ -11,17 +11,15 @@
 #include "platform/platform_fs.h"
 #include "platform/platform_utils.h"
 #include "render_utils.h"
+#include "scene_renderer.h"
 #include "shader.h"
 #include "sphere_sorting.h"
+#include "ssbo_rendering.h"
 #include "utils.h"
 #include <cglm/cglm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef USE_SSBO_RENDERING
-#include "ssbo_rendering.h"
-#endif
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -160,7 +158,6 @@ static void scene_init_instancing(Scene* scene)
 	free(data);
 }
 
-#ifdef USE_SSBO_RENDERING
 static void scene_init_ssbo(Scene* scene)
 {
 	const int total_count =
@@ -215,7 +212,6 @@ static void scene_init_ssbo(Scene* scene)
 
 	free(data);
 }
-#endif
 
 static void scene_init_state(Scene* scene)
 {
@@ -281,43 +277,18 @@ static int scene_init_billboard_shader(Scene* scene)
 		return 0;
 	}
 
-	scene->billboard_uniforms.irradiance_map = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "irradianceMap");
-	scene->billboard_uniforms.prefilter_map = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "prefilterMap");
-	scene->billboard_uniforms.brdf_lut =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "brdfLUT");
-	scene->billboard_uniforms.debug_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "debugMode");
-	scene->billboard_uniforms.cam_pos =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "camPos");
-	scene->billboard_uniforms.projection = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "projection");
-	scene->billboard_uniforms.view =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "view");
-	scene->billboard_uniforms.previous_view_proj =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "previousViewProj");
-	scene->billboard_uniforms.u_screen_size = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_screenSize");
-	scene->billboard_uniforms.u_specular_aa_enabled =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "u_specularAAEnabled");
-	scene->billboard_uniforms.u_aa_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_aaMode");
+	static const char* billboard_names[] = {
+	    "irradianceMap",  "prefilterMap",     "brdfLUT",
+	    "debugMode",      "camPos",           "projection",
+	    "view",           "previousViewProj", "u_screenSize",
+	    "u_ProbeGridMin", "u_ProbeGridMax",   "u_ProbeGridDim",
+	    "u_GIMode",       "u_GridToIdxScale", "u_specularAAEnabled",
+	    "u_aaMode"};
 
-	/* Probe Grid */
-	scene->billboard_uniforms.probe_grid_min = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridMin");
-	scene->billboard_uniforms.probe_grid_max = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridMax");
-	scene->billboard_uniforms.probe_grid_dim = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridDim");
-	scene->billboard_uniforms.gi_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_GIMode");
-	scene->billboard_uniforms.grid_to_idx_scale =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "u_GridToIdxScale");
+	shader_init_uniforms(scene->pbr_billboard_shader->program,
+	                     billboard_names,
+	                     (GLint*)&scene->billboard_uniforms,
+	                     sizeof(billboard_names) / sizeof(char*));
 
 	/* Set Billboard SH Sampler Indices (units 8-14) */
 	{
@@ -360,67 +331,66 @@ static int scene_init_compute_resources(Scene* scene)
 	return 1;
 }
 
-static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
+static int scene_init_shaders(Scene* scene)
 {
-#ifdef USE_SSBO_RENDERING
-	scene_init_ssbo(scene);
-	scene->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
-	                                     "shaders/pbr_ibl_instanced.frag");
-	if (!scene->pbr_ssbo_shader) {
-		return 0;
-	}
-	*out_shader = scene->pbr_ssbo_shader;
-#else
+	/* Opaque - Instanced */
 	scene_init_instancing(scene);
 	scene->pbr_instanced_shader = shader_load(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
 	if (!scene->pbr_instanced_shader) {
-		return 0;
+		LOG_ERROR("suckless-ogl.scene",
+		          "Failed to load instanced shader");
 	}
-	*out_shader = scene->pbr_instanced_shader;
-#endif
+	/* Opaque - SSBO */
+	scene_init_ssbo(scene);
 
-	scene->instanced_uniforms.irradiance_map =
-	    shader_get_uniform_location(*out_shader, "irradianceMap");
-	scene->instanced_uniforms.prefilter_map =
-	    shader_get_uniform_location(*out_shader, "prefilterMap");
-	scene->instanced_uniforms.brdf_lut =
-	    shader_get_uniform_location(*out_shader, "brdfLUT");
-	scene->instanced_uniforms.debug_mode =
-	    shader_get_uniform_location(*out_shader, "debugMode");
-	scene->instanced_uniforms.cam_pos =
-	    shader_get_uniform_location(*out_shader, "camPos");
-	scene->instanced_uniforms.projection =
-	    shader_get_uniform_location(*out_shader, "projection");
-	scene->instanced_uniforms.view =
-	    shader_get_uniform_location(*out_shader, "view");
-	scene->instanced_uniforms.previous_view_proj =
-	    shader_get_uniform_location(*out_shader, "previousViewProj");
-	scene->instanced_uniforms.u_specular_aa_enabled =
-	    shader_get_uniform_location(*out_shader, "u_specularAAEnabled");
-	scene->instanced_uniforms.u_aa_mode =
-	    shader_get_uniform_location(*out_shader, "u_aaMode");
+	scene->pbr_ssbo_shader = shader_load("shaders/pbr_ibl_ssbo.vert",
+	                                     "shaders/pbr_ibl_instanced.frag");
+	if (!scene->pbr_ssbo_shader) {
+		LOG_ERROR("suckless-ogl.scene", "Failed to load SSBO shader");
+	}
 
-	/* Probe Grid Uniforms */
-	scene->instanced_uniforms.probe_grid_min =
-	    shader_get_uniform_location(*out_shader, "u_ProbeGridMin");
-	scene->instanced_uniforms.probe_grid_max =
-	    shader_get_uniform_location(*out_shader, "u_ProbeGridMax");
-	scene->instanced_uniforms.probe_grid_dim =
-	    shader_get_uniform_location(*out_shader, "u_ProbeGridDim");
-	scene->instanced_uniforms.gi_mode =
-	    shader_get_uniform_location(*out_shader, "u_GIMode");
+	/* Initialize uniform caches for both */
+	Shader* opaque_shaders[] = {scene->pbr_instanced_shader,
+	                            scene->pbr_ssbo_shader};
 
-	/* Set Instanced SH Sampler Indices (units 8-14) */
-	{
-		shader_use(*out_shader);
+	static const char* uniform_names[] = {"irradianceMap",
+	                                      "prefilterMap",
+	                                      "brdfLUT",
+	                                      "debugMode",
+	                                      "camPos",
+	                                      "projection",
+	                                      "view",
+	                                      "previousViewProj",
+	                                      "u_ProbeGridMin",
+	                                      "u_ProbeGridMax",
+	                                      "u_ProbeGridDim",
+	                                      "u_GIMode",
+	                                      "u_specularAAEnabled",
+	                                      "u_aaMode"};
+
+	for (size_t i_shader = 0; i_shader < 2; i_shader++) {
+		Shader* s_ptr = opaque_shaders[i_shader];
+		if (!s_ptr) {
+			continue;
+		}
+
+		/* Batch initialize uniforms (excluding SH textures which are
+		 * dynamic)
+		 */
+		shader_init_uniforms(s_ptr->program, uniform_names,
+		                     (GLint*)&scene->instanced_uniforms,
+		                     sizeof(uniform_names) / sizeof(char*));
+
+		/* Set SH Sampler Indices (units 8-14) */
+		shader_use(s_ptr);
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 			enum { MAX_UNIFORM_NAME_LEN = 32 };
 			char name[MAX_UNIFORM_NAME_LEN];
 			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
 			                    i);
 			scene->instanced_uniforms.sh_textures[i] =
-			    shader_get_uniform_location(*out_shader, name);
+			    shader_get_uniform_location(s_ptr, name);
 			if (scene->instanced_uniforms.sh_textures[i] != -1) {
 				glUniform1i(
 				    scene->instanced_uniforms.sh_textures[i],
@@ -428,7 +398,9 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 			}
 		}
 	}
-	return 1;
+
+	return (scene->pbr_instanced_shader != NULL ||
+	        scene->pbr_ssbo_shader != NULL);
 }
 
 int scene_init(Scene* scene)
@@ -475,8 +447,7 @@ int scene_init(Scene* scene)
 		                      (2 * prows) + 1, 3);
 	}
 
-	Shader* inst_shader = NULL;
-	if (!scene_init_instanced_shader(scene, &inst_shader)) {
+	if (!scene_init_shaders(scene)) {
 		return 0;
 	}
 
@@ -500,9 +471,7 @@ static void scene_cleanup_pbr_shaders(Scene* scene)
 {
 	SHADER_SAFE_DESTROY(scene->pbr_instanced_shader);
 	SHADER_SAFE_DESTROY(scene->pbr_billboard_shader);
-#ifdef USE_SSBO_RENDERING
 	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
-#endif
 	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
 	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
 }
@@ -563,18 +532,15 @@ void scene_cleanup(Scene* scene)
 
 	icosphere_free(&scene->geometry);
 	skybox_cleanup(&scene->skybox);
-#ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->sphere_instances) {
 		platform_aligned_free(scene->sphere_instances);
 		scene->sphere_instances = NULL;
 	}
 	sphere_sorter_cleanup(&scene->sphere_sorter);
-#endif
+
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
-#ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
-#endif
 
 	if (scene->material_lib) {
 		material_free_lib(scene->material_lib);
@@ -633,9 +599,135 @@ void scene_update_gpu_buffers(Scene* scene)
 	glBindVertexArray(0);
 }
 
-static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
-                                    vec3 camera_pos, mat4 previous_view_proj,
-                                    int width, int height)
+// -----------------------------------------------------------------------------
+// Scene Rendering Strategies
+// -----------------------------------------------------------------------------
+
+static void instanced_render(Scene* scene, mat4 view, mat4 proj,
+                             vec3 camera_pos, mat4 previous_view_proj,
+                             int width, int height)
+{
+	(void)width;
+	(void)height;
+	Shader* current_shader = scene->pbr_instanced_shader;
+	shader_use(current_shader);
+
+	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
+	                               scene->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
+	                               scene->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
+	                               scene->dummy_black_tex);
+
+	shader_set_int_loc(scene->instanced_uniforms.irradiance_map, 0);
+	shader_set_int_loc(scene->instanced_uniforms.prefilter_map, 1);
+	shader_set_int_loc(scene->instanced_uniforms.brdf_lut, 2);
+	shader_set_int_loc(scene->instanced_uniforms.debug_mode,
+	                   scene->pbr_debug_mode);
+	shader_set_vec3_loc(scene->instanced_uniforms.cam_pos, camera_pos);
+	shader_set_mat4_loc(scene->instanced_uniforms.projection, (float*)proj);
+	shader_set_mat4_loc(scene->instanced_uniforms.view, (float*)view);
+	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
+	                    (float*)previous_view_proj);
+
+	if (scene->instanced_uniforms.u_specular_aa_enabled != -1) {
+		glUniform1i(scene->instanced_uniforms.u_specular_aa_enabled,
+		            scene->specular_aa_enabled);
+	}
+	if (scene->instanced_uniforms.u_aa_mode != -1) {
+		glUniform1i(scene->instanced_uniforms.u_aa_mode,
+		            scene->aa_mode);
+	}
+
+	/* Probe Grid spatial bounds and GI Toggle */
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
+	                    scene->probe_grid.aabb_min);
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
+	                    scene->probe_grid.aabb_max);
+
+	if (scene->instanced_uniforms.probe_grid_dim != -1) {
+		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
+		            scene->probe_grid.grid_dim[0],
+		            scene->probe_grid.grid_dim[1],
+		            scene->probe_grid.grid_dim[2]);
+	}
+	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
+	                   (int)scene->gi_mode);
+
+	/* Bind SH Textures */
+	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+		glActiveTexture(
+		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
+		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
+	}
+
+	instanced_group_draw(&scene->instanced_group,
+	                     (int)scene->geometry.indices.size);
+}
+
+static void ssbo_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
+                        mat4 previous_view_proj, int width, int height)
+{
+	(void)width;
+	(void)height;
+	Shader* current_shader = scene->pbr_ssbo_shader;
+	shader_use(current_shader);
+
+	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
+	                               scene->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
+	                               scene->dummy_black_tex);
+	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
+	                               scene->dummy_black_tex);
+
+	shader_set_int_loc(scene->instanced_uniforms.irradiance_map, 0);
+	shader_set_int_loc(scene->instanced_uniforms.prefilter_map, 1);
+	shader_set_int_loc(scene->instanced_uniforms.brdf_lut, 2);
+	shader_set_int_loc(scene->instanced_uniforms.debug_mode,
+	                   scene->pbr_debug_mode);
+	shader_set_vec3_loc(scene->instanced_uniforms.cam_pos, camera_pos);
+	shader_set_mat4_loc(scene->instanced_uniforms.projection, (float*)proj);
+	shader_set_mat4_loc(scene->instanced_uniforms.view, (float*)view);
+	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
+	                    (float*)previous_view_proj);
+
+	if (scene->instanced_uniforms.u_specular_aa_enabled != -1) {
+		glUniform1i(scene->instanced_uniforms.u_specular_aa_enabled,
+		            scene->specular_aa_enabled);
+	}
+	if (scene->instanced_uniforms.u_aa_mode != -1) {
+		glUniform1i(scene->instanced_uniforms.u_aa_mode,
+		            scene->aa_mode);
+	}
+
+	/* Probe Grid spatial bounds and GI Toggle */
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
+	                    scene->probe_grid.aabb_min);
+	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
+	                    scene->probe_grid.aabb_max);
+
+	if (scene->instanced_uniforms.probe_grid_dim != -1) {
+		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
+		            scene->probe_grid.grid_dim[0],
+		            scene->probe_grid.grid_dim[1],
+		            scene->probe_grid.grid_dim[2]);
+	}
+	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
+	                   (int)scene->gi_mode);
+
+	/* Bind SH Textures */
+	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+		glActiveTexture(
+		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
+		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
+	}
+
+	ssbo_group_draw(&scene->ssbo_group, scene->geometry.indices.size);
+}
+
+static void billboard_render_strategy(Scene* scene, mat4 view, mat4 proj,
+                                      vec3 camera_pos, mat4 previous_view_proj,
+                                      int width, int height)
 {
 	Shader* current_shader = scene->pbr_billboard_shader;
 	shader_use(current_shader);
@@ -705,43 +797,31 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	billboard_group_draw(&scene->billboard_group);
 
 	if (scene->pbr_debug_mode == 0 && scene->wireframe) {
-		/* Wireframe Overlay */
-		/* Enable Depth Test but disable Depth Write to overlay
-		 * correctly */
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-
 		shader_use(scene->debug_line_shader);
 		shader_set_mat4_loc(scene->debug_uniforms.projection,
 		                    (float*)proj);
 		shader_set_mat4_loc(scene->debug_uniforms.view, (float*)view);
 
-		/* 0. Transparent Fill (Instance Albedo) */
-		/* Push fill back to avoid z-fighting with outlines */
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(debug_offset_fill, debug_offset_fill);
-
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		/* Disable stipple, Enable Billboard Mode, Enable Instance Color
-		 */
+
 		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
 		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
 		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 1);
-		/* Alpha 0.10 for transparency */
 		float color_fill[4] = {1.0F, 1.0F, 1.0F, debug_fill_alpha};
 		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_fill);
 		billboard_group_draw_debug_fill(&scene->billboard_group);
+
 		glDisable(GL_BLEND);
 		glDisable(GL_POLYGON_OFFSET_FILL);
 
-		/* 1. Quad Outline (Solid Green/White) */
-		/* Pull outlines forward */
 		glEnable(GL_POLYGON_OFFSET_LINE);
 		glPolygonOffset(debug_offset_line, debug_offset_line);
-
-		/* Disable stipple, Enable Billboard Mode, Disable Instance
-		 * Color */
 		shader_set_int_loc(scene->debug_uniforms.u_stippled, 0);
 		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 1);
 		shader_set_int_loc(scene->debug_uniforms.u_use_instance_col, 0);
@@ -749,8 +829,6 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		shader_set_vec4_loc(scene->debug_uniforms.u_color, color_quad);
 		billboard_group_draw_debug_quads(&scene->billboard_group);
 
-		/* 2. Bounding Box (Dotted/Stippled Red/Yellow) */
-		/* Enable stipple, Disable Billboard Mode */
 		shader_set_int_loc(scene->debug_uniforms.u_stippled, 1);
 		shader_set_int_loc(scene->debug_uniforms.u_billboard_mode, 0);
 		float color_box[4] = {1.0F, 1.0F, 0.0F, debug_box_alpha};
@@ -758,107 +836,29 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		billboard_group_draw_debug_boxes(&scene->billboard_group);
 
 		glDisable(GL_POLYGON_OFFSET_LINE);
-
-		/* Restore Depth State */
 		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
 	}
 }
 
-static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
-                                   vec3 camera_pos, mat4 previous_view_proj)
-{
-	Shader* current_shader = NULL;
-#ifdef USE_SSBO_RENDERING
-	current_shader = scene->pbr_ssbo_shader;
-#else
-	current_shader = scene->pbr_instanced_shader;
-#endif
+static const SceneRenderer INSTANCED_STRATEGY = {.render = instanced_render};
 
-	shader_use(current_shader);
+static const SceneRenderer SSBO_STRATEGY = {.render = ssbo_render};
 
-	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
-	                               scene->dummy_black_tex);
-
-	shader_set_int_loc(scene->instanced_uniforms.irradiance_map, 0);
-	shader_set_int_loc(scene->instanced_uniforms.prefilter_map, 1);
-	shader_set_int_loc(scene->instanced_uniforms.brdf_lut, 2);
-	shader_set_int_loc(scene->instanced_uniforms.debug_mode,
-	                   scene->pbr_debug_mode);
-	shader_set_vec3_loc(scene->instanced_uniforms.cam_pos, camera_pos);
-	shader_set_mat4_loc(scene->instanced_uniforms.projection, (float*)proj);
-	shader_set_mat4_loc(scene->instanced_uniforms.view, (float*)view);
-	shader_set_mat4_loc(scene->instanced_uniforms.previous_view_proj,
-	                    (float*)previous_view_proj);
-
-	if (scene->instanced_uniforms.u_specular_aa_enabled != -1) {
-		glUniform1i(scene->instanced_uniforms.u_specular_aa_enabled,
-		            scene->specular_aa_enabled);
-	}
-	if (scene->instanced_uniforms.u_aa_mode != -1) {
-		glUniform1i(scene->instanced_uniforms.u_aa_mode,
-		            scene->aa_mode);
-	}
-
-	/* Probe Grid spatial bounds and GI Toggle */
-	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
-	                    scene->probe_grid.aabb_min);
-	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
-	                    scene->probe_grid.aabb_max);
-
-	if (scene->instanced_uniforms.probe_grid_dim != -1) {
-		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
-		            scene->probe_grid.grid_dim[0],
-		            scene->probe_grid.grid_dim[1],
-		            scene->probe_grid.grid_dim[2]);
-	}
-	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
-	                   (int)scene->gi_mode);
-
-	/* Bind SH Textures */
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		glActiveTexture(
-		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
-		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
-	}
-
-	/* Bind Probe SSBO for GI Mode 2 (SSBO) */
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, scene->probe_grid.ssbo);
-
-#ifdef USE_SSBO_RENDERING
-	ssbo_group_draw(&scene->ssbo_group, scene->geometry.indices.size);
-#else
-	instanced_group_draw(&scene->instanced_group,
-	                     (int)scene->geometry.indices.size);
-#endif
-}
-
-static inline void stencil_begin_object_pass(void)
-{
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
-	glStencilMask(DEFAULT_STENCIL_MASK);
-}
+static const SceneRenderer BILLBOARD_STRATEGY = {.render =
+                                                     billboard_render_strategy};
 
 void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
                   mat4 previous_view_proj, int width, int height)
 {
+	if (!scene) {
+		return;
+	}
+
 	mat4 view_proj;
 	mat4 inv_view_proj;
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
-	/* GI Probe SSBO sync — must happen before Spheres read it */
-	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
-		light_probe_grid_sync(&scene->probe_grid);
-	}
-
-#ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->show_envmap) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
@@ -868,10 +868,30 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 		glEnable(GL_DEPTH_TEST);
 	}
 
+	/* GI Probe SSBO sync — must happen before Spheres read it */
+	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
+		light_probe_grid_sync(&scene->probe_grid);
+	}
+
+	/* Determine active renderer */
+	if (scene->billboard_mode) {
+		scene->renderer = &BILLBOARD_STRATEGY;
+	} else {
+		scene->renderer = &INSTANCED_STRATEGY;
+#ifdef USE_SSBO_RENDERING
+		scene->renderer = &SSBO_STRATEGY;
+#endif
+	}
+
+	/* --- OBJECT PASS (Stencil + Draw) --- */
 	{
-		stencil_begin_object_pass();
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilFunc(GL_ALWAYS, 1, DEFAULT_STENCIL_MASK);
+		glStencilMask(DEFAULT_STENCIL_MASK);
 
 		if (scene->billboard_mode) {
+			/* Apply sorting if needed */
 			GLuint sorted_ssbo = 0;
 			switch (scene->sorting_mode) {
 				case SORTING_MODE_CPU_QSORT:
@@ -906,7 +926,7 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisablei(GL_BLEND, 1);
 
-			scene_render_billboards(scene, view, proj, camera_pos,
+			scene->renderer->render(scene, view, proj, camera_pos,
 			                        previous_view_proj, width,
 			                        height);
 
@@ -915,8 +935,9 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
 
-			scene_render_instanced(scene, view, proj, camera_pos,
-			                       previous_view_proj);
+			scene->renderer->render(scene, view, proj, camera_pos,
+			                        previous_view_proj, width,
+			                        height);
 
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -925,28 +946,6 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 
 		glDisable(GL_STENCIL_TEST);
 	}
-#else
-	{
-		stencil_begin_object_pass();
-
-		if (scene->billboard_mode) {
-			scene_render_billboards(scene, view, proj, camera_pos,
-			                        previous_view_proj, width,
-			                        height);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK,
-			              scene->wireframe ? GL_LINE : GL_FILL);
-			scene_render_instanced(scene, view, proj, camera_pos,
-			                       previous_view_proj);
-
-			if (scene->wireframe) {
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			}
-		}
-
-		glDisable(GL_STENCIL_TEST);
-
-#endif
 
 	if (scene->show_probe_grid) {
 		light_probe_render_debug(&scene->probe_grid, view, proj);
