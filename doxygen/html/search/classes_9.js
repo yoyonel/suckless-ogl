@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['keyboardlayoutconfig_1979',['KeyboardLayoutConfig',['../structKeyboardLayoutConfig.html',1,'']]],
-  ['keypos_1980',['KeyPos',['../structKeyPos.html',1,'']]]
+  ['keyboardlayoutconfig_1985',['KeyboardLayoutConfig',['../structKeyboardLayoutConfig.html',1,'']]],
+  ['keypos_1986',['KeyPos',['../structKeyPos.html',1,'']]]
 ];

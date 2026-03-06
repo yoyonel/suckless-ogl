@@ -283,16 +283,15 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a93ca2fce06c15deb6a1eb7ff6db65f61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="renderer_8h.html#a93ca2fce06c15deb6a1eb7ff6db65f61">app_render_ui</a> (struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="memdesc:a93ca2fce06c15deb6a1eb7ff6db65f61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main UI rendering entry point.  <a href="renderer_8h.html#a93ca2fce06c15deb6a1eb7ff6db65f61">More...</a><br /></td></tr>
-<tr class="separator:a93ca2fce06c15deb6a1eb7ff6db65f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6b32ce56595e21229b3c395a608740b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="renderer_8h.html#ab6b32ce56595e21229b3c395a608740b">app_render_ui</a> (const struct <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:ab6b32ce56595e21229b3c395a608740b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b1e76ebf547902da98608c3d9d4cb76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="renderer_8h.html#a8b1e76ebf547902da98608c3d9d4cb76">renderer_draw_frame</a> (struct <a class="el" href="structApp.html">App</a> *app_ref, <a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structPostProcess.html">PostProcess</a> *postprocess, <a class="el" href="structCamera.html">Camera</a> *camera, <a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, <a class="el" href="structGPUProfilerUI.html">GPUProfilerUI</a> *timeline_ui, <a class="el" href="structEnvManager.html">EnvManager</a> *env_mgr, <a class="el" href="structActionNotifier.html">ActionNotifier</a> *notifier, <a class="el" href="structEffectBenchmark.html">EffectBenchmark</a> *effect_bench, int width, int height, double delta_time, uint64_t frame_count, int log_gpu_metrics)</td></tr>
 <tr class="memdesc:a8b1e76ebf547902da98608c3d9d4cb76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Orchestrates the entire frame render (scene, postprocess, ui). Decouples the rendering logic from the main <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> lifecycle and window state.  <a href="renderer_8h.html#a8b1e76ebf547902da98608c3d9d4cb76">More...</a><br /></td></tr>
 <tr class="separator:a8b1e76ebf547902da98608c3d9d4cb76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a93ca2fce06c15deb6a1eb7ff6db65f61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93ca2fce06c15deb6a1eb7ff6db65f61">&#9670;&nbsp;</a></span>app_render_ui()</h2>
+<a id="ab6b32ce56595e21229b3c395a608740b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b32ce56595e21229b3c395a608740b">&#9670;&nbsp;</a></span>app_render_ui()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -300,20 +299,12 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void app_render_ui </td>
           <td>(</td>
-          <td class="paramtype">struct <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramtype">const struct <a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Main UI rendering entry point. </p>
-<p>Orchestrates all UI elements (overlays, histograms, loading spinners). </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>

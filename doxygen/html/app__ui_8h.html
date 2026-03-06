@@ -260,7 +260,14 @@ $(document).ready(function(){initNavTree('app__ui_8h.html',''); initResizable();
 
 <p>UI rendering module for the application.  
 <a href="#details">More...</a></p>
-<div class="textblock"><div class="dynheader">
+<div class="textblock"><code>#include &quot;<a class="el" href="ui_8h_source.html">ui.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for app_ui.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8h__incl.svg" width="470" height="336"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8h__dep__incl.svg" width="650" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
@@ -273,28 +280,38 @@ This graph shows which files directly or indirectly include this file:</div>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5801625db6cf8bb9015ff624b94e7c6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a5801625db6cf8bb9015ff624b94e7c6e">app_draw_help_overlay</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="memdesc:a5801625db6cf8bb9015ff624b94e7c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the help overlay with keyboard shortcuts.  <a href="app__ui_8h.html#a5801625db6cf8bb9015ff624b94e7c6e">More...</a><br /></td></tr>
-<tr class="separator:a5801625db6cf8bb9015ff624b94e7c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a218e676a092e2566c4f7f390dba2ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a3a218e676a092e2566c4f7f390dba2ca">app_draw_debug_overlay</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="memdesc:a3a218e676a092e2566c4f7f390dba2ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the debug overlay with performance metrics and settings.  <a href="app__ui_8h.html#a3a218e676a092e2566c4f7f390dba2ca">More...</a><br /></td></tr>
-<tr class="separator:a3a218e676a092e2566c4f7f390dba2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a102f988d3be9bb61dc41acc4be26df32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a102f988d3be9bb61dc41acc4be26df32">app_render_ui</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
-<tr class="memdesc:a102f988d3be9bb61dc41acc4be26df32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main UI rendering entry point.  <a href="app__ui_8h.html#a102f988d3be9bb61dc41acc4be26df32">More...</a><br /></td></tr>
-<tr class="separator:a102f988d3be9bb61dc41acc4be26df32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52e07b267cb28fd4153c6e4f52ba8ae6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a52e07b267cb28fd4153c6e4f52ba8ae6">compute_luminance_histogram</a> (<a class="el" href="structApp.html">App</a> *app, int *buckets, int size, float *min_lum, float *max_lum)</td></tr>
-<tr class="memdesc:a52e07b267cb28fd4153c6e4f52ba8ae6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the luminance histogram from current frame data.  <a href="app__ui_8h.html#a52e07b267cb28fd4153c6e4f52ba8ae6">More...</a><br /></td></tr>
-<tr class="separator:a52e07b267cb28fd4153c6e4f52ba8ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#aecd45eb408c8a13e0f98d280a6fef2df">app_draw_help_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:aecd45eb408c8a13e0f98d280a6fef2df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the help overlay with keyboard shortcuts.  <a href="app__ui_8h.html#aecd45eb408c8a13e0f98d280a6fef2df">More...</a><br /></td></tr>
+<tr class="separator:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a2260be1c8a14c8df4d54dee625f51c3a">app_draw_debug_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:a2260be1c8a14c8df4d54dee625f51c3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the debug overlay with performance metrics and settings.  <a href="app__ui_8h.html#a2260be1c8a14c8df4d54dee625f51c3a">More...</a><br /></td></tr>
+<tr class="separator:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b">app_render_ui</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main UI rendering entry point.  <a href="app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b">More...</a><br /></td></tr>
+<tr class="separator:a6e6cd6f94ac584ad4b8ca7434079e65b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#ae34ca930ba8175fe6d5e0e59ef5256f2">compute_luminance_histogram</a> (const <a class="el" href="structApp.html">App</a> *app, int *buckets, int size, float *min_lum, float *max_lum)</td></tr>
+<tr class="memdesc:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the luminance histogram from current frame data.  <a href="app__ui_8h.html#ae34ca930ba8175fe6d5e0e59ef5256f2">More...</a><br /></td></tr>
+<tr class="separator:ae34ca930ba8175fe6d5e0e59ef5256f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27e5ee4cedb372f915cf408adc005d94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a27e5ee4cedb372f915cf408adc005d94">app_ui_init</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay)</td></tr>
+<tr class="separator:a27e5ee4cedb372f915cf408adc005d94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae291b4eb13641176e0232509ddc0ccf0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#ae291b4eb13641176e0232509ddc0ccf0">app_ui_cleanup</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay)</td></tr>
+<tr class="separator:ae291b4eb13641176e0232509ddc0ccf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bc4879a7af2ed6616a105fc9a66a1e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a8bc4879a7af2ed6616a105fc9a66a1e6">app_ui_update</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, double delta_time)</td></tr>
+<tr class="separator:a8bc4879a7af2ed6616a105fc9a66a1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a864f92bad1252e5f3c95232b41a3f7de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a864f92bad1252e5f3c95232b41a3f7de">app_ui_handle_mouse</a> (<a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *overlay, double xpos, double ypos, int width, int height)</td></tr>
+<tr class="separator:a864f92bad1252e5f3c95232b41a3f7de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>UI rendering module for the application. </p>
 <p>This module handles all UI-related drawing operations, including help overlays, debug information, and luminance statistics. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a3a218e676a092e2566c4f7f390dba2ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a218e676a092e2566c4f7f390dba2ca">&#9670;&nbsp;</a></span>app_draw_debug_overlay()</h2>
+<a id="a2260be1c8a14c8df4d54dee625f51c3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2260be1c8a14c8df4d54dee625f51c3a">&#9670;&nbsp;</a></span>app_draw_debug_overlay()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -302,7 +319,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void app_draw_debug_overlay </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
         </tr>
@@ -319,14 +336,14 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a3a218e676a092e2566c4f7f390dba2ca_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a2260be1c8a14c8df4d54dee625f51c3a_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a5801625db6cf8bb9015ff624b94e7c6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5801625db6cf8bb9015ff624b94e7c6e">&#9670;&nbsp;</a></span>app_draw_help_overlay()</h2>
+<a id="aecd45eb408c8a13e0f98d280a6fef2df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecd45eb408c8a13e0f98d280a6fef2df">&#9670;&nbsp;</a></span>app_draw_help_overlay()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,7 +351,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void app_draw_help_overlay </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
         </tr>
@@ -351,14 +368,14 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a5801625db6cf8bb9015ff624b94e7c6e_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_aecd45eb408c8a13e0f98d280a6fef2df_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a102f988d3be9bb61dc41acc4be26df32"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a102f988d3be9bb61dc41acc4be26df32">&#9670;&nbsp;</a></span>app_render_ui()</h2>
+<a id="a6e6cd6f94ac584ad4b8ca7434079e65b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e6cd6f94ac584ad4b8ca7434079e65b">&#9670;&nbsp;</a></span>app_render_ui()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -366,7 +383,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void app_render_ui </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em></td><td>)</td>
           <td></td>
         </tr>
@@ -383,14 +400,136 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a102f988d3be9bb61dc41acc4be26df32_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a6e6cd6f94ac584ad4b8ca7434079e65b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a52e07b267cb28fd4153c6e4f52ba8ae6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52e07b267cb28fd4153c6e4f52ba8ae6">&#9670;&nbsp;</a></span>compute_luminance_histogram()</h2>
+<a id="ae291b4eb13641176e0232509ddc0ccf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae291b4eb13641176e0232509ddc0ccf0">&#9670;&nbsp;</a></span>app_ui_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__ui_8h_ae291b4eb13641176e0232509ddc0ccf0_cgraph.svg" width="443" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a864f92bad1252e5f3c95232b41a3f7de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a864f92bad1252e5f3c95232b41a3f7de">&#9670;&nbsp;</a></span>app_ui_handle_mouse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_handle_mouse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>xpos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>ypos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27e5ee4cedb372f915cf408adc005d94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27e5ee4cedb372f915cf408adc005d94">&#9670;&nbsp;</a></span>app_ui_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a27e5ee4cedb372f915cf408adc005d94_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a8bc4879a7af2ed6616a105fc9a66a1e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bc4879a7af2ed6616a105fc9a66a1e6">&#9670;&nbsp;</a></span>app_ui_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_ui_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td>
+          <td class="paramname"><em>overlay</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>delta_time</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae34ca930ba8175fe6d5e0e59ef5256f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae34ca930ba8175fe6d5e0e59ef5256f2">&#9670;&nbsp;</a></span>compute_luminance_histogram()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +537,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">int compute_luminance_histogram </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
           <td class="paramname"><em>app</em>, </td>
         </tr>
         <tr>
@@ -445,6 +584,12 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of samples processed or error code. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_ae34ca930ba8175fe6d5e0e59ef5256f2_cgraph.svg" width="100%" height="366"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
 
 </div>
 </div>

@@ -30,7 +30,7 @@ var ui_8c =
     [ "ui_layout_init", "ui_8c.html#a04ff141f59212601e740294c9159dbe7", null ],
     [ "ui_layout_separator", "ui_8c.html#a822ad2f9015dc8e43f609046475a5dfe", null ],
     [ "ui_layout_text", "ui_8c.html#a741fab59d05880f3bf5362d101833451", null ],
-    [ "ui_measure_text", "ui_8c.html#a26db48bb6063f3f76fd3a3227b3acb4b", null ],
+    [ "ui_measure_text", "ui_8c.html#a230bc2320e5c5a94d5634132ad7ecd05", null ],
     [ "FONT_ATLAS_SIZE_F", "ui_8c.html#ac805579cfa3cc9bca0cc4f075612fee8", null ],
     [ "FONT_BASELINE_OFFSET", "ui_8c.html#a9d2c975bbb987bab349a6efe804a88cc", null ],
     [ "g_ui_saved_state", "ui_8c.html#ada114a43ba5ef5da89f16bfd867c8065", null ],

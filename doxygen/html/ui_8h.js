@@ -20,5 +20,5 @@ var ui_8h =
     [ "ui_layout_init", "ui_8h.html#a04ff141f59212601e740294c9159dbe7", null ],
     [ "ui_layout_separator", "ui_8h.html#a822ad2f9015dc8e43f609046475a5dfe", null ],
     [ "ui_layout_text", "ui_8h.html#a741fab59d05880f3bf5362d101833451", null ],
-    [ "ui_measure_text", "ui_8h.html#a26db48bb6063f3f76fd3a3227b3acb4b", null ]
+    [ "ui_measure_text", "ui_8h.html#a230bc2320e5c5a94d5634132ad7ecd05", null ]
 ];

@@ -82,16 +82,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"billboard__rendering_8c.html#a5a12a5448656197b1da5248f2787da94",
-"functions_vars_i.html",
-"group__Environment.html#gga9ae155b103e5528d5cb4530cf6ec8d28a8b2c4d2e91ae66cad88a3080870b6ba8",
-"main_8c.html",
-"perf__timer_8h.html#a248eca7078cf6b01ea1d0a65f3863774",
-"render__utils_8h.html#a8e822a5ea204deab6cc1dc8fb4846522",
-"ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed",
-"structEffectMetadata.html#a12901db32eca74ecd4106bf6e24f0711",
-"structPerfTimer.html#a9774d7f04ce62906b42dfd0059a1cf7e",
-"structTracyManager.html"
+"background_8vert.html#acdef7a1fd863a6d3770c1268cb06add3",
+"functions_vars.html",
+"group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03a7ed542bb2b57941f5d8d33a10802baa2",
+"log_8h.html#aca1fd1d8935433e6ba2e3918214e07f9a60e19382e2269fec7bd51a1fd02ff682",
+"perf__timer_8c.html#ab77f03ea3adbd1c7e38aad5e9c51a48c",
+"render__utils_8h.html",
+"sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946",
+"structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8",
+"structPcg32.html#aa97421a198956761a9390bc4cffc70fa",
+"structSphereSorter.html#ae5ca2eda944c13eeffed5fe7305edd54"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,5 +1,14 @@
 var NAVTREEINDEX6 =
 {
+"render__utils_8h.html":[6,0,2,37],
+"render__utils_8h.html#a14b5c2c05c8237ed479c12883a7513e5":[6,0,2,37,12],
+"render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045":[6,0,2,37,14],
+"render__utils_8h.html#a36893aa437e6ad9c7fee136de3298763":[6,0,2,37,13],
+"render__utils_8h.html#a46e8c525ba0c0e1535cd2667b419a56c":[6,0,2,37,2],
+"render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578":[6,0,2,37,17],
+"render__utils_8h.html#a60b35229c13299bba83a2d47ed4c1013":[6,0,2,37,9],
+"render__utils_8h.html#a691eca4a993c57791a056d182eeeda68":[6,0,2,37,7],
+"render__utils_8h.html#a7c76878a56fc26dedd3af3595f12626e":[6,0,2,37,6],
 "render__utils_8h.html#a8e822a5ea204deab6cc1dc8fb4846522":[6,0,2,37,11],
 "render__utils_8h.html#a90d078a815893bfeb3fab9a551942916":[6,0,2,37,8],
 "render__utils_8h.html#a98a336c2498940402d85cac4b93e71a7":[6,0,2,37,5],
@@ -14,7 +23,7 @@ var NAVTREEINDEX6 =
 "renderer_8c.html#a8b1e76ebf547902da98608c3d9d4cb76":[6,0,4,34,0],
 "renderer_8h.html":[6,0,2,38],
 "renderer_8h.html#a8b1e76ebf547902da98608c3d9d4cb76":[6,0,2,38,1],
-"renderer_8h.html#a93ca2fce06c15deb6a1eb7ff6db65f61":[6,0,2,38,0],
+"renderer_8h.html#ab6b32ce56595e21229b3c395a608740b":[6,0,2,38,0],
 "renderer_8h_source.html":[6,0,2,38],
 "scene_8c.html":[6,0,4,35],
 "scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54":[6,0,4,35,24],
@@ -240,14 +249,5 @@ var NAVTREEINDEX6 =
 "sphere__sorting_8h.html":[6,0,2,44],
 "sphere__sorting_8h.html#a159532007839ad93c627f7173c755616":[6,0,2,44,2],
 "sphere__sorting_8h.html#a1b1931d3ca9613a3f9cb779c42d51336":[6,0,2,44,6],
-"sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba":[6,0,2,44,4],
-"sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,2,44,3],
-"sphere__sorting_8h.html#afb08c8f2f8876b56e8e5249aee59e6e1":[6,0,2,44,5],
-"sphere__sorting_8h_source.html":[6,0,2,44],
-"ssbo__rendering_8c.html":[6,0,4,41],
-"ssbo__rendering_8c.html#a286490847ce95171c2e25ac6adf3d8ed":[6,0,4,41,2],
-"ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b":[6,0,4,41,0],
-"ssbo__rendering_8c.html#a73e2cabf9e00de5334f443463ccee660":[6,0,4,41,3],
-"ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f":[6,0,4,41,1],
-"ssbo__rendering_8h.html":[6,0,2,45]
+"sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba":[6,0,2,44,4]
 };
