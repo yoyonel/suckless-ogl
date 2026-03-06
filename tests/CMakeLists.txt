@@ -129,12 +129,12 @@ foreach(test_file ${TEST_SOURCES})
         )
     endif()
 
-    # Déterminer si c'est un test OpenGL
-    if(${test_name} IN_LIST OPENGL_TESTS)
-        # Test avec Xvfb
+    # Déterminer si c'est un test OpenGL ou si on est sur Windows (cross-compilation)
+    if(${test_name} IN_LIST OPENGL_TESTS OR WIN32)
+        # Test avec Xvfb (et Wine sur Windows via le wrapper)
         add_test(NAME ${test_name}
                  COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:${test_name}>)
-        message(STATUS "Test OpenGL découvert: ${test_name} (avec Xvfb)")
+        message(STATUS "Test découvert (avec wrapper): ${test_name}")
     else()
         # Test simple
         add_test(NAME ${test_name} COMMAND ${test_name})
@@ -190,8 +190,13 @@ endif()
 target_link_libraries(test_shader_path_security_standalone PRIVATE cglm m)
 target_compile_definitions(test_shader_path_security_standalone PRIVATE _GNU_SOURCE)
 
-add_test(NAME test_shader_path_security_standalone
-         COMMAND test_shader_path_security_standalone)
+if(WIN32)
+    add_test(NAME test_shader_path_security_standalone
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_shader_path_security_standalone>)
+else()
+    add_test(NAME test_shader_path_security_standalone
+             COMMAND test_shader_path_security_standalone)
+endif()
 
 add_executable(test_texture_toctou
     test_texture_toctou.c
@@ -218,8 +223,13 @@ if(ENABLE_TRACY)
 endif()
 target_link_libraries(test_texture_toctou PRIVATE cglm m)
 target_compile_definitions(test_texture_toctou PRIVATE _GNU_SOURCE)
-add_test(NAME test_texture_toctou
-         COMMAND test_texture_toctou)
+if(WIN32)
+    add_test(NAME test_texture_toctou
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_texture_toctou>)
+else()
+    add_test(NAME test_texture_toctou
+             COMMAND test_texture_toctou)
+endif()
 
 # =============================================================================
 # TEST BILLBOARD CLEANUP (MOCKED)
@@ -248,8 +258,13 @@ endif()
 
 target_link_libraries(test_billboard_cleanup PRIVATE cglm m)
 
-add_test(NAME test_billboard_cleanup
-         COMMAND test_billboard_cleanup)
+if(WIN32)
+    add_test(NAME test_billboard_cleanup
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_cleanup>)
+else()
+    add_test(NAME test_billboard_cleanup
+             COMMAND test_billboard_cleanup)
+endif()
 
 # =============================================================================
 # TEST BILLBOARD OVERFLOW (MOCKED)
@@ -278,8 +293,13 @@ endif()
 
 target_link_libraries(test_billboard_overflow PRIVATE cglm)
 
-add_test(NAME test_billboard_overflow
-         COMMAND test_billboard_overflow)
+if(WIN32)
+    add_test(NAME test_billboard_overflow
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_overflow>)
+else()
+    add_test(NAME test_billboard_overflow
+             COMMAND test_billboard_overflow)
+endif()
 
 # =============================================================================
 # TEST GPU PROFILER REPRO (MOCKED)
@@ -315,8 +335,13 @@ endif()
 
 target_link_libraries(test_gpu_profiler_repro PRIVATE cglm m)
 
-add_test(NAME test_gpu_profiler_repro
-         COMMAND test_gpu_profiler_repro)
+if(WIN32)
+    add_test(NAME test_gpu_profiler_repro
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_gpu_profiler_repro>)
+else()
+    add_test(NAME test_gpu_profiler_repro
+             COMMAND test_gpu_profiler_repro)
+endif()
 
 # =============================================================================
 # TEST SHADER LIMIT (MOCKED)
@@ -340,8 +365,13 @@ target_include_directories(test_shader_limit PRIVATE
 
 target_link_libraries(test_shader_limit PRIVATE cglm m)
 
-add_test(NAME test_shader_limit
-         COMMAND test_shader_limit)
+if(WIN32)
+    add_test(NAME test_shader_limit
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_shader_limit>)
+else()
+    add_test(NAME test_shader_limit
+             COMMAND test_shader_limit)
+endif()
 
 # =============================================================================
 # TEST CAMERA INPUT (ISOLATED)
@@ -363,8 +393,13 @@ target_include_directories(test_camera_input PRIVATE
 
 target_link_libraries(test_camera_input PRIVATE cglm m)
 
-add_test(NAME test_camera_input
-         COMMAND test_camera_input)
+if(WIN32)
+    add_test(NAME test_camera_input
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_camera_input>)
+else()
+    add_test(NAME test_camera_input
+             COMMAND test_camera_input)
+endif()
 
 # =============================================================================
 # TEST IBL COORDINATOR (MOCKED)
@@ -398,8 +433,13 @@ endif()
 
 target_link_libraries(test_ibl_coordinator PRIVATE cglm m)
 
-add_test(NAME test_ibl_coordinator
-         COMMAND test_ibl_coordinator)
+if(WIN32)
+    add_test(NAME test_ibl_coordinator
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_ibl_coordinator>)
+else()
+    add_test(NAME test_ibl_coordinator
+             COMMAND test_ibl_coordinator)
+endif()
 
 # TEST BENCHMARK SPHERE SORTING (MOCKED)
 # =============================================================================
@@ -423,8 +463,13 @@ target_include_directories(test_benchmark_sphere_sorting PRIVATE
 
 target_link_libraries(test_benchmark_sphere_sorting PRIVATE cglm m)
 
-add_test(NAME test_benchmark_sphere_sorting
-         COMMAND test_benchmark_sphere_sorting)
+if(WIN32)
+    add_test(NAME test_benchmark_sphere_sorting
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_sphere_sorting>)
+else()
+    add_test(NAME test_benchmark_sphere_sorting
+             COMMAND test_benchmark_sphere_sorting)
+endif()
 # NOTES ET DOCUMENTATION
 # =============================================================================
 # Cette approche offre plusieurs avantages :
@@ -475,7 +520,12 @@ target_include_directories(test_sphere_sorting PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 target_link_libraries(test_sphere_sorting PRIVATE cglm m)
-add_test(NAME test_sphere_sorting COMMAND test_sphere_sorting)
+if(WIN32)
+    add_test(NAME test_sphere_sorting
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sphere_sorting>)
+else()
+    add_test(NAME test_sphere_sorting COMMAND test_sphere_sorting)
+endif()
 
 add_executable(test_benchmark_sphere_sorting_perf
     test_benchmark_sphere_sorting_perf.c
@@ -496,7 +546,12 @@ target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
     ${unity_SOURCE_DIR}/src
 )
 target_link_libraries(test_benchmark_sphere_sorting_perf PRIVATE cglm m)
-add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_sorting_perf)
+if(WIN32)
+    add_test(NAME test_benchmark_sphere_sorting_perf
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_sphere_sorting_perf>)
+else()
+    add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_sorting_perf)
+endif()
 
 # =============================================================================
 # SH MATH PRECISION TEST (STANDALONE)
@@ -510,7 +565,12 @@ target_include_directories(test_sh_precision PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 target_link_libraries(test_sh_precision PRIVATE cglm m)
-add_test(NAME test_sh_precision COMMAND test_sh_precision)
+if(WIN32)
+    add_test(NAME test_sh_precision
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sh_precision>)
+else()
+    add_test(NAME test_sh_precision COMMAND test_sh_precision)
+endif()
 
 # =============================================================================
 # SH INTEGRATION TEST (MOCKED)
@@ -532,7 +592,12 @@ target_include_directories(test_sh_integration PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 target_link_libraries(test_sh_integration PRIVATE cglm m pthread)
-add_test(NAME test_sh_integration COMMAND test_sh_integration)
+if(WIN32)
+    add_test(NAME test_sh_integration
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sh_integration>)
+else()
+    add_test(NAME test_sh_integration COMMAND test_sh_integration)
+endif()
 
 # =============================================================================
 # ASYNC COORDINATOR TEST (MOCKED)
@@ -551,7 +616,12 @@ target_include_directories(test_async_coordinator PRIVATE
     ${glfw_SOURCE_DIR}/include
 )
 target_link_libraries(test_async_coordinator PRIVATE cglm m)
-add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
+if(WIN32)
+    add_test(NAME test_async_coordinator
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_async_coordinator>)
+else()
+    add_test(NAME test_async_coordinator COMMAND test_async_coordinator)
+endif()
 
 # =============================================================================
 # ASYNC LOADER TEST (MOCKED)
@@ -579,7 +649,12 @@ if(UNIX)
 else()
     target_link_libraries(test_async_loader PRIVATE cglm pthread)
 endif()
-add_test(NAME test_async_loader COMMAND test_async_loader)
+if(WIN32)
+    add_test(NAME test_async_loader
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_async_loader>)
+else()
+    add_test(NAME test_async_loader COMMAND test_async_loader)
+endif()
 # =============================================================================
 # TEXTURE SECURITY TEST (MOCKED)
 # =============================================================================
@@ -609,4 +684,9 @@ if(UNIX)
 else()
     target_link_libraries(test_texture_security PRIVATE cglm pthread)
 endif()
-add_test(NAME test_texture_security COMMAND test_texture_security)
+if(WIN32)
+    add_test(NAME test_texture_security
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_texture_security>)
+else()
+    add_test(NAME test_texture_security COMMAND test_texture_security)
+endif()

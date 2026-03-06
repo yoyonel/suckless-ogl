@@ -34,10 +34,21 @@ sleep 1
 export DISPLAY=:${DISPLAY_NUM}
 
 # Exécuter le test
-${TEST_RUNNER_PREFIX} "$TEST_EXEC"
+# Exécuter le test
+if [ -n "$TEST_RUNNER_PREFIX" ]; then
+    # Fallback wine64 -> wine si nécessaire (par ex. sur dev local sans wine64 alias)
+    if [ "$TEST_RUNNER_PREFIX" = "wine64" ] && ! command -v wine64 &> /dev/null && command -v wine &> /dev/null; then
+        TEST_RUNNER_PREFIX="wine"
+    fi
+    $TEST_RUNNER_PREFIX "$TEST_EXEC"
+else
+    "$TEST_EXEC"
+fi
 EXIT_CODE=$?
 
 # Nettoyer
-kill $XVFB_PID 2>/dev/null || true
+if [ -n "$XVFB_PID" ]; then
+    kill $XVFB_PID 2>/dev/null || true
+fi
 
 exit $EXIT_CODE
