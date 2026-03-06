@@ -357,7 +357,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
 	                screen_width, screen_height);
 }
 
-float ui_measure_text(UIContext* ui_context, const char* text)
+float ui_measure_text(const UIContext* ui_context, const char* text)
 {
 	if (ui_context == NULL || text == NULL) {
 		return 0.0F;

@@ -3,6 +3,7 @@
 #include "action_notifier.h"
 #include "app.h"
 #include "app_settings.h"
+#include "app_ui.h"
 #include "camera.h"
 #include "camera_input.h"
 #include "env_manager.h"
@@ -602,6 +603,9 @@ void app_toggle_fullscreen(App* app, GLFWwindow* window)
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
+
+	app_ui_handle_mouse(&app->overlay, xpos, ypos, app->width, app->height);
+
 	if (!app->camera_enabled) {
 		return;
 	}

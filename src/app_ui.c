@@ -44,18 +44,34 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 {
 	if (overlay->help_press_timer > 0.0) {
 		overlay->help_press_timer -= delta_time;
-		if (overlay->help_press_timer < 0.0) {
-			overlay->help_press_timer = 0.0;
+		if (overlay->help_press_timer <= 0.0) {
 			overlay->help_pressed_key = -1;
+			overlay->help_pressed_mods = 0;
 		}
 	}
 }
 
+typedef struct {
+	int key;
+	int row;
+	float x_off; /* In units of KEY_SIZE + KEY_PADDING */
+	float width; /* In units of KEY_SIZE */
+	const char* label;
+} KeyPos;
+
 /* --- Forward Declarations (Internal) --- */
-static void draw_exposure_overlay(App* app, UILayout* layout);
-static void draw_loading_indicator(App* app);
-static void draw_help_overlay_keys(App* app, float start_x, float start_y,
+static void draw_exposure_overlay(const App* app, UILayout* layout);
+static void draw_loading_indicator(const App* app);
+static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h);
+
+static void draw_text_centered(const UIContext* ui_ctx, const char* text,
+                               float pos_x, float pos_y, int screen_width,
+                               int screen_height);
+static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
+                     const KeyPos* pos, float pos_x, float pos_y,
+                     const vec3 base_col, bool has_binding, bool is_pressed,
+                     int screen_width, int screen_height);
 
 enum {
 	DEBUG_TEXT_BUFFER_SIZE = 128,
@@ -105,14 +121,6 @@ enum {
 	MODIFIER_BUFFER_SIZE = 16,
 	KEYBOARD_BUFFER_SIZE = 256
 };
-
-typedef struct {
-	int key;
-	int row;
-	float x_off; /* In units of KEY_SIZE + KEY_PADDING */
-	float width; /* In units of KEY_SIZE */
-	const char* label;
-} KeyPos;
 
 static const KeyPos KEY_LAYOUT_QWERTY[] = {
     /* Row 0: Esc + Func */
@@ -181,23 +189,75 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
     {GLFW_KEY_UP, ROW_ZXCV, 15.0F, 1.0F, "Up"},
     {GLFW_KEY_DOWN, ROW_BOTTOM, 15.0F, 1.0F, "Dn"}};
 
-static void draw_text_centered(App* app, const char* text, float pos_x,
-                               float pos_y)
+void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
+                         int screen_width, int screen_height)
 {
-	float text_w = ui_measure_text(&app->overlay.ui, text);
-	ui_draw_text(&app->overlay.ui, text,
-	             pos_x - (text_w * UI_CENTER_FACTOR),
-	             pos_y - (DEFAULT_FONT_SIZE * UI_CENTER_FACTOR),
-	             (float*)DEFAULT_FONT_COLOR, app->width, app->height);
+	overlay->help_hovered_key = -1;
+
+	if (!overlay->show_help) {
+		return;
+	}
+
+	const unsigned int num_keys =
+	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
+	                   sizeof(KEY_LAYOUT_QWERTY[0]));
+	for (unsigned int i = 0; i < num_keys; i++) {
+		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
+
+		/* Center the keyboard layout (same logic as draw_help_overlay)
+		 */
+		const float total_w = 16.5F * (overlay->kbd_config.key_size +
+		                               overlay->kbd_config.key_padding);
+		const float total_h = 6.0F * (overlay->kbd_config.key_size +
+		                              overlay->kbd_config.key_padding);
+		const float start_x =
+		    ((float)screen_width - total_w) * UI_CENTER_FACTOR;
+		const float start_y =
+		    ((float)screen_height - total_h) * UI_CENTER_FACTOR;
+
+		const float kx_pos =
+		    start_x + (kpos->x_off * (overlay->kbd_config.key_size +
+		                              overlay->kbd_config.key_padding));
+		const float ky_pos =
+		    start_y +
+		    ((float)kpos->row * (overlay->kbd_config.key_size +
+		                         overlay->kbd_config.key_padding));
+
+		const float key_w =
+		    (kpos->width * overlay->kbd_config.key_size) +
+		    ((kpos->width - 1.0F) * overlay->kbd_config.key_padding);
+		const float key_h = overlay->kbd_config.key_size;
+
+		if (xpos >= (double)kx_pos &&
+		    xpos <= (double)(kx_pos + key_w) &&
+		    ypos >= (double)ky_pos &&
+		    ypos <= (double)(ky_pos + key_h)) {
+			overlay->help_hovered_key = kpos->key;
+			break;
+		}
+	}
 }
 
-static void draw_key(App* app, const KeyPos* pos, float pos_x, float pos_y,
-                     const vec3 base_col, bool has_binding, bool is_pressed)
+static void draw_text_centered(const UIContext* ui_ctx, const char* text,
+                               float pos_x, float pos_y, int screen_width,
+                               int screen_height)
 {
-	float key_w =
-	    (pos->width * app->overlay.kbd_config.key_size) +
-	    ((pos->width - 1.0F) * app->overlay.kbd_config.key_padding);
-	float key_h = app->overlay.kbd_config.key_size;
+	float text_w = ui_measure_text(ui_ctx, text);
+	/* Logically const: drawing text to the batch is an UI side effect */
+	ui_draw_text((UIContext*)ui_ctx, text,
+	             pos_x - (text_w * UI_CENTER_FACTOR),
+	             pos_y - (DEFAULT_FONT_SIZE * UI_CENTER_FACTOR),
+	             (float*)DEFAULT_FONT_COLOR, screen_width, screen_height);
+}
+
+static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
+                     const KeyPos* pos, float pos_x, float pos_y,
+                     const vec3 base_col, bool has_binding, bool is_pressed,
+                     int screen_width, int screen_height)
+{
+	float key_w = (pos->width * overlay->kbd_config.key_size) +
+	              ((pos->width - 1.0F) * overlay->kbd_config.key_padding);
+	float key_h = overlay->kbd_config.key_size;
 
 	vec3 col;
 	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, col);
@@ -211,23 +271,15 @@ static void draw_key(App* app, const KeyPos* pos, float pos_x, float pos_y,
 		alpha = KEY_HOVER_ALPHA;
 	}
 
-	ui_draw_rounded_rect(&app->overlay.ui, pos_x, pos_y, key_w, key_h,
-	                     app->overlay.kbd_config.key_radius, col, alpha,
-	                     app->width, app->height);
+	ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, key_w, key_h,
+	                     overlay->kbd_config.key_radius, col, alpha,
+	                     screen_width, screen_height);
 
 	/* Label */
 	float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
 	float label_y = pos_y + (key_h * UI_CENTER_FACTOR);
-	draw_text_centered(app, pos->label, label_x, label_y);
-
-	/* Mouse Hover Logic */
-	double mouse_x = 0.0;
-	double mouse_y = 0.0;
-	glfwGetCursorPos(app->window, &mouse_x, &mouse_y);
-	if (mouse_x >= (double)pos_x && mouse_x <= (double)(pos_x + key_w) &&
-	    mouse_y >= (double)pos_y && mouse_y <= (double)(pos_y + key_h)) {
-		app->overlay.help_hovered_key = pos->key;
-	}
+	draw_text_centered(ui_ctx, pos->label, label_x, label_y, screen_width,
+	                   screen_height);
 }
 
 /* UI Layout Constants */
@@ -285,7 +337,7 @@ static bool is_modifier_relevant(int key, int pressed_key, int pressed_mods)
 	return false;
 }
 
-void app_draw_help_overlay(App* app)
+void app_draw_help_overlay(const App* app)
 {
 	if (!app->overlay.show_help) {
 		return;
@@ -301,21 +353,24 @@ void app_draw_help_overlay(App* app)
 	const float start_y = ((float)app->height - total_h) * UI_CENTER_FACTOR;
 
 	/* Background Overlay */
-	ui_draw_rect_ex(&app->overlay.ui, 0.0F, 0.0F, (float)app->width,
-	                (float)app->height, (float*)HELP_BG_COLOR,
-	                HELP_BG_ALPHA, app->width, app->height);
+	ui_draw_rect_ex((UIContext*)&app->overlay.ui, 0.0F, 0.0F,
+	                (float)app->width, (float)app->height,
+	                (float*)HELP_BG_COLOR, HELP_BG_ALPHA, app->width,
+	                app->height);
 
 	/* Exit Hint */
-	ui_draw_text_ex(&app->overlay.ui, "[ESC] TO EXIT HELP",
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "[ESC] TO EXIT HELP",
 	                (float)app->width - HELP_EXIT_HINT_X_OFF,
 	                (float)app->height - HELP_EXIT_HINT_Y_OFF,
 	                (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, app->width,
 	                app->height);
 
 	/* Title */
-	draw_text_centered(app, "--- APPLICATION HELP (Dry-Run Mode) ---",
+	draw_text_centered((UIContext*)&app->overlay.ui,
+	                   "--- APPLICATION HELP (Dry-Run Mode) ---",
 	                   (float)app->width * UI_CENTER_FACTOR,
-	                   start_y - app->overlay.kbd_config.title_y_offset);
+	                   start_y - app->overlay.kbd_config.title_y_offset,
+	                   app->width, app->height);
 
 	/* Color Legend */
 	const float legend_y =
@@ -324,13 +379,14 @@ void app_draw_help_overlay(App* app)
 	const float legend_x_start = (float)app->width * LEGEND_X_START_FACTOR;
 	const float legend_step = (float)app->width * LEGEND_STEP_FACTOR;
 
-	ui_draw_text_ex(&app->overlay.ui, "Toggle (On/Off)", legend_x_start,
-	                legend_y, (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA,
-	                app->width, app->height);
-	ui_draw_text_ex(&app->overlay.ui, "Cycle", legend_x_start + legend_step,
-	                legend_y, (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA,
-	                app->width, app->height);
-	ui_draw_text_ex(&app->overlay.ui, "Combination (Shift+)",
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Toggle (On/Off)",
+	                legend_x_start, legend_y, (float*)KEY_COLOR_TOGGLE,
+	                HELP_TEXT_ALPHA, app->width, app->height);
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Cycle",
+	                legend_x_start + legend_step, legend_y,
+	                (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA, app->width,
+	                app->height);
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Combination (Shift+)",
 	                legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT),
 	                legend_y, (float*)KEY_COLOR_COMBINATION,
 	                HELP_TEXT_ALPHA, app->width, app->height);
@@ -338,10 +394,10 @@ void app_draw_help_overlay(App* app)
 	draw_help_overlay_keys(app, start_x, start_y, total_h);
 }
 
-static void draw_help_overlay_keys(App* app, float start_x, float start_y,
+static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h)
 {
-	app->overlay.help_hovered_key = -1;
+	/* help_hovered_key is now updated in app_ui_handle_mouse */
 
 	const unsigned int num_keys =
 	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
@@ -372,8 +428,9 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 			is_pressed = true;
 		}
 
-		draw_key(app, kpos, kx_pos, ky_pos, base_col, has_binding,
-		         is_pressed);
+		draw_key((UIContext*)&app->overlay.ui, &app->overlay, kpos,
+		         kx_pos, ky_pos, base_col, has_binding, is_pressed,
+		         app->width, app->height);
 	}
 
 	/* Show details for hovered or pressed key */
@@ -420,16 +477,17 @@ static void draw_help_overlay_keys(App* app, float start_x, float start_y,
 			(void)safe_snprintf(buf, sizeof(buf), "[%s%s]: %s",
 			                    mod_str, binding->action,
 			                    binding->desc);
-			draw_text_centered(app, buf,
+			draw_text_centered((UIContext*)&app->overlay.ui, buf,
 			                   (float)app->width * UI_CENTER_FACTOR,
-			                   detail_y);
+			                   detail_y, app->width, app->height);
 		}
 	}
 }
 
-static void draw_exposure_debug_text(App* app)
+static void draw_exposure_debug_text(const App* app)
 {
-	const float exposure_val = postprocess_get_exposure(&app->postprocess);
+	float exposure_val =
+	    postprocess_get_exposure((PostProcess*)&app->postprocess);
 
 	char debug_text[DEBUG_TEXT_BUFFER_SIZE];
 	const float luminance =
@@ -438,12 +496,13 @@ static void draw_exposure_debug_text(App* app)
 	                    "Auto Exposure: %.4f | Scene Lum: %.4f",
 	                    exposure_val, luminance);
 
-	ui_draw_text(&app->overlay.ui, debug_text, DEFAULT_FONT_OFFSET_X,
+	ui_draw_text((UIContext*)&app->overlay.ui, debug_text,
+	             DEFAULT_FONT_OFFSET_X,
 	             DEFAULT_FONT_OFFSET_Y + DEBUG_TEXT_Y_OFFSET,
 	             (float*)DEBUG_ORANGE_COLOR, app->width, app->height);
 }
 
-static void draw_luminance_histogram_graph(App* app, const int* buckets,
+static void draw_luminance_histogram_graph(const App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum)
 {
@@ -459,8 +518,9 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
 	const float bar_w = graph_w / (float)size;
 
 	/* Background */
-	ui_draw_rect(&app->overlay.ui, graph_x, graph_y, graph_w, graph_h,
-	             (vec3){0.0F, 0.0F, 0.0F}, app->width, app->height);
+	ui_draw_rect((UIContext*)&app->overlay.ui, graph_x, graph_y, graph_w,
+	             graph_h, (vec3){0.0F, 0.0F, 0.0F}, app->width,
+	             app->height);
 
 	/* Find peak for scaling */
 	int max_bucket = 1;
@@ -487,20 +547,20 @@ static void draw_luminance_histogram_graph(App* app, const int* buckets,
 			glm_vec3_copy((float*)HISTO_BAR_COLOR_RED, bar_col);
 		}
 
-		ui_draw_rect(&app->overlay.ui, bx_pos, by_pos, bar_w, bar_h,
-		             bar_col, app->width, app->height);
+		ui_draw_rect((UIContext*)&app->overlay.ui, bx_pos, by_pos,
+		             bar_w, bar_h, bar_col, app->width, app->height);
 	}
 
 	/* Labels for min/max */
 	char range_text[RANGE_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(range_text, sizeof(range_text), "%.2f .. %.2f",
 	                    min_lum, max_lum);
-	ui_draw_text(&app->overlay.ui, range_text, graph_x,
+	ui_draw_text((UIContext*)&app->overlay.ui, range_text, graph_x,
 	             graph_y + graph_h + GRAPH_TEXT_PADDING, GRAPH_TEXT_COLOR,
 	             app->width, app->height);
 }
 
-void app_draw_debug_overlay(App* app)
+void app_draw_debug_overlay(const App* app)
 {
 	static const int HISTO_BUCKETS = 256;
 	int buckets[HISTO_BUCKETS];
@@ -508,15 +568,15 @@ void app_draw_debug_overlay(App* app)
 	float max_lum = 0.0F;
 
 	if (postprocess_compute_luminance_histogram(
-	        &app->postprocess, app->frame_count, buckets, HISTO_BUCKETS,
-	        &min_lum, &max_lum) > 0) {
+	        (PostProcess*)&app->postprocess, app->frame_count, buckets,
+	        HISTO_BUCKETS, &min_lum, &max_lum) > 0) {
 		draw_luminance_histogram_graph(app, buckets, HISTO_BUCKETS,
 		                               min_lum, max_lum);
 		draw_exposure_debug_text(app);
 	}
 }
 
-static void draw_main_info_overlay(App* app, UILayout* layout)
+static void draw_main_info_overlay(const App* app, UILayout* layout)
 {
 	if (app->overlay.text_overlay_mode < 1) {
 		return;
@@ -566,13 +626,14 @@ static void draw_main_info_overlay(App* app, UILayout* layout)
 	}
 }
 
-static void draw_exposure_overlay(App* app, UILayout* layout)
+static void draw_exposure_overlay(const App* app, UILayout* layout)
 {
 	if (app->overlay.text_overlay_mode < 3) {
 		return;
 	}
 
-	float exposure_val = postprocess_get_exposure(&app->postprocess);
+	float exposure_val =
+	    postprocess_get_exposure((PostProcess*)&app->postprocess);
 
 	char exposure_text[EXPOSURE_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(exposure_text, sizeof(exposure_text),
@@ -580,7 +641,7 @@ static void draw_exposure_overlay(App* app, UILayout* layout)
 	ui_layout_text(layout, exposure_text, ENV_TEXT_COLOR);
 }
 
-static void draw_loading_indicator(App* app)
+static void draw_loading_indicator(const App* app)
 {
 	if (app->scene.ibl_coord.state == IBL_STATE_IDLE &&
 	    !app->env_mgr.env_map_loading) {
@@ -600,25 +661,29 @@ static void draw_loading_indicator(App* app)
 	float text_x = center_x - (text_width * UI_CENTER_FACTOR);
 	float text_y = center_y + (UI_SPINNER_SIZE * UI_TEXT_OFFSET_FACTOR);
 
-	ui_draw_text(&app->overlay.ui, loading_text, text_x, text_y,
+	ui_draw_text((UIContext*)&app->overlay.ui, loading_text, text_x, text_y,
 	             (float*)HISTO_BAR_COLOR_BLUE, app->width, app->height);
 
 	double current_time = glfwGetTime();
 	float angle = (float)current_time * (float)UI_SPINNER_SPEED;
-	ui_draw_spinner(&app->overlay.ui, center_x, center_y, UI_SPINNER_SIZE,
-	                angle, (float*)UI_SPINNER_COLOR, app->width,
-	                app->height);
+	ui_draw_spinner((UIContext*)&app->overlay.ui, center_x, center_y,
+	                UI_SPINNER_SIZE, angle, (float*)UI_SPINNER_COLOR,
+	                app->width, app->height);
 }
 
-void app_render_ui(App* app)
+void app_render_ui(const App* app)
 {
+	/* Logically const: drawing UI is viewed as a read-only op for the App
+	 * state, even if it uses an internal batching buffer. */
+	UIContext* ui_ctx = (UIContext*)&app->overlay.ui;
+
 	/* Wrap everything in a single batch to minimize draw
 	 * calls and state switches. Note: ui_begin saves state
 	 * and ui_end restores it. */
-	ui_begin(&app->overlay.ui, app->width, app->height);
+	ui_begin(ui_ctx, app->width, app->height);
 
 	UILayout layout;
-	ui_layout_init(&layout, &app->overlay.ui, DEFAULT_FONT_OFFSET_X,
+	ui_layout_init(&layout, ui_ctx, DEFAULT_FONT_OFFSET_X,
 	               DEFAULT_FONT_OFFSET_Y, DEFAULT_SPACING, app->width,
 	               app->height);
 
@@ -626,7 +691,8 @@ void app_render_ui(App* app)
 	draw_exposure_overlay(app, &layout);
 	draw_loading_indicator(app);
 
-	if (postprocess_is_enabled(&app->postprocess, POSTFX_EXPOSURE_DEBUG)) {
+	if (postprocess_is_enabled((PostProcess*)&app->postprocess,
+	                           POSTFX_EXPOSURE_DEBUG)) {
 		app_draw_debug_overlay(app);
 	}
 
@@ -634,11 +700,19 @@ void app_render_ui(App* app)
 		app_draw_help_overlay(app);
 	}
 
-	gpu_profiler_ui_draw(&app->timeline_ui, &app->overlay.ui, app->width,
-	                     app->height);
-	action_notifier_draw(&app->notifier, &app->overlay.ui, app->width,
-	                     app->height);
+	gpu_profiler_ui_draw((GPUProfilerUI*)&app->timeline_ui, ui_ctx,
+	                     app->width, app->height);
+	action_notifier_draw((ActionNotifier*)&app->notifier, ui_ctx,
+	                     app->width, app->height);
 
 	/* End global batch (restores state) */
-	ui_end(&app->overlay.ui);
+	ui_end(ui_ctx);
+}
+
+int compute_luminance_histogram(const App* app, int* buckets, int size,
+                                float* min_lum, float* max_lum)
+{
+	return postprocess_compute_luminance_histogram(
+	    (PostProcess*)&app->postprocess, app->frame_count, buckets, size,
+	    min_lum, max_lum);
 }

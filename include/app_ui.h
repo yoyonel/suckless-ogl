@@ -40,13 +40,13 @@ typedef struct App App;
  * @brief Draws the help overlay with keyboard shortcuts.
  * @param app Pointer to the application state.
  */
-void app_draw_help_overlay(App* app);
+void app_draw_help_overlay(const App* app);
 
 /**
  * @brief Draws the debug overlay with performance metrics and settings.
  * @param app Pointer to the application state.
  */
-void app_draw_debug_overlay(App* app);
+void app_draw_debug_overlay(const App* app);
 
 /**
  * @brief Main UI rendering entry point.
@@ -54,7 +54,7 @@ void app_draw_debug_overlay(App* app);
  * Orchestrates all UI elements (overlays, histograms, loading spinners).
  * @param app Pointer to the application state.
  */
-void app_render_ui(App* app);
+void app_render_ui(const App* app);
 
 /* --- Internal helper functions --- */
 
@@ -69,11 +69,13 @@ void app_render_ui(App* app);
  * @param[out] max_lum Maximum luminance found in the data.
  * @return Number of samples processed or error code.
  */
-int compute_luminance_histogram(App* app, int* buckets, int size,
+int compute_luminance_histogram(const App* app, int* buckets, int size,
                                 float* min_lum, float* max_lum);
 
 void app_ui_init(AppUIOverlay* overlay);
 void app_ui_cleanup(AppUIOverlay* overlay);
 void app_ui_update(AppUIOverlay* overlay, double delta_time);
+void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
+                         int width, int height);
 
 #endif /* APP_UI_H */
