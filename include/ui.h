@@ -139,7 +139,7 @@ void ui_draw_text(UIContext* ui_context, const char* text, float pos_x,
  * @param text The text to measure.
  * @return Width in pixels.
  */
-float ui_measure_text(UIContext* ui_context, const char* text);
+float ui_measure_text(const UIContext* ui_context, const char* text);
 
 /** @brief Draws text with custom alpha transparency. */
 void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,

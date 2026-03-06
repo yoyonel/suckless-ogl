@@ -14,7 +14,7 @@
 
 /* Forward declare App UI function */
 struct App;
-void app_render_ui(struct App* app);
+void app_render_ui(const struct App* app);
 
 /**
  * @brief Orchestrates the entire frame render (scene, postprocess, ui).
