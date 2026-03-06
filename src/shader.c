@@ -868,3 +868,14 @@ void shader_set_mat4_loc(GLint loc, const float* val)
 {
 	glUniformMatrix4fv(loc, 1, GL_FALSE, val);
 }
+
+void shader_init_uniforms(GLuint program, const char** names, GLint* locations,
+                          size_t count)
+{
+	if (program == 0 || !names || !locations) {
+		return;
+	}
+	for (size_t i = 0; i < count; i++) {
+		locations[i] = glGetUniformLocation(program, names[i]);
+	}
+}

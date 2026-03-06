@@ -74,6 +74,53 @@ void render_utils_reset_texture_units(int start_unit, int end_unit,
                                       GLuint fallback_tex);
 
 // -----------------------------------------------------------------------------
+// Buffer & VAO Management
+// -----------------------------------------------------------------------------
+
+/** @brief Represents a single vertex attribute. */
+typedef struct {
+	GLuint index;
+	GLint size;
+	GLenum type;
+	GLboolean normalized;
+	GLsizei stride;
+	size_t offset;
+	GLuint divisor;
+} VertexAttribute;
+
+/** @brief Represents a full vertex layout. */
+typedef struct {
+	const VertexAttribute* attributes;
+	size_t count;
+} VertexLayout;
+
+/**
+ * @brief Creates a buffer and initializes it with data.
+ *
+ * @param[out] out_buffer Pointer to store the generated buffer handle.
+ * @param target Buffer target (e.g., GL_ARRAY_BUFFER).
+ * @param size Size of the buffer in bytes.
+ * @param data Initial data (can be NULL).
+ * @param usage Usage hint (e.g., GL_STATIC_DRAW).
+ * @param label Debug label for the buffer.
+ */
+void render_utils_create_buffer(GLuint* out_buffer, GLenum target,
+                                GLsizeiptr size, const void* data, GLenum usage,
+                                const char* label);
+
+/**
+ * @brief Configures a VAO using a declarative layout.
+ *
+ * @param vao The VAO to configure.
+ * @param vbo The VBO to bind to the VAO.
+ * @param ebo The EBO to bind (optional, can be 0).
+ * @param layout The layout definition.
+ * @param label Debug label for the VAO.
+ */
+void render_utils_setup_vao(GLuint vao, GLuint vbo, GLuint ebo,
+                            const VertexLayout* layout, const char* label);
+
+// -----------------------------------------------------------------------------
 // Geometry Helpers
 // -----------------------------------------------------------------------------
 

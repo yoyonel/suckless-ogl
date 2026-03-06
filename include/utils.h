@@ -36,6 +36,17 @@ __attribute__((format(printf, 3, 4))) int safe_snprintf(char* buf,
                                                         ...);
 
 /**
+ * @brief Safe wrapper around vsnprintf.
+ * @param buf Destination buffer.
+ * @param buf_size Buffer capacity.
+ * @param format Printf-style format string.
+ * @param args va_list of arguments.
+ * @return number of characters written, -1 if truncated or error.
+ */
+int safe_vsnprintf(char* buf, size_t buf_size, const char* format,
+                   va_list args);
+
+/**
  * @brief Bitwise flag check helper.
  */
 static inline bool check_flag(int value, int flag)

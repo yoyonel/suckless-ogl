@@ -59,11 +59,69 @@ void render_utils_reset_texture_units(int start_unit, int end_unit,
 }
 
 // -----------------------------------------------------------------------------
+// Buffer & VAO Management
+// -----------------------------------------------------------------------------
+
+void render_utils_create_buffer(GLuint* out_buffer, GLenum target,
+                                GLsizeiptr size, const void* data, GLenum usage,
+                                const char* label)
+{
+	if (!out_buffer) {
+		return;
+	}
+	glGenBuffers(1, out_buffer);
+	glBindBuffer(target, *out_buffer);
+	glBufferData(target, size, data, usage);
+	if (label) {
+		glObjectLabel(GL_BUFFER, *out_buffer, -1, label);
+	}
+	glBindBuffer(target, 0);
+}
+
+void render_utils_setup_vao(GLuint vao, GLuint vbo, GLuint ebo,
+                            const VertexLayout* layout, const char* label)
+{
+	if (vao == 0 || vbo == 0 || !layout || !layout->attributes) {
+		return;
+	}
+
+	glBindVertexArray(vao);
+	if (label) {
+		glObjectLabel(GL_VERTEX_ARRAY, vao, -1, label);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	if (ebo != 0) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	}
+
+	for (size_t i = 0; i < layout->count; i++) {
+		const VertexAttribute* attr = &layout->attributes[i];
+		glEnableVertexAttribArray(attr->index);
+		glVertexAttribPointer(attr->index, attr->size, attr->type,
+		                      attr->normalized, attr->stride,
+		                      utils_buffer_offset(attr->offset));
+		if (attr->divisor > 0) {
+			glVertexAttribDivisor(attr->index, attr->divisor);
+		}
+	}
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if (ebo != 0) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+}
+
+// -----------------------------------------------------------------------------
 // Geometry Helpers
 // -----------------------------------------------------------------------------
 
 void render_utils_create_empty_vao(GLuint* vao)
 {
+	if (!vao) {
+		return;
+	}
 	glGenVertexArrays(1, vao);
 	glBindVertexArray(*vao);
 	glObjectLabel(GL_VERTEX_ARRAY, *vao, -1, "Empty VAO");
@@ -76,13 +134,8 @@ void render_utils_create_quad_vbo(GLuint* vbo)
 	    -0.5F, 0.5F, 0.0F, -0.5F, -0.5F, 0.0F,
 	    0.5F,  0.5F, 0.0F, 0.5F,  -0.5F, 0.0F,
 	};
-
-	glGenBuffers(1, vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices,
-	             GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glObjectLabel(GL_BUFFER, *vbo, -1, "Quad VBO");
+	render_utils_create_buffer(vbo, GL_ARRAY_BUFFER, sizeof(quadVertices),
+	                           quadVertices, GL_STATIC_DRAW, "Quad VBO");
 }
 
 void render_utils_create_wire_cube_vbo(GLuint* vbo)
@@ -103,12 +156,9 @@ void render_utils_create_wire_cube_vbo(GLuint* vbo)
 	    1.0F, -1.0F, 1.0F, -1.0F, 1.0F, 1.0F, 1.0F, 1.0F, -1.0F, -1.0F,
 	    1.0F, -1.0F, 1.0F, 1.0F};
 
-	glGenBuffers(1, vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices,
-	             GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glObjectLabel(GL_BUFFER, *vbo, -1, "Wire Cube VBO");
+	render_utils_create_buffer(vbo, GL_ARRAY_BUFFER, sizeof(cubeVertices),
+	                           cubeVertices, GL_STATIC_DRAW,
+	                           "Wire Cube VBO");
 }
 
 void render_utils_create_wire_quad_vbo(GLuint* vbo)
@@ -116,51 +166,34 @@ void render_utils_create_wire_quad_vbo(GLuint* vbo)
 	static const float quadVertices[] = {-0.5F, 0.5F,  0.0F,  0.5F,
 	                                     0.5F,  0.0F,  0.5F,  -0.5F,
 	                                     0.0F,  -0.5F, -0.5F, 0.0F};
-
-	glGenBuffers(1, vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices,
-	             GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glObjectLabel(GL_BUFFER, *vbo, -1, "Wire Quad VBO");
+	render_utils_create_buffer(vbo, GL_ARRAY_BUFFER, sizeof(quadVertices),
+	                           quadVertices, GL_STATIC_DRAW,
+	                           "Wire Quad VBO");
 }
 
 void render_utils_create_fullscreen_quad(GLuint* vao, GLuint* vbo)
 {
-	enum { TEX_COORD_OFFSET = 8 };
-	static const float
-	    screen_quad_vertices[SCREEN_QUAD_VERTEX_COUNT * (2 + 2)] = {
-	        /* positions     texCoords */
-	        -1.0F, 1.0F, 0.0F, 1.0F,  -1.0F, -1.0F,
-	        0.0F,  0.0F, 1.0F, -1.0F, 1.0F,  0.0F,
+	static const float screen_quad_vertices[] = {
+	    /* positions     texCoords */
+	    -1.0F, 1.0F, 0.0F, 1.0F,  -1.0F, -1.0F,
+	    0.0F,  0.0F, 1.0F, -1.0F, 1.0F,  0.0F,
 
-	        -1.0F, 1.0F, 0.0F, 1.0F,  1.0F,  -1.0F,
-	        1.0F,  0.0F, 1.0F, 1.0F,  1.0F,  1.0F};
+	    -1.0F, 1.0F, 0.0F, 1.0F,  1.0F,  -1.0F,
+	    1.0F,  0.0F, 1.0F, 1.0F,  1.0F,  1.0F};
+
+	render_utils_create_buffer(
+	    vbo, GL_ARRAY_BUFFER, sizeof(screen_quad_vertices),
+	    screen_quad_vertices, GL_STATIC_DRAW, "Fullscreen Quad VBO");
 
 	glGenVertexArrays(1, vao);
-	glGenBuffers(1, vbo);
 
-	glBindVertexArray(*vao);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(screen_quad_vertices),
-	             screen_quad_vertices, GL_STATIC_DRAW);
+	static const VertexAttribute attributes[] = {
+	    {0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0, 0},
+	    {1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 2 * sizeof(float),
+	     0}};
 
-	/* Position */
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      (void*)0);
-	glVertexAttribDivisor(0, 0);
-
-	/* TexCoords */
-	glEnableVertexAttribArray(1);
-	const void* tex_offset = utils_buffer_offset(TEX_COORD_OFFSET);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
-	                      tex_offset);
-	glVertexAttribDivisor(1, 0);
-
-	glBindVertexArray(0);
-
-	glObjectLabel(GL_VERTEX_ARRAY, *vao, -1, "Fullscreen Quad VAO");
+	VertexLayout layout = {attributes, 2};
+	render_utils_setup_vao(*vao, *vbo, 0, &layout, "Fullscreen Quad VAO");
 }
 
 // -----------------------------------------------------------------------------

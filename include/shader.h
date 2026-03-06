@@ -145,6 +145,17 @@ void shader_set_vec4_loc(GLint loc, const float* val);
 void shader_set_mat4_loc(GLint loc, const float* val);
 
 /**
+ * @brief Batch initializes uniform locations for a shader program.
+ *
+ * @param program The GL program handle.
+ * @param names Array of uniform name strings.
+ * @param locations Array to store the retrieved locations.
+ * @param count Number of uniforms to retrieve.
+ */
+void shader_init_uniforms(GLuint program, const char** names, GLint* locations,
+                          size_t count);
+
+/**
  * @brief Idempotent shader destruction macro.
  * Sets the pointer to NULL after calling shader_destroy.
  */

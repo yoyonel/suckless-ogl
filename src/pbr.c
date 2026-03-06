@@ -19,34 +19,26 @@ static const GLuint COMPUTE_DISPATCH_Z_ONCE = 1;
 
 void pbr_get_spec_uniforms(GLuint shader, PBRSpecUniforms* out)
 {
-	if (!out) {
-		return;
-	}
-	out->u_env_map = glGetUniformLocation(shader, "envMap");
-	out->u_roughness = glGetUniformLocation(shader, "roughnessValue");
-	out->u_mip = glGetUniformLocation(shader, "currentMipLevel");
-	out->u_threshold = glGetUniformLocation(shader, "clampThreshold");
-	out->u_offset_y = glGetUniformLocation(shader, "u_offset_y");
-	out->u_max_y = glGetUniformLocation(shader, "u_max_y");
+	static const char* names[] = {"envMap",          "roughnessValue",
+	                              "currentMipLevel", "clampThreshold",
+	                              "u_offset_y",      "u_max_y"};
+	shader_init_uniforms(shader, names, (GLint*)out,
+	                     sizeof(names) / sizeof(names[0]));
 }
 
 void pbr_get_irr_uniforms(GLuint shader, PBRIrrUniforms* out)
 {
-	if (!out) {
-		return;
-	}
-	out->u_threshold = glGetUniformLocation(shader, "clamp_threshold");
-	out->u_offset_y = glGetUniformLocation(shader, "u_offset_y");
-	out->u_max_y = glGetUniformLocation(shader, "u_max_y");
+	static const char* names[] = {"clamp_threshold", "u_offset_y",
+	                              "u_max_y"};
+	shader_init_uniforms(shader, names, (GLint*)out,
+	                     sizeof(names) / sizeof(names[0]));
 }
 
 void pbr_get_lum_uniforms(GLuint shader, PBRLumUniforms* out)
 {
-	if (!out) {
-		return;
-	}
-	out->u_numGroups = glGetUniformLocation(shader, "numGroups");
-	out->u_numPixels = glGetUniformLocation(shader, "numPixels");
+	static const char* names[] = {"numGroups", "numPixels"};
+	shader_init_uniforms(shader, names, (GLint*)out,
+	                     sizeof(names) / sizeof(names[0]));
 }
 
 GLuint pbr_prefilter_init(int width, int height)
