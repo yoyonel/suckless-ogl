@@ -103,13 +103,25 @@ if(UNIX)
 endif()
 ```
 
-## Cross-Compilation & Testing
-
-When building for Windows (e.g., via MinGW `x86_64-w64-mingw32-gcc`), several adjustments were made:
-
-* **Test Suite Modifications**: POSIX-specific tests (like those depending on `sys/resource.h` or `unistd.h`) are automatically excluded from the Windows build via `CMakeLists.txt`.
-* **Platform Dependencies in Tests**: Mocked tests (like `test_async_loader`) now explicitly link against `platform_time.c` and `platform_utils.c` on all platforms to resolve missing symbols like `platform_sleep_ms`.
 * **Compiler Flags**: Hardcoded `-rdynamic` and OS-specific linker flags were abstracted or wrapped in `if(UNIX)` blocks in CMake.
+
+## CI/CD Integration
+
+The project uses GitHub Actions to ensure cross-platform compatibility and produce release assets.
+
+### Automated Windows Builds
+
+Every push to `master` and every Pull Request triggers a Windows cross-compilation job using MinGW. This ensures that portability is maintained and no Windows-specific regressions are introduced.
+
+### Nightly Releases
+
+The CI pipeline automatically generates a **Nightly Build** release.
+* **Assets**: Includes `app-Windows-Release.exe` alongside Linux binaries.
+* **Automation**: The release is recreated on every push to `master`, ensuring the latest binaries are always available with a fresh timestamp.
+
+### Pre-merge Validation
+
+To ensure stability, the CI is configured to run the full unit test suite on both Linux and Windows (via Wine) before allowing a merge. Release assets are only produced if all tests pass on all platforms.
 
 ## Known Limitations & Workarounds
 
