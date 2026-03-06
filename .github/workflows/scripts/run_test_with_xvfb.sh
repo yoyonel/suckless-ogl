@@ -34,7 +34,7 @@ sleep 1
 export DISPLAY=:${DISPLAY_NUM}
 
 # Exécuter le test
-"$TEST_EXEC"
+${TEST_RUNNER_PREFIX} "$TEST_EXEC"
 EXIT_CODE=$?
 
 # Nettoyer
