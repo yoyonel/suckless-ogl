@@ -7,13 +7,15 @@ This document explains the **RAII-style** (Resource Acquisition Is Initializatio
 ## 1. The Concept: RAII in C
 
 In standard C, resources (memory, file handles, timers) must be managed manually. This often leads to:
-1.  **Deep indentation** when using scope-based macros (like `for` loops).
-2.  **Resource leaks** when a function returns early due to an error.
-3.  **Repetitive code** (multiple `stop_timer()` or `free()` calls before every `return`).
+
+1. **Deep indentation** when using scope-based macros (like `for` loops).
+2. **Resource leaks** when a function returns early due to an error.
+3. **Repetitive code** (multiple `stop_timer()` or `free()` calls before every `return`).
 
 To solve this, we use a technique borrowed from C++ called RAII, made possible in C by a GCC/Clang extension.
 
 ### The attribute cleanup Extension
+
 This attribute tells the compiler to automatically call a specific "cleanup function" when a local variable goes out of scope.
 
 ```graphviz
@@ -76,48 +78,50 @@ We use this primarily for performance monitoring via the `HYBRID_FUNC_TIMER` mac
 
 ### The Core Components
 
-1.  **The RAII Container**: A structure that holds the resource and its metadata.
+1. **The RAII Container**: A structure that holds the resource and its metadata.
 
-    ```c
-    typedef struct {
-        HybridTimer timer;
-        const char* label;
-    } HybridTimerRAII;
-    ```
+   ```c
+   typedef struct {
+       HybridTimer timer;
+       const char* label;
+   } HybridTimerRAII;
+   ```
 
-2.  **The Cleanup Function**: A static function that the compiler will trigger.
+2. **The Cleanup Function**: A static function that the compiler will trigger.
 
-    ```c
-    static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
-        perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
-    }
-    ```
+   ```c
+   static inline void hybrid_timer_cleanup_raii(HybridTimerRAII* timer_raii) {
+       perf_hybrid_stop(&timer_raii->timer, timer_raii->label);
+   }
+   ```
 
-3.  **The Macro**: A convenient way to declare the guarded variable.
+3. **The Macro**: A convenient way to declare the guarded variable.
 
-    ```c
-    #define HYBRID_FUNC_TIMER(label) \
-        HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
-            perf_hybrid_start(), label }
-    ```
+   ```c
+   #define HYBRID_FUNC_TIMER(label) \
+       HybridTimerRAII _h_raii __attribute__((cleanup(hybrid_timer_cleanup_raii))) = { \
+           perf_hybrid_start(), label }
+   ```
 
-4.  **The GPU Profiler RAII**: Used for automatic management of GPU profiling stages.
+4. **The GPU Profiler RAII**: Used for automatic management of GPU profiling stages.
 
-    ```c
-    #define GPU_STAGE_PROFILER(profiler_ptr, name, color) \
-        GPUStageRAII _stage_raii##__LINE__ \
-            __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
-        gpu_profiler_start_stage(profiler_ptr, name, color)
-    ```
+   ```c
+   #define GPU_STAGE_PROFILER(profiler_ptr, name, color) \
+       GPUStageRAII _stage_raii##__LINE__ \
+           __attribute__((cleanup(gpu_stage_cleanup_raii))) = {profiler_ptr}; \
+       gpu_profiler_start_stage(profiler_ptr, name, color)
+   ```
 
 ---
 
 ## 3. Benefits & Usage
 
 ### Less Indentation
+
 Unlike the older `HYBRID_MEASURE_LOG` which required a code block `{ ... }`, the new RAII macro allows for "flat" code.
 
 **Old Way (Indented):**
+
 ```c
 void process() {
     HYBRID_MEASURE_LOG("Task") {
@@ -128,6 +132,7 @@ void process() {
 ```
 
 **New Way (Flat):**
+
 ```c
 void process() {
     HYBRID_FUNC_TIMER("Task");
@@ -138,6 +143,7 @@ void process() {
 ```
 
 ### Safety with Early Returns
+
 The cleanup is guaranteed to run even if the function exits early.
 
 ```c
@@ -157,35 +163,35 @@ void demo_load_data(const char* file_path) {
 
 In the IBL (Image Based Lighting) generation pipeline, we use `HYBRID_FUNC_TIMER` at the start of expensive compute shader dispatches.
 
-    ```c
-    // signature renamed to prevent Doxygen auto-linking info
-    GLuint
-    demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
-    {
-        if (shader_id == 0) return 0;
+```c
+// signature renamed to prevent Doxygen auto-linking info
+GLuint
+demo_build_irradiance_map(GLuint shader_id, GLuint env_hdr_ptr, int map_size, float threshold_value)
+{
+    if (shader_id == 0) return 0;
 
-        GLuint irr_tex = 0;
-        HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
+    GLuint irr_tex = 0;
+    HYBRID_FUNC_TIMER("IBL: Irradiance Map"); // Automatic measurement starts
 
-        glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: Irradiance Map");
+    glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, "IBL: Irradiance Map");
 
-        // ... OpenGL Setup ...
-        glDispatchCompute(groups, groups, 1);
-        // ...
+    // ... OpenGL Setup ...
+    glDispatchCompute(groups, groups, 1);
+    // ...
 
-        glPopDebugGroup();
+    glPopDebugGroup();
 
-        return irr_tex;
-    } // Measurement stops and result is printed to log
+    return irr_tex;
+} // Measurement stops and result is printed to log
 ```
 
 ---
 
 ## 5. Compatibility & Requirements
 
-*   **Compilers**: This feature requires **GCC** or **Clang**. It is not part of the standard ISO C (C99/C11), but it is a de-facto standard in professional Linux C programming (used extensively in the Linux Kernel and `systemd`).
-*   **Order of Execution**: If multiple variables in the same scope have cleanup attributes, they are executed in **reverse order** of declaration (LIFO).
-*   **Caveats**: The cleanup function is NOT called if the program terminates via `exit()` or `abort()`. It only triggers when leaving a scope normally or via `goto`, `break`, `continue`, or `return`.
+* **Compilers**: This feature requires **GCC** or **Clang**. It is not part of the standard ISO C (C99/C11), but it is a de-facto standard in professional Linux C programming (used extensively in the Linux Kernel and `systemd`).
+* **Order of Execution**: If multiple variables in the same scope have cleanup attributes, they are executed in **reverse order** of declaration (LIFO).
+* **Caveats**: The cleanup function is NOT called if the program terminates via `exit()` or `abort()`. It only triggers when leaving a scope normally or via `goto`, `break`, `continue`, or `return`.
 
 ---
 
@@ -201,40 +207,71 @@ To maintain clean linting logs without sacrificing RAII's runtime safety, we use
 
 Defined in `include/utils.h`, these macros satisfy the analyzer by simulating a cleanup call only during static analysis. They have **zero runtime cost**.
 
-- `RAII_SATISFY_FILE(f)`: Simulates `fclose(f)`.
-- `RAII_SATISFY_FREE(p)`: Simulates `free(p)`.
+* `RAII_SATISFY_FILE(f)`: Simulates `fclose(f)`.
+* `RAII_SATISFY_FREE(p)`: Simulates `free(p)`.
 
 **Usage Example:**
 
-    ```c
-    // Example of multiple resource management using RAII
-    static char*
-    demo_raii_loader(const char* file_path)
-    {
-        CLEANUP_FILE FILE* file_ptr = fopen(file_path, "rb");
-        if (!file_ptr) return NULL;
+```c
+// Example of multiple resource management using RAII
+static char*
+demo_raii_loader(const char* file_path)
+{
+    CLEANUP_FILE FILE* file_ptr = fopen(file_path, "rb");
+    if (!file_ptr) return NULL;
 
-        CLEANUP_FREE char* data_buffer = malloc(1024);
-        if (error_flag) {
-            // Surgical hints to satisfy the analyzer on this path
-            RAII_SATISFY_FILE(file_ptr);
-            RAII_SATISFY_FREE(data_buffer);
-            return NULL;
-        }
-
+    CLEANUP_FREE char* data_buffer = malloc(1024);
+    if (error_flag) {
+        // Surgical hints to satisfy the analyzer on this path
         RAII_SATISFY_FILE(file_ptr);
-        return TRANSFER_OWNERSHIP(data_buffer);
-    } // Actual cleaning happens here at runtime via RAII
-    ```
+        RAII_SATISFY_FREE(data_buffer);
+        return NULL;
+    }
+
+    RAII_SATISFY_FILE(file_ptr);
+    return TRANSFER_OWNERSHIP(data_buffer);
+} // Actual cleaning happens here at runtime via RAII
+```
 
 ### Why use this instead of // NOLINT?
-- **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.
-- **Documentation**: It explicitly states that we are aware of the analyzer's limitation and are providing the missing link.
-- **Safety**: If you forget a hint, the code is still safe at runtime. If you forget a `fclose` in legacy code, the code leaks.
+
+* **Granularity**: `NOLINT` blocks can hide real bugs. Hints are surgical and only "complete the puzzle" for the analyzer.
+* **Documentation**: It explicitly states that we are aware of the analyzer's limitation and are providing the missing link.
+* **Safety**: If you forget a hint, the code is still safe at runtime. If you forget a `fclose` in legacy code, the code leaks.
 
 ---
 
-## 7. Critical Perspectives & Limitations
+## 7. String Safety & formatting
+
+The `utils` module provides safe wrappers around standard C formatting functions to prevent buffer overflows and satisfy security-conscious static analyzers.
+
+### `safe_vsnprintf` & `safe_snprintf`
+
+Standard `vsnprintf` can be considered insecure by some analyzers because it doesn't provide the explicit security checks introduced in the C11 standard. Our `safe_*` variants ensure:
+
+* The buffer is never null.
+* The size is explicitly checked.
+* The result is always null-terminated.
+* Truncation is explicitly handled (returns -1).
+
+```c
+void action_notifier_pushf(ActionNotifier* notifier, float duration,
+                           const char* format, ...)
+{
+    char buf[MAX_ACTION_TEXT_LENGTH];
+    va_list args;
+    va_start(args, format);
+    int ret = safe_vsnprintf(buf, sizeof(buf), format, args);
+    va_end(args);
+
+    if (ret < 0) return; // Truncation or error
+    action_notifier_push(notifier, buf, duration);
+}
+```
+
+---
+
+## 8. Critical Perspectives & Limitations
 
 While RAII in C is powerful, it is important to understand its non-standard nature and the risks involved.
 
@@ -245,16 +282,18 @@ For a deep dive into why RAII is "semantically impossible" to do perfectly in st
 
 **Key Takeaways for this Project:**
 
-1.  **The Copy Problem**: C blindly `memcpy` structs. If you copy a struct containing an RAII-managed resource, you will get a **double-free**.
-    > [!IMPORTANT]
-    > **Rule**: Never copy structures that own resources. Pass them by pointer, or use `TRANSFER_OWNERSHIP` to move them.
+1. **The Copy Problem**: C blindly `memcpy` structs. If you copy a struct containing an RAII-managed resource, you will get a **double-free**.
 
-2.  **The Tooling Gap**: Static analyzers (like Clang-Tidy) are designed for standard C models. Our "Analyzer Hints" (`RAII_SATISFY_*`) are the bridge needed to reconcile modern safety hacks with rigid analysis tools.
+   > [!IMPORTANT]
+   > **Rule**: Never copy structures that own resources. Pass them by pointer, or use `TRANSFER_OWNERSHIP` to move them.
 
-3.  **Safety vs. Purism**: This project chooses **Safety**. While "pure" C relies on manual cleanup and discipline, our RAII approach ensures that a forgotten path doesn't lead to a production leak, at the cost of being slightly "non-standard".
+2. **The Tooling Gap**: Static analyzers (like Clang-Tidy) are designed for standard C models. Our "Analyzer Hints" (`RAII_SATISFY_*`) are the bridge needed to reconcile modern safety hacks with rigid analysis tools.
+
+3. **Safety vs. Purism**: This project chooses **Safety**. While "pure" C relies on manual cleanup and discipline, our RAII approach ensures that a forgotten path doesn't lead to a production leak, at the cost of being slightly "non-standard".
 
 ---
 
 ## Further Reading
-- [GCC Variable Attributes: cleanup](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html)
-- [Resource Acquisition Is Initialization (RAII) in C](https://echorand.me/posts/clean_up_variable_attribute/)
+
+* [GCC Variable Attributes: cleanup](https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html)
+* [Resource Acquisition Is Initialization (RAII) in C](https://echorand.me/posts/clean_up_variable_attribute/)

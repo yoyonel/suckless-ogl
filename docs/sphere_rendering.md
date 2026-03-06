@@ -8,24 +8,27 @@ This document details the "High Quality" rendering implementation for sphere ins
 To correctly handle Transparency Alpha Blending (`GL_SRC_ALPHA`, `GL_ONE_MINUS_SRC_ALPHA`), objects must be drawn from furthest to closest (Back-to-Front) relative to the camera.
 
 ### SphereSorter Architecture
+
 The sorting system is encapsulated in the `sphere_sorting` module (`src/sphere_sorting.c`).
 
-1.  **Data**:
-    -   Instances (`SphereInstance`) are stored contiguously.
-    -   An intermediate structure `SphereSortEntry` contains `{ index, depth }` for each sphere.
-2.  **Algorithm**:
-    -   Each frame, the squared distance (`glm_vec3_distance2`) between the camera and each sphere is calculated.
-    -   Standard `qsort` is used to sort `SphereSortEntry` keys by descending depth (Back-to-Front).
-    -   A temporary sorted instance buffer is reconstructed.
-3.  **SIMD Optimization**:
-    -   Instance buffers are allocated via `aligned_alloc` with 64-byte alignment (`SIMD_ALIGNMENT`) to optimize memory access and enable potential AVX vectorization.
+1. **Data**:
+   - Instances (`SphereInstance`) are stored contiguously.
+   - An intermediate structure `SphereSortEntry` contains `{ index, depth }` for each sphere.
+2. **Algorithm**:
+   - Each frame, the squared distance (`glm_vec3_distance2`) between the camera and each sphere is calculated.
+   - Standard `qsort` is used to sort `SphereSortEntry` keys by descending depth (Back-to-Front).
+   - A temporary sorted instance buffer is reconstructed.
+3. **SIMD Optimization**:
+   - Instance buffers are allocated via `aligned_alloc` with 64-byte alignment (`SIMD_ALIGNMENT`) to optimize memory access and enable potential AVX vectorization.
 
 ### Rendering Pipeline
+
 If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is active (Key `T`):
-1.  **Skybox Render** (First, depth write).
-2.  **CPU Sort** of spheres via `sphere_sorter_sort`.
-3.  **Upload** sorted data via `glBufferSubData`.
-4.  **Draw** spheres with Blending enabled and Depth Write **disabled** (Read-Only).
+
+1. **Skybox Render** (First, depth write).
+2. **CPU Sort** of spheres via `sphere_sorter_sort_cpu` (or `sphere_sorter_sort_cpu_radix`).
+3. **Dispatch** to `BILLBOARD_STRATEGY` via the polymorphic `SceneRenderer`.
+4. **Draw** spheres with Blending enabled and Depth Write **disabled** (Read-Only).
 
 ### Ray-Tracing Diagram
 
@@ -90,6 +93,7 @@ digraph SphereLogic {
 The spheres are not real 3D geometry but **Impostors** (2D Billboards on a Quad). The exact sphere rendering is calculated mathematically for each pixel in the Fragment Shader (`pbr_ibl_billboard.frag`).
 
 ### The Aliasing Problem
+
 If we brutally "cut" the pixel when the ray misses the sphere (`discard` if `discriminant < 0`), we get very visible jagged edges (aliasing). MSAA does not work well here because to the GPU, it's a flat Quad.
 
 ### Solution: Discriminant Smoothing
@@ -99,11 +103,13 @@ If we brutally "cut" the pixel when the ray misses the sphere (`discard` if `dis
 ![Perfect AA: Pixel-Level Coverage Analysis](./images/sphere_perfect_aa_detail.jpg)
 
 The Ray-Sphere intersection equation gives a **discriminant** (Delta or h).
--   h > 0: Intersection (inside sphere).
--   h < 0: No intersection (outside sphere).
--   h approx 0: Exact sphere edge.
+
+1. h > 0: Intersection (inside sphere).
+2. h < 0: No intersection (outside sphere).
+3. h approx 0: Exact sphere edge.
 
 To smooth the edge, we use the derivative of the distance function to estimate pixel coverage:
+
 ```glsl
 // Analytic intersection calculation
 float discriminant_val = b*b - c; // Discriminant
@@ -123,14 +129,15 @@ This `edge_factor_val` darkens (or makes transparent) pixels that straddle the m
 ---
 
 ## 3. Configuration & Macros
+
 The behavior is controlled by the `USE_TRANSPARENT_BILLBOARDS` macro defined in `include/app_settings.h` (automatically injected into shaders).
 
--   **"Legacy-Calculation" Mode (Macro undefined)**:
-    -   Opaque Rendering (Depth Test/Write ON).
-    -   No sorting.
-    -   Alpha used to store Luma (FXAA optimization).
--   **"Transparent-Rendering" Mode (Macro defined + Key T)**:
-    -   Transparent Rendering (Blend ON, Depth Write OFF).
-    -   Back-to-Front sort every frame.
-    -   Alpha used for opacity (True Transparency).
-    -   FXAA recalculates Luma from RGB.
+- **"Legacy-Calculation" Mode (Macro undefined)**:
+  - Opaque Rendering (Depth Test/Write ON).
+  - No sorting.
+  - Alpha used to store Luma (FXAA optimization).
+- **"Transparent-Rendering" Mode (Macro defined + Key T)**:
+  - Transparent Rendering (Blend ON, Depth Write OFF).
+  - Back-to-Front sort every frame.
+  - Alpha used for opacity (True Transparency).
+  - FXAA recalculates Luma from RGB.

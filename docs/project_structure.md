@@ -21,7 +21,7 @@ icosphere/
 │   ├── app.c               # Orchestration & Loop
 │   ├── app_env.c           # IBL Management (Async/Progressive)
 │   ├── app_input.c         # Callbacks & Input State
-│   ├── app_scene.c         # Scene Rendering (Instanced/Billboards)
+│   ├── scene.c             # Scene Rendering (Instanced/Billboards)
 │   ├── app_ui.c            # Overlay UI & Debug
 │   ├── effects/            # Post-Process Effects (Bloom, DoF, Manual, ...)
 │   ├── camera.c            # Camera Physics
@@ -34,7 +34,7 @@ icosphere/
 │   ├── app.h               # Main App Structure
 │   ├── app_env.h
 │   ├── app_input.h
-│   ├── app_scene.h
+│   ├── scene.h
 │   ├── app_ui.h
 │   └── ...
 │
@@ -89,7 +89,7 @@ digraph ProjectStructure {
     AppUI [label="UI\n(app_ui)", color="#bb9af7", fontcolor="#bb9af7"];
     AppInput [label="Input\n(app_input)", color="#f7768e", fontcolor="#f7768e"];
     AppEnv [label="Env/IBL\n(app_env)", color="#7dcfff", fontcolor="#7dcfff"];
-    AppScene [label="Scene\n(app_scene)", color="#9ece6a", fontcolor="#9ece6a"];
+    AppScene [label="Scene\n(scene)", color="#9ece6a", fontcolor="#9ece6a"];
   }
 
   /* Utils/Engines */
@@ -130,7 +130,7 @@ digraph ProjectStructure {
 - `app_input.c`: Handles keyboard/mouse and fills `App` state.
 - `app_ui.c`: Draws overlays (text, loading spinners, graphs).
 - `app_env.c`: Handles asynchronous loading and IBL generation.
-- `app_scene.c`: Handles instance buffers and sphere draw calls.
+- `scene.c`: Handles instance buffers and sphere draw calls.
 
 ### 2. Post-Processing
 
