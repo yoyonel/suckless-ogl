@@ -499,7 +499,38 @@ void handle_app_input(App* app, int key, int mods)
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mods)
 {
-	(void)scancode;
+	const char* key_name = glfwGetKeyName(key, scancode);
+
+	/* Wine/AZERTY Fallback: Some keys (like é, è, ç, à on the top row)
+	 * are reported as UNKNOWN (-1) with high scancodes. */
+	enum {
+		SCANCODE_WINE_2 = 96,
+		SCANCODE_WINE_7 = 97,
+		SCANCODE_WINE_9 = 98,
+		SCANCODE_WINE_0 = 99
+	};
+
+	if (key == GLFW_KEY_UNKNOWN) {
+		if (scancode == SCANCODE_WINE_2) {
+			key = GLFW_KEY_2;
+		} else if (scancode == SCANCODE_WINE_7) {
+			key = GLFW_KEY_7;
+		} else if (scancode == SCANCODE_WINE_9) {
+			key = GLFW_KEY_9;
+		} else if (scancode == SCANCODE_WINE_0) {
+			key = GLFW_KEY_0;
+		}
+
+		if (key != GLFW_KEY_UNKNOWN) {
+			LOG_DEBUG("suckless-ogl.app",
+			          "Wine Fix: Scancode %d mapped to Key %d",
+			          scancode, key);
+		}
+	}
+
+	LOG_DEBUG("suckless-ogl.app",
+	          "Key: %d - Scancode: %d - Name: %s - Action: %d - Mods: %d",
+	          key, scancode, key_name ? key_name : "NULL", action, mods);
 	App* app = (App*)glfwGetWindowUserPointer(window);
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
