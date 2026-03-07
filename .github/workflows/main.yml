@@ -122,7 +122,6 @@ jobs:
 
   # --- NEW JOB : TESTS WINDOWS (WINE) ---
   test-windows:
-    needs: [lint-and-format]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
