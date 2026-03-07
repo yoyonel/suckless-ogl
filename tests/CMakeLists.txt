@@ -110,6 +110,7 @@ set(OPENGL_TESTS
     test_shader_uniforms_loc
     test_stencil_masking
     test_env_transition
+    test_auto_exposure_debug
 )
 
 # Pour chaque fichier test trouvé
