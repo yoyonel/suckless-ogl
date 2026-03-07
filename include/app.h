@@ -58,6 +58,9 @@ typedef struct App {
 	int is_fullscreen;             /**< Fullscreen toggle state. */
 	int saved_x, saved_y;          /**< Cached pos for window restore. */
 	int saved_width, saved_height; /**< Cached size for window restore. */
+	int resize_pending;            /**< Deferred resize flag. */
+	int pending_width;             /**< Deferred resize target width. */
+	int pending_height;            /**< Deferred resize target height. */
 	int camera_enabled;            /**< Pause camera movement. */
 	EnvManager env_mgr;            /**< Environment/IBL state. */
 	int perf_mode_active; /**< Performance/GameMode optimization active. */

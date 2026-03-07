@@ -216,6 +216,16 @@ test-integration-asan: asan
     @{{distrobox}} chmod +x scripts/test_integration_asan.sh
     @{{distrobox}} bash scripts/test_integration_asan.sh
 
+# Stress test: rapid fullscreen/windowed toggling to find deadlocks
+stress-fullscreen iterations="100" delay="50": build
+    @chmod +x scripts/test_stress_fullscreen.sh
+    @{{distrobox}} bash scripts/test_stress_fullscreen.sh {{build_dir}}/app {{iterations}} {{delay}}
+
+# Stress test fullscreen under ASan (slower but catches memory bugs)
+stress-fullscreen-asan iterations="50" delay="100": asan
+    @chmod +x scripts/test_stress_fullscreen.sh
+    @{{distrobox}} bash scripts/test_stress_fullscreen.sh ./build-asan/app {{iterations}} {{delay}}
+
 # Run programmatic ApiTrace performance verification
 test-apitrace: build
     @{{distrobox}} chmod +x scripts/verify_apitrace_perf.sh

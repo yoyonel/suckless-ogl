@@ -34,8 +34,14 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	app->height = height;
 	glViewport(0, 0, width, height);
 
-	/* Redimensionner le post-processing */
-	postprocess_resize(&app->postprocess, width, height);
+	/* Defer heavy GPU work (FBO/texture recreation) to the next frame.
+	 * This callback can fire synchronously from inside
+	 * glfwSetWindowMonitor() during a fullscreen toggle. Doing GPU resource
+	 * destruction/creation here deadlocks on NVIDIA when the driver is
+	 * mid-mode-switch. */
+	app->pending_width = width;
+	app->pending_height = height;
+	app->resize_pending = 1;
 }
 
 static void handle_pbr_debug_mode(App* app)
@@ -565,6 +571,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 void app_toggle_fullscreen(App* app, GLFWwindow* window)
 {
 	static const int REFRESH_RATE_WINDOWED = 0;
+
+	/* Drain the GPU pipeline before switching monitor modes.
+	 * glfwSetWindowMonitor() is synchronous and may trigger
+	 * framebuffer_size_callback from within. If the GPU still has
+	 * pending fences/swaps, the NVIDIA driver can deadlock. */
+	glFinish();
+
 	if (app->is_fullscreen == 0) {
 		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode* mode = glfwGetVideoMode(monitor);

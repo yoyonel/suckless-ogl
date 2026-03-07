@@ -84,6 +84,7 @@ void glfwGetWindowPos(GLFWwindow* window, int* xpos, int* ypos);
 void glfwGetWindowSize(GLFWwindow* window, int* width, int* height);
 void glfwSetWindowMonitor(GLFWwindow* window, GLFWmonitor* monitor, int xpos,
                           int ypos, int width, int height, int refreshRate);
+void glfwFocusWindow(GLFWwindow* window);
 
 typedef void (*GLFWscrollfun)(GLFWwindow* window, double xoffset,
                               double yoffset);
