@@ -1,5 +1,8 @@
 var NAVTREEINDEX9 =
 {
+"structPBRSpecUniforms.html#a0a8721216be4beb02eeb47a53593f2ac":[5,0,61,0],
+"structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13":[5,0,61,2],
+"structPBRSpecUniforms.html#abff7287a12825c2860925695bca88116":[5,0,61,5],
 "structPBRSpecUniforms.html#ac9b999a5f4c966adde15e30ef8fa6dd8":[5,0,61,4],
 "structPBRSpecUniforms.html#af15c11231b97bd4e3f5808bc2f83d66a":[5,0,61,3],
 "structPcg32.html":[5,0,62],
@@ -246,8 +249,5 @@ var NAVTREEINDEX9 =
 "structSphereSortEntry.html":[5,0,77],
 "structSphereSortEntry.html#aa5ba88dc5fb513dd334809b43f0721a0":[5,0,77,0],
 "structSphereSortEntry.html#aed13255308b43481740f760886695969":[5,0,77,1],
-"structSphereSorter.html":[5,0,78],
-"structSphereSorter.html#a2340e1e01b3f2ca13d0bac8d60bb3f21":[5,0,78,0],
-"structSphereSorter.html#a3b0a839152ecba171a2be62a709183a3":[5,0,78,10],
-"structSphereSorter.html#a3eee2a197fa6fcc0d2c6c9d771532906":[5,0,78,2]
+"structSphereSorter.html":[5,0,78]
 };

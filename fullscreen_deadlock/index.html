@@ -10,10 +10,10 @@
       
       
       
-        <link rel="prev" href="../memory_management_audit/">
+        <link rel="prev" href="../stencil_masking/">
       
       
-        <link rel="next" href="../debugging/">
+        <link rel="next" href="../simd_optimization/">
       
       
         
@@ -24,7 +24,7 @@
     
     
       
-        <title>Standalone Mocking - Suckless OGL</title>
+        <title>Fullscreen Deadlock - Suckless OGL</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#standalone-unit-testing-mocking-strategy" class="md-skip">
+        <a href="#fullscreen-toggle-deadlock-nvidia" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Standalone Mocking
+              Fullscreen Deadlock
             
           </span>
         </div>
@@ -1079,20 +1079,20 @@
       
   
   
+    
   
   
+  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
@@ -1113,7 +1113,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1380,10 +1380,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../fullscreen_deadlock/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fullscreen Deadlock
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1399,6 +1426,187 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#root-cause-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Root Cause Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Root Cause Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-problematic-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problematic Sequence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sequence-before-deadlock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequence Before (DEADLOCK)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-deferred-resize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation: Deferred Resize
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation: Deferred Resize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequence-after-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sequence After (FIXED)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-lightweight-callback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Lightweight Callback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-gpu-pipeline-drain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. GPU Pipeline Drain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-main-loop-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Main Loop Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stress-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stress Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stress Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of Changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1471,20 +1679,20 @@
       
   
   
-    
   
   
-  
     
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -1505,7 +1713,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1968,37 +2176,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Standalone Mocking
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../standalone_testing_mocking/" class="md-nav__link">
         
   
   
@@ -2014,98 +2195,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-philosophie" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Philosophie
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-technique-de-mocking-par-shadowing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Technique de Mocking par "Shadowing"
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="2. Technique de Mocking par &quot;Shadowing&quot;">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-redefinition-des-symboles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A. Redéfinition des Symboles
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#b-inclusion-directe-de-limplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        B. Inclusion Directe de l'Implémentation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-avantages-et-limites" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3. Avantages et Limites
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-exemple-concret-security-standalone" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4. Exemple Concret : Security Standalone
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -2301,7 +2390,7 @@
 
 
   
-    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/standalone_testing_mocking.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/fullscreen_deadlock.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
     </a>
@@ -2309,91 +2398,102 @@
   
 
 
-<h1 id="standalone-unit-testing-mocking-strategy">Standalone Unit Testing &amp; Mocking Strategy 🧪<a class="headerlink" href="#standalone-unit-testing-mocking-strategy" title="Permanent link">¶</a></h1>
-<p>Cette documentation décrit la technique de tests "standalone" et de mocking utilisée dans le projet <code>suckless-ogl</code>, en particulier pour valider la logique métier complexe (comme le parsing de shaders) sans dépendances GPU.</p>
-<h2 id="1-philosophie">1. Philosophie<a class="headerlink" href="#1-philosophie" title="Permanent link">¶</a></h2>
-<p>L'objectif est de pouvoir tester une unité de code (un fichier <code>.c</code>) en isolation totale. Cela permet :</p>
-<ul>
-<li>Une exécution instantanée (&lt; 10ms).</li>
-<li>Aucun besoin d'un contexte OpenGL valide ou de drivers GPU.</li>
-<li>Une compatibilité parfaite avec les environnements CI restreints.</li>
-</ul>
-<h2 id="2-technique-de-mocking-par-shadowing">2. Technique de Mocking par "Shadowing"<a class="headerlink" href="#2-technique-de-mocking-par-shadowing" title="Permanent link">¶</a></h2>
-<p>Contrairement aux frameworks de mocking lourds qui utilisent l'injection de dépendances au runtime, nous utilisons une approche au moment de la compilation :</p>
-<h3 id="a-redefinition-des-symboles">A. Redéfinition des Symboles<a class="headerlink" href="#a-redefinition-des-symboles" title="Permanent link">¶</a></h3>
-<p>Dans le fichier de test (ex: <code>tests/test_shader_path_security_standalone.c</code>), nous redéfinissons les fonctions des bibliothèques externes (GLAD, Log) dont dépend le code testé.</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cm">/* Mock OpenGL Definition */</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">GLuint</span><span class="w"> </span><span class="nf">glCreateShader</span><span class="p">(</span><span class="n">GLenum</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">type</span><span class="p">;</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Retourne un faux ID</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
-</span></code></pre></div>
-<h3 id="b-inclusion-directe-de-limplementation">B. Inclusion Directe de l'Implémentation<a class="headerlink" href="#b-inclusion-directe-de-limplementation" title="Permanent link">¶</a></h3>
-<p>Pour tester les fonctions privées (<code>static</code>) sans les exposer dans le header public <code>.h</code>, le fichier de test inclut directement le fichier <code>.c</code> après avoir défini les mocks.</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cm">/* 1. Mocks */</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">log_message</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* no-op */</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cm">/* 2. Target Implementation */</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"shader.c"</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cm">/* 3. Tests */</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_logic</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1">// Appel d'une fonction static définie dans shader.c</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">get_dir_from_path</span><span class="p">(...));</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
-</span></code></pre></div>
-<h2 id="3-avantages-et-limites">3. Avantages et Limites<a class="headerlink" href="#3-avantages-et-limites" title="Permanent link">¶</a></h2>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Avantage</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Accès Static</strong></td>
-<td style="text-align: left;">Permet de tester 100% de la logique interne sans pollution d'API.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Vitesse</strong></td>
-<td style="text-align: left;">Pas de lien dynamique lourd ou d'initialisation matérielle.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Zéro Dépendance</strong></td>
-<td style="text-align: left;">Le binaire de test est "pure C".</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Limite</th>
-<th style="text-align: left;">Précaution</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>Collision de Symboles</strong></td>
-<td style="text-align: left;">Ne peut pas être lié avec la vraie bibliothèque en même temps.</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>Maintenance</strong></td>
-<td style="text-align: left;">Si l'API réelle change, le mock doit être synchronisé manuellement.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="4-exemple-concret-security-standalone">4. Exemple Concret : Security Standalone<a class="headerlink" href="#4-exemple-concret-security-standalone" title="Permanent link">¶</a></h2>
-<p>Le test <code>tests/test_shader_path_security_standalone.c</code> démontre parfaitement cette approche :</p>
+<h1 id="fullscreen-toggle-deadlock-nvidia">Fullscreen Toggle Deadlock (NVIDIA)<a class="headerlink" href="#fullscreen-toggle-deadlock-nvidia" title="Permanent link">¶</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>A non-deterministic deadlock was identified when toggling between windowed and fullscreen modes, particularly on NVIDIA hardware (especially using Prime Render Offload). The application would freeze completely during the transition, requiring a force kill.</p>
+<h2 id="root-cause-analysis">Root Cause Analysis<a class="headerlink" href="#root-cause-analysis" title="Permanent link">¶</a></h2>
+<p>The deadlock was caused by a synchronization conflict between the GLFW event loop, the window manager/compositor, and the OpenGL driver.</p>
+<h3 id="the-problematic-sequence">The Problematic Sequence<a class="headerlink" href="#the-problematic-sequence" title="Permanent link">¶</a></h3>
 <ol>
-<li>Il définit des stubs pour ~20 fonctions OpenGL.</li>
-<li>Il inclut <code>src/shader.c</code>.</li>
-<li>Il valide les algorithmes de <code>is_safe_path</code> et de gestion des buffers de chemins.</li>
+<li><strong>Toggle Triggered</strong>: The user presses 'F', which calls <code>app_toggle_fullscreen()</code>.</li>
+<li><strong>Synchronous Driver Call</strong>: <code>app_toggle_fullscreen()</code> calls <code>glfwSetWindowMonitor()</code>. This is a synchronous operation that blocks until the window manager and driver acknowledge the mode switch.</li>
+<li><strong>Nested Callback</strong>: While blocked inside <code>glfwSetWindowMonitor()</code>, the window manager sends a resize event. GLFW dispatches this event immediately by calling <code>framebuffer_size_callback()</code>.</li>
+<li><strong>Heavy GPU Work</strong>: The callback invoked <code>postprocess_resize()</code>, which performed heavy GPU resource management:<ul>
+<li>Destroying existing Framebuffer Objects (FBOs) and textures.</li>
+<li>Allocating new textures for Bloom, Depth of Field, etc.</li>
+<li>Recompiling/re-linking shaders for some post-process effects.</li>
+</ul>
+</li>
+<li><strong>Circular Dependency (Deadlock)</strong>:<ul>
+<li>The <strong>Driver/Compositor</strong> is waiting for the application to finish its current GPU work (like a pending <code>glfwSwapBuffers</code> or fence sync) to complete the mode switch.</li>
+<li>The <strong>Application</strong> is blocked inside the resize callback, trying to allocate/delete GPU resources, but the driver's command queue is often locked or stalled during the mode switch handshake.</li>
+</ul>
+</li>
 </ol>
-<blockquote>
-<p>[!TIP]
-Utilisez cette approche pour toute logique de parsing, de calcul mathématique ou de gestion de ressources (RAII) qui ne nécessite pas de lecture effective sur le matériel.</p>
-</blockquote>
+<h3 id="sequence-before-deadlock">Sequence Before (DEADLOCK)<a class="headerlink" href="#sequence-before-deadlock" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/mermaid/svg/eNptkUFuwjAQRfecYpYgAd2zQEINIFSgUQtliZxkAqO4dmobKF31DL1Ar9gj1OM0rSD1ZmTP85__bYsvB1QpRiR2Rjy3wK9SGEcplUI5WAhSIGxVV3uDImsw0_lkwwzXRjMydETD7eXTLJqNfg6aIvE6aPgSU4mSFLYCxJN7wyGLD2An81OspRwfUTnb7gSCW55gcAAFnrepkDIRadGedP6XeES3IZXp00IrctpcClUOB7DQGYI9kUv3YPidrAvYUjsEzalqciPIWci1Cf5zftB-vx_gCun9jn9AS28IyAGa7nP_B5gc8hzNlrm_KJdJ4jUHiVCiwxW-uoNBCzf-aIqq3l959Xe6tV92mUidFphBcoYSVUZq57OK8uoWD-yGcV-fH-8QjUfR_P72rvUNEWy1hw==?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/mermaid/svg/eNptkUFuwjAQRfecYpYgAd2zQEINIFSgUQtliZxkAqO4dmobKF31DL1Ar9gj1OM0rSD1ZmTP85__bYsvB1QpRiR2Rjy3wK9SGEcplUI5WAhSIGxVV3uDImsw0_lkwwzXRjMydETD7eXTLJqNfg6aIvE6aPgSU4mSFLYCxJN7wyGLD2An81OspRwfUTnb7gSCW55gcAAFnrepkDIRadGedP6XeES3IZXp00IrctpcClUOB7DQGYI9kUv3YPidrAvYUjsEzalqciPIWci1Cf5zftB-vx_gCun9jn9AS28IyAGa7nP_B5gc8hzNlrm_KJdJ4jUHiVCiwxW-uoNBCzf-aIqq3l959Xe6tV92mUidFphBcoYSVUZq57OK8uoWD-yGcV-fH-8QjUfR_P72rvUNEWy1hw==?"></a></p>
+<h2 id="implementation-deferred-resize">Implementation: Deferred Resize<a class="headerlink" href="#implementation-deferred-resize" title="Permanent link">¶</a></h2>
+<p>The solution is a <strong>Deferred Resize</strong> pattern, which decouples the window manager's resize event from the expensive GPU resource recreation.</p>
+<h3 id="sequence-after-fixed">Sequence After (FIXED)<a class="headerlink" href="#sequence-after-fixed" title="Permanent link">¶</a></h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/mermaid/svg/eNptkk1OAzEMhfc9hZcg1B6gCxCoFFWiBfErVqN04plaZJwQpy1lxR1gyek4CUlTaNF0No7iL8_P9gi-zJFLHJCqvWo6ED-nfKCSnOIAY0UMSnK8m3lUusVcXA4fE5NiKznwtECf0pOH0WB0urloi1zfrzViuCaHhhg7ayhV7h4fx0QfajMkJpkdHML3-ydon1y5XzzREetGOj3qw6kxUNqmUawlHZzBgP9Eo-OkWi1vMTwSa7scW6Zg_cFhlotA5LLnPoytRpAlhXIGPk1OwhrL-e6f4g0KvSHgAjns6mRbVRw0TudVhb5IXFEqY6aqfN4UndiAYNPUMn_FZgUSTaGApgZZyLLAEVRG1dt2dqqHuWegpkFNKqBZbT38mdjfdOwqvZW9Pib4GrJ5mGJNLL1eb3eamVLOFX4eD349hMIha-L6BJ7Ob1sLdVaC87ZEkSLzm9WKqjCujEOs2V7s8OxKon4Zf8eAGr6_Pjo_KCzn2g==?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/mermaid/svg/eNptkk1OAzEMhfc9hZcg1B6gCxCoFFWiBfErVqN04plaZJwQpy1lxR1gyek4CUlTaNF0No7iL8_P9gi-zJFLHJCqvWo6ED-nfKCSnOIAY0UMSnK8m3lUusVcXA4fE5NiKznwtECf0pOH0WB0urloi1zfrzViuCaHhhg7ayhV7h4fx0QfajMkJpkdHML3-ydon1y5XzzREetGOj3qw6kxUNqmUawlHZzBgP9Eo-OkWi1vMTwSa7scW6Zg_cFhlotA5LLnPoytRpAlhXIGPk1OwhrL-e6f4g0KvSHgAjns6mRbVRw0TudVhb5IXFEqY6aqfN4UndiAYNPUMn_FZgUSTaGApgZZyLLAEVRG1dt2dqqHuWegpkFNKqBZbT38mdjfdOwqvZW9Pib4GrJ5mGJNLL1eb3eamVLOFX4eD349hMIha-L6BJ7Ob1sLdVaC87ZEkSLzm9WKqjCujEOs2V7s8OxKon4Zf8eAGr6_Pjo_KCzn2g==?"></a></p>
+<h3 id="1-lightweight-callback">1. Lightweight Callback<a class="headerlink" href="#1-lightweight-callback" title="Permanent link">¶</a></h3>
+<p>The <code>framebuffer_size_callback</code> no longer performs any GPU resource allocation. It only updates the viewport (which is cheap and safe) and stores the new dimensions in the <code>App</code> state.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">framebuffer_size_callback</span><span class="p">(</span><span class="n">GLFWwindow</span><span class="o">*</span><span class="w"> </span><span class="n">window</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">height</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="n">App</span><span class="o">*</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">App</span><span class="o">*</span><span class="p">)</span><span class="n">glfwGetWindowUserPointer</span><span class="p">(</span><span class="n">window</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">    </span><span class="n">glViewport</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="c1">// Only set the request flag</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">resize_pending</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="2-gpu-pipeline-drain">2. GPU Pipeline Drain<a class="headerlink" href="#2-gpu-pipeline-drain" title="Permanent link">¶</a></h3>
+<p>In <code>app_toggle_fullscreen()</code>, we now call <code>glFinish()</code> before invoking <code>glfwSetWindowMonitor()</code>. This ensures that the GPU pipeline is completely drained and all pending commands (fences, PBO transfers, swaps) are finished before the driver attempts the mode switch.</p>
+<h3 id="3-main-loop-processing">3. Main Loop Processing<a class="headerlink" href="#3-main-loop-processing" title="Permanent link">¶</a></h3>
+<p>The actual heavy lifting (<code>postprocess_resize</code>) is moved to the start of the next frame in <code>app_run</code>, safely outside the GLFW callback context.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Inside app_run() while loop</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">glfwPollEvents</span><span class="p">();</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">resize_pending</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">postprocess_resize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">app</span><span class="o">-&gt;</span><span class="n">postprocess</span><span class="p">,</span><span class="w"> </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_width</span><span class="p">,</span><span class="w"> </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">pending_height</span><span class="p">);</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="n">app</span><span class="o">-&gt;</span><span class="n">resize_pending</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="stress-testing">Stress Testing<a class="headerlink" href="#stress-testing" title="Permanent link">¶</a></h2>
+<p>A dedicated stress test was created to verify this fix: <code>scripts/test_stress_fullscreen.sh</code>.</p>
+<h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h3>
+<ul>
+<li>It uses <code>xdotool</code> to send 'F' keystrokes rapidly (e.g., 10ms-50ms intervals).</li>
+<li>It monitors the application's <strong>log output</strong> rather than window visibility. A deadlocked application may still have a visible window, but it will stop logging "Switched to fullscreen/windowed".</li>
+<li>If the expected log message doesn't appear within 5 seconds, it detects a hang, captures a full GDB stack trace of all threads, and terminates the app.</li>
+</ul>
+<h3 id="running-the-test">Running the test<a class="headerlink" href="#running-the-test" title="Permanent link">¶</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Standard test</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>just<span class="w"> </span>stress-fullscreen
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Aggressive test with ASan</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>just<span class="w"> </span>stress-fullscreen-asan<span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">10</span>
+</span></code></pre></div>
+<h2 id="summary-of-changes">Summary of Changes<a class="headerlink" href="#summary-of-changes" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>include/app.h</code></td>
+<td style="text-align: left;">Added <code>resize_pending</code>, <code>pending_width</code>, <code>pending_height</code> fields.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>src/app_input.c</code></td>
+<td style="text-align: left;">Updated <code>framebuffer_size_callback</code> to use flags; added <code>glFinish()</code> to toggle.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>src/app.c</code></td>
+<td style="text-align: left;">Added deferred resize processing logic and state initialization.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Justfile</code></td>
+<td style="text-align: left;">Added <code>stress-fullscreen</code> automation.</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -2414,7 +2514,7 @@ Utilisez cette approche pour toute logique de parsing, de calcul mathématique o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 9, 2026 14:27:52 UTC">February 9, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 7, 2026 22:27:44 UTC">March 7, 2026</span>
   </span>
 
     

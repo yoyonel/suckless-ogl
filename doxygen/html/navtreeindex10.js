@@ -1,5 +1,8 @@
 var NAVTREEINDEX10 =
 {
+"structSphereSorter.html#a2340e1e01b3f2ca13d0bac8d60bb3f21":[5,0,78,0],
+"structSphereSorter.html#a3b0a839152ecba171a2be62a709183a3":[5,0,78,10],
+"structSphereSorter.html#a3eee2a197fa6fcc0d2c6c9d771532906":[5,0,78,2],
 "structSphereSorter.html#a5e55fa0adfbcec56f1eaf7e5dc1f22bb":[5,0,78,14],
 "structSphereSorter.html#a665509266e24d75a21f42cbcd7f90e8e":[5,0,78,11],
 "structSphereSorter.html#a7fcbbb2107014ba9588957e52e9d6667":[5,0,78,5],
