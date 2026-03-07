@@ -38,6 +38,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	app->camera_enabled = true;
 	app->is_fullscreen = false;
+	app->resize_pending = 0;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
@@ -195,6 +196,17 @@ void app_run(App* app)
 			PROFILE_ZONE(poll_ctx, "GLFW PollEvents (Start)");
 			glfwPollEvents();
 			PROFILE_ZONE_END(poll_ctx);
+		}
+
+		/* Process deferred resize from framebuffer_size_callback.
+		 * Heavy GPU work (FBO/texture recreation) is done here, safely
+		 * outside any GLFW callback context, after the mode switch and
+		 * event processing are fully complete. */
+		if (app->resize_pending) {
+			postprocess_resize(&app->postprocess,
+			                   app->pending_width,
+			                   app->pending_height);
+			app->resize_pending = 0;
 		}
 
 		app->frame_count++;
