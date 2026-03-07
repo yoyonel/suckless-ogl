@@ -72,6 +72,9 @@ if(ENABLE_SHADER_OPTIMIZATION)
     message(STATUS "Shader Optimization: ENABLED (Static compile)")
 endif()
 
+# Option pour activer les tests
+option(BUILD_TESTS "Build and enable unit tests" ON)
+
 # Tracy Profiler Integration
 option(ENABLE_TRACY "Enable Tracy Profiler integration" OFF)
 if(ENABLE_TRACY)
@@ -451,7 +454,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # --- Unit Testing ---
-if(NOT ENABLE_TRACY)
+if(BUILD_TESTS AND NOT ENABLE_TRACY)
     enable_testing()
 
     # --- Code Coverage ---
