@@ -21,9 +21,54 @@ The deadlock was caused by a synchronization conflict between the GLFW event loo
     *   The **Driver/Compositor** is waiting for the application to finish its current GPU work (like a pending `glfwSwapBuffers` or fence sync) to complete the mode switch.
     *   The **Application** is blocked inside the resize callback, trying to allocate/delete GPU resources, but the driver's command queue is often locked or stalled during the mode switch handshake.
 
+### Sequence Before (DEADLOCK)
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Thread
+    participant GLFW as GLFW
+    participant Driver as NVIDIA Driver
+    participant GPU as GPU Pipeline
+
+    Main->>GLFW: glfwPollEvents()
+    GLFW->>Main: key_callback(F)
+    Main->>GLFW: glfwSetWindowMonitor()
+    GLFW->>Driver: Mode switch request
+    Note over Driver: Waits for GPU fence...
+    Driver-->>GLFW: Resize event
+    GLFW->>Main: framebuffer_size_callback()
+    Main->>GPU: glDeleteTextures / glGenTextures
+    Note over GPU,Driver: GPU blocked by pending swap
+    Note over Main,GPU: 💀 DEADLOCK
+```
+
 ## Implementation: Deferred Resize
 
 The solution is a **Deferred Resize** pattern, which decouples the window manager's resize event from the expensive GPU resource recreation.
+
+### Sequence After (FIXED)
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Thread
+    participant GLFW as GLFW
+    participant Driver as NVIDIA Driver
+    participant GPU as GPU Pipeline
+
+    Main->>GPU: glFinish() — drain pipeline
+    GPU-->>Main: All commands complete
+    Main->>GLFW: glfwSetWindowMonitor()
+    GLFW->>Driver: Mode switch request
+    Driver-->>GLFW: Resize event
+    GLFW->>Main: framebuffer_size_callback()
+    Note over Main: Only stores dimensions + flag
+    Main-->>GLFW: Return immediately
+    GLFW-->>Main: glfwSetWindowMonitor() returns
+    Note over Main: Next frame begins...
+    Main->>Main: app_run: resize_pending? YES
+    Main->>GPU: postprocess_resize() — safe context
+    GPU-->>Main: FBOs recreated ✓
+```
 
 ### 1. Lightweight Callback
 
