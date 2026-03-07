@@ -21,6 +21,7 @@
 #include <cglm/types.h>
 
 /* --- DEFAULT VALUES --- */
+#define POSTPROCESS_HISTOGRAM_BUCKETS 256
 
 #define DEFAULT_VIGNETTE_INTENSITY 0.8F  /**< Default vignette strength. */
 #define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /**< Default vignette falloff. */
@@ -353,6 +354,7 @@ typedef struct PostProcess {
 	float time;             /**< Accumulated time for noise/animation. */
 	float delta_time;       /**< Last frame delta. */
 	GLuint dummy_black_tex; /**< Fallback texture. */
+	GLuint dummy_uint_tex;
 
 	bool is_optimized; /**< true if Uber-shader uses static preprocessor
 	                      flags. */
@@ -379,6 +381,13 @@ typedef struct PostProcess {
 
 	float current_exposure; /**< Cached exposure from GPU readback. */
 	float auto_threshold;   /**< Dynamic exposure target. */
+
+	/* --- Histogram Cache (Avoid UI flickering) --- */
+	int last_buckets[POSTPROCESS_HISTOGRAM_BUCKETS];
+	float last_min_lum;
+	float last_max_lum;
+	int last_histogram_updated;
+
 	uint64_t frame_count; /**< Internal frame counter for readback sync. */
 } PostProcess;
 

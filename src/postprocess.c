@@ -211,6 +211,16 @@ int postprocess_init(PostProcess* post_processing,
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Post-processing initialized (%dx%d)", width, height);
 
+	/* Create dummy uint texture for stencil */
+	post_processing->dummy_uint_tex =
+	    render_utils_create_texture_2d(1, 1, GL_R8UI, 1, "Dummy Stencil");
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->dummy_uint_tex);
+	uint32_t zero = 0;
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RED_INTEGER,
+	                GL_UNSIGNED_INT, &zero);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	return 1;
 }
 
@@ -279,6 +289,11 @@ void postprocess_cleanup(PostProcess* post_processing)
 {
 	if (!post_processing) {
 		return;
+	}
+
+	if (post_processing->dummy_uint_tex) {
+		glDeleteTextures(1, &post_processing->dummy_uint_tex);
+		post_processing->dummy_uint_tex = 0;
 	}
 
 	destroy_readback_buffers(post_processing);
@@ -367,6 +382,27 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 
 static void postprocess_on_state_change(PostProcess* post_processing)
 {
+	/* Clear stale sync objects if effect was disabled to prevent stalls
+	 * when re-enabling */
+	if (!postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
+		for (int i = 0; i < 2; i++) {
+			if (post_processing->exposure_sync[i]) {
+				glDeleteSync(post_processing->exposure_sync[i]);
+				post_processing->exposure_sync[i] = NULL;
+			}
+		}
+	}
+	if (!postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG)) {
+		for (int i = 0; i < 2; i++) {
+			if (post_processing->histogram_sync[i]) {
+				glDeleteSync(
+				    post_processing->histogram_sync[i]);
+				post_processing->histogram_sync[i] = NULL;
+			}
+		}
+	}
+
+	post_processing->ubo_dirty = true;
 	if (post_processing->is_optimized) {
 		if (post_processing->active_effects ==
 		    post_processing->compiled_flags) {
@@ -627,24 +663,47 @@ void postprocess_end(PostProcess* post_processing)
 		fx_dof_render(post_processing);
 	}
 
-	/* Auto Exposure Pass */
-	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
-		// TODO: use RAII here !
+	/* Auto Exposure Pass & Debug Histogram */
+	bool ae_active =
+	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE);
+	bool debug_active =
+	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG);
+
+	if (ae_active || debug_active) {
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
 		                   "Auto Exposure",
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
+
+		/* We always need the downsample/luminance pass if either AE or
+		 * Debug is on */
 		fx_auto_exposure_render(post_processing);
 
-		/* Trigger Async Readback for current frame (will be ready in
+		/* Trigger Async Readbacks for current frame (will be ready in
 		 * next frames) */
 		int write_idx = (int)((post_processing->frame_count + 1) % 2);
-		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             post_processing->exposure_pbo[write_idx]);
-		glBindTexture(GL_TEXTURE_2D,
-		              post_processing->auto_exposure_fx.exposure_tex);
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-		post_processing->exposure_sync[write_idx] =
-		    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+		if (ae_active && !post_processing->exposure_sync[write_idx]) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             post_processing->exposure_pbo[write_idx]);
+			glBindTexture(
+			    GL_TEXTURE_2D,
+			    post_processing->auto_exposure_fx.exposure_tex);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+			post_processing->exposure_sync[write_idx] =
+			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+		}
+
+		if (debug_active &&
+		    !post_processing->histogram_sync[write_idx]) {
+			glBindBuffer(GL_PIXEL_PACK_BUFFER,
+			             post_processing->histogram_pbo[write_idx]);
+			glBindTexture(
+			    GL_TEXTURE_2D,
+			    post_processing->auto_exposure_fx.downsample_tex);
+			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
+			post_processing->histogram_sync[write_idx] =
+			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+		}
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
@@ -720,9 +779,10 @@ void postprocess_end(PostProcess* post_processing)
 		glBindTexture(GL_TEXTURE_2D, post_processing->dof_fx.blur_tex);
 
 		/* Bind Stencil Texture View (Unit 7) */
-		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL);
-		glBindTexture(GL_TEXTURE_2D,
-		              post_processing->scene_stencil_view);
+		render_utils_bind_texture_safe(
+		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL,
+		    post_processing->scene_stencil_view,
+		    post_processing->dummy_uint_tex);
 
 		/* Upload UBO: always update time/effects header, full rebuild
 		 * only when parameters changed (ubo_dirty). */
@@ -839,6 +899,13 @@ void postprocess_end(PostProcess* post_processing)
 
 		/* Dessiner le quad */
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+		/* Cleanup texture unit bindings to avoid leaking state into UI
+		 * or next frame, which can trigger driver validation warnings.
+		 */
+		render_utils_reset_texture_units(
+		    0, POSTPROCESS_TEX_UNIT_STENCIL + 1,
+		    post_processing->dummy_black_tex);
 	}
 
 	/* Unbind shared VAO after all fullscreen passes are complete */
@@ -886,6 +953,9 @@ void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
 {
 	post_processing->histogram_sync[index] = sync;
 }
+
+static const float LUM_MIN_EXTREME = 1e30F;
+static const float LUM_MAX_EXTREME = -1e30F;
 
 void postprocess_update_readbacks(PostProcess* post_processing,
                                   uint64_t frame_count)
@@ -994,18 +1064,46 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 			    GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
 			if (lum_data) {
-				fill_histogram_buckets(lum_data, buckets, size,
-				                       min_lum, max_lum);
+				/* Zero out cache before filling to avoid
+				 * accumulation
+				 */
+				for (int i = 0;
+				     i < POSTPROCESS_HISTOGRAM_BUCKETS; i++) {
+					post_processing->last_buckets[i] = 0;
+				}
+
+				*min_lum = LUM_MIN_EXTREME;
+				*max_lum = LUM_MAX_EXTREME;
+
+				fill_histogram_buckets(
+				    lum_data, post_processing->last_buckets,
+				    size, min_lum, max_lum);
+				post_processing->last_min_lum = *min_lum;
+				post_processing->last_max_lum = *max_lum;
+				post_processing->last_histogram_updated = 1;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-				processed = 1;
 			}
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 			glDeleteSync(current_sync);
 			post_processing->histogram_sync[read_idx] = NULL;
 		}
 	}
 
-	/* Trigger Async Transfer for Next Slot if not already pending */
+	/* Provide continuous data from cache if available */
+	if (post_processing->last_histogram_updated) {
+		for (int i = 0; i < size && i < POSTPROCESS_HISTOGRAM_BUCKETS;
+		     i++) {
+			buckets[i] = post_processing->last_buckets[i];
+		}
+		*min_lum = post_processing->last_min_lum;
+		*max_lum = post_processing->last_max_lum;
+		processed = 1;
+	}
+
+	/* Trigger Async Transfer for Next Slot if not already pending.
+	 * This is a safety fallback for standalone tests or benchmarks.
+	 */
 	int write_idx = (int)((frame_count + 1) % 2);
 	if (!post_processing->histogram_sync[write_idx]) {
 		trigger_histogram_readback(post_processing, write_idx);
