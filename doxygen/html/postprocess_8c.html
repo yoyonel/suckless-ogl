@@ -448,6 +448,10 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a658f6596b9a798d097a2c1c5a4605cd6"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#a658f6596b9a798d097a2c1c5a4605cd6">LUM_MIN_EXTREME</a> = 1e30F</td></tr>
+<tr class="separator:a658f6596b9a798d097a2c1c5a4605cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfb45631b71c3e593aaab867040a8eaa"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#adfb45631b71c3e593aaab867040a8eaa">LUM_MAX_EXTREME</a> = -1e30F</td></tr>
+<tr class="separator:adfb45631b71c3e593aaab867040a8eaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfd51418acbfeee92a289eedfdd1ea20"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structEffectMetadata.html">EffectMetadata</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20">ALL_EFFECTS</a> []</td></tr>
 <tr class="separator:adfd51418acbfeee92a289eedfdd1ea20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -1113,7 +1117,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="412" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess_8c_aa84256eef04459c5acf3b67987da736b_cgraph.svg" width="412" height="206"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -2484,24 +2488,68 @@ Here is the call graph for this function:</div>
 <div class="line">     <span class="stringliteral">&quot;OPT_ENABLE_VECTOR_FIELD_DEBUG&quot;</span>},</div>
 <div class="line">    {<a class="code" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69">POSTFX_STENCIL_DEBUG</a>, <span class="stringliteral">&quot;Stencil Debug View&quot;</span>, <span class="stringliteral">&quot;OPT_ENABLE_STENCIL_DEBUG&quot;</span>},</div>
 <div class="line">}</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a></div><div class="ttdeci">@ POSTFX_BANDING</div><div class="ttdef"><b>Definition:</b> postprocess.h:86</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_AUTO_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:77</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR</div><div class="ttdef"><b>Definition:</b> postprocess.h:81</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a></div><div class="ttdeci">@ POSTFX_DOF_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:76</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition:</b> postprocess.h:73</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a></div><div class="ttdeci">@ POSTFX_EXPOSURE_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:79</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a></div><div class="ttdeci">@ POSTFX_GRAIN</div><div class="ttdef"><b>Definition:</b> postprocess.h:69</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:82</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122">POSTFX_VECTOR_FIELD_DEBUG</a></div><div class="ttdeci">@ POSTFX_VECTOR_FIELD_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:87</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition:</b> postprocess.h:84</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a></div><div class="ttdeci">@ POSTFX_DOF</div><div class="ttdef"><b>Definition:</b> postprocess.h:75</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69">POSTFX_STENCIL_DEBUG</a></div><div class="ttdeci">@ POSTFX_STENCIL_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:89</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a></div><div class="ttdeci">@ POSTFX_BLOOM</div><div class="ttdef"><b>Definition:</b> postprocess.h:72</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a></div><div class="ttdeci">@ POSTFX_FXAA_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:85</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:70</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a></div><div class="ttdeci">@ POSTFX_VIGNETTE</div><div class="ttdef"><b>Definition:</b> postprocess.h:68</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a></div><div class="ttdeci">@ POSTFX_CHROM_ABBR</div><div class="ttdef"><b>Definition:</b> postprocess.h:71</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0">POSTFX_BANDING</a></div><div class="ttdeci">@ POSTFX_BANDING</div><div class="ttdef"><b>Definition:</b> postprocess.h:87</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba108913ab869a4a28f7fc76e3ee9b662b">POSTFX_AUTO_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_AUTO_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:78</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba1ac1a30593158502cd78c003a49ed0cd">POSTFX_MOTION_BLUR</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR</div><div class="ttdef"><b>Definition:</b> postprocess.h:82</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba20519bb090ae9cb97504462e99434583">POSTFX_DOF_DEBUG</a></div><div class="ttdeci">@ POSTFX_DOF_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:77</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition:</b> postprocess.h:74</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba315abd1ee0074a79adb8d7c58765d26d">POSTFX_EXPOSURE_DEBUG</a></div><div class="ttdeci">@ POSTFX_EXPOSURE_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:80</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba33f6b896495f1c47baf9973aabbd358c">POSTFX_GRAIN</a></div><div class="ttdeci">@ POSTFX_GRAIN</div><div class="ttdef"><b>Definition:</b> postprocess.h:70</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba412b3a71821702dd486bb1af6dce71fe">POSTFX_MOTION_BLUR_DEBUG</a></div><div class="ttdeci">@ POSTFX_MOTION_BLUR_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:83</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122">POSTFX_VECTOR_FIELD_DEBUG</a></div><div class="ttdeci">@ POSTFX_VECTOR_FIELD_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:88</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition:</b> postprocess.h:85</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba946a726f0049d827193668350ac8c9ef">POSTFX_DOF</a></div><div class="ttdeci">@ POSTFX_DOF</div><div class="ttdef"><b>Definition:</b> postprocess.h:76</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69">POSTFX_STENCIL_DEBUG</a></div><div class="ttdeci">@ POSTFX_STENCIL_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:90</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7babf2f433f6fc0f97c7508928c684c2e19">POSTFX_BLOOM</a></div><div class="ttdeci">@ POSTFX_BLOOM</div><div class="ttdef"><b>Definition:</b> postprocess.h:73</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f">POSTFX_FXAA_DEBUG</a></div><div class="ttdeci">@ POSTFX_FXAA_DEBUG</div><div class="ttdef"><b>Definition:</b> postprocess.h:86</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:71</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baf81ba138bbd75c20d288255ff0ad1237">POSTFX_VIGNETTE</a></div><div class="ttdeci">@ POSTFX_VIGNETTE</div><div class="ttdef"><b>Definition:</b> postprocess.h:69</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baff3f36ecd2d50a32a5f7d72648548589">POSTFX_CHROM_ABBR</a></div><div class="ttdeci">@ POSTFX_CHROM_ABBR</div><div class="ttdef"><b>Definition:</b> postprocess.h:72</div></div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="adfb45631b71c3e593aaab867040a8eaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfb45631b71c3e593aaab867040a8eaa">&#9670;&nbsp;</a></span>LUM_MAX_EXTREME</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float LUM_MAX_EXTREME = -1e30F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a658f6596b9a798d097a2c1c5a4605cd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a658f6596b9a798d097a2c1c5a4605cd6">&#9670;&nbsp;</a></span>LUM_MIN_EXTREME</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float LUM_MIN_EXTREME = 1e30F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->

@@ -1,5 +1,8 @@
 var NAVTREEINDEX7 =
 {
+"sphere__sorting_8h.html#a159532007839ad93c627f7173c755616":[6,0,2,44,2],
+"sphere__sorting_8h.html#a1b1931d3ca9613a3f9cb779c42d51336":[6,0,2,44,6],
+"sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba":[6,0,2,44,4],
 "sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,2,44,3],
 "sphere__sorting_8h.html#afb08c8f2f8876b56e8e5249aee59e6e1":[6,0,2,44,5],
 "sphere__sorting_8h_source.html":[6,0,2,44],
@@ -246,8 +249,5 @@ var NAVTREEINDEX7 =
 "structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c":[5,0,22,2],
 "structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf":[5,0,22,12],
 "structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca":[5,0,22,7],
-"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,22,1],
-"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,22,8],
-"structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018":[5,0,22,16],
-"structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d":[5,0,22,4]
+"structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6":[5,0,22,1]
 };

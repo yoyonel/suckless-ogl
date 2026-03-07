@@ -41,6 +41,7 @@ var postprocess_8h =
     [ "DEFAULT_VIGNETTE_SMOOTHNESS", "postprocess_8h.html#a24987b89075e8bfcef95322a2f55da3a", null ],
     [ "DEFAULT_WB_TEMP", "postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e", null ],
     [ "DEFAULT_WB_TINT", "postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2", null ],
+    [ "POSTPROCESS_HISTOGRAM_BUCKETS", "postprocess_8h.html#a7d38280252925a54dc81b01fc5c11032", null ],
     [ "BandingMode", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2", [
       [ "BANDING_MODE_LINEAR", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a", null ],
       [ "BANDING_MODE_DITHERED", "postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc", null ],

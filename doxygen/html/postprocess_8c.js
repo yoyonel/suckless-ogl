@@ -56,5 +56,7 @@ var postprocess_8c =
     [ "setup_sampler_uniforms", "postprocess_8c.html#ad37e66750c245e76eacbbfacfdfa2464", null ],
     [ "trigger_histogram_readback", "postprocess_8c.html#aa7a0afabddcd3ae0966dfe3faefe89e2", null ],
     [ "update_current_shader", "postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7", null ],
-    [ "ALL_EFFECTS", "postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20", null ]
+    [ "ALL_EFFECTS", "postprocess_8c.html#adfd51418acbfeee92a289eedfdd1ea20", null ],
+    [ "LUM_MAX_EXTREME", "postprocess_8c.html#adfb45631b71c3e593aaab867040a8eaa", null ],
+    [ "LUM_MIN_EXTREME", "postprocess_8c.html#a658f6596b9a798d097a2c1c5a4605cd6", null ]
 ];

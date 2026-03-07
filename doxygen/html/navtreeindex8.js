@@ -1,5 +1,8 @@
 var NAVTREEINDEX8 =
 {
+"structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c":[5,0,22,8],
+"structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018":[5,0,22,16],
+"structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d":[5,0,22,4],
 "structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8":[5,0,22,15],
 "structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943":[5,0,22,9],
 "structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3":[5,0,22,0],
@@ -246,8 +249,5 @@ var NAVTREEINDEX8 =
 "structPBRSpecUniforms.html#a093dd76c96c1eee1ee2bafd4189d5932":[5,0,61,1],
 "structPBRSpecUniforms.html#a0a8721216be4beb02eeb47a53593f2ac":[5,0,61,0],
 "structPBRSpecUniforms.html#a306cd0ac8f5fe3b4841bd73beda16e13":[5,0,61,2],
-"structPBRSpecUniforms.html#abff7287a12825c2860925695bca88116":[5,0,61,5],
-"structPBRSpecUniforms.html#ac9b999a5f4c966adde15e30ef8fa6dd8":[5,0,61,4],
-"structPBRSpecUniforms.html#af15c11231b97bd4e3f5808bc2f83d66a":[5,0,61,3],
-"structPcg32.html":[5,0,62]
+"structPBRSpecUniforms.html#abff7287a12825c2860925695bca88116":[5,0,61,5]
 };
