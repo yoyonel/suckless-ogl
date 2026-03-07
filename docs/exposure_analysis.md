@@ -167,3 +167,5 @@ digraph AutoExposure {
   Scene -> Final [color="#7aa2f7", penwidth=2.5, label="LDR Path"];
 }
 ```
+
+**[> Read the Auto Exposure Debug Histogram Documentation](auto_exposure_debug_histogram.md)**
