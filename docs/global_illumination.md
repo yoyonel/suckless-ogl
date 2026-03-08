@@ -11,6 +11,18 @@ L'approche repose sur un **Volume de Light Probes (Sondes de Lumières)** encoda
 Le système combine un calcul CPU asynchrone et un échantillonnage GPU sans aucune interruption (stall) du thread de rendu principal.
 
 ```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
 sequenceDiagram
     participant Main as Thread Principal (CPU)
     participant Worker as GI Worker Thread (CPU)

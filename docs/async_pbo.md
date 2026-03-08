@@ -13,23 +13,35 @@ Uploading large 4K HDR textures (approx. 64MB) to the GPU is a heavy operation.
 ## Architecture Overview
 
 ```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
 sequenceDiagram
     participant Main as Main Thread
     participant Worker as Async Worker
     participant GPU as GPU / Driver
 
-    Note over Main: Frame N — PBO Setup
+    Note over Main: Frame N - PBO Setup
     Main->>GPU: texture_ensure_pbo() + texture_map_pbo()
     Main->>Worker: async_loader_provide_pbo(mapped_ptr)
 
-    Note over Main: Frame N+1 — VRAM Pre-allocation
+    Note over Main: Frame N+1 - VRAM Pre-allocation
     Main->>GPU: texture_preallocate_hdr()<br/>glTexImage2D(level 0, NULL)
     Note over GPU: Allocate ~64MB base level only
 
-    Note over Worker: Frames N..N+M — Background Conversion
-    Worker->>Worker: float32 → float16 (SIMD)<br/>directly into mapped PBO
+    Note over Worker: Frames N..N+M - Background Conversion
+    Worker->>Worker: float32 -> float16 (SIMD)<br/>directly into mapped PBO
 
-    Note over Main: Frame N+M — Upload & Mipmaps
+    Note over Main: Frame N+M - Upload & Mipmaps
     Main->>GPU: glUnmapBuffer(PBO)
     Main->>GPU: glTexSubImage2D(from PBO)
     Main->>GPU: glGenerateMipmap()
@@ -107,9 +119,9 @@ gantt
     PBO Setup + TexStorage + Upload + Mipmap + 3×glGetError :done, 0, 60
 
     section After (3 frames)
-    Frame N  — PBO Setup & Map        :active, 0, 5
-    Frame N+1 — TexPrealloc (level 0) :active, 8, 15
-    Frame N+M — Upload + Mipmap       :active, 18, 38
+    Frame N  - PBO Setup & Map        :active, 0, 5
+    Frame N+1 - TexPrealloc (level 0) :active, 8, 15
+    Frame N+M - Upload + Mipmap       :active, 18, 38
 ```
 
 #### Frame N: PBO Setup (`ASYNC_WAITING_FOR_PBO`)
@@ -151,7 +163,7 @@ Key decisions:
 
 ```c
 // app_finalize_environment_load() → texture_upload_hdr_from_pbo()
-// reuse_tex_id matches pre-allocated texture → skip glTexStorage2D ✓
+// reuse_tex_id matches pre-allocated texture -> skip glTexStorage2D (OK)
 glUnmapBuffer(PBO);
 glTexSubImage2D(..., 0);   // DMA from PBO offset 0
 glGenerateMipmap();        // Generates mip chain (also allocates mip levels)
@@ -162,11 +174,26 @@ glGenerateMipmap();        // Generates mip chain (also allocates mip levels)
 ### Deferred Pre-allocation Flow
 
 ```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "primaryColor": "#24283b",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "actorBorder": "#7aa2f7",
+    "actorBkg": "#24283b",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26"
+  }
+}%%
 flowchart TD
     A["app_update() called"] --> B{"pending_prealloc_w > 0?"}
     B -- Yes --> C["texture_preallocate_hdr()"]
     C --> D{"recycled_hdr_tex matches?"}
-    D -- Yes --> E["Zero-cost reuse ✓"]
+    D -- Yes --> E["Zero-cost reuse (OK)"]
     D -- No --> F["glTexImage2D(level 0, NULL)"]
     F --> G["Store in app->recycled_hdr_tex"]
     B -- No --> H["async_loader_poll()"]
@@ -177,7 +204,7 @@ flowchart TD
     J --> K["Schedule pending_prealloc_w/h"]
     I -- ASYNC_READY --> L["texture_upload_hdr_from_pbo()"]
     L --> M{"reuse_tex matches?"}
-    M -- Yes --> N["Skip glTexStorage2D ✓"]
+    M -- Yes --> N["Skip glTexStorage2D (OK)"]
     M -- No --> O["Fallback: glTexStorage2D"]
     N --> P["glUnmapBuffer + glTexSubImage2D"]
     O --> P
@@ -191,14 +218,26 @@ flowchart TD
 `glGetError()` is a **synchronous query**: the CPU must wait for the GPU to process **all pending commands** before returning the error state. In a pipelined architecture, this defeats the purpose of asynchronous uploads.
 
 ```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
 sequenceDiagram
     participant CPU
     participant CmdQueue as GPU Command Queue
     participant GPU
 
     CPU->>CmdQueue: glTexSubImage2D (async, returns immediately)
-    CPU->>CmdQueue: glGetError() → STALL
-    Note over CPU: ⏳ Blocked waiting for GPU
+    CPU->>CmdQueue: glGetError() -> STALL
+    Note over CPU: (Waiting) Blocked waiting for GPU
     CmdQueue->>GPU: Execute TexSubImage...
     GPU-->>CmdQueue: Done
     CmdQueue-->>CPU: GL_NO_ERROR

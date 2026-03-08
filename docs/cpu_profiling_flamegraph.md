@@ -9,7 +9,7 @@ This guide provides a comprehensive, step-by-step methodology for CPU profiling 
 
 ## 📋 Table of Contents
 
-1. [Prerequisites & Installation](#prerequisites--installation)
+1. [Prerequisites & Installation](#prerequisites-installation)
 2. [Build Configuration](#build-configuration)
 3. [Recording Performance Data](#recording-performance-data)
 4. [Analyzing with perf report](#analyzing-with-perf-report)
@@ -253,7 +253,7 @@ cp flamegraph.svg /path/to/artifacts/
 - **Y-axis (height)**: Call stack depth (caller → callee)
 - **Color**: Random (for visual separation only)
 
-### Identifiction of Bottlenecks
+### Identification of Bottlenecks
 
 1. **Wide boxes**: Functions consuming significant CPU time
 2. **Patterns**:
