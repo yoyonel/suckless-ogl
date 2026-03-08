@@ -11,12 +11,15 @@
 [data-md-color-scheme="slate"] .mermaid text,
 [data-md-color-scheme="slate"] .mermaid tspan,
 [data-md-color-scheme="slate"] .mermaid .messageText,
+[data-md-color-scheme="slate"] .mermaid .signalText,
 [data-md-color-scheme="slate"] .mermaid .loopText,
-[data-md-color-scheme="slate"] .mermaid .loopText>tspan,
+[data-md-color-scheme="slate"] .mermaid .loopText > tspan,
 [data-md-color-scheme="slate"] .mermaid .noteText,
 [data-md-color-scheme="slate"] .mermaid .labelText,
-[data-md-color-scheme="slate"] .mermaid .actor>tspan,
-[data-md-color-scheme="slate"] .mermaid .label {
+[data-md-color-scheme="slate"] .mermaid .actor > tspan,
+[data-md-color-scheme="slate"] .mermaid .label,
+[data-md-color-scheme="slate"] .mermaid .messageLine0,
+[data-md-color-scheme="slate"] .mermaid .messageLine1 {
   fill: #ffffff !important;
   color: #ffffff !important;
   stroke: none !important;
