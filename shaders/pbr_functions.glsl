@@ -94,6 +94,8 @@ vec3 compute_IBL_PBR_Advanced(vec3 N, vec3 V, vec3 R, vec3 F0, float NdotV,
  * Uses the Varef (Variance-based Roughness) technique.
  * @param N Normal vector in world space.
  * @param roughness Perceptual roughness (0-1).
+ * @param projectedCurvature Pixel size in world space / Geo Radius (Analytic
+ * AA).
  */
 float compute_specular_aa_roughness(vec3 N, float roughness,
                                     float projectedCurvature)

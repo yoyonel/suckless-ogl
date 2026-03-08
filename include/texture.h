@@ -51,7 +51,8 @@ GLuint texture_preallocate_hdr(int width, int height, GLuint old_tex);
 /**
  * @brief Finalizes HDR upload from a PBO (Unmap -> Upload -> Mipmaps).
  *
- * @param pbo_id ID of the PBO (must be bound/mapped).
+ * @param pbo_id ID of the PBO (must be bound).
+ * @param ptr Pointer to the mapped PBO memory (will be unmapped).
  * @param width Texture width.
  * @param height Texture height.
  * @param reuse_tex_id Existing texture ID to update/reuse.

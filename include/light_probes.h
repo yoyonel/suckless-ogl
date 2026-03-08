@@ -67,6 +67,7 @@ typedef struct {
  * @param spheres Array of sphere instances (generic pointer to avoid GL dep in
  * header if needed).
  * @param count Number of spheres.
+ * @param stride Stride between spheres.
  * @param padding Padding to add to the AABB.
  */
 void light_probe_grid_compute_aabb(LightProbeGrid* grid, const void* spheres,
@@ -117,8 +118,6 @@ void light_probe_grid_sync(LightProbeGrid* grid);
  * @param grid Pointer to grid.
  * @param view View matrix.
  * @param proj Projection matrix.
- * @param sphere_vao VAO of the sphere mesh.
- * @param index_count Number of indices in sphere mesh.
  */
 void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj);
 

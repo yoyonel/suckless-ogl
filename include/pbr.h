@@ -151,23 +151,15 @@ void pbr_irradiance_slice_compute(GLuint shader, const PBRIrrUniforms* uniforms,
 GLuint build_brdf_lut_map(int size);
 
 /**
- * @brief Computes the average luminance of an HDR texture on the GPU.
- *
+ * @brief Starts the GPU computation for mean luminance (non-blocking).
  * Uses a two-pass parallel reduction via compute shaders and SSBOs.
  * @param shader_pass1 First reduction pass shader.
  * @param shader_pass2 Final reduction pass shader.
  * @param hdr_tex Source HDR texture.
  * @param width Texture width.
  * @param height Texture height.
- * @param clamp_multiplier Value to clamp extreme pixels.
  * @param ssbos Pair of SSBO handles for intermediate and final results.
  * @param uniforms Cached uniform locations for pass 2.
- * @return Average luminance value.
- */
-/**
- * @brief Starts the GPU computation for mean luminance (non-blocking).
- * Dispatches compute shaders but does NOT wait for results.
- * Caller should issue a memory barrier or fence sync after calling this.
  */
 void compute_mean_luminance_gpu_start(GLuint shader_pass1, GLuint shader_pass2,
                                       GLuint hdr_tex, int width, int height,
