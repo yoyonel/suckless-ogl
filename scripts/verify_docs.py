@@ -163,6 +163,56 @@ def verify_html_sanitization(html_dir):
 
     return errors
 
+def verify_mkdocs_rendering(site_dir):
+    """Detects unrendered diagram code blocks in MkDocs static output."""
+    errors = 0
+    print(f"\n--- Phase 3: MkDocs Rendering Verification ---")
+
+    # Keywords that indicate a diagram source is present
+    DIAGRAM_KEYWORDS = [
+        (re.compile(r'digraph\s+\w+\s+\{'), "Graphviz"),
+        (re.compile(r'sequenceDiagram'), "Mermaid"),
+        (re.compile(r'flowchart\s+(TD|LR|TB|BT)'), "Mermaid"),
+        (re.compile(r'gantt'), "Mermaid"),
+        (re.compile(r'stateDiagram'), "Mermaid"),
+        (re.compile(r'classDiagram'), "Mermaid"),
+    ]
+
+    for root, _, filenames in os.walk(site_dir):
+        # Skip Doxygen output which is handled by Phase 1
+        if "doxygen" in root: continue
+
+        for f in filenames:
+            if not f.endswith('.html'): continue
+            path = os.path.join(root, f)
+            try:
+                with open(path, 'r', encoding='utf-8') as fd:
+                    content = fd.read()
+
+                # Strip HTML tags to find keywords even if they are highlighted/split by spans
+                stripped_content = re.sub(r'<[^>]+>', ' ', content)
+
+                rel_path = os.path.relpath(path, site_dir)
+                for pattern, label in DIAGRAM_KEYWORDS:
+                    if pattern.search(stripped_content):
+                        # Heuristic: if it's Mermaid and wrapped in <pre class="mermaid">, it's fine
+                        # (browser-side rendering).
+                        if label == "Mermaid" and 'class="mermaid"' in content:
+                            continue
+
+                        # If it's in a code block (language-xxx or highlight), it's a failure
+                        if f'language-{label.lower()}' in content or 'highlight' in content:
+                            print(f"❌ [UNRENDERED {label.upper()}] {rel_path}: Found raw diagram code.")
+                            errors += 1
+                            break # One error per file
+            except Exception as e:
+                print(f"❌ [ERROR] Reading {path}: {e}")
+                errors += 1
+
+    if errors == 0:
+        print("✅ [OK] All site diagrams appear to be rendered (no raw code found).")
+    return errors
+
 if __name__ == "__main__":
     if len(sys.argv) > 1: DOCS_DIR = sys.argv[1]
     if len(sys.argv) > 2: HTML_DIR = sys.argv[2]
@@ -174,6 +224,11 @@ if __name__ == "__main__":
     total_errors = 0
     total_errors += verify_diagrams(get_files_with_diagrams(DOCS_DIR), HTML_DIR)
     total_errors += verify_html_sanitization(HTML_DIR)
+
+    # Phase 3: MkDocs Rendering Verification
+    SITE_DIR = "site"
+    if os.path.exists(SITE_DIR):
+        total_errors += verify_mkdocs_rendering(SITE_DIR)
 
     print("\n" + "="*40)
     print(f"Final Report: {total_errors} errors found.")
