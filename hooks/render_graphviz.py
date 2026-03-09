@@ -55,6 +55,12 @@ def on_page_markdown(markdown, page, config, files):
             if not success:
                 return f'<div class="admonition error"><p class="admonition-title">Diagram Error</p><p>Failed to render Graphviz diagram locally.</p><pre>{code}</pre></div>'
 
+        # Manually copy to site_dir for clean builds since mkdocs already copied media
+        site_dir = pathlib.Path(config['site_dir'])
+        site_assets_dir = site_dir / "assets" / "diagrams"
+        site_assets_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(local_file, site_assets_dir / local_file.name)
+
         # Reference the local SVG file relative to site root
         # We use a leading slash to ensure it's absolute from the domain root
         return f'<div class="kroki-diagram local-diagram"><img src="/{web_path}" alt="Graphviz Diagram" /></div>'

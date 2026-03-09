@@ -5,9 +5,10 @@ This document provides a high-level summary of how `suckless-ogl` handles asynch
 ## Core Philosophy
 
 Modern high-performance rendering requires that the **Main Thread (Render Thread) never blocks**. Any operation that takes more than 1-2ms should be either:
-1.  **Offloaded** to a background worker thread (for CPU/IO tasks).
-2.  **Slicing** over multiple frames (for heavy GPU tasks).
-3.  **Fenced** for non-blocking status checks (for CPU/GPU data transfers).
+
+1. **Offloaded** to a background worker thread (for CPU/IO tasks).
+2. **Sliced** over multiple frames (for heavy GPU tasks).
+3. **Fenced** for non-blocking status checks (for CPU/GPU data transfers).
 
 ## Frame Scheduling & Task Interleaving
 
@@ -67,10 +68,12 @@ We use dedicated worker threads for tasks that don't require an OpenGL context.
 All pixel data movement between CPU and GPU uses **Pixel Buffer Objects (PBOs)** to enable DMA (Direct Memory Access) transfers and avoid driver-level copies.
 
 ### Uploads (Textures)
+
 - **Double-Buffering**: Prevents the CPU from overwriting a buffer that the GPU is currently reading.
 - **Unsynchronized Mapping**: `GL_MAP_UNSYNCHRONIZED_BIT` is used to bypass internal driver checks, ensuring `glMapBufferRange` returns instantly.
 
 ### Readbacks (Measurements)
+
 - Used for: Auto-exposure (luminance), Histogram extraction, and Tracy screenshots.
 - **Fence Sync**: We insert a `glFenceSync` after the GPU command.
 - **Non-blocking poll**: We check the fence state using `glClientWaitSync` with a **0 timeout**. If the GPU isn't ready, we skip the update for that frame instead of blocking.
