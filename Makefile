@@ -101,6 +101,11 @@ docs-dev:
 	@echo "Starting MkDocs Live Preview (No Doxygen integration)..."
 	@$(PY_RUN) -m mkdocs serve
 
+docs-offline:
+	@echo "Building documentation in a strictly OFFLINE environment (unshare -rn)..."
+	@unshare -rn $(MAKE) docs-clean docs
+	@echo "✓ Offline build successful. No network was used."
+
 docs-legacy:
 	@echo "Generating Doxygen documentation (Legacy)..."
 	@$(DISTROBOX) doxygen Doxyfile
@@ -455,6 +460,7 @@ help:
 	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
+	@echo "  docs-offline - Build documentation in a strict offline environment"
 	@echo "  test-gen-refs - Regenerate test reference images"
 	@echo "  help       - Show this help message"
 

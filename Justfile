@@ -370,6 +370,20 @@ docs:
     @echo "Verifying Documentation Quality..."
     @{{py_run}} scripts/verify_docs.py docs site/doxygen/html
 
+# Clean all documentation build artifacts
+docs-clean:
+    @echo "Cleaning all documentation build artifacts..."
+    @rm -rf site/
+    @rm -rf docs/doxygen/
+    @rm -rf docs/html/ docs/latex/ docs/xml/
+    @echo "✓ Documentation artifacts removed"
+
+# Build documentation in a strict offline environment
+docs-offline:
+    @echo "Building documentation in a strictly OFFLINE environment (unshare -rn)..."
+    @unshare -rn just docs-clean docs
+    @echo "✓ Offline build successful. No network was used."
+
 # Verify Documentation Quality (ISO Makefile)
 docs-verify:
     @echo "Verifying Documentation Quality..."
