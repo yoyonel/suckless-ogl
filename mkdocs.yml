@@ -17,6 +17,7 @@ validation:
 
 hooks:
   - hooks/generate_diagram_index.py
+  - hooks/render_graphviz.py
 
 theme:
   name: material
@@ -100,6 +101,7 @@ extra_css:
 nav:
   - Home: index.md
   - Architecture:
+    - Glossary: glossary.md
     - Index des Diagrammes: diagram_index.md
     - Overview: project_structure.md
     - Core Architecture: architecture.md

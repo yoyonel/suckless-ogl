@@ -4,29 +4,29 @@
 
 <style>
 .diagram-item { position: relative; display: block; padding: 12px 0; border-bottom: 1px solid var(--md-code-bg-color); }
-.mermaid-preview {
-  opacity: 0;
-  visibility: hidden;
-  position: absolute;
-  left: max(300px, 30%);
-  top: -80px;
-  z-index: 999;
-  background: #1a1b26;
-  border: 2px solid #7aa2f7;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 15px 55px rgba(0,0,0,0.9);
-  width: 750px;
-  max-height: 600px;
-  overflow: auto;
-  pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(30px) scale(0.95);
+.mermaid-preview { 
+  opacity: 0; 
+  visibility: hidden; 
+  position: absolute; 
+  left: max(300px, 30%); 
+  top: -80px; 
+  z-index: 999; 
+  background: #1a1b26; 
+  border: 2px solid #7aa2f7; 
+  padding: 24px; 
+  border-radius: 12px; 
+  box-shadow: 0 15px 55px rgba(0,0,0,0.9); 
+  width: 750px; 
+  max-height: 600px; 
+  overflow: auto; 
+  pointer-events: none; 
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  transform: translateX(30px) scale(0.95); 
 }
-.diagram-item:hover .mermaid-preview {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(0) scale(1);
+.diagram-item:hover .mermaid-preview { 
+  opacity: 1; 
+  visibility: visible; 
+  transform: translateX(0) scale(1); 
 }
 .mermaid-preview .mermaid { background: transparent !important; color: white !important; }
 </style>
@@ -637,3 +637,5 @@ M->>M: Poll & Process...
 
   </div>
 </div>
+
+
