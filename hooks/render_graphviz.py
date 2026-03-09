@@ -14,7 +14,7 @@ def get_local_diagram_path(code, label, config):
     # Diagram cache directory in assets
     assets_dir = docs_dir / "assets" / "diagrams"
     assets_dir.mkdir(parents=True, exist_ok=True)
-    
+
     filename = f"{label.lower()}_{hash_id}.svg"
     return assets_dir / filename, f"assets/diagrams/{filename}"
 
@@ -22,7 +22,7 @@ def render_local_dot(code, output_path):
     dot_path = shutil.which("dot")
     if not dot_path:
         raise RuntimeError("❌ [DOT ERROR] binary 'dot' not found. Please install Graphviz locally.")
-        
+
     try:
         process = subprocess.Popen(
             [dot_path, "-Tsvg", "-o", str(output_path)],
@@ -42,13 +42,13 @@ def render_local_dot(code, output_path):
 def on_page_markdown(markdown, page, config, files):
     # Match both ```graphviz and ```dot
     pattern = re.compile(r'```(?:graphviz|dot)\n(.*?)\n```', re.DOTALL)
-    
+
     def replacer(match):
         code = match.group(1).strip()
         if not code: return ""
-        
+
         local_file, web_path = get_local_diagram_path(code, "graphviz", config)
-        
+
         # Render if not already cached
         if not local_file.exists():
             success = render_local_dot(code, local_file)
@@ -58,5 +58,5 @@ def on_page_markdown(markdown, page, config, files):
         # Reference the local SVG file relative to site root
         # We use a leading slash to ensure it's absolute from the domain root
         return f'<div class="kroki-diagram local-diagram"><img src="/{web_path}" alt="Graphviz Diagram" /></div>'
-            
+
     return pattern.sub(replacer, markdown)
