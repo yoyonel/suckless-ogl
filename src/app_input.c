@@ -264,6 +264,25 @@ static void handle_f9_input(App* app)
 static void app_toggle_help(App* app)
 {
 	app->overlay.show_help = !app->overlay.show_help;
+	if (app->overlay.show_help) {
+		/* Opening overlay: if camera is active, disable it exactly as
+		 * if the user pressed 'C' (preserves camera_enabled state
+		 * correctly and shows the "Camera: OFF" notification). */
+		if (app->camera_enabled) {
+			handle_camera_toggle(app);
+			app->overlay.help_captured_camera = 1;
+		} else {
+			app->overlay.help_captured_camera = 0;
+		}
+	} else {
+		/* Closing overlay: re-enable camera if we disabled it, again
+		 * via handle_camera_toggle so the notification/state is
+		 * consistent. */
+		if (app->overlay.help_captured_camera) {
+			handle_camera_toggle(app);
+			app->overlay.help_captured_camera = 0;
+		}
+	}
 	action_notifier_push(&app->notifier,
 	                     app->overlay.show_help ? "Help: ON" : "Help: OFF",
 	                     NOTIF_DUR_NORMAL);

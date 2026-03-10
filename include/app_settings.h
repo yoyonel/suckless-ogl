@@ -217,6 +217,13 @@ static const float DEFAULT_KBD_KEY_RADIUS = 8.0F;
 static const float DEFAULT_KBD_LABEL_SCALE = 0.55F;
 static const float DEFAULT_KBD_TITLE_Y_OFFSET = 70.0F;
 static const float DEFAULT_KBD_DETAIL_Y_OFFSET = 50.0F;
+/* Cyberpunk overlay visual tweaks */
+static const float DEFAULT_KBD_BLOOM_SCALE =
+    1.3F; /**< Bloom quad size vs key size (subtle) */
+static const float DEFAULT_KBD_UNBOUND_ALPHA =
+    0.22F; /**< Alpha for unbound keys */
+static const float DEFAULT_KBD_BOUND_ALPHA =
+    0.88F; /**< Alpha for bound keycaps */
 /** @} */
 
 /**

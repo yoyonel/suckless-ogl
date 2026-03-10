@@ -10,10 +10,41 @@
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
+#include <stb_image.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Load an RGBA PNG into an OpenGL texture. Returns 0 on failure. */
+static GLuint load_png_texture(const char* path)
+{
+	int img_w = 0;
+	int img_h = 0;
+	int channels = 0;
+	stbi_set_flip_vertically_on_load(0);
+	unsigned char* data = stbi_load(path, &img_w, &img_h, &channels, 4);
+	if (!data) {
+		return 0;
+	}
+	GLuint tex = 0;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_w, img_h, 0, GL_RGBA,
+	             GL_UNSIGNED_BYTE, data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	stbi_image_free(data);
+	return tex;
+}
+
+static const float GLOBAL_DIM_MAX_FALLOFF =
+    0.7F; /* Max alpha reduction for background keys when a key is pressed */
+static const float GLOBAL_DIM_SMOOTH_FACTOR =
+    15.0F; /* Speed of dimming interpolation */
 
 void app_ui_init(AppUIOverlay* overlay)
 {
@@ -25,6 +56,7 @@ void app_ui_init(AppUIOverlay* overlay)
 	overlay->help_pressed_key = -1;
 	overlay->help_pressed_mods = 0;
 	overlay->help_press_timer = 0.0;
+	overlay->help_global_dim = 1.0;
 	overlay->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
 	overlay->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
 	overlay->kbd_config.key_radius = DEFAULT_KBD_KEY_RADIUS;
@@ -33,11 +65,26 @@ void app_ui_init(AppUIOverlay* overlay)
 	overlay->kbd_config.detail_y_offset = DEFAULT_KBD_DETAIL_Y_OFFSET;
 	ui_init(&overlay->ui, "assets/fonts/FiraCode-Regular.ttf",
 	        DEFAULT_FONT_SIZE);
+
+	/* Load cyberpunk keyboard PNG assets */
+	overlay->kbd_tex_frame =
+	    load_png_texture("assets/textures/ui/kbd_panel_frame.png");
+	overlay->kbd_tex_key_base =
+	    load_png_texture("assets/textures/ui/kbd_key_base.png");
+	overlay->help_captured_camera = 0;
 }
 
 void app_ui_cleanup(AppUIOverlay* overlay)
 {
 	ui_destroy(&overlay->ui);
+	if (overlay->kbd_tex_frame != 0U) {
+		glDeleteTextures(1, &overlay->kbd_tex_frame);
+		overlay->kbd_tex_frame = 0;
+	}
+	if (overlay->kbd_tex_key_base != 0U) {
+		glDeleteTextures(1, &overlay->kbd_tex_key_base);
+		overlay->kbd_tex_key_base = 0;
+	}
 }
 
 void app_ui_update(AppUIOverlay* overlay, double delta_time)
@@ -49,6 +96,18 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 			overlay->help_pressed_mods = 0;
 		}
 	}
+
+	/* Smooth global dimming: target is dimmed if a key is active,
+	 * otherwise 1.0 */
+	double target_dim = 1.0;
+	if (overlay->help_pressed_key != -1) {
+		target_dim = 1.0 - (double)GLOBAL_DIM_MAX_FALLOFF;
+	}
+	/* Interpolate current dim towards target dim (factor for quick but
+	 * smooth transition) */
+	overlay->help_global_dim += (target_dim - overlay->help_global_dim) *
+	                            (double)GLOBAL_DIM_SMOOTH_FACTOR *
+	                            delta_time;
 }
 
 typedef struct {
@@ -65,13 +124,19 @@ static void draw_loading_indicator(const App* app);
 static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h);
 
-static void draw_text_centered(const UIContext* ui_ctx, const char* text,
-                               float pos_x, float pos_y, int screen_width,
-                               int screen_height);
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
                      const KeyPos* pos, float pos_x, float pos_y,
                      const vec3 base_col, bool has_binding, bool is_pressed,
-                     int screen_width, int screen_height);
+                     float global_dim_mult, int screen_width,
+                     int screen_height);
+
+static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
+                               float pos_y, int screen_width,
+                               int screen_height);
+
+static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
+                                            int key, int mods,
+                                            int* out_effective_mods);
 
 enum {
 	DEBUG_TEXT_BUFFER_SIZE = 128,
@@ -100,17 +165,21 @@ static const vec3 UI_SPINNER_COLOR = {90.0F / 255.0F, 111.0F / 255.0F,
                                       185.0F / 255.0F};
 static const size_t UI_LOADING_TEXT_SIZE = 64;
 
-static const float KEY_HOVER_ALPHA = 0.7F;
-static const vec3 KEY_COLOR_DEFAULT = {0.2F, 0.2F, 0.2F};
-static const vec3 KEY_COLOR_TOGGLE = {0.0F, 0.8F, 0.9F}; /* Cyan: On/Off */
-static const vec3 KEY_COLOR_CYCLE = {0.2F, 0.9F, 0.2F};  /* Green: Cycle */
-static const vec3 KEY_COLOR_COMBINATION = {1.0F, 0.6F,
-                                           0.1F}; /* Orange: Combo */
-static const vec3 KEY_COLOR_PRESSED = {0.0F, 1.0F, 0.5F};
+static const vec3 KEY_COLOR_DEFAULT = {0.15F, 0.15F, 0.20F};
+static const vec3 KEY_COLOR_TOGGLE = {0.0F, 0.82F, 0.92F}; /* Cyan: On/Off */
+static const vec3 KEY_COLOR_CYCLE = {0.12F, 0.90F, 0.12F}; /* Green: Cycle */
+static const vec3 KEY_COLOR_COMBINATION = {1.0F, 0.56F,
+                                           0.05F}; /* Orange: Combo */
 static const vec3 HELP_BG_COLOR = {0.05F, 0.05F, 0.07F};
-static const float HELP_BG_ALPHA = 0.85F;
-static const float KEY_PRESSED_ALPHA = 0.9F;
+static const float HELP_BG_ALPHA = 0.88F;
+static const float KEY_PRESSED_ALPHA = 0.95F;
 static const float KEY_DEFAULT_ALPHA = 0.4F;
+static const vec3 CYBER_TITLE_COLOR = {0.0F, 0.90F, 0.95F}; /* Neon cyan */
+static const float KEY_PRESS_BRIGHTEN_MIN = 0.6F; /* Min component on press */
+static const float PANEL_FRAME_ALPHA =
+    0.72F; /* Panel PNG opacity: scene visible behind */
+static const float BLOOM_MAX_INTENSITY =
+    0.5F; /* Cap bloom so it stays subtle */
 enum {
 	ROW_SYSTEM = 0,
 	ROW_NUMBERS = 1,
@@ -130,6 +199,7 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
     {GLFW_KEY_F3, ROW_SYSTEM, 4.0F, 1.0F, "F3"},
     {GLFW_KEY_F4, ROW_SYSTEM, 5.0F, 1.0F, "F4"},
     {GLFW_KEY_F5, ROW_SYSTEM, 6.5F, 1.0F, "F5"},
+    {GLFW_KEY_F6, ROW_SYSTEM, 7.5F, 1.0F, "F6"},
     {GLFW_KEY_F9, ROW_SYSTEM, 11.5F, 1.0F, "F9"},
     {GLFW_KEY_F12, ROW_SYSTEM, 14.5F, 1.2F, "F12"},
 
@@ -238,14 +308,12 @@ void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
 	}
 }
 
-static void draw_text_centered(const UIContext* ui_ctx, const char* text,
-                               float pos_x, float pos_y, int screen_width,
-                               int screen_height)
+static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
+                               float pos_y, int screen_width, int screen_height)
 {
 	float text_w = ui_measure_text(ui_ctx, text);
 	/* Logically const: drawing text to the batch is an UI side effect */
-	ui_draw_text((UIContext*)ui_ctx, text,
-	             pos_x - (text_w * UI_CENTER_FACTOR),
+	ui_draw_text(ui_ctx, text, pos_x - (text_w * UI_CENTER_FACTOR),
 	             pos_y - (DEFAULT_FONT_SIZE * UI_CENTER_FACTOR),
 	             (float*)DEFAULT_FONT_COLOR, screen_width, screen_height);
 }
@@ -253,31 +321,68 @@ static void draw_text_centered(const UIContext* ui_ctx, const char* text,
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
                      const KeyPos* pos, float pos_x, float pos_y,
                      const vec3 base_col, bool has_binding, bool is_pressed,
-                     int screen_width, int screen_height)
+                     float global_dim_mult, int screen_width, int screen_height)
 {
-	float key_w = (pos->width * overlay->kbd_config.key_size) +
-	              ((pos->width - 1.0F) * overlay->kbd_config.key_padding);
-	float key_h = overlay->kbd_config.key_size;
+	const float key_w =
+	    (pos->width * overlay->kbd_config.key_size) +
+	    ((pos->width - 1.0F) * overlay->kbd_config.key_padding);
+	const float key_h = overlay->kbd_config.key_size;
 
-	vec3 col;
-	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, col);
+	/* Choose tint and alpha based on binding / press state */
+	vec3 tint;
+	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, tint);
 	float alpha = KEY_DEFAULT_ALPHA;
 
+	if (has_binding) {
+		glm_vec3_copy((float*)base_col, tint);
+		alpha = DEFAULT_KBD_BOUND_ALPHA;
+	}
 	if (is_pressed) {
-		glm_vec3_copy((float*)KEY_COLOR_PRESSED, col);
+		/* Brighten tint on press */
+		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
 		alpha = KEY_PRESSED_ALPHA;
-	} else if (has_binding) {
-		glm_vec3_copy((float*)base_col, col);
-		alpha = KEY_HOVER_ALPHA;
+	}
+	/* Apply global dimming multiplier to base alpha */
+	alpha *= global_dim_mult;
+
+	/* Layer 1: Keycap PNG, tinted by binding color */
+	if (overlay->kbd_tex_key_base != 0U) {
+		ui_draw_textured_quad(ui_ctx, overlay->kbd_tex_key_base, pos_x,
+		                      pos_y, key_w, key_h, tint, alpha,
+		                      screen_width, screen_height);
+	} else {
+		/* Fallback: procedural rounded rect */
+		ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, key_w, key_h,
+		                     overlay->kbd_config.key_radius, tint,
+		                     alpha, screen_width, screen_height);
 	}
 
-	ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, key_w, key_h,
-	                     overlay->kbd_config.key_radius, col, alpha,
-	                     screen_width, screen_height);
+	/* Layer 2: Procedural bloom on press — subtle backlit keyboard effect.
+	 * Draw a slightly expanded semi-transparent rounded rect behind the key
+	 * to simulate a LED glow beneath the keycap. No texture involved.
+	 * Intensity fades as help_press_timer decreases. */
+	if (is_pressed) {
+		const float raw_intensity =
+		    (float)(overlay->help_press_timer / HELP_PRESS_DURATION);
+		const float bloom_alpha =
+		    glm_clamp(raw_intensity * 0.9F, 0.0F, 0.9F);
+		/* Expand the glow rect symmetrically to encompass the falloff
+		 * area */
+		static const float GLOW_SIDES =
+		    2.0F; /* both sides = expand × 2 */
+		const float glow_expand = 12.0F;
+		ui_draw_glow_rect(
+		    ui_ctx, pos_x - glow_expand, pos_y - glow_expand,
+		    key_w + (glow_expand * GLOW_SIDES),
+		    key_h + (glow_expand * GLOW_SIDES),
+		    overlay->kbd_config.key_radius +
+		        (glow_expand * UI_CENTER_FACTOR),
+		    tint, bloom_alpha, screen_width, screen_height);
+	}
 
-	/* Label */
-	float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
-	float label_y = pos_y + (key_h * UI_CENTER_FACTOR);
+	/* Layer 3: Key label text */
+	const float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
+	const float label_y = pos_y + (key_h * UI_CENTER_FACTOR);
 	draw_text_centered(ui_ctx, pos->label, label_x, label_y, screen_width,
 	                   screen_height);
 }
@@ -306,7 +411,16 @@ static void get_key_base_color(const AppBindingRegistry* registry, int key,
 		*out_has_binding = false;
 	}
 
-	if (direct != NULL) {
+	/* Priority: if the key has BOTH a direct binding AND a Shift+ binding,
+	 * show orange (Combination) to signal the dual-role.
+	 * Otherwise use the type of the direct binding (Cycle=green,
+	 * Toggle=cyan), or orange if there is only a shifted binding and no
+	 * direct binding.
+	 */
+	if (direct != NULL && shifted != NULL) {
+		/* Dual-role key: always show orange */
+		glm_vec3_copy((float*)KEY_COLOR_COMBINATION, out_col);
+	} else if (direct != NULL) {
 		if (direct->type == BINDING_TYPE_CYCLE) {
 			glm_vec3_copy((float*)KEY_COLOR_CYCLE, out_col);
 		} else {
@@ -337,6 +451,50 @@ static bool is_modifier_relevant(int key, int pressed_key, int pressed_mods)
 	return false;
 }
 
+static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
+                                            int key, int mods,
+                                            int* out_effective_mods)
+{
+	if (key == -1) {
+		if (out_effective_mods != NULL) {
+			*out_effective_mods = 0;
+		}
+		return NULL;
+	}
+
+	const AppBinding* binding =
+	    app_binding_registry_get(registry, key, mods);
+	if (binding != NULL) {
+		if (out_effective_mods != NULL) {
+			*out_effective_mods = mods;
+		}
+		return binding;
+	}
+
+	/* Fallback: try Shift */
+	binding = app_binding_registry_get(registry, key, (int)GLFW_MOD_SHIFT);
+	if (binding != NULL) {
+		if (out_effective_mods != NULL) {
+			*out_effective_mods = (int)GLFW_MOD_SHIFT;
+		}
+		return binding;
+	}
+
+	/* Fallback: try no mods */
+	binding = app_binding_registry_get(registry, key, 0);
+	if (binding != NULL) {
+		if (out_effective_mods != NULL) {
+			*out_effective_mods = 0;
+		}
+		return binding;
+	}
+
+	if (out_effective_mods != NULL) {
+		*out_effective_mods = 0;
+	}
+	return NULL;
+}
+
 void app_draw_help_overlay(const App* app)
 {
 	if (!app->overlay.show_help) {
@@ -352,11 +510,21 @@ void app_draw_help_overlay(const App* app)
 	const float start_x = ((float)app->width - total_w) * UI_CENTER_FACTOR;
 	const float start_y = ((float)app->height - total_h) * UI_CENTER_FACTOR;
 
-	/* Background Overlay */
+	/* Layer 1: Dark background behind everything */
 	ui_draw_rect_ex((UIContext*)&app->overlay.ui, 0.0F, 0.0F,
 	                (float)app->width, (float)app->height,
 	                (float*)HELP_BG_COLOR, HELP_BG_ALPHA, app->width,
 	                app->height);
+
+	/* Layer 2: Cyberpunk panel frame PNG at partial opacity so the 3D scene
+	 * peeks through the background. */
+	if (app->overlay.kbd_tex_frame != 0U) {
+		ui_draw_textured_quad(
+		    (UIContext*)&app->overlay.ui, app->overlay.kbd_tex_frame,
+		    0.0F, 0.0F, (float)app->width, (float)app->height,
+		    (vec3){1.0F, 1.0F, 1.0F}, PANEL_FRAME_ALPHA, app->width,
+		    app->height);
+	}
 
 	/* Exit Hint */
 	ui_draw_text_ex((UIContext*)&app->overlay.ui, "[ESC] TO EXIT HELP",
@@ -365,12 +533,20 @@ void app_draw_help_overlay(const App* app)
 	                (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, app->width,
 	                app->height);
 
-	/* Title */
-	draw_text_centered((UIContext*)&app->overlay.ui,
-	                   "--- APPLICATION HELP (Dry-Run Mode) ---",
-	                   (float)app->width * UI_CENTER_FACTOR,
-	                   start_y - app->overlay.kbd_config.title_y_offset,
-	                   app->width, app->height);
+	/* Title — neon cyan cyberpunk style (single draw via ui_draw_text_ex)
+	 */
+	{
+		const float title_txt_w =
+		    ui_measure_text(&app->overlay.ui, "[ APPLICATION HELP ]");
+		const float title_x = ((float)app->width * UI_CENTER_FACTOR) -
+		                      (title_txt_w * UI_CENTER_FACTOR);
+		const float title_y =
+		    start_y - app->overlay.kbd_config.title_y_offset;
+		ui_draw_text_ex((UIContext*)&app->overlay.ui,
+		                "[ APPLICATION HELP ]", title_x, title_y,
+		                (float*)CYBER_TITLE_COLOR, 1.0F, app->width,
+		                app->height);
+	}
 
 	/* Color Legend */
 	const float legend_y =
@@ -379,14 +555,14 @@ void app_draw_help_overlay(const App* app)
 	const float legend_x_start = (float)app->width * LEGEND_X_START_FACTOR;
 	const float legend_step = (float)app->width * LEGEND_STEP_FACTOR;
 
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Toggle (On/Off)",
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Toggle (On/Off)",
 	                legend_x_start, legend_y, (float*)KEY_COLOR_TOGGLE,
 	                HELP_TEXT_ALPHA, app->width, app->height);
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Cycle",
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Cycle",
 	                legend_x_start + legend_step, legend_y,
 	                (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA, app->width,
 	                app->height);
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "Combination (Shift+)",
+	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Shift+ Combo",
 	                legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT),
 	                legend_y, (float*)KEY_COLOR_COMBINATION,
 	                HELP_TEXT_ALPHA, app->width, app->height);
@@ -398,6 +574,20 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h)
 {
 	/* help_hovered_key is now updated in app_ui_handle_mouse */
+
+	/* Use the smoothly interpolated global dim multiplier to avoid flicker
+	 * when spamming. */
+	const float global_dim_mult = (float)app->overlay.help_global_dim;
+
+	/* Determine the effective modifiers for visual highlighting.
+	 * We only want to highlight modifiers that actually triggered a
+	 * binding. If the user presses Shift+W but only 'W' is bound, Shift
+	 * shouldn't glow.
+	 */
+	int effective_mods = 0;
+	(void)get_active_binding(
+	    &app->binding_registry, app->overlay.help_pressed_key,
+	    app->overlay.help_pressed_mods, &effective_mods);
 
 	const unsigned int num_keys =
 	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
@@ -419,18 +609,26 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		get_key_base_color(&app->binding_registry, kpos->key, base_col,
 		                   &has_binding);
 
-		bool is_pressed = (app->overlay.help_pressed_key == kpos->key);
+		bool is_pressed = false;
+		if (app->overlay.help_pressed_key == kpos->key) {
+			is_pressed = true;
+		}
 
 		/* Also highlight modifiers if they are part of a combination */
 		if (!is_pressed && is_modifier_relevant(
 		                       kpos->key, app->overlay.help_pressed_key,
-		                       app->overlay.help_pressed_mods)) {
+		                       effective_mods)) {
 			is_pressed = true;
 		}
 
+		/* Active keys are never dimmed, only inactive background keys
+		 */
+		const float current_key_dim =
+		    is_pressed ? 1.0F : global_dim_mult;
+
 		draw_key((UIContext*)&app->overlay.ui, &app->overlay, kpos,
 		         kx_pos, ky_pos, base_col, has_binding, is_pressed,
-		         app->width, app->height);
+		         current_key_dim, app->width, app->height);
 	}
 
 	/* Show details for hovered or pressed key */
@@ -438,22 +636,11 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	                           ? app->overlay.help_pressed_key
 	                           : app->overlay.help_hovered_key;
 	if (target_key != -1) {
-		const AppBinding* binding = NULL;
-		if (app->overlay.help_pressed_key != -1) {
-			binding = app_binding_registry_get(
-			    &app->binding_registry, target_key,
-			    app->overlay.help_pressed_mods);
-		}
-
-		if (binding == NULL) {
-			binding = app_binding_registry_get(
-			    &app->binding_registry, target_key,
-			    (int)GLFW_MOD_SHIFT);
-		}
-		if (binding == NULL) {
-			binding = app_binding_registry_get(
-			    &app->binding_registry, target_key, 0);
-		}
+		const int desc_mods = (app->overlay.help_pressed_key != -1)
+		                          ? app->overlay.help_pressed_mods
+		                          : 0;
+		const AppBinding* binding = get_active_binding(
+		    &app->binding_registry, target_key, desc_mods, NULL);
 
 		if (binding != NULL) {
 			/* Show detailed description below help */
