@@ -693,3 +693,203 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
 		ui_end(ui_context);
 	}
 }
+
+/* -------------------------------------------------------------------------- *
+ * Textured quad helpers (PNG-based UI assets)                                *
+ * -------------------------------------------------------------------------- */
+
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_textured_quad(UIContext* ui_context, GLuint texture, float rect_x,
+                           float rect_y, float width, float height,
+                           const vec3 tint, float alpha, int screen_width,
+                           int screen_height)
+{
+	if (ui_context == NULL || ui_context->shader == NULL || texture == 0) {
+		return;
+	}
+
+	/* Flush the current batch (uses font atlas) before switching texture */
+	if (ui_context->batch_active && ui_context->batch_count > 0) {
+		ui_flush(ui_context);
+	}
+
+	int auto_batch = 0;
+	if (!ui_context->batch_active) {
+		ui_begin(ui_context, screen_width, screen_height);
+		auto_batch = 1;
+	}
+
+	/* Swap out the font atlas for the PNG texture for this draw */
+	shader_use(ui_context->shader);
+	mat4 projection;
+	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
+	          1.0F, projection);
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	const float col_r = tint[0];
+	const float col_g = tint[1];
+	const float col_b = tint[2];
+	const float col_a = alpha;
+	const float mode = 3.0F; /* Textured Tinted */
+
+	UIQuad quad = {
+	    .vertices = {
+	        /* Triangle 1 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
+	         0.0F, 0.0F, 0.0F}, /* Top-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
+	        /* Triangle 2 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, 0.0F, 0.0F, 0.0F}, /* Bottom-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, 0.0F, 0.0F, 0.0F}, /* Top-right */
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
+	         col_b, col_a, mode, 0.0F, 0.0F, 0.0F} /* Bottom-right */
+	    }};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+
+	/* Restore font atlas */
+	glBindTexture(GL_TEXTURE_2D, ui_context->texture);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glUseProgram(0);
+
+	if (auto_batch) {
+		ui_end(ui_context);
+	}
+}
+
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_bloom_quad(UIContext* ui_context, GLuint texture, float rect_x,
+                        float rect_y, float width, float height,
+                        const vec3 tint, float intensity, int screen_width,
+                        int screen_height)
+{
+	if (ui_context == NULL || ui_context->shader == NULL || texture == 0 ||
+	    intensity <= 0.0F) {
+		return;
+	}
+
+	/* Flush any pending batch before changing blend mode */
+	if (ui_context->batch_active && ui_context->batch_count > 0) {
+		ui_flush(ui_context);
+	}
+
+	const GLStateBackup saved_state = render_utils_save_state();
+	/* Additive blending: bright pixels add light, black = invisible */
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glDisable(GL_DEPTH_TEST);
+
+	shader_use(ui_context->shader);
+	mat4 projection;
+	glm_ortho(0.0F, (float)screen_width, (float)screen_height, 0.0F, -1.0F,
+	          1.0F, projection);
+	shader_set_mat4(ui_context->shader, "projection", (float*)projection);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindVertexArray(ui_context->vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ui_context->vbo);
+
+	const float col_r = tint[0];
+	const float col_g = tint[1];
+	const float col_b = tint[2];
+	const float col_a = intensity; /* Bloom intensity in alpha */
+	const float mode = 4.0F;       /* Textured Additive */
+
+	UIQuad quad = {.vertices = {
+	                   /* Triangle 1 */
+	                   {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g,
+	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
+	                   {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b,
+	                    col_a, mode, 0.0F, 0.0F, 0.0F},
+	                   {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g,
+	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
+	                   /* Triangle 2 */
+	                   {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g,
+	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
+	                   {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g,
+	                    col_b, col_a, mode, 0.0F, 0.0F, 0.0F},
+	                   {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r,
+	                    col_g, col_b, col_a, mode, 0.0F, 0.0F, 0.0F}}};
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(UIQuad), &quad);
+	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
+
+	/* Cleanup */
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D,
+	              ui_context->texture); /* restore font atlas */
+	glUseProgram(0);
+
+	render_utils_restore_state(&saved_state);
+}
+
+// NOLINTNEXTLINE(readability-identifier-length)
+void ui_draw_glow_rect(UIContext* ui_context, float rect_x, float rect_y,
+                       float width, float height, float radius,
+                       const vec3 color, float alpha, int screen_width,
+                       int screen_height)
+{
+	if (ui_context == NULL || ui_context->shader == NULL) {
+		return;
+	}
+
+	int auto_batch = 0;
+	if (!ui_context->batch_active) {
+		ui_begin(ui_context, screen_width, screen_height);
+		auto_batch = 1;
+	}
+
+	if (ui_context->batch_count + VERTICES_PER_QUAD >
+	    UI_MAX_BATCH_VERTICES) {
+		ui_flush(ui_context);
+	}
+
+	const float col_r = color[0];
+	const float col_g = color[1];
+	const float col_b = color[2];
+	const float col_a = alpha;
+	const float mode = 5.0F; /* SDF Neon Glow Border */
+
+	/* Construct Quad manually */
+	UIQuad quad = {
+	    .vertices = {
+	        /* Triangle 1 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, width, height, radius}, /* Bottom-left */
+	        {rect_x, rect_y, 0.0F, 0.0F, col_r, col_g, col_b, col_a, mode,
+	         width, height, radius}, /* Top-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, width, height, radius}, /* Top-right */
+
+	        /* Triangle 2 */
+	        {rect_x, rect_y + height, 0.0F, 1.0F, col_r, col_g, col_b,
+	         col_a, mode, width, height, radius}, /* Bottom-left */
+	        {rect_x + width, rect_y, 1.0F, 0.0F, col_r, col_g, col_b, col_a,
+	         mode, width, height, radius}, /* Top-right */
+	        {rect_x + width, rect_y + height, 1.0F, 1.0F, col_r, col_g,
+	         col_b, col_a, mode, width, height, radius} /* Bottom-right */
+	    }};
+
+	for (int i = 0; i < VERTICES_PER_QUAD; i++) {
+		ui_context->batch_vertices[ui_context->batch_count++] =
+		    quad.vertices[i];
+	}
+
+	if (auto_batch) {
+		ui_end(ui_context);
+	}
+}
