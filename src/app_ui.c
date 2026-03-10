@@ -100,7 +100,8 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 	/* Smooth global dimming: target is dimmed if a key is active,
 	 * otherwise 1.0 */
 	double target_dim = 1.0;
-	if (overlay->help_pressed_key != -1) {
+	if (overlay->help_pressed_key != -1 ||
+	    overlay->help_hovered_key != -1) {
 		target_dim = 1.0 - (double)GLOBAL_DIM_MAX_FALLOFF;
 	}
 	/* Interpolate current dim towards target dim (factor for quick but
@@ -127,7 +128,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
                      const KeyPos* pos, float pos_x, float pos_y,
                      const vec3 base_col, bool has_binding, bool is_pressed,
-                     float global_dim_mult, int screen_width,
+                     bool is_hovered, float global_dim_mult, int screen_width,
                      int screen_height);
 
 static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
@@ -154,6 +155,9 @@ static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
 static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
 static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
 static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
+
+static const float GLOW_HOVER_ALPHA = 0.6F;
+static const float BLOOM_PRESS_MAX_ALPHA = 0.9F;
 
 /* UI Animation Constants */
 static const double UI_SPINNER_SPEED = 10.0;
@@ -321,7 +325,8 @@ static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
                      const KeyPos* pos, float pos_x, float pos_y,
                      const vec3 base_col, bool has_binding, bool is_pressed,
-                     float global_dim_mult, int screen_width, int screen_height)
+                     bool is_hovered, float global_dim_mult, int screen_width,
+                     int screen_height)
 {
 	const float key_w =
 	    (pos->width * overlay->kbd_config.key_size) +
@@ -337,8 +342,11 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 		glm_vec3_copy((float*)base_col, tint);
 		alpha = DEFAULT_KBD_BOUND_ALPHA;
 	}
-	if (is_pressed) {
-		/* Brighten tint on press */
+
+	bool is_active = (bool)(is_pressed || is_hovered);
+
+	if (is_active) {
+		/* Brighten tint on press or hover */
 		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
 		alpha = KEY_PRESSED_ALPHA;
 	}
@@ -361,11 +369,17 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 	 * Draw a slightly expanded semi-transparent rounded rect behind the key
 	 * to simulate a LED glow beneath the keycap. No texture involved.
 	 * Intensity fades as help_press_timer decreases. */
-	if (is_pressed) {
-		const float raw_intensity =
-		    (float)(overlay->help_press_timer / HELP_PRESS_DURATION);
-		const float bloom_alpha =
-		    glm_clamp(raw_intensity * 0.9F, 0.0F, 0.9F);
+	if (is_active) {
+		float bloom_alpha =
+		    GLOW_HOVER_ALPHA; /* Static glow for hover */
+		if (is_pressed) {
+			const float raw_intensity =
+			    (float)(overlay->help_press_timer /
+			            HELP_PRESS_DURATION);
+			bloom_alpha =
+			    glm_clamp(raw_intensity * BLOOM_PRESS_MAX_ALPHA,
+			              0.0F, BLOOM_PRESS_MAX_ALPHA);
+		}
 		/* Expand the glow rect symmetrically to encompass the falloff
 		 * area */
 		static const float GLOW_SIDES =
@@ -570,6 +584,18 @@ void app_draw_help_overlay(const App* app)
 	draw_help_overlay_keys(app, start_x, start_y, total_h);
 }
 
+static bool is_key_active_in_overlay(int key_to_test, int active_key,
+                                     int active_mods)
+{
+	if (active_key == key_to_test) {
+		return true;
+	}
+	if (is_modifier_relevant(key_to_test, active_key, active_mods)) {
+		return true;
+	}
+	return false;
+}
+
 static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h)
 {
@@ -588,6 +614,13 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	(void)get_active_binding(
 	    &app->binding_registry, app->overlay.help_pressed_key,
 	    app->overlay.help_pressed_mods, &effective_mods);
+
+	int hovered_effective_mods = 0;
+	if (app->overlay.help_hovered_key != -1) {
+		(void)get_active_binding(
+		    &app->binding_registry, app->overlay.help_hovered_key,
+		    app->overlay.help_pressed_mods, &hovered_effective_mods);
+	}
 
 	const unsigned int num_keys =
 	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
@@ -609,28 +642,23 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		get_key_base_color(&app->binding_registry, kpos->key, base_col,
 		                   &has_binding);
 
-		bool is_pressed = false;
-		if (app->overlay.help_pressed_key == kpos->key) {
-			is_pressed = true;
-		}
+		bool is_pressed = is_key_active_in_overlay(
+		    kpos->key, app->overlay.help_pressed_key, effective_mods);
 
-		/* Also highlight modifiers if they are part of a combination */
-		if (!is_pressed && is_modifier_relevant(
-		                       kpos->key, app->overlay.help_pressed_key,
-		                       effective_mods)) {
-			is_pressed = true;
-		}
+		bool is_hovered = is_key_active_in_overlay(
+		    kpos->key, app->overlay.help_hovered_key,
+		    hovered_effective_mods);
 
 		/* Active keys are never dimmed, only inactive background keys
 		 */
 		float current_key_dim = global_dim_mult;
-		if (is_pressed) {
+		if (is_pressed || is_hovered) {
 			current_key_dim = 1.0F;
 		}
 
 		draw_key((UIContext*)&app->overlay.ui, &app->overlay, kpos,
 		         kx_pos, ky_pos, base_col, has_binding, is_pressed,
-		         current_key_dim, app->width, app->height);
+		         is_hovered, current_key_dim, app->width, app->height);
 	}
 
 	/* Show details for hovered or pressed key */
