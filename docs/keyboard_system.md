@@ -7,7 +7,17 @@ This document describes the interactive keyboard help overlay and the underlying
 The help system provides a modern, interactive visualization of the application's key bindings. It consists of two main parts:
 
 1. **`AppBindingRegistry`**: A centralized data structure that stores all key metadata (key, modifiers, category, description).
-2. **Help Overlay UI**: A dynamic keyboard layout renderer that uses the registry to highlight active keys and show their functionality.
+2. **Help Overlay UI**: A dynamic keyboard layout renderer that uses the registry to highlight active keys and show their functionality. It features a Cyberpunk aesthetic using pre-rendered PNGs and procedural SDF (Signed Distance Field) effects.
+
+## Visual Design & Polish
+
+The help overlay utilizes an advanced hybrid rendering approach defined in `src/app_ui.c` and `shaders/ui.frag`:
+
+1. **Cyberpunk Textures**: The base panel UI frame and individual keys are rendered using high-quality PNG textures (`kbd_panel_frame.png` and `kbd_key_base.png`). Unbound keys sit quietly in the background, while bound keys are tinted via shader according to their binding type constraint (Toggle, Cycle, Combo).
+2. **Procedural Neon Bloom**: When a key is pressed, an intense, procedural SDF neon border glow is drawn directly by `ui.frag` (Mode `5.0`). The intensity of the glow follows a mathematically precise exponential decay for a crisp, luminous look.
+3. **Spotlight Dimming**: Activating a key smoothly dims (interp factor) the rest of the unbounded keyboard keys into the background into a "spotlight" focus effect.
+4. **Smart Modifier Highlighting**: The overlay actively queries the binding registry to determine whether a combination of keys relies on a given modifier (e.g. `Shift`). Pressing physical modifier keys alone, or paired carelessly with non-modifier keys, won't artificially light up the Shift key unless the active function strictly demands it.
+
 
 ## Architecture
 
@@ -69,7 +79,7 @@ The UI automatically color-codes keys based on their `BindingType`:
 
 ## UI Customization
 
-The keyboard layout is defined in `src/app_ui.c` and is centered automatically. You can adjust the visual parameters (size, padding, glassmorphism intensity) via the `KeyboardLayoutConfig` in `app_init`.
+The keyboard layout is defined in `src/app_ui.c` and is centered automatically. You can adjust the visual parameters (size, padding, textures) via the `KeyboardLayoutConfig` in `app_ui_init`.
 
 The key positions and labels are stored in the `KEY_LAYOUT_QWERTY` array within `app_ui.c`. Each entry defines:
 
