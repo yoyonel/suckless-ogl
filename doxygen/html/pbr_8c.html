@@ -302,7 +302,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a380eba0f8cc7fc6c292073aa718c7097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an irradiance map (diffuse IBL) in a single pass.  <a href="pbr_8c.html#a380eba0f8cc7fc6c292073aa718c7097">More...</a><br /></td></tr>
 <tr class="separator:a380eba0f8cc7fc6c292073aa718c7097"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7b8c646322f8f6704017540c02955eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#ad7b8c646322f8f6704017540c02955eb">compute_mean_luminance_gpu_start</a> (GLuint shader_pass1, GLuint shader_pass2, GLuint hdr_tex, int width, int height, GLuint ssbos[2], const <a class="el" href="structPBRLumUniforms.html">PBRLumUniforms</a> *uniforms)</td></tr>
-<tr class="memdesc:ad7b8c646322f8f6704017540c02955eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the average luminance of an HDR texture on the GPU.  <a href="pbr_8c.html#ad7b8c646322f8f6704017540c02955eb">More...</a><br /></td></tr>
+<tr class="memdesc:ad7b8c646322f8f6704017540c02955eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the GPU computation for mean luminance (non-blocking). Uses a two-pass parallel reduction via compute shaders and SSBOs.  <a href="pbr_8c.html#ad7b8c646322f8f6704017540c02955eb">More...</a><br /></td></tr>
 <tr class="separator:ad7b8c646322f8f6704017540c02955eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89b17db36764dc52b1a2bb46a8280d1c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c">compute_mean_luminance_gpu_result</a> (GLuint ssbos[2], float clamp_multiplier)</td></tr>
 <tr class="memdesc:a89b17db36764dc52b1a2bb46a8280d1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the result of mean luminance computation from the SSBO. This function should be called only after the GPU has finished the computation started by compute_mean_luminance_gpu_start.  <a href="pbr_8c.html#a89b17db36764dc52b1a2bb46a8280d1c">More...</a><br /></td></tr>
@@ -577,22 +577,19 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Computes the average luminance of an HDR texture on the GPU. </p>
-<p>Uses a two-pass parallel reduction via compute shaders and SSBOs. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Starts the GPU computation for mean luminance (non-blocking). Uses a two-pass parallel reduction via compute shaders and SSBOs. </p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">shader_pass1</td><td>First reduction pass shader. </td></tr>
     <tr><td class="paramname">shader_pass2</td><td>Final reduction pass shader. </td></tr>
     <tr><td class="paramname">hdr_tex</td><td>Source HDR texture. </td></tr>
     <tr><td class="paramname">width</td><td>Texture width. </td></tr>
     <tr><td class="paramname">height</td><td>Texture height. </td></tr>
-    <tr><td class="paramname">clamp_multiplier</td><td>Value to clamp extreme pixels. </td></tr>
     <tr><td class="paramname">ssbos</td><td>Pair of SSBO handles for intermediate and final results. </td></tr>
     <tr><td class="paramname">uniforms</td><td>Cached uniform locations for pass 2. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Average luminance value.</dd></dl>
-<p>Starts the GPU computation for mean luminance (non-blocking). Dispatches compute shaders but does NOT wait for results. Caller should issue a memory barrier or fence sync after calling this. </p>
 
 </div>
 </div>

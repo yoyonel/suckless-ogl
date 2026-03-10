@@ -347,6 +347,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index des Diagrammes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../project_structure/" class="md-nav__link">
         
   
@@ -411,6 +467,34 @@
     
   
     Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
   
 
     
@@ -888,6 +972,34 @@
     
   
     Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
   
 
     
@@ -1608,6 +1720,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
         
   
@@ -1728,6 +1868,34 @@
     
   
     Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
   
 
     
@@ -2286,6 +2454,146 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2383,7 +2691,8 @@
 -   If you declare <code>float padding[3]</code> in GLSL, <code>std140</code> treats this as an array. <strong>Every array element must be aligned to 16 bytes</strong>. So <code>padding[0]</code> takes 16 bytes (4 useful + 12 empty), <code>padding[1]</code> takes 16 bytes, etc.
 -   <strong>Solution</strong>: Use individual scalar fields for GLSL padding (<code>float _pad1; float _pad2; ...</code>) so they are packed compactly (4 bytes each), matching exactly the packed <code>float padding[3]</code> in C.</p>
 <h3 id="memory-visualization-std140">Memory Visualization (std140)<a class="headerlink" href="#memory-visualization-std140" title="Permanent link">¶</a></h3>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNp9kktv2zAMx-_5FIR3SYG0tYO8isI7pAO6Q4MNy3IKioCRaFuIIxkSnSLL8t2r-NHFG7Cb-OPjT1KUKrVYZLCaf3vBoykZTj0Ai3onlY1ffjx6a5sKkxsbB-y5K9CS5uDikIWKp8PHnn_e38OyFLucnLtdGElWQ_CcGccBfCGnUg0_zY60g_6qcAJzkjc-S_tIWPsHgMuwoNiSMFYOKpIYzRr3FAdPprSK7AD2RhvfgKDgT4hTvyiOJjVoGv00ikazyewqqnWIUGAybhwF6TclOYuju7EHr9UkJNO2pzZpijhMpk0SWmveKtHwbvafOo5tKRjWOW4pj4MTPMGyQqUl6C9ob-zxBn7DCVCwOtCGkoQE-w2N5hfOak_te1OgDNfha9eOGvtcVTn4JRMzbZTmNu6DOZb_MKvldb2oLXYOBh-Tb7cPeJm8s8MG1mOmRXk14_P3FSxz4xvwitEorAesSAj9aFKpVWbUmLWe42PuP1qiy0he6U-lSJLkL_0GdtZ8-7nTyVxptEdYIIusya5P6SvlB2IlsKH19Qy7Ag-IY39jXuDcewdShfKR?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNp9kktv2zAMx-_5FIR3SYG0tYO8isI7pAO6Q4MNy3IKioCRaFuIIxkSnSLL8t2r-NHFG7Cb-OPjT1KUKrVYZLCaf3vBoykZTj0Ai3onlY1ffjx6a5sKkxsbB-y5K9CS5uDikIWKp8PHnn_e38OyFLucnLtdGElWQ_CcGccBfCGnUg0_zY60g_6qcAJzkjc-S_tIWPsHgMuwoNiSMFYOKpIYzRr3FAdPprSK7AD2RhvfgKDgT4hTvyiOJjVoGv00ikazyewqqnWIUGAybhwF6TclOYuju7EHr9UkJNO2pzZpijhMpk0SWmveKtHwbvafOo5tKRjWOW4pj4MTPMGyQqUl6C9ob-zxBn7DCVCwOtCGkoQE-w2N5hfOak_te1OgDNfha9eOGvtcVTn4JRMzbZTmNu6DOZb_MKvldb2oLXYOBh-Tb7cPeJm8s8MG1mOmRXk14_P3FSxz4xvwitEorAesSAj9aFKpVWbUmLWe42PuP1qiy0he6U-lSJLkL_0GdtZ8-7nTyVxptEdYIIusya5P6SvlB2IlsKH19Qy7Ag-IY39jXuDcewdShfKR?"></a></p>
+<div class="kroki-diagram local-diagram"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="/assets/diagrams/graphviz_41b658464d0743d9.svg" data-desc-position="bottom"><img src="/assets/diagrams/graphviz_41b658464d0743d9.svg" alt="Graphviz Diagram"></a></div>
+
 <h2 id="3-data-structure">3. Data Structure<a class="headerlink" href="#3-data-structure" title="Permanent link">¶</a></h2>
 <h3 id="c-structure-postprocessh">C Structure (postprocess.h)<a class="headerlink" href="#c-structure-postprocessh" title="Permanent link">¶</a></h3>
 <p>We use explicit padding to align logical blocks to 16 bytes, facilitating memory reading and debugging.</p>
@@ -2551,6 +2860,8 @@
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../assets/javascripts/mermaid_config.js"></script>
       
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
       

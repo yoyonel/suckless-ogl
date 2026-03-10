@@ -747,7 +747,8 @@ Here is the call graph for this function:</div>
 <p>Finalizes HDR upload from a PBO (Unmap -&gt; Upload -&gt; Mipmaps). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pbo_id</td><td>ID of the PBO (must be bound/mapped). </td></tr>
+    <tr><td class="paramname">pbo_id</td><td>ID of the PBO (must be bound). </td></tr>
+    <tr><td class="paramname">ptr</td><td>Pointer to the mapped PBO memory (will be unmapped). </td></tr>
     <tr><td class="paramname">width</td><td>Texture width. </td></tr>
     <tr><td class="paramname">height</td><td>Texture height. </td></tr>
     <tr><td class="paramname">reuse_tex_id</td><td>Existing texture ID to update/reuse. </td></tr>

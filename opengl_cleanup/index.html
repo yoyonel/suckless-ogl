@@ -347,6 +347,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index des Diagrammes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../project_structure/" class="md-nav__link">
         
   
@@ -411,6 +467,34 @@
     
   
     Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
   
 
     
@@ -719,6 +803,34 @@
     
   
     Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
   
 
     
@@ -1439,6 +1551,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
         
   
@@ -1559,6 +1699,34 @@
     
   
     Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
   
 
     
@@ -2275,6 +2443,146 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2363,7 +2671,8 @@
 <li><strong>Cause</strong>: Attempting to label an object (Buffer/Texture/VAO) before its first "bind". On some drivers, the ID is not "alive" until it has been bound at least once.</li>
 <li><strong>Fix</strong>: Moved all <code>glObjectLabel</code> calls after the first <code>glBind[Object]</code>.</li>
 </ul>
-<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="https://kroki.io/graphviz/svg/eNqlU8Fu2zAMvecrBO_SAUnbZI3joPCAre26AhkKdOkuXQ-MRDtaNMmglLTZsH8f7diLnW6n3fSeyMdHilI6JyiW4nbxDWWY6Qy30qD42ROCwK6UpnR2d85okUtnHKVRYN4XQGhDVF6oQqeT0XmPjycn4vNargx6P_jkFJIV0fXS-RCJS_Q6t2LuVmi9OLovvASD6jVnWY4UD3wQwi-hwJTYSX-Hw9ZgGpFbW4Uq2pGZs8HCd-Y_otlg0BL670iD6Xt2NvBIOmuFev0D02FcE9qYug_rLNZhNfPqbHiWxEkrt7mQpxKycX1RoH3SKizTEcPHqnFUedNCkzKOx1ky_R_LyUsfU4CxbFwDkXuqQk-PkwNrw-O9uWu04sHAAk0a5YbRHJ_DmtB_tUc3l-IOufyGnyLqHw7isXzf99qqVn4JawHO362NuCCE0JWYosQYmOj4b8g_Rt9UNWaleqtIvY0l5CJfwOiO9gRglE0OtGuy0rsi-qfajd2UeuK2QIKgnW0rZ5NJnOCBck3upzl4253KB00-iHuPrYlxTLerC0flYv9tRPuNqvLrEu0m5s6JKyCz5ejdp1Au8MRfOGeBX73fbhctBQ==?" data-desc-position="bottom"><img alt="Kroki" src="https://kroki.io/graphviz/svg/eNqlU8Fu2zAMvecrBO_SAUnbZI3joPCAre26AhkKdOkuXQ-MRDtaNMmglLTZsH8f7diLnW6n3fSeyMdHilI6JyiW4nbxDWWY6Qy30qD42ROCwK6UpnR2d85okUtnHKVRYN4XQGhDVF6oQqeT0XmPjycn4vNargx6P_jkFJIV0fXS-RCJS_Q6t2LuVmi9OLovvASD6jVnWY4UD3wQwi-hwJTYSX-Hw9ZgGpFbW4Uq2pGZs8HCd-Y_otlg0BL670iD6Xt2NvBIOmuFev0D02FcE9qYug_rLNZhNfPqbHiWxEkrt7mQpxKycX1RoH3SKizTEcPHqnFUedNCkzKOx1ky_R_LyUsfU4CxbFwDkXuqQk-PkwNrw-O9uWu04sHAAk0a5YbRHJ_DmtB_tUc3l-IOufyGnyLqHw7isXzf99qqVn4JawHO362NuCCE0JWYosQYmOj4b8g_Rt9UNWaleqtIvY0l5CJfwOiO9gRglE0OtGuy0rsi-qfajd2UeuK2QIKgnW0rZ5NJnOCBck3upzl4253KB00-iHuPrYlxTLerC0flYv9tRPuNqvLrEu0m5s6JKyCz5ejdp1Au8MRfOGeBX73fbhctBQ==?"></a></p>
+<div class="kroki-diagram local-diagram"><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="/assets/diagrams/graphviz_326c64fe32827b88.svg" data-desc-position="bottom"><img src="/assets/diagrams/graphviz_326c64fe32827b88.svg" alt="Graphviz Diagram"></a></div>
+
 <h3 id="fallback-protection-0x502">Fallback Protection (0x502)<a class="headerlink" href="#fallback-protection-0x502" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>Problem</strong>: <code>GL_INVALID_OPERATION</code> during cleanup.</li>
@@ -2481,6 +2790,8 @@
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../assets/javascripts/mermaid_config.js"></script>
       
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
       

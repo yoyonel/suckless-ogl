@@ -347,6 +347,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Index des Diagrammes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../project_structure/" class="md-nav__link">
         
   
@@ -411,6 +467,34 @@
     
   
     Async Loading
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../synchronization_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Synchronization Overview
   
 
     
@@ -719,6 +803,34 @@
     
   
     Cubemap Seams
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../equirectangular_seam_fix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Equirectangular Seam Fix
   
 
     
@@ -1603,6 +1715,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gpu_sorting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Sphere Sorting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../mesa_f32_to_f16_analysis/" class="md-nav__link">
         
   
@@ -1723,6 +1863,34 @@
     
   
     Build Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linting_strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linting Strategy
   
 
     
@@ -2281,6 +2449,146 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7">
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Notes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Notes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_async_loader_deadlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Async Loader Deadlock Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fix_lint_bazzite_paths/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bazzite Lint Path Fix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pr_evaluation_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PR Evaluation (Shader Security)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2367,26 +2675,34 @@
 </ul>
 <h2 id="technical-implementation">Technical Implementation<a class="headerlink" href="#technical-implementation" title="Permanent link">¶</a></h2>
 <h3 id="1-luminance-downsampling">1. Luminance Downsampling<a class="headerlink" href="#1-luminance-downsampling" title="Permanent link">¶</a></h3>
-<p>Before the histogram can be calculated, the scene is downsampled to a 64x64 texture (<code>LUM_HISTOGRAM_MAP_SIZE</code>) where each texel represents the log-luminance of a block of pixels.
-- <strong>Shader</strong>: <code>shaders/lum_downsample.frag</code></p>
+<p>Before the histogram can be calculated, the scene is downsampled to a 64x64 texture (<code>LUM_HISTOGRAM_MAP_SIZE</code>) where each texel represents the log-luminance of a block of pixels.</p>
+<ul>
+<li><strong>Shader</strong>: <code>shaders/lum_downsample.frag</code></li>
+</ul>
 <h3 id="2-asynchronous-readback-pbo">2. Asynchronous Readback (PBO)<a class="headerlink" href="#2-asynchronous-readback-pbo" title="Permanent link">¶</a></h3>
-<p>Instead of a direct <code>glGetTexImage</code> (which is a blocking operation), the readback is requested at the end of the post-processing pass and collected in subsequent frames.
-- <strong>Double Buffering</strong>: Two PBOs (<code>histogram_pbo[2]</code>) are used to alternate between request and readback frames.
-- <strong>Sync Objects</strong>: <code>glFenceSync</code> is used to track when the GPU has finished writing to the PBO.</p>
+<p>Instead of a direct <code>glGetTexImage</code> (which is a blocking operation), the readback is requested at the end of the post-processing pass and collected in subsequent frames.</p>
+<ul>
+<li><strong>Double Buffering</strong>: Two PBOs (<code>histogram_pbo[2]</code>) are used to alternate between request and readback frames.</li>
+<li><strong>Sync Objects</strong>: <code>glFenceSync</code> is used to track when the GPU has finished writing to the PBO.</li>
+</ul>
 <h3 id="3-caching-continuity-logic">3. Caching &amp; Continuity Logic<a class="headerlink" href="#3-caching-continuity-logic" title="Permanent link">¶</a></h3>
-<p>To avoid the UI flickering when a frame's readback isn't ready, the system keeps the last successfully calculated histogram data in a cache.
-- <strong>Cache Fields</strong> (<code>PostProcess</code> struct):
-  - <code>last_buckets[256]</code>
-  - <code>last_min_lum</code>
-  - <code>last_max_lum</code>
-  - <code>last_histogram_updated</code> (flag)</p>
-<p>When <code>postprocess_compute_luminance_histogram</code> is called:
-1. It checks if the current PBO sync object is signaled.
-2. If signaled:
-   - It maps the PBO and zeros out the <code>last_buckets</code> cache.
-   - It re-calculates the histogram from the new data.
-   - It unmaps the PBO and updates the cache timestamp/flag.
-3. It always returns the contents of the cache if <code>last_histogram_updated</code> is true, providing a seamless visual experience.</p>
+<p>To avoid the UI flickering when a frame's readback isn't ready, the system keeps the last successfully calculated histogram data in a cache.</p>
+<ul>
+<li><strong>Cache Fields</strong> (<code>PostProcess</code> struct):</li>
+<li><code>last_buckets[256]</code></li>
+<li><code>last_min_lum</code></li>
+<li><code>last_max_lum</code></li>
+<li><code>last_histogram_updated</code> (flag)</li>
+</ul>
+<p>When <code>postprocess_compute_luminance_histogram</code> is called:</p>
+<ol>
+<li>It checks if the current PBO sync object is signaled.</li>
+<li>If signaled:</li>
+<li>It maps the PBO and zeros out the <code>last_buckets</code> cache.</li>
+<li>It re-calculates the histogram from the new data.</li>
+<li>It unmaps the PBO and updates the cache timestamp/flag.</li>
+<li>It always returns the contents of the cache if <code>last_histogram_updated</code> is true, providing a seamless visual experience.</li>
+</ol>
 <h2 id="testing-strategy">Testing Strategy<a class="headerlink" href="#testing-strategy" title="Permanent link">¶</a></h2>
 <p>A dedicated test suite <code>tests/test_auto_exposure_debug.c</code> ensures the robustness of this system.</p>
 <h3 id="test-cases">Test Cases<a class="headerlink" href="#test-cases" title="Permanent link">¶</a></h3>
@@ -2417,7 +2733,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 7, 2026 15:59:59 UTC">March 7, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
   </span>
 
     
@@ -2479,6 +2795,8 @@
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
+      
+        <script src="../assets/javascripts/mermaid_config.js"></script>
       
         <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
       
