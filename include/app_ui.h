@@ -8,6 +8,7 @@
 
 #ifndef APP_UI_H
 #define APP_UI_H
+#include "glad/glad.h"
 #include "ui.h"
 
 typedef struct {
@@ -32,6 +33,18 @@ typedef struct {
 	int help_pressed_key;
 	int help_pressed_mods;
 	double help_press_timer;
+	double help_global_dim;
+
+	/* Cyberpunk keyboard overlay textures (PNG assets) */
+	GLuint
+	    kbd_tex_frame; /**< Panel frame texture (cyan border + scanlines) */
+	GLuint
+	    kbd_tex_key_base; /**< Single keycap texture (tinted per binding) */
+
+	/** Set to 1 when the overlay auto-disabled the camera on open, so we
+	 *  can re-enable it exactly the same way (simulate 'C' press) on close.
+	 */
+	int help_captured_camera;
 } AppUIOverlay;
 
 typedef struct App App;
