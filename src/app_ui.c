@@ -623,8 +623,10 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 
 		/* Active keys are never dimmed, only inactive background keys
 		 */
-		const float current_key_dim =
-		    is_pressed ? 1.0F : global_dim_mult;
+		float current_key_dim = global_dim_mult;
+		if (is_pressed) {
+			current_key_dim = 1.0F;
+		}
 
 		draw_key((UIContext*)&app->overlay.ui, &app->overlay, kpos,
 		         kx_pos, ky_pos, base_col, has_binding, is_pressed,
