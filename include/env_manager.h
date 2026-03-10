@@ -73,8 +73,7 @@ int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
  *
  * @param mgr Pointer to the environment manager.
  * @param scene Pointer to the scene (for texture management).
- * @param pp Pointer to post-process (for exposure).
- * @param auto_threshold Pointer to the auto-exposure threshold.
+ * @param postproc Pointer to post-process (for exposure).
  * @param frame_count Current frame count.
  * @param width Current window width (for snapshot).
  * @param height Current window height (for snapshot).
@@ -88,7 +87,6 @@ void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
  * @param mgr Pointer to the environment manager.
  * @param scene Pointer to the scene.
  * @param postproc Pointer to post-process.
- * @param auto_threshold Pointer to the auto-exposure threshold.
  * @param delta_time Time elapsed since last frame.
  * @param frame_count Current frame count.
  */

@@ -13,7 +13,7 @@ The help system provides a modern, interactive visualization of the application'
 
 ### Centralized Registry
 
-All bindings are defined in [app_binding.c](src/app_binding.c). The registry is owned by the main `App` struct and initialized during startup.
+All bindings are defined in `src/app_binding.c`. The registry is owned by the main `App` struct and initialized during startup.
 
 ```c
 typedef struct {
@@ -40,7 +40,7 @@ When the help overlay is visible (`app->show_help == true`), the `key_callback` 
 
 To add a new key binding to the help system:
 
-1. Open [src/app_binding.c](src/app_binding.c).
+1. Open `src/app_binding.c`.
 2. Locate the `app_binding_registry_init` function.
 3. Use the `add_binding` helper macro:
 

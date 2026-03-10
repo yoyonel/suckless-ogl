@@ -54,7 +54,7 @@ BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan build-win test-win
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-pdf docs-clean asan build-win test-win
 
 # Job count: nproc - 2 locally (min 1), all cores in CI
 ifneq ($(CI),)
@@ -100,6 +100,11 @@ docs-serve:
 docs-dev:
 	@echo "Starting MkDocs Live Preview (No Doxygen integration)..."
 	@$(PY_RUN) -m mkdocs serve
+
+docs-offline:
+	@echo "Building documentation in a strictly OFFLINE environment (unshare -rn)..."
+	@unshare -rn $(MAKE) docs-clean docs
+	@echo "✓ Offline build successful. No network was used."
 
 docs-legacy:
 	@echo "Generating Doxygen documentation (Legacy)..."
@@ -455,6 +460,7 @@ help:
 	@echo "  memcheck-asan - Run AddressSanitizer (ASan) to detect leaks/errors"
 	@echo "  small      - Build for Minimum Size (-Os, Stripped)"
 	@echo "  docs       - Generate and verify Doxygen documentation (with diagrams)"
+	@echo "  docs-offline - Build documentation in a strict offline environment"
 	@echo "  test-gen-refs - Regenerate test reference images"
 	@echo "  help       - Show this help message"
 

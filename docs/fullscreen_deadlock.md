@@ -24,6 +24,31 @@ The deadlock was caused by a synchronization conflict between the GLFW event loo
 ### Sequence Before (DEADLOCK)
 
 ```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#7aa2f7",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#9aa5ce",
+    "secondaryColor": "#f7768e",
+    "tertiaryColor": "#1a1b26",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "actorBkg": "#24283b",
+    "actorBorder": "#7aa2f7",
+    "actorTextColor": "#ffffff",
+    "actorLineColor": "#7aa2f7",
+    "labelBoxBkgColor": "#1a1b26",
+    "labelBoxBorderColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "loopTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "signalTextColor": "#ffffff",
+    "activationBkgColor": "#414868",
+    "sequenceNumberColor": "#ffffff"
+  }
+}%%
 sequenceDiagram
     participant Main as Main Thread
     participant GLFW as GLFW
@@ -39,7 +64,7 @@ sequenceDiagram
     GLFW->>Main: framebuffer_size_callback()
     Main->>GPU: glDeleteTextures / glGenTextures
     Note over GPU,Driver: GPU blocked by pending swap
-    Note over Main,GPU: 💀 DEADLOCK
+    Note over Main,GPU: (DEADLOCK)
 ```
 
 ## Implementation: Deferred Resize
@@ -49,13 +74,38 @@ The solution is a **Deferred Resize** pattern, which decouples the window manage
 ### Sequence After (FIXED)
 
 ```mermaid
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#7aa2f7",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#9aa5ce",
+    "secondaryColor": "#f7768e",
+    "tertiaryColor": "#1a1b26",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "actorBkg": "#24283b",
+    "actorBorder": "#7aa2f7",
+    "actorTextColor": "#ffffff",
+    "actorLineColor": "#7aa2f7",
+    "labelBoxBkgColor": "#1a1b26",
+    "labelBoxBorderColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "loopTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "signalTextColor": "#ffffff",
+    "activationBkgColor": "#414868",
+    "sequenceNumberColor": "#ffffff"
+  }
+}%%
 sequenceDiagram
     participant Main as Main Thread
     participant GLFW as GLFW
     participant Driver as NVIDIA Driver
     participant GPU as GPU Pipeline
 
-    Main->>GPU: glFinish() — drain pipeline
+    Main->>GPU: glFinish() - drain pipeline
     GPU-->>Main: All commands complete
     Main->>GLFW: glfwSetWindowMonitor()
     GLFW->>Driver: Mode switch request
@@ -66,8 +116,8 @@ sequenceDiagram
     GLFW-->>Main: glfwSetWindowMonitor() returns
     Note over Main: Next frame begins...
     Main->>Main: app_run: resize_pending? YES
-    Main->>GPU: postprocess_resize() — safe context
-    GPU-->>Main: FBOs recreated ✓
+    Main->>GPU: postprocess_resize() - safe context
+    GPU-->>Main: FBOs recreated (OK)
 ```
 
 ### 1. Lightweight Callback

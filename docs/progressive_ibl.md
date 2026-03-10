@@ -87,66 +87,45 @@ This is the heaviest part. The cost per mipmap decreases exponentially.
 
 **Total "Tail Grouping"**: Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (<1ms each).
 
-```graphviz
-digraph IBLPipeline {
-  rankdir=LR;
-  bgcolor="transparent";
-  dpi=72;
-
-  // Suckless-Modern "Ghost" Design Tokens (Upscaled)
-  node [
-    shape=rect,
-    style="rounded",
-    fontname="Helvetica,Arial,sans-serif",
-    fontsize=16,
-    fillcolor="none",
-    color="#414868",
-    fontcolor="#c0caf5",
-    penwidth=2
-  ];
-
-  edge [
-    color="#565f89",
-    fontname="Helvetica,Arial,sans-serif",
-    fontsize=18,
-    fontcolor="#9aa5ce",
-    arrowsize=0.8,
-    penwidth=1.2
-  ];
-
-  subgraph cluster_heavy {
-    label="Heavy Workload (Sliced)";
-    fontname="Helvetica Bold,Arial,sans-serif";
-    fontsize=18;
-    fontcolor="#f7768e";
-    style="rounded,dashed";
-    color="#f7768e";
-    margin=20;
-    Mip0 [label="Mip 0\n(4 Frames)", color="#f7768e", fontcolor="#f7768e"];
-    Mip1 [label="Mip 1\n(2 Frames)", color="#f7768e", fontcolor="#f7768e"];
+```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "primaryColor": "#24283b",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#7aa2f7",
+    "lineColor": "#7aa2f7",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "actorBorder": "#7aa2f7",
+    "actorBkg": "#24283b",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26"
   }
+}%%
+flowchart LR
+  subgraph HeavyGroup["Heavy Workload Sliced"]
+    Mip0["Mip 0 4 Frames"]
+    Mip1["Mip 1 2 Frames"]
+  end
+  subgraph LightGroup["Fast Workload Grouped"]
+    Mip2["Mip 2 1 Frame"]
+    Tail["Mips 3-10 1 Frame"]
+  end
+  Start(["Start"]) --> Mip0
+  Mip0 --> Mip1
+  Mip1 --> Mip2
+  Mip2 --> Tail
+  Tail --> End(["Done"])
 
-  subgraph cluster_light {
-    label="Fast Workload (Grouped)";
-    fontname="Helvetica Bold,Arial,sans-serif";
-    fontsize=18;
-    fontcolor="#9ece6a";
-    style="rounded";
-    color="#9ece6a";
-    margin=20;
-    Mip2 [label="Mip 2\n(1 Frame)", color="#9ece6a", fontcolor="#9ece6a"];
-    Tail [label="Mips 3-10\n(1 Frame)", color="#9ece6a", fontcolor="#9ece6a", penwidth=3];
-  }
-
-  Start [shape=circle, label="Start", color="#7aa2f7", fontcolor="#7aa2f7"];
-  End [shape=doublecircle, label="Done", color="#9ece6a", fontcolor="#9ece6a", penwidth=3];
-
-  Start -> Mip0;
-  Mip0 -> Mip1;
-  Mip1 -> Mip2;
-  Mip2 -> Tail;
-  Tail -> End [color="#9ece6a", penwidth=2];
-}
+  style HeavyGroup fill:#24283b,stroke:#f7768e,stroke-dasharray: 5, 5
+  style LightGroup fill:#24283b,stroke:#9ece6a
+  style Start fill:#7aa2f7,color:#ffffff
+  style End fill:#9ece6a,color:#ffffff
+  style Mip0 fill:#414868,stroke:#f7768e
+  style Mip1 fill:#414868,stroke:#f7768e
+  style Mip2 fill:#414868,stroke:#9ece6a
+  style Tail fill:#414868,stroke:#9ece6a
 ```
 
 ---
@@ -198,6 +177,18 @@ Remove all per-slice barriers and issue **one** barrier at the end:
     coherency path is flushed.
 
 ```mermaid
+%%{init: {
+  "theme": "dark",
+  "themeVariables": {
+    "signalTextColor": "#ffffff",
+    "messageTextColor": "#ffffff",
+    "labelTextColor": "#ffffff",
+    "actorTextColor": "#ffffff",
+    "noteBkgColor": "#e0af68",
+    "noteTextColor": "#1a1b26",
+    "lineColor": "#7aa2f7"
+  }
+}%%
 sequenceDiagram
     participant CPU
     participant GPU

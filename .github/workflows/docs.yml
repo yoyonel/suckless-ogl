@@ -41,15 +41,17 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
+          sudo apt-get install -y doxygen graphviz libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0
 
       - name: Install Python Dependencies
         run: pip install -r requirements-dev.txt
 
       - name: Build Documentation
+        env:
+          ENABLE_PDF: 1
         run: |
           mkdocs build
-          doxygen Doxyfile
+          doxygen Doxyfile (cd site/doxygen && ln -s html/index.html index.html) || true
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

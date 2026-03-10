@@ -665,9 +665,9 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Auto Exposure Pass & Debug Histogram */
 	bool ae_active =
-	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE);
+	    postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE) != 0;
 	bool debug_active =
-	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG);
+	    postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG) != 0;
 
 	if (ae_active || debug_active) {
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler,

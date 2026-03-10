@@ -16,38 +16,37 @@ The refactored design uses a **context-based approach** (`PerfModeContext`), eli
 ```mermaid
 classDiagram
     class App {
-        +PerfModeContext perf_context
-        +int perf_mode_active
+        +perf_context
+        +perf_mode_active
         +init()
         +cleanup()
     }
 
     class PerfModeContext {
-        +PerfModeState state
-        +PerfModeBackend backend
-        +int original_policy
-        +struct sched_param original_param
-        +int original_nice
-        +int initialized
+        +state
+        +backend
+        +original_policy
+        +original_param
+        +original_nice
+        +initialized
     }
 
-    class Backend {
-        <<Interface>>
-        +activate()
-        +deactivate()
-    }
+    class Backend
+    <<interface>> Backend
+    Backend : +activate()
+    Backend : +deactivate()
 
     class GameModeBackend {
-        +libgamemode integration
+        +libgamemode_init
     }
 
     class NativeBackend {
-        +sched_setscheduler(FIFO)
-        +setpriority(nice)
+        +sched_setscheduler_FIFO
+        +setpriority_nice
     }
 
     App *-- PerfModeContext
-    PerfModeContext ..> GameModeBackend : Tries First
+    PerfModeContext ..> GameModeBackend : Tries_First
     PerfModeContext ..> NativeBackend : Fallback
 ```
 
