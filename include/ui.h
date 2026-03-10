@@ -167,4 +167,44 @@ void ui_draw_rounded_rect(UIContext* ui_context, float rect_x, float rect_y,
                           const vec3 color, float alpha, int screen_width,
                           int screen_height);
 
+/** @brief Draws an SDF neon glow border around a rounded rectangle area. */
+void ui_draw_glow_rect(UIContext* ui_context, float rect_x, float rect_y,
+                       float width, float height, float radius,
+                       const vec3 color, float alpha, int screen_width,
+                       int screen_height);
+
+/**
+ * @brief Draws a textured quad tinted by a color (mode 3).
+ *
+ * The PNG texture's RGB is multiplied by the tint color, and its alpha
+ * channel is scaled by the alpha parameter. Use for keycaps and panel frame.
+ *
+ * @note Flushes the current batch if the active texture differs.
+ * @param texture OpenGL texture handle (RGBA PNG).
+ * @param tint  Tint color multiplied against the texture RGB.
+ * @param alpha Overall opacity.
+ */
+void ui_draw_textured_quad(UIContext* ui_context, GLuint texture, float rect_x,
+                           float rect_y, float width, float height,
+                           const vec3 tint, float alpha, int screen_width,
+                           int screen_height);
+
+/**
+ * @brief Draws a textured quad with additive blending for bloom effects (mode
+ * 4).
+ *
+ * Uses GL_ONE, GL_ONE blending so dark pixels are invisible and bright pixels
+ * add light on top of existing content. The texture should be a radial bloom
+ * (bright center, black surround). The tint parameter allows coloring the
+ * bloom.
+ *
+ * @param texture OpenGL texture handle (bloom PNG, black background).
+ * @param tint    Color of the bloom light (e.g. white or cyan).
+ * @param intensity Bloom brightness (0.0 = invisible, 1.0 = full).
+ */
+void ui_draw_bloom_quad(UIContext* ui_context, GLuint texture, float rect_x,
+                        float rect_y, float width, float height,
+                        const vec3 tint, float intensity, int screen_width,
+                        int screen_height);
+
 #endif /* UI_H */
