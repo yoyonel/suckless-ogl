@@ -54,7 +54,7 @@ BUILD_REL_DIR := build-release
 BUILD_SMALL_DIR := build-small
 BUILD_ASAN_DIR := build-asan
 
-.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-clean asan build-win test-win
+.PHONY: all clean clean-all rebuild run help format lint deps-setup deps-clean offline-test docker-build test test-one test-list test-integration coverage release small debug-release docs docs-pdf docs-clean asan build-win test-win
 
 # Job count: nproc - 2 locally (min 1), all cores in CI
 ifneq ($(CI),)

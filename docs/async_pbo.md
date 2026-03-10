@@ -97,7 +97,7 @@ This prevents the Main Thread from ever touching the pixel data on the CPU, and 
 Even with the PBO strategy above, the upload frame still caused a ~60ms spike because all GPU-heavy operations were concentrated in a single frame:
 
 | Operation | Approx. Cost | Cause |
-|:---|:---:|:---|
+| :--- | :---: | :--- |
 | `glTexStorage2D` (13 mip levels) | ~15-20ms | VRAM allocation of ~85MB |
 | `glUnmapBuffer` | ~1-3ms | Flush DMA write-combine |
 | `glTexSubImage2D` | ~10-15ms | DMA transfer PBO → texture |
@@ -258,7 +258,7 @@ This means **every GL error is already reported immediately** via the debug call
 ### Audit Results
 
 | Location | Context | Action | Rationale |
-|:---|:---|:---|:---|
+| :---| :---|:---|:---|
 | `ssbo_rendering.c:24` | After SSBO init | **Kept** | Init-time only, negligible cost |
 | `texture.c` (was line 206) | Sticky error clear | **Removed** | Redundant with debug callback |
 | `texture.c` (was line 260) | After `glTexStorage2D` | **Debug-only** (`#ifndef NDEBUG`) | Fallback path, useful for debugging |

@@ -24,6 +24,7 @@ The project is optimized for a container named `clang-dev`. A `Makefile` wrapper
 - `make rebuild`: Performs a clean build from scratch (useful when dependencies change).
 - `make format`: Formats all C source and header files using **clang-format**.
 - `make lint`: Performs static analysis across the codebase using **clang-tidy** (Guaranteed **0 warnings**).
+- `make docs`: Builds MkDocs + Doxygen documentation.
 - `make clean-all`: Nukes the `build/` directory.
 
 ## Offline Build Support
@@ -57,24 +58,29 @@ make offline-test
 Dependencies are automatically managed via CMake's `FetchContent` module. No manual installation or management of `deps/` is required.
 
 ### cglm (OpenGL Mathematics for C)
+
 - **Source**: [recp/cglm](https://github.com/recp/cglm)
 - **Configuration**: Built as a **static library** (`CGLM_STATIC=ON`).
 - **Automation**: Fetched at configuration time.
 
 ### GLAD (OpenGL Loader Generator)
+
 - **Source**: [Dav1dde/glad](https://github.com/Dav1dde/glad)
 - **Configuration**: Programmatically generates headers and source for **OpenGL 4.4 Core**.
 - **Automation**: The generator script is fetched and executed during the CMake configuration phase.
 
 ### GLFW
+
 - **Source**: System library.
 - **Automation**: Located using `pkg-config`. Ensure `glfw-devel` (or equivalent) is installed in your development container.
 
 ### Unity
+
 - **Source**: [ThrowTheSwitch/Unity](https://github.com/ThrowTheSwitch/Unity)
 - **Automation**: Fetched at configuration time.
 
 ### cJSON
+
 - **Source**: [DaveGamble/cJSON](https://github.com/DaveGamble/cJSON)
 - **Automation**: Fetched at configuration time.
 
@@ -86,7 +92,6 @@ The project enforces strict security flags during compilation to mitigate memory
 - **Format Security**: `-Wformat -Wformat-security` prevents format string attacks.
 - **Fortify Source**: `_FORTIFY_SOURCE=2` adds runtime checks for common string/memory functions.
 - **Linker Hardening**: RELRO, NOW, and NoExecStack are enabled to protect the GOT and prevent stack execution.
-
 
 ## Fast Parallel Builds
 

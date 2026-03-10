@@ -36,7 +36,7 @@ This will output a formatted list of all recipes with descriptions.
 Here is a mapping of common `make` commands to their `just` equivalents:
 
 | Task | Makefile | Justfile | Notes |
-|------|----------|----------|-------|
+| :--- | :--- | :--- | :--- |
 | **Build** | `make` | `just build` | Builds debug version by default |
 | **Run** | `make run` | `just run` | Builds and runs the app |
 | **Clean** | `make clean` | `just clean` | CMake clean |

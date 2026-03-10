@@ -112,7 +112,7 @@ Because MB and CA are applied before FXAA in the same draw call, there is **no i
 Two paths exist, selected at compile time via `#ifdef USE_TRANSPARENT_BILLBOARDS`:
 
 | Mode | Alpha channel | Luma computation | Cost |
-|:---|:---|:---|:---|
+| :---| :---|:---|:---|
 | **Legacy** (`!USE_TRANSPARENT_BILLBOARDS`) | Pre-computed luma | `texture(...).a` | Fastest — 0 ALU for luma |
 | **Transparent** (`USE_TRANSPARENT_BILLBOARDS`) | Opacity data | `dot(rgb, vec3(0.299, 0.587, 0.114))` per sample | ~1 dot product per sample |
 
@@ -237,7 +237,7 @@ float fxaaQualityEdgeThresholdMin;  // Default: 0.063
 ```
 
 | Parameter | Effect | Lower | Higher |
-|:---|:---|:---|:---|
+| :---| :---|:---|:---|
 | `subpix` | Sub-pixel AA strength | Sharper, more noise | Blurrier, less noise |
 | `edgeThreshold` | Minimum contrast for AA | More edges processed | Only strong edges |
 | `edgeThresholdMin` | Absolute minimum contrast | Catches subtle edges | Skips low-contrast areas |
@@ -247,7 +247,7 @@ float fxaaQualityEdgeThresholdMin;  // Default: 0.063
 Enable `enableFXAADebug` via the UI or `app_settings.h` to visualize:
 
 | Color | Meaning |
-|:---|:---|
+| :---| :---|
 | **Red** | Pixels displaced by edge AA |
 | **Blue** | Pixels displaced by sub-pixel blending |
 | **Dark gray** | Unaffected pixels (no edge detected) |
