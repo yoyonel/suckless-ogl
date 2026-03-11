@@ -392,6 +392,42 @@ Note over GPU: Les fragments échantillonnent l'irradiance des 8 sondes adjacent
 </div>
 
 
+## [Analyse de l'implémentation du Motion Blur](../motion_blur_analysis/)
+
+<div class="diagram-item">
+  <a href="../motion_blur_analysis/#pipeline-de-rendu" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Pipeline de rendu</a> : <span style="opacity: 0.6; font-size: 0.85em;">L'architecture actuelle repose sur des principes modernes de rendu basés sur l'approche Tile-Based / Neighbor Max, initialement introduite par Jean-Yves Bouguet et les chercheurs en rendu temps réel. L'idée principale est d'éviter les &quot;fuites&quot; de flou lorsqu'un objet rapide passe devant un arrière-plan fixe, un artefact très commun dans les premières implémentations de ce post-process.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+V[Velocity Buffer] --> T[Tile Max Velocity Compute]
+T -->|Réduction à 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
+TTex --> N[Neighbor Max Velocity Compute]
+N -->|textureGather sur un Voisinage 3x3| NTex(Texture RG16F - Neighbor Max)
+C[Color Buffer Raw] --> M(Passe Motion Blur Finale)
+D[Depth Buffer] --> M
+V --> M
+NTex --> M
+M -->|Échantillonnage de 8 frames \n+ Interleaved Gradient Noise \n+ Depth Weighting| O[Color Buffer Flouté]
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../motion_blur_analysis/#4-lexemple-de-street-fighter-6-re-engine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. L'Exemple de Street Fighter 6 (RE Engine)</a> : <span style="opacity: 0.6; font-size: 0.85em;">Contrairement à du flou Linéaire standard (« je prends un vecteur et je trace une ligne droite »), le moteur de Capcom stocke l'information de l'accélération en plus de la vitesse. L'échantillonnage de Flou est ainsi &quot;courbé&quot; dans l'espace afin de simuler la trajectoire radiale des membres et poings.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+A[Flou Linéaire \nStandard Suckless OGL] -->|Crée des lignes droites et des artefacts| B(Trajectoire d'un coup de poing)
+C[Flou Courbe \nRE Engine / SF6] -->|Échantillonnage le long d'un arc de cercle| D(Flou stylisé style Anime/Manga)
+```
+
+  </div>
+</div>
+
+
 ## [Performance Mode & Notifications](../perf_and_notifications/)
 
 <div class="diagram-item">

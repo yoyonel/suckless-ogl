@@ -55,35 +55,41 @@ vec3 applyMotionBlur(vec2 uv)
 	/* Center Depth */
 	float centerDepth = linearizeDepth(texture(depthTexture, uv).r);
 
+	/* Échantillonnage Adaptatif (Dynamic Sample Count)
+	 * On limite le nombre de boucles en fonction de la vitesse (UV speed).
+	 * speed_ratio = speed / mb_maxVelocity (0.0 à 1.0)
+	 */
+	float speed_ratio =
+	    (mb_maxVelocity > 0.0) ? (speed / mb_maxVelocity) : 0.0;
+	int actual_samples =
+	    clamp(int(speed_ratio * float(mb_samples)), 2, mb_samples);
+
 	vec3 acc = centerColor;
 	float totalWeight = 1.0;
 
-	int samples = mb_samples;
-
-	for (int i = 0; i < samples; ++i) {
-		if (i == samples / 2)
+	for (int i = 0; i < actual_samples; ++i) {
+		if (i == actual_samples / 2)
 			continue;  // Skip center
 
-		float t = mix(-0.5, 0.5, (float(i) + noise) / float(samples));
+		float t =
+		    mix(-0.5, 0.5, (float(i) + noise) / float(actual_samples));
 		vec2 sampleUV = uv + velocity * t;
 
 		/* Always sample RAW screen texture here.
 		   (CA is applied *after* this function returns) */
 		vec3 sampleColor = texture(screenTexture, sampleUV).rgb;
 
-		/* Depth Weighting */
+		/* Soft Depth-Testing */
 		float sampleDepth =
 		    linearizeDepth(texture(depthTexture, sampleUV).r);
 		float depthDiff = sampleDepth - centerDepth;
-		float weight = 1.0;
 
-		if (depthDiff > 1.0) {
-			weight = 0.1;
-		} else if (depthDiff < -1.0) {
-			weight = 1.0;
-		} else {
-			weight = 1.0;
-		}
+		/* Remplacement du if brut par un smoothstep.
+		 * Si l'échantillon est derrière le pixel central (depthDiff >
+		 * 0), le poids diminue progressivement de 1.0 vers 0.1 entre
+		 * 0.5 et 2.0 unités.
+		 */
+		float weight = mix(1.0, 0.1, smoothstep(0.5, 2.0, depthDiff));
 
 		acc += sampleColor * weight;
 		totalWeight += weight;

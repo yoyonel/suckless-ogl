@@ -57,10 +57,16 @@ Afin d'atteindre l'état de l'art, voici les optimisations et changements possib
   ```glsl
   int actual_samples = max(2, int(speed * TARGET_SAMPLES_PER_UNIT));
   ```
-* **Half-Resolution Reconstruction :**
-  Exécuter 8+ lectures aléatoires non-cohérentes avec le cache sur un buffer 4K ou 1440p est extrêmement gourmand. Une pratique courante consiste à résoudre l'accumulation du Motion Blur dans une **toute petite texture** (à moitié, voire un quart de la résolution native) et de *l'upsampler* ensuite (Bilateral Upsample) en utilisant la profondeur de l'image de base pour ne pas "déborder" sur les objets.
+* **Half-Resolution Reconstruction (TODO) :**
+  Exécuter 8+ lectures aléatoires non-cohérentes avec le cache sur un buffer 4K ou 1440p est extrêmement gourmand. L'accumulation du Motion Blur dans une **toute petite texture** (à moitié de la résolution native) suivie d'un *upsample* bilatéral guidé par la profondeur est à implémenter pour les performances futures.
 
-### B. Qualité Visuelle
+    !!! warning "Plan d'implémentation (Refactoring de `postprocess.c`)"
+        L'implémentation du Motion Blur est actuellement incluse dans le composite unifié de la passe finale (`postprocess.frag`). Pour appliquer ce *Half-Res*, il faudra :
+
+        1. Restructurer le rendu et casser le flux actuel en désolidarisant le Motion Blur de cette maxi-passe.
+        2. Créer un nouveau `Framebuffer` dédié au sous-échantillonnage de dimensions `width/2 x height/2`.
+        3. Créer une passe spécifique (via compute ou quad écran) ne calculant *uniquement* que l'effet de flou dans cette texture allégée en couleurs et vélocités.
+        4. Écrire et exécuter l'étape d'*upsample* bilatéral durant la passe `postprocess.frag` ou dans une passe dédiée, afin de recomposer judicieusement l'image finale sur les bords des objets définis par le `depth buffer`.
 
 * **Per-Object et Skinned Velocity (Critique) :**
   Pour que le motion blur s'applique aux objets en mouvement ou aux personnages, il faut stocker et transmettre la matrice Modèle de la frame précédente pour *chaque* objet.
@@ -70,6 +76,21 @@ Afin d'atteindre l'état de l'art, voici les optimisations et changements possib
   ```
 * **Soft Depth-Testing :**
   Remplacer le test booléen et brutal de profondeur par une pondération lissée à l'aide d'un `smoothstep()`. Des limites dures créent un bruit granuleux ou des tremblements de pixels (flickering) sur les arêtes en mouvement.
+
+### C. Le Cas Exceptionnel : Flou Analytique Procédural
+
+Puisque **Suckless OGL** rend nativement des objets purs via **Raytracing analytique** dans le Fragment Shader (par le biais des billboards et *impostors* de sphères dans `pbr_ibl_billboard.frag`), une solution mathématiquement parfaite et sans post-process (2D) est techniquement possible.
+
+Lorsqu'une sphère de centre $C$ se déplace d'une position $C_0$ vers $C_1$ (via un vecteur vitesse $\vec{V}$) au cours d'une frame, le volume balayé par cette sphère (*Swept Volume*) forme géométriquement une **Capsule** (un cylindre terminé par deux hémisphères).
+
+**Comment l'implémenter mathématiquement au lieu du Post-Process ?**
+
+1. **Intersection Rayon-Capsule :** Au lieu de croiser un rayon avec une sphère, le shader des *impostors* calcule l'intersection analytique d'un rayon avec une capsule s'étendant du centre à $t=0$ au centre à $t=1$.
+2. **Intégration Temporelle :** Une fois l'intersection résolue sur la droite de mouvement de la capsule, l'opacité (Alpha) et la normale de surface en ce point peuvent être calculées en fonction du temps couvert par le croisement.
+3. **Mouvement de la Caméra + Mouvement de l'Objet :** La matrice de transformation de la vue au cours du temps peut simplement modifier l'origine du rayon $O(t) = O_0 + V_{cam} \cdot t$ pour simuler le flou de caméra.
+4. **Jittering Temporel / Stochasticité :** Au lieu d'accumuler dans un multi-buffer, le rayon généré depuis le point central de l'écran peut se voir attribuer une variable temps $t$ aléatoire par frame (via du Bruit Bleu par exemple). Couplé à un TAA (Temporal Anti-Aliasing), le flou de mouvement devient instantanément "gratuit" et mathématiquement parfait (vrai flou 3D) sans les erreurs d'occlusion du post-processing 2D.
+
+C'est une optimisation très avancée mais extrêmement élégante, souvent réservée aux moteurs de rendu hors-ligne (Pixar/RenderMan) ou aux *demoscenes* purement procédurales.
 
 ---
 
