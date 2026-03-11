@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"structEdgeEntry.html#a9827c0bd386c0511e19aa31782798131":[5,0,20,0],
+"structEdgeHash.html":[5,0,21],
 "structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff":[5,0,21,0],
 "structEdgeHash.html#abf74ac823023fa22a196e161bae695ec":[5,0,21,1],
 "structEdgeHash.html#ace0fcc8d2741d15211878c3b837016f4":[5,0,21,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX8 =
 "structLoadedBuffer.html#a08de67c79ace27f48143223f9a423078":[5,0,55,1],
 "structLoadedBuffer.html#aab42ed78eb04e97315cb610877f4e0ae":[5,0,55,0],
 "structMaterialLib.html":[5,0,56],
-"structMaterialLib.html#a1421f7bc086ca3e77678beba8fe2c37f":[5,0,56,1],
-"structMaterialLib.html#a8951aab4be6950b1bbf5aac0686e1820":[5,0,56,0],
-"structMetricStack.html":[5,0,57]
+"structMaterialLib.html#a1421f7bc086ca3e77678beba8fe2c37f":[5,0,56,1]
 };

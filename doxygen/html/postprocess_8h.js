@@ -66,7 +66,8 @@ var postprocess_8h =
       [ "POSTFX_FXAA_DEBUG", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad510c82628ad5bc268700d9ad7c6bb2f", null ],
       [ "POSTFX_BANDING", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba005a1a2270636aee8fe71cb435cd59c0", null ],
       [ "POSTFX_VECTOR_FIELD_DEBUG", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba8595cfff92cfe6c8138734b0eeefd122", null ],
-      [ "POSTFX_STENCIL_DEBUG", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69", null ]
+      [ "POSTFX_STENCIL_DEBUG", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baaa72578667b465c49394c8c7ae29ad69", null ],
+      [ "POSTFX_BLOOM_DEBUG", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba0ec22d0e12d93f34e7839e9c03264f25", null ]
     ] ],
     [ "postprocess_apply_preset", "postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409", null ],
     [ "postprocess_begin", "postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5", null ],

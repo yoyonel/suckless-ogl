@@ -1,5 +1,7 @@
 var NAVTREEINDEX9 =
 {
+"structMaterialLib.html#a8951aab4be6950b1bbf5aac0686e1820":[5,0,56,0],
+"structMetricStack.html":[5,0,57],
 "structMetricStack.html#a1efbff4d0974864c6e07fe75e13eeb7d":[5,0,57,0],
 "structMetricStack.html#a3f2ed238f489aac47c071e4ff9a8798e":[5,0,57,1],
 "structPBRIrrUniforms.html":[5,0,58],
@@ -247,7 +249,5 @@ var NAVTREEINDEX9 =
 "structSphereInstance.html#a859fe5779df50fa40fc8390ec36ccc77":[5,0,74,2],
 "structSphereInstance.html#a92b14b4943403057b8e63eff4f0eb8ab":[5,0,74,6],
 "structSphereInstance.html#a966983667d6838d7ba423aca6b0bca88":[5,0,74,1],
-"structSphereInstance.html#ac21613b7af1ea840200bd9feef6d098e":[5,0,74,0],
-"structSphereInstanceSSBO.html":[5,0,76],
-"structSphereInstanceSSBO.html#a16e3d53f226b3c0f6596f4c56345d990":[5,0,76,3]
+"structSphereInstance.html#ac21613b7af1ea840200bd9feef6d098e":[5,0,74,0]
 };

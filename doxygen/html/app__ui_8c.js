@@ -8,6 +8,7 @@ var app__ui_8c =
     [ "app_ui_init", "app__ui_8c.html#a27e5ee4cedb372f915cf408adc005d94", null ],
     [ "app_ui_update", "app__ui_8c.html#a8bc4879a7af2ed6616a105fc9a66a1e6", null ],
     [ "compute_luminance_histogram", "app__ui_8c.html#ae34ca930ba8175fe6d5e0e59ef5256f2", null ],
+    [ "draw_bloom_debug_status", "app__ui_8c.html#a535fc2bb9e40cd77f226290c0f46ffcc", null ],
     [ "draw_exposure_debug_text", "app__ui_8c.html#adc20d7574d4fd85069eea1a69a4d56f6", null ],
     [ "draw_exposure_overlay", "app__ui_8c.html#af70a47e72bc3967a1e497ee63ec55e0a", null ],
     [ "draw_help_overlay_keys", "app__ui_8c.html#ac88180806da165ac149d340e26add6ac", null ],
