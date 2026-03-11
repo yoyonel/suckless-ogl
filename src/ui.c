@@ -175,10 +175,11 @@ static int setup_vertex_buffers(UIContext* ui_context)
 // ============================================================================
 
 static UIQuad make_glyph_quad(const GlyphInfo* glyph, float render_x,
-                              float render_y, const vec3 color, float alpha)
+                              float render_y, float scale, const vec3 color,
+                              float alpha)
 {
-	const float width = glyph->w;
-	const float height = glyph->h;
+	const float width = glyph->w * scale;
+	const float height = glyph->h * scale;
 	const float left = render_x;
 	const float top = render_y;
 	const float right = render_x + width;
@@ -384,6 +385,14 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
                      float pos_y, const vec3 color, float alpha,
                      int screen_width, int screen_height)
 {
+	ui_draw_text_scaled(ui_context, text, pos_x, pos_y, color, alpha, 1.0F,
+	                    screen_width, screen_height);
+}
+
+void ui_draw_text_scaled(UIContext* ui_context, const char* text, float pos_x,
+                         float pos_y, const vec3 color, float alpha,
+                         float scale, int screen_width, int screen_height)
+{
 	if (ui_context == NULL || text == NULL || ui_context->shader == NULL) {
 		return;
 	}
@@ -409,9 +418,9 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 		    &ui_context->cdata[char_code - FONT_FIRST_CHAR];
 
 		// Calculate render position
-		const float render_x = current_x + glyph->x_off;
+		const float render_x = current_x + (glyph->x_off * scale);
 		const float render_y =
-		    pos_y + glyph->y_off + FONT_BASELINE_OFFSET;
+		    pos_y + ((glyph->y_off + FONT_BASELINE_OFFSET) * scale);
 
 		// Check if batch is full
 		if (ui_context->batch_count + VERTICES_PER_QUAD >
@@ -420,15 +429,15 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
 		}
 
 		// Generate and append quad
-		const UIQuad quad =
-		    make_glyph_quad(glyph, render_x, render_y, color, alpha);
+		const UIQuad quad = make_glyph_quad(glyph, render_x, render_y,
+		                                    scale, color, alpha);
 		for (int i = 0; i < VERTICES_PER_QUAD; i++) {
 			ui_context->batch_vertices[ui_context->batch_count++] =
 			    quad.vertices[i];
 		}
 
 		// Advance cursor
-		current_x += glyph->advance;
+		current_x += (glyph->advance * scale);
 	}
 
 	if (auto_batch) {

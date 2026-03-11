@@ -146,6 +146,11 @@ void ui_draw_text_ex(UIContext* ui_context, const char* text, float pos_x,
                      float pos_y, const vec3 color, float alpha,
                      int screen_width, int screen_height);
 
+/** @brief Draws text with custom alpha transparency and a scale factor. */
+void ui_draw_text_scaled(UIContext* ui_context, const char* text, float pos_x,
+                         float pos_y, const vec3 color, float alpha,
+                         float scale, int screen_width, int screen_height);
+
 /** @brief Draws a solid color rectangle. */
 void ui_draw_rect(UIContext* ui_context, float rect_x, float rect_y,
                   float width, float height, const vec3 color, int screen_width,

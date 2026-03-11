@@ -57,6 +57,7 @@ void app_ui_init(AppUIOverlay* overlay)
 	overlay->help_pressed_mods = 0;
 	overlay->help_press_timer = 0.0;
 	overlay->help_global_dim = 1.0;
+	overlay->help_hover_decay = 0.0;
 	overlay->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
 	overlay->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
 	overlay->kbd_config.key_radius = DEFAULT_KBD_KEY_RADIUS;
@@ -97,10 +98,16 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 		}
 	}
 
-	/* Smooth global dimming: target is dimmed if a key is active,
-	 * otherwise 1.0 */
+	/* Decay the hover timer */
+	if (overlay->help_hover_decay > 0.0) {
+		overlay->help_hover_decay -= delta_time;
+	}
+
+	/* Smooth global dimming: target is dimmed if a key is active, or was
+	 * recently active (hover decay grace period), otherwise 1.0 */
 	double target_dim = 1.0;
 	if (overlay->help_pressed_key != -1 ||
+	    overlay->help_hover_decay > 0.0 ||
 	    overlay->help_hovered_key != -1) {
 		target_dim = 1.0 - (double)GLOBAL_DIM_MAX_FALLOFF;
 	}
@@ -123,16 +130,18 @@ typedef struct {
 static void draw_exposure_overlay(const App* app, UILayout* layout);
 static void draw_loading_indicator(const App* app);
 static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
-                                   float total_h);
+                                   float total_h,
+                                   const KeyboardLayoutConfig* scaled_cfg);
 
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
-                     const KeyPos* pos, float pos_x, float pos_y,
-                     const vec3 base_col, bool has_binding, bool is_pressed,
-                     bool is_hovered, float global_dim_mult, int screen_width,
+                     const KeyboardLayoutConfig* scaled_cfg, const KeyPos* pos,
+                     float pos_x, float pos_y, const vec3 base_col,
+                     bool has_binding, bool is_pressed, bool is_hovered,
+                     float global_dim_mult, int screen_width,
                      int screen_height);
 
 static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
-                               float pos_y, int screen_width,
+                               float pos_y, float scale, int screen_width,
                                int screen_height);
 
 static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
@@ -158,6 +167,7 @@ static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
 
 static const float GLOW_HOVER_ALPHA = 0.6F;
 static const float BLOOM_PRESS_MAX_ALPHA = 0.9F;
+static const double HOVER_DECAY_DURATION = 0.15; /**< 150ms grace period */
 
 /* UI Animation Constants */
 static const double UI_SPINNER_SPEED = 10.0;
@@ -280,58 +290,67 @@ void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
 
 		/* Center the keyboard layout (same logic as draw_help_overlay)
 		 */
-		const float total_w = 16.5F * (overlay->kbd_config.key_size +
-		                               overlay->kbd_config.key_padding);
-		const float total_h = 6.0F * (overlay->kbd_config.key_size +
-		                              overlay->kbd_config.key_padding);
+		const float ui_scale = glm_clamp(
+		    (float)screen_height / DEFAULT_BASE_RESOLUTION_HEIGHT, 0.5F,
+		    3.0F);
+		const float scaled_key_size =
+		    overlay->kbd_config.key_size * ui_scale;
+		const float scaled_key_padding =
+		    overlay->kbd_config.key_padding * ui_scale;
+
+		const float total_w =
+		    16.5F * (scaled_key_size + scaled_key_padding);
+		const float total_h =
+		    6.0F * (scaled_key_size + scaled_key_padding);
 		const float start_x =
 		    ((float)screen_width - total_w) * UI_CENTER_FACTOR;
 		const float start_y =
 		    ((float)screen_height - total_h) * UI_CENTER_FACTOR;
 
 		const float kx_pos =
-		    start_x + (kpos->x_off * (overlay->kbd_config.key_size +
-		                              overlay->kbd_config.key_padding));
+		    start_x +
+		    (kpos->x_off * (scaled_key_size + scaled_key_padding));
 		const float ky_pos =
 		    start_y +
-		    ((float)kpos->row * (overlay->kbd_config.key_size +
-		                         overlay->kbd_config.key_padding));
+		    ((float)kpos->row * (scaled_key_size + scaled_key_padding));
 
-		const float key_w =
-		    (kpos->width * overlay->kbd_config.key_size) +
-		    ((kpos->width - 1.0F) * overlay->kbd_config.key_padding);
-		const float key_h = overlay->kbd_config.key_size;
+		const float key_w = (kpos->width * scaled_key_size) +
+		                    ((kpos->width - 1.0F) * scaled_key_padding);
+		const float key_h = scaled_key_size;
 
 		if (xpos >= (double)kx_pos &&
 		    xpos <= (double)(kx_pos + key_w) &&
 		    ypos >= (double)ky_pos &&
 		    ypos <= (double)(ky_pos + key_h)) {
 			overlay->help_hovered_key = kpos->key;
+			overlay->help_hover_decay = HOVER_DECAY_DURATION;
 			break;
 		}
 	}
 }
 
 static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
-                               float pos_y, int screen_width, int screen_height)
+                               float pos_y, float scale, int screen_width,
+                               int screen_height)
 {
-	float text_w = ui_measure_text(ui_ctx, text);
+	float text_w = ui_measure_text(ui_ctx, text) * scale;
 	/* Logically const: drawing text to the batch is an UI side effect */
-	ui_draw_text(ui_ctx, text, pos_x - (text_w * UI_CENTER_FACTOR),
-	             pos_y - (DEFAULT_FONT_SIZE * UI_CENTER_FACTOR),
-	             (float*)DEFAULT_FONT_COLOR, screen_width, screen_height);
+	ui_draw_text_scaled(
+	    ui_ctx, text, pos_x - (text_w * UI_CENTER_FACTOR),
+	    pos_y - ((DEFAULT_FONT_SIZE * scale) * UI_CENTER_FACTOR),
+	    (float*)DEFAULT_FONT_COLOR, 1.0F, scale, screen_width,
+	    screen_height);
 }
 
 static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
-                     const KeyPos* pos, float pos_x, float pos_y,
-                     const vec3 base_col, bool has_binding, bool is_pressed,
-                     bool is_hovered, float global_dim_mult, int screen_width,
-                     int screen_height)
+                     const KeyboardLayoutConfig* scaled_cfg, const KeyPos* pos,
+                     float pos_x, float pos_y, const vec3 base_col,
+                     bool has_binding, bool is_pressed, bool is_hovered,
+                     float global_dim_mult, int screen_width, int screen_height)
 {
-	const float key_w =
-	    (pos->width * overlay->kbd_config.key_size) +
-	    ((pos->width - 1.0F) * overlay->kbd_config.key_padding);
-	const float key_h = overlay->kbd_config.key_size;
+	const float key_w = (pos->width * scaled_cfg->key_size) +
+	                    ((pos->width - 1.0F) * scaled_cfg->key_padding);
+	const float key_h = scaled_cfg->key_size;
 
 	/* Choose tint and alpha based on binding / press state */
 	vec3 tint;
@@ -361,8 +380,8 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 	} else {
 		/* Fallback: procedural rounded rect */
 		ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, key_w, key_h,
-		                     overlay->kbd_config.key_radius, tint,
-		                     alpha, screen_width, screen_height);
+		                     scaled_cfg->key_radius, tint, alpha,
+		                     screen_width, screen_height);
 	}
 
 	/* Layer 2: Procedural bloom on press — subtle backlit keyboard effect.
@@ -384,20 +403,22 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 		 * area */
 		static const float GLOW_SIDES =
 		    2.0F; /* both sides = expand × 2 */
-		const float glow_expand = 12.0F;
+		const float scale_ratio =
+		    scaled_cfg->key_size / overlay->kbd_config.key_size;
+		const float glow_expand = 12.0F * scale_ratio;
 		ui_draw_glow_rect(
 		    ui_ctx, pos_x - glow_expand, pos_y - glow_expand,
 		    key_w + (glow_expand * GLOW_SIDES),
 		    key_h + (glow_expand * GLOW_SIDES),
-		    overlay->kbd_config.key_radius +
-		        (glow_expand * UI_CENTER_FACTOR),
+		    scaled_cfg->key_radius + (glow_expand * UI_CENTER_FACTOR),
 		    tint, bloom_alpha, screen_width, screen_height);
 	}
 
 	/* Layer 3: Key label text */
 	const float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
 	const float label_y = pos_y + (key_h * UI_CENTER_FACTOR);
-	draw_text_centered(ui_ctx, pos->label, label_x, label_y, screen_width,
+	draw_text_centered(ui_ctx, pos->label, label_x, label_y,
+	                   scaled_cfg->label_scale, screen_width,
 	                   screen_height);
 }
 
@@ -406,10 +427,10 @@ static const float HELP_EXIT_HINT_X_OFF = 300.0F;
 static const float HELP_EXIT_HINT_Y_OFF = 50.0F;
 static const float HELP_TEXT_ALPHA = 0.8F;
 
-static const float LEGEND_Y_FACTOR = 0.5F;
-static const float LEGEND_X_START_FACTOR = 0.3F;
-static const float LEGEND_STEP_FACTOR = 0.15F;
-static const float LEGEND_COMBO_STEP_MULT = 2.0F;
+static const float LEGEND_Y_FACTOR = 0.6F;
+static const float LEGEND_X_START_FACTOR = 0.25F;
+static const float LEGEND_STEP_FACTOR = 0.18F;
+static const float LEGEND_COMBO_STEP_MULT = 1.9F;
 
 static void get_key_base_color(const AppBindingRegistry* registry, int key,
                                vec3 out_col, bool* out_has_binding)
@@ -516,10 +537,23 @@ void app_draw_help_overlay(const App* app)
 	}
 
 	/* Center the keyboard layout */
-	const float total_w = 16.5F * (app->overlay.kbd_config.key_size +
-	                               app->overlay.kbd_config.key_padding);
-	const float total_h = 6.0F * (app->overlay.kbd_config.key_size +
-	                              app->overlay.kbd_config.key_padding);
+	const float ui_scale = glm_clamp(
+	    (float)app->height / DEFAULT_BASE_RESOLUTION_HEIGHT, 0.5F, 3.0F);
+
+	KeyboardLayoutConfig scaled_cfg;
+	scaled_cfg.key_size = app->overlay.kbd_config.key_size * ui_scale;
+	scaled_cfg.key_padding = app->overlay.kbd_config.key_padding * ui_scale;
+	scaled_cfg.key_radius = app->overlay.kbd_config.key_radius * ui_scale;
+	scaled_cfg.label_scale = app->overlay.kbd_config.label_scale * ui_scale;
+	scaled_cfg.title_y_offset =
+	    app->overlay.kbd_config.title_y_offset * ui_scale;
+	scaled_cfg.detail_y_offset =
+	    app->overlay.kbd_config.detail_y_offset * ui_scale;
+
+	const float total_w =
+	    16.5F * (scaled_cfg.key_size + scaled_cfg.key_padding);
+	const float total_h =
+	    6.0F * (scaled_cfg.key_size + scaled_cfg.key_padding);
 
 	const float start_x = ((float)app->width - total_w) * UI_CENTER_FACTOR;
 	const float start_y = ((float)app->height - total_h) * UI_CENTER_FACTOR;
@@ -541,47 +575,48 @@ void app_draw_help_overlay(const App* app)
 	}
 
 	/* Exit Hint */
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "[ESC] TO EXIT HELP",
-	                (float)app->width - HELP_EXIT_HINT_X_OFF,
-	                (float)app->height - HELP_EXIT_HINT_Y_OFF,
-	                (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, app->width,
-	                app->height);
+	ui_draw_text_scaled(
+	    (UIContext*)&app->overlay.ui, "[ESC] TO EXIT HELP",
+	    (float)app->width - (HELP_EXIT_HINT_X_OFF * ui_scale),
+	    (float)app->height - (HELP_EXIT_HINT_Y_OFF * ui_scale),
+	    (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, ui_scale, app->width,
+	    app->height);
 
 	/* Title — neon cyan cyberpunk style (single draw via ui_draw_text_ex)
 	 */
 	{
 		const float title_txt_w =
-		    ui_measure_text(&app->overlay.ui, "[ APPLICATION HELP ]");
+		    ui_measure_text(&app->overlay.ui, "[ APPLICATION HELP ]") *
+		    ui_scale;
 		const float title_x = ((float)app->width * UI_CENTER_FACTOR) -
 		                      (title_txt_w * UI_CENTER_FACTOR);
-		const float title_y =
-		    start_y - app->overlay.kbd_config.title_y_offset;
-		ui_draw_text_ex((UIContext*)&app->overlay.ui,
-		                "[ APPLICATION HELP ]", title_x, title_y,
-		                (float*)CYBER_TITLE_COLOR, 1.0F, app->width,
-		                app->height);
+		const float title_y = start_y - scaled_cfg.title_y_offset;
+		ui_draw_text_scaled((UIContext*)&app->overlay.ui,
+		                    "[ APPLICATION HELP ]", title_x, title_y,
+		                    (float*)CYBER_TITLE_COLOR, 1.0F, ui_scale,
+		                    app->width, app->height);
 	}
 
 	/* Color Legend */
 	const float legend_y =
-	    start_y -
-	    (app->overlay.kbd_config.title_y_offset * LEGEND_Y_FACTOR);
+	    start_y - (scaled_cfg.title_y_offset * LEGEND_Y_FACTOR);
 	const float legend_x_start = (float)app->width * LEGEND_X_START_FACTOR;
 	const float legend_step = (float)app->width * LEGEND_STEP_FACTOR;
 
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Toggle (On/Off)",
-	                legend_x_start, legend_y, (float*)KEY_COLOR_TOGGLE,
-	                HELP_TEXT_ALPHA, app->width, app->height);
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Cycle",
-	                legend_x_start + legend_step, legend_y,
-	                (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA, app->width,
-	                app->height);
-	ui_draw_text_ex((UIContext*)&app->overlay.ui, "■ Shift+ Combo",
-	                legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT),
-	                legend_y, (float*)KEY_COLOR_COMBINATION,
-	                HELP_TEXT_ALPHA, app->width, app->height);
+	ui_draw_text_scaled((UIContext*)&app->overlay.ui, "■ Toggle (On/Off)",
+	                    legend_x_start, legend_y, (float*)KEY_COLOR_TOGGLE,
+	                    HELP_TEXT_ALPHA, ui_scale, app->width, app->height);
+	ui_draw_text_scaled((UIContext*)&app->overlay.ui, "■ Cycle",
+	                    legend_x_start + legend_step, legend_y,
+	                    (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA, ui_scale,
+	                    app->width, app->height);
+	ui_draw_text_scaled(
+	    (UIContext*)&app->overlay.ui, "■ Shift+ Combo",
+	    legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT), legend_y,
+	    (float*)KEY_COLOR_COMBINATION, HELP_TEXT_ALPHA, ui_scale,
+	    app->width, app->height);
 
-	draw_help_overlay_keys(app, start_x, start_y, total_h);
+	draw_help_overlay_keys(app, start_x, start_y, total_h, &scaled_cfg);
 }
 
 static bool is_key_active_in_overlay(int key_to_test, int active_key,
@@ -597,9 +632,12 @@ static bool is_key_active_in_overlay(int key_to_test, int active_key,
 }
 
 static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
-                                   float total_h)
+                                   float total_h,
+                                   const KeyboardLayoutConfig* scaled_cfg)
 {
 	/* help_hovered_key is now updated in app_ui_handle_mouse */
+	const float ui_scale =
+	    scaled_cfg->key_size / app->overlay.kbd_config.key_size;
 
 	/* Use the smoothly interpolated global dim multiplier to avoid flicker
 	 * when spamming. */
@@ -628,13 +666,11 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	for (unsigned int i = 0; i < num_keys; i++) {
 		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
 		const float kx_pos =
-		    start_x +
-		    (kpos->x_off * (app->overlay.kbd_config.key_size +
-		                    app->overlay.kbd_config.key_padding));
+		    start_x + (kpos->x_off * (scaled_cfg->key_size +
+		                              scaled_cfg->key_padding));
 		const float ky_pos =
-		    start_y +
-		    ((float)kpos->row * (app->overlay.kbd_config.key_size +
-		                         app->overlay.kbd_config.key_padding));
+		    start_y + ((float)kpos->row * (scaled_cfg->key_size +
+		                                   scaled_cfg->key_padding));
 
 		/* Hit test for mouse interaction & color coding */
 		vec3 base_col;
@@ -656,9 +692,10 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 			current_key_dim = 1.0F;
 		}
 
-		draw_key((UIContext*)&app->overlay.ui, &app->overlay, kpos,
-		         kx_pos, ky_pos, base_col, has_binding, is_pressed,
-		         is_hovered, current_key_dim, app->width, app->height);
+		draw_key((UIContext*)&app->overlay.ui, &app->overlay,
+		         scaled_cfg, kpos, kx_pos, ky_pos, base_col,
+		         has_binding, is_pressed, is_hovered, current_key_dim,
+		         app->width, app->height);
 	}
 
 	/* Show details for hovered or pressed key */
@@ -675,8 +712,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		if (binding != NULL) {
 			/* Show detailed description below help */
 			const float detail_y =
-			    start_y + total_h +
-			    app->overlay.kbd_config.detail_y_offset;
+			    start_y + total_h + scaled_cfg->detail_y_offset;
 			char buf[KEYBOARD_BUFFER_SIZE];
 			char mod_str[MODIFIER_BUFFER_SIZE] = "";
 
@@ -696,7 +732,8 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 			                    binding->desc);
 			draw_text_centered((UIContext*)&app->overlay.ui, buf,
 			                   (float)app->width * UI_CENTER_FACTOR,
-			                   detail_y, app->width, app->height);
+			                   detail_y, ui_scale, app->width,
+			                   app->height);
 		}
 	}
 }
