@@ -124,6 +124,10 @@ void fx_bloom_render(PostProcess* post_processing)
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
+	if (post_processing->bloom_fx.debug_step == 1) { /* Prefilter only */
+		goto end_bloom;
+	}
+
 	/* 2. Downsample */
 	shader_use(bloom->downsample_shader);
 
@@ -144,6 +148,10 @@ void fx_bloom_render(PostProcess* post_processing)
 		glViewport(0, 0, mip_dst->width, mip_dst->height);
 
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+	}
+
+	if (post_processing->bloom_fx.debug_step == 2) { /* Downsample only */
+		goto end_bloom;
 	}
 
 	/* 3. Upsample with Blending */
@@ -170,6 +178,8 @@ void fx_bloom_render(PostProcess* post_processing)
 	}
 
 	glDisable(GL_BLEND);
+
+end_bloom:
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, post_processing->width, post_processing->height);
 }

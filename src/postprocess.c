@@ -745,11 +745,29 @@ void postprocess_end(PostProcess* post_processing)
 		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
 
 		/* Bind la texture de Bloom */
+		GLuint bloom_tex = 0;
+		if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
+			int step = post_processing->bloom_fx.debug_step;
+			int mip_idx = post_processing->bloom_fx.debug_mip;
+
+			if (step == 1 || step == 2 || step == 3) {
+				/* Prefilter (step 1) uses mip 0.
+				   Downsample (step 2) uses selected mip.
+				   Upsample (step 3) uses selected mip. */
+				bloom_tex =
+				    post_processing->bloom_fx.mips[mip_idx]
+				        .texture;
+			} else {
+				/* Final (step 0) or normal mode: use
+				 * reconstructed mip 0
+				 */
+				bloom_tex =
+				    post_processing->bloom_fx.mips[0].texture;
+			}
+		}
+
 		render_utils_bind_texture_safe(
-		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM,
-		    postprocess_is_enabled(post_processing, POSTFX_BLOOM)
-		        ? post_processing->bloom_fx.mips[0].texture
-		        : 0,
+		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM, bloom_tex,
 		    post_processing->dummy_black_tex);
 
 		/* Bind la texture de Profondeur (pour le DoF) */
