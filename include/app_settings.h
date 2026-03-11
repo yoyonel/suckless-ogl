@@ -211,12 +211,13 @@ static const int MAX_FPS_TEXT_LENGTH = 64;
 static const float HELP_PRESS_DURATION = 2.0F;
 
 /* Keyboard Layout Help UI Defaults */
-static const float DEFAULT_KBD_KEY_SIZE = 55.0F;
-static const float DEFAULT_KBD_KEY_PADDING = 5.0F;
-static const float DEFAULT_KBD_KEY_RADIUS = 8.0F;
-static const float DEFAULT_KBD_LABEL_SCALE = 0.55F;
-static const float DEFAULT_KBD_TITLE_Y_OFFSET = 70.0F;
-static const float DEFAULT_KBD_DETAIL_Y_OFFSET = 50.0F;
+static const float DEFAULT_BASE_RESOLUTION_HEIGHT = 1080.0F;
+static const float DEFAULT_KBD_KEY_SIZE = 60.0F;
+static const float DEFAULT_KBD_KEY_PADDING = 10.0F;
+static const float DEFAULT_KBD_KEY_RADIUS = 10.0F;
+static const float DEFAULT_KBD_LABEL_SCALE = 0.75F;
+static const float DEFAULT_KBD_TITLE_Y_OFFSET = 140.0F;
+static const float DEFAULT_KBD_DETAIL_Y_OFFSET = 100.0F;
 /* Cyberpunk overlay visual tweaks */
 static const float DEFAULT_KBD_BLOOM_SCALE =
     1.3F; /**< Bloom quad size vs key size (subtle) */
