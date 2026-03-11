@@ -31,6 +31,8 @@ typedef struct {
 	Shader* upsample_shader;
 	GLuint fbo;
 	BloomMip mips[BLOOM_MIP_LEVELS];
+	int debug_step; /* 0: Final, 1: Prefilter, 2: Downsample, 3: Upsample */
+	int debug_mip;  /* Sub-level for Downsample/Upsample debug */
 } BloomFX;
 
 /* Initialisation des ressources Bloom */
