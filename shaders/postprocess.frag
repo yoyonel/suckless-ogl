@@ -51,6 +51,13 @@ void main()
 		return;
 	}
 
+	/* 1d. Priority Debug Check for Bloom Stages */
+	if (enableBloomDebug) {
+		vec3 bloomCol = texture(bloomTexture, TexCoords).rgb;
+		FragColor = vec4(bloomCol, 1.0);
+		return;
+	}
+
 	vec3 color;
 	/* Stencil Check: 0 = Skybox/Background, 1 = Object */
 	uint stencil = texture(stencilTexture, TexCoords).r;
