@@ -342,17 +342,18 @@ static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
 	    screen_height);
 }
 
-static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
-                     const KeyboardLayoutConfig* scaled_cfg, const KeyPos* pos,
-                     float pos_x, float pos_y, const vec3 base_col,
-                     bool has_binding, bool is_pressed, bool is_hovered,
-                     float global_dim_mult, int screen_width, int screen_height)
+static void draw_key_layer_base(UIContext* ui_ctx, const AppUIOverlay* overlay,
+                                const KeyboardLayoutConfig* scaled_cfg,
+                                const KeyPos* pos, float pos_x, float pos_y,
+                                const vec3 base_col, bool has_binding,
+                                bool is_pressed, bool is_hovered,
+                                float global_dim_mult, int screen_width,
+                                int screen_height)
 {
 	const float key_w = (pos->width * scaled_cfg->key_size) +
 	                    ((pos->width - 1.0F) * scaled_cfg->key_padding);
 	const float key_h = scaled_cfg->key_size;
 
-	/* Choose tint and alpha based on binding / press state */
 	vec3 tint;
 	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, tint);
 	float alpha = KEY_DEFAULT_ALPHA;
@@ -362,35 +363,37 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 		alpha = DEFAULT_KBD_BOUND_ALPHA;
 	}
 
-	bool is_active = (bool)(is_pressed || is_hovered);
-
-	if (is_active) {
-		/* Brighten tint on press or hover */
+	if (is_pressed || is_hovered) {
 		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
 		alpha = KEY_PRESSED_ALPHA;
 	}
-	/* Apply global dimming multiplier to base alpha */
 	alpha *= global_dim_mult;
 
-	/* Layer 1: Keycap PNG, tinted by binding color */
 	if (overlay->kbd_tex_key_base != 0U) {
 		ui_draw_textured_quad(ui_ctx, overlay->kbd_tex_key_base, pos_x,
 		                      pos_y, key_w, key_h, tint, alpha,
 		                      screen_width, screen_height);
 	} else {
-		/* Fallback: procedural rounded rect */
 		ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, key_w, key_h,
 		                     scaled_cfg->key_radius, tint, alpha,
 		                     screen_width, screen_height);
 	}
+}
 
-	/* Layer 2: Procedural bloom on press — subtle backlit keyboard effect.
-	 * Draw a slightly expanded semi-transparent rounded rect behind the key
-	 * to simulate a LED glow beneath the keycap. No texture involved.
-	 * Intensity fades as help_press_timer decreases. */
-	if (is_active) {
-		float bloom_alpha =
-		    GLOW_HOVER_ALPHA; /* Static glow for hover */
+static void draw_key_layer_effects(UIContext* ui_ctx,
+                                   const AppUIOverlay* overlay,
+                                   const KeyboardLayoutConfig* scaled_cfg,
+                                   const KeyPos* pos, float pos_x, float pos_y,
+                                   const vec3 base_col, bool is_pressed,
+                                   bool is_hovered, int screen_width,
+                                   int screen_height)
+{
+	const float key_w = (pos->width * scaled_cfg->key_size) +
+	                    ((pos->width - 1.0F) * scaled_cfg->key_padding);
+	const float key_h = scaled_cfg->key_size;
+
+	if (is_pressed || is_hovered) {
+		float bloom_alpha = GLOW_HOVER_ALPHA;
 		if (is_pressed) {
 			const float raw_intensity =
 			    (float)(overlay->help_press_timer /
@@ -399,22 +402,30 @@ static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
 			    glm_clamp(raw_intensity * BLOOM_PRESS_MAX_ALPHA,
 			              0.0F, BLOOM_PRESS_MAX_ALPHA);
 		}
-		/* Expand the glow rect symmetrically to encompass the falloff
-		 * area */
-		static const float GLOW_SIDES =
-		    2.0F; /* both sides = expand × 2 */
+
+		static const float GLOW_SIDES = 2.0F;
 		const float scale_ratio =
 		    scaled_cfg->key_size / overlay->kbd_config.key_size;
 		const float glow_expand = 12.0F * scale_ratio;
+
 		ui_draw_glow_rect(
 		    ui_ctx, pos_x - glow_expand, pos_y - glow_expand,
 		    key_w + (glow_expand * GLOW_SIDES),
 		    key_h + (glow_expand * GLOW_SIDES),
 		    scaled_cfg->key_radius + (glow_expand * UI_CENTER_FACTOR),
-		    tint, bloom_alpha, screen_width, screen_height);
+		    base_col, bloom_alpha, screen_width, screen_height);
 	}
+}
 
-	/* Layer 3: Key label text */
+static void draw_key_layer_label(UIContext* ui_ctx,
+                                 const KeyboardLayoutConfig* scaled_cfg,
+                                 const KeyPos* pos, float pos_x, float pos_y,
+                                 int screen_width, int screen_height)
+{
+	const float key_w = (pos->width * scaled_cfg->key_size) +
+	                    ((pos->width - 1.0F) * scaled_cfg->key_padding);
+	const float key_h = scaled_cfg->key_size;
+
 	const float label_x = pos_x + (key_w * UI_CENTER_FACTOR);
 	const float label_y = pos_y + (key_h * UI_CENTER_FACTOR);
 	draw_text_centered(ui_ctx, pos->label, label_x, label_y,
@@ -635,19 +646,9 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h,
                                    const KeyboardLayoutConfig* scaled_cfg)
 {
-	/* help_hovered_key is now updated in app_ui_handle_mouse */
 	const float ui_scale =
 	    scaled_cfg->key_size / app->overlay.kbd_config.key_size;
-
-	/* Use the smoothly interpolated global dim multiplier to avoid flicker
-	 * when spamming. */
 	const float global_dim_mult = (float)app->overlay.help_global_dim;
-
-	/* Determine the effective modifiers for visual highlighting.
-	 * We only want to highlight modifiers that actually triggered a
-	 * binding. If the user presses Shift+W but only 'W' is bound, Shift
-	 * shouldn't glow.
-	 */
 	int effective_mods = 0;
 	(void)get_active_binding(
 	    &app->binding_registry, app->overlay.help_pressed_key,
@@ -663,6 +664,9 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	const unsigned int num_keys =
 	    (unsigned int)(sizeof(KEY_LAYOUT_QWERTY) /
 	                   sizeof(KEY_LAYOUT_QWERTY[0]));
+
+	/* Pass 1: Keycaps (Batching all textured quads using kbd_tex_key_base)
+	 */
 	for (unsigned int i = 0; i < num_keys; i++) {
 		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
 		const float kx_pos =
@@ -672,7 +676,6 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		    start_y + ((float)kpos->row * (scaled_cfg->key_size +
 		                                   scaled_cfg->key_padding));
 
-		/* Hit test for mouse interaction & color coding */
 		vec3 base_col;
 		bool has_binding = false;
 		get_key_base_color(&app->binding_registry, kpos->key, base_col,
@@ -680,22 +683,65 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 
 		bool is_pressed = is_key_active_in_overlay(
 		    kpos->key, app->overlay.help_pressed_key, effective_mods);
-
 		bool is_hovered = is_key_active_in_overlay(
 		    kpos->key, app->overlay.help_hovered_key,
 		    hovered_effective_mods);
 
-		/* Active keys are never dimmed, only inactive background keys
-		 */
-		float current_key_dim = global_dim_mult;
-		if (is_pressed || is_hovered) {
-			current_key_dim = 1.0F;
-		}
+		float current_key_dim =
+		    (is_pressed || is_hovered) ? 1.0F : global_dim_mult;
 
-		draw_key((UIContext*)&app->overlay.ui, &app->overlay,
-		         scaled_cfg, kpos, kx_pos, ky_pos, base_col,
-		         has_binding, is_pressed, is_hovered, current_key_dim,
-		         app->width, app->height);
+		draw_key_layer_base((UIContext*)&app->overlay.ui, &app->overlay,
+		                    scaled_cfg, kpos, kx_pos, ky_pos, base_col,
+		                    has_binding, is_pressed, is_hovered,
+		                    current_key_dim, app->width, app->height);
+	}
+
+	/* Pass 2: Bloom / Effects (Batching all procedural glow quads) */
+	for (unsigned int i = 0; i < num_keys; i++) {
+		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
+		const float kx_pos =
+		    start_x + (kpos->x_off * (scaled_cfg->key_size +
+		                              scaled_cfg->key_padding));
+		const float ky_pos =
+		    start_y + ((float)kpos->row * (scaled_cfg->key_size +
+		                                   scaled_cfg->key_padding));
+
+		bool is_pressed = is_key_active_in_overlay(
+		    kpos->key, app->overlay.help_pressed_key, effective_mods);
+		bool is_hovered = is_key_active_in_overlay(
+		    kpos->key, app->overlay.help_hovered_key,
+		    hovered_effective_mods);
+
+		if (is_pressed || is_hovered) {
+			vec3 base_col;
+			bool has_binding = false;
+			get_key_base_color(&app->binding_registry, kpos->key,
+			                   base_col, &has_binding);
+			if (is_pressed || is_hovered) {
+				glm_vec3_clamp(base_col, KEY_PRESS_BRIGHTEN_MIN,
+				               1.0F);
+			}
+
+			draw_key_layer_effects(
+			    (UIContext*)&app->overlay.ui, &app->overlay,
+			    scaled_cfg, kpos, kx_pos, ky_pos, base_col,
+			    is_pressed, is_hovered, app->width, app->height);
+		}
+	}
+
+	/* Pass 3: Labels (Batching all font glyph quads) */
+	for (unsigned int i = 0; i < num_keys; i++) {
+		const KeyPos* kpos = &KEY_LAYOUT_QWERTY[i];
+		const float kx_pos =
+		    start_x + (kpos->x_off * (scaled_cfg->key_size +
+		                              scaled_cfg->key_padding));
+		const float ky_pos =
+		    start_y + ((float)kpos->row * (scaled_cfg->key_size +
+		                                   scaled_cfg->key_padding));
+
+		draw_key_layer_label((UIContext*)&app->overlay.ui, scaled_cfg,
+		                     kpos, kx_pos, ky_pos, app->width,
+		                     app->height);
 	}
 
 	/* Show details for hovered or pressed key */

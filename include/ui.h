@@ -59,6 +59,7 @@ typedef struct {
 	int current_screen_width;  /**< Screen width for current batch */
 	int current_screen_height; /**< Screen height for current batch */
 	int batch_active;          /**< Is a batch currently active? */
+	GLuint current_texture;    /**< Currently bound texture in the batch */
 } UIContext;
 
 /**
