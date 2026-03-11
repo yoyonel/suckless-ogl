@@ -7,6 +7,7 @@
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "postprocess.h"
+#include "texture.h"
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
@@ -16,35 +17,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Load an RGBA PNG into an OpenGL texture. Returns 0 on failure. */
-static GLuint load_png_texture(const char* path)
-{
-	int img_w = 0;
-	int img_h = 0;
-	int channels = 0;
-	stbi_set_flip_vertically_on_load(0);
-	unsigned char* data = stbi_load(path, &img_w, &img_h, &channels, 4);
-	if (!data) {
-		return 0;
-	}
-	GLuint tex = 0;
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_w, img_h, 0, GL_RGBA,
-	             GL_UNSIGNED_BYTE, data);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	stbi_image_free(data);
-	return tex;
-}
+/* --- Forward Declarations (Internal) --- */
+static void draw_exposure_overlay(const App* app, UILayout* layout);
+static void draw_loading_indicator(const App* app);
+static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
+                                   float total_h,
+                                   const KeyboardLayoutConfig* scaled_cfg);
 
-static const float GLOBAL_DIM_MAX_FALLOFF =
-    0.7F; /* Max alpha reduction for background keys when a key is pressed */
-static const float GLOBAL_DIM_SMOOTH_FACTOR =
-    15.0F; /* Speed of dimming interpolation */
+static void draw_key_layer_base(UIContext* ui_ctx, const AppUIOverlay* overlay,
+                                const KeyboardLayoutConfig* scaled_cfg,
+                                const KeyPos* pos, float pos_x, float pos_y,
+                                const vec3 base_col, bool has_binding,
+                                bool is_pressed, bool is_hovered,
+                                float global_dim_mult, int screen_width,
+                                int screen_height);
+
+static void draw_key_layer_effects(UIContext* ui_ctx,
+                                   const AppUIOverlay* overlay,
+                                   const KeyboardLayoutConfig* scaled_cfg,
+                                   const KeyPos* pos, float pos_x, float pos_y,
+                                   const vec3 base_col, bool is_pressed,
+                                   bool is_hovered, int screen_width,
+                                   int screen_height);
+
+static void draw_key_layer_label(UIContext* ui_ctx,
+                                 const KeyboardLayoutConfig* scaled_cfg,
+                                 const KeyPos* pos, float pos_x, float pos_y,
+                                 int screen_width, int screen_height);
+
+static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
+                               float pos_y, float scale, int screen_width,
+                               int screen_height);
+
+static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
+                                            int key, int mods,
+                                            int* out_effective_mods);
 
 void app_ui_init(AppUIOverlay* overlay)
 {
@@ -69,9 +76,9 @@ void app_ui_init(AppUIOverlay* overlay)
 
 	/* Load cyberpunk keyboard PNG assets */
 	overlay->kbd_tex_frame =
-	    load_png_texture("assets/textures/ui/kbd_panel_frame.png");
+	    texture_load_rgba_png("assets/textures/ui/kbd_panel_frame.png");
 	overlay->kbd_tex_key_base =
-	    load_png_texture("assets/textures/ui/kbd_key_base.png");
+	    texture_load_rgba_png("assets/textures/ui/kbd_key_base.png");
 	overlay->help_captured_camera = 0;
 }
 
@@ -117,161 +124,6 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 	                            (double)GLOBAL_DIM_SMOOTH_FACTOR *
 	                            delta_time;
 }
-
-typedef struct {
-	int key;
-	int row;
-	float x_off; /* In units of KEY_SIZE + KEY_PADDING */
-	float width; /* In units of KEY_SIZE */
-	const char* label;
-} KeyPos;
-
-/* --- Forward Declarations (Internal) --- */
-static void draw_exposure_overlay(const App* app, UILayout* layout);
-static void draw_loading_indicator(const App* app);
-static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
-                                   float total_h,
-                                   const KeyboardLayoutConfig* scaled_cfg);
-
-static void draw_key(UIContext* ui_ctx, const AppUIOverlay* overlay,
-                     const KeyboardLayoutConfig* scaled_cfg, const KeyPos* pos,
-                     float pos_x, float pos_y, const vec3 base_col,
-                     bool has_binding, bool is_pressed, bool is_hovered,
-                     float global_dim_mult, int screen_width,
-                     int screen_height);
-
-static void draw_text_centered(UIContext* ui_ctx, const char* text, float pos_x,
-                               float pos_y, float scale, int screen_width,
-                               int screen_height);
-
-static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
-                                            int key, int mods,
-                                            int* out_effective_mods);
-
-enum {
-	DEBUG_TEXT_BUFFER_SIZE = 128,
-	RANGE_TEXT_BUFFER_SIZE = 64,
-	ENV_TEXT_BUFFER_SIZE = 256,
-	EXPOSURE_TEXT_BUFFER_SIZE = 64
-};
-
-static const float GRAPH_TEXT_PADDING = 20.0F;
-static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
-static const float LUMINANCE_EPSILON = 0.0001F;
-static const float DEBUG_TEXT_Y_OFFSET = DEFAULT_FONT_SIZE * 4.0F;
-static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
-static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};
-static const vec3 HISTO_BAR_COLOR_BLUE = {0.0F, 0.5F, 0.8F};
-static const vec3 HISTO_BAR_COLOR_RED = {0.8F, 0.5F, 0.0F};
-static const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F};
-
-static const float GLOW_HOVER_ALPHA = 0.6F;
-static const float BLOOM_PRESS_MAX_ALPHA = 0.9F;
-static const double HOVER_DECAY_DURATION = 0.15; /**< 150ms grace period */
-
-/* UI Animation Constants */
-static const double UI_SPINNER_SPEED = 10.0;
-static const float UI_LOADING_TEXT_WIDTH_FACTOR = 20.0F;
-static const float UI_SPINNER_SIZE = 64.0F;
-static const float UI_CENTER_FACTOR = 0.5F;
-static const float UI_TEXT_OFFSET_FACTOR = 0.8F;
-static const vec3 UI_SPINNER_COLOR = {90.0F / 255.0F, 111.0F / 255.0F,
-                                      185.0F / 255.0F};
-static const size_t UI_LOADING_TEXT_SIZE = 64;
-
-static const vec3 KEY_COLOR_DEFAULT = {0.15F, 0.15F, 0.20F};
-static const vec3 KEY_COLOR_TOGGLE = {0.0F, 0.82F, 0.92F}; /* Cyan: On/Off */
-static const vec3 KEY_COLOR_CYCLE = {0.12F, 0.90F, 0.12F}; /* Green: Cycle */
-static const vec3 KEY_COLOR_COMBINATION = {1.0F, 0.56F,
-                                           0.05F}; /* Orange: Combo */
-static const vec3 HELP_BG_COLOR = {0.05F, 0.05F, 0.07F};
-static const float HELP_BG_ALPHA = 0.88F;
-static const float KEY_PRESSED_ALPHA = 0.95F;
-static const float KEY_DEFAULT_ALPHA = 0.4F;
-static const vec3 CYBER_TITLE_COLOR = {0.0F, 0.90F, 0.95F}; /* Neon cyan */
-static const float KEY_PRESS_BRIGHTEN_MIN = 0.6F; /* Min component on press */
-static const float PANEL_FRAME_ALPHA =
-    0.72F; /* Panel PNG opacity: scene visible behind */
-static const float BLOOM_MAX_INTENSITY =
-    0.5F; /* Cap bloom so it stays subtle */
-enum {
-	ROW_SYSTEM = 0,
-	ROW_NUMBERS = 1,
-	ROW_QWERTY = 2,
-	ROW_ASDF = 3,
-	ROW_ZXCV = 4,
-	ROW_BOTTOM = 5,
-	MODIFIER_BUFFER_SIZE = 16,
-	KEYBOARD_BUFFER_SIZE = 256
-};
-
-static const KeyPos KEY_LAYOUT_QWERTY[] = {
-    /* Row 0: Esc + Func */
-    {GLFW_KEY_ESCAPE, ROW_SYSTEM, 0.0F, 1.0F, "Esc"},
-    {GLFW_KEY_F1, ROW_SYSTEM, 2.0F, 1.0F, "F1"},
-    {GLFW_KEY_F2, ROW_SYSTEM, 3.0F, 1.0F, "F2"},
-    {GLFW_KEY_F3, ROW_SYSTEM, 4.0F, 1.0F, "F3"},
-    {GLFW_KEY_F4, ROW_SYSTEM, 5.0F, 1.0F, "F4"},
-    {GLFW_KEY_F5, ROW_SYSTEM, 6.5F, 1.0F, "F5"},
-    {GLFW_KEY_F6, ROW_SYSTEM, 7.5F, 1.0F, "F6"},
-    {GLFW_KEY_F9, ROW_SYSTEM, 11.5F, 1.0F, "F9"},
-    {GLFW_KEY_F12, ROW_SYSTEM, 14.5F, 1.2F, "F12"},
-
-    /* Row 1: Numbers/Symbols */
-    {GLFW_KEY_GRAVE_ACCENT, ROW_NUMBERS, 0.0F, 1.0F, "~"},
-    {GLFW_KEY_1, ROW_NUMBERS, 1.0F, 1.0F, "1"},
-    {GLFW_KEY_2, ROW_NUMBERS, 2.0F, 1.0F, "2"},
-    {GLFW_KEY_3, ROW_NUMBERS, 3.0F, 1.0F, "3"},
-    {GLFW_KEY_4, ROW_NUMBERS, 4.0F, 1.0F, "4"},
-    {GLFW_KEY_5, ROW_NUMBERS, 5.0F, 1.0F, "5"},
-    {GLFW_KEY_6, ROW_NUMBERS, 6.0F, 1.0F, "6"},
-    {GLFW_KEY_7, ROW_NUMBERS, 7.0F, 1.0F, "7"},
-    {GLFW_KEY_8, ROW_NUMBERS, 8.0F, 1.0F, "8"},
-    {GLFW_KEY_9, ROW_NUMBERS, 9.0F, 1.0F, "9"},
-    {GLFW_KEY_0, ROW_NUMBERS, 10.0F, 1.0F, "0"},
-
-    /* Row 2: QWERTY */
-    {GLFW_KEY_TAB, ROW_QWERTY, 0.0F, 1.5F, "Tab"},
-    {GLFW_KEY_Q, ROW_QWERTY, 1.5F, 1.0F, "Q"},
-    {GLFW_KEY_W, ROW_QWERTY, 2.5F, 1.0F, "W"},
-    {GLFW_KEY_E, ROW_QWERTY, 3.5F, 1.0F, "E"},
-    {GLFW_KEY_R, ROW_QWERTY, 4.5F, 1.0F, "R"},
-    {GLFW_KEY_T, ROW_QWERTY, 5.5F, 1.0F, "T"},
-    {GLFW_KEY_Y, ROW_QWERTY, 6.5F, 1.0F, "Y"},
-    {GLFW_KEY_U, ROW_QWERTY, 7.5F, 1.0F, "U"},
-    {GLFW_KEY_I, ROW_QWERTY, 8.5F, 1.0F, "I"},
-    {GLFW_KEY_O, ROW_QWERTY, 9.5F, 1.0F, "O"},
-    {GLFW_KEY_P, ROW_QWERTY, 10.5F, 1.0F, "P"},
-
-    /* Row 3: ASDF */
-    {GLFW_KEY_CAPS_LOCK, ROW_ASDF, 0.0F, 1.8F, "Caps"},
-    {GLFW_KEY_A, ROW_ASDF, 1.8F, 1.0F, "A"},
-    {GLFW_KEY_S, ROW_ASDF, 2.8F, 1.0F, "S"},
-    {GLFW_KEY_D, ROW_ASDF, 3.8F, 1.0F, "D"},
-    {GLFW_KEY_F, ROW_ASDF, 4.8F, 1.0F, "F"},
-    {GLFW_KEY_G, ROW_ASDF, 5.8F, 1.0F, "G"},
-    {GLFW_KEY_H, ROW_ASDF, 6.8F, 1.0F, "H"},
-    {GLFW_KEY_J, ROW_ASDF, 7.8F, 1.0F, "J"},
-    {GLFW_KEY_K, ROW_ASDF, 8.8F, 1.0F, "K"},
-    {GLFW_KEY_L, ROW_ASDF, 9.8F, 1.0F, "L"},
-
-    /* Row 4: ZXCV */
-    {GLFW_KEY_LEFT_SHIFT, ROW_ZXCV, 0.0F, 2.3F, "Shift"},
-    {GLFW_KEY_Z, ROW_ZXCV, 2.3F, 1.0F, "Z"},
-    {GLFW_KEY_X, ROW_ZXCV, 3.3F, 1.0F, "X"},
-    {GLFW_KEY_C, ROW_ZXCV, 4.3F, 1.0F, "C"},
-    {GLFW_KEY_V, ROW_ZXCV, 5.3F, 1.0F, "V"},
-    {GLFW_KEY_B, ROW_ZXCV, 6.3F, 1.0F, "B"},
-    {GLFW_KEY_N, ROW_ZXCV, 7.3F, 1.0F, "N"},
-    {GLFW_KEY_M, ROW_ZXCV, 8.3F, 1.0F, "M"},
-
-    /* Row 5: Space/System */
-    {GLFW_KEY_LEFT_CONTROL, ROW_BOTTOM, 0.0F, 1.5F, "Ctrl"},
-    {GLFW_KEY_SPACE, ROW_BOTTOM, 3.8F, 6.0F, "Space"},
-    {GLFW_KEY_PAGE_UP, ROW_ZXCV, 13.5F, 1.3F, "PgUp"},
-    {GLFW_KEY_PAGE_DOWN, ROW_BOTTOM, 13.5F, 1.3F, "PgDn"},
-    {GLFW_KEY_UP, ROW_ZXCV, 15.0F, 1.0F, "Up"},
-    {GLFW_KEY_DOWN, ROW_BOTTOM, 15.0F, 1.0F, "Dn"}};
 
 void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
                          int screen_width, int screen_height)
@@ -432,16 +284,6 @@ static void draw_key_layer_label(UIContext* ui_ctx,
 	                   scaled_cfg->label_scale, screen_width,
 	                   screen_height);
 }
-
-/* UI Layout Constants */
-static const float HELP_EXIT_HINT_X_OFF = 300.0F;
-static const float HELP_EXIT_HINT_Y_OFF = 50.0F;
-static const float HELP_TEXT_ALPHA = 0.8F;
-
-static const float LEGEND_Y_FACTOR = 0.6F;
-static const float LEGEND_X_START_FACTOR = 0.25F;
-static const float LEGEND_STEP_FACTOR = 0.18F;
-static const float LEGEND_COMBO_STEP_MULT = 1.9F;
 
 static void get_key_base_color(const AppBindingRegistry* registry, int key,
                                vec3 out_col, bool* out_has_binding)
@@ -806,11 +648,6 @@ static void draw_luminance_histogram_graph(const App* app, const int* buckets,
                                            int size, float min_lum,
                                            float max_lum)
 {
-	static const float GRAPH_POS_X = 20.0F;
-	static const float GRAPH_POS_Y_OFF = 200.0F;
-	static const float GRAPH_DIM_W = 300.0F;
-	static const float GRAPH_DIM_H = 100.0F;
-
 	const float graph_x = GRAPH_POS_X;
 	const float graph_y = (float)app->height - GRAPH_POS_Y_OFF;
 	const float graph_w = GRAPH_DIM_W;
@@ -862,7 +699,6 @@ static void draw_luminance_histogram_graph(const App* app, const int* buckets,
 
 void app_draw_debug_overlay(const App* app)
 {
-	static const int HISTO_BUCKETS = 256;
 	int buckets[HISTO_BUCKETS];
 	float min_lum = 0.0F;
 	float max_lum = 0.0F;

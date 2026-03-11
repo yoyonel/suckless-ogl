@@ -81,4 +81,12 @@ void texture_generate_hdr_mipmap(GLuint tex);
 float* texture_load_pixels(const char* path, int* width, int* height,
                            int* channels);
 
+/**
+ * @brief Loads a PNG image from disk and creates an OpenGL RGBA texture.
+ *
+ * @param path File system path to the PNG image.
+ * @return GLuint The OpenGL texture ID, or 0 on failure.
+ */
+GLuint texture_load_rgba_png(const char* path);
+
 #endif /* TEXTURE_H */

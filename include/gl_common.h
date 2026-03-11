@@ -48,6 +48,8 @@ typedef unsigned int GLbitfield;
 #define GL_RGBA 0x1908
 #define GL_FLOAT 0x1406
 #define GL_HALF_FLOAT 0x140B
+#define GL_UNSIGNED_BYTE 0x1401
+#define GL_UNSIGNED_INT 0x1405
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
 #define GL_STREAM_DRAW 0x88E0
 #define GL_WRITE_ONLY 0x88B9
