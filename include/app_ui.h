@@ -34,6 +34,9 @@ typedef struct {
 	int help_pressed_mods;
 	double help_press_timer;
 	double help_global_dim;
+	double help_hover_decay; /**< Grace period for dimming when mouse leaves
+	                          * a key
+	                          */
 
 	/* Cyberpunk keyboard overlay textures (PNG assets) */
 	GLuint
