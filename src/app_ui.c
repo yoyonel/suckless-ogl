@@ -291,9 +291,11 @@ static void get_key_base_color(const AppBindingRegistry* registry, int key,
 	const AppBinding* direct = app_binding_registry_get(registry, key, 0);
 	const AppBinding* shifted =
 	    app_binding_registry_get(registry, key, (int)GLFW_MOD_SHIFT);
+	const AppBinding* alted =
+	    app_binding_registry_get(registry, key, (int)GLFW_MOD_ALT);
 
 	glm_vec3_copy((float*)KEY_COLOR_DEFAULT, out_col);
-	if (direct != NULL || shifted != NULL) {
+	if (direct != NULL || shifted != NULL || alted != NULL) {
 		*out_has_binding = true;
 	} else {
 		*out_has_binding = false;
@@ -314,7 +316,7 @@ static void get_key_base_color(const AppBindingRegistry* registry, int key,
 		} else {
 			glm_vec3_copy((float*)KEY_COLOR_TOGGLE, out_col);
 		}
-	} else if (shifted != NULL) {
+	} else if (shifted != NULL || alted != NULL) {
 		glm_vec3_copy((float*)KEY_COLOR_COMBINATION, out_col);
 	}
 }
@@ -464,7 +466,7 @@ void app_draw_help_overlay(const App* app)
 	                    (float*)KEY_COLOR_CYCLE, HELP_TEXT_ALPHA, ui_scale,
 	                    app->width, app->height);
 	ui_draw_text_scaled(
-	    (UIContext*)&app->overlay.ui, "■ Shift+ Combo",
+	    (UIContext*)&app->overlay.ui, "■ Combination (Shift/Alt+)",
 	    legend_x_start + (legend_step * LEGEND_COMBO_STEP_MULT), legend_y,
 	    (float*)KEY_COLOR_COMBINATION, HELP_TEXT_ALPHA, ui_scale,
 	    app->width, app->height);
@@ -697,6 +699,23 @@ static void draw_luminance_histogram_graph(const App* app, const int* buckets,
 	             app->width, app->height);
 }
 
+static void draw_bloom_debug_status(const App* app, UILayout* layout)
+{
+	if (postprocess_is_enabled((PostProcess*)&app->postprocess,
+	                           POSTFX_BLOOM_DEBUG)) {
+		char buf[DEBUG_TEXT_BUFFER_SIZE];
+		int step = app->postprocess.bloom_fx.debug_step;
+		int mip = app->postprocess.bloom_fx.debug_mip;
+		const char* stages[] = {"Final Map", "Prefilter", "Downsample",
+		                        "Upsample"};
+
+		(void)safe_snprintf(buf, sizeof(buf),
+		                    "Bloom Debug: %s | Mip: %d",
+		                    stages[step % 4], mip);
+		ui_layout_text(layout, buf, (float*)DEBUG_ORANGE_COLOR);
+	}
+}
+
 void app_draw_debug_overlay(const App* app)
 {
 	int buckets[HISTO_BUCKETS];
@@ -825,6 +844,7 @@ void app_render_ui(const App* app)
 
 	draw_main_info_overlay(app, &layout);
 	draw_exposure_overlay(app, &layout);
+	draw_bloom_debug_status(app, &layout);
 	draw_loading_indicator(app);
 
 	if (postprocess_is_enabled((PostProcess*)&app->postprocess,
