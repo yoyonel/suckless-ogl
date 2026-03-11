@@ -75,8 +75,12 @@ The UI automatically color-codes keys based on their `BindingType`:
 
 - **Cyan (`BINDING_TYPE_TOGGLE`)**: On/Off switches.
 - **Green (`BINDING_TYPE_CYCLE`)**: Actions that cycle through multiple states.
-- **Orange/Yellow (`GLFW_MOD_SHIFT`)**: Combination keys.
+- **Orange/Yellow (`GLFW_MOD_SHIFT`, `GLFW_MOD_ALT`)**: Combination keys.
 - **Blue (`BINDING_TYPE_ACTION`)**: One-shot actions (Reset, Screenshot, Exit).
+
+### Status Bar Integration
+
+Some debug modes (like Bloom Debug) integrate directly with the **Main Info Overlay** (F1) to display the currently active stage or sub-level (mip), providing real-time feedback during navigation.
 
 ## UI Customization
 
