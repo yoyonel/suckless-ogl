@@ -194,3 +194,9 @@ const bool enableStencilDebug = bool(OPT_ENABLE_STENCIL_DEBUG);
 #else
 #define enableStencilDebug ((activeEffects & (1u << 16u)) != 0u)
 #endif
+
+#ifdef OPT_ENABLE_BLOOM_DEBUG
+const bool enableBloomDebug = bool(OPT_ENABLE_BLOOM_DEBUG);
+#else
+#define enableBloomDebug ((activeEffects & (1u << 17u)) != 0u)
+#endif
