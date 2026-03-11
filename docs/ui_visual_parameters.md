@@ -31,6 +31,7 @@ These values control how individual keys react to interaction and their binding 
 Logic parameters that ensure a smooth "Premium" feel during mouse or keyboard usage.
 
 ### Hover Decay Stabilization
+
 ```mermaid
 graph LR
     A[Mouse over Key] --> B[Target Dim: 0.3]

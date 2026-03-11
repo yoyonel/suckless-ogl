@@ -637,3 +637,22 @@ M->>M: Poll & Process...
 
   </div>
 </div>
+
+
+## [UI Visual Parameters Reference](../ui_visual_parameters/)
+
+<div class="diagram-item">
+  <a href="../ui_visual_parameters/#hover-decay-stabilization" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Hover Decay Stabilization</a> : <span style="opacity: 0.6; font-size: 0.85em;">Logic parameters that ensure a smooth &quot;Premium&quot; feel during mouse or keyboard usage.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+A[Mouse over Key] --> B[Target Dim: 0.3]
+B --> C{Mouse leaves?}
+C -- Yes --> D[Wait 150ms]
+D -- Still Empty --> E[Target Dim: 1.0]
+D -- Enters New Key --> B
+```
+
+  </div>
+</div>
