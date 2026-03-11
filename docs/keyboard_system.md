@@ -15,9 +15,10 @@ The help overlay utilizes an advanced hybrid rendering approach defined in `src/
 
 1. **Cyberpunk Textures**: The base panel UI frame and individual keys are rendered using high-quality PNG textures (`kbd_panel_frame.png` and `kbd_key_base.png`). Unbound keys sit quietly in the background, while bound keys are tinted via shader according to their binding type constraint (Toggle, Cycle, Combo).
 2. **Procedural Neon Bloom**: When a key is pressed, an intense, procedural SDF neon border glow is drawn directly by `ui.frag` (Mode `5.0`). The intensity of the glow follows a mathematically precise exponential decay for a crisp, luminous look.
-3. **Spotlight Dimming**: Activating a key smoothly dims (interp factor) the rest of the unbounded keyboard keys into the background into a "spotlight" focus effect.
-4. **Smart Modifier Highlighting**: The overlay actively queries the binding registry to determine whether a combination of keys relies on a given modifier (e.g. `Shift`). Pressing physical modifier keys alone, or paired carelessly with non-modifier keys, won't artificially light up the Shift key unless the active function strictly demands it.
-
+3. **Responsive UI Scaling**: The entire overlay scales dynamically based on the window height. A `ui_scale` factor is calculated relative to a reference resolution (1080p), ensuring the overlay remains perfectly proportioned and legible on any screen size (from 720p to 4K).
+4. **Scalable Text Rendering**: Uses `ui_draw_text_scaled()` to render Freetype glyphs with on-the-fly metric scaling (width, height, advance, and offsets). This allows text to scale perfectly with the UI shapes without requiring multiple font rasterization passes.
+5. **Spotlight Dimming & Hover Decay**: Activating or hovering over a key smoothly dims the rest of the keyboard. To prevent flickering when the mouse passes over gaps between keys, a **150ms Hover Decay** timer maintains the dimmed state for a smooth visual experience.
+6. **Smart Modifier Highlighting**: The overlay actively queries the binding registry to determine whether a combination of keys relies on a given modifier (e.g. `Shift`). Pressing physical modifier keys alone, or paired carelessly with non-modifier keys, won't artificially light up the Shift key unless the active function strictly demands it.
 
 ## Architecture
 
