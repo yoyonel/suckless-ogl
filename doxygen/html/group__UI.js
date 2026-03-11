@@ -12,14 +12,7 @@ var group__UI =
     [ "DEFAULT_FPS_SMOOTHING", "group__UI.html#gaf0ca05071da1b9e491df5baaca3eb73e", null ],
     [ "DEFAULT_FPS_TARGET", "group__UI.html#ga47843426246814c211484644236efae2", null ],
     [ "DEFAULT_FPS_WINDOW", "group__UI.html#gab9848efe0430294ec2ff6ec8d2659691", null ],
-    [ "DEFAULT_KBD_DETAIL_Y_OFFSET", "group__UI.html#ga23542a0451132870d185f991f8c3154f", null ],
-    [ "DEFAULT_KBD_KEY_PADDING", "group__UI.html#gac5df6d20366b3a0bb4d7f26c391f8dbd", null ],
-    [ "DEFAULT_KBD_KEY_RADIUS", "group__UI.html#ga0509f78c29476302f36693f736264bef", null ],
-    [ "DEFAULT_KBD_KEY_SIZE", "group__UI.html#gadde8ed9e673f1fa854c78195518a525e", null ],
-    [ "DEFAULT_KBD_LABEL_SCALE", "group__UI.html#ga9f8184463c89711f06c8873ad4bcdffc", null ],
-    [ "DEFAULT_KBD_TITLE_Y_OFFSET", "group__UI.html#gaa1464a6461d033abd30eee12121bbc29", null ],
     [ "DEFAULT_SPACING", "group__UI.html#gabfa53e97d39b21b0639f934b842101a8", null ],
     [ "HALF_OFFSET_MULTIPLIER", "group__UI.html#ga07d578ea18451fba46831f6040d5914b", null ],
-    [ "HELP_PRESS_DURATION", "group__UI.html#ga06cfbed95bb0094c1887b051b7c376ba", null ],
     [ "MAX_FPS_TEXT_LENGTH", "group__UI.html#ga5ae1ae39c9d24fe3bc2206997ac0564b", null ]
 ];

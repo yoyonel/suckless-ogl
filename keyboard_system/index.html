@@ -13,7 +13,7 @@
         <link rel="prev" href="../mouse_camera_control/">
       
       
-        <link rel="next" href="../gpu-rendering-synchronization/">
+        <link rel="next" href="../ui_visual_parameters/">
       
       
         
@@ -24,7 +24,7 @@
     
     
       
-        <title>Keyboard System - Suckless OGL</title>
+        <title>Keyboard Help System - Suckless OGL</title>
       
     
     
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Keyboard System
+              Keyboard Help System
             
           </span>
         </div>
@@ -1175,7 +1175,7 @@
   <span class="md-ellipsis">
     
   
-    Keyboard System
+    Keyboard Help System
   
 
     
@@ -1193,7 +1193,7 @@
   <span class="md-ellipsis">
     
   
-    Keyboard System
+    Keyboard Help System
   
 
     
@@ -1223,6 +1223,17 @@
     <span class="md-ellipsis">
       
         Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visual-design-polish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Design &amp; Polish
       
     </span>
   </a>
@@ -1333,6 +1344,62 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_visual_parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Visual Parameters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ui_batching_optimization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    UI Batching Optimization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2662,7 +2729,17 @@
 <p>The help system provides a modern, interactive visualization of the application's key bindings. It consists of two main parts:</p>
 <ol>
 <li><strong><code>AppBindingRegistry</code></strong>: A centralized data structure that stores all key metadata (key, modifiers, category, description).</li>
-<li><strong>Help Overlay UI</strong>: A dynamic keyboard layout renderer that uses the registry to highlight active keys and show their functionality.</li>
+<li><strong>Help Overlay UI</strong>: A dynamic keyboard layout renderer that uses the registry to highlight active keys and show their functionality. It features a Cyberpunk aesthetic using pre-rendered PNGs and procedural SDF (Signed Distance Field) effects.</li>
+</ol>
+<h2 id="visual-design-polish">Visual Design &amp; Polish<a class="headerlink" href="#visual-design-polish" title="Permanent link">¶</a></h2>
+<p>The help overlay utilizes an advanced hybrid rendering approach defined in <code>src/app_ui.c</code> and <code>shaders/ui.frag</code>:</p>
+<ol>
+<li><strong>Cyberpunk Textures</strong>: The base panel UI frame and individual keys are rendered using high-quality PNG textures (<code>kbd_panel_frame.png</code> and <code>kbd_key_base.png</code>). Unbound keys sit quietly in the background, while bound keys are tinted via shader according to their binding type constraint (Toggle, Cycle, Combo).</li>
+<li><strong>Procedural Neon Bloom</strong>: When a key is pressed, an intense, procedural SDF neon border glow is drawn directly by <code>ui.frag</code> (Mode <code>5.0</code>). The intensity of the glow follows a mathematically precise exponential decay for a crisp, luminous look.</li>
+<li><strong>Responsive UI Scaling</strong>: The entire overlay scales dynamically based on the window height. A <code>ui_scale</code> factor is calculated relative to a reference resolution (1080p), ensuring the overlay remains perfectly proportioned and legible on any screen size (from 720p to 4K).</li>
+<li><strong>Scalable Text Rendering</strong>: Uses <code>ui_draw_text_scaled()</code> to render Freetype glyphs with on-the-fly metric scaling (width, height, advance, and offsets). This allows text to scale perfectly with the UI shapes without requiring multiple font rasterization passes.</li>
+<li><strong>Spotlight Dimming &amp; Hover Decay</strong>: Activating or hovering over a key smoothly dims the rest of the keyboard. To prevent flickering when the mouse passes over gaps between keys, a <strong>150ms Hover Decay</strong> timer maintains the dimmed state for a smooth visual experience.</li>
+<li><strong>Smart Modifier Highlighting</strong>: The overlay actively queries the binding registry to determine whether a combination of keys relies on a given modifier (e.g. <code>Shift</code>). Pressing physical modifier keys alone, or paired carelessly with non-modifier keys, won't artificially light up the Shift key unless the active function strictly demands it.</li>
 </ol>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
 <h3 id="centralized-registry">Centralized Registry<a class="headerlink" href="#centralized-registry" title="Permanent link">¶</a></h3>
@@ -2708,8 +2785,8 @@
 <li><strong>Blue (<code>BINDING_TYPE_ACTION</code>)</strong>: One-shot actions (Reset, Screenshot, Exit).</li>
 </ul>
 <h2 id="ui-customization">UI Customization<a class="headerlink" href="#ui-customization" title="Permanent link">¶</a></h2>
-<p>The keyboard layout is defined in <code>src/app_ui.c</code> and is centered automatically. You can adjust the visual parameters (size, padding, glassmorphism intensity) via the <code>KeyboardLayoutConfig</code> in <code>app_init</code>.</p>
-<p>The key positions and labels are stored in the <code>KEY_LAYOUT_QWERTY</code> array within <code>app_ui.c</code>. Each entry defines:</p>
+<p>The keyboard layout is defined in <code>include/app_ui.h</code> and is centered automatically. You can adjust the visual parameters (size, padding, textures) via the <code>KeyboardLayoutConfig</code> and associated constants in <code>include/app_ui.h</code>.</p>
+<p>The key positions and labels are stored in the <code>KEY_LAYOUT_QWERTY</code> array within <code>include/app_ui.h</code>. Each entry defines:</p>
 <ul>
 <li>The <code>key</code> handled.</li>
 <li>The <code>row</code> index.</li>
@@ -2737,7 +2814,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 11, 2026 13:52:14 UTC">March 11, 2026</span>
   </span>
 
     

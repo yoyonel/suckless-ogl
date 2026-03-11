@@ -13,5 +13,20 @@ var gpu__profiler_8h =
     [ "gpu_profiler_reset_samplers", "gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face", null ],
     [ "gpu_profiler_set_enabled", "gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02", null ],
     [ "gpu_profiler_start_stage", "gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530", null ],
-    [ "gpu_stage_cleanup_raii", "gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9", null ]
+    [ "gpu_stage_cleanup_raii", "gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9", null ],
+    [ "GPU_PROFILER_AUTO_EXPOSURE_COLOR", "gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b", null ],
+    [ "GPU_PROFILER_BLOOM_COLOR", "gpu__profiler_8h.html#a689e67a9ac7c9833cea0e441ab41a482", null ],
+    [ "GPU_PROFILER_COMPOSITE_COLOR", "gpu__profiler_8h.html#aefa79da2c8228eec514a28467923a07d", null ],
+    [ "GPU_PROFILER_DOF_COLOR", "gpu__profiler_8h.html#ac8514b41b0bfb22f696feac256ac0607", null ],
+    [ "GPU_PROFILER_ENV_COLOR", "gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3", null ],
+    [ "GPU_PROFILER_GI_DEBUG_COLOR", "gpu__profiler_8h.html#a623ee165a10838fc9e485ff1b11e3aeb", null ],
+    [ "GPU_PROFILER_GI_SYNC_COLOR", "gpu__profiler_8h.html#a49240777a1bd99a5c407b803d454e768", null ],
+    [ "GPU_PROFILER_MOTION_BLUR_COLOR", "gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816", null ],
+    [ "GPU_PROFILER_POSTPROCESS_COLOR", "gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f", null ],
+    [ "GPU_PROFILER_ROW_HEIGHT", "gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4", null ],
+    [ "GPU_PROFILER_SCENE_COLOR", "gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d", null ],
+    [ "GPU_PROFILER_TOTAL_FRAME_COLOR", "gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261", null ],
+    [ "GPU_PROFILER_UI_COLOR", "gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178", null ],
+    [ "GPU_PROFILER_WINDOW_DURATION_S", "gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92", null ],
+    [ "GPU_PROFILER_WINDOW_TRANSITION_S", "gpu__profiler_8h.html#a6c552f4e4a7d22fa4c0fed9fa5e83ad9", null ]
 ];
