@@ -176,6 +176,12 @@ jobs:
         env:
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
         run: |
+          if [ -z "$SURGE_TOKEN" ]; then
+            echo "⚠️ SURGE_TOKEN est vide ou indisponible (PR provenant d'un fork potentiellement)."
+            echo "⏭️ Déploiement du preview Surge ignoré pour ne pas briser le CI."
+            echo "PREVIEW_URL=(Aperçu non disponible pour les forks)" >> $GITHUB_ENV
+            exit 0
+          fi
           PR_NUMBER=${{ github.event.number }}
           DEPLOY_DOMAIN="suckless-ogl-pr-$PR_NUMBER.surge.sh"
           npx surge site/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
