@@ -17,7 +17,25 @@ enum {
 	GPU_QUERY_BUFFER_COUNT = 2
 };
 
+/* --- Profiler Colors (Nord Theme) --- */
+static const int GPU_PROFILER_TOTAL_FRAME_COLOR = 0xECEFF4;
+static const int GPU_PROFILER_ENV_COLOR = 0x88C0D0;
+static const int GPU_PROFILER_SCENE_COLOR = 0xD08770;
+static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR = 0xEBCB8B;
+static const int GPU_PROFILER_BLOOM_COLOR = 0x5E81AC;
+static const int GPU_PROFILER_DOF_COLOR = 0xA3BE8C;
+static const int GPU_PROFILER_MOTION_BLUR_COLOR = 0xBF616A;
+static const int GPU_PROFILER_COMPOSITE_COLOR = 0x81A1C1;
+static const int GPU_PROFILER_POSTPROCESS_COLOR = 0xB48EAD;
+static const int GPU_PROFILER_UI_COLOR = 0x4C566A;
+static const int GPU_PROFILER_GI_SYNC_COLOR = 0x8FBCBB;
+static const int GPU_PROFILER_GI_DEBUG_COLOR = 0xB48EAD;
+
 /* --- Capture Settings --- */
+static const float GPU_PROFILER_WINDOW_DURATION_S = 0.5F;
+static const float GPU_PROFILER_WINDOW_TRANSITION_S = 0.2F;
+static const float GPU_PROFILER_ROW_HEIGHT = 28.0F;
+
 #include "app_settings.h"
 
 /**

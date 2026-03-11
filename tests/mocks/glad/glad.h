@@ -25,6 +25,7 @@ typedef struct __GLsync* GLsync;
 #define GL_FLOAT 0x1406
 #define GL_HALF_FLOAT 0x140B
 #define GL_UNSIGNED_INT 0x1405
+#define GL_UNSIGNED_BYTE 0x1401
 #define GL_CULL_FACE 0x0B44
 #define GL_TRIANGLES 0x0004
 #define GL_TRIANGLE_STRIP 0x0005

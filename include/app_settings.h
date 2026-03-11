@@ -182,52 +182,6 @@ static const float DEFAULT_AO =
 /** @} */
 
 /**
- * @defgroup UI User Interface
- * @brief Font, HUD, and Overlay settings.
- * @{
- */
-static const float DEFAULT_FONT_SIZE = 32.0F; /**< Base font size in pixels. */
-static const float DEFAULT_FPS_SMOOTHING =
-    0.95F; /**< EMA Factor for FPS counter (Higher = Smoother). */
-static const float DEFAULT_FPS_WINDOW =
-    5.0F; /**< Refresh rate of the FPS text (Hz). */
-static const int DEFAULT_FPS_SAMPLER_SIZE = 200; /**< History size. */
-static const float DEFAULT_FPS_TARGET = 60.0F;   /**< Target FPS. */
-
-/* Instancing Grid Layout (Scene generation) */
-static const int DEFAULT_COLS = 10;        /**< Grid width (N x N spheres). */
-static const float DEFAULT_SPACING = 2.5F; /**< World units between spheres. */
-static const float HALF_OFFSET_MULTIPLIER = 0.5F;
-
-/* Text Aesthetics (Drop Shadow) */
-static const float DEFAULT_FONT_SHADOW_OFFSET_X = 2.0F;
-static const float DEFAULT_FONT_SHADOW_OFFSET_Y = 2.0F;
-static const float DEFAULT_FONT_OFFSET_X = 0.0F;
-static const float DEFAULT_FONT_OFFSET_Y = 0.0F;
-static const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F}; /**< White text. */
-static const vec3 DEFAULT_FONT_SHADOW_COLOR = {0.0F, 0.0F,
-                                               0.0F}; /**< Black shadow. */
-static const int MAX_FPS_TEXT_LENGTH = 64;
-static const float HELP_PRESS_DURATION = 2.0F;
-
-/* Keyboard Layout Help UI Defaults */
-static const float DEFAULT_BASE_RESOLUTION_HEIGHT = 1080.0F;
-static const float DEFAULT_KBD_KEY_SIZE = 60.0F;
-static const float DEFAULT_KBD_KEY_PADDING = 10.0F;
-static const float DEFAULT_KBD_KEY_RADIUS = 10.0F;
-static const float DEFAULT_KBD_LABEL_SCALE = 0.75F;
-static const float DEFAULT_KBD_TITLE_Y_OFFSET = 140.0F;
-static const float DEFAULT_KBD_DETAIL_Y_OFFSET = 100.0F;
-/* Cyberpunk overlay visual tweaks */
-static const float DEFAULT_KBD_BLOOM_SCALE =
-    1.3F; /**< Bloom quad size vs key size (subtle) */
-static const float DEFAULT_KBD_UNBOUND_ALPHA =
-    0.22F; /**< Alpha for unbound keys */
-static const float DEFAULT_KBD_BOUND_ALPHA =
-    0.88F; /**< Alpha for bound keycaps */
-/** @} */
-
-/**
  * @defgroup PostProcess Post-Processing Limits
  * @brief Constraints for Tone Mapping and Auto-Exposure.
  * @{
@@ -251,32 +205,29 @@ static const int LUM_HISTOGRAM_SIZE =
     64 * 64; /**< Total pixels in the histogram map. */
 /** @} */
 
-//
-static const int GPU_PROFILER_TOTAL_FRAME_COLOR =
-    0xECEFF4;                                         /* Nord Snow Storm */
-static const int GPU_PROFILER_ENV_COLOR = 0x88C0D0;   /* Nord Frost Blue */
-static const int GPU_PROFILER_SCENE_COLOR = 0xD08770; /* Nord Aurora Orange */
-static const int GPU_PROFILER_AUTO_EXPOSURE_COLOR =
-    0xEBCB8B;                                         /* Nord Aurora Yellow */
-static const int GPU_PROFILER_BLOOM_COLOR = 0x5E81AC; /* Nord Frost Dark Blue */
-static const int GPU_PROFILER_DOF_COLOR = 0xA3BE8C;   /* Nord Aurora Green */
-static const int GPU_PROFILER_MOTION_BLUR_COLOR =
-    0xBF616A; /* Nord Aurora Red */
-static const int GPU_PROFILER_COMPOSITE_COLOR =
-    0x81A1C1; /* Nord Frost Medium Blue */
-static const int GPU_PROFILER_POSTPROCESS_COLOR =
-    0xB48EAD;                                      /* Nord Aurora Purple */
-static const int GPU_PROFILER_UI_COLOR = 0x4C566A; /* Nord Polar Night Gray */
-static const int GPU_PROFILER_GI_SYNC_COLOR =
-    0x8FBCBB; /* Nord Frost Teal — SSBO upload */
-static const int GPU_PROFILER_GI_DEBUG_COLOR =
-    0xB48EAD; /* Nord Aurora Purple — debug probe draw */
+/**
+ * @defgroup UI User Interface Base
+ * @brief Essential UI constants for other modules.
+ * @{
+ */
+static const float DEFAULT_FONT_SIZE = 32.0F;
+static const float DEFAULT_FPS_SMOOTHING = 0.95F;
+static const float DEFAULT_FPS_WINDOW = 5.0F;
+static const int DEFAULT_FPS_SAMPLER_SIZE = 200;
+static const float DEFAULT_FPS_TARGET = 60.0F;
 
-/* --- Capture Settings --- */
-static const float GPU_PROFILER_WINDOW_DURATION_S =
-    0.5F; /**< Time between ASCII/Timeline refreshes. */
-static const float GPU_PROFILER_WINDOW_TRANSITION_S =
-    0.2F; /**< Default transition time. */
-static const float GPU_PROFILER_ROW_HEIGHT = 28.0F; /**< UI row height. */
+static const float DEFAULT_FONT_SHADOW_OFFSET_X = 2.0F;
+static const float DEFAULT_FONT_SHADOW_OFFSET_Y = 2.0F;
+static const float DEFAULT_FONT_OFFSET_X = 0.0F;
+static const float DEFAULT_FONT_OFFSET_Y = 0.0F;
+static const vec3 DEFAULT_FONT_COLOR = {1.0F, 1.0F, 1.0F};
+static const vec3 DEFAULT_FONT_SHADOW_COLOR = {0.0F, 0.0F, 0.0F};
+static const int MAX_FPS_TEXT_LENGTH = 64;
+
+/* Instancing Grid Layout (Scene generation) */
+static const int DEFAULT_COLS = 10;
+static const float DEFAULT_SPACING = 2.5F;
+static const float HALF_OFFSET_MULTIPLIER = 0.5F;
+/** @} */
 
 #endif /* APP_SETTINGS_H */
