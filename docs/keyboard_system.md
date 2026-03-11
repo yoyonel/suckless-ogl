@@ -80,9 +80,9 @@ The UI automatically color-codes keys based on their `BindingType`:
 
 ## UI Customization
 
-The keyboard layout is defined in `src/app_ui.c` and is centered automatically. You can adjust the visual parameters (size, padding, textures) via the `KeyboardLayoutConfig` in `app_ui_init`.
+The keyboard layout is defined in `include/app_ui.h` and is centered automatically. You can adjust the visual parameters (size, padding, textures) via the `KeyboardLayoutConfig` and associated constants in `include/app_ui.h`.
 
-The key positions and labels are stored in the `KEY_LAYOUT_QWERTY` array within `app_ui.c`. Each entry defines:
+The key positions and labels are stored in the `KEY_LAYOUT_QWERTY` array within `include/app_ui.h`. Each entry defines:
 
 - The `key` handled.
 - The `row` index.
