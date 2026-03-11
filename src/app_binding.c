@@ -91,6 +91,12 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_B, 0, "Toggle Bloom",
 	            "Toggles the bloom/glow effect.", BINDING_CAT_POSTFX,
 	            BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_B, GLFW_MOD_SHIFT, "Cycle Bloom Debug Stage",
+	            "Cycles through bloom intermediate maps and stages.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_B, GLFW_MOD_ALT, "Cycle Bloom Debug Mip",
+	            "Cycles through bloom levels (mips) in debug mode.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_M, 0, "Toggle Motion Blur",
 	            "Toggles the velocity-based motion blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);

@@ -227,7 +227,80 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			toggle_postfx(ctx, POSTFX_GRAIN, "Grain");
 			break;
 		case GLFW_KEY_B:
-			toggle_postfx(ctx, POSTFX_BLOOM, "Bloom");
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
+				/* SHIFT+B: Cycle Bloom Debug Mode:
+				   Off -> Final -> Prefilter -> Downsample ->
+				   Upsample -> Off */
+				int debug_enabled = postprocess_is_enabled(
+				    ctx->postprocess, POSTFX_BLOOM_DEBUG);
+				int current_step =
+				    ctx->postprocess->bloom_fx.debug_step;
+
+				const char* mode_name = NULL;
+				if (!debug_enabled) {
+					/* Off -> Final */
+					postprocess_enable(ctx->postprocess,
+					                   POSTFX_BLOOM_DEBUG);
+					/* Ensure bloom is on for debug */
+					postprocess_enable(ctx->postprocess,
+					                   POSTFX_BLOOM);
+					ctx->postprocess->bloom_fx.debug_step =
+					    0;
+					mode_name = "Bloom Debug: Final Map";
+				} else if (current_step == 0) {
+					/* Final -> Prefilter */
+					ctx->postprocess->bloom_fx.debug_step =
+					    1;
+					mode_name = "Bloom Debug: Prefilter";
+				} else if (current_step == 1) {
+					/* Prefilter -> Downsample */
+					ctx->postprocess->bloom_fx.debug_step =
+					    2;
+					mode_name = "Bloom Debug: Downsample";
+				} else if (current_step == 2) {
+					/* Downsample -> Upsample (is actually
+					 * final map in our impl, let's keep it
+					 * for completeness or intermediate if
+					 * we want) */
+					/* For now let's just use it as
+					 * "Upsample/Final" */
+					ctx->postprocess->bloom_fx.debug_step =
+					    3;
+					mode_name = "Bloom Debug: Upsample";
+				} else {
+					/* Upsample -> Off */
+					postprocess_disable(ctx->postprocess,
+					                    POSTFX_BLOOM_DEBUG);
+					mode_name = "Bloom Debug: OFF";
+				}
+				LOG_INFO("suckless-ogl.postprocess", "%s",
+				         mode_name);
+				action_notifier_push(ctx->notifier, mode_name,
+				                     NOTIF_DUR_NORMAL);
+			} else if (check_flag(mods, GLFW_MOD_ALT)) {
+				/* ALT+B: Cycle Bloom Debug Mip (0-4) */
+				if (postprocess_is_enabled(
+				        ctx->postprocess, POSTFX_BLOOM_DEBUG)) {
+					ctx->postprocess->bloom_fx.debug_mip =
+					    (ctx->postprocess->bloom_fx
+					         .debug_mip +
+					     1) %
+					    BLOOM_MIP_LEVELS;
+
+					char buf[NOTIF_BUF_SIZE];
+					(void)safe_snprintf(
+					    buf, sizeof(buf),
+					    "Bloom Debug Mip: %d",
+					    ctx->postprocess->bloom_fx
+					        .debug_mip);
+					LOG_INFO("suckless-ogl.postprocess",
+					         "%s", buf);
+					action_notifier_push(ctx->notifier, buf,
+					                     NOTIF_DUR_SHORT);
+				}
+			} else {
+				toggle_postfx(ctx, POSTFX_BLOOM, "Bloom");
+			}
 			break;
 		case GLFW_KEY_H:
 			toggle_postfx_complex(ctx, mods, POSTFX_DOF,
