@@ -10,10 +10,10 @@
       
       
       
-        <link rel="prev" href="../portability_pal/">
+        <link rel="prev" href="../postprocess_optimizations_2026-02/">
       
       
-        <link rel="next" href="../sphere_rendering/">
+        <link rel="next" href="../motion_blur_analysis/">
       
       
         
@@ -24,7 +24,7 @@
     
     
       
-        <title>Global Illumination - Suckless OGL</title>
+        <title>Post-Process Optimizations (March 2026) - Suckless OGL</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#global-illumination-1-bounce" class="md-skip">
+        <a href="#analyse-technique-optimisations-post-process-mars-2026" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Global Illumination
+              Post-Process Optimizations (March 2026)
             
           </span>
         </div>
@@ -680,37 +680,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Global Illumination
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../global_illumination/" class="md-nav__link">
         
   
   
@@ -726,143 +699,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#architecture-de-limplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Architecture de l'Implémentation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#mathematiques-optimisations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mathématiques &amp; Optimisations
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Mathématiques &amp; Optimisations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#facteur-de-forme-et-simplification-lambertienne" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Facteur de Forme et Simplification Lambertienne
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#seuils-limites-bounding-et-prevention-du-sh-ringing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Seuils Limites (Bounding) et Prévention du SH Ringing
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#harmoniques-spheriques-band-2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Harmoniques Sphériques (Band 2)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Harmoniques Sphériques (Band 2)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#methodes-de-stockage-echantillonnage-gpu" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Méthodes de Stockage &amp; Échantillonnage GPU
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Méthodes de Stockage &amp; Échantillonnage GPU">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-textures-3d-hardware-interpolation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1. Textures 3D (Hardware Interpolation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-ssbo-software-interpolation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. SSBO (Software Interpolation)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion-et-controles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Conclusion et Contrôles
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1236,10 +1072,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../postprocess_optimizations_2026-03/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1255,6 +1118,204 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectifs-generaux" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Objectifs Généraux
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partie-1-auto-exposure-calcul-de-luminance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partie 1 : Auto-Exposure (Calcul de Luminance)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Partie 1 : Auto-Exposure (Calcul de Luminance)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#points-critiques-lecons-apprises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Points Critiques (Leçons Apprises)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etapes-dimplementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étapes d'implémentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partie-2-bloom-downsampling-single-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partie 2 : Bloom (Downsampling Single-Pass)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Partie 2 : Bloom (Downsampling Single-Pass)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concept_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#details-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Détails Techniques
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etapes-dimplementation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étapes d'implémentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partie-3-gestion-des-ressources-raii" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partie 3 : Gestion des Ressources &amp; RAII
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Partie 3 : Gestion des Ressources &amp; RAII">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concept_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommandations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommandations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#partie-4-validation-et-metriques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Partie 4 : Validation et Métriques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Partie 4 : Validation et Métriques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#methodologie-de-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Méthodologie de test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2794,7 +2855,7 @@
 
 
   
-    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/global_illumination.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/yoyonel/suckless-ogl/edit/master/docs/postprocess_optimizations_2026-03.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
     </a>
@@ -2802,136 +2863,109 @@
   
 
 
-<h1 id="global-illumination-1-bounce">Global Illumination (1-Bounce)<a class="headerlink" href="#global-illumination-1-bounce" title="Permanent link">¶</a></h1>
-<p>Suckless-OGL incorpore une solution d'<strong>Illumination Globale (GI) à 1 rebond</strong> légère et performante. L'objectif est de capturer le transfert de couleur diffuse (Color Bleeding) entre les objets de la scène, sans nécessiter de techniques lourdes telles que le Path Tracing ou le Voxel Cone Tracing, et sans avoir recours à des techniques Screen-Space (SSGI) qui souffrent d'artefacts d'occlusion.</p>
-<p>L'approche repose sur un <strong>Volume de Light Probes (Sondes de Lumières)</strong> encodant l'irradiance au travers d'<strong>Harmoniques Sphériques (Spherical Harmonics - SH)</strong>.</p>
-<hr>
-<h2 id="architecture-de-limplementation">Architecture de l'Implémentation<a class="headerlink" href="#architecture-de-limplementation" title="Permanent link">¶</a></h2>
-<p>Le système combine un calcul CPU asynchrone et un échantillonnage GPU sans aucune interruption (stall) du thread de rendu principal.</p>
-<pre class="mermaid"><code>%%{init: {
-  "theme": "dark",
-  "themeVariables": {
-    "signalTextColor": "#ffffff",
-    "messageTextColor": "#ffffff",
-    "labelTextColor": "#ffffff",
-    "actorTextColor": "#ffffff",
-    "noteBkgColor": "#e0af68",
-    "noteTextColor": "#1a1b26",
-    "lineColor": "#7aa2f7"
-  }
-}%%
-sequenceDiagram
-    participant Main as Thread Principal (CPU)
-    participant Worker as GI Worker Thread (CPU)
-    participant GPU as SSBO &amp; Shaders (GPU)
-
-    Main-&gt;&gt;Worker: Envoie une copie de la scène (Positions, Couleurs)
-    Main-&gt;&gt;Worker: Signale une mise à jour (CondVar)
-    activate Worker
-    Note over Worker: Calcule le Form Factor et projette en Harmoniques Sphériques (SH)
-    Worker--&gt;&gt;Main: Signale que les calculs sont terminés (results_ready)
-    deactivate Worker
-    Main-&gt;&gt;GPU: Upload des données SH vers le SSBO (glBufferSubData)
-    Main-&gt;&gt;GPU: Appel de dessin (Instanced ou SSBO)
-    Note over GPU: Les fragments échantillonnent l'irradiance des 8 sondes adjacentes (Trilinear Filtering)</code></pre>
+<h1 id="analyse-technique-optimisations-post-process-mars-2026">Analyse Technique : Optimisations Post-Process (Mars 2026)<a class="headerlink" href="#analyse-technique-optimisations-post-process-mars-2026" title="Permanent link">¶</a></h1>
+<p>Cette documentation détaille les pistes d'optimisation GPU pour le pipeline de post-processing de <code>suckless-ogl</code>, basées sur le passage des calculs vers les <strong>Compute Shaders</strong>.</p>
+<h2 id="objectifs-generaux">Objectifs Généraux<a class="headerlink" href="#objectifs-generaux" title="Permanent link">¶</a></h2>
 <ol>
-<li><strong>Light Probe Grid (CPU)</strong>:</li>
-<li>Une grille 3D régulière de sondes est dimensionnée pour englober la scène entière.</li>
-<li>Un thread dédié (<code>GI Probe Worker</code>) calcule l'irradiance de chaque sonde depuis chaque objet interactif de la scène, de manière totalement asynchrone.</li>
-<li><strong>Synchronisation vers GPU (SSBO)</strong>:</li>
-<li>Chaque frame, le thread principal vérifie (via un <code>trylock</code>) si un nouveau calcul de SH est disponible.</li>
-<li>Si oui, les données sont envoyées au GPU via un <strong>Shader Storage Buffer Object (SSBO)</strong>, minimisant l'overhead CPU vers GPU.</li>
-<li><strong>Échantillonnage (Fragment Shader)</strong>:</li>
-<li>Lors de l'évaluation PBR, si la GI est activée, le fragment calcule sa position par rapport à la grille.</li>
-<li>Deux méthodes d'échantillonnage sont disponibles :<ul>
-<li><strong>Textures 3D (Hardware)</strong> : Utilise 7 textures 3D avec interpolation trilinéaire matérielle. C'est la méthode la plus performante.</li>
-<li><strong>SSBO (Software)</strong> : Accède directement au buffer de sondes et effectue l'interpolation trilinéaire manuellement dans le shader.</li>
-</ul>
+<li>
+<p><strong>Réduction de l'overhead CPU</strong> : Supprimer les changements de Framebuffer (FBO) et les draw calls multiples.</p>
 </li>
-<li>Le résultat est une irradiance douce et continue.</li>
+<li>
+<p><strong>Maximisation de l'occupation GPU</strong> : Utiliser le parallélisme massif des unités de calcul (EUs/CUs) via les Compute Shaders.</p>
+</li>
+<li>
+<p><strong>Réduction des barrières de synchronisation</strong> : Minimiser les attentes entre les passes.</p>
+</li>
 </ol>
 <hr>
-<h2 id="mathematiques-optimisations">Mathématiques &amp; Optimisations<a class="headerlink" href="#mathematiques-optimisations" title="Permanent link">¶</a></h2>
-<p>Le coeur de l'algorithme réside dans le calcul de la lumière rebondie (Color Bleeding). L'intensité de l'échange radiatif (Radiative Transfer) entre un émetteur diffus (une sphère) et un récepteur (la sonde) est définie par l'équation de rendu.</p>
-<h3 id="facteur-de-forme-et-simplification-lambertienne">Facteur de Forme et Simplification Lambertienne<a class="headerlink" href="#facteur-de-forme-et-simplification-lambertienne" title="Permanent link">¶</a></h3>
-<p>Pour une surface diffuse (Lambertienne), la fonction de distribution de la réflectance bidirectionnelle (BRDF) est définie par :</p>
-<div class="arithmatex">\[
-f_r = \frac{\rho}{\pi}
-\]</div>
-<p>où <span class="arithmatex">\(\rho\)</span> est l'albedo.</p>
-<p>L'angle solide <span class="arithmatex">\(\Omega\)</span> sous-tendu par une sphère de rayon <span class="arithmatex">\(r\)</span> à distance <span class="arithmatex">\(d\)</span> est approximé pour les petites surfaces par :</p>
-<div class="arithmatex">\[
-\Omega \approx \pi \frac{r^2}{d^2}
-\]</div>
-<p>L'énergie totale transférée de la sphère à la sonde pour une radiance unitaire (1.0) est le produit de la BRDF émettrice et de l'angle solide récepteur :</p>
-<div class="arithmatex">\[
-\text{Color for SH} \approx L_{exitant} \times \Omega = \left(\frac{albedo}{\pi}\right) \times \left(\pi \frac{r^2}{d^2}\right)
-\]</div>
-<p><strong>Optimisation Critique</strong> : Comme nous pouvons le voir ci-dessus, les termes en <span class="arithmatex">\(\pi\)</span> <strong>s'annulent parfaitement</strong>. L'énergie à accumuler dans l'Harmonique Sphérique se réduit donc au Facteur de Forme (Form Factor) brut :</p>
-<div class="arithmatex">\[
-\text{Form Factor (FF)} = \frac{r^2}{d^2}
-\]</div>
-<p>Cette factorisation massive élimine plusieurs instructions trigonométriques complexes par sphère et par sonde.</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Extrait depuis light_probes.c</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dist2</span><span class="p">;</span><span class="w"> </span><span class="c1">// dist2 = distance au carré</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">diffuse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sphere</span><span class="o">-&gt;</span><span class="n">metallic</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GI_BOUNCE_SCALE</span><span class="p">;</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">vec3</span><span class="w"> </span><span class="n">radiance</span><span class="p">;</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">glm_vec3_scale</span><span class="p">((</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">sphere</span><span class="o">-&gt;</span><span class="n">albedo</span><span class="p">,</span><span class="w"> </span><span class="n">diffuse</span><span class="p">,</span><span class="w"> </span><span class="n">radiance</span><span class="p">);</span>
-</span></code></pre></div>
-<p><em>(On observe également que les matériaux purs métaux (<code>metallic == 1.0f</code>) ne contribuent pas au rebond diffus, car les métaux n'ont pas de diffusion sous-surfacique par définition de la physique PBR).</em></p>
-<h3 id="seuils-limites-bounding-et-prevention-du-sh-ringing">Seuils Limites (Bounding) et Prévention du SH Ringing<a class="headerlink" href="#seuils-limites-bounding-et-prevention-du-sh-ringing" title="Permanent link">¶</a></h3>
-<p>Les Harmoniques Sphériques (SH) sont excellentes pour modéliser une illumination à très basse fréquence, mais elles échouent (provoquent du <em>ringing</em>, soit un dépassement des couleurs avec des valeurs négatives ou hyper-brillantes) sous des signaux très concentrés (Delta Function).</p>
-<p>De plus, si une sonde est positionnée <strong>à l'intérieur</strong> d'une surface, ou exactement sur sa surface, <span class="arithmatex">\(d \rightarrow 0\)</span> et le Form Factor diverge vers l'infini.</p>
-<p>Pour éviter ces artéfacts et optimiser l'algorithme, des seuils très stricts sont mis en place :</p>
+<h2 id="partie-1-auto-exposure-calcul-de-luminance">Partie 1 : Auto-Exposure (Calcul de Luminance)<a class="headerlink" href="#partie-1-auto-exposure-calcul-de-luminance" title="Permanent link">¶</a></h2>
+<h3 id="concept">Concept<a class="headerlink" href="#concept" title="Permanent link">¶</a></h3>
+<p>Remplacer la passe de rasterisation (Fragment Shader sur un quad 64x64) par un Compute Shader traitant la texture de scène.</p>
+<h3 id="points-critiques-lecons-apprises">Points Critiques (Leçons Apprises)<a class="headerlink" href="#points-critiques-lecons-apprises" title="Permanent link">¶</a></h3>
+<p>Pour conserver un rendu <strong>ISO avec master</strong>, le Compute Shader doit impérativement répliquer la logique physique :</p>
+<ul>
+<li>
+<p><strong>Échantillonnage 4x4</strong> : Ne pas se contenter d'un <code>texture()</code> au centre. Il faut moyenner un bloc de pixels (box filter) pour capturer les pics de lumière.</p>
+</li>
+<li>
+<p><strong>Seuil d'exclusion (0.05)</strong> : Ignorer les pixels dont la luminance est inférieure à 0.05. Sans cela, le ciel noir ou les ombres profondes tirent la moyenne vers le bas, provoquant une surexposition massive.</p>
+</li>
+<li>
+<p><strong>Valeur Sentinelle (-100.0)</strong> : Si un bloc est entièrement noir, il doit être marqué pour être ignoré par l'étape d'adaptation.</p>
+</li>
+</ul>
+<h3 id="etapes-dimplementation">Étapes d'implémentation<a class="headerlink" href="#etapes-dimplementation" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong><code>GI_MIN_DIST_RADII</code> (1.05)</strong> : Rejette toute contribution si la sonde est à moins de <span class="arithmatex">\(1.05\times\)</span> le rayon de l'émetteur. Ceci empêche l'auto-illumination aberrante et le Ringing des SH, tout en permettant à la surface de capter avec force la couleur de son plus proche voisin (<span class="arithmatex">\(d \geq 1.05\)</span>).</li>
-<li><strong><code>GI_MAX_DIST_RADII</code> (3.0)</strong> : Culling spatial pur. Au-delà de <span class="arithmatex">\(3\times\)</span> le rayon, le Facteur de Forme est inférieur à <span class="arithmatex">\(0.0025\)</span>, ce qui est indiscernable visuellement. On ignore la sphère et l'on gagne considérablement en performance CPU.</li>
+<li>
+<p><strong>Shader</strong> : Créer <code>shaders/lum_downsample.comp</code> avec une boucle de sampling 4x4.</p>
+</li>
+<li>
+<p><strong>Texture</strong> : Passer <code>downsample_tex</code> en format <code>R32F</code> pour le stockage d'images (image2D).</p>
+</li>
+<li>
+<p><strong>C Code</strong> : Supprimer <code>downsample_fbo</code>. Remplacer <code>glDrawArrays</code> par <code>glDispatchCompute(8, 8, 1)</code>.</p>
+</li>
+<li>
+<p><strong>Barrière</strong> : Ajouter <code>glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)</code> avant l'étape d'adaptation.</p>
+</li>
 </ol>
 <hr>
-<h2 id="harmoniques-spheriques-band-2">Harmoniques Sphériques (Band 2)<a class="headerlink" href="#harmoniques-spheriques-band-2" title="Permanent link">¶</a></h2>
-<p>Nous encodons les données colorimétriques projetées sur la <strong>sphère d'irradiance</strong> en utilisant les 3 premières bandes (Bande 0, 1 et 2) des Harmoniques Sphériques.</p>
-<div class="arithmatex">\[
-E(n) = \sum_{l=0}^{2} A_l \sum_{m=-l}^{l} L_{l}^{m} Y_{l}^{m}(n)
-\]</div>
+<h2 id="partie-2-bloom-downsampling-single-pass">Partie 2 : Bloom (Downsampling Single-Pass)<a class="headerlink" href="#partie-2-bloom-downsampling-single-pass" title="Permanent link">¶</a></h2>
+<h3 id="concept_1">Concept<a class="headerlink" href="#concept_1" title="Permanent link">¶</a></h3>
+<p>Remplacer les 5 à 6 passes de Downsampling successives par un seul dispatch Compute Shader (similaire au <em>Single Pass Downsampler</em> d'AMD).</p>
+<h3 id="details-techniques">Détails Techniques<a class="headerlink" href="#details-techniques" title="Permanent link">¶</a></h3>
 <ul>
-<li><span class="arithmatex">\(Y_l^m\)</span> : Fonctions de base réelles.</li>
-<li><span class="arithmatex">\(L_l^m\)</span> : Coefficients projetés (Stockés dans les 9 vecteurs des SSBO).</li>
-<li><span class="arithmatex">\(A_l\)</span> : Coefficients de Convolution Cosinus (<span class="arithmatex">\(\pi\)</span>, <span class="arithmatex">\(\frac{2\pi}{3}\)</span>, <span class="arithmatex">\(\frac{\pi}{4}\)</span>).</li>
+<li>
+<p><strong>Hiérarchie de Mips</strong> : Utiliser <code>glBindImageTexture</code> pour lier plusieurs niveaux de mipmaps (1 à 4) simultanément.</p>
+</li>
+<li>
+<p><strong>Parallélisme</strong> : Chaque groupe de travail (8x8) traite une zone et écrit dans les mips correspondantes.</p>
+</li>
+<li>
+<p><strong>Format</strong> : Utiliser <code>R11F_G11F_B10F</code> pour un stockage HDR compact et performant.</p>
+</li>
 </ul>
-<p>Le shader (<code>sh_probe.glsl</code>) et la partie mathématiques CPU (<code>sh_math.c</code>) évaluent ces coefficients de la même manière que la théorie originale formalisée par <strong>Ramamoorthi et Hanrahan</strong>.</p>
-<h3 id="methodes-de-stockage-echantillonnage-gpu">Méthodes de Stockage &amp; Échantillonnage GPU<a class="headerlink" href="#methodes-de-stockage-echantillonnage-gpu" title="Permanent link">¶</a></h3>
-<p>Le système supporte deux modes de transfert et d'échantillonnage, commutables à la volée.</p>
-<h4 id="1-textures-3d-hardware-interpolation">1. Textures 3D (Hardware Interpolation)<a class="headerlink" href="#1-textures-3d-hardware-interpolation" title="Permanent link">¶</a></h4>
-<p>Chacun des 9 coefficients est packé dans un ensemble de 7 textures 3D <code>RGBA16F</code>. Cela permet de déléguer l'interpolation trilinéaire à l'unité de texture du GPU.</p>
-<ul>
-<li><strong>Avantage</strong> : Performance maximale, interpolation gratuite.</li>
-<li><strong>Inconvénient</strong> : Nécessite un packing complexe CPU-side (7 textures).</li>
-</ul>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// sh_probe.glsl</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler3D</span><span class="w"> </span><span class="n">u_SHTexture0</span><span class="p">;</span><span class="w"> </span><span class="c1">// ... à 6</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kt">vec3</span><span class="w"> </span><span class="n">uvw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">local_pos</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">u_ProbeGridDim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">u_ProbeGridDim</span><span class="p">);</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">t0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">u_SHTexture0</span><span class="p">,</span><span class="w"> </span><span class="n">uvw</span><span class="p">);</span><span class="w"> </span><span class="c1">// ...</span>
-</span></code></pre></div>
-<h4 id="2-ssbo-software-interpolation">2. SSBO (Software Interpolation)<a class="headerlink" href="#2-ssbo-software-interpolation" title="Permanent link">¶</a></h4>
-<p>Les données sont envoyées brutes dans un <strong>Shader Storage Buffer Object (SSBO)</strong>. Le shader effectue alors les 8 lectures et les interpolations <code>mix()</code> manuellement.</p>
-<ul>
-<li><strong>Avantage</strong> : Transfert immédiat sans packing, alignement <code>std430</code> simple.</li>
-<li><strong>Inconvénient</strong> : Plus coûteux en instructions shader et accès mémoire.</li>
-</ul>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// sh_probe.glsl</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">std430</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="k">buffer</span><span class="w"> </span><span class="n">ProbeBuffer</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w"> </span><span class="n">LightProbe</span><span class="w"> </span><span class="n">probes</span><span class="p">[];</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">};</span>
-</span></code></pre></div>
-<p>Chacun des 9 coefficients est stocké sous forme de <code>vec4</code> (16 bytes) pour satisfaire les prérequis d'alignement <code>std430</code>.</p>
+<h3 id="etapes-dimplementation_1">Étapes d'implémentation<a class="headerlink" href="#etapes-dimplementation_1" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p><strong>Shader</strong> : Créer <code>shaders/bloom_downsample.comp</code>.</p>
+</li>
+<li>
+<p><strong>C Code</strong> : Modifier <code>fx_bloom_init</code> pour configurer les textures de mips avec l'accès image.</p>
+</li>
+<li>
+<p><strong>Render</strong> : Remplacer la boucle de rendu fragment par un dispatch unique. Conserver le mode Raster pour l'Upsampling (qui bénéficie du blending hardware <code>GL_ONE, GL_ONE</code>).</p>
+</li>
+</ol>
 <hr>
-<h2 id="conclusion-et-controles">Conclusion et Contrôles<a class="headerlink" href="#conclusion-et-controles" title="Permanent link">¶</a></h2>
-<p>L'approche de la GI dans Suckless-OGL par sondes d'irradiance procure un ajout visuel remarquable, ancrant physiquement les objets entre eux sans coût de rendu supplémentaire par fragment, autre que les 8 interpolations mathématiques et l'évaluation des 9 coefficients en un passage déterministe.</p>
-<p><strong>Raccourcis en cours d'exécution</strong> :</p>
+<h2 id="partie-3-gestion-des-ressources-raii">Partie 3 : Gestion des Ressources &amp; RAII<a class="headerlink" href="#partie-3-gestion-des-ressources-raii" title="Permanent link">¶</a></h2>
+<h3 id="concept_2">Concept<a class="headerlink" href="#concept_2" title="Permanent link">¶</a></h3>
+<p>Fiabiliser la suppression des ressources lors du redémarrage du moteur ou du changement de résolution.</p>
+<h3 id="recommandations">Recommandations<a class="headerlink" href="#recommandations" title="Permanent link">¶</a></h3>
 <ul>
-<li><code>Y</code> : Cycle entre les modes de GI : <strong>Textures 3D</strong> -&gt; <strong>SSBO</strong> -&gt; <strong>Désactivé</strong>.</li>
-<li><code>Shift + Y</code> : Affiche les sondes de la grille sous la forme de sphères lumineuses de debug (Debug Probes Draw).</li>
+<li>
+<p><strong>Macro <code>SHADER_SAFE_DESTROY</code></strong> : Utiliser systématiquement une macro vérifiant la nullité avant <code>shader_destroy</code>.</p>
+</li>
+<li>
+<p><strong>Nettoyage FBO</strong> : S'assurer que les textures attachées aux FBO sont bien libérées <em>après</em> les FBO pour éviter les dangling pointers dans le driver.</p>
+</li>
 </ul>
+<hr>
+<h2 id="partie-4-validation-et-metriques">Partie 4 : Validation et Métriques<a class="headerlink" href="#partie-4-validation-et-metriques" title="Permanent link">¶</a></h2>
+<h3 id="methodologie-de-test">Méthodologie de test<a class="headerlink" href="#methodologie-de-test" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p><strong>Parité Visuelle</strong> : Utiliser <code>tests/test_visual_fx.c</code> pour comparer, pixel à pixel, le rendu Raster et le rendu Compute. Toute différence de luminance moyenne &gt; 1% doit être traitée comme un bug.</p>
+</li>
+<li>
+<p><strong>Benchmarking</strong> : Utiliser <code>apitrace</code> pour vérifier la disparition des "bubbles" dans le pipeline (zones où le GPU attend le CPU).</p>
+</li>
+<li>
+<p><strong>Watchdog</strong> : Pour les tests sous Wine, implémenter un timeout de sortie si l'application ignore le signal <code>Escape</code> suite à une désynchronisation X11.</p>
+</li>
+</ol>
+<hr>
+<p><em>Analyse réalisée le 13 Mars 2026.</em></p>
 
 
 
@@ -2952,7 +2986,7 @@ E(n) = \sum_{l=0}^{2} A_l \sum_{m=-l}^{l} L_{l}^{m} Y_{l}^{m}(n)
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 13, 2026 23:39:08 UTC">March 13, 2026</span>
   </span>
 
     
