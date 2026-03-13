@@ -25,10 +25,8 @@ typedef struct {
 
 /* Structure regroupant les ressources graphiques de l'Auto Exposure */
 typedef struct {
-	GLuint downsample_fbo;
 	GLuint downsample_tex;
 	GLuint exposure_tex;
-	Shader* downsample_shader;
 	Shader* adapt_shader;
 } AutoExposureFX;
 

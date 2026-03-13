@@ -15,13 +15,12 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 {
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
-	/* 1. Downsample Logic (64x64 R16F) */
-	glGenFramebuffers(1, &auto_exp->downsample_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
-
+	/* 1. Downsample Texture Storage (64x64 R16F)
+	 * This texture is now written by the Bloom SPD compute shader
+	 * but owned by AE for adaptation. */
 	FXTextureConfig ds_config = {.width = LUM_HISTOGRAM_MAP_SIZE,
 	                             .height = LUM_HISTOGRAM_MAP_SIZE,
-	                             .internal_format = GL_R16F,
+	                             .internal_format = GL_R32F,
 	                             .format = GL_RED,
 	                             .type = GL_FLOAT,
 	                             .min_filter = GL_LINEAR,
@@ -30,17 +29,6 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	                             .wrap_t = GL_CLAMP_TO_EDGE,
 	                             .initial_data = NULL};
 	fx_utils_create_texture(&auto_exp->downsample_tex, &ds_config);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, auto_exp->downsample_tex, 0);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
-	    GL_FRAMEBUFFER_COMPLETE) {
-		LOG_ERROR("suckless-ogl.postprocess.ae",
-		          "Lum Downsample FBO incomplete!");
-		fx_auto_exposure_cleanup(post_processing);
-		return 0;
-	}
 
 	/* 2. Adaptation Storage (1x1 RGBA32F) */
 	float initialValues[4] = {EXPOSURE_INITIAL_VAL, 0.0F, 0.0F, 1.0F};
@@ -57,25 +45,20 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	fx_utils_create_texture(&auto_exp->exposure_tex, &exp_config);
 
 	/* 3. Load Shaders */
-	auto_exp->downsample_shader = shader_load(
-	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
 	auto_exp->adapt_shader =
 	    shader_load_compute_program("shaders/lum_adapt.comp");
 
-	if (!auto_exp->downsample_shader || !auto_exp->adapt_shader) {
+	if (!auto_exp->adapt_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.ae",
-		          "Failed to load auto-exposure shaders");
+		          "Failed to load auto-exposure adaptation shader");
 		fx_auto_exposure_cleanup(post_processing);
 		return 0;
 	}
 
-	/* Set sampler uniforms once (they are per-program state) */
-	shader_use(auto_exp->downsample_shader);
-	shader_set_int(auto_exp->downsample_shader, "sceneTexture", 0);
+	/* Set sampler uniforms once */
 	shader_use(auto_exp->adapt_shader);
 	shader_set_int(auto_exp->adapt_shader, "lumTexture", 0);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return 1;
 }
 
@@ -83,10 +66,6 @@ void fx_auto_exposure_cleanup(PostProcess* post_processing)
 {
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
-	if (auto_exp->downsample_fbo) {
-		glDeleteFramebuffers(1, &auto_exp->downsample_fbo);
-		auto_exp->downsample_fbo = 0;
-	}
 	if (auto_exp->downsample_tex) {
 		glDeleteTextures(1, &auto_exp->downsample_tex);
 		auto_exp->downsample_tex = 0;
@@ -95,7 +74,6 @@ void fx_auto_exposure_cleanup(PostProcess* post_processing)
 		glDeleteTextures(1, &auto_exp->exposure_tex);
 		auto_exp->exposure_tex = 0;
 	}
-	SHADER_SAFE_DESTROY(auto_exp->downsample_shader);
 	SHADER_SAFE_DESTROY(auto_exp->adapt_shader);
 }
 
@@ -107,15 +85,10 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
-	/* 1. Downsample Scene -> 64x64 Log Luminance */
-	glViewport(0, 0, LUM_HISTOGRAM_MAP_SIZE, LUM_HISTOGRAM_MAP_SIZE);
-	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
-
-	shader_use(auto_exp->downsample_shader);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-
-	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+	/* 1. Downsample Logic (REMOVED)
+	 * Luminance is now calculated by Bloom SPD Compute shader to save
+	 * bandwidth. We directly use auto_exp->downsample_tex which was
+	 * populated by fx_bloom_render. */
 
 	/* 2. Compute Adaptation */
 	shader_use(auto_exp->adapt_shader);
@@ -139,16 +112,18 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 	shader_set_float(auto_exp->adapt_shader, "keyValue",
 	                 post_processing->auto_exposure.key_value);
 
-	/* Unbind downsample FBO before compute reads downsample_tex.
-	 * This ensures the rasterized luminance data is flushed. */
+	/* Unbind any FB just in case, though we only use compute here */
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	/* Ensure Bloom SPD image writes to downsample_tex are visible to
+	 * texture fetch */
 	glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+
 	glDispatchCompute(1, 1, 1);
+
+	/* Final barrier for exposure_tex to be visible to final composite */
 	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
 	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
-
-	glViewport(0, 0, post_processing->width, post_processing->height);
 }
 
 float fx_auto_exposure_get_current_exposure(PostProcess* post_processing)
