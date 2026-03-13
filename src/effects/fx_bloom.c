@@ -49,6 +49,22 @@ int fx_bloom_init(PostProcess* post_processing)
 	int height = post_processing->height;
 
 	for (int i = 0; i < BLOOM_MIP_LEVELS; i++) {
+		BloomMip* mip = &bloom->mips[i];
+		mip->width = width;
+		mip->height = height;
+
+		FXTextureConfig config = {.width = width,
+		                          .height = height,
+		                          .internal_format = GL_R11F_G11F_B10F,
+		                          .format = GL_RGB,
+		                          .type = GL_FLOAT,
+		                          .min_filter = GL_LINEAR,
+		                          .mag_filter = GL_LINEAR,
+		                          .wrap_s = GL_CLAMP_TO_EDGE,
+		                          .wrap_t = GL_CLAMP_TO_EDGE,
+		                          .initial_data = NULL};
+		fx_utils_create_texture(&mip->texture, &config);
+
 		width /= 2;
 		height /= 2;
 		if (width < 1) {
@@ -57,22 +73,18 @@ int fx_bloom_init(PostProcess* post_processing)
 		if (height < 1) {
 			height = 1;
 		}
+	}
 
-		bloom->mips[i].width = width;
-		bloom->mips[i].height = height;
+	/* Initialize FBO by attaching the first mip (Prefilter target) */
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, bloom->mips[0].texture, 0);
 
-		FXTextureConfig tex_config = {
-		    .width = width,
-		    .height = height,
-		    .internal_format = GL_R11F_G11F_B10F,
-		    .format = GL_RGB,
-		    .type = GL_FLOAT,
-		    .min_filter = GL_LINEAR,
-		    .mag_filter = GL_LINEAR,
-		    .wrap_s = GL_CLAMP_TO_EDGE,
-		    .wrap_t = GL_CLAMP_TO_EDGE,
-		    .initial_data = NULL};
-		fx_utils_create_texture(&bloom->mips[i].texture, &tex_config);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
+	    GL_FRAMEBUFFER_COMPLETE) {
+		LOG_ERROR("suckless-ogl.postprocess.bloom",
+		          "Bloom FBO incomplete!");
+		fx_bloom_cleanup(post_processing);
+		return 0;
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -108,19 +120,16 @@ void fx_bloom_render(PostProcess* post_processing)
 	}
 
 	BloomFX* bloom = &post_processing->bloom_fx;
-	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
-	glDisable(GL_DEPTH_TEST);
 
 	/* 1. Prefilter */
 	shader_use(bloom->prefilter_shader);
-	shader_set_float(bloom->prefilter_shader, "threshold",
-	                 post_processing->bloom.threshold);
-	shader_set_float(bloom->prefilter_shader, "knee",
-	                 post_processing->bloom.soft_threshold);
+	fx_bloom_upload_params(bloom->prefilter_shader,
+	                       &post_processing->bloom);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, bloom->mips[0].texture, 0);
 	glViewport(0, 0, bloom->mips[0].width, bloom->mips[0].height);
@@ -177,18 +186,17 @@ void fx_bloom_render(PostProcess* post_processing)
 		goto end_bloom;
 	}
 
-	/* 3. Upsample with Blending */
+	/* 3. Upsample (Accumulative) */
 	shader_use(bloom->upsample_shader);
 	shader_set_float(bloom->upsample_shader, "filterRadius",
 	                 post_processing->bloom.radius);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
-	glBlendEquation(GL_FUNC_ADD);
 
-	for (int i = BLOOM_MIP_LEVELS - 2; i >= 0; i--) {
-		const BloomMip* mip_src = &bloom->mips[i + 1];
-		const BloomMip* mip_dst = &bloom->mips[i];
+	for (int i = BLOOM_MIP_LEVELS - 1; i > 0; i--) {
+		const BloomMip* mip_src = &bloom->mips[i];
+		const BloomMip* mip_dst = &bloom->mips[i - 1];
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mip_src->texture);
@@ -198,18 +206,26 @@ void fx_bloom_render(PostProcess* post_processing)
 		glViewport(0, 0, mip_dst->width, mip_dst->height);
 
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+		if (post_processing->bloom_fx.debug_step == 3 &&
+		    post_processing->bloom_fx.debug_mip == i) {
+			glDisable(GL_BLEND);
+			goto end_bloom;
+		}
 	}
 
 	glDisable(GL_BLEND);
 
 end_bloom:
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, post_processing->width, post_processing->height);
 }
 
 void fx_bloom_upload_params(Shader* shader, const BloomParams* params)
 {
 	shader_set_float(shader, "bloom.intensity", params->intensity);
+	shader_set_float(shader, "bloom.threshold", params->threshold);
+	shader_set_float(shader, "bloom.soft_threshold",
+	                 params->soft_threshold);
 }
 
 Shader* fx_bloom_get_downsample_shader(PostProcess* post_processing)

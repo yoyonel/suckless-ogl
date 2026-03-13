@@ -31,7 +31,7 @@ typedef struct {
 /* Structure regroupant les ressources graphiques du Bloom */
 typedef struct {
 	Shader* prefilter_shader;
-	Shader* downsample_shader;
+	Shader* downsample_shader; /* Re-introduced for DoF support */
 	Shader* upsample_shader;
 	Shader* compute_downsample_shader;
 	GLuint fbo;
