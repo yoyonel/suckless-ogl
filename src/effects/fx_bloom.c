@@ -22,9 +22,11 @@ int fx_bloom_init(PostProcess* post_processing)
 	                                       "shaders/bloom_downsample.frag");
 	bloom->upsample_shader = shader_load("shaders/postprocess.vert",
 	                                     "shaders/bloom_upsample.frag");
+	bloom->compute_downsample_shader =
+	    shader_load_compute_program("shaders/bloom_downsample.comp");
 
 	if (!bloom->prefilter_shader || !bloom->downsample_shader ||
-	    !bloom->upsample_shader) {
+	    !bloom->upsample_shader || !bloom->compute_downsample_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.bloom",
 		          "Failed to load bloom shaders");
 		fx_bloom_cleanup(post_processing);
@@ -96,6 +98,7 @@ void fx_bloom_cleanup(PostProcess* post_processing)
 	SHADER_SAFE_DESTROY(bloom->prefilter_shader);
 	SHADER_SAFE_DESTROY(bloom->downsample_shader);
 	SHADER_SAFE_DESTROY(bloom->upsample_shader);
+	SHADER_SAFE_DESTROY(bloom->compute_downsample_shader);
 }
 
 void fx_bloom_render(PostProcess* post_processing)
@@ -128,27 +131,47 @@ void fx_bloom_render(PostProcess* post_processing)
 		goto end_bloom;
 	}
 
-	/* 2. Downsample */
-	shader_use(bloom->downsample_shader);
+	/* 2. Compute Downsample (SPD) */
+	/* Replaces the old 5-6 fragment passes with a single dispatch */
+	shader_use(bloom->compute_downsample_shader);
 
-	for (int i = 0; i < BLOOM_MIP_LEVELS - 1; i++) {
-		const BloomMip* mip_src = &bloom->mips[i];
-		const BloomMip* mip_dst = &bloom->mips[i + 1];
+	/* Bind Mip 0 as source sampler */
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, bloom->mips[0].texture);
+	shader_set_int(bloom->compute_downsample_shader, "srcTexture", 0);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mip_src->texture);
+	vec2 src_res = {(float)bloom->mips[0].width,
+	                (float)bloom->mips[0].height};
+	shader_set_vec2(bloom->compute_downsample_shader, "srcResolution",
+	                src_res);
 
-		vec2 resolution = {(float)mip_src->width,
-		                   (float)mip_src->height};
-		shader_set_vec2(bloom->downsample_shader, "srcResolution",
-		                resolution);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		                       GL_TEXTURE_2D, mip_dst->texture, 0);
-		glViewport(0, 0, mip_dst->width, mip_dst->height);
-
-		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+	/* Bind Mips 1-4 as output images */
+	/* Note: Mip 0 is the SOURCE (Prefiltered), Mip 1 is first DOWN */
+	for (int i = 1; i < BLOOM_MIP_LEVELS; i++) {
+		glBindImageTexture((GLuint)i, bloom->mips[i].texture, 0,
+		                   GL_FALSE, 0, GL_WRITE_ONLY,
+		                   GL_R11F_G11F_B10F);
 	}
+
+	/* Bind Auto-Exposure Downsample Texture (Unit 6) for integrated
+	 * luminance */
+	glBindImageTexture(BLOOM_BINDING_LUMINANCE,
+	                   post_processing->auto_exposure_fx.downsample_tex, 0,
+	                   GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+
+	/* Dispatch: each thread handles a 2x2 area to produce 1 pixel in Mip 1
+	 */
+	GLuint groups_x =
+	    (GLuint)((bloom->mips[1].width + (BLOOM_COMPUTE_GROUP_SIZE - 1)) /
+	             BLOOM_COMPUTE_GROUP_SIZE);
+	GLuint groups_y =
+	    (GLuint)((bloom->mips[1].height + (BLOOM_COMPUTE_GROUP_SIZE - 1)) /
+	             BLOOM_COMPUTE_GROUP_SIZE);
+	glDispatchCompute(groups_x, groups_y, 1);
+
+	/* Ensure all image writes are finished before upsampling or
+	 * compositing */
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	if (post_processing->bloom_fx.debug_step == 2) { /* Downsample only */
 		goto end_bloom;

@@ -9,6 +9,10 @@ struct PostProcess;
 
 enum { BLOOM_MIP_LEVELS = 5 };
 
+/* Compute Shader Constants */
+#define BLOOM_COMPUTE_GROUP_SIZE 8
+#define BLOOM_BINDING_LUMINANCE 6
+
 /* Paramètres pour le Bloom (Physically Based) */
 typedef struct {
 	float intensity;      /* Puissance globale (0.0 - 1.0+) */
@@ -29,6 +33,7 @@ typedef struct {
 	Shader* prefilter_shader;
 	Shader* downsample_shader;
 	Shader* upsample_shader;
+	Shader* compute_downsample_shader;
 	GLuint fbo;
 	BloomMip mips[BLOOM_MIP_LEVELS];
 	int debug_step; /* 0: Final, 1: Prefilter, 2: Downsample, 3: Upsample */
