@@ -444,6 +444,15 @@ lint:
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py {{build_dir}}
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
+# Lint documentation files (Markdown)
+lint-docs:
+    @if command -v pre-commit >/dev/null 2>&1; then \
+        pre-commit run --all-files markdownlint; \
+    else \
+        echo "❌ Error: pre-commit not found. Please install it to run markdownlint."; \
+        exit 1; \
+    fi
+
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 lint-full:
     @if [ ! -f .lint_full/compile_commands.json ] || [ CMakeLists.txt -nt .lint_full/compile_commands.json ]; then \

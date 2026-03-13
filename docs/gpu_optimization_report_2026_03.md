@@ -23,12 +23,16 @@ Measurements performed on **Intel Iris Xe (iGPU)** at 1080p resolution.
 ## 3. Detailed Optimizations
 
 ### A. Bloom Single-Pass Downsampler (SPD)
+
 Instead of 6 fragment shader passes (one per mip level), we now use a single **Compute Shader** (`bloom_downsample.comp`).
+
 - **Technical Gain**: Utilizes **GPU Shared Memory** (LDS) to perform the reduction in one dispatch.
 - **Hardware Impact**: Drastically reduces VRAM bandwidth usage, which is the primary bottleneck on integrated GPUs (Intel Iris Xe).
 
 ### B. Auto-Exposure Fusion
+
 The luminance reduction for Auto-Exposure was previously a separate raster pass. It is now **integrated directly** into the Bloom SPD Compute Shader.
+
 - **Technical Gain**: The Bloom shader already samples the entire screen. By calculating the average luminance in the same pass, we eliminate a complete read/write cycle of the scene texture.
 - **Performance Impact**: Effectively makes the Auto-Exposure downsampling cost **zero**.
 
@@ -40,6 +44,7 @@ The luminance reduction for Auto-Exposure was previously a separate raster pass.
 ## 5. Next Steps
 
 To reach sub-2.0ms frame times, the next logical steps are:
+
 1. **Pass Merging**: Fusing Tonemapping, Color Grading, and FXAA into a single compute pass.
 2. **Depth Pre-Pass**: Implementing an Early-Z pass to reduce PBR shader cost in complex scenes.
 

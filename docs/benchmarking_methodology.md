@@ -5,6 +5,7 @@ Ce document définit la méthodologie officielle pour mesurer, analyser et valid
 ## 1. Philosophie du Benchmarking
 
 Dans ce projet, nous ne cherchons pas seulement à "augmenter les FPS", mais à **optimiser l'efficacité globale** :
+
 - **CPU Bound** : Réduire le temps de préparation des commandes (overhead driver).
 - **GPU Bound** : Réduire la complexité des shaders et l'overdraw.
 - **Bandwidth Bound** : Réduire les transferts VRAM (critique sur iGPU).
@@ -12,16 +13,19 @@ Dans ce projet, nous ne cherchons pas seulement à "augmenter les FPS", mais à 
 ## 2. L'Arsenal d'Outils
 
 ### A. Tracy Profiler (CPU/Stalls)
+
 - **Usage** : `make run-tracy` (si activé) ou build avec `-DENABLE_TRACY=ON`.
 - **Analyse** : Permet de voir si le CPU attend le GPU (`glMapBufferRange` bloquant, `glFinish`).
 - **Indicateur clé** : La durée de la fonction `renderer_draw_frame`.
 
 ### B. ApiTrace (GPU Source of Truth)
+
 - **Usage** : `just bench-record` puis `just bench-analyze`.
 - **Analyse** : Mesure le temps réel passé sur le silicium du GPU pour chaque shader.
 - **Indicateur clé** : Le tableau "Performance by Shader" généré par `trace_analyze.py`.
 
 ### C. GPUProfiler Interne (Temps Réel)
+
 - **Usage** : Touche **F3** en cours d'exécution.
 - **Analyse** : Utilise des requêtes `GL_TIMESTAMP` pour découper la frame en étapes (Geometry, Post-Process, UI).
 
