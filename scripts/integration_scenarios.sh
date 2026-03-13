@@ -1,156 +1,174 @@
 #!/bin/bash
+# scripts/integration_scenarios.sh
+# Scenarios for controlling the application via xdotool
+
+# Source shared utilities for send_key
+SCRIPT_DIR=$(dirname "$0")
+source "$SCRIPT_DIR/integration_utils.sh"
 
 run_scenario_full() {
-    echo "Starting Integration Test Scenario (FULL)..."
+    local wid=$1
+    if [ -z "$wid" ]; then
+        echo "Error: Scenario requires a Window ID (WID)"
+        return 1
+    fi
+
+    echo "Starting Integration Test Scenario (FULL) on window $wid..."
 
     # 0. Activate Functions
     echo "=> FPS Counter (F1)"
-    for i in {1..6}; do xdotool key --delay 200 F1; done
+    for i in {1..6}; do send_key "$wid" F1 200; done
     sleep 1
 
     echo "=> Help (F2)"
-    xdotool key --delay 200 F2
+    send_key "$wid" F2 200
     sleep 1
-    xdotool key --delay 200 F2
+    send_key "$wid" F2 200
 
     echo "=> Activate GPU Profiler (F3)"
-    xdotool key --delay 200 F3
+    send_key "$wid" F3 200
     sleep 1
 
     echo "=> Log on GPU Metrics (F4)"
-    xdotool key --delay 200 F4
+    send_key "$wid" F4 200
     sleep 1
 
     echo "=> Resetting Camera (R)"
-    xdotool key --delay 200 R
+    send_key "$wid" R 200
     sleep 1
 
     echo "=> Test Full Screen (F)"
-    xdotool key --delay 200 F
+    send_key "$wid" F 200
     sleep 1
     echo "=> Test Windowed (F)"
-    xdotool key --delay 200 F
+    send_key "$wid" F 200
     sleep 1
 
     echo "=> Test Transition switching mode (T)"
-    xdotool key --delay 200 T
+    send_key "$wid" T 200
     sleep 1
 
     # 1. Environment Switching
     echo "=> Switching Environments (Page_Up / Page_Down)"
-    xdotool key --delay 200 Page_Up
+    send_key "$wid" Page_Up 200
     sleep 1
-    xdotool key --delay 200 Page_Up
+    send_key "$wid" Page_Up 200
     sleep 1
-    xdotool key --delay 200 Page_Down
+    send_key "$wid" Page_Down 200
     sleep 1
 
     # 2. Styles
     echo "=> Testing Styles (1-6)"
-    for i in {1..6}; do xdotool key --delay 500 $i; done
-    xdotool key --delay 500 2 # Style: Subtle
+    for i in {1..6}; do send_key "$wid" $i 500; done
+    send_key "$wid" 2 500 # Style: Subtle
 
     # 8.b GI Diffuse 1-Bounce
     echo "=> Testing GI Diffuse 1-Bounce"
-    for i in {1..3}; do xdotool key --delay 500 y; done
+    for i in {1..3}; do send_key "$wid" y 500; done
 
     # 8.a Debug view on GI
     echo "=> Debug view on GI"
-    xdotool key --delay 500 shift+y
+    send_key "$wid" shift+y 500
     sleep 1
-    xdotool key --delay 500 shift+y
+    send_key "$wid" shift+y 500
 
     # 3. Post-Process Effects
     echo "=> Toggling Effects"
-    xdotool key --delay 500 v # Vignette OFF
-    xdotool key --delay 500 v # Vignette ON
-    xdotool key --delay 500 g # Grain
-    xdotool key --delay 500 b # Bloom
-    xdotool key --delay 500 h # DoF
-    xdotool key --delay 500 j # Auto Exposure
-    xdotool key --delay 500 m # Motion Blur
-    xdotool key --delay 500 x # FXAA
+    send_key "$wid" v 500 # Vignette OFF
+    send_key "$wid" v 500 # Vignette ON
+    send_key "$wid" g 500 # Grain
+    send_key "$wid" b 500 # Bloom
+    send_key "$wid" h 500 # DoF
+    send_key "$wid" j 500 # Auto Exposure
+    send_key "$wid" m 500 # Motion Blur
+    send_key "$wid" x 500 # FXAA
 
-    xdotool key --delay 500 w # Wireframe ON
-    xdotool key --delay 500 w # Wireframe OFF
+    send_key "$wid" w 500 # Wireframe ON
+    send_key "$wid" w 500 # Wireframe OFF
 
     echo "=> Toggling Sphere Sorting (O)"
-    for i in {1..6}; do xdotool key --delay 500 o; done
+    for i in {1..6}; do send_key "$wid" o 500; done
 
     # 4. Camera Movement
     echo "=> Moving Camera"
     for key in z d s a q e; do
-        xdotool keydown $key; sleep 0.5; xdotool keyup $key
+        send_keydown "$wid" $key; sleep 0.5; send_keyup "$wid" $key
     done
 
     # 5. PBR Debug Modes
     echo "=> Cycling PBR Debug Modes (F5)"
-    for i in {1..10}; do xdotool key --delay 300 F5; done
+    for i in {1..10}; do send_key "$wid" F5 300; done
 
     # 6. Performance Mode
     echo "=> Toggling Performance Mode (F9)"
-    xdotool key --delay 500 F9
+    send_key "$wid" F9 500
     sleep 1
-    xdotool key --delay 500 F9
+    send_key "$wid" F9 500
 
     # 7. Style 7 - Banding Modes
     echo "=> Testing Style 7 - Banding Modes"
-    for i in {1..4}; do xdotool key --delay 500 7; done
+    for i in {1..4}; do send_key "$wid" 7 500; done
 
     echo "=> Test Complete."
-    xdotool key Escape
+    send_key "$wid" Escape 200
 }
 
 run_scenario_minimal() {
-    echo "Starting Integration Test Scenario (MINIMAL - for Valgrind)..."
+    local wid=$1
+    if [ -z "$wid" ]; then
+        echo "Error: Scenario requires a Window ID (WID)"
+        return 1
+    fi
+
+    echo "Starting Integration Test Scenario (MINIMAL - for Valgrind) on window $wid..."
     sleep 1
 
     # 1. Environment Switching
     echo "=> Switching Environments (Page_Up / Page_Down)"
-    xdotool key --delay 200 Page_Up
+    send_key "$wid" Page_Up 200
     sleep 2
-    xdotool key --delay 200 Page_Up
+    send_key "$wid" Page_Up 200
     sleep 2
-    xdotool key --delay 200 Page_Down
+    send_key "$wid" Page_Down 200
     sleep 2
 
     # 2. Styles
     echo "=> Testing Styles (1-6)"
-    for i in {1..6}; do xdotool key --delay 500 $i; done
-    xdotool key --delay 500 2 # Style: Subtle
+    for i in {1..6}; do send_key "$wid" $i 500; done
+    send_key "$wid" 2 500 # Style: Subtle
 
     # 3. Post-Process Effects
     echo "=> Toggling Effects"
-    xdotool key --delay 500 v # Vignette OFF
-    xdotool key --delay 500 v # Vignette ON
-    xdotool key --delay 500 g # Grain
-    xdotool key --delay 500 b # Bloom
-    xdotool key --delay 500 h # DoF
-    xdotool key --delay 500 j # Auto Exposure
+    send_key "$wid" v 500 # Vignette OFF
+    send_key "$wid" v 500 # Vignette ON
+    send_key "$wid" g 500 # Grain
+    send_key "$wid" b 500 # Bloom
+    send_key "$wid" h 500 # DoF
+    send_key "$wid" j 500 # Auto Exposure
 
-    xdotool key --delay 500 w # Wireframe ON
-    xdotool key --delay 500 w # Wireframe OFF
+    send_key "$wid" w 500 # Wireframe ON
+    send_key "$wid" w 500 # Wireframe OFF
 
     echo "=> Toggling Sphere Sorting (O)"
-    for i in {1..3}; do xdotool key --delay 800 o; done
+    for i in {1..3}; do send_key "$wid" o 800; done
 
     # 4. Camera Movement
     echo "=> Moving Camera"
     for key in z d s a; do
-        xdotool keydown $key; sleep 0.5; xdotool keyup $key
+        send_keydown "$wid" $key; sleep 0.5; send_keyup "$wid" $key
     done
 
     # 5. PBR Debug Modes
     echo "=> Cycling PBR Debug Modes (F5)"
-    for i in {1..5}; do xdotool key --delay 300 F5; done
+    for i in {1..5}; do send_key "$wid" F5 300; done
 
     # 6. Performance Mode
     echo "=> Toggling Performance Mode (F9)"
-    xdotool key --delay 500 F9
+    send_key "$wid" F9 500
     sleep 2
-    xdotool key --delay 500 F9
+    send_key "$wid" F9 500
     sleep 1
 
     echo "=> Test Complete."
-    xdotool key Escape
+    send_key "$wid" Escape 200
 }

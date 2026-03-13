@@ -42,7 +42,28 @@ wait_for_window_start() {
 
 focus_window() {
     local wid=$1
-    echo "Attempting to focus window $wid..."
-    xdotool windowfocus "$wid" || echo "Warning: windowfocus failed (non-fatal)"
-    xdotool windowactivate "$wid" || echo "Warning: windowactivate failed (expected in headless CI)"
+    echo "Targeting window $wid for events..."
+    # We use windowfocus but NOT windowactivate to avoid bringing it to the front
+    # on some window managers, though results may vary.
+    xdotool windowfocus "$wid" || echo "Warning: windowfocus failed"
+}
+
+send_key() {
+    local wid=$1
+    local key=$2
+    local delay=${3:-200}
+    # --window $wid attempts to send the event directly to the window ID
+    xdotool key --window "$wid" --delay "$delay" "$key"
+}
+
+send_keydown() {
+    local wid=$1
+    local key=$2
+    xdotool keydown --window "$wid" "$key"
+}
+
+send_keyup() {
+    local wid=$1
+    local key=$2
+    xdotool keyup --window "$wid" "$key"
 }

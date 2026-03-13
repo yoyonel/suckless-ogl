@@ -81,6 +81,15 @@ bench-analyze:
 # Run full automated benchmarking cycle (Init + Record + Analyze)
 bench-all: bench-init bench-record bench-analyze
 
+# Run benchmarking in headless mode (no window appears, won't steal focus)
+bench-headless: bench-init
+	@echo "[*] Recording performance trace (HEADLESS)..."
+	@chmod +x scripts/test_integration_apitrace.sh
+	@xvfb-run -a ./scripts/test_integration_apitrace.sh {{apitrace_bin}}
+	@mv build/integration.trace build/baseline.trace
+	@echo "[✓] Headless trace saved to build/baseline.trace"
+	@$(MAKE) bench-analyze
+
 # Configure CMake (Debug build)
 configure:
     @{{distrobox}} cmake {{extra_cmake_flags}} -G "Unix Makefiles" -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON

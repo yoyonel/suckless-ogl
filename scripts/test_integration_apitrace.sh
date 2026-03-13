@@ -48,7 +48,7 @@ focus_window "$WID"
 
 # 4. Run GUI Scenario
 echo "[*] Running Integration Test Scenario (Full)..."
-run_scenario_full
+run_scenario_full "$WID"
 
 # 5. Wait for app to finish (usually Escape in scenario ends it)
 if wait $APP_PID; then
