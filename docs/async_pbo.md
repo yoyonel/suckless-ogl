@@ -7,7 +7,9 @@ This document details the implementation of the asynchronous high-resolution tex
 Uploading large 4K HDR textures (approx. 64MB) to the GPU is a heavy operation.
 
 - **Direct Upload (`glTexImage2D`)**: Blocks the driver and main thread until the copy is complete (~50ms+), causing massive frame drops.
-- **Naive PBO**: Using a single PBO allows asynchronous DMA transfer, but the *mapping* of that PBO (`glMapBufferRange`) can still block if the GPU is currently reading from it (Implicit Synchronization).
+
+- **Naive PBO**: Using a single PBO allows asynchronous DMA transfer, but the _mapping_ of that PBO (`glMapBufferRange`) can still block if the GPU is currently reading from it (Implicit Synchronization).
+
 - **Monolithic Upload**: Even with PBOs, performing all GPU work (texture storage allocation, data upload, mipmap generation) in a single frame creates a ~60ms spike.
 
 ## Architecture Overview
@@ -31,52 +33,64 @@ sequenceDiagram
     participant GPU as GPU / Driver
 
     Note over Main: Frame N - PBO Setup
+
     Main->>GPU: texture_ensure_pbo() + texture_map_pbo()
     Main->>Worker: async_loader_provide_pbo(mapped_ptr)
 
     Note over Main: Frame N+1 - VRAM Pre-allocation
+
     Main->>GPU: texture_preallocate_hdr()<br/>glTexImage2D(level 0, NULL)
     Note over GPU: Allocate ~64MB base level only
 
     Note over Worker: Frames N..N+M - Background Conversion
+
     Worker->>Worker: float32 -> float16 (SIMD)<br/>directly into mapped PBO
 
     Note over Main: Frame N+M - Upload & Mipmaps
+
     Main->>GPU: glUnmapBuffer(PBO)
     Main->>GPU: glTexSubImage2D(from PBO)
     Main->>GPU: glGenerateMipmap()
     Note over GPU: DMA transfer + mipmap chain
+
 ```
 
 ## The Solution: Double-Buffered Persistent PBOs
 
-To ensure the Main Thread *never* waits for the GPU, we use a **Ping-Pong** strategy with two persistent PBOs.
+To ensure the Main Thread _never_ waits for the GPU, we use a **Ping-Pong** strategy with two persistent PBOs.
 
 ### Architecture
 
 1. **Async Worker Thread**:
-    - Loads the HDR file from disk (I/O).
-    - Decodes to float buffer.
-    - **Waits** for the Main Thread to provide a mapped GPU pointer.
-    - Converts Float -> Half-Float (FP16) *directly* into the mapped memory.
+   - Loads the HDR file from disk (I/O).
+
+   - Decodes to float buffer.
+
+   - **Waits** for the Main Thread to provide a mapped GPU pointer.
+
+   - Converts Float -> Half-Float (FP16) _directly_ into the mapped memory.
 
 2. **Main Thread (`app_update`)**:
-    - Checks if the worker is waiting.
-    - Selects the **next available PBO** (index `frame % 2`).
-    - **Maps** the PBO with `GL_MAP_UNSYNCHRONIZED_BIT`.
-    - Passes the pointer to the worker.
-    - When worker finishes, **Unmaps** and calls `glTexSubImage2D`.
+   - Checks if the worker is waiting.
+
+   - Selects the **next available PBO** (index `frame % 2`).
+
+   - **Maps** the PBO with `GL_MAP_UNSYNCHRONIZED_BIT`.
+
+   - Passes the pointer to the worker.
+
+   - When worker finishes, **Unmaps** and calls `glTexSubImage2D`.
 
 ### Key Optimizations
 
 #### 1. Double Buffering & Unsynchronized Mapping
 
 By alternating between `upload_pbo[0]` and `upload_pbo[1]`, we guarantee that while the GPU is reading from PBO 0 (for the previous texture), we are mapping and writing to PBO 1.
-This allows us to use `GL_MAP_UNSYNCHRONIZED_BIT`, which tells the driver: *"I promise I am not overwriting data you are currently using, so don't check, just give me the pointer immediately."*
+This allows us to use `GL_MAP_UNSYNCHRONIZED_BIT`, which tells the driver: _"I promise I am not overwriting data you are currently using, so don't check, just give me the pointer immediately."_
 
 #### 2. Persistent Allocation (No Orphaning)
 
-Previously, we used `glBufferData(NULL)` (Orphaning) to force the driver to give us a new memory chunk. While this avoids synchronization, the *allocation itself* for 64MB took ~26-40ms on certain drivers.
+Previously, we used `glBufferData(NULL)` (Orphaning) to force the driver to give us a new memory chunk. While this avoids synchronization, the _allocation itself_ for 64MB took ~26-40ms on certain drivers.
 **Current Approach**: We allocate the PBOs once (or resize only if larger textures are loaded). We reuse the existing VRAM storage, eliminating allocation overhead.
 
 #### 3. 2-Step Upload
@@ -84,8 +98,11 @@ Previously, we used `glBufferData(NULL)` (Orphaning) to force the driver to give
 Instead of fully converting on the specific thread and then copying, we:
 
 1. **Load** (Worker)
+
 2. **Map** (Main Thread)
+
 3. **Convert & Write** (Worker, directly into PBO)
+
 4. **Upload** (Main Thread, DMA)
 
 This prevents the Main Thread from ever touching the pixel data on the CPU, and prevents the Worker from needing a GL context.
@@ -97,12 +114,14 @@ This prevents the Main Thread from ever touching the pixel data on the CPU, and 
 Even with the PBO strategy above, the upload frame still caused a ~60ms spike because all GPU-heavy operations were concentrated in a single frame:
 
 | Operation | Approx. Cost | Cause |
-| :--- | :---: | :--- |
+| :-------- | :----------: | :---- |
+
 | `glTexStorage2D` (13 mip levels) | ~15-20ms | VRAM allocation of ~85MB |
 | `glUnmapBuffer` | ~1-3ms | Flush DMA write-combine |
 | `glTexSubImage2D` | ~10-15ms | DMA transfer PBO → texture |
 | `glGenerateMipmap` | ~10-15ms | GPU compute on 13 levels |
 | `glGetError` × 3 | ~5-10ms | **GPU sync points** (pipeline stalls) |
+
 | **Total** | **~45-65ms** | Single frame spike |
 
 ### The Strategy: Spread Work Across 3 Frames
@@ -120,8 +139,11 @@ gantt
 
     section After (3 frames)
     Frame N  - PBO Setup & Map        :active, 0, 5
+
     Frame N+1 - TexPrealloc (level 0) :active, 8, 15
+
     Frame N+M - Upload + Mipmap       :active, 18, 38
+
 ```
 
 #### Frame N: PBO Setup (`ASYNC_WAITING_FOR_PBO`)
@@ -130,11 +152,13 @@ gantt
 // app_update() — ASYNC_WAITING_FOR_PBO branch
 texture_ensure_pbo(&app->upload_pbo[idx], &app->upload_pbo_size[idx], size);
 void* ptr = texture_map_pbo(app->upload_pbo[idx], size);
+
 async_loader_provide_pbo(app->async_loader, ptr, app->upload_pbo[idx]);
 
 // Schedule deferred pre-allocation for NEXT frame
 app->pending_prealloc_w = req.width;
 app->pending_prealloc_h = req.height;
+
 ```
 
 **Cost**: ~1-5ms (PBO reuse, no allocation)
@@ -149,12 +173,15 @@ if (app->pending_prealloc_w > 0) {
         app->recycled_hdr_tex);
     app->pending_prealloc_w = 0;
 }
+
 ```
 
 Key decisions:
 
 - **`glTexImage2D` instead of `glTexStorage2D`**: Allocates only level 0 (~64MB) instead of 13 mip levels (~85MB). The mipmap chain is created later by `glGenerateMipmap`.
+
 - **No `glGetError()`**: Avoids forcing a GPU sync point. Errors are caught by the `GL_DEBUG_OUTPUT_SYNCHRONOUS` callback.
+
 - **Texture reuse**: If `recycled_hdr_tex` already matches dimensions and format, the pre-allocation is a **no-op** (zero-cost path).
 
 **Cost**: ~5-15ms first load, ~0ms on subsequent loads with same dimensions
@@ -167,6 +194,7 @@ Key decisions:
 glUnmapBuffer(PBO);
 glTexSubImage2D(..., 0);   // DMA from PBO offset 0
 glGenerateMipmap();        // Generates mip chain (also allocates mip levels)
+
 ```
 
 **Cost**: ~20-30ms (irreducible GPU work)
@@ -192,23 +220,32 @@ glGenerateMipmap();        // Generates mip chain (also allocates mip levels)
 flowchart TD
     A["app_update() called"] --> B{"pending_prealloc_w > 0?"}
     B -- Yes --> C["texture_preallocate_hdr()"]
+
     C --> D{"recycled_hdr_tex matches?"}
     D -- Yes --> E["Zero-cost reuse (OK)"]
+
     D -- No --> F["glTexImage2D(level 0, NULL)"]
+
     F --> G["Store in app->recycled_hdr_tex"]
     B -- No --> H["async_loader_poll()"]
+
     E --> H
     G --> H
     H --> I{"req.state?"}
     I -- WAITING_FOR_PBO --> J["PBO Setup & Map"]
+
     J --> K["Schedule pending_prealloc_w/h"]
     I -- ASYNC_READY --> L["texture_upload_hdr_from_pbo()"]
+
     L --> M{"reuse_tex matches?"}
     M -- Yes --> N["Skip glTexStorage2D (OK)"]
+
     M -- No --> O["Fallback: glTexStorage2D"]
+
     N --> P["glUnmapBuffer + glTexSubImage2D"]
     O --> P
     P --> Q["glGenerateMipmap"]
+
 ```
 
 ## Sync Point Removal (`glGetError` Audit)
@@ -242,6 +279,7 @@ sequenceDiagram
     GPU-->>CmdQueue: Done
     CmdQueue-->>CPU: GL_NO_ERROR
     Note over CPU: Can finally continue
+
 ```
 
 ### The Safety Net: `GL_DEBUG_OUTPUT_SYNCHRONOUS`
@@ -251,18 +289,23 @@ The application enables OpenGL debug output in synchronous mode (`gl_debug.c`):
 ```c
 glEnable(GL_DEBUG_OUTPUT);
 glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
 ```
 
 This means **every GL error is already reported immediately** via the debug callback, making `glGetError()` calls redundant for error detection.
 
 ### Audit Results
 
-| Location | Context | Action | Rationale |
-| :---| :---|:---|:---|
+| Location              | Context         | Action   | Rationale                       |
+| :-------------------- | :-------------- | :------- | :------------------------------ |
 | `ssbo_rendering.c:24` | After SSBO init | **Kept** | Init-time only, negligible cost |
+
 | `texture.c` (was line 206) | Sticky error clear | **Removed** | Redundant with debug callback |
+
 | `texture.c` (was line 260) | After `glTexStorage2D` | **Debug-only** (`#ifndef NDEBUG`) | Fallback path, useful for debugging |
+
 | `texture.c` (was line 289) | After `glTexSubImage2D` | **Removed** | Hot path, debug callback catches errors |
+
 | `texture.c` (was line 309) | After `glGenerateMipmap` | **Removed** | Hot path, debug callback catches errors |
 
 ## Evolution of the Implementation
@@ -296,9 +339,13 @@ We implemented `upload_pbo[2]`.
 We split texture initialization across 3 frames and removed `glGetError()` sync points.
 
 - **PBO Setup** in Frame N (~1-5ms)
+
 - **VRAM Pre-allocation** deferred to Frame N+1 (~5-15ms, or 0ms with reuse)
+
 - **Upload + Mipmaps** in Frame N+M (~20-30ms)
+
 - **3 `glGetError()` sync points removed** from the upload path
+
 - **`glTexImage2D(level 0)` replaces `glTexStorage2D(13 levels)`**: lighter allocation, mip chain deferred
 
 **Result**: Worst-case frame spike reduced from ~60ms to ~20-30ms. With texture reuse (same dimensions), the pre-allocation frame is a no-op.
@@ -317,10 +364,14 @@ We use **Double-Buffered PBOs + Sync Fences**:
 
 1. **Trigger Phase (Frame N)**:
    - Call `glGetTexImage` into `pbo[idx]`.
+
    - Insert a fence: `sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)`.
+
 2. **Read Phase (Frame N+1)**:
    - Check the fence: `glClientWaitSync(sync[!idx], ..., 0)`.
+
    - If `GL_ALREADY_SIGNALED` or `GL_CONDITION_SATISFIED`, map the PBO and read.
+
    - If not signaled, **skip the update** for this frame. This prevents the CPU from ever stalling at the cost of 1 extra frame of latency for HUD values.
 
 **Result**: Exposure calculation and histogram extraction cost **< 0.05ms** on the CPU, regardless of scene complexity.
@@ -328,7 +379,11 @@ We use **Double-Buffered PBOs + Sync Fences**:
 ## Code References
 
 - **`src/app.c`**: Manages the PBO array loop and deferred pre-allocation in `app_update`. Fields: `pending_prealloc_w`, `pending_prealloc_h`.
+
 - **`src/texture.c`**: `texture_ensure_pbo` (sizing), `texture_map_pbo` (flags), `texture_preallocate_hdr` (VRAM pre-allocation), `texture_upload_hdr_from_pbo` (upload pipeline).
+
 - **`src/async_loader.c`**: Handles the threading state machine (`WAITING_FOR_PBO`).
+
 - **`include/app.h`**: `App` struct holds `recycled_hdr_tex`, `pending_prealloc_w/h`, `upload_pbo[2]`.
+
 - **`src/gl_debug.c`**: Configures `GL_DEBUG_OUTPUT_SYNCHRONOUS`.

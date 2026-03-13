@@ -10,9 +10,10 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 
 ## Visual Comparison
 
-| GPU | Before Fix | After Fix |
-|-----|------------|-----------|
+| GPU       | Before Fix                  | After Fix    |
+| --------- | --------------------------- | ------------ |
 | **Intel** | ✅ Clean edges, proper FXAA | ✅ Unchanged |
+
 | **NVIDIA** | ❌ White halos, buggy edges | ✅ Identical to Intel |
 
 ## Root Causes Identified
@@ -26,8 +27,11 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 **Fix**: Use pre-calculated luma from alpha channel instead.
 
 ```diff
-- lumaEnd1 = FxaaLuma(texture(screenTexture, uv1).rgb);
-+ lumaEnd1 = texture(screenTexture, uv1).a;  // Pre-calculated in PBR shader
+
+* lumaEnd1 = FxaaLuma(texture(screenTexture, uv1).rgb);
+
+* lumaEnd1 = texture(screenTexture, uv1).a;  // Pre-calculated in PBR shader
+
 ```
 
 ### Issue 2: Derivative-Based Roughness Clamping
@@ -39,8 +43,8 @@ Investigation and resolution of rendering differences between Intel and NVIDIA G
 **Attempted Fixes**:
 
 1. ❌ Threshold 0.1 → 0.5: Reduced but didn't eliminate halos
-2. ❌ Saturation `min(maxVariation, 1.0)`: Still visible artifacts
-3. ✅ **Complete removal**: Achieved visual parity
+1. ❌ Saturation `min(maxVariation, 1.0)`: Still visible artifacts
+1. ✅ **Complete removal**: Achieved visual parity
 
 **Final Solution**: Disabled roughness clamping entirely.
 
@@ -51,13 +55,15 @@ float compute_roughness_clamping(vec3 N_val, float roughness_val)
     roughness_val = clamp(roughness_val, 0.0, 1.0);
     return roughness_val;
 }
+
 ```
 
 ## Why Derivatives Differ
 
-| Vendor | Implementation | Behavior |
-|--------|---------------|----------|
+| Vendor    | Implementation                           | Behavior                   |
+| --------- | ---------------------------------------- | -------------------------- |
 | **Intel** | Conservative 2x2 quad finite differences | Stable, predictable values |
+
 | **NVIDIA** | Optimized hardware units | Different rounding, can spike |
 
 **Result**: `pow(maxVariation, 0.1)` amplified vendor differences → white halos on NVIDIA.
@@ -67,13 +73,17 @@ float compute_roughness_clamping(vec3 N_val, float roughness_val)
 ### Lost
 
 - Geometric anti-aliasing on curved surfaces
+
 - Specular aliasing prevention on very smooth metals
 
 ### Gained
 
 - ✅ Cross-vendor consistency
+
 - ✅ Predictable behavior
+
 - ✅ Simplified shader code
+
 - ✅ Minor performance improvement
 
 **Verdict**: FXAA already provides excellent AA. Loss of hardware-dependent roughness clamping is compensated by a stable analytic minimum and sphere-specific curvature clamping.
@@ -83,10 +93,14 @@ float compute_roughness_clamping(vec3 N_val, float roughness_val)
 A key finding during this synchronization effort was the trade-off between using GLSL built-ins and custom analytic math.
 
 | Method | Built-in (`dFdx`, `fwidth`) | Analytic Curvature/Fade |
-| :--- | :--- | :--- |
+| :----- | :-------------------------- | :---------------------- |
+
 | **Vendor Consistency** | ❌ Poor (Driver/Hardware precision) | ✅ 100% (Mathematical) |
+
 | **Latency** | Medium (Quad-sync required) | Low (Pure ALU) |
+
 | **Logic Safety** | ❌ Fails in divergent branches | ✅ Branch-safe |
+
 | **Implementation** | Trivial (1 line) | Complex (Custom math per primitive) |
 
 **Cost Evaluation**: While analytic math uses more ALU cycles (approx. 5-10 more), it avoids the hardware synchronization latency of quads and ensures that regression maps between Intel, NVIDIA, and AMD remain dark (bit-perfect parity).
@@ -95,19 +109,22 @@ A key finding during this synchronization effort was the trade-off between using
 
 ### Visual Inspection
 
-```
+```text
 Before:  Intel ✅  |  NVIDIA ❌ (halos, buggy FXAA)
 After:   Intel ✅  |  NVIDIA ✅ (identical rendering)
+
 ```
 
 ### Reference Metrics (FXAA Synthetic Test)
 
 Target values based on correct Intel HD 4600 behavior (Sphere Pattern):
 
-| Metric | Reference Value (Intel) | NVIDIA (GTX 950M) | Pass Threshold |
-|--------|-------------------------|-------------------|----------------|
-| **Edge Noise (No AA)** | ~0.0026 | 0.0026 | N/A |
+| Metric                 | Reference Value (Intel) | NVIDIA (GTX 950M) | Pass Threshold |
+| ---------------------- | ----------------------- | ----------------- | -------------- |
+| **Edge Noise (No AA)** | ~0.0026                 | 0.0026            | N/A            |
+
 | **Edge Noise (FXAA)** | ~0.0015 | 0.0015 | < 0.0020 |
+
 | **Noise Reduction** | **~41.88%** | **41.85%** | > 10% |
 
 > **Conclusion**: NVIDIA rendering is now mathematically identical to Intel (delta < 0.1%), confirming the precision fix is successful.
@@ -115,6 +132,7 @@ Target values based on correct Intel HD 4600 behavior (Sphere Pattern):
 ## Files Modified
 
 - `shaders/postprocess/fxaa.glsl`
+
 - `shaders/pbr_functions.glsl`
 
 ## PBO Mapping Synchronization (Implicit vs. Explicit)
@@ -135,27 +153,30 @@ Instead of letting the driver guess, we use explicit synchronization:
 
 1. **Fence after Command**:
 
-   ```c
+```c
    glReadPixels(...);
    app->sync[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-   ```
+```
 
-2. **Wait before Map**:
+1. **Wait before Map**:
 
-   ```c
+```c
    // Non-blocking wait (timeout 0)
    GLenum status = glClientWaitSync(app->sync[!idx], GL_SYNC_FLUSH_COMMANDS_BIT, 0);
    if (status != GL_TIMEOUT_EXPIRED) {
        void* ptr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+
        // ... process ...
        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
    }
-   ```
+```
 
 By checking the fence with a zero timeout, we ensure that if the GPU is still busy, the CPU simply skips the logic for that frame instead of waiting. This is crucial for maintaining a high and stable frame rate.
 
 ## References
 
 - [shader-cross-gpu-compatibility.md](./shader-cross-gpu-compatibility.md) - General guidelines
+
 - [FXAA 3.11 Whitepaper](https://developer.nvidia.com/fxaa)
+
 - [OpenGL Derivatives](https://www.khronos.org/opengl/wiki/Derivative)

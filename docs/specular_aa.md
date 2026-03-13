@@ -21,11 +21,11 @@ In the GGX/PBR model, the "roughness" parameter (\(r\)) is related to the varian
 To account for sub-pixel geometry variation (\(\sigma_g^2\)), we simply add the variances:
 
 \[
-\alpha_{total} = \alpha_{micro} + \sigma_g^2
+\alpha*{total} = \alpha*{micro} + \sigma_g^2
 \]
 
 \[
-\text{roughness}_{clamped} = \sqrt{\text{roughness}^2 + \sigma_g^2}
+\text{roughness}\_{clamped} = \sqrt{\text{roughness}^2 + \sigma_g^2}
 \]
 
 ## 3. Implementation Modes
@@ -42,8 +42,9 @@ Used for general meshes (`u_aaMode == 0`). It uses GPU derivatives (`dFdx`/`dFdy
 \sigma_g^2 = \text{SCALE} \cdot \max\left( \| \frac{\partial \mathbf{N}}{\partial x} \|^2, \| \frac{\partial \mathbf{N}}{\partial y} \|^2 \right)
 \]
 
-* **Pros**: Automatic, works on any mesh.
-* **Cons**: Hardware-dependent (derivatives vary between vendors), prone to spikes at silhouettes.
+- **Pros**: Automatic, works on any mesh.
+
+- **Cons**: Hardware-dependent (derivatives vary between vendors), prone to spikes at silhouettes.
 
 ### B. Curvature-Based Mode (Analytic)
 
@@ -55,15 +56,17 @@ Used for primitives with known analytic curvature, like the raytraced spheres (`
 \sigma_g^2 = \text{SCALE} \cdot \left( \frac{\text{pixelSizeWorld}}{\text{Radius}} \right)^2
 \]
 
-* **Pros**: Hardware-independent, perfectly stable at any distance, no silhouette spikes.
-* **Cons**: Requires explicit knowledge of the primitive's geometry.
+- **Pros**: Hardware-independent, perfectly stable at any distance, no silhouette spikes.
+
+- **Cons**: Requires explicit knowledge of the primitive's geometry.
 
 ## 4. Tuning Constants and Factors
 
 Found in `shaders/pbr_functions.glsl`:
 
 | Constant | Value | Description |
-| :--- | :--- | :--- |
+| :------- | :---- | :---------- |
+
 | `SCALE` | `50.0` | Global multiplier for variance. High value for extreme stability. |
 | `MAX_VARIANCE` | `0.1` | Caps the variance to prevent "exploding" roughness at silhouettes. |
 | `MIN_ROUGHNESS` | `0.04` | Hard floor for roughness to avoid numerical singularities and fireflies. |
@@ -75,5 +78,6 @@ When Specular AA increases the roughness, the **Multiple Scattering Compensation
 
 ## 6. Integration
 
-* **Billboards**: Use **Curvature-mode** by default for reference-level stability.
-* **Instanced**: Can use **Screen-Space mode** for general geometry, but currently defaults to a safe minimum roughness (\(0.04\)).
+- **Billboards**: Use **Curvature-mode** by default for reference-level stability.
+
+- **Instanced**: Can use **Screen-Space mode** for general geometry, but currently defaults to a safe minimum roughness (\(0.04\)).

@@ -10,16 +10,22 @@ The deadlock was caused by a synchronization conflict between the GLFW event loo
 
 ### The Problematic Sequence
 
-1.  **Toggle Triggered**: The user presses 'F', which calls `app_toggle_fullscreen()`.
-2.  **Synchronous Driver Call**: `app_toggle_fullscreen()` calls `glfwSetWindowMonitor()`. This is a synchronous operation that blocks until the window manager and driver acknowledge the mode switch.
-3.  **Nested Callback**: While blocked inside `glfwSetWindowMonitor()`, the window manager sends a resize event. GLFW dispatches this event immediately by calling `framebuffer_size_callback()`.
-4.  **Heavy GPU Work**: The callback invoked `postprocess_resize()`, which performed heavy GPU resource management:
-    *   Destroying existing Framebuffer Objects (FBOs) and textures.
-    *   Allocating new textures for Bloom, Depth of Field, etc.
-    *   Recompiling/re-linking shaders for some post-process effects.
-5.  **Circular Dependency (Deadlock)**:
-    *   The **Driver/Compositor** is waiting for the application to finish its current GPU work (like a pending `glfwSwapBuffers` or fence sync) to complete the mode switch.
-    *   The **Application** is blocked inside the resize callback, trying to allocate/delete GPU resources, but the driver's command queue is often locked or stalled during the mode switch handshake.
+1. **Toggle Triggered**: The user presses 'F', which calls `app_toggle_fullscreen()`.
+1. **Synchronous Driver Call**: `app_toggle_fullscreen()` calls `glfwSetWindowMonitor()`. This is a synchronous operation that blocks until the window manager and driver acknowledge the mode switch.
+1. **Nested Callback**: While blocked inside `glfwSetWindowMonitor()`, the window manager sends a resize event. GLFW dispatches this event immediately by calling `framebuffer_size_callback()`.
+1. **Heavy GPU Work**: The callback invoked `postprocess_resize()`, which performed heavy GPU resource management:
+
+- Destroying existing Framebuffer Objects (FBOs) and textures.
+
+- Allocating new textures for Bloom, Depth of Field, etc.
+
+- Recompiling/re-linking shaders for some post-process effects.
+
+1. **Circular Dependency (Deadlock)**:
+
+- The **Driver/Compositor** is waiting for the application to finish its current GPU work (like a pending `glfwSwapBuffers` or fence sync) to complete the mode switch.
+
+- The **Application** is blocked inside the resize callback, trying to allocate/delete GPU resources, but the driver's command queue is often locked or stalled during the mode switch handshake.
 
 ### Sequence Before (DEADLOCK)
 
@@ -65,6 +71,7 @@ sequenceDiagram
     Main->>GPU: glDeleteTextures / glGenTextures
     Note over GPU,Driver: GPU blocked by pending swap
     Note over Main,GPU: (DEADLOCK)
+
 ```
 
 ## Implementation: Deferred Resize
@@ -106,6 +113,7 @@ sequenceDiagram
     participant GPU as GPU Pipeline
 
     Main->>GPU: glFinish() - drain pipeline
+
     GPU-->>Main: All commands complete
     Main->>GLFW: glfwSetWindowMonitor()
     GLFW->>Driver: Mode switch request
@@ -117,7 +125,9 @@ sequenceDiagram
     Note over Main: Next frame begins...
     Main->>Main: app_run: resize_pending? YES
     Main->>GPU: postprocess_resize() - safe context
+
     GPU-->>Main: FBOs recreated (OK)
+
 ```
 
 ### 1. Lightweight Callback
@@ -126,7 +136,9 @@ The `framebuffer_size_callback` no longer performs any GPU resource allocation. 
 
 ```c
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+
     App* app = (App*)glfwGetWindowUserPointer(window);
+
     app->width = width;
     app->height = height;
     glViewport(0, 0, width, height);
@@ -136,6 +148,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     app->pending_height = height;
     app->resize_pending = 1;
 }
+
 ```
 
 ### 2. GPU Pipeline Drain
@@ -154,6 +167,7 @@ if (app->resize_pending) {
     postprocess_resize(&app->postprocess, app->pending_width, app->pending_height);
     app->resize_pending = 0;
 }
+
 ```
 
 ## Stress Testing
@@ -161,23 +175,32 @@ if (app->resize_pending) {
 A dedicated stress test was created to verify this fix: `scripts/test_stress_fullscreen.sh`.
 
 ### How it works
+
 - It uses `xdotool` to send 'F' keystrokes rapidly (e.g., 10ms-50ms intervals).
+
 - It monitors the application's **log output** rather than window visibility. A deadlocked application may still have a visible window, but it will stop logging "Switched to fullscreen/windowed".
+
 - If the expected log message doesn't appear within 5 seconds, it detects a hang, captures a full GDB stack trace of all threads, and terminates the app.
 
 ### Running the test
+
 ```bash
+
 # Standard test
+
 just stress-fullscreen
 
 # Aggressive test with ASan
+
 just stress-fullscreen-asan 200 10
+
 ```
 
 ## Summary of Changes
 
 | File | Change |
-| :--- | :--- |
+| :--- | :----- |
+
 | `include/app.h` | Added `resize_pending`, `pending_width`, `pending_height` fields. |
 | `src/app_input.c` | Updated `framebuffer_size_callback` to use flags; added `glFinish()` to toggle. |
 | `src/app.c` | Added deferred resize processing logic and state initialization. |

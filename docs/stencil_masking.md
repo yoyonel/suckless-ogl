@@ -11,8 +11,10 @@ Separating background pixels from geometry is a common optimization in post-proc
 The buffer is cleared to `0` at the start of each frame.
 
 | Value | Meaning | Description |
-| :--- | :--- | :--- |
+| :---- | :------ | :---------- |
+
 | `0` | **Skybox / Background** | Background pixels (infinite distance). |
+
 | `1` | **Object / Geometry** | Main scene objects (Spheres, Billboards). |
 
 ## Technical Implementation
@@ -23,6 +25,7 @@ During the main rendering pass (`app_render`), the stencil test is enabled befor
 
 ```c
 /* Mark pixels where geometry is rendered with 1 */
+
 glEnable(GL_STENCIL_TEST);
 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -31,6 +34,7 @@ glStencilMask(0xFF);
 /* Render Spheres/Billboards... */
 
 glDisable(GL_STENCIL_TEST);
+
 ```
 
 The skybox is rendered with the stencil test disabled (or after clearing), ensuring it remains at `0`.
@@ -50,12 +54,15 @@ if (enableChromAbbr && !isSkybox) {
 } else {
     color = getSceneSource(TexCoords);
 }
+
 ```
 
 ## Benefits
 
 1. **Optimization**: Expensive sampling (like Chromatic Aberration) is skipped for background pixels that often lack detail or are far away.
+
 2. **Visual Quality**: Prevents bleeding of background colors into foreground effects or vice-versa.
+
 3. **Flexibility**: Provides a cheap 1-bit mask that can be reused by multiple effects without extra textures.
 
 ## Debugging
@@ -63,4 +70,5 @@ if (enableChromAbbr && !isSkybox) {
 You can visualize the stencil mask by enabling the `POSTFX_STENCIL_DEBUG` flag (Toggle with **F6**). This will color the screen based on the stencil value:
 
 - **Black**: Skybox (0)
+
 - **White**: Objects (1)

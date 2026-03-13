@@ -9,13 +9,13 @@ The monolithic `app.c` has been split into several specialized modules to improv
 ### Modules
 
 | Module | Responsibility |
-| :--- | :--- |
+| :----- | :------------- |
+
 | `app.c` / `app.h` | Orchestrator: Initialization, main loop, high-level render pass management. |
 | `app_ui.c` / `app_ui.h` | UI Rendering: Overlays, help screens, debug text, histograms, and loading spinners. |
 | `app_input.c` / `app_input.h` | Input Handling: Keyboard callbacks, mouse/scroll events, and post-process feature toggles. |
 | `app_env.c` / `app_env.h` | Environment & IBL: HDR file scanning, asynchronous loading, and the IBL state machine. |
 | `app_scene.c` / `app_scene.h` | Scene Rendering: Billboard groups, instanced groups, and procedural geometry updates. |
-
 
 ## Architecture Diagram
 
@@ -89,6 +89,7 @@ digraph Architecture {
   AppScene -> PBR [label="Draws"];
   AppScene -> Skybox [label="Draws"];
 }
+
 ```
 
 ## Data Ownership
@@ -96,8 +97,11 @@ digraph Architecture {
 The `App` struct (defined in `app.h`) remains the central state container. Most modules take a pointer to `App` as their first argument.
 
 To avoid cyclic dependencies:
+
 - Core struct definitions (`App`, `Camera`, `AsyncRequest`) use named structs instead of anonymous ones to support forward declarations.
+
 - Module headers are included at the **end** of `app.h` to ensure they can see the full `App` definition if necessary (though they primarily use pointers).
+
 - Specialized source files (`.c`) include `app.h` and the required renderer headers directly.
 
 ## Build System
@@ -107,4 +111,5 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 ## Performance Impact
 
 - **Compilation**: Parallel compilation is now more effective as changes to UI don't require re-compiling the IBL logic.
+
 - **Runtime**: Zero overhead, as functions are simply moved into separate translation units. Inlining is still possible for performance-critical functions if they were moved to headers (though not currently required).

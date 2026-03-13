@@ -19,11 +19,13 @@ if (has_work) {
 
 pthread_mutex_lock(&request_mutex);     // (3) DEADLOCK — already held!
 has_pending_work = false;
+
 ```
 
 `async_handle_io()` internally re-acquires the mutex before returning (in all
 code paths: success, failure, cancel). Step (3) then tried to lock an already-held
 mutex — **undefined behavior** on POSIX default (non-recursive) mutexes, which on
+
 Linux manifests as a permanent deadlock.
 
 Once the worker thread deadlocked on itself, the main thread's `async_loader_poll()`
@@ -38,18 +40,24 @@ Made the re-lock conditional on whether `async_handle_io()` was called:
 if (has_work) {
     async_handle_io(path_to_load);
     /* Returns with mutex HELD — no re-lock needed */
+
 } else {
     /* No work dispatched, re-acquire for next iteration */
+
     pthread_mutex_lock(&request_mutex);
 }
 has_pending_work = false;
+
 ```
 
 ## Why It Appeared Intermittently
 
 The deadlock only triggers when:
+
 1. The worker thread finishes all internal work (IO + conversion)
+
 2. The main thread happens to call `async_loader_poll()` after the worker
+
    re-acquires the mutex at step (3)
 
 On faster GPUs/CPUs, timing differences could mask the bug. On Intel HD 4600

@@ -1,16 +1,18 @@
-
 # Skybox Rendering Technique (Equirectangular)
 
 The engine uses direct **Equirectangular** mapping for the environment background. This is more memory-efficient as it avoids converting to and storing a generated cubemap.
 
-### Early-Z Optimization
+## Early-Z Optimization
+
 To maximize performance on integrated GPUs, the skybox is rendered **after** the scene objects.
 
-1.  **Vertex Shader**: Positions the skybox triangles exactly on the far plane (`z = 1.0`).
-2.  **Depth Test**: By using `glDepthFunc(GL_LEQUAL)`, the GPU automatically rejects skybox fragments that are occluded by 3D objects (like the icosphere) before launching the fragment shader.
-3.  **Fragment Shader**: Performs an inverse spherical projection to sample the 2D HDR texture.
+1. **Vertex Shader**: Positions the skybox triangles exactly on the far plane (`z = 1.0`).
 
-### Optimization Diagram
+2. **Depth Test**: By using `glDepthFunc(GL_LEQUAL)`, the GPU automatically rejects skybox fragments that are occluded by 3D objects (like the icosphere) before launching the fragment shader.
+
+3. **Fragment Shader**: Performs an inverse spherical projection to sample the 2D HDR texture.
+
+## Optimization Diagram
 
 ```graphviz
 digraph SkyboxZ {
@@ -69,6 +71,7 @@ digraph SkyboxZ {
   Test -> FS [label="Visible (Sky)"];
   Test -> Discard [label="Hidden (Object)"];
 }
+
 ```
 
 ```glsl
@@ -79,6 +82,7 @@ vec2 SampleEquirectangular(vec3 v) {
     uv *= invAtan;
     uv.x += 0.5;
     uv.y = 0.5 - uv.y;
+
     return uv;
 }
 
@@ -87,14 +91,16 @@ void skybox_main() {
     vec2 uv = SampleEquirectangular(dir);
     out_color_val = textureLod(environmentMap, uv, blur_lod);
 }
+
 ```
 
-### C Implementation (View Matrix)
+## C Implementation (View Matrix)
 
 We remove the **translation** component from the view matrix so the skybox appears infinitely far away (centered on the camera):
 
 ```c
 /* Copy view and strip translation to keep skybox at infinity */
+
 mat4 view_sky;
 glm_mat4_copy(view, view_sky);
 view_sky[3][0] = 0.0f;
@@ -102,9 +108,11 @@ view_sky[3][1] = 0.0f;
 view_sky[3][2] = 0.0f;
 
 /* Compute inverse view-projection for equirect sampling */
+
 mat4 inv_vp_sky;
 glm_mat4_mul(proj, view_sky, inv_vp_sky);
 glm_mat4_inv(inv_vp_sky, inv_vp_sky);
+
 ```
 
 ## 🔍 Technical Details
@@ -112,8 +120,10 @@ glm_mat4_inv(inv_vp_sky, inv_vp_sky);
 ### Mipmap Sampling
 
 Using `textureLod` with an equirectangular texture allows precise control over bluriness:
--   **LOD 0**: Sharp environment.
--   **LOD > 0**: Blurred environment (useful for PBR background or debugging).
+
+- **LOD 0**: Sharp environment.
+
+- **LOD > 0**: Blurred environment (useful for PBR background or debugging).
 
 ### Orientation Correction
 
@@ -124,7 +134,9 @@ The inversion `uv.y = 0.5 - uv.y` is crucial to map the "top" of the HDR image t
 ```c
 // Main render loop integration
 void render_scene_example(App* app) {
+
     // 1. View Matrix without translation
+
     mat4 view_sky;
     glm_mat4_copy(app->view, view_sky);
     view_sky[3][0] = 0.0f;
@@ -136,36 +148,46 @@ void render_scene_example(App* app) {
     glm_mat4_inv(inv_vp_sky, inv_vp_sky);
 
     // 2. Render via skybox module
+
     skybox_render(&app->skybox, app->skybox_shader,
                   app->hdr_texture, inv_vp_sky, app->env_lod);
 }
+
 ```
 
 ## 🌟 Advantages
 
-1.  **Performance**: No complex matrix math, just zeroing 3 floats.
-2.  **Simplicity**: Easy to understand and maintain.
-3.  **Robustness**: Standard industry technique.
-4.  **Quality**: Seamless infinite background.
+1. **Performance**: No complex matrix math, just zeroing 3 floats.
+
+2. **Simplicity**: Easy to understand and maintain.
+
+3. **Robustness**: Standard industry technique.
+
+4. **Quality**: Seamless infinite background.
 
 ## 📝 Important Notes
 
--   Use `glDepthFunc(GL_LEQUAL)` so the skybox is drawn at the back processing.
--   The skybox does not write significant depth.
--   The LOD (blur_lod) allows controlling the environment blur.
+- Use `glDepthFunc(GL_LEQUAL)` so the skybox is drawn at the back processing.
+
+- The skybox does not write significant depth.
+
+- The LOD (blur_lod) allows controlling the environment blur.
 
 ## 🔗 Python → C Equivalence
 
 ### Python (moderngl)
+
 ```python
 view_m = camera.matrix
 view_m[3][0] = 0
 view_m[3][1] = 0
 view_m[3][2] = 0
 inv_view_proj_sky = glm.inverse(projection_matrix * view_m)
+
 ```
 
 ### C (cglm)
+
 ```c
 mat4 view_m;
 glm_lookat(camera_pos, target, up, view_m);
@@ -176,6 +198,7 @@ view_m[3][2] = 0.0f;
 mat4 inv_view_proj_sky;
 glm_mat4_mul(proj_matrix, view_m, inv_view_proj_sky);
 glm_mat4_inv(inv_view_proj_sky, inv_view_proj_sky);
+
 ```
 
 **Perfectly equivalent!** ✅

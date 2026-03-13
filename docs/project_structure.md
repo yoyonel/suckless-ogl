@@ -1,4 +1,3 @@
-
 # Project Structure: Refactored Icosphere
 
 ## Modular Architecture
@@ -6,8 +5,11 @@
 The code has been refactored according to the following principles:
 
 - **Separation of Concerns**: Each module has a clear function.
+
 - **Encapsulation**: Data structures are managed by their own modules.
+
 - **Reusability**: Components can be used independently.
+
 - **Maintainability**: Code that is easier to read, test, and modify.
 
 ## Folder Structure
@@ -15,23 +17,37 @@ The code has been refactored according to the following principles:
 ```text
 icosphere/
 ├── .github/workflows/  # CI/CD Workflows
+
 │   └── scripts/        # CI-specific scripts (Xvfb wrapper, reporting, ...)
+
 ├── src/
 │   ├── main.c              # Entry Point
+
 │   ├── app.c               # Orchestration & Loop
+
 │   ├── app_env.c           # IBL Management (Async/Progressive)
+
 │   ├── app_input.c         # Callbacks & Input State
+
 │   ├── app_scene.c         # Scene Rendering (Instanced/Billboards)
+
 │   ├── app_ui.c            # Overlay UI & Debug
+
 │   ├── effects/            # Post-Process Effects (Bloom, DoF, Manual, ...)
+
 │   ├── camera.c            # Camera Physics
+
 │   ├── async_loader.c      # Thread Loading
+
 │   ├── postprocess.c       # FXAA/ToneMapping Pipeline
+
 │   ├── pbr.c               # PBR Functions
+
 │   └── ... (utils, log, shader, texture)
 │
 ├── include/
 │   ├── app.h               # Main App Structure
+
 │   ├── app_env.h
 │   ├── app_input.h
 │   ├── app_scene.h
@@ -40,9 +56,13 @@ icosphere/
 │
 ├── shaders/
 │   ├── IBL/                # IBL Compute Shaders
+
 │   ├── postprocess/        # FX Shaders (Bloom, DoF, FXAA)
+
 │   ├── pbr_ibl_*.vert/frag # Physically Based Rendering Shaders
+
 │   └── ...
+
 ```
 
 ## Architecture Diagram
@@ -75,9 +95,11 @@ digraph ProjectStructure {
   ];
 
   /* Core */
+
   App [label="App\n(app.c)", color="#e0af68", fontcolor="#e0af68", penwidth=3];
 
   /* Sub-Modules */
+
   subgraph cluster_modules {
     label="Functional Modules";
     fontname="Helvetica Bold,Arial,sans-serif";
@@ -93,6 +115,7 @@ digraph ProjectStructure {
   }
 
   /* Utils/Engines */
+
   subgraph cluster_engine {
     label="Graphics Engine";
     fontname="Helvetica Bold,Arial,sans-serif";
@@ -108,6 +131,7 @@ digraph ProjectStructure {
   }
 
   /* Relations */
+
   App -> AppUI;
   App -> AppInput;
   App -> AppEnv;
@@ -120,6 +144,7 @@ digraph ProjectStructure {
   AppEnv -> PBR [label="Gen Maps"];
   AppScene -> PBR [label="Render"];
 }
+
 ```
 
 ## Modules and Responsibilities
@@ -127,21 +152,29 @@ digraph ProjectStructure {
 ### 1. Core (App)
 
 - `app.c`: Conductor. Initializes, updates, renders.
+
 - `app_input.c`: Handles keyboard/mouse and fills `App` state.
+
 - `app_ui.c`: Draws overlays (text, loading spinners, graphs).
+
 - `app_env.c`: Handles asynchronous loading and IBL generation.
+
 - `app_scene.c`: Handles instance buffers and sphere draw calls.
 
 ### 2. Post-Processing
 
 - Complex pipeline managed by `postprocess.c`.
+
 - Supports: Auto-Exposure, Bloom, DoF, Motion Blur, FXAA, Vignette...
+
 - Uses a standardized UBO (`PostProcessUBODef`) for shaders.
 
 ### 3. Physical Rendering (PBR)
 
 - `pbr.c`: Configures PBR shaders.
+
 - `material.c`: Manages the material library.
+
 - `sphere_sorting.c`: Sorts transparent instances (Back-to-Front).
 
 ## Improvements over Original Code
@@ -149,56 +182,75 @@ digraph ProjectStructure {
 ### ✅ Organization
 
 - Code divided into logical modules.
+
 - Headers separating interface and implementation.
+
 - Easy to find and modify specific features.
 
 ### ✅ Reusability
 
 - Modules can be reused in other projects.
+
 - Clear and documented APIs.
+
 - Encapsulated data structures.
 
 ### ✅ Maintainability
 
 - Clearly defined responsibilities.
+
 - Less coupling between components.
+
 - Easier to debug and test.
 
 ### ✅ Extensibility
 
 - Easy to add new features.
+
 - Example: adding a new geometry type following the icosphere model.
+
 - Modular shader system.
 
 ### ✅ Memory Management
 
 - Clear init/cleanup functions for each module.
+
 - Reduced risk of memory leaks.
+
 - Well-defined resource lifecycle.
 
 ### ✅ Readability
 
 - Descriptive function names with module prefixes.
+
 - Consistent code structure.
+
 - Comments at key locations.
 
 ## Compilation and Execution
 
 ```sh
+
 # Compile the project
+
 make
 
 # Run the application
+
 make run
 
 # Clean generated files
+
 make clean
 
 # Format the code
+
 make format
 
 # Lint the code (static analysis - Zero Warning Project)
+
 make lint
+
 ```
 
 ## Controls
@@ -208,20 +260,27 @@ make lint
 **Camera Mode Enabled (Default)**:
 
 - **Move Mouse**: Orient camera (yaw/pitch).
+
 - **Mouse Wheel**: Zoom in/out.
+
 - **C**: Toggle camera control activation/deactivation.
+
 - **SPACE**: Reset camera position.
 
 When camera mode is **enabled**:
 
 - The cursor is hidden and captured.
+
 - Mouse movements control orientation.
+
 - Pitch is limited to avoid gimbal lock.
 
 When camera mode is **disabled** (press **C**):
 
 - The cursor becomes visible.
+
 - Mouse movements do not affect the camera.
+
 - Useful for interacting with the interface.
 
 ### ⌨️ Keyboard Control
@@ -229,27 +288,43 @@ When camera mode is **disabled** (press **C**):
 **Display**:
 
 - **W**: Toggle wireframe/solid.
+
 - **↑**: Increase subdivisions (max 6).
+
 - **↓**: Decrease subdivisions (min 0).
+
 - **PAGE_UP / PAGE_DOWN**: Increase/Decrease environment blur (LOD).
+
 - **F**: Toggle between Windowed and Fullscreen mode.
+
 - **ESC**: Quit the application.
 
 ## Dependencies
 
 - **GLFW**: Window management and inputs.
+
 - **GLAD**: OpenGL 4.4+ loader.
+
 - **cglm**: Vector/Matrix mathematics.
+
 - **stb_image**: HDR image loading.
 
 ## Technical Notes
 
 - Uses OpenGL 4.4 Core Profile.
+
 - macOS support with `GLFW_OPENGL_FORWARD_COMPAT`.
+
 - Real-time procedural geometry generation.
+
 - Environment mapping with HDR and direct equirectangular mapping.
+
 - Dynamic window resizing management.
+
 - Automated build system with FetchContent (cglm, glad, stb).
+
 - Zero clang-tidy warnings on the entire project source code.
+
 - Structured logging for easier debugging.
+
 - Full interactive Fullscreen support.

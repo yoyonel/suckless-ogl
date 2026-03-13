@@ -1,19 +1,28 @@
-
 # Texture Pipeline Optimization (Immutable Storage)
 
 ## 1. Problem: Mutable Storage
+
 The historical function `glTexImage2D`:
-1.  Allows resizing the texture at any time.
-2.  Allows changing the format (RGB -> RGBA) at any time.
-3.  **Consequence**: The driver must check the "completeness" of the texture *at every Draw Call*.
-4.  **Overhead**: Validation CPU cost.
+
+1. Allows resizing the texture at any time.
+
+2. Allows changing the format (RGB -> RGBA) at any time.
+
+3. **Consequence**: The driver must check the "completeness" of the texture _at every Draw Call_.
+
+4. **Overhead**: Validation CPU cost.
 
 ## 2. Solution: Immutable Storage
+
 Since OpenGL 4.2, `glTexStorage2D`:
-1.  Allocates all mipmap levels in one go.
-2.  Sizes and formats are frozen (Immutable).
-3.  Data is uploaded via `glTexSubImage2D`.
-4.  **Benefit**: The driver knows the texture is valid. No validation at Draw time.
+
+1. Allocates all mipmap levels in one go.
+
+2. Sizes and formats are frozen (Immutable).
+
+3. Data is uploaded via `glTexSubImage2D`.
+
+4. **Benefit**: The driver knows the texture is valid. No validation at Draw time.
 
 ## 3. Implementation in Engine
 
@@ -25,26 +34,35 @@ Since OpenGL 4.2, `glTexStorage2D`:
 
 // New Method (GOOD)
 // 1. Determine number of levels
+
 int levels = 1 + floor(log2(max(width, height)));
 
 // 2. Allocate storage (VRAM)
+
 glTexStorage2D(GL_TEXTURE_2D, levels, GL_RGBA8, width, height);
 
 // 3. Upload data
+
 glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 // 4. Generate Mipmaps (Hardware)
+
 glGenerateMipmap(GL_TEXTURE_2D);
+
 ```
 
 ## 4. Alignment Constraint (Unpack Alignment)
+
 When `stb_image` loads an image with 3 channels (RGB), the rows may not be aligned to 4 bytes (standard OpenGL default).
-*   **Symptom**: Skewed or slanted image.
-*   **Fix**:
-    ```c
+
+- **Symptom**: Skewed or slanted image.
+
+- **Fix**:
+
+```c
     if (channels == 3) glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     else               glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    ```
+```
 
 ## 5. Memory Layout Comparison
 
@@ -112,9 +130,13 @@ digraph TextureStorage {
     Sub1 -> Draw;
   }
 }
+
 ```
 
 ## 6. Performance Gains
--   Significantly reduced driver overhead.
--   Better memory locality (Mipmaps are often packed together).
--   Eliminates "Incomplete Texture" errors.
+
+- Significantly reduced driver overhead.
+
+- Better memory locality (Mipmaps are often packed together).
+
+- Eliminates "Incomplete Texture" errors.

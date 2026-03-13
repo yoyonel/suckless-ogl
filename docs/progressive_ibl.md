@@ -1,4 +1,3 @@
-
 # Progressive & Asynchronous IBL Architecture
 
 This document details the implementation of asynchronous loading and progressive generation of IBL (Image Based Lighting) maps to eliminate freezes when changing environments.
@@ -10,11 +9,16 @@ The goal was to move from a blocking synchronous load (100ms - 800ms freeze) to 
 ### The Pipeline
 
 1. **Disk Load (Separate Thread)**: The `.hdr` file is loaded and decoded (stb_image) in a dedicated thread (`async_loader.c`).
+
 2. **GPU Upload (Main Thread)**: Once ready, raw data is uploaded to VRAM (HDR texture).
+
 3. **IBL Generation (Progressive)**: A state machine (`ibl_coordinator_update`) drives the compute shaders step-by-step to generate:
-    * Mean Luminance (Async GPU readback via `glFenceSync`).
-    * Irradiance Map (Diffuse).
-    * Specular Prefiltered Map (Reflection).
+   - Mean Luminance (Async GPU readback via `glFenceSync`).
+
+   - Irradiance Map (Diffuse).
+
+   - Specular Prefiltered Map (Reflection).
+
 4. **Swap (Double Buffering)**: We use "Pending" textures. The old environment remains displayed until the new one is 100% ready.
 
 ---
@@ -28,6 +32,7 @@ PBR Compute Shaders (especially for high-resolution Specular maps) are very expe
 ### 2.1 Overlap Protection (Crucial)
 
 Compute Shader Workgroups have a fixed size (32x32). If we ask to compute a slice **1 pixel** high, the GPU still launches a block 32 pixels high.
+
 Without protection, the 31 excess rows overwrite/recalculate neighboring pixels, massively wasting resources.
 
 **The Fix (`u_max_y_slice`)**:
@@ -43,6 +48,7 @@ void main_task() {
     if (pixel_pos.y >= u_max_y_slice) return; // Immediate stop for phantom threads
     // ...
 }
+
 ```
 
 ---
@@ -55,34 +61,43 @@ To reconcile **fluidity** (no freeze) and **overall speed** (fast loading), we u
 
 Computing the mean luminance is necessary to adjust brightness automatically, but reading the result back to the CPU can cause a significant pipeline stall (`glGetBufferSubData`).
 
-* **Strategy**: Asynchronous readback.
-* **Implementation**: We dispatch the compute shader and insert a `glFenceSync`. The state machine enters `IBL_STATE_LUMINANCE_WAIT`. In subsequent frames, `glClientWaitSync(..., 0)` is used to poll the GPU non-blockingly. Once the data is ready, we read it instantly without stalling.
+- **Strategy**: Asynchronous readback.
+
+- **Implementation**: We dispatch the compute shader and insert a `glFenceSync`. The state machine enters `IBL_STATE_LUMINANCE_WAIT`. In subsequent frames, `glClientWaitSync(..., 0)` is used to poll the GPU non-blockingly. Once the data is ready, we read it instantly without stalling.
 
 ### B. Mipmap Generation (`glGenerateMipmap`)
 
 Before IBL computation begins, the uploaded HDR texture must have its mipmap chain generated.
 
-* **Strategy**: Isolated Frame.
-* **Cost**: ~40ms (on a 4K HDR image).
-* **Limitation**: `glGenerateMipmap` is a monolithic OpenGL function. It cannot be sliced or interrupted. It forces the GPU to read, downscale, and write 13 levels of high-precision floating-point data in a single massive operation.
-* **Result**: This creates a single irreducible frame "spike" (~24 FPS for one frame). It is voluntarily isolated on its own dedicated frame to prevent compounding with upload (`glTexSubImage2D`) or IBL Compute Shaders.
+- **Strategy**: Isolated Frame.
+
+- **Cost**: ~40ms (on a 4K HDR image).
+
+- **Limitation**: `glGenerateMipmap` is a monolithic OpenGL function. It cannot be sliced or interrupted. It forces the GPU to read, downscale, and write 13 levels of high-precision floating-point data in a single massive operation.
+
+- **Result**: This creates a single irreducible frame "spike" (~24 FPS for one frame). It is voluntarily isolated on its own dedicated frame to prevent compounding with upload (`glTexSubImage2D`) or IBL Compute Shaders.
 
 ### C. Irradiance Map (64x64)
 
-* **Strategy**: Constant slicing.
+- **Strategy**: Constant slicing.
 
-* **Slicing**: 12 Slices.
-* **Cost**: ~5ms / slice.
+- **Slicing**: 12 Slices.
+
+- **Cost**: ~5ms / slice.
 
 ### D. Specular Map (1024x1024)
 
 This is the heaviest part. The cost per mipmap decreases exponentially.
 
 | Mip Level | Size | Strategy | Est. Cost / Frame | Description |
-| :--- | :--- | :--- | :--- | :--- |
+| :-------- | :--- | :------- | :---------------- | :---------- |
+
 | **Mip 0** | 1024x1024 | **24 Slices** | ~25-35ms | Heaviest (High Frequency details). |
+
 | **Mip 1** | 512x512 | **8 Slices** | ~15-25ms | Medium. |
+
 | **Mip 2** | 256x256 | **1 Slice** | ~15ms | Light, computed in one go. |
+
 | **Mip 3-10** | 128..1 | **Tail Grouping** | ~20ms (Total) | All computed in **a single frame**. |
 
 **Total "Tail Grouping"**: Grouping small mips (3 to 10) avoids wasting 7 frames of latency for tiny jobs (<1ms each).
@@ -126,6 +141,7 @@ flowchart LR
   style Mip1 fill:#414868,stroke:#f7768e
   style Mip2 fill:#414868,stroke:#9ece6a
   style Tail fill:#414868,stroke:#9ece6a
+
 ```
 
 ---
@@ -138,10 +154,14 @@ Initially, each slice dispatch called `glMemoryBarrier(GL_ALL_BARRIER_BITS)` at
 the end. This forced the GPU to:
 
 1. **Drain the entire pipeline** — all in-flight commands complete before the
-    next dispatch starts.
+
+   next dispatch starts.
+
 2. **Invalidate all GPU caches** — texture cache, L2, framebuffer, etc.
+
 3. **Cold-restart** — the next dispatch re-fetches `env_hdr_tex` from VRAM
-    instead of hitting cache.
+
+   instead of hitting cache.
 
 The overhead was **super-linear**: doubling the slice count more than doubled
 the total processing time. This made fine-grained slicing (many small slices
@@ -151,15 +171,18 @@ for ~33ms/frame budget) impractical.
 
 Analyzing the data flow reveals that slices are **independent**:
 
-```
+```text
 Slice 0: READ env_hdr_tex → WRITE dest_tex[mip][y: 0..N]
 Slice 1: READ env_hdr_tex → WRITE dest_tex[mip][y: N..2N]
 ...etc
+
 ```
 
-* All slices **read** from the same source HDR texture (never modified).
-* Each slice **writes** to a disjoint Y-range of the destination texture.
-* There is no read-after-write or write-after-write hazard between slices.
+- All slices **read** from the same source HDR texture (never modified).
+
+- Each slice **writes** to a disjoint Y-range of the destination texture.
+
+- There is no read-after-write or write-after-write hazard between slices.
 
 The same holds across mip levels: each mip writes to a different mip level of
 the destination, and reads from the same source HDR.
@@ -168,13 +191,18 @@ the destination, and reads from the same source HDR.
 
 Remove all per-slice barriers and issue **one** barrier at the end:
 
-* `pbr_prefilter_mip()` and `pbr_irradiance_slice_compute()` no longer call
-    `glMemoryBarrier()`. The caller is responsible.
-* A single `glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)` is placed in
-    `IBL_STATE_DONE`, just before the textures are sampled for rendering.
-* The barrier type is narrowed from `GL_ALL_BARRIER_BITS` to
-    `GL_SHADER_IMAGE_ACCESS_BARRIER_BIT` — only the image-store-to-texture-fetch
-    coherency path is flushed.
+- `pbr_prefilter_mip()` and `pbr_irradiance_slice_compute()` no longer call
+
+  `glMemoryBarrier()`. The caller is responsible.
+
+- A single `glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)` is placed in
+
+  `IBL_STATE_DONE`, just before the textures are sampled for rendering.
+
+- The barrier type is narrowed from `GL_ALL_BARRIER_BITS` to
+
+  `GL_SHADER_IMAGE_ACCESS_BARRIER_BIT` — only the image-store-to-texture-fetch
+  coherency path is flushed.
 
 ```mermaid
 %%{init: {
@@ -207,15 +235,20 @@ sequenceDiagram
     end
     CPU->>GPU: glMemoryBarrier(IMAGE_ACCESS_BIT)
     Note right of GPU: Single flush before sampling
+
 ```
 
 ### 4.4 Benchmark Results (16 slices on Mip 0)
 
 | Metric | Before (per-slice barrier) | After (deferred) | Improvement |
-| :--- | :--- | :--- | :--- |
+| :----- | :------------------------- | :--------------- | :---------- |
+
 | **Average** | ~1004 ms | ~875 ms | **~13%** |
+
 | **Min** | 792 ms | 668 ms | **~16%** |
+
 | **Max** | 1189 ms | 904 ms | **~24%** |
+
 | **Variance** | ±200 ms | ±80 ms | **Much more stable** |
 
 The variance reduction is significant: per-slice pipeline drains introduced
@@ -233,13 +266,18 @@ continuously without stalls.
 
 With this architecture on a discrete GPU:
 
-* **FPS**: Remains fluid (~30+ FPS during IBL generation).
-* **Total Time**: A complete environment transition takes about **850ms to 950ms** (with 24+8+12 slices).
-* **Perceived Latency**: Near-zero thanks to continuous display of the old environment during computation.
+- **FPS**: Remains fluid (~30+ FPS during IBL generation).
+
+- **Total Time**: A complete environment transition takes about **850ms to 950ms** (with 24+8+12 slices).
+
+- **Perceived Latency**: Near-zero thanks to continuous display of the old environment during computation.
 
 ## 6. Key Files
 
-* `src/ibl_coordinator.c`: Contains the State Machine (`ibl_coordinator_update`) and the deferred barrier in `IBL_STATE_DONE`.
-* `src/pbr.c`: Implements sliced compute dispatches (`pbr_prefilter_mip`, `pbr_irradiance_slice_compute`) — no internal barriers.
-* `include/pbr.h`: API documentation with `@note` about caller barrier responsibility.
-* `shaders/IBL/*.glsl`: Shaders modified to support `u_offset_y` and `u_max_y`.
+- `src/ibl_coordinator.c`: Contains the State Machine (`ibl_coordinator_update`) and the deferred barrier in `IBL_STATE_DONE`.
+
+- `src/pbr.c`: Implements sliced compute dispatches (`pbr_prefilter_mip`, `pbr_irradiance_slice_compute`) — no internal barriers.
+
+- `include/pbr.h`: API documentation with `@note` about caller barrier responsibility.
+
+- `shaders/IBL/*.glsl`: Shaders modified to support `u_offset_y` and `u_max_y`.

@@ -12,27 +12,33 @@ The **Async Loader** decouples the **Disk I/O and CPU decompression** steps from
 
 The system consists of several main components working together to ensure zero-stall loading:
 
-1.  **Async Loader Module** (`src/async_loader.c`)
-    *   Manages a background worker thread.
-    *   Handles heavy I/O and SIMD format conversion.
-    *   Implements the `WAITING_FOR_PBO` protocol to interact with the main thread.
+1. **Async Loader Module** (`src/async_loader.c`)
 
-2.  **Async Coordinator** (`src/async/async_coordinator.h`)
-    *   Manages double-buffered PBOs on the main thread.
-    *   Handles the mapping and provision of GPU memory to the worker.
+- Manages a background worker thread.
 
-3.  **Environment Manager** (`src/env_manager.c`)
-    *   Orchestrates the multi-step loading process over several frames.
+- Handles heavy I/O and SIMD format conversion.
+
+- Implements the `WAITING_FOR_PBO` protocol to interact with the main thread.
+
+1. **Async Coordinator** (`src/async/async_coordinator.h`)
+
+- Manages double-buffered PBOs on the main thread.
+
+- Handles the mapping and provision of GPU memory to the worker.
+
+1. **Environment Manager** (`src/env_manager.c`)
+
+- Orchestrates the multi-step loading process over several frames.
 
 ### Data Flow (PBO-based)
 
 The loading process follows a specialized "handshake" to avoid shared contexts:
 
-1.  **Main Thread**: Calls `async_loader_request(path)`.
-2.  **Worker Thread**: Loads the file from disk and decodes it into a CPU float buffer. Transitions to `ASYNC_WAITING_FOR_PBO`.
-3.  **Main Thread**: Detects the waiting state during `poll()`. It maps a PBO and provides the pointer to the worker.
-4.  **Worker Thread**: Converts the float data directly into the mapped PBO memory using SIMD instructions. Transitions to `ASYNC_READY`.
-5.  **Main Thread**: Detects `ASYNC_READY`. It unmaps the PBO and performs a `glTexSubImage2D` (DMA transfer) to the GPU texture.
+1. **Main Thread**: Calls `async_loader_request(path)`.
+1. **Worker Thread**: Loads the file from disk and decodes it into a CPU float buffer. Transitions to `ASYNC_WAITING_FOR_PBO`.
+1. **Main Thread**: Detects the waiting state during `poll()`. It maps a PBO and provides the pointer to the worker.
+1. **Worker Thread**: Converts the float data directly into the mapped PBO memory using SIMD instructions. Transitions to `ASYNC_READY`.
+1. **Main Thread**: Detects `ASYNC_READY`. It unmaps the PBO and performs a `glTexSubImage2D` (DMA transfer) to the GPU texture.
 
 This architecture ensures that the **Main Thread never touches the pixel data** and the **Worker Thread never touches the OpenGL context**.
 
@@ -83,6 +89,7 @@ sequenceDiagram
     M->>G: glTexSubImage2D (Fast DMA)
     M->>G: glGenerateMipmap
     M->>M: Start Progressive IBL
+
 ```
 
 ### The 3-Step Integration
@@ -90,8 +97,11 @@ sequenceDiagram
 To further reduce frame spikes, the final GPU integration is split across frames:
 
 - **Step 1: Upload**: data is moved from PBO to a pre-allocated texture.
+
 - **Step 2: Mipmaps**: `glGenerateMipmap` is called (allocated on first use).
+
 - **Step 3: IBL Start**: The `IBLCoordinator` begins slicing the map for irradiance and pre-filtering.
 
 ### Detailed PBO Strategy
+
 For more technical details on the PBO implementation, see [Async PBO Upload](async_pbo.md).

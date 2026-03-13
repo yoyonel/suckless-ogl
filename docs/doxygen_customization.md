@@ -11,8 +11,11 @@ We use the [Doxygen-Awesome](https://github.com/jothepro/doxygen-awesome-css) li
 ### Integrated Components
 
 - **Dark Mode**: Toggle situated in the sidebar.
+
 - **Interactive TOC**: Floating table of contents for long pages.
+
 - **Copy Button**: One-click code extraction from fragments.
+
 - **Tabs**: Support for tabbed content in documentation.
 
 ---
@@ -27,6 +30,7 @@ The `Doxyfile` maps graphics-specific extensions to C++ for basic indexing, whil
 
 ```properties
 EXTENSION_MAPPING = glsl=C++ vert=C++ frag=C++ comp=C++
+
 ```
 
 ### 2. Indentation Preservation Fix
@@ -34,8 +38,11 @@ EXTENSION_MAPPING = glsl=C++ vert=C++ frag=C++ comp=C++
 Doxygen encodes code blocks as a series of `<div class="line">` elements, which often breaks standard syntax highlighters. We've added a custom JavaScript orchestrator in `header.html` that:
 
 1. **Extracts** the raw text from all `.line` divs.
+
 2. **Reconstructs** a standard `pre` > `code` block.
+
 3. **Preserves** original indentation and whitespace.
+
 4. **Triggers** `highlight.js` on the newly created block.
 
 **Theme**: `Tokyo Night Dark` (consistent with the wider project ecosystem).
@@ -51,6 +58,7 @@ Our Graphviz (DOT) diagrams have been overhauled to blend seamlessly with the da
 Defined in `Doxyfile`:
 
 - **Format**: `svg` (for crisp zoom and interactivity).
+
 - **Transparency**: `DOT_TRANSPARENT = YES` (removes harsh white/gray backgrounds).
 
 ### 2. Design Tokens
@@ -58,13 +66,16 @@ Defined in `Doxyfile`:
 Each diagram follows a strict "Ghost" style to ensure it feels like a native part of the page:
 
 - **Nodes**: `shape=rect, style="rounded"`. No fill color (`fillcolor="none"`) for a "see-through" aesthetic.
+
 - **Borders**: Vivid **Tokyo Night** colors with enhanced `penwidth=2`.
+
 - **Edges**: Refined grays (`#565f89`) with subtle arrowheads.
 
 **Example Token usage:**
 
 ```properties
 node [style="rounded", fillcolor="none", color="#414868", fontcolor="#c0caf5", penwidth=2];
+
 ```
 
 ---
@@ -83,6 +94,7 @@ The filter is registered using the `FILTER_PATTERNS` option:
 
 ```properties
 FILTER_PATTERNS = "*.md=python3 doxygen_resources/math_filter.py"
+
 ```
 
 #### 2. How the Filter Works
@@ -90,6 +102,7 @@ FILTER_PATTERNS = "*.md=python3 doxygen_resources/math_filter.py"
 The script uses regular expressions to perform a "Search & Replace" on the fly:
 
 - **Display Math**: Converts `$$ ... $$` to `\f[ ... \f]`.
+
 - **Inline Math**: Converts `$ ... $` to `\f$ ... \f$`.
 
 The regex logic is carefully crafted to avoid false positives (like escaped dollar signs `\$` or currency symbols) and ensures that the conversion only happens within the Doxygen pipeline. **The original Markdown files remain untouched**, preserving perfect rendering in the MkDocs interface.
@@ -99,7 +112,8 @@ The regex logic is carefully crafted to avoid false positives (like escaped doll
 ## 🔧 Core Configuration (Doxyfile)
 
 | Option | Value | Purpose |
-| :--- | :--- | :--- |
+| :----- | :---- | :------ |
+
 | `OPTIMIZE_OUTPUT_FOR_C` | `YES` | Adjusts terminology for C (e.g., "Files" vs "Classes"). |
 | `GENERATE_TREEVIEW` | `YES` | Enables the interactive sidebar navigation. |
 | `CALL_GRAPH` | `YES` | Automatically generates function call dependency diagrams. |
@@ -112,5 +126,7 @@ The regex logic is carefully crafted to avoid false positives (like escaped doll
 If you need to update the theme:
 
 1. Styles are located in `docs/doxygen-awesome-css/`.
+
 2. Global JS logic (including the highlighting fix) is in `docs/header.html`.
+
 3. Rebuild the documentation with `make docs`.

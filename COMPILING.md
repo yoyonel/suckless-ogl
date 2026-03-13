@@ -7,13 +7,15 @@ This document explains the available build targets and the debugging process use
 The project uses a hybrid Makefile + CMake system for convenience and performance.
 
 | Target | Build Type | Flags | Description |
-| :--- | :--- | :--- | :--- |
+| :----- | :--------- | :---- | :---------- |
+
 | `make` | Debug | `-O0 -g` | Default dev build. Full symbols, no optimization. |
 | `make release` | Release | `-O3 -march=native -ffast-math` | **Ultra Release**. Uses **Unity Build** (compile as single unit). Stripped. |
+
 | `make debug-release`| RelWithDebInfo | `-O3 -march=native -g` | Release speed + Debug symbols. Not stripped. Use this for debugging performance issues or crashes. |
 | `make small` | MinSizeRel | `-Os` | Focused on binary size (~192K). |
-| `make asan`  | Debug          | `-fsanitize=address` | Fast runtime error detection. |
-| `make memcheck` | Release      | Valgrind        | **Default** deep leak analysis. |
+| `make asan` | Debug | `-fsanitize=address` | Fast runtime error detection. |
+| `make memcheck` | Release | Valgrind | **Default** deep leak analysis. |
 
 ### 🔍 Memory & Error Checking
 
@@ -25,7 +27,9 @@ Recommended for thorough leak hunting and identifying "still reachable" blocks.
 
 ```bash
 make memcheck         # Runs Valgrind on a Release build (Local Default)
+
 make test-integration # Runs full UI scenario under Valgrind
+
 ```
 
 #### 2. AddressSanitizer (ASan / Performance)
@@ -34,7 +38,9 @@ Best for fast runtime error detection (overflows, use-after-free) and used by **
 
 ```bash
 make asan             # Build with ASan instrumentation
+
 make memcheck-asan    # Run ASan-instrumented binary (CI Default)
+
 ```
 
 ## The SIMD Segfault Story: A Technical Deep-Dive
@@ -45,9 +51,11 @@ When enabling `-march=native` with `-O3`, the application initially suffered fro
 
 The debugging followed a three-step deduction process:
 
-* **Localization (The "Last Words")**: By adding granular `LOG_INFO` traces, we observed the crash happened immediately after "Starting app_init_instancing" but before any further logs. This narrowed the "crime scene" to the first few lines of that function.
-* **The `-march=native` Clue**: The crash *only* occurred when the compiler was allowed to use native CPU instructions. This strongly suggested that the compiler was generating specialized high-speed instructions (AVX/AVX2) that the standard build wasn't using.
-* **AddressSanitizer's Testimony**: Running the app with `ENABLE_ASAN=ON` reported `Conditional jump or move depends on uninitialised value(s)` (or similar memory access errors) during matrix operations. In the context of highly optimized code, this often indicates that a SIMD instruction (like `VMOVAPS`) tried to access an address it couldn't handle.
+- **Localization (The "Last Words")**: By adding granular `LOG_INFO` traces, we observed the crash happened immediately after "Starting app_init_instancing" but before any further logs. This narrowed the "crime scene" to the first few lines of that function.
+
+- **The `-march=native` Clue**: The crash _only_ occurred when the compiler was allowed to use native CPU instructions. This strongly suggested that the compiler was generating specialized high-speed instructions (AVX/AVX2) that the standard build wasn't using.
+
+- **AddressSanitizer's Testimony**: Running the app with `ENABLE_ASAN=ON` reported `Conditional jump or move depends on uninitialised value(s)` (or similar memory access errors) during matrix operations. In the context of highly optimized code, this often indicates that a SIMD instruction (like `VMOVAPS`) tried to access an address it couldn't handle.
 
 ### 2. Root Cause: Alignment Violation
 
@@ -56,12 +64,15 @@ High-performance SIMD instructions (Single Instruction Multiple Data) like those
 The problem was twofold:
 
 1. **Stack Alignment**: The `App` struct was initially on the stack. Most compilers only guarantee 16-byte alignment for the stack, but AVX needs 32 or 64.
+
 2. **Heap Alignment**: Standard `malloc` only guarantees 8 or 16-byte alignment. When we allocated arrays of structs, if the first element wasn't aligned to 64 bytes, every vectorized write to it caused an immediate hardware exception (Segfault).
 
 ### 3. The Fix: Enforced Alignment
 
 We resolved this by ensuring the CPU always finds its data where it expects:
 
-* **Aligned Allocation**: Replaced stack and standard `malloc` allocation with `posix_memalign((void**)&ptr, SIMD_ALIGNMENT, size)`. This forces the operating system to give us a memory block starting at a perfectly aligned address.
-* **Struct Padding**: Added `__attribute__((aligned(SIMD_ALIGNMENT)))` to `SphereInstance` and `PBRMaterial`. This tells the compiler to pad these structures so that their size is always a multiple of 64, ensuring that elements in an array (`data[1]`, `data[2]`, etc.) stay aligned.
-* **Consistency**: Centralized `SIMD_ALIGNMENT 64` in `gl_common.h`. 64 bytes is chosen as it is both AVX-512 safe and matches the L1 cache line size of most modern CPUs, providing a secondary performance benefit by preventing "cache line splitting".
+- **Aligned Allocation**: Replaced stack and standard `malloc` allocation with `posix_memalign((void**)&ptr, SIMD_ALIGNMENT, size)`. This forces the operating system to give us a memory block starting at a perfectly aligned address.
+
+- **Struct Padding**: Added `__attribute__((aligned(SIMD_ALIGNMENT)))` to `SphereInstance` and `PBRMaterial`. This tells the compiler to pad these structures so that their size is always a multiple of 64, ensuring that elements in an array (`data[1]`, `data[2]`, etc.) stay aligned.
+
+- **Consistency**: Centralized `SIMD_ALIGNMENT 64` in `gl_common.h`. 64 bytes is chosen as it is both AVX-512 safe and matches the L1 cache line size of most modern CPUs, providing a secondary performance benefit by preventing "cache line splitting".

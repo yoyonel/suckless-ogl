@@ -15,6 +15,7 @@ Une copie superficielle de `GPUStage` entraînait le partage de la propriété d
 Le correctif introduit `gpu_stage_move`, qui :
 
 1. Copie les champs scalaires un par un.
+
 2. **Échange** (`swap`) les pointeurs des buffers des samplers au lieu de les copier.
 
 Cette approche garantit l'unicité du propriétaire pour chaque buffer alloué tout en réutilisant les emplacements mémoire existants dans le tableau `stages`.
@@ -23,9 +24,10 @@ Cette approche garantit l'unicité du propriétaire pour chaque buffer alloué t
 
 L'audit a porté sur les structures suivantes identifiées comme gérant de la mémoire dynamique :
 
-| Structure | Ressource Critique | État de Risque | Conclusion |
-|-----------|-------------------|----------------|------------|
-| `GPUStage` | `AdaptiveSampler.samples` | **Corrigé** | Risque maîtrisé par `gpu_stage_move`. |
+| Structure  | Ressource Critique        | État de Risque | Conclusion                            |
+| ---------- | ------------------------- | -------------- | ------------------------------------- |
+| `GPUStage` | `AdaptiveSampler.samples` | **Corrigé**    | Risque maîtrisé par `gpu_stage_move`. |
+
 | `AdaptiveSampler` | `samples` (buffer de données) | Bas | Initialisé par `init`, libéré par `cleanup`. Pas de copie détectée. |
 | `AsyncRequest` | `float_data`, `half_data` | Bas | Utilise un pattern de "transfert de propriété destructif" sécurisé dans `async_loader_poll`. |
 | `PBRMaterial` | `name` (tableau fixe) | Nul | Structure POD (Plain Old Data). Copie sûre. |
@@ -34,14 +36,18 @@ L'audit a porté sur les structures suivantes identifiées comme gérant de la m
 
 ### Points Particulièrement Examinés
 
-* **`sphere_sorting.c`** : Effectue des copies de `SphereInstance` lors du tri. C'est parfaitement sûr car `SphereInstance` ne contient que des types par valeur (mathématiques cglm).
-* **`async_loader.c`** : Le passage de `AsyncRequest` du thread worker au thread principal est sécurisé. Le loader met explicitement à `NULL` ses pointeurs internes après la copie vers le demandeur, évitant ainsi tout conflit de propriété.
+- **`sphere_sorting.c`** : Effectue des copies de `SphereInstance` lors du tri. C'est parfaitement sûr car `SphereInstance` ne contient que des types par valeur (mathématiques cglm).
+
+- **`async_loader.c`** : Le passage de `AsyncRequest` du thread worker au thread principal est sécurisé. Le loader met explicitement à `NULL` ses pointeurs internes après la copie vers le demandeur, évitant ainsi tout conflit de propriété.
 
 ## 4. Recommandations et Bonnes Pratiques
 
 1. **Privilégier les Tableaux Fixes pour les Strings** : Comme vu avec `PBRMaterial` et `GPUStage`, l'utilisation de `char name[N]` au lieu de `char* name` élimine les risques liés à la copie de structures.
+
 2. **Move Semantics en C** : Pour les structures complexes (comme `GPUStage`), implémenter systématiquement une fonction de "move" ou de "swap" au lieu d'utiliser l'opérateur `=`.
+
 3. **Documentation de l'Appartenance (`Ownership`)** : Documenter explicitement si une structure "possède" ses pointeurs ou si elle ne fait que les référencer.
+
 4. **Utilisation de l'Analyse Statique** : Continuer à utiliser `just lint-full` (clang-tidy) qui aide à détecter les utilisations après libération (`use-after-free`).
 
 ## 5. Conclusion de l'Évaluation

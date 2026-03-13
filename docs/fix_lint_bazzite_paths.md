@@ -9,12 +9,15 @@
 Bazzite (Fedora Atomic) uses `/var/home` as the physical home directory, with
 `/home` as a symlink:
 
-```
+```sh
 /home -> var/home
+
 ```
 
 This creates a path identity mismatch:
+
 - **Python / filesystem:** `os.path.abspath()` returns `/var/home/latty/...`
+
 - **CMake:** Writes `/home/latty/...` in `compile_commands.json`
 
 ## Problem 1: Lint Cache `Permission denied`
@@ -25,16 +28,19 @@ When `file_path` was an absolute `/var/home/...` path and CWD resolved different
 `os.makedirs()` to attempt creating directories outside the project.
 
 **Fix:** Changed to `os.path.relpath(file_path, src_root)` which always produces
+
 clean relative paths like `src/foo.c`.
 
 ## Problem 2: `run-clang-tidy` Finds 0 Files
 
 `run-clang-tidy` uses **string matching** against `compile_commands.json` entries.
+
 When the script passed `/var/home/latty/.../src/app.c` but the database contained
 `/home/latty/.../src/app.c`, it matched 0 files and exited successfully without
 linting anything.
 
 **Fix:** Added `detect_path_prefix()` which reads the first entry from
+
 `compile_commands.json` and compares it with the filesystem path. If a prefix
 mismatch is detected (e.g., `/var/home/latty/Prog/proj` vs `/home/latty/Prog/proj`),
 `normalize_path_for_clang_tidy()` remaps the prefix before passing paths to
@@ -43,4 +49,5 @@ mismatch is detected (e.g., `/var/home/latty/Prog/proj` vs `/home/latty/Prog/pro
 ## Backward Compatibility
 
 On systems where `/home` is **not** a symlink, `detect_path_prefix()` returns
+
 `(None, None)` and the normalization function is a no-op. No behavior change.

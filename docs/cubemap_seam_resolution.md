@@ -1,14 +1,16 @@
-
 # Cubemap Seam Resolution
 
 ## 🔍 Identified Problem
 
 The edges of the cubemap are visible as lines or artifacts. This can be caused by several factors:
 
-1.  **LOD too high**: A high `blur_lod` (4.0) uses low-resolution mipmap levels.
-2.  **Insufficient Resolution**: 512x512 might be too small.
-3.  **Filtering without seamless**: Transitions between faces are not smoothed.
-4.  **Edge Sampling**: Interpolation between faces is poorly handled.
+1. **LOD too high**: A high `blur_lod` (4.0) uses low-resolution mipmap levels.
+
+2. **Insufficient Resolution**: 512x512 might be too small.
+
+3. **Filtering without seamless**: Transitions between faces are not smoothed.
+
+4. **Edge Sampling**: Interpolation between faces is poorly handled.
 
 ## 🏁 Definitive Solution: Equirectangular Mapping
 
@@ -16,10 +18,13 @@ Although previous solutions (Seamless Cubemap, Increased Resolution) improved th
 
 ### Why?
 
-1.  **No more faces**: An equirectangular texture is a single continuous 2D rectangle. There are no longer "face edges" where seams can appear.
-2.  **Simplified Pipelines**: We go directly from the HDR image (panoramic) to rendering, without passing through a conversion compute shader.
-3.  **Less Memory**: No need to allocate an additional cubemap texture.
-4.  **Max Quality**: We sample the source data directly.
+1. **No more faces**: An equirectangular texture is a single continuous 2D rectangle. There are no longer "face edges" where seams can appear.
+
+2. **Simplified Pipelines**: We go directly from the HDR image (panoramic) to rendering, without passing through a conversion compute shader.
+
+3. **Less Memory**: No need to allocate an additional cubemap texture.
+
+4. **Max Quality**: We sample the source data directly.
 
 ### Visual Comparison
 
@@ -79,23 +84,27 @@ digraph CubemapVsEqui {
     Map -> Sample [label="Interpolated"];
   }
 }
+
 ```
 
 ### Comparison: Cubemap vs Equirectangular
 
-| Feature | Cubemap (Old) | Equirectangular (Current) |
-|---------|---------------|---------------------------|
-| Seams | Possible at edges | **Impossible** |
-| Complexity | High (Compute Shader) | **Low** (Direct) |
-| Artifacts | Mipmapping at corners | **None** (Continuous linear) |
-| Flexibility | Industry standard | Ideal for HDR visualizers |
+| Feature     | Cubemap (Old)         | Equirectangular (Current)    |
+| ----------- | --------------------- | ---------------------------- |
+| Seams       | Possible at edges     | **Impossible**               |
+| Complexity  | High (Compute Shader) | **Low** (Direct)             |
+| Artifacts   | Mipmapping at corners | **None** (Continuous linear) |
+| Flexibility | Industry standard     | Ideal for HDR visualizers    |
 
 ### Software Implementation
 
 Switching to equirectangular allowed removing:
--   The compute shader `equirect2cube.glsl`.
--   The functions `texture_create_env_cubemap` and `texture_build_env_cubemap`.
--   The complexity of managing 6 faces.
+
+- The compute shader `equirect2cube.glsl`.
+
+- The functions `texture_create_env_cubemap` and `texture_build_env_cubemap`.
+
+- The complexity of managing 6 faces.
 
 ### Conclusion
 

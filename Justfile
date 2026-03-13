@@ -402,11 +402,36 @@ format:
     @echo "Formatting Python scripts..."
     @{{distrobox}} ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
+# Format documentation files (Markdown) using Prettier
+format-docs:
+    @echo "Formatting Markdown documentation..."
+    @npx prettier --write "docs/**/*.md" "*.md"
+
+# Ensure generated headers are ready for linting
+lint-deps:
+    @if [ ! -d {{build_dir}} ]; then just configure; fi
+    @{{distrobox}} cmake --build {{build_dir}} --target glad-generate-files --parallel {{nprocs}}
+
+# Clean lint cache
+lint-clean:
+    @echo "Cleaning lint cache..."
+    @rm -rf .lint_cache*
+
 # Lint code using clang-tidy and ruff
-lint:
+lint: lint-deps
     @if [ ! -f {{build_dir}}/compile_commands.json ]; then {{distrobox}} cmake -B {{build_dir}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; fi
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py {{build_dir}}
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
+
+# Lint documentation files (Markdown)
+lint-docs:
+    @if command -v pre-commit >/dev/null 2>&1; then \
+        pre-commit run --all-files markdownlint; \
+    else \
+        echo "❌ Error: pre-commit not found. Please install it to run markdownlint."; \
+        exit 1; \
+    fi
+
 
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 lint-full:

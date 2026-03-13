@@ -88,6 +88,7 @@ digraph FXAAOverview {
     EndTest -> Offset [label="yes — distance ratio", color="#9ece6a", fontcolor="#9ece6a"];
     Offset -> Final;
 }
+
 ```
 
 FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagged edges (aliasing) by analyzing the contrast between pixels (Luma).
@@ -101,8 +102,9 @@ FXAA is a single-pass, post-processing anti-aliasing technique that reduces jagg
 
 FXAA runs inside the single-pass postprocess uber-shader (`postprocess.frag`). The pipeline order within the fragment shader is:
 
-```
+```text
 Motion Blur → Chromatic Aberration → FXAA → DoF → Bloom → Tone mapping → ...
+
 ```
 
 Because MB and CA are applied before FXAA in the same draw call, there is **no intermediate texture** containing the MB/CA result — only the raw scene texture (`screenTexture`) is available for neighbor sampling. FXAA therefore operates on the raw scene for all luma comparisons and final color reads. The `colorInput` parameter (post-MB/CA) is only used for the **early exit** path (no edge detected → return the processed color as-is).
@@ -111,9 +113,10 @@ Because MB and CA are applied before FXAA in the same draw call, there is **no i
 
 Two paths exist, selected at compile time via `#ifdef USE_TRANSPARENT_BILLBOARDS`:
 
-| Mode | Alpha channel | Luma computation | Cost |
-| :---| :---|:---|:---|
+| Mode                                       | Alpha channel     | Luma computation | Cost                     |
+| :----------------------------------------- | :---------------- | :--------------- | :----------------------- |
 | **Legacy** (`!USE_TRANSPARENT_BILLBOARDS`) | Pre-computed luma | `texture(...).a` | Fastest — 0 ALU for luma |
+
 | **Transparent** (`USE_TRANSPARENT_BILLBOARDS`) | Opacity data | `dot(rgb, vec3(0.299, 0.587, 0.114))` per sample | ~1 dot product per sample |
 
 The current build defines `USE_TRANSPARENT_BILLBOARDS` (see `app_settings.h`), so the transparent path is active.
@@ -177,6 +180,7 @@ digraph FXAADataFlow {
     FXAA -> Rest [label="color"];
     Rest -> Output;
 }
+
 ```
 
 ## Key Optimizations
@@ -189,6 +193,7 @@ digraph FXAADataFlow {
 float FxaaLuma(vec3 rgb) {
     return dot(rgb, vec3(0.299, 0.587, 0.114));
 }
+
 ```
 
 This is the standard FXAA 3.11 approach. A previous implementation used `dot(sqrt(rgb), ...)` to approximate perceptual (gamma) luma, but this added **up to 18 `sqrt` calls per pixel** (8 neighbors + up to 10 in the search loop) with no measurable quality improvement. The linear luma is sufficient for edge detection contrast ratios.
@@ -203,6 +208,7 @@ vec2 screenTexelSize;  // = 1.0 / vec2(width, height)
 
 // In FXAA
 vec2 inverseScreenSize = screenTexelSize;  // Free — just a UBO read
+
 ```
 
 Updated on resize only (`postprocess_resize()` sets `ubo_dirty = true`).
@@ -218,11 +224,17 @@ All luma comparisons (center, cardinal neighbors, corners, search loop endpoints
 ## Algorithm Steps
 
 1. **Center + 4 cardinal lumas** — `textureOffset()` for N/S/E/W, `texture()` for center
+
 2. **Early exit** — If contrast `range < max(thresholdMin, rangeMax × threshold)`, return `colorInput` (post-MB/CA)
+
 3. **4 corner lumas** — `textureOffset()` for NW/NE/SW/SE
+
 4. **Edge orientation** — Sobel-like gradient to determine horizontal vs vertical edge
+
 5. **Sub-pixel offset** — Smoothstep-based blending for single-pixel artifacts
+
 6. **Iterative search** — Walk along the edge in both directions with variable steps until contrast exceeds `gradientScaled`
+
 7. **Final blend** — Read `screenTexture` at the offset UV; take the maximum of edge offset and sub-pixel offset
 
 ## Configuration
@@ -232,24 +244,28 @@ Settings are controlled via the `PostProcessUBO`:
 ```glsl
 // UBO Layout (std140)
 float fxaaQualitySubpix;            // Default: 0.75 (Range 0.0 - 1.0)
+
 float fxaaQualityEdgeThreshold;     // Default: 0.125
 float fxaaQualityEdgeThresholdMin;  // Default: 0.063
+
 ```
 
-| Parameter | Effect | Lower | Higher |
-| :---| :---|:---|:---|
-| `subpix` | Sub-pixel AA strength | Sharper, more noise | Blurrier, less noise |
-| `edgeThreshold` | Minimum contrast for AA | More edges processed | Only strong edges |
+| Parameter          | Effect                    | Lower                | Higher                   |
+| :----------------- | :------------------------ | :------------------- | :----------------------- |
+| `subpix`           | Sub-pixel AA strength     | Sharper, more noise  | Blurrier, less noise     |
+| `edgeThreshold`    | Minimum contrast for AA   | More edges processed | Only strong edges        |
 | `edgeThresholdMin` | Absolute minimum contrast | Catches subtle edges | Skips low-contrast areas |
 
 ## Debugging
 
 Enable `enableFXAADebug` via the UI or `app_settings.h` to visualize:
 
-| Color | Meaning |
-| :---| :---|
+| Color   | Meaning                     |
+| :------ | :-------------------------- |
 | **Red** | Pixels displaced by edge AA |
+
 | **Blue** | Pixels displaced by sub-pixel blending |
+
 | **Dark gray** | Unaffected pixels (no edge detected) |
 
 ## Changelog
