@@ -56,8 +56,30 @@ default:
     @just --list
 
 # =============================================================================
-# Build & Run Standard
+# Benchmarking & Performance Analysis
 # =============================================================================
+
+# Build for profiling (Optimized + Debug Symbols)
+bench-init:
+	@mkdir -p {{build_dir}}
+	@{{distrobox}} cmake -B {{build_dir}} -DCMAKE_BUILD_TYPE=Profiling
+	@{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
+
+# Record a 5-second trace of the main app with automated camera movement
+bench-record:
+	@echo "[*] Recording performance trace (integration scenario)..."
+	@chmod +x scripts/test_integration_apitrace.sh
+	@./scripts/test_integration_apitrace.sh {{apitrace_bin}}
+	@mv build/integration.trace build/baseline.trace
+	@echo "[✓] Trace saved to build/baseline.trace"
+
+# Analyze the latest baseline trace
+bench-analyze:
+	@echo "[*] Analyzing GPU performance..."
+	@{{py_run}} scripts/trace_analyze.py build/baseline.trace {{apitrace_bin}}
+
+# Run full automated benchmarking cycle (Init + Record + Analyze)
+bench-all: bench-init bench-record bench-analyze
 
 # Configure CMake (Debug build)
 configure:

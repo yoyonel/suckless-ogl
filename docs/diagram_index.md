@@ -222,6 +222,28 @@ Note over CPU: Can finally continue
 </div>
 
 
+## [Performance Benchmarking & Analysis Methodology](../benchmarking_methodology/)
+
+<div class="diagram-item">
+  <a href="../benchmarking_methodology/#5-diagramme-de-flux-de-performance" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">5. Diagramme de Flux de Performance</a> : <span style="opacity: 0.6; font-size: 0.85em;">4. Validation : Le gain doit être supérieur à la variance (marge d'erreur de ~0.05ms).</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+A[Démarrer Application] --> B{Analyser goulot?}
+B -->|CPU/Overhead| C[Tracy Profiler]
+B -->|GPU/Shaders| D[ApiTrace]
+B -->|Bande Passante| E[GPUProfiler F3]
+C --> F[Optimiser Draw Calls/UBO]
+D --> G[Optimiser Algorithmes Shader]
+E --> H[Fusionner Passes Post-Process]
+F & G & H --> I[Valider via Baseline Comparison]
+```
+
+  </div>
+</div>
+
+
 ## [Environment Transitions](../env_transitions/)
 
 <div class="diagram-item">
