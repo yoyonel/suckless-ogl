@@ -110,6 +110,7 @@ run_scenario_full() {
     for i in {1..4}; do send_key "$wid" 7 500; done
 
     echo "=> Test Complete."
+    sleep 1
     send_key "$wid" Escape 200
 }
 

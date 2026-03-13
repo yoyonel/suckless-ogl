@@ -88,7 +88,7 @@ bench-headless: bench-init
 	@xvfb-run -a ./scripts/test_integration_apitrace.sh {{apitrace_bin}}
 	@mv build/integration.trace build/baseline.trace
 	@echo "[✓] Headless trace saved to build/baseline.trace"
-	@$(MAKE) bench-analyze
+	@just bench-analyze
 
 # Configure CMake (Debug build)
 configure:
