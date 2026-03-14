@@ -42,10 +42,16 @@ To ensure full coverage and clear categorization, we use a structured naming con
 
 *   **View**: `front`, `back`, `left`, `right`, `top`, `bottom`.
 *   **Mode**: `default`, `subtle`.
-*   **Effect**: `none`, `bloom`, `fxaa`, `dof`, `auto_exposure`, etc.
+*   **Effect**: `none`, `bloom`, `fxaa`, `dof`, `auto_exposure`, `motion_blur`, etc.
 
 ### Subtle Mode Strategy
 By default, visual regression tests for post-processing effects are conducted using the **Subtle** mode (`PRESET_SUBTLE`). This prevents visual artifacts from overloading the diff maps and focuses on the high-frequency impact of the effect itself.
+
+### Motion Blur Testing Strategy
+Since motion blur relies on frame-to-frame camera velocity calculation (`previousViewProj`), testing it with a single static render yields no blur. We employ a **Double Frame Sequence** strategy:
+1.  **Frame N-1 (Warmup)**: Render the static view to initialize the `previousViewProj` matrix in the shader.
+2.  **Frame N (Motion)**: Apply a deterministic camera rotation (`yaw` or `pitch`) depending on the `ViewPoint` and render the second frame.
+3.  **Capture**: The resulting image captures a consistent, deterministic blur driven entirely by spatial data (not time). We favor rotation over translation to avoid introducing parallax and depth-weighting discontinuities that occur when moving around the pillar of spheres, ensuring 100% stable test references across CI environments.
 
 ## Interactive Visual Report
 
