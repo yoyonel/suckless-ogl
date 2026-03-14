@@ -47,9 +47,7 @@ void tearDown(void)
  */
 void test_stencil_depth_consistency(void)
 {
-	/* 1. Ensure geometry is loaded */
-	icosphere_generate(&g_test_app.scene.geometry, 3);
-	scene_update_gpu_buffers(&g_test_app.scene);
+	/* 1. Ensure scene is ready */
 
 	/* 2. Set camera to look at center area */
 	g_test_app.camera.position[0] = 0.0F;
