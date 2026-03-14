@@ -1,8 +1,8 @@
 #define _POSIX_C_SOURCE 199309L
 #include "app.h"
 #include "camera.h"
-#include "icosphere.h"
 #include "main.h"
+#include "postprocess_presets.h"
 #include "renderer.h"
 #include "scene.h"
 #include "unity.h"
@@ -44,6 +44,7 @@ static const int COORD_DEC = 1;
 static const float CAMERA_DIST = 25.0F;
 static const int PATH_BUF_SIZE = 256;
 static const int ERR_BUF_SIZE = 512;
+static const uint64_t DEFAULT_SYNC_TIMEOUT = 1000000000ULL;
 
 typedef struct {
 	const char* name;
@@ -239,7 +240,7 @@ static void verify_reference_image(int width, int height,
 /**
  * Integration Test: Full lifecycle and single frame rendering validation
  */
-void test_app_render_multi_view(void)
+static void test_app_render_multi_view(void)
 {
 	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
 	                         "App should be initialized");
@@ -252,11 +253,6 @@ void test_app_render_multi_view(void)
 	// Texture should already be loaded and cached from setUp()
 	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.scene.hdr_texture,
 	                              "HDR texture never loaded");
-
-	// Generate geometry
-	icosphere_generate(&g_test_app.scene.geometry,
-	                   g_test_app.scene.subdivisions);
-	scene_update_gpu_buffers(&g_test_app.scene);
 
 	size_t pixel_data_size =
 	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
@@ -313,7 +309,7 @@ void test_app_render_multi_view(void)
 			// Must wait for current fence
 			glClientWaitSync(g_pbo_sync[current_pbo],
 			                 GL_SYNC_FLUSH_COMMANDS_BIT,
-			                 1000000000);
+			                 DEFAULT_SYNC_TIMEOUT);
 			void* mapped =
 			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 			if (mapped) {
@@ -351,7 +347,7 @@ void test_app_render_multi_view(void)
 			if (g_pbo_sync[next_pbo]) {
 				glClientWaitSync(g_pbo_sync[next_pbo],
 				                 GL_SYNC_FLUSH_COMMANDS_BIT,
-				                 1000000000);
+				                 DEFAULT_SYNC_TIMEOUT);
 			}
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[next_pbo]);
 			void* mapped =
@@ -401,7 +397,7 @@ void test_app_render_multi_view(void)
 		if (g_pbo_sync[last_pbo]) {
 			glClientWaitSync(g_pbo_sync[last_pbo],
 			                 GL_SYNC_FLUSH_COMMANDS_BIT,
-			                 1000000000);
+			                 DEFAULT_SYNC_TIMEOUT);
 		}
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[last_pbo]);
 		void* mapped = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
@@ -440,9 +436,88 @@ void test_app_render_multi_view(void)
 }
 
 /**
+ * Test Subtle Mode with Bloom
+ */
+static void test_app_render_subtle_bloom(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	// Apply Subtle Preset + Bloom
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_BLOOM);
+
+	// Disable Vignette and Grain as requested
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle Bloom viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Force one frame update to sync UBO
+		app_update(&g_test_app);
+
+		// Render
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name), "%s_subtle_bloom",
+		               vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
+/**
  * Test camera initialization
  */
-void test_app_camera_initialization(void)
+static void test_app_camera_initialization(void)
 {
 	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
 	                         "App should be initialized");
@@ -451,10 +526,346 @@ void test_app_camera_initialization(void)
 	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, g_test_app.camera.zoom);
 }
 
+/**
+ * Test Auto Exposure
+ */
+/**
+ * Test Subtle Mode with Auto Exposure
+ */
+static void test_app_render_subtle_auto_exposure(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle Auto Exposure viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Apply Subtle Preset + Auto Exposure
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SUBTLE);
+		postprocess_enable(&g_test_app.postprocess,
+		                   POSTFX_AUTO_EXPOSURE);
+
+		// Disable Vignette and Grain as requested
+		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+		// Warmup auto-exposure (128 frames)
+		const int warmup_frames = 128;
+		for (int frame = 0; frame < warmup_frames; frame++) {
+			app_update(&g_test_app);
+			renderer_draw_frame(
+			    &g_test_app, &g_test_app.scene,
+			    &g_test_app.postprocess, &g_test_app.camera,
+			    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
+			    &g_test_app.env_mgr, &g_test_app.notifier,
+			    &g_test_app.effect_bench, g_test_app.width,
+			    g_test_app.height, g_test_app.delta_time,
+			    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+		}
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name),
+		               "%s_subtle_auto_exposure", vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
+/**
+ * Test FXAA
+ */
+/**
+ * Test Subtle Mode with FXAA
+ */
+static void test_app_render_subtle_fxaa(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle FXAA viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Apply Subtle Preset + FXAA
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SUBTLE);
+		postprocess_enable(&g_test_app.postprocess, POSTFX_FXAA);
+
+		// Disable Vignette and Grain as requested
+		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+		// Force one frame update to sync UBO
+		app_update(&g_test_app);
+
+		// Render
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name), "%s_subtle_fxaa",
+		               vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
+/**
+ * Test Subtle Mode without additional effects
+ */
+static void test_app_render_subtle_none(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle None viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Apply Subtle Preset
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SUBTLE);
+
+		// Disable Vignette and Grain as requested
+		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+		// Force one frame update to sync UBO
+		app_update(&g_test_app);
+
+		// Render
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name), "%s_subtle_none",
+		               vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
+/**
+ * Test Depth of Field (DoF)
+ */
+/**
+ * Test Subtle Mode with Depth of Field (DoF)
+ */
+static void test_app_render_subtle_dof(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle DoF viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Apply Subtle Preset + DoF
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SUBTLE);
+		postprocess_enable(&g_test_app.postprocess, POSTFX_DOF);
+
+		// Disable Vignette and Grain as requested
+		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+		// Force one frame update to sync UBO/matrices
+		app_update(&g_test_app);
+
+		// Render
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name), "%s_subtle_dof",
+		               vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
 	RUN_TEST(test_app_render_multi_view);
+	RUN_TEST(test_app_render_subtle_none);
+	RUN_TEST(test_app_render_subtle_bloom);
+	RUN_TEST(test_app_render_subtle_auto_exposure);
+	RUN_TEST(test_app_render_subtle_fxaa);
+	RUN_TEST(test_app_render_subtle_dof);
 	RUN_TEST(test_app_camera_initialization);
 
 	// Cleanup APRÈS tous les tests
