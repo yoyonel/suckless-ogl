@@ -61,7 +61,7 @@ default:
 
 # Configure CMake (Debug build)
 configure:
-    @{{distrobox}} cmake {{extra_cmake_flags}} -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON
+    @{{distrobox}} cmake {{extra_cmake_flags}} -G "Unix Makefiles" -B {{build_dir}} -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON
 
 # Build the project (Debug)
 build:
@@ -96,7 +96,7 @@ run-release: release
 
 # Build for Extreme Performance (Unity Build, Native, Aggressive Math)
 ultra-release:
-    @{{distrobox}} cmake -B build-ultra -DCMAKE_BUILD_TYPE=Release \
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-ultra -DCMAKE_BUILD_TYPE=Release \
         -DENABLE_UNITY_BUILD=ON \
         -DENABLE_NATIVE_ARCH=ON \
         -DENABLE_AGGRESSIVE_MATH=ON
@@ -108,7 +108,7 @@ run-ultra-release: ultra-release
 
 # Build for Minimum Size (-Os, Stripped)
 small:
-    @{{distrobox}} cmake -B build-small -DCMAKE_BUILD_TYPE=MinSizeRel
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-small -DCMAKE_BUILD_TYPE=MinSizeRel
     @{{distrobox}} cmake --build build-small --parallel {{nprocs}}
     @ls -lh build-small/app
 
@@ -118,7 +118,7 @@ run-small: small
 
 # Build with SSBO rendering (alternative path)
 build-ssbo:
-    @{{distrobox}} cmake -B build-ssbo -DCMAKE_BUILD_TYPE=Debug -DUSE_SSBO=ON
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-ssbo -DCMAKE_BUILD_TYPE=Debug -DUSE_SSBO=ON
     @{{distrobox}} cmake --build build-ssbo --parallel {{nprocs}}
 
 # Build and run with SSBO rendering
@@ -131,7 +131,7 @@ clean-ssbo:
 
 # Build with Synchronous Debug (SLOW but safe)
 build-sync:
-    @{{distrobox}} cmake -B build-sync -DCMAKE_BUILD_TYPE=Debug -DENABLE_Gx_SYNC=ON
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-sync -DCMAKE_BUILD_TYPE=Debug -DENABLE_Gx_SYNC=ON
     @{{distrobox}} cmake --build build-sync --parallel {{nprocs}}
 
 # Build and run with Synchronous Debug
@@ -144,7 +144,7 @@ clean-sync:
 
 # Build with optimizations and debug symbols (for profiling)
 profile:
-    @{{distrobox}} cmake -B build-profile -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-profile -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_NATIVE_ARCH=ON
     @{{distrobox}} cmake --build build-profile --parallel {{nprocs}}
     @echo ""
     @echo "📊 Profile Build Verification Summary:"
@@ -239,7 +239,7 @@ test-integration-apitrace: build
 # Generate HTML code coverage report (llvm-cov)
 coverage:
     @echo "Building with coverage instrumentation..."
-    @{{distrobox}} cmake {{extra_cmake_flags}} -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+    @{{distrobox}} cmake {{extra_cmake_flags}} -G "Unix Makefiles" -B build-coverage -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     @{{distrobox}} cmake --build build-coverage --parallel {{nprocs}}
     @echo "Running tests to generate profile data..."
     @{{distrobox}} sh -c "LLVM_PROFILE_FILE='{{justfile_directory()}}/build-coverage/test_%p.profraw' LIBGL_ALWAYS_SOFTWARE='1' GALLIUM_DRIVER='llvmpipe' ctest --test-dir build-coverage --output-on-failure"
@@ -265,7 +265,7 @@ coverage:
 asan:
     @echo "Building with AddressSanitizer (ASan)..."
     @mkdir -p build-asan
-    @{{distrobox}} cmake -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
     @{{distrobox}} cmake --build build-asan --parallel {{nprocs}}
 
 # Run Valgrind (Default) to detect leaks/errors
@@ -456,12 +456,12 @@ run-tracy: build-tracy
 
 # Build application with Tracy enabled
 build-tracy:
-    @{{distrobox}} cmake -B build-tracy -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-tracy -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON
     @{{distrobox}} cmake --build build-tracy --parallel {{nprocs}}
 
 # Build with Tracy AND AddressSanitizer
 build-tracy-asan:
-    @{{distrobox}} cmake -B build-tracy-asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-tracy-asan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_TRACY=ON -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
     @{{distrobox}} cmake --build build-tracy-asan --parallel {{nprocs}}
 
 # Run integration test with Tracy AND ASan
@@ -471,7 +471,7 @@ test-integration-tracy-asan: build-tracy-asan
 
 # Build with Tracy in Release mode
 build-tracy-release:
-    @{{distrobox}} cmake -B build-tracy-release -DCMAKE_BUILD_TYPE=Release -DENABLE_TRACY=ON
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-tracy-release -DCMAKE_BUILD_TYPE=Release -DENABLE_TRACY=ON
     @{{distrobox}} cmake --build build-tracy-release --parallel {{nprocs}}
 
 # Run integration test with Tracy in Release mode
@@ -490,7 +490,7 @@ build_win_dir := "build-win"
 
 # Configure for Windows (MinGW)
 configure-win:
-    @{{distrobox}} cmake -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -B {{build_win_dir}} -DBUILD_TESTS=ON .
+    @{{distrobox}} cmake -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=toolchain-mingw.cmake -B {{build_win_dir}} -DBUILD_TESTS=ON .
 
 # Build for Windows
 build-win:
