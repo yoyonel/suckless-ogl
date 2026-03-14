@@ -40,7 +40,7 @@ def generate_effect_diff(base_path, effect_path, out_path):
         print(f"[WARN] Failed to generate effect diff: {e}")
         return False
 
-def generate_report(sha, repository):
+def generate_report(sha, repository, pr_number=None):
     test_dir = "tests"
     html_index_path = "build-coverage/coverage_report/visual_tests/index.html"
     comment_path = ".github/workflows/scripts/comment.md"
@@ -670,7 +670,11 @@ def generate_report(sha, repository):
             comment += f"| **{variant}** | {ref_img} | {actual_img} | {diff_img} |\n"
 
     comment += "\n> [!TIP]\n"
-    comment += "> Accédez au rapport interactif complet dans l'onglet **Summary** du CI pour filtrer par vue/mode/effet.\n"
+    if pr_number:
+        interactive_url = f"https://suckless-ogl-pr-{pr_number}.surge.sh/coverage/visual_tests/index.html"
+        comment += f"> Accédez au **[Rapport Interactif Complet]({interactive_url})** pour filtrer par vue/mode/effet et utiliser la loupe.\n"
+    else:
+        comment += "> Accédez au rapport interactif complet dans l'onglet **Summary** du CI pour filtrer par vue/mode/effet.\n"
 
     with open(comment_path, "w") as f:
         f.write(comment)
@@ -685,6 +689,8 @@ def generate_report(sha, repository):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Usage: generate_visual_report.py <sha> <repository>")
+        print("Usage: generate_visual_report.py <sha> <repository> [pr_number]")
         sys.exit(1)
-    generate_report(sys.argv[1], sys.argv[2])
+
+    pr_num = sys.argv[3] if len(sys.argv) > 3 else None
+    generate_report(sys.argv[1], sys.argv[2], pr_num)

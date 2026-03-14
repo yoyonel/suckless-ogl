@@ -89,7 +89,7 @@ jobs:
           cp tests/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
 
           # Run dynamic report generator (produces index.html and comment.md)
-          python3 .github/workflows/scripts/generate_visual_report.py "${{ github.sha }}" "${{ github.repository }}"
+          python3 .github/workflows/scripts/generate_visual_report.py "${{ github.sha }}" "${{ github.repository }}" "${{ github.event.number }}"
 
           # Copy images for the static coverage report site
           cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true
