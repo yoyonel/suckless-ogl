@@ -201,6 +201,11 @@ test pattern="": build
 # Regenerate test reference images
 test-gen-refs: build
     @GEN_REFS=1 {{xvfb_wrapper}} {{build_dir}}/tests/test_app
+    @echo "[INFO] Optimizing reference images..."
+    @if command -v mogrify >/dev/null 2>&1; then \
+        mogrify -strip tests/ref_*.png; \
+        echo "[SUCCESS] PNG references optimized."; \
+    fi
 
 # List all available tests
 test-list:
