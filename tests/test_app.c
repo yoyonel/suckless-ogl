@@ -42,6 +42,7 @@ static const float PERCENTAGE_FACTOR = 100.0F;
 static const int FACTOR_DIV2 = 2;
 static const int COORD_DEC = 1;
 static const float CAMERA_DIST = 25.0F;
+static const float ANGLE_DISPLACEMENT = 2.0F;
 static const int PATH_BUF_SIZE = 256;
 static const int ERR_BUF_SIZE = 512;
 static const uint64_t DEFAULT_SYNC_TIMEOUT = 1000000000ULL;
@@ -857,6 +858,120 @@ static void test_app_render_subtle_dof(void)
 	free(pixels);
 }
 
+/**
+ * Test Subtle Mode with Motion Blur
+ * Uses a double-frame sequence to generate deterministic blur.
+ */
+static void test_app_render_subtle_motion_blur(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Subtle Motion Blur viewpoint: %s\n",
+		       vpoint->name);
+
+		// Apply Subtle Preset + Motion Blur
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SUBTLE);
+		postprocess_enable(&g_test_app.postprocess, POSTFX_MOTION_BLUR);
+
+		// Disable Vignette and Grain as requested
+		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+
+		// --- FRAME 1: WARMUP (SET PREVIOUS_VIEW_PROJ) ---
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+
+		// Apply NEGATIVE view-dependent deterministic movement for the
+		// WARMUP frame This ensures Frame 2 (the captured frame) lands
+		// exactly on the standard view position, making it perfectly
+		// comparable to the "none" reference image in the Diff Map.
+		float angle_disp = ANGLE_DISPLACEMENT;
+		if (strcmp(vpoint->name, "front") == 0) {
+			g_test_app.camera.yaw -= angle_disp;
+		} else if (strcmp(vpoint->name, "back") == 0) {
+			g_test_app.camera.yaw += angle_disp;
+		} else if (strcmp(vpoint->name, "left") == 0) {
+			g_test_app.camera.pitch -= angle_disp;
+		} else if (strcmp(vpoint->name, "right") == 0) {
+			g_test_app.camera.pitch += angle_disp;
+		} else if (strcmp(vpoint->name, "top") == 0) {
+			g_test_app.camera.pitch -= angle_disp;
+		} else if (strcmp(vpoint->name, "bottom") == 0) {
+			g_test_app.camera.pitch += angle_disp;
+		}
+		camera_update_vectors(&g_test_app.camera);
+
+		app_update(&g_test_app);
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		// --- FRAME 2: MOTION (CAPTURED) ---
+		// Restore camera to the exact baseline view point for the
+		// capture. The movement FROM Frame 1 TO Frame 2 will create the
+		// velocity vectors.
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		app_update(&g_test_app);
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name),
+		               "%s_subtle_motion_blur", vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -866,6 +981,7 @@ int main(void)
 	RUN_TEST(test_app_render_subtle_auto_exposure);
 	RUN_TEST(test_app_render_subtle_fxaa);
 	RUN_TEST(test_app_render_subtle_dof);
+	RUN_TEST(test_app_render_subtle_motion_blur);
 	RUN_TEST(test_app_camera_initialization);
 
 	// Cleanup APRÈS tous les tests
