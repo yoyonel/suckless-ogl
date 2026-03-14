@@ -87,9 +87,13 @@ jobs:
           # Collect results for storage
           cp tests/ref_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
           cp tests/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
+          # We will also collect effect_diffs after the script runs
 
           # Run dynamic report generator (produces index.html and comment.md)
           python3 .github/workflows/scripts/generate_visual_report.py "${{ github.sha }}" "${{ github.repository }}" "${{ github.event.number }}"
+
+          # Collect generated diffs as well
+          cp build-coverage/coverage_report/visual_tests/effect_diff_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
 
           # Copy images for the static coverage report site
           cp visual_artifacts/${{ github.sha }}/*.png build-coverage/coverage_report/visual_tests/ 2>/dev/null || true

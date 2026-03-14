@@ -36,8 +36,23 @@ def generate_effect_diff(base_path, effect_path, out_path):
         diff = enhancer.enhance(5.0) # 5x contrast
         diff.save(out_path)
         return True
+    except ImportError:
+        # Fallback to ImageMagick if Pillow is missing
+        import subprocess
+        try:
+            # convert base.png effect.png -compose difference -composite -evaluate multiply 5 out.png
+            subprocess.run([
+                "convert", base_path, effect_path,
+                "-compose", "difference", "-composite",
+                "-evaluate", "multiply", "5",
+                out_path
+            ], check=True, capture_output=True)
+            return True
+        except Exception as e:
+            print(f"[WARN] Failed to generate effect diff via ImageMagick: {e}")
+            return False
     except Exception as e:
-        print(f"[WARN] Failed to generate effect diff: {e}")
+        print(f"[WARN] Failed to generate effect diff via Pillow: {e}")
         return False
 
 def generate_report(sha, repository, pr_number=None):
@@ -81,7 +96,7 @@ def generate_report(sha, repository, pr_number=None):
             "effect": effect,
             "actual": actual_name,
             "diff": diff_name,
-            "effect_diff": effect_diff_name if effect != "none" else None,
+            "effect_diff": None,
             "status": "PASS",
             "baseline": None
         }
@@ -104,6 +119,7 @@ def generate_report(sha, repository, pr_number=None):
             out_diff_path = os.path.join(html_dir, effect_diff_name)
             if generate_effect_diff(base_path, effect_path, out_diff_path):
                 entry["baseline"] = os.path.basename(base_path)
+                entry["effect_diff"] = effect_diff_name
 
         data.append(entry)
         views.add(view)
