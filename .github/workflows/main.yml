@@ -146,6 +146,7 @@ jobs:
 
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
   documentation:
+    needs: [test-and-coverage]
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
@@ -159,6 +160,14 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
           make docs CONTAINER_RUN=""
+
+      - name: Download Coverage for Preview
+        if: github.event_name == 'pull_request'
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: site/coverage
+
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v4
         with:
