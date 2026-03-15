@@ -572,6 +572,7 @@ static void test_app_render_subtle_auto_exposure(void)
 		                         &PRESET_SUBTLE);
 		postprocess_enable(&g_test_app.postprocess,
 		                   POSTFX_AUTO_EXPOSURE);
+		g_test_app.log_gpu_metrics = 1;
 
 		// Disable Vignette and Grain as requested
 		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
@@ -579,7 +580,9 @@ static void test_app_render_subtle_auto_exposure(void)
 
 		// Warmup auto-exposure (128 frames)
 		const int warmup_frames = 128;
+		g_test_app.delta_time = 1.0 / 60.0;
 		for (int frame = 0; frame < warmup_frames; frame++) {
+			g_test_app.frame_count++;
 			app_update(&g_test_app);
 			renderer_draw_frame(
 			    &g_test_app, &g_test_app.scene,
