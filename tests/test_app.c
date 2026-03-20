@@ -462,7 +462,8 @@ static void pipeline_run_test_loop(const char* test_tag,
 			if (getenv("GEN_REFS") != NULL) {
 				char ref_path[PATH_BUF_SIZE];
 				(void)snprintf(ref_path, sizeof(ref_path),
-				               "tests/references/ref_%s.png", test_name);
+				               "tests/references/ref_%s.png",
+				               test_name);
 				(void)stbi_write_png(
 				    ref_path, fb_width, fb_height,
 				    BYTES_PER_PIXEL, pixels[prev],

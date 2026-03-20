@@ -251,6 +251,12 @@ GLuint build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size,
 		if (uniforms.u_threshold >= 0) {
 			glUniform1f(uniforms.u_threshold, threshold);
 		}
+		if (uniforms.u_offset_y >= 0) {
+			glUniform1i(uniforms.u_offset_y, 0);
+		}
+		if (uniforms.u_max_y >= 0) {
+			glUniform1i(uniforms.u_max_y, size);
+		}
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, env_hdr_tex);
