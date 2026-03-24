@@ -45,9 +45,9 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float cg_gamma;
 	float cg_gain;
 	float cg_offset;
+	float cg_lift;
 	float _pad6_0;
 	float _pad6_1;
-	float _pad6_2;
 
 	/* Tonemap (32 bytes) */
 	float tm_slope;
@@ -90,6 +90,14 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float bandingPerceptualGamma;
 	vec3 bandingChannelLevels;
 	float _pad11;
+
+	/* Fog (32 bytes) */
+	float fog_density;
+	float fog_start;
+	float fog_heightFalloff;
+	float _pad12;
+	vec3 fog_color;
+	float _pad13;
 };
 
 /* Compatibility Helper Macros */
@@ -199,4 +207,16 @@ const bool enableStencilDebug = bool(OPT_ENABLE_STENCIL_DEBUG);
 const bool enableBloomDebug = bool(OPT_ENABLE_BLOOM_DEBUG);
 #else
 #define enableBloomDebug ((activeEffects & (1u << 17u)) != 0u)
+#endif
+
+#ifdef OPT_ENABLE_FOG
+const bool enableFog = bool(OPT_ENABLE_FOG);
+#else
+#define enableFog ((activeEffects & (1u << 18u)) != 0u)
+#endif
+
+#ifdef OPT_ENABLE_FOG_DEBUG
+const bool enableFogDebug = bool(OPT_ENABLE_FOG_DEBUG);
+#else
+#define enableFogDebug ((activeEffects & (1u << 19u)) != 0u)
 #endif

@@ -66,5 +66,8 @@ vec3 apply_color_grading(vec3 color)
 	/* 5. Offset */
 	color = color + cg_offset;
 
+	/* 6. Lift (Shifting blacks) */
+	color = mix(vec3(cg_lift), color, clamp(1.0 - cg_lift, 0.0, 1.0));
+
 	return max(vec3(0.0), color);
 }

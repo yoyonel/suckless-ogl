@@ -22,6 +22,7 @@ uniform usampler2D stencilTexture;
 @header "postprocess/grain.glsl";
 @header "postprocess/fxaa.glsl";
 @header "postprocess/banding.glsl";
+@header "postprocess/fog.glsl";
 
 /* ============================================================================
    MAIN PIPELINE
@@ -98,6 +99,17 @@ void main()
 	/* 4. Bloom */
 	if (enableBloom) {
 		color = applyBloom(color);
+	}
+
+	/* 4b. Atmospheric Fog (HDR space, before exposure/tonemapping) */
+	if (enableFog) {
+		color = applyFog(color, TexCoords);
+	}
+
+	if (enableFogDebug) {
+		/* Show only the fog component (fog color * fog factor) on black
+		 */
+		color = applyFog(vec3(0.0), TexCoords);
 	}
 
 	/* 5. Exposure */

@@ -147,6 +147,14 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->banding.channel_levels[1] = DEFAULT_BANDING_LEVELS;
 	post_processing->banding.channel_levels[2] = DEFAULT_BANDING_LEVELS;
 
+	/* Initialisation Fog (Off by default) */
+	post_processing->fog.density = DEFAULT_FOG_DENSITY;
+	post_processing->fog.start = DEFAULT_FOG_START;
+	post_processing->fog.height_falloff = DEFAULT_FOG_HEIGHT_FALLOFF;
+	post_processing->fog.color[0] = DEFAULT_FOG_COLOR_R;
+	post_processing->fog.color[1] = DEFAULT_FOG_COLOR_G;
+	post_processing->fog.color[2] = DEFAULT_FOG_COLOR_B;
+
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
 
@@ -477,13 +485,15 @@ void postprocess_set_white_balance(PostProcess* post_processing,
 
 void postprocess_set_color_grading(PostProcess* post_processing,
                                    float saturation, float contrast,
-                                   float gamma, float gain, float offset)
+                                   float gamma, float gain, float offset,
+                                   float lift)
 {
 	post_processing->color_grading.saturation = saturation;
 	post_processing->color_grading.contrast = contrast;
 	post_processing->color_grading.gamma = gamma;
 	post_processing->color_grading.gain = gain;
 	post_processing->color_grading.offset = offset;
+	post_processing->color_grading.lift = lift;
 	post_processing->ubo_dirty = true;
 }
 
@@ -580,6 +590,19 @@ void postprocess_set_banding_channels(PostProcess* post_processing, float red,
 	post_processing->ubo_dirty = true;
 }
 
+void postprocess_set_fog(PostProcess* post_processing, float density,
+                         float start, float height_falloff, float fog_r,
+                         float fog_g, float fog_b)
+{
+	post_processing->fog.density = density;
+	post_processing->fog.start = start;
+	post_processing->fog.height_falloff = height_falloff;
+	post_processing->fog.color[0] = fog_r;
+	post_processing->fog.color[1] = fog_g;
+	post_processing->fog.color[2] = fog_b;
+	post_processing->ubo_dirty = true;
+}
+
 void postprocess_set_grading_ue_default(PostProcess* post_processing)
 {
 	/* * Valeurs par défaut d'Unreal Engine (Section "Global").
@@ -614,6 +637,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->dof = preset->dof;
 	post_processing->fxaa = preset->fxaa;
 	post_processing->banding = preset->banding;
+	post_processing->fog = preset->fog;
 	post_processing->ubo_dirty = true;
 
 	postprocess_on_state_change(post_processing);
@@ -853,6 +877,7 @@ void postprocess_end(PostProcess* post_processing)
 			ubo.grading_gain = post_processing->color_grading.gain;
 			ubo.grading_offset =
 			    post_processing->color_grading.offset;
+			ubo.grading_lift = post_processing->color_grading.lift;
 
 			ubo.tonemap_slope = post_processing->tonemapper.slope;
 			ubo.tonemap_toe = post_processing->tonemapper.toe;
@@ -898,6 +923,14 @@ void postprocess_end(PostProcess* post_processing)
 			    post_processing->banding.channel_levels[1];
 			ubo.banding_channel_levels[2] =
 			    post_processing->banding.channel_levels[2];
+
+			ubo.fog_density = post_processing->fog.density;
+			ubo.fog_start = post_processing->fog.start;
+			ubo.fog_height_falloff =
+			    post_processing->fog.height_falloff;
+			ubo.fog_color[0] = post_processing->fog.color[0];
+			ubo.fog_color[1] = post_processing->fog.color[1];
+			ubo.fog_color[2] = post_processing->fog.color[2];
 
 			glBufferSubData(GL_UNIFORM_BUFFER, 0,
 			                sizeof(PostProcessUBO), &ubo);
@@ -1272,6 +1305,9 @@ static const EffectMetadata ALL_EFFECTS[] = {
     {POSTFX_VECTOR_FIELD_DEBUG, "Vector Field Debug",
      "OPT_ENABLE_VECTOR_FIELD_DEBUG"},
     {POSTFX_STENCIL_DEBUG, "Stencil Debug View", "OPT_ENABLE_STENCIL_DEBUG"},
+    {POSTFX_BLOOM_DEBUG, "Bloom Debug View", "OPT_ENABLE_BLOOM_DEBUG"},
+    {POSTFX_FOG, "Atmospheric Fog", "OPT_ENABLE_FOG"},
+    {POSTFX_FOG_DEBUG, "Fog Debug View", "OPT_ENABLE_FOG_DEBUG"},
 };
 
 #define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))
