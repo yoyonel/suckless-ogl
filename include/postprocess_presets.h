@@ -380,4 +380,71 @@ static const PostProcessPreset PRESET_BLUEPRINT = {
                 .perceptual_gamma = 1.0F,
                 .channel_levels = {0.1F, 0.4F, 0.9F}}};
 
+/**
+ * @brief Nordic Noir: Foggy neon-lit night with teal-orange split toning.
+ *
+ * Inspired by Nordic noir photography — cool atmospheric fog, warm neon
+ * highlights, visible film grain, lifted shadows with teal cast, and
+ * filmic tone mapping with compressed dynamic range.
+ */
+static const PostProcessPreset PRESET_NORDIC_NOIR = {
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+        (unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_BLOOM |
+        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_CHROM_ABBR |
+        (unsigned int)POSTFX_FXAA | (unsigned int)POSTFX_FOG,
+    /* Vignette: Subtle oval, soft falloff */
+    .vignette = {.intensity = 0.45F, .smoothness = 0.7F, .roundness = 0.6F},
+    /* Grain: Film-like noise, heavier in shadows */
+    .grain = {.intensity = 0.25F,
+              .intensity_shadows = 1.3F,
+              .intensity_midtones = 1.0F,
+              .intensity_highlights = 0.4F,
+              .shadows_max = 0.15F,
+              .highlights_min = 0.55F,
+              .texel_size = 2.0F},
+    /* Exposure: Slightly moody/underexposed */
+    .exposure = {.exposure = 0.85F},
+    /* Chromatic Aberration: Barely visible, organic feel */
+    .chrom_abbr = {.strength = 0.003F}, /* White Balance: Colder teal push */
+    .white_balance = {.temperature = 4050.0F, .tint = -0.04F},
+    /* Color Grading: Noir look with pronounced milky shadows (Lift) */
+    .color_grading = {.saturation = 0.88F,
+                      .contrast = 1.20F,
+                      .gamma = 1.05F,
+                      .gain = 1.0F,
+                      .offset = 0.0F,
+                      .lift = 0.045F},
+    /* Tonemapper: Filmic with lifted toe, compressed shoulder */
+    .tonemapper = {.slope = 0.88F,
+                   .toe = 0.18F,
+                   .shoulder = 0.45F,
+                   .black_clip = 0.0F,
+                   .white_clip = 0.01F},
+    /* Bloom: Atmospheric glow (Soft & Dynamic) */
+    .bloom = {.intensity = 0.09F,
+              .threshold = 0.80F,
+              .soft_threshold = 0.55F,
+              .radius = 2.4F},
+    /* DoF: Disabled (fog handles depth attenuation) */
+    .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
+            .focal_range = DEFAULT_DOF_FOCAL_RANGE,
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+    /* FXAA: Low sub-pixel to keep grain sharp */
+    .fxaa = {.subpix = 0.45F,
+             .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
+             .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
+    .banding = {.mode = BANDING_MODE_LINEAR,
+                .levels = DEFAULT_BANDING_LEVELS,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {DEFAULT_BANDING_LEVELS,
+                                   DEFAULT_BANDING_LEVELS,
+                                   DEFAULT_BANDING_LEVELS}},
+    /* Fog: More visible deep cold haze */
+    .fog = {.density = 0.022F,
+            .start = 3.5F,
+            .height_falloff = 0.018F,
+            .color = {0.10F, 0.16F, 0.22F}}};
+
 #endif /* POSTPROCESS_PRESETS_H */
