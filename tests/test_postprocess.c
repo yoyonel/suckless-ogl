@@ -343,7 +343,8 @@ void test_postprocess_render_pipeline(void)
 	postprocess_set_dof(&post_proc, 10.0F, 5.0F, 1.0F);
 	postprocess_set_grain(&post_proc, 0.1F);
 	postprocess_set_chrom_abbr(&post_proc, 0.05F);
-	postprocess_set_color_grading(&post_proc, 1.1F, 1.1F, 1.0F, 1.0F, 0.0F);
+	postprocess_set_color_grading(&post_proc, 1.1F, 1.1F, 1.0F, 1.0F, 0.0F,
+	                              0.0F);
 	postprocess_set_white_balance(&post_proc, 6500.00F, 0.1F);
 	postprocess_set_fxaa(&post_proc, 0.75F, 0.125F, 0.063F);
 	postprocess_set_banding(&post_proc, BANDING_MODE_LINEAR, 256.0F);
