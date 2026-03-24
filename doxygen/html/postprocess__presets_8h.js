@@ -8,6 +8,7 @@ var postprocess__presets_8h =
     [ "PRESET_CINEMATIC", "postprocess__presets_8h.html#a6867da5e153c31da923bfd57b2563313", null ],
     [ "PRESET_DEFAULT", "postprocess__presets_8h.html#a4b57a0184cd61b5335951aa0e6b30495", null ],
     [ "PRESET_MATRIX", "postprocess__presets_8h.html#a3e3533df1a8aace5ebd66546165be922", null ],
+    [ "PRESET_NORDIC_NOIR", "postprocess__presets_8h.html#ae8c416f5c4672f246b43fa3085d99981", null ],
     [ "PRESET_POSTERIZED", "postprocess__presets_8h.html#a632215d24b2cc5d2e1b1a9ad1a8875e2", null ],
     [ "PRESET_RETRO", "postprocess__presets_8h.html#afb1c2f382c8e33458959764eaad5e2cf", null ],
     [ "PRESET_SUBTLE", "postprocess__presets_8h.html#a9e68acd97f1db2a2eefc2d3cdd9e9af4", null ],

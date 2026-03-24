@@ -1,52 +1,52 @@
 <map id="renderer_draw_frame" name="renderer_draw_frame">
-<area shape="rect" id="node1" title="Orchestrates the entire frame render (scene, postprocess, ui). Decouples the rendering logic from the..." alt="" coords="5,1268,168,1295"/>
-<area shape="rect" id="node2" href="$action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="235,1076,388,1103"/>
-<area shape="rect" id="node4" href="$app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b" title="Main UI rendering entry point." alt="" coords="254,335,369,361"/>
-<area shape="rect" id="node18" href="$camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786" title="Generates the 4x4 view matrix for this camera." alt="" coords="218,959,405,985"/>
-<area shape="rect" id="node19" href="$effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="233,1010,390,1051"/>
-<area shape="rect" id="node20" href="$effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb" title="Per&#45;frame update. Call after gpu_profiler_begin_frame()." alt="" coords="216,803,407,829"/>
-<area shape="rect" id="node26" href="$env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61" title="Renders the transition overlay (fade/crossfade)." alt="" coords="486,1463,646,1505"/>
-<area shape="rect" id="node30" href="$gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4" title="Marks the beginning of a frame. Swaps buffers and processes previous results." alt="" coords="240,1127,383,1169"/>
-<area shape="rect" id="node33" href="$gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02" title="Enables or disables the profiler." alt="" coords="219,1293,404,1320"/>
-<area shape="rect" id="node34" href="$gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db" title="Updates animations and synchronizes data with the live profiler." alt="" coords="226,1243,397,1269"/>
-<area shape="rect" id="node40" href="$postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5" title="Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop." alt="" coords="240,1395,383,1421"/>
-<area shape="rect" id="node41" href="$postprocess_8h.html#aa84256eef04459c5acf3b67987da736b" title="Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main r..." alt="" coords="246,1539,377,1565"/>
-<area shape="rect" id="node45" href="$postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95" title="Updates view&#45;projection matrices for effects requiring depth&#45;reconstruction." alt="" coords="235,1590,387,1631"/>
-<area shape="rect" id="node46" href="$postprocess_8h.html#a4e499403ff87148f7455391b3ee508be" title="Updates all async GPU readbacks (Exposure, Histogram). Handles PBO mapping and Sync management intern..." alt="" coords="235,1673,387,1714"/>
-<area shape="rect" id="node47" href="$scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406" title="Renders the scene." alt="" coords="257,1777,366,1804"/>
-<area shape="rect" id="node3" href="$utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075" title="Safe wrapper around strncpy to ensure null&#45;termination." alt="" coords="761,1085,867,1112"/>
-<area shape="rect" id="node5" href="$action__notifier_8h.html#a31d380c260cce25902eace6917fbeebb" title="Renders active notifications to the screen." alt="" coords="489,107,643,133"/>
-<area shape="rect" id="node6" href="$app__ui_8c.html#a2260be1c8a14c8df4d54dee625f51c3a" title="Draws the debug overlay with performance metrics and settings." alt="" coords="472,157,660,184"/>
-<area shape="rect" id="node7" href="$app__ui_8c.html#aecd45eb408c8a13e0f98d280a6fef2df" title="Draws the help overlay with keyboard shortcuts." alt="" coords="478,208,654,235"/>
-<area shape="rect" id="node8" href="$app__ui_8c.html#a535fc2bb9e40cd77f226290c0f46ffcc" title=" " alt="" coords="468,411,664,437"/>
-<area shape="rect" id="node9" href="$background_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5" title=" " alt="" coords="783,309,845,336"/>
-<area shape="rect" id="node10" href="$postprocess_8h.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="725,461,903,488"/>
-<area shape="rect" id="node11" href="$app__ui_8c.html#af70a47e72bc3967a1e497ee63ec55e0a" title=" " alt="" coords="477,309,655,336"/>
-<area shape="rect" id="node12" href="$app__ui_8c.html#ab1201a24aee78d93c5e82a3924ffec0a" title=" " alt="" coords="479,461,653,488"/>
-<area shape="rect" id="node13" href="$app__ui_8c.html#a600c8e8156cfa1ae1ad50a82f9d1ee05" title=" " alt="" coords="475,360,657,387"/>
-<area shape="rect" id="node14" href="$gpu__profiler__ui_8h.html#aa22e51dc6232ffd2f5740fc7ed56180a" title="Renders the GPU timeline using the provided UI context." alt="" coords="487,563,645,589"/>
-<area shape="rect" id="node15" href="$ui_8h.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="527,613,605,640"/>
-<area shape="rect" id="node16" href="$ui_8h.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="533,5,599,32"/>
-<area shape="rect" id="node17" href="$ui_8h.html#a04ff141f59212601e740294c9159dbe7" title="Initializes a layout helper for a frame." alt="" coords="511,56,621,83"/>
-<area shape="rect" id="node21" href="$effect__benchmark_8c.html#a24534e9b42a963dfb6019f99c41a2514" title="Atomically apply a new effect bitmask." alt="" coords="511,664,621,691"/>
-<area shape="rect" id="node22" href="$effect__benchmark_8c.html#aa900ec758a0ffcd90c46d380a086c97a" title=" " alt="" coords="507,715,625,741"/>
-<area shape="rect" id="node23" href="$effect__benchmark_8c.html#a392e325c2453fe315ac40f4f4a1194a3" title="Logs all results to the console via LOG_INFO." alt="" coords="483,766,649,807"/>
-<area shape="rect" id="node24" href="$effect__benchmark_8c.html#a733a99a378a7c1dd5155e7f8521a7a15" title="Find the &quot;Final Composite&quot; stage in the profiler and return its raw duration_ms, or &#45;1...." alt="" coords="475,832,657,859"/>
-<area shape="rect" id="node25" href="$effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01" title=" " alt="" coords="495,883,637,909"/>
-<area shape="rect" id="node27" href="$shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db" title=" " alt="" coords="749,1449,879,1476"/>
-<area shape="rect" id="node28" href="$shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="755,1500,873,1527"/>
-<area shape="rect" id="node29" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="766,1551,862,1577"/>
-<area shape="rect" id="node31" href="$adaptive__sampler_8h.html#ab853a173e8dae6bd06ce8bb03982e1a8" title="Manually adds a sample to the sampler (e.g. from external source like GPU profiler)." alt="" coords="481,1035,651,1061"/>
-<area shape="rect" id="node32" href="$metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8" title=" " alt="" coords="499,984,633,1011"/>
-<area shape="rect" id="node35" href="$app__metrics_8h.html#a8729219fdcfaa718637e6e6b1273c0c2" title="Logs GPU performance statistics if the reporting window for any stage has elapsed." alt="" coords="486,1202,646,1243"/>
-<area shape="rect" id="node36" href="$gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face" title="Resets all samplers for a new capture window." alt="" coords="497,1267,635,1309"/>
-<area shape="rect" id="node37" href="$gpu__profiler__ui_8c.html#a791c884d99ce17538fa4fd8d17a877c8" title=" " alt="" coords="475,1333,657,1374"/>
-<area shape="rect" id="node38" href="$gpu__profiler__ui_8c.html#a15363df2f9d5c696e83a0077332cf845" title=" " alt="" coords="489,1137,643,1178"/>
-<area shape="rect" id="node39" href="$gpu__profiler__ui_8c.html#a354e56ee6aaa3ae6e00da508876cb513" title=" " alt="" coords="481,1398,651,1439"/>
-<area shape="rect" id="node42" href="$postprocess_8c.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="477,1697,655,1724"/>
-<area shape="rect" id="node43" href="$render__utils_8h.html#a46e8c525ba0c0e1535cd2667b419a56c" title="Safely binds a texture to a specific unit, using a fallback if needed." alt="" coords="455,1580,677,1607"/>
-<area shape="rect" id="node44" href="$render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045" title="Resets a range of texture units to a safe state." alt="" coords="497,1631,635,1673"/>
-<area shape="rect" id="node48" href="$billboard__rendering_8h.html#ae5de263a9690fe980c5c71c5bb2fa9e4" title="Updates instance data on the GPU by copying from another GPU buffer (e.g. SSBO)." alt="" coords="479,1865,653,1906"/>
-<area shape="rect" id="node49" href="$light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread." alt="" coords="484,1748,648,1775"/>
-<area shape="rect" id="node50" href="$light__probes_8h.html#ad70cf99a2b574df78d64d174738aea1f" title="Renders debug spheres for the probes." alt="" coords="494,1799,638,1841"/>
+<area shape="rect" id="node1" title="Orchestrates the entire frame render (scene, postprocess, ui). Decouples the rendering logic from the..." alt="" coords="5,1429,168,1456"/>
+<area shape="rect" id="node2" href="$action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="235,5,388,32"/>
+<area shape="rect" id="node4" href="$app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b" title="Main UI rendering entry point." alt="" coords="254,867,369,893"/>
+<area shape="rect" id="node19" href="$camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786" title="Generates the 4x4 view matrix for this camera." alt="" coords="218,1284,405,1311"/>
+<area shape="rect" id="node20" href="$effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="233,1335,390,1377"/>
+<area shape="rect" id="node21" href="$effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb" title="Per&#45;frame update. Call after gpu_profiler_begin_frame()." alt="" coords="216,1401,407,1428"/>
+<area shape="rect" id="node27" href="$env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61" title="Renders the transition overlay (fade/crossfade)." alt="" coords="231,1465,391,1506"/>
+<area shape="rect" id="node31" href="$gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4" title="Marks the beginning of a frame. Swaps buffers and processes previous results." alt="" coords="240,103,383,145"/>
+<area shape="rect" id="node34" href="$gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02" title="Enables or disables the profiler." alt="" coords="219,1647,404,1673"/>
+<area shape="rect" id="node35" href="$gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db" title="Updates animations and synchronizes data with the live profiler." alt="" coords="226,356,397,383"/>
+<area shape="rect" id="node41" href="$postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5" title="Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop." alt="" coords="240,1697,383,1724"/>
+<area shape="rect" id="node42" href="$postprocess_8h.html#aa84256eef04459c5acf3b67987da736b" title="Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main r..." alt="" coords="246,1596,377,1623"/>
+<area shape="rect" id="node46" href="$postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95" title="Updates view&#45;projection matrices for effects requiring depth&#45;reconstruction." alt="" coords="235,1749,387,1790"/>
+<area shape="rect" id="node47" href="$postprocess_8h.html#a4e499403ff87148f7455391b3ee508be" title="Updates all async GPU readbacks (Exposure, Histogram). Handles PBO mapping and Sync management intern..." alt="" coords="235,1530,387,1571"/>
+<area shape="rect" id="node48" href="$scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406" title="Renders the scene." alt="" coords="257,1817,366,1844"/>
+<area shape="rect" id="node3" href="$utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075" title="Safe wrapper around strncpy to ensure null&#45;termination." alt="" coords="761,32,867,59"/>
+<area shape="rect" id="node5" href="$action__notifier_8h.html#a31d380c260cce25902eace6917fbeebb" title="Renders active notifications to the screen." alt="" coords="489,1019,643,1045"/>
+<area shape="rect" id="node6" href="$app__ui_8c.html#a2260be1c8a14c8df4d54dee625f51c3a" title="Draws the debug overlay with performance metrics and settings." alt="" coords="472,1069,660,1096"/>
+<area shape="rect" id="node7" href="$app__ui_8c.html#aecd45eb408c8a13e0f98d280a6fef2df" title="Draws the help overlay with keyboard shortcuts." alt="" coords="478,1120,654,1147"/>
+<area shape="rect" id="node8" href="$app__ui_8c.html#a535fc2bb9e40cd77f226290c0f46ffcc" title=" " alt="" coords="468,765,664,792"/>
+<area shape="rect" id="node9" href="$background_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5" title=" " alt="" coords="783,639,845,665"/>
+<area shape="rect" id="node10" href="$postprocess_8h.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="725,765,903,792"/>
+<area shape="rect" id="node11" href="$app__ui_8c.html#a82d18ad8e7c83cd153cf1b73896ee4e6" title=" " alt="" coords="475,715,657,741"/>
+<area shape="rect" id="node12" href="$app__ui_8c.html#af70a47e72bc3967a1e497ee63ec55e0a" title=" " alt="" coords="477,512,655,539"/>
+<area shape="rect" id="node13" href="$app__ui_8c.html#ab1201a24aee78d93c5e82a3924ffec0a" title=" " alt="" coords="479,816,653,843"/>
+<area shape="rect" id="node14" href="$app__ui_8c.html#a600c8e8156cfa1ae1ad50a82f9d1ee05" title=" " alt="" coords="475,563,657,589"/>
+<area shape="rect" id="node15" href="$gpu__profiler__ui_8h.html#aa22e51dc6232ffd2f5740fc7ed56180a" title="Renders the GPU timeline using the provided UI context." alt="" coords="487,867,645,893"/>
+<area shape="rect" id="node16" href="$ui_8h.html#a5356c389352db784027765ad0ef3aca5" title="Begins a new UI batch." alt="" coords="527,917,605,944"/>
+<area shape="rect" id="node17" href="$ui_8h.html#afefa2b11544b44d05a8d2652e4e4883c" title="Ends the current UI batch and restores OpenGL state." alt="" coords="533,968,599,995"/>
+<area shape="rect" id="node18" href="$ui_8h.html#a04ff141f59212601e740294c9159dbe7" title="Initializes a layout helper for a frame." alt="" coords="511,613,621,640"/>
+<area shape="rect" id="node22" href="$effect__benchmark_8c.html#a24534e9b42a963dfb6019f99c41a2514" title="Atomically apply a new effect bitmask." alt="" coords="511,1389,621,1416"/>
+<area shape="rect" id="node23" href="$effect__benchmark_8c.html#aa900ec758a0ffcd90c46d380a086c97a" title=" " alt="" coords="507,1440,625,1467"/>
+<area shape="rect" id="node24" href="$effect__benchmark_8c.html#a392e325c2453fe315ac40f4f4a1194a3" title="Logs all results to the console via LOG_INFO." alt="" coords="483,1222,649,1263"/>
+<area shape="rect" id="node25" href="$effect__benchmark_8c.html#a733a99a378a7c1dd5155e7f8521a7a15" title="Find the &quot;Final Composite&quot; stage in the profiler and return its raw duration_ms, or &#45;1...." alt="" coords="475,1288,657,1315"/>
+<area shape="rect" id="node26" href="$effect__benchmark_8c.html#a5e57c4b5acb493bfbda010f6b8f5df01" title=" " alt="" coords="495,1339,637,1365"/>
+<area shape="rect" id="node28" href="$shader_8h.html#aed5502c74325481ebafdd9dfc49cf8db" title=" " alt="" coords="501,1491,631,1517"/>
+<area shape="rect" id="node29" href="$shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="507,1541,625,1568"/>
+<area shape="rect" id="node30" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="518,1592,614,1619"/>
+<area shape="rect" id="node32" href="$adaptive__sampler_8h.html#ab853a173e8dae6bd06ce8bb03982e1a8" title="Manually adds a sample to the sampler (e.g. from external source like GPU profiler)." alt="" coords="481,83,651,109"/>
+<area shape="rect" id="node33" href="$metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8" title=" " alt="" coords="499,133,633,160"/>
+<area shape="rect" id="node36" href="$app__metrics_8h.html#a8729219fdcfaa718637e6e6b1273c0c2" title="Logs GPU performance statistics if the reporting window for any stage has elapsed." alt="" coords="486,446,646,487"/>
+<area shape="rect" id="node37" href="$gpu__profiler_8h.html#abb8eabbef66554b6e1646f398037face" title="Resets all samplers for a new capture window." alt="" coords="497,185,635,226"/>
+<area shape="rect" id="node38" href="$gpu__profiler__ui_8c.html#a791c884d99ce17538fa4fd8d17a877c8" title=" " alt="" coords="475,250,657,291"/>
+<area shape="rect" id="node39" href="$gpu__profiler__ui_8c.html#a15363df2f9d5c696e83a0077332cf845" title=" " alt="" coords="489,381,643,422"/>
+<area shape="rect" id="node40" href="$gpu__profiler__ui_8c.html#a354e56ee6aaa3ae6e00da508876cb513" title=" " alt="" coords="481,315,651,357"/>
+<area shape="rect" id="node43" href="$postprocess_8c.html#af9163a0102d9d7b05ae4c091b9358f9f" title="Returns true if an effect is currently active." alt="" coords="477,1643,655,1669"/>
+<area shape="rect" id="node44" href="$render__utils_8h.html#a46e8c525ba0c0e1535cd2667b419a56c" title="Safely binds a texture to a specific unit, using a fallback if needed." alt="" coords="455,1693,677,1720"/>
+<area shape="rect" id="node45" href="$render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045" title="Resets a range of texture units to a safe state." alt="" coords="497,1745,635,1786"/>
+<area shape="rect" id="node49" href="$billboard__rendering_8h.html#ae5de263a9690fe980c5c71c5bb2fa9e4" title="Updates instance data on the GPU by copying from another GPU buffer (e.g. SSBO)." alt="" coords="479,1810,653,1851"/>
+<area shape="rect" id="node50" href="$light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread." alt="" coords="484,1876,648,1903"/>
 </map>

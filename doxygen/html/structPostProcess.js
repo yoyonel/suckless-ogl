@@ -20,6 +20,7 @@ var structPostProcess =
     [ "exposure", "structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb", null ],
     [ "exposure_pbo", "structPostProcess.html#ac8525d546170939238907adbe2429a78", null ],
     [ "exposure_sync", "structPostProcess.html#a11699f767b7388da6d8ee5a3b3463e64", null ],
+    [ "fog", "structPostProcess.html#a09533273202880d19b3143ee5694f2f9", null ],
     [ "frame_count", "structPostProcess.html#aa36afb0f2f932f2c1b42cb5a8d11d367", null ],
     [ "fxaa", "structPostProcess.html#ab6dd21a9e441fb05688017da0fdeab76", null ],
     [ "gpu_profiler", "structPostProcess.html#acb108231128817d5e9f495a70df22f1b", null ],

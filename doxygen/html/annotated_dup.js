@@ -29,6 +29,7 @@ var annotated_dup =
     [ "Entry", "structEntry.html", "structEntry" ],
     [ "EnvManager", "structEnvManager.html", "structEnvManager" ],
     [ "ExposureParams", "structExposureParams.html", "structExposureParams" ],
+    [ "FogParams", "structFogParams.html", "structFogParams" ],
     [ "FpsCounter", "structFpsCounter.html", "structFpsCounter" ],
     [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],
     [ "GLStateBackup", "structGLStateBackup.html", "structGLStateBackup" ],

@@ -7,6 +7,7 @@ var structPostProcessPreset =
     [ "color_grading", "structPostProcessPreset.html#aa100ec8656fb47c1c9fecf39b91a8272", null ],
     [ "dof", "structPostProcessPreset.html#a3ccb7525d0d096c03ab429e0ac16ee21", null ],
     [ "exposure", "structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1", null ],
+    [ "fog", "structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2", null ],
     [ "fxaa", "structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd", null ],
     [ "grain", "structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0", null ],
     [ "tonemapper", "structPostProcessPreset.html#a414f30957b85919adfa385296c2f6181", null ],
