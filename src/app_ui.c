@@ -781,6 +781,44 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	}
 }
 
+static void draw_cinematic_overlay(const App* app, UILayout* layout)
+{
+	if (app->overlay.text_overlay_mode < 2) {
+		return;
+	}
+
+	const PostProcess* post_proc = &app->postprocess;
+	char text[DEBUG_TEXT_BUFFER_SIZE];
+
+	/* White Balance */
+	(void)safe_snprintf(text, sizeof(text), "WB Temp: %.0f K (Tint: %.2f)",
+	                    post_proc->white_balance.temperature,
+	                    post_proc->white_balance.tint);
+	ui_layout_text(layout, text, DEFAULT_FONT_COLOR);
+
+	/* Color Grading */
+	(void)safe_snprintf(
+	    text, sizeof(text), "Shadow Lift: %.3f (Contrast: %.2f)",
+	    post_proc->color_grading.lift, post_proc->color_grading.contrast);
+	ui_layout_text(layout, text, DEFAULT_FONT_COLOR);
+
+	/* Fog Details (Only if enabled) */
+	if (postprocess_is_enabled((PostProcess*)post_proc, POSTFX_FOG)) {
+		(void)safe_snprintf(
+		    text, sizeof(text), "Fog: Density=%.3f, Start=%.1f",
+		    post_proc->fog.density, post_proc->fog.start);
+		ui_layout_text(layout, text, ENV_TEXT_COLOR);
+	}
+
+	/* Grain Details (Only if enabled) */
+	if (postprocess_is_enabled((PostProcess*)post_proc, POSTFX_GRAIN)) {
+		(void)safe_snprintf(
+		    text, sizeof(text), "Grain: Int=%.2f, Scale=%.1f",
+		    post_proc->grain.intensity, post_proc->grain.texel_size);
+		ui_layout_text(layout, text, DEFAULT_FONT_COLOR);
+	}
+}
+
 static void draw_exposure_overlay(const App* app, UILayout* layout)
 {
 	if (app->overlay.text_overlay_mode < 3) {
@@ -843,6 +881,7 @@ void app_render_ui(const App* app)
 	               app->height);
 
 	draw_main_info_overlay(app, &layout);
+	draw_cinematic_overlay(app, &layout);
 	draw_exposure_overlay(app, &layout);
 	draw_bloom_debug_status(app, &layout);
 	draw_loading_indicator(app);

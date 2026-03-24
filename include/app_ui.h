@@ -133,6 +133,7 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
     {GLFW_KEY_F4, ROW_SYSTEM, 5.0F, 1.0F, "F4"},
     {GLFW_KEY_F5, ROW_SYSTEM, 6.5F, 1.0F, "F5"},
     {GLFW_KEY_F6, ROW_SYSTEM, 7.5F, 1.0F, "F6"},
+    {GLFW_KEY_F7, ROW_SYSTEM, 8.5F, 1.0F, "F7"},
     {GLFW_KEY_F9, ROW_SYSTEM, 11.5F, 1.0F, "F9"},
     {GLFW_KEY_F12, ROW_SYSTEM, 14.5F, 1.2F, "F12"},
 
