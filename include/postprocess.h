@@ -50,6 +50,14 @@
 /* Banding defaults */
 #define DEFAULT_BANDING_LEVELS 256.0F /**< 8-bit simulation. */
 
+/* Fog Defaults */
+#define DEFAULT_FOG_DENSITY 0.0F
+#define DEFAULT_FOG_START 10.0F
+#define DEFAULT_FOG_HEIGHT_FALLOFF 0.1F
+#define DEFAULT_FOG_COLOR_R 0.5F
+#define DEFAULT_FOG_COLOR_G 0.6F
+#define DEFAULT_FOG_COLOR_B 0.7F
+
 /* White Balance Defaults */
 #define DEFAULT_WB_TEMP 6500.0F
 #define DEFAULT_WB_TINT 0.0F
@@ -89,6 +97,8 @@ typedef enum {
 	    (1U << 15U), /**< Vector field velocity visualization. */
 	POSTFX_STENCIL_DEBUG = (1U << 16U), /**< Stencil mask visualization. */
 	POSTFX_BLOOM_DEBUG = (1U << 17U),   /**< Bloom debug view. */
+	POSTFX_FOG = (1U << 18U),           /**< Atmospheric depth fog. */
+	POSTFX_FOG_DEBUG = (1U << 19U),     /**< Fog component visualization. */
 } PostProcessEffect;
 
 /** @brief Default mask of active effects. */
@@ -106,6 +116,7 @@ typedef struct {
 	float gamma;      /**< 0.0 to 2.0. */
 	float gain;       /**< 0.0 to 2.0. */
 	float offset;     /**< -1.0 to 1.0. */
+	float lift;       /**< 0.0 to 1.0. */
 } ColorGradingParams;
 
 /**
@@ -205,6 +216,17 @@ typedef struct {
 } BandingParams;
 
 /**
+ * @struct FogParams
+ * @brief Depth-based atmospheric fog parameters.
+ */
+typedef struct {
+	float density;        /**< Exponential fog density. */
+	float start;          /**< Near distance where fog begins. */
+	float height_falloff; /**< Vertical attenuation factor. */
+	float color[3];       /**< Fog color (linear RGB). */
+} FogParams;
+
+/**
  * @struct ShaderCacheEntry
  * @brief Cache entry for optimized shaders.
  */
@@ -260,7 +282,8 @@ typedef struct {
 	float grading_gamma;
 	float grading_gain;
 	float grading_offset;
-	float _pad6[3];
+	float grading_lift;
+	float _pad6[2];
 
 	/* Tonemapper */
 	float tonemap_slope;
@@ -301,6 +324,14 @@ typedef struct {
 	float banding_perceptual_gamma;
 	float banding_channel_levels[3];
 	float _pad11;
+
+	/* Fog (32 bytes) */
+	float fog_density;
+	float fog_start;
+	float fog_height_falloff;
+	float _pad12;
+	float fog_color[3];
+	float _pad13;
 } PostProcessUBO;
 
 /**
@@ -351,6 +382,7 @@ typedef struct PostProcess {
 	MotionBlurParams motion_blur;
 	FXAAParams fxaa;
 	BandingParams banding;
+	FogParams fog;
 
 	float time;             /**< Accumulated time for noise/animation. */
 	float delta_time;       /**< Last frame delta. */
@@ -456,7 +488,8 @@ void postprocess_set_white_balance(PostProcess* post_processing,
                                    float temperature, float tint);
 void postprocess_set_color_grading(PostProcess* post_processing,
                                    float saturation, float contrast,
-                                   float gamma, float gain, float offset);
+                                   float gamma, float gain, float offset,
+                                   float lift);
 void postprocess_set_tonemapper(PostProcess* post_processing, float slope,
                                 float toe, float shoulder, float black_clip,
                                 float white_clip);
@@ -485,7 +518,9 @@ void postprocess_set_banding_perceptual(PostProcess* post_processing,
                                         float gamma);
 void postprocess_set_banding_channels(PostProcess* post_processing, float red,
                                       float green, float blue);
-
+void postprocess_set_fog(PostProcess* post_processing, float density,
+                         float start, float height_falloff, float fog_r,
+                         float fog_g, float fog_b);
 /**
  * @brief Updates view-projection matrices for effects requiring
  * depth-reconstruction.
@@ -511,6 +546,7 @@ typedef struct {
 	DoFParams dof;
 	FXAAParams fxaa;
 	BandingParams banding;
+	FogParams fog;
 } PostProcessPreset;
 
 /**

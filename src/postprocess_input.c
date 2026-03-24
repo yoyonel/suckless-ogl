@@ -170,6 +170,15 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 				    NOTIF_DUR_NORMAL);
 			}
 			break;
+		case GLFW_KEY_9: /* Preset: Nordic Noir */
+			postprocess_apply_preset(ctx->postprocess,
+			                         &PRESET_NORDIC_NOIR);
+			LOG_INFO("suckless-ogl.postprocess",
+			         "Style: Nordic Noir");
+			action_notifier_push(ctx->notifier,
+			                     "Style: Nordic Noir",
+			                     NOTIF_DUR_LONG);
+			break;
 		case GLFW_KEY_0:
 		case GLFW_KEY_KP_0:
 			postprocess_apply_preset(ctx->postprocess,
@@ -371,6 +380,11 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 		case GLFW_KEY_F6:
 			toggle_postfx(ctx, POSTFX_STENCIL_DEBUG,
 			              "Stencil Debug");
+			break;
+		case GLFW_KEY_F7:
+			toggle_postfx_complex(
+			    ctx, mods, POSTFX_FOG, POSTFX_FOG_DEBUG,
+			    "Atmospheric Fog", "Fog Debug View");
 			break;
 		default:
 			handle_preset_input(ctx, key);

@@ -159,6 +159,9 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_6, 0, "Style: Noir",
 	            "Applies a high-contrast black and white look.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_9, 0, "Style: Nordic Noir",
+	            "Foggy neon-lit night with teal-orange split toning.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_0, 0, "Reset PostFX",
 	            "Resets all effects and exposure to default values.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_ACTION);
@@ -188,6 +191,9 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_F6, 0, "Stencil Debug",
 	            "Toggles stencil buffer debug visualization.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F7, 0, "Toggle Fog",
+	            "Toggles atmospheric fog. Use SHIFT+F7 for Debug view.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_F9, 0, "Toggle Perf Mode",
 	            "Toggles Performance Mode (disables heavy effects).",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
