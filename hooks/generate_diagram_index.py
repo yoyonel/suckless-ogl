@@ -32,10 +32,10 @@ def on_config(config):
     use_directory_urls = config.get('use_directory_urls', True)
     output_file = os.path.join(docs_dir, "diagram_index.md")
 
-    all_files = sorted([f for f in os.listdir(docs_dir) if f.endswith('.md') and f != "diagram_index.md"])
+    all_files = sorted([f for f in os.listdir(docs_dir) if f.endswith('.md') and not f.endswith('.fr.md') and f != "diagram_index.md"])
 
-    content = "# Index des Diagrammes\n\n"
-    content += "*Cette page est générée automatiquement. **Survolez les titres** pour voir un aperçu du diagramme.*\n\n"
+    content = "# Diagram Index\n\n"
+    content += "*This page is auto-generated. **Hover over the titles** to preview the diagram.*\n\n"
 
     content += '<style>\n'
     content += '.diagram-item { position: relative; display: block; padding: 12px 0; border-bottom: 1px solid var(--md-code-bg-color); }\n'
@@ -100,7 +100,7 @@ def on_config(config):
                     mermaid_lines.append(lines[j])
                     j += 1
 
-                title = current_header if current_header else "Haut de page"
+                title = current_header if current_header else "Top of page"
                 anchor = f"#{current_slug}" if current_slug else "#"
 
                 desc = ""

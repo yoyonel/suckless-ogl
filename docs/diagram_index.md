@@ -1,6 +1,6 @@
-# Index des Diagrammes
+# Diagram Index
 
-*Cette page est générée automatiquement. **Survolez les titres** pour voir un aperçu du diagramme.*
+*This page is auto-generated. **Hover over the titles** to preview the diagram.*
 
 <style>
 .diagram-item { position: relative; display: block; padding: 12px 0; border-bottom: 1px solid var(--md-code-bg-color); }
@@ -357,7 +357,7 @@ GPU-->>Main: FBOs recreated (OK)
 ## [Global Illumination (1-Bounce)](../global_illumination/)
 
 <div class="diagram-item">
-  <a href="../global_illumination/#architecture-de-limplementation" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture de l'Implémentation</a> : <span style="opacity: 0.6; font-size: 0.85em;">Le système combine un calcul CPU asynchrone et un échantillonnage GPU sans aucune interruption (stall) du thread de rendu principal.</span>
+  <a href="../global_illumination/#implementation-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Implementation Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">The system combines asynchronous CPU computation with GPU sampling, with no interruption (stall) to the main render thread.</span>
   <div class="mermaid-preview">
 
 ```mermaid
@@ -374,54 +374,54 @@ GPU-->>Main: FBOs recreated (OK)
 }
 }%%
 sequenceDiagram
-participant Main as Thread Principal (CPU)
+participant Main as Main Thread (CPU)
 participant Worker as GI Worker Thread (CPU)
 participant GPU as SSBO & Shaders (GPU)
-Main->>Worker: Envoie une copie de la scène (Positions, Couleurs)
-Main->>Worker: Signale une mise à jour (CondVar)
+Main->>Worker: Send scene copy (Positions, Colors)
+Main->>Worker: Signal update (CondVar)
 activate Worker
-Note over Worker: Calcule le Form Factor et projette en Harmoniques Sphériques (SH)
-Worker-->>Main: Signale que les calculs sont terminés (results_ready)
+Note over Worker: Compute Form Factor and project to Spherical Harmonics (SH)
+Worker-->>Main: Signal computations complete (results_ready)
 deactivate Worker
-Main->>GPU: Upload des données SH vers le SSBO (glBufferSubData)
-Main->>GPU: Appel de dessin (Instanced ou SSBO)
-Note over GPU: Les fragments échantillonnent l'irradiance des 8 sondes adjacentes (Trilinear Filtering)
+Main->>GPU: Upload SH data to SSBO (glBufferSubData)
+Main->>GPU: Draw call (Instanced or SSBO)
+Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Filtering)
 ```
 
   </div>
 </div>
 
 
-## [Analyse de l'implémentation du Motion Blur](../motion_blur_analysis/)
+## [Motion Blur Implementation Analysis](../motion_blur_analysis/)
 
 <div class="diagram-item">
-  <a href="../motion_blur_analysis/#pipeline-de-rendu" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Pipeline de rendu</a> : <span style="opacity: 0.6; font-size: 0.85em;">L'architecture actuelle repose sur des principes modernes de rendu basés sur l'approche Tile-Based / Neighbor Max, initialement introduite par Jean-Yves Bouguet et les chercheurs en rendu temps réel. L'idée principale est d'éviter les &quot;fuites&quot; de flou lorsqu'un objet rapide passe devant un arrière-plan fixe, un artefact très commun dans les premières implémentations de ce post-process.</span>
+  <a href="../motion_blur_analysis/#render-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Render Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">The current architecture is based on modern rendering principles using the Tile-Based / Neighbor Max approach, originally introduced by Jean-Yves Bouguet and real-time rendering researchers. The main idea is to prevent blur &quot;bleeding&quot; when a fast object passes in front of a static background — a very common artifact in early implementations of this post-process.</span>
   <div class="mermaid-preview">
 
 ```mermaid
 graph TD
 V[Velocity Buffer] --> T[Tile Max Velocity Compute]
-T -->|Réduction à 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
+T -->|Reduction at 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
 TTex --> N[Neighbor Max Velocity Compute]
-N -->|textureGather sur un Voisinage 3x3| NTex(Texture RG16F - Neighbor Max)
-C[Color Buffer Raw] --> M(Passe Motion Blur Finale)
+N -->|textureGather over 3x3 Neighborhood| NTex(Texture RG16F - Neighbor Max)
+C[Color Buffer Raw] --> M(Final Motion Blur Pass)
 D[Depth Buffer] --> M
 V --> M
 NTex --> M
-M -->|Échantillonnage de 8 frames \n+ Interleaved Gradient Noise \n+ Depth Weighting| O[Color Buffer Flouté]
+M -->|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blurred Color Buffer]
 ```
 
   </div>
 </div>
 
 <div class="diagram-item">
-  <a href="../motion_blur_analysis/#4-lexemple-de-street-fighter-6-re-engine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. L'Exemple de Street Fighter 6 (RE Engine)</a> : <span style="opacity: 0.6; font-size: 0.85em;">Contrairement à du flou Linéaire standard (« je prends un vecteur et je trace une ligne droite »), le moteur de Capcom stocke l'information de l'accélération en plus de la vitesse. L'échantillonnage de Flou est ainsi &quot;courbé&quot; dans l'espace afin de simuler la trajectoire radiale des membres et poings.</span>
+  <a href="../motion_blur_analysis/#4-the-street-fighter-6-case-study-re-engine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4. The Street Fighter 6 Case Study (RE Engine)</a> : <span style="opacity: 0.6; font-size: 0.85em;">Unlike standard linear blur (&quot;take a vector and trace a straight line&quot;), Capcom's engine stores acceleration information in addition to velocity. The blur sampling is thus &quot;curved&quot; in space to simulate the radial trajectory of limbs and fists.</span>
   <div class="mermaid-preview">
 
 ```mermaid
 graph LR
-A[Flou Linéaire \nStandard Suckless OGL] -->|Crée des lignes droites et des artefacts| B(Trajectoire d'un coup de poing)
-C[Flou Courbe \nRE Engine / SF6] -->|Échantillonnage le long d'un arc de cercle| D(Flou stylisé style Anime/Manga)
+A[Linear Blur \nStandard Suckless OGL] -->|Creates straight lines and artifacts| B(Punch trajectory)
+C[Curved Blur \nRE Engine / SF6] -->|Sampling along a circular arc| D(Anime/Manga-style stylized blur)
 ```
 
   </div>
