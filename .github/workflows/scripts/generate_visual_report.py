@@ -137,7 +137,7 @@ def generate_report(sha, repository, pr_number=None):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visual Regression Report</title>
+  <title>Rapport de Régression Visuelle</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -345,30 +345,65 @@ def generate_report(sha, repository, pr_number=None):
     .footer {{ margin-top: 60px; color: var(--text-dim); border-top: 1px solid var(--border-color); padding-top: 20px; text-align: center; }}
     .footer a {{ color: var(--accent); text-decoration: none; font-weight: 600; }}
     .footer a:hover {{ text-decoration: underline; }}
+
+    /* Language Switcher */
+    .lang-switcher {{
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 1000;
+    }}
+    .lang-btn {{
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }}
+    .lang-btn.active {{
+      background: var(--accent);
+      color: #0d1117;
+      border-color: var(--accent);
+    }}
+    .lang-btn:hover:not(.active) {{
+      border-color: var(--accent);
+      color: var(--accent);
+    }}
   </style>
 </head>
 <body>
+  <div class="lang-switcher">
+    <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="langFR" onclick="setLang('fr')">FR</button>
+  </div>
   <div class="container">
-    <h1>Visual Regression Analysis</h1>
-    <div class="subtitle">Utilisez le slider pour comparer : <span style="color:var(--accent)" id="labelDescLeft">Baseline</span> vs <span style="color:#a371f7" id="labelDescRight">Rendu</span></div>
+    <h1 id="i18n-title"></h1>
+    <div class="subtitle" id="i18n-subtitle"></div>
 
     <div class="controls">
       <div class="field">
-        <label>Vue</label>
+        <label id="i18n-label-view"></label>
         <select id="viewSelect"></select>
       </div>
       <div class="field">
-        <label>Mode</label>
+        <label id="i18n-label-mode"></label>
         <select id="modeSelect"></select>
       </div>
       <div class="field">
-        <label>Effet</label>
+        <label id="i18n-label-effect"></label>
         <select id="effectSelect"></select>
       </div>
 
       <div class="mode-toggle">
-        <button id="btnPR" class="mode-btn active">Comparaison PR</button>
-        <button id="btnEffect" class="mode-btn">Visualisation Effet</button>
+        <button id="btnPR" class="mode-btn active"></button>
+        <button id="btnEffect" class="mode-btn"></button>
       </div>
     </div>
 
@@ -376,42 +411,129 @@ def generate_report(sha, repository, pr_number=None):
 
     <div style="text-align: center; margin-bottom: 20px;">
         <button id="btnZoom" class="mode-btn" style="border: 1px solid var(--border-color); display: inline-flex; align-items: center; gap: 8px;">
-            <span id="zoomIcon">🔍</span> Activer la Loupe
+            <span id="zoomIcon">🔍</span> <span id="i18n-zoom-label"></span>
         </button>
     </div>
 
     <div id="mainDisplay" class="main-display">
       <div id="compareWrapper" class="comparison-slider zoomable">
         <div id="zoomLens" class="zoom-lens"></div>
-        <img id="refImg" class="slider-before" src="" alt="Reference">
-        <img id="actualImg" class="slider-after" src="" alt="Actual">
+        <img id="refImg" class="slider-before" src="" alt="">
+        <img id="actualImg" class="slider-after" src="" alt="">
         <div id="sliderHandle" class="slider-handle">
           <div class="handle-circle"></div>
         </div>
-        <div id="labelLeft" class="label-tag label-left">RÉFÉRENCE</div>
-        <div id="labelRight" class="label-tag label-right">RENDU PR</div>
+        <div id="labelLeft" class="label-tag label-left"></div>
+        <div id="labelRight" class="label-tag label-right"></div>
       </div>
 
       <div id="diffSection" class="diff-map-section" style="display:none">
-        <h3 id="diffTitle">CARTE DES DIFFÉRENCES (x5 CONTRASTE)</h3>
+        <h3 id="diffTitle"></h3>
         <div class="diff-map-container zoomable" style="position: relative; display: inline-block; overflow: hidden; border-radius: 8px;">
-          <img id="diffImg" src="" alt="Difference Map">
+          <img id="diffImg" src="" alt="">
         </div>
       </div>
     </div>
 
     <div id="noVariantMessage" class="no-variant" style="display:none">
-      Aucune image de référence pour cette combinaison.
+      <span id="i18n-no-variant"></span>
     </div>
 
     <div class="footer">
-        <a href='../index.html'>← Retour au Rapport de Couverture</a>
+        <a id="i18n-back-link" href='../index.html'></a>
     </div>
   </div>
 
   <script>
     const data = {json.dumps(data)};
     const sortedViews = {json.dumps(sorted_views)};
+
+    // ── i18n ────────────────────────────────────────────────────────────────
+    const I18N = {{
+      en: {{
+        title:          'Visual Regression Analysis',
+        subtitle:       'Use the slider to compare: <span style="color:var(--accent)" id="labelDescLeft">Baseline</span> vs <span style="color:#a371f7" id="labelDescRight">Render</span>',
+        labelView:      'View',
+        labelMode:      'Mode',
+        labelEffect:    'Effect',
+        btnPR:          'PR Comparison',
+        btnEffect:      'Effect Preview',
+        zoomOn:         'Enable Magnifier',
+        zoomOff:        'Disable Magnifier',
+        labelRef:       'REFERENCE',
+        labelRender:    'PR RENDER',
+        descRef:        'Baseline',
+        descRender:     'Render',
+        labelNoEffect:  'NO EFFECT (NONE)',
+        labelWithEffect: 'WITH EFFECT',
+        descNoEffect:   'No Effect',
+        descWithEffect: 'With Effect',
+        statusPass:     '\u25cf Visual Match',
+        statusFail:     '\u25cf Regression Detected',
+        statusEffect:   'Effect Preview',
+        diffTitlePR:    'DIFFERENCE MAP (REF vs PR)',
+        diffTitleInit:  'DIFFERENCE MAP (x5 CONTRAST)',
+        diffTitleEffect: 'EFFECT INTENSITY (DIFF MAP x5)',
+        noVariant:      'No reference image for this combination.',
+        backLink:       '\u2190 Back to Coverage Report',
+      }},
+      fr: {{
+        title:          'Analyse de R\u00e9gression Visuelle',
+        subtitle:       'Utilisez le slider pour comparer : <span style="color:var(--accent)" id="labelDescLeft">R\u00e9f\u00e9rence</span> vs <span style="color:#a371f7" id="labelDescRight">Rendu</span>',
+        labelView:      'Vue',
+        labelMode:      'Mode',
+        labelEffect:    'Effet',
+        btnPR:          'Comparaison PR',
+        btnEffect:      "Visualisation d'Effet",
+        zoomOn:         'Activer la Loupe',
+        zoomOff:        'D\u00e9sactiver la Loupe',
+        labelRef:       'R\u00c9F\u00c9RENCE',
+        labelRender:    'RENDU PR',
+        descRef:        'R\u00e9f\u00e9rence',
+        descRender:     'Rendu',
+        labelNoEffect:  'SANS EFFET (NONE)',
+        labelWithEffect: 'AVEC EFFET',
+        descNoEffect:   'Sans Effet',
+        descWithEffect: 'Avec Effet',
+        statusPass:     '\u25cf Correspondance Visuelle',
+        statusFail:     '\u25cf R\u00e9gression D\u00e9tect\u00e9e',
+        statusEffect:   "Visualisation de l'effet",
+        diffTitlePR:    'CARTE DES DIFF\u00c9RENCES (R\u00c9F vs PR)',
+        diffTitleInit:  'CARTE DES DIFF\u00c9RENCES (x5 CONTRASTE)',
+        diffTitleEffect: 'INTENSIT\u00c9 DE L\'EFFET (CARTE DIFF x5)',
+        noVariant:      'Aucune image de r\u00e9f\u00e9rence pour cette combinaison.',
+        backLink:       '\u2190 Retour au Rapport de Couverture',
+      }},
+    }};
+
+    let currentLang = localStorage.getItem('visual-report-lang') || 'en';
+
+    function applyLang() {{
+      const t = I18N[currentLang];
+      document.documentElement.lang = currentLang;
+      document.title = t.title;
+      document.getElementById('i18n-title').textContent = t.title;
+      document.getElementById('i18n-subtitle').innerHTML = t.subtitle;
+      document.getElementById('i18n-label-view').textContent = t.labelView;
+      document.getElementById('i18n-label-mode').textContent = t.labelMode;
+      document.getElementById('i18n-label-effect').textContent = t.labelEffect;
+      document.getElementById('btnPR').textContent = t.btnPR;
+      document.getElementById('btnEffect').textContent = t.btnEffect;
+      document.getElementById('i18n-zoom-label').textContent = isZoomActive ? t.zoomOff : t.zoomOn;
+      document.getElementById('i18n-no-variant').textContent = t.noVariant;
+      document.getElementById('i18n-back-link').textContent = t.backLink;
+      document.getElementById('langEN').classList.toggle('active', currentLang === 'en');
+      document.getElementById('langFR').classList.toggle('active', currentLang === 'fr');
+      // Re-render display texts
+      updateDisplay();
+    }}
+
+    function setLang(lang) {{
+      currentLang = lang;
+      localStorage.setItem('visual-report-lang', lang);
+      applyLang();
+    }}
+    // ────────────────────────────────────────────────────────────────────────
 
     const vSel = document.getElementById('viewSelect');
     const mSel = document.getElementById('modeSelect');
@@ -500,39 +622,40 @@ def generate_report(sha, repository, pr_number=None):
             wrapper.style.display = 'grid';
             emptyMsg.style.display = 'none';
 
+            const t = I18N[currentLang];
             if (currentComparisonMode === 'PR') {{
                 refImg.src = match.file;
                 actualImg.src = match.actual;
-                labL.textContent = 'RÉFÉRENCE';
-                labR.textContent = 'RENDU PR';
+                labL.textContent = t.labelRef;
+                labR.textContent = t.labelRender;
                 labL.style.color = 'var(--accent)';
-                descL.textContent = 'Baseline';
-                descR.textContent = 'Rendu';
+                descL.textContent = t.descRef;
+                descR.textContent = t.descRender;
 
                 if (match.status === 'FAIL') {{
-                    statusArea.innerHTML = '<span class="status-badge status-fail">● Regression Detected</span>';
+                    statusArea.innerHTML = '<span class="status-badge status-fail">' + t.statusFail + '</span>';
                     diffSection.style.display = 'block';
                     diffImg.src = match.diff;
-                    dTitle.textContent = 'CARTE DES DIFFÉRENCES (RÉF vs PR)';
+                    dTitle.textContent = t.diffTitlePR;
                 }} else {{
-                    statusArea.innerHTML = '<span class="status-badge status-pass">● Visual Match</span>';
+                    statusArea.innerHTML = '<span class="status-badge status-pass">' + t.statusPass + '</span>';
                     diffSection.style.display = 'none';
                 }}
             }} else {{
                 // Effect Visualization Mode
                 refImg.src = match.baseline || match.file;
                 actualImg.src = match.file;
-                labL.textContent = 'SANS EFFET (NONE)';
-                labR.textContent = 'AVEC EFFET (' + effect.toUpperCase() + ')';
+                labL.textContent = t.labelNoEffect;
+                labR.textContent = t.labelWithEffect + ' (' + effect.toUpperCase() + ')';
                 labL.style.color = 'var(--text-dim)';
-                descL.textContent = 'Mode None';
-                descR.textContent = 'Avec Effet';
-                statusArea.innerHTML = '<span class="status-badge status-pass">Visualisation de l\\'effet</span>';
+                descL.textContent = t.descNoEffect;
+                descR.textContent = t.descWithEffect;
+                statusArea.innerHTML = '<span class="status-badge status-pass">' + t.statusEffect + '</span>';
 
                 if (match.effect_diff) {{
                     diffSection.style.display = 'block';
                     diffImg.src = match.effect_diff;
-                    dTitle.textContent = 'INTENSITÉ DE L\\'EFFET (DIFF MAP x5)';
+                    dTitle.textContent = t.diffTitleEffect;
                 }} else {{
                     diffSection.style.display = 'none';
                 }}
@@ -591,8 +714,9 @@ def generate_report(sha, repository, pr_number=None):
     btnZoom.onclick = () => {{
         isZoomActive = !isZoomActive;
         btnZoom.classList.toggle('active', isZoomActive);
-        zoomIcon.textContent = isZoomActive ? '👁️‍🗨️' : '🔍';
-        btnZoom.innerHTML = (isZoomActive ? '<span>👁️‍🗨️</span> Désactiver la Loupe' : '<span>🔍</span> Activer la Loupe');
+        zoomIcon.textContent = isZoomActive ? '👁️\u200d🗨️' : '🔍';
+        const t = I18N[currentLang];
+        document.getElementById('i18n-zoom-label').textContent = isZoomActive ? t.zoomOff : t.zoomOn;
         lens.style.display = isZoomActive ? 'block' : 'none';
 
         // Update cursors for all zoomable areas
@@ -653,6 +777,7 @@ def generate_report(sha, repository, pr_number=None):
 
     populateViews();
     updateModes();
+    applyLang();
   </script>
 </body>
 </html>"""
