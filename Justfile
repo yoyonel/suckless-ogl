@@ -266,6 +266,19 @@ coverage:
         -ignore-filename-regex='(tests/|include/|external/|deps/)'
     @echo "Coverage report generated in build-coverage/coverage_report/index.html"
 
+# Generate visual regression report and serve it locally via HTTP (avoids file:// image loading issues)
+# Uses tests/ref_*.png (and tests/failed_*.png if present) as input
+# Press Ctrl+C to stop the server
+visual-report port="8765":
+    @echo "Generating visual regression report..."
+    @mkdir -p build-coverage/coverage_report/visual_tests
+    @{{py_run}} .github/workflows/scripts/generate_visual_report.py \
+        "$(git rev-parse --short HEAD)" \
+        "$(git remote get-url origin 2>/dev/null | sed 's|.*github.com[:/]||;s|\.git$$||' || echo 'local/repo')"
+    @echo "Serving at http://localhost:{{port}}/ — press Ctrl+C to stop"
+    @xdg-open "http://localhost:{{port}}/" 2>/dev/null &
+    @cd build-coverage/coverage_report/visual_tests && python3 -m http.server {{port}}
+
 # Build with AddressSanitizer (ASan)
 asan:
     @echo "Building with AddressSanitizer (ASan)..."

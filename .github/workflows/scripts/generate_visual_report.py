@@ -385,7 +385,10 @@ def generate_report(sha, repository, pr_number=None):
   </div>
   <div class="container">
     <h1 id="i18n-title"></h1>
-    <div class="subtitle" id="i18n-subtitle"></div>
+    <div class="subtitle"><span id="i18n-subtitle-intro"></span>
+      <span style="color:var(--accent)" id="labelDescLeft"></span>
+      <span id="i18n-subtitle-vs"> vs </span>
+      <span style="color:#a371f7" id="labelDescRight"></span></div>
 
     <div class="controls">
       <div class="field">
@@ -452,7 +455,8 @@ def generate_report(sha, repository, pr_number=None):
     const I18N = {{
       en: {{
         title:          'Visual Regression Analysis',
-        subtitle:       'Use the slider to compare: <span style="color:var(--accent)" id="labelDescLeft">Baseline</span> vs <span style="color:#a371f7" id="labelDescRight">Render</span>',
+        subtitleIntro:  'Use the slider to compare:',
+        subtitleVs:     'vs',
         labelView:      'View',
         labelMode:      'Mode',
         labelEffect:    'Effect',
@@ -500,7 +504,7 @@ def generate_report(sha, repository, pr_number=None):
         statusEffect:   "Visualisation de l'effet",
         diffTitlePR:    'CARTE DES DIFF\u00c9RENCES (R\u00c9F vs PR)',
         diffTitleInit:  'CARTE DES DIFF\u00c9RENCES (x5 CONTRASTE)',
-        diffTitleEffect: 'INTENSIT\u00c9 DE L\'EFFET (CARTE DIFF x5)',
+        diffTitleEffect: "INTENSIT\u00c9 DE L'EFFET (CARTE DIFF x5)",
         noVariant:      'Aucune image de r\u00e9f\u00e9rence pour cette combinaison.',
         backLink:       '\u2190 Retour au Rapport de Couverture',
       }},
@@ -513,7 +517,8 @@ def generate_report(sha, repository, pr_number=None):
       document.documentElement.lang = currentLang;
       document.title = t.title;
       document.getElementById('i18n-title').textContent = t.title;
-      document.getElementById('i18n-subtitle').innerHTML = t.subtitle;
+      document.getElementById('i18n-subtitle-intro').textContent = t.subtitleIntro;
+      document.getElementById('i18n-subtitle-vs').textContent = t.subtitleVs;
       document.getElementById('i18n-label-view').textContent = t.labelView;
       document.getElementById('i18n-label-mode').textContent = t.labelMode;
       document.getElementById('i18n-label-effect').textContent = t.labelEffect;
@@ -524,14 +529,13 @@ def generate_report(sha, repository, pr_number=None):
       document.getElementById('i18n-back-link').textContent = t.backLink;
       document.getElementById('langEN').classList.toggle('active', currentLang === 'en');
       document.getElementById('langFR').classList.toggle('active', currentLang === 'fr');
-      // Re-render display texts
-      updateDisplay();
     }}
 
     function setLang(lang) {{
       currentLang = lang;
       localStorage.setItem('visual-report-lang', lang);
       applyLang();
+      updateDisplay();
     }}
     // ────────────────────────────────────────────────────────────────────────
 
@@ -775,9 +779,9 @@ def generate_report(sha, repository, pr_number=None):
     mSel.onchange = updateModes;
     eSel.onchange = updateDisplay;
 
+    applyLang();
     populateViews();
     updateModes();
-    applyLang();
   </script>
 </body>
 </html>"""
