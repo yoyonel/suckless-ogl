@@ -17,10 +17,14 @@
       
       
         
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/memory_management_audit/" hreflang="fr">
+        
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -87,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rapport-danalyse-gestion-de-la-memoire-et-shallow-copies" class="md-skip">
+        <a href="#analysis-report-memory-management-and-shallow-copies" class="md-skip">
           Skip to content
         </a>
       
@@ -159,6 +163,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/memory_management_audit/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -382,7 +412,7 @@
   <span class="md-ellipsis">
     
   
-    Index des Diagrammes
+    Diagram Index
   
 
     
@@ -2339,22 +2369,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-contexte-de-laudit" class="md-nav__link">
+  <a href="#1-audit-context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Contexte de l'Audit
+        1. Audit Context
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Contexte de l'Audit">
+    <nav class="md-nav" aria-label="1. Audit Context">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#le-probleme-identifie" class="md-nav__link">
+  <a href="#the-identified-problem" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le Problème Identifié
+        The Identified Problem
       
     </span>
   </a>
@@ -2367,10 +2397,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-analyse-du-correctif" class="md-nav__link">
+  <a href="#2-fix-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Analyse du Correctif
+        2. Fix Analysis
       
     </span>
   </a>
@@ -2378,22 +2408,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-resultats-de-laudit-de-la-base-de-code" class="md-nav__link">
+  <a href="#3-codebase-audit-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Résultats de l'Audit de la Base de Code
+        3. Codebase Audit Results
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Résultats de l'Audit de la Base de Code">
+    <nav class="md-nav" aria-label="3. Codebase Audit Results">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#points-particulierement-examines" class="md-nav__link">
+  <a href="#specifically-examined-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Points Particulièrement Examinés
+        Specifically Examined Points
       
     </span>
   </a>
@@ -2406,10 +2436,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-recommandations-et-bonnes-pratiques" class="md-nav__link">
+  <a href="#4-recommendations-and-best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Recommandations et Bonnes Pratiques
+        4. Recommendations and Best Practices
       
     </span>
   </a>
@@ -2417,10 +2447,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-conclusion-de-levaluation" class="md-nav__link">
+  <a href="#5-evaluation-conclusion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. Conclusion de l'Évaluation
+        5. Evaluation Conclusion
       
     </span>
   </a>
@@ -2729,6 +2759,90 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2767,10 +2881,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -2788,8 +2902,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2887,27 +3001,27 @@
   
 
 
-<h1 id="rapport-danalyse-gestion-de-la-memoire-et-shallow-copies">Rapport d'Analyse : Gestion de la Mémoire et Shallow Copies<a class="headerlink" href="#rapport-danalyse-gestion-de-la-memoire-et-shallow-copies" title="Permanent link">¶</a></h1>
-<h2 id="1-contexte-de-laudit">1. Contexte de l'Audit<a class="headerlink" href="#1-contexte-de-laudit" title="Permanent link">¶</a></h2>
-<p>Suite au correctif du commit <code>9abba91c</code>, une analyse approfondie de la base de code a été effectuée pour identifier des risques similaires de double libération de mémoire (<code>double-free</code>) causés par des copies superficielles (<code>shallow copies</code>) de structures gérant des ressources allouées sur le tas (<code>heap</code>).</p>
-<h3 id="le-probleme-identifie">Le Problème Identifié<a class="headerlink" href="#le-probleme-identifie" title="Permanent link">¶</a></h3>
-<p>Dans <code>gpu_profiler_ui.c</code>, la fonction <code>gpu_profiler_ui_compact_stages</code> effectuait une affectation par valeur (<code>*dest = *src</code>) lors de la compaction des étapes de profilage. La structure <code>GPUStage</code> contient deux instances de <code>AdaptiveSampler</code>, chacune possédant un pointeur <code>samples</code> vers un buffer alloué dynamiquement.</p>
-<p>Une copie superficielle de <code>GPUStage</code> entraînait le partage de la propriété de ces buffers. Lors du nettoyage final via <code>gpu_profiler_cleanup</code>, la fonction tentait de libérer le même pointeur plusieurs fois, provoquant un plantage.</p>
-<h2 id="2-analyse-du-correctif">2. Analyse du Correctif<a class="headerlink" href="#2-analyse-du-correctif" title="Permanent link">¶</a></h2>
-<p>Le correctif introduit <code>gpu_stage_move</code>, qui :</p>
+<h1 id="analysis-report-memory-management-and-shallow-copies">Analysis Report: Memory Management and Shallow Copies<a class="headerlink" href="#analysis-report-memory-management-and-shallow-copies" title="Permanent link">¶</a></h1>
+<h2 id="1-audit-context">1. Audit Context<a class="headerlink" href="#1-audit-context" title="Permanent link">¶</a></h2>
+<p>Following the fix in commit <code>9abba91c</code>, a thorough analysis of the codebase was performed to identify similar risks of double-free memory corruption caused by shallow copies of structures managing heap-allocated resources.</p>
+<h3 id="the-identified-problem">The Identified Problem<a class="headerlink" href="#the-identified-problem" title="Permanent link">¶</a></h3>
+<p>In <code>gpu_profiler_ui.c</code>, the function <code>gpu_profiler_ui_compact_stages</code> performed a value assignment (<code>*dest = *src</code>) when compacting profiling stages. The <code>GPUStage</code> struct contains two <code>AdaptiveSampler</code> instances, each owning a <code>samples</code> pointer to a dynamically allocated buffer.</p>
+<p>A shallow copy of <code>GPUStage</code> caused ownership of these buffers to be shared. During final cleanup via <code>gpu_profiler_cleanup</code>, the function attempted to free the same pointer multiple times, causing a crash.</p>
+<h2 id="2-fix-analysis">2. Fix Analysis<a class="headerlink" href="#2-fix-analysis" title="Permanent link">¶</a></h2>
+<p>The fix introduces <code>gpu_stage_move</code>, which:</p>
 <ol>
-<li>Copie les champs scalaires un par un.</li>
-<li><strong>Échange</strong> (<code>swap</code>) les pointeurs des buffers des samplers au lieu de les copier.</li>
+<li>Copies scalar fields one by one.</li>
+<li><strong>Swaps</strong> the buffer pointers of the samplers instead of copying them.</li>
 </ol>
-<p>Cette approche garantit l'unicité du propriétaire pour chaque buffer alloué tout en réutilisant les emplacements mémoire existants dans le tableau <code>stages</code>.</p>
-<h2 id="3-resultats-de-laudit-de-la-base-de-code">3. Résultats de l'Audit de la Base de Code<a class="headerlink" href="#3-resultats-de-laudit-de-la-base-de-code" title="Permanent link">¶</a></h2>
-<p>L'audit a porté sur les structures suivantes identifiées comme gérant de la mémoire dynamique :</p>
+<p>This approach guarantees unique ownership for each allocated buffer while reusing existing memory slots in the <code>stages</code> array.</p>
+<h2 id="3-codebase-audit-results">3. Codebase Audit Results<a class="headerlink" href="#3-codebase-audit-results" title="Permanent link">¶</a></h2>
+<p>The audit covered the following structures identified as managing dynamic memory:</p>
 <table>
 <thead>
 <tr>
 <th>Structure</th>
-<th>Ressource Critique</th>
-<th>État de Risque</th>
+<th>Critical Resource</th>
+<th>Risk Status</th>
 <th>Conclusion</th>
 </tr>
 </thead>
@@ -2915,55 +3029,55 @@
 <tr>
 <td><code>GPUStage</code></td>
 <td><code>AdaptiveSampler.samples</code></td>
-<td><strong>Corrigé</strong></td>
-<td>Risque maîtrisé par <code>gpu_stage_move</code>.</td>
+<td><strong>Fixed</strong></td>
+<td>Risk contained by <code>gpu_stage_move</code>.</td>
 </tr>
 <tr>
 <td><code>AdaptiveSampler</code></td>
-<td><code>samples</code> (buffer de données)</td>
-<td>Bas</td>
-<td>Initialisé par <code>init</code>, libéré par <code>cleanup</code>. Pas de copie détectée.</td>
+<td><code>samples</code> (data buffer)</td>
+<td>Low</td>
+<td>Initialized by <code>init</code>, freed by <code>cleanup</code>. No copy detected.</td>
 </tr>
 <tr>
 <td><code>AsyncRequest</code></td>
 <td><code>float_data</code>, <code>half_data</code></td>
-<td>Bas</td>
-<td>Utilise un pattern de "transfert de propriété destructif" sécurisé dans <code>async_loader_poll</code>.</td>
+<td>Low</td>
+<td>Uses a safe destructive ownership-transfer pattern in <code>async_loader_poll</code>.</td>
 </tr>
 <tr>
 <td><code>PBRMaterial</code></td>
-<td><code>name</code> (tableau fixe)</td>
-<td>Nul</td>
-<td>Structure POD (Plain Old Data). Copie sûre.</td>
+<td><code>name</code> (fixed array)</td>
+<td>None</td>
+<td>POD (Plain Old Data) struct. Safe to copy.</td>
 </tr>
 <tr>
 <td><code>MaterialLib</code></td>
-<td><code>materials</code> (tableau dynamique)</td>
-<td>Nul</td>
-<td>Géré exclusivement par pointeurs (<code>MaterialLib*</code>). Pas de copie par valeur.</td>
+<td><code>materials</code> (dynamic array)</td>
+<td>None</td>
+<td>Managed exclusively via pointers (<code>MaterialLib*</code>). No value copy.</td>
 </tr>
 <tr>
 <td><code>SphereInstance</code></td>
-<td>Aucun (Vecteurs/Matrices)</td>
-<td>Nul</td>
-<td>Structure POD. Copie sûre (utilisée massivement dans <code>sphere_sorting.c</code>).</td>
+<td>None (Vectors/Matrices)</td>
+<td>None</td>
+<td>POD struct. Safe to copy (used heavily in <code>sphere_sorting.c</code>).</td>
 </tr>
 </tbody>
 </table>
-<h3 id="points-particulierement-examines">Points Particulièrement Examinés<a class="headerlink" href="#points-particulierement-examines" title="Permanent link">¶</a></h3>
+<h3 id="specifically-examined-points">Specifically Examined Points<a class="headerlink" href="#specifically-examined-points" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong><code>sphere_sorting.c</code></strong> : Effectue des copies de <code>SphereInstance</code> lors du tri. C'est parfaitement sûr car <code>SphereInstance</code> ne contient que des types par valeur (mathématiques cglm).</li>
-<li><strong><code>async_loader.c</code></strong> : Le passage de <code>AsyncRequest</code> du thread worker au thread principal est sécurisé. Le loader met explicitement à <code>NULL</code> ses pointeurs internes après la copie vers le demandeur, évitant ainsi tout conflit de propriété.</li>
+<li><strong><code>sphere_sorting.c</code></strong>: Performs <code>SphereInstance</code> copies during sorting. This is entirely safe as <code>SphereInstance</code> contains only value types (cglm math types).</li>
+<li><strong><code>async_loader.c</code></strong>: Passing <code>AsyncRequest</code> from the worker thread to the main thread is safe. The loader explicitly nulls its internal pointers after copying to the requester, preventing any ownership conflict.</li>
 </ul>
-<h2 id="4-recommandations-et-bonnes-pratiques">4. Recommandations et Bonnes Pratiques<a class="headerlink" href="#4-recommandations-et-bonnes-pratiques" title="Permanent link">¶</a></h2>
+<h2 id="4-recommendations-and-best-practices">4. Recommendations and Best Practices<a class="headerlink" href="#4-recommendations-and-best-practices" title="Permanent link">¶</a></h2>
 <ol>
-<li><strong>Privilégier les Tableaux Fixes pour les Strings</strong> : Comme vu avec <code>PBRMaterial</code> et <code>GPUStage</code>, l'utilisation de <code>char name[N]</code> au lieu de <code>char* name</code> élimine les risques liés à la copie de structures.</li>
-<li><strong>Move Semantics en C</strong> : Pour les structures complexes (comme <code>GPUStage</code>), implémenter systématiquement une fonction de "move" ou de "swap" au lieu d'utiliser l'opérateur <code>=</code>.</li>
-<li><strong>Documentation de l'Appartenance (<code>Ownership</code>)</strong> : Documenter explicitement si une structure "possède" ses pointeurs ou si elle ne fait que les référencer.</li>
-<li><strong>Utilisation de l'Analyse Statique</strong> : Continuer à utiliser <code>just lint-full</code> (clang-tidy) qui aide à détecter les utilisations après libération (<code>use-after-free</code>).</li>
+<li><strong>Prefer Fixed Arrays for Strings</strong>: As seen with <code>PBRMaterial</code> and <code>GPUStage</code>, using <code>char name[N]</code> instead of <code>char* name</code> eliminates risks related to struct copying.</li>
+<li><strong>Move Semantics in C</strong>: For complex structures (like <code>GPUStage</code>), always implement a "move" or "swap" function instead of using the <code>=</code> operator.</li>
+<li><strong>Ownership Documentation</strong>: Explicitly document whether a structure "owns" its pointers or merely references them.</li>
+<li><strong>Use Static Analysis</strong>: Continue using <code>just lint-full</code> (clang-tidy) which helps detect use-after-free issues.</li>
 </ol>
-<h2 id="5-conclusion-de-levaluation">5. Conclusion de l'Évaluation<a class="headerlink" href="#5-conclusion-de-levaluation" title="Permanent link">¶</a></h2>
-<p>Le risque de double-free lié aux shallow copies de samplers était isolé à la logique de compaction de l'UI du profiler. La cohérence de l'utilisation des pointeurs et la prédominance des structures POD dans le reste du moteur garantissent une bonne stabilité générale de la gestion mémoire.</p>
+<h2 id="5-evaluation-conclusion">5. Evaluation Conclusion<a class="headerlink" href="#5-evaluation-conclusion" title="Permanent link">¶</a></h2>
+<p>The double-free risk from shallow copies of samplers was isolated to the profiler UI compaction logic. The consistent use of pointers and the prevalence of POD structs in the rest of the engine guarantee good overall memory management stability.</p>
 
 
 
@@ -2984,7 +3098,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 19, 2026 12:22:24 UTC">February 19, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
   </span>
 
     
@@ -3044,6 +3158,8 @@
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
       

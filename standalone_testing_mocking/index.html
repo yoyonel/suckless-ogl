@@ -17,10 +17,14 @@
       
       
         
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/standalone_testing_mocking/" hreflang="fr">
+        
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -159,6 +163,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/standalone_testing_mocking/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -382,7 +412,7 @@
   <span class="md-ellipsis">
     
   
-    Index des Diagrammes
+    Diagram Index
   
 
     
@@ -2367,10 +2397,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-philosophie" class="md-nav__link">
+  <a href="#1-philosophy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Philosophie
+        1. Philosophy
       
     </span>
   </a>
@@ -2378,22 +2408,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-technique-de-mocking-par-shadowing" class="md-nav__link">
+  <a href="#2-compile-time-shadowing-mocking" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Technique de Mocking par "Shadowing"
+        2. Compile-Time "Shadowing" Mocking
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Technique de Mocking par &quot;Shadowing&quot;">
+    <nav class="md-nav" aria-label="2. Compile-Time &quot;Shadowing&quot; Mocking">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-redefinition-des-symboles" class="md-nav__link">
+  <a href="#a-symbol-redefinition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A. Redéfinition des Symboles
+        A. Symbol Redefinition
       
     </span>
   </a>
@@ -2401,10 +2431,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-inclusion-directe-de-limplementation" class="md-nav__link">
+  <a href="#b-direct-implementation-include" class="md-nav__link">
     <span class="md-ellipsis">
       
-        B. Inclusion Directe de l'Implémentation
+        B. Direct Implementation Include
       
     </span>
   </a>
@@ -2417,10 +2447,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-avantages-et-limites" class="md-nav__link">
+  <a href="#3-advantages-and-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Avantages et Limites
+        3. Advantages and Limitations
       
     </span>
   </a>
@@ -2428,10 +2458,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-exemple-concret-security-standalone" class="md-nav__link">
+  <a href="#4-concrete-example-security-standalone" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Exemple Concret : Security Standalone
+        4. Concrete Example: Security Standalone
       
     </span>
   </a>
@@ -2712,6 +2742,90 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2750,10 +2864,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -2771,8 +2885,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2871,26 +2985,26 @@
 
 
 <h1 id="standalone-unit-testing-mocking-strategy">Standalone Unit Testing &amp; Mocking Strategy 🧪<a class="headerlink" href="#standalone-unit-testing-mocking-strategy" title="Permanent link">¶</a></h1>
-<p>Cette documentation décrit la technique de tests "standalone" et de mocking utilisée dans le projet <code>suckless-ogl</code>, en particulier pour valider la logique métier complexe (comme le parsing de shaders) sans dépendances GPU.</p>
-<h2 id="1-philosophie">1. Philosophie<a class="headerlink" href="#1-philosophie" title="Permanent link">¶</a></h2>
-<p>L'objectif est de pouvoir tester une unité de code (un fichier <code>.c</code>) en isolation totale. Cela permet :</p>
+<p>This document describes the standalone testing and mocking technique used in the <code>suckless-ogl</code> project, particularly for validating complex business logic (such as shader parsing) without GPU dependencies.</p>
+<h2 id="1-philosophy">1. Philosophy<a class="headerlink" href="#1-philosophy" title="Permanent link">¶</a></h2>
+<p>The goal is to test a unit of code (a <code>.c</code> file) in complete isolation. This enables:</p>
 <ul>
-<li>Une exécution instantanée (&lt; 10ms).</li>
-<li>Aucun besoin d'un contexte OpenGL valide ou de drivers GPU.</li>
-<li>Une compatibilité parfaite avec les environnements CI restreints.</li>
+<li>Instant execution (&lt; 10ms).</li>
+<li>No need for a valid OpenGL context or GPU drivers.</li>
+<li>Perfect compatibility with restricted CI environments.</li>
 </ul>
-<h2 id="2-technique-de-mocking-par-shadowing">2. Technique de Mocking par "Shadowing"<a class="headerlink" href="#2-technique-de-mocking-par-shadowing" title="Permanent link">¶</a></h2>
-<p>Contrairement aux frameworks de mocking lourds qui utilisent l'injection de dépendances au runtime, nous utilisons une approche au moment de la compilation :</p>
-<h3 id="a-redefinition-des-symboles">A. Redéfinition des Symboles<a class="headerlink" href="#a-redefinition-des-symboles" title="Permanent link">¶</a></h3>
-<p>Dans le fichier de test (ex: <code>tests/test_shader_path_security_standalone.c</code>), nous redéfinissons les fonctions des bibliothèques externes (GLAD, Log) dont dépend le code testé.</p>
+<h2 id="2-compile-time-shadowing-mocking">2. Compile-Time "Shadowing" Mocking<a class="headerlink" href="#2-compile-time-shadowing-mocking" title="Permanent link">¶</a></h2>
+<p>Unlike heavy mocking frameworks that rely on runtime dependency injection, we use a compile-time approach:</p>
+<h3 id="a-symbol-redefinition">A. Symbol Redefinition<a class="headerlink" href="#a-symbol-redefinition" title="Permanent link">¶</a></h3>
+<p>In the test file (e.g., <code>tests/test_shader_path_security_standalone.c</code>), we redefine the external library functions (GLAD, Log) that the tested code depends on.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cm">/* Mock OpenGL Definition */</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">GLuint</span><span class="w"> </span><span class="nf">glCreateShader</span><span class="p">(</span><span class="n">GLenum</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">type</span><span class="p">;</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Retourne un faux ID</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// Returns a fake ID</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="b-inclusion-directe-de-limplementation">B. Inclusion Directe de l'Implémentation<a class="headerlink" href="#b-inclusion-directe-de-limplementation" title="Permanent link">¶</a></h3>
-<p>Pour tester les fonctions privées (<code>static</code>) sans les exposer dans le header public <code>.h</code>, le fichier de test inclut directement le fichier <code>.c</code> après avoir défini les mocks.</p>
+<h3 id="b-direct-implementation-include">B. Direct Implementation Include<a class="headerlink" href="#b-direct-implementation-include" title="Permanent link">¶</a></h3>
+<p>To test private (<code>static</code>) functions without exposing them in the public <code>.h</code> header, the test file directly includes the <code>.c</code> file after defining the mocks.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cm">/* 1. Mocks */</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">log_message</span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* no-op */</span><span class="w"> </span><span class="p">}</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
@@ -2899,61 +3013,61 @@
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="cm">/* 3. Tests */</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">test_logic</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1">// Appel d'une fonction static définie dans shader.c</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="c1">// Calling a static function defined in shader.c</span>
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">get_dir_from_path</span><span class="p">(...));</span>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
 </span></code></pre></div>
-<h2 id="3-avantages-et-limites">3. Avantages et Limites<a class="headerlink" href="#3-avantages-et-limites" title="Permanent link">¶</a></h2>
+<h2 id="3-advantages-and-limitations">3. Advantages and Limitations<a class="headerlink" href="#3-advantages-and-limitations" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Avantage</th>
+<th style="text-align: left;">Advantage</th>
 <th style="text-align: left;">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Accès Static</strong></td>
-<td style="text-align: left;">Permet de tester 100% de la logique interne sans pollution d'API.</td>
+<td style="text-align: left;"><strong>Static Access</strong></td>
+<td style="text-align: left;">Allows testing 100% of internal logic without API pollution.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Vitesse</strong></td>
-<td style="text-align: left;">Pas de lien dynamique lourd ou d'initialisation matérielle.</td>
+<td style="text-align: left;"><strong>Speed</strong></td>
+<td style="text-align: left;">No heavy dynamic linking or hardware initialization.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><strong>Zéro Dépendance</strong></td>
-<td style="text-align: left;">Le binaire de test est "pure C".</td>
+<td style="text-align: left;"><strong>Zero Dependency</strong></td>
+<td style="text-align: left;">The test binary is "pure C".</td>
 </tr>
 </tbody>
 </table>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Limite</th>
-<th style="text-align: left;">Précaution</th>
+<th style="text-align: left;">Limitation</th>
+<th style="text-align: left;">Precaution</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><strong>Collision de Symboles</strong></td>
-<td style="text-align: left;">Ne peut pas être lié avec la vraie bibliothèque en même temps.</td>
+<td style="text-align: left;"><strong>Symbol Collision</strong></td>
+<td style="text-align: left;">Cannot be linked with the real library at the same time.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><strong>Maintenance</strong></td>
-<td style="text-align: left;">Si l'API réelle change, le mock doit être synchronisé manuellement.</td>
+<td style="text-align: left;">If the real API changes, the mock must be manually synchronized.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="4-exemple-concret-security-standalone">4. Exemple Concret : Security Standalone<a class="headerlink" href="#4-exemple-concret-security-standalone" title="Permanent link">¶</a></h2>
-<p>Le test <code>tests/test_shader_path_security_standalone.c</code> démontre parfaitement cette approche :</p>
+<h2 id="4-concrete-example-security-standalone">4. Concrete Example: Security Standalone<a class="headerlink" href="#4-concrete-example-security-standalone" title="Permanent link">¶</a></h2>
+<p>The test <code>tests/test_shader_path_security_standalone.c</code> perfectly demonstrates this approach:</p>
 <ol>
-<li>Il définit des stubs pour ~20 fonctions OpenGL.</li>
-<li>Il inclut <code>src/shader.c</code>.</li>
-<li>Il valide les algorithmes de <code>is_safe_path</code> et de gestion des buffers de chemins.</li>
+<li>It defines stubs for ~20 OpenGL functions.</li>
+<li>It includes <code>src/shader.c</code>.</li>
+<li>It validates the <code>is_safe_path</code> algorithms and path buffer management.</li>
 </ol>
 <blockquote>
 <p>[!TIP]
-Utilisez cette approche pour toute logique de parsing, de calcul mathématique ou de gestion de ressources (RAII) qui ne nécessite pas de lecture effective sur le matériel.</p>
+Use this approach for any parsing logic, mathematical computation, or resource management (RAII) that does not require actual hardware reads.</p>
 </blockquote>
 
 
@@ -2975,7 +3089,7 @@ Utilisez cette approche pour toute logique de parsing, de calcul mathématique o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 9, 2026 14:27:52 UTC">February 9, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
   </span>
 
     
@@ -3035,6 +3149,8 @@ Utilisez cette approche pour toute logique de parsing, de calcul mathématique o
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
       

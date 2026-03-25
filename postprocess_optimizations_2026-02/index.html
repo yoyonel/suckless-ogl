@@ -17,10 +17,14 @@
       
       
         
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/postprocess_optimizations_2026-02/" hreflang="fr">
+        
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -87,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#post-process-pipeline-optimisations-corrections-fevrier-2026" class="md-skip">
+        <a href="#post-process-pipeline-optimizations-fixes-february-2026" class="md-skip">
           Skip to content
         </a>
       
@@ -159,6 +163,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/postprocess_optimizations_2026-02/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -382,7 +412,7 @@
   <span class="md-ellipsis">
     
   
-    Index des Diagrammes
+    Diagram Index
   
 
     
@@ -1107,10 +1137,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#table-des-matieres" class="md-nav__link">
+  <a href="#table-of-contents" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Table des matières
+        Table of Contents
       
     </span>
   </a>
@@ -1118,10 +1148,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resume" class="md-nav__link">
+  <a href="#summary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Résumé
+        Summary
       
     </span>
   </a>
@@ -1129,22 +1159,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-corrections-de-bugs" class="md-nav__link">
+  <a href="#1-bug-fixes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Corrections de bugs
+        1. Bug Fixes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Corrections de bugs">
+    <nav class="md-nav" aria-label="1. Bug Fixes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#11-fxaa-motion-blur-ordre-du-pipeline-fragment" class="md-nav__link">
+  <a href="#11-fxaa-motion-blur-fragment-pipeline-order" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1.1 FXAA / Motion Blur — Ordre du pipeline fragment
+        1.1 FXAA / Motion Blur — Fragment Pipeline Order
       
     </span>
   </a>
@@ -1152,10 +1182,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#12-neighbor-max-sur-dispatch-du-compute" class="md-nav__link">
+  <a href="#12-neighbor-max-compute-over-dispatch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1.2 Neighbor Max — Sur-dispatch du compute
+        1.2 Neighbor Max — Compute Over-Dispatch
       
     </span>
   </a>
@@ -1163,10 +1193,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#13-luminance-adaptation-reduction-parallele" class="md-nav__link">
+  <a href="#13-luminance-adaptation-parallel-reduction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1.3 Luminance Adaptation — Réduction parallèle
+        1.3 Luminance Adaptation — Parallel Reduction
       
     </span>
   </a>
@@ -1174,10 +1204,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#14-barrieres-memoire-manquantes" class="md-nav__link">
+  <a href="#14-missing-memory-barriers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1.4 Barrières mémoire manquantes
+        1.4 Missing Memory Barriers
       
     </span>
   </a>
@@ -1185,10 +1215,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#15-auto-exposure-fbo-unbind-avant-compute" class="md-nav__link">
+  <a href="#15-auto-exposure-fbo-unbind-before-compute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1.5 Auto-Exposure — FBO unbind avant compute
+        1.5 Auto-Exposure — FBO Unbind Before Compute
       
     </span>
   </a>
@@ -1201,22 +1231,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-optimisations-de-performance" class="md-nav__link">
+  <a href="#2-performance-optimizations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Optimisations de performance
+        2. Performance Optimizations
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Optimisations de performance">
+    <nav class="md-nav" aria-label="2. Performance Optimizations">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#21-ubo-dirty-flag-upload-partiel" class="md-nav__link">
+  <a href="#21-ubo-dirty-flag-partial-upload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.1 UBO dirty flag — Upload partiel
+        2.1 UBO Dirty Flag — Partial Upload
       
     </span>
   </a>
@@ -1224,10 +1254,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#22-sampler-uniforms-liaison-unique" class="md-nav__link">
+  <a href="#22-sampler-uniforms-bind-once" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.2 Sampler uniforms — Liaison unique
+        2.2 Sampler Uniforms — Bind Once
       
     </span>
   </a>
@@ -1235,10 +1265,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#23-vao-bindunbind-factorisation" class="md-nav__link">
+  <a href="#23-vao-bindunbind-factored-out" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.3 VAO bind/unbind — Factorisation
+        2.3 VAO Bind/Unbind — Factored Out
       
     </span>
   </a>
@@ -1251,22 +1281,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-refactoring-du-gpu-profiler" class="md-nav__link">
+  <a href="#3-gpu-profiler-refactoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Refactoring du GPU Profiler
+        3. GPU Profiler Refactoring
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Refactoring du GPU Profiler">
+    <nav class="md-nav" aria-label="3. GPU Profiler Refactoring">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#31-double-buffering-des-metadonnees" class="md-nav__link">
+  <a href="#31-double-buffering-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.1 Double-buffering des métadonnées
+        3.1 Double-Buffering Metadata
       
     </span>
   </a>
@@ -1274,10 +1304,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#32-separation-recording_count-stage_count" class="md-nav__link">
+  <a href="#32-separating-recording_count-stage_count" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.2 Séparation recording_count / stage_count
+        3.2 Separating recording_count / stage_count
       
     </span>
   </a>
@@ -1285,10 +1315,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#33-etapes-de-profiling-restructurees" class="md-nav__link">
+  <a href="#33-restructured-profiling-stages" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.3 Étapes de profiling restructurées
+        3.3 Restructured Profiling Stages
       
     </span>
   </a>
@@ -1301,10 +1331,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-fichiers-modifies" class="md-nav__link">
+  <a href="#4-modified-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Fichiers modifiés
+        4. Modified Files
       
     </span>
   </a>
@@ -2856,6 +2886,90 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2894,10 +3008,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -2915,8 +3029,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3014,126 +3128,119 @@
   
 
 
-<h1 id="post-process-pipeline-optimisations-corrections-fevrier-2026">Post-Process Pipeline — Optimisations &amp; Corrections (Février 2026)<a class="headerlink" href="#post-process-pipeline-optimisations-corrections-fevrier-2026" title="Permanent link">¶</a></h1>
+<h1 id="post-process-pipeline-optimizations-fixes-february-2026">Post-Process Pipeline — Optimizations &amp; Fixes (February 2026)<a class="headerlink" href="#post-process-pipeline-optimizations-fixes-february-2026" title="Permanent link">¶</a></h1>
 <blockquote>
-<p><strong>Date</strong> : 7 février 2026
-<strong>Cible</strong> : OpenGL 4.6, Mesa / Intel Iris Xe (RPL-U), iGPU mémoire unifiée
-<strong>Fichiers modifiés</strong> : 12 fichiers (headers, sources C, shaders, tests)</p>
+<p><strong>Date</strong>: February 7, 2026
+<strong>Target</strong>: OpenGL 4.6, Mesa / Intel Iris Xe (RPL-U), unified-memory iGPU
+<strong>Modified files</strong>: 12 files (headers, C sources, shaders, tests)</p>
 </blockquote>
 <hr>
-<h2 id="table-des-matieres">Table des matières<a class="headerlink" href="#table-des-matieres" title="Permanent link">¶</a></h2>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
 <ol>
-<li><a href="#resume">Résumé</a></li>
-<li><a href="#1-corrections-de-bugs">Corrections de bugs</a></li>
-<li><a href="#11-fxaa-motion-blur-ordre-du-pipeline-fragment">FXAA / Motion Blur — Ordre du pipeline fragment</a></li>
-<li><a href="#12-neighbor-max-sur-dispatch-du-compute">Neighbor Max — Sur-dispatch du compute</a></li>
-<li><a href="#13-luminance-adaptation-reduction-parallele">Luminance Adaptation — Réduction parallèle</a></li>
-<li><a href="#14-barrieres-memoire-manquantes">Barrières mémoire manquantes</a></li>
-<li><a href="#15-auto-exposure-fbo-unbind-avant-compute">Auto-Exposure — FBO unbind avant compute</a></li>
-<li><a href="#2-optimisations-de-performance">Optimisations de performance</a></li>
-<li><a href="#21-ubo-dirty-flag-upload-partiel">UBO dirty flag — Upload partiel</a></li>
-<li><a href="#22-sampler-uniforms-liaison-unique">Sampler uniforms — Liaison unique</a></li>
-<li><a href="#23-vao-bindunbind-factorisation">VAO bind/unbind — Factorisation</a></li>
-<li><a href="#3-refactoring-du-gpu-profiler">Refactoring du GPU Profiler</a></li>
-<li><a href="#31-double-buffering-des-metadonnees">Double-buffering des métadonnées</a></li>
-<li><a href="#32-separation-recording_count-stage_count">Séparation recording_count / stage_count</a></li>
-<li><a href="#33-etapes-de-profiling-restructurees">Étapes de profiling restructurées</a></li>
-<li><a href="#4-fichiers-modifies">Fichiers modifiés</a></li>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#1-bug-fixes">Bug Fixes</a></li>
+<li><a href="#11-fxaa-motion-blur-fragment-pipeline-order">FXAA / Motion Blur — Fragment pipeline order</a></li>
+<li><a href="#12-neighbor-max-compute-over-dispatch">Neighbor Max — Compute over-dispatch</a></li>
+<li><a href="#13-luminance-adaptation-parallel-reduction">Luminance Adaptation — Parallel reduction</a></li>
+<li><a href="#14-missing-memory-barriers">Missing memory barriers</a></li>
+<li><a href="#15-auto-exposure-fbo-unbind-before-compute">Auto-Exposure — FBO unbind before compute</a></li>
+<li><a href="#2-performance-optimizations">Performance Optimizations</a></li>
+<li><a href="#21-ubo-dirty-flag-partial-upload">UBO dirty flag — Partial upload</a></li>
+<li><a href="#22-sampler-uniforms-bind-once">Sampler uniforms — Bind once</a></li>
+<li><a href="#23-vao-bindunbind-factored-out">VAO bind/unbind — Factored out</a></li>
+<li><a href="#3-gpu-profiler-refactoring">GPU Profiler Refactoring</a></li>
+<li><a href="#31-double-buffering-metadata">Double-buffering metadata</a></li>
+<li><a href="#32-separating-recording_count-stage_count">Separating recording_count / stage_count</a></li>
+<li><a href="#33-restructured-profiling-stages">Restructured profiling stages</a></li>
+<li><a href="#4-modified-files">Modified Files</a></li>
 <li><a href="#5-validation">Validation</a></li>
 </ol>
 <hr>
-<h2 id="resume">Résumé<a class="headerlink" href="#resume" title="Permanent link">¶</a></h2>
-<p>Série d'optimisations et corrections apportées au pipeline de post-processing
-et au GPU profiler. Les changements couvrent quatre axes :</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>A series of optimizations and fixes applied to the post-processing pipeline
+and the GPU profiler. Changes cover four axes:</p>
 <ul>
-<li><strong>Corrections de bugs</strong> dans l'ordre d'exécution des effets fragment, le
-  dispatch des compute shaders, et les barrières de synchronisation.</li>
-<li><strong>Optimisations CPU-side</strong> réduisant les appels OpenGL redondants par frame.</li>
-<li><strong>Refactoring du profiler GPU</strong> pour corriger les conflits d'index entre
-  frames dans le système double-buffered.</li>
-<li><strong>Restructuration du profiling</strong> pour séparer le coût compute du coût
-  fragment dans le motion blur.</li>
+<li><strong>Bug fixes</strong> in effect execution order, compute shader dispatches, and synchronization barriers.</li>
+<li><strong>CPU-side optimizations</strong> reducing redundant OpenGL calls per frame.</li>
+<li><strong>GPU profiler refactoring</strong> to fix index conflicts between frames in the double-buffered system.</li>
+<li><strong>Profiling restructure</strong> to separate compute cost from fragment cost in motion blur.</li>
 </ul>
 <hr>
-<h2 id="1-corrections-de-bugs">1. Corrections de bugs<a class="headerlink" href="#1-corrections-de-bugs" title="Permanent link">¶</a></h2>
-<h3 id="11-fxaa-motion-blur-ordre-du-pipeline-fragment">1.1 FXAA / Motion Blur — Ordre du pipeline fragment<a class="headerlink" href="#11-fxaa-motion-blur-ordre-du-pipeline-fragment" title="Permanent link">¶</a></h3>
-<p><strong>Fichier</strong> : <code>shaders/postprocess.frag</code></p>
-<p><strong>Problème</strong> : Le FXAA était appliqué directement sur <code>screenTexture</code> <em>avant</em>
-le Motion Blur et le Chromatic Aberration. Le Motion Blur n'était donc jamais
-lissé par le FXAA, et le FXAA ne bénéficiait pas du contenu motion-blurred.</p>
-<p><strong>Avant</strong> :
-</p><div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>FXAA → (CA → MB) ou texture directe
+<h2 id="1-bug-fixes">1. Bug Fixes<a class="headerlink" href="#1-bug-fixes" title="Permanent link">¶</a></h2>
+<h3 id="11-fxaa-motion-blur-fragment-pipeline-order">1.1 FXAA / Motion Blur — Fragment Pipeline Order<a class="headerlink" href="#11-fxaa-motion-blur-fragment-pipeline-order" title="Permanent link">¶</a></h3>
+<p><strong>File</strong>: <code>shaders/postprocess.frag</code></p>
+<p><strong>Problem</strong>: FXAA was applied directly on <code>screenTexture</code> <em>before</em>
+Motion Blur and Chromatic Aberration. Motion Blur was therefore never
+smoothed by FXAA, and FXAA did not benefit from motion-blurred content.</p>
+<p><strong>Before</strong>:
+</p><div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>FXAA → (CA → MB) or direct texture
 </span></code></pre></div><p></p>
-<p><strong>Après</strong> :
+<p><strong>After</strong>:
 </p><div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>(MB → CA) → FXAA → DoF → Bloom → ...
 </span></code></pre></div><p></p>
-<p>Le FXAA reçoit maintenant la couleur déjà traitée par MB+CA via le paramètre
-<code>color</code>, au lieu de re-sampler <code>screenTexture</code> indépendamment.</p>
-<h3 id="12-neighbor-max-sur-dispatch-du-compute">1.2 Neighbor Max — Sur-dispatch du compute<a class="headerlink" href="#12-neighbor-max-sur-dispatch-du-compute" title="Permanent link">¶</a></h3>
-<p><strong>Fichier</strong> : <code>src/effects/fx_motion_blur.c</code></p>
-<p><strong>Problème</strong> : Le pass Neighbor Max dispatching était identique au Tile Max
-(<code>groups = ceil(pixels / 16)</code>), alors que le Neighbor Max opère sur les
-<em>tiles</em>, pas sur les pixels. Cela provoquait un sur-dispatch de 16× en X et
-16× en Y (256× au total).</p>
-<p><strong>Avant</strong> :
+<p>FXAA now receives color already processed by MB+CA via the <code>color</code> parameter,
+instead of re-sampling <code>screenTexture</code> independently.</p>
+<h3 id="12-neighbor-max-compute-over-dispatch">1.2 Neighbor Max — Compute Over-Dispatch<a class="headerlink" href="#12-neighbor-max-compute-over-dispatch" title="Permanent link">¶</a></h3>
+<p><strong>File</strong>: <code>src/effects/fx_motion_blur.c</code></p>
+<p><strong>Problem</strong>: The Neighbor Max dispatch was identical to Tile Max
+(<code>groups = ceil(pixels / 16)</code>), whereas Neighbor Max operates on
+<em>tiles</em>, not pixels. This caused a 16× over-dispatch in X and 16× in Y (256× total).</p>
+<p><strong>Before</strong>:
 </p><div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">glDispatchCompute</span><span class="p">(</span><span class="n">groups_x</span><span class="p">,</span><span class="w"> </span><span class="n">groups_y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// groups = ceil(width/16)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// Pour 1920×1080 : 120×68 = 8160 groupes (chacun 16×16 = 256 threads)</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Total: ~2M threads pour traiter 8160 tiles</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1">// For 1920×1080: 120×68 = 8160 groups (each 16×16 = 256 threads)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Total: ~2M threads to process 8160 tiles</span>
 </span></code></pre></div><p></p>
-<p><strong>Après</strong> :
+<p><strong>After</strong>:
 </p><div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">neighbor_groups_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">tile_count_x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kt">int</span><span class="w"> </span><span class="n">neighbor_groups_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">tile_count_y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">15</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">16</span><span class="p">;</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">glDispatchCompute</span><span class="p">(</span><span class="n">neighbor_groups_x</span><span class="p">,</span><span class="w"> </span><span class="n">neighbor_groups_y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// Pour 1920×1080 : 8×5 = 40 groupes → ~10K threads pour 8160 tiles</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// For 1920×1080: 8×5 = 40 groups → ~10K threads for 8160 tiles</span>
 </span></code></pre></div><p></p>
-<h3 id="13-luminance-adaptation-reduction-parallele">1.3 Luminance Adaptation — Réduction parallèle<a class="headerlink" href="#13-luminance-adaptation-reduction-parallele" title="Permanent link">¶</a></h3>
-<p><strong>Fichier</strong> : <code>shaders/lum_adapt.comp</code></p>
-<p><strong>Problème</strong> : Le compute shader d'adaptation de luminance utilisait un seul
-thread (<code>gl_GlobalInvocationID == (0,0)</code>) qui itérait séquentiellement sur les
-64×64 = 4096 texels de la carte de luminance.</p>
-<p><strong>Après</strong> : Réduction parallèle en shared memory avec 256 threads (16×16),
-chaque thread traitant 16 texels (bloc 4×4), suivie d'une réduction
-logarithmique <code>256 → 128 → 64 → ... → 1</code>.</p>
+<h3 id="13-luminance-adaptation-parallel-reduction">1.3 Luminance Adaptation — Parallel Reduction<a class="headerlink" href="#13-luminance-adaptation-parallel-reduction" title="Permanent link">¶</a></h3>
+<p><strong>File</strong>: <code>shaders/lum_adapt.comp</code></p>
+<p><strong>Problem</strong>: The luminance adaptation compute shader used a single
+thread (<code>gl_GlobalInvocationID == (0,0)</code>) that iterated sequentially over
+64×64 = 4096 texels of the luminance map.</p>
+<p><strong>After</strong>: Parallel reduction in shared memory with 256 threads (16×16),
+each thread processing 16 texels (4×4 block), followed by a logarithmic
+reduction <code>256 → 128 → 64 → ... → 1</code>.</p>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">layout</span><span class="p">(</span><span class="n">local_size_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="n">local_size_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="p">;</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">shared</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">sharedLogLum</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">shared</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">sharedValidCount</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1">// Chaque thread accumule 4×4 texels</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// Réduction parallèle avec barrier()</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1">// Each thread accumulates 4×4 texels</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// Parallel reduction with barrier()</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">128</span><span class="n">u</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mo">0</span><span class="n">u</span><span class="p">;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&gt;&gt;=</span><span class="w"> </span><span class="mi">1</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
-<h3 id="14-barrieres-memoire-manquantes">1.4 Barrières mémoire manquantes<a class="headerlink" href="#14-barrieres-memoire-manquantes" title="Permanent link">¶</a></h3>
-<p><strong>Fichier</strong> : <code>src/postprocess.c</code></p>
-<p><strong>Ajout</strong> : <code>glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT)</code> en début de
-<code>postprocess_end()</code>, après le rendu de la scène MRT et avant les effets
-compute (Bloom, DoF, AE, MB). Garantit que les écritures dans les textures
-de couleur, vélocité et depth/stencil sont visibles aux compute shaders.</p>
-<h3 id="15-auto-exposure-fbo-unbind-avant-compute">1.5 Auto-Exposure — FBO unbind avant compute<a class="headerlink" href="#15-auto-exposure-fbo-unbind-avant-compute" title="Permanent link">¶</a></h3>
-<p><strong>Fichier</strong> : <code>src/effects/fx_auto_exposure.c</code></p>
-<p><strong>Problème</strong> : Le FBO de downsample restait bindé pendant le dispatch du
-compute shader d'adaptation. Le compute shader lisait <code>downsample_tex</code> qui
-était encore attachée au FBO actif, créant un conflit lecture/écriture
-potentiel.</p>
-<p><strong>Après</strong> : Le FBO est unbindé (<code>glBindFramebuffer(GL_FRAMEBUFFER, 0)</code>)
-<em>avant</em> la barrière mémoire et le dispatch, garantissant que les données
-rasterisées sont flushées.</p>
+<h3 id="14-missing-memory-barriers">1.4 Missing Memory Barriers<a class="headerlink" href="#14-missing-memory-barriers" title="Permanent link">¶</a></h3>
+<p><strong>File</strong>: <code>src/postprocess.c</code></p>
+<p><strong>Addition</strong>: <code>glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT)</code> at the start of
+<code>postprocess_end()</code>, after scene MRT rendering and before compute effects
+(Bloom, DoF, AE, MB). Guarantees that writes to color, velocity, and
+depth/stencil textures are visible to compute shaders.</p>
+<h3 id="15-auto-exposure-fbo-unbind-before-compute">1.5 Auto-Exposure — FBO Unbind Before Compute<a class="headerlink" href="#15-auto-exposure-fbo-unbind-before-compute" title="Permanent link">¶</a></h3>
+<p><strong>File</strong>: <code>src/effects/fx_auto_exposure.c</code></p>
+<p><strong>Problem</strong>: The downsample FBO remained bound during the adaptation compute
+shader dispatch. The compute shader was reading <code>downsample_tex</code> while it was
+still attached to the active FBO, creating a potential read/write conflict.</p>
+<p><strong>After</strong>: The FBO is unbound (<code>glBindFramebuffer(GL_FRAMEBUFFER, 0)</code>)
+<em>before</em> the memory barrier and dispatch, ensuring rasterized data is flushed.</p>
 <hr>
-<h2 id="2-optimisations-de-performance">2. Optimisations de performance<a class="headerlink" href="#2-optimisations-de-performance" title="Permanent link">¶</a></h2>
-<h3 id="21-ubo-dirty-flag-upload-partiel">2.1 UBO dirty flag — Upload partiel<a class="headerlink" href="#21-ubo-dirty-flag-upload-partiel" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>include/postprocess.h</code>, <code>src/postprocess.c</code></p>
-<p><strong>Problème</strong> : Le <code>PostProcessUBO</code> (~300 octets, layout std140) était
-reconstruit et uploadé en totalité chaque frame via <code>glBufferSubData</code>, même
-si aucun paramètre n'avait changé (seul <code>time</code> change chaque frame).</p>
-<p><strong>Solution</strong> : Ajout d'un flag <code>bool ubo_dirty</code> dans la struct <code>PostProcess</code>.</p>
+<h2 id="2-performance-optimizations">2. Performance Optimizations<a class="headerlink" href="#2-performance-optimizations" title="Permanent link">¶</a></h2>
+<h3 id="21-ubo-dirty-flag-partial-upload">2.1 UBO Dirty Flag — Partial Upload<a class="headerlink" href="#21-ubo-dirty-flag-partial-upload" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>include/postprocess.h</code>, <code>src/postprocess.c</code></p>
+<p><strong>Problem</strong>: The <code>PostProcessUBO</code> (~300 bytes, std140 layout) was fully
+rebuilt and uploaded every frame via <code>glBufferSubData</code>, even if no parameters
+had changed (only <code>time</code> changes each frame).</p>
+<p><strong>Solution</strong>: Added a <code>bool ubo_dirty</code> flag to the <code>PostProcess</code> struct.</p>
 <ul>
-<li><strong>Quand <code>ubo_dirty = true</code></strong> : Reconstruction complète du UBO et upload de
-  <code>sizeof(PostProcessUBO)</code> octets.</li>
-<li><strong>Quand <code>ubo_dirty = false</code></strong> : Upload partiel de 8 octets uniquement
-  (<code>active_effects</code> + <code>time</code>), les deux premiers champs du UBO.</li>
+<li><strong>When <code>ubo_dirty = true</code></strong>: Full UBO rebuild and <code>sizeof(PostProcessUBO)</code> byte upload.</li>
+<li><strong>When <code>ubo_dirty = false</code></strong>: Partial 8-byte upload only
+  (<code>active_effects</code> + <code>time</code>), the two first fields of the UBO.</li>
 </ul>
-<p>Le flag est mis à <code>true</code> dans les 17 setters de paramètres (<code>postprocess_set_*</code>)
-et à l'initialisation. <code>postprocess_update_time()</code> ne met <strong>pas</strong> le flag à
-<code>true</code> car <code>time</code> est dans l'en-tête toujours mis à jour.</p>
+<p>The flag is set to <code>true</code> in the 17 parameter setters (<code>postprocess_set_*</code>)
+and at initialization. <code>postprocess_update_time()</code> does <strong>not</strong> set the flag
+since <code>time</code> is in the header that is always updated.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">post_processing</span><span class="o">-&gt;</span><span class="n">ubo_dirty</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="n">PostProcessUBO</span><span class="w"> </span><span class="n">ubo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... full rebuild ... */</span><span class="w"> </span><span class="p">};</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">glBufferSubData</span><span class="p">(</span><span class="n">GL_UNIFORM_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">PostProcessUBO</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ubo</span><span class="p">);</span>
@@ -3143,71 +3250,66 @@ et à l'initialisation. <code>postprocess_update_time()</code> ne met <strong>pa
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">glBufferSubData</span><span class="p">(</span><span class="n">GL_UNIFORM_BUFFER</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">header</span><span class="p">),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">header</span><span class="p">);</span>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Gain</strong> : En régime stationnaire (pas d'interaction UI), l'upload passe de
-~300 octets/frame à 8 octets/frame.</p>
-<h3 id="22-sampler-uniforms-liaison-unique">2.2 Sampler uniforms — Liaison unique<a class="headerlink" href="#22-sampler-uniforms-liaison-unique" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>src/postprocess.c</code>, <code>src/effects/fx_bloom.c</code>,
+<p><strong>Gain</strong>: In steady state (no UI interaction), the upload drops from
+~300 bytes/frame to 8 bytes/frame.</p>
+<h3 id="22-sampler-uniforms-bind-once">2.2 Sampler Uniforms — Bind Once<a class="headerlink" href="#22-sampler-uniforms-bind-once" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>src/postprocess.c</code>, <code>src/effects/fx_bloom.c</code>,
 <code>src/effects/fx_dof.c</code>, <code>src/effects/fx_auto_exposure.c</code>,
 <code>src/effects/fx_motion_blur.c</code></p>
-<p><strong>Problème</strong> : Les <code>shader_set_int(shader, "samplerName", unit)</code> étaient
-appelés chaque frame dans les fonctions <code>*_render()</code>, alors que les sampler
-uniforms sont un <strong>état par programme</strong> (<code>glProgramUniform</code>) qui ne change
-jamais : chaque sampler est toujours associé à la même unité de texture.</p>
-<p><strong>Solution</strong> :</p>
+<p><strong>Problem</strong>: <code>shader_set_int(shader, "samplerName", unit)</code> was called every
+frame in <code>*_render()</code> functions, even though sampler uniforms are
+<strong>per-program state</strong> (<code>glProgramUniform</code>) that never changes: each sampler
+is always associated with the same texture unit.</p>
+<p><strong>Solution</strong>:</p>
 <ol>
 <li>
-<p><strong>Shader postprocess (uber-shader)</strong> : Les 8 liaisons sampler→unité sont
-   configurées dans <code>setup_sampler_uniforms()</code>, appelée une seule fois lors de
-   <code>update_current_shader()</code> (changement ou recompilation du shader).</p>
+<p><strong>Postprocess (uber-shader)</strong>: 8 sampler→unit bindings are configured in
+   <code>setup_sampler_uniforms()</code>, called once per <code>update_current_shader()</code>
+   (shader change or recompilation).</p>
 </li>
 <li>
-<p><strong>Shaders d'effets</strong> : Les sampler uniforms sont configurés dans les
-   fonctions <code>*_init()</code> :</p>
+<p><strong>Effect shaders</strong>: Sampler uniforms are configured in <code>*_init()</code> functions:</p>
 </li>
-<li>Bloom : <code>srcTexture = 0</code> sur prefilter, downsample, upsample</li>
-<li>Auto-Exposure : <code>sceneTexture = 0</code> sur downsample, <code>lumTexture = 0</code> sur adapt</li>
-<li>Motion Blur : <code>velocityTexture = 0</code> sur tile_max, <code>tileMaxTexture = 0</code>
-     sur neighbor_max</li>
-<li>DoF : Réutilise les shaders Bloom (déjà configurés)</li>
+<li>Bloom: <code>srcTexture = 0</code> on prefilter, downsample, upsample</li>
+<li>Auto-Exposure: <code>sceneTexture = 0</code> on downsample, <code>lumTexture = 0</code> on adapt</li>
+<li>Motion Blur: <code>velocityTexture = 0</code> on tile_max, <code>tileMaxTexture = 0</code> on neighbor_max</li>
+<li>DoF: Reuses Bloom shaders (already configured)</li>
 </ol>
-<p><strong>Gain</strong> : Suppression de ~15 appels <code>glGetUniformLocation</code> + <code>glUniform1i</code>
-par frame.</p>
-<p><strong>Note</strong> : <code>silent_warnings = true</code> est maintenant positionné <em>avant</em>
-<code>update_current_shader()</code> dans <code>postprocess_compile_optimized()</code> pour éviter
-les warnings de uniforms manquants sur les samplers compilés out.</p>
-<h3 id="23-vao-bindunbind-factorisation">2.3 VAO bind/unbind — Factorisation<a class="headerlink" href="#23-vao-bindunbind-factorisation" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>src/postprocess.c</code>, <code>src/effects/fx_bloom.c</code>,
+<p><strong>Gain</strong>: Elimination of ~15 <code>glGetUniformLocation</code> + <code>glUniform1i</code> calls per frame.</p>
+<p><strong>Note</strong>: <code>silent_warnings = true</code> is now set <em>before</em> <code>update_current_shader()</code>
+in <code>postprocess_compile_optimized()</code> to avoid warnings about missing uniforms
+on compiled-out samplers.</p>
+<h3 id="23-vao-bindunbind-factored-out">2.3 VAO Bind/Unbind — Factored Out<a class="headerlink" href="#23-vao-bindunbind-factored-out" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>src/postprocess.c</code>, <code>src/effects/fx_bloom.c</code>,
 <code>src/effects/fx_dof.c</code>, <code>src/effects/fx_auto_exposure.c</code></p>
-<p><strong>Problème</strong> : Chaque effet (Bloom, DoF, AE downsample) bindait et unbindait
-le VAO du screen quad indépendamment (<code>glBindVertexArray(vao)</code> /
-<code>glBindVertexArray(0)</code>), générant des changements d'état inutiles vu que tous
-les fullscreen passes utilisent le même VAO.</p>
-<p><strong>Solution</strong> : Le VAO est bindé <strong>une seule fois</strong> en début de
-<code>postprocess_end()</code> et unbindé <strong>une seule fois</strong> après le dernier
-<code>glDrawArrays</code> (Final Composite).</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Début de postprocess_end()</span>
+<p><strong>Problem</strong>: Each effect (Bloom, DoF, AE downsample) independently bound
+and unbound the screen quad VAO (<code>glBindVertexArray(vao)</code> /
+<code>glBindVertexArray(0)</code>), generating unnecessary state changes since all
+fullscreen passes use the same VAO.</p>
+<p><strong>Solution</strong>: The VAO is bound <strong>once</strong> at the start of <code>postprocess_end()</code>
+and unbound <strong>once</strong> after the last <code>glDrawArrays</code> (Final Composite).</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Start of postprocess_end()</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">glBindVertexArray</span><span class="p">(</span><span class="n">post_processing</span><span class="o">-&gt;</span><span class="n">screen_quad_vao</span><span class="p">);</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
 </span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1">// ... Bloom, DoF, AE, MB, Final Composite ...</span>
 </span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// Après le dernier draw</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// After last draw</span>
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">glBindVertexArray</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 </span></code></pre></div>
-<p><strong>Gain</strong> : Suppression de ~6 appels <code>glBindVertexArray</code> par frame (3 bind +
-3 unbind dans Bloom, DoF, AE).</p>
+<p><strong>Gain</strong>: Elimination of ~6 <code>glBindVertexArray</code> calls per frame (3 bind +
+3 unbind in Bloom, DoF, AE).</p>
 <hr>
-<h2 id="3-refactoring-du-gpu-profiler">3. Refactoring du GPU Profiler<a class="headerlink" href="#3-refactoring-du-gpu-profiler" title="Permanent link">¶</a></h2>
-<h3 id="31-double-buffering-des-metadonnees">3.1 Double-buffering des métadonnées<a class="headerlink" href="#31-double-buffering-des-metadonnees" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>include/gpu_profiler.h</code>, <code>src/gpu_profiler.c</code></p>
-<p><strong>Problème</strong> : Les métadonnées des stages (nom, couleur, depth, parent_index)
-étaient écrites directement dans <code>profiler-&gt;stages[]</code> pendant l'enregistrement.
-Ce tableau est aussi lu par l'UI pour l'affichage. Avec le double-buffering
-des queries, les index de la frame N d'écriture pouvaient écraser les
-métadonnées de la frame N-1 encore en lecture.</p>
-<p><strong>Solution</strong> : Ajout de <code>GPUStageInfo stage_info[MAX_GPU_STAGES]</code> dans chaque
-<code>GPUQueryBuffer</code>. Les métadonnées sont écrites dans le buffer d'écriture
-pendant <code>gpu_profiler_start_stage()</code>, puis restaurées dans <code>stages[]</code> lors du
-read-back dans <code>gpu_profiler_begin_frame()</code>.</p>
+<h2 id="3-gpu-profiler-refactoring">3. GPU Profiler Refactoring<a class="headerlink" href="#3-gpu-profiler-refactoring" title="Permanent link">¶</a></h2>
+<h3 id="31-double-buffering-metadata">3.1 Double-Buffering Metadata<a class="headerlink" href="#31-double-buffering-metadata" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>include/gpu_profiler.h</code>, <code>src/gpu_profiler.c</code></p>
+<p><strong>Problem</strong>: Stage metadata (name, color, depth, parent_index) was written
+directly into <code>profiler-&gt;stages[]</code> during recording. This array is also read
+by the UI for display. With query double-buffering, frame N write indices could
+overwrite frame N-1 metadata still being read.</p>
+<p><strong>Solution</strong>: Added <code>GPUStageInfo stage_info[MAX_GPU_STAGES]</code> to each
+<code>GPUQueryBuffer</code>. Metadata is written to the write buffer during
+<code>gpu_profiler_start_stage()</code>, then restored to <code>stages[]</code> during readback in
+<code>gpu_profiler_begin_frame()</code>.</p>
 <div class="language-c highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">name</span><span class="p">[</span><span class="n">MAX_GPU_STAGE_NAME</span><span class="p">];</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">color</span><span class="p">;</span>
@@ -3215,31 +3317,29 @@ read-back dans <code>gpu_profiler_begin_frame()</code>.</p>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">parent_index</span><span class="p">;</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">}</span><span class="w"> </span><span class="n">GPUStageInfo</span><span class="p">;</span>
 </span></code></pre></div>
-<h3 id="32-separation-recording_count-stage_count">3.2 Séparation recording_count / stage_count<a class="headerlink" href="#32-separation-recording_count-stage_count" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>include/gpu_profiler.h</code>, <code>src/gpu_profiler.c</code>,
+<h3 id="32-separating-recording_count-stage_count">3.2 Separating recording_count / stage_count<a class="headerlink" href="#32-separating-recording_count-stage_count" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>include/gpu_profiler.h</code>, <code>src/gpu_profiler.c</code>,
 <code>tests/test_gpu_profiler.c</code></p>
-<p><strong>Problème</strong> : <code>stage_count</code> servait à la fois de compteur d'enregistrement
-(write-path) et de compteur d'affichage (read-path). Après le swap de buffers,
-il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
-<p><strong>Solution</strong> : Deux compteurs distincts :
-- <code>recording_count</code> : compteur d'écriture, remis à 0 à chaque
-  <code>begin_frame()</code>.
-- <code>stage_count</code> : compteur d'affichage, mis à jour depuis le read buffer
-  complété, <strong>jamais</strong> remis à 0.</p>
-<h3 id="33-etapes-de-profiling-restructurees">3.3 Étapes de profiling restructurées<a class="headerlink" href="#33-etapes-de-profiling-restructurees" title="Permanent link">¶</a></h3>
-<p><strong>Fichiers</strong> : <code>src/postprocess.c</code>, <code>include/app_settings.h</code></p>
-<p>Le profiling du post-process est restructuré pour distinguer :</p>
+<p><strong>Problem</strong>: <code>stage_count</code> served both as a recording counter (write-path)
+and a display counter (read-path). After the buffer swap, it was reset to 0,
+causing the UI to flicker for one frame.</p>
+<p><strong>Solution</strong>: Two distinct counters:
+- <code>recording_count</code>: write counter, reset to 0 on each <code>begin_frame()</code>.
+- <code>stage_count</code>: display counter, updated from the completed read buffer, <strong>never</strong> reset to 0.</p>
+<h3 id="33-restructured-profiling-stages">3.3 Restructured Profiling Stages<a class="headerlink" href="#33-restructured-profiling-stages" title="Permanent link">¶</a></h3>
+<p><strong>Files</strong>: <code>src/postprocess.c</code>, <code>include/app_settings.h</code></p>
+<p>Post-process profiling is restructured to distinguish:</p>
 <table>
 <thead>
 <tr>
 <th>Stage</th>
-<th>Contenu</th>
+<th>Content</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Post-Process</strong></td>
-<td>Englobant (parent de tous les sous-stages)</td>
+<td>Parent of all sub-stages</td>
 </tr>
 <tr>
 <td>Bloom</td>
@@ -3259,25 +3359,25 @@ il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
 </tr>
 <tr>
 <td><strong>Final Composite</strong></td>
-<td>Fullscreen quad : MB sampling, CA, FXAA, etc.</td>
+<td>Fullscreen quad: MB sampling, CA, FXAA, etc.</td>
 </tr>
 </tbody>
 </table>
-<p>Ajout de la couleur <code>GPU_PROFILER_COMPOSITE_COLOR</code> (Nord Frost Medium Blue,
-<code>0x81A1C1</code>) dans <code>app_settings.h</code>.</p>
+<p>Added <code>GPU_PROFILER_COMPOSITE_COLOR</code> (Nord Frost Medium Blue, <code>0x81A1C1</code>)
+to <code>app_settings.h</code>.</p>
 <hr>
-<h2 id="4-fichiers-modifies">4. Fichiers modifiés<a class="headerlink" href="#4-fichiers-modifies" title="Permanent link">¶</a></h2>
+<h2 id="4-modified-files">4. Modified Files<a class="headerlink" href="#4-modified-files" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
-<th>Fichier</th>
-<th>Changements</th>
+<th>File</th>
+<th>Changes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>include/postprocess.h</code></td>
-<td>Ajout <code>bool ubo_dirty</code></td>
+<td>Added <code>bool ubo_dirty</code></td>
 </tr>
 <tr>
 <td><code>include/gpu_profiler.h</code></td>
@@ -3285,7 +3385,7 @@ il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
 </tr>
 <tr>
 <td><code>include/perf_timer.h</code></td>
-<td>Clarification docs <code>GPUTimer</code></td>
+<td>Clarified <code>GPUTimer</code> docs</td>
 </tr>
 <tr>
 <td><code>include/app_settings.h</code></td>
@@ -3293,49 +3393,49 @@ il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
 </tr>
 <tr>
 <td><code>src/postprocess.c</code></td>
-<td>UBO dirty flag, <code>setup_sampler_uniforms()</code>, VAO factorisation, barrière mémoire, profiling restructuré</td>
+<td>UBO dirty flag, <code>setup_sampler_uniforms()</code>, VAO factoring, memory barrier, profiling restructure</td>
 </tr>
 <tr>
 <td><code>src/gpu_profiler.c</code></td>
-<td>Double-buffering métadonnées, recording_count, docs</td>
+<td>Metadata double-buffering, recording_count, docs</td>
 </tr>
 <tr>
 <td><code>src/effects/fx_bloom.c</code></td>
-<td>Sampler init, suppression VAO/sampler per-frame</td>
+<td>Sampler init, removed per-frame VAO/sampler</td>
 </tr>
 <tr>
 <td><code>src/effects/fx_dof.c</code></td>
-<td>Suppression VAO/sampler per-frame</td>
+<td>Removed per-frame VAO/sampler</td>
 </tr>
 <tr>
 <td><code>src/effects/fx_auto_exposure.c</code></td>
-<td>Sampler init, FBO unbind, suppression VAO/sampler per-frame</td>
+<td>Sampler init, FBO unbind, removed per-frame VAO/sampler</td>
 </tr>
 <tr>
 <td><code>src/effects/fx_motion_blur.c</code></td>
-<td>Sampler init, dispatch corrigé, docs</td>
+<td>Sampler init, fixed dispatch, docs</td>
 </tr>
 <tr>
 <td><code>shaders/postprocess.frag</code></td>
-<td>Réordonnancement FXAA/MB/CA</td>
+<td>FXAA/MB/CA reordering</td>
 </tr>
 <tr>
 <td><code>shaders/lum_adapt.comp</code></td>
-<td>Réduction parallèle 256 threads</td>
+<td>Parallel reduction with 256 threads</td>
 </tr>
 <tr>
 <td><code>tests/test_gpu_profiler.c</code></td>
-<td>Adaptation aux nouveaux champs</td>
+<td>Adapted to new fields</td>
 </tr>
 </tbody>
 </table>
 <hr>
 <h2 id="5-validation">5. Validation<a class="headerlink" href="#5-validation" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Build</strong> : <code>make all</code> — 0 erreurs, 0 warnings</li>
-<li><strong>Tests</strong> : <code>make test</code> — 32/32 tests passés (100%)</li>
-<li><strong>Lint</strong> : <code>make lint</code> — Tous les checks passés (clang-tidy)</li>
-<li><strong>Exécution</strong> : <code>make run-release</code> — Vérification visuelle OK</li>
+<li><strong>Build</strong>: <code>make all</code> — 0 errors, 0 warnings</li>
+<li><strong>Tests</strong>: <code>make test</code> — 32/32 tests passed (100%)</li>
+<li><strong>Lint</strong>: <code>make lint</code> — All checks passed (clang-tidy)</li>
+<li><strong>Run</strong>: <code>make run-release</code> — Visual verification OK</li>
 </ul>
 
 
@@ -3357,7 +3457,7 @@ il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
   </span>
 
     
@@ -3417,6 +3517,8 @@ il était remis à 0, ce qui faisait clignoter l'UI pendant une frame.</p>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
       

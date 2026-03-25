@@ -17,10 +17,14 @@
       
       
         
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/global_illumination/" hreflang="fr">
+        
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -159,6 +163,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/global_illumination/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -382,7 +412,7 @@
   <span class="md-ellipsis">
     
   
-    Index des Diagrammes
+    Diagram Index
   
 
     
@@ -743,10 +773,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#architecture-de-limplementation" class="md-nav__link">
+  <a href="#implementation-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture de l'Implémentation
+        Implementation Architecture
       
     </span>
   </a>
@@ -754,22 +784,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mathematiques-optimisations" class="md-nav__link">
+  <a href="#mathematics-optimizations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mathématiques &amp; Optimisations
+        Mathematics &amp; Optimizations
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Mathématiques &amp; Optimisations">
+    <nav class="md-nav" aria-label="Mathematics &amp; Optimizations">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#facteur-de-forme-et-simplification-lambertienne" class="md-nav__link">
+  <a href="#form-factor-and-lambertian-simplification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Facteur de Forme et Simplification Lambertienne
+        Form Factor and Lambertian Simplification
       
     </span>
   </a>
@@ -777,10 +807,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#seuils-limites-bounding-et-prevention-du-sh-ringing" class="md-nav__link">
+  <a href="#clamping-thresholds-and-sh-ringing-prevention" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Seuils Limites (Bounding) et Prévention du SH Ringing
+        Clamping Thresholds and SH Ringing Prevention
       
     </span>
   </a>
@@ -793,34 +823,34 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#harmoniques-spheriques-band-2" class="md-nav__link">
+  <a href="#spherical-harmonics-band-2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Harmoniques Sphériques (Band 2)
+        Spherical Harmonics (Band 2)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Harmoniques Sphériques (Band 2)">
+    <nav class="md-nav" aria-label="Spherical Harmonics (Band 2)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#methodes-de-stockage-echantillonnage-gpu" class="md-nav__link">
+  <a href="#storage-methods-gpu-sampling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Méthodes de Stockage &amp; Échantillonnage GPU
+        Storage Methods &amp; GPU Sampling
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Méthodes de Stockage &amp; Échantillonnage GPU">
+    <nav class="md-nav" aria-label="Storage Methods &amp; GPU Sampling">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-textures-3d-hardware-interpolation" class="md-nav__link">
+  <a href="#1-3d-textures-hardware-interpolation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Textures 3D (Hardware Interpolation)
+        1. 3D Textures (Hardware Interpolation)
       
     </span>
   </a>
@@ -849,10 +879,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#conclusion-et-controles" class="md-nav__link">
+  <a href="#conclusion-and-controls" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conclusion et Contrôles
+        Conclusion and Controls
       
     </span>
   </a>
@@ -2757,6 +2787,90 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2795,10 +2909,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -2816,8 +2930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2916,11 +3030,11 @@
 
 
 <h1 id="global-illumination-1-bounce">Global Illumination (1-Bounce)<a class="headerlink" href="#global-illumination-1-bounce" title="Permanent link">¶</a></h1>
-<p>Suckless-OGL incorpore une solution d'<strong>Illumination Globale (GI) à 1 rebond</strong> légère et performante. L'objectif est de capturer le transfert de couleur diffuse (Color Bleeding) entre les objets de la scène, sans nécessiter de techniques lourdes telles que le Path Tracing ou le Voxel Cone Tracing, et sans avoir recours à des techniques Screen-Space (SSGI) qui souffrent d'artefacts d'occlusion.</p>
-<p>L'approche repose sur un <strong>Volume de Light Probes (Sondes de Lumières)</strong> encodant l'irradiance au travers d'<strong>Harmoniques Sphériques (Spherical Harmonics - SH)</strong>.</p>
+<p>Suckless-OGL incorporates a lightweight, high-performance <strong>1-bounce Global Illumination (GI)</strong> solution. The goal is to capture diffuse color transfer (Color Bleeding) between scene objects without requiring heavy techniques such as Path Tracing or Voxel Cone Tracing, and without resorting to Screen-Space techniques (SSGI) that suffer from occlusion artifacts.</p>
+<p>The approach relies on a <strong>Light Probe Volume</strong> encoding irradiance via <strong>Spherical Harmonics (SH)</strong>.</p>
 <hr>
-<h2 id="architecture-de-limplementation">Architecture de l'Implémentation<a class="headerlink" href="#architecture-de-limplementation" title="Permanent link">¶</a></h2>
-<p>Le système combine un calcul CPU asynchrone et un échantillonnage GPU sans aucune interruption (stall) du thread de rendu principal.</p>
+<h2 id="implementation-architecture">Implementation Architecture<a class="headerlink" href="#implementation-architecture" title="Permanent link">¶</a></h2>
+<p>The system combines asynchronous CPU computation with GPU sampling, with no interruption (stall) to the main render thread.</p>
 <pre class="mermaid"><code>%%{init: {
   "theme": "dark",
   "themeVariables": {
@@ -2934,116 +3048,117 @@
   }
 }%%
 sequenceDiagram
-    participant Main as Thread Principal (CPU)
+    participant Main as Main Thread (CPU)
     participant Worker as GI Worker Thread (CPU)
     participant GPU as SSBO &amp; Shaders (GPU)
 
-    Main-&gt;&gt;Worker: Envoie une copie de la scène (Positions, Couleurs)
-    Main-&gt;&gt;Worker: Signale une mise à jour (CondVar)
+    Main-&gt;&gt;Worker: Send scene copy (Positions, Colors)
+    Main-&gt;&gt;Worker: Signal update (CondVar)
     activate Worker
-    Note over Worker: Calcule le Form Factor et projette en Harmoniques Sphériques (SH)
-    Worker--&gt;&gt;Main: Signale que les calculs sont terminés (results_ready)
+    Note over Worker: Compute Form Factor and project to Spherical Harmonics (SH)
+    Worker--&gt;&gt;Main: Signal computations complete (results_ready)
     deactivate Worker
-    Main-&gt;&gt;GPU: Upload des données SH vers le SSBO (glBufferSubData)
-    Main-&gt;&gt;GPU: Appel de dessin (Instanced ou SSBO)
-    Note over GPU: Les fragments échantillonnent l'irradiance des 8 sondes adjacentes (Trilinear Filtering)</code></pre>
+    Main-&gt;&gt;GPU: Upload SH data to SSBO (glBufferSubData)
+    Main-&gt;&gt;GPU: Draw call (Instanced or SSBO)
+    Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Filtering)</code></pre>
 <ol>
 <li><strong>Light Probe Grid (CPU)</strong>:</li>
-<li>Une grille 3D régulière de sondes est dimensionnée pour englober la scène entière.</li>
-<li>Un thread dédié (<code>GI Probe Worker</code>) calcule l'irradiance de chaque sonde depuis chaque objet interactif de la scène, de manière totalement asynchrone.</li>
-<li><strong>Synchronisation vers GPU (SSBO)</strong>:</li>
-<li>Chaque frame, le thread principal vérifie (via un <code>trylock</code>) si un nouveau calcul de SH est disponible.</li>
-<li>Si oui, les données sont envoyées au GPU via un <strong>Shader Storage Buffer Object (SSBO)</strong>, minimisant l'overhead CPU vers GPU.</li>
-<li><strong>Échantillonnage (Fragment Shader)</strong>:</li>
-<li>Lors de l'évaluation PBR, si la GI est activée, le fragment calcule sa position par rapport à la grille.</li>
-<li>Deux méthodes d'échantillonnage sont disponibles :<ul>
-<li><strong>Textures 3D (Hardware)</strong> : Utilise 7 textures 3D avec interpolation trilinéaire matérielle. C'est la méthode la plus performante.</li>
-<li><strong>SSBO (Software)</strong> : Accède directement au buffer de sondes et effectue l'interpolation trilinéaire manuellement dans le shader.</li>
+<li>A regular 3D grid of probes is sized to encompass the entire scene.</li>
+<li>A dedicated thread (<code>GI Probe Worker</code>) asynchronously computes each probe's irradiance from every interactive scene object.</li>
+<li><strong>GPU Synchronization (SSBO)</strong>:</li>
+<li>Each frame, the main thread checks (via <code>trylock</code>) whether a new SH computation is available.</li>
+<li>If so, data is sent to the GPU via a <strong>Shader Storage Buffer Object (SSBO)</strong>, minimizing CPU-to-GPU overhead.</li>
+<li><strong>Sampling (Fragment Shader)</strong>:</li>
+<li>During PBR evaluation, if GI is enabled, the fragment computes its position relative to the grid.</li>
+<li>Two sampling methods are available:<ul>
+<li><strong>3D Textures (Hardware)</strong>: Uses 7 3D textures with hardware trilinear interpolation. This is the most performant method.</li>
+<li><strong>SSBO (Software)</strong>: Directly accesses the probe buffer and performs trilinear interpolation manually in the shader.</li>
 </ul>
 </li>
-<li>Le résultat est une irradiance douce et continue.</li>
+<li>The result is smooth, continuous irradiance.</li>
 </ol>
 <hr>
-<h2 id="mathematiques-optimisations">Mathématiques &amp; Optimisations<a class="headerlink" href="#mathematiques-optimisations" title="Permanent link">¶</a></h2>
-<p>Le coeur de l'algorithme réside dans le calcul de la lumière rebondie (Color Bleeding). L'intensité de l'échange radiatif (Radiative Transfer) entre un émetteur diffus (une sphère) et un récepteur (la sonde) est définie par l'équation de rendu.</p>
-<h3 id="facteur-de-forme-et-simplification-lambertienne">Facteur de Forme et Simplification Lambertienne<a class="headerlink" href="#facteur-de-forme-et-simplification-lambertienne" title="Permanent link">¶</a></h3>
-<p>Pour une surface diffuse (Lambertienne), la fonction de distribution de la réflectance bidirectionnelle (BRDF) est définie par :</p>
+<h2 id="mathematics-optimizations">Mathematics &amp; Optimizations<a class="headerlink" href="#mathematics-optimizations" title="Permanent link">¶</a></h2>
+<p>The core of the algorithm lies in computing bounced light (Color Bleeding). The intensity of the radiative exchange between a diffuse emitter (a sphere) and a receiver (the probe) is defined by the rendering equation.</p>
+<h3 id="form-factor-and-lambertian-simplification">Form Factor and Lambertian Simplification<a class="headerlink" href="#form-factor-and-lambertian-simplification" title="Permanent link">¶</a></h3>
+<p>For a diffuse (Lambertian) surface, the Bidirectional Reflectance Distribution Function (BRDF) is defined by:</p>
 <div class="arithmatex">\[
 f_r = \frac{\rho}{\pi}
 \]</div>
-<p>où <span class="arithmatex">\(\rho\)</span> est l'albedo.</p>
-<p>L'angle solide <span class="arithmatex">\(\Omega\)</span> sous-tendu par une sphère de rayon <span class="arithmatex">\(r\)</span> à distance <span class="arithmatex">\(d\)</span> est approximé pour les petites surfaces par :</p>
+<p>where <span class="arithmatex">\(\rho\)</span> is the albedo.</p>
+<p>The solid angle <span class="arithmatex">\(\Omega\)</span> subtended by a sphere of radius <span class="arithmatex">\(r\)</span> at distance <span class="arithmatex">\(d\)</span> is approximated for small surfaces by:</p>
 <div class="arithmatex">\[
 \Omega \approx \pi \frac{r^2}{d^2}
 \]</div>
-<p>L'énergie totale transférée de la sphère à la sonde pour une radiance unitaire (1.0) est le produit de la BRDF émettrice et de l'angle solide récepteur :</p>
+<p>The total energy transferred from the sphere to the probe for unit radiance (1.0) is the product of the emitter BRDF and the receiver solid angle:</p>
 <div class="arithmatex">\[
 \text{Color for SH} \approx L_{exitant} \times \Omega = \left(\frac{albedo}{\pi}\right) \times \left(\pi \frac{r^2}{d^2}\right)
 \]</div>
-<p><strong>Optimisation Critique</strong> : Comme nous pouvons le voir ci-dessus, les termes en <span class="arithmatex">\(\pi\)</span> <strong>s'annulent parfaitement</strong>. L'énergie à accumuler dans l'Harmonique Sphérique se réduit donc au Facteur de Forme (Form Factor) brut :</p>
+<p><strong>Critical Optimization</strong>: As shown above, the <span class="arithmatex">\(\pi\)</span> terms <strong>cancel out perfectly</strong>. The energy to accumulate in the Spherical Harmonic reduces to the raw Form Factor:</p>
 <div class="arithmatex">\[
 \text{Form Factor (FF)} = \frac{r^2}{d^2}
 \]</div>
-<p>Cette factorisation massive élimine plusieurs instructions trigonométriques complexes par sphère et par sonde.</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Extrait depuis light_probes.c</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dist2</span><span class="p">;</span><span class="w"> </span><span class="c1">// dist2 = distance au carré</span>
+<p>This massive simplification eliminates several complex trigonometric instructions per sphere per probe.</p>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Excerpt from light_probes.c</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">radius</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">dist2</span><span class="p">;</span><span class="w"> </span><span class="c1">// dist2 = squared distance</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">diffuse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0f</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">sphere</span><span class="o">-&gt;</span><span class="n">metallic</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GI_BOUNCE_SCALE</span><span class="p">;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">vec3</span><span class="w"> </span><span class="n">radiance</span><span class="p">;</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">glm_vec3_scale</span><span class="p">((</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span><span class="n">sphere</span><span class="o">-&gt;</span><span class="n">albedo</span><span class="p">,</span><span class="w"> </span><span class="n">diffuse</span><span class="p">,</span><span class="w"> </span><span class="n">radiance</span><span class="p">);</span>
 </span></code></pre></div>
-<p><em>(On observe également que les matériaux purs métaux (<code>metallic == 1.0f</code>) ne contribuent pas au rebond diffus, car les métaux n'ont pas de diffusion sous-surfacique par définition de la physique PBR).</em></p>
-<h3 id="seuils-limites-bounding-et-prevention-du-sh-ringing">Seuils Limites (Bounding) et Prévention du SH Ringing<a class="headerlink" href="#seuils-limites-bounding-et-prevention-du-sh-ringing" title="Permanent link">¶</a></h3>
-<p>Les Harmoniques Sphériques (SH) sont excellentes pour modéliser une illumination à très basse fréquence, mais elles échouent (provoquent du <em>ringing</em>, soit un dépassement des couleurs avec des valeurs négatives ou hyper-brillantes) sous des signaux très concentrés (Delta Function).</p>
-<p>De plus, si une sonde est positionnée <strong>à l'intérieur</strong> d'une surface, ou exactement sur sa surface, <span class="arithmatex">\(d \rightarrow 0\)</span> et le Form Factor diverge vers l'infini.</p>
-<p>Pour éviter ces artéfacts et optimiser l'algorithme, des seuils très stricts sont mis en place :</p>
+<p><em>(Note that pure metallic materials (<code>metallic == 1.0f</code>) do not contribute to diffuse bounce, as metals have no subsurface diffusion by PBR physics definition).</em></p>
+<hr>
+<h3 id="clamping-thresholds-and-sh-ringing-prevention">Clamping Thresholds and SH Ringing Prevention<a class="headerlink" href="#clamping-thresholds-and-sh-ringing-prevention" title="Permanent link">¶</a></h3>
+<p>Spherical Harmonics are excellent for modeling very low-frequency illumination, but they fail (producing <em>ringing</em>, i.e., color overshoot with negative or hyper-bright values) under highly concentrated signals (Delta Functions).</p>
+<p>Furthermore, if a probe is placed <strong>inside</strong> a surface, or exactly on its surface, <span class="arithmatex">\(d \rightarrow 0\)</span> and the Form Factor diverges to infinity.</p>
+<p>To prevent these artifacts and optimize the algorithm, strict thresholds are enforced:</p>
 <ol>
-<li><strong><code>GI_MIN_DIST_RADII</code> (1.05)</strong> : Rejette toute contribution si la sonde est à moins de <span class="arithmatex">\(1.05\times\)</span> le rayon de l'émetteur. Ceci empêche l'auto-illumination aberrante et le Ringing des SH, tout en permettant à la surface de capter avec force la couleur de son plus proche voisin (<span class="arithmatex">\(d \geq 1.05\)</span>).</li>
-<li><strong><code>GI_MAX_DIST_RADII</code> (3.0)</strong> : Culling spatial pur. Au-delà de <span class="arithmatex">\(3\times\)</span> le rayon, le Facteur de Forme est inférieur à <span class="arithmatex">\(0.0025\)</span>, ce qui est indiscernable visuellement. On ignore la sphère et l'on gagne considérablement en performance CPU.</li>
+<li><strong><code>GI_MIN_DIST_RADII</code> (1.05)</strong>: Rejects any contribution if the probe is less than <span class="arithmatex">\(1.05\times\)</span> the emitter's radius away. This prevents aberrant self-illumination and SH Ringing, while still allowing the surface to strongly capture the color of its nearest neighbor (<span class="arithmatex">\(d \geq 1.05\)</span>).</li>
+<li><strong><code>GI_MAX_DIST_RADII</code> (3.0)</strong>: Pure spatial culling. Beyond <span class="arithmatex">\(3\times\)</span> the radius, the Form Factor is below <span class="arithmatex">\(0.0025\)</span>, which is visually indistinguishable. The sphere is ignored, yielding significant CPU performance gains.</li>
 </ol>
 <hr>
-<h2 id="harmoniques-spheriques-band-2">Harmoniques Sphériques (Band 2)<a class="headerlink" href="#harmoniques-spheriques-band-2" title="Permanent link">¶</a></h2>
-<p>Nous encodons les données colorimétriques projetées sur la <strong>sphère d'irradiance</strong> en utilisant les 3 premières bandes (Bande 0, 1 et 2) des Harmoniques Sphériques.</p>
+<h2 id="spherical-harmonics-band-2">Spherical Harmonics (Band 2)<a class="headerlink" href="#spherical-harmonics-band-2" title="Permanent link">¶</a></h2>
+<p>We encode projected colorimetric data onto the <strong>irradiance sphere</strong> using the first 3 bands (Band 0, 1, and 2) of Spherical Harmonics.</p>
 <div class="arithmatex">\[
 E(n) = \sum_{l=0}^{2} A_l \sum_{m=-l}^{l} L_{l}^{m} Y_{l}^{m}(n)
 \]</div>
 <ul>
-<li><span class="arithmatex">\(Y_l^m\)</span> : Fonctions de base réelles.</li>
-<li><span class="arithmatex">\(L_l^m\)</span> : Coefficients projetés (Stockés dans les 9 vecteurs des SSBO).</li>
-<li><span class="arithmatex">\(A_l\)</span> : Coefficients de Convolution Cosinus (<span class="arithmatex">\(\pi\)</span>, <span class="arithmatex">\(\frac{2\pi}{3}\)</span>, <span class="arithmatex">\(\frac{\pi}{4}\)</span>).</li>
+<li><span class="arithmatex">\(Y_l^m\)</span>: Real basis functions.</li>
+<li><span class="arithmatex">\(L_l^m\)</span>: Projected coefficients (stored in the 9 SSBO vectors).</li>
+<li><span class="arithmatex">\(A_l\)</span>: Cosine Convolution coefficients (<span class="arithmatex">\(\pi\)</span>, <span class="arithmatex">\(\frac{2\pi}{3}\)</span>, <span class="arithmatex">\(\frac{\pi}{4}\)</span>).</li>
 </ul>
-<p>Le shader (<code>sh_probe.glsl</code>) et la partie mathématiques CPU (<code>sh_math.c</code>) évaluent ces coefficients de la même manière que la théorie originale formalisée par <strong>Ramamoorthi et Hanrahan</strong>.</p>
-<h3 id="methodes-de-stockage-echantillonnage-gpu">Méthodes de Stockage &amp; Échantillonnage GPU<a class="headerlink" href="#methodes-de-stockage-echantillonnage-gpu" title="Permanent link">¶</a></h3>
-<p>Le système supporte deux modes de transfert et d'échantillonnage, commutables à la volée.</p>
-<h4 id="1-textures-3d-hardware-interpolation">1. Textures 3D (Hardware Interpolation)<a class="headerlink" href="#1-textures-3d-hardware-interpolation" title="Permanent link">¶</a></h4>
-<p>Chacun des 9 coefficients est packé dans un ensemble de 7 textures 3D <code>RGBA16F</code>. Cela permet de déléguer l'interpolation trilinéaire à l'unité de texture du GPU.</p>
+<p>The shader (<code>sh_probe.glsl</code>) and the CPU math part (<code>sh_math.c</code>) evaluate these coefficients in the same way as the original theory formalized by <strong>Ramamoorthi and Hanrahan</strong>.</p>
+<h3 id="storage-methods-gpu-sampling">Storage Methods &amp; GPU Sampling<a class="headerlink" href="#storage-methods-gpu-sampling" title="Permanent link">¶</a></h3>
+<p>The system supports two transfer and sampling modes, switchable at runtime.</p>
+<h4 id="1-3d-textures-hardware-interpolation">1. 3D Textures (Hardware Interpolation)<a class="headerlink" href="#1-3d-textures-hardware-interpolation" title="Permanent link">¶</a></h4>
+<p>Each of the 9 coefficients is packed into a set of 7 <code>RGBA16F</code> 3D textures. This delegates trilinear interpolation to the GPU texture unit.</p>
 <ul>
-<li><strong>Avantage</strong> : Performance maximale, interpolation gratuite.</li>
-<li><strong>Inconvénient</strong> : Nécessite un packing complexe CPU-side (7 textures).</li>
+<li><strong>Advantage</strong>: Maximum performance, free interpolation.</li>
+<li><strong>Drawback</strong>: Requires complex CPU-side packing (7 textures).</li>
 </ul>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// sh_probe.glsl</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler3D</span><span class="w"> </span><span class="n">u_SHTexture0</span><span class="p">;</span><span class="w"> </span><span class="c1">// ... à 6</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler3D</span><span class="w"> </span><span class="n">u_SHTexture0</span><span class="p">;</span><span class="w"> </span><span class="c1">// ... to 6</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kt">vec3</span><span class="w"> </span><span class="n">uvw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">local_pos</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">u_ProbeGridDim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">u_ProbeGridDim</span><span class="p">);</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">t0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">u_SHTexture0</span><span class="p">,</span><span class="w"> </span><span class="n">uvw</span><span class="p">);</span><span class="w"> </span><span class="c1">// ...</span>
 </span></code></pre></div>
 <h4 id="2-ssbo-software-interpolation">2. SSBO (Software Interpolation)<a class="headerlink" href="#2-ssbo-software-interpolation" title="Permanent link">¶</a></h4>
-<p>Les données sont envoyées brutes dans un <strong>Shader Storage Buffer Object (SSBO)</strong>. Le shader effectue alors les 8 lectures et les interpolations <code>mix()</code> manuellement.</p>
+<p>Data is sent raw into a <strong>Shader Storage Buffer Object (SSBO)</strong>. The shader then performs the 8 reads and <code>mix()</code> interpolations manually.</p>
 <ul>
-<li><strong>Avantage</strong> : Transfert immédiat sans packing, alignement <code>std430</code> simple.</li>
-<li><strong>Inconvénient</strong> : Plus coûteux en instructions shader et accès mémoire.</li>
+<li><strong>Advantage</strong>: Immediate transfer without packing, simple <code>std430</code> alignment.</li>
+<li><strong>Drawback</strong>: More costly in shader instructions and memory accesses.</li>
 </ul>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// sh_probe.glsl</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">std430</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="k">buffer</span><span class="w"> </span><span class="n">ProbeBuffer</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w"> </span><span class="n">LightProbe</span><span class="w"> </span><span class="n">probes</span><span class="p">[];</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">};</span>
 </span></code></pre></div>
-<p>Chacun des 9 coefficients est stocké sous forme de <code>vec4</code> (16 bytes) pour satisfaire les prérequis d'alignement <code>std430</code>.</p>
+<p>Each of the 9 coefficients is stored as a <code>vec4</code> (16 bytes) to meet <code>std430</code> alignment requirements.</p>
 <hr>
-<h2 id="conclusion-et-controles">Conclusion et Contrôles<a class="headerlink" href="#conclusion-et-controles" title="Permanent link">¶</a></h2>
-<p>L'approche de la GI dans Suckless-OGL par sondes d'irradiance procure un ajout visuel remarquable, ancrant physiquement les objets entre eux sans coût de rendu supplémentaire par fragment, autre que les 8 interpolations mathématiques et l'évaluation des 9 coefficients en un passage déterministe.</p>
-<p><strong>Raccourcis en cours d'exécution</strong> :</p>
+<h2 id="conclusion-and-controls">Conclusion and Controls<a class="headerlink" href="#conclusion-and-controls" title="Permanent link">¶</a></h2>
+<p>Suckless-OGL's irradiance probe GI approach provides a remarkable visual addition, physically grounding objects in relation to each other with no additional per-fragment rendering cost, other than 8 mathematical interpolations and deterministic evaluation of 9 coefficients in a single pass.</p>
+<p><strong>Runtime Shortcuts</strong>:</p>
 <ul>
-<li><code>Y</code> : Cycle entre les modes de GI : <strong>Textures 3D</strong> -&gt; <strong>SSBO</strong> -&gt; <strong>Désactivé</strong>.</li>
-<li><code>Shift + Y</code> : Affiche les sondes de la grille sous la forme de sphères lumineuses de debug (Debug Probes Draw).</li>
+<li><code>Y</code>: Cycle between GI modes: <strong>3D Textures</strong> -&gt; <strong>SSBO</strong> -&gt; <strong>Disabled</strong>.</li>
+<li><code>Shift + Y</code>: Display the grid probes as luminous debug spheres (Debug Probes Draw).</li>
 </ul>
 
 
@@ -3065,7 +3180,7 @@ E(n) = \sum_{l=0}^{2} A_l \sum_{m=-l}^{l} L_{l}^{m} Y_{l}^{m}(n)
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 10, 2026 11:36:57 UTC">March 10, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
   </span>
 
     
@@ -3125,6 +3240,8 @@ E(n) = \sum_{l=0}^{2} A_l \sum_{m=-l}^{l} L_{l}^{m} Y_{l}^{m}(n)
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
       

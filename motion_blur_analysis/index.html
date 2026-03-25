@@ -17,10 +17,14 @@
       
       
         
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../fr/motion_blur_analysis/" hreflang="fr">
+        
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -87,7 +91,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#analyse-de-limplementation-du-motion-blur" class="md-skip">
+        <a href="#motion-blur-implementation-analysis" class="md-skip">
           Skip to content
         </a>
       
@@ -159,6 +163,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"></path></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../fr/motion_blur_analysis/" hreflang="fr" class="md-select__link">
+              Français
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -382,7 +412,7 @@
   <span class="md-ellipsis">
     
   
-    Index des Diagrammes
+    Diagram Index
   
 
     
@@ -1163,22 +1193,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
       
         <li class="md-nav__item">
-  <a href="#1-architecture-actuelle" class="md-nav__link">
+  <a href="#1-current-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Architecture Actuelle
+        1. Current Architecture
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Architecture Actuelle">
+    <nav class="md-nav" aria-label="1. Current Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#pipeline-de-rendu" class="md-nav__link">
+  <a href="#render-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pipeline de rendu
+        Render Pipeline
       
     </span>
   </a>
@@ -1186,10 +1216,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#points-forts-de-la-solution" class="md-nav__link">
+  <a href="#strengths-of-the-solution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        💡 Points forts de la solution
+        💡 Strengths of the Solution
       
     </span>
   </a>
@@ -1197,10 +1227,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#limite-de-limplementation-actuelle-camera-only" class="md-nav__link">
+  <a href="#current-implementation-limitation-camera-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📉 Limite de l'implémentation actuelle : Camera-Only
+        📉 Current Implementation Limitation: Camera-Only
       
     </span>
   </a>
@@ -1213,22 +1243,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-pistes-dameliorations-vitesse-et-qualite" class="md-nav__link">
+  <a href="#2-improvement-paths-speed-and-quality" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Pistes d'Améliorations (Vitesse et Qualité)
+        2. Improvement Paths (Speed and Quality)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Pistes d'Améliorations (Vitesse et Qualité)">
+    <nav class="md-nav" aria-label="2. Improvement Paths (Speed and Quality)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-vitesse-et-optimisation" class="md-nav__link">
+  <a href="#a-speed-and-optimization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A. Vitesse et Optimisation
+        A. Speed and Optimization
       
     </span>
   </a>
@@ -1236,10 +1266,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#c-le-cas-exceptionnel-flou-analytique-procedural" class="md-nav__link">
+  <a href="#c-the-special-case-procedural-analytic-blur" class="md-nav__link">
     <span class="md-ellipsis">
       
-        C. Le Cas Exceptionnel : Flou Analytique Procédural
+        C. The Special Case: Procedural Analytic Blur
       
     </span>
   </a>
@@ -1252,15 +1282,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-comparaison-avec-les-moteurs-aaa" class="md-nav__link">
+  <a href="#3-comparison-with-aaa-engines" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Comparaison avec les Moteurs AAA
+        3. Comparison with AAA Engines
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="3. Comparaison avec les Moteurs AAA">
+    <nav class="md-nav" aria-label="3. Comparison with AAA Engines">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1280,22 +1310,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-lexemple-de-street-fighter-6-re-engine" class="md-nav__link">
+  <a href="#4-the-street-fighter-6-case-study-re-engine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. L'Exemple de Street Fighter 6 (RE Engine)
+        4. The Street Fighter 6 Case Study (RE Engine)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. L'Exemple de Street Fighter 6 (RE Engine)">
+    <nav class="md-nav" aria-label="4. The Street Fighter 6 Case Study (RE Engine)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#le-verdict" class="md-nav__link">
+  <a href="#the-verdict" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Le Verdict
+        The Verdict
       
     </span>
   </a>
@@ -2785,6 +2815,90 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8">
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing_translations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Translations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../doxygen/html/index.html" class="md-nav__link">
         
@@ -2823,10 +2937,10 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9">
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_10">
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -2844,8 +2958,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_9">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2943,109 +3057,106 @@
   
 
 
-<h1 id="analyse-de-limplementation-du-motion-blur">Analyse de l'implémentation du Motion Blur<a class="headerlink" href="#analyse-de-limplementation-du-motion-blur" title="Permanent link">¶</a></h1>
-<p>Cette documentation détaille l'état actuel de l'implémentation du Motion Blur dans <strong>Suckless OGL</strong>, ses performances, sa qualité, et les compare avec les approches des moteurs AAA, en s'appuyant particulièrement sur le cas du <em>RE Engine</em> (utilisé pour <em>Street Fighter 6</em>). Elle offre également des pistes d'amélioration concrètes.</p>
+<h1 id="motion-blur-implementation-analysis">Motion Blur Implementation Analysis<a class="headerlink" href="#motion-blur-implementation-analysis" title="Permanent link">¶</a></h1>
+<p>This document details the current state of the Motion Blur implementation in <strong>Suckless OGL</strong>, its performance, quality, and compares it with AAA engine approaches, drawing particularly on the <em>RE Engine</em> case (used for <em>Street Fighter 6</em>). It also provides concrete improvement paths.</p>
 <hr>
-<h2 id="1-architecture-actuelle">1. Architecture Actuelle<a class="headerlink" href="#1-architecture-actuelle" title="Permanent link">¶</a></h2>
-<p>L'architecture actuelle repose sur des principes modernes de rendu basés sur l'approche <strong>Tile-Based / Neighbor Max</strong>, initialement introduite par Jean-Yves Bouguet et les chercheurs en rendu temps réel. L'idée principale est d'éviter les "fuites" de flou lorsqu'un objet rapide passe devant un arrière-plan fixe, un artefact très commun dans les premières implémentations de ce post-process.</p>
-<h3 id="pipeline-de-rendu">Pipeline de rendu<a class="headerlink" href="#pipeline-de-rendu" title="Permanent link">¶</a></h3>
+<h2 id="1-current-architecture">1. Current Architecture<a class="headerlink" href="#1-current-architecture" title="Permanent link">¶</a></h2>
+<p>The current architecture is based on modern rendering principles using the <strong>Tile-Based / Neighbor Max</strong> approach, originally introduced by Jean-Yves Bouguet and real-time rendering researchers. The main idea is to prevent blur "bleeding" when a fast object passes in front of a static background — a very common artifact in early implementations of this post-process.</p>
+<h3 id="render-pipeline">Render Pipeline<a class="headerlink" href="#render-pipeline" title="Permanent link">¶</a></h3>
 <pre class="mermaid"><code>graph TD
     V[Velocity Buffer] --&gt; T[Tile Max Velocity Compute]
-    T --&gt;|Réduction à 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
+    T --&gt;|Reduction at 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
     TTex --&gt; N[Neighbor Max Velocity Compute]
-    N --&gt;|textureGather sur un Voisinage 3x3| NTex(Texture RG16F - Neighbor Max)
-    C[Color Buffer Raw] --&gt; M(Passe Motion Blur Finale)
+    N --&gt;|textureGather over 3x3 Neighborhood| NTex(Texture RG16F - Neighbor Max)
+    C[Color Buffer Raw] --&gt; M(Final Motion Blur Pass)
     D[Depth Buffer] --&gt; M
     V --&gt; M
     NTex --&gt; M
-    M --&gt;|Échantillonnage de 8 frames \n+ Interleaved Gradient Noise \n+ Depth Weighting| O[Color Buffer Flouté]</code></pre>
-<h3 id="points-forts-de-la-solution">💡 Points forts de la solution<a class="headerlink" href="#points-forts-de-la-solution" title="Permanent link">¶</a></h3>
+    M --&gt;|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blurred Color Buffer]</code></pre>
+<h3 id="strengths-of-the-solution">💡 Strengths of the Solution<a class="headerlink" href="#strengths-of-the-solution" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Utilisation intensive des Compute Shaders :</strong> L'approche en deux passes (<code>tile_max</code> et <code>neighbor_max</code>) est performante. La réduction dans la mémoire partagée (Shared Memory) pour l'étape Tile Max minimise considérablement la bande passante. L'utilisation intelligente du <code>textureGather</code> permet une lecture optimale en quads.</li>
-<li><strong>Neighbor Max Velocity :</strong> Empêche efficacement le flou de se propager de manière incohérente sur les objets et supprime les halos disgracieux.</li>
-<li><strong>Pondération avec la Profondeur (Depth Weighting) :</strong> Protège le premier plan en désactivant le mélange de couleurs lorsque l'échantillon prélevé est trop éloigné derrière le pixel central (<code>depthDiff &gt; 1.0</code>).</li>
-<li><strong>Bruit de Gradient (Interleaved Gradient Noise) :</strong> Empêche le phénomène de <em>banding</em> visuel en transformant les stries liées à un faible nombre d'échantillons en bruit esthétique de style pellicule.</li>
+<li><strong>Heavy use of Compute Shaders:</strong> The two-pass approach (<code>tile_max</code> and <code>neighbor_max</code>) is performant. The reduction in shared memory (Shared Memory) for the Tile Max step considerably minimizes bandwidth. The smart use of <code>textureGather</code> enables optimal quad reads.</li>
+<li><strong>Neighbor Max Velocity:</strong> Effectively prevents blur from propagating incoherently across objects and removes unsightly halos.</li>
+<li><strong>Depth Weighting:</strong> Protects the foreground by disabling color blending when the sampled pixel is too far behind the center pixel (<code>depthDiff &gt; 1.0</code>).</li>
+<li><strong>Interleaved Gradient Noise:</strong> Prevents visual <em>banding</em> by transforming stripes from low sample counts into aesthetic film-grain-style noise.</li>
 </ol>
-<h3 id="limite-de-limplementation-actuelle-camera-only">📉 Limite de l'implémentation actuelle : Camera-Only<a class="headerlink" href="#limite-de-limplementation-actuelle-camera-only" title="Permanent link">¶</a></h3>
-<p>Dans le fichier <code>pbr_ibl_instanced.vert</code>, on observe que la configuration actuelle ne calcule le déplacement (Velocity) que par le biais de l'ancienne position de la caméra (<code>previousViewProj</code> * la position de la géométrie locale actuelle) :</p>
+<h3 id="current-implementation-limitation-camera-only">📉 Current Implementation Limitation: Camera-Only<a class="headerlink" href="#current-implementation-limitation-camera-only" title="Permanent link">¶</a></h3>
+<p>In <code>pbr_ibl_instanced.vert</code>, the current configuration calculates velocity (Velocity) only via the previous camera position (<code>previousViewProj</code> * the current local geometry position):</p>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">CurrentClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">projection</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">WorldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">PreviousClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">WorldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
 </span></code></pre></div>
-<p><strong>Pourquoi c'est tout à fait justifié (pour le moment) :</strong>
-Dans <strong>Suckless OGL</strong>, tous les objets 3D (comme la grille de sphères PBR) sont statiques dans l'espace "World". Seule la caméra se déplace ou effectue des rotations. Par conséquent, il n'y a pas (encore) de concept de vélocité "Objet" (Object Velocity). Le <strong>Camera Motion Blur</strong> est donc 100% suffisant à ce stade du développement.</p>
-<p><strong>Toutefois</strong>, dès lors que le moteur implémentera des entités dynamiques (ex: des ennemis ou des objets physiques qui tombent), la vélocité propre de l'objet (sa <em>Previous World Position</em>) ainsi calculée sera <code>0</code> ou du moins faussée devant ne refléter que de la vélocité caméra. Un objet traversant rapidement l'écran devant une caméra fixe ne s'imprimera pas dans le <em>Velocity Buffer</em> en l'état actuel et ressortira hyper net par dessus le reste de l'image.</p>
+<p><strong>Why this is fully justified (for now):</strong>
+In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are static in World space. Only the camera moves or rotates. Therefore there is (yet) no concept of "Object" velocity. <strong>Camera Motion Blur</strong> is 100% sufficient at this stage of development.</p>
+<p><strong>However</strong>, once the engine implements dynamic entities (e.g., enemies or falling physics objects), the object's own velocity (its <em>Previous World Position</em>) would be <code>0</code> or at least incorrect, reflecting only camera velocity. An object crossing the screen quickly in front of a static camera would not register in the <em>Velocity Buffer</em> with the current setup and would appear hyper-sharp against the rest of the image.</p>
 <hr>
-<h2 id="2-pistes-dameliorations-vitesse-et-qualite">2. Pistes d'Améliorations (Vitesse et Qualité)<a class="headerlink" href="#2-pistes-dameliorations-vitesse-et-qualite" title="Permanent link">¶</a></h2>
-<p>Afin d'atteindre l'état de l'art, voici les optimisations et changements possibles.</p>
-<h3 id="a-vitesse-et-optimisation">A. Vitesse et Optimisation<a class="headerlink" href="#a-vitesse-et-optimisation" title="Permanent link">¶</a></h3>
+<h2 id="2-improvement-paths-speed-and-quality">2. Improvement Paths (Speed and Quality)<a class="headerlink" href="#2-improvement-paths-speed-and-quality" title="Permanent link">¶</a></h2>
+<p>To reach state-of-the-art quality, here are the possible optimizations and changes.</p>
+<h3 id="a-speed-and-optimization">A. Speed and Optimization<a class="headerlink" href="#a-speed-and-optimization" title="Permanent link">¶</a></h3>
 <ul>
-<li><strong>Échantillonnage Adaptatif (Dynamic Sample Count) :</strong>
-  Actuellement, le shader effectue <strong>toujours</strong> <code>mb_samples</code> itérations (8 par défaut), même si la vitesse du pixel est proche de zéro (<code>speed &lt; 0.0001</code> est ignoré, mais les faibles valeurs passent). Un nombre dynamique d'itérations basé sur la vitesse proportionnelle permettrait d'économiser un nombre monumental de cycles GPU.
+<li><strong>Adaptive Sampling (Dynamic Sample Count):</strong>
+  Currently, the shader always executes <code>mb_samples</code> iterations (8 by default), even if the pixel velocity is near zero (<code>speed &lt; 0.0001</code> is ignored but low values still pass through). A dynamic iteration count based on proportional velocity would save a monumental number of GPU cycles.
   <div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">actual_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">TARGET_SAMPLES_PER_UNIT</span><span class="p">));</span>
 </span></code></pre></div></li>
 <li>
-<p><strong>Half-Resolution Reconstruction (TODO) :</strong>
-  Exécuter 8+ lectures aléatoires non-cohérentes avec le cache sur un buffer 4K ou 1440p est extrêmement gourmand. L'accumulation du Motion Blur dans une <strong>toute petite texture</strong> (à moitié de la résolution native) suivie d'un <em>upsample</em> bilatéral guidé par la profondeur est à implémenter pour les performances futures.</p>
-<div class="admonition warning">
-<p class="admonition-title">Plan d'implémentation (Refactoring de <code>postprocess.c</code>)</p>
-<p>L'implémentation du Motion Blur est actuellement incluse dans le composite unifié de la passe finale (<code>postprocess.frag</code>). Pour appliquer ce <em>Half-Res</em>, il faudra :</p>
-<ol>
-<li>Restructurer le rendu et casser le flux actuel en désolidarisant le Motion Blur de cette maxi-passe.</li>
-<li>Créer un nouveau <code>Framebuffer</code> dédié au sous-échantillonnage de dimensions <code>width/2 x height/2</code>.</li>
-<li>Créer une passe spécifique (via compute ou quad écran) ne calculant <em>uniquement</em> que l'effet de flou dans cette texture allégée en couleurs et vélocités.</li>
-<li>Écrire et exécuter l'étape d'<em>upsample</em> bilatéral durant la passe <code>postprocess.frag</code> ou dans une passe dédiée, afin de recomposer judicieusement l'image finale sur les bords des objets définis par le <code>depth buffer</code>.</li>
-</ol>
-</div>
+<p><strong>Half-Resolution Reconstruction (TODO):</strong>
+  Executing 8+ random, cache-incoherent reads on a 4K or 1440p buffer is extremely costly. Accumulating Motion Blur in a <strong>half-resolution texture</strong> followed by a depth-guided bilateral upsample should be implemented for future performance.</p>
+<p>echo "exit: $?"! warning "Implementation Plan (Refactoring <code>postprocess.c</code>)"
+    Implementing Half-Res requires:</p>
+<div class="language-text highlight"><pre><span></span><code>1. Restructure the render pipeline and decouple Motion Blur from the current mega-pass.
+2. Create a dedicated `Framebuffer` for sub-sampling at `width/2 x height/2` dimensions.
+3. Create a dedicated pass (via compute or screen quad) that computes *only* the blur effect in this lightweight texture.
+4. Write and execute the bilateral upsample step during the `postprocess.frag` pass or a dedicated pass to recompose the final image cleanly on object edges defined by the `depth buffer`.
+</code></pre></div>
 </li>
 <li>
-<p><strong>Per-Object et Skinned Velocity (Critique) :</strong>
-  Pour que le motion blur s'applique aux objets en mouvement ou aux personnages, il faut stocker et transmettre la matrice Modèle de la frame précédente pour <em>chaque</em> objet.
+<p><strong>Per-Object and Skinned Velocity (Critical):</strong>
+  For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for <em>each</em> object.
   </p><div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">PrevWorldPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">i_previous_model</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">in_position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">PreviousClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PrevWorldPos</span><span class="p">;</span>
 </span></code></pre></div><p></p>
 </li>
-<li><strong>Soft Depth-Testing :</strong>
-  Remplacer le test booléen et brutal de profondeur par une pondération lissée à l'aide d'un <code>smoothstep()</code>. Des limites dures créent un bruit granuleux ou des tremblements de pixels (flickering) sur les arêtes en mouvement.</li>
+<li><strong>Soft Depth-Testing:</strong>
+  Replace the hard boolean depth test with a smooth weight using <code>smoothstep()</code>. Hard limits create grainy noise or pixel flickering on moving edges.</li>
 </ul>
-<h3 id="c-le-cas-exceptionnel-flou-analytique-procedural">C. Le Cas Exceptionnel : Flou Analytique Procédural<a class="headerlink" href="#c-le-cas-exceptionnel-flou-analytique-procedural" title="Permanent link">¶</a></h3>
-<p>Puisque <strong>Suckless OGL</strong> rend nativement des objets purs via <strong>Raytracing analytique</strong> dans le Fragment Shader (par le biais des billboards et <em>impostors</em> de sphères dans <code>pbr_ibl_billboard.frag</code>), une solution mathématiquement parfaite et sans post-process (2D) est techniquement possible.</p>
-<p>Lorsqu'une sphère de centre <span class="arithmatex">\(C\)</span> se déplace d'une position <span class="arithmatex">\(C_0\)</span> vers <span class="arithmatex">\(C_1\)</span> (via un vecteur vitesse <span class="arithmatex">\(\vec{V}\)</span>) au cours d'une frame, le volume balayé par cette sphère (<em>Swept Volume</em>) forme géométriquement une <strong>Capsule</strong> (un cylindre terminé par deux hémisphères).</p>
-<p><strong>Comment l'implémenter mathématiquement au lieu du Post-Process ?</strong></p>
+<h3 id="c-the-special-case-procedural-analytic-blur">C. The Special Case: Procedural Analytic Blur<a class="headerlink" href="#c-the-special-case-procedural-analytic-blur" title="Permanent link">¶</a></h3>
+<p>Since <strong>Suckless OGL</strong> natively renders pure objects via <strong>analytical Ray-tracing</strong> in the Fragment Shader (through billboards and sphere <em>impostors</em> in <code>pbr_ibl_billboard.frag</code>), a mathematically perfect, post-process-free (2D) solution is technically feasible.</p>
+<p>When a sphere centered at <span class="arithmatex">\(C\)</span> moves from position <span class="arithmatex">\(C_0\)</span> to <span class="arithmatex">\(C_1\)</span> (via velocity vector <span class="arithmatex">\(\vec{V}\)</span>) during a frame, the volume swept by the sphere geometrically forms a <strong>Capsule</strong> (a cylinder capped by two hemispheres).</p>
+<p><strong>How to implement this mathematically instead of Post-Process:</strong></p>
 <ol>
-<li><strong>Intersection Rayon-Capsule :</strong> Au lieu de croiser un rayon avec une sphère, le shader des <em>impostors</em> calcule l'intersection analytique d'un rayon avec une capsule s'étendant du centre à <span class="arithmatex">\(t=0\)</span> au centre à <span class="arithmatex">\(t=1\)</span>.</li>
-<li><strong>Intégration Temporelle :</strong> Une fois l'intersection résolue sur la droite de mouvement de la capsule, l'opacité (Alpha) et la normale de surface en ce point peuvent être calculées en fonction du temps couvert par le croisement.</li>
-<li><strong>Mouvement de la Caméra + Mouvement de l'Objet :</strong> La matrice de transformation de la vue au cours du temps peut simplement modifier l'origine du rayon <span class="arithmatex">\(O(t) = O_0 + V_{cam} \cdot t\)</span> pour simuler le flou de caméra.</li>
-<li><strong>Jittering Temporel / Stochasticité :</strong> Au lieu d'accumuler dans un multi-buffer, le rayon généré depuis le point central de l'écran peut se voir attribuer une variable temps <span class="arithmatex">\(t\)</span> aléatoire par frame (via du Bruit Bleu par exemple). Couplé à un TAA (Temporal Anti-Aliasing), le flou de mouvement devient instantanément "gratuit" et mathématiquement parfait (vrai flou 3D) sans les erreurs d'occlusion du post-processing 2D.</li>
+<li><strong>Ray-Capsule Intersection:</strong> Instead of intersecting a ray with a sphere, the <em>impostor</em> shader computes the analytical intersection of a ray with a capsule extending from the center at <span class="arithmatex">\(t=0\)</span> to the center at <span class="arithmatex">\(t=1\)</span>.</li>
+<li><strong>Temporal Integration:</strong> Once the intersection is resolved along the capsule motion axis, the opacity (Alpha) and surface normal at that point can be computed as a function of the time covered by the crossing.</li>
+<li><strong>Camera + Object Motion:</strong> The view transformation matrix over time can simply modify the ray origin <span class="arithmatex">\(O(t) = O_0 + V_{cam} \cdot t\)</span> to simulate camera blur.</li>
+<li><strong>Temporal Jitter / Stochasticity:</strong> Instead of accumulating in a multi-buffer, the ray generated from the screen center can be assigned a random time variable <span class="arithmatex">\(t\)</span> per frame (e.g., via Blue Noise). Combined with TAA, motion blur becomes instantaneously "free" and mathematically perfect (true 3D blur) without the occlusion errors of 2D post-processing.</li>
 </ol>
-<p>C'est une optimisation très avancée mais extrêmement élégante, souvent réservée aux moteurs de rendu hors-ligne (Pixar/RenderMan) ou aux <em>demoscenes</em> purement procédurales.</p>
+<p>This is a very advanced but extremely elegant optimization, often reserved for offline renderers (Pixar/RenderMan) or purely procedural demoscenes.</p>
 <hr>
-<h2 id="3-comparaison-avec-les-moteurs-aaa">3. Comparaison avec les Moteurs AAA<a class="headerlink" href="#3-comparaison-avec-les-moteurs-aaa" title="Permanent link">¶</a></h2>
+<h2 id="3-comparison-with-aaa-engines">3. Comparison with AAA Engines<a class="headerlink" href="#3-comparison-with-aaa-engines" title="Permanent link">¶</a></h2>
 <h3 id="unreal-engine-5-unity-hdrp">Unreal Engine 5 &amp; Unity (HDRP)<a class="headerlink" href="#unreal-engine-5-unity-hdrp" title="Permanent link">¶</a></h3>
-<p>Ces moteurs utilisent une architecture extrêmement similaire au niveau du <em>Tile Max</em> / <em>Neighbor Max</em>. Cependant, ils intègrent l'effet au sein de leur écosystème global temporel :
-* <strong>Découplage :</strong> Ces moteurs comportent un contrôle séparant explicitement la force du flou de mouvement de la Caméra et celui des Objets, car le flou de mouvement de caméra est une cause très connue de <em>Motion Sickness</em> chez les joueurs.
-* <strong>TSR / TAA :</strong> Chez l'UE5, le flou de mouvement n'est pas uniquement un effet de post-process jetable, il aide visuellement la résolution temporelle (Temporal Super Resolution) en combinant les vecteurs de mouvement à l'Anti-Aliasing.</p>
+<p>These engines use an architecture extremely similar to <em>Tile Max</em> / <em>Neighbor Max</em>. However, they integrate the effect within their global temporal ecosystem:
+* <strong>Decoupling:</strong> These engines have a control explicitly separating the strength of Camera motion blur from Object motion blur, as camera motion blur is a well-known cause of <em>Motion Sickness</em> in players.
+* <strong>TSR / TAA:</strong> In UE5, motion blur is not just a throwaway post-process effect — it visually aids temporal resolution (Temporal Super Resolution) by combining motion vectors with Anti-Aliasing.</p>
 <hr>
-<h2 id="4-lexemple-de-street-fighter-6-re-engine">4. L'Exemple de Street Fighter 6 (RE Engine)<a class="headerlink" href="#4-lexemple-de-street-fighter-6-re-engine" title="Permanent link">¶</a></h2>
-<p>Le <strong>RE Engine</strong> (Capcom) livre un <em>Masterclass</em> sur l'utilisation poussée de l'effet dans le jeu de combat <strong>Street Fighter 6</strong> :</p>
+<h2 id="4-the-street-fighter-6-case-study-re-engine">4. The Street Fighter 6 Case Study (RE Engine)<a class="headerlink" href="#4-the-street-fighter-6-case-study-re-engine" title="Permanent link">¶</a></h2>
+<p>The <strong>RE Engine</strong> (Capcom) delivers a <em>Masterclass</em> on advanced use of the effect in the fighting game <strong>Street Fighter 6</strong>:</p>
 <ol>
 <li>
-<p><strong>Per-Vertex Velocity Hyper-Précise :</strong>
-   Dans SF6, la vélocité n'est pas seulement passée par <em>mesh</em>, mais elle est calculée os par os via le shader de <em>Skinning</em>. Lorsqu'un personnage donne un coup de pied, sa chaussure développe un vecteur de vélocité gigantesque comparé à sa cuisse.</p>
+<p><strong>Hyper-Precise Per-Vertex Velocity:</strong>
+   In SF6, velocity is not just passed per <em>mesh</em> — it is computed bone by bone via the <em>Skinning</em> shader. When a character kicks, their shoe develops a gigantic velocity vector compared to their thigh.</p>
 </li>
 <li>
-<p><strong>Sur-Échantillonnage Localisé (Targeted High-Samples) :</strong>
-   Pour économiser de la puissance sans sacrifier la qualité, le RE Engine se permet de lancer entre 16 et 32 échantillons (Samples) par pixel, <strong>mais uniquement</strong> sur les silhouettes enregistrant des vecteurs de haute amplitude. L'environnement statique derrière reste parfaitement net et très peu coûteux à évaluer.</p>
+<p><strong>Targeted High-Samples (Localized Supersampling):</strong>
+   To conserve power without sacrificing quality, the RE Engine launches between 16 and 32 samples per pixel, <strong>but only</strong> on silhouettes recording high-amplitude vectors. The static environment behind remains perfectly sharp and very cheap to evaluate.</p>
 </li>
 <li>
-<p><strong>Motion Blur Courbe (Curved Motion Blur) :</strong>
-   Contrairement à du flou Linéaire standard (« je prends un vecteur et je trace une ligne droite »), le moteur de Capcom stocke l'information de l'accélération en plus de la vitesse. L'échantillonnage de Flou est ainsi "courbé" dans l'espace afin de simuler la trajectoire radiale des membres et poings.</p>
+<p><strong>Curved Motion Blur:</strong>
+   Unlike standard linear blur ("take a vector and trace a straight line"), Capcom's engine stores acceleration information in addition to velocity. The blur sampling is thus "curved" in space to simulate the radial trajectory of limbs and fists.</p>
 </li>
 </ol>
 <pre class="mermaid"><code>graph LR
-    A[Flou Linéaire \nStandard Suckless OGL] --&gt;|Crée des lignes droites et des artefacts| B(Trajectoire d'un coup de poing)
-    C[Flou Courbe \nRE Engine / SF6] --&gt;|Échantillonnage le long d'un arc de cercle| D(Flou stylisé style Anime/Manga)</code></pre>
-<h3 id="le-verdict">Le Verdict<a class="headerlink" href="#le-verdict" title="Permanent link">¶</a></h3>
-<p>Pour permettre à Suckless OGL de concurrencer commercialement ces rendus, l'ajout du <em>Camera-only</em> est insuffisant. <strong>L'implémentation du stockage de l'ancienne matrice de modélisation (Previous Model Matrix)</strong> par instance (dans <code>pbr_ibl_instanced.vert</code>) est l'étape la plus immédiate et gratifiante à entreprendre.</p>
+    A[Linear Blur \nStandard Suckless OGL] --&gt;|Creates straight lines and artifacts| B(Punch trajectory)
+    C[Curved Blur \nRE Engine / SF6] --&gt;|Sampling along a circular arc| D(Anime/Manga-style stylized blur)</code></pre>
+<h3 id="the-verdict">The Verdict<a class="headerlink" href="#the-verdict" title="Permanent link">¶</a></h3>
+<p>For Suckless OGL to commercially compete with these renders, adding <em>Camera-only</em> blur is insufficient. <strong>Implementing previous model matrix (Previous Model Matrix) storage</strong> per instance (in <code>pbr_ibl_instanced.vert</code>) is the most immediate and rewarding next step.</p>
 
 
 
@@ -3066,7 +3177,7 @@ Dans <strong>Suckless OGL</strong>, tous les objets 3D (comme la grille de sphè
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 11, 2026 21:25:23 UTC">March 11, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
   </span>
 
     
@@ -3126,6 +3237,8 @@ Dans <strong>Suckless OGL</strong>, tous les objets 3D (comme la grille de sphè
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/javascripts/lang_switcher.js"></script>
       
         <script src="../assets/javascripts/mathjax.js"></script>
       

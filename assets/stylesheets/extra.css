@@ -71,3 +71,33 @@
   fill: #4a4a4a !important;
   stroke: #ffffff !important;
 }
+
+/* Language switcher: highlight the currently active language */
+.md-select__link[hreflang]:lang(en)[hreflang="en"],
+.md-select__link[hreflang]:lang(fr)[hreflang="fr"] {
+  font-weight: 700;
+  color: var(--md-accent-fg-color);
+}
+
+/* :lang() matches on the html element lang attribute via inheritance */
+:lang(en) .md-select__link[hreflang="en"]::after,
+:lang(fr) .md-select__link[hreflang="fr"]::after {
+  content: " ✓";
+}
+
+/* Language switcher icon: replace SVG with current language code (set by lang_switcher.js) */
+.md-header__option .md-select > button.md-header__button svg {
+  display: none;
+}
+
+.md-header__option .md-select > button.md-header__button {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  min-width: 1.6rem;
+}
+
+/* Generic: works for any language without CSS changes */
+.md-header__option .md-select > button.md-header__button[data-lang]::before {
+  content: attr(data-lang);
+}
