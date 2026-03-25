@@ -1,127 +1,127 @@
-# Analyse de l'implémentation du Motion Blur
+# Motion Blur Implementation Analysis
 
-Cette documentation détaille l'état actuel de l'implémentation du Motion Blur dans **Suckless OGL**, ses performances, sa qualité, et les compare avec les approches des moteurs AAA, en s'appuyant particulièrement sur le cas du *RE Engine* (utilisé pour *Street Fighter 6*). Elle offre également des pistes d'amélioration concrètes.
+This document details the current state of the Motion Blur implementation in **Suckless OGL**, its performance, quality, and compares it with AAA engine approaches, drawing particularly on the *RE Engine* case (used for *Street Fighter 6*). It also provides concrete improvement paths.
 
 ---
 
-## 1. Architecture Actuelle
+## 1. Current Architecture
 
-L'architecture actuelle repose sur des principes modernes de rendu basés sur l'approche **Tile-Based / Neighbor Max**, initialement introduite par Jean-Yves Bouguet et les chercheurs en rendu temps réel. L'idée principale est d'éviter les "fuites" de flou lorsqu'un objet rapide passe devant un arrière-plan fixe, un artefact très commun dans les premières implémentations de ce post-process.
+The current architecture is based on modern rendering principles using the **Tile-Based / Neighbor Max** approach, originally introduced by Jean-Yves Bouguet and real-time rendering researchers. The main idea is to prevent blur "bleeding" when a fast object passes in front of a static background — a very common artifact in early implementations of this post-process.
 
-### Pipeline de rendu
+### Render Pipeline
 
 ```mermaid
 graph TD
     V[Velocity Buffer] --> T[Tile Max Velocity Compute]
-    T -->|Réduction à 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
+    T -->|Reduction at 16x16 via Shared Memory| TTex(Texture RG16F - Tile Max)
     TTex --> N[Neighbor Max Velocity Compute]
-    N -->|textureGather sur un Voisinage 3x3| NTex(Texture RG16F - Neighbor Max)
-    C[Color Buffer Raw] --> M(Passe Motion Blur Finale)
+    N -->|textureGather over 3x3 Neighborhood| NTex(Texture RG16F - Neighbor Max)
+    C[Color Buffer Raw] --> M(Final Motion Blur Pass)
     D[Depth Buffer] --> M
     V --> M
     NTex --> M
-    M -->|Échantillonnage de 8 frames \n+ Interleaved Gradient Noise \n+ Depth Weighting| O[Color Buffer Flouté]
+    M -->|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blurred Color Buffer]
 ```
 
-### 💡 Points forts de la solution
+### 💡 Strengths of the Solution
 
-1. **Utilisation intensive des Compute Shaders :** L'approche en deux passes (`tile_max` et `neighbor_max`) est performante. La réduction dans la mémoire partagée (Shared Memory) pour l'étape Tile Max minimise considérablement la bande passante. L'utilisation intelligente du `textureGather` permet une lecture optimale en quads.
-2. **Neighbor Max Velocity :** Empêche efficacement le flou de se propager de manière incohérente sur les objets et supprime les halos disgracieux.
-3. **Pondération avec la Profondeur (Depth Weighting) :** Protège le premier plan en désactivant le mélange de couleurs lorsque l'échantillon prélevé est trop éloigné derrière le pixel central (`depthDiff > 1.0`).
-4. **Bruit de Gradient (Interleaved Gradient Noise) :** Empêche le phénomène de *banding* visuel en transformant les stries liées à un faible nombre d'échantillons en bruit esthétique de style pellicule.
+1. **Heavy use of Compute Shaders:** The two-pass approach (`tile_max` and `neighbor_max`) is performant. The reduction in shared memory (Shared Memory) for the Tile Max step considerably minimizes bandwidth. The smart use of `textureGather` enables optimal quad reads.
+2. **Neighbor Max Velocity:** Effectively prevents blur from propagating incoherently across objects and removes unsightly halos.
+3. **Depth Weighting:** Protects the foreground by disabling color blending when the sampled pixel is too far behind the center pixel (`depthDiff > 1.0`).
+4. **Interleaved Gradient Noise:** Prevents visual *banding* by transforming stripes from low sample counts into aesthetic film-grain-style noise.
 
-### 📉 Limite de l'implémentation actuelle : Camera-Only
+### 📉 Current Implementation Limitation: Camera-Only
 
-Dans le fichier `pbr_ibl_instanced.vert`, on observe que la configuration actuelle ne calcule le déplacement (Velocity) que par le biais de l'ancienne position de la caméra (`previousViewProj` * la position de la géométrie locale actuelle) :
+In `pbr_ibl_instanced.vert`, the current configuration calculates velocity (Velocity) only via the previous camera position (`previousViewProj` * the current local geometry position):
 
 ```glsl
 CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
 PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
 ```
 
-**Pourquoi c'est tout à fait justifié (pour le moment) :**
-Dans **Suckless OGL**, tous les objets 3D (comme la grille de sphères PBR) sont statiques dans l'espace "World". Seule la caméra se déplace ou effectue des rotations. Par conséquent, il n'y a pas (encore) de concept de vélocité "Objet" (Object Velocity). Le **Camera Motion Blur** est donc 100% suffisant à ce stade du développement.
+**Why this is fully justified (for now):**
+In **Suckless OGL**, all 3D objects (like the PBR sphere grid) are static in World space. Only the camera moves or rotates. Therefore there is (yet) no concept of "Object" velocity. **Camera Motion Blur** is 100% sufficient at this stage of development.
 
-**Toutefois**, dès lors que le moteur implémentera des entités dynamiques (ex: des ennemis ou des objets physiques qui tombent), la vélocité propre de l'objet (sa *Previous World Position*) ainsi calculée sera `0` ou du moins faussée devant ne refléter que de la vélocité caméra. Un objet traversant rapidement l'écran devant une caméra fixe ne s'imprimera pas dans le *Velocity Buffer* en l'état actuel et ressortira hyper net par dessus le reste de l'image.
+**However**, once the engine implements dynamic entities (e.g., enemies or falling physics objects), the object's own velocity (its *Previous World Position*) would be `0` or at least incorrect, reflecting only camera velocity. An object crossing the screen quickly in front of a static camera would not register in the *Velocity Buffer* with the current setup and would appear hyper-sharp against the rest of the image.
 
 ---
 
-## 2. Pistes d'Améliorations (Vitesse et Qualité)
+## 2. Improvement Paths (Speed and Quality)
 
-Afin d'atteindre l'état de l'art, voici les optimisations et changements possibles.
+To reach state-of-the-art quality, here are the possible optimizations and changes.
 
-### A. Vitesse et Optimisation
+### A. Speed and Optimization
 
-* **Échantillonnage Adaptatif (Dynamic Sample Count) :**
-  Actuellement, le shader effectue **toujours** `mb_samples` itérations (8 par défaut), même si la vitesse du pixel est proche de zéro (`speed < 0.0001` est ignoré, mais les faibles valeurs passent). Un nombre dynamique d'itérations basé sur la vitesse proportionnelle permettrait d'économiser un nombre monumental de cycles GPU.
+* **Adaptive Sampling (Dynamic Sample Count):**
+  Currently, the shader always executes `mb_samples` iterations (8 by default), even if the pixel velocity is near zero (`speed < 0.0001` is ignored but low values still pass through). A dynamic iteration count based on proportional velocity would save a monumental number of GPU cycles.
   ```glsl
   int actual_samples = max(2, int(speed * TARGET_SAMPLES_PER_UNIT));
   ```
-* **Half-Resolution Reconstruction (TODO) :**
-  Exécuter 8+ lectures aléatoires non-cohérentes avec le cache sur un buffer 4K ou 1440p est extrêmement gourmand. L'accumulation du Motion Blur dans une **toute petite texture** (à moitié de la résolution native) suivie d'un *upsample* bilatéral guidé par la profondeur est à implémenter pour les performances futures.
+* **Half-Resolution Reconstruction (TODO):**
+  Executing 8+ random, cache-incoherent reads on a 4K or 1440p buffer is extremely costly. Accumulating Motion Blur in a **half-resolution texture** followed by a depth-guided bilateral upsample should be implemented for future performance.
 
-    !!! warning "Plan d'implémentation (Refactoring de `postprocess.c`)"
-        L'implémentation du Motion Blur est actuellement incluse dans le composite unifié de la passe finale (`postprocess.frag`). Pour appliquer ce *Half-Res*, il faudra :
+    echo "exit: $?"! warning "Implementation Plan (Refactoring `postprocess.c`)"
+        Implementing Half-Res requires:
 
-        1. Restructurer le rendu et casser le flux actuel en désolidarisant le Motion Blur de cette maxi-passe.
-        2. Créer un nouveau `Framebuffer` dédié au sous-échantillonnage de dimensions `width/2 x height/2`.
-        3. Créer une passe spécifique (via compute ou quad écran) ne calculant *uniquement* que l'effet de flou dans cette texture allégée en couleurs et vélocités.
-        4. Écrire et exécuter l'étape d'*upsample* bilatéral durant la passe `postprocess.frag` ou dans une passe dédiée, afin de recomposer judicieusement l'image finale sur les bords des objets définis par le `depth buffer`.
+        1. Restructure the render pipeline and decouple Motion Blur from the current mega-pass.
+        2. Create a dedicated `Framebuffer` for sub-sampling at `width/2 x height/2` dimensions.
+        3. Create a dedicated pass (via compute or screen quad) that computes *only* the blur effect in this lightweight texture.
+        4. Write and execute the bilateral upsample step during the `postprocess.frag` pass or a dedicated pass to recompose the final image cleanly on object edges defined by the `depth buffer`.
 
-* **Per-Object et Skinned Velocity (Critique) :**
-  Pour que le motion blur s'applique aux objets en mouvement ou aux personnages, il faut stocker et transmettre la matrice Modèle de la frame précédente pour *chaque* objet.
+* **Per-Object and Skinned Velocity (Critical):**
+  For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for *each* object.
   ```glsl
   vec4 PrevWorldPos = vec3(i_previous_model * vec4(in_position, 1.0));
   PreviousClipPos = previousViewProj * PrevWorldPos;
   ```
-* **Soft Depth-Testing :**
-  Remplacer le test booléen et brutal de profondeur par une pondération lissée à l'aide d'un `smoothstep()`. Des limites dures créent un bruit granuleux ou des tremblements de pixels (flickering) sur les arêtes en mouvement.
+* **Soft Depth-Testing:**
+  Replace the hard boolean depth test with a smooth weight using `smoothstep()`. Hard limits create grainy noise or pixel flickering on moving edges.
 
-### C. Le Cas Exceptionnel : Flou Analytique Procédural
+### C. The Special Case: Procedural Analytic Blur
 
-Puisque **Suckless OGL** rend nativement des objets purs via **Raytracing analytique** dans le Fragment Shader (par le biais des billboards et *impostors* de sphères dans `pbr_ibl_billboard.frag`), une solution mathématiquement parfaite et sans post-process (2D) est techniquement possible.
+Since **Suckless OGL** natively renders pure objects via **analytical Ray-tracing** in the Fragment Shader (through billboards and sphere *impostors* in `pbr_ibl_billboard.frag`), a mathematically perfect, post-process-free (2D) solution is technically feasible.
 
-Lorsqu'une sphère de centre $C$ se déplace d'une position $C_0$ vers $C_1$ (via un vecteur vitesse $\vec{V}$) au cours d'une frame, le volume balayé par cette sphère (*Swept Volume*) forme géométriquement une **Capsule** (un cylindre terminé par deux hémisphères).
+When a sphere centered at $C$ moves from position $C_0$ to $C_1$ (via velocity vector $\vec{V}$) during a frame, the volume swept by the sphere geometrically forms a **Capsule** (a cylinder capped by two hemispheres).
 
-**Comment l'implémenter mathématiquement au lieu du Post-Process ?**
+**How to implement this mathematically instead of Post-Process:**
 
-1. **Intersection Rayon-Capsule :** Au lieu de croiser un rayon avec une sphère, le shader des *impostors* calcule l'intersection analytique d'un rayon avec une capsule s'étendant du centre à $t=0$ au centre à $t=1$.
-2. **Intégration Temporelle :** Une fois l'intersection résolue sur la droite de mouvement de la capsule, l'opacité (Alpha) et la normale de surface en ce point peuvent être calculées en fonction du temps couvert par le croisement.
-3. **Mouvement de la Caméra + Mouvement de l'Objet :** La matrice de transformation de la vue au cours du temps peut simplement modifier l'origine du rayon $O(t) = O_0 + V_{cam} \cdot t$ pour simuler le flou de caméra.
-4. **Jittering Temporel / Stochasticité :** Au lieu d'accumuler dans un multi-buffer, le rayon généré depuis le point central de l'écran peut se voir attribuer une variable temps $t$ aléatoire par frame (via du Bruit Bleu par exemple). Couplé à un TAA (Temporal Anti-Aliasing), le flou de mouvement devient instantanément "gratuit" et mathématiquement parfait (vrai flou 3D) sans les erreurs d'occlusion du post-processing 2D.
+1. **Ray-Capsule Intersection:** Instead of intersecting a ray with a sphere, the *impostor* shader computes the analytical intersection of a ray with a capsule extending from the center at $t=0$ to the center at $t=1$.
+2. **Temporal Integration:** Once the intersection is resolved along the capsule motion axis, the opacity (Alpha) and surface normal at that point can be computed as a function of the time covered by the crossing.
+3. **Camera + Object Motion:** The view transformation matrix over time can simply modify the ray origin $O(t) = O_0 + V_{cam} \cdot t$ to simulate camera blur.
+4. **Temporal Jitter / Stochasticity:** Instead of accumulating in a multi-buffer, the ray generated from the screen center can be assigned a random time variable $t$ per frame (e.g., via Blue Noise). Combined with TAA, motion blur becomes instantaneously "free" and mathematically perfect (true 3D blur) without the occlusion errors of 2D post-processing.
 
-C'est une optimisation très avancée mais extrêmement élégante, souvent réservée aux moteurs de rendu hors-ligne (Pixar/RenderMan) ou aux *demoscenes* purement procédurales.
+This is a very advanced but extremely elegant optimization, often reserved for offline renderers (Pixar/RenderMan) or purely procedural demoscenes.
 
 ---
 
-## 3. Comparaison avec les Moteurs AAA
+## 3. Comparison with AAA Engines
 
 ### Unreal Engine 5 & Unity (HDRP)
 
-Ces moteurs utilisent une architecture extrêmement similaire au niveau du *Tile Max* / *Neighbor Max*. Cependant, ils intègrent l'effet au sein de leur écosystème global temporel :
-* **Découplage :** Ces moteurs comportent un contrôle séparant explicitement la force du flou de mouvement de la Caméra et celui des Objets, car le flou de mouvement de caméra est une cause très connue de *Motion Sickness* chez les joueurs.
-* **TSR / TAA :** Chez l'UE5, le flou de mouvement n'est pas uniquement un effet de post-process jetable, il aide visuellement la résolution temporelle (Temporal Super Resolution) en combinant les vecteurs de mouvement à l'Anti-Aliasing.
+These engines use an architecture extremely similar to *Tile Max* / *Neighbor Max*. However, they integrate the effect within their global temporal ecosystem:
+* **Decoupling:** These engines have a control explicitly separating the strength of Camera motion blur from Object motion blur, as camera motion blur is a well-known cause of *Motion Sickness* in players.
+* **TSR / TAA:** In UE5, motion blur is not just a throwaway post-process effect — it visually aids temporal resolution (Temporal Super Resolution) by combining motion vectors with Anti-Aliasing.
 
 ---
 
-## 4. L'Exemple de Street Fighter 6 (RE Engine)
+## 4. The Street Fighter 6 Case Study (RE Engine)
 
-Le **RE Engine** (Capcom) livre un *Masterclass* sur l'utilisation poussée de l'effet dans le jeu de combat **Street Fighter 6** :
+The **RE Engine** (Capcom) delivers a *Masterclass* on advanced use of the effect in the fighting game **Street Fighter 6**:
 
-1. **Per-Vertex Velocity Hyper-Précise :**
-   Dans SF6, la vélocité n'est pas seulement passée par *mesh*, mais elle est calculée os par os via le shader de *Skinning*. Lorsqu'un personnage donne un coup de pied, sa chaussure développe un vecteur de vélocité gigantesque comparé à sa cuisse.
+1. **Hyper-Precise Per-Vertex Velocity:**
+   In SF6, velocity is not just passed per *mesh* — it is computed bone by bone via the *Skinning* shader. When a character kicks, their shoe develops a gigantic velocity vector compared to their thigh.
 
-2. **Sur-Échantillonnage Localisé (Targeted High-Samples) :**
-   Pour économiser de la puissance sans sacrifier la qualité, le RE Engine se permet de lancer entre 16 et 32 échantillons (Samples) par pixel, **mais uniquement** sur les silhouettes enregistrant des vecteurs de haute amplitude. L'environnement statique derrière reste parfaitement net et très peu coûteux à évaluer.
+2. **Targeted High-Samples (Localized Supersampling):**
+   To conserve power without sacrificing quality, the RE Engine launches between 16 and 32 samples per pixel, **but only** on silhouettes recording high-amplitude vectors. The static environment behind remains perfectly sharp and very cheap to evaluate.
 
-3. **Motion Blur Courbe (Curved Motion Blur) :**
-   Contrairement à du flou Linéaire standard (« je prends un vecteur et je trace une ligne droite »), le moteur de Capcom stocke l'information de l'accélération en plus de la vitesse. L'échantillonnage de Flou est ainsi "courbé" dans l'espace afin de simuler la trajectoire radiale des membres et poings.
+3. **Curved Motion Blur:**
+   Unlike standard linear blur ("take a vector and trace a straight line"), Capcom's engine stores acceleration information in addition to velocity. The blur sampling is thus "curved" in space to simulate the radial trajectory of limbs and fists.
 
 ```mermaid
 graph LR
-    A[Flou Linéaire \nStandard Suckless OGL] -->|Crée des lignes droites et des artefacts| B(Trajectoire d'un coup de poing)
-    C[Flou Courbe \nRE Engine / SF6] -->|Échantillonnage le long d'un arc de cercle| D(Flou stylisé style Anime/Manga)
+    A[Linear Blur \nStandard Suckless OGL] -->|Creates straight lines and artifacts| B(Punch trajectory)
+    C[Curved Blur \nRE Engine / SF6] -->|Sampling along a circular arc| D(Anime/Manga-style stylized blur)
 ```
 
-### Le Verdict
-Pour permettre à Suckless OGL de concurrencer commercialement ces rendus, l'ajout du *Camera-only* est insuffisant. **L'implémentation du stockage de l'ancienne matrice de modélisation (Previous Model Matrix)** par instance (dans `pbr_ibl_instanced.vert`) est l'étape la plus immédiate et gratifiante à entreprendre.
+### The Verdict
+For Suckless OGL to commercially compete with these renders, adding *Camera-only* blur is insufficient. **Implementing previous model matrix (Previous Model Matrix) storage** per instance (in `pbr_ibl_instanced.vert`) is the most immediate and rewarding next step.

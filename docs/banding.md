@@ -1,10 +1,10 @@
-# Effet de Banding (Quantisation Couleurs)
+# Banding Effect (Color Quantization)
 
-L'effet de **Banding** (ou réduction de profondeur de couleur) est un filtre artistique qui réduit volontairement la précision des couleurs pour créer des styles allant du rétro-informatique au schéma technique.
+The **Banding** effect (or color depth reduction) is an artistic filter that intentionally reduces color precision to create styles ranging from retro computing to technical diagrams.
 
-## 🚀 Fonctionnement Rapide
+## 🚀 Quick Overview
 
-Le système propose **5 modes distincts**, accessibles via un cycle sur la **touche '7'**. Chaque mode utilise une approche mathématique différente pour compresser l'espace colorimétrique.
+The system offers **5 distinct modes**, cycled through **key '7'**. Each mode uses a different mathematical approach to compress the color space.
 
 ```graphviz
 digraph BandingFlow {
@@ -14,14 +14,14 @@ digraph BandingFlow {
     node [shape=rect, style="filled,rounded", fontname="Helvetica", fillcolor="#24283b", color="#414868", fontcolor="#c0caf5", penwidth=2];
     edge [color="#565f89", fontcolor="#9aa5ce", fontsize=10];
 
-    A [label="Image HDR"];
+    A [label="HDR Image"];
     B [label="Banding Mode?", shape=diamond, fillcolor="#1a1b26", color="#7dcfff", fontcolor="#7dcfff"];
     C [label="0: Linear"];
     D [label="1: Dithered"];
     E [label="2: Perceptual"];
     F [label="3: Channel"];
     G [label="4: Luminance"];
-    H [label="Image LDR finale", fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
+    H [label="Final LDR Image", fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
 
     A -> B;
     B -> C; B -> D; B -> E; B -> F; B -> G;
@@ -31,18 +31,18 @@ digraph BandingFlow {
 
 ---
 
-## 🎨 Les 5 Styles Artistiques
+## 🎨 The 5 Artistic Styles
 
 ### 1. Pop Art (Linear)
-Le mode le plus simple. Il divise l'espace colorimétrique en paliers égaux.
-- **Usage** : Pour un look "Cel-shaded" ou "Comic book".
-- **Maths** :
+The simplest mode. It divides the color space into equal steps.
+- **Usage**: For a "Cel-shaded" or "Comic book" look.
+- **Math**:
 \f[ result = \frac{\lfloor color \cdot levels \rfloor}{levels} \f]
 
 ### 2. Retro Computing (Dithered)
-Utilise une matrice de **Bayer 4x4** pour simuler des nuances intermédiaires via une grille de seuils.
-- **Usage** : Style Macintosh, GameBoy ou vieux moniteurs CGA.
-- **Principe** :
+Uses a **Bayer 4x4** matrix to simulate intermediate shades via a threshold grid.
+- **Usage**: Macintosh, GameBoy, or old CGA monitor style.
+- **Principle**:
 ```graphviz
 digraph DitherFlow {
     rankdir=TD;
@@ -61,36 +61,36 @@ digraph DitherFlow {
 ```
 
 ### 3. Analog (Perceptual)
-Applique une courbe de gamma avant la quantisation pour préserver plus de détails dans les zones sombres.
-- **Usage** : Look "capteur vidéo vintage".
-- **Avantage** : Évite les aplats noirs massifs dans les ombres.
+Applies a gamma curve before quantization to preserve more detail in dark areas.
+- **Usage**: "Vintage video sensor" look.
+- **Advantage**: Avoids massive black blobs in shadows.
 \f[ result = \left( \frac{\lfloor color^{\gamma} \cdot levels \rfloor}{levels} \right)^{\frac{1}{\gamma}} \f]
 
 ### 4. CGA/VGA Style (Channel)
-Réduit la précision de chaque canal RGB indépendamment.
-- **Usage** : Simuler des palettes matérielles limitées (ex: 8 niveaux de rouge, 8 de vert, 4 de bleu).
+Reduces the precision of each RGB channel independently.
+- **Usage**: Simulate limited hardware palettes (e.g., 8 red levels, 8 green, 4 blue).
 
 ### 5. Blueprint (Luminance)
-Quantise la luminance perçue de l'image, puis applique une teinte colorée.
-- **Usage** : Schémas techniques, hologrammes, interfaces futuristes.
+Quantizes the perceived luminance of the image, then applies a color tint.
+- **Usage**: Technical blueprints, holograms, futuristic interfaces.
 
 ---
 
-## ⚙️ Paramètres (PostProcessPreset)
+## ⚙️ Parameters (PostProcessPreset)
 
-| Paramètre | Description |
+| Parameter | Description |
 | :--- | :--- |
-| `mode` | Sélecteur du style (0 à 4). |
-| `levels` | Nombre de niveaux de couleurs (ex: 2.0 = Noir/Blanc). |
-| `dither_strength` | Intensité du grain (Mode 1 uniquement). |
-| `perceptual_gamma` | Courbe de contraste (Mode 2 uniquement). |
-| `channel_levels` | Canaux RGB (Mode 3) ou Couleur de Teinte (Mode 4). |
+| `mode` | Style selector (0 to 4). |
+| `levels` | Number of color levels (e.g., 2.0 = Black/White). |
+| `dither_strength` | Grain intensity (Mode 1 only). |
+| `perceptual_gamma` | Contrast curve (Mode 2 only). |
+| `channel_levels` | RGB channels (Mode 3) or Tint Color (Mode 4). |
 
 ---
 
-## 🛠 Intégration Technique
+## 🛠 Technical Integration
 
-L'effet est implémenté dans le pipeline PBR via un Uber-shader optimisé.
+The effect is implemented in the PBR pipeline via an optimized Uber-shader.
 
 ```graphviz
 digraph TechnicalFlow {

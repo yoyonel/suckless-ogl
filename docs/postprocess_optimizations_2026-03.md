@@ -1,93 +1,93 @@
-# Analyse Technique : Optimisations Post-Process (Mars 2026)
+# Technical Analysis: Post-Process Optimizations (March 2026)
 
-Cette documentation détaille les pistes d'optimisation GPU pour le pipeline de post-processing de `suckless-ogl`, basées sur le passage des calculs vers les **Compute Shaders**.
+This document details GPU optimization paths for the post-processing pipeline of `suckless-ogl`, based on migrating computations to **Compute Shaders**.
 
-## Objectifs Généraux
+## General Objectives
 
-1. **Réduction de l'overhead CPU** : Supprimer les changements de Framebuffer (FBO) et les draw calls multiples.
+1. **Reduce CPU overhead**: Eliminate Framebuffer (FBO) switches and multiple draw calls.
 
-2. **Maximisation de l'occupation GPU** : Utiliser le parallélisme massif des unités de calcul (EUs/CUs) via les Compute Shaders.
+2. **Maximize GPU occupancy**: Leverage the massive parallelism of compute units (EUs/CUs) via Compute Shaders.
 
-3. **Réduction des barrières de synchronisation** : Minimiser les attentes entre les passes.
+3. **Reduce synchronization barriers**: Minimize waits between passes.
 
 ---
 
-## Partie 1 : Auto-Exposure (Calcul de Luminance)
+## Part 1: Auto-Exposure (Luminance Calculation)
 
 ### Concept
 
-Remplacer la passe de rasterisation (Fragment Shader sur un quad 64x64) par un Compute Shader traitant la texture de scène.
+Replace the rasterization pass (Fragment Shader on a 64x64 quad) with a Compute Shader processing the scene texture.
 
-### Points Critiques (Leçons Apprises)
+### Critical Points (Lessons Learned)
 
-Pour conserver un rendu **ISO avec master**, le Compute Shader doit impérativement répliquer la logique physique :
+To maintain **ISO parity with master**, the Compute Shader must strictly replicate the physical logic:
 
-- **Échantillonnage 4x4** : Ne pas se contenter d'un `texture()` au centre. Il faut moyenner un bloc de pixels (box filter) pour capturer les pics de lumière.
+- **4x4 Sampling**: Do not settle for a single `texture()` at the center. Average a pixel block (box filter) to capture light peaks.
 
-- **Seuil d'exclusion (0.05)** : Ignorer les pixels dont la luminance est inférieure à 0.05. Sans cela, le ciel noir ou les ombres profondes tirent la moyenne vers le bas, provoquant une surexposition massive.
+- **Exclusion Threshold (0.05)**: Ignore pixels with luminance below 0.05. Without this, black sky or deep shadows pull the average down, causing massive overexposure.
 
-- **Valeur Sentinelle (-100.0)** : Si un bloc est entièrement noir, il doit être marqué pour être ignoré par l'étape d'adaptation.
+- **Sentinel Value (-100.0)**: If a block is entirely black, it must be marked for the adaptation step to ignore it.
 
-### Étapes d'implémentation
+### Implementation Steps
 
-1. **Shader** : Créer `shaders/lum_downsample.comp` avec une boucle de sampling 4x4.
+1. **Shader**: Create `shaders/lum_downsample.comp` with a 4x4 sampling loop.
 
-2. **Texture** : Passer `downsample_tex` en format `R32F` pour le stockage d'images (image2D).
+2. **Texture**: Switch `downsample_tex` to `R32F` format for image storage (`image2D`).
 
-3. **C Code** : Supprimer `downsample_fbo`. Remplacer `glDrawArrays` par `glDispatchCompute(8, 8, 1)`.
+3. **C Code**: Remove `downsample_fbo`. Replace `glDrawArrays` with `glDispatchCompute(8, 8, 1)`.
 
-4. **Barrière** : Ajouter `glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)` avant l'étape d'adaptation.
+4. **Barrier**: Add `glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)` before the adaptation step.
 
 ---
 
-## Partie 2 : Bloom (Downsampling Single-Pass)
+## Part 2: Bloom (Single-Pass Downsampling)
 
 ### Concept
 
-Remplacer les 5 à 6 passes de Downsampling successives par un seul dispatch Compute Shader (similaire au _Single Pass Downsampler_ d'AMD).
+Replace the 5–6 successive downsampling passes with a single Compute Shader dispatch (similar to AMD's _Single Pass Downsampler_).
 
-### Détails Techniques
+### Technical Details
 
-- **Hiérarchie de Mips** : Utiliser `glBindImageTexture` pour lier plusieurs niveaux de mipmaps (1 à 4) simultanément.
+- **Mip Hierarchy**: Use `glBindImageTexture` to bind multiple mipmap levels (1 to 4) simultaneously.
 
-- **Parallélisme** : Chaque groupe de travail (8x8) traite une zone et écrit dans les mips correspondantes.
+- **Parallelism**: Each work group (8x8) processes a region and writes to the corresponding mips.
 
-- **Format** : Utiliser `R11F_G11F_B10F` pour un stockage HDR compact et performant.
+- **Format**: Use `R11F_G11F_B10F` for compact, performant HDR storage.
 
-### Étapes d'implémentation
+### Implementation Steps
 
-1. **Shader** : Créer `shaders/bloom_downsample.comp`.
+1. **Shader**: Create `shaders/bloom_downsample.comp`.
 
-2. **C Code** : Modifier `fx_bloom_init` pour configurer les textures de mips avec l'accès image.
+2. **C Code**: Modify `fx_bloom_init` to configure mip textures with image access.
 
-3. **Render** : Remplacer la boucle de rendu fragment par un dispatch unique. Conserver le mode Raster pour l'Upsampling (qui bénéficie du blending hardware `GL_ONE, GL_ONE`).
+3. **Render**: Replace the fragment render loop with a single dispatch. Keep Raster mode for Upsampling (which benefits from hardware blending `GL_ONE, GL_ONE`).
 
 ---
 
-## Partie 3 : Gestion des Ressources & RAII
+## Part 3: Resource Management & RAII
 
 ### Concept
 
-Fiabiliser la suppression des ressources lors du redémarrage du moteur ou du changement de résolution.
+Ensure reliable resource deletion during engine restarts or resolution changes.
 
-### Recommandations
+### Recommendations
 
-- **Macro `SHADER_SAFE_DESTROY`** : Utiliser systématiquement une macro vérifiant la nullité avant `shader_destroy`.
+- **`SHADER_SAFE_DESTROY` Macro**: Always use a macro that checks for null before calling `shader_destroy`.
 
-- **Nettoyage FBO** : S'assurer que les textures attachées aux FBO sont bien libérées _après_ les FBO pour éviter les dangling pointers dans le driver.
-
----
-
-## Partie 4 : Validation et Métriques
-
-### Méthodologie de test
-
-1. **Parité Visuelle** : Utiliser `tests/test_visual_fx.c` pour comparer, pixel à pixel, le rendu Raster et le rendu Compute. Toute différence de luminance moyenne > 1% doit être traitée comme un bug.
-
-2. **Benchmarking** : Utiliser `apitrace` pour vérifier la disparition des "bubbles" dans le pipeline (zones où le GPU attend le CPU).
-
-3. **Watchdog** : Pour les tests sous Wine, implémenter un timeout de sortie si l'application ignore le signal `Escape` suite à une désynchronisation X11.
+- **FBO Cleanup**: Ensure that textures attached to FBOs are freed _after_ the FBOs to avoid dangling pointers in the driver.
 
 ---
 
-_Analyse réalisée le 13 Mars 2026._
+## Part 4: Validation and Metrics
+
+### Test Methodology
+
+1. **Visual Parity**: Use `tests/test_visual_fx.c` to compare Raster and Compute output pixel-by-pixel. Any mean luminance difference > 1% must be treated as a bug.
+
+2. **Benchmarking**: Use `apitrace` to verify the elimination of "bubbles" in the pipeline (zones where the GPU waits for the CPU).
+
+3. **Watchdog**: For tests under Wine, implement an exit timeout if the application ignores the `Escape` signal due to X11 desynchronization.
+
+---
+
+_Analysis performed on March 13, 2026._
