@@ -1,49 +1,49 @@
-# Lexique Technique
+# Technical Glossary
 
-Ce lexique regroupe les termes et expressions techniques utilisés dans le projet, couvrant les aspects théoriques du rendu PBR, les optimisations géométriques et les concepts de bas niveau de l'API graphique.
+This glossary covers technical terms and expressions used in the project, spanning theoretical PBR rendering aspects, geometric optimizations, and low-level graphics API concepts.
 
 ---
 
-## 🎨 Rendu & Physique (PBR / IBL)
+## 🎨 Rendering & Physics (PBR / IBL)
 
-| Terme | Définition Logicielle / Théorique |
+| Term | Software / Theoretical Definition |
 | :--- | :--- |
-| **PBR** | *Physically Based Rendering*. Modèle de rendu basé sur les lois de la physique pour simulant l'interaction réelle de la lumière avec les matériaux. |
-| **IBL** | *Image Based Lighting*. Utilisation d'une image (cubemap HDR) pour simuler une illumination globale complexe. |
-| **BRDF** | *Bidirectional Reflective Distribution Function*. Fonction définissant comment un matériau réfléchit la lumière (modèle de Cook-Torrance). |
-| **NDF (GGX)** | *Normal Distribution Function*. Partie du PBR décrivant la micro-géométrie des surfaces (distribution des micro-facettes). |
-| **Split-Sum** | Approximation mathématique (Epic Games) permettant de calculer l'IBL spéculaire en temps réel via une pré-intégration (Prefiltered Map + BRDF LUT). |
-| **Irradiance / Radiance** | L'Irradiance est le flux lumineux incident total (diffus), la Radiance est le flux dans une direction précise (spéculaire). |
-| **Normal Mapping / TBN** | Simulation de détails via une texture. La matrice **TBN** (Tangent, Bitangent, Normal) transforme les vecteurs du "Tangent Space" vers le "World Space". |
+| **PBR** | *Physically Based Rendering*. A rendering model grounded in the laws of physics to simulate how light realistically interacts with materials. |
+| **IBL** | *Image Based Lighting*. Using an image (HDR cubemap) to simulate complex global illumination. |
+| **BRDF** | *Bidirectional Reflective Distribution Function*. A function defining how a material reflects light (Cook-Torrance model). |
+| **NDF (GGX)** | *Normal Distribution Function*. The component of PBR describing the micro-geometry of surfaces (microfacet distribution). |
+| **Split-Sum** | A mathematical approximation (Epic Games) enabling real-time IBL specular computation via pre-integration (Prefiltered Map + BRDF LUT). |
+| **Irradiance / Radiance** | Irradiance is the total incident luminous flux (diffuse); Radiance is the flux in a specific direction (specular). |
+| **Normal Mapping / TBN** | Detail simulation via a texture. The **TBN** matrix (Tangent, Bitangent, Normal) transforms vectors from Tangent Space to World Space. |
 
-## 📐 Optimisations de Projection (Sphères / Billboards)
+## 📐 Projection Optimizations (Spheres / Billboards)
 
-| Terme | Définition Logicielle |
+| Term | Software Definition |
 | :--- | :--- |
-| **Imposteurs** | Technique simulant une géométrie 3D complexe (sphère) sur un quad 2D via du ray-casting dans le shader. |
-| **Analytic AA** | Anti-Aliasing mathématique sur le bord de la sphère calculé à partir de la dérivée du discriminant (`fwidth`), offrant des contours parfaits. |
-| **Tangent Planes** | Méthode géométrique calculant la "bounding box" (AABB) parfaite d'une sphère à l'écran via les plans tangents passant par la caméra. |
-| **Conservative Depth** | Positionnement du quad au point le plus proche de la sphère pour garantir un Z-test correct avant l'écriture de `gl_FragDepth`. |
-| **Discriminant** | Valeur de l'équation Rayon-Sphère ($b^2 - ac$). Détermine si un pixel est à l'intérieur ($>0$) ou à l'extérieur ($<0$) de la sphère. |
-| **Perspective Distortion** | Déformation elliptique d'une sphère lorsqu'elle s'éloigne du centre de l'écran, gérée ici par la projection exacte des tangents. |
+| **Impostors** | A technique simulating complex 3D geometry (sphere) on a 2D quad via ray-casting in the shader. |
+| **Analytic AA** | Mathematical anti-aliasing on the sphere edge, computed from the discriminant derivative (`fwidth`), yielding perfect contours. |
+| **Tangent Planes** | A geometric method computing the perfect screen-space bounding box (AABB) of a sphere via tangent planes passing through the camera. |
+| **Conservative Depth** | Positioning the quad at the sphere's closest point to guarantee a correct Z-test before writing `gl_FragDepth`. |
+| **Discriminant** | The ray-sphere equation value ($b^2 - ac$). Determines whether a pixel is inside ($>0$) or outside ($<0$) the sphere. |
+| **Perspective Distortion** | Elliptical deformation of a sphere when it moves away from screen center, handled here by exact tangent projection. |
 
-## ⚙️ API Graphique & Flux de Données (GPU)
+## ⚙️ Graphics API & Data Flow (GPU)
 
-| Terme | Définition Logicielle |
+| Term | Software Definition |
 | :--- | :--- |
-| **PBO (Zero-Copy)** | *Pixel Buffer Object*. Utilisation de `GL_MAP_UNSYNCHRONIZED_BIT` pour uploader des données sans bloquer le CPU. |
-| **Fence Sync** | Objet `glFenceSync` permettant de vérifier la complétion d'une tâche GPU sans forcer un vidage complet (stall) du pipeline. |
-| **Flat Interpolation** | Qualificateur `flat` empêchant l'interpolation entre sommets, crucial pour la stabilité numérique des calculs de silouhette sur les sphères. |
-| **Provoking Vertex** | Sommet dont la valeur est utilisée par l'ensemble de la primitive lors d'une interpolation `flat`. |
-| **Pipeline Stall** | Latence critique où le CPU attend le GPU (causée par une lecture synchrone ou un `glFinish`). |
+| **PBO (Zero-Copy)** | *Pixel Buffer Object*. Using `GL_MAP_UNSYNCHRONIZED_BIT` to upload data without stalling the CPU. |
+| **Fence Sync** | A `glFenceSync` object used to check GPU task completion without forcing a full pipeline flush (stall). |
+| **Flat Interpolation** | The `flat` qualifier preventing interpolation between vertices, critical for numerical stability of silhouette calculations on spheres. |
+| **Provoking Vertex** | The vertex whose value is used for the entire primitive during `flat` interpolation. |
+| **Pipeline Stall** | A critical latency where the CPU waits for the GPU (caused by synchronous reads or `glFinish`). |
 
-## 🚀 Architecture & Système
+## 🚀 Architecture & System
 
-| Terme | Définition Logicielle |
+| Term | Software Definition |
 | :--- | :--- |
-| **Time Slicing** | Découpage d'opérations lourdes (IBL) en petites tranches réparties sur plusieurs frames pour maintenir un FPS constant. |
-| **Double Buffering (Pending)** | Préparation d'un nouvel état (ex: environnement) en arrière-plan pendant que l'ancien est toujours en cours d'affichage. |
-| **SIMD (AVX)** | Utilisation d'instructions processeur larges pour traiter plusieurs flottants simultanément (utilisé pour le tri des sphères). |
-| **PAL** | *Platform Abstraction Layer*. Couche isolant le code métier des spécificités système (Linux/Windows). |
-| **MkDocs / Doxygen** | Outils de génération de documentation (Narrative vs API Reference). |
-| **Tracy** | Profileur hybride (CPU/GPU) utilisé pour analyser les performances en temps réel. |
+| **Time Slicing** | Splitting heavy operations (IBL) into small slices spread across multiple frames to maintain a constant FPS. |
+| **Double Buffering (Pending)** | Preparing a new state (e.g., environment) in the background while the old one is still being displayed. |
+| **SIMD (AVX)** | Using wide processor instructions to process multiple floats simultaneously (used for sphere sorting). |
+| **PAL** | *Platform Abstraction Layer*. A layer isolating business logic from system-specific details (Linux/Windows). |
+| **MkDocs / Doxygen** | Documentation generation tools (Narrative vs. API Reference). |
+| **Tracy** | A hybrid profiler (CPU/GPU) used to analyze performance in real time. |

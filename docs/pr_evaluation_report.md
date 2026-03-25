@@ -1,41 +1,41 @@
 # PR Evaluation: Shader Path Security 🛡️
 
-Cette PR apporte une amélioration critique à la sécurité et à la robustesse du chargeur de shaders (`@header`). Elle traite non seulement les vulnérabilités de type "Path Traversal", mais améliore aussi la gestion des erreurs internes (troncation).
+This PR brings a critical security and robustness improvement to the shader loader (`@header`). It addresses not only Path Traversal vulnerabilities but also improves internal error handling (truncation).
 
-## 1. Apport de la PR
+## 1. PR Contribution
 
-- **Sécurité (Voisinage Zero-Trust)** : L'ajout de `is_safe_path` empêche l'utilisation de `..`, des chemins absolus `/`, et des caractères suspects (`:`, `\`). C'est essentiel pour éviter qu'un shader malveillant ne puisse lire des fichiers sensibles (ex: `/etc/passwd` ou des clés SSH) via des inclusions relatives.
-- **Robustesse des Buffers** : Remplacement des opérations de chaînes potentiellement risquées par des vérifications explicites de taille (`safe_snprintf`, `safe_memcpy`) et détection de la troncation des chemins.
-- **Testabilité** : Introduction des tests "Standalone", permettant de tester la logique métier sans dépendances lourdes (GPU, Drivers).
+- **Security (Zero-Trust Perimeter)**: Adding `is_safe_path` prevents the use of `..`, absolute paths `/`, and suspicious characters (`:`, `\`). This is essential to prevent a malicious shader from reading sensitive files (e.g., `/etc/passwd` or SSH keys) via relative includes.
+- **Buffer Robustness**: Replacement of potentially risky string operations with explicit size checks (`safe_snprintf`, `safe_memcpy`) and path truncation detection.
+- **Testability**: Introduction of "Standalone" tests, enabling business logic testing without heavy dependencies (GPU, Drivers).
 
-## 2. Qualité du Code
+## 2. Code Quality
 
-- **Programmation Défensive** : Utilisation de `MAX_INCLUDE_DEPTH` pour limiter la récursivité et `MAX_SHADER_SOURCE_SIZE` (16MB) pour prévenir les attaques par déni de service (DoS).
-- **Gestion RAII** : Usage intelligent de `__attribute__((cleanup(ctx_free)))` pour garantir la libération de la mémoire complexe du système d'inclusions, même en cas d'erreur précoce.
-- **Précision du Parsing** : Le parser de `@header` gère correctement les chemins avec ou sans guillemets, et nettoie les espaces/retours chariot résiduels.
+- **Defensive Programming**: Using `MAX_INCLUDE_DEPTH` to limit recursion and `MAX_SHADER_SOURCE_SIZE` (16MB) to prevent denial-of-service (DoS) attacks.
+- **RAII Management**: Smart use of `__attribute__((cleanup(ctx_free)))` to guarantee memory release for the complex include system, even on early error.
+- **Parsing Precision**: The `@header` parser correctly handles paths with or without quotes, and strips trailing spaces/carriage returns.
 
-## 3. Analyse de `tests/test_shader_path_security_standalone.c`
+## 3. Analysis of `tests/test_shader_path_security_standalone.c`
 
-### Méthode de Test : "Mocking & Injection"
+### Test Method: "Mocking & Injection"
 
-Le fichier utilise une stratégie astucieuse pour isoler la logique de `src/shader.c` :
+The file uses a clever strategy to isolate the logic from `src/shader.c`:
 
-1. **Mocks Légers** : Au lieu de lier `glad` ou le système de log complexe, le test redéfinit des fonctions "vides" (lignes 11-173). Cela permet au compilateur de satisfaire les symboles sans infrastructure OpenGL.
-2. **Inclusion Directe du C** : `#include "shader.c"` (ligne 175). C'est la clé pour tester des fonctions `static` (ex: `get_dir_from_path`, `parse_include_path`) sans les exposer dans le header public.
-3. **Isolation Totale** : Le test se compile en un exécutable minimal, ultra-rapide et déterministe, idéal pour une CI qui doit tourner sans GPU (ex: GitHub Actions standard).
+1. **Lightweight Mocks**: Instead of linking `glad` or the complex logging system, the test redefines "empty" functions (lines 11–173). This allows the compiler to satisfy symbols without OpenGL infrastructure.
+2. **Direct C Include**: `#include "shader.c"` (line 175). This is the key to testing `static` functions (e.g., `get_dir_from_path`, `parse_include_path`) without exposing them in the public header.
+3. **Total Isolation**: The test compiles to a minimal, ultra-fast, deterministic executable — ideal for CI running without a GPU (e.g., standard GitHub Actions).
 
-### Focus sur la Sécurité via Mock
+### Security Focus via Mock
 
-Le test valide spécifiquement les **cas aux limites de troncation**. Par exemple, `test_get_dir_from_path_truncation` vérifie que si le buffer de sortie est trop petit pour contenir le répertoire, la fonction échoue proprement (`false`) au lieu de copier une chaîne tronquée potentiellement dangereuse ou invalide.
+The test specifically validates **truncation edge cases**. For example, `test_get_dir_from_path_truncation` verifies that if the output buffer is too small to hold the directory, the function fails cleanly (`false`) instead of copying a potentially dangerous or invalid truncated string.
 
 ---
 
-## Conclusion & Recommandations
+## Conclusion & Recommendations
 
-**Score : 9/10**
+**Score: 9/10**
 
-- **Points forts** : Sécurité granulaire, tests rapides, code propre.
-- **Amélioration possible** : Ajouter un test dans le standalone pour `is_safe_path` lui-même avec une liste de "payloads" classiques (`../../`, `/etc/`, `C:\`, etc.) pour centraliser la validation de la blacklist.
+- **Strengths**: Granular security, fast tests, clean code.
+- **Possible improvement**: Add a test in the standalone suite for `is_safe_path` itself with a list of classic "payloads" (`../../`, `/etc/`, `C:\`, etc.) to centralize blacklist validation.
 
 > [!TIP]
-> La méthode d'inclusion directe du fichier `.c` dans les tests est excellente pour le code "infrastructure" comme celui-ci. Elle permet d'atteindre une couverture de branche de 100% sur la logique de parsing sans avoir à créer des fichiers physiques sur le disque pour chaque combinaison.
+> The method of directly including the `.c` file in tests is excellent for "infrastructure" code like this. It allows achieving 100% branch coverage on parsing logic without needing to create physical files on disk for each combination.

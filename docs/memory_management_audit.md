@@ -1,49 +1,49 @@
-# Rapport d'Analyse : Gestion de la Mémoire et Shallow Copies
+# Analysis Report: Memory Management and Shallow Copies
 
-## 1. Contexte de l'Audit
+## 1. Audit Context
 
-Suite au correctif du commit `9abba91c`, une analyse approfondie de la base de code a été effectuée pour identifier des risques similaires de double libération de mémoire (`double-free`) causés par des copies superficielles (`shallow copies`) de structures gérant des ressources allouées sur le tas (`heap`).
+Following the fix in commit `9abba91c`, a thorough analysis of the codebase was performed to identify similar risks of double-free memory corruption caused by shallow copies of structures managing heap-allocated resources.
 
-### Le Problème Identifié
+### The Identified Problem
 
-Dans `gpu_profiler_ui.c`, la fonction `gpu_profiler_ui_compact_stages` effectuait une affectation par valeur (`*dest = *src`) lors de la compaction des étapes de profilage. La structure `GPUStage` contient deux instances de `AdaptiveSampler`, chacune possédant un pointeur `samples` vers un buffer alloué dynamiquement.
+In `gpu_profiler_ui.c`, the function `gpu_profiler_ui_compact_stages` performed a value assignment (`*dest = *src`) when compacting profiling stages. The `GPUStage` struct contains two `AdaptiveSampler` instances, each owning a `samples` pointer to a dynamically allocated buffer.
 
-Une copie superficielle de `GPUStage` entraînait le partage de la propriété de ces buffers. Lors du nettoyage final via `gpu_profiler_cleanup`, la fonction tentait de libérer le même pointeur plusieurs fois, provoquant un plantage.
+A shallow copy of `GPUStage` caused ownership of these buffers to be shared. During final cleanup via `gpu_profiler_cleanup`, the function attempted to free the same pointer multiple times, causing a crash.
 
-## 2. Analyse du Correctif
+## 2. Fix Analysis
 
-Le correctif introduit `gpu_stage_move`, qui :
+The fix introduces `gpu_stage_move`, which:
 
-1. Copie les champs scalaires un par un.
-2. **Échange** (`swap`) les pointeurs des buffers des samplers au lieu de les copier.
+1. Copies scalar fields one by one.
+2. **Swaps** the buffer pointers of the samplers instead of copying them.
 
-Cette approche garantit l'unicité du propriétaire pour chaque buffer alloué tout en réutilisant les emplacements mémoire existants dans le tableau `stages`.
+This approach guarantees unique ownership for each allocated buffer while reusing existing memory slots in the `stages` array.
 
-## 3. Résultats de l'Audit de la Base de Code
+## 3. Codebase Audit Results
 
-L'audit a porté sur les structures suivantes identifiées comme gérant de la mémoire dynamique :
+The audit covered the following structures identified as managing dynamic memory:
 
-| Structure | Ressource Critique | État de Risque | Conclusion |
-|-----------|-------------------|----------------|------------|
-| `GPUStage` | `AdaptiveSampler.samples` | **Corrigé** | Risque maîtrisé par `gpu_stage_move`. |
-| `AdaptiveSampler` | `samples` (buffer de données) | Bas | Initialisé par `init`, libéré par `cleanup`. Pas de copie détectée. |
-| `AsyncRequest` | `float_data`, `half_data` | Bas | Utilise un pattern de "transfert de propriété destructif" sécurisé dans `async_loader_poll`. |
-| `PBRMaterial` | `name` (tableau fixe) | Nul | Structure POD (Plain Old Data). Copie sûre. |
-| `MaterialLib` | `materials` (tableau dynamique) | Nul | Géré exclusivement par pointeurs (`MaterialLib*`). Pas de copie par valeur. |
-| `SphereInstance` | Aucun (Vecteurs/Matrices) | Nul | Structure POD. Copie sûre (utilisée massivement dans `sphere_sorting.c`). |
+| Structure | Critical Resource | Risk Status | Conclusion |
+|-----------|-------------------|-------------|------------|
+| `GPUStage` | `AdaptiveSampler.samples` | **Fixed** | Risk contained by `gpu_stage_move`. |
+| `AdaptiveSampler` | `samples` (data buffer) | Low | Initialized by `init`, freed by `cleanup`. No copy detected. |
+| `AsyncRequest` | `float_data`, `half_data` | Low | Uses a safe destructive ownership-transfer pattern in `async_loader_poll`. |
+| `PBRMaterial` | `name` (fixed array) | None | POD (Plain Old Data) struct. Safe to copy. |
+| `MaterialLib` | `materials` (dynamic array) | None | Managed exclusively via pointers (`MaterialLib*`). No value copy. |
+| `SphereInstance` | None (Vectors/Matrices) | None | POD struct. Safe to copy (used heavily in `sphere_sorting.c`). |
 
-### Points Particulièrement Examinés
+### Specifically Examined Points
 
-* **`sphere_sorting.c`** : Effectue des copies de `SphereInstance` lors du tri. C'est parfaitement sûr car `SphereInstance` ne contient que des types par valeur (mathématiques cglm).
-* **`async_loader.c`** : Le passage de `AsyncRequest` du thread worker au thread principal est sécurisé. Le loader met explicitement à `NULL` ses pointeurs internes après la copie vers le demandeur, évitant ainsi tout conflit de propriété.
+* **`sphere_sorting.c`**: Performs `SphereInstance` copies during sorting. This is entirely safe as `SphereInstance` contains only value types (cglm math types).
+* **`async_loader.c`**: Passing `AsyncRequest` from the worker thread to the main thread is safe. The loader explicitly nulls its internal pointers after copying to the requester, preventing any ownership conflict.
 
-## 4. Recommandations et Bonnes Pratiques
+## 4. Recommendations and Best Practices
 
-1. **Privilégier les Tableaux Fixes pour les Strings** : Comme vu avec `PBRMaterial` et `GPUStage`, l'utilisation de `char name[N]` au lieu de `char* name` élimine les risques liés à la copie de structures.
-2. **Move Semantics en C** : Pour les structures complexes (comme `GPUStage`), implémenter systématiquement une fonction de "move" ou de "swap" au lieu d'utiliser l'opérateur `=`.
-3. **Documentation de l'Appartenance (`Ownership`)** : Documenter explicitement si une structure "possède" ses pointeurs ou si elle ne fait que les référencer.
-4. **Utilisation de l'Analyse Statique** : Continuer à utiliser `just lint-full` (clang-tidy) qui aide à détecter les utilisations après libération (`use-after-free`).
+1. **Prefer Fixed Arrays for Strings**: As seen with `PBRMaterial` and `GPUStage`, using `char name[N]` instead of `char* name` eliminates risks related to struct copying.
+2. **Move Semantics in C**: For complex structures (like `GPUStage`), always implement a "move" or "swap" function instead of using the `=` operator.
+3. **Ownership Documentation**: Explicitly document whether a structure "owns" its pointers or merely references them.
+4. **Use Static Analysis**: Continue using `just lint-full` (clang-tidy) which helps detect use-after-free issues.
 
-## 5. Conclusion de l'Évaluation
+## 5. Evaluation Conclusion
 
-Le risque de double-free lié aux shallow copies de samplers était isolé à la logique de compaction de l'UI du profiler. La cohérence de l'utilisation des pointeurs et la prédominance des structures POD dans le reste du moteur garantissent une bonne stabilité générale de la gestion mémoire.
+The double-free risk from shallow copies of samplers was isolated to the profiler UI compaction logic. The consistent use of pointers and the prevalence of POD structs in the rest of the engine guarantee good overall memory management stability.

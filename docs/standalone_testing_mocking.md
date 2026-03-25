@@ -1,34 +1,34 @@
 # Standalone Unit Testing & Mocking Strategy 🧪
 
-Cette documentation décrit la technique de tests "standalone" et de mocking utilisée dans le projet `suckless-ogl`, en particulier pour valider la logique métier complexe (comme le parsing de shaders) sans dépendances GPU.
+This document describes the standalone testing and mocking technique used in the `suckless-ogl` project, particularly for validating complex business logic (such as shader parsing) without GPU dependencies.
 
-## 1. Philosophie
+## 1. Philosophy
 
-L'objectif est de pouvoir tester une unité de code (un fichier `.c`) en isolation totale. Cela permet :
+The goal is to test a unit of code (a `.c` file) in complete isolation. This enables:
 
-- Une exécution instantanée (< 10ms).
-- Aucun besoin d'un contexte OpenGL valide ou de drivers GPU.
-- Une compatibilité parfaite avec les environnements CI restreints.
+- Instant execution (< 10ms).
+- No need for a valid OpenGL context or GPU drivers.
+- Perfect compatibility with restricted CI environments.
 
-## 2. Technique de Mocking par "Shadowing"
+## 2. Compile-Time "Shadowing" Mocking
 
-Contrairement aux frameworks de mocking lourds qui utilisent l'injection de dépendances au runtime, nous utilisons une approche au moment de la compilation :
+Unlike heavy mocking frameworks that rely on runtime dependency injection, we use a compile-time approach:
 
-### A. Redéfinition des Symboles
+### A. Symbol Redefinition
 
-Dans le fichier de test (ex: `tests/test_shader_path_security_standalone.c`), nous redéfinissons les fonctions des bibliothèques externes (GLAD, Log) dont dépend le code testé.
+In the test file (e.g., `tests/test_shader_path_security_standalone.c`), we redefine the external library functions (GLAD, Log) that the tested code depends on.
 
 ```c
 /* Mock OpenGL Definition */
 GLuint glCreateShader(GLenum type) {
     (void)type;
-    return 1; // Retourne un faux ID
+    return 1; // Returns a fake ID
 }
 ```
 
-### B. Inclusion Directe de l'Implémentation
+### B. Direct Implementation Include
 
-Pour tester les fonctions privées (`static`) sans les exposer dans le header public `.h`, le fichier de test inclut directement le fichier `.c` après avoir défini les mocks.
+To test private (`static`) functions without exposing them in the public `.h` header, the test file directly includes the `.c` file after defining the mocks.
 
 ```c
 /* 1. Mocks */
@@ -39,31 +39,31 @@ void log_message(...) { /* no-op */ }
 
 /* 3. Tests */
 void test_logic() {
-    // Appel d'une fonction static définie dans shader.c
+    // Calling a static function defined in shader.c
     ASSERT_TRUE(get_dir_from_path(...));
 }
 ```
 
-## 3. Avantages et Limites
+## 3. Advantages and Limitations
 
-| Avantage | Description |
+| Advantage | Description |
 | :--- | :--- |
-| **Accès Static** | Permet de tester 100% de la logique interne sans pollution d'API. |
-| **Vitesse** | Pas de lien dynamique lourd ou d'initialisation matérielle. |
-| **Zéro Dépendance** | Le binaire de test est "pure C". |
+| **Static Access** | Allows testing 100% of internal logic without API pollution. |
+| **Speed** | No heavy dynamic linking or hardware initialization. |
+| **Zero Dependency** | The test binary is "pure C". |
 
-| Limite | Précaution |
+| Limitation | Precaution |
 | :--- | :--- |
-| **Collision de Symboles** | Ne peut pas être lié avec la vraie bibliothèque en même temps. |
-| **Maintenance** | Si l'API réelle change, le mock doit être synchronisé manuellement. |
+| **Symbol Collision** | Cannot be linked with the real library at the same time. |
+| **Maintenance** | If the real API changes, the mock must be manually synchronized. |
 
-## 4. Exemple Concret : Security Standalone
+## 4. Concrete Example: Security Standalone
 
-Le test `tests/test_shader_path_security_standalone.c` démontre parfaitement cette approche :
+The test `tests/test_shader_path_security_standalone.c` perfectly demonstrates this approach:
 
-1. Il définit des stubs pour ~20 fonctions OpenGL.
-2. Il inclut `src/shader.c`.
-3. Il valide les algorithmes de `is_safe_path` et de gestion des buffers de chemins.
+1. It defines stubs for ~20 OpenGL functions.
+2. It includes `src/shader.c`.
+3. It validates the `is_safe_path` algorithms and path buffer management.
 
 > [!TIP]
-> Utilisez cette approche pour toute logique de parsing, de calcul mathématique ou de gestion de ressources (RAII) qui ne nécessite pas de lecture effective sur le matériel.
+> Use this approach for any parsing logic, mathematical computation, or resource management (RAII) that does not require actual hardware reads.

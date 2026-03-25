@@ -117,31 +117,31 @@ hooks:
 
 ## 📊 Diagram Rendering (Suckless & Offline-First)
 
-Nous suivons une philosophie **zéro-dépendance externe**. La documentation doit pouvoir être générée et consultée sans connexion internet.
+We follow a **zero external dependency** philosophy. Documentation must be buildable and viewable without an internet connection.
 
 ### Graphviz (Local-Only)
 
-Plutôt que d'utiliser des services en ligne, nous utilisons un hook Python personnalisé ([hooks/render_graphviz.py](file:///home/latty/Prog/__PERSO__/suckless-ogl/hooks/render_graphviz.py)) qui invoque directement le binaire `dot` local :
+Rather than using online services, we use a custom Python hook (`hooks/render_graphviz.py`) that invokes the local `dot` binary directly:
 
-1. **Rendu Local** : Le hook intercepte les blocs `graphviz` et appelle `/usr/bin/dot`.
-2. **Mise en Cache** : Les SVGs générés sont stockés dans `docs/assets/diagrams/` pour éviter des rendus inutiles.
-3. **Zéro Latence** : Pas de requêtes réseau, rendu instantané et privé.
+1. **Local Rendering**: The hook intercepts `graphviz` blocks and calls `/usr/bin/dot`.
+2. **Caching**: Generated SVGs are stored in `docs/assets/diagrams/` to avoid redundant renders.
+3. **Zero Latency**: No network requests, instant and private rendering.
 
 > [!TIP]
-> Pour vérifier que le build est réellement 100% offline, utilisez la commande :
+> To verify the build is truly 100% offline, use:
 >
 > ```bash
-> make docs-offline  # ou 'just docs-offline'
+> make docs-offline  # or 'just docs-offline'
 > ```
 >
-> Cette commande utilise `unshare -rn` pour isoler totalement le processus du réseau. Ces cibles enchaînent automatiquement `docs-clean` et `docs` pour garantir un rendu à partir de zéro sans internet.
+> This command uses `unshare -rn` to fully isolate the process from the network. These targets automatically chain `docs-clean` and `docs` to guarantee a fresh render from scratch without internet.
 
 > [!IMPORTANT]
-> L'installation de `graphviz` est requise sur la machine de build pour générer ces diagrammes. Si `dot` est absent, le build MkDocs échouera explicitement via une `RuntimeError`.
+> `graphviz` must be installed on the build machine to generate these diagrams. If `dot` is absent, the MkDocs build will explicitly fail via a `RuntimeError`.
 
 ### Mermaid (Browser-Side)
 
-Les diagrammes Mermaid sont rendus directement par le navigateur via `mermaid.js`. Cela garantit que le rendu est toujours fidèle à la version du script embarquée, sans dépendre d'un serveur tiers ni de pré-génération complexe.
+Mermaid diagrams are rendered directly in the browser via `mermaid.js`. This guarantees that rendering always matches the bundled script version, without depending on a third-party server or complex pre-generation.
 
 ## 🧪 Documentation Integrity
 

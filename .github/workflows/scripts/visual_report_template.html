@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Regression Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+__CSS_CONTENT__
+  </style>
+</head>
+<body>
+  <div class="lang-switcher">
+    <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="langFR" onclick="setLang('fr')">FR</button>
+  </div>
+  <div class="container">
+    <h1 id="i18n-title"></h1>
+    <div class="subtitle">
+      <span id="i18n-subtitle-intro"></span>
+      <span style="color:var(--accent)" id="labelDescLeft"></span>
+      <span id="i18n-subtitle-vs"> vs </span>
+      <span style="color:#a371f7" id="labelDescRight"></span>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label id="i18n-label-view"></label>
+        <select id="viewSelect"></select>
+      </div>
+      <div class="field">
+        <label id="i18n-label-mode"></label>
+        <select id="modeSelect"></select>
+      </div>
+      <div class="field">
+        <label id="i18n-label-effect"></label>
+        <select id="effectSelect"></select>
+      </div>
+      <div class="mode-toggle">
+        <button id="btnPR" class="mode-btn active"></button>
+        <button id="btnEffect" class="mode-btn"></button>
+      </div>
+    </div>
+
+    <div id="statusArea" class="status-area"></div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button id="btnZoom" class="mode-btn" style="border: 1px solid var(--border-color); display: inline-flex; align-items: center; gap: 8px;">
+        <span id="zoomIcon">🔍</span> <span id="i18n-zoom-label"></span>
+      </button>
+    </div>
+
+    <div id="mainDisplay" class="main-display">
+      <div id="compareWrapper" class="comparison-slider zoomable">
+        <div id="zoomLens" class="zoom-lens"></div>
+        <img id="refImg" class="slider-before" src="" alt="">
+        <img id="actualImg" class="slider-after" src="" alt="">
+        <div id="sliderHandle" class="slider-handle">
+          <div class="handle-circle"></div>
+        </div>
+        <div id="labelLeft" class="label-tag label-left"></div>
+        <div id="labelRight" class="label-tag label-right"></div>
+      </div>
+
+      <div id="diffSection" class="diff-map-section" style="display:none">
+        <h3 id="diffTitle"></h3>
+        <div class="diff-map-container zoomable" style="position: relative; display: inline-block; overflow: hidden; border-radius: 8px;">
+          <img id="diffImg" src="" alt="">
+        </div>
+      </div>
+    </div>
+
+    <div id="noVariantMessage" class="no-variant" style="display:none">
+      <span id="i18n-no-variant"></span>
+    </div>
+
+    <div class="footer">
+      <a id="i18n-back-link" href="../index.html"></a>
+    </div>
+  </div>
+
+  <script>
+__JS_CONTENT__
+  </script>
+</body>
+</html>

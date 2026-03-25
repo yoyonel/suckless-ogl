@@ -1,11 +1,8 @@
 # Effect Benchmark — A/B GPU Cost Measurement
 
-Outil de mesure automatisé du coût GPU individuel de chaque effet postprocess
-au sein du uber-shader ("Final Composite"). Les effets multi-pass (Bloom, DoF,
-Auto Exposure, Motion Blur) disposent déjà de leur propre stage GPU Profiler et
-ne sont pas concernés.
+An automated tool for measuring the individual GPU cost of each post-process effect within the uber-shader ("Final Composite"). Multi-pass effects (Bloom, DoF, Auto Exposure, Motion Blur) already have their own GPU Profiler stage and are not affected.
 
-## Vue d'ensemble
+## Overview
 
 ```graphviz
 digraph BenchOverview {
@@ -22,11 +19,11 @@ digraph BenchOverview {
           arrowsize=0.8, penwidth=1.5];
 
     subgraph cluster_trigger {
-        label="Déclenchement";
+        label="Trigger";
         fontname="Helvetica Bold"; fontsize=14; fontcolor="#7dcfff";
         style="rounded,dashed"; color="#7dcfff"; margin=16;
 
-        Key8 [label="Touche [8]\neffect_benchmark_start()",
+        Key8 [label="Key [8]\neffect_benchmark_start()",
               fillcolor="#1a1b26", color="#7dcfff", fontcolor="#7dcfff"];
     }
 
@@ -35,35 +32,35 @@ digraph BenchOverview {
         fontname="Helvetica Bold"; fontsize=14; fontcolor="#e0af68";
         style="rounded,dashed"; color="#e0af68"; margin=16;
 
-        BL [label="Tous les effets ON\n30 warmup + 120 mesures",
+        BL [label="All effects ON\n30 warmup + 120 measurements",
             fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
-        BLStats [label="mean ± stddev\n(baseline_mean_ms)",
+        BLStats [label="mean +/- stddev\n(baseline_mean_ms)",
                  fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
     }
 
     subgraph cluster_sweep {
-        label="Phase 2 — Sweep (×N effets actifs)";
+        label="Phase 2 — Sweep (xN active effects)";
         fontname="Helvetica Bold"; fontsize=14; fontcolor="#bb9af7";
         style="rounded,dashed"; color="#bb9af7"; margin=16;
 
-        Disable [label="Désactiver 1 effet\npostprocess.active_effects &= ~bit",
+        Disable [label="Disable 1 effect\npostprocess.active_effects &= ~bit",
                  fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
-        Measure [label="30 warmup + 120 mesures\naccumuler sum, sum²",
+        Measure [label="30 warmup + 120 measurements\naccumulate sum, sum^2",
                  fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
-        Cost [label="cost = baseline − mean_off\nstddev via Welford",
+        Cost [label="cost = baseline - mean_off\nstddev via Welford",
               fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
-        Next [label="Effet suivant ?",
+        Next [label="Next effect?",
               shape=diamond, fillcolor="#1a1b26", color="#f7768e", fontcolor="#f7768e"];
     }
 
     subgraph cluster_done {
-        label="Phase 3 — Résultats";
+        label="Phase 3 — Results";
         fontname="Helvetica Bold"; fontsize=14; fontcolor="#9ece6a";
         style="rounded,dashed"; color="#9ece6a"; margin=16;
 
-        Restore [label="Restaurer active_effects\n(état original)",
+        Restore [label="Restore active_effects\n(original state)",
                  fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
-        Log [label="Log table Unicode\n+ notification on-screen",
+        Log [label="Unicode table log\n+ on-screen notification",
              fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
     }
 
@@ -73,33 +70,33 @@ digraph BenchOverview {
     Disable -> Measure;
     Measure -> Cost;
     Cost -> Next;
-    Next -> Disable [label="oui", color="#bb9af7", fontcolor="#bb9af7"];
-    Next -> Restore [label="non", color="#9ece6a", fontcolor="#9ece6a"];
+    Next -> Disable [label="yes", color="#bb9af7", fontcolor="#bb9af7"];
+    Next -> Restore [label="no", color="#9ece6a", fontcolor="#9ece6a"];
     Restore -> Log;
 }
 ```
 
-## Utilisation
+## Usage
 
-| Touche | Action |
+| Key | Action |
 |--------|--------|
-| **8**  | Démarre le sweep (ou affiche "Already running" si en cours) |
+| **8** | Start the sweep (or shows "Already running" if in progress) |
 
-Le sweep dure environ **22 secondes** à 60 fps (8 phases × (30 + 120) frames ÷ 60).
+The sweep takes approximately **22 seconds** at 60 fps (8 phases × (30 + 120) frames ÷ 60).
 
-1. Lancer l'application
-2. Stabiliser la scène (ne pas bouger la caméra pendant le bench)
-3. Appuyer sur **8**
-4. Attendre la notification "FX Benchmark: Done (see log)"
-5. Lire les résultats dans la sortie log
+1. Launch the application
+2. Stabilize the scene (do not move the camera during the bench)
+3. Press **8**
+4. Wait for the "FX Benchmark: Done (see log)" notification
+5. Read results in the log output
 
-> ⚠️ **Important** : Ne pas interagir avec la scène ni toggle d'effets pendant
-> le benchmark. Le système sauvegarde/restaure `active_effects` mais tout
-> changement externe invaliderait les mesures.
+> ⚠️ **Important**: Do not interact with the scene or toggle effects during
+> the benchmark. The system saves/restores `active_effects` but any external
+> change would invalidate measurements.
 
-## Lire les résultats
+## Reading the Results
 
-Exemple de sortie réelle (Intel Iris Xe, 1920×1080, scène IBL + 20 sphères) :
+Sample real output (Intel Iris Xe, 1920×1080, IBL scene + 20 spheres):
 
 ```text
 ╔══════════════════════════════════════════════════════╗
@@ -121,68 +118,67 @@ Exemple de sortie réelle (Intel Iris Xe, 1920×1080, scène IBL + 20 sphères) 
 ╚════════════════════╩═══════════╩═══════════╩════════╝
 ```
 
-### Colonnes
+### Columns
 
-| Colonne    | Signification |
+| Column    | Meaning |
 |------------|---------------|
-| **Effect** | Nom de l'effet postprocess |
-| **Cost(ms)** | `baseline_mean - mean_with_effect_OFF`. Positif = l'effet coûte du temps GPU |
-| **StdDev** | Écart-type sur 120 échantillons. Indique la stabilité de la mesure |
-| **Status** | `ON` = testé (était actif), `OFF` = sauté (était déjà désactivé) |
+| **Effect** | Post-process effect name |
+| **Cost(ms)** | `baseline_mean - mean_with_effect_OFF`. Positive = the effect costs GPU time |
+| **StdDev** | Standard deviation over 120 samples. Indicates measurement stability |
+| **Status** | `ON` = tested (was active), `OFF` = skipped (was already disabled) |
 
-### Interpréter les valeurs
+### Interpreting Values
 
-#### Coût positif (+0.0110 ms)
+#### Positive cost (+0.0110 ms)
 
-L'effet ajoute du temps GPU. C'est le cas attendu. Plus la valeur est grande,
-plus l'effet est coûteux.
+The effect adds GPU time. This is the expected case. The larger the value,
+the more costly the effect.
 
-#### Coût négatif (-0.0014 ms, -0.0289 ms)
+#### Negative cost (-0.0014 ms, -0.0289 ms)
 
-Un coût négatif signifie que **désactiver l'effet ralentit le composite**.
-C'est contre-intuitif mais normal sur un iGPU. Causes possibles :
+A negative cost means that **disabling the effect slows the composite**.
+This is counter-intuitive but normal on an iGPU. Possible causes:
 
-1. **Bruit de mesure** — Si `|cost| < stddev`, la mesure est dans le bruit.
-   Exemple : Grain coûte -0.0014 ms ± 0.0242 → le vrai coût est
-   indistinguable de zéro.
+1. **Measurement noise** — If `|cost| < stddev`, the measurement is within noise.
+   Example: Grain costs -0.0014 ms ± 0.0242 → true cost is
+   indistinguishable from zero.
 
-2. **Divergence de branches** — Le uber-shader utilise des `if (effect_enabled)`.
-   Sur les GPUs à exécution SIMD (wavefronts/warps), le coût d'une branche
-   dépend de la **cohérence** au sein du warp. Désactiver un seul effet peut
-   modifier le pattern de divergence et paradoxalement ralentir les warps
-   voisins.
+2. **Branch divergence** — The uber-shader uses `if (effect_enabled)`.
+   On SIMD GPUs (wavefronts/warps), branch cost depends on **coherence**
+   within the warp. Disabling a single effect may change the divergence
+   pattern and paradoxically slow adjacent warps.
 
-3. **Pression registres/cache** — Le compilateur GLSL peut réorganiser les
-   registres quand le code mort est éliminé. Une configuration différente
-   peut avoir une pression mémoire légèrement différente.
+3. **Register/cache pressure** — The GLSL compiler may reorganize registers
+   when dead code is eliminated. A different configuration may have slightly
+   different memory pressure.
 
-4. **Ordonnancement ALU/TEX** — Sur iGPU Intel, les ALUs partagent la bande
-   passante mémoire avec le CPU. Un calcul en moins peut laisser les TEX
-   units en attente sans recouvrement ALU.
+4. **ALU/TEX scheduling** — On Intel iGPU, ALUs share memory bandwidth with
+   the CPU. One less computation may leave TEX units waiting without ALU
+   overlap.
 
-#### Somme ≠ baseline
+#### Sum ≠ baseline
 
-La ligne "Sum of costs" sera rarement égale à `baseline_mean`. C'est attendu :
-les effets ne sont **pas additifs** car ils partagent les mêmes unités
-d'exécution (ALU, caches texture, bande passante). L'interaction entre effets
-crée des effets de masquage (latency hiding).
+The "Sum of costs" line will rarely equal `baseline_mean`. This is expected:
+effects are **not additive** since they share the same execution units
+(ALU, texture caches, bandwidth). The interaction between effects creates
+masking effects (latency hiding).
 
-### Règles pratiques
+### Practical Rules
 
 | Observation | Conclusion |
 |-------------|------------|
-| `cost > 0` et `cost > 2 × stddev` | L'effet a un coût **significatif** et mesurable |
-| `cost > 0` mais `cost < stddev` | Coût probable mais **non significatif** statistiquement |
-| `cost ≈ 0` (positif ou négatif) et `stddev` élevé | **Bruit** — relancer le bench en stabilisant la scène |
-| `cost < 0` et `|cost| > stddev` | Effet de **divergence/cache** — pas alarmant, inhérent au uber-shader |
-| Tous les coûts très faibles (<0.05 ms) | Le postprocess n'est **pas le goulot** — chercher ailleurs (geometry, lighting) |
+| `cost > 0` and `cost > 2 × stddev` | The effect has a **significant**, measurable cost |
+| `cost > 0` but `cost < stddev` | Probable cost but **not statistically significant** |
+| `cost ≈ 0` (pos or neg) and high `stddev` | **Noise** — re-run the bench with a stable scene |
+| `cost < 0` and `|cost| > stddev` | **Divergence/cache** effect — not alarming, inherent to uber-shader |
+| All costs very small (<0.05 ms) | Postprocess is **not the bottleneck** — look elsewhere (geometry, lighting) |
 
-## Effets benchmarkés
+## Benchmarked Effects
 
-Seuls les effets **fragment-shader** exécutés dans le draw call "Final Composite"
-sont mesurés par A/B toggle :
+Only **fragment-shader** effects executed in the "Final Composite" draw call
+are measured by A/B toggle:
 
-| Effet | Bit | Macro |
+| Effect | Bit | Macro |
 |-------|-----|-------|
 | FXAA | `1 << 12` | `POSTFX_FXAA` |
 | Chromatic Aberration | `1 << 3` | `POSTFX_CHROM_ABBR` |
@@ -192,26 +188,26 @@ sont mesurés par A/B toggle :
 | Banding | `1 << 14` | `POSTFX_BANDING` |
 | Exposure | `1 << 2` | `POSTFX_EXPOSURE` |
 
-Les effets **multi-pass** (Bloom, DoF, Auto Exposure, Motion Blur) ont déjà
-leur propre stage dans le GPU Profiler (`F1` pour afficher l'overlay) et ne
-nécessitent pas d'A/B testing.
+**Multi-pass effects** (Bloom, DoF, Auto Exposure, Motion Blur) already have
+their own stage in the GPU Profiler (`F1` to display the overlay) and do not
+need A/B testing.
 
-## Architecture interne
+## Internal Architecture
 
-### Pourquoi l'A/B ?
+### Why A/B?
 
-Les GPU timer queries (`GL_TIMESTAMP`) mesurent le temps entre deux draw calls.
-Or, tous les effets fragment-shader s'exécutent dans un **unique** fullscreen
-quad draw call ("Final Composite"). Il est impossible de placer des timers
-*à l'intérieur* d'un draw call.
+GPU timer queries (`GL_TIMESTAMP`) measure time between two draw calls.
+However, all fragment-shader effects execute within a **single** fullscreen
+quad draw call ("Final Composite"). It is impossible to place timers
+*inside* a draw call.
 
-La méthode A/B contourne cette limitation :
+The A/B method works around this:
 
 ```text
-Coût(effet) = T(tous ON) − T(effet OFF)
+Cost(effect) = T(all ON) - T(effect OFF)
 ```
 
-### Machine à états
+### State Machine
 
 ```graphviz
 digraph BenchStateMachine {
@@ -226,103 +222,95 @@ digraph BenchStateMachine {
     edge [color="#565f89", fontname="Helvetica", fontsize=10, fontcolor="#9aa5ce",
           arrowsize=0.8, penwidth=1.5];
 
-    IDLE [label="BENCH_IDLE\n(attente)", fillcolor="#1a1b26", color="#565f89", fontcolor="#565f89"];
-    BASELINE [label="BENCH_BASELINE\ntous effets ON\n30+120 frames",
+    IDLE [label="BENCH_IDLE\n(waiting)", fillcolor="#1a1b26", color="#565f89", fontcolor="#565f89"];
+    BASELINE [label="BENCH_BASELINE\nall effects ON\n30+120 frames",
               fillcolor="#1a1b26", color="#e0af68", fontcolor="#e0af68"];
-    STABILIZE [label="BENCH_STABILIZE\ntous ON (reset)\n30 frames",
+    STABILIZE [label="BENCH_STABILIZE\nall ON (reset)\n30 frames",
                fillcolor="#1a1b26", color="#7aa2f7", fontcolor="#7aa2f7"];
-    EFFECT [label="BENCH_EFFECT_TEST\n1 effet OFF\n30+120 frames",
+    EFFECT [label="BENCH_EFFECT_TEST\n1 effect OFF\n30+120 frames",
             fillcolor="#1a1b26", color="#bb9af7", fontcolor="#bb9af7"];
-    DONE [label="BENCH_DONE\nrésultats loggés",
+    DONE [label="BENCH_DONE\nresults logged",
           fillcolor="#1a1b26", color="#9ece6a", fontcolor="#9ece6a"];
 
     IDLE -> BASELINE [label="start()", color="#7dcfff", fontcolor="#7dcfff"];
     BASELINE -> STABILIZE [label="120 samples"];
-    STABILIZE -> EFFECT [label="warmup fini"];
-    EFFECT -> STABILIZE [label="effet suivant\n(reset)", style=dashed, color="#7aa2f7", fontcolor="#7aa2f7"];
-    EFFECT -> DONE [label="tous testés\nrestaure state", color="#9ece6a", fontcolor="#9ece6a"];
-    DONE -> IDLE [label="start()\n(nouveau sweep)", style=dashed];
+    STABILIZE -> EFFECT [label="warmup done"];
+    EFFECT -> STABILIZE [label="next effect\n(reset)", style=dashed, color="#7aa2f7", fontcolor="#7aa2f7"];
+    EFFECT -> DONE [label="all tested\nrestore state", color="#9ece6a", fontcolor="#9ece6a"];
+    DONE -> IDLE [label="start()\n(new sweep)", style=dashed];
 }
 ```
 
-### Flux par frame
+### Per-Frame Flow
 
-`effect_benchmark_update()` est appelée **après** `gpu_profiler_begin_frame()`
-pour lire les résultats du frame N-1 (double-buffered timer queries) :
+`effect_benchmark_update()` is called **after** `gpu_profiler_begin_frame()`
+to read frame N-1 results (double-buffered timer queries):
 
-1. **Warmup** (30 frames) — Les résultats sont ignorés. Laisse le driver/GPU
-   stabiliser les caches et le pipeline après le changement d'état.
+1. **Warmup** (30 frames) — Results are discarded. Lets the driver/GPU
+   stabilize caches and the pipeline after the state change.
 
-2. **Accumulation** (120 frames) — Accumule `sum_ms` et `sum_sq_ms` pour
-   calculer la moyenne et l'écart-type :
+2. **Accumulation** (120 frames) — Accumulates `sum_ms` and `sum_sq_ms` to
+   compute mean and standard deviation:
 
 $$
 \bar{x} = \frac{\sum x_i}{N}, \qquad \sigma = \sqrt{\frac{\sum x_i^2}{N} - \bar{x}^2}
 $$
 
-1. **Transition** — Calcule les stats, stocke le résultat, désactive l'effet
-   suivant, remet le compteur à zéro.
+3. **Transition** — Computes stats, stores result, disables next effect, resets counter.
 
-### Fichiers
+### Files
 
-| Fichier | Rôle |
+| File | Role |
 |---------|------|
-| `include/effect_benchmark.h` | Types (`EffectBenchmark`, `BenchPhase`, `EffectBenchResult`), constantes, API |
-| `src/effect_benchmark.c` | Machine à états, accumulation, table d'effets, affichage résultats |
-| `include/app.h` | Champ `EffectBenchmark effect_bench` dans `App` |
-| `src/app.c` | `effect_benchmark_init()` au démarrage, `effect_benchmark_update()` par frame |
-| `src/app_input.c` | Binding touche `8` → `effect_benchmark_start()` |
+| `include/effect_benchmark.h` | Types (`EffectBenchmark`, `BenchPhase`, `EffectBenchResult`), constants, API |
+| `src/effect_benchmark.c` | State machine, accumulation, effect table, result display |
+| `include/app.h` | `EffectBenchmark effect_bench` field in `App` |
+| `src/app.c` | `effect_benchmark_init()` at startup, `effect_benchmark_update()` per frame |
+| `src/app_input.c` | Key `8` binding → `effect_benchmark_start()` |
 
 ### API
 
 ```c
-// Initialisation (une fois au démarrage)
+// Initialization (once at startup)
 void effect_benchmark_init(EffectBenchmark* bench,
                            PostProcess* postprocess,
                            GPUProfiler* profiler);
 
-// Démarrer un sweep (retourne false si déjà en cours)
+// Start a sweep (returns false if already running)
 bool effect_benchmark_start(EffectBenchmark* bench);
 
-// Appeler chaque frame après gpu_profiler_begin_frame()
-// Retourne true quand le sweep vient de se terminer
+// Call every frame after gpu_profiler_begin_frame()
+// Returns true when the sweep just finished
 bool effect_benchmark_update(EffectBenchmark* bench);
 
-// Vérifier si un bench est en cours
+// Check if a benchmark is running
 bool effect_benchmark_is_running(const EffectBenchmark* bench);
 
-// Afficher les résultats (appelé automatiquement à la fin)
+// Display results (called automatically at the end)
 void effect_benchmark_log_results(const EffectBenchmark* bench);
 ```
 
-### Paramètres de mesure
+### Measurement Parameters
 
-| Constante | Valeur | Rôle |
+| Constant | Value | Role |
 |-----------|--------|------|
-| `BENCH_WARMUP_FRAMES` | 30 | Frames ignorées après chaque changement d'état (stabilisation pipeline) |
-| `BENCH_MEASURE_FRAMES` | 120 | Frames échantillonnées par phase (≈2s à 60fps) |
-| `BENCH_MAX_EFFECTS` | 16 | Capacité maximale de la table d'effets |
+| `BENCH_WARMUP_FRAMES` | 30 | Frames discarded after each state change (pipeline stabilization) |
+| `BENCH_MEASURE_FRAMES` | 120 | Frames sampled per phase (≈2s at 60fps) |
+| `BENCH_MAX_EFFECTS` | 16 | Maximum effect table capacity |
 
-## Limites
+## Limitations
 
-1. **Précision iGPU** — Sur GPU intégré (Intel Iris Xe), la résolution des
-   timer queries est de l'ordre de 80 ns. Les effets très légers (< 0.01 ms)
-   sont souvent dans le bruit.
+1. **iGPU Precision** — On integrated GPU (Intel Iris Xe), timer query resolution is around 80 ns. Very light effects (< 0.01 ms) are often within noise.
 
-2. **Non-additivité** — Le coût d'un effet dépend des autres effets actifs
-   (latency hiding, pression registres). La somme des coûts individuels ne
-   sera pas égale au coût total.
+2. **Non-Additivity** — The cost of an effect depends on other active effects (latency hiding, register pressure). The sum of individual costs will not equal the total cost.
 
-3. **Stabilité scène requise** — Bouger la caméra pendant le bench modifie
-   la charge fragment (overdraw, fill rate) et fausse les mesures.
+3. **Scene Stability Required** — Moving the camera during the bench modifies fragment load (overdraw, fill rate) and skews measurements.
 
-4. **Divergence GPU** — Les branches `if` du uber-shader ont un coût qui
-   dépend de la cohérence spatiale des pixels. L'A/B ne capture pas le coût
-   de divergence additionnel quand *plusieurs* effets sont actifs simultanément.
+4. **GPU Divergence** — The `if` branches of the uber-shader have a cost that depends on the spatial coherence of pixels. A/B does not capture the additional divergence cost when *multiple* effects are simultaneously active.
 
 ## Changelog
 
-| Date | Changement |
+| Date | Change |
 |------|-----------|
-| 2026-02-07 | Création du module `effect_benchmark` (header, implémentation, intégration) |
-| 2026-02-08 | Ajout de la phase `BENCH_STABILIZE` et du Timeout (2s) pour la fiabilité |
+| 2026-02-07 | Created `effect_benchmark` module (header, implementation, integration) |
+| 2026-02-08 | Added `BENCH_STABILIZE` phase and Timeout (2s) for reliability |
