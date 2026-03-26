@@ -7,12 +7,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LUT_LINE_LENGTH 256
-#define MIN_LUT_SIZE 2
-#define MAX_LUT_SIZE 256
-#define LUT3D_TEXTURE_UNIT 8
-#define LUT_SIZE_TOKEN_LEN 11
-#define LUT_SIZE_VALUE_OFFSET 12
+enum LUT3DConstants {
+	MAX_LUT_LINE_LENGTH = 256,
+	MIN_LUT_SIZE = 2,
+	MAX_LUT_SIZE = 256,
+	LUT3D_TEXTURE_UNIT = 8,
+	LUT_SIZE_TOKEN_LEN = 11,
+	LUT_SIZE_VALUE_OFFSET = 12
+};
 
 int fx_lut3d_init(PostProcess* post_processing)
 {
@@ -31,6 +33,36 @@ void fx_lut3d_cleanup(PostProcess* post_processing)
 	}
 }
 
+static int parse_lut_line(const char* line, float* lut_data, int* entry_count,
+                          int lut_size)
+{
+	/* Skip comments and empty lines */
+	if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') {
+		return 0;
+	}
+
+	if (strncmp(line, "LUT_3D_SIZE", LUT_SIZE_TOKEN_LEN) == 0) {
+		return 1; /* Already handled or needs special handling */
+	}
+
+	/* Parse RGB data */
+	if (lut_data && *entry_count < lut_size * lut_size * lut_size) {
+		char* next = NULL;
+		float red = strtof(line, &next);
+		if (next == line) {
+			return 0;
+		}
+		float green = strtof(next, &next);
+		float blue = strtof(next, NULL);
+
+		lut_data[(*entry_count * 3) + 0] = red;
+		lut_data[(*entry_count * 3) + 1] = green;
+		lut_data[(*entry_count * 3) + 2] = blue;
+		(*entry_count)++;
+	}
+	return 0;
+}
+
 int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
 {
 	FILE* cube_file = fopen(path, "r");
@@ -46,68 +78,57 @@ int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
 	int entry_count = 0;
 
 	while (fgets(line, sizeof(line), cube_file)) {
-		/* Skip comments and empty lines */
-		if (line[0] == '#' || line[0] == '\n' || line[0] == '\r') {
-			continue;
-		}
-
 		if (strncmp(line, "LUT_3D_SIZE", LUT_SIZE_TOKEN_LEN) == 0) {
 			char* endptr = NULL;
 			const int base_decimal = 10;
-			lut_size = (int)strtol(line + LUT_SIZE_VALUE_OFFSET,
-			                       &endptr, base_decimal);
+			int new_size = (int)strtol(line + LUT_SIZE_VALUE_OFFSET,
+			                           &endptr, base_decimal);
 			(void)endptr;
-			if (lut_size < MIN_LUT_SIZE ||
-			    lut_size > MAX_LUT_SIZE) {
+
+			if (new_size < MIN_LUT_SIZE ||
+			    new_size > MAX_LUT_SIZE) {
 				LOG_ERROR("suckless-ogl.postprocess.lut3d",
-				          "Invalid LUT size: %d", lut_size);
+				          "Invalid LUT size: %d", new_size);
+				if (lut_data) {
+					free(lut_data);
+				}
 				(void)fclose(cube_file);
 				return -2;
 			}
-			lut_data = (float*)malloc(
-			    (size_t)lut_size * (size_t)lut_size *
-			    (size_t)lut_size * 3 * sizeof(float));
+
+			if (lut_data) {
+				free(lut_data);
+			}
+			lut_size = new_size;
+			lut_data = (float*)malloc((size_t)lut_size * lut_size *
+			                          lut_size * 3 * sizeof(float));
+			if (!lut_data) {
+				(void)fclose(cube_file);
+				return -4;
+			}
 			continue;
 		}
 
-		/* Parse RGB data */
-		if (lut_data && entry_count < lut_size * lut_size * lut_size) {
-			char* next = NULL;
-			float red = strtof(line, &next);
-			float green = strtof(next, &next);
-			float blue = strtof(next, NULL);
-			(void)next;
-
-			lut_data[(entry_count * 3) + 0] = red;
-			lut_data[(entry_count * 3) + 1] = green;
-			lut_data[(entry_count * 3) + 2] = blue;
-			entry_count++;
-		}
-	}
-
-	if (entry_count != lut_size * lut_size * lut_size) {
-		LOG_ERROR("suckless-ogl.postprocess.lut3d",
-		          "LUT data mismatch: expected %d, got %d",
-		          lut_size * lut_size * lut_size, entry_count);
-		if (lut_data) {
-			free(lut_data);
-		}
-		(void)fclose(cube_file);
-		return -3;
+		(void)parse_lut_line(line, lut_data, &entry_count, lut_size);
 	}
 
 	(void)fclose(cube_file);
 
-	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
+	if (entry_count != lut_size * lut_size * lut_size || !lut_data) {
+		LOG_ERROR("suckless-ogl.postprocess.lut3d", "LUT mismatch");
+		if (lut_data) {
+			free(lut_data);
+		}
+		return -3;
+	}
 
-	/* Create GPU texture */
+	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
 	if (lut3d_sys->lut_tex) {
 		glDeleteTextures(1, &lut3d_sys->lut_tex);
 	}
 
 	glGenTextures(1, &lut3d_sys->lut_tex);
 	glBindTexture(GL_TEXTURE_3D, lut3d_sys->lut_tex);
-
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB32F, lut_size, lut_size, lut_size,
 	             0, GL_RGB, GL_FLOAT, lut_data);
 
@@ -117,16 +138,10 @@ int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	glBindTexture(GL_TEXTURE_3D, 0);
-
 	free(lut_data);
-
 	lut3d_sys->current_size = lut_size;
 	post_processing->lut3d.texture = lut3d_sys->lut_tex;
 	post_processing->lut3d.size = lut_size;
-
-	LOG_INFO("suckless-ogl.postprocess.lut3d",
-	         "Loaded 3D LUT from %s (Size: %d^3)", path, lut_size);
 
 	return 0;
 }
