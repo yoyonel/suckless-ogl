@@ -23,6 +23,7 @@ uniform usampler2D stencilTexture;
 @header "postprocess/fxaa.glsl";
 @header "postprocess/banding.glsl";
 @header "postprocess/fog.glsl";
+@header "postprocess/lut3d.glsl";
 
 /* ============================================================================
    MAIN PIPELINE
@@ -118,9 +119,12 @@ void main()
 
 	/* 6. Color Grading & White Balance */
 	if (enableColorGrading) {
-		/* apply_color_grading handles WB internally in our new module
-		 */
 		color = apply_color_grading(color);
+	}
+
+	/* 6b. 3D LUT Gamut Mapping */
+	if (enableLUT3D) {
+		color = apply_lut3d(color);
 	}
 
 	/* 7. Tonemapping */
