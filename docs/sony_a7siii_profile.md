@@ -8,7 +8,7 @@ Technical reference for the cinematic POC and future integration of the Sony Alp
 | :--- | :--- | :--- |
 | **Sensor Type** | 35mm Full-Frame CMOS | Impacts focal length multipliers and Depth of Field (DOF) depth. |
 | **Sensor Size** | 35.6 x 23.8 mm | Physical surface used for circle of confusion and bokeh scale. |
-| **DOF Simulation** | 35mm f/1.8 | Shallow depth of field; focal distance 16.0m, range 4.0m. |
+| **DOF Simulation** | 35mm f/1.8 (Ciné) | Shallow DOF with 2.0x anamorphic vertical oval bokeh. |
 | **Output Resolution** | 12.1 MP (4240 x 2832) | Pixel pitch reference for grain/noise frequency. |
 | **Dynamic Range** | 15+ stops (S-Log3) | High Dynamic Range (HDR) ceiling; maps to ACES highlight roll-off. |
 | **Dual Base ISO** | 640 / 12,800 | Optimal signal-to-noise ratio points; triggers gain simulation shifts. |
@@ -32,6 +32,10 @@ The Alpha 7S III uses two distinct analog circuits. Low Gain (ISO 640) for brigh
 ### 4. S-Cinetone
 
 A color science derived from the Sony VENICE cinema camera. It focuses on pleasing skin tones (natural mid-tones) and a "softer" highlight roll-off compared to standard Rec.709.
+
+### 5. Anamorphic Bokeh (2.0x)
+
+The profile now simulates high-end cinematic anamorphic optics by applying a **2.0x vertical stretch** to the bokeh kernel. This results in the characteristic "oval" out-of-focus highlights and "waterfall" background stretching associated with professional cinema lenses.
 
 ## 📚 Sources & Technical Resources
 
