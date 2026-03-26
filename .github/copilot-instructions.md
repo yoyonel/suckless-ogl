@@ -108,6 +108,12 @@ Warning handling policy during lint execution:
 - Update `mkdocs.yml` `nav:` section to include new doc
 - Use clear hierarchy: H1 (feature name), H2 (subtopics), H3 (details)
 
+### UI & Interaction Synchronization
+
+1. **Keyboard Overlay (F2)**: Always keep the in-app keyboard help synchronized.
+   - When adding, removing, or changing a keybinding in `src/app_input.c` or elsewhere, you **MUST** update the `AppBindingRegistry` in `src/app_binding.c`.
+   - The `F2` help system is the source of truth for the user; code-only changes are considered incomplete.
+
 ### Documentation Best Practices
 
 1. **No local filesystem links** — All docs assume web deployment
