@@ -10,13 +10,14 @@ out vec3 FragColor;
 
 uniform sampler2D srcTexture;
 uniform float filterRadius; /* Rayon du filtre, défaut 1.0 */
+uniform vec2 texelScale;    /* Échelle des texels (pour l'anamorphisme) */
 
 void main()
 {
 	// La taille du filtre dépend de la résolution de la texture source
 	ivec2 sz = textureSize(srcTexture, 0);
-	float x = filterRadius / float(sz.x);
-	float y = filterRadius / float(sz.y);
+	float x = (filterRadius * texelScale.x) / float(sz.x);
+	float y = (filterRadius * texelScale.y) / float(sz.y);
 
 	// 9-tap tent filter
 	// [ 1 2 1 ]
