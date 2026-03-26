@@ -156,6 +156,12 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->fog.color[1] = DEFAULT_FOG_COLOR_G;
 	post_processing->fog.color[2] = DEFAULT_FOG_COLOR_B;
 
+	/* DoF defaults */
+	post_processing->dof.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE;
+	post_processing->dof.focal_range = DEFAULT_DOF_FOCAL_RANGE;
+	post_processing->dof.bokeh_scale = DEFAULT_DOF_BOKEH_SCALE;
+	post_processing->dof.anamorphic_ratio = DEFAULT_DOF_ANAMORPHIC_RATIO;
+
 	/* Effets par défaut définis dans postprocess.h */
 	post_processing->active_effects = DEFAULT_ACTIVE_EFFECTS;
 
@@ -534,6 +540,14 @@ void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
 	post_processing->dof.focal_distance = focal_distance;
 	post_processing->dof.focal_range = focal_range;
 	post_processing->dof.bokeh_scale = bokeh_scale;
+	/* Preserve anamorphic ratio if not specified in this helper */
+	post_processing->ubo_dirty = true;
+}
+
+void postprocess_set_dof_anamorphic(PostProcess* post_processing,
+                                    float anamorphic_ratio)
+{
+	post_processing->dof.anamorphic_ratio = anamorphic_ratio;
 	post_processing->ubo_dirty = true;
 }
 
@@ -916,6 +930,8 @@ void postprocess_end(PostProcess* post_processing)
 			    post_processing->dof.focal_distance;
 			ubo.dof_focal_range = post_processing->dof.focal_range;
 			ubo.dof_bokeh_scale = post_processing->dof.bokeh_scale;
+			ubo.dof_anamorphic_ratio =
+			    post_processing->dof.anamorphic_ratio;
 
 			ubo.mb_intensity =
 			    post_processing->motion_blur.intensity;

@@ -37,7 +37,8 @@
 	          .radius = 1.0F},                               \
 	.dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,    \
 	        .focal_range = DEFAULT_DOF_FOCAL_RANGE,          \
-	        .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},         \
+	        .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,          \
+	        .anamorphic_ratio = 1.0F},                       \
 	.fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,                  \
 	         .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,  \
 	         .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN}
@@ -74,7 +75,8 @@ static const PostProcessPreset PRESET_DEFAULT = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -118,7 +120,8 @@ static const PostProcessPreset PRESET_SUBTLE = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -164,7 +167,8 @@ static const PostProcessPreset PRESET_CINEMATIC = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -209,7 +213,8 @@ static const PostProcessPreset PRESET_VINTAGE = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -254,7 +259,8 @@ static const PostProcessPreset PRESET_MATRIX = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -298,7 +304,8 @@ static const PostProcessPreset PRESET_BW_CONTRAST = {
               .radius = 1.0F},
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     .fxaa = {.subpix = DEFAULT_FXAA_SUBPIX,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
              .edge_threshold_min = DEFAULT_FXAA_EDGE_THRESHOLD_MIN},
@@ -429,7 +436,8 @@ static const PostProcessPreset PRESET_NORDIC_NOIR = {
     /* DoF: Disabled (fog handles depth attenuation) */
     .dof = {.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE,
             .focal_range = DEFAULT_DOF_FOCAL_RANGE,
-            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE},
+            .bokeh_scale = DEFAULT_DOF_BOKEH_SCALE,
+            .anamorphic_ratio = 1.0F},
     /* FXAA: Low sub-pixel to keep grain sharp */
     .fxaa = {.subpix = 0.45F,
              .edge_threshold = DEFAULT_FXAA_EDGE_THRESHOLD,
@@ -492,8 +500,11 @@ static const PostProcessPreset PRESET_SONY_A7SIII = {
               .threshold = 0.85F,
               .soft_threshold = 0.5F,
               .radius = 1.8F},
-    /* Depth of Field: Simulating 35/50mm f/1.8 on FF */
-    .dof = {.focal_distance = 16.0F, .focal_range = 4.0F, .bokeh_scale = 12.0F},
+    /* Depth of Field: Simulating 35/50mm f/1.8 on FF (with 2.0x Anamorphic) */
+    .dof = {.focal_distance = 16.0F,
+            .focal_range = 4.0F,
+            .bokeh_scale = 12.0F,
+            .anamorphic_ratio = 2.0F},
     .fxaa = {.subpix = 0.75F,
              .edge_threshold = 0.125F,
              .edge_threshold_min = 0.0625F},

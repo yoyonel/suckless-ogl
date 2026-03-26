@@ -69,7 +69,7 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float d_focalDistance;
 	float d_focalRange;
 	float d_bokehScale;
-	float _pad8;
+	float d_anamorphicRatio;
 
 	/* MotionBlur (16 bytes) */
 	float mb_intensity;

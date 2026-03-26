@@ -47,6 +47,8 @@
 #define DEFAULT_DOF_FOCAL_DISTANCE 20.0F
 #define DEFAULT_DOF_FOCAL_RANGE 5.0F
 #define DEFAULT_DOF_BOKEH_SCALE 10.0F
+#define DEFAULT_DOF_ANAMORPHIC_RATIO \
+	1.0F /**< 1.0 = Spherical, 2.0 = Anamorphic */
 
 /* Banding defaults */
 #define DEFAULT_BANDING_LEVELS 256.0F /**< 8-bit simulation. */
@@ -305,7 +307,7 @@ typedef struct {
 	float dof_focal_distance;
 	float dof_focal_range;
 	float dof_bokeh_scale;
-	float _pad8;
+	float dof_anamorphic_ratio;
 
 	/* Motion Blur */
 	float mb_intensity;
@@ -511,6 +513,8 @@ void postprocess_set_bloom(PostProcess* post_processing, float intensity,
                            float threshold, float soft_threshold);
 void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
                          float focal_range, float bokeh_scale);
+void postprocess_set_dof_anamorphic(PostProcess* post_processing,
+                                    float anamorphic_ratio);
 float postprocess_get_exposure(PostProcess* post_processing);
 void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float min_luminance, float max_luminance,
