@@ -98,6 +98,7 @@ Warning handling policy during lint execution:
 
 ## 📚 Documentation Strategy
 
+- **Multilingual Synchronization**: All documentation must be kept synchronized across all available languages (currently **English** and **French**). When updating or creating a doc in `docs/` (`.md`), ensure the equivalent `.fr.md` is also updated or created.
 ### Update Existing Docs
 - Feature/fix updates existing behavior → Update the relevant doc
 - Examples: `docs/tooling.md`, `docs/ci_cd.md`, `docs/runtime_controls_logging.md`
