@@ -56,7 +56,8 @@ static void handle_exposure_input(const PostProcessInputContext* ctx, int key)
 	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_SHORT);
 }
 
-static void handle_preset_input(const PostProcessInputContext* ctx, int key)
+static void handle_preset_input(const PostProcessInputContext* ctx, int key,
+                                int mods)
 {
 	switch (key) {
 		case GLFW_KEY_1: /* Preset: Aucun */
@@ -178,6 +179,50 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key)
 			action_notifier_push(ctx->notifier,
 			                     "Style: Nordic Noir",
 			                     NOTIF_DUR_LONG);
+			break;
+		case GLFW_KEY_F8: /* Preset: Sony A7S III / Cycle LUTs */
+			if (check_flag(mods, GLFW_MOD_SHIFT)) {
+				static int lut_idx = 0;
+				const char* luts[] = {
+				    "assets/luts/sony_scinetone.cube",
+				    "assets/luts/sony_venice.cube",
+				    "assets/luts/kodak_vision3.cube",
+				    "assets/luts/fuji_eternal.cube",
+				    "assets/luts/teal_orange.cube",
+				    "assets/luts/vintage.cube",
+				    "assets/luts/sony_a7siii_poc.cube"};
+				const char* names[] = {
+				    "Sony S-Cinetone", "Sony Venice Look",
+				    "Kodak Vision3",   "Fujifilm Eternal",
+				    "Teal & Orange",   "Vintage Film",
+				    "Alpha 7S III POC"};
+				int count =
+				    (int)(sizeof(luts) / sizeof(luts[0]));
+				lut_idx = (lut_idx + 1) % count;
+
+				if (postprocess_load_lut3d(
+				        ctx->postprocess, luts[lut_idx]) == 0) {
+					postprocess_enable(ctx->postprocess,
+					                   POSTFX_LUT3D);
+					action_notifier_push(ctx->notifier,
+					                     names[lut_idx],
+					                     NOTIF_DUR_SHORT);
+					LOG_INFO("suckless-ogl.input",
+					         "Loaded LUT: %s",
+					         names[lut_idx]);
+				}
+			} else {
+				postprocess_apply_preset(ctx->postprocess,
+				                         &PRESET_SONY_A7SIII);
+				postprocess_load_lut3d(
+				    ctx->postprocess,
+				    "assets/luts/sony_scinetone.cube");
+				LOG_INFO("suckless-ogl.input",
+				         "Style: Sony Alpha 7S III");
+				action_notifier_push(ctx->notifier,
+				                     "Style: Sony A7S III",
+				                     NOTIF_DUR_LONG);
+			}
 			break;
 		case GLFW_KEY_0:
 		case GLFW_KEY_KP_0:
@@ -387,7 +432,7 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			    "Atmospheric Fog", "Fog Debug View");
 			break;
 		default:
-			handle_preset_input(ctx, key);
+			handle_preset_input(ctx, key, mods);
 			break;
 	}
 }

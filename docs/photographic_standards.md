@@ -334,3 +334,34 @@ speedUp = 0.3         // Very slow adaptation (water)
 minLuminance = 10.0   // Extreme contrast
 maxLuminance = 100000 // Direct sunlight without atmosphere
 ```
+
+## 🎨 Gamut Mapping & 3D LUTs
+
+### Color Spaces & Gamuts
+Modern cinema cameras capture light in wide-gamut log spaces to preserve maximum dynamic range.
+
+| Standard | Dynamic Range | Primary Usage |
+| :--- | :--- | :--- |
+| **Rec.709** | ~6 stops | Standard TV / Web |
+| **DCI-P3** | ~12 stops | Digital Cinema / HDR |
+| **S-Gamut3.Cine** | ~15 stops | Sony Cinema Cameras (A7S III, Venice) |
+| **Arri LogC** | ~14+ stops | Arri Alexa Standard |
+
+### 3D LUT (Look-Up Table)
+A 3D LUT is a $N^3$ cube of colors used to transform a source gamut (e.g., S-Log3) into a target "look" or standard (e.g., Rec.709).
+
+- **Technical LUT**: Exact mathematical conversion between color spaces.
+- **Creative LUT**: Artistic grading (Teal & Orange, Film Emulation).
+
+### Sony S-Log3 / S-Gamut3.Cine
+Used in our **Sony A7S III** profile. It maps linear light to a logarithmic curve to optimize data distribution in deep shadows and bright highlights.
+
+```glsl
+// Simplified S-Log3 decoding (emulated by LUT)
+if (x < 0.01125) {
+    y = (x - 0.01) / 3.5;
+} else {
+    y = (log10((x + 0.01) / 0.1) + 0.1) / 1.0;
+}
+```
+In `suckless-ogl`, we use **Hardware-Accelerated 3D LUTs** (`GL_TEXTURE_3D`) for near-zero cost gamut mapping.

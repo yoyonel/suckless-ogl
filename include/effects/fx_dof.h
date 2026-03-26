@@ -12,6 +12,8 @@ typedef struct {
 	float focal_distance; /* Distance de mise au point (unités monde) */
 	float focal_range; /* Plage de netteté (autour de la distance focale) */
 	float bokeh_scale; /* Taille du flou (simule l'ouverture) */
+	float anamorphic_ratio; /* Étirement vertical (1.0 = sphérique, 2.0 =
+	                           ciné) */
 } DoFParams;
 
 /* Structure regroupant les ressources graphiques du DoF */

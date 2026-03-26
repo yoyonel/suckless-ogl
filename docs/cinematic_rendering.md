@@ -56,9 +56,9 @@ Our current `PostProcessPreset` architecture already supports most of these para
 | **Sony (CineStyle)** | Professional skin tones, warm highlights | Alpha 7S III / S-Cinetone |
 | **Canon (Vivid)** | Saturated primaries, soft bloom, pleasant reds | EOS R5 |
 
-### Technical Roadmap
+### Technical Roadmap (Implemented)
 
-1. **3D LUT Support**: Integrate `.cube` LUT processing for brand-specific color transforms.
+1. **3D LUT Support**: Full integration of `.cube` LUT processing (up to $256^3$) for brand-specific gamut mapping and artistic grading.
 2. **Diffusion Profiles**: Add variable bloom radius based on "lens" quality (sharp Zeiss vs vintage Leica).
 3. **Sensor Profiles**: Simulate sensor-specific noise patterns (CMOS vs CMOS-BSI).
 

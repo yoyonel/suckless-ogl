@@ -141,6 +141,7 @@ set(SOURCES
     src/effects/fx_auto_exposure.c
     src/effects/fx_bloom.c
     src/effects/fx_dof.c
+    src/effects/fx_lut3d.c
     src/effects/fx_motion_blur.c
     src/effects/fx_utils.c
     src/platform/platform_fs.c
