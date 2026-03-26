@@ -29,7 +29,8 @@ enum {
 	POSTPROCESS_TEX_UNIT_VELOCITY = 4,
 	POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX = 5,
 	POSTPROCESS_TEX_UNIT_DOF_BLUR = 6,
-	POSTPROCESS_TEX_UNIT_STENCIL = 7
+	POSTPROCESS_TEX_UNIT_STENCIL = 7,
+	POSTPROCESS_TEX_UNIT_LUT3D = 8
 };
 
 /* Compute Shader Constants */
@@ -216,6 +217,14 @@ int postprocess_init(PostProcess* post_processing,
 		return 0;
 	}
 
+	/* Créer les ressources 3D LUT */
+	if (!fx_lut3d_init(post_processing)) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to create 3D LUT resources");
+		/* On continue quand même */
+	}
+	post_processing->lut3d.intensity = 1.0F;
+
 	LOG_INFO("suckless-ogl.postprocess",
 	         "Post-processing initialized (%dx%d)", width, height);
 
@@ -326,6 +335,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 	fx_dof_cleanup(post_processing);
 	fx_auto_exposure_cleanup(post_processing);
 	fx_motion_blur_cleanup(post_processing);
+	fx_lut3d_cleanup(post_processing);
 
 	LOG_INFO("suckless-ogl.postprocess", "Post-processing cleaned up");
 }
@@ -638,6 +648,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 	post_processing->fxaa = preset->fxaa;
 	post_processing->banding = preset->banding;
 	post_processing->fog = preset->fog;
+	post_processing->lut3d.intensity = preset->lut3d.intensity;
 	post_processing->ubo_dirty = true;
 
 	postprocess_on_state_change(post_processing);
@@ -794,6 +805,13 @@ void postprocess_end(PostProcess* post_processing)
 		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM, bloom_tex,
 		    post_processing->dummy_black_tex);
 
+		/* Upload LUT3D params */
+		if (postprocess_is_enabled(post_processing, POSTFX_LUT3D)) {
+			fx_lut3d_upload_params(
+			    post_processing->postprocess_shader,
+			    &post_processing->lut3d);
+		}
+
 		/* Bind la texture de Profondeur (pour le DoF) */
 		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
 		glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
@@ -931,6 +949,8 @@ void postprocess_end(PostProcess* post_processing)
 			ubo.fog_color[0] = post_processing->fog.color[0];
 			ubo.fog_color[1] = post_processing->fog.color[1];
 			ubo.fog_color[2] = post_processing->fog.color[2];
+
+			ubo.lut3d_intensity = post_processing->lut3d.intensity;
 
 			glBufferSubData(GL_UNIFORM_BUFFER, 0,
 			                sizeof(PostProcessUBO), &ubo);
@@ -1207,6 +1227,7 @@ static void setup_sampler_uniforms(PostProcess* post_processing)
 	               POSTPROCESS_TEX_UNIT_NEIGHBOR_MAX);
 	shader_set_int(shader, "dofBlurTexture", POSTPROCESS_TEX_UNIT_DOF_BLUR);
 	shader_set_int(shader, "stencilTexture", POSTPROCESS_TEX_UNIT_STENCIL);
+	shader_set_int(shader, "u_lut_tex", POSTPROCESS_TEX_UNIT_LUT3D);
 }
 
 static int create_framebuffer(PostProcess* post_processing)
@@ -1308,6 +1329,7 @@ static const EffectMetadata ALL_EFFECTS[] = {
     {POSTFX_BLOOM_DEBUG, "Bloom Debug View", "OPT_ENABLE_BLOOM_DEBUG"},
     {POSTFX_FOG, "Atmospheric Fog", "OPT_ENABLE_FOG"},
     {POSTFX_FOG_DEBUG, "Fog Debug View", "OPT_ENABLE_FOG_DEBUG"},
+    {POSTFX_LUT3D, "3D LUT Gamut Mapping", "OPT_ENABLE_LUT3D"},
 };
 
 #define EFFECT_COUNT (sizeof(ALL_EFFECTS) / sizeof(ALL_EFFECTS[0]))
@@ -1462,4 +1484,16 @@ void postprocess_use_dynamic(PostProcess* post_processing)
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to compile dynamic shader");
 	}
+}
+void postprocess_set_lut3d(PostProcess* post_processing, float intensity,
+                           GLuint texture)
+{
+	post_processing->lut3d.intensity = intensity;
+	post_processing->lut3d.texture = texture;
+	post_processing->ubo_dirty = true;
+}
+
+int postprocess_load_lut3d(PostProcess* post_processing, const char* path)
+{
+	return fx_lut3d_load_cube(post_processing, path);
 }

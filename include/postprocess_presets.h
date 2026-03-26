@@ -447,4 +447,66 @@ static const PostProcessPreset PRESET_NORDIC_NOIR = {
             .height_falloff = 0.018F,
             .color = {0.10F, 0.16F, 0.22F}}};
 
+/**
+ * @brief Sony Alpha 7S III: Professional cinematic look (S-Cinetone/S-Log3
+ * style).
+ *
+ * Characteristics: Natural mid-tones, soft highlight roll-off, clean and
+ * fine organic grain, and breathable shadows.
+ */
+static const PostProcessPreset PRESET_SONY_A7SIII = {
+    .active_effects =
+        (unsigned int)POSTFX_VIGNETTE | (unsigned int)POSTFX_GRAIN |
+        (unsigned int)POSTFX_AUTO_EXPOSURE | (unsigned int)POSTFX_BLOOM |
+        (unsigned int)POSTFX_COLOR_GRADING | (unsigned int)POSTFX_FXAA |
+        (unsigned int)POSTFX_DOF | (unsigned int)POSTFX_LUT3D,
+    /* Vignette: Subtle and natural */
+    .vignette = {.intensity = 0.35F, .smoothness = 0.65F, .roundness = 0.8F},
+    /* Grain: Extremely fine, organic 35mm feel */
+    .grain = {.intensity = 0.018F,
+              .intensity_shadows = 1.1F,
+              .intensity_midtones = 1.0F,
+              .intensity_highlights = 0.5F,
+              .shadows_max = 0.1F,
+              .highlights_min = 0.55F,
+              .texel_size = 1.2F},
+    /* Exposure: Calibrated for middle gray (18%) */
+    .exposure = {.exposure = 1.0F},
+    /* White Balance: Neutral D65 daylight */
+    .white_balance = {.temperature = 6500.0F, .tint = 0.0F},
+    /* Color Grading: Vibrant but natural, lifted shadows */
+    .color_grading = {.saturation = 1.04F,
+                      .contrast = 1.02F,
+                      .gamma = 1.0F,
+                      .gain = 1.0F,
+                      .offset = 0.0F,
+                      .lift = 0.015F},
+    /* Tonemapper: S-Cinetone inspired soft roll-off */
+    .tonemapper = {.slope = 0.92F,
+                   .toe = 0.12F,
+                   .shoulder = 0.38F,
+                   .black_clip = 0.0F,
+                   .white_clip = 0.005F},
+    /* Bloom: Subtle highlight diffusion */
+    .bloom = {.intensity = 0.035F,
+              .threshold = 0.85F,
+              .soft_threshold = 0.5F,
+              .radius = 1.8F},
+    /* Depth of Field: Simulating 35/50mm f/1.8 on FF */
+    .dof = {.focal_distance = 16.0F, .focal_range = 4.0F, .bokeh_scale = 12.0F},
+    .fxaa = {.subpix = 0.75F,
+             .edge_threshold = 0.125F,
+             .edge_threshold_min = 0.0625F},
+    .banding = {.mode = BANDING_MODE_LINEAR,
+                .levels = 256.0F,
+                .dither_strength = 0.0F,
+                .perceptual_gamma = 1.0F,
+                .channel_levels = {256.0F, 256.0F, 256.0F}},
+    .fog = {.density = 0.0F,
+            .start = 10.0F,
+            .height_falloff = 0.1F,
+            .color = {0.5F, 0.6F, 0.7F}},
+    /* 3D LUT (Gamut Mapping) */
+    .lut3d = {.intensity = 1.0F, .texture = 0, .size = 0}};
+
 #endif /* POSTPROCESS_PRESETS_H */
