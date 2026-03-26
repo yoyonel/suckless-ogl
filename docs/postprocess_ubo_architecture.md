@@ -83,6 +83,10 @@ typedef struct {
     float fxaa_quality_edge_threshold;
     float fxaa_quality_edge_threshold_min;
     float _pad10;
+
+    /* 3D LUT (16 bytes) */
+    float lut3d_intensity;
+    float _pad11[3];
 } PostProcessUBO_Layout;
 ```
 
@@ -111,6 +115,12 @@ LAYOUT_CONFIG(std140, binding = 0) uniform PostProcessBlock_Layout {
     float fxaaQualityEdgeThreshold;
     float fxaaQualityEdgeThresholdMin;
     float _pad10;
+
+    /* 3D LUT */
+    float lut3d_intensity;
+    float _pad11_0;
+    float _pad11_1;
+    float _pad11_2;
 };
 ```
 
