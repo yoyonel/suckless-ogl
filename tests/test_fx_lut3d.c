@@ -6,7 +6,6 @@
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
-#include <unistd.h>
 
 static GLFWwindow* g_test_window = NULL;
 static GPUProfiler g_gpu_profiler_system;
@@ -98,7 +97,7 @@ static void test_lut3d_load_valid_mock_cube(void)
 	TEST_ASSERT_EQUAL(GL_NO_ERROR, glGetError());
 
 	postprocess_cleanup(&post_proc);
-	(void)unlink(lut_path);
+	(void)remove(lut_path);
 }
 
 static void test_lut3d_cleanup_removes_texture(void)
@@ -125,7 +124,7 @@ static void test_lut3d_cleanup_removes_texture(void)
 	postprocess_cleanup(&post_proc);
 	TEST_ASSERT_FALSE(glIsTexture(tex));
 
-	(void)unlink(lut_path);
+	(void)remove(lut_path);
 }
 
 int main(void)
