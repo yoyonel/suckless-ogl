@@ -1005,21 +1005,26 @@ static void test_app_render_sony_a7siii(void)
 		g_test_app.camera.pitch = vpoint->pitch;
 		camera_update_vectors(&g_test_app.camera);
 
-		// Apply Sony A7S III Preset
+		// Apply Sony A7S III Preset + load S-Cinetone 3D LUT
 		postprocess_apply_preset(&g_test_app.postprocess,
 		                         &PRESET_SONY_A7SIII);
+		postprocess_load_lut3d(&g_test_app.postprocess,
+		                       "assets/luts/sony_scinetone.cube");
 
-		// Force one frame update to sync UBO
-		app_update(&g_test_app);
-
-		// Render
-		renderer_draw_frame(
-		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
-		    &g_test_app.camera, &g_test_app.gpu_profiler,
-		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
-		    &g_test_app.notifier, &g_test_app.effect_bench,
-		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
-		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+		// Warmup auto-exposure (128 frames) — Sony preset uses
+		// POSTFX_AUTO_EXPOSURE which needs convergence time
+		const int warmup_frames = 128;
+		for (int frame = 0; frame < warmup_frames; frame++) {
+			app_update(&g_test_app);
+			renderer_draw_frame(
+			    &g_test_app, &g_test_app.scene,
+			    &g_test_app.postprocess, &g_test_app.camera,
+			    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
+			    &g_test_app.env_mgr, &g_test_app.notifier,
+			    &g_test_app.effect_bench, g_test_app.width,
+			    g_test_app.height, g_test_app.delta_time,
+			    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+		}
 
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
