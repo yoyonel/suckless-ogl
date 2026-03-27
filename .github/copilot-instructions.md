@@ -8,6 +8,7 @@
 4. **Pre-commit checks** — Enforce via `just pre-commit-install`
 5. **CI/CD validation** — All builds/tests must pass locally (Docker) AND remote (GitHub Actions)
 6. **NO suppression of warnings/errors** — Fix issues at the source; never bypass them
+7. **NEVER modify reference test images** — Files matching `tests/ref_*.png` are the visual regression baseline from `master`. They must NEVER be replaced, overwritten, or regenerated without the user's **explicit approval and visual validation**. When in doubt, restore them from `origin/master` with `git checkout origin/master -- tests/ref_*.png`
 
 ---
 
@@ -98,6 +99,14 @@ Warning handling policy during lint execution:
 
 ## 📚 Documentation Strategy
 
+- **Multilingual Synchronization**: All documentation must be kept synchronized across all available languages (currently **English** and **French**). When updating or creating a doc in `docs/` (`.md`), ensure the equivalent `.fr.md` is also updated or created.
+
+### Testing Requirements
+
+- **Feature Coverage**: Every new feature or significant modification must be covered by appropriate tests.
+  - **Unit Tests**: For core logic, parsers, and parameter validation.
+  - **Integration Tests**: For rendering presets, UBO synchronization, and full pipeline verification.
+- **Regression Testing**: Ensure all existing tests pass after modifications.
 ### Update Existing Docs
 - Feature/fix updates existing behavior → Update the relevant doc
 - Examples: `docs/tooling.md`, `docs/ci_cd.md`, `docs/runtime_controls_logging.md`
@@ -107,6 +116,12 @@ Warning handling policy during lint execution:
 - New feature/module/subsystem → Create `docs/<feature>.md`
 - Update `mkdocs.yml` `nav:` section to include new doc
 - Use clear hierarchy: H1 (feature name), H2 (subtopics), H3 (details)
+
+### UI & Interaction Synchronization
+
+1. **Keyboard Overlay (F2)**: Always keep the in-app keyboard help synchronized.
+   - When adding, removing, or changing a keybinding in `src/app_input.c` or elsewhere, you **MUST** update the `AppBindingRegistry` in `src/app_binding.c`.
+   - The `F2` help system is the source of truth for the user; code-only changes are considered incomplete.
 
 ### Documentation Best Practices
 
