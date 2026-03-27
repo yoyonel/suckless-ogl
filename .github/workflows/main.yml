@@ -85,8 +85,8 @@ jobs:
           mkdir -p build-coverage/coverage_report/visual_tests
 
           # Collect results for storage
-          cp tests/ref_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
-          cp tests/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
+          cp tests/references/ref_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
+          cp tests/references/failed_*.png visual_artifacts/${{ github.sha }}/ 2>/dev/null || true
           # We will also collect effect_diffs after the script runs
 
           # Run dynamic report generator (produces index.html and comment.md)

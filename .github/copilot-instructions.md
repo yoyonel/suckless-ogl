@@ -8,7 +8,7 @@
 4. **Pre-commit checks** — Enforce via `just pre-commit-install`
 5. **CI/CD validation** — All builds/tests must pass locally (Docker) AND remote (GitHub Actions)
 6. **NO suppression of warnings/errors** — Fix issues at the source; never bypass them
-7. **NEVER modify reference test images** — Files matching `tests/ref_*.png` are the visual regression baseline from `master`. They must NEVER be replaced, overwritten, or regenerated without the user's **explicit approval and visual validation**. When in doubt, restore them from `origin/master` with `git checkout origin/master -- tests/ref_*.png`
+7. **NEVER modify reference test images** — Files matching `tests/references/ref_*.png` are the visual regression baseline from `master`. They must NEVER be replaced, overwritten, or regenerated without the user's **explicit approval and visual validation**. When in doubt, restore them from `origin/master` with `git checkout origin/master -- tests/references/ref_*.png`
 
 ---
 

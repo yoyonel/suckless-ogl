@@ -156,8 +156,8 @@ static void verify_reference_image(int width, int height,
 	size_t pixel_data_size = (size_t)(width * height * BYTES_PER_PIXEL);
 
 	char ref_path[PATH_BUF_SIZE];
-	(void)snprintf(ref_path, sizeof(ref_path), "tests/ref_%s.png",
-	               face_name);
+	(void)snprintf(ref_path, sizeof(ref_path),
+	               "tests/references/ref_%s.png", face_name);
 
 	// Load reference frame (PNG)
 	int ref_w = 0;
@@ -212,7 +212,8 @@ static void verify_reference_image(int width, int height,
 
 			char diff_path[PATH_BUF_SIZE];
 			(void)snprintf(diff_path, sizeof(diff_path),
-			               "tests/failed_diff_%s.png", face_name);
+			               "tests/references/failed_diff_%s.png",
+			               face_name);
 			(void)stbi_write_png(diff_path, width, height,
 			                     BYTES_PER_PIXEL, diff_map,
 			                     width * BYTES_PER_PIXEL);
@@ -221,7 +222,8 @@ static void verify_reference_image(int width, int height,
 
 		char actual_path[PATH_BUF_SIZE];
 		(void)snprintf(actual_path, sizeof(actual_path),
-		               "tests/failed_actual_%s.png", face_name);
+		               "tests/references/failed_actual_%s.png",
+		               face_name);
 		(void)stbi_write_png(actual_path, width, height,
 		                     BYTES_PER_PIXEL, current_pixels,
 		                     width * BYTES_PER_PIXEL);
@@ -326,7 +328,8 @@ static void test_app_render_multi_view(void)
 					char ref_path[PATH_BUF_SIZE];
 					(void)snprintf(
 					    ref_path, sizeof(ref_path),
-					    "tests/ref_%s.png", vpoint->name);
+					    "tests/references/ref_%s.png",
+					    vpoint->name);
 					(void)stbi_write_png(
 					    ref_path, fb_width, fb_height,
 					    BYTES_PER_PIXEL, current_pixels,
@@ -368,10 +371,10 @@ static void test_app_render_multi_view(void)
 				    &G_VIEWPOINTS[i - 1];
 				if (capture_mode) {
 					char ref_path[PATH_BUF_SIZE];
-					(void)snprintf(ref_path,
-					               sizeof(ref_path),
-					               "tests/ref_%s.png",
-					               prev_vpoint->name);
+					(void)snprintf(
+					    ref_path, sizeof(ref_path),
+					    "tests/references/ref_%s.png",
+					    prev_vpoint->name);
 					(void)stbi_write_png(
 					    ref_path, fb_width, fb_height,
 					    BYTES_PER_PIXEL, current_pixels,
@@ -415,7 +418,7 @@ static void test_app_render_multi_view(void)
 			if (capture_mode) {
 				char ref_path[PATH_BUF_SIZE];
 				(void)snprintf(ref_path, sizeof(ref_path),
-				               "tests/ref_%s.png",
+				               "tests/references/ref_%s.png",
 				               last_vpoint->name);
 				(void)stbi_write_png(
 				    ref_path, fb_width, fb_height,
@@ -501,7 +504,8 @@ static void test_app_render_subtle_bloom(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -599,7 +603,8 @@ static void test_app_render_subtle_auto_exposure(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -682,7 +687,8 @@ static void test_app_render_subtle_fxaa(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -761,7 +767,8 @@ static void test_app_render_subtle_none(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -844,7 +851,8 @@ static void test_app_render_subtle_dof(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -958,7 +966,8 @@ static void test_app_render_subtle_motion_blur(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
@@ -1038,7 +1047,8 @@ static void test_app_render_sony_a7siii(void)
 		if (getenv("GEN_REFS") != NULL) {
 			char ref_path[PATH_BUF_SIZE];
 			(void)snprintf(ref_path, sizeof(ref_path),
-			               "tests/ref_%s.png", test_name);
+			               "tests/references/ref_%s.png",
+			               test_name);
 			(void)stbi_write_png(ref_path, fb_width, fb_height,
 			                     BYTES_PER_PIXEL, pixels,
 			                     fb_width * BYTES_PER_PIXEL);
