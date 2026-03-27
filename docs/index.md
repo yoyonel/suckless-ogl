@@ -25,7 +25,8 @@
 - **Isolated Environment**: Native `distrobox` support to guarantee a reproducible build environment.
 - **Quality & Testing**: Unit testing suite, code coverage, static analysis, and [Standalone Mocking](standalone_testing_mocking.md).
 - **Interactive Keyboard Overlay**: Modern Cyberpunk UI with [Responsive Scaling](keyboard_system.md) and [Visual Parameter Reference](ui_visual_parameters.md).
-- **Post-Processing Pipeline**: Advanced stack including [Auto-Exposure](exposure_analysis.md), [Bloom](postprocess_optimizations_2026-02.md), [Bloom Debugging](bloom_debug.md), and [Debug Histograms](auto_exposure_debug_histogram.md).
+- **Post-Processing Pipeline**: Advanced stack including [Auto-Exposure](exposure_analysis.md), [Bloom](postprocess_optimizations_2026-02.md), [Bloom Debugging](bloom_debug.md), [Debug Histograms](auto_exposure_debug_histogram.md), and [3D LUT / Gamut Mapping](sony_a7siii_profile.md).
+- **Cinematic Rendering**: High-fidelity photographic simulation with brand-specific profiles like the [Sony Alpha 7S III](sony_a7siii_profile.md).
 
 ## 🛠️ Compilation and Usage
 

@@ -41,26 +41,28 @@ The grain system emulates 35mm film stock through a perceptual noise model:
 * **Temporal Jitter**: Instead of "scrolling" noise, the system uses a high-frequency hash of time to regenerate a unique noise grain every frame. This prevents directional streaks and creates a natural "boiling" effect.
 * **Luminance Weighting**: Grain intensity is dynamically scaled based on the scene luminance. It is densest in the shadows and midtones, and barely visible in clear highlights, mimicking real silver halide behavior.
 
-## 📸 Future: Camera Profile System
+## 📸 Camera Profile System
 
-To scale this photographic approach, we can implement a **Camera Profile System** where each profile bundles specific rendering characteristics of legendary camera brands.
+The system implements a **Camera Profile System** where each profile bundles specific rendering characteristics of legendary camera brands.
 
-### Implementation Concept
-
-Our current `PostProcessPreset` architecture already supports most of these parameters. A dedicated `include/camera_profiles.h` could define several industry-standard profiles:
+### Implemented Profiles
 
 | Profile | Characteristic | Simulation Target |
 | :--- | :--- | :--- |
+| **Sony (CineStyle)** | Professional mid-tones, soft highlights, 3D LUT | Alpha 7S III / S-Cinetone |
 | **Fujifilm (Classic)** | Teal shadows, high contrast, organic grain | X100VI / X-Trans V |
 | **Leica (Summarit)** | Severe highlight roll-off, ultra-fine grain | M11 Monochrome |
-| **Sony (CineStyle)** | Professional skin tones, warm highlights | Alpha 7S III / S-Cinetone |
 | **Canon (Vivid)** | Saturated primaries, soft bloom, pleasant reds | EOS R5 |
 
-### Technical Roadmap
+### 🛠️ Advanced Debugging: 3D LUT Lattice (Shift + F10)
 
-1. **3D LUT Support**: Integrate `.cube` LUT processing for brand-specific color transforms.
-2. **Diffusion Profiles**: Add variable bloom radius based on "lens" quality (sharp Zeiss vs vintage Leica).
-3. **Sensor Profiles**: Simulate sensor-specific noise patterns (CMOS vs CMOS-BSI).
+To visualize how a 3D LUT deforms the color space, a dedicated lattice debugger can be toggled via `Shift + F10`. It renders a GPU-accelerated point grid representing the RGB volume, showing exactly how the gamut is remapped by the active profile.
+
+### Technical Roadmap (Achieved)
+
+1. **3D LUT Support**: Full integration of `.cube` LUT processing for brand-specific gamut mapping.
+2. **Anamorphic Bokeh**: Support for non-spherical lens bokeh (2.0x stretch) in the Depth of Field module.
+3. **Lattice Visualization**: Real-time debugging of color space deformation.
 
 ### Data Sources & Technical Resources
 

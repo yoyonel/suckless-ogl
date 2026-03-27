@@ -692,3 +692,47 @@ D -- Enters New Key --> B
 
   </div>
 </div>
+
+## [Sony Alpha 7S III Cinematic Profile](../sony_a7siii_profile/)
+
+<div class="diagram-item">
+  <a href="../sony_a7siii_profile/#cine-rendering-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Cine Rendering Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">A professional-grade color pipeline ensuring highlight roll-off and expanded dynamic range.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+    subgraph Engine["Suckless-OGL Render Engine"]
+        L["Linear HDR Scene"] --> G["Gamut Mapping (3D LUT)"]
+        G --> P["Post Process Effects"]
+        P --> T["Tone Mapping"]
+    end
+    subgraph Sony["Sony S-Log3 Workflow"]
+        S1["S-Gamut3.Cine"] --> S2["S-Log3 Curve"]
+        S2 --> S3["S-Cinetone Look"]
+    end
+    G -.-> Sony
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../sony_a7siii_profile/#3d-lut-memory-layout" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">3D LUT Memory Layout</a> : <span style="opacity: 0.6; font-size: 0.85em;">GPU storage and sampling of the 33x33x33 color cube.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+    subgraph GPU_VRAM["GPU VRAM (GL_TEXTURE_3D)"]
+        L0["R0 G0 B0"] --- L1["R1 G0 B0"]
+        L1 --- L32["R32 G0 B0"]
+        L32 --- Ly["... Z Slices (33x) ..."]
+    end
+    subgraph Shader["Sampler (Trilinear)"]
+        I["Input RGB"] --> S["hw_lerp(8-texels)"]
+        S --> O["Mapped RGB"]
+    </div>
+    GPU_VRAM --> Shader
+```
+
+  </div>
+</div>
