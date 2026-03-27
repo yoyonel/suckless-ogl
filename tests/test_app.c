@@ -972,6 +972,81 @@ static void test_app_render_subtle_motion_blur(void)
 	free(pixels);
 }
 
+/**
+ * Test Sony A7S III Preset (Anamorphic DoF + 3D LUT)
+ */
+static void test_app_render_sony_a7siii(void)
+{
+	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
+	                         "App should be initialized");
+
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+	unsigned char* pixels = (unsigned char*)malloc(pixel_data_size);
+	TEST_ASSERT_NOT_NULL(pixels);
+
+	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
+		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+		printf("[INFO] Testing Sony A7S III viewpoint: %s\n",
+		       vpoint->name);
+
+		// Set camera
+		glm_vec3_copy(
+		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
+		    g_test_app.camera.position);
+		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
+		                     vpoint->world_up[2]},
+		              g_test_app.camera.world_up);
+		g_test_app.camera.yaw = vpoint->yaw;
+		g_test_app.camera.pitch = vpoint->pitch;
+		camera_update_vectors(&g_test_app.camera);
+
+		// Apply Sony A7S III Preset
+		postprocess_apply_preset(&g_test_app.postprocess,
+		                         &PRESET_SONY_A7SIII);
+
+		// Force one frame update to sync UBO
+		app_update(&g_test_app);
+
+		// Render
+		renderer_draw_frame(
+		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
+		    &g_test_app.camera, &g_test_app.gpu_profiler,
+		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
+		    &g_test_app.notifier, &g_test_app.effect_bench,
+		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
+		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+		flip_image_vertically(fb_width, fb_height, pixels);
+
+		char test_name[PATH_BUF_SIZE];
+		(void)snprintf(test_name, sizeof(test_name), "%s_sony_a7siii",
+		               vpoint->name);
+
+		if (getenv("GEN_REFS") != NULL) {
+			char ref_path[PATH_BUF_SIZE];
+			(void)snprintf(ref_path, sizeof(ref_path),
+			               "tests/ref_%s.png", test_name);
+			(void)stbi_write_png(ref_path, fb_width, fb_height,
+			                     BYTES_PER_PIXEL, pixels,
+			                     fb_width * BYTES_PER_PIXEL);
+			printf("[INFO] Reference generated: %s\n", ref_path);
+		} else {
+			verify_reference_image(fb_width, fb_height, pixels,
+			                       test_name);
+		}
+	}
+
+	free(pixels);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -982,6 +1057,7 @@ int main(void)
 	RUN_TEST(test_app_render_subtle_fxaa);
 	RUN_TEST(test_app_render_subtle_dof);
 	RUN_TEST(test_app_render_subtle_motion_blur);
+	RUN_TEST(test_app_render_sony_a7siii);
 	RUN_TEST(test_app_camera_initialization);
 
 	// Cleanup APRÈS tous les tests

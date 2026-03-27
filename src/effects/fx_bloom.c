@@ -142,6 +142,9 @@ void fx_bloom_render(PostProcess* post_processing)
 		                   (float)mip_src->height};
 		shader_set_vec2(bloom->downsample_shader, "srcResolution",
 		                resolution);
+		vec2 neutralScale = {1.0F, 1.0F};
+		shader_set_vec2(bloom->downsample_shader, "texelScale",
+		                (float*)&neutralScale);
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 		                       GL_TEXTURE_2D, mip_dst->texture, 0);
@@ -158,6 +161,9 @@ void fx_bloom_render(PostProcess* post_processing)
 	shader_use(bloom->upsample_shader);
 	shader_set_float(bloom->upsample_shader, "filterRadius",
 	                 post_processing->bloom.radius);
+	vec2 neutralScale = {1.0F, 1.0F};
+	shader_set_vec2(bloom->upsample_shader, "texelScale",
+	                (float*)&neutralScale);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);

@@ -111,6 +111,8 @@ set(OPENGL_TESTS
     test_stencil_masking
     test_env_transition
     test_auto_exposure_debug
+    test_fx_lut3d
+    test_fx_dof
 )
 
 # Pour chaque fichier test trouvé

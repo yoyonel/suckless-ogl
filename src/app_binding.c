@@ -194,6 +194,15 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_F7, 0, "Toggle Fog",
 	            "Toggles atmospheric fog. Use SHIFT+F7 for Debug view.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F8, 0, "Sony A7S III",
+	            "Toggles Sony Alpha 7S III S-Cinetone camera profile.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F8, GLFW_MOD_SHIFT, "Cycle 3D LUT",
+	            "Cycles through cinematic 3D LUT 'Characters'.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_F10, GLFW_MOD_SHIFT, "Toggle LUT Viz",
+	            "Toggles 3D LUT Lattice deformation visualization.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_F9, 0, "Toggle Perf Mode",
 	            "Toggles Performance Mode (disables heavy effects).",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
