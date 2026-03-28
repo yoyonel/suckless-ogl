@@ -6,6 +6,7 @@
 #endif
 
 #include "gl_common.h"
+#include "gpu_profiler.h"
 #include "texture.h"
 #include "unity.h"
 #include <stdint.h>
@@ -161,7 +162,6 @@ void glGetTexLevelParameteriv(GLenum target, GLint level, GLenum pname,
 }
 
 /* GPU Profiler Mocks */
-typedef struct GPUProfiler GPUProfiler;
 void gpu_profiler_start_stage(GPUProfiler* profiler, const char* name,
                               uint32_t color)
 {
