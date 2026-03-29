@@ -4,6 +4,7 @@ set -e
 APP_PATH="./build/app"
 WINDOW_NAME="Icosphere Phong"
 LOG_FILE="valgrind_integration.log"
+SCENARIO="${1:-minimal}"  # "minimal" (default) or "full"
 
 # Source shared utilities and scenarios
 SCRIPT_DIR=$(dirname "$0")
@@ -21,7 +22,7 @@ echo "Starting Valgrind..."
 # Remove --log-file to let output flow to terminal.
 # We use 'tee' to capture it for the final grep without breaking APP_PID.
 # Bash's process substitution is perfect for this.
-valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite "$APP_PATH" 2>&1 | tee "$LOG_FILE" &
+valgrind --error-exitcode=1 --leak-check=full --show-leak-kinds=definite --suppressions=valgrind.supp "$APP_PATH" 2>&1 | tee "$LOG_FILE" &
 APP_PID=$!
 
 if ! wait_for_window_start $APP_PID "$WINDOW_NAME"; then
@@ -34,8 +35,12 @@ fi
 WID=$(xdotool search --sync --onlyvisible --name "$WINDOW_NAME" 2>/dev/null | head -n 1)
 focus_window "$WID"
 
-echo "Starting Integration Test Scenario..."
-run_scenario_minimal
+echo "Starting Integration Test Scenario ($SCENARIO)..."
+if [ "$SCENARIO" = "full" ]; then
+    run_scenario_full
+else
+    run_scenario_minimal
+fi
 
 if wait $APP_PID; then
     echo "SUCCESS: App exited cleanly and Valgrind found no errors."

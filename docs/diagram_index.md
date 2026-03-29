@@ -31,6 +31,534 @@
 .mermaid-preview .mermaid { background: transparent !important; color: white !important; }
 </style>
 
+## [Anatomy of a Frame: The Complete Lifecycle of suckless-ogl](../application_lifecycle/)
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#introduction" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Introduction</a> : <span style="opacity: 0.6; font-size: 0.85em;">This article traces the complete lifecycle of the application: from the first byte allocated in `main()` to the moment the GPU presents the first fully-lit frame on screen. We'll cover every layer — CPU memory, GPU resources, the X11/GLFW windowing handshake, OpenGL context creation, shader compilation, asynchronous texture loading, and the multi-pass rendering architecture that produces each frame.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Application Lifecycle"
+A["main()"] --> B["app_init()"]
+B --> C["app_run() - Main Loop"]
+C --> D["app_cleanup()"]
+end
+subgraph "app_init()"
+B --> B1["Window + OpenGL Context"]
+B --> B2["Camera & Input"]
+B --> B3["Scene Init (GPU Resources)"]
+B --> B4["Async Loader Thread"]
+B --> B5["Post-Processing Pipeline"]
+B --> B6["Profiling Systems"]
+end
+subgraph "Each Frame in app_run()"
+C --> C1["Poll Events"]
+C --> C2["Camera Physics"]
+C --> C3["renderer_draw_frame()"]
+C --> C4["SwapBuffers"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#21-glfw-initialization-window-hints" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">2.1 — GLFW Initialization & Window Hints</a> : <span style="opacity: 0.6; font-size: 0.85em;">Behind the scenes, GLFW performs an X11 handshake:</span>
+  <div class="mermaid-preview">
+
+```mermaid
+sequenceDiagram
+participant App as Application
+participant GLFW as GLFW Library
+participant X11 as X11 Server
+participant Mesa as Mesa/GPU Driver
+participant GPU as GPU Hardware
+App->>GLFW: glfwInit()
+GLFW->>X11: XOpenDisplay()
+X11-->>GLFW: Display* connection
+App->>GLFW: glfwCreateWindow(1920, 1080)
+GLFW->>X11: XCreateWindow() + GLX setup
+X11->>Mesa: glXCreateContextAttribsARB(4.4 Core, Debug)
+Mesa->>GPU: Allocate command buffer, context state
+Mesa-->>X11: GLXContext
+X11-->>GLFW: Window + Context ready
+App->>GLFW: glfwMakeContextCurrent()
+GLFW->>Mesa: glXMakeCurrent()
+Mesa->>GPU: Bind context to calling thread
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#31-camera" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">3.1 — Camera</a> : <span style="opacity: 0.6; font-size: 0.85em;">The camera uses a fixed-timestep physics model (60 Hz) with exponential smoothing for rotation. Mouse input is filtered through an EMA (Exponential Moving Average) to dampen jitter.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+subgraph "Camera Update Pipeline"
+A["Mouse Delta"] -->|EMA filter| B["yaw_target / pitch_target"]
+B -->|Lerp α=0.1| C["yaw / pitch (smooth)"]
+C --> D["camera_update_vectors()"]
+D --> E["front, right, up vectors"]
+E --> F["View Matrix (lookAt)"]
+end
+subgraph "Physics (Fixed 60Hz)"
+G["WASD Keys"] --> H["Target Velocity"]
+H -->|acceleration × dt| I["Current Velocity"]
+I -->|friction| J["Position += vel × dt"]
+J --> K["Head Bobbing (sin wave)"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#32-async-loader-thread" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">3.2 — Async Loader Thread</a> : <span style="opacity: 0.6; font-size: 0.85em;">A dedicated POSIX thread is spawned for background I/O. It sleeps on a condition variable (`pthreadcondwait`) until work is queued. This prevents disk reads from stalling the render loop.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+stateDiagram-v2
+[*] --> IDLE
+IDLE --> PENDING: async_loader_request()
+PENDING --> LOADING: Worker wakes up
+LOADING --> WAITING_FOR_PBO: I/O complete, need GPU buffer
+WAITING_FOR_PBO --> CONVERTING: Main thread provides PBO
+CONVERTING --> READY: Float->Half SIMD conversion done
+READY --> IDLE: Main thread consumes result
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#42-dummy-textures-brdf-lut" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.2 — Dummy Textures & BRDF LUT</a> : <span style="opacity: 0.6; font-size: 0.85em;">This texture maps `(NdotV, roughness)` → `(F0scale, F0bias)` and is used every frame by the PBR fragment shader to avoid expensive real-time BRDF integration.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+subgraph "BRDF LUT Generation (One-Time)"
+A["Compute Shader<br/>spbrdf.glsl"] -->|"Importance Sampling<br/>GGX Distribution"| B["512×512 RG16F Texture"]
+B --> C["Bound to Texture Unit 2<br/>every PBR draw call"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#44-two-rendering-modes-billboard-ray-tracing-vs-icosphere-mesh" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.4 — Two Rendering Modes: Billboard Ray-Tracing vs. Icosphere Mesh</a> : <span style="opacity: 0.6; font-size: 0.85em;">The quad geometry is a simple unit quad (±0.5), but the vertex shader projects it to tightly enclose the sphere's screen-space bounding box via analytical tangent-line computation (see `computeBillboardSphere()` in `projectionutils.glsl`).</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+subgraph "Billboard Ray-Tracing (Default)"
+A["4-vertex Quad<br/>(per instance)"] -->|"Vertex Shader:<br/>project to sphere bounds"| B["Screen-space quad"]
+B -->|"Fragment Shader:<br/>ray-sphere intersection"| C["Perfect sphere<br/>per-pixel normal + depth"]
+end
+subgraph "Icosphere Mesh (Fallback)"
+D["642-vertex mesh<br/>(subdivided icosahedron)"] -->|"Rasterized as<br/>triangles"| E["Polygon approximation<br/>(faceted at low subdiv)"]
+end
+style A fill:#4CAF50,stroke:#333,stroke-width:2px
+style D fill:#999,stroke:#333,stroke-width:1px
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#44-two-rendering-modes-billboard-ray-tracing-vs-icosphere-mesh" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.4 — Two Rendering Modes: Billboard Ray-Tracing vs. Icosphere Mesh</a> : <span style="opacity: 0.6; font-size: 0.85em;">icospheregenerate(&scene-&gt;geometry, INITIALSUBDIVISIONS);  // Level 3</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+A["Level 0<br/>12 vertices<br/>20 triangles"] -->|"Subdivide"| B["Level 1<br/>42 vertices<br/>80 triangles"]
+B -->|"Subdivide"| C["Level 2<br/>162 vertices<br/>320 triangles"]
+C -->|"Subdivide"| D["Level 3<br/>642 vertices<br/>1280 triangles"]
+D -->|"..."| E["Level 6<br/>~40k vertices"]
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#47-instance-grid-setup" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.7 — Instance Grid Setup</a> : <span style="opacity: 0.6; font-size: 0.85em;">Camera at distance 20, looking at origin → sees entire grid</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+subgraph "Scene Layout (Top View)"
+direction TB
+A["Camera (0, 0, 20)<br/>Looking −Z"]
+A -.->|"20 units"| B["Origin (0, 0, 0)"]
+B --- C["10×10 Sphere Grid<br/>22.5 × 22.5 units<br/>Z = 0 plane"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#410-shader-compilation" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">4.10 — Shader Compilation</a> : <span style="opacity: 0.6; font-size: 0.85em;">All shaders are compiled during `sceneinit()`:</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Shader Programs"
+direction TB
+PBR["PBR Instanced<br/>pbr_ibl_instanced.vert/.frag"]
+BB["PBR Billboard<br/>pbr_ibl_billboard.vert/.frag"]
+SKY["Skybox<br/>background.vert/.frag"]
+DBG["Debug Lines<br/>debug_line.vert/.frag"]
+UI["UI Overlay<br/>ui.vert/.frag"]
+end
+subgraph "Compute Shaders"
+SPMAP["Specular Prefilter<br/>IBL/spmap.glsl"]
+IRMAP["Irradiance Conv.<br/>IBL/irmap.glsl"]
+BRDF["BRDF LUT<br/>IBL/spbrdf.glsl"]
+LUM1["Luminance Pass 1<br/>IBL/luminance_reduce_pass1.glsl"]
+LUM2["Luminance Pass 2<br/>IBL/luminance_reduce_pass2.glsl"]
+end
+subgraph "Post-Process Shaders"
+PP["Final Composite<br/>postprocess.vert/.frag"]
+BD["Bloom Down<br/>bloom_downsample.frag"]
+BU["Bloom Up<br/>bloom_upsample.frag"]
+BP["Bloom Prefilter<br/>bloom_prefilter.frag"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#51-the-scene-fbo-multi-render-target" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">5.1 — The Scene FBO (Multi-Render Target)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The core offscreen framebuffer uses MRT (Multiple Render Targets):</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+subgraph "Scene FBO"
+C0["Color 0<br/>GL_RGBA16F<br/>HDR Scene Color"]
+C1["Color 1<br/>GL_RG16F<br/>Velocity Vectors"]
+DS["Depth/Stencil<br/>GL_DEPTH32F_STENCIL8"]
+SV["Stencil View<br/>GL_R8UI<br/>(TextureView)"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#61-async-loading-sequence" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">6.1 — Async Loading Sequence</a> : <span style="opacity: 0.6; font-size: 0.85em;">This triggers the asynchronous environment loading pipeline — the most complex multi-frame operation in the engine.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+sequenceDiagram
+participant Main as Main Thread (Render)
+participant Worker as Async Worker Thread
+participant GPU as GPU
+Main->>Worker: async_loader_request("env.hdr")
+Note over Worker: State: PENDING -> LOADING
+Worker->>Worker: stbi_loadf() - decode HDR to float RGBA
+Note over Worker: ~50ms for 2K HDR on NVMe
+Worker-->>Main: State: WAITING_FOR_PBO
+Main->>GPU: glGenBuffers() -> PBO
+Main->>GPU: glMapBuffer(PBO, WRITE)
+Main-->>Worker: async_loader_provide_pbo(pbo_ptr)
+Note over Worker: State: CONVERTING
+Worker->>Worker: SIMD float32 -> float16 conversion
+Note over Worker: ~2ms for 2048×1024
+Worker-->>Main: State: READY
+Main->>GPU: glUnmapBuffer(PBO)
+Main->>GPU: glTexSubImage2D(from PBO)
+Note over GPU: DMA transfer: PBO -> VRAM
+Main->>GPU: glGenerateMipmap()
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#62-transition-state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">6.2 — Transition State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">During the first load, the screen stays black (no crossfade from a previous scene):</span>
+  <div class="mermaid-preview">
+
+```mermaid
+stateDiagram-v2
+[*] --> WAIT_IBL: "First load"
+WAIT_IBL --> WAIT_IBL: "IBL in progress..."
+WAIT_IBL --> FADE_IN: "IBL complete"
+FADE_IN --> IDLE: "Alpha reaches 0"
+note right of WAIT_IBL
+transition_alpha = 1.0 (fully opaque black)
+Screen is black during the first few frames
+end note
+note right of FADE_IN
+Alpha decreases: 1.0 -> 0.0
+over 250ms (DEFAULT duration)
+end note
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#71-the-three-ibl-maps" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">7.1 — The Three IBL Maps</a> : <span style="opacity: 0.6; font-size: 0.85em;">Once the HDR texture is uploaded, the IBL Coordinator ([src/iblcoordinator.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/iblcoordinator.c)) takes over. It computes three maps across multiple frames to avoid GPU stalls.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+HDR["HDR Environment Map<br/>2048×1024 equirectangular<br/>GL_RGBA16F"] --> SPEC
+HDR --> IRR
+HDR --> LUM
+SPEC["Specular Prefilter Map<br/>1024×1024 × 5 mip levels<br/>Compute: spmap.glsl"]
+IRR["Irradiance Map<br/>64×64<br/>Compute: irmap.glsl"]
+LUM["Luminance Reduction<br/>1×1 average<br/>Compute: luminance_reduce"]
+SPEC -->|"Per-pixel reflection<br/>roughness -> mip level"| PBR["PBR Shader"]
+IRR -->|"Diffuse hemisphere<br/>integral"| PBR
+LUM -->|"Auto exposure<br/>threshold"| PP["Post-Process"]
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#72-progressive-slicing-strategy" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">7.2 — Progressive Slicing Strategy</a> : <span style="opacity: 0.6; font-size: 0.85em;">| Luminance | 2 dispatches (pass 1 + 2) | 2 dispatches |</span>
+  <div class="mermaid-preview">
+
+```mermaid
+gantt
+title IBL Progressive Generation Timeline
+dateFormat X
+axisFormat Frame %s
+section Luminance
+Luminance Pass 1      :lum1, 0, 1
+Luminance Wait (fence) :lum2, 1, 2
+Luminance Readback     :lum3, 2, 3
+section Specular Mip 0
+Slice 1/24            :s1, 3, 4
+Slice 2/24            :s2, 4, 5
+Slice ...             :s3, 5, 6
+Slice 24/24           :s4, 6, 7
+section Specular Mip 1
+Slice 1/8             :m1, 7, 8
+Slice 8/8             :m2, 8, 9
+section Specular Mips 2-4
+Grouped dispatch      :m3, 9, 10
+section Irradiance
+Slice 1/12            :i1, 10, 11
+Slice 12/12           :i2, 11, 12
+section Done
+IBL Complete -> Fade In :done, 12, 13
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#chapter-8-the-main-loop" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Chapter 8 — The Main Loop</a> : <span style="opacity: 0.6; font-size: 0.85em;">`apprun()` ([src/app.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/app.c)) is the heartbeat — a classic uncapped game loop with fixed-timestep physics.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Main Loop - One Iteration"
+A["glfwPollEvents()<br/>Process keyboard, mouse, resize"] --> B
+B["Time & FPS update<br/>delta_time, frame_count"] --> C
+C["Camera Physics<br/>Fixed timestep 60Hz<br/>Smooth rotation lerp"] --> D
+D["Geometry Update<br/>(if subdivisions changed)"] --> E
+E["app_update()<br/>Process input state"] --> F
+F["renderer_draw_frame()<br/>THE BIG ONE"] --> G
+G["Tracy screenshots<br/>(profiling)"] --> H
+H["glfwSwapBuffers()<br/>Present to screen"] --> I
+I["GPU profiler collect<br/>(query results)"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#91-high-level-frame-architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.1 — High-Level Frame Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">`rendererdrawframe()` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "renderer_draw_frame()"
+A["GPU Profiler Begin"] --> B
+B["postprocess_begin()<br/>Bind Scene FBO<br/>Clear color/depth/stencil"] --> C
+subgraph "View Setup"
+C["camera_get_view_matrix()"]
+C --> D["glm_perspective()<br/>FOV=60°, near=0.1, far=1000"]
+D --> E["ViewProj = Proj × View"]
+E --> F["InvViewProj = inverse(ViewProj)"]
+end
+F --> G["scene_render()"]
+subgraph "scene_render()"
+G --> G1["Skybox Pass<br/>(depth disabled)"]
+G1 --> G2["Sphere Sorting<br/>(GPU Bitonic)"]
+G2 --> G3["PBR Sphere Pass<br/>(instanced draw)"]
+end
+G3 --> H["postprocess_end()<br/>7-Stage Pipeline"]
+H --> I["UI Overlay<br/>+ Env Transition"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#93-pass-2-sphere-sorting-gpu-bitonic-sort" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.3 — Pass 2: Sphere Sorting (GPU Bitonic Sort)</a> : <span style="opacity: 0.6; font-size: 0.85em;">For transparent billboard rendering, spheres must be drawn back-to-front. The default sorting mode is GPU Bitonic Sort:</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+A["100 sphere distances<br/>computed on GPU"] -->|"Bitonic sort<br/>O(n·log²n)"| B["Sorted index SSBO"]
+B --> C["Billboard draw<br/>back-to-front"]
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#94-pass-3-pbr-spheres-billboard-ray-tracing-default" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.4 — Pass 3: PBR Spheres — Billboard Ray-Tracing (Default)</a> : <span style="opacity: 0.6; font-size: 0.85em;">This is the core rendering pass. In the default billboard mode, each sphere is a 4-vertex quad whose fragment shader performs per-pixel ray-sphere intersection.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Billboard Ray-Tracing Pipeline"
+A["shader_use(pbr_billboard_shader)"] --> B
+subgraph "Texture Bindings"
+B["Unit 0: Irradiance Map (64×64)"]
+B --> C["Unit 1: Spec. Prefilter Map (1024²)"]
+C --> D["Unit 2: BRDF LUT (512²)"]
+D --> E["Units 8–14: SH Probes (L0–L2)"]
+end
+E --> F["Set Uniforms<br/>view, proj, camPos, screenSize"]
+F --> G["Probe Grid + GI Uniforms"]
+G --> H
+subgraph "Draw Call"
+H["glDrawArraysInstanced(<br/>  GL_TRIANGLE_STRIP,<br/>  0,<br/>  4,             // quad vertices<br/>  100            // instances<br/>)"]
+end
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#95-the-billboard-fragment-shader-ray-sphere-intersection" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">9.5 — The Billboard Fragment Shader (Ray-Sphere Intersection)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The fragment shader (`pbriblbillboard.frag`) is where the real magic happens. Instead of shading a rasterized triangle mesh, it analytically intersects a ray with a perfect sphere:</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Billboard Fragment Shader Pipeline"
+R["Build Ray<br/>origin = camPos<br/>dir = normalize(WorldPos - camPos)"] --> INT
+INT["Ray-Sphere Intersection<br/>oc = origin - center<br/>b = dot(oc, dir)<br/>c = dot(oc,oc) - r²<br/>discriminant = b² - c"] --> HIT{"Hit?"}
+HIT -->|"No (disc < 0)"| DISCARD["discard;<br/>(pixel outside sphere)"]
+HIT -->|"Yes"| HITPOS["hitPos = origin + t × dir"]
+HITPOS --> NORMAL["N = normalize(hitPos - center)<br/>(analytically perfect)"]
+HITPOS --> DEPTH["gl_FragDepth = project(hitPos)<br/>(correct Z-buffer)"]
+NORMAL --> PBR
+subgraph "PBR Shading (Cook-Torrance + IBL)"
+PBR["V = -rayDir"]
+PBR --> FRESNEL["Fresnel-Schlick"]
+PBR --> GGX["Smith-GGX Geometry"]
+PBR --> NDF["GGX NDF Distribution"]
+FRESNEL --> SPEC["IBL Specular:<br/>prefilterMap(R, roughness)<br/>× brdfLUT(NdotV, roughness)"]
+GGX --> SPEC
+NDF --> SPEC
+PBR --> DIFF["IBL Diffuse:<br/>irradiance(N) × albedo"]
+SPEC --> FINAL["color = Diffuse + Specular"]
+DIFF --> FINAL
+end
+FINAL --> AA["Edge Anti-Aliasing<br/>smoothstep on discriminant"]
+AA --> ALPHA["FragColor = vec4(color, edgeFactor)<br/>(true alpha transparency)"]
+HITPOS --> VEL["Velocity = project(hitPos, prevViewProj)<br/>(per-pixel motion vectors)"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#101-the-7-stage-pipeline" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">10.1 — The 7-Stage Pipeline</a> : <span style="opacity: 0.6; font-size: 0.85em;">After the 3D scene is rendered into the MRT FBO, `postprocessend()` applies up to 8 effects in a carefully ordered pipeline.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "Post-Processing Pipeline"
+A["Memory Barrier<br/>(flush MRT writes)"]
+A --> B["① Bloom<br/>Downsample -> Threshold -> Upsample"]
+B --> C["② Depth of Field<br/>CoC -> Bokeh blur"]
+C --> D["③ Auto-Exposure<br/>Luminance reduction -> PBO readback"]
+D --> E["④ Motion Blur<br/>Tile-max velocity -> Neighbor-max"]
+E --> F
+subgraph "⑤ Final Composite (Fullscreen Quad)"
+F["Bind 9 Textures<br/>Scene + Bloom + Depth + Exposure<br/>+ Velocity + NeighborMax + DoF<br/>+ Stencil + LUT3D"]
+F --> G["Upload UBO<br/>(all effect params)"]
+G --> H["Draw fullscreen quad"]
+end
+subgraph "Fragment Shader Effects"
+H --> I["Chromatic Aberration"]
+I --> J["Vignette"]
+J --> K["Film Grain"]
+K --> L["White Balance"]
+L --> M["Color Grading<br/>(Sat, Contrast, Gamma, Gain)"]
+M --> N["Tonemapping<br/>(Filmic curve)"]
+N --> O["3D LUT Grading"]
+O --> P["FXAA"]
+P --> Q["Dithering<br/>(Anti-banding)"]
+Q --> R["Atmospheric Fog"]
+end
+R --> S["⑥ LUT Visualization<br/>(if enabled)"]
+S --> T["⑦ Texture Cleanup<br/>(reset units to dummy)"]
+end
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../application_lifecycle/#appendix-c-rendering-pipeline-data-flow" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Appendix C — Rendering Pipeline Data Flow</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TB
+subgraph "CPU (per frame)"
+POLL["glfwPollEvents()"] --> TIME["Δt calculation"]
+TIME --> CAM["Camera physics<br/>(fixed 60Hz)"]
+CAM --> SORT["Sphere sorting<br/>(GPU dispatch)"]
+end
+subgraph "GPU Pass 1: Scene"
+FBO["Bind Scene FBO<br/>Clear (0,0,0,1)"]
+FBO --> SKY["Skybox Pass<br/>Fullscreen quad<br/>Equirectangular sampling"]
+SKY --> STENCIL["Enable Stencil"]
+STENCIL --> SPHERES["Billboard Ray-Trace Pass<br/>1 draw call, 100 instances<br/>4 verts/quad, perfect spheres<br/>per-pixel intersection + depth"]
+end
+subgraph "GPU Pass 2: Post-Process"
+BLOOM["Bloom<br/>Downsample -> Upsample"]
+DOF["Depth of Field<br/>CoC -> Blur"]
+EXPO["Auto-Exposure<br/>Luminance reduction"]
+MBLUR["Motion Blur<br/>Velocity field"]
+BLOOM --> COMP
+DOF --> COMP
+EXPO --> COMP
+MBLUR --> COMP
+COMP["Final Composite<br/>9 texture units<br/>UBO parameters<br/>Fullscreen quad draw"]
+end
+subgraph "GPU Pass 3: UI"
+UI["Text Overlay<br/>Profiler Timeline<br/>Env Transition"]
+end
+SORT --> FBO
+SPHERES --> BLOOM
+COMP --> UI
+UI --> SWAP["glfwSwapBuffers()"]
+```
+
+  </div>
+</div>
+
+
 ## [Asynchronous Environment Map Loader](../async_loader/)
 
 <div class="diagram-item">

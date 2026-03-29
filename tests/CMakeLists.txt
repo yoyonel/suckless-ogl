@@ -49,8 +49,12 @@ endif()
 add_library(app_testlib STATIC ${TEST_LIB_SOURCES})
 target_include_directories(app_testlib PUBLIC ${TEST_INCLUDE_DIRS})
 target_link_libraries(app_testlib PUBLIC ${TEST_COMMON_LIBS})
-target_compile_definitions(app_testlib PUBLIC UNITY_INCLUDE_DOUBLE _GNU_SOURCE)
-# target_compile_definitions(app_testlib PUBLIC GLFW_INCLUDE_NONE _POSIX_C_SOURCE=199309L)
+target_compile_definitions(app_testlib PUBLIC
+    UNITY_INCLUDE_DOUBLE
+    _GNU_SOURCE
+    _DEFAULT_SOURCE
+    _POSIX_C_SOURCE=200809L
+)
 
 # =============================================================================
 # AUTO-DÉCOUVERTE DES TESTS
@@ -111,6 +115,8 @@ set(OPENGL_TESTS
     test_stencil_masking
     test_env_transition
     test_auto_exposure_debug
+    test_fx_lut3d
+    test_fx_dof
 )
 
 # Pour chaque fichier test trouvé

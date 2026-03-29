@@ -12,12 +12,14 @@ out vec3 FragColor;
 uniform sampler2D srcTexture;
 uniform vec2
     srcResolution; /* Résolution de la texture source (pas la destination !) */
+uniform vec2 texelScale; /* Échelle des texels (pour l'anamorphisme), défaut
+                            (1.0, 1.0) */
 
 void main()
 {
 	vec2 srcTexelSize = 1.0 / srcResolution;
-	float x = srcTexelSize.x;
-	float y = srcTexelSize.y;
+	float x = srcTexelSize.x * texelScale.x;
+	float y = srcTexelSize.y * texelScale.y;
 
 	/* On échantillonne autour du centre */
 	vec3 a =

@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 199309L
 #ifndef GL_COMMON_NO_GLAD
 #define GL_COMMON_NO_GLAD
 #endif
@@ -57,7 +56,7 @@ void log_message(LogLevel level, const char* tag, const char* format, ...)
 }
 
 /* Mock tracy_manager functions used by async_loader */
-void tracy_manager_async_transition(struct TracyManager* mgr, int state)
+void tracy_manager_async_transition(struct TracyManager* mgr, AsyncState state)
 {
 	(void)mgr;
 	(void)state;

@@ -13,6 +13,8 @@
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
+#include "effects/fx_lut3d.h"
+#include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
@@ -46,6 +48,8 @@
 #define DEFAULT_DOF_FOCAL_DISTANCE 20.0F
 #define DEFAULT_DOF_FOCAL_RANGE 5.0F
 #define DEFAULT_DOF_BOKEH_SCALE 10.0F
+#define DEFAULT_DOF_ANAMORPHIC_RATIO \
+	1.0F /**< 1.0 = Spherical, 2.0 = Anamorphic */
 
 /* Banding defaults */
 #define DEFAULT_BANDING_LEVELS 256.0F /**< 8-bit simulation. */
@@ -99,6 +103,8 @@ typedef enum {
 	POSTFX_BLOOM_DEBUG = (1U << 17U),   /**< Bloom debug view. */
 	POSTFX_FOG = (1U << 18U),           /**< Atmospheric depth fog. */
 	POSTFX_FOG_DEBUG = (1U << 19U),     /**< Fog component visualization. */
+	POSTFX_LUT3D = (1U << 20U),         /**< 3D LUT Gamut Mapping. */
+	POSTFX_LUT_VIZ = (1U << 21U), /**< 3D LUT Lattice visualization. */
 } PostProcessEffect;
 
 /** @brief Default mask of active effects. */
@@ -303,7 +309,7 @@ typedef struct {
 	float dof_focal_distance;
 	float dof_focal_range;
 	float dof_bokeh_scale;
-	float _pad8;
+	float dof_anamorphic_ratio;
 
 	/* Motion Blur */
 	float mb_intensity;
@@ -330,8 +336,12 @@ typedef struct {
 	float fog_start;
 	float fog_height_falloff;
 	float _pad12;
-	float fog_color[3];
+	vec3 fog_color;
 	float _pad13;
+
+	/* 3D LUT (16 bytes) */
+	float lut3d_intensity;
+	float _pad14[3];
 } PostProcessUBO;
 
 /**
@@ -351,6 +361,8 @@ typedef struct PostProcess {
 	DoFFX dof_fx;                    /**< Depth-of-field subsystem. */
 	AutoExposureFX auto_exposure_fx; /**< Adaptation subsystem. */
 	MotionBlurFX motion_blur_fx;     /**< Blur subsystem. */
+	LUT3DFX lut3d_fx;                /**< 3D LUT subsystem. */
+	LUTVizFX lut_viz_fx;             /**< LUT visualization. */
 
 	/* Render Utilities */
 	GLuint screen_quad_vao; /**< Shared quad for passes. */
@@ -383,6 +395,7 @@ typedef struct PostProcess {
 	FXAAParams fxaa;
 	BandingParams banding;
 	FogParams fog;
+	LUT3DParams lut3d;
 
 	float time;             /**< Accumulated time for noise/animation. */
 	float delta_time;       /**< Last frame delta. */
@@ -503,6 +516,8 @@ void postprocess_set_bloom(PostProcess* post_processing, float intensity,
                            float threshold, float soft_threshold);
 void postprocess_set_dof(PostProcess* post_processing, float focal_distance,
                          float focal_range, float bokeh_scale);
+void postprocess_set_dof_anamorphic(PostProcess* post_processing,
+                                    float anamorphic_ratio);
 float postprocess_get_exposure(PostProcess* post_processing);
 void postprocess_set_auto_exposure(PostProcess* post_processing,
                                    float min_luminance, float max_luminance,
@@ -521,6 +536,9 @@ void postprocess_set_banding_channels(PostProcess* post_processing, float red,
 void postprocess_set_fog(PostProcess* post_processing, float density,
                          float start, float height_falloff, float fog_r,
                          float fog_g, float fog_b);
+void postprocess_set_lut3d(PostProcess* post_processing, float intensity,
+                           GLuint texture);
+int postprocess_load_lut3d(PostProcess* post_processing, const char* path);
 /**
  * @brief Updates view-projection matrices for effects requiring
  * depth-reconstruction.
@@ -547,6 +565,7 @@ typedef struct {
 	FXAAParams fxaa;
 	BandingParams banding;
 	FogParams fog;
+	LUT3DParams lut3d;
 } PostProcessPreset;
 
 /**

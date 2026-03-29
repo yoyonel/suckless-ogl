@@ -69,7 +69,7 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float d_focalDistance;
 	float d_focalRange;
 	float d_bokehScale;
-	float _pad8;
+	float d_anamorphicRatio;
 
 	/* MotionBlur (16 bytes) */
 	float mb_intensity;
@@ -98,6 +98,10 @@ layout(std140, binding = 0) uniform PostProcessBlock
 	float _pad12;
 	vec3 fog_color;
 	float _pad13;
+
+	/* 3D LUT (16 bytes) */
+	float lut3d_intensity;
+	float _pad14[3];
 };
 
 /* Compatibility Helper Macros */
@@ -219,4 +223,10 @@ const bool enableFog = bool(OPT_ENABLE_FOG);
 const bool enableFogDebug = bool(OPT_ENABLE_FOG_DEBUG);
 #else
 #define enableFogDebug ((activeEffects & (1u << 19u)) != 0u)
+#endif
+
+#ifdef OPT_ENABLE_LUT3D
+const bool enableLUT3D = bool(OPT_ENABLE_LUT3D);
+#else
+#define enableLUT3D ((activeEffects & (1u << 20u)) != 0u)
 #endif

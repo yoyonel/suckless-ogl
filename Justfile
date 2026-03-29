@@ -203,7 +203,7 @@ test-gen-refs: build
     @GEN_REFS=1 {{xvfb_wrapper}} {{build_dir}}/tests/test_app
     @echo "[INFO] Optimizing reference images..."
     @if command -v mogrify >/dev/null 2>&1; then \
-        mogrify -strip tests/ref_*.png; \
+        mogrify -strip tests/references/ref_*.png; \
         echo "[SUCCESS] PNG references optimized."; \
     fi
 
@@ -211,10 +211,15 @@ test-gen-refs: build
 test-list:
     @{{distrobox}} ctest --test-dir {{build_dir}} -N 2>/dev/null | grep "Test #" | sed "s/.*: //"
 
-# Run full UI integration test under Valgrind (Default)
-test-integration: release
+# Run UI integration test under Valgrind (Minimal scenario, Debug build for symbols)
+test-integration: build
     @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
     @{{distrobox}} bash scripts/test_integration_valgrind.sh
+
+# Run UI integration test under Valgrind (Full scenario, Debug build for symbols)
+test-integration-valgrind-full: build
+    @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
+    @{{distrobox}} bash scripts/test_integration_valgrind.sh full
 
 # Run full UI integration test under ASan
 test-integration-asan: asan
@@ -267,7 +272,7 @@ coverage:
     @echo "Coverage report generated in build-coverage/coverage_report/index.html"
 
 # Generate visual regression report and serve it locally via HTTP (avoids file:// image loading issues)
-# Uses tests/ref_*.png (and tests/failed_*.png if present) as input
+# Uses tests/references/ref_*.png (and tests/references/failed_*.png if present) as input
 # Press Ctrl+C to stop the server
 visual-report port="8765":
     @echo "Generating visual regression report..."

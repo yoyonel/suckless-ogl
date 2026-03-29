@@ -114,6 +114,10 @@ void fx_dof_render(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, dof->temp_tex, 0);
 
+	/* Pass 0: Set Anamorphic Scale */
+	float ratio = post_processing->dof.anamorphic_ratio;
+	vec2 texel_scale = {1.0F, ratio};
+
 	Shader* ds_shader = fx_bloom_get_downsample_shader(post_processing);
 	shader_use(ds_shader);
 
@@ -123,6 +127,7 @@ void fx_dof_render(PostProcess* post_processing)
 	vec2 src_res = {(float)post_processing->width,
 	                (float)post_processing->height};
 	shader_set_vec2(ds_shader, "srcResolution", (float*)&src_res);
+	shader_set_vec2(ds_shader, "texelScale", (float*)&texel_scale);
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
@@ -136,6 +141,7 @@ void fx_dof_render(PostProcess* post_processing)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, dof->temp_tex);
 	shader_set_float(us_shader, "filterRadius", 1.0F);
+	shader_set_vec2(us_shader, "texelScale", (float*)&texel_scale);
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 

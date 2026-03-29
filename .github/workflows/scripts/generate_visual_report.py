@@ -56,7 +56,7 @@ def generate_effect_diff(base_path, effect_path, out_path):
         return False
 
 def generate_report(sha, repository, pr_number=None):
-    test_dir = "tests"
+    test_dir = "tests/references"
     html_index_path = "build-coverage/coverage_report/visual_tests/index.html"
     comment_path = ".github/workflows/scripts/comment.md"
 

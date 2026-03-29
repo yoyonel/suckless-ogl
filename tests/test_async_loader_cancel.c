@@ -1,5 +1,5 @@
 // tests/test_async_loader_cancel.c
-#define _POSIX_C_SOURCE 199309L
+#define _POSIX_C_SOURCE 200809L
 #include "async_loader.h"
 #include <stdbool.h>
 #include <stdio.h>

@@ -97,6 +97,34 @@ run_scenario_full() {
     echo "=> Testing Style 7 - Banding Modes"
     for i in {1..4}; do xdotool key --delay 500 7; done
 
+    # 8. Fog (F7)
+    echo "=> Toggling Fog (F7)"
+    xdotool key --delay 500 F7
+    sleep 1
+    echo "=> Fog Debug (Shift+F7)"
+    xdotool key --delay 500 shift+F7
+    sleep 1
+    xdotool key --delay 500 shift+F7
+    sleep 0.5
+    xdotool key --delay 500 F7
+
+    # 9. Sony A7S III / 3D LUT Pipeline (F8)
+    echo "=> Activating Sony A7S III Profile (F8)"
+    xdotool key --delay 500 F8
+    sleep 1
+
+    echo "=> Cycling 3D LUTs (Shift+F8)"
+    for i in {1..7}; do xdotool key --delay 500 shift+F8; done
+    sleep 1
+
+    echo "=> Toggle LUT Viz (Shift+F10)"
+    xdotool key --delay 500 shift+F10
+    sleep 1
+    xdotool key --delay 500 shift+F10
+
+    echo "=> Resetting to Default (0)"
+    xdotool key --delay 500 0
+
     echo "=> Test Complete."
     xdotool key Escape
 }
@@ -149,6 +177,24 @@ run_scenario_minimal() {
     xdotool key --delay 500 F9
     sleep 2
     xdotool key --delay 500 F9
+    sleep 1
+
+    # 7. Sony A7S III / 3D LUT Pipeline (F8)
+    echo "=> Activating Sony A7S III Profile (F8)"
+    xdotool key --delay 500 F8
+    sleep 2
+
+    echo "=> Cycling 3D LUTs (Shift+F8)"
+    for i in {1..3}; do xdotool key --delay 800 shift+F8; done
+    sleep 1
+
+    echo "=> Toggle LUT Viz (Shift+F10)"
+    xdotool key --delay 500 shift+F10
+    sleep 1
+    xdotool key --delay 500 shift+F10
+
+    echo "=> Resetting to Default (0)"
+    xdotool key --delay 500 0
     sleep 1
 
     echo "=> Test Complete."
