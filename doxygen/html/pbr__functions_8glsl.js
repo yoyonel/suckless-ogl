@@ -10,7 +10,7 @@ var pbr__functions_8glsl =
     [ "dirToUV", "pbr__functions_8glsl.html#a7c907a9c3d390104e1d64b16dc1220d2", null ],
     [ "fresnelSchlickRoughness", "pbr__functions_8glsl.html#a9535dbe6fb313fa2e4c7d615a9c49431", null ],
     [ "EPSILON", "pbr__functions_8glsl.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9", null ],
-    [ "glsl", "pbr__functions_8glsl.html#a1f4fd7d236fefcbcb916c3cb6b06cd2d", null ],
+    [ "glsl", "pbr__functions_8glsl.html#a99ce6de0c3904f6c8c3117cc92719b01", null ],
     [ "INV_PI", "pbr__functions_8glsl.html#aba5e6db48fdfc9b9cb18c368295bd224", null ],
     [ "PI", "pbr__functions_8glsl.html#aa08a577393243b86dfd2a97e61443673", null ]
 ];

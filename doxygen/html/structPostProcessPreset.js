@@ -10,6 +10,7 @@ var structPostProcessPreset =
     [ "fog", "structPostProcessPreset.html#aba5562c520b09436141bdaa254886af2", null ],
     [ "fxaa", "structPostProcessPreset.html#aa95a69dc4a02264eb4e3164d551b50bd", null ],
     [ "grain", "structPostProcessPreset.html#af7645e0d8755d89fdb54e405518233f0", null ],
+    [ "lut3d", "structPostProcessPreset.html#affd57f46b38e3b7f6a9f8c207b2aad15", null ],
     [ "tonemapper", "structPostProcessPreset.html#a414f30957b85919adfa385296c2f6181", null ],
     [ "vignette", "structPostProcessPreset.html#a92dbacc225792a6e1cf041cd9599379c", null ],
     [ "white_balance", "structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d", null ]

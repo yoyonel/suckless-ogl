@@ -349,8 +349,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a83c3724991b2e48ab31140edb81c6b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af724bf579c4c3e2389a14302b9445032"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">dof_bokeh_scale</a></td></tr>
 <tr class="separator:af724bf579c4c3e2389a14302b9445032"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4cc529c8e1f1bdbfb6ff8a2690a23d87"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a4cc529c8e1f1bdbfb6ff8a2690a23d87">_pad8</a></td></tr>
-<tr class="separator:a4cc529c8e1f1bdbfb6ff8a2690a23d87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d6535eff8e1d25edced0ba342f14f77"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a5d6535eff8e1d25edced0ba342f14f77">dof_anamorphic_ratio</a></td></tr>
+<tr class="separator:a5d6535eff8e1d25edced0ba342f14f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add9027c5cec4f9f02fc537dabb20f183"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183">mb_intensity</a></td></tr>
 <tr class="separator:add9027c5cec4f9f02fc537dabb20f183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab047ad0796e0fadb03bcdf5cb083496"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496">mb_max_velocity</a></td></tr>
@@ -387,10 +387,14 @@ Data Fields</h2></td></tr>
 <tr class="separator:a093c67f60fbf8f68a033e127437b4c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a971deee388be15c24a2fdb7040bf5ac4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a971deee388be15c24a2fdb7040bf5ac4">_pad12</a></td></tr>
 <tr class="separator:a971deee388be15c24a2fdb7040bf5ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4a6c3b34ad88f1f2f3f19f4198fde07"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#af4a6c3b34ad88f1f2f3f19f4198fde07">fog_color</a> [3]</td></tr>
-<tr class="separator:af4a6c3b34ad88f1f2f3f19f4198fde07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7f5b3a43944ba3063fb3b3135296c87"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#ab7f5b3a43944ba3063fb3b3135296c87">fog_color</a></td></tr>
+<tr class="separator:ab7f5b3a43944ba3063fb3b3135296c87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a168d45780bb9c3d39451ad5e44bd6b20"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a168d45780bb9c3d39451ad5e44bd6b20">_pad13</a></td></tr>
 <tr class="separator:a168d45780bb9c3d39451ad5e44bd6b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8115a6646b5a1c9a91e1bc56535eba59"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a8115a6646b5a1c9a91e1bc56535eba59">lut3d_intensity</a></td></tr>
+<tr class="separator:a8115a6646b5a1c9a91e1bc56535eba59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cce7024ac79bb972d456f1aa13877b7"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html#a0cce7024ac79bb972d456f1aa13877b7">_pad14</a> [3]</td></tr>
+<tr class="separator:a0cce7024ac79bb972d456f1aa13877b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Shared Uniform Buffer structure for shaders. </p>
@@ -460,6 +464,20 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PostProcessUBO::_pad13</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0cce7024ac79bb972d456f1aa13877b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cce7024ac79bb972d456f1aa13877b7">&#9670;&nbsp;</a></span>_pad14</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::_pad14[3]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -544,20 +562,6 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PostProcessUBO::_pad7[3]</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4cc529c8e1f1bdbfb6ff8a2690a23d87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4cc529c8e1f1bdbfb6ff8a2690a23d87">&#9670;&nbsp;</a></span>_pad8</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float PostProcessUBO::_pad8</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -732,6 +736,20 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a5d6535eff8e1d25edced0ba342f14f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d6535eff8e1d25edced0ba342f14f77">&#9670;&nbsp;</a></span>dof_anamorphic_ratio</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::dof_anamorphic_ratio</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af724bf579c4c3e2389a14302b9445032"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af724bf579c4c3e2389a14302b9445032">&#9670;&nbsp;</a></span>dof_bokeh_scale</h2>
 
@@ -788,14 +806,14 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a id="af4a6c3b34ad88f1f2f3f19f4198fde07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4a6c3b34ad88f1f2f3f19f4198fde07">&#9670;&nbsp;</a></span>fog_color</h2>
+<a id="ab7f5b3a43944ba3063fb3b3135296c87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7f5b3a43944ba3063fb3b3135296c87">&#9670;&nbsp;</a></span>fog_color</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float PostProcessUBO::fog_color[3]</td>
+          <td class="memname">vec3 PostProcessUBO::fog_color</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1062,6 +1080,20 @@ Data Fields</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">float PostProcessUBO::grain_texel_size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8115a6646b5a1c9a91e1bc56535eba59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8115a6646b5a1c9a91e1bc56535eba59">&#9670;&nbsp;</a></span>lut3d_intensity</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float PostProcessUBO::lut3d_intensity</td>
         </tr>
       </table>
 </div><div class="memdoc">
