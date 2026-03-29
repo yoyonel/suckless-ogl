@@ -211,10 +211,15 @@ test-gen-refs: build
 test-list:
     @{{distrobox}} ctest --test-dir {{build_dir}} -N 2>/dev/null | grep "Test #" | sed "s/.*: //"
 
-# Run full UI integration test under Valgrind (Default)
-test-integration: release
+# Run UI integration test under Valgrind (Minimal scenario, Debug build for symbols)
+test-integration: build
     @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
     @{{distrobox}} bash scripts/test_integration_valgrind.sh
+
+# Run UI integration test under Valgrind (Full scenario, Debug build for symbols)
+test-integration-valgrind-full: build
+    @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
+    @{{distrobox}} bash scripts/test_integration_valgrind.sh full
 
 # Run full UI integration test under ASan
 test-integration-asan: asan
