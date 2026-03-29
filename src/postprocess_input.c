@@ -182,7 +182,8 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 			break;
 		case GLFW_KEY_F8: /* Preset: Sony A7S III / Cycle LUTs */
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
-				static int lut_idx = 0;
+				int* lut_idx_ptr =
+				    &ctx->postprocess->lut3d_fx.current_lut_idx;
 				const char* luts[] = {
 				    "assets/luts/sony_scinetone.cube",
 				    "assets/luts/sony_venice.cube",
@@ -198,18 +199,19 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 				    "Alpha 7S III POC"};
 				int count =
 				    (int)(sizeof(luts) / sizeof(luts[0]));
-				lut_idx = (lut_idx + 1) % count;
+				*lut_idx_ptr = (*lut_idx_ptr + 1) % count;
 
 				if (postprocess_load_lut3d(
-				        ctx->postprocess, luts[lut_idx]) == 0) {
+				        ctx->postprocess, luts[*lut_idx_ptr]) ==
+				    0) {
 					postprocess_enable(ctx->postprocess,
 					                   POSTFX_LUT3D);
-					action_notifier_push(ctx->notifier,
-					                     names[lut_idx],
-					                     NOTIF_DUR_SHORT);
+					action_notifier_push(
+					    ctx->notifier, names[*lut_idx_ptr],
+					    NOTIF_DUR_SHORT);
 					LOG_INFO("suckless-ogl.input",
 					         "Loaded LUT: %s",
-					         names[lut_idx]);
+					         names[*lut_idx_ptr]);
 				}
 			} else {
 				postprocess_apply_preset(ctx->postprocess,

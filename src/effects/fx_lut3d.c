@@ -21,6 +21,7 @@ int fx_lut3d_init(PostProcess* post_processing)
 	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
 	lut3d_sys->lut_tex = 0;
 	lut3d_sys->current_size = 0;
+	lut3d_sys->current_lut_idx = 0;
 	return 0;
 }
 

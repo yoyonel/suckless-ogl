@@ -3,8 +3,8 @@
 #include "log.h"
 #include "postprocess.h"
 #include "shader.h"
-#include <malloc.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 enum LUTVizConstants { DEFAULT_LUT_VIZ_GRID_SIZE = 32 };
 

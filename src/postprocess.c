@@ -104,12 +104,6 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->current_exposure = 1.0F;
 	post_processing->auto_threshold = 1.0F;
 
-	/* Initialisation DoF */
-	post_processing->dof.focal_distance = DEFAULT_DOF_FOCAL_DISTANCE;
-	post_processing->dof.focal_range = DEFAULT_DOF_FOCAL_RANGE;
-	post_processing->dof.bokeh_scale = DEFAULT_DOF_BOKEH_SCALE;
-	post_processing->dof.anamorphic_ratio = DEFAULT_DOF_ANAMORPHIC_RATIO;
-
 	/* Initialisation Motion Blur */
 	if (!fx_motion_blur_init(post_processing)) {
 		LOG_ERROR("suckless-ogl.postprocess",
@@ -237,7 +231,7 @@ int postprocess_init(PostProcess* post_processing,
 	}
 
 	/* Créer les ressources 3D LUT */
-	if (!fx_lut3d_init(post_processing)) {
+	if (fx_lut3d_init(post_processing) != 0) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create 3D LUT resources");
 		/* On continue quand même */

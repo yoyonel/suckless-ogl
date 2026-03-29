@@ -24,8 +24,9 @@ typedef struct {
  * @brief Internal resources for the 3D LUT effect.
  */
 typedef struct {
-	GLuint lut_tex;   /**< Currently loaded 3D texture. */
-	int current_size; /**< Resolution of the loaded LUT. */
+	GLuint lut_tex;      /**< Currently loaded 3D texture. */
+	int current_size;    /**< Resolution of the loaded LUT. */
+	int current_lut_idx; /**< Index of the currently active gallery LUT. */
 } LUT3DFX;
 
 /**
