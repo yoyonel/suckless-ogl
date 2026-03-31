@@ -78,17 +78,27 @@ API générique dans `include/gl_common.h` :
 
 Appliqué à `BillboardUBO` et `PostProcessUBO`.
 
-### Palier 3 — Bindings Persistants de Textures/Buffers (~21 appels économisés)
+### Palier 3 — Bindings Persistants SH Textures/SSBO (~15 appels économisés)
 
-**Statut : Planifié**
+**Statut : En cours**
 
-| Optimisation | Appels économisés |
-|-------------|-------------------|
-| Bind textures IBL une seule fois au chargement (pas par frame) | 6 |
-| Bind textures 3D SH une seule fois quand la probe grid change | 14 |
-| Bind SSBO probe une seule fois quand la probe grid change | 1 |
+| Optimisation | Appels économisés | Cachable ? |
+|-------------|-------------------|------------|
+| ~~Bind textures IBL une seule fois~~ | ~~6~~ | **NON** — units 0-2 clobbées par Skybox et PostProcess |
+| Bind textures 3D SH une seule fois quand probe grid change | 14 | **OUI** — units 8-14 exclusives aux passes PBR |
+| Bind SSBO probe une seule fois quand probe grid change | 1 | **OUI** — binding 3 exclusif aux passes PBR |
 
-Nécessite un flag "dirty" sur les mises à jour de la probe grid pour re-bind uniquement au changement.
+**Pourquoi les textures IBL ne peuvent PAS être cachées :**
+Dans un renderer multi-passe, les texture units 0-2 sont partagées :
+- `src/skybox.c` re-bind `GL_TEXTURE0` avec la cubemap d'environnement
+- `src/postprocess.c` re-bind les units 0-1-2 avec les FBO, bloom, etc.
+
+Cacher ces bindings nécessiterait un tracker d'état GL centralisé (over-engineering).
+Les textures SH (units 8-14) et le SSBO probe (binding 3) sont sûrs car aucune
+autre passe ne touche ces units/bindings.
+
+**Invalidation :** après `light_probe_grid_sync()` qui appelle `glBindTexture(GL_TEXTURE_3D, 0)`
+sur l'unité active courante, pouvant écraser un binding SH caché.
 
 ### Palier 4 — Lecture Directe SSBO dans le Vertex Shader (~7 appels économisés)
 
@@ -113,8 +123,8 @@ SphereInstance inst = instances[gl_InstanceID];
 | Base | — | — | **~65** |
 | Palier 1 | Trivial | 5 | ~60 |
 | Palier 2 (UBO) | Moyen | 11 | ~49 |
-| Palier 3 (Persistant) | Moyen | 21 | **~28** |
-| Palier 4 (SSBO direct) | Moyen-Haut | 7 | **~21** |
+| Palier 3 (SH/SSBO) | Moyen | 15 | **~34** |
+| Palier 4 (SSBO direct) | Moyen-Haut | 7 | **~27** |
 
 ## Fichiers Concernés
 
