@@ -3,27 +3,28 @@
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec2 VelocityOut;
 
-in vec3 WorldPos;  // Position on the billboard plane
-in vec3 Normal;    // (Unused)
-flat in vec3 SphereCenter;
-flat in float SphereRadius;
-flat in vec3 Albedo;
-flat in float Metallic;
-flat in float Roughness;
-flat in float AO;
+layout(location = 0) in vec3 WorldPos;  // Position on the billboard plane
+layout(location = 1) in vec3 Normal;    // (Unused)
+flat layout(location = 2) in vec3 SphereCenter;
+flat layout(location = 3) in float SphereRadius;
+flat layout(location = 4) in vec3 Albedo;
+flat layout(location = 5) in float Metallic;
+flat layout(location = 6) in float Roughness;
+flat layout(location = 7) in float AO;
 
-in vec4 CurrentClipPos;  // Interpolated clip pos of the quad (juste pour l'AA)
+layout(location = 8) in vec4
+    CurrentClipPos;  // Interpolated clip pos of the quad (juste pour l'AA)
 
-uniform vec3 camPos;
-uniform sampler2D irradianceMap;
-uniform sampler2D prefilterMap;
-uniform sampler2D brdfLUT;
-uniform int debugMode;
+layout(location = 12) uniform vec3 camPos;
+layout(binding = 0) uniform sampler2D irradianceMap;
+layout(binding = 1) uniform sampler2D prefilterMap;
+layout(binding = 2) uniform sampler2D brdfLUT;
+layout(location = 13) uniform int debugMode;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 previousViewProj;
-uniform vec2 u_screenSize;
+layout(location = 0) uniform mat4 projection;
+layout(location = 4) uniform mat4 view;
+layout(location = 8) uniform mat4 previousViewProj;
+layout(location = 14) uniform vec2 u_screenSize;
 
 // Include common PBR functions
 @header "pbr_functions.glsl";
@@ -101,10 +102,10 @@ void main()
 	float ndcDepth = clipPosActual.z / clipPosActual.w;
 
 	// Ecriture explicite de la profondeur pour que la sphère soit "ronde"
-	// dans le Z-Buffer
-	gl_FragDepth = (gl_DepthRange.diff * ndcDepth + gl_DepthRange.near +
-	                gl_DepthRange.far) *
-	               0.5;
+	// dans le Z-Buffer (default depth range [0,1]: simplified for SPIR-V
+	// compatibility — gl_DepthRange is unsupported by glslang SPIR-V
+	// backend)
+	gl_FragDepth = (ndcDepth + 1.0) * 0.5;
 
 	// 5. Lighting / Shading
 	vec3 V = -rayDir;

@@ -8,23 +8,25 @@ layout(location = 2) in mat4 i_model;   // Instance Model Matrix
 layout(location = 6) in vec3 i_albedo;  // Instance Albedo
 layout(location = 7) in vec3 i_pbr;  // Instance PBR (Metallic, Roughness, AO)
 
-out vec3 WorldPos;  // Point on the billboard plane
-out vec3 Normal;    // Synchronized (unused)
+layout(location = 0) out vec3 WorldPos;  // Point on the billboard plane
+layout(location = 1) out vec3 Normal;    // Synchronized (unused)
 
 // Données transmises "flat" (sans interpolation) au Fragment Shader
-flat out vec3 SphereCenter;   // Center of the sphere in World Space
-flat out float SphereRadius;  // Radius of the sphere
-flat out vec3 Albedo;
-flat out float Metallic;
-flat out float Roughness;
-flat out float AO;
+flat layout(location = 2) out vec3
+    SphereCenter;  // Center of the sphere in World Space
+flat layout(location = 3) out float SphereRadius;  // Radius of the sphere
+flat layout(location = 4) out vec3 Albedo;
+flat layout(location = 5) out float Metallic;
+flat layout(location = 6) out float Roughness;
+flat layout(location = 7) out float AO;
 
-out vec4 CurrentClipPos;  // Used for AA size calculation in Frag
+layout(location = 8) out vec4
+    CurrentClipPos;  // Used for AA size calculation in Frag
 // out vec4 PreviousClipPos;  <-- SUPPRIMÉ : Le calcul vertex est faux pour un
 // billboard
 
-uniform mat4 projection;
-uniform mat4 view;
+layout(location = 0) uniform mat4 projection;
+layout(location = 4) uniform mat4 view;
 // uniform mat4 previousViewProj; <-- Inutile ici désormais
 
 // Header pour la fonction computeBillboardSphere
