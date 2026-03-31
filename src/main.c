@@ -4,12 +4,9 @@
 #include "cli.h"
 #include "gl_common.h"
 #include "log.h"
-#include "mem.h"
 #include "platform/platform_utils.h"
 #include "tracy_manager.h"
-#include <cJSON.h>
 #include <stdlib.h>
-#include <string.h>
 
 int main(int argc, char* argv[])
 {

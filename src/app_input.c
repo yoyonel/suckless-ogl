@@ -10,7 +10,6 @@
 #include "glad/glad.h"
 #include "log.h"
 #include "perf_mode.h"
-#include "postprocess.h" /* Explicit include for types */
 #include "postprocess_input.h"
 #include "profiler.h"
 #include "scene.h"

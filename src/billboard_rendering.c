@@ -4,7 +4,6 @@
 #include "instanced_rendering.h"
 #include "render_utils.h"
 #include <assert.h>
-#include <cglm/types.h>
 #include <stddef.h>
 
 static const int WIRE_CUBE_VERTEX_COUNT = 24;

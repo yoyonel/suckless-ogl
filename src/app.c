@@ -18,13 +18,8 @@
 #include "scene.h"
 #include "texture.h"
 #include "tracy_gpu.h"
-#include "ui.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
-#include <cglm/cam.h>
-#include <cglm/mat4.h>
-#include <cglm/types.h>
-#include <cglm/util.h>
 #include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>

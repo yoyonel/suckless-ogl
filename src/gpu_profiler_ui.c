@@ -1,7 +1,6 @@
 #include "gpu_profiler_ui.h"
 
 #include "app_metrics.h"
-#include "app_settings.h"
 #include "ui.h"
 #include "utils.h"
 #include <math.h>

@@ -1,6 +1,5 @@
-#include "mem.h"
-
 #ifdef TRACY_ENABLE
+#include "mem.h"
 /* STB Image (Read) */
 #define STBI_MALLOC(sz) tracy_malloc(sz)
 #define STBI_REALLOC(p, newsz) tracy_realloc(p, newsz)
