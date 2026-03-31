@@ -505,6 +505,26 @@ test-integration-tracy-release: build-tracy-release
 # Run application with Tracy enabled in Release mode
 run-tracy-release: build-tracy-release
     @./build-tracy-release/app
+
+# =============================================================================
+# RenderDoc (Frame Analysis)
+# =============================================================================
+
+renderdoc_dir := env_var_or_default("RENDERDOC_DIR", "/usr/bin")
+
+# Build the application in Debug mode for RenderDoc analysis
+build-debug-renderdoc: configure
+    @echo "Building Debug (RenderDoc profile)..."
+    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
+
+# Launch qrenderdoc GUI with Debug build (Usage: just renderdoc_dir=/path/to/renderdoc renderdoc)
+renderdoc: build-debug-renderdoc
+    @{{renderdoc_dir}}/qrenderdoc --working-dir . ./{{build_dir}}/app
+
+# Capture a frame via renderdoccmd CLI (Usage: just renderdoc_dir=/path/to/renderdoc renderdoc-capture)
+renderdoc-capture: build-debug-renderdoc
+    @{{renderdoc_dir}}/renderdoccmd capture --working-dir . ./{{build_dir}}/app
+
 # =============================================================================
 # Windows / Cross-Compilation (MinGW + Wine)
 # =============================================================================
