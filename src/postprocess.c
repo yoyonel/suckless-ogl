@@ -6,6 +6,7 @@
 #include "effects/fx_dof.h"
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
+#include "gl_debug.h"
 #include "log.h"
 #include "render_utils.h"
 #include "shader.h"
@@ -707,7 +708,9 @@ void postprocess_end(PostProcess* post_processing)
 	if (postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "Bloom",
 		                   GPU_PROFILER_BLOOM_COLOR);
+		gl_debug_push_group("PostFX_Bloom");
 		fx_bloom_render(post_processing);
+		gl_debug_pop_group();
 	}
 
 	/* DoF Blur Pass (if DoF enabled) */
@@ -717,7 +720,9 @@ void postprocess_end(PostProcess* post_processing)
 	    postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "DoF",
 		                   GPU_PROFILER_DOF_COLOR);
+		gl_debug_push_group("PostFX_DepthOfField");
 		fx_dof_render(post_processing);
+		gl_debug_pop_group();
 	}
 
 	/* Auto Exposure Pass & Debug Histogram */
@@ -730,6 +735,8 @@ void postprocess_end(PostProcess* post_processing)
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
 		                   "Auto Exposure",
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
+
+		gl_debug_push_group("PostFX_AutoExposure");
 
 		/* We always need the downsample/luminance pass if either AE or
 		 * Debug is on */
@@ -764,6 +771,8 @@ void postprocess_end(PostProcess* post_processing)
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+		gl_debug_pop_group(); /* PostFX_AutoExposure */
 	}
 
 	/* Motion Blur Pre-Pass (Compute) - Also needed for debug modes */
@@ -773,7 +782,9 @@ void postprocess_end(PostProcess* post_processing)
 	                           POSTFX_VECTOR_FIELD_DEBUG)) {
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "MB Compute",
 		                   GPU_PROFILER_MOTION_BLUR_COLOR);
+		gl_debug_push_group("PostFX_MotionBlur_Compute");
 		fx_motion_blur_render(post_processing);
+		gl_debug_pop_group();
 	}
 
 	/* === Final Composite: fullscreen quad with all fragment effects ===
@@ -784,6 +795,8 @@ void postprocess_end(PostProcess* post_processing)
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
 		                   "Final Composite",
 		                   GPU_PROFILER_COMPOSITE_COLOR);
+
+		gl_debug_push_group("PostFX_Final_Composite");
 
 		/* Retour au framebuffer par défaut */
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1004,6 +1017,8 @@ void postprocess_end(PostProcess* post_processing)
 
 		/* Render LUT Cube Visualization (if enabled) */
 		fx_lut_viz_render(post_processing);
+
+		gl_debug_pop_group(); /* PostFX_Final_Composite */
 	}
 
 	/* Unbind shared VAO after all fullscreen passes are complete */

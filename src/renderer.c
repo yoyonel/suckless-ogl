@@ -2,10 +2,10 @@
 
 #include "app_ui.h"
 #include "gl_common.h"
+#include "gl_debug.h"
 #include "gpu_profiler.h"
 #include "profiler.h"
 #include <GLFW/glfw3.h>
-#include <cglm/cglm.h>
 
 void renderer_draw_frame(struct App* app_ref, Scene* scene,
                          PostProcess* postprocess, Camera* camera,
@@ -34,6 +34,8 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	GPU_STAGE_PROFILER(profiler, "Total Frame",
 	                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
+	gl_debug_push_group("Render_Frame");
+
 	postprocess_begin(postprocess);
 	glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
 
@@ -54,11 +56,15 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
+	gl_debug_push_group("Scene_Render");
 	scene_render(scene, view, proj, camera_pos,
 	             postprocess->motion_blur_fx.previous_view_proj, width,
 	             height);
+	gl_debug_pop_group();
 
+	gl_debug_push_group("Post_Processing");
 	postprocess_end(postprocess);
+	gl_debug_pop_group();
 
 	postprocess_update_matrices(postprocess, view_proj);
 
@@ -66,11 +72,17 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 		GPU_STAGE_PROFILER(profiler, "UI Overlay",
 		                   GPU_PROFILER_UI_COLOR);
 
+		gl_debug_push_group("UI_Overlay");
+
 		/* Render Transition Overlay */
 		env_manager_render_overlay(env_mgr, scene);
 
 		app_render_ui(app_ref);
+
+		gl_debug_pop_group();
 	}
+
+	gl_debug_pop_group(); /* Render_Frame */
 
 	// 4. Logique d'affichage et animations
 	double current_time = glfwGetTime();
