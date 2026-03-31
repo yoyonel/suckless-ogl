@@ -3,10 +3,7 @@
 layout(location = 0) in vec3 in_position;  // Quad vertex in local space (+-0.5)
 layout(location = 1) in vec3 in_normal;    // Unused
 
-// Per-instance attributes
-layout(location = 2) in mat4 i_model;   // Instance Model Matrix
-layout(location = 6) in vec3 i_albedo;  // Instance Albedo
-layout(location = 7) in vec3 i_pbr;  // Instance PBR (Metallic, Roughness, AO)
+// Per-instance data fetched from SSBO via gl_InstanceID (Tier 4)
 
 layout(location = 0) out vec3 WorldPos;  // Point on the billboard plane
 layout(location = 1) out vec3 Normal;    // Synchronized (unused)
@@ -26,6 +23,7 @@ layout(location = 8) out vec4
 // billboard
 
 /* clang-format off */
+@header "billboard_instance_ssbo.glsl"
 @header "billboard_ubo.glsl"
 @header "projection_utils.glsl"
     /* clang-format on */
@@ -33,14 +31,17 @@ layout(location = 8) out vec4
     void
     main()
 {
+	// Fetch instance data from sorted SSBO (no VBO copy needed)
+	SphereInstance inst = billboard_instances[gl_InstanceID];
+
 	// 1. Extraction de l'échelle (Rayon)
-	float scaleX = length(vec3(i_model[0]));
-	float scaleY = length(vec3(i_model[1]));
-	float scaleZ = length(vec3(i_model[2]));
+	float scaleX = length(vec3(inst.model[0]));
+	float scaleY = length(vec3(inst.model[1]));
+	float scaleZ = length(vec3(inst.model[2]));
 	float maxScale = max(scaleX, max(scaleY, scaleZ));
 
 	SphereRadius = maxScale;
-	SphereCenter = vec3(i_model[3]);
+	SphereCenter = vec3(inst.model[3]);
 
 	// 2. Calcul de la géométrie du Billboard (Méthode Exacte ou
 	// Conservative) Cette fonction remplit clipPos et WorldPos
@@ -49,10 +50,10 @@ layout(location = 8) out vec4
 	                       projection, clipPos, WorldPos);
 
 	// 3. Transmission des matériaux
-	Albedo = i_albedo;
-	Metallic = i_pbr.x;
-	Roughness = i_pbr.y;
-	AO = i_pbr.z;
+	Albedo = inst.albedo;
+	Metallic = inst.metallic;
+	Roughness = inst.roughness;
+	AO = inst.ao;
 
 	// Normale "face caméra" pour le quad (la vraie normale sera calculée
 	// par raytracing)
