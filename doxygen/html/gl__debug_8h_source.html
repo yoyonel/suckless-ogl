@@ -259,8 +259,14 @@ $(document).ready(function(){initNavTree('gl__debug_8h_source.html',''); initRes
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gl__debug_8h.html#a3fdc249a58cdd3053f6090849c2ae38c">setup_opengl_debug</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GL_DEBUG_H */</span><span class="preprocessor"></span></div>
-<div class="ttc" id="agl__debug_8h_html_a3fdc249a58cdd3053f6090849c2ae38c"><div class="ttname"><a href="gl__debug_8h.html#a3fdc249a58cdd3053f6090849c2ae38c">setup_opengl_debug</a></div><div class="ttdeci">void setup_opengl_debug(void)</div><div class="ttdoc">Configures OpenGL debug callback.</div><div class="ttdef"><b>Definition:</b> gl_debug.c:138</div></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug_push_group</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keywordtype">void</span> <a class="code" href="gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug_pop_group</a>(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* GL_DEBUG_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__debug_8h_html_a25be2ee4e0a9571435ad48c51f93da8a"><div class="ttname"><a href="gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a">gl_debug_pop_group</a></div><div class="ttdeci">void gl_debug_pop_group(void)</div><div class="ttdoc">Pop the current debug group from the OpenGL debug stack.</div><div class="ttdef"><b>Definition:</b> gl_debug.c:162</div></div>
+<div class="ttc" id="agl__debug_8h_html_a3fdc249a58cdd3053f6090849c2ae38c"><div class="ttname"><a href="gl__debug_8h.html#a3fdc249a58cdd3053f6090849c2ae38c">setup_opengl_debug</a></div><div class="ttdeci">void setup_opengl_debug(void)</div><div class="ttdoc">Configures OpenGL debug callback.</div><div class="ttdef"><b>Definition:</b> gl_debug.c:137</div></div>
+<div class="ttc" id="agl__debug_8h_html_aab0f03e3f09521ffa3e714fd12c61cf4"><div class="ttname"><a href="gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4">gl_debug_push_group</a></div><div class="ttdeci">void gl_debug_push_group(const char *name)</div><div class="ttdoc">Push a named debug group onto the OpenGL debug stack.</div><div class="ttdef"><b>Definition:</b> gl_debug.c:157</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

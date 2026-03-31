@@ -260,8 +260,10 @@ $(document).ready(function(){initNavTree('background_8frag.html',''); initResiza
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a06e3867b2ef1f1715391bd55fd702dd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5">layout</a> (location=0) out vec4 <a class="el" href="ui__spinner_8frag.html#af5639df2ce0dea4170bb8b47a599911e">FragColor</a></td></tr>
-<tr class="separator:a06e3867b2ef1f1715391bd55fd702dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa502181a07bffcbf45d1a0305ea7e73e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#aa502181a07bffcbf45d1a0305ea7e73e">layout</a> (location=0) in vec3 RayDir</td></tr>
+<tr class="separator:aa502181a07bffcbf45d1a0305ea7e73e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c2fc52e2d7a88d94a8b826dc3b032bc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#a9c2fc52e2d7a88d94a8b826dc3b032bc">layout</a> (binding=0) uniform sampler2D environmentMap</td></tr>
+<tr class="separator:a9c2fc52e2d7a88d94a8b826dc3b032bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfb45c403721e8c71065fd9b5407b39a"><td class="memItemLeft" align="right" valign="top">vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#abfb45c403721e8c71065fd9b5407b39a">SampleEquirectangular</a> (vec3 v)</td></tr>
 <tr class="separator:abfb45c403721e8c71065fd9b5407b39a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdef7a1fd863a6d3770c1268cb06add3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#acdef7a1fd863a6d3770c1268cb06add3">main</a> ()</td></tr>
@@ -269,18 +271,30 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a2b86b51f120ac686b4c2c542c65fb4c7"><td class="memItemLeft" align="right" valign="top">in vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#a2b86b51f120ac686b4c2c542c65fb4c7">RayDir</a></td></tr>
-<tr class="separator:a2b86b51f120ac686b4c2c542c65fb4c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a129ec0b6641bbab43cb32e612d8d0623"><td class="memItemLeft" align="right" valign="top">uniform sampler2D&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#a129ec0b6641bbab43cb32e612d8d0623">environmentMap</a></td></tr>
-<tr class="separator:a129ec0b6641bbab43cb32e612d8d0623"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4501d7fad1ba623dd0c9b06456c9813c"><td class="memItemLeft" align="right" valign="top">uniform float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#a4501d7fad1ba623dd0c9b06456c9813c">blur_lod</a></td></tr>
-<tr class="separator:a4501d7fad1ba623dd0c9b06456c9813c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9a1943fd19907f9c61975876aaa9d80"><td class="memItemLeft" align="right" valign="top">const vec2&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="background_8frag.html#ae9a1943fd19907f9c61975876aaa9d80">invAtan</a> = vec2(0.1591, 0.3183)</td></tr>
 <tr class="separator:ae9a1943fd19907f9c61975876aaa9d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a06e3867b2ef1f1715391bd55fd702dd5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06e3867b2ef1f1715391bd55fd702dd5">&#9670;&nbsp;</a></span>layout()</h2>
+<a id="a9c2fc52e2d7a88d94a8b826dc3b032bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2fc52e2d7a88d94a8b826dc3b032bc">&#9670;&nbsp;</a></span>layout() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">layout </td>
+          <td>(</td>
+          <td class="paramtype">binding&#160;</td>
+          <td class="paramname"> = <code>0</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa502181a07bffcbf45d1a0305ea7e73e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa502181a07bffcbf45d1a0305ea7e73e">&#9670;&nbsp;</a></span>layout() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,34 +353,6 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a4501d7fad1ba623dd0c9b06456c9813c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4501d7fad1ba623dd0c9b06456c9813c">&#9670;&nbsp;</a></span>blur_lod</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uniform float blur_lod</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a129ec0b6641bbab43cb32e612d8d0623"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a129ec0b6641bbab43cb32e612d8d0623">&#9670;&nbsp;</a></span>environmentMap</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uniform sampler2D environmentMap</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae9a1943fd19907f9c61975876aaa9d80"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae9a1943fd19907f9c61975876aaa9d80">&#9670;&nbsp;</a></span>invAtan</h2>
 
@@ -375,20 +361,6 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const vec2 invAtan = vec2(0.1591, 0.3183)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2b86b51f120ac686b4c2c542c65fb4c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b86b51f120ac686b4c2c542c65fb4c7">&#9670;&nbsp;</a></span>RayDir</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">in vec3 RayDir</td>
         </tr>
       </table>
 </div><div class="memdoc">

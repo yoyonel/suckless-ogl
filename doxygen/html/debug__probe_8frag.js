@@ -1,15 +1,12 @@
 var debug__probe_8frag =
 [
     [ "LightProbe", "structLightProbe.html", "structLightProbe" ],
+    [ "layout", "debug__probe_8frag.html#a352e6e8aed4a47e7486cf814c9b94a0e", null ],
     [ "layout", "debug__probe_8frag.html#a36f028a0cfc1001e399692579ffefa9d", null ],
     [ "main", "debug__probe_8frag.html#acdef7a1fd863a6d3770c1268cb06add3", null ],
     [ "A0", "debug__probe_8frag.html#ac50d384c529c551b9d552a32839475e6", null ],
     [ "A1", "debug__probe_8frag.html#a87a46c9a128ea86b5b6656cfe07ecb05", null ],
     [ "A2", "debug__probe_8frag.html#abb9977a0ac90dfc1d1e10bdff6ef4a4a", null ],
-    [ "color", "debug__probe_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef", null ],
-    [ "view", "debug__probe_8frag.html#a7ab66495f9aae7ab34147735223f7c6d", null ],
-    [ "vProbeIndex", "debug__probe_8frag.html#acd6ccd4c46009d80f1cbb5083008ee5b", null ],
-    [ "vUV", "debug__probe_8frag.html#a39fca2c8fe34ab0c307cdd0f7e7f53d6", null ],
     [ "Y00", "debug__probe_8frag.html#a14e5fffe64bf998c22800a3445a41a25", null ],
     [ "Y10", "debug__probe_8frag.html#a3431a747fcb97f65c1629c565ff8773d", null ],
     [ "Y11", "debug__probe_8frag.html#a932bde719fd64cf4d9d9b66f7c794a13", null ],

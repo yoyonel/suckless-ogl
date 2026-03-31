@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['luminance_20histogram_4032',['Luminance Histogram',['../group__Histogram.html',1,'']]]
+  ['luminance_20histogram_3914',['Luminance Histogram',['../group__Histogram.html',1,'']]]
 ];

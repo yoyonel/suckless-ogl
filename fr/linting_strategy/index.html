@@ -2138,6 +2138,73 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#hygiene-des-includes-misc-include-cleaner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hygiène des includes (misc-include-cleaner)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hygiène des includes (misc-include-cleaner)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation-glsl-des-shaders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation GLSL des shaders
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validation GLSL des shaders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mode-standard-integre-dans-just-lint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mode standard (intégré dans just lint)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mode-strict-optionnel-cible-spir-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mode strict (optionnel, cible SPIR-V)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3120,6 +3187,32 @@
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>make<span class="w"> </span>lint
 </span></code></pre></div>
 <p>L'ajout d'une nouvelle règle dans <code>.clang-tidy</code> invalidera également automatiquement l'intégralité du cache, garantissant la conformité à l'échelle du projet.</p>
+<h2 id="hygiene-des-includes-misc-include-cleaner">Hygiène des includes (misc-include-cleaner)<a class="headerlink" href="#hygiene-des-includes-misc-include-cleaner" title="Permanent link">¶</a></h2>
+<p>Le check <code>misc-include-cleaner</code> est activé dans <code>.clang-tidy</code> pour détecter les directives <code>#include</code> inutilisées au moment du lint.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># .clang-tidy (extrait)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nt">Checks</span><span class="p">:</span><span class="w"> </span><span class="s">'...,misc-*,...'</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nt">CheckOptions</span><span class="p">:</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">misc-include-cleaner.MissingIncludes</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s">'false'</span>
+</span></code></pre></div>
+<ul>
+<li><strong>UnusedIncludes</strong> : Activé — signale les headers inclus mais jamais directement utilisés.</li>
+<li><strong>MissingIncludes</strong> : Désactivé — évite les faux positifs sur les symboles disponibles via des includes transitifs (courant avec cglm, stb, GLFW).</li>
+</ul>
+<p>Cela garantit que <code>just lint</code> détecte automatiquement les includes obsolètes, sans nécessiter d'outillage spécifique à l'IDE.</p>
+<h2 id="validation-glsl-des-shaders">Validation GLSL des shaders<a class="headerlink" href="#validation-glsl-des-shaders" title="Permanent link">¶</a></h2>
+<p>Les shaders sont validés au moment du lint via <code>glslangValidator</code> et le script <code>scripts/lint_shaders.sh</code>.</p>
+<h3 id="mode-standard-integre-dans-just-lint">Mode standard (intégré dans <code>just lint</code>)<a class="headerlink" href="#mode-standard-integre-dans-just-lint" title="Permanent link">¶</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>just<span class="w"> </span>lint
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Inclut : clang-tidy + ruff + validation GLSL (26 shaders)</span>
+</span></code></pre></div>
+<p>Valide tous les shaders <code>.vert</code>, <code>.frag</code> et <code>.comp</code> dans <code>shaders/</code>. Le script résout les directives d'inclusion <code>@header</code> personnalisées avant de passer le source résolu à <code>glslangValidator</code>.</p>
+<h3 id="mode-strict-optionnel-cible-spir-v">Mode strict (optionnel, cible SPIR-V)<a class="headerlink" href="#mode-strict-optionnel-cible-spir-v" title="Permanent link">¶</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>just<span class="w"> </span>lint-shaders-strict
+</span></code></pre></div>
+<p>Exécute la validation avec <code>--target-env opengl</code> (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs <code>layout(location=N)</code> manquants, qui empêchent silencieusement le debugger de shaders RenderDoc de fonctionner.</p>
+<p>Depuis mars 2026, <strong>les 33 fichiers shader passent la validation SPIR-V stricte</strong>. Le projet impose des <code>layout(location=N)</code> explicites sur tous les varyings et uniforms non-opaques, et <code>layout(binding=N)</code> sur tous les samplers/images. Voir <a href="../renderdoc_guide/#8-debogage-des-shaders-compatibilite-spir-v">renderdoc_guide.fr.md</a> pour le détail complet.</p>
 
 
 
@@ -3140,7 +3233,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="31 mars 2026 14:19:58 UTC">31 mars 2026</span>
   </span>
 
     

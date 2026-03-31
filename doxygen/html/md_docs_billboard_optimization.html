@@ -343,9 +343,8 @@ Robustness Handling</h1>
 <div class="line">nearestZ = min(nearestZ, -0.11);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// ✅ After: extracted from the projection matrix</span></div>
-<div class="line"><span class="keywordtype">float</span> zNear = <a class="code" href="debug__line_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">projection</a>[3][2] / (<a class="code" href="debug__line_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">projection</a>[2][2] - 1.0);</div>
+<div class="line"><span class="keywordtype">float</span> zNear = projection[3][2] / (projection[2][2] - 1.0);</div>
 <div class="line">nearestZ = min(nearestZ, -(zNear + 0.01));</div>
-<div class="ttc" id="adebug__line_8vert_html_a6f89a4fbf1a53a21ada7ca66387463a1"><div class="ttname"><a href="debug__line_8vert.html#a6f89a4fbf1a53a21ada7ca66387463a1">projection</a></div><div class="ttdeci">uniform mat4 projection</div><div class="ttdef"><b>Definition:</b> debug_line.vert:9</div></div>
 </div><!-- fragment --><p>For a standard OpenGL perspective matrix:</p>
 <p class="formulaDsp">
 \[ P = \begin{pmatrix} sx &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; sy &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; A &amp; B \\ 0 &amp; 0 &amp; -1 &amp; 0 \end{pmatrix} \quad\text{where}\quad A = P_{22} = -\frac{f+n}{f-n},\quad B = P_{32} = -\frac{2fn}{f-n} \]

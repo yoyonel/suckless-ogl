@@ -1,25 +1,8 @@
 var pbr__ibl__billboard_8frag =
 [
     [ "intersectSphere", "pbr__ibl__billboard_8frag.html#a65c64433ce42e5fa98925acb42321c46", null ],
+    [ "layout", "pbr__ibl__billboard_8frag.html#a2d6f90492d9bb3e42eae9bfe730a3834", null ],
     [ "layout", "pbr__ibl__billboard_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5", null ],
     [ "main", "pbr__ibl__billboard_8frag.html#acdef7a1fd863a6d3770c1268cb06add3", null ],
-    [ "Albedo", "pbr__ibl__billboard_8frag.html#a5460c8f858649846ebd3672945ec21a6", null ],
-    [ "AO", "pbr__ibl__billboard_8frag.html#a36487f1815e63c133d14bae531e4f344", null ],
-    [ "brdfLUT", "pbr__ibl__billboard_8frag.html#a296f5a6ea081e76dc1c8938e00b38cc3", null ],
-    [ "camPos", "pbr__ibl__billboard_8frag.html#ad5f1108f376121fda3fe33d3deb96000", null ],
-    [ "CurrentClipPos", "pbr__ibl__billboard_8frag.html#a2bbf023aeafe138e0e3a8b8b2f867602", null ],
-    [ "debugMode", "pbr__ibl__billboard_8frag.html#abaa039aa7232ce6ca78b8b31ff6fe556", null ],
-    [ "glsl", "pbr__ibl__billboard_8frag.html#a45bb4c97466db7e116560434ff23499a", null ],
-    [ "irradianceMap", "pbr__ibl__billboard_8frag.html#a317edb6278f8ecb22dd5f771eb813623", null ],
-    [ "Metallic", "pbr__ibl__billboard_8frag.html#a0a8957af51bf8d3e6ca6b94f408ef8ba", null ],
-    [ "Normal", "pbr__ibl__billboard_8frag.html#a18b7801c2dc257a0ddc2e74f0b320e78", null ],
-    [ "prefilterMap", "pbr__ibl__billboard_8frag.html#aa1f903d1916d5f054fbd4ed9bc37ef8c", null ],
-    [ "previousViewProj", "pbr__ibl__billboard_8frag.html#aa85972450e5bec5caa31b28745bcbe20", null ],
-    [ "projection", "pbr__ibl__billboard_8frag.html#a6f89a4fbf1a53a21ada7ca66387463a1", null ],
-    [ "Roughness", "pbr__ibl__billboard_8frag.html#a1a53659c825d1c5961a993ec72faa73d", null ],
-    [ "SphereCenter", "pbr__ibl__billboard_8frag.html#a74b8a3851930fe086d04d85c49a166b5", null ],
-    [ "SphereRadius", "pbr__ibl__billboard_8frag.html#a36985c34f51f6551534334b70579169b", null ],
-    [ "u_screenSize", "pbr__ibl__billboard_8frag.html#a4f186f754c59ab0a3d0fdb4dc1d54e41", null ],
-    [ "view", "pbr__ibl__billboard_8frag.html#a7ab66495f9aae7ab34147735223f7c6d", null ],
-    [ "WorldPos", "pbr__ibl__billboard_8frag.html#ae18169c1f4b5370bb68b96d77eb5945d", null ]
+    [ "glsl", "pbr__ibl__billboard_8frag.html#a45bb4c97466db7e116560434ff23499a", null ]
 ];

@@ -300,7 +300,7 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a30b0408d8cfedb388bca9987b7d83122"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">GPU_STAGE_PROFILER</a>(profiler_ptr,  name,  <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)</td></tr>
+<tr class="memitem:a30b0408d8cfedb388bca9987b7d83122"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">GPU_STAGE_PROFILER</a>(profiler_ptr,  name,  color)</td></tr>
 <tr class="memdesc:a30b0408d8cfedb388bca9987b7d83122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scoped GPU profiling stage. Automatically ends on scope exit.  <a href="gpu__profiler_8h.html#a30b0408d8cfedb388bca9987b7d83122">More...</a><br /></td></tr>
 <tr class="separator:a30b0408d8cfedb388bca9987b7d83122"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -326,7 +326,7 @@ Functions</h2></td></tr>
 <tr class="memitem:a44de4cea7056033e6c03683013cbcc02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">gpu_profiler_set_enabled</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, bool enabled)</td></tr>
 <tr class="memdesc:a44de4cea7056033e6c03683013cbcc02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables the profiler.  <a href="gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02">More...</a><br /></td></tr>
 <tr class="separator:a44de4cea7056033e6c03683013cbcc02"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab4caa95e9c5f77266939ae13806b530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler_start_stage</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, const char *name, uint32_t <a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>)</td></tr>
+<tr class="memitem:aab4caa95e9c5f77266939ae13806b530"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">gpu_profiler_start_stage</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, const char *name, uint32_t color)</td></tr>
 <tr class="memdesc:aab4caa95e9c5f77266939ae13806b530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts a new profiling stage.  <a href="gpu__profiler_8h.html#aab4caa95e9c5f77266939ae13806b530">More...</a><br /></td></tr>
 <tr class="separator:aab4caa95e9c5f77266939ae13806b530"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae819b47b90af9fa7965f5fc44331ac1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gpu__profiler_8h.html#ae819b47b90af9fa7965f5fc44331ac1d">gpu_profiler_end_stage</a> (<a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler)</td></tr>
@@ -395,7 +395,7 @@ Variables</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><a class="el" href="ui__spinner_8frag.html#a1b6b0074b43684c435f4275d6fb7bf1a">color</a>&#160;</td>
+          <td class="paramname">color&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -407,8 +407,7 @@ Variables</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line">    <a class="code" href="structGPUStageRAII.html">GPUStageRAII</a> _stage_raii##__LINE__                   \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a>))) \</div>
 <div class="line">        __attribute__((unused)) = {profiler_ptr};        \</div>
-<div class="line">    gpu_profiler_start_stage(profiler_ptr, name, <a class="code" href="debug__probe_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a>)</div>
-<div class="ttc" id="adebug__probe_8frag_html_a0a3e99eab94835ffca469f09cb4a24ef"><div class="ttname"><a href="debug__probe_8frag.html#a0a3e99eab94835ffca469f09cb4a24ef">color</a></div><div class="ttdeci">out vec4 color</div><div class="ttdef"><b>Definition:</b> debug_probe.frag:8</div></div>
+<div class="line">    gpu_profiler_start_stage(profiler_ptr, name, color)</div>
 <div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:168</div></div>
 <div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:159</div></div>
 </div><!-- fragment -->
