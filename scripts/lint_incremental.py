@@ -181,9 +181,14 @@ def main():
 
     # Find sources
     files = []
+    # Third-party implementation files: STB headers define their own allocators
+    # and misc-include-cleaner cannot trace macro-level malloc redirection.
+    exclude_basenames = {"stb_image_impl.c"}
     for d in SRC_DIRS:
         # Standard recursive glob
-        files.extend(glob.glob(os.path.join(d, "**", "*.c"), recursive=True))
+        for f in glob.glob(os.path.join(d, "**", "*.c"), recursive=True):
+            if os.path.basename(f) not in exclude_basenames:
+                files.append(f)
 
     if not files:
         print("No source files found.")

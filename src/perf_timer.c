@@ -183,6 +183,8 @@ void gpu_timer_cleanup(GPUTimer* timer)
 // ============================================================================
 
 #ifdef TRACY_ENABLE
+#include "profiler.h"
+#include "utils.h"
 // Source location statique pour les tâches hybrides afin d'éviter la double
 // barre dans Tracy (on laisse 'function' à NULL pour n'afficher que le label)
 static const struct ___tracy_source_location_data HYBRID_SRCLOC = {
