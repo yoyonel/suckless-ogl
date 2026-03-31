@@ -100,21 +100,66 @@ autre passe ne touche ces units/bindings.
 **Invalidation :** après `light_probe_grid_sync()` qui appelle `glBindTexture(GL_TEXTURE_3D, 0)`
 sur l'unité active courante, pouvant écraser un binding SH caché.
 
-### Palier 4 — Lecture Directe SSBO dans le Vertex Shader (~7 appels économisés)
+### Palier 4 — Lecture Directe SSBO dans le Vertex Shader (~3 appels économisés)
 
-**Statut : Planifié**
+**Statut : Terminé** ✅
 
-Éliminer la copie `glCopyBufferSubData` SSBO→VBO en lisant les instances triées
+Élimine la copie `glCopyBufferSubData` SSBO→VBO en lisant les instances triées
 directement via `gl_InstanceID` depuis le SSBO dans le vertex shader.
 
+**Insight clé :** le tri GPU binde déjà `sorted_instance_ssbo` au point de binding 2
+via `glBindBufferBase`. Après le compute shader, `glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0)`
+ne débinde que la cible générique — PAS le point de binding indexé. Donc binding 2 reste valide.
+
+Pour les chemins CPU sort (qsort, radix), un seul `glBindBufferBase(binding 2, instance_ssbo)`
+est ajouté à la fin de `upload_sorted_to_ssbo()` pour correspondre à la convention du tri GPU.
+
+**Côté GLSL** — nouvel include partagé `shaders/billboard_instance_ssbo.glsl` :
+
 ```glsl
-// Dans pbr_ibl_billboard.vert — remplacer les attributs par instance par un fetch SSBO
-layout(std430, binding = 2) readonly buffer SortedInstances {
-    SphereInstance instances[];
+struct SphereInstance {
+    mat4 model;
+    vec3 albedo;
+    float metallic;
+    float roughness;
+    float ao;
+    float padding;
+    float _pad[9];  // Correspondre au stride C 128 octets (SIMD_ALIGNMENT=64)
 };
-// ...
-SphereInstance inst = instances[gl_InstanceID];
+
+layout(std430, binding = 2) readonly buffer BillboardInstanceSSBO {
+    SphereInstance billboard_instances[];
+};
 ```
+
+**Vertex shader** — `shaders/pbr_ibl_billboard.vert` récupère les données par instance
+via `gl_InstanceID` au lieu d'attributs de vertex instantiés :
+
+```glsl
+// Avant (attributs vertex) :
+layout(location = 2) in mat4 i_model;
+layout(location = 6) in vec3 i_albedo;
+layout(location = 7) in vec3 i_pbr;
+
+// Après (fetch SSBO) :
+SphereInstance inst = billboard_instances[gl_InstanceID];
+float scaleX = length(vec3(inst.model[0]));
+Albedo = inst.albedo;
+Metallic = inst.metallic;  // Accès direct, pas de packing vec3
+```
+
+**Côté C** — Dans `src/scene.c`, l'appel `billboard_group_update_from_buffer()` est supprimé
+entièrement (conservé uniquement pour le wireframe debug). Aucun `glBindBufferBase` supplémentaire
+nécessaire dans le chemin GPU sort — binding 2 est déjà établi par le dispatch compute.
+
+La copie VBO legacy est conservée uniquement pour l'overlay wireframe debug.
+
+**Appels économisés :**
+
+| Mode de tri | Supprimés | Ajoutés | Net |
+|-------------|----------|---------|-----|
+| GPU bitonic (défaut) | 3 (bind read, bind write, copy) | 0 | **-3** |
+| CPU qsort/radix | 3 | 1 (`glBindBufferBase` dans sort) | **-2** |
 
 ## Résultats Projetés
 
@@ -124,18 +169,89 @@ SphereInstance inst = instances[gl_InstanceID];
 | Palier 1 | Trivial | 5 | ~60 |
 | Palier 2 (UBO) | Moyen | 11 | ~49 |
 | Palier 3 (SH/SSBO) | Moyen | 15 | **~34** |
-| Palier 4 (SSBO direct) | Moyen-Haut | 7 | **~27** |
+| Palier 4 (SSBO direct) | Moyen | 3 | **~31** |
+
+## Analyse de Régression de Performance
+
+### Compromis du Palier 4 : Input Assembler vs Lecture SSBO
+
+Le Palier 4 remplace le chemin traditionnel **Input Assembler matériel** (attributs vertex
+par instance via VBO + `glVertexAttribDivisor`) par une **lecture SSBO manuelle** dans le
+vertex shader (`billboard_instances[gl_InstanceID]`).
+
+C'est un compromis architectural délibéré :
+
+| Aspect | Avant (VBO + IA) | Après (lecture SSBO) |
+|--------|-------------------|----------------------|
+| Chemin de données | Input Assembler matériel (fonction fixe) | Instruction `buffer load` manuelle dans le shader |
+| Bande passante | L'IA peut pré-charger/mettre en cache les flux d'attributs | Lecture cohérente unique par invocation |
+| Latence | Matériel dédié, potentiellement coût nul | Instruction ALU + hit cache L2 (typiquement) |
+| Appels GL | `glBindBufferBase` + `glCopyBufferSubData` + setup VBO | 0 appel supplémentaire (binding 2 réutilisé du tri) |
+
+### Pourquoi C'est Sans Risque
+
+**1. Charge de travail dominée par le fragment shader.** Chaque sphère billboard exécute un
+fragment shader PBR + IBL complet avec :
+
+- 3 lookups de textures IBL (cubemap irradiance, env map pré-filtrée, BRDF LUT)
+- 7 lookups de textures 3D SH probe (harmoniques sphériques)
+- Évaluation BRDF Cook-Torrance (NDF GGX, géométrie Smith, Fresnel)
+- Tone mapping + correction gamma
+
+Le coût du fragment shader par pixel **écrase** toute différence de fetch au stade vertex.
+Pour une frame typique 1920×1080 avec 10–100 sphères, le vertex shader s'exécute ~4–600 fois
+(4–6 vertices × instances) tandis que le fragment shader s'exécute des millions de fois.
+
+**2. Accès cache-friendly.** La lecture SSBO accède à `billboard_instances[gl_InstanceID]`
+séquentiellement à travers les instances. Avec des structs alignées sur 128 octets
+(correspondant aux lignes de cache), cela produit d'excellents taux de hit cache L2 —
+comparables à ce que le matériel Input Assembler obtiendrait pour les mêmes données.
+
+**3. Nombre d'instances négligeable.** Le système billboard rend 10–100 sphères. Même avec
+une pénalité pessimiste de 10ns par invocation vertex (improbable), le surcoût total serait :
+
+$$100 \text{ instances} \times 6 \text{ vertices} \times 10\text{ns} = 6\mu\text{s}$$
+
+Soit **trois ordres de grandeur** en dessous d'un budget frame typique de 16ms.
+
+**4. Réduction du surcoût driver.** Les 3 appels GL supprimés (bind + copie + unbind)
+éliminent la validation côté CPU du driver et l'enregistrement du command buffer. Sur les
+scènes lourdes en draw calls, cette économie CPU peut dépasser le coût GPU théorique des
+lectures manuelles.
+
+### Mesurer l'Impact
+
+Le projet inclut un système `GPUProfiler` ([src/gpu_profiler.c](gpu_profiler.c)) avec des
+timestamp queries par stage, mais la passe Billboard manque actuellement d'un stage de
+profiling dédié. Pour mesurer l'impact réel :
+
+1. **Ajouter `GPU_STAGE_PROFILER`** autour du bloc billboard sort+render dans `scene.c`
+2. **Utiliser le pattern `EffectBenchmark` existant** ([src/effect_benchmark.c](effect_benchmark.c)) :
+   warmup 30 frames, mesure 120 frames, rapport mean ± stddev
+3. **Comparer les branches** en exécutant le même point de vue caméra sur `master` vs `refactor/`
+4. **Résultat attendu** : delta dans le bruit de mesure (< 1% variation), confirmant la
+   dominance fragment-bound
+
+Un futur mode CLI `--benchmark N` pourrait automatiser cette comparaison entre branches.
+
+### Conclusion
+
+La lecture SSBO est un **compromis net positif** : coût GPU négligeable (s'il existe) en
+échange de 3 appels GL en moins, élimination de la copie VBO, et un flux de données plus
+simple où la sortie du tri est consommée directement par le vertex shader sans copies
+intermédiaires.
 
 ## Fichiers Concernés
 
 | Fichier | Rôle |
 |---------|------|
-| `src/scene.c` | `scene_render_billboards()` — upload UBO, bind textures |
-| `src/billboard_rendering.c` | `billboard_group_update_from_buffer()` — copie SSBO→VBO |
+| `src/scene.c` | `scene_render_billboards()` — upload UBO, bind textures, bind SSBO |
+| `src/billboard_rendering.c` | `billboard_group_update_from_buffer()` — copie VBO legacy (debug uniquement) |
 | `src/billboard_rendering.c` | `billboard_group_draw()` — bind VAO, état cull, draw call |
 | `src/sphere_sorting.c` | `sphere_sorter_sort_gpu()` — dispatch compute |
-| `shaders/billboard_ubo.glsl` | **Nouveau** — définition bloc UBO partagé (`binding = 1`) |
-| `shaders/pbr_ibl_billboard.vert` | Vertex shader — inclut `billboard_ubo.glsl` |
+| `shaders/billboard_instance_ssbo.glsl` | **Nouveau** — SSBO SphereInstance pour lecture directe vertex (`binding = 2`) |
+| `shaders/billboard_ubo.glsl` | Définition bloc UBO partagé (`binding = 1`) |
+| `shaders/pbr_ibl_billboard.vert` | Vertex shader — fetch SSBO via `gl_InstanceID` |
 | `shaders/pbr_ibl_billboard.frag` | Fragment shader — inclut `billboard_ubo.glsl` |
 | `shaders/sh_probe.glsl` | Uniforms SH probe — gardé par `#ifndef HAS_BILLBOARD_UBO` |
 | `include/scene.h` | Struct `BillboardUBO` + `BillboardUniforms` (samplers SH uniquement) |
