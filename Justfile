@@ -425,11 +425,16 @@ format:
     @echo "Formatting Python scripts..."
     @{{distrobox}} ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
-# Lint code using clang-tidy and ruff
+# Lint code using clang-tidy, ruff, and GLSL validation
 lint:
     @if [ ! -f {{build_dir}}/compile_commands.json ]; then {{distrobox}} cmake -B {{build_dir}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; fi
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py {{build_dir}}
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
+    @{{distrobox}} bash scripts/lint_shaders.sh
+
+# Lint shaders with strict SPIR-V validation (surfaces RenderDoc-class issues)
+lint-shaders-strict:
+    @{{distrobox}} bash scripts/lint_shaders.sh --strict
 
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 lint-full:
