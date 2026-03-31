@@ -877,9 +877,19 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 					    camera_pos);
 					break;
 			}
-			billboard_group_update_from_buffer(
-			    &scene->billboard_group, sorted_ssbo,
-			    scene->sphere_instance_count);
+			/* Tier 4: Sorted SSBO already bound at binding 2 by
+			 * sort functions — vertex shader reads it directly
+			 * via gl_InstanceID (no VBO copy needed). */
+			scene->billboard_group.instance_count =
+			    scene->sphere_instance_count;
+
+			/* Legacy VBO copy only for debug wireframe overlay
+			 * (debug_line_shader reads per-instance attributes) */
+			if (scene->wireframe) {
+				billboard_group_update_from_buffer(
+				    &scene->billboard_group, sorted_ssbo,
+				    scene->sphere_instance_count);
+			}
 
 			glEnablei(GL_BLEND, 0);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -112,6 +112,10 @@ static GLuint upload_sorted_to_ssbo(SphereSorter* sorter, int count)
 		                sorter->temp_instances);
 	}
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	/* Bind sorted data at binding 2 so billboard vertex shader can
+	 * read it via gl_InstanceID (GPU sort already does this). */
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, sorter->instance_ssbo);
 	return sorter->instance_ssbo;
 }
 
