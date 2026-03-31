@@ -53,3 +53,43 @@ make lint
 ```
 
 L'ajout d'une nouvelle règle dans `.clang-tidy` invalidera également automatiquement l'intégralité du cache, garantissant la conformité à l'échelle du projet.
+
+## Hygiène des includes (misc-include-cleaner)
+
+Le check `misc-include-cleaner` est activé dans `.clang-tidy` pour détecter les directives `#include` inutilisées au moment du lint.
+
+### Configuration
+
+```yaml
+# .clang-tidy (extrait)
+Checks: '...,misc-*,...'
+CheckOptions:
+  - key: misc-include-cleaner.MissingIncludes
+    value: 'false'
+```
+
+- **UnusedIncludes** : Activé — signale les headers inclus mais jamais directement utilisés.
+- **MissingIncludes** : Désactivé — évite les faux positifs sur les symboles disponibles via des includes transitifs (courant avec cglm, stb, GLFW).
+
+Cela garantit que `just lint` détecte automatiquement les includes obsolètes, sans nécessiter d'outillage spécifique à l'IDE.
+
+## Validation GLSL des shaders
+
+Les shaders sont validés au moment du lint via `glslangValidator` et le script `scripts/lint_shaders.sh`.
+
+### Mode standard (intégré dans `just lint`)
+
+```bash
+just lint
+# Inclut : clang-tidy + ruff + validation GLSL (26 shaders)
+```
+
+Valide tous les shaders `.vert`, `.frag` et `.comp` dans `shaders/`. Le script résout les directives d'inclusion `@header` personnalisées avant de passer le source résolu à `glslangValidator`.
+
+### Mode strict (optionnel, cible SPIR-V)
+
+```bash
+just lint-shaders-strict
+```
+
+Exécute la validation avec `--target-env opengl` (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs `layout(location=N)` manquants, pouvant causer des problèmes dans des outils comme le debugger de shaders RenderDoc. Ce mode est informatif et non requis pour les commits.

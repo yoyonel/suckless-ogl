@@ -77,6 +77,72 @@ Frame 1
 
 Les étiquettes de débogage rendent la navigation immédiate (voir [debugging.md](./debugging.md)).
 
+## Lancement rapide via Justfile
+
+Construction et lancement directement depuis la racine du projet :
+
+```bash
+# Build Debug + lancer RenderDoc
+just renderdoc
+
+# Surcharger le chemin du binaire RenderDoc
+just renderdoc_bin=/chemin/vers/qrenderdoc renderdoc
+```
+
+## Instrumentation active (GL_KHR_debug)
+
+Le moteur utilise `GL_KHR_debug` pour nommer les ressources et segmenter les commandes GPU pour RenderDoc.
+
+### Naming des ressources (glObjectLabel)
+
+Objets labellisés visibles dans le Resource Inspector :
+
+| Catégorie | Exemples |
+|-----------|----------|
+| **Shader Programs** | `skybox.vert + skybox.frag`, `pbr_instanced.vert + pbr.frag` |
+| **Buffers** | `Quad VBO`, `Wire Cube VBO`, `Wire Quad VBO` |
+| **VAOs** | `Empty VAO`, `Fullscreen Quad VAO` |
+| **Textures** | `Scene Color (HDR)`, `Velocity Buffer`, `Scene Depth (D32F_S8)` |
+| **Texture Views** | `Scene Stencil View` |
+
+### Groupes de debug (Event Browser RenderDoc)
+
+La frame est structurée par des paires hiérarchiques `glPushDebugGroup`/`glPopDebugGroup` :
+
+```text
+Render_Frame
+├─ Scene_Render
+│   ├─ Skybox_Pass
+│   ├─ Billboard_Sort_And_Render  (mode billboard transparent)
+│   │   └─ tri + draw calls
+│   └─ Instanced_Geometry_Render  (mode instancié)
+│       └─ draw calls
+├─ Post_Processing
+│   ├─ PostFX_Bloom
+│   ├─ PostFX_DepthOfField
+│   ├─ PostFX_AutoExposure
+│   ├─ PostFX_MotionBlur_Compute
+│   └─ PostFX_Final_Composite
+└─ UI_Overlay
+```
+
+Cette décomposition permet d'isoler le coût de chaque passe de rendu directement dans l'Event Browser.
+
+### Ajout de nouveaux groupes de debug
+
+Utiliser les fonctions helper de `gl_debug.h` :
+
+```c
+#include "gl_debug.h"
+
+gl_debug_push_group("Mon_Pass_Custom");
+/* ... commandes OpenGL ... */
+gl_debug_pop_group();
+```
+
+Chaque `gl_debug_push_group()` doit être apparié avec un `gl_debug_pop_group()`.
+Convention de nommage : `Feature_ObjectType` (ex. `PostFX_Bloom`, `Scene_Render`).
+
 ## Ressources textures et tampons
 
 L'inspecteur de ressources permet de visualiser :
