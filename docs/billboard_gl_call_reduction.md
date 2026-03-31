@@ -85,17 +85,27 @@ To prevent silent SIGSEGV crashes on stack-allocated UBOs:
 - Applied to both `BillboardUBO` and `PostProcessUBO`
 - Any future UBO gets the same 2-line protection
 
-### Tier 3 — Persistent Texture/Buffer Bindings (~21 calls saved)
+### Tier 3 — Persistent SH Texture/SSBO Bindings (~15 calls saved)
 
-**Status: Planned**
+**Status: In Progress**
 
-| Optimization | Calls saved |
-|-------------|-------------|
-| Bind IBL textures once at load (not per-frame) | 6 |
-| Bind SH 3D textures once when probe grid changes (not per-frame) | 14 |
-| Bind probe SSBO once when probe grid changes | 1 |
+| Optimization | Calls saved | Cachable? |
+|-------------|-------------|----------|
+| ~~Bind IBL textures once at load~~ | ~~6~~ | **NO** — units 0-2 are clobbered by Skybox and PostProcess passes |
+| Bind SH 3D textures once when probe grid changes | 14 | **YES** — units 8-14 are exclusive to PBR passes |
+| Bind probe SSBO once when probe grid changes | 1 | **YES** — binding point 3 is exclusive to PBR passes |
 
-Requires tracking a "dirty" flag on probe grid updates to re-bind only when data changes.
+**Why IBL textures cannot be cached:**
+In a multi-pass renderer, texture units 0-2 are shared across passes:
+- `src/skybox.c` rebinds `GL_TEXTURE0` with the environment cubemap
+- `src/postprocess.c` rebinds units 0-1-2 with FBO color attachments, bloom textures, etc.
+
+Caching these bindings would require a centralized GL state tracker (over-engineering).
+The SH textures (units 8-14) and probe SSBO (binding 3) are safe because no other
+pass touches those units/bindings.
+
+**Invalidation:** after `light_probe_grid_sync()` which calls `glBindTexture(GL_TEXTURE_3D, 0)`
+on the current active unit, potentially clobbering a cached SH binding.
 
 ### Tier 4 — Direct SSBO Read in Vertex Shader (~7 calls saved)
 
@@ -121,8 +131,8 @@ SphereInstance inst = instances[gl_InstanceID];
 | Baseline | — | — | **~65** |
 | Tier 1 | Trivial | 5 | ~60 |
 | Tier 2 (UBO) | Medium | 11 | ~49 |
-| Tier 3 (Persistent) | Medium | 21 | **~28** |
-| Tier 4 (SSBO direct) | Medium-High | 7 | **~21** |
+| Tier 3 (SH/SSBO) | Medium | 15 | **~34** |
+| Tier 4 (SSBO direct) | Medium-High | 7 | **~27** |
 
 ## Files Involved
 
