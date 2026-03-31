@@ -131,6 +131,30 @@ enum { SCREEN_QUAD_VERTEX_COUNT = 6 };
 enum { SIMD_ALIGNMENT = 64 };
 
 /**
+ * @brief Required alignment for UBO structs used with cglm (AVX mat4 ops).
+ *
+ * cglm's glm_mat4_copy uses AVX _mm256_store_ps which requires 32-byte
+ * alignment. Any UBO struct containing mat4 (float[16]) fields must be
+ * tagged with GL_UBO_ALIGNED to guarantee safe stack/heap allocation.
+ */
+enum { GL_UBO_ALIGNMENT = 32 };
+
+/**
+ * @brief Attribute to apply on UBO typedef to enforce AVX alignment.
+ * Usage: } GL_UBO_ALIGNED MyUBOType;
+ */
+#define GL_UBO_ALIGNED __attribute__((aligned(GL_UBO_ALIGNMENT)))
+
+/**
+ * @brief Compile-time assertion that a UBO struct meets AVX alignment.
+ * Place after the typedef to catch misconfigurations at build time.
+ * @param type The UBO struct type name.
+ */
+#define GL_ASSERT_UBO_ALIGNMENT(type)                      \
+	_Static_assert(_Alignof(type) >= GL_UBO_ALIGNMENT, \
+	               #type " must be >= 32-byte aligned for AVX (cglm)")
+
+/**
  * @brief Pushes a debug group to the OpenGL command stream for debugging tools.
  * @param name String label for the group.
  */

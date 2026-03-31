@@ -342,7 +342,9 @@ typedef struct {
 	/* 3D LUT (16 bytes) */
 	float lut3d_intensity;
 	float _pad14[3];
-} PostProcessUBO;
+} GL_UBO_ALIGNED PostProcessUBO;
+
+GL_ASSERT_UBO_ALIGNMENT(PostProcessUBO);
 
 /**
  * @struct PostProcess
