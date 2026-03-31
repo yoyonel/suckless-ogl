@@ -281,12 +281,6 @@ static int scene_init_billboard_shader(Scene* scene)
 		return 0;
 	}
 
-	scene->billboard_uniforms.irradiance_map = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "irradianceMap");
-	scene->billboard_uniforms.prefilter_map = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "prefilterMap");
-	scene->billboard_uniforms.brdf_lut =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "brdfLUT");
 	scene->billboard_uniforms.debug_mode = shader_get_uniform_location(
 	    scene->pbr_billboard_shader, "debugMode");
 	scene->billboard_uniforms.cam_pos =
@@ -647,9 +641,9 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
 	                               scene->dummy_black_tex);
 
-	shader_set_int_loc(scene->billboard_uniforms.irradiance_map, 0);
-	shader_set_int_loc(scene->billboard_uniforms.prefilter_map, 1);
-	shader_set_int_loc(scene->billboard_uniforms.brdf_lut, 2);
+	/* Sampler-to-unit mapping is handled by layout(binding=X) in the
+	 * fragment shader — no glUniform1i needed for irradianceMap,
+	 * prefilterMap, brdfLUT. */
 	shader_set_int_loc(scene->billboard_uniforms.debug_mode,
 	                   scene->pbr_debug_mode);
 	shader_set_vec3_loc(scene->billboard_uniforms.cam_pos, camera_pos);
