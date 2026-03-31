@@ -26,43 +26,64 @@ This document tracks the tiered optimization plan and its implementation status.
 
 ## Optimization Tiers
 
-### Tier 1 — Trivial, No Shader Changes (~9 calls saved)
+### Tier 1 — Trivial, No Shader Changes (~5 calls saved)
 
-**Status: In Progress**
+**Status: Done** ✅
 
 | Optimization | Calls saved | Risk |
 |-------------|-------------|------|
 | Remove 3× `glUniform1i` for sampler bindings (already `layout(binding=X)` in GLSL) | 3 | None |
 | Remove 2× defensive unbind after `glCopyBufferSubData` | 2 | None |
 
-Total: **~5 calls saved** (conservative, safe subset).
+Total: **5 calls saved**. Validated in RenderDoc: 64 → 59 commands.
 
-### Tier 2 — UBO for Per-Frame Uniforms (~12 calls → 1)
+### Tier 2 — UBO for Per-Frame Uniforms (~12 calls → 2)
 
-**Status: Planned**
+**Status: Done** ✅
 
-Replace individual `glUniform*` calls with a single **Uniform Buffer Object**, following the
-existing `PostProcessUBO` pattern in `src/postprocess.c`.
+Replaced ~12 individual `glUniform*` calls with a single **Uniform Buffer Object** upload
+(`glBufferSubData` + `glBindBuffer`), following the existing `PostProcessUBO` pattern.
 
-```c
-typedef struct {
-    mat4 projection;        // offset 0
-    mat4 view;              // offset 64
-    mat4 previousViewProj;  // offset 128
-    vec3 camPos;            // offset 192
-    int  debugMode;         // offset 204
-    vec2 screenSize;        // offset 208
-    vec2 _pad0;             // offset 216 (std140 alignment)
-    vec3 probeGridMin;      // offset 224
-    int  giMode;            // offset 236
-    vec3 probeGridMax;      // offset 240
-    int  specularAAEnabled; // offset 252
-    ivec3 probeGridDim;     // offset 256
-    int   aaMode;           // offset 268
-} BillboardUBO;
+**GLSL side** — new shared include `shaders/billboard_ubo.glsl`:
+
+```glsl
+layout(std140, binding = 1) uniform BillboardBlock {
+    mat4 projection;
+    mat4 view;
+    mat4 previousViewProj;
+    vec3 camPos;      int debugMode;
+    vec2 u_screenSize; vec2 _bb_pad0;
+    vec3 u_ProbeGridMin; int u_GIMode;
+    vec3 u_ProbeGridMax; int u_specularAAEnabled;
+    ivec3 u_ProbeGridDim; int u_aaMode;
+    vec3 u_GridToIdxScale; float _bb_pad1;
+};
 ```
 
-One `glBufferSubData` + `glBindBufferBase` replaces ~12 individual uniform calls.
+**C side** — `BillboardUBO` struct in `include/scene.h`, `std140`-aligned, uploaded via:
+
+```c
+BillboardUBO ubo = {0};
+// ... fill fields ...
+glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
+glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO), &ubo);
+```
+
+**Conditional guard** in `shaders/sh_probe.glsl` — individual uniform declarations
+wrapped in `#ifndef HAS_BILLBOARD_UBO` so the instanced pipeline (which does NOT
+use the UBO) continues to work with explicit `layout(location=X)` uniforms.
+
+#### UBO Alignment Safety
+
+cglm's `glm_mat4_copy` uses AVX `_mm256_store_ps` which requires 32-byte alignment.
+To prevent silent SIGSEGV crashes on stack-allocated UBOs:
+
+- Generic API in `include/gl_common.h`:
+  - `GL_UBO_ALIGNMENT` enum constant (32)
+  - `GL_UBO_ALIGNED` attribute macro for typedef
+  - `GL_ASSERT_UBO_ALIGNMENT(type)` compile-time `_Static_assert`
+- Applied to both `BillboardUBO` and `PostProcessUBO`
+- Any future UBO gets the same 2-line protection
 
 ### Tier 3 — Persistent Texture/Buffer Bindings (~21 calls saved)
 
@@ -107,11 +128,14 @@ SphereInstance inst = instances[gl_InstanceID];
 
 | File | Role |
 |------|------|
-| `src/scene.c` | `scene_render_billboards()` — uniform setup, texture binding |
+| `src/scene.c` | `scene_render_billboards()` — UBO upload, texture binding |
 | `src/billboard_rendering.c` | `billboard_group_update_from_buffer()` — SSBO→VBO copy |
 | `src/billboard_rendering.c` | `billboard_group_draw()` — VAO bind, cull state, draw call |
 | `src/sphere_sorting.c` | `sphere_sorter_sort_gpu()` — compute dispatch |
-| `shaders/pbr_ibl_billboard.vert` | Vertex shader — explicit `layout(binding)` for samplers |
-| `shaders/pbr_ibl_billboard.frag` | Fragment shader — `layout(binding=0/1/2)` for IBL samplers |
-| `shaders/sh_probe.glsl` | SH probe uniforms and texture bindings |
-| `include/scene.h` | `BillboardUniforms` struct definition |
+| `shaders/billboard_ubo.glsl` | **New** — shared UBO block definition (`binding = 1`) |
+| `shaders/pbr_ibl_billboard.vert` | Vertex shader — includes `billboard_ubo.glsl` |
+| `shaders/pbr_ibl_billboard.frag` | Fragment shader — includes `billboard_ubo.glsl` |
+| `shaders/sh_probe.glsl` | SH probe uniforms — guarded by `#ifndef HAS_BILLBOARD_UBO` |
+| `include/scene.h` | `BillboardUBO` struct + `BillboardUniforms` (SH samplers only) |
+| `include/gl_common.h` | `GL_UBO_ALIGNED` / `GL_ASSERT_UBO_ALIGNMENT` generic API |
+| `include/postprocess.h` | `PostProcessUBO` — alignment guard applied |
