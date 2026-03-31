@@ -1,11 +1,11 @@
-#version 330 core
+#version 450 core
 
-in vec2 TexCoords;
-out vec3 FragColor;
+layout(location = 0) in vec2 TexCoords;
+layout(location = 0) out vec3 FragColor;
 
-uniform sampler2D srcTexture;
-uniform float threshold;
-uniform float knee; /* Soft threshold knee */
+layout(binding = 0) uniform sampler2D srcTexture;
+layout(location = 0) uniform float threshold;
+layout(location = 1) uniform float knee; /* Soft threshold knee */
 
 void main()
 {

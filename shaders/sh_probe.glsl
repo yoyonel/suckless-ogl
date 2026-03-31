@@ -1,24 +1,24 @@
 // sh_probe.glsl
 
-uniform vec3 u_ProbeGridMin;
-uniform vec3 u_ProbeGridMax;
-uniform ivec3 u_ProbeGridDim;
-uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
-uniform vec3 u_GridToIdxScale;
-uniform bool u_specularAAEnabled;
-uniform int u_aaMode;  // 0: Screen-space, 1: Curvature
+layout(location = 15) uniform vec3 u_ProbeGridMin;
+layout(location = 16) uniform vec3 u_ProbeGridMax;
+layout(location = 17) uniform ivec3 u_ProbeGridDim;
+layout(location = 18) uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
+layout(location = 19) uniform vec3 u_GridToIdxScale;
+layout(location = 20) uniform bool u_specularAAEnabled;
+layout(location = 21) uniform int u_aaMode;  // 0: Screen-space, 1: Curvature
 
 /* 7x 3D textures for SH coefficients (Units 8-14)
    - Tex 0-5: Coeffs 0-7 (RGBA16F, each holds 4 channels)
    - Tex 6: Coeff 8 (RGBA16F, only RGB used)
 */
-uniform sampler3D u_SHTexture0;
-uniform sampler3D u_SHTexture1;
-uniform sampler3D u_SHTexture2;
-uniform sampler3D u_SHTexture3;
-uniform sampler3D u_SHTexture4;
-uniform sampler3D u_SHTexture5;
-uniform sampler3D u_SHTexture6;
+layout(binding = 8) uniform sampler3D u_SHTexture0;
+layout(binding = 9) uniform sampler3D u_SHTexture1;
+layout(binding = 10) uniform sampler3D u_SHTexture2;
+layout(binding = 11) uniform sampler3D u_SHTexture3;
+layout(binding = 12) uniform sampler3D u_SHTexture4;
+layout(binding = 13) uniform sampler3D u_SHTexture5;
+layout(binding = 14) uniform sampler3D u_SHTexture6;
 
 struct LightProbe {
 	vec4 coeffs[9];

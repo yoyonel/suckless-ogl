@@ -2,11 +2,11 @@
 
 layout(location = 0) in vec3 a_position;  // Original RGB (0-1)
 
-uniform sampler3D u_lut3d;
-uniform mat4 u_mvp;
-uniform float u_time;
+layout(binding = 0) uniform sampler3D u_lut3d;
+layout(location = 0) uniform mat4 u_mvp;
+layout(location = 4) uniform float u_time;
 
-out vec3 v_color;
+layout(location = 0) out vec3 v_color;
 
 void main()
 {

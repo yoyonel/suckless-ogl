@@ -9,6 +9,7 @@
 5. **CI/CD validation** — All builds/tests must pass locally (Docker) AND remote (GitHub Actions)
 6. **NO suppression of warnings/errors** — Fix issues at the source; never bypass them
 7. **NEVER modify reference test images** — Files matching `tests/references/ref_*.png` are the visual regression baseline from `master`. They must NEVER be replaced, overwritten, or regenerated without the user's **explicit approval and visual validation**. When in doubt, restore them from `origin/master` with `git checkout origin/master -- tests/references/ref_*.png`
+8. **MVP first** — Always start with a Minimum Viable change on a limited scope to validate the approach before scaling to the full codebase. Do NOT batch-modify all files upfront; prove the fix on one representative case, get user validation, then generalize
 
 ---
 

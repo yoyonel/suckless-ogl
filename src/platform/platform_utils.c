@@ -4,7 +4,6 @@
 
 #ifdef __linux__
 #include <sys/syscall.h>
-#include <sys/types.h>
 #include <unistd.h>
 #elif defined(_WIN32)
 #include <windows.h>

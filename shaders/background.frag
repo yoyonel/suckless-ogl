@@ -1,11 +1,11 @@
 #version 450 core
 
-in vec3 RayDir;
+layout(location = 0) in vec3 RayDir;
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec2 VelocityOut;
 
-uniform sampler2D environmentMap;
-uniform float blur_lod;
+layout(binding = 0) uniform sampler2D environmentMap;
+layout(location = 4) uniform float blur_lod;
 
 const vec2 invAtan = vec2(0.1591, 0.3183);
 vec2 SampleEquirectangular(vec3 v)

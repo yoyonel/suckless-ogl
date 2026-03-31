@@ -1,14 +1,14 @@
 #version 430 core
 
-uniform mat4 view;
-uniform mat4 projection;
+layout(location = 0) uniform mat4 view;
+layout(location = 4) uniform mat4 projection;
 
-uniform vec3 u_ProbeGridMin;
-uniform vec3 u_ProbeGridMax;
-uniform ivec3 u_ProbeGridDim;
+layout(location = 8) uniform vec3 u_ProbeGridMin;
+layout(location = 9) uniform vec3 u_ProbeGridMax;
+layout(location = 10) uniform ivec3 u_ProbeGridDim;
 
-out vec2 vUV;
-flat out int vProbeIndex;
+layout(location = 0) out vec2 vUV;
+flat layout(location = 1) out int vProbeIndex;
 
 void main()
 {

@@ -1,9 +1,9 @@
-#version 330 core
+#version 450 core
 
-in vec2 TexCoords;
-out vec4 FragColor;
+layout(location = 0) in vec2 TexCoords;
+layout(location = 0) out vec4 FragColor;
 
-uniform vec3 color;
+layout(location = 8) uniform vec3 color;
 
 void main()
 {

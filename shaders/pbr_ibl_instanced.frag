@@ -3,20 +3,20 @@
 layout(location = 0) out vec4 FragColor;
 layout(location = 1) out vec2 VelocityOut;
 
-in vec3 WorldPos;
-in vec3 Normal;
-in vec3 Albedo;
-in float Metallic;
-in float Roughness;
-in float AO;
-in vec4 CurrentClipPos;
-in vec4 PreviousClipPos;
+layout(location = 0) in vec3 WorldPos;
+layout(location = 1) in vec3 Normal;
+layout(location = 2) in vec3 Albedo;
+layout(location = 3) in float Metallic;
+layout(location = 4) in float Roughness;
+layout(location = 5) in float AO;
+layout(location = 6) in vec4 CurrentClipPos;
+layout(location = 7) in vec4 PreviousClipPos;
 
-uniform vec3 camPos;
-uniform sampler2D irradianceMap;
-uniform sampler2D prefilterMap;
-uniform sampler2D brdfLUT;
-uniform int debugMode;
+layout(location = 12) uniform vec3 camPos;
+layout(binding = 0) uniform sampler2D irradianceMap;
+layout(binding = 1) uniform sampler2D prefilterMap;
+layout(binding = 2) uniform sampler2D brdfLUT;
+layout(location = 13) uniform int debugMode;
 
 // Include common PBR functions
 @header "pbr_functions.glsl";

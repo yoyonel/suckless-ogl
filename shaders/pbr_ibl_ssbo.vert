@@ -19,16 +19,16 @@ layout(std430, binding = 0) readonly buffer InstanceBuffer
 };
 
 /* Uniforms globaux */
-uniform mat4 projection;
-uniform mat4 view;
+layout(location = 0) uniform mat4 projection;
+layout(location = 4) uniform mat4 view;
 
 /* Outputs vers le fragment shader */
-out vec3 WorldPos;
-out vec3 Normal;
-out vec3 Albedo;
-out float Metallic;
-out float Roughness;
-out float AO;
+layout(location = 0) out vec3 WorldPos;
+layout(location = 1) out vec3 Normal;
+layout(location = 2) out vec3 Albedo;
+layout(location = 3) out float Metallic;
+layout(location = 4) out float Roughness;
+layout(location = 5) out float AO;
 
 void main()
 {

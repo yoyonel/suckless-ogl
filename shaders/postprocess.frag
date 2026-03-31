@@ -1,12 +1,12 @@
 #version 440 core
 @header "common.glsl";
 
-out vec4 FragColor;
-in vec2 TexCoords;
+layout(location = 0) out vec4 FragColor;
+layout(location = 0) in vec2 TexCoords;
 
-uniform sampler2D screenTexture;
-uniform sampler2D depthTexture;
-uniform usampler2D stencilTexture;
+layout(binding = 0) uniform sampler2D screenTexture;
+layout(binding = 2) uniform sampler2D depthTexture;
+layout(binding = 7) uniform usampler2D stencilTexture;
 
 /* Includes for Post-Process Effects */
 @header "postprocess/ubo.glsl";

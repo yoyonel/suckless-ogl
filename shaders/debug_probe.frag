@@ -1,11 +1,11 @@
 #version 430 core
 
-in vec2 vUV;
-flat in int vProbeIndex;
+layout(location = 0) in vec2 vUV;
+flat layout(location = 1) in int vProbeIndex;
 
-uniform mat4 view;
+layout(location = 0) uniform mat4 view;
 
-out vec4 color;
+layout(location = 0) out vec4 color;
 
 /* SH Constants (matching sh_math.h) */
 const float Y00 = 0.28209479177387814347;

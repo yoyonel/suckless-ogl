@@ -1,6 +1,5 @@
 #include "icosphere.h"
 
-#include "mem.h"
 #include <cglm/types.h>
 #include <cglm/vec3.h>
 #include <stdint.h>

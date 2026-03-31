@@ -53,3 +53,45 @@ make lint
 ```
 
 Training a new rule in `.clang-tidy` will also automatically invalidate the entire cache, ensuring project-wide compliance.
+
+## Include Hygiene (misc-include-cleaner)
+
+The `misc-include-cleaner` check is enabled in `.clang-tidy` to detect unused `#include` directives at lint time.
+
+### Configuration
+
+```yaml
+# .clang-tidy (excerpt)
+Checks: '...,misc-*,...'
+CheckOptions:
+  - key: misc-include-cleaner.MissingIncludes
+    value: 'false'
+```
+
+- **UnusedIncludes**: Enabled — flags headers that are included but never directly used.
+- **MissingIncludes**: Disabled — avoids false positives on symbols available through transitive includes (common with cglm, stb, GLFW).
+
+This ensures `just lint` catches stale includes automatically, without requiring IDE-specific tooling.
+
+## GLSL Shader Validation
+
+Shaders are validated at lint time using `glslangValidator` via `scripts/lint_shaders.sh`.
+
+### Standard Mode (integrated in `just lint`)
+
+```bash
+just lint
+# Includes: clang-tidy + ruff + GLSL validation (26 shaders)
+```
+
+Validates all `.vert`, `.frag`, and `.comp` shaders in `shaders/`. The script resolves custom `@header` include directives before passing the resolved source to `glslangValidator`.
+
+### Strict Mode (optional, SPIR-V target)
+
+```bash
+just lint-shaders-strict
+```
+
+Runs validation with `--target-env opengl` (SPIR-V rules). This surfaces issues like missing `layout(location=N)` qualifiers that cause RenderDoc's shader debugger to fail silently.
+
+As of March 2026, **all 33 shader files pass strict SPIR-V validation**. The project enforces explicit `layout(location=N)` on all varyings and non-opaque uniforms, and `layout(binding=N)` on all samplers/images. See [renderdoc_guide.md](renderdoc_guide.md#8-shader-debugging-spir-v-compatibility) for the full rationale.

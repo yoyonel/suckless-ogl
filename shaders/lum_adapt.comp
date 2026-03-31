@@ -8,12 +8,12 @@ layout(binding = 0) uniform sampler2D lumTexture;
 /* Sortie: Texture 1x1 RGBA32F (Exposure Factor) */
 layout(rgba32f, binding = 1) uniform image2D exposureImage;
 
-uniform float deltaTime;
-uniform float minLuminance;
-uniform float maxLuminance;
-uniform float speedUp;
-uniform float speedDown;
-uniform float keyValue; /* Target middle gray (ex: 1.0) */
+layout(location = 0) uniform float deltaTime;
+layout(location = 1) uniform float minLuminance;
+layout(location = 2) uniform float maxLuminance;
+layout(location = 3) uniform float speedUp;
+layout(location = 4) uniform float speedDown;
+layout(location = 5) uniform float keyValue; /* Target middle gray (ex: 1.0) */
 
 /* Shared memory for parallel reduction (256 threads) */
 shared float sharedLogLum[256];
@@ -21,91 +21,97 @@ shared float sharedValidCount[256];
 
 void main()
 {
-    uint localIndex = gl_LocalInvocationID.y * 16 + gl_LocalInvocationID.x;
+	uint localIndex = gl_LocalInvocationID.y * 16 + gl_LocalInvocationID.x;
 
-    /* Each of the 256 threads processes 16 texels from the 64x64 map.
-       Thread layout: 16x16 threads, each handles a 4x1 strip repeated
-       across 4 rows, covering 4x4 = 16 texels total.
-       Mapping: thread (tx,ty) covers pixels at:
-         x = [tx*4 .. tx*4+3], y = [ty*4 .. ty*4+3] */
-    int baseX = int(gl_LocalInvocationID.x) * 4;
-    int baseY = int(gl_LocalInvocationID.y) * 4;
+	/* Each of the 256 threads processes 16 texels from the 64x64 map.
+	   Thread layout: 16x16 threads, each handles a 4x1 strip repeated
+	   across 4 rows, covering 4x4 = 16 texels total.
+	   Mapping: thread (tx,ty) covers pixels at:
+	     x = [tx*4 .. tx*4+3], y = [ty*4 .. ty*4+3] */
+	int baseX = int(gl_LocalInvocationID.x) * 4;
+	int baseY = int(gl_LocalInvocationID.y) * 4;
 
-    float localSum = 0.0;
-    float localCount = 0.0;
+	float localSum = 0.0;
+	float localCount = 0.0;
 
-    for (int dy = 0; dy < 4; dy++) {
-        for (int dx = 0; dx < 4; dx++) {
-            int px = baseX + dx;
-            int py = baseY + dy;
-            vec2 uv = (vec2(px, py) + 0.5) / 64.0;
-            float logVal = textureLod(lumTexture, uv, 0).r;
+	for (int dy = 0; dy < 4; dy++) {
+		for (int dx = 0; dx < 4; dx++) {
+			int px = baseX + dx;
+			int py = baseY + dy;
+			vec2 uv = (vec2(px, py) + 0.5) / 64.0;
+			float logVal = textureLod(lumTexture, uv, 0).r;
 
-            /* Si le pixel est valide (pas la sentinelle -100.0) */
-            if (logVal > -50.0 && !isinf(logVal)) {
-                localSum += logVal;
-                localCount += 1.0;
-            }
-        }
-    }
+			/* Si le pixel est valide (pas la sentinelle -100.0) */
+			if (logVal > -50.0 && !isinf(logVal)) {
+				localSum += logVal;
+				localCount += 1.0;
+			}
+		}
+	}
 
-    sharedLogLum[localIndex] = localSum;
-    sharedValidCount[localIndex] = localCount;
+	sharedLogLum[localIndex] = localSum;
+	sharedValidCount[localIndex] = localCount;
 
-    barrier();
+	barrier();
 
-    /* Parallel reduction in shared memory (256 -> 1) */
-    for (uint s = 128u; s > 0u; s >>= 1u) {
-        if (localIndex < s) {
-            sharedLogLum[localIndex] += sharedLogLum[localIndex + s];
-            sharedValidCount[localIndex] += sharedValidCount[localIndex + s];
-        }
-        barrier();
-    }
+	/* Parallel reduction in shared memory (256 -> 1) */
+	for (uint s = 128u; s > 0u; s >>= 1u) {
+		if (localIndex < s) {
+			sharedLogLum[localIndex] +=
+			    sharedLogLum[localIndex + s];
+			sharedValidCount[localIndex] +=
+			    sharedValidCount[localIndex + s];
+		}
+		barrier();
+	}
 
-    /* Thread 0 computes the final exposure */
-    if (localIndex == 0) {
-        float totalLogLum = sharedLogLum[0];
-        float validPixels = sharedValidCount[0];
+	/* Thread 0 computes the final exposure */
+	if (localIndex == 0) {
+		float totalLogLum = sharedLogLum[0];
+		float validPixels = sharedValidCount[0];
 
-        float sceneLum = 0.0;
+		float sceneLum = 0.0;
 
-        /* Moyenne uniquement sur les pixels valides (objets, ciel) */
-        if (validPixels > 0.0) {
-             float avgLogLum = totalLogLum / validPixels;
-             sceneLum = exp2(avgLogLum);
-        } else {
-             /* Si tout l'écran est noir, luminance très faible par défaut */
-             sceneLum = 0.1;
-        }
+		/* Moyenne uniquement sur les pixels valides (objets, ciel) */
+		if (validPixels > 0.0) {
+			float avgLogLum = totalLogLum / validPixels;
+			sceneLum = exp2(avgLogLum);
+		} else {
+			/* Si tout l'écran est noir, luminance très faible par
+			 * défaut */
+			sceneLum = 0.1;
+		}
 
-        /* Protection contre luminance nulle */
-        sceneLum = max(sceneLum, 0.0001);
+		/* Protection contre luminance nulle */
+		sceneLum = max(sceneLum, 0.0001);
 
-        /* Clamping Luminance */
-        sceneLum = clamp(sceneLum, minLuminance, maxLuminance);
+		/* Clamping Luminance */
+		sceneLum = clamp(sceneLum, minLuminance, maxLuminance);
 
-        /* Calcul de l'exposition cible */
-        float targetExposure = keyValue / sceneLum;
+		/* Calcul de l'exposition cible */
+		float targetExposure = keyValue / sceneLum;
 
-        /* Lire l'exposition précédente (Red channel) */
-        float currentExposure = imageLoad(exposureImage, ivec2(0, 0)).r;
+		/* Lire l'exposition précédente (Red channel) */
+		float currentExposure = imageLoad(exposureImage, ivec2(0, 0)).r;
 
-        /* Adaptation Temporelle */
-        float adjustmentSpeed = (targetExposure > currentExposure) ? speedUp : speedDown;
+		/* Adaptation Temporelle */
+		float adjustmentSpeed =
+		    (targetExposure > currentExposure) ? speedUp : speedDown;
 
-        float factor = 1.0 - exp(-deltaTime * adjustmentSpeed);
-        float newExposure = currentExposure + (targetExposure - currentExposure) * factor;
+		float factor = 1.0 - exp(-deltaTime * adjustmentSpeed);
+		float newExposure = currentExposure +
+		                    (targetExposure - currentExposure) * factor;
 
-        /* Protection NaN/Inf */
-        if (isnan(newExposure) || isinf(newExposure)) {
-            newExposure = currentExposure;
-        }
+		/* Protection NaN/Inf */
+		if (isnan(newExposure) || isinf(newExposure)) {
+			newExposure = currentExposure;
+		}
 
-        /* Ensure valid range */
-        newExposure = max(newExposure, 0.001);
+		/* Ensure valid range */
+		newExposure = max(newExposure, 0.001);
 
-        /* Ecriture (RGBA) */
-        imageStore(exposureImage, ivec2(0, 0), vec4(newExposure, 0.0, 0.0, 1.0));
-    }
+		/* Ecriture (RGBA) */
+		imageStore(exposureImage, ivec2(0, 0),
+		           vec4(newExposure, 0.0, 0.0, 1.0));
+	}
 }

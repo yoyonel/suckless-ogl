@@ -1,4 +1,4 @@
-uniform sampler3D u_lut_tex;
+layout(binding = 8) uniform sampler3D u_lut_tex;
 
 /**
  * @brief Applies 3D LUT gamut mapping to the color.

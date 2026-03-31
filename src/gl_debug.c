@@ -4,7 +4,6 @@
 #include "log.h"
 #include "utils.h"
 #include <stdint.h>
-#include <stdio.h>
 
 #define LOG_TAG "OpenGL Debug"
 
@@ -153,4 +152,14 @@ void setup_opengl_debug(void)
 		            "Debug Context NOT active - "
 		            "glDebugMessageCallback disabled");
 	}
+}
+
+void gl_debug_push_group(const char* name)
+{
+	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name);
+}
+
+void gl_debug_pop_group(void)
+{
+	glPopDebugGroup();
 }

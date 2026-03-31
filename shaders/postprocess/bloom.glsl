@@ -1,4 +1,4 @@
-uniform sampler2D bloomTexture;
+layout(binding = 1) uniform sampler2D bloomTexture;
 
 /* ============================================================================
    EFFECT: BLOOM

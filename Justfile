@@ -425,11 +425,16 @@ format:
     @echo "Formatting Python scripts..."
     @{{distrobox}} ruff format scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
 
-# Lint code using clang-tidy and ruff
+# Lint code using clang-tidy, ruff, and GLSL validation
 lint:
     @if [ ! -f {{build_dir}}/compile_commands.json ]; then {{distrobox}} cmake -B {{build_dir}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON; fi
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py {{build_dir}}
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
+    @{{distrobox}} bash scripts/lint_shaders.sh
+
+# Lint shaders with strict SPIR-V validation (surfaces RenderDoc-class issues)
+lint-shaders-strict:
+    @{{distrobox}} bash scripts/lint_shaders.sh --strict
 
 # Full linting with all features enabled (Tracy, SSBO, etc.)
 lint-full:
@@ -505,6 +510,26 @@ test-integration-tracy-release: build-tracy-release
 # Run application with Tracy enabled in Release mode
 run-tracy-release: build-tracy-release
     @./build-tracy-release/app
+
+# =============================================================================
+# RenderDoc (Frame Analysis)
+# =============================================================================
+
+renderdoc_dir := env_var_or_default("RENDERDOC_DIR", "/usr/bin")
+
+# Build the application in Debug mode for RenderDoc analysis
+build-debug-renderdoc: configure
+    @echo "Building Debug (RenderDoc profile)..."
+    @{{distrobox}} cmake --build {{build_dir}} --parallel {{nprocs}}
+
+# Launch qrenderdoc GUI with Debug build (Usage: just renderdoc_dir=/path/to/renderdoc renderdoc)
+renderdoc: build-debug-renderdoc
+    @{{renderdoc_dir}}/qrenderdoc --working-dir . ./{{build_dir}}/app
+
+# Capture a frame via renderdoccmd CLI (Usage: just renderdoc_dir=/path/to/renderdoc renderdoc-capture)
+renderdoc-capture: build-debug-renderdoc
+    @{{renderdoc_dir}}/renderdoccmd capture --working-dir . ./{{build_dir}}/app
+
 # =============================================================================
 # Windows / Cross-Compilation (MinGW + Wine)
 # =============================================================================

@@ -1,21 +1,12 @@
-#include "mem.h"
-
 #ifdef TRACY_ENABLE
-/* STB Image (Read) */
-#define STBI_MALLOC(sz) tracy_malloc(sz)
-#define STBI_REALLOC(p, newsz) tracy_realloc(p, newsz)
-#define STBI_FREE(p) tracy_free(p)
-
-/* STB Image Write */
-#define STBIW_MALLOC(sz) tracy_malloc(sz)
-#define STBIW_REALLOC(p, newsz) tracy_realloc(p, newsz)
-#define STBIW_FREE(p) tracy_free(p)
-
-/* STB TrueType */
-#define STBTT_malloc(x, u) ((void)(u), tracy_malloc(x))
-#define STBTT_free(x, u) ((void)(u), tracy_free(x))
+/*
+ * mem.h redefines malloc/realloc/free to Tracy-tracked variants.
+ * STB headers use standard allocators internally, which get intercepted
+ * by these macro redirections — no explicit STBI_MALLOC override needed.
+ */
+#include "mem.h"
 #else
-/* Standard Allocators */
+/* Standard Allocators (explicit overrides for STB) */
 #define STBI_MALLOC(sz) malloc(sz)
 #define STBI_REALLOC(p, newsz) realloc(p, newsz)
 #define STBI_FREE(p) free(p)

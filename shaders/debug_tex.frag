@@ -1,11 +1,11 @@
-#version 330 core
-out vec4 FragColor;
-in vec2 TexCoords;
+#version 450 core
+layout(location = 0) out vec4 FragColor;
+layout(location = 0) in vec2 TexCoords;
 
-uniform sampler2D u_tex;
-uniform float lod;
-uniform float u_alpha = 1.0;
-uniform bool u_bypass_processing = false;
+layout(binding = 0) uniform sampler2D u_tex;
+layout(location = 0) uniform float lod;
+layout(location = 1) uniform float u_alpha;
+layout(location = 2) uniform bool u_bypass_processing;
 
 void main()
 {

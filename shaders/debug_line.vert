@@ -1,16 +1,16 @@
-#version 330 core
+#version 450 core
 layout(location = 0) in vec3 aPos;
 // Instanced Model Matrix (locations 2,3,4,5)
 layout(location = 2) in mat4 aModel;
 // Instanced Albedo (location 6)
 layout(location = 6) in vec3 aAlbedo;
 
-uniform mat4 view;
-uniform mat4 projection;
-uniform bool u_billboardMode;
+layout(location = 0) uniform mat4 view;
+layout(location = 4) uniform mat4 projection;
+layout(location = 8) uniform bool u_billboardMode;
 
-out vec3 vWorldPos;
-out vec3 vAlbedo;
+layout(location = 0) out vec3 vWorldPos;
+layout(location = 1) out vec3 vAlbedo;
 
 @header "projection_utils.glsl"
 

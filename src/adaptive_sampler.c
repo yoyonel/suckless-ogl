@@ -1,7 +1,5 @@
 #include "adaptive_sampler.h"
 
-#include "mem.h"
-#include "utils.h"  /* safe_snprintf */
 #include <stdint.h> /* uintptr_t */
 #include <stdio.h>  /* For FILE* if needed */
 #include <stdlib.h> /* malloc, free */

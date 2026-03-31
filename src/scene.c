@@ -2,6 +2,7 @@
 
 #include "app_settings.h"
 #include "billboard_rendering.h"
+#include "gl_debug.h"
 #include "glad/glad.h"
 #include "ibl_coordinator.h"
 #include "icosphere.h"
@@ -14,7 +15,6 @@
 #include "shader.h"
 #include "sphere_sorting.h"
 #include "utils.h"
-#include <cglm/cglm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -860,18 +860,21 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->show_envmap) {
+		gl_debug_push_group("Skybox_Pass");
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		skybox_render(&scene->skybox, scene->skybox_shader,
 		              scene->hdr_texture, scene->dummy_black_tex,
 		              inv_view_proj, scene->env_lod);
 		glEnable(GL_DEPTH_TEST);
+		gl_debug_pop_group();
 	}
 
 	{
 		stencil_begin_object_pass();
 
 		if (scene->billboard_mode) {
+			gl_debug_push_group("Billboard_Sort_And_Render");
 			GLuint sorted_ssbo = 0;
 			switch (scene->sorting_mode) {
 				case SORTING_MODE_CPU_QSORT:
@@ -911,7 +914,9 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			                        height);
 
 			glDisablei(GL_BLEND, 0);
+			gl_debug_pop_group();
 		} else {
+			gl_debug_push_group("Instanced_Geometry_Render");
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
 
@@ -921,6 +926,7 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
+			gl_debug_pop_group();
 		}
 
 		glDisable(GL_STENCIL_TEST);
@@ -930,10 +936,13 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 		stencil_begin_object_pass();
 
 		if (scene->billboard_mode) {
+			gl_debug_push_group("Billboard_Render");
 			scene_render_billboards(scene, view, proj, camera_pos,
 			                        previous_view_proj, width,
 			                        height);
+			gl_debug_pop_group();
 		} else {
+			gl_debug_push_group("Instanced_Geometry_Render");
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
 			scene_render_instanced(scene, view, proj, camera_pos,
@@ -942,6 +951,7 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
+			gl_debug_pop_group();
 		}
 
 		glDisable(GL_STENCIL_TEST);
