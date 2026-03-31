@@ -25,12 +25,10 @@ layout(location = 8) out vec4
 // out vec4 PreviousClipPos;  <-- SUPPRIMÉ : Le calcul vertex est faux pour un
 // billboard
 
-layout(location = 0) uniform mat4 projection;
-layout(location = 4) uniform mat4 view;
-// uniform mat4 previousViewProj; <-- Inutile ici désormais
-
-// Header pour la fonction computeBillboardSphere
+/* clang-format off */
+@header "billboard_ubo.glsl"
 @header "projection_utils.glsl"
+    /* clang-format on */
 
     void
     main()

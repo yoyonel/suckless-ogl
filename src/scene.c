@@ -281,37 +281,13 @@ static int scene_init_billboard_shader(Scene* scene)
 		return 0;
 	}
 
-	scene->billboard_uniforms.debug_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "debugMode");
-	scene->billboard_uniforms.cam_pos =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "camPos");
-	scene->billboard_uniforms.projection = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "projection");
-	scene->billboard_uniforms.view =
-	    shader_get_uniform_location(scene->pbr_billboard_shader, "view");
-	scene->billboard_uniforms.previous_view_proj =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "previousViewProj");
-	scene->billboard_uniforms.u_screen_size = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_screenSize");
-	scene->billboard_uniforms.u_specular_aa_enabled =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "u_specularAAEnabled");
-	scene->billboard_uniforms.u_aa_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_aaMode");
-
-	/* Probe Grid */
-	scene->billboard_uniforms.probe_grid_min = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridMin");
-	scene->billboard_uniforms.probe_grid_max = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridMax");
-	scene->billboard_uniforms.probe_grid_dim = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_ProbeGridDim");
-	scene->billboard_uniforms.gi_mode = shader_get_uniform_location(
-	    scene->pbr_billboard_shader, "u_GIMode");
-	scene->billboard_uniforms.grid_to_idx_scale =
-	    shader_get_uniform_location(scene->pbr_billboard_shader,
-	                                "u_GridToIdxScale");
+	/* Create UBO for billboard per-frame uniforms (binding = 1) */
+	glGenBuffers(1, &scene->billboard_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(BillboardUBO), NULL,
+	             GL_DYNAMIC_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, scene->billboard_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	/* Set Billboard SH Sampler Indices (units 8-14) */
 	{
@@ -529,6 +505,7 @@ static void scene_cleanup_buffers(Scene* scene)
 	GL_SAFE_DELETE_BUFFER(scene->wire_quad_vbo);
 	GL_SAFE_DELETE_BUFFER(scene->quad_vbo);
 	GL_SAFE_DELETE_BUFFERS(2, scene->lum_ssbo);
+	GL_SAFE_DELETE_BUFFER(scene->billboard_ubo);
 }
 
 static void scene_cleanup_textures(Scene* scene)
@@ -641,44 +618,31 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
 	                               scene->dummy_black_tex);
 
-	/* Sampler-to-unit mapping is handled by layout(binding=X) in the
-	 * fragment shader — no glUniform1i needed for irradianceMap,
-	 * prefilterMap, brdfLUT. */
-	shader_set_int_loc(scene->billboard_uniforms.debug_mode,
-	                   scene->pbr_debug_mode);
-	shader_set_vec3_loc(scene->billboard_uniforms.cam_pos, camera_pos);
-	shader_set_mat4_loc(scene->billboard_uniforms.projection, (float*)proj);
-	shader_set_mat4_loc(scene->billboard_uniforms.view, (float*)view);
-	shader_set_mat4_loc(scene->billboard_uniforms.previous_view_proj,
-	                    (float*)previous_view_proj);
+	/* Upload all per-frame uniforms via UBO (binding = 1) */
+	{
+		BillboardUBO ubo = {0};
+		glm_mat4_copy(proj, (vec4*)ubo.projection);
+		glm_mat4_copy(view, (vec4*)ubo.view);
+		glm_mat4_copy(previous_view_proj,
+		              (vec4*)ubo.previous_view_proj);
+		glm_vec3_copy(camera_pos, ubo.cam_pos);
+		ubo.debug_mode = scene->pbr_debug_mode;
+		ubo.screen_size[0] = (float)width;
+		ubo.screen_size[1] = (float)height;
+		glm_vec3_copy(scene->probe_grid.aabb_min, ubo.probe_grid_min);
+		ubo.gi_mode = (int32_t)scene->gi_mode;
+		glm_vec3_copy(scene->probe_grid.aabb_max, ubo.probe_grid_max);
+		ubo.specular_aa_enabled = scene->specular_aa_enabled;
+		ubo.probe_grid_dim[0] = scene->probe_grid.grid_dim[0];
+		ubo.probe_grid_dim[1] = scene->probe_grid.grid_dim[1];
+		ubo.probe_grid_dim[2] = scene->probe_grid.grid_dim[2];
+		ubo.aa_mode = scene->aa_mode;
 
-	float screen_size[2] = {(float)width, (float)height};
-	shader_set_vec2_loc(scene->billboard_uniforms.u_screen_size,
-	                    screen_size);
-
-	if (scene->billboard_uniforms.u_specular_aa_enabled != -1) {
-		glUniform1i(scene->billboard_uniforms.u_specular_aa_enabled,
-		            scene->specular_aa_enabled);
+		glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO),
+		                &ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
-	if (scene->billboard_uniforms.u_aa_mode != -1) {
-		glUniform1i(scene->billboard_uniforms.u_aa_mode,
-		            scene->aa_mode);
-	}
-
-	/* Probe Grid spatial bounds and GI Toggle */
-	shader_set_vec3_loc(scene->billboard_uniforms.probe_grid_min,
-	                    scene->probe_grid.aabb_min);
-	shader_set_vec3_loc(scene->billboard_uniforms.probe_grid_max,
-	                    scene->probe_grid.aabb_max);
-
-	if (scene->billboard_uniforms.probe_grid_dim != -1) {
-		glUniform3i(scene->billboard_uniforms.probe_grid_dim,
-		            scene->probe_grid.grid_dim[0],
-		            scene->probe_grid.grid_dim[1],
-		            scene->probe_grid.grid_dim[2]);
-	}
-	shader_set_int_loc(scene->billboard_uniforms.gi_mode,
-	                   (int)scene->gi_mode);
 
 	/* Bind SH Textures */
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
