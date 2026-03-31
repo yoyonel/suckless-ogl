@@ -1,5 +1,6 @@
 // sh_probe.glsl
 
+#ifndef HAS_BILLBOARD_UBO
 layout(location = 15) uniform vec3 u_ProbeGridMin;
 layout(location = 16) uniform vec3 u_ProbeGridMax;
 layout(location = 17) uniform ivec3 u_ProbeGridDim;
@@ -7,6 +8,7 @@ layout(location = 18) uniform int u_GIMode;  // 0: OFF, 1: 3D Texture, 2: SSBO
 layout(location = 19) uniform vec3 u_GridToIdxScale;
 layout(location = 20) uniform bool u_specularAAEnabled;
 layout(location = 21) uniform int u_aaMode;  // 0: Screen-space, 1: Curvature
+#endif
 
 /* 7x 3D textures for SH coefficients (Units 8-14)
    - Tex 0-5: Coeffs 0-7 (RGBA16F, each holds 4 channels)

@@ -15,16 +15,11 @@ flat layout(location = 7) in float AO;
 layout(location = 8) in vec4
     CurrentClipPos;  // Interpolated clip pos of the quad (juste pour l'AA)
 
-layout(location = 12) uniform vec3 camPos;
-layout(binding = 0) uniform sampler2D irradianceMap;
+@header "billboard_ubo.glsl"
+
+    layout(binding = 0) uniform sampler2D irradianceMap;
 layout(binding = 1) uniform sampler2D prefilterMap;
 layout(binding = 2) uniform sampler2D brdfLUT;
-layout(location = 13) uniform int debugMode;
-
-layout(location = 0) uniform mat4 projection;
-layout(location = 4) uniform mat4 view;
-layout(location = 8) uniform mat4 previousViewProj;
-layout(location = 14) uniform vec2 u_screenSize;
 
 // Include common PBR functions
 @header "pbr_functions.glsl";
