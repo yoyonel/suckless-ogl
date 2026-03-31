@@ -87,9 +87,6 @@ void billboard_group_update_from_buffer(BillboardGroup* group,
 
 	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0,
 	                    size);
-
-	glBindBuffer(GL_COPY_READ_BUFFER, 0);
-	glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 }
 
 static void setup_billboard_instance_attributes(void)

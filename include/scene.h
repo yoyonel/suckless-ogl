@@ -93,9 +93,6 @@ typedef struct {
  * @brief Cached uniform locations for billboard rendering.
  */
 typedef struct {
-	GLint irradiance_map;        /**< Location of 'irradianceMap' */
-	GLint prefilter_map;         /**< Location of 'prefilterMap' */
-	GLint brdf_lut;              /**< Location of 'brdfLUT' */
 	GLint debug_mode;            /**< Location of 'debugMode' */
 	GLint cam_pos;               /**< Location of 'camPos' */
 	GLint projection;            /**< Location of 'projection' */
