@@ -92,4 +92,6 @@ Valide tous les shaders `.vert`, `.frag` et `.comp` dans `shaders/`. Le script r
 just lint-shaders-strict
 ```
 
-Exécute la validation avec `--target-env opengl` (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs `layout(location=N)` manquants, pouvant causer des problèmes dans des outils comme le debugger de shaders RenderDoc. Ce mode est informatif et non requis pour les commits.
+Exécute la validation avec `--target-env opengl` (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs `layout(location=N)` manquants, qui empêchent silencieusement le debugger de shaders RenderDoc de fonctionner.
+
+Depuis mars 2026, **les 33 fichiers shader passent la validation SPIR-V stricte**. Le projet impose des `layout(location=N)` explicites sur tous les varyings et uniforms non-opaques, et `layout(binding=N)` sur tous les samplers/images. Voir [renderdoc_guide.fr.md](renderdoc_guide.fr.md#8-debogage-des-shaders-compatibilite-spir-v) pour le détail complet.
