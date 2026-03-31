@@ -604,6 +604,30 @@ void scene_update_gpu_buffers(Scene* scene)
 	glBindVertexArray(0);
 }
 
+/**
+ * @brief Binds SH 3D textures (units 8-14) and probe SSBO only when changed.
+ * Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache.
+ * Invalidated after light_probe_grid_sync() which clobbers GL_TEXTURE_3D.
+ */
+static void scene_bind_probe_textures(Scene* scene)
+{
+	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+		GLuint tex = scene->probe_grid.sh_textures[i];
+		if (tex != scene->bound_sh_textures[i]) {
+			glActiveTexture(
+			    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
+			glBindTexture(GL_TEXTURE_3D, tex);
+			scene->bound_sh_textures[i] = tex;
+		}
+	}
+
+	if (scene->probe_grid.ssbo != scene->bound_probe_ssbo) {
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
+		                 scene->probe_grid.ssbo);
+		scene->bound_probe_ssbo = scene->probe_grid.ssbo;
+	}
+}
+
 static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
                                     vec3 camera_pos, mat4 previous_view_proj,
                                     int width, int height)
@@ -611,6 +635,8 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	Shader* current_shader = scene->pbr_billboard_shader;
 	shader_use(current_shader);
 
+	/* IBL textures must be re-bound every frame: units 0-2 are
+	 * clobbered by skybox + post-process passes between frames. */
 	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
 	                               scene->dummy_black_tex);
 	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
@@ -644,15 +670,7 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
-	/* Bind SH Textures */
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		glActiveTexture(
-		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
-		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
-	}
-
-	/* Bind Probe SSBO for GI Mode 2 (SSBO) */
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, scene->probe_grid.ssbo);
+	scene_bind_probe_textures(scene);
 
 	/* Debug Visualization Constants */
 	const float debug_fill_alpha = 0.10F;
@@ -735,6 +753,8 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 
 	shader_use(current_shader);
 
+	/* IBL textures must be re-bound every frame: units 0-2 are
+	 * clobbered by skybox + post-process passes between frames. */
 	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
 	                               scene->dummy_black_tex);
 	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
@@ -777,15 +797,7 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
 	                   (int)scene->gi_mode);
 
-	/* Bind SH Textures */
-	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		glActiveTexture(
-		    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
-		glBindTexture(GL_TEXTURE_3D, scene->probe_grid.sh_textures[i]);
-	}
-
-	/* Bind Probe SSBO for GI Mode 2 (SSBO) */
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, scene->probe_grid.ssbo);
+	scene_bind_probe_textures(scene);
 
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_draw(&scene->ssbo_group, scene->geometry.indices.size);
@@ -814,6 +826,12 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 	/* GI Probe SSBO sync — must happen before Spheres read it */
 	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
 		light_probe_grid_sync(&scene->probe_grid);
+		/* Sync clobbers 3D texture bindings on the current unit
+		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
+		 * so scene_bind_probe_textures() will re-bind. */
+		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
+			scene->bound_sh_textures[i] = 0;
+		}
 	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS

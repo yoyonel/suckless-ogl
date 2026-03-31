@@ -190,6 +190,10 @@ typedef struct Scene {
 	GLuint transition_snapshot_tex; /**< For crossfade mode. */
 	GLuint billboard_ubo; /**< UBO for billboard per-frame uniforms. */
 
+	/* --- SH/Probe Binding Cache (Tier 3 — units 8-14 + SSBO 3) --- */
+	GLuint bound_sh_textures[SH_TEXTURE_COUNT]; /**< Last SH tex bound. */
+	GLuint bound_probe_ssbo; /**< Last probe SSBO bound. */
+
 	/* --- Render Configuration --- */
 	int wireframe;            /**< OpenGL wireframe mode toggle. */
 	int billboard_mode;       /**< Toggle for billboard rendering path. */
