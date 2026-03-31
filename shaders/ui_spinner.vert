@@ -1,11 +1,11 @@
-#version 330 core
+#version 450 core
 
 layout(location = 0) in vec4 vertex;  // <vec2 pos, vec2 tex>
 
-out vec2 TexCoords;
+layout(location = 0) out vec2 TexCoords;
 
-uniform mat4 projection;
-uniform mat4 model;
+layout(location = 0) uniform mat4 projection;
+layout(location = 4) uniform mat4 model;
 
 void main()
 {

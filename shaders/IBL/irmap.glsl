@@ -5,9 +5,9 @@ layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 layout(binding = 0) uniform sampler2D envMap;
 layout(binding = 1, rgba16f) restrict writeonly uniform image2D irradianceMap;
 
-uniform float clamp_threshold;
-uniform int u_offset_y;
-uniform int u_max_y;
+layout(location = 0) uniform float clamp_threshold;
+layout(location = 1) uniform int u_offset_y;
+layout(location = 2) uniform int u_max_y;
 
 const float PI = 3.14159265359;
 const float TWO_PI = 2.0 * PI;

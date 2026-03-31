@@ -18,8 +18,8 @@ layout(std430, binding = 1) buffer Result
 	float meanLuminance;
 };
 
-uniform uint numGroups;
-uniform uint numPixels;
+layout(location = 0) uniform uint numGroups;
+layout(location = 1) uniform uint numPixels;
 
 shared float sharedSum[256];
 

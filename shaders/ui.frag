@@ -1,12 +1,13 @@
-#version 330 core
-in vec2 TexCoords;
-in vec4 vColor;
-in float vMode;
-in vec3 vRoundedParams;
+#version 450 core
+layout(location = 0) in vec2 TexCoords;
+layout(location = 1) in vec4 vColor;
+layout(location = 2) in float vMode;
+layout(location = 3) in vec3 vRoundedParams;
 
-out vec4 color;
+layout(location = 0) out vec4 color;
 
-uniform sampler2D text;  // Font atlas (modes 0-2) ou texture PNG (modes 3-4)
+layout(binding = 0) uniform sampler2D
+    text;  // Font atlas (modes 0-2) ou texture PNG (modes 3-4)
 
 void main()
 {

@@ -9,19 +9,19 @@ layout(location = 6) in vec3 i_albedo;  // Emplacement 6
 layout(location = 7)
     in vec3 i_pbr;  // Emplacement 7 (x: metallic, y: roughness, z: ao)
 
-out vec3 WorldPos;
-out vec3 Normal;
-out vec3 Albedo;
-out float Metallic;
-out float Roughness;
-out float AO;
+layout(location = 0) out vec3 WorldPos;
+layout(location = 1) out vec3 Normal;
+layout(location = 2) out vec3 Albedo;
+layout(location = 3) out float Metallic;
+layout(location = 4) out float Roughness;
+layout(location = 5) out float AO;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 previousViewProj;
+layout(location = 0) uniform mat4 projection;
+layout(location = 4) uniform mat4 view;
+layout(location = 8) uniform mat4 previousViewProj;
 
-out vec4 CurrentClipPos;
-out vec4 PreviousClipPos;
+layout(location = 6) out vec4 CurrentClipPos;
+layout(location = 7) out vec4 PreviousClipPos;
 
 void main()
 {

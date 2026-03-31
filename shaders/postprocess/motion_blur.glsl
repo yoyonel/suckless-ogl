@@ -1,5 +1,5 @@
-uniform sampler2D velocityTexture;
-uniform sampler2D neighborMaxTexture;
+layout(binding = 4) uniform sampler2D velocityTexture;
+layout(binding = 5) uniform sampler2D neighborMaxTexture;
 
 vec3 applyVectorFieldDebug(vec2 uv);
 

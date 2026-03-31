@@ -1,12 +1,12 @@
-#version 330 core
-out vec4 FragColor;
+#version 450 core
+layout(location = 0) out vec4 FragColor;
 
-in vec3 vWorldPos;
-in vec3 vAlbedo;
+layout(location = 0) in vec3 vWorldPos;
+layout(location = 1) in vec3 vAlbedo;
 
-uniform vec4 u_color;
-uniform bool u_stippled;
-uniform bool u_useInstanceColor;
+layout(location = 9) uniform vec4 u_color;
+layout(location = 10) uniform bool u_stippled;
+layout(location = 11) uniform bool u_useInstanceColor;
 
 void main()
 {

@@ -3,7 +3,8 @@
    ============================================================================
  */
 
-uniform sampler2D autoExposureTexture; /* Texture 1x1 R32F */
+layout(binding = 3) uniform sampler2D
+    autoExposureTexture; /* Texture 1x1 R32F */
 
 /* Effet Exposition (Tone Mapping) */
 vec3 applyExposure(vec3 color)

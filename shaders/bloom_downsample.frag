@@ -1,4 +1,4 @@
-#version 330 core
+#version 450 core
 
 /*
  * Downsampling 13-tap de Jorge Jimenez (Next Gen Post Processing in Call of
@@ -6,14 +6,14 @@
  * flickering et garde l'énergie.
  */
 
-in vec2 TexCoords;
-out vec3 FragColor;
+layout(location = 0) in vec2 TexCoords;
+layout(location = 0) out vec3 FragColor;
 
-uniform sampler2D srcTexture;
-uniform vec2
+layout(binding = 0) uniform sampler2D srcTexture;
+layout(location = 0) uniform vec2
     srcResolution; /* Résolution de la texture source (pas la destination !) */
-uniform vec2 texelScale; /* Échelle des texels (pour l'anamorphisme), défaut
-                            (1.0, 1.0) */
+layout(location = 1) uniform vec2 texelScale; /* Échelle des texels (pour
+                            l'anamorphisme), défaut (1.0, 1.0) */
 
 void main()
 {

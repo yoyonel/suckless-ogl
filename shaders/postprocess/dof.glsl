@@ -1,5 +1,5 @@
 /* Texture floutée (1/2 res, 13-tap filter) */
-uniform sampler2D dofBlurTexture;
+layout(binding = 6) uniform sampler2D dofBlurTexture;
 
 /* ============================================================================
    EFFECT: DEPTH OF FIELD (OPTIMIZED KAWASE / JIMENEZ)

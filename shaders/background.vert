@@ -2,9 +2,9 @@
 
 layout(location = 0) in vec3 in_position;
 
-uniform mat4 m_inv_view_proj;
+layout(location = 0) uniform mat4 m_inv_view_proj;
 
-out vec3 RayDir;
+layout(location = 0) out vec3 RayDir;
 
 void main()
 {

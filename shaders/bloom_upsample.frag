@@ -1,16 +1,18 @@
-#version 330 core
+#version 450 core
 
 /*
  * Upsampling avec Tent Filter (3x3)
  * Rayon ajustable par le scale, mais standard est 1.0 (voisins immédiats).
  */
 
-in vec2 TexCoords;
-out vec3 FragColor;
+layout(location = 0) in vec2 TexCoords;
+layout(location = 0) out vec3 FragColor;
 
-uniform sampler2D srcTexture;
-uniform float filterRadius; /* Rayon du filtre, défaut 1.0 */
-uniform vec2 texelScale;    /* Échelle des texels (pour l'anamorphisme) */
+layout(binding = 0) uniform sampler2D srcTexture;
+layout(location = 0) uniform
+    float filterRadius; /* Rayon du filtre, défaut 1.0 */
+layout(location = 1) uniform vec2
+    texelScale; /* Échelle des texels (pour l'anamorphisme) */
 
 void main()
 {
