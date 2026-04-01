@@ -164,8 +164,6 @@ void billboard_group_draw(BillboardGroup* group)
 	if (culling_was_enabled) {
 		glEnable(GL_CULL_FACE);
 	}
-
-	glBindVertexArray(0);
 }
 
 void billboard_group_cleanup(BillboardGroup* group)
@@ -184,7 +182,6 @@ void billboard_group_draw_debug_fill(BillboardGroup* group)
 
 	glBindVertexArray(group->vao);
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, group->instance_count);
-	glBindVertexArray(0);
 }
 
 void billboard_group_draw_debug_quads(BillboardGroup* group)
@@ -201,7 +198,6 @@ void billboard_group_draw_debug_quads(BillboardGroup* group)
 	// render_utils_create_wire_quad_vbo puts 4 vertices. We'll use
 	// GL_LINE_LOOP to close it.
 	glDrawArraysInstanced(GL_LINE_LOOP, 0, 4, group->instance_count);
-	glBindVertexArray(0);
 }
 
 void billboard_group_draw_debug_boxes(BillboardGroup* group)
@@ -214,5 +210,4 @@ void billboard_group_draw_debug_boxes(BillboardGroup* group)
 	// Cube VBO has 24 vertices (GL_LINES)
 	glDrawArraysInstanced(GL_LINES, 0, WIRE_CUBE_VERTEX_COUNT,
 	                      group->instance_count);
-	glBindVertexArray(0);
 }

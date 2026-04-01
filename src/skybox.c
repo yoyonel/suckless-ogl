@@ -61,7 +61,6 @@ void skybox_render(Skybox* skybox, Shader* shader, GLuint env_map,
 	/* Draw fullscreen quad */
 	glBindVertexArray(skybox->vao);
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
-	glBindVertexArray(0);
 
 	/* Restore default depth test */
 	glDepthFunc(GL_LESS);

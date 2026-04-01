@@ -124,7 +124,6 @@ void fx_lut_viz_render(PostProcess* post_processing)
 	glBindVertexArray(viz->vao);
 	glDrawArrays(GL_POINTS, 0,
 	             viz->grid_size * viz->grid_size * viz->grid_size);
-	glBindVertexArray(0);
 
 	glUseProgram(0);
 }

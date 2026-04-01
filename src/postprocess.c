@@ -1022,7 +1022,6 @@ void postprocess_end(PostProcess* post_processing)
 	}
 
 	/* Unbind shared VAO after all fullscreen passes are complete */
-	glBindVertexArray(0);
 
 	/* Réactiver le depth test */
 	glEnable(GL_DEPTH_TEST);

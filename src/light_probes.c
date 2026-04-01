@@ -701,8 +701,6 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 	glDrawArraysInstanced(GL_TRIANGLES, 0, GI_DEBUG_PROBE_VERTICES,
 	                      grid->total_probes);
 
-	glBindVertexArray(0);
-
 	/* Render AABB Wireframe */
 	if (grid->aabb_shader == NULL) {
 		grid->aabb_shader = shader_load("shaders/debug_line.vert",
@@ -743,7 +741,6 @@ void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 
 		glBindVertexArray(grid->aabb_vao);
 		glDrawArrays(GL_LINES, 0, GI_WIRE_CUBE_VERTICES);
-		glBindVertexArray(0);
 	}
 
 	glUseProgram(0);
