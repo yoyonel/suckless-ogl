@@ -37,6 +37,7 @@ Environment loading is asynchronous and is triggered via the `Page Up` / `Page D
 1.  Click **"Launch"** in RenderDoc.
 2.  In your application, get ready to switch environments.
 3.  Press **F12** (or `Print Screen`) in the application to capture a frame.
+    *   *Note: Application's native PNG screenshots have been moved to `SHIFT+F12` to avoid conflicts with RenderDoc.*
     *   *Note: Since IBL loading takes several frames (~500ms), you may need to take several successive captures to hit the exact frame where the Compute Shaders are running.*
 4.  A thumbnail appears in RenderDoc. Double-click it to open.
 

@@ -40,6 +40,7 @@ Pour capturer une séquence de génération IBL complète :
 1. Lancer l'application via RenderDoc
 2. Appuyer sur `E` pour déclencher un changement d'environnement
 3. Appuyer sur `F12` pour capturer les frames immédiatement après (génération IBL progressive)
+   *(Note : les captures d'écran PNG natives de l'application se font désormais avec `SHIFT+F12` pour éviter les conflits)*
 4. Analyser les passes compute dans l'Event Browser
 
 ## Conseils Intel/Mesa
