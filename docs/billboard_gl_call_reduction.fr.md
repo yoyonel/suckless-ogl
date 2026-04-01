@@ -11,19 +11,19 @@ Ce document suit le plan d'optimisation par paliers et son état d'implémentati
 
 ## Décomposition Actuelle (~65 appels)
 
-| Phase | Appels | Détail |
-|-------|--------|--------|
-| Compute sort | 12 | `bufferSubData`, `useProgram`, 3 uniforms, 3 SSBO binds, dispatch, barrier |
-| Copie buffer SSBO→VBO | 7 | bind source/dest, copie, 2× unbind défensifs |
-| État blend | 3 | `glEnablei`, `glBlendFunc`, `glDisablei` |
-| `glUseProgram` | 1 | `pbr_ibl_billboard` |
-| Textures IBL | 6 | 3× (`glActiveTexture` + `glBindTexture`) |
-| Uniforms samplers | 3 | **Redondant** — `layout(binding=0/1/2)` déjà défini dans le shader |
-| Uniforms par frame | ~12 | projection, view, prevVP, camPos, screenSize, debugMode, params GI |
-| Textures SH (GI) | 14 | 7× (`glActiveTexture` + `glBindTexture3D`) |
-| SSBO probe | 1 | `glBindBufferBase` |
-| VAO + draw | 3 | `glBindVertexArray`, `glDisable(GL_CULL_FACE)`, `glDrawArraysInstanced` |
-| Nettoyage | ~3 | unbind VAO, restaurer cull, désactiver blend |
+| Phase                  | Appels | Détail                                                                        |
+| :--------------------- | :----- | :---------------------------------------------------------------------------- |
+| Compute sort           | 12     | `bufferSubData`, `useProgram`, 3 uniforms, 3 SSBO binds, dispatch, barrier      |
+| Copie buffer SSBO→VBO  | 7      | bind source/dest, copie, 2× unbind défensifs                                   |
+| État blend             | 3      | `glEnablei`, `glBlendFunc`, `glDisablei`                                       |
+| `glUseProgram`         | 1      | `pbr_ibl_billboard`                                                            |
+| Textures IBL           | 6      | 3× (`glActiveTexture` + `glBindTexture`)                                       |
+| Uniforms samplers      | 3      | **Redondant** — `layout(binding=0/1/2)` déjà défini dans le shader             |
+| Uniforms par frame     | ~12    | projection, view, prevVP, camPos, screenSize, debugMode, params GI             |
+| Textures SH (GI)       | 14     | 7× (`glActiveTexture` + `glBindTexture3D`)                                     |
+| SSBO probe             | 1      | `glBindBufferBase`                                                             |
+| VAO + draw             | 3      | `glBindVertexArray`, `glDisable(GL_CULL_FACE)`, `glDrawArraysInstanced`        |
+| Nettoyage              | ~3     | unbind VAO, restaurer cull, désactiver blend                                  |
 
 ## Paliers d'Optimisation
 
@@ -38,12 +38,11 @@ Ce document suit le plan d'optimisation par paliers et son état d'implémentati
 
 Total : **5 appels économisés**. Validé dans RenderDoc : 64 → 59 commandes.
 
-### Palier 2 — UBO pour les Uniforms Par Frame (~12 appels → 2)
+### Palier 2 — AZDO Persistent Mapping pour le Billboard UBO
 
-**Statut : Terminé** ✅
+**Statut : Terminé** ✅ (Amélioré depuis `glBufferSubData`)
 
-Remplacement des ~12 appels `glUniform*` individuels par un seul upload **Uniform Buffer Object**
-(`glBufferSubData` + `glBindBuffer`), suivant le pattern `PostProcessUBO` existant.
+Initialement, nous avons remplacé ~12 appels `glUniform*` individuels par un seul UBO. Nous avons depuis amélioré cela vers du **AZDO Persistent Mapping**. L'UBO est désormais alloué avec `glBufferStorage` et mappé dans la mémoire CPU une seule fois. Les mises à jour se font via un simple `memcpy`.
 
 **Côté GLSL** — nouveau fichier partagé `shaders/billboard_ubo.glsl` :
 
@@ -72,33 +71,23 @@ d'uniforms sont protégées par `#ifndef HAS_BILLBOARD_UBO` pour que le pipeline
 `glm_mat4_copy` de cglm utilise AVX `_mm256_store_ps` (alignement 32 octets requis).
 API générique dans `include/gl_common.h` :
 
-- `GL_UBO_ALIGNMENT` — constante (32)
 - `GL_UBO_ALIGNED` — attribut `__attribute__((aligned(32)))` pour typedef
 - `GL_ASSERT_UBO_ALIGNMENT(type)` — `_Static_assert` compile-time
 
 Appliqué à `BillboardUBO` et `PostProcessUBO`.
 
-### Palier 3 — Bindings Persistants SH Textures/SSBO (~15 appels économisés)
+### Palier 3 — Bindings Persistants SH/IBL Textures & SSBO (~21 appels économisés)
 
-**Statut : En cours**
+**Statut : Terminé** ✅
 
-| Optimisation | Appels économisés | Cachable ? |
-|-------------|-------------------|------------|
-| ~~Bind textures IBL une seule fois~~ | ~~6~~ | **NON** — units 0-2 clobbées par Skybox et PostProcess |
-| Bind textures 3D SH une seule fois quand probe grid change | 14 | **OUI** — units 8-14 exclusives aux passes PBR |
-| Bind SSBO probe une seule fois quand probe grid change | 1 | **OUI** — binding 3 exclusif aux passes PBR |
+| Optimisation | Appels économisés | Statut |
+|-------------|-------------------|--------|
+| Bind textures IBL une seule fois (Units 15-17) | 6 | **Terminé** |
+| Bind textures 3D SH une seule fois (Units 8-14) | 14 | **Terminé** |
+| Bind SSBO probe une seule fois (Binding 3) | 1 | **Terminé** |
 
-**Pourquoi les textures IBL ne peuvent PAS être cachées :**
-Dans un renderer multi-passe, les texture units 0-2 sont partagées :
-- `src/skybox.c` re-bind `GL_TEXTURE0` avec la cubemap d'environnement
-- `src/postprocess.c` re-bind les units 0-1-2 avec les FBO, bloom, etc.
-
-Cacher ces bindings nécessiterait un tracker d'état GL centralisé (over-engineering).
-Les textures SH (units 8-14) et le SSBO probe (binding 3) sont sûrs car aucune
-autre passe ne touche ces units/bindings.
-
-**Invalidation :** après `light_probe_grid_sync()` qui appelle `glBindTexture(GL_TEXTURE_3D, 0)`
-sur l'unité active courante, pouvant écraser un binding SH caché.
+**Stratégie de Cache IBL :**
+En déplaçant les samplers IBL vers des unités hautes dédiées (15, 16, 17), nous garantissons qu'ils ne sont pas écrasés par les passes Skybox ou PostProcess. Nous utilisons désormais un cache de binding dans la structure `Scene` pour éliminer tous les appels `glActiveTexture` et `glBindTexture` par frame pour le rendu PBR.
 
 ### Palier 4 — Lecture Directe SSBO dans le Vertex Shader (~3 appels économisés)
 
@@ -156,20 +145,33 @@ La copie VBO legacy est conservée uniquement pour l'overlay wireframe debug.
 
 **Appels économisés :**
 
-| Mode de tri | Supprimés | Ajoutés | Net |
-|-------------|----------|---------|-----|
-| GPU bitonic (défaut) | 3 (bind read, bind write, copy) | 0 | **-3** |
-| CPU qsort/radix | 3 | 1 (`glBindBufferBase` dans sort) | **-2** |
+| Mode de tri          | Supprimés                        | Ajoutés                          | Net    |
+| :------------------- | :------------------------------- | :------------------------------- | :----- |
+| GPU bitonic (défaut) | 3 (bind read, bind write, copy)  | 0                                | **-3** |
+| CPU qsort/radix      | 3                                | 1 (`glBindBufferBase` dans sort) | **-2** |
 
 ## Résultats Projetés
 
-| Palier | Effort | Appels économisés | Restants |
-|--------|--------|-------------------|----------|
-| Base | — | — | **~65** |
-| Palier 1 | Trivial | 5 | ~60 |
-| Palier 2 (UBO) | Moyen | 11 | ~49 |
-| Palier 3 (SH/SSBO) | Moyen | 15 | **~34** |
-| Palier 4 (SSBO direct) | Moyen | 3 | **~31** |
+| Palier                 | Effort | Appels économisés | Restants |
+| :--------------------- | :----- | :---------------- | :------- |
+| Base                   | —      | —                 | **~65**  |
+| Palier 1               | Trivial| 5                 | ~60      |
+| Palier 2 (UBO)         | Moyen  | 11                | ~49      |
+| Palier 3 (SH/SSBO)     | Moyen  | 15                | **~34**  |
+| Palier 4 (SSBO direct) | Moyen  | 3                 | ~31      |
+| Palier 5 (Nettoyage)   | Faible | ~8                | **~23**  |
+
+### Palier 5 — Suppression des Unbinds Défensifs (~8+ appels économisés)
+
+**Statut : Terminé** ✅
+
+Suppression de tous les appels redondants `glBindVertexArray(0)` et `glBindBuffer(..., 0)` des chemins chauds (hot paths). Dans un pipeline OpenGL moderne, l'état est simplement écrasé par le prochain bind, faisant de ces appels de "nettoyage" un gaspillage significatif de cycles CPU.
+
+**Modules affectés :**
+- Rendu Billboard & Instancié
+- Rendu SSBO
+- Post-process & Skybox
+- UI & FX LUT Viz
 
 ## Analyse de Régression de Performance
 
@@ -254,6 +256,6 @@ intermédiaires.
 | `shaders/pbr_ibl_billboard.vert` | Vertex shader — fetch SSBO via `gl_InstanceID` |
 | `shaders/pbr_ibl_billboard.frag` | Fragment shader — inclut `billboard_ubo.glsl` |
 | `shaders/sh_probe.glsl` | Uniforms SH probe — gardé par `#ifndef HAS_BILLBOARD_UBO` |
-| `include/scene.h` | Struct `BillboardUBO` + `BillboardUniforms` (samplers SH uniquement) |
+| `include/scene.h` | `BillboardUBO` struct + `BillboardUniforms` (samplers SH uniquement) |
 | `include/gl_common.h` | API générique `GL_UBO_ALIGNED` / `GL_ASSERT_UBO_ALIGNMENT` |
 | `include/postprocess.h` | `PostProcessUBO` — garde d'alignement appliquée |
