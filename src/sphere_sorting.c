@@ -1,6 +1,7 @@
 #include "sphere_sorting.h"
 
-#include "gl_common.h"           /* For SIMD_ALIGNMENT */
+#include "gl_common.h" /* For SIMD_ALIGNMENT */
+#include "gl_debug.h"
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
 #include "platform/platform_utils.h"
@@ -239,8 +240,11 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 			glUniform1ui(sorter->loc_stage,
 			             3U); /* Stage 3: Single Pass */
 		}
+
+		gl_debug_push_group("GPU Sort: Single-Pass Shared Memory Sort");
 		glDispatchCompute(1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+		gl_debug_pop_group();
 
 		glUseProgram(0);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -254,14 +258,18 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	if (sorter->loc_stage >= 0) {
 		glUniform1ui(sorter->loc_stage, 0U);
 	}
+
+	gl_debug_push_group("GPU Sort: Prepare");
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	gl_debug_pop_group();
 
 	/* 4b. SORT Stage (u_stage = 1): Bitonic Sort on entries (indices) */
 	if (sorter->loc_stage >= 0) {
 		glUniform1ui(sorter->loc_stage, 1U);
 	}
 
+	gl_debug_push_group("GPU Sort: Bitonic Sort");
 	for (unsigned int k = 2U; k <= u_count_pot; k <<= 1U) {
 		for (unsigned int j = k >> 1U; j > 0U; j >>= 1U) {
 			if (sorter->loc_j >= 0) {
@@ -274,13 +282,17 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		}
 	}
+	gl_debug_pop_group();
 
 	/* 4c. PERMUTE Stage (u_stage = 2): Reorder instances */
 	if (sorter->loc_stage >= 0) {
 		glUniform1ui(sorter->loc_stage, 2U);
 	}
+
+	gl_debug_push_group("GPU Sort: Permute");
 	glDispatchCompute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	gl_debug_pop_group();
 
 	glUseProgram(0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
