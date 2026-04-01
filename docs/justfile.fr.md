@@ -45,6 +45,8 @@ Voici une correspondance des commandes `make` courantes avec leurs équivalents 
 | **Test spécifique** | `make test/<nom>` | `just test <nom>` | Exécute les tests correspondants |
 | **ApiTrace unitaire** | `make test-apitrace` | `just test-apitrace` | Vérification performance légère |
 | **ApiTrace intégr.** | `make test-integration-apitrace` | `just test-integration-apitrace` | Test scénario complet |
+| **Intégration (Simple)** | `make test-integration`* | `just test-integration` | Vérification UI rapide (Debug) |
+| **Intégration (Valgrind)** | `make test-integration` | `just test-integration-valgrind` | Vérification scénario UI sous Valgrind |
 | **Couverture** | `make coverage` | `just coverage` | Génère le rapport HTML |
 | **Lint** | `make lint` | `just lint` | Exécute clang-tidy et ruff |
 | **Format** | `make format` | `just format` | Exécute clang-format et ruff |
@@ -79,6 +81,18 @@ Cette commande :
 1. Construit le binaire de test.
 2. Si le binaire existe, l'exécute directement (via le wrapper `xvfb`) pour une sortie immédiate.
 3. Si introuvable, revient à la correspondance de motif `ctest`.
+
+### Tests d'Intégration UI
+
+Le projet utilise `xdotool` et `Xvfb` pour simuler des interactions utilisateur et vérifier la stabilité de l'UI à travers différents modes de build.
+
+- **Standard** : `just test-integration` (Debug) / `just test-integration-release` (Release)
+- **Sécurité Mémoire** : `just test-integration-valgrind` / `just test-integration-asan`
+- **Profilage** : `just test-integration-profile` / `just test-integration-tracy`
+- **Variantes** : `just test-integration-ssbo` / `just test-integration-ultra` / `just test-integration-small`
+
+> [!TIP]
+> Utilisez `just test-integration` pour une vérification fonctionnelle rapide. Cela se termine en quelques secondes, alors que les variantes Valgrind peuvent prendre plusieurs minutes.
 
 ### Variantes de construction
 

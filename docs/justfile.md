@@ -45,6 +45,8 @@ Here is a mapping of common `make` commands to their `just` equivalents:
 | **Test Specific** | `make test/<name>` | `just test <name>` | Runs matching tests |
 | **ApiTrace Unit** | `make test-apitrace` | `just test-apitrace` | Automated performance check |
 | **ApiTrace Integr** | `make test-integration-apitrace` | `just test-integration-apitrace` | Full app scenario check |
+| **Integration (Simple)** | `make test-integration`* | `just test-integration` | Fast UI scenario check (Debug) |
+| **Integration (Valgrind)** | `make test-integration` | `just test-integration-valgrind` | UI scenario check under Valgrind |
 | **Coverage** | `make coverage` | `just coverage` | Generates HTML report |
 | **Lint** | `make lint` | `just lint` | Runs clang-tidy and ruff |
 | **Format** | `make format` | `just format` | Runs clang-format and ruff |
@@ -79,6 +81,18 @@ This command automatically:
 1. Builds the test binary.
 2. If binary exists, runs it directly (via `xvfb` wrapper) for immediate output.
 3. If not found, falls back to `ctest` pattern matching.
+
+### UI Integration Testing
+
+The project uses `xdotool` and `Xvfb` to simulate user interactions and verify UI stability across different build modes.
+
+- **Standard**: `just test-integration` (Debug) / `just test-integration-release` (Release)
+- **Memory Safety**: `just test-integration-valgrind` / `just test-integration-asan`
+- **Profiling**: `just test-integration-profile` / `just test-integration-tracy`
+- **Variants**: `just test-integration-ssbo` / `just test-integration-ultra` / `just test-integration-small`
+
+> [!TIP]
+> Use `just test-integration` for quick functional verification. It finishes in seconds, whereas Valgrind variants can take several minutes.
 
 ### Build Variants
 

@@ -54,16 +54,25 @@ echo "Starting Integration Test Scenario..."
 run_scenario_full
 
 if wait $APP_PID; then
-    echo "SUCCESS: App exited cleanly and AddressSanitizer found no errors."
+    echo "SUCCESS: App exited cleanly."
     EXIT_CODE=0
 else
-    echo "FAILURE: AddressSanitizer reported errors or app crashed!"
+    echo "FAILURE: App crashed or exited with error!"
     EXIT_CODE=1
 fi
 
-echo "---------------------------------------------------"
-echo "AddressSanitizer / LeakSanitizer Report Summary (from $LOG_FILE):"
-grep -E "ERROR: (Address|Leak)Sanitizer" $LOG_FILE || echo "No ASan/LSan errors found in log."
-echo "---------------------------------------------------"
+# Optional: Report summary (Conditional on ASan presence)
+if nm -u "$APP_PATH" 2>/dev/null | grep -q "__asan_init"; then
+    echo "---------------------------------------------------"
+    echo "AddressSanitizer / LeakSanitizer Report Summary (from $LOG_FILE):"
+    grep -E "ERROR: (Address|Leak)Sanitizer" $LOG_FILE || echo "No ASan/LSan errors found in log."
+    echo "---------------------------------------------------"
+else
+    # For non-ASan builds, just show the last few lines of the log to confirm clean exit
+    echo "---------------------------------------------------"
+    echo "Integration Test Log Summary (tail of $LOG_FILE):"
+    tail -n 5 "$LOG_FILE"
+    echo "---------------------------------------------------"
+fi
 
 exit $EXIT_CODE
