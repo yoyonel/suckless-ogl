@@ -192,7 +192,8 @@ typedef struct Scene {
 	GLuint dummy_white_tex;      /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */
 	GLuint transition_snapshot_tex; /**< For crossfade mode. */
-	GLuint billboard_ubo; /**< UBO for billboard per-frame uniforms. */
+	GLuint billboard_ubo;    /**< UBO for billboard per-frame uniforms. */
+	void* billboard_ubo_ptr; /**< Persistent mapped CPU pointer for UBO. */
 
 	/* --- IBL Binding Cache (Tier 5 — units 15-17) --- */
 	GLuint bound_ibl_textures[IBL_TEXTURE_COUNT]; /**< Last IBL active. */

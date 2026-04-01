@@ -230,6 +230,7 @@ static void scene_init_state(Scene* scene)
 	scene->sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->gi_mode = GI_MODE_OFF;
 	scene->show_probe_grid = 0;
+	scene->billboard_ubo_ptr = NULL;
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
 	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
@@ -288,8 +289,12 @@ static int scene_init_billboard_shader(Scene* scene)
 	/* Create UBO for billboard per-frame uniforms (binding = 1) */
 	glGenBuffers(1, &scene->billboard_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(BillboardUBO), NULL,
-	             GL_DYNAMIC_DRAW);
+	GLbitfield flags = (GLbitfield)GL_MAP_WRITE_BIT |
+	                   (GLbitfield)GL_MAP_PERSISTENT_BIT |
+	                   (GLbitfield)GL_MAP_COHERENT_BIT;
+	glBufferStorage(GL_UNIFORM_BUFFER, sizeof(BillboardUBO), NULL, flags);
+	scene->billboard_ubo_ptr =
+	    glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO), flags);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, scene->billboard_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -674,10 +679,11 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		ubo.probe_grid_dim[2] = scene->probe_grid.grid_dim[2];
 		ubo.aa_mode = scene->aa_mode;
 
-		glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO),
-		                &ubo);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		if (scene->billboard_ubo_ptr) {
+			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
+			memcpy(scene->billboard_ubo_ptr, &ubo,
+			       sizeof(BillboardUBO));
+		}
 	}
 
 	scene_bind_probe_textures(scene);
