@@ -11,7 +11,7 @@ This document tracks the tiered optimization plan and its implementation status.
 ## Current Breakdown (~65 calls)
 
 | Phase | Calls | Detail |
-|-------|-------|--------|
+| :--- | :--- | :--- |
 | Compute sort | 12 | `bufferSubData`, `useProgram`, 3 uniforms, 3 SSBO binds, dispatch, barrier |
 | Buffer copy SSBO→VBO | 7 | bind copy source/dest, copy, 2× defensive unbind |
 | Blend state | 3 | `glEnablei`, `glBlendFunc`, `glDisablei` |
@@ -37,12 +37,11 @@ This document tracks the tiered optimization plan and its implementation status.
 
 Total: **5 calls saved**. Validated in RenderDoc: 64 → 59 commands.
 
-### Tier 2 — UBO for Per-Frame Uniforms (~12 calls → 2)
+### Tier 2 — AZDO Persistent Mapping for Billboard UBO
 
-**Status: Done** ✅
+**Status: Done** ✅ (Upgraded from `glBufferSubData`)
 
-Replaced ~12 individual `glUniform*` calls with a single **Uniform Buffer Object** upload
-(`glBufferSubData` + `glBindBuffer`), following the existing `PostProcessUBO` pattern.
+Initially, we replaced ~12 individual `glUniform*` calls with a single UBO. We have since upgraded this to **AZDO Persistent Mapping**. The UBO is now allocated with `glBufferStorage` and mapped into CPU memory once. Updates are performed via a simple `memcpy`.
 
 **GLSL side** — new shared include `shaders/billboard_ubo.glsl`:
 
@@ -65,8 +64,8 @@ layout(std140, binding = 1) uniform BillboardBlock {
 ```c
 BillboardUBO ubo = {0};
 // ... fill fields ...
-glBindBuffer(GL_UNIFORM_BUFFER, scene->billboard_ubo);
-glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO), &ubo);
+// AZDO: No glBindBuffer or glBufferSubData needed!
+memcpy(scene->billboard_ubo_ptr, &ubo, sizeof(BillboardUBO));
 ```
 
 **Conditional guard** in `shaders/sh_probe.glsl` — individual uniform declarations
@@ -85,27 +84,18 @@ To prevent silent SIGSEGV crashes on stack-allocated UBOs:
 - Applied to both `BillboardUBO` and `PostProcessUBO`
 - Any future UBO gets the same 2-line protection
 
-### Tier 3 — Persistent SH Texture/SSBO Bindings (~15 calls saved)
+### Tier 3 — Persistent SH/IBL Texture & SSBO Bindings (~21 calls saved)
 
-**Status: In Progress**
+**Status: Done** ✅
 
-| Optimization | Calls saved | Cachable? |
+| Optimization | Calls saved | Status |
 |-------------|-------------|----------|
-| ~~Bind IBL textures once at load~~ | ~~6~~ | **NO** — units 0-2 are clobbered by Skybox and PostProcess passes |
-| Bind SH 3D textures once when probe grid changes | 14 | **YES** — units 8-14 are exclusive to PBR passes |
-| Bind probe SSBO once when probe grid changes | 1 | **YES** — binding point 3 is exclusive to PBR passes |
+| Bind IBL textures once (Units 15-17) | 6 | **Done** |
+| Bind SH 3D textures once (Units 8-14) | 14 | **Done** |
+| Bind probe SSBO once (Binding 3) | 1 | **Done** |
 
-**Why IBL textures cannot be cached:**
-In a multi-pass renderer, texture units 0-2 are shared across passes:
-- `src/skybox.c` rebinds `GL_TEXTURE0` with the environment cubemap
-- `src/postprocess.c` rebinds units 0-1-2 with FBO color attachments, bloom textures, etc.
-
-Caching these bindings would require a centralized GL state tracker (over-engineering).
-The SH textures (units 8-14) and probe SSBO (binding 3) are safe because no other
-pass touches those units/bindings.
-
-**Invalidation:** after `light_probe_grid_sync()` which calls `glBindTexture(GL_TEXTURE_3D, 0)`
-on the current active unit, potentially clobbering a cached SH binding.
+**IBL Caching Strategy:**
+By moving IBL samplers to dedicated high units (15, 16, 17), we ensure they are not clobbered by the Skybox or PostProcess passes. We now use a binding cache in the `Scene` struct to eliminate all per-frame `glActiveTexture` and `glBindTexture` calls for PBR rendering.
 
 ### Tier 4 — Direct SSBO Read in Vertex Shader (~3 calls saved)
 
@@ -172,12 +162,25 @@ shader with per-instance vertex attributes). In the normal rendering path, no co
 ## Projected Results
 
 | Tier | Effort | Calls saved | Remaining |
-|------|--------|-------------|-----------|
+| :--- | :--- | :--- | :--- |
 | Baseline | — | — | **~65** |
 | Tier 1 | Trivial | 5 | ~60 |
 | Tier 2 (UBO) | Medium | 11 | ~49 |
 | Tier 3 (SH/SSBO) | Medium | 15 | **~34** |
-| Tier 4 (SSBO direct) | Medium | 3 | **~31** |
+| Tier 4 (SSBO direct) | Medium | 3 | ~31 |
+| Tier 5 (Unbind cleanup) | Low | ~8 | **~23** |
+
+### Tier 5 — Removal of Defensive Unbinds (~8+ calls saved)
+
+**Status: Done** ✅
+
+Removed all redundant `glBindVertexArray(0)` and `glBindBuffer(..., 0)` calls from the hot paths. In a modern OpenGL pipeline, state is simply overwritten by the next bind, making these "cleanup" calls a significant waste of CPU cycles.
+
+**Affected modules:**
+- Billboard & Instanced Rendering
+- SSBO Rendering
+- Post-process & Skybox
+- UI & FX LUT Viz
 
 ## Performance Regression Analysis
 
