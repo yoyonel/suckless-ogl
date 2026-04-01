@@ -692,3 +692,12 @@ void glDeleteSync(GLsync sync)
 {
 	(void)sync;
 }
+
+void gl_debug_push_group(const char* name)
+{
+	(void)name;
+}
+
+void gl_debug_pop_group(void)
+{
+}
