@@ -89,7 +89,8 @@ Le projet utilise `xdotool` et `Xvfb` pour simuler des interactions utilisateur 
 - **Standard** : `just test-integration` (Debug) / `just test-integration-release` (Release)
 - **Sécurité Mémoire** : `just test-integration-valgrind` / `just test-integration-asan`
 - **Profilage** : `just test-integration-profile` / `just test-integration-tracy`
-- **Variantes** : `just test-integration-ssbo` / `just test-integration-ultra` / `just test-integration-small`
+- **Variantes** : `just test-integration-ssbo` / `just test-integration-ultra` / `just test-integration-small` / `just test-integration-sync`
+- **Combinés** : `just test-integration-tracy-asan` / `just test-integration-tracy-release`
 
 > [!TIP]
 > Utilisez `just test-integration` pour une vérification fonctionnelle rapide. Cela se termine en quelques secondes, alors que les variantes Valgrind peuvent prendre plusieurs minutes.
