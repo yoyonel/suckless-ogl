@@ -246,6 +246,10 @@ static void scene_init_state(Scene* scene)
 	scene->irradiance_tex = 0;
 	scene->transition_snapshot_tex = 0;
 
+	for (int i = 0; i < IBL_TEXTURE_COUNT; i++) {
+		scene->bound_ibl_textures[i] = 0;
+	}
+
 	scene_scan_hdr_files(scene);
 	// Initial load of default map is handled by app or caller
 	// We just setup the state here.
@@ -350,12 +354,6 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 	*out_shader = scene->pbr_instanced_shader;
 #endif
 
-	scene->instanced_uniforms.irradiance_map =
-	    shader_get_uniform_location(*out_shader, "irradianceMap");
-	scene->instanced_uniforms.prefilter_map =
-	    shader_get_uniform_location(*out_shader, "prefilterMap");
-	scene->instanced_uniforms.brdf_lut =
-	    shader_get_uniform_location(*out_shader, "brdfLUT");
 	scene->instanced_uniforms.debug_mode =
 	    shader_get_uniform_location(*out_shader, "debugMode");
 	scene->instanced_uniforms.cam_pos =
@@ -628,6 +626,25 @@ static void scene_bind_probe_textures(Scene* scene)
 	}
 }
 
+static void scene_bind_ibl_textures(Scene* scene)
+{
+	GLuint textures[IBL_TEXTURE_COUNT] = {
+	    scene->irradiance_tex ? scene->irradiance_tex
+	                          : scene->dummy_black_tex,
+	    scene->spec_prefiltered_tex ? scene->spec_prefiltered_tex
+	                                : scene->dummy_black_tex,
+	    scene->brdf_lut_tex ? scene->brdf_lut_tex : scene->dummy_black_tex};
+
+	for (int i = 0; i < IBL_TEXTURE_COUNT; i++) {
+		if (textures[i] != scene->bound_ibl_textures[i]) {
+			glActiveTexture(
+			    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_IBL_START + i));
+			glBindTexture(GL_TEXTURE_2D, textures[i]);
+			scene->bound_ibl_textures[i] = textures[i];
+		}
+	}
+}
+
 static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
                                     vec3 camera_pos, mat4 previous_view_proj,
                                     int width, int height)
@@ -635,14 +652,7 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 	Shader* current_shader = scene->pbr_billboard_shader;
 	shader_use(current_shader);
 
-	/* IBL textures must be re-bound every frame: units 0-2 are
-	 * clobbered by skybox + post-process passes between frames. */
-	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
-	                               scene->dummy_black_tex);
+	scene_bind_ibl_textures(scene);
 
 	/* Upload all per-frame uniforms via UBO (binding = 1) */
 	{
@@ -753,18 +763,8 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 
 	shader_use(current_shader);
 
-	/* IBL textures must be re-bound every frame: units 0-2 are
-	 * clobbered by skybox + post-process passes between frames. */
-	render_utils_bind_texture_safe(GL_TEXTURE0, scene->irradiance_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE1, scene->spec_prefiltered_tex,
-	                               scene->dummy_black_tex);
-	render_utils_bind_texture_safe(GL_TEXTURE2, scene->brdf_lut_tex,
-	                               scene->dummy_black_tex);
+	scene_bind_ibl_textures(scene);
 
-	shader_set_int_loc(scene->instanced_uniforms.irradiance_map, 0);
-	shader_set_int_loc(scene->instanced_uniforms.prefilter_map, 1);
-	shader_set_int_loc(scene->instanced_uniforms.brdf_lut, 2);
 	shader_set_int_loc(scene->instanced_uniforms.debug_mode,
 	                   scene->pbr_debug_mode);
 	shader_set_vec3_loc(scene->instanced_uniforms.cam_pos, camera_pos);

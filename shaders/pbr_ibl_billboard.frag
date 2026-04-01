@@ -17,9 +17,9 @@ layout(location = 8) in vec4
 
 @header "billboard_ubo.glsl"
 
-    layout(binding = 0) uniform sampler2D irradianceMap;
-layout(binding = 1) uniform sampler2D prefilterMap;
-layout(binding = 2) uniform sampler2D brdfLUT;
+    layout(binding = 15) uniform sampler2D irradianceMap;
+layout(binding = 16) uniform sampler2D prefilterMap;
+layout(binding = 17) uniform sampler2D brdfLUT;
 
 // Include common PBR functions
 @header "pbr_functions.glsl";

@@ -13,9 +13,9 @@ layout(location = 6) in vec4 CurrentClipPos;
 layout(location = 7) in vec4 PreviousClipPos;
 
 layout(location = 12) uniform vec3 camPos;
-layout(binding = 0) uniform sampler2D irradianceMap;
-layout(binding = 1) uniform sampler2D prefilterMap;
-layout(binding = 2) uniform sampler2D brdfLUT;
+layout(binding = 15) uniform sampler2D irradianceMap;
+layout(binding = 16) uniform sampler2D prefilterMap;
+layout(binding = 17) uniform sampler2D brdfLUT;
 layout(location = 13) uniform int debugMode;
 
 // Include common PBR functions
