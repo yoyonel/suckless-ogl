@@ -56,6 +56,10 @@ typedef enum {
  * @struct InstancedUniforms
  * @brief Cached uniform locations for PBR instanced rendering.
  */
+
+enum { IBL_TEXTURE_COUNT = 3 };
+enum { TEXTURE_UNIT_IBL_START = 15 };
+
 typedef struct {
 	GLint irradiance_map;        /**< Location of 'irradianceMap' */
 	GLint prefilter_map;         /**< Location of 'prefilterMap' */
@@ -189,6 +193,9 @@ typedef struct Scene {
 	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */
 	GLuint transition_snapshot_tex; /**< For crossfade mode. */
 	GLuint billboard_ubo; /**< UBO for billboard per-frame uniforms. */
+
+	/* --- IBL Binding Cache (Tier 5 — units 15-17) --- */
+	GLuint bound_ibl_textures[IBL_TEXTURE_COUNT]; /**< Last IBL active. */
 
 	/* --- SH/Probe Binding Cache (Tier 3 — units 8-14 + SSBO 3) --- */
 	GLuint bound_sh_textures[SH_TEXTURE_COUNT]; /**< Last SH tex bound. */
