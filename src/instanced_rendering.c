@@ -69,7 +69,6 @@ void instanced_group_draw(InstancedGroup* group, size_t index_count)
 	glBindVertexArray(group->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)index_count,
 	                        GL_UNSIGNED_INT, 0, group->instance_count);
-	glBindVertexArray(0);
 }
 
 void instanced_group_cleanup(InstancedGroup* group)

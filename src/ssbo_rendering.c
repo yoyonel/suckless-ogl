@@ -67,7 +67,6 @@ void ssbo_group_draw(SSBOGroup* group, size_t index_count)
 	glBindVertexArray(group->vao);
 	glDrawElementsInstanced(GL_TRIANGLES, (GLsizei)index_count,
 	                        GL_UNSIGNED_INT, 0, group->instance_count);
-	glBindVertexArray(0);
 }
 
 void ssbo_group_cleanup(SSBOGroup* group)

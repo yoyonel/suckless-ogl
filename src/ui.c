@@ -164,7 +164,6 @@ static int setup_vertex_buffers(UIContext* ui_context)
 	    4, 3, GL_FLOAT, GL_FALSE, stride,
 	    utils_buffer_offset(offsetof(UIVertex, rect_size_x)));
 
-	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return 1;
@@ -352,7 +351,6 @@ void ui_flush(UIContext* ui_context)
 
 	glDrawArrays(GL_TRIANGLES, 0, ui_context->batch_count);
 
-	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUseProgram(0);
@@ -653,7 +651,6 @@ void ui_draw_spinner(UIContext* ui_context, float center_x, float center_y,
 	glDrawArrays(GL_TRIANGLES, 0, VERTICES_PER_QUAD);
 
 	/* Cleanup */
-	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glUseProgram(0);
 
