@@ -317,6 +317,9 @@ static bool handle_f_key_input(App* app, int key, int mods)
 			handle_f9_input(app);
 			return true;
 		case GLFW_KEY_F12: {
+			if (!check_flag(mods, GLFW_MOD_SHIFT)) {
+				return false;
+			}
 			enum { FILENAME_BUF_SIZE = 64 };
 			char filename[FILENAME_BUF_SIZE];
 			time_t now = time(NULL);

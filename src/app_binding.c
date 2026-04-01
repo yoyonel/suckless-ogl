@@ -206,7 +206,7 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_F9, 0, "Toggle Perf Mode",
 	            "Toggles Performance Mode (disables heavy effects).",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
-	add_binding(GLFW_KEY_F12, 0, "Take Screenshot",
+	add_binding(GLFW_KEY_F12, GLFW_MOD_SHIFT, "Take Screenshot",
 	            "Saves the current frame as a PNG image.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_ACTION);
 	add_binding(GLFW_KEY_O, 0, "Cycle Sorting",
