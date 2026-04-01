@@ -19,6 +19,8 @@ run_scenario_full() {
 
     echo "=> Log on GPU Metrics (F4)"
     xdotool key --delay 200 F4
+    sleep 2
+    xdotool key --delay 200 F4
     sleep 1
 
     echo "=> Resetting Camera (R)"

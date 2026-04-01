@@ -211,8 +211,48 @@ test-gen-refs: build
 test-list:
     @{{distrobox}} ctest --test-dir {{build_dir}} -N 2>/dev/null | grep "Test #" | sed "s/.*: //"
 
-# Run UI integration test under Valgrind (Minimal scenario, Debug build for symbols)
+# Run simple UI integration test (Default Debug build)
 test-integration: build
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh {{build_dir}}/app
+
+# Run UI integration test on Release build
+test-integration-release: release
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh {{build_dir}}/app
+
+# Run UI integration test on Profile build (RelWithDebInfo)
+test-integration-profile: profile
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh build-profile/app
+
+# Run UI integration test with SSBO rendering enabled
+test-integration-ssbo: build-ssbo
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh build-ssbo/app
+
+# Run UI integration test on Ultra Release build (LTO, Unity, Aggressive Math)
+test-integration-ultra: ultra-release
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh build-ultra/app
+
+# Run UI integration test on Small build (MinSizeRel)
+test-integration-small: small
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh build-small/app
+
+# Run UI integration test on Synchronous Debug build
+test-integration-sync: build-sync
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh build-sync/app
+
+# Run UI integration test with Tracy enabled (Debug)
+test-integration-tracy: build-tracy
+    @chmod +x scripts/test_integration_generic.sh
+    @{{distrobox}} ./scripts/test_integration_generic.sh ./build-tracy/app
+
+# Run UI integration test under Valgrind (Minimal scenario, Debug build for symbols)
+test-integration-valgrind: build
     @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
     @{{distrobox}} bash scripts/test_integration_valgrind.sh
 
