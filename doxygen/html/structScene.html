@@ -349,6 +349,16 @@ Data Fields</h2></td></tr>
 <tr class="separator:a37847e95781840a840af5a08112e6673"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abef61822b04cc32c8799ba9138dd0996"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#abef61822b04cc32c8799ba9138dd0996">transition_snapshot_tex</a></td></tr>
 <tr class="separator:abef61822b04cc32c8799ba9138dd0996"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56c4f69931f1e14c10dd361c22b2ffae"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a56c4f69931f1e14c10dd361c22b2ffae">billboard_ubo</a></td></tr>
+<tr class="separator:a56c4f69931f1e14c10dd361c22b2ffae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f279509666c30bd35ce7953ba34a3fa"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a2f279509666c30bd35ce7953ba34a3fa">billboard_ubo_ptr</a></td></tr>
+<tr class="separator:a2f279509666c30bd35ce7953ba34a3fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36fae8971d0b343ce2371079a34f5a93"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a36fae8971d0b343ce2371079a34f5a93">bound_ibl_textures</a> [<a class="el" href="scene_8h.html#aae05225933a42f81e7c4a9fb286596f9afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td></tr>
+<tr class="separator:a36fae8971d0b343ce2371079a34f5a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00a5903455a597ec330106a7b3c90c02"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a00a5903455a597ec330106a7b3c90c02">bound_sh_textures</a> [<a class="el" href="light__probes_8h.html#aaf105ae5beaca1dee30ae54530691fcea5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]</td></tr>
+<tr class="separator:a00a5903455a597ec330106a7b3c90c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a688f8b341d3104f6a201067e81065667"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a688f8b341d3104f6a201067e81065667">bound_probe_ssbo</a></td></tr>
+<tr class="separator:a688f8b341d3104f6a201067e81065667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7244b4a9b48c72027c9c3c2a030b8c5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae7244b4a9b48c72027c9c3c2a030b8c5">wireframe</a></td></tr>
 <tr class="separator:ae7244b4a9b48c72027c9c3c2a030b8c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8fcc2996ea8ea2a31ca3d53ba7481de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ab8fcc2996ea8ea2a31ca3d53ba7481de">billboard_mode</a></td></tr>
@@ -426,6 +436,36 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a56c4f69931f1e14c10dd361c22b2ffae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56c4f69931f1e14c10dd361c22b2ffae">&#9670;&nbsp;</a></span>billboard_ubo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::billboard_ubo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>UBO for billboard per-frame uniforms. </p>
+
+</div>
+</div>
+<a id="a2f279509666c30bd35ce7953ba34a3fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f279509666c30bd35ce7953ba34a3fa">&#9670;&nbsp;</a></span>billboard_ubo_ptr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* Scene::billboard_ubo_ptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Persistent mapped CPU pointer for UBO. </p>
+
+</div>
+</div>
 <a id="abe2548d91bae8e908c5f2e8e2b9e0a8a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe2548d91bae8e908c5f2e8e2b9e0a8a">&#9670;&nbsp;</a></span>billboard_uniforms</h2>
 
@@ -438,6 +478,51 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Cached locations. </p>
+
+</div>
+</div>
+<a id="a36fae8971d0b343ce2371079a34f5a93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36fae8971d0b343ce2371079a34f5a93">&#9670;&nbsp;</a></span>bound_ibl_textures</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::bound_ibl_textures[<a class="el" href="scene_8h.html#aae05225933a42f81e7c4a9fb286596f9afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last IBL active. </p>
+
+</div>
+</div>
+<a id="a688f8b341d3104f6a201067e81065667"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a688f8b341d3104f6a201067e81065667">&#9670;&nbsp;</a></span>bound_probe_ssbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::bound_probe_ssbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last probe SSBO bound. </p>
+
+</div>
+</div>
+<a id="a00a5903455a597ec330106a7b3c90c02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00a5903455a597ec330106a7b3c90c02">&#9670;&nbsp;</a></span>bound_sh_textures</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint Scene::bound_sh_textures[<a class="el" href="light__probes_8h.html#aaf105ae5beaca1dee30ae54530691fcea5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last SH tex bound. </p>
 
 </div>
 </div>

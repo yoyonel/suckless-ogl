@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['vec3array_2045',['Vec3Array',['../structVec3Array.html',1,'']]],
-  ['vignetteparams_2046',['VignetteParams',['../structVignetteParams.html',1,'']]]
+  ['vec3array_2063',['Vec3Array',['../structVec3Array.html',1,'']]],
+  ['vignetteparams_2064',['VignetteParams',['../structVignetteParams.html',1,'']]]
 ];

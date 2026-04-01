@@ -2,6 +2,7 @@ var scene_8h =
 [
     [ "InstancedUniforms", "structInstancedUniforms.html", "structInstancedUniforms" ],
     [ "DebugUniforms", "structDebugUniforms.html", "structDebugUniforms" ],
+    [ "BillboardUBO", "structBillboardUBO.html", "structBillboardUBO" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
     [ "Scene", "structScene.html", "structScene" ],
     [ "AAMode", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909e", [
@@ -21,6 +22,7 @@ var scene_8h =
       [ "SORTING_MODE_GPU_BITONIC", "scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1a6ccd692a1c3a24178244d51be47a78ad", null ],
       [ "SORTING_MODE_COUNT", "scene_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1", null ]
     ] ],
+    [ "_Static_assert", "scene_8h.html#a73409835d7b56428bf28d86b1dc74f63", null ],
     [ "aa_mode_to_string", "scene_8h.html#ad63ee708be73ae184d1233ad69cf077f", null ],
     [ "scene_cleanup", "scene_8h.html#a544a31d29501a2854aee06c6011ec62d", null ],
     [ "scene_init", "scene_8h.html#ab37b3774644a51065a47e884ffc5e649", null ],

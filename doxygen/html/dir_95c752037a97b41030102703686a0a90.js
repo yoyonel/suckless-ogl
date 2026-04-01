@@ -2,6 +2,8 @@ var dir_95c752037a97b41030102703686a0a90 =
 [
     [ "background.frag", "background_8frag.html", "background_8frag" ],
     [ "background.vert", "background_8vert.html", "background_8vert" ],
+    [ "billboard_instance_ssbo.glsl", "billboard__instance__ssbo_8glsl.html", "billboard__instance__ssbo_8glsl" ],
+    [ "billboard_ubo.glsl", "billboard__ubo_8glsl.html", "billboard__ubo_8glsl" ],
     [ "bloom_downsample.frag", "bloom__downsample_8frag.html", "bloom__downsample_8frag" ],
     [ "bloom_prefilter.frag", "bloom__prefilter_8frag.html", "bloom__prefilter_8frag" ],
     [ "bloom_upsample.frag", "bloom__upsample_8frag.html", "bloom__upsample_8frag" ],

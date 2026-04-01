@@ -12,6 +12,7 @@ var annotated_dup =
     [ "AsyncRequest", "structAsyncRequest.html", "structAsyncRequest" ],
     [ "BandingParams", "structBandingParams.html", "structBandingParams" ],
     [ "BillboardGroup", "structBillboardGroup.html", "structBillboardGroup" ],
+    [ "BillboardUBO", "structBillboardUBO.html", "structBillboardUBO" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
     [ "CachedSphere", "structCachedSphere.html", "structCachedSphere" ],
     [ "Camera", "structCamera.html", "structCamera" ],

@@ -339,6 +339,11 @@ Functions</h2></td></tr>
 <tr class="memitem:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a97b3fbf4a92687b0b76a08b452daa63e">scene_update_gpu_buffers</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:a97b3fbf4a92687b0b76a08b452daa63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates GPU buffers for dynamic geometry (e.g. LOD changes).  <a href="scene_8c.html#a97b3fbf4a92687b0b76a08b452daa63e">More...</a><br /></td></tr>
 <tr class="separator:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab592a43644107cc963b5ba9ba827cfad"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">scene_bind_probe_textures</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
+<tr class="memdesc:ab592a43644107cc963b5ba9ba827cfad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds SH 3D textures (units 8-14) and probe SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D.  <a href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">More...</a><br /></td></tr>
+<tr class="separator:ab592a43644107cc963b5ba9ba827cfad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bd2995953630892fd2f63e154e471c7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a7bd2995953630892fd2f63e154e471c7">scene_bind_ibl_textures</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
+<tr class="separator:a7bd2995953630892fd2f63e154e471c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93e3d35cbb4f25d0b5f7369726aafb9a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a">scene_render_billboards</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height)</td></tr>
 <tr class="separator:a93e3d35cbb4f25d0b5f7369726aafb9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145a7ef9d48d9aa108fd6bdb8050f1b2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2">scene_render_instanced</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj)</td></tr>
@@ -446,6 +451,60 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7bd2995953630892fd2f63e154e471c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bd2995953630892fd2f63e154e471c7">&#9670;&nbsp;</a></span>scene_bind_ibl_textures()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void scene_bind_ibl_textures </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab592a43644107cc963b5ba9ba827cfad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab592a43644107cc963b5ba9ba827cfad">&#9670;&nbsp;</a></span>scene_bind_probe_textures()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void scene_bind_probe_textures </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Binds SH 3D textures (units 8-14) and probe SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D. </p>
 
 </div>
 </div>
@@ -1076,7 +1135,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a93e3d35cbb4f25d0b5f7369726aafb9a_cgraph.svg" width="462" height="590"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a93e3d35cbb4f25d0b5f7369726aafb9a_cgraph.svg" width="439" height="539"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -1136,7 +1195,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a145a7ef9d48d9aa108fd6bdb8050f1b2_cgraph.svg" width="460" height="342"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="scene_8c_a145a7ef9d48d9aa108fd6bdb8050f1b2_cgraph.svg" width="438" height="392"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

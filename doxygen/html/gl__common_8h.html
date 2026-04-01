@@ -282,6 +282,12 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a5f8ac9d31ca569461fe7a38ba64b50cb"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">GL_UBO_ALIGNED</a>&#160;&#160;&#160;__attribute__((aligned(<a class="el" href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a>)))</td></tr>
+<tr class="memdesc:a5f8ac9d31ca569461fe7a38ba64b50cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attribute to apply on UBO typedef to enforce AVX alignment. Usage: } GL_UBO_ALIGNED MyUBOType;.  <a href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">More...</a><br /></td></tr>
+<tr class="separator:a5f8ac9d31ca569461fe7a38ba64b50cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ecc4ae37fb4080a41e0c8b7e7b84cbd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">GL_ASSERT_UBO_ALIGNMENT</a>(type)</td></tr>
+<tr class="memdesc:a1ecc4ae37fb4080a41e0c8b7e7b84cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time assertion that a UBO struct meets AVX alignment. Place after the typedef to catch misconfigurations at build time.  <a href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">More...</a><br /></td></tr>
+<tr class="separator:a1ecc4ae37fb4080a41e0c8b7e7b84cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">GL_DEBUG_PUSH</a>(name)&#160;&#160;&#160;	glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, -1, name)</td></tr>
 <tr class="memdesc:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a debug group to the OpenGL command stream for debugging tools.  <a href="gl__common_8h.html#ae94e8ca561d54f3d6e7881b0b2efb812">More...</a><br /></td></tr>
 <tr class="separator:ae94e8ca561d54f3d6e7881b0b2efb812"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,6 +341,10 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a05589fbab0657f08285ebdfe93f5ec9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory alignment for SIMD/AVX (64-byte is AVX-512 safe and L1 cache line aligned).  <a href="gl__common_8h.html#a05589fbab0657f08285ebdfe93f5ec9e">More...</a><br /></td></tr>
 <tr class="separator:a05589fbab0657f08285ebdfe93f5ec9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16af7b253440dadd46a80a4b9fddba4d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a> = 32
+ }</td></tr>
+<tr class="memdesc:a16af7b253440dadd46a80a4b9fddba4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Required alignment for UBO structs used with cglm (AVX mat4 ops).  <a href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4d">More...</a><br /></td></tr>
+<tr class="separator:a16af7b253440dadd46a80a4b9fddba4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -365,6 +375,36 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Attribute to automatically delete an OpenGL texture on scope exit. </p>
+
+</div>
+</div>
+<a id="a1ecc4ae37fb4080a41e0c8b7e7b84cbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">&#9670;&nbsp;</a></span>GL_ASSERT_UBO_ALIGNMENT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_ASSERT_UBO_ALIGNMENT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">type</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <a class="code" href="postprocess_8h.html#a2f3b5c5d4d64b3bad8be49c8005b9f1d">_Static_assert</a>(_Alignof(type) &gt;= <a class="code" href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a>, \</div>
+<div class="line">                   #type <span class="stringliteral">&quot; must be &gt;= 32-byte aligned for AVX (cglm)&quot;</span>)</div>
+<div class="ttc" id="agl__common_8h_html_a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660"><div class="ttname"><a href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a></div><div class="ttdeci">@ GL_UBO_ALIGNMENT</div><div class="ttdef"><b>Definition:</b> gl_common.h:140</div></div>
+<div class="ttc" id="apostprocess_8h_html_a2f3b5c5d4d64b3bad8be49c8005b9f1d"><div class="ttname"><a href="postprocess_8h.html#a2f3b5c5d4d64b3bad8be49c8005b9f1d">_Static_assert</a></div><div class="ttdeci">_Static_assert(_Alignof(PostProcessUBO) &gt;=GL_UBO_ALIGNMENT, &quot;PostProcessUBO&quot; &quot; must be &gt;= 32-byte aligned for AVX (cglm)&quot;)</div></div>
+</div><!-- fragment -->
+<p>Compile-time assertion that a UBO struct meets AVX alignment. Place after the typedef to catch misconfigurations at build time. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>The UBO struct type name. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -626,7 +666,7 @@ Functions</h2></td></tr>
 <div class="line">    const <span class="keywordtype">char</span>* _gl_dbg_##__LINE__                              \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a>)))        \</div>
 <div class="line">        __attribute__((unused)) = name</div>
-<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:146</div></div>
+<div class="ttc" id="agl__common_8h_html_ac192a54fd8e4a35cb9c5cba07be2b7dc"><div class="ttname"><a href="gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc">cleanup_gl_debug_group</a></div><div class="ttdeci">static void cleanup_gl_debug_group(const char **dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL debug groups.</div><div class="ttdef"><b>Definition:</b> gl_common.h:170</div></div>
 </div><!-- fragment -->
 <p>Scoped OpenGL debug group. Automatically pops when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -657,7 +697,7 @@ Functions</h2></td></tr>
 <div class="line">    GLuint _gl_prog_##__LINE__                           \</div>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a>))) \</div>
 <div class="line">        __attribute__((unused)) = prog</div>
-<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:165</div></div>
+<div class="ttc" id="agl__common_8h_html_ad15b0974fb88bf43476a2ba10cc58447"><div class="ttname"><a href="gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447">cleanup_gl_use_program</a></div><div class="ttdeci">static void cleanup_gl_use_program(const GLuint *dummy)</div><div class="ttdoc">RAII-style cleanup for OpenGL shader program binding.</div><div class="ttdef"><b>Definition:</b> gl_common.h:189</div></div>
 </div><!-- fragment -->
 <p>Scoped shader program binding. Unbinds (glUseProgram(0)) when leaving scope. </p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -666,6 +706,22 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a5f8ac9d31ca569461fe7a38ba64b50cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f8ac9d31ca569461fe7a38ba64b50cb">&#9670;&nbsp;</a></span>GL_UBO_ALIGNED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define GL_UBO_ALIGNED&#160;&#160;&#160;__attribute__((aligned(<a class="el" href="gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a>)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Attribute to apply on UBO typedef to enforce AVX alignment. Usage: } GL_UBO_ALIGNED MyUBOType;. </p>
 
 </div>
 </div>
@@ -742,6 +798,26 @@ Functions</h2></td></tr>
 <p>Memory alignment for SIMD/AVX (64-byte is AVX-512 safe and L1 cache line aligned). </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a05589fbab0657f08285ebdfe93f5ec9ea7619557dd412e4f5e4416d11b1c40d42"></a>SIMD_ALIGNMENT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a16af7b253440dadd46a80a4b9fddba4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16af7b253440dadd46a80a4b9fddba4d">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Required alignment for UBO structs used with cglm (AVX mat4 ops). </p>
+<p>cglm's glm_mat4_copy uses AVX _mm256_store_ps which requires 32-byte alignment. Any UBO struct containing mat4 (float[16]) fields must be tagged with GL_UBO_ALIGNED to guarantee safe stack/heap allocation. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660"></a>GL_UBO_ALIGNMENT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>

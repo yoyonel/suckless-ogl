@@ -338,6 +338,12 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 <li>SAMPLER_WINDOW_DURATION
 : <a class="el" href="gpu__profiler_8c.html#a890ccfc13a81906751c69b52d0c07f8c">gpu_profiler.c</a>
 </li>
+<li>scene_bind_ibl_textures()
+: <a class="el" href="scene_8c.html#a7bd2995953630892fd2f63e154e471c7">scene.c</a>
+</li>
+<li>scene_bind_probe_textures()
+: <a class="el" href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">scene.c</a>
+</li>
 <li>scene_cleanup()
 : <a class="el" href="scene_8h.html#a544a31d29501a2854aee06c6011ec62d">scene.h</a>
 , <a class="el" href="scene_8c.html#a544a31d29501a2854aee06c6011ec62d">scene.c</a>
@@ -406,8 +412,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 : <a class="el" href="gl__common_8h.html#ac36f475ca5b446f4fde4c9b90bec77c8a726b6f2464109ad63235993e0fd37631">gl_common.h</a>
 </li>
 <li>scroll_callback()
-: <a class="el" href="app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.c</a>
-, <a class="el" href="app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.h</a>
+: <a class="el" href="app__input_8h.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.h</a>
+, <a class="el" href="app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea">app_input.c</a>
 </li>
 <li>setup_billboard_instance_attributes()
 : <a class="el" href="billboard__rendering_8c.html#a2658bd993dee45baaf17c77d45bc0d29">billboard_rendering.c</a>
@@ -440,14 +446,14 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="sh__math_8c.html#ab50dd1d1eb1234eb0daebf22e4e063c4">sh_math.c</a>
 </li>
 <li>SH_TEXTURE_COUNT
-: <a class="el" href="light__probes_8h.html#aba01db17f4a2bfbc3db60dc172972a25a5d6ff6546c5072f21b7dca2a5b52752e">light_probes.h</a>
+: <a class="el" href="light__probes_8h.html#aaf105ae5beaca1dee30ae54530691fcea5d6ff6546c5072f21b7dca2a5b52752e">light_probes.h</a>
 </li>
 <li>sh_zero()
 : <a class="el" href="sh__math_8h.html#ac664d1a7cbd238963310d4b145b63e10">sh_math.h</a>
 , <a class="el" href="sh__math_8c.html#ac664d1a7cbd238963310d4b145b63e10">sh_math.c</a>
 </li>
 <li>SHADER_CACHE_SIZE
-: <a class="el" href="postprocess_8h.html#af9bdc3014f3d54c426b6d2df10de4960a9337d358c52b7f56750005f4028cc504">postprocess.h</a>
+: <a class="el" href="postprocess_8h.html#adb49720dc49f7d4e4cf9adbf2948e409a9337d358c52b7f56750005f4028cc504">postprocess.h</a>
 </li>
 <li>shader_cache_uniforms()
 : <a class="el" href="shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6">shader.c</a>
@@ -471,7 +477,7 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c">shader.c</a>
 </li>
 <li>SHADER_LABEL_BUFFER_SIZE
-: <a class="el" href="shader_8c.html#ac205be2172292384dd687b5471a87edda392912e5ab211e28c877a7cc3b56b0f5">shader.c</a>
+: <a class="el" href="shader_8c.html#af3520ff6d43011872bab77edd27d4de3a392912e5ab211e28c877a7cc3b56b0f5">shader.c</a>
 </li>
 <li>shader_load()
 : <a class="el" href="shader_8h.html#ab37c4a413a068f69399c7b755b9f9254">shader.h</a>
@@ -486,8 +492,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="shader_8c.html#aa89c729851974bb9688299641d338487">shader.c</a>
 </li>
 <li>shader_load_program()
-: <a class="el" href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader.h</a>
-, <a class="el" href="shader_8c.html#ae08327f08826fb5e44e6c5a1627433e4">shader.c</a>
+: <a class="el" href="shader_8c.html#ae08327f08826fb5e44e6c5a1627433e4">shader.c</a>
+, <a class="el" href="shader_8h.html#ae08327f08826fb5e44e6c5a1627433e4">shader.h</a>
 </li>
 <li>shader_load_program_with_defines()
 : <a class="el" href="shader_8c.html#aceae7aeb168485f653ba9f1137f30468">shader.c</a>
@@ -501,8 +507,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="shader_8h.html#abe28559559e7c42dcb17881a0f4c73a5">shader.h</a>
 </li>
 <li>shader_read_file_with_defines()
-: <a class="el" href="shader_8c.html#af23bbd523d928bb8a9d43c19a3a3dc82">shader.c</a>
-, <a class="el" href="shader_8h.html#af23bbd523d928bb8a9d43c19a3a3dc82">shader.h</a>
+: <a class="el" href="shader_8h.html#af23bbd523d928bb8a9d43c19a3a3dc82">shader.h</a>
+, <a class="el" href="shader_8c.html#af23bbd523d928bb8a9d43c19a3a3dc82">shader.c</a>
 </li>
 <li>SHADER_SAFE_DESTROY
 : <a class="el" href="shader_8h.html#a2bd907645fc175f8defb74557aadff73">shader.h</a>
@@ -560,7 +566,7 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="shader_8c.html#ad80a771bc794ef6b652f13449129b645">shader.c</a>
 </li>
 <li>SHADER_WARNING_THROTTLE_LIMIT
-: <a class="el" href="shader_8h.html#adb49720dc49f7d4e4cf9adbf2948e409a2892c37b844f2481c736a4ee2e196e36">shader.h</a>
+: <a class="el" href="shader_8h.html#a94798fdadfbf49a7c658ace669a1d310a2892c37b844f2481c736a4ee2e196e36">shader.h</a>
 </li>
 <li>SIGN_MASK
 : <a class="el" href="simd__utils_8c.html#aacb3c2c95d2acb6dc1933bcccd7756e1">simd_utils.c</a>
@@ -573,8 +579,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="skybox_8c.html#a426022a6fba8e5f57863e91b5ce3a3a0">skybox.c</a>
 </li>
 <li>skybox_init()
-: <a class="el" href="skybox_8h.html#ad8084984d6dafbe33c871117733efacf">skybox.h</a>
-, <a class="el" href="skybox_8c.html#ad8084984d6dafbe33c871117733efacf">skybox.c</a>
+: <a class="el" href="skybox_8c.html#ad8084984d6dafbe33c871117733efacf">skybox.c</a>
+, <a class="el" href="skybox_8h.html#ad8084984d6dafbe33c871117733efacf">skybox.h</a>
 </li>
 <li>skybox_render()
 : <a class="el" href="skybox_8h.html#a536ba7358b462e00242dcee43f6483c4">skybox.h</a>
@@ -600,8 +606,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="sphere__sorting_8c.html#a159532007839ad93c627f7173c755616">sphere_sorting.c</a>
 </li>
 <li>sphere_sorter_init()
-: <a class="el" href="sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.h</a>
-, <a class="el" href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.c</a>
+: <a class="el" href="sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.c</a>
+, <a class="el" href="sphere__sorting_8h.html#ac8261ad4dd8402eed788cdcd12116946">sphere_sorting.h</a>
 </li>
 <li>sphere_sorter_sort_cpu()
 : <a class="el" href="sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba">sphere_sorting.h</a>
@@ -620,8 +626,8 @@ $(document).ready(function(){initNavTree('globals_s.html',''); initResizable(); 
 , <a class="el" href="ssbo__rendering_8c.html#a63cfa5e26eb0905cd645f1e665a8517b">ssbo_rendering.c</a>
 </li>
 <li>ssbo_group_cleanup()
-: <a class="el" href="ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.c</a>
-, <a class="el" href="ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.h</a>
+: <a class="el" href="ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.h</a>
+, <a class="el" href="ssbo__rendering_8c.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_rendering.c</a>
 </li>
 <li>ssbo_group_draw()
 : <a class="el" href="ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed">ssbo_rendering.h</a>

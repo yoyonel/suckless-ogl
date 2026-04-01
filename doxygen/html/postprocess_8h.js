@@ -81,6 +81,7 @@ var postprocess_8h =
       [ "POSTFX_LUT3D", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7bad8b0078238cabfb8885a95c79157ed25", null ],
       [ "POSTFX_LUT_VIZ", "postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba4cd3faee9d2199483e99ee606ac02a6b", null ]
     ] ],
+    [ "_Static_assert", "postprocess_8h.html#a2f3b5c5d4d64b3bad8be49c8005b9f1d", null ],
     [ "postprocess_apply_preset", "postprocess_8h.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409", null ],
     [ "postprocess_begin", "postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5", null ],
     [ "postprocess_cleanup", "postprocess_8h.html#a9ad5053871c219c0dd7585fab39c18b0", null ],

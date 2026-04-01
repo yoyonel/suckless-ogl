@@ -72,7 +72,7 @@ var NAVTREE =
         [ "Variables", "globals_vars.html", "globals_vars" ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
-        [ "Enumerator", "globals_eval.html", null ],
+        [ "Enumerator", "globals_eval.html", "globals_eval" ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -83,15 +83,15 @@ var NAVTREEINDEX =
 [
 "../../index.html",
 "async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee",
-"functions_vars_w.html",
-"group__Environment.html#gga1e019cb397af76f46ed7eb54267cfb03ac3aa33602cf9770b14ee04146816ab22",
-"material_8c.html#a8862dab388da94800a1d4fa6bbc4f625",
-"postprocess_8c.html#adcef69ea56c03cb233d5e3a9abaeea56",
-"scene_8h.html#a111471ae82d90ada8c12655b0b4f909eadb95af9dc37b555fd5dcf0056c685e61",
-"structApp.html#a6f6d06bcca2d712a2bbd88a1d817bef7",
-"structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a",
-"structPostProcess.html#acb108231128817d5e9f495a70df22f1b",
-"structUIQuad.html#ad40bd73c68d4a1978b088ffff64e7716"
+"functions_vars_r.html",
+"group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743",
+"log_8h.html#a63330e5e329bed8646b5421a8ef25f75",
+"postprocess_8c.html#a6ce07fd263254dd72c5afc8c199f3913",
+"scene_8c.html#a0ddc0b6b8c680fd1a2562f7ae1ecec40",
+"structAdaptiveSampleItem.html#a84054cb0f73084f3b3fd66a818cbf405",
+"structExposureParams.html",
+"structPostProcess.html#a33f165abd3e1ff6e37b8055277097a83",
+"structSphereSorter.html#ab39c20ea7c51562da2b140827758ed49"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
