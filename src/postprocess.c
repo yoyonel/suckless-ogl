@@ -792,10 +792,6 @@ void postprocess_end(PostProcess* post_processing)
 	 * Exposure, Tonemapping, FXAA, Vignette, Grain, etc.
 	 * The cost of Motion Blur fragment work is measured HERE. */
 	{
-		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
-		                   "Final Composite",
-		                   GPU_PROFILER_COMPOSITE_COLOR);
-
 		gl_debug_push_group("PostFX_Final_Composite");
 
 		/* Retour au framebuffer par défaut */

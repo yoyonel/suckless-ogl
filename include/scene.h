@@ -4,6 +4,7 @@
 #include "app_settings.h"
 #include "billboard_rendering.h"
 #include "gl_common.h"
+#include "gpu_profiler.h"
 #include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
@@ -252,8 +253,9 @@ const char* aa_mode_to_string(AAMode mode);
  * @param width Viewport width.
  * @param height Viewport height.
  */
-void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
-                  mat4 previous_view_proj, int width, int height);
+void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
+                  vec3 camera_pos, mat4 previous_view_proj, int width,
+                  int height);
 
 /**
  * @brief Updates GPU buffers for dynamic geometry (e.g. LOD changes).

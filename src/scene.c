@@ -821,8 +821,9 @@ static inline void stencil_begin_object_pass(void)
 	glStencilMask(DEFAULT_STENCIL_MASK);
 }
 
-void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
-                  mat4 previous_view_proj, int width, int height)
+void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
+                  vec3 camera_pos, mat4 previous_view_proj, int width,
+                  int height)
 {
 	mat4 view_proj;
 	mat4 inv_view_proj;
@@ -842,6 +843,8 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->show_envmap) {
+		GPU_STAGE_PROFILER(profiler, "Environment",
+		                   GPU_PROFILER_ENV_COLOR);
 		gl_debug_push_group("Skybox_Pass");
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
@@ -858,31 +861,45 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 		if (scene->billboard_mode) {
 			gl_debug_push_group("Billboard_Sort_And_Render");
 			GLuint sorted_ssbo = 0;
-			switch (scene->sorting_mode) {
-				case SORTING_MODE_CPU_QSORT:
-					sorted_ssbo = sphere_sorter_sort_cpu(
-					    &scene->sphere_sorter,
-					    scene->sphere_instances,
-					    scene->sphere_instance_count,
-					    camera_pos);
-					break;
-				case SORTING_MODE_CPU_RADIX:
-					sorted_ssbo =
-					    sphere_sorter_sort_cpu_radix(
-					        &scene->sphere_sorter,
-					        scene->sphere_instances,
-					        scene->sphere_instance_count,
-					        camera_pos);
-					break;
-				case SORTING_MODE_GPU_BITONIC:
-				default:
-					sorted_ssbo = sphere_sorter_sort_gpu(
-					    &scene->sphere_sorter,
-					    scene->sphere_instances,
-					    scene->sphere_instance_count,
-					    camera_pos);
-					break;
+
+			/* 1. Sorting Pass (CPU or GPU) */
+			{
+				GPU_STAGE_PROFILER(
+				    profiler, "Sphere Sort",
+				    GPU_PROFILER_MOTION_BLUR_COLOR);
+
+				switch (scene->sorting_mode) {
+					case SORTING_MODE_CPU_QSORT:
+						sorted_ssbo =
+						    sphere_sorter_sort_cpu(
+						        &scene->sphere_sorter,
+						        scene->sphere_instances,
+						        scene
+						            ->sphere_instance_count,
+						        camera_pos);
+						break;
+					case SORTING_MODE_CPU_RADIX:
+						sorted_ssbo =
+						    sphere_sorter_sort_cpu_radix(
+						        &scene->sphere_sorter,
+						        scene->sphere_instances,
+						        scene
+						            ->sphere_instance_count,
+						        camera_pos);
+						break;
+					case SORTING_MODE_GPU_BITONIC:
+					default:
+						sorted_ssbo =
+						    sphere_sorter_sort_gpu(
+						        &scene->sphere_sorter,
+						        scene->sphere_instances,
+						        scene
+						            ->sphere_instance_count,
+						        camera_pos);
+						break;
+				}
 			}
+
 			/* Tier 4: Sorted SSBO already bound at binding 2 by
 			 * sort functions — vertex shader reads it directly
 			 * via gl_InstanceID (no VBO copy needed). */
@@ -897,17 +914,27 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 				    scene->sphere_instance_count);
 			}
 
-			glEnablei(GL_BLEND, 0);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDisablei(GL_BLEND, 1);
+			/* 2. Actual Billboard Rendering */
+			{
+				GPU_STAGE_PROFILER(profiler, "Billboard Render",
+				                   GPU_PROFILER_SCENE_COLOR);
 
-			scene_render_billboards(scene, view, proj, camera_pos,
-			                        previous_view_proj, width,
-			                        height);
+				glEnablei(GL_BLEND, 0);
+				glBlendFunc(GL_SRC_ALPHA,
+				            GL_ONE_MINUS_SRC_ALPHA);
+				glDisablei(GL_BLEND, 1);
 
-			glDisablei(GL_BLEND, 0);
+				scene_render_billboards(
+				    scene, view, proj, camera_pos,
+				    previous_view_proj, width, height);
+
+				glDisablei(GL_BLEND, 0);
+			}
+
 			gl_debug_pop_group();
 		} else {
+			GPU_STAGE_PROFILER(profiler, "Instanced Render",
+			                   GPU_PROFILER_SCENE_COLOR);
 			gl_debug_push_group("Instanced_Geometry_Render");
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
@@ -929,11 +956,29 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 
 		if (scene->billboard_mode) {
 			gl_debug_push_group("Billboard_Render");
-			scene_render_billboards(scene, view, proj, camera_pos,
-			                        previous_view_proj, width,
-			                        height);
+
+			/* 1. Dummy sort (legacy/fallback path) */
+			{
+				GPU_STAGE_PROFILER(
+				    profiler, "Sphere Sort",
+				    GPU_PROFILER_MOTION_BLUR_COLOR);
+				/* In fallback path, sorting is handled outside
+				 * or not at all */
+			}
+
+			/* 2. Actual Billboard Rendering */
+			{
+				GPU_STAGE_PROFILER(profiler, "Billboard Render",
+				                   GPU_PROFILER_SCENE_COLOR);
+				scene_render_billboards(
+				    scene, view, proj, camera_pos,
+				    previous_view_proj, width, height);
+			}
+
 			gl_debug_pop_group();
 		} else {
+			GPU_STAGE_PROFILER(profiler, "Instanced Render",
+			                   GPU_PROFILER_SCENE_COLOR);
 			gl_debug_push_group("Instanced_Geometry_Render");
 			glPolygonMode(GL_FRONT_AND_BACK,
 			              scene->wireframe ? GL_LINE : GL_FILL);
@@ -947,6 +992,7 @@ void scene_render(Scene* scene, mat4 view, mat4 proj, vec3 camera_pos,
 		}
 
 		glDisable(GL_STENCIL_TEST);
+	}
 
 #endif
 

@@ -69,7 +69,7 @@ static const int BENCHMARKABLE_COUNT =
 static float find_composite_duration(const GPUProfiler* profiler)
 {
 	for (int i = 0; i < profiler->stage_count; ++i) {
-		if (strcmp(profiler->stages[i].name, "Final Composite") == 0) {
+		if (strcmp(profiler->stages[i].name, "Post-Process") == 0) {
 			return profiler->stages[i].duration_ms;
 		}
 	}
