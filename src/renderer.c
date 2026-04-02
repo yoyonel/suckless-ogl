@@ -18,8 +18,6 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	bool profiling_enabled =
 	    (timeline_ui->visible || log_gpu_metrics != 0 ||
 	     effect_benchmark_is_running(effect_bench)) != 0;
-	gpu_profiler_set_enabled(profiler, profiling_enabled);
-	gpu_profiler_begin_frame(profiler, frame_count);
 	postprocess_update_readbacks(postprocess, frame_count);
 
 	PROFILE_FRAME_MARK;
@@ -29,10 +27,6 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 		action_notifier_push(notifier, "FX Benchmark: Done (see log)",
 		                     NOTIF_DUR_LONG);
 	}
-
-	// 2. Démarrer la mesure globale de la frame
-	GPU_STAGE_PROFILER(profiler, "Total Frame",
-	                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
 	gl_debug_push_group("Render_Frame");
 
@@ -56,11 +50,15 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
-	gl_debug_push_group("Scene_Render");
-	scene_render(scene, view, proj, camera_pos,
-	             postprocess->motion_blur_fx.previous_view_proj, width,
-	             height);
-	gl_debug_pop_group();
+	{
+		GPU_STAGE_PROFILER(profiler, "Scene Render",
+		                   GPU_PROFILER_SCENE_COLOR);
+		gl_debug_push_group("Scene_Render");
+		scene_render(scene, profiler, view, proj, camera_pos,
+		             postprocess->motion_blur_fx.previous_view_proj,
+		             width, height);
+		gl_debug_pop_group();
+	}
 
 	gl_debug_push_group("Post_Processing");
 	postprocess_end(postprocess);
