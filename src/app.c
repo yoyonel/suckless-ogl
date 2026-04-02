@@ -204,6 +204,16 @@ void app_run(App* app)
 			app->resize_pending = 0;
 		}
 
+		bool profiling_enabled =
+		    (app->timeline_ui.visible || app->log_gpu_metrics != 0 ||
+		     effect_benchmark_is_running(&app->effect_bench)) != 0;
+		gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
+		gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+
+		/* 1. Global Measure (includes CPU update and GPU swap) */
+		GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
+		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
+
 		app->frame_count++;
 		double current_time = glfwGetTime();
 		app->delta_time = current_time - app->last_frame_time;
@@ -280,6 +290,8 @@ void app_run(App* app)
 		}
 
 		{
+			GPU_STAGE_PROFILER(&app->gpu_profiler, "Swap Buffers",
+			                   GPU_PROFILER_UI_COLOR);
 			PROFILE_ZONE(swap_ctx, "GLFW SwapBuffers");
 			glfwSwapBuffers(app->window);
 			PROFILE_ZONE_END(swap_ctx);
