@@ -5,6 +5,7 @@
 #include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
 #include "platform/platform_utils.h"
+#include "profiler.h"
 #include "shader.h"
 #include <stdbool.h>
 #include <stdlib.h>
@@ -212,12 +213,15 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 	}
 
 	/* 3. Upload Data to instance_ssbo */
+	PROFILE_ZONE(sort_upload_ctx, "GPU Sort: SSBO Upload");
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
 	glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,
 	                (GLsizeiptr)(count * sizeof(SphereInstance)),
 	                instances);
+	PROFILE_ZONE_END(sort_upload_ctx);
 
 	/* 4. Dispatch Compute (using cached uniform locations) */
+	PROFILE_ZONE(sort_dispatch_ctx, "GPU Sort: Compute Dispatch");
 	glUseProgram(sorter->compute_program);
 
 	if (sorter->loc_count >= 0) {
@@ -252,6 +256,7 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 		glUseProgram(0);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		PROFILE_ZONE_END(sort_dispatch_ctx);
 		return sorter->sorted_instance_ssbo;
 	}
 
@@ -300,6 +305,7 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 
 	glUseProgram(0);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	PROFILE_ZONE_END(sort_dispatch_ctx);
 
 	return sorter->sorted_instance_ssbo;
 }

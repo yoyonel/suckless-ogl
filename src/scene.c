@@ -11,6 +11,7 @@
 #include "material.h"
 #include "platform/platform_fs.h"
 #include "platform/platform_utils.h"
+#include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
 #include "sphere_sorting.h"
@@ -832,6 +833,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* GI Probe SSBO sync — must happen before Spheres read it */
 	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
+		PROFILE_ZONE(gi_sync_ctx, "GI Probe Sync (buffer upload)");
 		light_probe_grid_sync(&scene->probe_grid);
 		/* Sync clobbers 3D texture bindings on the current unit
 		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
@@ -839,6 +841,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 			scene->bound_sh_textures[i] = 0;
 		}
+		PROFILE_ZONE_END(gi_sync_ctx);
 	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
