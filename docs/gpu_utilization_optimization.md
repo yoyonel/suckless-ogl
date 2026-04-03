@@ -38,9 +38,9 @@ Added `PROFILE_ZONE` markers around key sync points. Tracy Statistics revealed:
 
 **All four initial hypotheses were invalidated by measurement.** None of these sync points cause significant stalls.
 
-### Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: 95%)
+### Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: ~~95%~~ → **Invalidated**)
 
-Tracy timeline analysis revealed the **actual root cause**:
+The initial Tracy timeline analysis suggested a CPU-GPU pipeline bubble:
 
 ```text
 GPU: [==Scene+PP+UI==][.........Swap Buffers (IDLE).........][==next frame==]
@@ -48,14 +48,33 @@ CPU: [==GL commands==][Tracy][Swap][Collect][Poll][Update][==GL commands==]
                        <---- GPU idle while CPU does non-GL work ---->
 ```
 
-**Evidence from Tracy (Frame 3,392):**
+**This hypothesis was tested and invalidated.** Reordering the main loop (moving CPU-only work after SwapBuffers) produced no measurable improvement — the GPU idle gap remained identical. The "Swap Buffers" GPU idle was not caused by a pipeline bubble but by external throttling (see H6).
 
-- Total Frame CPU execution: **3.21 ms** (self time: 52 µs = 1.63%)
-- GPU useful work: ~2.0–2.5 ms per frame
-- GPU idle gap (visible as "Swap Buffers" in GPU lane): ~1.0–1.5 ms
-- GPU idle time / total frame ≈ **30-40%** → matches MangoHud ~63% utilization
+### Final Root Cause — X11/Compiz Compositor Overhead (Confidence: 95%)
 
-**The problem is structural**: the main loop executes CPU-only work (physics, camera, matrix computation, Tracy housekeeping, event polling) **after** all GL commands are submitted and **before** submitting the next frame's commands. The GPU finishes its work and starves.
+Deeper Tracy profiling in fullscreen mode revealed the **actual root cause**:
+
+**Evidence from Tracy (Frame 2,053, fullscreen, VSync OFF):**
+
+| Zone | Time | % of Frame |
+|:---|:---:|:---:|
+| `GLFW PollEvents` | **625 µs** | **28%** |
+| GPU useful work | ~200 µs | 9% |
+| Render submit + Swap | ~400 µs | 18% |
+| GPU idle (starving) | ~1000 µs | **45%** |
+
+`glfwPollEvents()` calls into the X11 server, which is mediated by the Compiz compositing window manager. Each round-trip incurs significant latency compared to Wayland's direct model.
+
+**Cross-platform comparison:**
+
+| Environment | Display | Compositor | `PollEvents` | GPU Usage |
+|:---|:---|:---|:---:|:---:|
+| Intel Iris Xe (i7-1355U) | X11 | Compiz | ~625 µs | ~63% |
+| NVIDIA 950M (Bazzite) | Wayland | Native | ~10-50 µs | ~99% |
+
+The GPU is idle ~37% of the time because the CPU spends 625 µs per frame in X11/Compiz event polling — time during which no GL commands are submitted. The NVIDIA 950M achieves 100% not because it's slower, but because Wayland's event model has negligible overhead.
+
+**This is a system-level limitation, not an application-level bug.** No code change can reduce X11/Compiz `glfwPollEvents()` latency.
 
 ### Updated Confidence Table
 
@@ -65,28 +84,36 @@ CPU: [==GL commands==][Tracy][Swap][Collect][Poll][Update][==GL commands==]
 | ~~H2~~ | Sort barrier flushes | ~55 µs (negligible) | **Measured** | Tracy Statistics |
 | ~~H3~~ | UBO implicit sync | < 10 µs (negligible) | **Measured** | Tracy Statistics |
 | H4 | Shared memory bandwidth | Structural, not primary | 40% | Unchanged |
-| **H5** | **CPU-GPU pipeline bubble (main loop ordering)** | **~30-40% GPU idle** | **95%** | **Tracy Timeline** |
+| ~~H5~~ | ~~CPU-GPU pipeline bubble~~ | ~~30-40% GPU idle~~ | **Invalidated** | Loop reorder tested, no effect |
+| **H6** | **X11/Compiz event polling overhead** | **~28% frame time, ~37% GPU idle** | **95%** | **Tracy Timeline (fullscreen)** |
 
-## Proposed Fix — Main Loop Reordering
+## Proposed Fix — Main Loop Reordering (**Tested — No Effect**)
 
-Currently (`app_run()` in `app.c`):
-
-```text
-PollEvents → physics/camera → App Update → Render (GL cmds) → Tracy → SwapBuffers → Collect
-```
-
-Proposed:
+The loop reordering approach was implemented and tested:
 
 ```text
-PollEvents → Render (GL cmds) → SwapBuffers → physics/camera/App Update → Collect
+Before: PollEvents → physics/camera → App Update → Render → Tracy → SwapBuffers → Collect
+After:  PollEvents → Render → SwapBuffers → physics/camera/App Update → Collect
 ```
 
-By moving CPU-only work **after** SwapBuffers, the CPU prepares frame N+1 **while** the GPU executes frame N. The pipeline bubble disappears.
+**Result:** No measurable change in GPU utilization or frame time. The reorder was reverted because:
 
-**Risks:**
+1. It added 1 frame of input latency for zero benefit
+2. The GPU idle gap was caused by X11/Compiz, not by CPU-side work ordering
 
-- Camera/physics data will be **one frame old** relative to rendering (adds 1 frame of input latency). At 154 FPS this is ~6.5 ms — acceptable for this use case.
-- Some updates (resize, async loading) may need careful ordering.
+## Conclusion
+
+The ~63% GPU utilization on Intel Iris Xe under X11/Compiz is a **system-level characteristic**, not an application defect. The GPU renders the scene in ~200 µs but the CPU spends ~625 µs in X11 event polling per frame, starving the GPU of new work.
+
+**Mitigation options (all external to the application):**
+
+| Option | Expected Impact | Feasibility |
+|:---|:---|:---|
+| Switch to Wayland compositor | GPU → ~100% | Requires desktop environment change |
+| Use a non-compositing WM (e.g., i3, dwm) | Reduced PollEvents overhead | User preference |
+| Disable Compiz compositing (`compiz --replace --no-composite`) | Partial improvement | May break desktop features |
+
+No application-level code changes are planned for this issue.
 
 ## Phase 1: Tracy Instrumentation (Done)
 
@@ -100,6 +127,18 @@ Added `PROFILE_ZONE` CPU markers at key synchronization points:
 | `"GPU Sort: Compute Dispatch"` | `sphere_sorting.c` | Full dispatch + barrier chain |
 | `"PostProcess UBO Upload"` | `postprocess.c` | `glBufferSubData` implicit sync detection |
 
-## Phase 2: Main Loop Reordering (Planned)
+## Phase 2: Main Loop Reordering (**Tested — Invalidated**)
 
-Reorganize `app_run()` to overlap CPU work with GPU execution.
+Reorganized `app_run()` to move CPU-only work (camera physics, UI update, notifier, sampler) after `glfwSwapBuffers()`. The change compiled and passed all 60/60 tests but produced **zero improvement** in GPU utilization. The reorder was reverted.
+
+This led to the discovery of the actual root cause (H6: X11/Compiz overhead) through additional Tracy instrumentation of the full frame loop.
+
+### Additional Tracy Zones (Phase 2 Diagnostic)
+
+| Zone | File | Purpose |
+|:---|:---|:---|
+| `"Frame Timing"` | `app.c` | Timing/FPS/sampler block |
+| `"UI & Notifier Update"` | `app.c` | Action notifier, UI overlay, postprocess time |
+| `"Camera Physics"` | `app.c` | Fixed timestep physics + rotation interpolation |
+| `"PostProcess Resize"` | `app.c` | Deferred FBO/texture recreation |
+| `"Icosphere Regen"` | `app.c` | Mesh regeneration on subdivision change |

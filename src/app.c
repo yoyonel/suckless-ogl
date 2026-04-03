@@ -198,10 +198,12 @@ void app_run(App* app)
 		 * outside any GLFW callback context, after the mode switch and
 		 * event processing are fully complete. */
 		if (app->resize_pending) {
+			PROFILE_ZONE(resize_ctx, "PostProcess Resize");
 			postprocess_resize(&app->postprocess,
 			                   app->pending_width,
 			                   app->pending_height);
 			app->resize_pending = 0;
+			PROFILE_ZONE_END(resize_ctx);
 		}
 
 		bool profiling_enabled =
@@ -214,42 +216,58 @@ void app_run(App* app)
 		GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
-		app->frame_count++;
-		double current_time = glfwGetTime();
-		app->delta_time = current_time - app->last_frame_time;
-		app->last_frame_time = current_time;
-		fps_update(&app->fps_counter, app->delta_time, current_time);
-		adaptive_sampler_should_sample(&app->fps_sampler,
-		                               (float)app->delta_time,
-		                               current_time, app->frame_count);
-		action_notifier_update(&app->notifier, (float)app->delta_time);
-
-		app_ui_update(&app->overlay, app->delta_time);
-
-		if (adaptive_sampler_is_finished(&app->fps_sampler,
-		                                 current_time)) {
-			adaptive_sampler_reset(&app->fps_sampler, current_time);
+		{
+			PROFILE_ZONE(timing_ctx, "Frame Timing");
+			app->frame_count++;
+			double current_time = glfwGetTime();
+			app->delta_time = current_time - app->last_frame_time;
+			app->last_frame_time = current_time;
+			fps_update(&app->fps_counter, app->delta_time,
+			           current_time);
+			adaptive_sampler_should_sample(
+			    &app->fps_sampler, (float)app->delta_time,
+			    current_time, app->frame_count);
+			if (adaptive_sampler_is_finished(&app->fps_sampler,
+			                                 current_time)) {
+				adaptive_sampler_reset(&app->fps_sampler,
+				                       current_time);
+			}
+			PROFILE_ZONE_END(timing_ctx);
 		}
 
-		postprocess_update_time(&app->postprocess,
-		                        (float)app->delta_time);
-
-		app->camera.physics_accumulator += (float)app->delta_time;
-		while (app->camera.physics_accumulator >=
-		       app->camera.fixed_timestep) {
-			camera_fixed_update(&app->camera);
-			app->camera.physics_accumulator -=
-			    app->camera.fixed_timestep;
+		{
+			PROFILE_ZONE(ui_notif_ctx, "UI & Notifier Update");
+			action_notifier_update(&app->notifier,
+			                       (float)app->delta_time);
+			app_ui_update(&app->overlay, app->delta_time);
+			postprocess_update_time(&app->postprocess,
+			                        (float)app->delta_time);
+			PROFILE_ZONE_END(ui_notif_ctx);
 		}
 
-		float alpha = app->camera.rotation_smoothing;
-		app->camera.yaw +=
-		    (app->camera.yaw_target - app->camera.yaw) * alpha;
-		app->camera.pitch +=
-		    (app->camera.pitch_target - app->camera.pitch) * alpha;
-		camera_update_vectors(&app->camera);
+		{
+			PROFILE_ZONE(camera_ctx, "Camera Physics");
+			app->camera.physics_accumulator +=
+			    (float)app->delta_time;
+			while (app->camera.physics_accumulator >=
+			       app->camera.fixed_timestep) {
+				camera_fixed_update(&app->camera);
+				app->camera.physics_accumulator -=
+				    app->camera.fixed_timestep;
+			}
+
+			float alpha = app->camera.rotation_smoothing;
+			app->camera.yaw +=
+			    (app->camera.yaw_target - app->camera.yaw) * alpha;
+			app->camera.pitch +=
+			    (app->camera.pitch_target - app->camera.pitch) *
+			    alpha;
+			camera_update_vectors(&app->camera);
+			PROFILE_ZONE_END(camera_ctx);
+		}
 
 		if (app->scene.subdivisions != last_subdiv) {
+			PROFILE_ZONE(ico_ctx, "Icosphere Regen");
 			icosphere_generate(&app->scene.geometry,
 			                   app->scene.subdivisions);
 			scene_update_gpu_buffers(&app->scene);
@@ -264,6 +282,7 @@ void app_run(App* app)
 			    app->scene.sphere_nbo, app->scene.sphere_ebo);
 #endif
 			last_subdiv = app->scene.subdivisions;
+			PROFILE_ZONE_END(ico_ctx);
 		}
 
 		{
