@@ -2,6 +2,7 @@
 
 #include "adaptive_sampler.h"
 #include "glad/glad.h"
+#include "profiler.h"
 #include "utils.h"
 #include <stddef.h> /* size_t */
 
@@ -129,6 +130,7 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 	 * overlaps with preceding/following GPU work rather than blocking
 	 * the pipeline.  The timestamps accurately reflect the driver's
 	 * scheduling behavior. */
+	PROFILE_ZONE(query_readback_ctx, "GPU Query Readback (sync)");
 	for (int i = 0; i < read_buf->stage_count; ++i) {
 		GPUTimer* timer = &read_buf->queries[i];
 
@@ -180,6 +182,8 @@ void gpu_profiler_begin_frame(GPUProfiler* profiler, uint64_t frame_index)
 		profiler->stages[i].duration_ms = (float)duration_ms;
 		profiler->stages[i].start_offset_ms = (float)offset_ms;
 	}
+
+	PROFILE_ZONE_END(query_readback_ctx);
 
 	/* Update display stage_count from last completed frame's read-back.
 	 * This is what the UI iterates over — it must NOT be reset to 0. */

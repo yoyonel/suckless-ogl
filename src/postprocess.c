@@ -877,6 +877,7 @@ void postprocess_end(PostProcess* post_processing)
 
 		/* Upload UBO: always update time/effects header, full rebuild
 		 * only when parameters changed (ubo_dirty). */
+		PROFILE_ZONE(ubo_upload_ctx, "PostProcess UBO Upload");
 		glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
 		if (post_processing->ubo_dirty) {
 			PostProcessUBO ubo = {0};
@@ -1000,6 +1001,7 @@ void postprocess_end(PostProcess* post_processing)
 			                &header);
 		}
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		PROFILE_ZONE_END(ubo_upload_ctx);
 
 		/* Dessiner le quad */
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);

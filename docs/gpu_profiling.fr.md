@@ -71,6 +71,10 @@ Contrôles :
 
 ## Journal des modifications
 
+* **2026-04-03** :
+  * **Instrumentation Tracy Sync** : Ajout de marqueurs `PROFILE_ZONE` autour du readback des queries GPU, sync SSBO des sondes GI, chaîne de dispatch du tri GPU, et upload UBO PostProcess pour détecter les stalls de pipeline CPU-GPU.
+  * **Étude d'utilisation GPU** : Voir [Optimisation de l'Utilisation GPU](gpu_utilization_optimization.fr.md) pour l'analyse complète (baseline, hypothèses, mesures Tracy, diagnostic révisé).
+
 * **2026-02-08** :
   * **Support RAII** : Ajout de la macro `GPU_STAGE_PROFILER` pour la gestion automatique des étapes (code plus propre, retours anticipés plus sûrs).
   * **Instrumentation** : Instrumentation de l'étape **UI Overlay** pour combler le dernier manque dans la timeline GPU.
