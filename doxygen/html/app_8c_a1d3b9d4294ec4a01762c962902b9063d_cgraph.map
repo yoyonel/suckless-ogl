@@ -1,52 +1,52 @@
 <map id="app_run" name="app_run">
-<area shape="rect" id="node1" title="Enters the main application rendering and event loop." alt="" coords="5,447,80,473"/>
-<area shape="rect" id="node2" href="$action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3" title="Updates notification timers." alt="" coords="148,5,315,32"/>
-<area shape="rect" id="node3" href="$adaptive__sampler_8h.html#a92cd04e246adba77f07ca2f80ea011b2" title="Checks if the current sampling window has concluded." alt="" coords="153,57,310,98"/>
-<area shape="rect" id="node4" href="$adaptive__sampler_8h.html#a80236a4368c7457d556fd3c4efb8862c" title="Resets the sampler state for a new window." alt="" coords="142,123,321,149"/>
-<area shape="rect" id="node5" href="$adaptive__sampler_8h.html#ad2f0f93f086b9307988505e079a65e3f" title="Determines if a sample should be taken this frame based on probability." alt="" coords="137,174,326,215"/>
-<area shape="rect" id="node8" href="$app__ui_8h.html#a8bc4879a7af2ed6616a105fc9a66a1e6" title=" " alt="" coords="173,240,290,267"/>
-<area shape="rect" id="node9" href="$app_8c.html#ad74ca828f85941cd20bc12561b854dcb" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="182,291,281,317"/>
-<area shape="rect" id="node15" href="$camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" title="Performs one fixed&#45;step physics update." alt="" coords="151,345,312,372"/>
-<area shape="rect" id="node16" href="$camera_8h.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="142,396,321,423"/>
-<area shape="rect" id="node17" href="$fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" title=" " alt="" coords="184,447,279,473"/>
-<area shape="rect" id="node19" href="$icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" title="Generates icosphere mesh data for a specified subdivision level." alt="" coords="156,497,307,524"/>
-<area shape="rect" id="node24" href="$instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4" title="Binds a procedural mesh (e.g., icosphere) to the instanced group." alt="" coords="128,575,335,601"/>
-<area shape="rect" id="node26" href="$postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5" title="Recreates all internal buffers for a new resolution." alt="" coords="158,676,305,703"/>
-<area shape="rect" id="node30" href="$postprocess_8h.html#ae22c24f5c64568dcf1908a579312ed60" title="Increments internal clocks." alt="" coords="137,1131,326,1157"/>
-<area shape="rect" id="node31" href="$renderer_8h.html#a8b1e76ebf547902da98608c3d9d4cb76" title="Orchestrates the entire frame render (scene, postprocess, ui). Decouples the rendering logic from the..." alt="" coords="150,1080,313,1107"/>
-<area shape="rect" id="node48" href="$scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e" title="Updates GPU buffers for dynamic geometry (e.g. LOD changes)." alt="" coords="134,1181,329,1208"/>
-<area shape="rect" id="node49" href="$ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b" title="Binds a mesh (VBO/EBO) to the SSBO VAO." alt="" coords="144,1232,319,1259"/>
-<area shape="rect" id="node50" href="$tracy__manager_8h.html#a15f341fbf0f0311899c1103b2ef05bc0" title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame." alt="" coords="145,1283,317,1325"/>
-<area shape="rect" id="node6" href="$adaptive__sampler_8c.html#a5c9150292b8d042d1211dcf1c9be03f1" title=" " alt="" coords="402,11,557,37"/>
-<area shape="rect" id="node7" href="$adaptive__sampler_8c.html#a606b326df87936035ed9485849b43486" title=" " alt="" coords="646,11,765,37"/>
-<area shape="rect" id="node10" href="$async__coordinator_8c.html#afbeba111b55c3c11972710fe0a4b4a1b" title=" " alt="" coords="383,229,576,256"/>
-<area shape="rect" id="node11" href="$env__manager_8h.html#aca14ba762de723629de8d921ffc52cdd" title="Processes the multi&#45;frame HDR environment loading state machine." alt="" coords="395,281,563,322"/>
-<area shape="rect" id="node12" href="$env__manager_8h.html#af6cf5ee2b30a1efd1a49fdd7839a67b8" title="Updates the IBL state machine and handles transition events." alt="" coords="386,61,573,88"/>
-<area shape="rect" id="node13" href="$env__manager_8h.html#aafd47aadf2c5e1696d618a510326ce78" title="Updates the environment transition animation." alt="" coords="398,113,561,154"/>
-<area shape="rect" id="node14" href="$texture_8h.html#aeaaf787b6ecd6938e78ec390d6749359" title="Pre&#45;allocates VRAM for an HDR texture (glTexStorage2D only)." alt="" coords="391,179,568,205"/>
-<area shape="rect" id="node18" href="$log_8h.html#a71580585dbb8388e03440751eb26bae7" title="Logs a formatted message." alt="" coords="425,347,533,373"/>
-<area shape="rect" id="node20" href="$icosphere_8c.html#aa9a7be7aefc37fdcd8de17c522d47dcd" title=" " alt="" coords="410,448,549,475"/>
-<area shape="rect" id="node21" href="$icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d" title="Appends a vec3 to the array, reallocating if necessary." alt="" coords="643,423,768,449"/>
-<area shape="rect" id="node22" href="$icosphere_8c.html#a88db60f70d9063d3f5a7c1b1ba8538e8" title=" " alt="" coords="437,499,522,525"/>
-<area shape="rect" id="node23" href="$icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45" title="Appends an unsigned int to the array, reallocating if necessary." alt="" coords="646,524,765,551"/>
-<area shape="rect" id="node25" href="$instanced__rendering_8c.html#aa88eb21789dac1f6d953aa3ebc40b21f" title=" " alt="" coords="384,600,575,627"/>
-<area shape="rect" id="node27" href="$postprocess_8c.html#a4bbf34e2aeca9031792cf4c335f77ab6" title=" " alt="" coords="406,651,553,677"/>
-<area shape="rect" id="node28" href="$postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a" title=" " alt="" coords="402,701,557,728"/>
-<area shape="rect" id="node29" href="$render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045" title="Resets a range of texture units to a safe state." alt="" coords="636,938,775,979"/>
-<area shape="rect" id="node32" href="$action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="403,803,556,829"/>
-<area shape="rect" id="node33" href="$app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b" title="Main UI rendering entry point." alt="" coords="422,853,537,880"/>
-<area shape="rect" id="node34" href="$camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786" title="Generates the 4x4 view matrix for this camera." alt="" coords="386,904,573,931"/>
-<area shape="rect" id="node35" href="$effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="401,955,558,997"/>
-<area shape="rect" id="node36" href="$effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb" title="Per&#45;frame update. Call after gpu_profiler_begin_frame()." alt="" coords="384,1021,575,1048"/>
-<area shape="rect" id="node37" href="$env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61" title="Renders the transition overlay (fade/crossfade)." alt="" coords="399,1073,559,1114"/>
-<area shape="rect" id="node38" href="$gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a" title="Pop the current debug group from the OpenGL debug stack." alt="" coords="627,1540,783,1567"/>
-<area shape="rect" id="node39" href="$gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4" title="Push a named debug group onto the OpenGL debug stack." alt="" coords="624,1591,787,1617"/>
-<area shape="rect" id="node40" href="$gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4" title="Marks the beginning of a frame. Swaps buffers and processes previous results." alt="" coords="408,1190,551,1231"/>
-<area shape="rect" id="node41" href="$gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02" title="Enables or disables the profiler." alt="" coords="387,1256,572,1283"/>
-<area shape="rect" id="node42" href="$gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db" title="Updates animations and synchronizes data with the live profiler." alt="" coords="394,1307,565,1333"/>
-<area shape="rect" id="node43" href="$postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5" title="Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop." alt="" coords="408,1357,551,1384"/>
-<area shape="rect" id="node44" href="$postprocess_8h.html#aa84256eef04459c5acf3b67987da736b" title="Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main r..." alt="" coords="414,1139,545,1165"/>
-<area shape="rect" id="node45" href="$postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95" title="Updates view&#45;projection matrices for effects requiring depth&#45;reconstruction." alt="" coords="403,1409,555,1450"/>
-<area shape="rect" id="node46" href="$postprocess_8h.html#a4e499403ff87148f7455391b3ee508be" title="Updates all async GPU readbacks (Exposure, Histogram). Handles PBO mapping and Sync management intern..." alt="" coords="403,1474,555,1515"/>
-<area shape="rect" id="node47" href="$scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406" title="Renders the scene." alt="" coords="425,1591,534,1617"/>
+<area shape="rect" id="node1" title="Enters the main application rendering and event loop." alt="" coords="5,753,80,780"/>
+<area shape="rect" id="node2" href="$action__notifier_8h.html#a68e7a028ca326da5893c84e2a8115cd3" title="Updates notification timers." alt="" coords="148,33,315,60"/>
+<area shape="rect" id="node3" href="$adaptive__sampler_8h.html#a92cd04e246adba77f07ca2f80ea011b2" title="Checks if the current sampling window has concluded." alt="" coords="153,85,310,126"/>
+<area shape="rect" id="node4" href="$adaptive__sampler_8h.html#a80236a4368c7457d556fd3c4efb8862c" title="Resets the sampler state for a new window." alt="" coords="142,151,321,177"/>
+<area shape="rect" id="node5" href="$adaptive__sampler_8h.html#ad2f0f93f086b9307988505e079a65e3f" title="Determines if a sample should be taken this frame based on probability." alt="" coords="137,202,326,243"/>
+<area shape="rect" id="node7" href="$app__ui_8h.html#a8bc4879a7af2ed6616a105fc9a66a1e6" title=" " alt="" coords="173,268,290,295"/>
+<area shape="rect" id="node8" href="$app_8c.html#ad74ca828f85941cd20bc12561b854dcb" title="One&#45;frame logic update (physics, timers, camera)." alt="" coords="182,319,281,345"/>
+<area shape="rect" id="node14" href="$camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7" title="Performs one fixed&#45;step physics update." alt="" coords="151,396,312,423"/>
+<area shape="rect" id="node15" href="$camera_8h.html#aa47646370ef1804643d987edb53fe2f7" title="Recalculates front, right, and up vectors from yaw and pitch." alt="" coords="142,447,321,473"/>
+<area shape="rect" id="node16" href="$effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0" title="Returns true if a benchmark is currently running." alt="" coords="401,494,558,535"/>
+<area shape="rect" id="node17" href="$fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635" title=" " alt="" coords="184,1040,279,1067"/>
+<area shape="rect" id="node19" href="$gpu__profiler_8h.html#a1b02eae0daab556a5ceadace03aad5e4" title="Marks the beginning of a frame. Swaps buffers and processes previous results." alt="" coords="160,498,303,539"/>
+<area shape="rect" id="node23" href="$gpu__profiler_8h.html#a44de4cea7056033e6c03683013cbcc02" title="Enables or disables the profiler." alt="" coords="139,1091,324,1117"/>
+<area shape="rect" id="node24" href="$icosphere_8h.html#a7c1eaf921d44583aa9f855097b74d4b1" title="Generates icosphere mesh data for a specified subdivision level." alt="" coords="156,1141,307,1168"/>
+<area shape="rect" id="node29" href="$instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4" title="Binds a procedural mesh (e.g., icosphere) to the instanced group." alt="" coords="128,1192,335,1219"/>
+<area shape="rect" id="node31" href="$postprocess_8h.html#aeba49bd333ab21356706ac98f5b180b5" title="Recreates all internal buffers for a new resolution." alt="" coords="158,989,305,1016"/>
+<area shape="rect" id="node35" href="$postprocess_8h.html#ae22c24f5c64568dcf1908a579312ed60" title="Increments internal clocks." alt="" coords="137,1243,326,1269"/>
+<area shape="rect" id="node36" href="$renderer_8h.html#a8b1e76ebf547902da98608c3d9d4cb76" title="Orchestrates the entire frame render (scene, postprocess, ui). Decouples the rendering logic from the..." alt="" coords="150,779,313,805"/>
+<area shape="rect" id="node48" href="$scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e" title="Updates GPU buffers for dynamic geometry (e.g. LOD changes)." alt="" coords="134,1293,329,1320"/>
+<area shape="rect" id="node49" href="$ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b" title="Binds a mesh (VBO/EBO) to the SSBO VAO." alt="" coords="144,1344,319,1371"/>
+<area shape="rect" id="node50" href="$tracy__manager_8h.html#a15f341fbf0f0311899c1103b2ef05bc0" title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame." alt="" coords="145,1395,317,1437"/>
+<area shape="rect" id="node6" href="$adaptive__sampler_8c.html#a5c9150292b8d042d1211dcf1c9be03f1" title=" " alt="" coords="402,5,557,32"/>
+<area shape="rect" id="node9" href="$async__coordinator_8c.html#afbeba111b55c3c11972710fe0a4b4a1b" title=" " alt="" coords="383,56,576,83"/>
+<area shape="rect" id="node10" href="$env__manager_8h.html#aca14ba762de723629de8d921ffc52cdd" title="Processes the multi&#45;frame HDR environment loading state machine." alt="" coords="395,107,563,149"/>
+<area shape="rect" id="node11" href="$env__manager_8h.html#af6cf5ee2b30a1efd1a49fdd7839a67b8" title="Updates the IBL state machine and handles transition events." alt="" coords="386,173,573,200"/>
+<area shape="rect" id="node12" href="$env__manager_8h.html#aafd47aadf2c5e1696d618a510326ce78" title="Updates the environment transition animation." alt="" coords="398,225,561,266"/>
+<area shape="rect" id="node13" href="$texture_8h.html#aeaaf787b6ecd6938e78ec390d6749359" title="Pre&#45;allocates VRAM for an HDR texture (glTexStorage2D only)." alt="" coords="391,291,568,317"/>
+<area shape="rect" id="node18" href="$log_8h.html#a71580585dbb8388e03440751eb26bae7" title="Logs a formatted message." alt="" coords="425,1301,533,1328"/>
+<area shape="rect" id="node20" href="$adaptive__sampler_8h.html#ab853a173e8dae6bd06ce8bb03982e1a8" title="Manually adds a sample to the sampler (e.g. from external source like GPU profiler)." alt="" coords="394,341,565,368"/>
+<area shape="rect" id="node21" href="$metric__stack_8h.html#ac1f754389be64551e5ce2cc276220db8" title=" " alt="" coords="412,392,547,419"/>
+<area shape="rect" id="node22" href="$utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075" title="Safe wrapper around strncpy to ensure null&#45;termination." alt="" coords="653,501,758,528"/>
+<area shape="rect" id="node25" href="$icosphere_8c.html#aa9a7be7aefc37fdcd8de17c522d47dcd" title=" " alt="" coords="410,1504,549,1531"/>
+<area shape="rect" id="node26" href="$icosphere_8c.html#a38fc23a56f4c687ecb08e3dde52b2b5d" title="Appends a vec3 to the array, reallocating if necessary." alt="" coords="643,1467,768,1493"/>
+<area shape="rect" id="node27" href="$icosphere_8c.html#a88db60f70d9063d3f5a7c1b1ba8538e8" title=" " alt="" coords="437,1403,522,1429"/>
+<area shape="rect" id="node28" href="$icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45" title="Appends an unsigned int to the array, reallocating if necessary." alt="" coords="646,1391,765,1417"/>
+<area shape="rect" id="node30" href="$instanced__rendering_8c.html#aa88eb21789dac1f6d953aa3ebc40b21f" title=" " alt="" coords="384,1555,575,1581"/>
+<area shape="rect" id="node32" href="$postprocess_8c.html#a4bbf34e2aeca9031792cf4c335f77ab6" title=" " alt="" coords="406,1149,553,1176"/>
+<area shape="rect" id="node33" href="$postprocess_8c.html#a1696aa61a279d5a08b8639a245e9035a" title=" " alt="" coords="402,1200,557,1227"/>
+<area shape="rect" id="node34" href="$render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045" title="Resets a range of texture units to a safe state." alt="" coords="636,1197,775,1238"/>
+<area shape="rect" id="node37" href="$action__notifier_8h.html#a8facec5ee2a33b00e3a12b03fb75c378" title="Adds a new notification message." alt="" coords="403,560,556,587"/>
+<area shape="rect" id="node38" href="$app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b" title="Main UI rendering entry point." alt="" coords="422,779,537,805"/>
+<area shape="rect" id="node39" href="$camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786" title="Generates the 4x4 view matrix for this camera." alt="" coords="386,829,573,856"/>
+<area shape="rect" id="node40" href="$effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb" title="Per&#45;frame update. Call after gpu_profiler_begin_frame()." alt="" coords="384,880,575,907"/>
+<area shape="rect" id="node41" href="$env__manager_8h.html#ae12a5f2406e71f9cd410cc4e6518ca61" title="Renders the transition overlay (fade/crossfade)." alt="" coords="399,931,559,973"/>
+<area shape="rect" id="node42" href="$gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a" title="Pop the current debug group from the OpenGL debug stack." alt="" coords="627,1023,783,1049"/>
+<area shape="rect" id="node43" href="$gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4" title="Push a named debug group onto the OpenGL debug stack." alt="" coords="624,1087,787,1113"/>
+<area shape="rect" id="node44" href="$gpu__profiler__ui_8h.html#ac53c270cd512488caca074831008a6db" title="Updates animations and synchronizes data with the live profiler." alt="" coords="394,611,565,637"/>
+<area shape="rect" id="node45" href="$postprocess_8h.html#a8fdad312e138cf7080b4596e127584e5" title="Binds the HDR FBO and prepares for scene rendering. Should be called BEFORE the main render loop." alt="" coords="408,661,551,688"/>
+<area shape="rect" id="node46" href="$postprocess_8h.html#aa84256eef04459c5acf3b67987da736b" title="Processes the HDR scene and renders the final LDR result to screen. Should be called AFTER the main r..." alt="" coords="414,1048,545,1075"/>
+<area shape="rect" id="node47" href="$postprocess_8h.html#a86ca4160d60435cb54320bbcc68d0d95" title="Updates view&#45;projection matrices for effects requiring depth&#45;reconstruction." alt="" coords="403,713,555,754"/>
 </map>

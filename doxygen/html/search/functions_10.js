@@ -24,7 +24,7 @@ var searchData=
   ['scene_5finit_5finstanced_5fshader_2608',['scene_init_instanced_shader',['../scene_8c.html#a2c42faa2abd070918407798043140e3f',1,'scene.c']]],
   ['scene_5finit_5finstancing_2609',['scene_init_instancing',['../scene_8c.html#a20db65b57334ddf3116de362f8e91af8',1,'scene.c']]],
   ['scene_5finit_5fstate_2610',['scene_init_state',['../scene_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb',1,'scene.c']]],
-  ['scene_5frender_2611',['scene_render',['../scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406',1,'scene_render(Scene *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height):&#160;scene.c'],['../scene_8c.html#afacc27c12aee6cc929dfe2ccd4cc9406',1,'scene_render(Scene *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height):&#160;scene.c']]],
+  ['scene_5frender_2611',['scene_render',['../scene_8h.html#a2dc48aafade2ded863fd19ad58fe6726',1,'scene_render(Scene *scene, GPUProfiler *profiler, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height):&#160;scene.c'],['../scene_8c.html#a2dc48aafade2ded863fd19ad58fe6726',1,'scene_render(Scene *scene, GPUProfiler *profiler, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height):&#160;scene.c']]],
   ['scene_5frender_5fbillboards_2612',['scene_render_billboards',['../scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a',1,'scene.c']]],
   ['scene_5frender_5finstanced_2613',['scene_render_instanced',['../scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2',1,'scene.c']]],
   ['scene_5fscan_5fhdr_5ffiles_2614',['scene_scan_hdr_files',['../scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972',1,'scene.c']]],

@@ -21,7 +21,7 @@ var scene_8c =
     [ "scene_init_instanced_shader", "scene_8c.html#a2c42faa2abd070918407798043140e3f", null ],
     [ "scene_init_instancing", "scene_8c.html#a20db65b57334ddf3116de362f8e91af8", null ],
     [ "scene_init_state", "scene_8c.html#aff46f1206e35ed81c94cfd0a4b45afdb", null ],
-    [ "scene_render", "scene_8c.html#afacc27c12aee6cc929dfe2ccd4cc9406", null ],
+    [ "scene_render", "scene_8c.html#a2dc48aafade2ded863fd19ad58fe6726", null ],
     [ "scene_render_billboards", "scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a", null ],
     [ "scene_render_instanced", "scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2", null ],
     [ "scene_scan_hdr_files", "scene_8c.html#a8c6e924f776610ef26f3d2923fb5d972", null ],

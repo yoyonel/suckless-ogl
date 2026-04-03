@@ -261,6 +261,7 @@ $(document).ready(function(){initNavTree('scene_8h.html',''); initResizable(); }
 <div class="textblock"><code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="icosphere_8h_source.html">icosphere.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
@@ -348,9 +349,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ad63ee708be73ae184d1233ad69cf077f"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#ad63ee708be73ae184d1233ad69cf077f">aa_mode_to_string</a> (<a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a> mode)</td></tr>
 <tr class="memdesc:ad63ee708be73ae184d1233ad69cf077f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string representation of the AA mode.  <a href="scene_8h.html#ad63ee708be73ae184d1233ad69cf077f">More...</a><br /></td></tr>
 <tr class="separator:ad63ee708be73ae184d1233ad69cf077f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406">scene_render</a> (<a class="el" href="structScene.html">Scene</a> *scene, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height)</td></tr>
-<tr class="memdesc:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the scene.  <a href="scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406">More...</a><br /></td></tr>
-<tr class="separator:afacc27c12aee6cc929dfe2ccd4cc9406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dc48aafade2ded863fd19ad58fe6726"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a2dc48aafade2ded863fd19ad58fe6726">scene_render</a> (<a class="el" href="structScene.html">Scene</a> *scene, <a class="el" href="structGPUProfiler.html">GPUProfiler</a> *profiler, mat4 view, mat4 proj, vec3 camera_pos, mat4 previous_view_proj, int width, int height)</td></tr>
+<tr class="memdesc:a2dc48aafade2ded863fd19ad58fe6726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders the scene.  <a href="scene_8h.html#a2dc48aafade2ded863fd19ad58fe6726">More...</a><br /></td></tr>
+<tr class="separator:a2dc48aafade2ded863fd19ad58fe6726"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e">scene_update_gpu_buffers</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:a97b3fbf4a92687b0b76a08b452daa63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates GPU buffers for dynamic geometry (e.g. LOD changes).  <a href="scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e">More...</a><br /></td></tr>
 <tr class="separator:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -594,8 +595,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="afacc27c12aee6cc929dfe2ccd4cc9406"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afacc27c12aee6cc929dfe2ccd4cc9406">&#9670;&nbsp;</a></span>scene_render()</h2>
+<a id="a2dc48aafade2ded863fd19ad58fe6726"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2dc48aafade2ded863fd19ad58fe6726">&#9670;&nbsp;</a></span>scene_render()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -605,6 +606,12 @@ Here is the call graph for this function:</div>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
           <td class="paramname"><em>scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structGPUProfiler.html">GPUProfiler</a> *&#160;</td>
+          <td class="paramname"><em>profiler</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -666,7 +673,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h_afacc27c12aee6cc929dfe2ccd4cc9406_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h_a2dc48aafade2ded863fd19ad58fe6726_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

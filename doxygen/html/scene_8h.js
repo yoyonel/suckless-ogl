@@ -26,6 +26,6 @@ var scene_8h =
     [ "aa_mode_to_string", "scene_8h.html#ad63ee708be73ae184d1233ad69cf077f", null ],
     [ "scene_cleanup", "scene_8h.html#a544a31d29501a2854aee06c6011ec62d", null ],
     [ "scene_init", "scene_8h.html#ab37b3774644a51065a47e884ffc5e649", null ],
-    [ "scene_render", "scene_8h.html#afacc27c12aee6cc929dfe2ccd4cc9406", null ],
+    [ "scene_render", "scene_8h.html#a2dc48aafade2ded863fd19ad58fe6726", null ],
     [ "scene_update_gpu_buffers", "scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e", null ]
 ];
