@@ -2330,10 +2330,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95" class="md-nav__link">
+  <a href="#revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95-invalidated" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: 95%)
+        Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: ~~95%~~ → Invalidated)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-root-cause-x11compiz-compositor-overhead-confidence-95" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Root Cause — X11/Compiz Compositor Overhead (Confidence: 95%)
       
     </span>
   </a>
@@ -2357,10 +2368,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proposed-fix-main-loop-reordering" class="md-nav__link">
+  <a href="#proposed-fix-main-loop-reordering-tested-no-effect" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Proposed Fix — Main Loop Reordering
+        Proposed Fix — Main Loop Reordering (Tested — No Effect)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
       
     </span>
   </a>
@@ -2379,13 +2401,30 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-2-main-loop-reordering-planned" class="md-nav__link">
+  <a href="#phase-2-main-loop-reordering-tested-invalidated" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 2: Main Loop Reordering (Planned)
+        Phase 2: Main Loop Reordering (Tested — Invalidated)
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Phase 2: Main Loop Reordering (Tested — Invalidated)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#additional-tracy-zones-phase-2-diagnostic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Tracy Zones (Phase 2 Diagnostic)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3288,20 +3327,78 @@
 </tbody>
 </table>
 <p><strong>All four initial hypotheses were invalidated by measurement.</strong> None of these sync points cause significant stalls.</p>
-<h3 id="revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95">Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: 95%)<a class="headerlink" href="#revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95" title="Permanent link">¶</a></h3>
-<p>Tracy timeline analysis revealed the <strong>actual root cause</strong>:</p>
+<h3 id="revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95-invalidated">Revised Hypothesis — CPU-GPU Pipeline Bubble (Confidence: ~~95%~~ → <strong>Invalidated</strong>)<a class="headerlink" href="#revised-hypothesis-cpu-gpu-pipeline-bubble-confidence-95-invalidated" title="Permanent link">¶</a></h3>
+<p>The initial Tracy timeline analysis suggested a CPU-GPU pipeline bubble:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>GPU: [==Scene+PP+UI==][.........Swap Buffers (IDLE).........][==next frame==]
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>CPU: [==GL commands==][Tracy][Swap][Collect][Poll][Update][==GL commands==]
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                       &lt;---- GPU idle while CPU does non-GL work ----&gt;
 </span></code></pre></div>
-<p><strong>Evidence from Tracy (Frame 3,392):</strong></p>
-<ul>
-<li>Total Frame CPU execution: <strong>3.21 ms</strong> (self time: 52 µs = 1.63%)</li>
-<li>GPU useful work: ~2.0–2.5 ms per frame</li>
-<li>GPU idle gap (visible as "Swap Buffers" in GPU lane): ~1.0–1.5 ms</li>
-<li>GPU idle time / total frame ≈ <strong>30-40%</strong> → matches MangoHud ~63% utilization</li>
-</ul>
-<p><strong>The problem is structural</strong>: the main loop executes CPU-only work (physics, camera, matrix computation, Tracy housekeeping, event polling) <strong>after</strong> all GL commands are submitted and <strong>before</strong> submitting the next frame's commands. The GPU finishes its work and starves.</p>
+<p><strong>This hypothesis was tested and invalidated.</strong> Reordering the main loop (moving CPU-only work after SwapBuffers) produced no measurable improvement — the GPU idle gap remained identical. The "Swap Buffers" GPU idle was not caused by a pipeline bubble but by external throttling (see H6).</p>
+<h3 id="final-root-cause-x11compiz-compositor-overhead-confidence-95">Final Root Cause — X11/Compiz Compositor Overhead (Confidence: 95%)<a class="headerlink" href="#final-root-cause-x11compiz-compositor-overhead-confidence-95" title="Permanent link">¶</a></h3>
+<p>Deeper Tracy profiling in fullscreen mode revealed the <strong>actual root cause</strong>:</p>
+<p><strong>Evidence from Tracy (Frame 2,053, fullscreen, VSync OFF):</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Zone</th>
+<th style="text-align: center;">Time</th>
+<th style="text-align: center;">% of Frame</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>GLFW PollEvents</code></td>
+<td style="text-align: center;"><strong>625 µs</strong></td>
+<td style="text-align: center;"><strong>28%</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">GPU useful work</td>
+<td style="text-align: center;">~200 µs</td>
+<td style="text-align: center;">9%</td>
+</tr>
+<tr>
+<td style="text-align: left;">Render submit + Swap</td>
+<td style="text-align: center;">~400 µs</td>
+<td style="text-align: center;">18%</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPU idle (starving)</td>
+<td style="text-align: center;">~1000 µs</td>
+<td style="text-align: center;"><strong>45%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>glfwPollEvents()</code> calls into the X11 server, which is mediated by the Compiz compositing window manager. Each round-trip incurs significant latency compared to Wayland's direct model.</p>
+<p><strong>Cross-platform comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Environment</th>
+<th style="text-align: left;">Display</th>
+<th style="text-align: left;">Compositor</th>
+<th style="text-align: center;"><code>PollEvents</code></th>
+<th style="text-align: center;">GPU Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Intel Iris Xe (i7-1355U)</td>
+<td style="text-align: left;">X11</td>
+<td style="text-align: left;">Compiz</td>
+<td style="text-align: center;">~625 µs</td>
+<td style="text-align: center;">~63%</td>
+</tr>
+<tr>
+<td style="text-align: left;">NVIDIA 950M (Bazzite)</td>
+<td style="text-align: left;">Wayland</td>
+<td style="text-align: left;">Native</td>
+<td style="text-align: center;">~10-50 µs</td>
+<td style="text-align: center;">~99%</td>
+</tr>
+</tbody>
+</table>
+<p>The GPU is idle ~37% of the time because the CPU spends 625 µs per frame in X11/Compiz event polling — time during which no GL commands are submitted. The NVIDIA 950M achieves 100% not because it's slower, but because Wayland's event model has negligible overhead.</p>
+<p><strong>This is a system-level limitation, not an application-level bug.</strong> No code change can reduce X11/Compiz <code>glfwPollEvents()</code> latency.</p>
 <h3 id="updated-confidence-table">Updated Confidence Table<a class="headerlink" href="#updated-confidence-table" title="Permanent link">¶</a></h3>
 <table>
 <thead>
@@ -3343,27 +3440,61 @@
 <td style="text-align: left;">Unchanged</td>
 </tr>
 <tr>
-<td style="text-align: center;"><strong>H5</strong></td>
-<td style="text-align: left;"><strong>CPU-GPU pipeline bubble (main loop ordering)</strong></td>
-<td style="text-align: center;"><strong>~30-40% GPU idle</strong></td>
+<td style="text-align: center;">~~H5~~</td>
+<td style="text-align: left;">~~CPU-GPU pipeline bubble~~</td>
+<td style="text-align: center;">~~30-40% GPU idle~~</td>
+<td style="text-align: center;"><strong>Invalidated</strong></td>
+<td style="text-align: left;">Loop reorder tested, no effect</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>H6</strong></td>
+<td style="text-align: left;"><strong>X11/Compiz event polling overhead</strong></td>
+<td style="text-align: center;"><strong>~28% frame time, ~37% GPU idle</strong></td>
 <td style="text-align: center;"><strong>95%</strong></td>
-<td style="text-align: left;"><strong>Tracy Timeline</strong></td>
+<td style="text-align: left;"><strong>Tracy Timeline (fullscreen)</strong></td>
 </tr>
 </tbody>
 </table>
-<h2 id="proposed-fix-main-loop-reordering">Proposed Fix — Main Loop Reordering<a class="headerlink" href="#proposed-fix-main-loop-reordering" title="Permanent link">¶</a></h2>
-<p>Currently (<code>app_run()</code> in <code>app.c</code>):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>PollEvents → physics/camera → App Update → Render (GL cmds) → Tracy → SwapBuffers → Collect
+<h2 id="proposed-fix-main-loop-reordering-tested-no-effect">Proposed Fix — Main Loop Reordering (<strong>Tested — No Effect</strong>)<a class="headerlink" href="#proposed-fix-main-loop-reordering-tested-no-effect" title="Permanent link">¶</a></h2>
+<p>The loop reordering approach was implemented and tested:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Before: PollEvents → physics/camera → App Update → Render → Tracy → SwapBuffers → Collect
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>After:  PollEvents → Render → SwapBuffers → physics/camera/App Update → Collect
 </span></code></pre></div>
-<p>Proposed:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>PollEvents → Render (GL cmds) → SwapBuffers → physics/camera/App Update → Collect
-</span></code></pre></div>
-<p>By moving CPU-only work <strong>after</strong> SwapBuffers, the CPU prepares frame N+1 <strong>while</strong> the GPU executes frame N. The pipeline bubble disappears.</p>
-<p><strong>Risks:</strong></p>
-<ul>
-<li>Camera/physics data will be <strong>one frame old</strong> relative to rendering (adds 1 frame of input latency). At 154 FPS this is ~6.5 ms — acceptable for this use case.</li>
-<li>Some updates (resize, async loading) may need careful ordering.</li>
-</ul>
+<p><strong>Result:</strong> No measurable change in GPU utilization or frame time. The reorder was reverted because:</p>
+<ol>
+<li>It added 1 frame of input latency for zero benefit</li>
+<li>The GPU idle gap was caused by X11/Compiz, not by CPU-side work ordering</li>
+</ol>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¶</a></h2>
+<p>The ~63% GPU utilization on Intel Iris Xe under X11/Compiz is a <strong>system-level characteristic</strong>, not an application defect. The GPU renders the scene in ~200 µs but the CPU spends ~625 µs in X11 event polling per frame, starving the GPU of new work.</p>
+<p><strong>Mitigation options (all external to the application):</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Option</th>
+<th style="text-align: left;">Expected Impact</th>
+<th style="text-align: left;">Feasibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Switch to Wayland compositor</td>
+<td style="text-align: left;">GPU → ~100%</td>
+<td style="text-align: left;">Requires desktop environment change</td>
+</tr>
+<tr>
+<td style="text-align: left;">Use a non-compositing WM (e.g., i3, dwm)</td>
+<td style="text-align: left;">Reduced PollEvents overhead</td>
+<td style="text-align: left;">User preference</td>
+</tr>
+<tr>
+<td style="text-align: left;">Disable Compiz compositing (<code>compiz --replace --no-composite</code>)</td>
+<td style="text-align: left;">Partial improvement</td>
+<td style="text-align: left;">May break desktop features</td>
+</tr>
+</tbody>
+</table>
+<p>No application-level code changes are planned for this issue.</p>
 <h2 id="phase-1-tracy-instrumentation-done">Phase 1: Tracy Instrumentation (Done)<a class="headerlink" href="#phase-1-tracy-instrumentation-done" title="Permanent link">¶</a></h2>
 <p>Added <code>PROFILE_ZONE</code> CPU markers at key synchronization points:</p>
 <table>
@@ -3402,8 +3533,46 @@
 </tr>
 </tbody>
 </table>
-<h2 id="phase-2-main-loop-reordering-planned">Phase 2: Main Loop Reordering (Planned)<a class="headerlink" href="#phase-2-main-loop-reordering-planned" title="Permanent link">¶</a></h2>
-<p>Reorganize <code>app_run()</code> to overlap CPU work with GPU execution.</p>
+<h2 id="phase-2-main-loop-reordering-tested-invalidated">Phase 2: Main Loop Reordering (<strong>Tested — Invalidated</strong>)<a class="headerlink" href="#phase-2-main-loop-reordering-tested-invalidated" title="Permanent link">¶</a></h2>
+<p>Reorganized <code>app_run()</code> to move CPU-only work (camera physics, UI update, notifier, sampler) after <code>glfwSwapBuffers()</code>. The change compiled and passed all 60/60 tests but produced <strong>zero improvement</strong> in GPU utilization. The reorder was reverted.</p>
+<p>This led to the discovery of the actual root cause (H6: X11/Compiz overhead) through additional Tracy instrumentation of the full frame loop.</p>
+<h3 id="additional-tracy-zones-phase-2-diagnostic">Additional Tracy Zones (Phase 2 Diagnostic)<a class="headerlink" href="#additional-tracy-zones-phase-2-diagnostic" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Zone</th>
+<th style="text-align: left;">File</th>
+<th style="text-align: left;">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>"Frame Timing"</code></td>
+<td style="text-align: left;"><code>app.c</code></td>
+<td style="text-align: left;">Timing/FPS/sampler block</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"UI &amp; Notifier Update"</code></td>
+<td style="text-align: left;"><code>app.c</code></td>
+<td style="text-align: left;">Action notifier, UI overlay, postprocess time</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"Camera Physics"</code></td>
+<td style="text-align: left;"><code>app.c</code></td>
+<td style="text-align: left;">Fixed timestep physics + rotation interpolation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"PostProcess Resize"</code></td>
+<td style="text-align: left;"><code>app.c</code></td>
+<td style="text-align: left;">Deferred FBO/texture recreation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>"Icosphere Regen"</code></td>
+<td style="text-align: left;"><code>app.c</code></td>
+<td style="text-align: left;">Mesh regeneration on subdivision change</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -3424,7 +3593,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 3, 2026 10:24:02 UTC">April 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 3, 2026 18:03:02 UTC">April 3, 2026</span>
   </span>
 
     
