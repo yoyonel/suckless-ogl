@@ -70,7 +70,54 @@ The optimization was validated using the [Visual Regression Testing System](visu
 
 ---
 
-## 5. Conclusion
+## 5. Dual-Path Runtime Toggle (April 2026)
+
+Following benchmarking on multiple GPUs (Intel Iris Xe iGPU, NVIDIA 950M), the compute downsample path showed no clear performance advantage on older/integrated hardware — and was sometimes slower due to the graphics→compute pipeline transition cost.
+
+Rather than reverting the compute work, the system now supports **both render paths** at runtime:
+
+| Path | Downsample Method | Best For |
+| :--- | :--- | :--- |
+| **Fragment** (default) | Fullscreen quad + FBO | iGPU, older dGPU (Maxwell) |
+| **Compute** | `glDispatchCompute` + imageStore | Modern dGPU with async compute |
+
+### Switching at Runtime
+
+```text
+Ctrl+J  →  Toggle between Fragment / Compute downsample
+J       →  Toggle Auto-Exposure ON/OFF (unchanged)
+Shift+J →  Exposure Debug histogram (unchanged)
+```
+
+A notification ("AE Path: Fragment" / "AE Path: Compute") confirms the switch. The GPU Profiler label also changes dynamically to reflect which path is active.
+
+### Architecture
+
+```mermaid
+graph TD
+    SCENE[Scene Color Texture]
+    SCENE --> SWITCH{active_path?}
+    SWITCH -->|Fragment| FRAG["FS Quad → FBO 64x64"]
+    SWITCH -->|Compute| COMP["CS Dispatch 4x4 WG"]
+    FRAG --> DS_TEX[Downsample Tex R32F]
+    COMP --> DS_TEX
+    DS_TEX --> ADAPT["CS: Adaptation 1x1"]
+    ADAPT --> EXP[Exposure Tex]
+```
+
+Both paths write to the **same shared downsample texture** (R32F 64x64). The adaptation compute shader is unchanged. Resource overhead of the unused path is negligible (1 FBO + 1 shader program in memory).
+
+### Default Path Rationale
+
+Fragment is the default because:
+
+- The rasterizer's spatial texture prefetch is heavily optimized for this workload (4x4 box filter on a 64x64 target)
+- No pipeline transition barrier is needed (stays in graphics context)
+- Proven stable across all tested hardware
+
+---
+
+## 6. Conclusion
 
 While the Compute Downsampler is technically slower than Raster Hardware on some architectures (like Intel integrated graphics), the **Zero-Sync** architecture makes the overall frame more efficient.
 

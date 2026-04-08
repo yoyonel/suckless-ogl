@@ -12,11 +12,14 @@
 static const float EXPOSURE_INITIAL_VAL = 1.20F;
 static const int LUM_DOWNSAMPLE_GROUP_SIZE = 16;
 
+static const char* const AE_PATH_NAMES[AE_PATH_COUNT] = {"Fragment", "Compute"};
+
 int fx_auto_exposure_init(PostProcess* post_processing)
 {
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
-	/* 1. Downsample Logic (64x64 R32F for Compute Image Access) */
+	/* 1. Downsample texture — R32F for compute image access, also
+	 * compatible with fragment path via FBO attachment. */
 	FXTextureConfig ds_config = {.width = LUM_HISTOGRAM_MAP_SIZE,
 	                             .height = LUM_HISTOGRAM_MAP_SIZE,
 	                             .internal_format = GL_R32F,
@@ -29,8 +32,22 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	                             .initial_data = NULL};
 	fx_utils_create_texture(&auto_exp->downsample_tex, &ds_config);
 
-	/* 2. Adaptation Storage (1x1 RGBA32F) */
-	float initialValues[4] = {EXPOSURE_INITIAL_VAL, 0.0F, 0.0F, 1.0F};
+	/* 2. Fragment path: FBO for fullscreen-quad rendering */
+	glGenFramebuffers(1, &auto_exp->downsample_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+	                       GL_TEXTURE_2D, auto_exp->downsample_tex, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
+	    GL_FRAMEBUFFER_COMPLETE) {
+		LOG_ERROR("suckless-ogl.postprocess.ae",
+		          "Lum Downsample FBO incomplete!");
+		fx_auto_exposure_cleanup(post_processing);
+		return 0;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	/* 3. Adaptation Storage (1x1 RGBA32F) */
+	float initial_values[4] = {EXPOSURE_INITIAL_VAL, 0.0F, 0.0F, 1.0F};
 	FXTextureConfig exp_config = {.width = 1,
 	                              .height = 1,
 	                              .internal_format = GL_RGBA32F,
@@ -40,27 +57,35 @@ int fx_auto_exposure_init(PostProcess* post_processing)
 	                              .mag_filter = GL_NEAREST,
 	                              .wrap_s = GL_CLAMP_TO_EDGE,
 	                              .wrap_t = GL_CLAMP_TO_EDGE,
-	                              .initial_data = initialValues};
+	                              .initial_data = initial_values};
 	fx_utils_create_texture(&auto_exp->exposure_tex, &exp_config);
 
-	/* 3. Load Shaders (Both are now Compute Programs) */
-	auto_exp->downsample_shader =
+	/* 4. Load Shaders — both downsample paths + shared adaptation */
+	auto_exp->downsample_frag_shader = shader_load(
+	    "shaders/postprocess.vert", "shaders/lum_downsample.frag");
+	auto_exp->downsample_comp_shader =
 	    shader_load_compute_program("shaders/lum_downsample.comp");
 	auto_exp->adapt_shader =
 	    shader_load_compute_program("shaders/lum_adapt.comp");
 
-	if (!auto_exp->downsample_shader || !auto_exp->adapt_shader) {
+	if (!auto_exp->downsample_frag_shader ||
+	    !auto_exp->downsample_comp_shader || !auto_exp->adapt_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.ae",
 		          "Failed to load auto-exposure shaders");
 		fx_auto_exposure_cleanup(post_processing);
 		return 0;
 	}
 
-	/* Set uniforms once */
-	shader_use(auto_exp->downsample_shader);
-	shader_set_int(auto_exp->downsample_shader, "sceneTexture", 0);
+	/* Set sampler uniforms once */
+	shader_use(auto_exp->downsample_frag_shader);
+	shader_set_int(auto_exp->downsample_frag_shader, "sceneTexture", 0);
+	shader_use(auto_exp->downsample_comp_shader);
+	shader_set_int(auto_exp->downsample_comp_shader, "sceneTexture", 0);
 	shader_use(auto_exp->adapt_shader);
 	shader_set_int(auto_exp->adapt_shader, "lumTexture", 0);
+
+	/* Default to fragment path (proven perf on iGPU / older dGPU) */
+	auto_exp->active_path = AE_PATH_FRAGMENT;
 
 	return 1;
 }
@@ -69,6 +94,10 @@ void fx_auto_exposure_cleanup(PostProcess* post_processing)
 {
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
+	if (auto_exp->downsample_fbo) {
+		glDeleteFramebuffers(1, &auto_exp->downsample_fbo);
+		auto_exp->downsample_fbo = 0;
+	}
 	if (auto_exp->downsample_tex) {
 		glDeleteTextures(1, &auto_exp->downsample_tex);
 		auto_exp->downsample_tex = 0;
@@ -77,8 +106,44 @@ void fx_auto_exposure_cleanup(PostProcess* post_processing)
 		glDeleteTextures(1, &auto_exp->exposure_tex);
 		auto_exp->exposure_tex = 0;
 	}
-	SHADER_SAFE_DESTROY(auto_exp->downsample_shader);
+	SHADER_SAFE_DESTROY(auto_exp->downsample_frag_shader);
+	SHADER_SAFE_DESTROY(auto_exp->downsample_comp_shader);
 	SHADER_SAFE_DESTROY(auto_exp->adapt_shader);
+}
+
+static void downsample_fragment(AutoExposureFX* auto_exp,
+                                PostProcess* post_processing)
+{
+	glViewport(0, 0, LUM_HISTOGRAM_MAP_SIZE, LUM_HISTOGRAM_MAP_SIZE);
+	glBindFramebuffer(GL_FRAMEBUFFER, auto_exp->downsample_fbo);
+
+	shader_use(auto_exp->downsample_frag_shader);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+
+	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, post_processing->width, post_processing->height);
+}
+
+static void downsample_compute(AutoExposureFX* auto_exp,
+                               PostProcess* post_processing)
+{
+	shader_use(auto_exp->downsample_comp_shader);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+
+	glBindImageTexture(1, auto_exp->downsample_tex, 0, GL_FALSE, 0,
+	                   GL_WRITE_ONLY, GL_R32F);
+
+	glDispatchCompute(LUM_HISTOGRAM_MAP_SIZE / LUM_DOWNSAMPLE_GROUP_SIZE,
+	                  LUM_HISTOGRAM_MAP_SIZE / LUM_DOWNSAMPLE_GROUP_SIZE,
+	                  1);
+
+	glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+	                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
 }
 
 void fx_auto_exposure_render(PostProcess* post_processing)
@@ -89,36 +154,32 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
-	/* 1. Downsample Scene -> 64x64 Log Luminance (Compute) */
+	/* 1. Downsample Scene -> 64x64 Log Luminance */
 	{
-		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
-		                   "Auto-Exposure (Downsample)",
+		const char* label = (auto_exp->active_path == AE_PATH_COMPUTE)
+		                        ? "Auto-Exposure Downsample (Compute)"
+		                        : "Auto-Exposure Downsample (Fragment)";
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler, label,
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
 
-		shader_use(auto_exp->downsample_shader);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
-
-		glBindImageTexture(1, auto_exp->downsample_tex, 0, GL_FALSE, 0,
-		                   GL_WRITE_ONLY, GL_R32F);
-
-		/* 8x8 workgroups of 8x8 threads = 64x64 output */
-		glDispatchCompute(
-		    LUM_HISTOGRAM_MAP_SIZE / LUM_DOWNSAMPLE_GROUP_SIZE,
-		    LUM_HISTOGRAM_MAP_SIZE / LUM_DOWNSAMPLE_GROUP_SIZE, 1);
-
-		/* Barrier ensuring that imageStore from downsample is completed
-		 * before adaptation reads from it as a texture. */
-		glMemoryBarrier((GLbitfield)GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-		                (GLbitfield)GL_TEXTURE_FETCH_BARRIER_BIT);
+		if (auto_exp->active_path == AE_PATH_COMPUTE) {
+			downsample_compute(auto_exp, post_processing);
+		} else {
+			downsample_fragment(auto_exp, post_processing);
+		}
 	}
 
-	/* 2. Compute Adaptation (Compute) */
+	/* 2. Compute Adaptation (always compute — single invocation) */
 	{
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
 		                   "Auto-Exposure (Adaptation)",
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
+
+		/* Fragment path needs a texture fetch barrier before compute
+		 * reads the FBO output as a sampled texture */
+		if (auto_exp->active_path == AE_PATH_FRAGMENT) {
+			glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+		}
 
 		shader_use(auto_exp->adapt_shader);
 
@@ -157,4 +218,20 @@ float fx_auto_exposure_get_current_exposure(PostProcess* post_processing)
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, pixel);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	return pixel[0];
+}
+
+void fx_auto_exposure_toggle_path(PostProcess* post_processing)
+{
+	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
+	auto_exp->active_path =
+	    (AEDownsamplePath)((auto_exp->active_path + 1) % AE_PATH_COUNT);
+	LOG_INFO("suckless-ogl.postprocess.ae",
+	         "Auto-Exposure downsample path: %s",
+	         AE_PATH_NAMES[auto_exp->active_path]);
+}
+
+const char* fx_auto_exposure_path_name(PostProcess* post_processing)
+{
+	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
+	return AE_PATH_NAMES[auto_exp->active_path];
 }

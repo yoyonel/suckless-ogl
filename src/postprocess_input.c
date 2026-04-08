@@ -1,5 +1,6 @@
 #include "postprocess_input.h"
 
+#include "effects/fx_auto_exposure.h"
 #include "log.h"
 #include "postprocess_presets.h"
 #include "utils.h"
@@ -291,6 +292,27 @@ static void handle_fxaa_input(const PostProcessInputContext* ctx, int mods)
 	}
 }
 
+static void handle_ae_path_toggle(const PostProcessInputContext* ctx)
+{
+	fx_auto_exposure_toggle_path(ctx->postprocess);
+	const char* pname = fx_auto_exposure_path_name(ctx->postprocess);
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "AE Path: %s", pname);
+	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_auto_exposure_key(const PostProcessInputContext* ctx,
+                                     int mods)
+{
+	if (check_flag(mods, GLFW_MOD_CONTROL)) {
+		handle_ae_path_toggle(ctx);
+	} else {
+		toggle_postfx_complex(ctx, mods, POSTFX_AUTO_EXPOSURE,
+		                      POSTFX_EXPOSURE_DEBUG, "Auto Exposure",
+		                      "Auto Exposure Debug");
+	}
+}
+
 void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
                                   int mods)
 {
@@ -443,10 +465,7 @@ void postprocess_input_handle_key(const PostProcessInputContext* ctx, int key,
 			handle_exposure_input(ctx, key);
 			break;
 		case GLFW_KEY_J:
-			toggle_postfx_complex(ctx, mods, POSTFX_AUTO_EXPOSURE,
-			                      POSTFX_EXPOSURE_DEBUG,
-			                      "Auto Exposure",
-			                      "Auto Exposure Debug");
+			handle_auto_exposure_key(ctx, mods);
 			break;
 		case GLFW_KEY_F6:
 			toggle_postfx(ctx, POSTFX_STENCIL_DEBUG,

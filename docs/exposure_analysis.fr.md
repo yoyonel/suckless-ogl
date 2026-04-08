@@ -40,7 +40,7 @@ Le pipeline d'exposition s'intercale **avant le tonemapping** :
 ```
 Image HDR linéaire
     ↓
-Downsampling de luminance (lum_downsample.frag)
+Downsampling de luminance (Fragment ou Compute, Ctrl+J)
     ↓  [réduction log-average]
 Adaptation temporelle (lum_adapt.comp)
     ↓  [EV progressif]
@@ -53,7 +53,12 @@ Image LDR sRGB finale
 
 ### Downsampling de luminance
 
-Le shader `lum_downsample.frag` réduit l'image en calculant la moyenne logarithmique de la luminance sur une grille de 4×4 pixels à chaque passe :
+Deux chemins de rendu sont disponibles, sélectionnables en temps réel avec `Ctrl+J` :
+
+- **Fragment** (défaut) : `lum_downsample.frag` — quad plein écran rendu dans un FBO. Optimal pour iGPU et GPU discrets anciens.
+- **Compute** : `lum_downsample.comp` — `glDispatchCompute`. Évite la rastérisation mais introduit une transition de pipeline graphics→compute.
+
+Les deux chemins réduisent l'image en calculant la moyenne logarithmique de la luminance sur une grille de 4×4 pixels :
 
 ```glsl
 // Calcul de la luminance perceptuelle

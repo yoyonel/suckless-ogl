@@ -23,12 +23,29 @@ typedef struct {
 	float key_value;  /* Target exposure value (middle gray), def: 1.0 */
 } AutoExposureParams;
 
+/* Downsample render path selection */
+typedef enum {
+	AE_PATH_FRAGMENT, /* Legacy fullscreen-quad fragment shader */
+	AE_PATH_COMPUTE,  /* Compute shader dispatch */
+	AE_PATH_COUNT
+} AEDownsamplePath;
+
 /* Structure regroupant les ressources graphiques de l'Auto Exposure */
 typedef struct {
+	/* Common resources */
 	GLuint downsample_tex;
 	GLuint exposure_tex;
-	Shader* downsample_shader;
 	Shader* adapt_shader;
+
+	/* Fragment path resources */
+	GLuint downsample_fbo;
+	Shader* downsample_frag_shader;
+
+	/* Compute path resources */
+	Shader* downsample_comp_shader;
+
+	/* Active path */
+	AEDownsamplePath active_path;
 } AutoExposureFX;
 
 /* Initialisation des ressources Auto Exposure */
@@ -43,5 +60,11 @@ void fx_auto_exposure_render(struct PostProcess* post_processing);
 /* Récupère la valeur d'exposition actuelle (du GPU) */
 float fx_auto_exposure_get_current_exposure(
     struct PostProcess* post_processing);
+
+/* Toggle entre fragment et compute downsample path */
+void fx_auto_exposure_toggle_path(struct PostProcess* post_processing);
+
+/* Retourne le nom du path actif */
+const char* fx_auto_exposure_path_name(struct PostProcess* post_processing);
 
 #endif /* FX_AUTO_EXPOSURE_H */

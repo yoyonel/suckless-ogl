@@ -95,7 +95,9 @@ Exposure is applied at a specific stage in the final fragment shader:
 
 ## 4. Pre-calculation and Optimizations
 
-*   **Downsample 64x64**: Rather than performing a complex parallel reduction of the full 1080p/4k image, the image is drastically reduced via a very fast fragment shader (`lum_downsample.frag`) which performs an approximate average (4x4 Box Filter with stride). This massively reduces the load for the Compute Shader.
+*   **Downsample 64x64**: The scene is reduced to a 64x64 log-luminance map via an approximate 4x4 Box Filter with stride. Two downsample paths are available, selectable at runtime with `Ctrl+J`:
+    *   **Fragment path** (default): Uses `lum_downsample.frag` with a fullscreen quad rendered into an FBO. Best suited for integrated and older discrete GPUs.
+    *   **Compute path**: Uses `lum_downsample.comp` with `glDispatchCompute`. Avoids rasterization overhead but incurs a graphics→compute pipeline transition. See [Auto-Exposure Optimization Report](auto_exposure_opt_report.md) for benchmarks.
 *   **Single Compute Shader**: Adaptation launches only a single WorkGroup (1,1,1) as it processes only 4096 pixels (64x64). It is extremely lightweight.
 *   **Persistent Texture**: Using a 1x1 texture as storage allows retaining exposure state from one frame to the next without CPU-GPU roundtrips (no `glGetTexImage` needed for logic, everything stays on GPU).
 
