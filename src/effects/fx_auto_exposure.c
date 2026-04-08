@@ -155,18 +155,16 @@ void fx_auto_exposure_render(PostProcess* post_processing)
 	AutoExposureFX* auto_exp = &post_processing->auto_exposure_fx;
 
 	/* 1. Downsample Scene -> 64x64 Log Luminance */
-	{
-		const char* label = (auto_exp->active_path == AE_PATH_COMPUTE)
-		                        ? "Auto-Exposure Downsample (Compute)"
-		                        : "Auto-Exposure Downsample (Fragment)";
-		GPU_STAGE_PROFILER(post_processing->gpu_profiler, label,
+	if (auto_exp->active_path == AE_PATH_COMPUTE) {
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
+		                   "Auto-Exposure Downsample (Compute)",
 		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
-
-		if (auto_exp->active_path == AE_PATH_COMPUTE) {
-			downsample_compute(auto_exp, post_processing);
-		} else {
-			downsample_fragment(auto_exp, post_processing);
-		}
+		downsample_compute(auto_exp, post_processing);
+	} else {
+		GPU_STAGE_PROFILER(post_processing->gpu_profiler,
+		                   "Auto-Exposure Downsample (Fragment)",
+		                   GPU_PROFILER_AUTO_EXPOSURE_COLOR);
+		downsample_fragment(auto_exp, post_processing);
 	}
 
 	/* 2. Compute Adaptation (always compute — single invocation) */
