@@ -1,5 +1,7 @@
 var NAVTREEINDEX6 =
 {
+"scene_8c.html":[6,0,4,35],
+"scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54":[6,0,4,35,26],
 "scene_8c.html#a0ddc0b6b8c680fd1a2562f7ae1ecec40":[6,0,4,35,13],
 "scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2":[6,0,4,35,23],
 "scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3":[6,0,4,35,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX6 =
 "structActionNotification.html#ada8c321e013c078247b46a54feb1c094":[5,0,0,0],
 "structActionNotifier.html":[5,0,1],
 "structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825":[5,0,1,0],
-"structAdaptiveSampleItem.html":[5,0,2],
-"structAdaptiveSampleItem.html#a4fa16b525b008fc260bffc25e742ff78":[5,0,2,2],
-"structAdaptiveSampleItem.html#a7a857915c813957ef237b1ddeb04b1d4":[5,0,2,1]
+"structAdaptiveSampleItem.html":[5,0,2]
 };

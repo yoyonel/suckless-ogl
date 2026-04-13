@@ -258,6 +258,7 @@ $(document).ready(function(){initNavTree('postprocess__input_8c.html',''); initR
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="postprocess__input_8h_source.html">postprocess_input.h</a>&quot;</code><br />
+<code>#include &quot;effects/fx_auto_exposure.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__presets_8h_source.html">postprocess_presets.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
@@ -287,6 +288,10 @@ Functions</h2></td></tr>
 <tr class="separator:a33527b2006eed0f72f45a3b4e7227838"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39d78a9fa6647267f4e54013be2ba57a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#a39d78a9fa6647267f4e54013be2ba57a">handle_fxaa_input</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods)</td></tr>
 <tr class="separator:a39d78a9fa6647267f4e54013be2ba57a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab724a1467783d1a0c32042f2ebe9a8f0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ab724a1467783d1a0c32042f2ebe9a8f0">handle_ae_path_toggle</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx)</td></tr>
+<tr class="separator:ab724a1467783d1a0c32042f2ebe9a8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5c5e3bd95f2a6bdd9c714a9f1e56fc8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ab5c5e3bd95f2a6bdd9c714a9f1e56fc8">handle_auto_exposure_key</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int mods)</td></tr>
+<tr class="separator:ab5c5e3bd95f2a6bdd9c714a9f1e56fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac314e0acb97710d2d9177593506123a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__input_8c.html#ac314e0acb97710d2d9177593506123a4">postprocess_input_handle_key</a> (const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *ctx, int key, int mods)</td></tr>
 <tr class="memdesc:ac314e0acb97710d2d9177593506123a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles key input events related to post-processing.  <a href="postprocess__input_8c.html#ac314e0acb97710d2d9177593506123a4">More...</a><br /></td></tr>
 <tr class="separator:ac314e0acb97710d2d9177593506123a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -310,6 +315,80 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ab724a1467783d1a0c32042f2ebe9a8f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab724a1467783d1a0c32042f2ebe9a8f0">&#9670;&nbsp;</a></span>handle_ae_path_toggle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_ae_path_toggle </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_ab724a1467783d1a0c32042f2ebe9a8f0_cgraph.svg" width="539" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ab5c5e3bd95f2a6bdd9c714a9f1e56fc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c5e3bd95f2a6bdd9c714a9f1e56fc8">&#9670;&nbsp;</a></span>handle_auto_exposure_key()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_auto_exposure_key </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPostProcessInputContext.html">PostProcessInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__input_8c_ab5c5e3bd95f2a6bdd9c714a9f1e56fc8_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="abfa07d9865ce43b54938a67359d48a4a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abfa07d9865ce43b54938a67359d48a4a">&#9670;&nbsp;</a></span>handle_exposure_input()</h2>
 

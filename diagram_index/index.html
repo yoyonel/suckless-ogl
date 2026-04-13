@@ -526,6 +526,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#auto-exposure-optimization-report-march-2026" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auto-Exposure Optimization Report (March 2026)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-transitions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1320,6 +1331,34 @@
     
   
     Post-Process Optimizations (March 2026)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
   
 
     
@@ -2468,6 +2507,34 @@
     
   
     Perf Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
   
 
     
@@ -3904,6 +3971,49 @@ Note over CPU: Can finally continue</code></pre>
   </div>
 </div>
 
+<h2 id="auto-exposure-optimization-report-march-2026"><a href="../auto_exposure_opt_report/">Auto-Exposure Optimization Report (March 2026)</a><a class="headerlink" href="#auto-exposure-optimization-report-march-2026" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#baseline-hybrid" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Baseline (Hybrid)</a> : <span style="opacity: 0.6; font-size: 0.85em;">In the baseline version, the screen-space luminance was calculated using traditional rendering passes.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+SCENE[Scene Color Tex] --&gt; DS[FS: Downsample 64x64]
+DS --&gt; FBO[Downsample FBO]
+FBO -- "RASTER-TO-COMPUTE SYNC" --&gt; ADAPT[CS: Adaptation 1x1]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#optimized-unified-compute" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Optimized (Unified Compute)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The new implementation eliminates the intermediate Framebuffer (FBO) and stays entirely within the GPU's compute domain.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph LR
+SCENE[Scene Color Tex] --&gt; DS[CS: Downsample 64x64]
+DS -- "MEMORY BARRIER (Light)" --&gt; ADAPT[CS: Adaptation 1x1]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">A notification ("AE Path: Fragment" / "AE Path: Compute") confirms the switch. The GPU Profiler label also changes dynamically to reflect which path is active.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+SCENE[Scene Color Texture]
+SCENE --&gt; SWITCH{active_path?}
+SWITCH --&gt;|Fragment| FRAG["FS Quad -&gt; FBO 64x64"]
+SWITCH --&gt;|Compute| COMP["CS Dispatch 4x4 WG"]
+FRAG --&gt; DS_TEX[Downsample Tex R32F]
+COMP --&gt; DS_TEX
+DS_TEX --&gt; ADAPT["CS: Adaptation 1x1"]
+ADAPT --&gt; EXP[Exposure Tex]</code></pre>
+
+  </div>
+</div>
+
 <h2 id="environment-transitions"><a href="../env_transitions/">Environment Transitions</a><a class="headerlink" href="#environment-transitions" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
   <a href="../env_transitions/#state-machine" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">State Machine</a> : <span style="opacity: 0.6; font-size: 0.85em;">Transitions are governed by a state machine in `src/appenv.c`.</span>
@@ -4351,7 +4461,7 @@ D -- Enters New Key --&gt; B</code></pre>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 29, 2026 14:14:55 UTC">March 29, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 15, 2026 12:57:24 UTC">March 15, 2026</span>
   </span>
 
     

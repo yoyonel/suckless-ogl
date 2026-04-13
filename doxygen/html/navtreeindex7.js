@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"structAdaptiveSampleItem.html#a4fa16b525b008fc260bffc25e742ff78":[5,0,2,2],
+"structAdaptiveSampleItem.html#a7a857915c813957ef237b1ddeb04b1d4":[5,0,2,1],
 "structAdaptiveSampleItem.html#a84054cb0f73084f3b3fd66a818cbf405":[5,0,2,0],
 "structAdaptiveSampler.html":[5,0,3],
 "structAdaptiveSampler.html#a0e49d332095e73af87d1859ca8ae0b47":[5,0,3,11],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "structEnvManager.html#a3601c5ddf3a485dd14bc14e193b74850":[5,0,28,6],
 "structEnvManager.html#a56f6c95940e65b8e764a4c5c5b1b8969":[5,0,28,1],
 "structEnvManager.html#a6304914ea761b162c1cdaddca2263c08":[5,0,28,0],
-"structEnvManager.html#aa5e90636632eb8bde621eea379c6c78b":[5,0,28,4],
-"structEnvManager.html#ad2a227d57f5ae8306e86bba1a01678ea":[5,0,28,7],
-"structEnvManager.html#aec13a19ecca640e67db8c532c9099e98":[5,0,28,2]
+"structEnvManager.html#aa5e90636632eb8bde621eea379c6c78b":[5,0,28,4]
 };

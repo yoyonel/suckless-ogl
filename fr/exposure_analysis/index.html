@@ -1319,6 +1319,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../auto_exposure_opt_report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto-Exposure Opt. Report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../motion_blur_analysis/" class="md-nav__link">
         
   
@@ -2467,6 +2495,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../perf_benchmarking_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Performance Benchmarking Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../renderdoc_guide/" class="md-nav__link">
         
   
@@ -3216,7 +3272,7 @@
 <p>Le pipeline d'exposition s'intercale <strong>avant le tonemapping</strong> :</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Image HDR linéaire
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    ↓
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Downsampling de luminance (lum_downsample.frag)
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Downsampling de luminance (Fragment ou Compute, Ctrl+J)
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ↓  [réduction log-average]
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>Adaptation temporelle (lum_adapt.comp)
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    ↓  [EV progressif]
@@ -3227,7 +3283,12 @@
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>Image LDR sRGB finale
 </span></code></pre></div>
 <h3 id="downsampling-de-luminance">Downsampling de luminance<a class="headerlink" href="#downsampling-de-luminance" title="Permanent link">¶</a></h3>
-<p>Le shader <code>lum_downsample.frag</code> réduit l'image en calculant la moyenne logarithmique de la luminance sur une grille de 4×4 pixels à chaque passe :</p>
+<p>Deux chemins de rendu sont disponibles, sélectionnables en temps réel avec <code>Ctrl+J</code> :</p>
+<ul>
+<li><strong>Fragment</strong> (défaut) : <code>lum_downsample.frag</code> — quad plein écran rendu dans un FBO. Optimal pour iGPU et GPU discrets anciens.</li>
+<li><strong>Compute</strong> : <code>lum_downsample.comp</code> — <code>glDispatchCompute</code>. Évite la rastérisation mais introduit une transition de pipeline graphics→compute.</li>
+</ul>
+<p>Les deux chemins réduisent l'image en calculant la moyenne logarithmique de la luminance sur une grille de 4×4 pixels :</p>
 <div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// Calcul de la luminance perceptuelle</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">luma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">color</span><span class="p">.</span><span class="n">rgb</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="mf">0.2126</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7152</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0722</span><span class="p">));</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Compression logarithmique pour les scènes HDR</span>
@@ -3314,7 +3375,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="8 avril 2026 16:21:25 UTC">8 avril 2026</span>
   </span>
 
     

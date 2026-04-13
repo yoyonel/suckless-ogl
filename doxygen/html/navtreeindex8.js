@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"structEnvManager.html#ad2a227d57f5ae8306e86bba1a01678ea":[5,0,28,7],
+"structEnvManager.html#aec13a19ecca640e67db8c532c9099e98":[5,0,28,2],
 "structExposureParams.html":[5,0,29],
 "structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7":[5,0,29,0],
 "structFXAAParams.html":[5,0,32],
@@ -247,7 +249,5 @@ var NAVTREEINDEX8 =
 "structPostProcess.html#a11699f767b7388da6d8ee5a3b3463e64":[5,0,67,19],
 "structPostProcess.html#a12555122594114b529f6b219d4be1f72":[5,0,67,30],
 "structPostProcess.html#a157463ca294a1f467910df5773a7d812":[5,0,67,26],
-"structPostProcess.html#a28bbef0312027aa0db7639f20f68ef24":[5,0,67,27],
-"structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20":[5,0,67,5],
-"structPostProcess.html#a30dfc3030196ea124e2134aec8776e95":[5,0,67,0]
+"structPostProcess.html#a28bbef0312027aa0db7639f20f68ef24":[5,0,67,27]
 };
