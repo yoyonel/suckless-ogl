@@ -47,6 +47,7 @@ just ci-docker-all  # Full local CI matrix (Docker)
 6. **NO suppression of warnings/errors** — Fix issues at the source; never bypass them
 7. **NEVER modify reference test images** — Files matching `tests/references/ref_*.png` are the visual regression baseline from `master`. They must NEVER be replaced, overwritten, or regenerated without the user's **explicit approval and visual validation**. When in doubt, restore them from `origin/master` with `git checkout origin/master -- tests/references/ref_*.png`
 8. **MVP first** — Always start with a Minimum Viable change on a limited scope to validate the approach before scaling to the full codebase. Do NOT batch-modify all files upfront; prove the fix on one representative case, get user validation, then generalize
+9. **Impact assessment before implementation** — Before starting any task that involves architectural changes, GPU pipeline modifications, or significant refactoring, FIRST produce a written analysis covering: (a) expected performance impact (gain/regression, with reasoning), (b) risks and unknowns, (c) resource cost (tokens, time, complexity). For GPU/rendering work, this means predicting whether compute vs raster will win based on the workload profile (bandwidth-bound? ALU-bound? occupancy?). Present the analysis to the user for go/no-go BEFORE writing any code. A 5-minute analysis can save hours of wasted implementation
 
 ## Detailed Rules (see instruction files)
 
@@ -139,14 +140,15 @@ Strongly prefer existing tools over custom scripts. Move complex logic to `scrip
 ## 🔄 Typical Feature Workflow
 
 1. **Consult project board** — Pick an issue from the current milestone
-2. **Create feature branch** (`feat/my-feature`)
-3. **Code implementation** — Write code + tests + docs
-4. **Quality gate** — `just format && just lint && just test-all`
-5. **Commit** — SoC, Conventional Commits format
-6. **Local CI** — `just ci-docker-all`
-7. **Open PR** — Labels + milestone + project link + `Closes #N` (only on explicit user request)
-8. **Monitor CI** — Local + remote in parallel
-9. **NEVER** `git push origin master`
+2. **Impact assessment** — Analyze expected gains, risks, perf profile (see Golden Rule 9). Get user go/no-go
+3. **Create feature branch** (`feat/my-feature`)
+4. **Code implementation** — Write code + tests + docs
+5. **Quality gate** — `just format && just lint && just test-all`
+6. **Commit** — SoC, Conventional Commits format
+7. **Local CI** — `just ci-docker-all`
+8. **Open PR** — Labels + milestone + project link + `Closes #N` (only on explicit user request)
+9. **Monitor CI** — Local + remote in parallel
+10. **NEVER** `git push origin master`
 
 ---
 
