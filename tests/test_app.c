@@ -357,7 +357,9 @@ static void verify_reference_image(int width, int height,
 		    face_name, (double)(diff_percentage * PERCENTAGE_FACTOR));
 	}
 
-	stbi_image_free(ref_pixels);
+	if (!is_cached) {
+		stbi_image_free(ref_pixels);
+	}
 
 	// Allow up to 2% difference for MSAA/driver noise
 	TEST_ASSERT_FLOAT_WITHIN(DIFF_PERCENTAGE_TOLERANCE, 0.0F,
