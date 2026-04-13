@@ -1,0 +1,51 @@
+#version 440 core
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+
+/* Entrée: Texture Scène HDR */
+layout(binding = 0) uniform sampler2D sceneTexture;
+
+/* Sortie: Texture 64x64 Log Luminance (Image Access) */
+layout(r32f, binding = 1) uniform image2D outLumImage;
+
+const vec3 LUMINANCE_VECTOR = vec3(0.2126, 0.7152, 0.0722);
+
+void main()
+{
+	ivec2 pixelCoord = ivec2(gl_GlobalInvocationID.xy);
+	if (pixelCoord.x >= 64 || pixelCoord.y >= 64) {
+		return;
+	}
+
+	/* Calcul des TexCoords pour le centre de ce bloc 64x64 */
+	vec2 texCoords = (vec2(pixelCoord) + 0.5) / 64.0;
+	vec2 texSize = vec2(textureSize(sceneTexture, 0));
+	vec2 onePixel = 1.0 / texSize;
+
+	float totalLogLum = 0.0;
+	float weight = 0.0;
+
+	/* Unrolled 4x4 loop (Stride 4)
+	   Offsets: -6, -2, 2, 6
+	   Relative to center: -1.5, -0.5, 0.5, 1.5 in 'stride-4' units
+	*/
+
+	for (int i = 0; i < 16; ++i) {
+		float ox = (float(i % 4) - 1.5) * 4.0;
+		float oy = (float(i / 4) - 1.5) * 4.0;
+
+		// Use textureLod to avoid implicit derivative overhead in compute
+		vec3 color = textureLod(sceneTexture, texCoords + vec2(ox, oy) * onePixel, 0).rgb;
+		float lum = dot(color, LUMINANCE_VECTOR);
+
+		/* Masquage des pixels trop sombres (0.05) */
+		if (lum > 0.05 && !isinf(lum)) {
+			totalLogLum += log2(lum);
+			weight += 1.0;
+		}
+	}
+
+	float result = (weight > 0.0) ? (totalLogLum / weight) : -100.0;
+
+	imageStore(outLumImage, pixelCoord, vec4(result, 0.0, 0.0, 1.0));
+}

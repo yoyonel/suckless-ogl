@@ -38,6 +38,9 @@ To maintain **ISO parity with master**, the Compute Shader must strictly replica
 
 4. **Barrier**: Add `glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT)` before the adaptation step.
 
+> [!TIP]
+> Pour une analyse détaillée des gains et du protocole de mesure, consultez le [Rapport d'Optimisation Auto-Exposure](auto_exposure_opt_report.md).
+
 ---
 
 ## Part 2: Bloom (Single-Pass Downsampling)

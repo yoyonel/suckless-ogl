@@ -80,6 +80,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_security\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_extract\\.c$")
 
 # Exclure les tests spécifiques à POSIX sur Windows
 if(WIN32)
@@ -697,3 +698,9 @@ if(WIN32)
 else()
     add_test(NAME test_texture_security COMMAND test_texture_security)
 endif()
+# =============================================================================
+# IBL EXTRACTION TOOL (STANDALONE)
+# =============================================================================
+add_executable(test_ibl_extract test_ibl_extract.c)
+target_link_libraries(test_ibl_extract PRIVATE app_testlib)
+# No add_test because it's a CLI tool for verification, not a unit test.

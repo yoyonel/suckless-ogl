@@ -750,6 +750,38 @@ Note over CPU: Can finally continue
 </div>
 
 
+## [Auto-Exposure Optimization Report (March 2026)](../auto_exposure_opt_report/)
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#baseline-hybrid" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Baseline (Hybrid)</a> : <span style="opacity: 0.6; font-size: 0.85em;">In the baseline version, the screen-space luminance was calculated using traditional rendering passes.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+SCENE[Scene Color Tex] --> DS[FS: Downsample 64x64]
+DS --> FBO[Downsample FBO]
+FBO -- "RASTER-TO-COMPUTE SYNC" --> ADAPT[CS: Adaptation 1x1]
+ADAPT --> EXP[Exposure Tex]
+```
+
+  </div>
+</div>
+
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#optimized-unified-compute" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Optimized (Unified Compute)</a> : <span style="opacity: 0.6; font-size: 0.85em;">The new implementation eliminates the intermediate Framebuffer (FBO) and stays entirely within the GPU's compute domain.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph LR
+SCENE[Scene Color Tex] --> DS[CS: Downsample 64x64]
+DS -- "MEMORY BARRIER (Light)" --> ADAPT[CS: Adaptation 1x1]
+ADAPT --> EXP[Exposure Tex]
+```
+
+  </div>
+</div>
+
+
 ## [Environment Transitions](../env_transitions/)
 
 <div class="diagram-item">

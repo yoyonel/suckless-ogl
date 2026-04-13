@@ -109,6 +109,10 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_J, GLFW_MOD_SHIFT, "Exposure Debug",
 	            "Shows the luminance histogram for auto-exposure tuning.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_J, GLFW_MOD_CONTROL, "AE Path: Frag/Compute",
+	            "Switches auto-exposure downsample between fragment and "
+	            "compute shader.",
+	            BINDING_CAT_POSTFX, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_V, 0, "Toggle Vignette",
 	            "Toggles the dark border vignette effect.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);

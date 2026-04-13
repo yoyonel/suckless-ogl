@@ -43,9 +43,9 @@ static const int FACTOR_DIV2 = 2;
 static const int COORD_DEC = 1;
 static const float CAMERA_DIST = 25.0F;
 static const float ANGLE_DISPLACEMENT = 2.0F;
-static const int PATH_BUF_SIZE = 256;
-static const int ERR_BUF_SIZE = 512;
-static const uint64_t DEFAULT_SYNC_TIMEOUT = 1000000000ULL;
+#define PATH_BUF_SIZE 256
+#define ERR_BUF_SIZE 512
+#define DEFAULT_SYNC_TIMEOUT 1000000000ULL
 
 typedef struct {
 	const char* name;
@@ -64,6 +64,77 @@ static const ViewPoint G_VIEWPOINTS[] = {
     {"bottom", {0, -CAMERA_DIST, 0}, -90.0F, 90.0F, {0, 0, 1}}};
 
 static const int NUM_VIEWPOINTS = sizeof(G_VIEWPOINTS) / sizeof(ViewPoint);
+
+typedef struct {
+	char name[PATH_BUF_SIZE];
+	unsigned char* data;
+	int width;
+	int height;
+} CachedRef;
+
+#define MAX_CACHED_REFS 128
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static CachedRef g_ref_cache[MAX_CACHED_REFS];
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static int g_ref_cache_count = 0;
+
+static void preload_reference(const char* test_name)
+{
+	if (g_ref_cache_count >= MAX_CACHED_REFS) {
+		return;
+	}
+
+	char ref_path[PATH_BUF_SIZE];
+	(void)snprintf(ref_path, sizeof(ref_path), "tests/ref_%s.png",
+	               test_name);
+
+	int img_width = 0;
+	int img_height = 0;
+	int channels = 0;
+	unsigned char* data =
+	    stbi_load(ref_path, &img_width, &img_height, &channels, 0);
+	if (data) {
+		(void)strncpy(g_ref_cache[g_ref_cache_count].name, test_name,
+		              PATH_BUF_SIZE - 1);
+		g_ref_cache[g_ref_cache_count].data = data;
+		g_ref_cache[g_ref_cache_count].width = img_width;
+		g_ref_cache[g_ref_cache_count].height = img_height;
+		g_ref_cache_count++;
+	}
+}
+
+static void preload_all_references(void)
+{
+	const int num_test_cases = 6;
+	const char* test_cases[] = {"bloom", "auto_exposure", "fxaa",
+	                            "none",  "dof",           "motion_blur"};
+	for (int case_idx = 0; case_idx < num_test_cases; case_idx++) {
+		for (int vp_idx = 0; vp_idx < NUM_VIEWPOINTS; vp_idx++) {
+			char full_name[PATH_BUF_SIZE];
+			(void)snprintf(
+			    full_name, sizeof(full_name), "%s_subtle_%s",
+			    G_VIEWPOINTS[vp_idx].name, test_cases[case_idx]);
+			preload_reference(full_name);
+		}
+	}
+	// Also preload multi-view faces
+	const int num_faces = 6;
+	const char* faces[] = {"front", "back", "left",
+	                       "right", "top",  "bottom"};
+	for (int face_idx = 0; face_idx < num_faces; face_idx++) {
+		preload_reference(faces[face_idx]);
+	}
+}
+
+static CachedRef* get_cached_reference(const char* test_name)
+{
+	for (int i = 0; i < g_ref_cache_count; i++) {
+		if (strcmp(g_ref_cache[i].name, test_name) == 0) {
+			return &g_ref_cache[i];
+		}
+	}
+	return NULL;
+}
 
 void setUp(void)
 {
@@ -112,6 +183,9 @@ void setUp(void)
 			             GL_STREAM_READ);
 		}
 		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+		// Preload all reference images into RAM
+		preload_all_references();
 	} else if (g_cached_hdr_texture != 0) {
 		// Reuse cached texture for subsequent tests
 		g_test_app.scene.hdr_texture = g_cached_hdr_texture;
@@ -149,32 +223,82 @@ static void flip_image_vertically(int image_width, int image_height,
 	free(row_tmp);
 }
 
+/**
+ * Capture framebuffer to CPU memory using PBO for optimization.
+ */
+static void capture_frame_pbo(unsigned char* pixels, int fb_width,
+                              int fb_height, size_t pixel_data_size)
+{
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	if (g_pbo[0] != 0) {
+		int current_pbo = g_pbo_index;
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[current_pbo]);
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, 0);
+
+		if (g_pbo_sync[current_pbo]) {
+			glDeleteSync(g_pbo_sync[current_pbo]);
+		}
+		g_pbo_sync[current_pbo] =
+		    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+		glClientWaitSync(g_pbo_sync[current_pbo],
+		                 GL_SYNC_FLUSH_COMMANDS_BIT,
+		                 DEFAULT_SYNC_TIMEOUT);
+
+		void* mapped = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+		if (mapped) {
+			(void)memcpy(pixels, mapped, pixel_data_size);
+			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+		}
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+		g_pbo_index = (g_pbo_index + 1) % 2;
+	} else {
+		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+		             GL_UNSIGNED_BYTE, pixels);
+	}
+}
+
 static void verify_reference_image(int width, int height,
                                    unsigned char* current_pixels,
                                    const char* face_name)
 {
 	size_t pixel_data_size = (size_t)(width * height * BYTES_PER_PIXEL);
 
-	char ref_path[PATH_BUF_SIZE];
-	(void)snprintf(ref_path, sizeof(ref_path),
-	               "tests/references/ref_%s.png", face_name);
-
-	// Load reference frame (PNG)
+	unsigned char* ref_pixels = NULL;
 	int ref_w = 0;
 	int ref_h = 0;
-	int ref_channels = 0;
-	unsigned char* ref_pixels =
-	    stbi_load(ref_path, &ref_w, &ref_h, &ref_channels, BYTES_PER_PIXEL);
+	bool is_cached = false;
+
+	// Try cache first
+	CachedRef* cached = get_cached_reference(face_name);
+	if (cached) {
+		ref_pixels = cached->data;
+		ref_w = cached->width;
+		ref_h = cached->height;
+		is_cached = true;
+	} else {
+		// Fallback to disk
+		char ref_path[PATH_BUF_SIZE];
+		(void)snprintf(ref_path, sizeof(ref_path),
+		               "tests/references/ref_%s.png", face_name);
+		int ref_channels = 0;
+		ref_pixels = stbi_load(ref_path, &ref_w, &ref_h, &ref_channels,
+		                       BYTES_PER_PIXEL);
+	}
+
 	if (ref_pixels == NULL) {
 		char err_msg[ERR_BUF_SIZE];
 		(void)snprintf(err_msg, sizeof(err_msg),
-		               "Reference image %s not found.", ref_path);
+		               "Reference image %s not found.", face_name);
 		TEST_FAIL_MESSAGE(err_msg);
 		return;
 	}
 
 	if (ref_w != width || ref_h != height) {
-		stbi_image_free(ref_pixels);
+		if (!is_cached) {
+			stbi_image_free(ref_pixels);
+		}
 		TEST_FAIL_MESSAGE("Reference image dimensions mismatch");
 		return;
 	}
@@ -233,11 +357,186 @@ static void verify_reference_image(int width, int height,
 		    face_name, (double)(diff_percentage * PERCENTAGE_FACTOR));
 	}
 
-	stbi_image_free(ref_pixels);
+	if (!is_cached) {
+		stbi_image_free(ref_pixels);
+	}
 
 	// Allow up to 2% difference for MSAA/driver noise
 	TEST_ASSERT_FLOAT_WITHIN(DIFF_PERCENTAGE_TOLERANCE, 0.0F,
 	                         diff_percentage);
+}
+
+typedef void (*PreRenderFunc)(void*);
+
+static void pipeline_run_test_loop(const char* test_tag,
+                                   PreRenderFunc pre_render, void* user_data)
+{
+	int fb_width = 0;
+	int fb_height = 0;
+	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+	size_t pixel_data_size =
+	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
+
+	unsigned char* pixels[2];
+	pixels[0] = (unsigned char*)malloc(pixel_data_size);
+	pixels[1] = (unsigned char*)malloc(pixel_data_size);
+
+	for (int i = 0; i < NUM_VIEWPOINTS + 1; i++) {
+		int current = i % 2;
+		int prev = (i + 1) % 2;
+
+		// --- STEP A: Start Render N (if not done) ---
+		if (i < NUM_VIEWPOINTS) {
+			const ViewPoint* vpoint = &G_VIEWPOINTS[i];
+			glm_vec3_copy((vec3){vpoint->pos[0], vpoint->pos[1],
+			                     vpoint->pos[2]},
+			              g_test_app.camera.position);
+			glm_vec3_copy(
+			    (vec3){vpoint->world_up[0], vpoint->world_up[1],
+			           vpoint->world_up[2]},
+			    g_test_app.camera.world_up);
+			g_test_app.camera.yaw = vpoint->yaw;
+			g_test_app.camera.pitch = vpoint->pitch;
+			camera_update_vectors(&g_test_app.camera);
+
+			if (pre_render) {
+				pre_render(user_data);
+			}
+
+			app_update(&g_test_app);
+			renderer_draw_frame(
+			    &g_test_app, &g_test_app.scene,
+			    &g_test_app.postprocess, &g_test_app.camera,
+			    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
+			    &g_test_app.env_mgr, &g_test_app.notifier,
+			    &g_test_app.effect_bench, g_test_app.width,
+			    g_test_app.height, g_test_app.delta_time,
+			    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+
+			// Start async readback for Viewpoint I
+			glPixelStorei(GL_PACK_ALIGNMENT, 1);
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[current]);
+			glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+			             GL_UNSIGNED_BYTE, 0);
+
+			if (g_pbo_sync[current]) {
+				glDeleteSync(g_pbo_sync[current]);
+			}
+			g_pbo_sync[current] =
+			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+		}
+
+		// --- STEP B: Verify Render N-1 ---
+		if (i > 0) {
+			int view_idx = i - 1;
+			const ViewPoint* prev_vpoint = &G_VIEWPOINTS[view_idx];
+
+			// Wait for PBO Readback of Viewpoint N-1
+			glClientWaitSync(g_pbo_sync[prev],
+			                 GL_SYNC_FLUSH_COMMANDS_BIT,
+			                 DEFAULT_SYNC_TIMEOUT);
+
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[prev]);
+			void* mapped =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (mapped) {
+				(void)memcpy(pixels[prev], mapped,
+				             pixel_data_size);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+			flip_image_vertically(fb_width, fb_height,
+			                      pixels[prev]);
+
+			char test_name[PATH_BUF_SIZE];
+			if (test_tag) {
+				(void)snprintf(test_name, sizeof(test_name),
+				               "%s_subtle_%s",
+				               prev_vpoint->name, test_tag);
+			} else {
+				// Base integration test (multi-view)
+				(void)strncpy(test_name, prev_vpoint->name,
+				              PATH_BUF_SIZE - 1);
+			}
+
+			if (getenv("GEN_REFS") != NULL) {
+				char ref_path[PATH_BUF_SIZE];
+				(void)snprintf(ref_path, sizeof(ref_path),
+				               "tests/references/ref_%s.png",
+				               test_name);
+				(void)stbi_write_png(
+				    ref_path, fb_width, fb_height,
+				    BYTES_PER_PIXEL, pixels[prev],
+				    fb_width * BYTES_PER_PIXEL);
+			} else {
+				verify_reference_image(fb_width, fb_height,
+				                       pixels[prev], test_name);
+			}
+		}
+	}
+
+	free(pixels[0]);
+	free(pixels[1]);
+}
+
+static void apply_subtle_none(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+}
+
+static void apply_subtle_bloom(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_BLOOM);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+}
+
+static void apply_subtle_auto_exposure(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+	g_test_app.log_gpu_metrics = 1;
+
+	// Note: warmup frames are handled inside the app_update cycles in the
+	// main loop. We might need a special case for this if 16 frames is not
+	// enough.
+}
+
+static void apply_subtle_fxaa(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_FXAA);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+}
+
+static void apply_subtle_dof(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_DOF);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
+}
+
+static void apply_subtle_motion_blur(void* data)
+{
+	(void)data;
+	postprocess_apply_preset(&g_test_app.postprocess, &PRESET_SUBTLE);
+	postprocess_enable(&g_test_app.postprocess, POSTFX_MOTION_BLUR);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
+	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
 }
 
 /**
@@ -247,196 +546,8 @@ static void test_app_render_multi_view(void)
 {
 	TEST_ASSERT_TRUE_MESSAGE(g_app_initialized,
 	                         "App should be initialized");
-
-	// Get actual framebuffer dimensions
-	int fb_width = 0;
-	int fb_height = 0;
-	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
-
-	// Texture should already be loaded and cached from setUp()
-	TEST_ASSERT_NOT_EQUAL_MESSAGE(0, g_test_app.scene.hdr_texture,
-	                              "HDR texture never loaded");
-
-	size_t pixel_data_size =
-	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
-	unsigned char* current_pixels = (unsigned char*)malloc(pixel_data_size);
-	TEST_ASSERT_NOT_NULL(current_pixels);
-
-	int capture_mode = (getenv("GEN_REFS") != NULL);
-
-	for (int i = 0; i < NUM_VIEWPOINTS; i++) {
-		const ViewPoint* vpoint = &G_VIEWPOINTS[i];
-		printf("[INFO] Testing viewpoint: %s\n", vpoint->name);
-
-		// Set camera
-		glm_vec3_copy(
-		    (vec3){vpoint->pos[0], vpoint->pos[1], vpoint->pos[2]},
-		    g_test_app.camera.position);
-		glm_vec3_copy((vec3){vpoint->world_up[0], vpoint->world_up[1],
-		                     vpoint->world_up[2]},
-		              g_test_app.camera.world_up);
-		g_test_app.camera.yaw = vpoint->yaw;
-		g_test_app.camera.pitch = vpoint->pitch;
-		camera_update_vectors(&g_test_app.camera);
-
-		// Render
-		renderer_draw_frame(
-		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
-		    &g_test_app.camera, &g_test_app.gpu_profiler,
-		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
-		    &g_test_app.notifier, &g_test_app.effect_bench,
-		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
-		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
-
-		// Async capture using PBO (optimization#2)
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-
-		// Bind PBO for async DMA transfer
-		int current_pbo = g_pbo_index;
-		int next_pbo = (g_pbo_index + 1) % 2;
-
-		// Start async read to PBO
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[current_pbo]);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, 0);
-
-		// Fence the read
-		if (g_pbo_sync[current_pbo]) {
-			glDeleteSync(g_pbo_sync[current_pbo]);
-		}
-		g_pbo_sync[current_pbo] =
-		    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-
-		// Process first frame immediately (no previous frame)
-		if (i == 0) {
-			// Must wait for current fence
-			glClientWaitSync(g_pbo_sync[current_pbo],
-			                 GL_SYNC_FLUSH_COMMANDS_BIT,
-			                 DEFAULT_SYNC_TIMEOUT);
-			void* mapped =
-			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-			if (mapped) {
-				(void)memcpy(current_pixels, mapped,
-				             pixel_data_size);
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-
-				// Flip for PNG/comparison
-				flip_image_vertically(fb_width, fb_height,
-				                      current_pixels);
-
-				if (capture_mode) {
-					char ref_path[PATH_BUF_SIZE];
-					(void)snprintf(
-					    ref_path, sizeof(ref_path),
-					    "tests/references/ref_%s.png",
-					    vpoint->name);
-					(void)stbi_write_png(
-					    ref_path, fb_width, fb_height,
-					    BYTES_PER_PIXEL, current_pixels,
-					    fb_width * BYTES_PER_PIXEL);
-					printf(
-					    "[INFO] Reference generated: %s\n",
-					    ref_path);
-				} else {
-					verify_reference_image(
-					    fb_width, fb_height, current_pixels,
-					    vpoint->name);
-				}
-			}
-		}
-
-		// Map previous frame's PBO (which should now be ready)
-		if (i > 0) {
-			// Wait for previous fence
-			if (g_pbo_sync[next_pbo]) {
-				glClientWaitSync(g_pbo_sync[next_pbo],
-				                 GL_SYNC_FLUSH_COMMANDS_BIT,
-				                 DEFAULT_SYNC_TIMEOUT);
-			}
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[next_pbo]);
-			void* mapped =
-			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-			if (mapped) {
-				(void)memcpy(current_pixels, mapped,
-				             pixel_data_size);
-				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-
-				// Flip for PNG/comparison
-				flip_image_vertically(fb_width, fb_height,
-				                      current_pixels);
-
-				// Verify/generate for the PREVIOUS viewpoint
-				// (i-1)
-				const ViewPoint* prev_vpoint =
-				    &G_VIEWPOINTS[i - 1];
-				if (capture_mode) {
-					char ref_path[PATH_BUF_SIZE];
-					(void)snprintf(
-					    ref_path, sizeof(ref_path),
-					    "tests/references/ref_%s.png",
-					    prev_vpoint->name);
-					(void)stbi_write_png(
-					    ref_path, fb_width, fb_height,
-					    BYTES_PER_PIXEL, current_pixels,
-					    fb_width * BYTES_PER_PIXEL);
-					printf(
-					    "[INFO] Reference generated: %s\n",
-					    ref_path);
-				} else {
-					// Verify previous viewpoint
-					verify_reference_image(
-					    fb_width, fb_height, current_pixels,
-					    prev_vpoint->name);
-				}
-			}
-		}
-
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-		g_pbo_index = next_pbo;
-	}
-
-	// Read the last frame from the PBO (we're one frame behind)
-	if (NUM_VIEWPOINTS > 0) {
-		int last_pbo = (g_pbo_index + 1) % 2;
-		if (g_pbo_sync[last_pbo]) {
-			glClientWaitSync(g_pbo_sync[last_pbo],
-			                 GL_SYNC_FLUSH_COMMANDS_BIT,
-			                 DEFAULT_SYNC_TIMEOUT);
-		}
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[last_pbo]);
-		void* mapped = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-		if (mapped) {
-			(void)memcpy(current_pixels, mapped, pixel_data_size);
-			glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-
-			// Flip for PNG/comparison
-			flip_image_vertically(fb_width, fb_height,
-			                      current_pixels);
-
-			const ViewPoint* last_vpoint =
-			    &G_VIEWPOINTS[NUM_VIEWPOINTS - 1];
-			if (capture_mode) {
-				char ref_path[PATH_BUF_SIZE];
-				(void)snprintf(ref_path, sizeof(ref_path),
-				               "tests/references/ref_%s.png",
-				               last_vpoint->name);
-				(void)stbi_write_png(
-				    ref_path, fb_width, fb_height,
-				    BYTES_PER_PIXEL, current_pixels,
-				    fb_width * BYTES_PER_PIXEL);
-				printf("[INFO] Reference generated: %s\n",
-				       ref_path);
-			} else {
-				// Verify last viewpoint
-				verify_reference_image(fb_width, fb_height,
-				                       current_pixels,
-				                       last_vpoint->name);
-			}
-		}
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-	}
-
-	free(current_pixels);
+	g_test_app.postprocess.active_effects = 0;
+	pipeline_run_test_loop(NULL, NULL, NULL);
 }
 
 /**
@@ -492,9 +603,8 @@ static void test_app_render_subtle_bloom(void)
 		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
 		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		capture_frame_pbo(pixels, fb_width, fb_height, pixel_data_size);
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
@@ -572,14 +682,17 @@ static void test_app_render_subtle_auto_exposure(void)
 		                         &PRESET_SUBTLE);
 		postprocess_enable(&g_test_app.postprocess,
 		                   POSTFX_AUTO_EXPOSURE);
+		g_test_app.log_gpu_metrics = 1;
 
 		// Disable Vignette and Grain as requested
 		postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
 		postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
 
-		// Warmup auto-exposure (128 frames)
-		const int warmup_frames = 128;
+		// Warmup auto-exposure (16 frames instead of 128 for speed)
+		const int warmup_frames = 16;
+		g_test_app.delta_time = 1.0 / 60.0;
 		for (int frame = 0; frame < warmup_frames; frame++) {
+			g_test_app.frame_count++;
 			app_update(&g_test_app);
 			renderer_draw_frame(
 			    &g_test_app, &g_test_app.scene,
@@ -591,9 +704,8 @@ static void test_app_render_subtle_auto_exposure(void)
 			    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 		}
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		capture_frame_pbo(pixels, fb_width, fb_height, pixel_data_size);
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
@@ -675,9 +787,8 @@ static void test_app_render_subtle_fxaa(void)
 		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
 		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		capture_frame_pbo(pixels, fb_width, fb_height, pixel_data_size);
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
@@ -755,9 +866,8 @@ static void test_app_render_subtle_none(void)
 		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
 		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		capture_frame_pbo(pixels, fb_width, fb_height, pixel_data_size);
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
@@ -839,9 +949,8 @@ static void test_app_render_subtle_dof(void)
 		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
 		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		capture_frame_pbo(pixels, fb_width, fb_height, pixel_data_size);
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
@@ -954,9 +1063,37 @@ static void test_app_render_subtle_motion_blur(void)
 		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
 		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
 
+		// Optimization: Use PBO if available
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
-		             GL_UNSIGNED_BYTE, pixels);
+		if (g_pbo[0] != 0) {
+			int current_pbo = g_pbo_index;
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, g_pbo[current_pbo]);
+			glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+			             GL_UNSIGNED_BYTE, 0);
+
+			if (g_pbo_sync[current_pbo]) {
+				glDeleteSync(g_pbo_sync[current_pbo]);
+			}
+			g_pbo_sync[current_pbo] =
+			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+			glClientWaitSync(g_pbo_sync[current_pbo],
+			                 GL_SYNC_FLUSH_COMMANDS_BIT,
+			                 DEFAULT_SYNC_TIMEOUT);
+
+			void* mapped =
+			    glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+			if (mapped) {
+				(void)memcpy(pixels, mapped, pixel_data_size);
+				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+			}
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+			g_pbo_index = (g_pbo_index + 1) % 2;
+		} else {
+			glReadPixels(0, 0, fb_width, fb_height, GL_RGB,
+			             GL_UNSIGNED_BYTE, pixels);
+		}
+
 		flip_image_vertically(fb_width, fb_height, pixels);
 
 		char test_name[PATH_BUF_SIZE];
