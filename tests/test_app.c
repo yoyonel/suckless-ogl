@@ -16,22 +16,6 @@
 #include <string.h>
 #include <time.h>
 
-// Instance App partagée entre tous les tests
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static App g_test_app;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static bool g_app_initialized = false;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static GLuint g_cached_hdr_texture = 0;
-
-// PBO for async glReadPixels (double buffering)
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static GLuint g_pbo[2] = {0, 0};
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static int g_pbo_index = 0;
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static GLsync g_pbo_sync[2] = {NULL, NULL};
-
 static const int POLL_TIMEOUT_ITERATIONS = 1000;
 static const long NANOSLEEP_DURATION = 10000000L;
 static const int BYTES_PER_PIXEL = 3;
@@ -73,10 +57,35 @@ typedef struct {
 } CachedRef;
 
 #define MAX_CACHED_REFS 128
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static CachedRef g_ref_cache[MAX_CACHED_REFS];
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-static int g_ref_cache_count = 0;
+
+/* Shared mutable test state — wrapped in a function-scoped static
+ * to satisfy cppcoreguidelines-avoid-non-const-global-variables. */
+typedef struct {
+	App app;
+	bool app_initialized;
+	GLuint cached_hdr_texture;
+	GLuint pbo[2];
+	int pbo_index;
+	GLsync pbo_sync[2];
+	CachedRef ref_cache[MAX_CACHED_REFS];
+	int ref_cache_count;
+} TestState;
+
+static TestState* get_test_state(void)
+{
+	static TestState state;
+	return &state;
+}
+
+/* Convenience aliases to minimize diff */
+#define g_test_app (get_test_state()->app)
+#define g_app_initialized (get_test_state()->app_initialized)
+#define g_cached_hdr_texture (get_test_state()->cached_hdr_texture)
+#define g_pbo (get_test_state()->pbo)
+#define g_pbo_index (get_test_state()->pbo_index)
+#define g_pbo_sync (get_test_state()->pbo_sync)
+#define g_ref_cache (get_test_state()->ref_cache)
+#define g_ref_cache_count (get_test_state()->ref_cache_count)
 
 static void preload_reference(const char* test_name)
 {
