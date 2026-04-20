@@ -244,6 +244,41 @@ void test_poll_left_trigger_moves_down(void)
 	TEST_ASSERT_TRUE(cam.move_input[1] < 0.0F);
 }
 
+void test_share_button_triggers_camera_reset(void)
+{
+	GamepadState state;
+	gamepad_input_init(&state);
+
+	g_mock_gamepad_connected = 1;
+
+	/* First poll: Share not pressed → no action. */
+	GamepadActions act1 = {0, 0, 0};
+	gamepad_input_poll(&state, &act1);
+	TEST_ASSERT_EQUAL(0, act1.camera_reset);
+
+	/* Second poll: Share pressed (edge) → action fires. */
+	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_PRESS;
+	GamepadActions act2 = {0, 0, 0};
+	gamepad_input_poll(&state, &act2);
+	TEST_ASSERT_EQUAL(1, act2.camera_reset);
+
+	/* Third poll: Share held → no repeat. */
+	GamepadActions act3 = {0, 0, 0};
+	gamepad_input_poll(&state, &act3);
+	TEST_ASSERT_EQUAL(0, act3.camera_reset);
+
+	/* Fourth poll: Share released then pressed → fires again. */
+	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_RELEASE;
+	GamepadActions act4 = {0, 0, 0};
+	gamepad_input_poll(&state, &act4);
+	TEST_ASSERT_EQUAL(0, act4.camera_reset);
+
+	g_mock_gamepad_state.buttons[GLFW_GAMEPAD_BUTTON_BACK] = GLFW_PRESS;
+	GamepadActions act5 = {0, 0, 0};
+	gamepad_input_poll(&state, &act5);
+	TEST_ASSERT_EQUAL(1, act5.camera_reset);
+}
+
 void test_poll_sticks_in_deadzone_no_effect(void)
 {
 	GamepadState state;
@@ -284,6 +319,7 @@ int main(void)
 	RUN_TEST(test_poll_right_stick_yaw);
 	RUN_TEST(test_poll_triggers_vertical_movement);
 	RUN_TEST(test_poll_left_trigger_moves_down);
+	RUN_TEST(test_share_button_triggers_camera_reset);
 	RUN_TEST(test_poll_sticks_in_deadzone_no_effect);
 	return UNITY_END();
 }
