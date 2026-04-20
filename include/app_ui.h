@@ -220,6 +220,9 @@ typedef struct {
 	float height;  /**< Height in layout units. */
 	int is_bound;  /**< Non-zero if this control has an active binding. */
 	int bind_type; /**< 0=action, 1=toggle, 2=cycle. */
+	int gp_btn;    /**< GLFW button index, or -1 if not a button. */
+	int gp_axis;   /**< GLFW axis index, or -1 if not an axis. */
+	int gp_axis2;  /**< Second axis for sticks, or -1. */
 	const char* label;  /**< Short label drawn on the control. */
 	const char* action; /**< Action name (e.g. "Camera Move"). */
 	const char* desc;   /**< Detailed description. */
@@ -240,40 +243,48 @@ enum {
  */
 static const GamepadControlPos GAMEPAD_LAYOUT[] = {
     /* L2 / R2 (triggers — wide, top) */
-    {0.5F, 0.0F, 2.5F, 0.8F, 1, 0, "L2", "Move Down",
-     "Left trigger: moves the camera downward (proportional)."},
-    {9.0F, 0.0F, 2.5F, 0.8F, 1, 0, "R2", "Move Up",
-     "Right trigger: moves the camera upward (proportional)."},
+    {0.5F, 0.0F, 2.5F, 0.8F, 1, 0, -1, GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, -1, "L2",
+     "Move Down", "Left trigger: moves the camera downward (proportional)."},
+    {9.0F, 0.0F, 2.5F, 0.8F, 1, 0, -1, GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, -1,
+     "R2", "Move Up", "Right trigger: moves the camera upward (proportional)."},
 
     /* L1 / R1 (bumpers — narrower, below triggers) */
-    {0.5F, 1.1F, 2.5F, 0.6F, 1, 2, "L1", "Prev Env",
-     "Left bumper: cycles to the previous environment map."},
-    {9.0F, 1.1F, 2.5F, 0.6F, 1, 2, "R1", "Next Env",
-     "Right bumper: cycles to the next environment map."},
+    {0.5F, 1.1F, 2.5F, 0.6F, 1, 2, GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, -1, -1,
+     "L1", "Prev Env", "Left bumper: cycles to the previous environment map."},
+    {9.0F, 1.1F, 2.5F, 0.6F, 1, 2, GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, -1, -1,
+     "R1", "Next Env", "Right bumper: cycles to the next environment map."},
 
     /* D-pad (left side, unbound) */
-    {1.5F, 2.8F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xB2", "", ""},
-    {0.8F, 3.5F, 0.7F, 0.7F, 0, 0, "\xE2\x97\x80", "", ""},
-    {2.2F, 3.5F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xB6", "", ""},
-    {1.5F, 4.2F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xBC", "", ""},
+    {1.5F, 2.8F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_UP, -1, -1,
+     "\xE2\x96\xB2", "", ""},
+    {0.8F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_LEFT, -1, -1,
+     "\xE2\x97\x80", "", ""},
+    {2.2F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, -1, -1,
+     "\xE2\x96\xB6", "", ""},
+    {1.5F, 4.2F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_DPAD_DOWN, -1, -1,
+     "\xE2\x96\xBC", "", ""},
 
     /* Face buttons (right side, unbound) */
-    {10.0F, 2.8F, 0.7F, 0.7F, 0, 0, "Y", "", ""},
-    {9.3F, 3.5F, 0.7F, 0.7F, 0, 0, "X", "", ""},
-    {10.7F, 3.5F, 0.7F, 0.7F, 0, 0, "B", "", ""},
-    {10.0F, 4.2F, 0.7F, 0.7F, 0, 0, "A", "", ""},
+    {10.0F, 2.8F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_Y, -1, -1, "Y", "", ""},
+    {9.3F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_X, -1, -1, "X", "", ""},
+    {10.7F, 3.5F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_B, -1, -1, "B", "", ""},
+    {10.0F, 4.2F, 0.7F, 0.7F, 0, 0, GLFW_GAMEPAD_BUTTON_A, -1, -1, "A", "", ""},
 
     /* Left Stick (active — camera movement) */
-    {1.0F, 5.5F, 1.8F, 1.2F, 1, 0, "L Stick", "Camera Move",
+    {1.0F, 5.5F, 1.8F, 1.2F, 1, 0, -1, GLFW_GAMEPAD_AXIS_LEFT_X,
+     GLFW_GAMEPAD_AXIS_LEFT_Y, "L Stick", "Camera Move",
      "Left analog stick: proportional camera movement (forward/back/strafe)."},
 
     /* Right Stick (active — camera look) */
-    {9.2F, 5.5F, 1.8F, 1.2F, 1, 0, "R Stick", "Camera Look",
+    {9.2F, 5.5F, 1.8F, 1.2F, 1, 0, -1, GLFW_GAMEPAD_AXIS_RIGHT_X,
+     GLFW_GAMEPAD_AXIS_RIGHT_Y, "R Stick", "Camera Look",
      "Right analog stick: proportional camera look (yaw/pitch)."},
 
     /* Center buttons (unbound) */
-    {4.5F, 3.5F, 1.2F, 0.6F, 0, 0, "Share", "", ""},
-    {6.3F, 3.5F, 1.2F, 0.6F, 0, 0, "Options", "", ""},
+    {4.5F, 3.5F, 1.2F, 0.6F, 0, 0, GLFW_GAMEPAD_BUTTON_BACK, -1, -1, "Share",
+     "", ""},
+    {6.3F, 3.5F, 1.2F, 0.6F, 0, 0, GLFW_GAMEPAD_BUTTON_START, -1, -1, "Options",
+     "", ""},
 };
 
 enum {

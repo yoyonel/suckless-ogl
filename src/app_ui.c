@@ -11,6 +11,7 @@
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stb_image.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -494,7 +495,8 @@ static const float GP_SMALL_LABEL_SCALE = 0.7F;
 static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
                                  float origin_x, float origin_y,
                                  float unit_size, float unit_pad,
-                                 float ui_scale, int hovered_idx, int ctrl_idx)
+                                 float ui_scale, int hovered_idx, int ctrl_idx,
+                                 bool is_pressed)
 {
 	UIContext* ui_ctx = (UIContext*)&app->overlay.ui;
 	const float step = unit_size + unit_pad;
@@ -520,7 +522,7 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
 	}
 
 	bool is_hovered = (hovered_idx == ctrl_idx);
-	if (is_hovered) {
+	if (is_pressed || is_hovered) {
 		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
 		alpha = KEY_PRESSED_ALPHA;
 	}
@@ -538,8 +540,8 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
 		                     app->height);
 	}
 
-	/* Glow effect on hover. */
-	if (is_hovered) {
+	/* Glow effect on hover or press. */
+	if (is_pressed || is_hovered) {
 		float glow_expand = GP_GLOW_BASE_SIZE * ui_scale;
 		ui_draw_glow_rect(
 		    ui_ctx, pos_x - glow_expand, pos_y - glow_expand,
@@ -559,6 +561,68 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
 	float label_y = pos_y + (ctrl_h * UI_CENTER_FACTOR);
 	draw_text_centered(ui_ctx, ctrl->label, label_x, label_y, label_scale,
 	                   app->width, app->height);
+}
+
+/**
+ * @brief Poll live gamepad state and mark active controls.
+ */
+static void gp_overlay_poll_active(const App* app,
+                                   bool active[GAMEPAD_LAYOUT_COUNT])
+{
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		active[i] = false;
+	}
+	GLFWgamepadstate gp_state;
+	if (!glfwJoystickIsGamepad(app->gamepad.joystick_id) ||
+	    !glfwGetGamepadState(app->gamepad.joystick_id, &gp_state)) {
+		return;
+	}
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		const GamepadControlPos* gpc = &GAMEPAD_LAYOUT[i];
+		if (gpc->gp_btn >= 0 &&
+		    gp_state.buttons[gpc->gp_btn] == GLFW_PRESS) {
+			active[i] = true;
+		}
+		if (gpc->gp_axis >= 0 && fabsf(gp_state.axes[gpc->gp_axis]) >
+		                             app->gamepad.deadzone) {
+			active[i] = true;
+		}
+		if (gpc->gp_axis2 >= 0 && fabsf(gp_state.axes[gpc->gp_axis2]) >
+		                              app->gamepad.deadzone) {
+			active[i] = true;
+		}
+	}
+}
+
+/**
+ * @brief Find the hovered gamepad control via mouse hit-test.
+ */
+static int gp_overlay_find_hovered(float origin_x, float origin_y,
+                                   float unit_size, float unit_pad, float step)
+{
+	double mouse_x = 0.0;
+	double mouse_y = 0.0;
+	GLFWwindow* win =
+	    glfwGetCurrentContext != NULL ? glfwGetCurrentContext() : NULL;
+	if (win != NULL) {
+		glfwGetCursorPos(win, &mouse_x, &mouse_y);
+	}
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		const GamepadControlPos* gpc = &GAMEPAD_LAYOUT[i];
+		float hit_x = origin_x + (gpc->x_off * step);
+		float hit_y = origin_y + (gpc->y_off * step);
+		float hit_w =
+		    (gpc->width * unit_size) + ((gpc->width - 1.0F) * unit_pad);
+		float hit_h = (gpc->height * unit_size) +
+		              ((gpc->height - 1.0F) * unit_pad);
+		if (mouse_x >= (double)hit_x &&
+		    mouse_x <= (double)(hit_x + hit_w) &&
+		    mouse_y >= (double)hit_y &&
+		    mouse_y <= (double)(hit_y + hit_h)) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 void app_draw_gamepad_help_overlay(const App* app)
@@ -640,44 +704,36 @@ void app_draw_gamepad_help_overlay(const App* app)
 	}
 
 	/* Determine hovered control. */
-	int hovered_idx = -1;
-	{
-		double mouse_x = 0.0;
-		double mouse_y = 0.0;
-		GLFWwindow* win = glfwGetCurrentContext != NULL
-		                      ? glfwGetCurrentContext()
-		                      : NULL;
-		if (win != NULL) {
-			glfwGetCursorPos(win, &mouse_x, &mouse_y);
-		}
-		for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
-			const GamepadControlPos* gpc = &GAMEPAD_LAYOUT[i];
-			float hit_x = origin_x + (gpc->x_off * step);
-			float hit_y = origin_y + (gpc->y_off * step);
-			float hit_w = (gpc->width * unit_size) +
-			              ((gpc->width - 1.0F) * unit_pad);
-			float hit_h = (gpc->height * unit_size) +
-			              ((gpc->height - 1.0F) * unit_pad);
-			if (mouse_x >= (double)hit_x &&
-			    mouse_x <= (double)(hit_x + hit_w) &&
-			    mouse_y >= (double)hit_y &&
-			    mouse_y <= (double)(hit_y + hit_h)) {
-				hovered_idx = i;
-				break;
-			}
-		}
-	}
+	int hovered_idx = gp_overlay_find_hovered(origin_x, origin_y, unit_size,
+	                                          unit_pad, step);
+
+	/* Determine active controls from live gamepad state. */
+	bool gp_active[GAMEPAD_LAYOUT_COUNT];
+	gp_overlay_poll_active(app, gp_active);
 
 	/* Draw all controls. */
 	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
 		draw_gamepad_control(app, &GAMEPAD_LAYOUT[i], origin_x,
 		                     origin_y, unit_size, unit_pad, ui_scale,
-		                     hovered_idx, i);
+		                     hovered_idx, i, gp_active[i]);
 	}
 
-	/* Show detail for hovered control. */
+	/* Show detail for hovered or pressed control. */
+	int detail_idx = -1;
 	if (hovered_idx >= 0 && GAMEPAD_LAYOUT[hovered_idx].is_bound) {
-		const GamepadControlPos* ctrl = &GAMEPAD_LAYOUT[hovered_idx];
+		detail_idx = hovered_idx;
+	}
+	/* Pressed gamepad control takes priority if no hover. */
+	if (detail_idx < 0) {
+		for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+			if (gp_active[i] && GAMEPAD_LAYOUT[i].is_bound) {
+				detail_idx = i;
+				break;
+			}
+		}
+	}
+	if (detail_idx >= 0) {
+		const GamepadControlPos* ctrl = &GAMEPAD_LAYOUT[detail_idx];
 		char buf[KEYBOARD_BUFFER_SIZE];
 		(void)safe_snprintf(buf, sizeof(buf), "[%s]: %s", ctrl->action,
 		                    ctrl->desc);
