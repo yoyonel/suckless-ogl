@@ -98,6 +98,17 @@ enum {
 	KEYBOARD_BUFFER_SIZE = 256
 };
 
+/**
+ * @enum HelpMode
+ * @brief States for the F2 help overlay cycling.
+ */
+typedef enum {
+	HELP_MODE_OFF = 0,
+	HELP_MODE_KEYBOARD,
+	HELP_MODE_GAMEPAD,
+	HELP_MODE_COUNT
+} HelpMode;
+
 enum {
 	ROW_SYSTEM = 0,
 	ROW_NUMBERS = 1,
@@ -196,11 +207,85 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
     {GLFW_KEY_UP, ROW_ZXCV, 15.0F, 1.0F, "Up"},
     {GLFW_KEY_DOWN, ROW_BOTTOM, 15.0F, 1.0F, "Dn"}};
 
+/* --- Gamepad overlay layout --- */
+
+/**
+ * @struct GamepadControlPos
+ * @brief Position and metadata for a single gamepad control in the overlay.
+ */
+typedef struct {
+	float x_off;   /**< Horizontal offset in layout units. */
+	float y_off;   /**< Vertical offset in layout units. */
+	float width;   /**< Width in layout units. */
+	float height;  /**< Height in layout units. */
+	int is_bound;  /**< Non-zero if this control has an active binding. */
+	int bind_type; /**< 0=action, 1=toggle, 2=cycle. */
+	const char* label;  /**< Short label drawn on the control. */
+	const char* action; /**< Action name (e.g. "Camera Move"). */
+	const char* desc;   /**< Detailed description. */
+} GamepadControlPos;
+
+enum {
+	GP_ROW_TRIGGERS = 0,
+	GP_ROW_BUMPERS = 1,
+	GP_ROW_FACE = 2,
+	GP_ROW_STICKS = 3,
+	GP_ROW_SYSTEM = 4
+};
+
+/* Layout: 12 units wide × 7 units tall, DualShock-inspired.
+ * Left side: L2, L1, D-pad, L-Stick.
+ * Right side: R2, R1, face buttons, R-Stick.
+ * Center: Share, Options.
+ */
+static const GamepadControlPos GAMEPAD_LAYOUT[] = {
+    /* L2 / R2 (triggers — wide, top) */
+    {0.5F, 0.0F, 2.5F, 0.8F, 1, 0, "L2", "Move Down",
+     "Left trigger: moves the camera downward (proportional)."},
+    {9.0F, 0.0F, 2.5F, 0.8F, 1, 0, "R2", "Move Up",
+     "Right trigger: moves the camera upward (proportional)."},
+
+    /* L1 / R1 (bumpers — narrower, below triggers) */
+    {0.5F, 1.1F, 2.5F, 0.6F, 1, 2, "L1", "Prev Env",
+     "Left bumper: cycles to the previous environment map."},
+    {9.0F, 1.1F, 2.5F, 0.6F, 1, 2, "R1", "Next Env",
+     "Right bumper: cycles to the next environment map."},
+
+    /* D-pad (left side, unbound) */
+    {1.5F, 2.8F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xB2", "", ""},
+    {0.8F, 3.5F, 0.7F, 0.7F, 0, 0, "\xE2\x97\x80", "", ""},
+    {2.2F, 3.5F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xB6", "", ""},
+    {1.5F, 4.2F, 0.7F, 0.7F, 0, 0, "\xE2\x96\xBC", "", ""},
+
+    /* Face buttons (right side, unbound) */
+    {10.0F, 2.8F, 0.7F, 0.7F, 0, 0, "Y", "", ""},
+    {9.3F, 3.5F, 0.7F, 0.7F, 0, 0, "X", "", ""},
+    {10.7F, 3.5F, 0.7F, 0.7F, 0, 0, "B", "", ""},
+    {10.0F, 4.2F, 0.7F, 0.7F, 0, 0, "A", "", ""},
+
+    /* Left Stick (active — camera movement) */
+    {1.0F, 5.5F, 1.8F, 1.2F, 1, 0, "L Stick", "Camera Move",
+     "Left analog stick: proportional camera movement (forward/back/strafe)."},
+
+    /* Right Stick (active — camera look) */
+    {9.2F, 5.5F, 1.8F, 1.2F, 1, 0, "R Stick", "Camera Look",
+     "Right analog stick: proportional camera look (yaw/pitch)."},
+
+    /* Center buttons (unbound) */
+    {4.5F, 3.5F, 1.2F, 0.6F, 0, 0, "Share", "", ""},
+    {6.3F, 3.5F, 1.2F, 0.6F, 0, 0, "Options", "", ""},
+};
+
+enum {
+	GAMEPAD_LAYOUT_COUNT =
+	    sizeof(GAMEPAD_LAYOUT) / sizeof(GAMEPAD_LAYOUT[0])
+};
+
 typedef struct {
 	UIContext ui;
 	KeyboardLayoutConfig kbd_config;
 
-	int show_help;
+	HelpMode show_help;
 	int show_info_overlay;
 	int text_overlay_mode;
 	int show_exposure_debug;
@@ -233,6 +318,12 @@ typedef struct App App;
  * @param app Pointer to the application state.
  */
 void app_draw_help_overlay(const App* app);
+
+/**
+ * @brief Draws the gamepad help overlay with controller bindings.
+ * @param app Pointer to the application state.
+ */
+void app_draw_gamepad_help_overlay(const App* app);
 
 /**
  * @brief Draws the debug overlay with performance metrics and settings.

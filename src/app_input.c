@@ -260,30 +260,45 @@ static void handle_f9_input(App* app)
 	PROFILE_ZONE_END(f9_zone);
 }
 
+static const char* const HELP_MODE_NAMES[] = {"Help: OFF", "Help: Keyboard",
+                                              "Help: Gamepad"};
+
 static void app_toggle_help(App* app)
 {
-	app->overlay.show_help = !app->overlay.show_help;
-	if (app->overlay.show_help) {
-		/* Opening overlay: if camera is active, disable it exactly as
-		 * if the user pressed 'C' (preserves camera_enabled state
-		 * correctly and shows the "Camera: OFF" notification). */
+	HelpMode prev = app->overlay.show_help;
+	app->overlay.show_help = (HelpMode)(((int)prev + 1) % HELP_MODE_COUNT);
+	HelpMode next = app->overlay.show_help;
+
+	if (prev == HELP_MODE_OFF && next != HELP_MODE_OFF) {
+		/* Opening overlay: if camera is active, disable it. */
 		if (app->camera_enabled) {
 			handle_camera_toggle(app);
 			app->overlay.help_captured_camera = 1;
 		} else {
 			app->overlay.help_captured_camera = 0;
 		}
-	} else {
-		/* Closing overlay: re-enable camera if we disabled it, again
-		 * via handle_camera_toggle so the notification/state is
-		 * consistent. */
+	} else if (next == HELP_MODE_OFF && prev != HELP_MODE_OFF) {
+		/* Closing overlay: re-enable camera if we disabled it. */
 		if (app->overlay.help_captured_camera) {
 			handle_camera_toggle(app);
 			app->overlay.help_captured_camera = 0;
 		}
 	}
-	action_notifier_push(&app->notifier,
-	                     app->overlay.show_help ? "Help: ON" : "Help: OFF",
+	action_notifier_push(&app->notifier, HELP_MODE_NAMES[(int)next],
+	                     NOTIF_DUR_NORMAL);
+}
+
+static void app_close_help(App* app)
+{
+	if (app->overlay.show_help == HELP_MODE_OFF) {
+		return;
+	}
+	app->overlay.show_help = HELP_MODE_OFF;
+	if (app->overlay.help_captured_camera) {
+		handle_camera_toggle(app);
+		app->overlay.help_captured_camera = 0;
+	}
+	action_notifier_push(&app->notifier, HELP_MODE_NAMES[0],
 	                     NOTIF_DUR_NORMAL);
 }
 
@@ -563,12 +578,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 	App* app = (App*)glfwGetWindowUserPointer(window);
 	if (action == GLFW_PRESS) {
 		if (key == GLFW_KEY_ESCAPE) {
-			if (app->overlay.show_help) {
-				app_toggle_help(app);
+			if (app->overlay.show_help != HELP_MODE_OFF) {
+				app_close_help(app);
 			} else {
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
-		} else if (app->overlay.show_help) {
+		} else if (app->overlay.show_help != HELP_MODE_OFF) {
 			/* Dry-run mode: intercept keys except for Close/Toggle
 			 * keys */
 			if (key == GLFW_KEY_F2) {
@@ -584,7 +599,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action,
 			handle_app_input(app, key, mods);
 		}
 	}
-	if (!app->overlay.show_help) {
+	if (app->overlay.show_help == HELP_MODE_OFF) {
 		camera_input_handle_key(&app->camera, key, action);
 	}
 }
