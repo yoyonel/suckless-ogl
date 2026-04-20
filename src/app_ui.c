@@ -65,6 +65,7 @@ void app_ui_init(AppUIOverlay* overlay)
 	overlay->help_pressed_mods = 0;
 	overlay->help_press_timer = 0.0;
 	overlay->help_global_dim = 1.0;
+	overlay->help_gp_decay = 0.0;
 	overlay->help_hover_decay = 0.0;
 	overlay->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
 	overlay->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
@@ -111,12 +112,17 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 		overlay->help_hover_decay -= delta_time;
 	}
 
+	/* Decay the gamepad grace timer (same role as help_hover_decay) */
+	if (overlay->help_gp_decay > 0.0) {
+		overlay->help_gp_decay -= delta_time;
+	}
+
 	/* Smooth global dimming: target is dimmed if a key is active, or was
-	 * recently active (hover decay grace period), otherwise 1.0 */
+	 * recently active (hover/gamepad decay grace period), otherwise 1.0 */
 	double target_dim = 1.0;
 	if (overlay->help_pressed_key != -1 ||
 	    overlay->help_hover_decay > 0.0 ||
-	    overlay->help_hovered_key != -1) {
+	    overlay->help_hovered_key != -1 || overlay->help_gp_decay > 0.0) {
 		target_dim = 1.0 - (double)GLOBAL_DIM_MAX_FALLOFF;
 	}
 	/* Interpolate current dim towards target dim (factor for quick but
@@ -497,7 +503,7 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
                                  float origin_x, float origin_y,
                                  float unit_size, float unit_pad,
                                  float ui_scale, int hovered_idx, int ctrl_idx,
-                                 bool is_pressed)
+                                 bool is_pressed, float dim_mult)
 {
 	UIContext* ui_ctx = (UIContext*)&app->overlay.ui;
 	const float step = unit_size + unit_pad;
@@ -526,6 +532,8 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
 	if (is_pressed || is_hovered) {
 		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
 		alpha = KEY_PRESSED_ALPHA;
+	} else {
+		alpha *= dim_mult;
 	}
 
 	/* Key base (reuse keyboard keycap texture). */
@@ -735,11 +743,29 @@ void app_draw_gamepad_help_overlay(const App* app)
 	bool gp_active[GAMEPAD_LAYOUT_COUNT];
 	gp_overlay_poll_active(app, gp_active);
 
+	/* Signal dimming system: refresh decay timer while any input is active
+	 * (same pattern as keyboard's help_hover_decay = HOVER_DECAY_DURATION
+	 * on mouse hit). */
+	bool any_active = (hovered_idx >= 0);
+	if (!any_active) {
+		for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+			if (gp_active[i]) {
+				any_active = true;
+				break;
+			}
+		}
+	}
+	if (any_active) {
+		((AppUIOverlay*)&app->overlay)->help_gp_decay =
+		    HOVER_DECAY_DURATION;
+	}
+	const float dim_mult = (float)app->overlay.help_global_dim;
+
 	/* Draw all controls. */
 	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
 		draw_gamepad_control(app, &GAMEPAD_LAYOUT[i], origin_x,
 		                     origin_y, unit_size, unit_pad, ui_scale,
-		                     hovered_idx, i, gp_active[i]);
+		                     hovered_idx, i, gp_active[i], dim_mult);
 	}
 
 	/* Show detail for hovered or pressed control. */

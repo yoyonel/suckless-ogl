@@ -309,6 +309,10 @@ typedef struct {
 	double help_hover_decay; /**< Grace period for dimming when mouse leaves
 	                          * a key
 	                          */
+	double help_gp_decay; /**< Grace period for dimming when gamepad input
+	                       * stops — same role as help_hover_decay but for
+	                       * gamepad controls.
+	                       */
 
 	/* Cyberpunk keyboard overlay textures (PNG assets) */
 	GLuint
