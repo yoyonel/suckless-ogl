@@ -249,7 +249,7 @@ void app_run(App* app)
 
 		{
 			PROFILE_ZONE(camera_ctx, "Camera Physics");
-			GamepadActions gp_actions = {0, 0};
+			GamepadActions gp_actions = {0, 0, 0};
 			if (app->camera_enabled) {
 				gamepad_input_poll(&app->gamepad, &gp_actions);
 			}
@@ -260,6 +260,15 @@ void app_run(App* app)
 			if (gp_actions.env_prev) {
 				app_handle_env_input(app, GLFW_PRESS, 0,
 				                     GLFW_KEY_PAGE_DOWN);
+			}
+			if (gp_actions.camera_reset) {
+				camera_init(
+				    &app->camera, DEFAULT_CAMERA_DISTANCE,
+				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
+				app->scene.env_lod = DEFAULT_ENV_LOD;
+				action_notifier_push(&app->notifier,
+				                     "Camera & LOD Reset",
+				                     NOTIF_DUR_LONG);
 			}
 			app->camera.physics_accumulator +=
 			    (float)app->delta_time;

@@ -35,6 +35,7 @@ typedef struct Camera Camera;
 typedef struct GamepadActions {
 	int env_next; /**< R1 pressed → cycle to next environment map. */
 	int env_prev; /**< L1 pressed → cycle to previous environment map. */
+	int camera_reset; /**< Share pressed → reset camera to initial pose. */
 } GamepadActions;
 
 /** Number of gamepad axes cached for per-step application. */

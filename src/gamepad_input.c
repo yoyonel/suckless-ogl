@@ -57,6 +57,14 @@ static void gamepad_poll_buttons(GamepadState* state,
 		if (l1_now && !l1_prev) {
 			actions->env_prev = 1;
 		}
+
+		unsigned char share_now =
+		    pad->buttons[GLFW_GAMEPAD_BUTTON_BACK];
+		unsigned char share_prev =
+		    state->prev_buttons[GLFW_GAMEPAD_BUTTON_BACK];
+		if (share_now && !share_prev) {
+			actions->camera_reset = 1;
+		}
 	}
 	/* Save button state for next-frame edge detection. */
 	for (int idx = 0; idx < GAMEPAD_BUTTON_COUNT; idx++) {
@@ -73,6 +81,7 @@ void gamepad_input_poll(GamepadState* state, GamepadActions* actions)
 	if (actions) {
 		actions->env_next = 0;
 		actions->env_prev = 0;
+		actions->camera_reset = 0;
 	}
 
 	if (state->connected && !was_connected) {

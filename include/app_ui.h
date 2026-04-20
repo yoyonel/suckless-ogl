@@ -280,9 +280,9 @@ static const GamepadControlPos GAMEPAD_LAYOUT[] = {
      GLFW_GAMEPAD_AXIS_RIGHT_Y, "R Stick", "Camera Look",
      "Right analog stick: proportional camera look (yaw/pitch)."},
 
-    /* Center buttons (unbound) */
-    {4.5F, 3.5F, 1.2F, 0.6F, 0, 0, GLFW_GAMEPAD_BUTTON_BACK, -1, -1, "Share",
-     "", ""},
+    /* Center buttons */
+    {4.5F, 3.5F, 1.2F, 0.6F, 1, 1, GLFW_GAMEPAD_BUTTON_BACK, -1, -1, "Share",
+     "Camera Reset", "Reset camera position, orientation and LOD to defaults."},
     {6.3F, 3.5F, 1.2F, 0.6F, 0, 0, GLFW_GAMEPAD_BUTTON_START, -1, -1, "Options",
      "", ""},
 };
