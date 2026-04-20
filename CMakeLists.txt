@@ -104,6 +104,7 @@ set(SOURCES
     src/cli.c
     src/effect_benchmark.c
     src/fps.c
+    src/gamepad_input.c
     src/gl_debug.c
     src/gpu_profiler.c
     src/gpu_profiler_ui.c

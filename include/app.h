@@ -11,6 +11,7 @@
 #include "effect_benchmark.h"
 #include "env_manager.h"
 #include "fps.h"
+#include "gamepad_input.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
@@ -50,7 +51,8 @@ typedef struct App {
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 	AppBindingRegistry binding_registry;
 
-	Camera camera; /**< View/Proj state. */
+	Camera camera;        /**< View/Proj state. */
+	GamepadState gamepad; /**< Controller/gamepad input state. */
 
 	/* --- App State Flags and Values --- */
 	int width;                     /**< Current window/viewport width. */
