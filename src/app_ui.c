@@ -491,6 +491,7 @@ static const float GP_LAYOUT_ROWS = 7.0F;
 static const float GP_GLOW_BASE_SIZE = 12.0F;
 static const float GP_GLOW_SIDES = 2.0F;
 static const float GP_SMALL_LABEL_SCALE = 0.7F;
+static const float GP_TRIGGER_NORM = 0.5F;
 
 static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
                                  float origin_x, float origin_y,
@@ -564,6 +565,27 @@ static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
 }
 
 /**
+ * @brief Test whether a raw GLFW axis value exceeds its activation threshold.
+ *
+ * Triggers (axes 4-5) rest at -1.0 and range to +1.0, so they are
+ * normalised to [0,1] before comparing against the trigger threshold.
+ * Stick axes (0-3) are centred at 0.0 and compared via fabsf against
+ * the deadzone.
+ */
+static bool gp_axis_active(const float* axes, int axis_id,
+                           const GamepadState* pad)
+{
+	float raw = axes[axis_id];
+	if (axis_id >= GLFW_GAMEPAD_AXIS_LEFT_TRIGGER) {
+		/* Trigger: normalise [-1,1] → [0,1]. */
+		float norm = (raw + 1.0F) * GP_TRIGGER_NORM;
+		return norm > pad->trigger_threshold;
+	}
+	/* Stick: centred at 0. */
+	return fabsf(raw) > pad->deadzone;
+}
+
+/**
  * @brief Poll live gamepad state and mark active controls.
  */
 static void gp_overlay_poll_active(const App* app,
@@ -583,12 +605,14 @@ static void gp_overlay_poll_active(const App* app,
 		    gp_state.buttons[gpc->gp_btn] == GLFW_PRESS) {
 			active[i] = true;
 		}
-		if (gpc->gp_axis >= 0 && fabsf(gp_state.axes[gpc->gp_axis]) >
-		                             app->gamepad.deadzone) {
+		if (gpc->gp_axis >= 0 &&
+		    gp_axis_active(gp_state.axes, gpc->gp_axis,
+		                   &app->gamepad)) {
 			active[i] = true;
 		}
-		if (gpc->gp_axis2 >= 0 && fabsf(gp_state.axes[gpc->gp_axis2]) >
-		                              app->gamepad.deadzone) {
+		if (gpc->gp_axis2 >= 0 &&
+		    gp_axis_active(gp_state.axes, gpc->gp_axis2,
+		                   &app->gamepad)) {
 			active[i] = true;
 		}
 	}
