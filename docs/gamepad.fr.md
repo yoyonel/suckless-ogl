@@ -124,6 +124,7 @@ donc elles se mélangent naturellement. Si le stick de la manette a une entrée,
 elle remplace la valeur du clavier sur cet axe. La caméra doit être activée
 (touche `C`) pour que l'entrée manette prenne effet.
 
-!!! note "Overlay F2"
-    L'overlay d'aide clavier (F2) n'affiche pas encore les bindings manette.
-    Une section dédiée est prévue pour une prochaine version.
+!!! tip "Overlay F2"
+    Appuyez sur **F2** pour parcourir les pages d'aide : **Clavier → Manette → Désactivé**.
+    La page manette affiche une disposition spatiale style DualShock avec tous
+    les contrôles liés. Survolez un contrôle à la souris pour voir sa description.

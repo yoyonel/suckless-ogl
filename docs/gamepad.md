@@ -122,6 +122,7 @@ naturally. If the gamepad stick has input, it overrides the keyboard value
 on that axis. The camera must be enabled (`C` key toggle) for gamepad input
 to take effect.
 
-!!! note "F2 Help Overlay"
-    The F2 keyboard help overlay does not yet display gamepad bindings.
-    A dedicated gamepad help section is planned for a future release.
+!!! tip "F2 Help Overlay"
+    Press **F2** to cycle through help pages: **Keyboard → Gamepad → Off**.
+    The gamepad page shows a DualShock-style spatial layout with all bound
+    controls. Hover any control with the mouse to see its description.
