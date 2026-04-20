@@ -73,6 +73,31 @@ typedef struct GLFWvidmode {
 #define GLFW_TRUE 1
 #define GLFW_FALSE 0
 
+/* Joystick / Gamepad */
+#define GLFW_JOYSTICK_1 0
+#define GLFW_GAMEPAD_AXIS_LEFT_X 0
+#define GLFW_GAMEPAD_AXIS_LEFT_Y 1
+#define GLFW_GAMEPAD_AXIS_RIGHT_X 2
+#define GLFW_GAMEPAD_AXIS_RIGHT_Y 3
+#define GLFW_GAMEPAD_AXIS_LEFT_TRIGGER 4
+#define GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER 5
+#define GLFW_GAMEPAD_BUTTON_A 0
+#define GLFW_GAMEPAD_BUTTON_B 1
+#define GLFW_GAMEPAD_BUTTON_X 2
+#define GLFW_GAMEPAD_BUTTON_Y 3
+#define GLFW_GAMEPAD_BUTTON_LEFT_BUMPER 4
+#define GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER 5
+#define GLFW_GAMEPAD_BUTTON_CROSS GLFW_GAMEPAD_BUTTON_A
+
+typedef struct {
+	unsigned char buttons[15];
+	float axes[6];
+} GLFWgamepadstate;
+
+int glfwJoystickIsGamepad(int jid);
+int glfwGetGamepadState(int jid, GLFWgamepadstate* state);
+const char* glfwGetGamepadName(int jid);
+
 void* glfwGetWindowUserPointer(GLFWwindow* window);
 void glfwSetWindowShouldClose(GLFWwindow* window, int value);
 void glfwSetInputMode(GLFWwindow* window, int mode, int value);

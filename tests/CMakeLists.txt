@@ -71,6 +71,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_overflow\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_profiler_repro\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gamepad_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
@@ -408,6 +409,28 @@ else()
     add_test(NAME test_camera_input
              COMMAND test_camera_input)
 endif()
+
+# =============================================================================
+# TEST GAMEPAD INPUT (ISOLATED / MOCKED GLFW)
+# =============================================================================
+add_executable(test_gamepad_input
+    test_gamepad_input.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/src/camera.c
+    ${CMAKE_SOURCE_DIR}/src/gamepad_input.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+)
+
+target_include_directories(test_gamepad_input PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${unity_SOURCE_DIR}/src
+)
+
+target_link_libraries(test_gamepad_input PRIVATE cglm m)
+
+add_test(NAME test_gamepad_input COMMAND test_gamepad_input)
 
 # =============================================================================
 # TEST IBL COORDINATOR (MOCKED)
