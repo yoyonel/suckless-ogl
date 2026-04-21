@@ -22,7 +22,8 @@ static void setup_instance_attributes(void)
 {
 	render_utils_setup_sphere_instance_attributes(
 	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic));
+	    offsetof(SphereInstance, metallic),
+	    offsetof(SphereInstance, prev_center));
 }
 
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,

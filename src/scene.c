@@ -123,6 +123,9 @@ static void scene_init_instancing(Scene* scene)
 		data[i].metallic = mat->metallic;
 		data[i].roughness = mat->roughness;
 		data[i].ao = 1.0F;
+		/* Static grid: prev_center = current center (no object motion)
+		 */
+		glm_vec3_copy(position, data[i].prev_center);
 	}
 
 	instanced_group_init(&scene->instanced_group, data, total_count);
@@ -1003,6 +1006,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
 	 */
 	if (scene->nbody_mode) {
+		GPU_STAGE_PROFILER(profiler, "NBody Trails",
+		                   GPU_PROFILER_NBODY_COLOR);
 		gl_debug_push_group("NBody_Trails");
 		trail_renderer_draw(&scene->trail_renderer, view, proj,
 		                    camera_pos);

@@ -46,14 +46,14 @@ static const float NBODY_MAX_ACCUMULATOR = 1.0F / 30.0F;
  * @brief A single gravitational body.
  */
 typedef struct {
-	vec3 position;   /**< World position. */
-	float mass;      /**< Gravitational mass. */
-	vec3 velocity;   /**< Current velocity. */
-	float radius;    /**< Visual sphere radius (for rendering scale). */
-	vec3 albedo;     /**< PBR base color for this body. */
-	float metallic;  /**< PBR metallic factor. */
-	float roughness; /**< PBR roughness factor. */
-	float _pad[3];   /**< Alignment padding. */
+	vec3 position;      /**< World position. */
+	float mass;         /**< Gravitational mass. */
+	vec3 velocity;      /**< Current velocity. */
+	float radius;       /**< Visual sphere radius (for rendering scale). */
+	vec3 albedo;        /**< PBR base color for this body. */
+	float metallic;     /**< PBR metallic factor. */
+	float roughness;    /**< PBR roughness factor. */
+	vec3 prev_position; /**< Position from previous frame (motion blur). */
 } NBodyParticle;
 
 /**

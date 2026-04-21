@@ -93,7 +93,8 @@ static void setup_billboard_instance_attributes(void)
 {
 	render_utils_setup_sphere_instance_attributes(
 	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic));
+	    offsetof(SphereInstance, metallic),
+	    offsetof(SphereInstance, prev_center));
 }
 
 static void create_billboard_vao(GLuint* vao, GLuint geometry_vbo,

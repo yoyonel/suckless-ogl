@@ -154,6 +154,12 @@ void nbody_init_preset(NBodySim* sim)
 
 	/* Snapshot total energy for diagnostics (tests). */
 	(void)nbody_total_energy(sim);
+
+	/* Initialize prev_position = position for first frame (no motion). */
+	for (int i = 0; i < sim->body_count; i++) {
+		glm_vec3_copy(sim->bodies[i].position,
+		              sim->bodies[i].prev_position);
+	}
 }
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
@@ -289,6 +295,14 @@ void nbody_step(NBodySim* sim, float delta_time)
 		return;
 	}
 
+	/* Snapshot current positions for per-object motion blur.
+	 * prev_position will be used by nbody_write_instances() to
+	 * fill SphereInstance::prev_center for the velocity buffer. */
+	for (int i = 0; i < sim->body_count; i++) {
+		glm_vec3_copy(sim->bodies[i].position,
+		              sim->bodies[i].prev_position);
+	}
+
 	sim->accumulator += delta_time * sim->time_scale;
 	if (sim->accumulator > NBODY_MAX_ACCUMULATOR) {
 		sim->accumulator = NBODY_MAX_ACCUMULATOR;
@@ -312,6 +326,7 @@ void nbody_write_instances(const NBodySim* sim, SphereInstance* out)
 		out[i].metallic = body->metallic;
 		out[i].roughness = body->roughness;
 		out[i].ao = 1.0F;
+		glm_vec3_copy((float*)body->prev_position, out[i].prev_center);
 	}
 }
 
