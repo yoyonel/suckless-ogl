@@ -26,6 +26,12 @@ enum { PBR_DEBUG_MODE_COUNT = 10 };
 /* Notification constants */
 enum { NOTIF_BUF_SIZE = 128 };
 
+/* N-Body simulation speed constants (powers of 2 for exact round-trip). */
+static const float SIM_SPEED_FACTOR = 2.0F;
+static const float SIM_SPEED_MAX = 64.0F;
+static const float SIM_SPEED_MIN = 0.125F;
+static const float SIM_SPEED_INV_FACTOR = 0.5F;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
@@ -445,6 +451,26 @@ static bool handle_g_key_input(App* app, int mods)
 	return true;
 }
 
+static void handle_sim_speed_input(App* app, bool speed_up)
+{
+	NBodySim* sim = &app->scene.nbody_sim;
+	if (speed_up) {
+		sim->time_scale *= SIM_SPEED_FACTOR;
+		if (sim->time_scale > SIM_SPEED_MAX) {
+			sim->time_scale = SIM_SPEED_MAX;
+		}
+	} else {
+		sim->time_scale *= SIM_SPEED_INV_FACTOR;
+		if (sim->time_scale < SIM_SPEED_MIN) {
+			sim->time_scale = SIM_SPEED_MIN;
+		}
+	}
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Sim Speed: %.1fx",
+	                    (double)sim->time_scale);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
 static void handle_o_key_input(App* app)
 {
 	app->scene.sorting_mode =
@@ -559,6 +585,12 @@ void handle_app_input(App* app, int key, int mods)
 			if (handle_g_key_input(app, mods)) {
 				return;
 			}
+			break;
+		case GLFW_KEY_PERIOD:
+			handle_sim_speed_input(app, true);
+			break;
+		case GLFW_KEY_COMMA:
+			handle_sim_speed_input(app, false);
 			break;
 		default:
 			break;

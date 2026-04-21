@@ -122,6 +122,12 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_G, GLFW_MOD_SHIFT, "N-Body Gravity",
 	            "Toggles N-body gravitational sandbox mode.",
 	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_PERIOD, 0, "Sim Speed Up",
+	            "Doubles the N-body simulation speed (max 64x).",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_COMMA, 0, "Sim Speed Down",
+	            "Halves the N-body simulation speed (min 1/8x).",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, GLFW_MOD_SHIFT, "Toggle DOF Debug",
