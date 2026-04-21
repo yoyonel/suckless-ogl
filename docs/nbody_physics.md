@@ -236,6 +236,9 @@ invariants over long simulation runs:
 | `test_nbody_paused_no_change` | Paused sim is perfectly frozen | Bit-exact |
 | `test_nbody_survives_dt_spikes` | Spike frames do not destabilise | All bodies $< 50$ units |
 | `test_nbody_long_run_stability` | 1 200 s simulation invariants | See below |
+| `test_nbody_kinetic_energy_positive` | $E_k > 0$ after init | Positive |
+| `test_nbody_energy_drift_api` | Drift API: $E_0$ stored, drift $\approx 0$ at $t=0$ | drift $< 5\%$ after 10 s |
+| `test_nbody_zero_gravity` | $G = 0$ means no acceleration | Velocity unchanged after 120 steps |
 
 ### Long-Run Stability Results (1 200 s at 120 Hz = 144 000 steps)
 
@@ -281,6 +284,49 @@ $$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 1
 
 An overlay notification displays the current speed on each change.
 
+### Gravity Control (`gravity`)
+
+The gravitational constant $G$ can be adjusted at runtime with Shift modifier:
+
+| Key (US layout) | Key (AZERTY) | Action |
+|-----------------|--------------|--------|
+| `Shift+.` | `Shift+:` | Double G (max 128) |
+| `Shift+,` | `Shift+;` | Halve G (min 0.125, then OFF) |
+
+$G$ follows powers of 2 from the current value:
+
+$$G \in \{0,\; 0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; \ldots,\; 128.0\}$$
+
+- **$G = 0$** disables gravity entirely: bodies follow straight-line ballistic
+  trajectories at their current velocity.
+- When $G$ changes, the reference energy $E_0$ is **recalculated** so the
+  stability indicator reflects only numerical integration error, not the
+  intentional physics parameter change.
+
+### HUD Overlay
+
+When the N-body mode is active and text overlay is enabled (`F1`), two lines
+are displayed:
+
+1. **Energy & Gravity:** `Ek: 77.1 J | G: 2.000` — kinetic energy
+   $E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2$ and current $G$ value.
+2. **Stability:** `Stability: Stable (drift: 0.12%)` — shows whether the
+   integrator is conserving energy.
+
+The stability indicator is colour-coded:
+
+| Colour | State | Condition |
+|--------|-------|-----------|
+| Green | Stable | drift $< 5\%$ |
+| Red | Divergent | drift $\geq 5\%$ |
+
+Drift is computed as:
+
+$$\text{drift} = \frac{|E(t) - E_0|}{|E_0|}$$
+
+where $E_0$ is the total energy snapshot taken at initialisation (or after
+a gravity change).
+
 ### Trail Length Stability
 
 The trail sampling accumulator scales by `time_scale`:
@@ -305,10 +351,11 @@ per frame instead of 1, keeping trail length constant in world units.
 |------|------|
 | `include/nbody.h` | Public API, constants, data structures |
 | `src/nbody.c` | Physics implementation (Verlet, softening, preset) |
-| `tests/test_nbody_stability.c` | Stability test suite (5 tests) |
+| `tests/test_nbody_stability.c` | Stability test suite (8 tests) |
 | `include/trail_renderer.h` | Trail rendering (visual ribbons behind bodies) |
 | `src/trail_renderer.c` | Billboard ribbon trail implementation |
-| `src/app_input.c` | Simulation speed keybindings (`,` / `.`) |
+| `src/app_input.c` | Simulation speed (`,` / `.`) and gravity (Shift variants) keybindings |
+| `src/app_ui.c` | N-body HUD overlay (energy, gravity, stability) |
 | `src/app_binding.c` | F2 help overlay registration |
 | `shaders/trail.vert` | Trail vertex shader |
 | `shaders/trail.frag` | Trail fragment shader |

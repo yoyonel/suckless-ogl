@@ -245,6 +245,9 @@ invariants physiques sur de longues simulations :
 | `test_nbody_paused_no_change` | Sim en pause parfaitement gelée | Identique bit à bit |
 | `test_nbody_survives_dt_spikes` | Les pics de frame ne déstabilisent pas | Tous les corps $< 50$ unités |
 | `test_nbody_long_run_stability` | Invariants sur 1 200 s | Voir ci-dessous |
+| `test_nbody_kinetic_energy_positive` | $E_k > 0$ après init | Positif |
+| `test_nbody_energy_drift_api` | API drift : $E_0$ stocké, dérive $\approx 0$ à $t=0$ | dérive $< 5\%$ après 10 s |
+| `test_nbody_zero_gravity` | $G = 0$ signifie aucune accélération | Vitesse inchangée après 120 pas |
 
 ### Résultats de Stabilité Long Terme (1 200 s à 120 Hz = 144 000 pas)
 
@@ -290,6 +293,50 @@ $$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 1
 
 Une notification overlay affiche la vitesse actuelle à chaque changement.
 
+### Contrôle de la Gravité (`gravity`)
+
+La constante gravitationnelle $G$ est ajustable en temps réel avec le
+modificateur Shift :
+
+| Touche (US) | Touche (AZERTY) | Action |
+|-------------|-----------------|--------|
+| `Shift+.` | `Shift+:` | Doubler G (max 128) |
+| `Shift+,` | `Shift+;` | Diviser G par 2 (min 0.125, puis OFF) |
+
+$G$ suit des puissances de 2 à partir de la valeur courante :
+
+$$G \in \{0,\; 0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; \ldots,\; 128.0\}$$
+
+- **$G = 0$** désactive la gravité : les corps suivent des trajectoires
+  balistiques en ligne droite à leur vitesse courante.
+- Quand $G$ change, l'énergie de référence $E_0$ est **recalculée** pour que
+  l'indicateur de stabilité ne reflète que l'erreur d'intégration numérique,
+  pas le changement intentionnel de paramètre physique.
+
+### Affichage HUD
+
+Quand le mode N-corps est actif et l'overlay texte est activé (`F1`), deux
+lignes sont affichées :
+
+1. **Énergie & Gravité :** `Ek: 77.1 J | G: 2.000` — énergie cinétique
+   $E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2$ et valeur courante de $G$.
+2. **Stabilité :** `Stability: Stable (drift: 0.12%)` — indique si
+   l'intégrateur conserve l'énergie.
+
+L'indicateur de stabilité est coloré :
+
+| Couleur | État | Condition |
+|---------|------|-----------|
+| Vert | Stable | dérive $< 5\%$ |
+| Rouge | Divergent | dérive $\geq 5\%$ |
+
+La dérive est calculée par :
+
+$$\text{dérive} = \frac{|E(t) - E_0|}{|E_0|}$$
+
+où $E_0$ est le snapshot d'énergie totale pris à l'initialisation (ou après
+un changement de gravité).
+
 ### Stabilité de la Longueur des Traînées
 
 L'accumulateur d'échantillonnage des traînées est modulé par `time_scale` :
@@ -314,10 +361,11 @@ par frame au lieu de 1, gardant la longueur des traînées constante en unités 
 |---------|------|
 | `include/nbody.h` | API publique, constantes, structures de données |
 | `src/nbody.c` | Implémentation physique (Verlet, adoucissement, preset) |
-| `tests/test_nbody_stability.c` | Suite de tests de stabilité (5 tests) |
+| `tests/test_nbody_stability.c` | Suite de tests de stabilité (8 tests) |
 | `include/trail_renderer.h` | Rendu des traînées (rubans visuels derrière les corps) |
 | `src/trail_renderer.c` | Implémentation des traînées en rubans billboard |
-| `src/app_input.c` | Raccourcis clavier vitesse de simulation (`,` / `.`) |
+| `src/app_input.c` | Raccourcis vitesse de simulation (`,` / `.`) et gravité (variantes Shift) |
+| `src/app_ui.c` | Overlay HUD N-corps (énergie, gravité, stabilité) |
 | `src/app_binding.c` | Enregistrement dans l'overlay d'aide F2 |
 | `shaders/trail.vert` | Vertex shader des traînées |
 | `shaders/trail.frag` | Fragment shader des traînées |
