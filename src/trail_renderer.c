@@ -115,14 +115,21 @@ void trail_renderer_clear(TrailRenderer* trail)
 void trail_renderer_record(TrailRenderer* trail, const NBodySim* sim,
                            float delta_time)
 {
-	trail->sample_timer += delta_time;
-	if (trail->sample_timer < TRAIL_SAMPLE_INTERVAL) {
-		return;
-	}
-	trail->sample_timer -= TRAIL_SAMPLE_INTERVAL;
+	/* Scale sampling rate by time_scale so trail length in world units
+	 * stays constant regardless of simulation speed.  At 8× speed the
+	 * bodies move 8× faster, so we sample 8× more often — the ring
+	 * buffer evicts old points at the same *visual* pace. */
+	float effective_dt = delta_time * sim->time_scale;
+	trail->sample_timer += effective_dt;
 
-	for (int i = 0; i < sim->body_count && i < trail->body_count; i++) {
-		ring_push(&trail->rings[i], sim->bodies[i].position);
+	/* Emit as many sub-samples as needed (catches large time_scale
+	 * jumps that skip multiple intervals in a single frame). */
+	while (trail->sample_timer >= TRAIL_SAMPLE_INTERVAL) {
+		trail->sample_timer -= TRAIL_SAMPLE_INTERVAL;
+		for (int i = 0; i < sim->body_count && i < trail->body_count;
+		     i++) {
+			ring_push(&trail->rings[i], sim->bodies[i].position);
+		}
 	}
 }
 
