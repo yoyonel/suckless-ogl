@@ -312,7 +312,7 @@ void app_run(App* app)
 		}
 
 		{
-			PROFILE_ZONE(nbody_ctx, "NBody Update");
+			PROFILE_ZONE(nbody_ctx, "NBody Physics");
 			scene_nbody_update(&app->scene, (float)app->delta_time);
 			PROFILE_ZONE_END(nbody_ctx);
 		}
