@@ -10,7 +10,10 @@ struct SphereInstance {
 	float roughness;
 	float ao;
 	float padding;
-	float _pad[9];
+	float prev_center_x;
+	float prev_center_y;
+	float prev_center_z;
+	float _pad[6];
 };
 
 layout(std430, binding = 2) readonly buffer BillboardInstanceSSBO

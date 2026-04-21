@@ -8,6 +8,8 @@ layout(location = 2) in mat4 i_model;   // Emplacement 2, 3, 4, 5
 layout(location = 6) in vec3 i_albedo;  // Emplacement 6
 layout(location = 7)
     in vec3 i_pbr;  // Emplacement 7 (x: metallic, y: roughness, z: ao)
+layout(location = 8) in vec3
+    i_prev_center;  // Previous frame center (motion blur)
 
 layout(location = 0) out vec3 WorldPos;
 layout(location = 1) out vec3 Normal;
@@ -39,7 +41,12 @@ void main()
 	AO = i_pbr.z;
 
 	CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
-	PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
+
+	/* Per-object motion blur: reconstruct previous world position by
+	 * applying the same local vertex offset to the previous center.
+	 * For static objects, i_prev_center == current center → camera-only. */
+	vec3 prevWorldPos = i_prev_center + (WorldPos - vec3(i_model[3]));
+	PreviousClipPos = previousViewProj * vec4(prevWorldPos, 1.0);
 
 	gl_Position = CurrentClipPos;
 }

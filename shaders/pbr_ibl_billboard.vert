@@ -19,8 +19,8 @@ flat layout(location = 7) out float AO;
 
 layout(location = 8) out vec4
     CurrentClipPos;  // Used for AA size calculation in Frag
-// out vec4 PreviousClipPos;  <-- SUPPRIMÉ : Le calcul vertex est faux pour un
-// billboard
+flat layout(location = 9) out vec3
+    PrevSphereCenter;  // Previous frame center (per-object motion blur)
 
 /* clang-format off */
 @header "billboard_instance_ssbo.glsl"
@@ -58,6 +58,10 @@ layout(location = 8) out vec4
 	// Normale "face caméra" pour le quad (la vraie normale sera calculée
 	// par raytracing)
 	Normal = -vec3(view[0][2], view[1][2], view[2][2]);
+
+	// Previous frame center for per-object motion blur velocity
+	PrevSphereCenter =
+	    vec3(inst.prev_center_x, inst.prev_center_y, inst.prev_center_z);
 
 	CurrentClipPos = clipPos;
 	gl_Position = CurrentClipPos;
