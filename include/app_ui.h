@@ -203,6 +203,8 @@ static const KeyPos KEY_LAYOUT_QWERTY[] = {
     {GLFW_KEY_B, ROW_ZXCV, 6.3F, 1.0F, "B"},
     {GLFW_KEY_N, ROW_ZXCV, 7.3F, 1.0F, "N"},
     {GLFW_KEY_M, ROW_ZXCV, 8.3F, 1.0F, "M"},
+    {GLFW_KEY_COMMA, ROW_ZXCV, 9.3F, 1.0F, ","},
+    {GLFW_KEY_PERIOD, ROW_ZXCV, 10.3F, 1.0F, "."},
 
     /* Row 5: Space/System */
     {GLFW_KEY_LEFT_CONTROL, ROW_BOTTOM, 0.0F, 1.5F, "Ctrl"},
