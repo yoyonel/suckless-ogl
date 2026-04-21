@@ -363,6 +363,79 @@ void test_nbody_survives_dt_spikes(void)
 	}
 }
 
+/**
+ * Verify nbody_kinetic_energy returns a positive value after init.
+ */
+void test_nbody_kinetic_energy_positive(void)
+{
+	NBodySim sim;
+	nbody_init_preset(&sim);
+
+	float kin = nbody_kinetic_energy(&sim);
+	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, kin);
+	printf("  [kinetic] Ek = %.4f J\n", (double)kin);
+}
+
+/**
+ * Verify initial_energy is stored and energy_drift starts near zero.
+ */
+void test_nbody_energy_drift_api(void)
+{
+	NBodySim sim;
+	nbody_init_preset(&sim);
+
+	/* E0 should be stored and non-zero */
+	TEST_ASSERT_NOT_EQUAL_FLOAT(0.0F, sim.initial_energy);
+
+	/* Drift at t=0 should be exactly 0 */
+	float drift = nbody_energy_drift(&sim);
+	TEST_ASSERT_FLOAT_WITHIN(1e-6F, 0.0F, drift);
+
+	/* After a few steps, drift should stay small (< 5%) */
+	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	for (int i = 0; i < 600; i++) {
+		nbody_step(&sim, STEP_DT);
+	}
+	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+	drift = nbody_energy_drift(&sim);
+	printf("  [drift API] after 10s: drift = %.4f%%\n",
+	       (double)(drift * 100.0F));
+	TEST_ASSERT_LESS_THAN_FLOAT_MESSAGE(
+	    MAX_ENERGY_DRIFT, drift,
+	    "Energy drift API exceeded threshold after 10s");
+}
+
+/**
+ * Verify gravity=0 produces zero gravitational acceleration
+ * (bodies move in straight lines).
+ */
+void test_nbody_zero_gravity(void)
+{
+	NBodySim sim;
+	nbody_init_preset(&sim);
+	sim.gravity = 0.0F;
+
+	/* Record velocity of body 1 */
+	float vel_before[3] = {sim.bodies[1].velocity[0],
+	                       sim.bodies[1].velocity[1],
+	                       sim.bodies[1].velocity[2]};
+
+	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	for (int i = 0; i < 120; i++) {
+		nbody_step(&sim, STEP_DT);
+	}
+	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+	/* With G=0, velocity should be unchanged (no forces). */
+	TEST_ASSERT_FLOAT_WITHIN(1e-4F, vel_before[0],
+	                         sim.bodies[1].velocity[0]);
+	TEST_ASSERT_FLOAT_WITHIN(1e-4F, vel_before[1],
+	                         sim.bodies[1].velocity[1]);
+	TEST_ASSERT_FLOAT_WITHIN(1e-4F, vel_before[2],
+	                         sim.bodies[1].velocity[2]);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -370,6 +443,9 @@ int main(void)
 	RUN_TEST(test_nbody_energy_conservation);
 	RUN_TEST(test_nbody_paused_no_change);
 	RUN_TEST(test_nbody_survives_dt_spikes);
+	RUN_TEST(test_nbody_kinetic_energy_positive);
+	RUN_TEST(test_nbody_energy_drift_api);
+	RUN_TEST(test_nbody_zero_gravity);
 	RUN_TEST(test_nbody_long_run_stability);
 	return UNITY_END();
 }
