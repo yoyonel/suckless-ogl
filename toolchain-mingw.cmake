@@ -26,6 +26,3 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 # Link everything statically for easier deployment under Wine/Windows
 set(CMAKE_EXE_LINKER_FLAGS "-static")
-
-# Use Wine to run cross-compiled executables (CTest, try_run, etc.)
-set(CMAKE_CROSSCOMPILING_EMULATOR "wine64")

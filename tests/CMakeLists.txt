@@ -430,7 +430,12 @@ target_include_directories(test_gamepad_input PRIVATE
 
 target_link_libraries(test_gamepad_input PRIVATE cglm m)
 
-add_test(NAME test_gamepad_input COMMAND test_gamepad_input)
+if(WIN32)
+    add_test(NAME test_gamepad_input
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_gamepad_input>)
+else()
+    add_test(NAME test_gamepad_input COMMAND test_gamepad_input)
+endif()
 
 # =============================================================================
 # TEST IBL COORDINATOR (MOCKED)
