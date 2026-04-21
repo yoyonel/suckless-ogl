@@ -17,6 +17,7 @@ directement en USB ou Bluetooth.
 | **R2 (Gâchette droite)** | Monter | Proportionnel à la pression |
 | **L1 (Bumper gauche)** | Environnement précédent | Détection sur front montant |
 | **R1 (Bumper droit)** | Environnement suivant | Détection sur front montant |
+| **Share (Select)** | Reset caméra & LOD | Détection sur front montant (équiv. ESPACE) |
 
 ## Gestion de la zone morte
 
@@ -56,7 +57,7 @@ graph TD
     subgraph "Par frame (1x)"
         GLFW[API Gamepad GLFW] --> POLL[gamepad_input_poll]
         POLL -->|filtre zone morte| AXES[cache state.axes]
-        POLL -->|détection front| BTN[GamepadActions : L1/R1]
+        POLL -->|détection front| BTN[GamepadActions : L1/R1/Share]
     end
     subgraph "Par pas physique (Nx)"
         KB[camera_build_keyboard_input] --> MI[cam.move_input]
@@ -71,7 +72,7 @@ graph TD
 - **`gamepad_input_init()`** — Initialise l'état avec les valeurs par défaut.
 - **`gamepad_input_poll()`** — Appelée une fois par frame avant la boucle
   d'accumulation physique. Lit les axes GLFW (avec zone morte), normalise les
-  gâchettes de [-1,1] vers [0,1], et détecte les fronts montants L1/R1.
+  gâchettes de [-1,1] vers [0,1], et détecte les fronts montants L1/R1/Share.
   Les résultats sont mis en cache dans `state->axes[]`.
 - **`gamepad_write_input()`** — Appelée à chaque pas physique après
   `camera_build_keyboard_input()`. Superpose les valeurs analogiques sur
@@ -125,6 +126,11 @@ elle remplace la valeur du clavier sur cet axe. La caméra doit être activée
 (touche `C`) pour que l'entrée manette prenne effet.
 
 !!! tip "Overlay F2"
-    Appuyez sur **F2** pour parcourir les pages d'aide : **Clavier → Manette → Désactivé**.
-    La page manette affiche une disposition spatiale style DualShock avec tous
-    les contrôles liés. Survolez un contrôle à la souris pour voir sa description.
+    Appuyez sur **F2** pour parcourir les pages d'aide. La page manette est
+    **automatiquement masquée** lorsqu'aucune manette n'est connectée, le
+    cycle est alors **Clavier → Désactivé**. Quand une manette est détectée,
+    le cycle complet est **Clavier → Manette → Désactivé**. La page manette
+    affiche une disposition spatiale style DualShock avec tous les contrôles
+    liés. Les entrées actives sont surlignées en vert et les contrôles
+    inactifs s'estompent quand une entrée est active. Survolez un contrôle
+    à la souris pour voir sa description.

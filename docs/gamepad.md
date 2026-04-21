@@ -17,6 +17,7 @@ over USB or Bluetooth.
 | **R2 (Right Trigger)** | Move up | Proportional to trigger depth |
 | **L1 (Left Bumper)** | Previous environment map | Edge-detected press |
 | **R1 (Right Bumper)** | Next environment map | Edge-detected press |
+| **Share (Select)** | Reset camera & LOD | Edge-detected press (same as SPACE) |
 
 ## Dead-Zone Handling
 
@@ -55,7 +56,7 @@ graph TD
     subgraph "Per Frame (1x)"
         GLFW[GLFW Gamepad API] --> POLL[gamepad_input_poll]
         POLL -->|deadzone filter| AXES[state.axes cache]
-        POLL -->|edge detect| BTN[GamepadActions: L1/R1]
+        POLL -->|edge detect| BTN[GamepadActions: L1/R1/Share]
     end
     subgraph "Per Physics Step (Nx)"
         KB[camera_build_keyboard_input] --> MI[cam.move_input]
@@ -70,8 +71,8 @@ graph TD
 - **`gamepad_input_init()`** — Initializes state with defaults.
 - **`gamepad_input_poll()`** — Called once per frame before the physics
   accumulator loop. Reads GLFW axes (with deadzone), normalizes triggers
-  from [-1,1] to [0,1], and edge-detects L1/R1 bumper presses. Caches
-  results in `state->axes[]`.
+  from [-1,1] to [0,1], and edge-detects L1/R1/Share button presses.
+  Caches results in `state->axes[]`.
 - **`gamepad_write_input()`** — Called each physics step after
   `camera_build_keyboard_input()`. Overlays cached analog values onto
   `cam->move_input` and applies right-stick look rotation to
@@ -123,6 +124,10 @@ on that axis. The camera must be enabled (`C` key toggle) for gamepad input
 to take effect.
 
 !!! tip "F2 Help Overlay"
-    Press **F2** to cycle through help pages: **Keyboard → Gamepad → Off**.
-    The gamepad page shows a DualShock-style spatial layout with all bound
-    controls. Hover any control with the mouse to see its description.
+    Press **F2** to cycle through help pages. The gamepad page is
+    **automatically skipped** when no controller is connected, so the
+    cycle is **Keyboard → Off**. When a gamepad is detected, the full
+    cycle is **Keyboard → Gamepad → Off**. The gamepad page shows a
+    DualShock-style spatial layout with all bound controls. Active inputs
+    are highlighted in green, and inactive controls dim when any input is
+    active. Hover any control with the mouse to see its description.
