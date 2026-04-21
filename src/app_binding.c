@@ -128,6 +128,12 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_COMMA, 0, "Sim Speed Down",
 	            "Halves the N-body simulation speed (min 1/8x).",
 	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_PERIOD, GLFW_MOD_SHIFT, "Gravity Up",
+	            "Doubles the gravitational constant G (max 128).",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_COMMA, GLFW_MOD_SHIFT, "Gravity Down",
+	            "Halves G (min 0.125, then OFF).", BINDING_CAT_VISUALS,
+	            BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, GLFW_MOD_SHIFT, "Toggle DOF Debug",

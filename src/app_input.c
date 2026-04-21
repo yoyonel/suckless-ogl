@@ -32,6 +32,12 @@ static const float SIM_SPEED_MAX = 64.0F;
 static const float SIM_SPEED_MIN = 0.125F;
 static const float SIM_SPEED_INV_FACTOR = 0.5F;
 
+/* N-Body gravity constants (power-of-2 steps, with G=0 special case). */
+static const float GRAVITY_FACTOR = 2.0F;
+static const float GRAVITY_MAX = 128.0F;
+static const float GRAVITY_MIN_POSITIVE = 0.125F;
+static const float GRAVITY_INV_FACTOR = 0.5F;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	App* app = (App*)glfwGetWindowUserPointer(window);
@@ -471,6 +477,43 @@ static void handle_sim_speed_input(App* app, bool speed_up)
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
 }
 
+static void handle_gravity_input(App* app, bool increase)
+{
+	NBodySim* sim = &app->scene.nbody_sim;
+	if (increase) {
+		if (sim->gravity == 0.0F) {
+			sim->gravity = GRAVITY_MIN_POSITIVE;
+		} else {
+			sim->gravity *= GRAVITY_FACTOR;
+			if (sim->gravity > GRAVITY_MAX) {
+				sim->gravity = GRAVITY_MAX;
+			}
+		}
+	} else {
+		sim->gravity *= GRAVITY_INV_FACTOR;
+		if (sim->gravity < GRAVITY_MIN_POSITIVE) {
+			sim->gravity = 0.0F;
+		}
+	}
+	char buf[NOTIF_BUF_SIZE];
+	if (sim->gravity == 0.0F) {
+		(void)safe_snprintf(buf, sizeof(buf), "Gravity: OFF");
+	} else {
+		(void)safe_snprintf(buf, sizeof(buf), "Gravity: G=%.3f",
+		                    (double)sim->gravity);
+	}
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_sim_or_gravity_input(App* app, int mods, bool increase)
+{
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		handle_gravity_input(app, increase);
+	} else {
+		handle_sim_speed_input(app, increase);
+	}
+}
+
 static void handle_o_key_input(App* app)
 {
 	app->scene.sorting_mode =
@@ -587,10 +630,10 @@ void handle_app_input(App* app, int key, int mods)
 			}
 			break;
 		case GLFW_KEY_PERIOD:
-			handle_sim_speed_input(app, true);
+			handle_sim_or_gravity_input(app, mods, true);
 			break;
 		case GLFW_KEY_COMMA:
-			handle_sim_speed_input(app, false);
+			handle_sim_or_gravity_input(app, mods, false);
 			break;
 		default:
 			break;
