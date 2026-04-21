@@ -20,6 +20,7 @@ void camera_init(Camera* cam, float distance, float yaw, float pitch)
 	cam->move_forward = cam->move_backward = 0;
 	cam->move_left = cam->move_right = 0;
 	cam->move_up = cam->move_down = 0;
+	glm_vec3_zero(cam->move_input);
 
 	// Physique
 	glm_vec3_zero(cam->velocity_current);
@@ -69,39 +70,42 @@ void camera_update_vectors(Camera* cam)
 	glm_vec3_normalize(cam->up);
 }
 
-// NOUVELLE FONCTION : Mise à jour physique avec pas de temps fixe
+void camera_build_keyboard_input(Camera* cam)
+{
+	cam->move_input[0] =
+	    (float)(cam->move_right - cam->move_left); /* right/left */
+	cam->move_input[1] =
+	    (float)(cam->move_up - cam->move_down); /* up/down */
+	cam->move_input[2] =
+	    (float)(cam->move_forward - cam->move_backward); /* fwd/back */
+}
+
 void camera_fixed_update(Camera* cam)
 {
 	vec3 target_velocity;
 	glm_vec3_zero(target_velocity);
 	vec3 temp;
 
-	if (cam->move_forward) {
-		glm_vec3_scale(cam->front, cam->velocity, temp);
+	/* Forward / backward (move_input[2]) */
+	if (fabsf(cam->move_input[2]) > 0.0F) {
+		glm_vec3_scale(cam->front, cam->move_input[2] * cam->velocity,
+		               temp);
 		glm_vec3_add(target_velocity, temp, target_velocity);
 	}
-	if (cam->move_backward) {
-		glm_vec3_scale(cam->front, cam->velocity, temp);
-		glm_vec3_sub(target_velocity, temp, target_velocity);
-	}
-	if (cam->move_left) {
-		glm_vec3_scale(cam->right, cam->velocity, temp);
-		glm_vec3_sub(target_velocity, temp, target_velocity);
-	}
-	if (cam->move_right) {
-		glm_vec3_scale(cam->right, cam->velocity, temp);
+	/* Right / left (move_input[0]) */
+	if (fabsf(cam->move_input[0]) > 0.0F) {
+		glm_vec3_scale(cam->right, cam->move_input[0] * cam->velocity,
+		               temp);
 		glm_vec3_add(target_velocity, temp, target_velocity);
 	}
-	if (cam->move_up) {
-		glm_vec3_scale(cam->world_up, cam->velocity, temp);
+	/* Up / down (move_input[1]) */
+	if (fabsf(cam->move_input[1]) > 0.0F) {
+		glm_vec3_scale(cam->world_up,
+		               cam->move_input[1] * cam->velocity, temp);
 		glm_vec3_add(target_velocity, temp, target_velocity);
-	}
-	if (cam->move_down) {
-		glm_vec3_scale(cam->world_up, cam->velocity, temp);
-		glm_vec3_sub(target_velocity, temp, target_velocity);
 	}
 
-	// Interpolation avec alpha basé sur fixed_timestep
+	/* Interpolation with alpha based on fixed_timestep. */
 	float alpha = cam->acceleration * cam->fixed_timestep;
 	if (alpha > DEFAULT_MAX_ALPHA) {
 		alpha = DEFAULT_MAX_ALPHA;
@@ -109,19 +113,19 @@ void camera_fixed_update(Camera* cam)
 	glm_vec3_lerp(cam->velocity_current, target_velocity, alpha,
 	              cam->velocity_current);
 
-	// Friction
+	/* Friction. */
 	float target_norm = glm_vec3_norm(target_velocity);
 	if (target_norm < DEFAULT_MIN_VELOCITY) {
 		glm_vec3_scale(cam->velocity_current, cam->friction,
 		               cam->velocity_current);
 	}
 
-	// Déplacement
+	/* Position update. */
 	vec3 movement;
 	glm_vec3_scale(cam->velocity_current, cam->fixed_timestep, movement);
 	glm_vec3_add(cam->position, movement, cam->position);
 
-	// Head bobbing
+	/* Head bobbing. */
 	if (cam->bobbing_enabled) {
 		float current_speed = glm_vec3_norm(cam->velocity_current);
 		if (current_speed > DEFAULT_MIN_VELOCITY_FOR_BOBBING) {
@@ -137,20 +141,19 @@ void camera_fixed_update(Camera* cam)
 	}
 }
 
-// Dans camera_process_mouse :
 void camera_process_mouse(Camera* cam, float xoffset, float yoffset)
 {
-	// Lissage des inputs souris (ajustable via cam->mouse_smoothing_factor)
+	/* Smooth mouse input (adjustable via cam->mouse_smoothing_factor). */
 	cam->smoothed_x = (cam->mouse_smoothing_factor * cam->smoothed_x) +
 	                  ((1.0F - cam->mouse_smoothing_factor) * xoffset);
 	cam->smoothed_y = (cam->mouse_smoothing_factor * cam->smoothed_y) +
 	                  ((1.0F - cam->mouse_smoothing_factor) * yoffset);
 
-	// Application
+	/* Apply to orientation targets. */
 	cam->yaw_target += cam->smoothed_x * cam->sensitivity;
 	cam->pitch_target -= cam->smoothed_y * cam->sensitivity;
 
-	// Clamping
+	/* Clamp pitch. */
 	if (cam->pitch_target > DEFAULT_MAX_PITCH) {
 		cam->pitch_target = DEFAULT_MAX_PITCH;
 	}

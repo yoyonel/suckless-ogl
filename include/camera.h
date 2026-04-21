@@ -51,13 +51,20 @@ typedef struct Camera {
 	float sensitivity; /**< Mouse sensitivity factor. */
 	float zoom;        /**< Current Field of View (FOV) in degrees. */
 
-	/* Movement states (booleans) */
+	/* Movement states (booleans — set by keyboard callbacks) */
 	int move_forward;
 	int move_backward;
 	int move_left;
 	int move_right;
 	int move_up;
 	int move_down;
+
+	/* Unified movement input [-1,1] per camera-local axis.
+	 * [0] = right (+) / left (-),
+	 * [1] = up (+) / down (-),
+	 * [2] = forward (+) / backward (-).
+	 * Built each physics step from keyboard flags and/or gamepad. */
+	vec3 move_input;
 
 	/* Realistic physics */
 	vec3 velocity_current; /**< Current 3D velocity vector (momentum). */
@@ -134,9 +141,21 @@ void camera_process_scroll(Camera* cam, float yoffset);
 /**
  * @brief Performs one fixed-step physics update.
  *
- * Handles momentum, friction, and head-bobbing calculations.
+ * Reads move_input to build target_velocity, then applies momentum,
+ * friction, and head-bobbing.  move_input must be set before calling
+ * (via camera_build_keyboard_input and/or gamepad overlay).
  * @param cam Pointer to the camera instance.
  */
 void camera_fixed_update(Camera* cam);
+
+/**
+ * @brief Converts boolean keyboard flags into move_input.
+ *
+ * Writes cam->move_input from cam->move_forward/backward/left/right/up/down.
+ * Values are binary (0 or ±1).  Call before gamepad overlay and
+ * camera_fixed_update each physics step.
+ * @param cam Pointer to the camera instance.
+ */
+void camera_build_keyboard_input(Camera* cam);
 
 #endif /* CAMERA_H */

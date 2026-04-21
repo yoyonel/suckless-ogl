@@ -113,6 +113,21 @@ The project uses GitHub Actions to ensure cross-platform compatibility and produ
 
 Every push to `master` and every Pull Request triggers a Windows cross-compilation job using MinGW. This ensures that portability is maintained and no Windows-specific regressions are introduced.
 
+The MinGW toolchain file (`toolchain-mingw.cmake`) configures CMake
+for cross-compilation. Test execution under Wine is handled by the
+`run_test_with_xvfb.sh` wrapper script, which auto-detects `.exe`
+test binaries and prefixes them with `wine64`. Each standalone test
+in `tests/CMakeLists.txt` uses this wrapper on `WIN32` builds via:
+
+```cmake
+if(WIN32)
+    add_test(NAME test_foo
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_foo>)
+else()
+    add_test(NAME test_foo COMMAND test_foo)
+endif()
+```
+
 ### Local Windows Testing via Wine
 
 If you develop on Linux and want to test the Windows build locally, you can use the provided `just` targets. These targets rely on your `clang-dev` distrobox environment having `mingw` and `wine` installed.
@@ -147,3 +162,19 @@ When running the Windows build via Wine (`just build-win` and executing `app.exe
 
 * **Workaround**: `glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);` is set during window creation to prevent the window from minimizing automatically.
 * **Cursor Re-capture**: A manual cursor reset (`glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL)` followed by `GLFW_CURSOR_DISABLED` and `glfwSetCursorPos()`) was added to `app_input.c` to help Wine re-capture the cursor, but perfect focus parity with native Linux is not always guaranteed due to Window Manager and Wine interactions.
+
+### Gamepad/Joystick Not Detected under Wine
+
+GLFW's gamepad API (`glfwJoystickIsGamepad`) relies on the platform's native
+gamepad stack. Under Wine, this maps to the Windows WinMM/XInput APIs, which
+require Wine to detect the Linux joystick device.
+
+* **Root cause**: Wine's joystick passthrough depends on `libSDL2` being
+  available in the Wine prefix and on correct udev permissions for
+  `/dev/input/js*` and `/dev/input/event*` devices.
+* **Symptoms**: The gamepad works perfectly with the native Linux build
+  (`just run`) but is not recognized under Wine (`just run-win`). The F2
+  overlay correctly hides the gamepad page since `gamepad.connected == 0`.
+* **Status**: This is a **known Wine limitation**, not an application bug.
+  Gamepad support under Wine is best-effort. For full gamepad functionality,
+  use the native Linux build.

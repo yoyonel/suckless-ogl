@@ -86,6 +86,7 @@ void test_camera_fixed_update_no_input(void)
 	glm_vec3_copy(cam.position, initial_pos);
 
 	// Simule une mise à jour sans input
+	camera_build_keyboard_input(&cam);
 	camera_fixed_update(&cam);
 
 	// La position ne devrait pas changer (pas d'input)
@@ -102,6 +103,7 @@ void test_camera_fixed_update_with_forward_input(void)
 	glm_vec3_copy(cam.position, initial_pos);
 
 	// Simule une mise à jour
+	camera_build_keyboard_input(&cam);
 	camera_fixed_update(&cam);
 
 	// La position devrait avoir changé (vers l'avant)
@@ -118,6 +120,7 @@ void test_camera_fixed_update_accumulator(void)
 	// Vérifie que la boucle de fixed update s'exécute 3 fois
 	int update_count = 0;
 	while (cam.physics_accumulator >= cam.fixed_timestep) {
+		camera_build_keyboard_input(&cam);
 		camera_fixed_update(&cam);
 		cam.physics_accumulator -= cam.fixed_timestep;
 		update_count++;
@@ -173,6 +176,7 @@ void test_camera_process_scroll_changes_position(void)
 	glm_vec3_copy(cam.position, initial_pos);
 
 	camera_process_scroll(&cam, SCROLL_OFFSET);
+	camera_build_keyboard_input(&cam);
 	camera_fixed_update(&cam);
 
 	// La position devrait avoir changé

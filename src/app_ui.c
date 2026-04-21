@@ -11,6 +11,7 @@
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stb_image.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -55,7 +56,7 @@ static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
 
 void app_ui_init(AppUIOverlay* overlay)
 {
-	overlay->show_help = false;
+	overlay->show_help = HELP_MODE_OFF;
 	overlay->show_info_overlay = true;
 	overlay->show_exposure_debug = false;
 	overlay->text_overlay_mode = 0;
@@ -64,6 +65,7 @@ void app_ui_init(AppUIOverlay* overlay)
 	overlay->help_pressed_mods = 0;
 	overlay->help_press_timer = 0.0;
 	overlay->help_global_dim = 1.0;
+	overlay->help_gp_decay = 0.0;
 	overlay->help_hover_decay = 0.0;
 	overlay->kbd_config.key_size = DEFAULT_KBD_KEY_SIZE;
 	overlay->kbd_config.key_padding = DEFAULT_KBD_KEY_PADDING;
@@ -110,12 +112,17 @@ void app_ui_update(AppUIOverlay* overlay, double delta_time)
 		overlay->help_hover_decay -= delta_time;
 	}
 
+	/* Decay the gamepad grace timer (same role as help_hover_decay) */
+	if (overlay->help_gp_decay > 0.0) {
+		overlay->help_gp_decay -= delta_time;
+	}
+
 	/* Smooth global dimming: target is dimmed if a key is active, or was
-	 * recently active (hover decay grace period), otherwise 1.0 */
+	 * recently active (hover/gamepad decay grace period), otherwise 1.0 */
 	double target_dim = 1.0;
 	if (overlay->help_pressed_key != -1 ||
 	    overlay->help_hover_decay > 0.0 ||
-	    overlay->help_hovered_key != -1) {
+	    overlay->help_hovered_key != -1 || overlay->help_gp_decay > 0.0) {
 		target_dim = 1.0 - (double)GLOBAL_DIM_MAX_FALLOFF;
 	}
 	/* Interpolate current dim towards target dim (factor for quick but
@@ -130,7 +137,7 @@ void app_ui_handle_mouse(AppUIOverlay* overlay, double xpos, double ypos,
 {
 	overlay->help_hovered_key = -1;
 
-	if (!overlay->show_help) {
+	if (overlay->show_help == HELP_MODE_OFF) {
 		return;
 	}
 
@@ -387,7 +394,7 @@ static const AppBinding* get_active_binding(const AppBindingRegistry* registry,
 
 void app_draw_help_overlay(const App* app)
 {
-	if (!app->overlay.show_help) {
+	if (app->overlay.show_help != HELP_MODE_KEYBOARD) {
 		return;
 	}
 
@@ -472,6 +479,328 @@ void app_draw_help_overlay(const App* app)
 	    app->width, app->height);
 
 	draw_help_overlay_keys(app, start_x, start_y, total_h, &scaled_cfg);
+
+	/* Page hint (bottom-left). */
+	ui_draw_text_scaled(
+	    (UIContext*)&app->overlay.ui, "[F2] NEXT PAGE",
+	    HELP_EXIT_HINT_Y_OFF * ui_scale,
+	    (float)app->height - (HELP_EXIT_HINT_Y_OFF * ui_scale),
+	    (float*)KEY_COLOR_COMBINATION, HELP_TEXT_ALPHA, ui_scale,
+	    app->width, app->height);
+}
+
+/* --- Gamepad help overlay --- */
+
+/** Gamepad layout spans 12 units wide × 7 units tall. */
+static const float GP_LAYOUT_COLS = 12.0F;
+static const float GP_LAYOUT_ROWS = 7.0F;
+static const float GP_GLOW_BASE_SIZE = 12.0F;
+static const float GP_GLOW_SIDES = 2.0F;
+static const float GP_SMALL_LABEL_SCALE = 0.7F;
+static const float GP_TRIGGER_NORM = 0.5F;
+
+static void draw_gamepad_control(const App* app, const GamepadControlPos* ctrl,
+                                 float origin_x, float origin_y,
+                                 float unit_size, float unit_pad,
+                                 float ui_scale, int hovered_idx, int ctrl_idx,
+                                 bool is_pressed, float dim_mult)
+{
+	UIContext* ui_ctx = (UIContext*)&app->overlay.ui;
+	const float step = unit_size + unit_pad;
+	const float pos_x = origin_x + (ctrl->x_off * step);
+	const float pos_y = origin_y + (ctrl->y_off * step);
+	const float ctrl_w =
+	    (ctrl->width * unit_size) + ((ctrl->width - 1.0F) * unit_pad);
+	const float ctrl_h =
+	    (ctrl->height * unit_size) + ((ctrl->height - 1.0F) * unit_pad);
+
+	/* Pick color based on binding type. */
+	vec3 tint;
+	float alpha = KEY_DEFAULT_ALPHA;
+	if (ctrl->is_bound) {
+		if (ctrl->bind_type == 2) { /* cycle */
+			glm_vec3_copy((float*)KEY_COLOR_CYCLE, tint);
+		} else {
+			glm_vec3_copy((float*)KEY_COLOR_TOGGLE, tint);
+		}
+		alpha = DEFAULT_KBD_BOUND_ALPHA;
+	} else {
+		glm_vec3_copy((float*)KEY_COLOR_DEFAULT, tint);
+	}
+
+	bool is_hovered = (hovered_idx == ctrl_idx);
+	if (is_pressed || is_hovered) {
+		glm_vec3_clamp(tint, KEY_PRESS_BRIGHTEN_MIN, 1.0F);
+		alpha = KEY_PRESSED_ALPHA;
+	} else {
+		alpha *= dim_mult;
+	}
+
+	/* Key base (reuse keyboard keycap texture). */
+	const KeyboardLayoutConfig* kcfg = &app->overlay.kbd_config;
+	float radius = kcfg->key_radius * ui_scale;
+	if (app->overlay.kbd_tex_key_base != 0U) {
+		ui_draw_textured_quad(ui_ctx, app->overlay.kbd_tex_key_base,
+		                      pos_x, pos_y, ctrl_w, ctrl_h, tint, alpha,
+		                      app->width, app->height);
+	} else {
+		ui_draw_rounded_rect(ui_ctx, pos_x, pos_y, ctrl_w, ctrl_h,
+		                     radius, tint, alpha, app->width,
+		                     app->height);
+	}
+
+	/* Glow effect on hover or press. */
+	if (is_pressed || is_hovered) {
+		float glow_expand = GP_GLOW_BASE_SIZE * ui_scale;
+		ui_draw_glow_rect(
+		    ui_ctx, pos_x - glow_expand, pos_y - glow_expand,
+		    ctrl_w + (glow_expand * GP_GLOW_SIDES),
+		    ctrl_h + (glow_expand * GP_GLOW_SIDES),
+		    radius + (glow_expand * UI_CENTER_FACTOR), tint,
+		    GLOW_HOVER_ALPHA, app->width, app->height);
+	}
+
+	/* Label. */
+	float label_scale = kcfg->label_scale * ui_scale;
+	/* Clamp label for small controls. */
+	if (ctrl->width < 1.0F) {
+		label_scale *= GP_SMALL_LABEL_SCALE;
+	}
+	float label_x = pos_x + (ctrl_w * UI_CENTER_FACTOR);
+	float label_y = pos_y + (ctrl_h * UI_CENTER_FACTOR);
+	draw_text_centered(ui_ctx, ctrl->label, label_x, label_y, label_scale,
+	                   app->width, app->height);
+}
+
+/**
+ * @brief Test whether a raw GLFW axis value exceeds its activation threshold.
+ *
+ * Triggers (axes 4-5) rest at -1.0 and range to +1.0, so they are
+ * normalised to [0,1] before comparing against the trigger threshold.
+ * Stick axes (0-3) are centred at 0.0 and compared via fabsf against
+ * the deadzone.
+ */
+static bool gp_axis_active(const float* axes, int axis_id,
+                           const GamepadState* pad)
+{
+	float raw = axes[axis_id];
+	if (axis_id >= GLFW_GAMEPAD_AXIS_LEFT_TRIGGER) {
+		/* Trigger: normalise [-1,1] → [0,1]. */
+		float norm = (raw + 1.0F) * GP_TRIGGER_NORM;
+		return norm > pad->trigger_threshold;
+	}
+	/* Stick: centred at 0. */
+	return fabsf(raw) > pad->deadzone;
+}
+
+/**
+ * @brief Poll live gamepad state and mark active controls.
+ */
+static void gp_overlay_poll_active(const App* app,
+                                   bool active[GAMEPAD_LAYOUT_COUNT])
+{
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		active[i] = false;
+	}
+	GLFWgamepadstate gp_state;
+	if (!glfwJoystickIsGamepad(app->gamepad.joystick_id) ||
+	    !glfwGetGamepadState(app->gamepad.joystick_id, &gp_state)) {
+		return;
+	}
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		const GamepadControlPos* gpc = &GAMEPAD_LAYOUT[i];
+		if (gpc->gp_btn >= 0 &&
+		    gp_state.buttons[gpc->gp_btn] == GLFW_PRESS) {
+			active[i] = true;
+		}
+		if (gpc->gp_axis >= 0 &&
+		    gp_axis_active(gp_state.axes, gpc->gp_axis,
+		                   &app->gamepad)) {
+			active[i] = true;
+		}
+		if (gpc->gp_axis2 >= 0 &&
+		    gp_axis_active(gp_state.axes, gpc->gp_axis2,
+		                   &app->gamepad)) {
+			active[i] = true;
+		}
+	}
+}
+
+/**
+ * @brief Find the hovered gamepad control via mouse hit-test.
+ */
+static int gp_overlay_find_hovered(float origin_x, float origin_y,
+                                   float unit_size, float unit_pad, float step)
+{
+	double mouse_x = 0.0;
+	double mouse_y = 0.0;
+	GLFWwindow* win =
+	    glfwGetCurrentContext != NULL ? glfwGetCurrentContext() : NULL;
+	if (win != NULL) {
+		glfwGetCursorPos(win, &mouse_x, &mouse_y);
+	}
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		const GamepadControlPos* gpc = &GAMEPAD_LAYOUT[i];
+		float hit_x = origin_x + (gpc->x_off * step);
+		float hit_y = origin_y + (gpc->y_off * step);
+		float hit_w =
+		    (gpc->width * unit_size) + ((gpc->width - 1.0F) * unit_pad);
+		float hit_h = (gpc->height * unit_size) +
+		              ((gpc->height - 1.0F) * unit_pad);
+		if (mouse_x >= (double)hit_x &&
+		    mouse_x <= (double)(hit_x + hit_w) &&
+		    mouse_y >= (double)hit_y &&
+		    mouse_y <= (double)(hit_y + hit_h)) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void app_draw_gamepad_help_overlay(const App* app)
+{
+	if (app->overlay.show_help != HELP_MODE_GAMEPAD) {
+		return;
+	}
+
+	UIContext* ui_ctx = (UIContext*)&app->overlay.ui;
+	const float ui_scale = glm_clamp(
+	    (float)app->height / DEFAULT_BASE_RESOLUTION_HEIGHT, 0.5F, 3.0F);
+
+	/* Reuse keyboard sizing for consistency. */
+	const float unit_size = app->overlay.kbd_config.key_size * ui_scale;
+	const float unit_pad = app->overlay.kbd_config.key_padding * ui_scale;
+	const float step = unit_size + unit_pad;
+
+	const float total_w = GP_LAYOUT_COLS * step;
+	const float total_h = GP_LAYOUT_ROWS * step;
+
+	const float origin_x = ((float)app->width - total_w) * UI_CENTER_FACTOR;
+	const float origin_y =
+	    ((float)app->height - total_h) * UI_CENTER_FACTOR;
+
+	/* Layer 1: Dark background. */
+	ui_draw_rect_ex(ui_ctx, 0.0F, 0.0F, (float)app->width,
+	                (float)app->height, (float*)HELP_BG_COLOR,
+	                HELP_BG_ALPHA, app->width, app->height);
+
+	/* Layer 2: Cyberpunk panel frame. */
+	if (app->overlay.kbd_tex_frame != 0U) {
+		ui_draw_textured_quad(
+		    ui_ctx, app->overlay.kbd_tex_frame, 0.0F, 0.0F,
+		    (float)app->width, (float)app->height,
+		    (vec3){1.0F, 1.0F, 1.0F}, PANEL_FRAME_ALPHA, app->width,
+		    app->height);
+	}
+
+	/* Exit hint. */
+	ui_draw_text_scaled(
+	    ui_ctx, "[ESC] TO EXIT HELP",
+	    (float)app->width - (HELP_EXIT_HINT_X_OFF * ui_scale),
+	    (float)app->height - (HELP_EXIT_HINT_Y_OFF * ui_scale),
+	    (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA, ui_scale, app->width,
+	    app->height);
+
+	/* Title. */
+	{
+		const float title_w =
+		    ui_measure_text(&app->overlay.ui, "[ GAMEPAD CONTROLS ]") *
+		    ui_scale;
+		const float title_x = ((float)app->width * UI_CENTER_FACTOR) -
+		                      (title_w * UI_CENTER_FACTOR);
+		const float title_y =
+		    origin_y -
+		    (app->overlay.kbd_config.title_y_offset * ui_scale);
+		ui_draw_text_scaled(ui_ctx, "[ GAMEPAD CONTROLS ]", title_x,
+		                    title_y, (float*)CYBER_TITLE_COLOR, 1.0F,
+		                    ui_scale, app->width, app->height);
+	}
+
+	/* Color legend. */
+	{
+		const float legend_y =
+		    origin_y - (app->overlay.kbd_config.title_y_offset *
+		                ui_scale * LEGEND_Y_FACTOR);
+		const float legend_x =
+		    (float)app->width * LEGEND_X_START_FACTOR;
+		const float legend_step_w =
+		    (float)app->width * LEGEND_STEP_FACTOR;
+
+		ui_draw_text_scaled(ui_ctx, "■ Action", legend_x, legend_y,
+		                    (float*)KEY_COLOR_TOGGLE, HELP_TEXT_ALPHA,
+		                    ui_scale, app->width, app->height);
+		ui_draw_text_scaled(ui_ctx, "■ Cycle", legend_x + legend_step_w,
+		                    legend_y, (float*)KEY_COLOR_CYCLE,
+		                    HELP_TEXT_ALPHA, ui_scale, app->width,
+		                    app->height);
+	}
+
+	/* Determine hovered control. */
+	int hovered_idx = gp_overlay_find_hovered(origin_x, origin_y, unit_size,
+	                                          unit_pad, step);
+
+	/* Determine active controls from live gamepad state. */
+	bool gp_active[GAMEPAD_LAYOUT_COUNT];
+	gp_overlay_poll_active(app, gp_active);
+
+	/* Signal dimming system: refresh decay timer while any input is active
+	 * (same pattern as keyboard's help_hover_decay = HOVER_DECAY_DURATION
+	 * on mouse hit). */
+	bool any_active = (hovered_idx >= 0);
+	if (!any_active) {
+		for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+			if (gp_active[i]) {
+				any_active = true;
+				break;
+			}
+		}
+	}
+	if (any_active) {
+		((AppUIOverlay*)&app->overlay)->help_gp_decay =
+		    HOVER_DECAY_DURATION;
+	}
+	const float dim_mult = (float)app->overlay.help_global_dim;
+
+	/* Draw all controls. */
+	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+		draw_gamepad_control(app, &GAMEPAD_LAYOUT[i], origin_x,
+		                     origin_y, unit_size, unit_pad, ui_scale,
+		                     hovered_idx, i, gp_active[i], dim_mult);
+	}
+
+	/* Show detail for hovered or pressed control. */
+	int detail_idx = -1;
+	if (hovered_idx >= 0 && GAMEPAD_LAYOUT[hovered_idx].is_bound) {
+		detail_idx = hovered_idx;
+	}
+	/* Pressed gamepad control takes priority if no hover. */
+	if (detail_idx < 0) {
+		for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
+			if (gp_active[i] && GAMEPAD_LAYOUT[i].is_bound) {
+				detail_idx = i;
+				break;
+			}
+		}
+	}
+	if (detail_idx >= 0) {
+		const GamepadControlPos* ctrl = &GAMEPAD_LAYOUT[detail_idx];
+		char buf[KEYBOARD_BUFFER_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "[%s]: %s", ctrl->action,
+		                    ctrl->desc);
+		const float detail_y =
+		    origin_y + total_h +
+		    (app->overlay.kbd_config.detail_y_offset * ui_scale);
+		draw_text_centered(ui_ctx, buf,
+		                   (float)app->width * UI_CENTER_FACTOR,
+		                   detail_y, ui_scale, app->width, app->height);
+	}
+
+	/* [F2] page hint at bottom-left. */
+	ui_draw_text_scaled(
+	    ui_ctx, "[F2] NEXT PAGE", HELP_EXIT_HINT_Y_OFF * ui_scale,
+	    (float)app->height - (HELP_EXIT_HINT_Y_OFF * ui_scale),
+	    (float*)KEY_COLOR_COMBINATION, HELP_TEXT_ALPHA, ui_scale,
+	    app->width, app->height);
 }
 
 static bool is_key_active_in_overlay(int key_to_test, int active_key,
@@ -891,8 +1220,10 @@ void app_render_ui(const App* app)
 		app_draw_debug_overlay(app);
 	}
 
-	if (app->overlay.show_help) {
+	if (app->overlay.show_help == HELP_MODE_KEYBOARD) {
 		app_draw_help_overlay(app);
+	} else if (app->overlay.show_help == HELP_MODE_GAMEPAD) {
+		app_draw_gamepad_help_overlay(app);
 	}
 
 	gpu_profiler_ui_draw((GPUProfilerUI*)&app->timeline_ui, ui_ctx,

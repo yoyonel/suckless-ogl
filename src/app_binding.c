@@ -183,9 +183,9 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_F1, 0, "Cycle Overlays",
 	            "Cycles through different debug information overlays.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_CYCLE);
-	add_binding(GLFW_KEY_F2, 0, "Toggle Help",
-	            "Shows or hides this interactive keyboard help.",
-	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_F2, 0, "Cycle Help",
+	            "Cycles help overlay: Keyboard → Gamepad → Off.",
+	            BINDING_CAT_SYSTEM, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_F3, 0, "Toggle Profiler",
 	            "Toggles the GPU timeline profiler visibility.",
 	            BINDING_CAT_SYSTEM, BINDING_TYPE_TOGGLE);

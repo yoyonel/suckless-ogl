@@ -144,7 +144,6 @@ jobs:
         run: |
           export WINEPREFIX=$HOME/.wine
           export WINEDEBUG=-all
-          export TEST_RUNNER_PREFIX="wine64"
           cd build-test-win && ctest --output-on-failure
 
 

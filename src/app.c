@@ -9,6 +9,7 @@
 #include "async_loader.h"
 #include "camera.h"
 #include "fps.h"
+#include "gamepad_input.h"
 #include "gl_common.h"
 #include "glad/glad.h"
 #include "perf_mode.h"
@@ -42,6 +43,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
 	            DEFAULT_CAMERA_PITCH);
+	gamepad_input_init(&app->gamepad);
 
 	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->window) {
@@ -247,10 +249,34 @@ void app_run(App* app)
 
 		{
 			PROFILE_ZONE(camera_ctx, "Camera Physics");
+			GamepadActions gp_actions = {0, 0, 0};
+			if (app->camera_enabled) {
+				gamepad_input_poll(&app->gamepad, &gp_actions);
+			}
+			if (gp_actions.env_next) {
+				app_handle_env_input(app, GLFW_PRESS, 0,
+				                     GLFW_KEY_PAGE_UP);
+			}
+			if (gp_actions.env_prev) {
+				app_handle_env_input(app, GLFW_PRESS, 0,
+				                     GLFW_KEY_PAGE_DOWN);
+			}
+			if (gp_actions.camera_reset) {
+				camera_init(
+				    &app->camera, DEFAULT_CAMERA_DISTANCE,
+				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
+				app->scene.env_lod = DEFAULT_ENV_LOD;
+				action_notifier_push(&app->notifier,
+				                     "Camera & LOD Reset",
+				                     NOTIF_DUR_LONG);
+			}
 			app->camera.physics_accumulator +=
 			    (float)app->delta_time;
 			while (app->camera.physics_accumulator >=
 			       app->camera.fixed_timestep) {
+				camera_build_keyboard_input(&app->camera);
+				gamepad_write_input(&app->gamepad,
+				                    &app->camera);
 				camera_fixed_update(&app->camera);
 				app->camera.physics_accumulator -=
 				    app->camera.fixed_timestep;
