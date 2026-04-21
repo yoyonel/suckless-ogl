@@ -126,6 +126,25 @@ l'exécution de tests cross-compilés : CTest préfixe automatiquement
 chaque exécutable de test avec `wine64`, sans nécessiter de wrapper
 manuel ou de variable d'environnement.
 
+## Limitations connues
+
+### Manette/Joystick non détecté sous Wine
+
+L'API gamepad de GLFW (`glfwJoystickIsGamepad`) repose sur la pile native de
+la plateforme. Sous Wine, cela correspond aux API Windows WinMM/XInput, qui
+nécessitent que Wine détecte le périphérique joystick Linux.
+
+* **Cause** : Le passthrough joystick de Wine dépend de la présence de
+  `libSDL2` dans le préfixe Wine et des permissions udev correctes sur
+  `/dev/input/js*` et `/dev/input/event*`.
+* **Symptômes** : La manette fonctionne parfaitement avec le build Linux
+  natif (`just run`) mais n'est pas reconnue sous Wine (`just run-win`).
+  L'overlay F2 masque correctement la page manette puisque
+  `gamepad.connected == 0`.
+* **Statut** : C'est une **limitation connue de Wine**, pas un bug
+  applicatif. Le support manette sous Wine est best-effort. Pour une
+  fonctionnalité manette complète, utiliser le build Linux natif.
+
 ## Voir aussi
 
 - [build.md](./build.md) — Guide de compilation

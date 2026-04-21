@@ -154,3 +154,19 @@ When running the Windows build via Wine (`just build-win` and executing `app.exe
 
 * **Workaround**: `glfwWindowHint(GLFW_AUTO_ICONIFY, GLFW_FALSE);` is set during window creation to prevent the window from minimizing automatically.
 * **Cursor Re-capture**: A manual cursor reset (`glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL)` followed by `GLFW_CURSOR_DISABLED` and `glfwSetCursorPos()`) was added to `app_input.c` to help Wine re-capture the cursor, but perfect focus parity with native Linux is not always guaranteed due to Window Manager and Wine interactions.
+
+### Gamepad/Joystick Not Detected under Wine
+
+GLFW's gamepad API (`glfwJoystickIsGamepad`) relies on the platform's native
+gamepad stack. Under Wine, this maps to the Windows WinMM/XInput APIs, which
+require Wine to detect the Linux joystick device.
+
+* **Root cause**: Wine's joystick passthrough depends on `libSDL2` being
+  available in the Wine prefix and on correct udev permissions for
+  `/dev/input/js*` and `/dev/input/event*` devices.
+* **Symptoms**: The gamepad works perfectly with the native Linux build
+  (`just run`) but is not recognized under Wine (`just run-win`). The F2
+  overlay correctly hides the gamepad page since `gamepad.connected == 0`.
+* **Status**: This is a **known Wine limitation**, not an application bug.
+  Gamepad support under Wine is best-effort. For full gamepad functionality,
+  use the native Linux build.
