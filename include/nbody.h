@@ -63,10 +63,11 @@ typedef struct {
 typedef struct {
 	NBodyParticle bodies[NBODY_MAX_BODIES]; /**< Array of bodies. */
 	int body_count;                         /**< Number of active bodies. */
-	float gravity;     /**< Gravitational constant G. */
-	float accumulator; /**< Physics timestep accumulator. */
-	float time_scale;  /**< Speed multiplier (1.0 = real-time). */
-	bool paused;       /**< If true, simulation does not advance. */
+	float gravity;        /**< Gravitational constant G. */
+	float accumulator;    /**< Physics timestep accumulator. */
+	float time_scale;     /**< Speed multiplier (1.0 = real-time). */
+	float initial_energy; /**< Total energy at init (E₀ reference). */
+	bool paused;          /**< If true, simulation does not advance. */
 } NBodySim;
 
 /**
@@ -104,5 +105,17 @@ int nbody_get_count(const NBodySim* sim);
  * this quantity oscillates with bounded amplitude around E₀.
  */
 float nbody_total_energy(const NBodySim* sim);
+
+/**
+ * @brief Computes kinetic energy only: Σ ½ m v².
+ */
+float nbody_kinetic_energy(const NBodySim* sim);
+
+/**
+ * @brief Returns the relative energy drift |E(t) - E₀| / |E₀|.
+ *
+ * Returns 0 when initial_energy is zero (no reference).
+ */
+float nbody_energy_drift(const NBodySim* sim);
 
 #endif /* NBODY_H */

@@ -152,8 +152,8 @@ void nbody_init_preset(NBodySim* sim)
 		             sim->bodies[i].velocity);
 	}
 
-	/* Snapshot total energy for diagnostics (tests). */
-	(void)nbody_total_energy(sim);
+	/* Snapshot total energy as reference for stability diagnostics. */
+	sim->initial_energy = nbody_total_energy(sim);
 
 	/* Initialize prev_position = position for first frame (no motion). */
 	for (int i = 0; i < sim->body_count; i++) {
@@ -333,4 +333,31 @@ void nbody_write_instances(const NBodySim* sim, SphereInstance* out)
 int nbody_get_count(const NBodySim* sim)
 {
 	return sim->body_count;
+}
+
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+float nbody_kinetic_energy(const NBodySim* sim)
+{
+	float kinetic = 0.0F;
+	for (int i = 0; i < sim->body_count; i++) {
+		vec3 vel;
+		glm_vec3_copy((float*)sim->bodies[i].velocity, vel);
+		kinetic += 0.5F * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
+	}
+	return kinetic;
+}
+
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+float nbody_energy_drift(const NBodySim* sim)
+{
+	float ref_energy = sim->initial_energy;
+	if (ref_energy == 0.0F) {
+		return 0.0F;
+	}
+	float current = nbody_total_energy(sim);
+	float diff = current - ref_energy;
+	return (diff < 0.0F ? -diff : diff) /
+	       (ref_energy < 0.0F ? -ref_energy : ref_energy);
 }
