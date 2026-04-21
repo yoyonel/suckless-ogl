@@ -1,14 +1,20 @@
 var searchData=
 [
-  ['gi_5fdebug_5fprobe_5fvertices_3625',['GI_DEBUG_PROBE_VERTICES',['../light__probes_8c.html#a96a58e29e8dbf2b5bdeb775cba46556eadd736b70ac73170b9644d6fe7dbdd6ba',1,'light_probes.c']]],
-  ['gi_5flog_5fbuf_5fsize_3626',['GI_LOG_BUF_SIZE',['../light__probes_8c.html#a96a58e29e8dbf2b5bdeb775cba46556eafe2fed8b2ca9113062d05bbf50f6e6b8',1,'light_probes.c']]],
-  ['gi_5fmode_5f3d_5ftex_3627',['GI_MODE_3D_TEX',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa78c9618ee8bd96d6765e64fc81b86c0f',1,'scene.h']]],
-  ['gi_5fmode_5fcount_3628',['GI_MODE_COUNT',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa556fdef2df9e646f492f124faa2faecd',1,'scene.h']]],
-  ['gi_5fmode_5foff_3629',['GI_MODE_OFF',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa9b40f870d3b7b4152e252bc8212abf8d',1,'scene.h']]],
-  ['gi_5fmode_5fssbo_3630',['GI_MODE_SSBO',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fac43ea93596533981819af745bb23626a',1,'scene.h']]],
-  ['gi_5fsmall_5flog_5fbuf_5fsize_3631',['GI_SMALL_LOG_BUF_SIZE',['../light__probes_8c.html#a96a58e29e8dbf2b5bdeb775cba46556ea18b0bd55142c07ceea2c4d99755af444',1,'light_probes.c']]],
-  ['gi_5fwire_5fcube_5fvertices_3632',['GI_WIRE_CUBE_VERTICES',['../light__probes_8c.html#a96a58e29e8dbf2b5bdeb775cba46556eaf1db8d5cb9170cc48e50f01378675bc2',1,'light_probes.c']]],
-  ['gl_5fubo_5falignment_3633',['GL_UBO_ALIGNMENT',['../gl__common_8h.html#a16af7b253440dadd46a80a4b9fddba4da0178e01bb43e84986ca3cf7d7cdbb660',1,'gl_common.h']]],
-  ['gpu_5fidentifier_5fraw_5fbuf_5fsize_3634',['GPU_IDENTIFIER_RAW_BUF_SIZE',['../render__utils_8c.html#a157d5577a5b2f5986037d0d09c7dc77da088b803bc4a6432888162268cf640155',1,'render_utils.c']]],
-  ['gpu_5fquery_5fbuffer_5fcount_3635',['GPU_QUERY_BUFFER_COUNT',['../gpu__profiler_8h.html#aba01db17f4a2bfbc3db60dc172972a25a253a489f6b3470ff87bbe17d5f5e589d',1,'gpu_profiler.h']]]
+  ['gamepad_5flayout_5fcount_3732',['GAMEPAD_LAYOUT_COUNT',['../app__ui_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe',1,'app_ui.h']]],
+  ['gi_5fdebug_5fprobe_5fvertices_3733',['GI_DEBUG_PROBE_VERTICES',['../light__probes_8c.html#a458e651af6690959efa2afb96be7d609add736b70ac73170b9644d6fe7dbdd6ba',1,'light_probes.c']]],
+  ['gi_5flog_5fbuf_5fsize_3734',['GI_LOG_BUF_SIZE',['../light__probes_8c.html#a458e651af6690959efa2afb96be7d609afe2fed8b2ca9113062d05bbf50f6e6b8',1,'light_probes.c']]],
+  ['gi_5fmode_5f3d_5ftex_3735',['GI_MODE_3D_TEX',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa78c9618ee8bd96d6765e64fc81b86c0f',1,'scene.h']]],
+  ['gi_5fmode_5fcount_3736',['GI_MODE_COUNT',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa556fdef2df9e646f492f124faa2faecd',1,'scene.h']]],
+  ['gi_5fmode_5foff_3737',['GI_MODE_OFF',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fa9b40f870d3b7b4152e252bc8212abf8d',1,'scene.h']]],
+  ['gi_5fmode_5fssbo_3738',['GI_MODE_SSBO',['../scene_8h.html#a77089f19a96b4dfc89e234b29626a85fac43ea93596533981819af745bb23626a',1,'scene.h']]],
+  ['gi_5fsmall_5flog_5fbuf_5fsize_3739',['GI_SMALL_LOG_BUF_SIZE',['../light__probes_8c.html#a458e651af6690959efa2afb96be7d609a18b0bd55142c07ceea2c4d99755af444',1,'light_probes.c']]],
+  ['gi_5fwire_5fcube_5fvertices_3740',['GI_WIRE_CUBE_VERTICES',['../light__probes_8c.html#a458e651af6690959efa2afb96be7d609af1db8d5cb9170cc48e50f01378675bc2',1,'light_probes.c']]],
+  ['gl_5fubo_5falignment_3741',['GL_UBO_ALIGNMENT',['../gl__common_8h.html#aaf105ae5beaca1dee30ae54530691fcea0178e01bb43e84986ca3cf7d7cdbb660',1,'gl_common.h']]],
+  ['gp_5frow_5fbumpers_3742',['GP_ROW_BUMPERS',['../app__ui_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec',1,'app_ui.h']]],
+  ['gp_5frow_5fface_3743',['GP_ROW_FACE',['../app__ui_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d',1,'app_ui.h']]],
+  ['gp_5frow_5fsticks_3744',['GP_ROW_STICKS',['../app__ui_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b',1,'app_ui.h']]],
+  ['gp_5frow_5fsystem_3745',['GP_ROW_SYSTEM',['../app__ui_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b',1,'app_ui.h']]],
+  ['gp_5frow_5ftriggers_3746',['GP_ROW_TRIGGERS',['../app__ui_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6',1,'app_ui.h']]],
+  ['gpu_5fidentifier_5fraw_5fbuf_5fsize_3747',['GPU_IDENTIFIER_RAW_BUF_SIZE',['../render__utils_8c.html#a84627a72058502328269676b81780f89a088b803bc4a6432888162268cf640155',1,'render_utils.c']]],
+  ['gpu_5fquery_5fbuffer_5fcount_3748',['GPU_QUERY_BUFFER_COUNT',['../gpu__profiler_8h.html#a80155586fa275b28773c9b203f52cabaa253a489f6b3470ff87bbe17d5f5e589d',1,'gpu_profiler.h']]]
 ];

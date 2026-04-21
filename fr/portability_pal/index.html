@@ -828,6 +828,34 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#limitations-connues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations connues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations connues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manettejoystick-non-detecte-sous-wine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manette/Joystick non détecté sous Wine
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#voir-aussi" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1562,6 +1590,34 @@
     
   
     Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
   
 
     
@@ -3366,6 +3422,34 @@
 <div class="language-cmake highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_SYSTEM_NAME</span><span class="w"> </span><span class="s">Windows</span><span class="p">)</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_COMPILER</span><span class="w"> </span><span class="s">x86_64-w64-mingw32-gcc</span><span class="p">)</span>
 </span></code></pre></div>
+<p>L'exécution des tests sous Wine est gérée par le script wrapper
+<code>run_test_with_xvfb.sh</code>, qui détecte automatiquement les binaires
+<code>.exe</code> et les préfixe avec <code>wine64</code>. Chaque test standalone dans
+<code>tests/CMakeLists.txt</code> utilise ce wrapper en build <code>WIN32</code> :</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">if</span><span class="p">(</span><span class="s">WIN32</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="nb">add_test</span><span class="p">(</span><span class="s">NAME</span><span class="w"> </span><span class="s">test_foo</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">             </span><span class="s">COMMAND</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_SOURCE_DIR</span><span class="o">}</span><span class="s">/.github/workflows/scripts/run_test_with_xvfb.sh</span><span class="w"> </span><span class="o">$&lt;</span><span class="nv">TARGET_FILE:test_foo</span><span class="o">&gt;</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nb">else</span><span class="p">()</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nb">add_test</span><span class="p">(</span><span class="s">NAME</span><span class="w"> </span><span class="s">test_foo</span><span class="w"> </span><span class="s">COMMAND</span><span class="w"> </span><span class="s">test_foo</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="nb">endif</span><span class="p">()</span>
+</span></code></pre></div>
+<h2 id="limitations-connues">Limitations connues<a class="headerlink" href="#limitations-connues" title="Permanent link">¶</a></h2>
+<h3 id="manettejoystick-non-detecte-sous-wine">Manette/Joystick non détecté sous Wine<a class="headerlink" href="#manettejoystick-non-detecte-sous-wine" title="Permanent link">¶</a></h3>
+<p>L'API gamepad de GLFW (<code>glfwJoystickIsGamepad</code>) repose sur la pile native de
+la plateforme. Sous Wine, cela correspond aux API Windows WinMM/XInput, qui
+nécessitent que Wine détecte le périphérique joystick Linux.</p>
+<ul>
+<li><strong>Cause</strong> : Le passthrough joystick de Wine dépend de la présence de
+  <code>libSDL2</code> dans le préfixe Wine et des permissions udev correctes sur
+  <code>/dev/input/js*</code> et <code>/dev/input/event*</code>.</li>
+<li><strong>Symptômes</strong> : La manette fonctionne parfaitement avec le build Linux
+  natif (<code>just run</code>) mais n'est pas reconnue sous Wine (<code>just run-win</code>).
+  L'overlay F2 masque correctement la page manette puisque
+  <code>gamepad.connected == 0</code>.</li>
+<li><strong>Statut</strong> : C'est une <strong>limitation connue de Wine</strong>, pas un bug
+  applicatif. Le support manette sous Wine est best-effort. Pour une
+  fonctionnalité manette complète, utiliser le build Linux natif.</li>
+</ul>
 <h2 id="voir-aussi">Voir aussi<a class="headerlink" href="#voir-aussi" title="Permanent link">¶</a></h2>
 <ul>
 <li><a href="../build/">build.md</a> — Guide de compilation</li>
@@ -3391,7 +3475,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="21 avril 2026 08:53:05 UTC">21 avril 2026</span>
   </span>
 
     

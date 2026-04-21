@@ -1,27 +1,7 @@
 var searchData=
 [
-  ['r_3303',['r',['../structUIVertex.html#a41765e1cc6c021cf6bf8aeec59303f68',1,'UIVertex']]],
-  ['radius_3304',['radius',['../structUIVertex.html#a78f77555598d98f7dddc38d0938faf1f',1,'UIVertex::radius()'],['../structCachedSphere.html#ab5617c01bb213678b6e86a7761a11f24',1,'CachedSphere::radius()']]],
-  ['read_5findex_3305',['read_index',['../structGPUProfiler.html#a16c180a6bf8f3f47dcbf02deeeea6c5e',1,'GPUProfiler']]],
-  ['recording_5fcount_3306',['recording_count',['../structGPUProfiler.html#ac69c2515dc2237041fc9ca26e367fb0d',1,'GPUProfiler']]],
-  ['rect_5fsize_5fx_3307',['rect_size_x',['../structUIVertex.html#a22a567bbac6289709156d7eeab42749d',1,'UIVertex']]],
-  ['rect_5fsize_5fy_3308',['rect_size_y',['../structUIVertex.html#a7a6d94b5c7627a5713497ec1bb8a5c43',1,'UIVertex']]],
-  ['recursion_5fdepth_3309',['recursion_depth',['../structIncludeContext.html#a345b684fcf0fc4c2ffb5f54d27515ec9',1,'IncludeContext']]],
-  ['recycled_5fhdr_5ftex_3310',['recycled_hdr_tex',['../structScene.html#a606909f5d607437bdd11f2a9c7b43378',1,'Scene']]],
-  ['renderer_3311',['renderer',['../structGPUInfo.html#a4da36b59d887870f6c2f6aff9c17961c',1,'GPUInfo']]],
-  ['request_5fcond_3312',['request_cond',['../structAsyncLoader.html#a54bf2270f213ea632e0cf188a573f756',1,'AsyncLoader']]],
-  ['request_5fmutex_3313',['request_mutex',['../structAsyncLoader.html#a6d002824c4d54f63263a4194f4ba2144',1,'AsyncLoader']]],
-  ['resize_5fpending_3314',['resize_pending',['../structApp.html#a1f3af0289423a62e6753b4994179079b',1,'App']]],
-  ['result_5fcount_3315',['result_count',['../structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf',1,'EffectBenchmark']]],
-  ['results_3316',['results',['../structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855',1,'EffectBenchmark']]],
-  ['results_5fready_3317',['results_ready',['../structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9',1,'LightProbeGrid']]],
-  ['right_3318',['right',['../structCamera.html#ab85197df3b54a775327630d16219922a',1,'Camera']]],
-  ['rng_3319',['rng',['../structAdaptiveSampler.html#a6faf2d71576af580e879ddb9d815ddef',1,'AdaptiveSampler']]],
-  ['rotation_5fsmoothing_3320',['rotation_smoothing',['../structCamera.html#a3aab68c9e46b44b0243504089c3227d7',1,'Camera']]],
-  ['roughness_3321',['roughness',['../structSphereInstance.html#a92b14b4943403057b8e63eff4f0eb8ab',1,'SphereInstance::roughness()'],['../structSphereInstance__POD.html#a20a2c790c62f51e7bf5bff6f87bf3a40',1,'SphereInstance_POD::roughness()'],['../structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e',1,'PBRMaterial::roughness()'],['../structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6',1,'SphereInstanceSSBO::roughness()'],['../structInstanceData.html#a3b0cebd54854de3a98a8a1ec79c3db12',1,'InstanceData::roughness()']]],
-  ['roundness_3322',['roundness',['../structVignetteParams.html#a54607f94ed00d6889db34e89839db6b9',1,'VignetteParams']]],
-  ['row_3323',['row',['../structKeyPos.html#af2c2bd4e8c7f4610f95d9c4000e31d79',1,'KeyPos']]],
-  ['row_5fpad_3324',['ROW_PAD',['../gpu__profiler__ui_8c.html#a1dbf31ba88950a696066589bc63d1ac0',1,'gpu_profiler_ui.c']]],
-  ['row_5fpad_5fdouble_3325',['ROW_PAD_DOUBLE',['../gpu__profiler__ui_8c.html#af11037421505311b3eb8eafa2ecf29fe',1,'gpu_profiler_ui.c']]],
-  ['running_3326',['running',['../structLightProbeGrid.html#af6e6ba7991b4456336c97cfd84c9315b',1,'LightProbeGrid::running()'],['../structAsyncLoader.html#ae661c48a363fb2a20042e2e1f29cb524',1,'AsyncLoader::running()']]]
+  ['quad_5fvbo_3404',['quad_vbo',['../structScene.html#af0dac4c2a74b1a604666ca3017c49a73',1,'Scene']]],
+  ['queries_3405',['queries',['../structGPUQueryBuffer.html#aea6a383906220fa489488797a55296b8',1,'GPUQueryBuffer']]],
+  ['query_5fend_3406',['query_end',['../structGPUTimer.html#a6cbbcc29ad48e891111c7ab4984261b6',1,'GPUTimer']]],
+  ['query_5fstart_3407',['query_start',['../structGPUTimer.html#a6e80f0b96ba846024c7c621a0e61649c',1,'GPUTimer']]]
 ];

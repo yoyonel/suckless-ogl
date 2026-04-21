@@ -1,6 +1,7 @@
 var app__ui_8c =
 [
     [ "app_draw_debug_overlay", "app__ui_8c.html#a2260be1c8a14c8df4d54dee625f51c3a", null ],
+    [ "app_draw_gamepad_help_overlay", "app__ui_8c.html#aecd586b031f0825054a022157ef27429", null ],
     [ "app_draw_help_overlay", "app__ui_8c.html#aecd45eb408c8a13e0f98d280a6fef2df", null ],
     [ "app_render_ui", "app__ui_8c.html#a6e6cd6f94ac584ad4b8ca7434079e65b", null ],
     [ "app_ui_cleanup", "app__ui_8c.html#ae291b4eb13641176e0232509ddc0ccf0", null ],
@@ -12,6 +13,7 @@ var app__ui_8c =
     [ "draw_cinematic_overlay", "app__ui_8c.html#a82d18ad8e7c83cd153cf1b73896ee4e6", null ],
     [ "draw_exposure_debug_text", "app__ui_8c.html#adc20d7574d4fd85069eea1a69a4d56f6", null ],
     [ "draw_exposure_overlay", "app__ui_8c.html#af70a47e72bc3967a1e497ee63ec55e0a", null ],
+    [ "draw_gamepad_control", "app__ui_8c.html#ab90a94299ab3aff797d97f66965a0737", null ],
     [ "draw_help_overlay_keys", "app__ui_8c.html#ac88180806da165ac149d340e26add6ac", null ],
     [ "draw_key_layer_base", "app__ui_8c.html#a18bb12dc158eb14e51915e211510e391", null ],
     [ "draw_key_layer_effects", "app__ui_8c.html#adf9833624808a2cc35105ff6b4a04c26", null ],
@@ -22,6 +24,15 @@ var app__ui_8c =
     [ "draw_text_centered", "app__ui_8c.html#a74c643caf4877bfc6c92caed2a7d779a", null ],
     [ "get_active_binding", "app__ui_8c.html#ac728a2c6b8100d42540b7471262c7284", null ],
     [ "get_key_base_color", "app__ui_8c.html#a7db775acc267773a5d45a5afc6844eeb", null ],
+    [ "gp_axis_active", "app__ui_8c.html#a4fa733535e4b950624955b987ab1fbe7", null ],
+    [ "gp_overlay_find_hovered", "app__ui_8c.html#a5bd46e2ed0be3adf716e027f818841ff", null ],
+    [ "gp_overlay_poll_active", "app__ui_8c.html#a8e089cd73f85596832c1db598a3662aa", null ],
     [ "is_key_active_in_overlay", "app__ui_8c.html#a79e4807fa5dc8741de93d060381548f8", null ],
-    [ "is_modifier_relevant", "app__ui_8c.html#a2c6ab23480ae4de17b6ff39d29cdc36e", null ]
+    [ "is_modifier_relevant", "app__ui_8c.html#a2c6ab23480ae4de17b6ff39d29cdc36e", null ],
+    [ "GP_GLOW_BASE_SIZE", "app__ui_8c.html#aa757d8bd1a3d4fb06b9bf2046963de6a", null ],
+    [ "GP_GLOW_SIDES", "app__ui_8c.html#aedf6ee7fcafaa6149218b94f81b0b34b", null ],
+    [ "GP_LAYOUT_COLS", "app__ui_8c.html#a20b1ff518e5e14a017594a9c75438b19", null ],
+    [ "GP_LAYOUT_ROWS", "app__ui_8c.html#a31a731d480b2f7695594a443dc6a67db", null ],
+    [ "GP_SMALL_LABEL_SCALE", "app__ui_8c.html#af6a4cd2b290e70b89a9b3ca96c6d8689", null ],
+    [ "GP_TRIGGER_NORM", "app__ui_8c.html#a8913760ddb525fced3aebc3519c7c8a7", null ]
 ];

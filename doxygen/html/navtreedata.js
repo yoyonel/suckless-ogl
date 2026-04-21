@@ -82,16 +82,17 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"async__loader_8h.html#ada1ed83ee10e19ab9cca088b280d85ee",
-"functions_vars_r.html",
-"group__Environment.html#ga3f6406e55aec288a2d91f065fddf3743",
-"log_8h.html#a63330e5e329bed8646b5421a8ef25f75",
-"postprocess_8c.html#a6ce07fd263254dd72c5afc8c199f3913",
-"scene_8c.html",
-"structAdaptiveSampleItem.html#a4fa16b525b008fc260bffc25e742ff78",
-"structEnvManager.html#ad2a227d57f5ae8306e86bba1a01678ea",
-"structPostProcess.html#a28e331d9437d9dc2237aefb1df3eee20",
-"structSphereSorter.html#a98c6eed3dea20688adeed4d87c9b1049"
+"async__loader_8c.html#a7a9ef6b50fc1358023da343b3b6d281a",
+"functions_r.html",
+"gpu__profiler__ui_8c.html#add190d66a5136e9b1893c6346f3bd8fd",
+"light__probes_8c.html#a7257874abc46a1df3d4a0780083e7a39",
+"perf__timer_8h.html#a144c7bd743c4e27d7738669d549e59ae",
+"render__utils_8c.html#a14b5c2c05c8237ed479c12883a7513e5",
+"sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946",
+"structEdgeHash.html#abf74ac823023fa22a196e161bae695ec",
+"structLightProbe.html#adf243c027b1162800901618aa2185f07",
+"structScene.html#a963fa306ad4c6a1745d0419a3698df32",
+"ui_8h.html#aa12b42bbbbca85f3404c48a9534aa7ac"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

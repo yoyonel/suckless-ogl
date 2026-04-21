@@ -289,6 +289,9 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGamepadControlPos.html">GamepadControlPos</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Position and metadata for a single gamepad control in the overlay.  <a href="structGamepadControlPos.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -311,6 +314,13 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a726ca809ffd3d67ab4b8476646f26635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc537f8b6bfa7ac716cc822163b11f10"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10">HelpMode</a> { <a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10ade00db897f81c8c6cfb9818349d7b3e4">HELP_MODE_OFF</a> = 0
+, <a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10ae627ac592095e7618ff3796ee63b31ac">HELP_MODE_KEYBOARD</a>
+, <a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10a056234096c3947ff635b2a608892eab8">HELP_MODE_GAMEPAD</a>
+, <a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10a08ba175169aded98598dcff21669128f">HELP_MODE_COUNT</a>
+ }</td></tr>
+<tr class="memdesc:adc537f8b6bfa7ac716cc822163b11f10"><td class="mdescLeft">&#160;</td><td class="mdescRight">States for the F2 help overlay cycling.  <a href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10">More...</a><br /></td></tr>
+<tr class="separator:adc537f8b6bfa7ac716cc822163b11f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0411cd49bb5b71852cecd93bcbf0ca2d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
 &#160;&#160;<a class="el" href="app__ui_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da7b2a40de7cd7232db51c5f1e3ee96cd1">ROW_SYSTEM</a> = 0
 , <a class="el" href="app__ui_8h.html#a0411cd49bb5b71852cecd93bcbf0ca2da0cd3889dcc3ba98a0e82a7cc654ba011">ROW_NUMBERS</a> = 1
@@ -322,12 +332,28 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a0411cd49bb5b71852cecd93bcbf0ca2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abed82baf7f470b522273a3e37c24c600"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
+&#160;&#160;<a class="el" href="app__ui_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6">GP_ROW_TRIGGERS</a> = 0
+, <a class="el" href="app__ui_8h.html#abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec">GP_ROW_BUMPERS</a> = 1
+, <a class="el" href="app__ui_8h.html#abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d">GP_ROW_FACE</a> = 2
+, <a class="el" href="app__ui_8h.html#abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b">GP_ROW_STICKS</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="app__ui_8h.html#abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b">GP_ROW_SYSTEM</a> = 4
+<br />
+ }</td></tr>
+<tr class="separator:abed82baf7f470b522273a3e37c24c600"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__ui_8h.html#ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe">GAMEPAD_LAYOUT_COUNT</a>
+ }</td></tr>
+<tr class="separator:ab04a0655cd1e3bcac5e8f48c18df1a57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#aecd45eb408c8a13e0f98d280a6fef2df">app_draw_help_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="memdesc:aecd45eb408c8a13e0f98d280a6fef2df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the help overlay with keyboard shortcuts.  <a href="app__ui_8h.html#aecd45eb408c8a13e0f98d280a6fef2df">More...</a><br /></td></tr>
 <tr class="separator:aecd45eb408c8a13e0f98d280a6fef2df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecd586b031f0825054a022157ef27429"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#aecd586b031f0825054a022157ef27429">app_draw_gamepad_help_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:aecd586b031f0825054a022157ef27429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the gamepad help overlay with controller bindings.  <a href="app__ui_8h.html#aecd586b031f0825054a022157ef27429">More...</a><br /></td></tr>
+<tr class="separator:aecd586b031f0825054a022157ef27429"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a2260be1c8a14c8df4d54dee625f51c3a">app_draw_debug_overlay</a> (const <a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="memdesc:a2260be1c8a14c8df4d54dee625f51c3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the debug overlay with performance metrics and settings.  <a href="app__ui_8h.html#a2260be1c8a14c8df4d54dee625f51c3a">More...</a><br /></td></tr>
 <tr class="separator:a2260be1c8a14c8df4d54dee625f51c3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -458,6 +484,8 @@ Variables</h2></td></tr>
 <tr class="separator:ac6cd248610705cb146a492bd8a7da771"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5336ece17ffa3c77409020cba50c1127"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structKeyPos.html">KeyPos</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a5336ece17ffa3c77409020cba50c1127">KEY_LAYOUT_QWERTY</a> []</td></tr>
 <tr class="separator:a5336ece17ffa3c77409020cba50c1127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76692a7d7e5a8fe07cc5641197f46b60"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structGamepadControlPos.html">GamepadControlPos</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a76692a7d7e5a8fe07cc5641197f46b60">GAMEPAD_LAYOUT</a> []</td></tr>
+<tr class="separator:a76692a7d7e5a8fe07cc5641197f46b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>UI rendering module for the application. </p>
@@ -541,6 +569,66 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="abed82baf7f470b522273a3e37c24c600"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abed82baf7f470b522273a3e37c24c600">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6"></a>GP_ROW_TRIGGERS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600aa483b09a468e0697af80a5ba9f893bec"></a>GP_ROW_BUMPERS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600a24d4a7f8e6f380f2fe8fb90ceff9d11d"></a>GP_ROW_FACE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600a61646d2d730a3d4f61312edbad92a67b"></a>GP_ROW_STICKS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="abed82baf7f470b522273a3e37c24c600add6ed01fa8373a438cf16886867a0d6b"></a>GP_ROW_SYSTEM&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ab04a0655cd1e3bcac5e8f48c18df1a57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab04a0655cd1e3bcac5e8f48c18df1a57">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab04a0655cd1e3bcac5e8f48c18df1a57a467a84dc35cce2ac128b4d9f27392ebe"></a>GAMEPAD_LAYOUT_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="adc537f8b6bfa7ac716cc822163b11f10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc537f8b6bfa7ac716cc822163b11f10">&#9670;&nbsp;</a></span>HelpMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10">HelpMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>States for the F2 help overlay cycling. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="adc537f8b6bfa7ac716cc822163b11f10ade00db897f81c8c6cfb9818349d7b3e4"></a>HELP_MODE_OFF&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adc537f8b6bfa7ac716cc822163b11f10ae627ac592095e7618ff3796ee63b31ac"></a>HELP_MODE_KEYBOARD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adc537f8b6bfa7ac716cc822163b11f10a056234096c3947ff635b2a608892eab8"></a>HELP_MODE_GAMEPAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="adc537f8b6bfa7ac716cc822163b11f10a08ba175169aded98598dcff21669128f"></a>HELP_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a2260be1c8a14c8df4d54dee625f51c3a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2260be1c8a14c8df4d54dee625f51c3a">&#9670;&nbsp;</a></span>app_draw_debug_overlay()</h2>
@@ -569,6 +657,38 @@ Variables</h2></td></tr>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_a2260be1c8a14c8df4d54dee625f51c3a_cgraph.svg" width="100%" height="518"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aecd586b031f0825054a022157ef27429"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecd586b031f0825054a022157ef27429">&#9670;&nbsp;</a></span>app_draw_gamepad_help_overlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app_draw_gamepad_help_overlay </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draws the gamepad help overlay with controller bindings. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__ui_8h_aecd586b031f0825054a022157ef27429_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -1167,6 +1287,28 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const vec3 ENV_TEXT_COLOR = {0.7F, 0.7F, 0.7F}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a76692a7d7e5a8fe07cc5641197f46b60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76692a7d7e5a8fe07cc5641197f46b60">&#9670;&nbsp;</a></span>GAMEPAD_LAYOUT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structGamepadControlPos.html">GamepadControlPos</a> GAMEPAD_LAYOUT[]</td>
         </tr>
       </table>
   </td>

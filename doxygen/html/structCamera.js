@@ -15,6 +15,7 @@ var structCamera =
     [ "move_backward", "structCamera.html#a0396807ffb6648a095e07ffee0b39215", null ],
     [ "move_down", "structCamera.html#a5a91e47215b603f52859e3e3228d668a", null ],
     [ "move_forward", "structCamera.html#a7daeac31156375ca3f4523d4e269b401", null ],
+    [ "move_input", "structCamera.html#ac8355d1faafc7ed932d76459c94d4e65", null ],
     [ "move_left", "structCamera.html#a98e5bda2530d6d33e519f667693bd928", null ],
     [ "move_right", "structCamera.html#aefce35f5e3696809239d092200df58f6", null ],
     [ "move_up", "structCamera.html#a06109e323f901183067d656dc16a70f4", null ],

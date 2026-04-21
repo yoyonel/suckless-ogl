@@ -252,7 +252,8 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <div class="header">
   <div class="summary">
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">app_input.c File Reference</div>  </div>
 </div><!--header-->
@@ -287,12 +288,12 @@ Include dependency graph for app_input.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#aabfcbcb5ac86a1edac4035264bc7d2b8a46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 10
+<tr class="memitem:aac34dfe6c6b73b43a4656c9dce041034"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#aac34dfe6c6b73b43a4656c9dce041034a46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 10
  }</td></tr>
-<tr class="separator:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d76b81b0ad4c19007a781d4edb8181f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a5d76b81b0ad4c19007a781d4edb8181fa4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
+<tr class="separator:aac34dfe6c6b73b43a4656c9dce041034"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ed680fdb405e7195d9f14032851eebb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a0ed680fdb405e7195d9f14032851eebba4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
  }</td></tr>
-<tr class="separator:a5d76b81b0ad4c19007a781d4edb8181f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a0ed680fdb405e7195d9f14032851eebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -318,6 +319,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab95b9b42ce35ad90993f944a445abdad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9850cca8a12558a109de5a11d51e9f79"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a9850cca8a12558a109de5a11d51e9f79">app_toggle_help</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
 <tr class="separator:a9850cca8a12558a109de5a11d51e9f79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70c327f56665d8c58133750c9cfc2939"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a70c327f56665d8c58133750c9cfc2939">app_close_help</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:a70c327f56665d8c58133750c9cfc2939"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada90ac6ee9bccf491734774c490e9046"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#ada90ac6ee9bccf491734774c490e9046">handle_f_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="separator:ada90ac6ee9bccf491734774c490e9046"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f475bca27fa1c22163a3904a8385547"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a4f475bca27fa1c22163a3904a8385547">handle_y_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int mods)</td></tr>
@@ -342,10 +345,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a9ad0dce8449731259f77702aeba8e457"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a9ad0dce8449731259f77702aeba8e457">app_save_png_frame</a> (<a class="el" href="structApp.html">App</a> *app, const char *filename)</td></tr>
 <tr class="memdesc:a9ad0dce8449731259f77702aeba8e457"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the current framebuffer and saves it as a PNG file.  <a href="app__input_8c.html#a9ad0dce8449731259f77702aeba8e457">More...</a><br /></td></tr>
 <tr class="separator:a9ad0dce8449731259f77702aeba8e457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aaa1e3548abb0f29572e751cc61774d22"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#aaa1e3548abb0f29572e751cc61774d22">HELP_MODE_NAMES</a> []</td></tr>
+<tr class="separator:aaa1e3548abb0f29572e751cc61774d22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="aabfcbcb5ac86a1edac4035264bc7d2b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabfcbcb5ac86a1edac4035264bc7d2b8">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="aac34dfe6c6b73b43a4656c9dce041034"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac34dfe6c6b73b43a4656c9dce041034">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -356,13 +364,13 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aabfcbcb5ac86a1edac4035264bc7d2b8a46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac34dfe6c6b73b43a4656c9dce041034a46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a5d76b81b0ad4c19007a781d4edb8181f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d76b81b0ad4c19007a781d4edb8181f">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a0ed680fdb405e7195d9f14032851eebb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ed680fdb405e7195d9f14032851eebb">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -373,12 +381,44 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5d76b81b0ad4c19007a781d4edb8181fa4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0ed680fdb405e7195d9f14032851eebba4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a70c327f56665d8c58133750c9cfc2939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70c327f56665d8c58133750c9cfc2939">&#9670;&nbsp;</a></span>app_close_help()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void app_close_help </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a70c327f56665d8c58133750c9cfc2939_cgraph.svg" width="100%" height="300"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a5bd036fc9913a0b441d5a2121daf0f0e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5bd036fc9913a0b441d5a2121daf0f0e">&#9670;&nbsp;</a></span>app_handle_env_input()</h2>
 
@@ -1181,6 +1221,31 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="aaa1e3548abb0f29572e751cc61774d22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa1e3548abb0f29572e751cc61774d22">&#9670;&nbsp;</a></span>HELP_MODE_NAMES</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* const HELP_MODE_NAMES[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {<span class="stringliteral">&quot;Help: OFF&quot;</span>, <span class="stringliteral">&quot;Help: Keyboard&quot;</span>,</div>
+<div class="line">                                              <span class="stringliteral">&quot;Help: Gamepad&quot;</span>}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

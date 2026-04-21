@@ -1,7 +1,22 @@
 var searchData=
 [
-  ['x_3536',['x',['../structUIVertex.html#abc4f881f9b18241439050f050fce487e',1,'UIVertex']]],
-  ['x0_3537',['x0',['../structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9',1,'GlyphInfo']]],
-  ['x1_3538',['x1',['../structGlyphInfo.html#a2e1c51a272e5a5590a2b456db512add8',1,'GlyphInfo']]],
-  ['x_5foff_3539',['x_off',['../structKeyPos.html#ae0c075b2bf0f08ae85f9e4e71bf21e4b',1,'KeyPos::x_off()'],['../structGlyphInfo.html#ab8030ae4d33509a98169563a68f4b19d',1,'GlyphInfo::x_off()']]]
+  ['w_3623',['w',['../structGlyphInfo.html#a023c7646426a1377790817045185cfa7',1,'GlyphInfo']]],
+  ['warning_5fcount_3624',['warning_count',['../structShader.html#a8bb60eb9d111bfadf0b15ea49f021c4f',1,'Shader']]],
+  ['wb_5ftemperature_3625',['wb_temperature',['../structPostProcessUBO.html#aaa07e291612b995131ad67d6d86edcd4',1,'PostProcessUBO']]],
+  ['wb_5ftint_3626',['wb_tint',['../structPostProcessUBO.html#aa6270b574e6e1dcbb39b95131a670e04',1,'PostProcessUBO']]],
+  ['white_5fbalance_3627',['white_balance',['../structPostProcess.html#aaac67359cd05c2eb46134105e71ea043',1,'PostProcess::white_balance()'],['../structPostProcessPreset.html#a6c8c3ef05c36c0590581f9382a25736d',1,'PostProcessPreset::white_balance()']]],
+  ['white_5fclip_3628',['white_clip',['../structTonemapParams.html#a11935b3c9a4eea555fcf07002816f05a',1,'TonemapParams']]],
+  ['width_3629',['width',['../structApp.html#a2c90198ed2171c619f0f3b9eb49d005a',1,'App::width()'],['../structKeyPos.html#ad3a6ecd64fc13edcebe57297cb3b42bd',1,'KeyPos::width()'],['../structGamepadControlPos.html#a1ea2d57c0012f2f715446f03834f3cc5',1,'GamepadControlPos::width()'],['../structAsyncRequest.html#ad4afdf0552ccb72bacdd3f7710374b51',1,'AsyncRequest::width()'],['../structIBLCoordinator.html#a589d1a49358ad375dd97b3f4488c91f1',1,'IBLCoordinator::width()'],['../structPostProcess.html#a65b8eb5b5bd81fd7cad569919a2559a3',1,'PostProcess::width()']]],
+  ['window_3630',['window',['../structApp.html#a86cbfdc5598162e909b9f3a25ae1b350',1,'App::window()'],['../structPostProcessInputContext.html#a0264051c4b66c1eb3fc8aa670e109268',1,'PostProcessInputContext::window()']]],
+  ['window_5fduration_3631',['window_duration',['../structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7',1,'AdaptiveSampler']]],
+  ['window_5fend_5fframe_3632',['window_end_frame',['../structAdaptiveSampler.html#a5c5722c6a15025f2d559a5ed359a9804',1,'AdaptiveSampler']]],
+  ['window_5fstart_5fframe_3633',['window_start_frame',['../structAdaptiveSampler.html#a3cbc132e731af568472de68a8015c637',1,'AdaptiveSampler']]],
+  ['window_5fstart_5ftime_3634',['window_start_time',['../structAdaptiveSampler.html#a0e49d332095e73af87d1859ca8ae0b47',1,'AdaptiveSampler']]],
+  ['wire_5fcube_5fvbo_3635',['wire_cube_vbo',['../structScene.html#ae60c52bbdaa90bfc0139619469f12a13',1,'Scene']]],
+  ['wire_5fcube_5fvertex_5fcount_3636',['WIRE_CUBE_VERTEX_COUNT',['../billboard__rendering_8c.html#a1981a837d663f92043ee566e92f32848',1,'billboard_rendering.c']]],
+  ['wire_5fquad_5fvbo_3637',['wire_quad_vbo',['../structScene.html#a11763573f4e2779706ec30d78a126872',1,'Scene']]],
+  ['wireframe_3638',['wireframe',['../structScene.html#ae7244b4a9b48c72027c9c3c2a030b8c5',1,'Scene']]],
+  ['worker_5fthread_3639',['worker_thread',['../structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d',1,'LightProbeGrid::worker_thread()'],['../structAsyncLoader.html#a06385b41f9a1c1f8a2f3152f76d57740',1,'AsyncLoader::worker_thread()']]],
+  ['world_5fup_3640',['world_up',['../structCamera.html#aaa47106f6916ce367b11d511329245ed',1,'Camera']]],
+  ['write_5findex_3641',['write_index',['../structGPUProfiler.html#aba148eeb7478acf3579882681d91cb7a',1,'GPUProfiler']]]
 ];

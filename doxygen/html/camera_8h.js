@@ -20,6 +20,7 @@ var camera_8h =
     [ "DEFAULT_SCROLL_SENSITIVITY", "camera_8h.html#adb4c37062fe8dfb2f1958406eb8863ed", null ],
     [ "DEFAULT_TARGET_FPS", "camera_8h.html#a7f666161077f533fbb99cdea46d22802", null ],
     [ "DEFAULT_ZOOM_SPEED", "camera_8h.html#a286f1c31100b26fb1f6d616bf2dcb604", null ],
+    [ "camera_build_keyboard_input", "camera_8h.html#aa313d3e6d87244c9b1d7f3d379a3eed3", null ],
     [ "camera_fixed_update", "camera_8h.html#a4acfb829aaddeadc9a6699a3a29acaf7", null ],
     [ "camera_get_view_matrix", "camera_8h.html#a235bc4bcb5afde6245d7c7706d9df786", null ],
     [ "camera_init", "camera_8h.html#a0c924b5985fb3aa4ace810b139bd7018", null ],

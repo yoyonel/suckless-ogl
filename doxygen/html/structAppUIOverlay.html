@@ -272,8 +272,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a342c24bfe5f41efda7705cf53a10da9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a526eab703b13fe6b021f4652a53fc14b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structKeyboardLayoutConfig.html">KeyboardLayoutConfig</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#a526eab703b13fe6b021f4652a53fc14b">kbd_config</a></td></tr>
 <tr class="separator:a526eab703b13fe6b021f4652a53fc14b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11eaeb146f7121dcb5a95e0430173048"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#a11eaeb146f7121dcb5a95e0430173048">show_help</a></td></tr>
-<tr class="separator:a11eaeb146f7121dcb5a95e0430173048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72456159ffdab40c9370960861a9ef6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10">HelpMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#a72456159ffdab40c9370960861a9ef6f">show_help</a></td></tr>
+<tr class="separator:a72456159ffdab40c9370960861a9ef6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af099301dcf7af6ebfbb05138479b77cc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#af099301dcf7af6ebfbb05138479b77cc">show_info_overlay</a></td></tr>
 <tr class="separator:af099301dcf7af6ebfbb05138479b77cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17c94ab19176b06af2fee85d918eeb25"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#a17c94ab19176b06af2fee85d918eeb25">text_overlay_mode</a></td></tr>
@@ -292,6 +292,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:aa29b364789368d4d72c735eb731e99a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab59781ea2e0a6275b3d701a716f88c09"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#ab59781ea2e0a6275b3d701a716f88c09">help_hover_decay</a></td></tr>
 <tr class="separator:ab59781ea2e0a6275b3d701a716f88c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3c6cf2dc61beded1f25c8e0b64a8b0b"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#ad3c6cf2dc61beded1f25c8e0b64a8b0b">help_gp_decay</a></td></tr>
+<tr class="separator:ad3c6cf2dc61beded1f25c8e0b64a8b0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0fd1718b2774406f652a3a0e8ac1da4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#ae0fd1718b2774406f652a3a0e8ac1da4">kbd_tex_frame</a></td></tr>
 <tr class="separator:ae0fd1718b2774406f652a3a0e8ac1da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a565c99fcc4d2343bb1c037d54c98bf8f"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppUIOverlay.html#a565c99fcc4d2343bb1c037d54c98bf8f">kbd_tex_key_base</a></td></tr>
@@ -326,6 +328,21 @@ Data Fields</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad3c6cf2dc61beded1f25c8e0b64a8b0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3c6cf2dc61beded1f25c8e0b64a8b0b">&#9670;&nbsp;</a></span>help_gp_decay</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double AppUIOverlay::help_gp_decay</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Grace period for dimming when gamepad input stops — same role as help_hover_decay but for gamepad controls. </p>
 
 </div>
 </div>
@@ -458,14 +475,14 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a id="a11eaeb146f7121dcb5a95e0430173048"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11eaeb146f7121dcb5a95e0430173048">&#9670;&nbsp;</a></span>show_help</h2>
+<a id="a72456159ffdab40c9370960861a9ef6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72456159ffdab40c9370960861a9ef6f">&#9670;&nbsp;</a></span>show_help</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int AppUIOverlay::show_help</td>
+          <td class="memname"><a class="el" href="app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10">HelpMode</a> AppUIOverlay::show_help</td>
         </tr>
       </table>
 </div><div class="memdoc">

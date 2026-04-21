@@ -2,8 +2,16 @@ var app__ui_8h =
 [
     [ "KeyPos", "structKeyPos.html", "structKeyPos" ],
     [ "KeyboardLayoutConfig", "structKeyboardLayoutConfig.html", "structKeyboardLayoutConfig" ],
+    [ "GamepadControlPos", "structGamepadControlPos.html", "structGamepadControlPos" ],
     [ "AppUIOverlay", "structAppUIOverlay.html", "structAppUIOverlay" ],
+    [ "HelpMode", "app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10", [
+      [ "HELP_MODE_OFF", "app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10ade00db897f81c8c6cfb9818349d7b3e4", null ],
+      [ "HELP_MODE_KEYBOARD", "app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10ae627ac592095e7618ff3796ee63b31ac", null ],
+      [ "HELP_MODE_GAMEPAD", "app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10a056234096c3947ff635b2a608892eab8", null ],
+      [ "HELP_MODE_COUNT", "app__ui_8h.html#adc537f8b6bfa7ac716cc822163b11f10a08ba175169aded98598dcff21669128f", null ]
+    ] ],
     [ "app_draw_debug_overlay", "app__ui_8h.html#a2260be1c8a14c8df4d54dee625f51c3a", null ],
+    [ "app_draw_gamepad_help_overlay", "app__ui_8h.html#aecd586b031f0825054a022157ef27429", null ],
     [ "app_draw_help_overlay", "app__ui_8h.html#aecd45eb408c8a13e0f98d280a6fef2df", null ],
     [ "app_render_ui", "app__ui_8h.html#a6e6cd6f94ac584ad4b8ca7434079e65b", null ],
     [ "app_ui_cleanup", "app__ui_8h.html#ae291b4eb13641176e0232509ddc0ccf0", null ],
@@ -27,6 +35,7 @@ var app__ui_8h =
     [ "DEFAULT_KBD_TITLE_Y_OFFSET", "app__ui_8h.html#aa1464a6461d033abd30eee12121bbc29", null ],
     [ "DEFAULT_KBD_UNBOUND_ALPHA", "app__ui_8h.html#a91fc3c3f2ffb614323a729328d8ff7aa", null ],
     [ "ENV_TEXT_COLOR", "app__ui_8h.html#af0b98e622dd47736cd7e777d203a82e7", null ],
+    [ "GAMEPAD_LAYOUT", "app__ui_8h.html#a76692a7d7e5a8fe07cc5641197f46b60", null ],
     [ "GLOBAL_DIM_MAX_FALLOFF", "app__ui_8h.html#a3591dafcd6088d523404b946b512135e", null ],
     [ "GLOBAL_DIM_SMOOTH_FACTOR", "app__ui_8h.html#af7d0b37e844c1e81ca1babc84608f47a", null ],
     [ "GLOW_HOVER_ALPHA", "app__ui_8h.html#a74ff0575436fcd1a9b154650bc840442", null ],

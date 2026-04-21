@@ -16,6 +16,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "effect_benchmark.c", "effect__benchmark_8c.html", "effect__benchmark_8c" ],
     [ "env_manager.c", "env__manager_8c.html", "env__manager_8c" ],
     [ "fps.c", "fps_8c.html", "fps_8c" ],
+    [ "gamepad_input.c", "gamepad__input_8c.html", "gamepad__input_8c" ],
     [ "gl_debug.c", "gl__debug_8c.html", "gl__debug_8c" ],
     [ "gpu_profiler.c", "gpu__profiler_8c.html", "gpu__profiler_8c" ],
     [ "gpu_profiler_ui.c", "gpu__profiler__ui_8c.html", "gpu__profiler__ui_8c" ],

@@ -277,6 +277,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aa47646370ef1804643d987edb53fe2f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8c.html#aa47646370ef1804643d987edb53fe2f7">camera_update_vectors</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
 <tr class="memdesc:aa47646370ef1804643d987edb53fe2f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recalculates front, right, and up vectors from yaw and pitch.  <a href="camera_8c.html#aa47646370ef1804643d987edb53fe2f7">More...</a><br /></td></tr>
 <tr class="separator:aa47646370ef1804643d987edb53fe2f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8c.html#aa313d3e6d87244c9b1d7f3d379a3eed3">camera_build_keyboard_input</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
+<tr class="memdesc:aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts boolean keyboard flags into move_input.  <a href="camera_8c.html#aa313d3e6d87244c9b1d7f3d379a3eed3">More...</a><br /></td></tr>
+<tr class="separator:aa313d3e6d87244c9b1d7f3d379a3eed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4acfb829aaddeadc9a6699a3a29acaf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="camera_8c.html#a4acfb829aaddeadc9a6699a3a29acaf7">camera_fixed_update</a> (<a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
 <tr class="memdesc:a4acfb829aaddeadc9a6699a3a29acaf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs one fixed-step physics update.  <a href="camera_8c.html#a4acfb829aaddeadc9a6699a3a29acaf7">More...</a><br /></td></tr>
 <tr class="separator:a4acfb829aaddeadc9a6699a3a29acaf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -291,6 +294,32 @@ Functions</h2></td></tr>
 <tr class="separator:a7359946256cd8193b91caa4b82bc20ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="aa313d3e6d87244c9b1d7f3d379a3eed3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa313d3e6d87244c9b1d7f3d379a3eed3">&#9670;&nbsp;</a></span>camera_build_keyboard_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void camera_build_keyboard_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
+          <td class="paramname"><em>cam</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts boolean keyboard flags into move_input. </p>
+<p>Writes cam-&gt;move_input from cam-&gt;move_forward/backward/left/right/up/down. Values are binary (0 or ±1). Call before gamepad overlay and camera_fixed_update each physics step. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4acfb829aaddeadc9a6699a3a29acaf7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4acfb829aaddeadc9a6699a3a29acaf7">&#9670;&nbsp;</a></span>camera_fixed_update()</h2>
 
@@ -308,7 +337,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Performs one fixed-step physics update. </p>
-<p>Handles momentum, friction, and head-bobbing calculations. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Reads move_input to build target_velocity, then applies momentum, friction, and head-bobbing. move_input must be set before calling (via camera_build_keyboard_input and/or gamepad overlay). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cam</td><td>Pointer to the camera instance. </td></tr>
   </table>

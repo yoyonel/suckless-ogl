@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['offset_3229',['offset',['../structColorGradingParams.html#aef2056f6ab8806d8afcb039f6aad33f9',1,'ColorGradingParams']]],
-  ['offset_5fsampler_3230',['offset_sampler',['../structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d',1,'GPUStage']]],
-  ['original_5findex_3231',['original_index',['../structSphereSortEntry.html#aed13255308b43481740f760886695969',1,'SphereSortEntry']]],
-  ['original_5fnice_3232',['original_nice',['../structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686',1,'PerfModeContext']]],
-  ['original_5fparam_3233',['original_param',['../structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924',1,'PerfModeContext']]],
-  ['original_5fpolicy_3234',['original_policy',['../structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39',1,'PerfModeContext']]],
-  ['overlay_3235',['overlay',['../structApp.html#a1c778e4cff23207babd19f8ba6496a6e',1,'App']]]
+  ['name_3323',['name',['../structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c',1,'EffectBenchmark::name()'],['../structGPUStage.html#a2de1e5fda6f1272093bbbf71a412455a',1,'GPUStage::name()'],['../structGPUStageInfo.html#ae92767f48a0622028fb91be036eb7548',1,'GPUStageInfo::name()'],['../structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4',1,'PBRMaterial::name()'],['../structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de',1,'UniformEntry::name()'],['../structShader.html#a63fc645b9235c69c54c1a5b6a019db69',1,'Shader::name()'],['../structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6',1,'EffectEntry::name()'],['../structEffectMetadata.html#ac6608946101117dc9b73ac112842fc55',1,'EffectMetadata::name()'],['../structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4',1,'EffectBenchResult::name()']]],
+  ['near_5fplane_3324',['NEAR_PLANE',['../group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de',1,'app_settings.h']]],
+  ['neighbor_5fmax_5fshader_3325',['neighbor_max_shader',['../structPostProcess.html#a33f165abd3e1ff6e37b8055277097a83',1,'PostProcess']]],
+  ['next_3326',['next',['../structLoadedBuffer.html#a08de67c79ace27f48143223f9a423078',1,'LoadedBuffer::next()'],['../structChunk.html#a18bb30292f0e37772147fc4811534522',1,'Chunk::next()']]],
+  ['normals_3327',['normals',['../structIcosphereGeometry.html#a2eb01262bd1bba34ac84f192f6c366af',1,'IcosphereGeometry']]],
+  ['notes_3328',['notes',['../structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825',1,'ActionNotifier']]],
+  ['notifier_3329',['notifier',['../structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5',1,'App::notifier()'],['../structPostProcessInputContext.html#afffecc97e4a324216409049e76be4bc3',1,'PostProcessInputContext::notifier()']]],
+  ['ns_5fto_5fms_3330',['NS_TO_MS',['../gpu__profiler_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'NS_TO_MS():&#160;gpu_profiler.c'],['../perf__timer_8c.html#ad016cfb60498ffc8dfb74333a226d5e9',1,'NS_TO_MS():&#160;perf_timer.c']]],
+  ['ns_5fto_5fs_3331',['NS_TO_S',['../perf__timer_8c.html#a19325a5f7cca1f4ae6ad9e1804e326fc',1,'perf_timer.c']]],
+  ['ns_5fto_5fus_3332',['NS_TO_US',['../perf__timer_8c.html#a45450bdee139fc2f8ca3c79c07a922b3',1,'perf_timer.c']]]
 ];

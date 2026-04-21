@@ -559,6 +559,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gamepad-camera-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gamepad Camera Control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#global-illumination-1-bounce" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1583,6 +1594,34 @@
     
   
     Mouse Control
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gamepad Control
   
 
     
@@ -4132,6 +4171,27 @@ Note over Main: Next frame begins...
 Main-&gt;&gt;Main: app_run: resize_pending? YES
 Main-&gt;&gt;GPU: postprocess_resize() - safe context
 GPU--&gt;&gt;Main: FBOs recreated (OK)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="gamepad-camera-control"><a href="../gamepad/">Gamepad Camera Control</a><a class="headerlink" href="#gamepad-camera-control" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../gamepad/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">physics step.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+subgraph "Per Frame (1x)"
+GLFW[GLFW Gamepad API] --&gt; POLL[gamepad_input_poll]
+POLL --&gt;|deadzone filter| AXES[state.axes cache]
+POLL --&gt;|edge detect| BTN[GamepadActions: L1/R1/Share]
+end
+subgraph "Per Physics Step (Nx)"
+KB[camera_build_keyboard_input] --&gt; MI[cam.move_input]
+AXES --&gt; WRITE[gamepad_write_input]
+WRITE --&gt;|overlay| MI
+MI --&gt; PHYS[camera_fixed_update]
+end</code></pre>
 
   </div>
 </div>

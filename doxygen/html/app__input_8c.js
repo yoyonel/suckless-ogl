@@ -1,5 +1,6 @@
 var app__input_8c =
 [
+    [ "app_close_help", "app__input_8c.html#a70c327f56665d8c58133750c9cfc2939", null ],
     [ "app_handle_env_input", "app__input_8c.html#a5bd036fc9913a0b441d5a2121daf0f0e", null ],
     [ "app_save_png_frame", "app__input_8c.html#a9ad0dce8449731259f77702aeba8e457", null ],
     [ "app_toggle_fullscreen", "app__input_8c.html#a479d0af6d3acd4e6dc4e13cd29b9b63d", null ],
@@ -18,5 +19,6 @@ var app__input_8c =
     [ "handle_y_key_input", "app__input_8c.html#a4f475bca27fa1c22163a3904a8385547", null ],
     [ "key_callback", "app__input_8c.html#a286930f4e8ede059b83ff6eafa2ff718", null ],
     [ "mouse_callback", "app__input_8c.html#af4ca2891044ac10a664b8d83ce590f1f", null ],
-    [ "scroll_callback", "app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea", null ]
+    [ "scroll_callback", "app__input_8c.html#a06ad2502008f16fbcf01dfaa7f7bc9ea", null ],
+    [ "HELP_MODE_NAMES", "app__input_8c.html#aaa1e3548abb0f29572e751cc61774d22", null ]
 ];
