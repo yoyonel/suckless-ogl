@@ -113,6 +113,13 @@ The project uses GitHub Actions to ensure cross-platform compatibility and produ
 
 Every push to `master` and every Pull Request triggers a Windows cross-compilation job using MinGW. This ensures that portability is maintained and no Windows-specific regressions are introduced.
 
+The MinGW toolchain file (`toolchain-mingw.cmake`) sets
+`CMAKE_CROSSCOMPILING_EMULATOR` to `wine64`, which tells CMake to
+automatically prefix all test executables with `wine64` when running
+via CTest. This is the standard CMake mechanism for cross-compiled
+test execution — no manual `wine64` wrapper or environment variable
+is needed.
+
 ### Local Windows Testing via Wine
 
 If you develop on Linux and want to test the Windows build locally, you can use the provided `just` targets. These targets rely on your `clang-dev` distrobox environment having `mingw` and `wine` installed.
