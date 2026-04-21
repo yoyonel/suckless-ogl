@@ -118,13 +118,21 @@ La toolchain est définie dans `toolchain-mingw.cmake` :
 ```cmake
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
-set(CMAKE_CROSSCOMPILING_EMULATOR "wine64")
 ```
 
-`CMAKE_CROSSCOMPILING_EMULATOR` est le mécanisme standard CMake pour
-l'exécution de tests cross-compilés : CTest préfixe automatiquement
-chaque exécutable de test avec `wine64`, sans nécessiter de wrapper
-manuel ou de variable d'environnement.
+L'exécution des tests sous Wine est gérée par le script wrapper
+`run_test_with_xvfb.sh`, qui détecte automatiquement les binaires
+`.exe` et les préfixe avec `wine64`. Chaque test standalone dans
+`tests/CMakeLists.txt` utilise ce wrapper en build `WIN32` :
+
+```cmake
+if(WIN32)
+    add_test(NAME test_foo
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_foo>)
+else()
+    add_test(NAME test_foo COMMAND test_foo)
+endif()
+```
 
 ## Limitations connues
 
