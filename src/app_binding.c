@@ -119,6 +119,9 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_G, 0, "Toggle Grain",
 	            "Toggles film grain noise effect.", BINDING_CAT_POSTFX,
 	            BINDING_TYPE_TOGGLE);
+	add_binding(GLFW_KEY_G, GLFW_MOD_SHIFT, "N-Body Gravity",
+	            "Toggles N-body gravitational sandbox mode.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, GLFW_MOD_SHIFT, "Toggle DOF Debug",

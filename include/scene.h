@@ -10,9 +10,11 @@
 #include "instanced_rendering.h"
 #include "light_probes.h"
 #include "material.h"
+#include "nbody.h"
 #include "shader.h"
 #include "skybox.h"
 #include "sphere_sorting.h"
+#include "trail_renderer.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
@@ -216,6 +218,11 @@ typedef struct Scene {
 	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
 	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 
+	/* --- N-Body Simulation --- */
+	NBodySim nbody_sim;           /**< N-body gravitational simulation. */
+	TrailRenderer trail_renderer; /**< Orbital trail renderer. */
+	int nbody_mode;               /**< Toggle: 0=grid, 1=N-body. */
+
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
 	InstancedUniforms instanced_uniforms; /**< Cached locations. */
@@ -262,5 +269,19 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
  * @param scene Pointer to the scene.
  */
 void scene_update_gpu_buffers(Scene* scene);
+
+/**
+ * @brief Toggles N-body simulation mode on/off.
+ * @param scene Pointer to the scene.
+ */
+void scene_toggle_nbody(Scene* scene);
+
+/**
+ * @brief Advances the N-body simulation by one frame.
+ * @param scene Pointer to the scene.
+ * @param delta_time Wall-clock time elapsed.
+ * @param cam_pos Camera world position (for trail billboard).
+ */
+void scene_nbody_update(Scene* scene, float delta_time);
 
 #endif /* SCENE_H */

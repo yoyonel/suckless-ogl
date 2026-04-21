@@ -547,6 +547,7 @@ void scene_cleanup(Scene* scene)
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
+	trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
@@ -999,7 +1000,94 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 #endif
 
+	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
+	 */
+	if (scene->nbody_mode) {
+		gl_debug_push_group("NBody_Trails");
+		trail_renderer_draw(&scene->trail_renderer, view, proj,
+		                    camera_pos);
+		gl_debug_pop_group();
+	}
+
 	if (scene->show_probe_grid) {
 		light_probe_render_debug(&scene->probe_grid, view, proj);
 	}
+}
+
+/* ---------------------------------------------------------------------------
+ * N-Body simulation integration
+ * ---------------------------------------------------------------------------*/
+
+void scene_toggle_nbody(Scene* scene)
+{
+	scene->nbody_mode = !scene->nbody_mode;
+
+	if (scene->nbody_mode) {
+		/* Initialize simulation and trails */
+		nbody_init_preset(&scene->nbody_sim);
+
+		int count = nbody_get_count(&scene->nbody_sim);
+		if (!trail_renderer_init(&scene->trail_renderer, count)) {
+			scene->nbody_mode = 0;
+			return;
+		}
+
+		/* Set trail colors from body albedos (HDR-scaled) */
+		for (int i = 0; i < count; i++) {
+			trail_renderer_set_color(
+			    &scene->trail_renderer, i,
+			    scene->nbody_sim.bodies[i].albedo);
+		}
+
+		/* Write initial instance data and update GPU */
+		SphereInstance instances[NBODY_MAX_BODIES];
+		nbody_write_instances(&scene->nbody_sim, instances);
+		instanced_group_update(&scene->instanced_group, instances,
+		                       count);
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+		if (scene->sphere_instances) {
+			safe_memcpy(scene->sphere_instances,
+			            sizeof(SphereInstance) * (size_t)count,
+			            instances,
+			            sizeof(SphereInstance) * (size_t)count);
+			scene->sphere_instance_count = count;
+		}
+		scene->billboard_group.instance_count = count;
+#endif
+	} else {
+		/* Restore original material grid */
+		trail_renderer_cleanup(&scene->trail_renderer);
+		scene_init_instancing(scene);
+	}
+}
+
+void scene_nbody_update(Scene* scene, float delta_time)
+{
+	if (!scene->nbody_mode) {
+		return;
+	}
+
+	/* Advance physics */
+	nbody_step(&scene->nbody_sim, delta_time);
+
+	/* Record trail positions */
+	trail_renderer_record(&scene->trail_renderer, &scene->nbody_sim,
+	                      delta_time);
+
+	/* Update instanced rendering data */
+	int count = nbody_get_count(&scene->nbody_sim);
+	SphereInstance instances[NBODY_MAX_BODIES];
+	nbody_write_instances(&scene->nbody_sim, instances);
+	instanced_group_update(&scene->instanced_group, instances, count);
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	if (scene->sphere_instances) {
+		safe_memcpy(scene->sphere_instances,
+		            sizeof(SphereInstance) * (size_t)count, instances,
+		            sizeof(SphereInstance) * (size_t)count);
+		scene->sphere_instance_count = count;
+	}
+	scene->billboard_group.instance_count = count;
+#endif
 }

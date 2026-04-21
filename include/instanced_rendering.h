@@ -60,6 +60,15 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo);
 
 /**
+ * @brief Updates the instance VBO with new data (e.g., N-body positions).
+ * @param group Pointer to the group.
+ * @param data New instance data array.
+ * @param count Number of instances (must not exceed original allocation).
+ */
+void instanced_group_update(InstancedGroup* group, const SphereInstance* data,
+                            int count);
+
+/**
  * @brief Executes an indexed instanced draw call.
  * @param group Pointer to the group.
  * @param index_count Number of indices in the base mesh.

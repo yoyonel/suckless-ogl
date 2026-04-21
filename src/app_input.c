@@ -430,6 +430,49 @@ static void handle_system_key_input(App* app, int key, int mods)
 	}
 }
 
+static bool handle_g_key_input(App* app, int mods)
+{
+	if (!check_flag(mods, GLFW_MOD_SHIFT)) {
+		return false;
+	}
+	scene_toggle_nbody(&app->scene);
+	LOG_INFO("suckless-ogl.app", "N-Body mode: %s",
+	         app->scene.nbody_mode ? "ON" : "OFF");
+	action_notifier_push(&app->notifier,
+	                     app->scene.nbody_mode ? "N-Body Gravity: ON"
+	                                           : "N-Body Gravity: OFF",
+	                     NOTIF_DUR_LONG);
+	return true;
+}
+
+static void handle_o_key_input(App* app)
+{
+	app->scene.sorting_mode =
+	    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
+	const char* mode_name = "Unknown";
+	const char* notif_name = "Sort: Unknown";
+
+	switch (app->scene.sorting_mode) {
+		case SORTING_MODE_CPU_QSORT:
+			mode_name = "CPU (qsort)";
+			notif_name = "Sort: CPU (qsort)";
+			break;
+		case SORTING_MODE_CPU_RADIX:
+			mode_name = "CPU (Radix)";
+			notif_name = "Sort: CPU (Radix)";
+			break;
+		case SORTING_MODE_GPU_BITONIC:
+			mode_name = "GPU (Bitonic)";
+			notif_name = "Sort: GPU (Bitonic)";
+			break;
+		default:
+			break;
+	}
+
+	LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s", mode_name);
+	action_notifier_push(&app->notifier, notif_name, NOTIF_DUR_NORMAL);
+}
+
 void handle_app_input(App* app, int key, int mods)
 {
 	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
@@ -466,32 +509,7 @@ void handle_app_input(App* app, int key, int mods)
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_O:
-			app->scene.sorting_mode =
-			    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
-			const char* mode_name = "Unknown";
-			const char* notif_name = "Sort: Unknown";
-
-			switch (app->scene.sorting_mode) {
-				case SORTING_MODE_CPU_QSORT:
-					mode_name = "CPU (qsort)";
-					notif_name = "Sort: CPU (qsort)";
-					break;
-				case SORTING_MODE_CPU_RADIX:
-					mode_name = "CPU (Radix)";
-					notif_name = "Sort: CPU (Radix)";
-					break;
-				case SORTING_MODE_GPU_BITONIC:
-					mode_name = "GPU (Bitonic)";
-					notif_name = "Sort: GPU (Bitonic)";
-					break;
-				default:
-					break;
-			}
-
-			LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s",
-			         mode_name);
-			action_notifier_push(&app->notifier, notif_name,
-			                     NOTIF_DUR_NORMAL);
+			handle_o_key_input(app);
 			break;
 		case GLFW_KEY_T:
 			app->env_mgr.env_transition_mode =
@@ -536,6 +554,11 @@ void handle_app_input(App* app, int key, int mods)
 			                         ? "Skybox: ON"
 			                         : "Skybox: OFF",
 			                     NOTIF_DUR_NORMAL);
+			break;
+		case GLFW_KEY_G:
+			if (handle_g_key_input(app, mods)) {
+				return;
+			}
 			break;
 		default:
 			break;

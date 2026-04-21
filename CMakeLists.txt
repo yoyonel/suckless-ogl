@@ -117,6 +117,7 @@ set(SOURCES
     src/main.c
     src/material.c
     src/metric_stack.c
+    src/nbody.c
     src/pbr.c
     src/perf_mode.c
     src/perf_timer.c
@@ -133,6 +134,7 @@ set(SOURCES
     src/stb_image_impl.c
     src/texture.c
     src/tracy_gpu.cpp
+    src/trail_renderer.c
     src/tracy_log.c
     src/tracy_manager.c
     src/ui.c
