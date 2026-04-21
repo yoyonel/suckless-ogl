@@ -267,6 +267,14 @@ static void app_toggle_help(App* app)
 {
 	HelpMode prev = app->overlay.show_help;
 	app->overlay.show_help = (HelpMode)(((int)prev + 1) % HELP_MODE_COUNT);
+
+	/* Skip gamepad page when no controller is connected. */
+	if (app->overlay.show_help == HELP_MODE_GAMEPAD &&
+	    !app->gamepad.connected) {
+		app->overlay.show_help =
+		    (HelpMode)(((int)app->overlay.show_help + 1) %
+		               HELP_MODE_COUNT);
+	}
 	HelpMode next = app->overlay.show_help;
 
 	if (prev == HELP_MODE_OFF && next != HELP_MODE_OFF) {
