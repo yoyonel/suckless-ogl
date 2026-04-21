@@ -263,6 +263,42 @@ All constants are defined in `include/nbody.h`:
 
 ---
 
+## Runtime Controls
+
+### Simulation Speed (`time_scale`)
+
+The simulation speed can be adjusted at runtime via keyboard:
+
+| Key (US layout) | Key (AZERTY) | Action |
+|-----------------|--------------|--------|
+| `.` | `:` | Double speed (max 64×) |
+| `,` | `;` | Halve speed (min 1/8×) |
+
+The `time_scale` multiplier follows powers of 2 to ensure that `1.0×` is
+always reachable:
+
+$$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 16.0,\; 32.0,\; 64.0\}$$
+
+An overlay notification displays the current speed on each change.
+
+### Trail Length Stability
+
+The trail sampling accumulator scales by `time_scale`:
+
+```text
+effective_dt = wall_dt × time_scale
+sample_timer += effective_dt
+while sample_timer >= TRAIL_SAMPLE_INTERVAL:
+    record positions
+    sample_timer -= TRAIL_SAMPLE_INTERVAL
+```
+
+This ensures the trail ring buffer fills and evicts points at the same
+*visual* pace regardless of `time_scale`. At 8× speed, 8 samples are emitted
+per frame instead of 1, keeping trail length constant in world units.
+
+---
+
 ## Code Map
 
 | File | Role |
@@ -272,5 +308,7 @@ All constants are defined in `include/nbody.h`:
 | `tests/test_nbody_stability.c` | Stability test suite (5 tests) |
 | `include/trail_renderer.h` | Trail rendering (visual ribbons behind bodies) |
 | `src/trail_renderer.c` | Billboard ribbon trail implementation |
+| `src/app_input.c` | Simulation speed keybindings (`,` / `.`) |
+| `src/app_binding.c` | F2 help overlay registration |
 | `shaders/trail.vert` | Trail vertex shader |
 | `shaders/trail.frag` | Trail fragment shader |

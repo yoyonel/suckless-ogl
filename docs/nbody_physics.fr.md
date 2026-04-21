@@ -272,6 +272,42 @@ Toutes les constantes sont définies dans `include/nbody.h` :
 
 ---
 
+## Contrôles en Temps Réel
+
+### Vitesse de Simulation (`time_scale`)
+
+La vitesse de simulation est ajustable au clavier :
+
+| Touche (US) | Touche (AZERTY) | Action |
+|-------------|-----------------|--------|
+| `.` | `:` | Doubler la vitesse (max 64×) |
+| `,` | `;` | Diviser par 2 (min 1/8×) |
+
+Le multiplicateur `time_scale` suit des puissances de 2 pour garantir que
+`1.0×` est toujours atteignable :
+
+$$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 16.0,\; 32.0,\; 64.0\}$$
+
+Une notification overlay affiche la vitesse actuelle à chaque changement.
+
+### Stabilité de la Longueur des Traînées
+
+L'accumulateur d'échantillonnage des traînées est modulé par `time_scale` :
+
+```text
+effective_dt = wall_dt × time_scale
+sample_timer += effective_dt
+tant que sample_timer >= TRAIL_SAMPLE_INTERVAL:
+    enregistrer les positions
+    sample_timer -= TRAIL_SAMPLE_INTERVAL
+```
+
+Cela garantit que le ring buffer se remplit et évacue les points au même
+rythme *visuel* quel que soit `time_scale`. À 8×, 8 échantillons sont émis
+par frame au lieu de 1, gardant la longueur des traînées constante en unités monde.
+
+---
+
 ## Carte du Code
 
 | Fichier | Rôle |
@@ -281,5 +317,7 @@ Toutes les constantes sont définies dans `include/nbody.h` :
 | `tests/test_nbody_stability.c` | Suite de tests de stabilité (5 tests) |
 | `include/trail_renderer.h` | Rendu des traînées (rubans visuels derrière les corps) |
 | `src/trail_renderer.c` | Implémentation des traînées en rubans billboard |
+| `src/app_input.c` | Raccourcis clavier vitesse de simulation (`,` / `.`) |
+| `src/app_binding.c` | Enregistrement dans l'overlay d'aide F2 |
 | `shaders/trail.vert` | Vertex shader des traînées |
 | `shaders/trail.frag` | Fragment shader des traînées |
