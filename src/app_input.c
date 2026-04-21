@@ -9,6 +9,7 @@
 #include "env_manager.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "nbody.h"
 #include "perf_mode.h"
 #include "postprocess_input.h"
 #include "profiler.h"
@@ -495,6 +496,10 @@ static void handle_gravity_input(App* app, bool increase)
 			sim->gravity = 0.0F;
 		}
 	}
+	/* Recalculate reference energy so drift only measures numerical error,
+	 * not the intentional physics parameter change. */
+	sim->initial_energy = nbody_total_energy(sim);
+
 	char buf[NOTIF_BUF_SIZE];
 	if (sim->gravity == 0.0F) {
 		(void)safe_snprintf(buf, sizeof(buf), "Gravity: OFF");
