@@ -406,6 +406,36 @@ The N-body pipeline is instrumented with fine-grained CPU profiling zones
 
 ---
 
+## Resource Lifecycle
+
+When N-body mode is toggled **OFF**, the engine restores the original material
+grid by calling `scene_init_instancing()` a second time.  This re-init path must
+first release every resource allocated by the previous init call to avoid GPU
+buffer and CPU memory leaks:
+
+```c
+/* Cleanup before re-init (scene.c — N-body OFF branch) */
+trail_renderer_cleanup(&scene->trail_renderer);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+if (scene->sphere_instances) {
+    platform_aligned_free(scene->sphere_instances);
+    scene->sphere_instances = NULL;
+}
+sphere_sorter_cleanup(&scene->sphere_sorter);
+#endif
+instanced_group_cleanup(&scene->instanced_group);
+billboard_group_cleanup(&scene->billboard_group);
+scene_init_instancing(scene);
+```
+
+The cleanup mirrors what `scene_cleanup()` does at application exit.  Without it,
+each ON → OFF toggle leaked ~27 KB (4 blocks: instance VBO, billboard VBO,
+aligned instance array, sphere sorter).
+
+Validated with `just test-integration-valgrind-full` — **0 bytes definitely lost**.
+
+---
+
 ## Code Map
 
 | File | Role |

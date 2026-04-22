@@ -31,6 +31,7 @@ The audit covered the following structures identified as managing dynamic memory
 | `PBRMaterial` | `name` (fixed array) | None | POD (Plain Old Data) struct. Safe to copy. |
 | `MaterialLib` | `materials` (dynamic array) | None | Managed exclusively via pointers (`MaterialLib*`). No value copy. |
 | `SphereInstance` | None (Vectors/Matrices) | None | POD struct. Safe to copy (used heavily in `sphere_sorting.c`). |
+| `scene_init_instancing` | instance VBO, billboard VBO, `sphere_instances`, `sphere_sorter` | **Fixed** | N-body OFF re-init path now calls cleanup before re-init to avoid leaking ~27 KB per toggle. |
 
 ### Specifically Examined Points
 

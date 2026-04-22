@@ -418,6 +418,36 @@ fin (visibles dans Tracy ou tout profileur compatible `PROFILE_ZONE`).
 
 ---
 
+## Cycle de Vie des Ressources
+
+Lorsque le mode N-corps est basculé sur **OFF**, le moteur restaure la grille
+de matériaux originale en appelant `scene_init_instancing()` une seconde fois.
+Ce chemin de ré-initialisation doit d'abord libérer chaque ressource allouée
+par l'appel précédent pour éviter les fuites de buffers GPU et de mémoire CPU :
+
+```c
+/* Nettoyage avant ré-init (scene.c — branche N-body OFF) */
+trail_renderer_cleanup(&scene->trail_renderer);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+if (scene->sphere_instances) {
+    platform_aligned_free(scene->sphere_instances);
+    scene->sphere_instances = NULL;
+}
+sphere_sorter_cleanup(&scene->sphere_sorter);
+#endif
+instanced_group_cleanup(&scene->instanced_group);
+billboard_group_cleanup(&scene->billboard_group);
+scene_init_instancing(scene);
+```
+
+Le nettoyage reproduit ce que fait `scene_cleanup()` à la fermeture de
+l'application.  Sans cela, chaque bascule ON → OFF fuyait ~27 Ko (4 blocs :
+instance VBO, billboard VBO, tableau d'instances aligné, trieur de sphères).
+
+Validé avec `just test-integration-valgrind-full` — **0 bytes definitely lost**.
+
+---
+
 ## Carte du Code
 
 | Fichier | Rôle |
