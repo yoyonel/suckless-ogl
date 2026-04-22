@@ -1073,6 +1073,9 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		return;
 	}
 
+	/* Smooth time-scale transition (decelerate → pause → reverse) */
+	nbody_update_time_scale(&scene->nbody_sim, delta_time);
+
 	/* Advance physics (Velocity Verlet, O(N²) gravity) */
 	{
 		PROFILE_ZONE(verlet_ctx, "NBody Verlet");

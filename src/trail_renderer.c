@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "utils.h"
 #include <cglm/vec3.h>
+#include <math.h>
 #include <string.h>
 
 /* Maximum ribbon vertices: each body can produce up to
@@ -119,8 +120,10 @@ void trail_renderer_record(TrailRenderer* trail, const NBodySim* sim,
 	/* Scale sampling rate by time_scale so trail length in world units
 	 * stays constant regardless of simulation speed.  At 8× speed the
 	 * bodies move 8× faster, so we sample 8× more often — the ring
-	 * buffer evicts old points at the same *visual* pace. */
-	float effective_dt = delta_time * sim->time_scale;
+	 * buffer evicts old points at the same *visual* pace.
+	 * fabsf() ensures sampling works under time reversal (negative
+	 * time_scale) — we always accumulate positive time for sampling. */
+	float effective_dt = delta_time * fabsf(sim->time_scale);
 	trail->sample_timer += effective_dt;
 
 	/* Emit as many sub-samples as needed (catches large time_scale

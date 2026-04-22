@@ -60,6 +60,7 @@ void nbody_init_preset(NBodySim* sim)
 	(void)safe_memset(sim, sizeof(*sim), 0, sizeof(*sim));
 	sim->gravity = NBODY_DEFAULT_G;
 	sim->time_scale = 1.0F;
+	sim->target_time_scale = 1.0F;
 	sim->paused = false;
 
 	/* Body 0: Central star — gold/bronze, heavy, stationary */
@@ -303,14 +304,21 @@ void nbody_step(NBodySim* sim, float delta_time)
 		              sim->bodies[i].prev_position);
 	}
 
-	sim->accumulator += delta_time * sim->time_scale;
+	float scaled_dt = delta_time * sim->time_scale;
+	sim->accumulator += scaled_dt;
+
+	/* Clamp magnitude to prevent spiral of death */
 	if (sim->accumulator > NBODY_MAX_ACCUMULATOR) {
 		sim->accumulator = NBODY_MAX_ACCUMULATOR;
+	} else if (sim->accumulator < -NBODY_MAX_ACCUMULATOR) {
+		sim->accumulator = -NBODY_MAX_ACCUMULATOR;
 	}
 
-	while (sim->accumulator >= NBODY_FIXED_DT) {
-		integrate_step(sim, NBODY_FIXED_DT);
-		sim->accumulator -= NBODY_FIXED_DT;
+	/* Integrate: step sign follows accumulator sign (time reversal) */
+	float step = copysignf(NBODY_FIXED_DT, sim->accumulator);
+	while (fabsf(sim->accumulator) >= NBODY_FIXED_DT) {
+		integrate_step(sim, step);
+		sim->accumulator -= step;
 	}
 }
 
@@ -360,4 +368,18 @@ float nbody_energy_drift(const NBodySim* sim)
 	float diff = current - ref_energy;
 	return (diff < 0.0F ? -diff : diff) /
 	       (ref_energy < 0.0F ? -ref_energy : ref_energy);
+}
+
+void nbody_update_time_scale(NBodySim* sim, float delta_time)
+{
+	float diff = sim->target_time_scale - sim->time_scale;
+	if (diff == 0.0F) {
+		return;
+	}
+	float step = NBODY_TIME_SCALE_RATE * delta_time;
+	if (fabsf(diff) <= step) {
+		sim->time_scale = sim->target_time_scale;
+	} else {
+		sim->time_scale += copysignf(step, diff);
+	}
 }

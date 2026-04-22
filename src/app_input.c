@@ -17,6 +17,7 @@
 #include "utils.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stb_image_write.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -445,6 +446,22 @@ static void handle_system_key_input(App* app, int key, int mods)
 
 static bool handle_g_key_input(App* app, int mods)
 {
+	/* Ctrl+Shift+G: toggle time reversal */
+	const int ctrl_shift =
+	    (int)((unsigned)GLFW_MOD_SHIFT | (unsigned)GLFW_MOD_CONTROL);
+	if (((unsigned)mods & (unsigned)ctrl_shift) == (unsigned)ctrl_shift) {
+		NBodySim* sim = &app->scene.nbody_sim;
+		sim->target_time_scale = -sim->target_time_scale;
+		const char* dir =
+		    (sim->target_time_scale < 0.0F) ? "REVERSE" : "FORWARD";
+		LOG_INFO("suckless-ogl.app", "Time direction: %s (%.1fx)", dir,
+		         (double)sim->target_time_scale);
+		char buf[NOTIF_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "Time: %s (%.1fx)", dir,
+		                    (double)fabsf(sim->target_time_scale));
+		action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
+		return true;
+	}
 	if (!check_flag(mods, GLFW_MOD_SHIFT)) {
 		return false;
 	}
@@ -461,20 +478,23 @@ static bool handle_g_key_input(App* app, int mods)
 static void handle_sim_speed_input(App* app, bool speed_up)
 {
 	NBodySim* sim = &app->scene.nbody_sim;
+	float mag = fabsf(sim->target_time_scale);
+	float sign = (sim->target_time_scale < 0.0F) ? -1.0F : 1.0F;
 	if (speed_up) {
-		sim->time_scale *= SIM_SPEED_FACTOR;
-		if (sim->time_scale > SIM_SPEED_MAX) {
-			sim->time_scale = SIM_SPEED_MAX;
+		mag *= SIM_SPEED_FACTOR;
+		if (mag > SIM_SPEED_MAX) {
+			mag = SIM_SPEED_MAX;
 		}
 	} else {
-		sim->time_scale *= SIM_SPEED_INV_FACTOR;
-		if (sim->time_scale < SIM_SPEED_MIN) {
-			sim->time_scale = SIM_SPEED_MIN;
+		mag *= SIM_SPEED_INV_FACTOR;
+		if (mag < SIM_SPEED_MIN) {
+			mag = SIM_SPEED_MIN;
 		}
 	}
+	sim->target_time_scale = sign * mag;
+	sim->time_scale = sim->target_time_scale;
 	char buf[NOTIF_BUF_SIZE];
-	(void)safe_snprintf(buf, sizeof(buf), "Sim Speed: %.1fx",
-	                    (double)sim->time_scale);
+	(void)safe_snprintf(buf, sizeof(buf), "Sim Speed: %.1fx", (double)mag);
 	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
 }
 

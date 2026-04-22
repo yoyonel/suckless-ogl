@@ -60,14 +60,18 @@ typedef struct {
  * @struct NBodySim
  * @brief State container for the N-body simulation.
  */
+/** Rate at which time_scale transitions toward its target (units/s). */
+static const float NBODY_TIME_SCALE_RATE = 3.0F;
+
 typedef struct {
 	NBodyParticle bodies[NBODY_MAX_BODIES]; /**< Array of bodies. */
 	int body_count;                         /**< Number of active bodies. */
-	float gravity;        /**< Gravitational constant G. */
-	float accumulator;    /**< Physics timestep accumulator. */
-	float time_scale;     /**< Speed multiplier (1.0 = real-time). */
-	float initial_energy; /**< Total energy at init (E₀ reference). */
-	bool paused;          /**< If true, simulation does not advance. */
+	float gravity;           /**< Gravitational constant G. */
+	float accumulator;       /**< Physics timestep accumulator. */
+	float time_scale;        /**< Speed multiplier (1.0 = real-time). */
+	float target_time_scale; /**< Smooth-transition target. */
+	float initial_energy;    /**< Total energy at init (E₀ reference). */
+	bool paused;             /**< If true, simulation does not advance. */
 } NBodySim;
 
 /**
@@ -117,5 +121,15 @@ float nbody_kinetic_energy(const NBodySim* sim);
  * Returns 0 when initial_energy is zero (no reference).
  */
 float nbody_energy_drift(const NBodySim* sim);
+
+/**
+ * @brief Smoothly transitions time_scale toward target_time_scale.
+ *
+ * Called once per frame.  Ramps at NBODY_TIME_SCALE_RATE units/s,
+ * producing a decelerate → pause → accelerate-in-reverse effect.
+ * @param sim Pointer to the simulation state.
+ * @param delta_time Wall-clock frame delta (seconds).
+ */
+void nbody_update_time_scale(NBodySim* sim, float delta_time);
 
 #endif /* NBODY_H */
