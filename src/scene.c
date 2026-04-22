@@ -1061,8 +1061,18 @@ void scene_toggle_nbody(Scene* scene)
 		scene->billboard_group.instance_count = count;
 #endif
 	} else {
-		/* Restore original material grid */
+		/* Restore original material grid — clean up before re-init
+		 * to avoid leaking GPU buffers and CPU allocations */
 		trail_renderer_cleanup(&scene->trail_renderer);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+		if (scene->sphere_instances) {
+			platform_aligned_free(scene->sphere_instances);
+			scene->sphere_instances = NULL;
+		}
+		sphere_sorter_cleanup(&scene->sphere_sorter);
+#endif
+		instanced_group_cleanup(&scene->instanced_group);
+		billboard_group_cleanup(&scene->billboard_group);
 		scene_init_instancing(scene);
 	}
 }
