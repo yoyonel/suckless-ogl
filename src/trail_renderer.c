@@ -2,6 +2,7 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "profiler.h"
 #include "shader.h"
 #include "utils.h"
 #include <cglm/vec3.h>
@@ -248,29 +249,37 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	int body_count_v[NBODY_MAX_BODIES];
 	int active_bodies = 0;
 
-	for (int i = 0; i < trail->body_count; i++) {
-		int start = total_verts;
-		int vcount =
-		    build_ribbon(&trail->rings[i], trail->colors[i], cam_pos,
-		                 1.0F, /* body_radius — could be passed in */
-		                 &staging[total_verts]);
-		if (vcount > 0) {
-			body_start[active_bodies] = start;
-			body_count_v[active_bodies] = vcount;
-			active_bodies++;
-			total_verts += vcount;
+	{
+		PROFILE_ZONE(ribbon_ctx, "Trail Ribbon Build");
+		for (int i = 0; i < trail->body_count; i++) {
+			int start = total_verts;
+			int vcount = build_ribbon(
+			    &trail->rings[i], trail->colors[i], cam_pos,
+			    1.0F, /* body_radius — could be passed in */
+			    &staging[total_verts]);
+			if (vcount > 0) {
+				body_start[active_bodies] = start;
+				body_count_v[active_bodies] = vcount;
+				active_bodies++;
+				total_verts += vcount;
+			}
 		}
+		PROFILE_ZONE_END(ribbon_ctx);
 	}
 
 	if (total_verts == 0) {
 		return;
 	}
 
-	/* Upload to GPU */
-	glBindBuffer(GL_ARRAY_BUFFER, trail->vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	                (GLsizeiptr)(total_verts * sizeof(TrailVertex)),
-	                staging);
+	/* Upload ribbon geometry to GPU */
+	{
+		PROFILE_ZONE(upload_ctx, "Trail VBO Upload");
+		glBindBuffer(GL_ARRAY_BUFFER, trail->vbo);
+		glBufferSubData(GL_ARRAY_BUFFER, 0,
+		                (GLsizeiptr)(total_verts * sizeof(TrailVertex)),
+		                staging);
+		PROFILE_ZONE_END(upload_ctx);
+	}
 
 	/* Set rendering state */
 	shader_use(trail->shader);
@@ -287,8 +296,13 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	glDepthMask(GL_FALSE);
 
 	/* Draw each body's trail as a separate triangle strip */
-	for (int i = 0; i < active_bodies; i++) {
-		glDrawArrays(GL_TRIANGLE_STRIP, body_start[i], body_count_v[i]);
+	{
+		PROFILE_ZONE(draw_ctx, "Trail Draw Calls");
+		for (int i = 0; i < active_bodies; i++) {
+			glDrawArrays(GL_TRIANGLE_STRIP, body_start[i],
+			             body_count_v[i]);
+		}
+		PROFILE_ZONE_END(draw_ctx);
 	}
 
 	/* Restore state */

@@ -1073,18 +1073,35 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		return;
 	}
 
-	/* Advance physics */
-	nbody_step(&scene->nbody_sim, delta_time);
+	/* Advance physics (Velocity Verlet, O(N²) gravity) */
+	{
+		PROFILE_ZONE(verlet_ctx, "NBody Verlet");
+		nbody_step(&scene->nbody_sim, delta_time);
+		PROFILE_ZONE_END(verlet_ctx);
+	}
 
-	/* Record trail positions */
-	trail_renderer_record(&scene->trail_renderer, &scene->nbody_sim,
-	                      delta_time);
+	/* Record trail positions into ring buffers */
+	{
+		PROFILE_ZONE(trail_ctx, "NBody Trail Sample");
+		trail_renderer_record(&scene->trail_renderer, &scene->nbody_sim,
+		                      delta_time);
+		PROFILE_ZONE_END(trail_ctx);
+	}
 
-	/* Update instanced rendering data */
+	/* Build instance data and upload to GPU */
 	int count = nbody_get_count(&scene->nbody_sim);
 	SphereInstance instances[NBODY_MAX_BODIES];
-	nbody_write_instances(&scene->nbody_sim, instances);
-	instanced_group_update(&scene->instanced_group, instances, count);
+	{
+		PROFILE_ZONE(inst_ctx, "NBody Instance Build");
+		nbody_write_instances(&scene->nbody_sim, instances);
+		PROFILE_ZONE_END(inst_ctx);
+	}
+	{
+		PROFILE_ZONE(upload_ctx, "NBody VBO Upload");
+		instanced_group_update(&scene->instanced_group, instances,
+		                       count);
+		PROFILE_ZONE_END(upload_ctx);
+	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->sphere_instances) {
