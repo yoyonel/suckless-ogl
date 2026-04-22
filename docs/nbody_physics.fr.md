@@ -355,6 +355,33 @@ par frame au lieu de 1, gardant la longueur des traînées constante en unités 
 
 ---
 
+## Zones de Profilage
+
+Le pipeline N-corps est instrumenté avec des zones de profilage CPU à grain
+fin (visibles dans Tracy ou tout profileur compatible `PROFILE_ZONE`).
+
+### Zones CPU (`PROFILE_ZONE` — Thread Principal)
+
+| Zone | Fichier | Ce qu'elle mesure |
+|------|---------|-------------------|
+| `NBody Physics` | `app.c` | Wrapper top-level (parent de toutes les suivantes) |
+| `NBody Verlet` | `scene.c` | `nbody_step()` — gravité O(N²) + Velocity Verlet |
+| `NBody Trail Sample` | `scene.c` | `trail_renderer_record()` — écriture ring buffers |
+| `NBody Instance Build` | `scene.c` | `nbody_write_instances()` — génération matrices modèle |
+| `NBody VBO Upload` | `scene.c` | `instanced_group_update()` → `glBufferSubData` |
+| `Trail Ribbon Build` | `trail_renderer.c` | `build_ribbon()` × N corps — staging géométrie CPU |
+| `Trail VBO Upload` | `trail_renderer.c` | `glBufferSubData` — upload buffer GPU |
+| `Trail Draw Calls` | `trail_renderer.c` | `glDrawArrays` × N corps |
+
+### Zones GPU (`GPU_STAGE_PROFILER` — Contexte OpenGL)
+
+| Zone | Fichier | Ce qu'elle mesure |
+|------|---------|-------------------|
+| `Instanced Render` | `scene.c` | Draw call des sphères (partagé avec grille matériaux) |
+| `NBody Trails` | `scene.c` | Passe complète de rendu des traînées |
+
+---
+
 ## Carte du Code
 
 | Fichier | Rôle |

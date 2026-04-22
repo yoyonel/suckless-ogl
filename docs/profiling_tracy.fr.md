@@ -71,6 +71,51 @@ cmake -B build -DENABLE_TRACY=ON
 cmake -B build -DCMAKE_BUILD_TYPE=Release  # Tracy automatiquement désactivé
 ```
 
+## Configuration du Port
+
+Par défaut, Tracy utilise le port **8086** pour les données et le broadcast.
+Si ce port est déjà utilisé sur votre système, le `Justfile` détecte
+automatiquement un port libre :
+
+```bash
+# Automatique — utilise 8087 si 8086 est occupé
+just tracy-server    # Terminal 1
+just run-tracy       # Terminal 2
+
+# Forçage manuel
+TRACY_PORT=9090 just tracy-server
+TRACY_PORT=9090 just run-tracy
+```
+
+La variable `tracy_port` du Justfile sonde le port 8086 avec `ss` et
+bascule sur 8087 s'il est occupé. Le serveur utilise `-a 127.0.0.1 -p <port>`
+pour une connexion directe (pas de broadcast UDP).
+
+## Zones de Profilage N-Corps
+
+Lorsque la simulation N-corps est active (`Shift+G`), les zones suivantes
+apparaissent dans Tracy :
+
+### Zones CPU (Thread Principal)
+
+| Zone | Parent | Ce qu'elle mesure |
+|------|--------|-------------------|
+| `NBody Physics` | Frame | Wrapper top-level N-corps |
+| `NBody Verlet` | NBody Physics | Gravité O(N²) + intégration Verlet |
+| `NBody Trail Sample` | NBody Physics | Enregistrement ring buffer traînées |
+| `NBody Instance Build` | NBody Physics | Génération matrices modèle |
+| `NBody VBO Upload` | NBody Physics | Stall `glBufferSubData` |
+| `Trail Ribbon Build` | NBody Trails | Staging géométrie CPU |
+| `Trail VBO Upload` | NBody Trails | Upload buffer |
+| `Trail Draw Calls` | NBody Trails | `glDrawArrays` par corps |
+
+### Zones GPU (Contexte OpenGL)
+
+| Zone | Ce qu'elle mesure |
+|------|-------------------|
+| `Instanced Render` | Draw call instancié des sphères |
+| `NBody Trails` | Passe de rendu des traînées |
+
 ## Voir aussi
 
 - [gpu_profiling.md](./gpu_profiling.md) — Système de profilage GPU intégré

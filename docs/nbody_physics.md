@@ -345,6 +345,33 @@ per frame instead of 1, keeping trail length constant in world units.
 
 ---
 
+## Profiling Zones
+
+The N-body pipeline is instrumented with fine-grained CPU profiling zones
+(visible in Tracy or any `PROFILE_ZONE`-compatible profiler).
+
+### CPU Zones (`PROFILE_ZONE` — Main Thread)
+
+| Zone | Location | What it measures |
+|------|----------|------------------|
+| `NBody Physics` | `app.c` | Top-level wrapper (parent of all below) |
+| `NBody Verlet` | `scene.c` | `nbody_step()` — O(N²) gravity + Velocity Verlet |
+| `NBody Trail Sample` | `scene.c` | `trail_renderer_record()` — ring buffer writes |
+| `NBody Instance Build` | `scene.c` | `nbody_write_instances()` — model matrix generation |
+| `NBody VBO Upload` | `scene.c` | `instanced_group_update()` → `glBufferSubData` |
+| `Trail Ribbon Build` | `trail_renderer.c` | `build_ribbon()` × N bodies — CPU geometry staging |
+| `Trail VBO Upload` | `trail_renderer.c` | `glBufferSubData` — GPU buffer upload |
+| `Trail Draw Calls` | `trail_renderer.c` | `glDrawArrays` × N bodies |
+
+### GPU Zones (`GPU_STAGE_PROFILER` — OpenGL Context)
+
+| Zone | Location | What it measures |
+|------|----------|------------------|
+| `Instanced Render` | `scene.c` | Sphere draw call (shared with material grid) |
+| `NBody Trails` | `scene.c` | Full trail rendering pass |
+
+---
+
 ## Code Map
 
 | File | Role |

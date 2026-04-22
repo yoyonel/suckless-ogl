@@ -81,7 +81,52 @@ When using the `HYBRID_MEASURE_LOG` macro, you will see specific zones in the ti
 - **Memory Button:** Audit every allocation and find exactly who leaked memory.
 - **Messages:** View your application logs (`LOG_INFO`, etc.) perfectly synced with the timeline.
 
-## 5. Enabling Sampling (Linux)
+## 5. Port Configuration
+
+By default, Tracy uses port **8086** for both data and broadcast.
+If that port is already in use on your system, the `Justfile` auto-detects
+a free port:
+
+```bash
+# Automatic — uses 8087 if 8086 is busy
+just tracy-server    # Terminal 1
+just run-tracy       # Terminal 2
+
+# Manual override
+TRACY_PORT=9090 just tracy-server
+TRACY_PORT=9090 just run-tracy
+```
+
+The `tracy_port` variable in the Justfile probes port 8086 with `ss` and
+falls back to 8087 if occupied. The server uses `-a 127.0.0.1 -p <port>`
+for direct connection (no UDP broadcast).
+
+## 6. N-Body Profiling Zones
+
+When the N-body simulation is active (`Shift+G`), the following zones
+appear in Tracy:
+
+### CPU Zones (Main Thread)
+
+| Zone | Parent | What it measures |
+|------|--------|------------------|
+| `NBody Physics` | Frame | Top-level N-body wrapper |
+| `NBody Verlet` | NBody Physics | O(N²) gravity + Verlet integration |
+| `NBody Trail Sample` | NBody Physics | Ring buffer trail recording |
+| `NBody Instance Build` | NBody Physics | Model matrix generation |
+| `NBody VBO Upload` | NBody Physics | `glBufferSubData` stall |
+| `Trail Ribbon Build` | NBody Trails | CPU geometry staging |
+| `Trail VBO Upload` | NBody Trails | Buffer upload |
+| `Trail Draw Calls` | NBody Trails | `glDrawArrays` per body |
+
+### GPU Zones (OpenGL Context)
+
+| Zone | What it measures |
+|------|------------------|
+| `Instanced Render` | Sphere instanced draw call |
+| `NBody Trails` | Trail rendering pass |
+
+## 7. Enabling Sampling (Linux)
 
 If the **Sampling** tab in Statistics is empty, it means the kernel blocked access to performance counters.
 
@@ -94,7 +139,7 @@ sudo sysctl -w kernel.perf_event_paranoid=-1
 > [!WARNING]
 > This setting allows all users to monitor system performance.
 
-## 6. Analyzing Sampling Data
+## 8. Analyzing Sampling Data
 
 The **Sampling** tab shows where the CPU spends its time based on periodic stack traces (samples), **even for functions that are not manually instrumented**. This is crucial for finding hidden performance bottlenecks.
 
