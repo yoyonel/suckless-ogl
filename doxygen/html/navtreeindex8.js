@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff":[5,0,22,0],
 "structEdgeHash.html#abf74ac823023fa22a196e161bae695ec":[5,0,22,1],
 "structEdgeHash.html#ace0fcc8d2741d15211878c3b837016f4":[5,0,22,2],
 "structEffectBenchResult.html":[5,0,24],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "structKeyboardLayoutConfig.html#aaabd98beb9a098d1ebc23fd633fd896e":[5,0,56,3],
 "structKeyboardLayoutConfig.html#aca0f4bd90e014b3052cbb9629e355e11":[5,0,56,5],
 "structKeyboardLayoutConfig.html#ad365fcee5f4f9d5f7de8176e3ffd25a9":[5,0,56,4],
-"structLightProbe.html":[5,0,58],
-"structLightProbe.html#a01ff8e8d631d43158606c73102b224da":[5,0,58,0]
+"structLightProbe.html":[5,0,58]
 };

@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"sphere__sorting_8c.html#ab58f7a4a3d93d58b169574ff8e95079d":[6,0,4,41,10],
 "sphere__sorting_8c.html#ac8261ad4dd8402eed788cdcd12116946":[6,0,4,41,6],
 "sphere__sorting_8c.html#acb3fa2312fad06af4b08eccb275556a8":[6,0,4,41,11],
 "sphere__sorting_8c.html#aec8224722de5e61973f9e3b8078d365d":[6,0,4,41,14],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "structEdgeEntry.html#a24249ee61be50158e19c51b35c999b2a":[5,0,21,1],
 "structEdgeEntry.html#a69fb36ead45121e4dc87b00d2c699902":[5,0,21,2],
 "structEdgeEntry.html#a9827c0bd386c0511e19aa31782798131":[5,0,21,0],
-"structEdgeHash.html":[5,0,22],
-"structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff":[5,0,22,0]
+"structEdgeHash.html":[5,0,22]
 };

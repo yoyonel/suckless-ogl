@@ -1,5 +1,6 @@
 var NAVTREEINDEX9 =
 {
+"structLightProbe.html#a01ff8e8d631d43158606c73102b224da":[5,0,58,0],
 "structLightProbe.html#adf243c027b1162800901618aa2185f07":[5,0,58,1],
 "structLightProbeGrid.html":[5,0,59],
 "structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d":[5,0,59,20],
@@ -248,6 +249,5 @@ var NAVTREEINDEX9 =
 "structScene.html#a896b30612f7921d033a63e983cc04d02":[5,0,74,12],
 "structScene.html#a8d6dc5a9ef8fa0c35060866d22402a06":[5,0,74,37],
 "structScene.html#a8e5068f97bbee1f5c72cc9dfce3e6ab0":[5,0,74,28],
-"structScene.html#a8fb0e29cd355adce1c6348f6304507b0":[5,0,74,48],
-"structScene.html#a9230b9a4001e368b3c8291954e182aff":[5,0,74,14]
+"structScene.html#a8fb0e29cd355adce1c6348f6304507b0":[5,0,74,48]
 };

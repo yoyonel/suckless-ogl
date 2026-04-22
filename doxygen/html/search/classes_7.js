@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['hdrscancontext_2084',['HdrScanContext',['../structHdrScanContext.html',1,'']]],
-  ['hybridtimer_2085',['HybridTimer',['../structHybridTimer.html',1,'']]],
-  ['hybridtimerraii_2086',['HybridTimerRAII',['../structHybridTimerRAII.html',1,'']]]
+  ['hdrscancontext_2085',['HdrScanContext',['../structHdrScanContext.html',1,'']]],
+  ['hybridtimer_2086',['HybridTimer',['../structHybridTimer.html',1,'']]],
+  ['hybridtimerraii_2087',['HybridTimerRAII',['../structHybridTimerRAII.html',1,'']]]
 ];

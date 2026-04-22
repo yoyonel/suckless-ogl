@@ -38,12 +38,13 @@ var NAVTREEINDEX2 =
 "functions_y.html":[5,2,0,25],
 "functions_z.html":[5,2,0,26],
 "gamepad__input_8c.html":[6,0,4,16],
-"gamepad__input_8c.html#a0172eef66adc551ec0c8f5c539a62cc7":[6,0,4,16,5],
-"gamepad__input_8c.html#a2be1680e58e523af5551fbca1fe40e7f":[6,0,4,16,0],
-"gamepad__input_8c.html#a7675da2a057eba16844b2250a15a8f56":[6,0,4,16,2],
-"gamepad__input_8c.html#a8918722fe2ae5795c45d1b192cfc7c0c":[6,0,4,16,1],
-"gamepad__input_8c.html#aae85773763d5efa9eea04e6ea67b1362":[6,0,4,16,4],
-"gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30":[6,0,4,16,3],
+"gamepad__input_8c.html#a0172eef66adc551ec0c8f5c539a62cc7":[6,0,4,16,6],
+"gamepad__input_8c.html#a088324ad8995e3eb76024e3e79083d48":[6,0,4,16,0],
+"gamepad__input_8c.html#a2be1680e58e523af5551fbca1fe40e7f":[6,0,4,16,1],
+"gamepad__input_8c.html#a7675da2a057eba16844b2250a15a8f56":[6,0,4,16,3],
+"gamepad__input_8c.html#a8918722fe2ae5795c45d1b192cfc7c0c":[6,0,4,16,2],
+"gamepad__input_8c.html#aae85773763d5efa9eea04e6ea67b1362":[6,0,4,16,5],
+"gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30":[6,0,4,16,4],
 "gamepad__input_8h.html":[6,0,2,16],
 "gamepad__input_8h.html#a00f87c9f09cb242e136b9ffd54de528f":[6,0,2,16,5],
 "gamepad__input_8h.html#a0172eef66adc551ec0c8f5c539a62cc7":[6,0,2,16,11],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "gpu__profiler__ui_8c.html#ab390637c15904dd866b0c2916eb948b0":[6,0,4,19,9],
 "gpu__profiler__ui_8c.html#ab9c1456c84c481b08c3c3d8e56f6dd14":[6,0,4,19,15],
 "gpu__profiler__ui_8c.html#ac53c270cd512488caca074831008a6db":[6,0,4,19,7],
-"gpu__profiler__ui_8c.html#acc00a78ce96d4bb641995567512e20ff":[6,0,4,19,21],
-"gpu__profiler__ui_8c.html#ad1df40ff7e5855ccd5293cea04eb8522":[6,0,4,19,30]
+"gpu__profiler__ui_8c.html#acc00a78ce96d4bb641995567512e20ff":[6,0,4,19,21]
 };
