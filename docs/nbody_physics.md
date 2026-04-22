@@ -284,6 +284,40 @@ $$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 1
 
 An overlay notification displays the current speed on each change.
 
+### Time Reversal
+
+The time direction can be **reversed** at runtime:
+
+| Key (US layout) | Key (AZERTY) | Action |
+|-----------------|--------------|--------|
+| `Ctrl+Shift+G` | `Ctrl+Shift+G` | Toggle time direction (forward/reverse) |
+
+This exploits a fundamental property of Newtonian gravity: the equations of
+motion are **invariant under $t \to -t$**.  Reversing time is equivalent to
+negating all velocities — the system retraces its trajectory backwards.
+
+Because Velocity Verlet is both **symplectic** and **time-reversible**
+($\Phi_h^{-1} = \Phi_{-h}$), the reversed simulation follows the same
+orbit with bounded energy error.  After $N$ forward steps and $N$ backward
+steps, the system returns to the initial state (modulo floating-point
+rounding: $\sim N \cdot \epsilon_{\text{machine}}$ position error).
+
+When reversed, the HUD shows a ⏪ indicator next to the energy readout.
+Speed controls (`,` / `.`) adjust the magnitude without affecting the
+time direction.
+
+#### Progressive Transition
+
+The reversal is not instantaneous: `time_scale` ramps linearly toward
+its target at a rate of **3.0 units/s** (`NBODY_TIME_SCALE_RATE`).  At
+$1\times$ speed the full forward→reverse transition takes ~0.7 s:
+
+$$+1.0 \xrightarrow{\text{decelerate}} 0.0 \xrightarrow{\text{accelerate}} -1.0$$
+
+This produces a natural “VHS rewind” feel where bodies slow down, pause
+briefly, then accelerate in reverse.  Higher speed multipliers take
+proportionally longer to reverse (e.g. $4\times$ → ~2.7 s).
+
 ### Gravity Control (`gravity`)
 
 The gravitational constant $G$ can be adjusted at runtime with Shift modifier:

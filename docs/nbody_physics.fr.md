@@ -293,6 +293,42 @@ $$\text{time\_scale} \in \{0.125,\; 0.25,\; 0.5,\; 1.0,\; 2.0,\; 4.0,\; 8.0,\; 1
 
 Une notification overlay affiche la vitesse actuelle à chaque changement.
 
+### Inversion Temporelle
+
+La direction du temps peut être **inversée** à l'exécution :
+
+| Touche (US) | Touche (AZERTY) | Action |
+|-------------|-----------------|--------|
+| `Ctrl+Shift+G` | `Ctrl+Shift+G` | Bascule la direction du temps (avant/arrière) |
+
+Ceci exploite une propriété fondamentale de la gravité newtonienne : les
+équations du mouvement sont **invariantes sous $t \to -t$**.  Inverser le
+temps revient à négativer toutes les vitesses — le système retrace sa
+trajectoire en sens inverse.
+
+Comme Velocity Verlet est à la fois **symplectique** et **réversible dans
+le temps** ($\Phi_h^{-1} = \Phi_{-h}$), la simulation inversée suit la
+même orbite avec une erreur d'énergie bornée.  Après $N$ pas en avant et
+$N$ pas en arrière, le système revient à l'état initial (modulo l'arrondi
+flottant : $\sim N \cdot \epsilon_{\text{machine}}$ d'erreur de position).
+
+En marche arrière, le HUD affiche un indicateur ⏪ à côté de la lecture
+d'énergie.  Les contrôles de vitesse (`,` / `.`) ajustent la magnitude
+sans affecter la direction temporelle.
+
+#### Transition Progressive
+
+L'inversion n'est pas instantanée : `time_scale` converge linéairement
+vers sa cible au rythme de **3.0 unités/s** (`NBODY_TIME_SCALE_RATE`).  À
+vitesse $1\times$, la transition complète avant→arrière prend ~0.7 s :
+
+$$+1.0 \xrightarrow{\text{décélération}} 0.0 \xrightarrow{\text{accélération}} -1.0$$
+
+Cela produit un effet naturel « rembobinage VHS » où les corps ralentissent,
+se figent brièvement, puis accélèrent en sens inverse.  Des multiplicateurs
+plus élevés prennent proportionnellement plus de temps (ex. $4\times$ →
+~2.7 s).
+
 ### Contrôle de la Gravité (`gravity`)
 
 La constante gravitationnelle $G$ est ajustable en temps réel avec le
