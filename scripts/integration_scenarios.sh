@@ -127,6 +127,36 @@ run_scenario_full() {
     echo "=> Resetting to Default (0)"
     xdotool key --delay 500 0
 
+    # 10. N-Body Gravity Sandbox (Shift+G)
+    echo "=> Activating N-Body Mode (Shift+G)"
+    xdotool key --delay 500 shift+g
+    sleep 1
+
+    echo "=> Sim Speed Up (period) / Down (comma)"
+    xdotool key --delay 300 period
+    xdotool key --delay 300 period
+    sleep 0.5
+    xdotool key --delay 300 comma
+    sleep 0.5
+
+    echo "=> Gravity Control (Shift+period / Shift+comma)"
+    xdotool key --delay 300 shift+period
+    xdotool key --delay 300 shift+period
+    sleep 0.5
+    xdotool key --delay 300 shift+comma
+    sleep 0.5
+
+    echo "=> Time Reversal (Ctrl+Shift+G)"
+    xdotool key --delay 300 ctrl+shift+g
+    sleep 1.5
+    echo "=> Time Forward (Ctrl+Shift+G)"
+    xdotool key --delay 300 ctrl+shift+g
+    sleep 1.5
+
+    echo "=> Deactivating N-Body Mode (Shift+G)"
+    xdotool key --delay 500 shift+g
+    sleep 0.5
+
     echo "=> Test Complete."
     xdotool key Escape
 }
@@ -198,6 +228,23 @@ run_scenario_minimal() {
     echo "=> Resetting to Default (0)"
     xdotool key --delay 500 0
     sleep 1
+
+    # 8. N-Body Gravity Sandbox (Shift+G)
+    echo "=> Activating N-Body Mode (Shift+G)"
+    xdotool key --delay 500 shift+g
+    sleep 1
+
+    echo "=> Sim Speed Up (period)"
+    xdotool key --delay 300 period
+    sleep 0.5
+
+    echo "=> Time Reversal (Ctrl+Shift+G)"
+    xdotool key --delay 300 ctrl+shift+g
+    sleep 1.5
+
+    echo "=> Deactivating N-Body Mode (Shift+G)"
+    xdotool key --delay 500 shift+g
+    sleep 0.5
 
     echo "=> Test Complete."
     xdotool key Escape
