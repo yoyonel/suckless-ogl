@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "gamepad_input.h"
+#include "log.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -7,7 +8,7 @@
 #include <string.h>
 
 /* ---- Stub for log_message (avoids linking log.c + platform deps) ---- */
-void log_message(int level, const char* tag, const char* fmt, ...)
+void log_message(LogLevel level, const char* tag, const char* fmt, ...)
 {
 	(void)level;
 	(void)tag;
