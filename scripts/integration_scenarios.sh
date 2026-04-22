@@ -1,5 +1,32 @@
 #!/bin/bash
 
+# Detect keyboard layout for xdotool keysym mapping.
+# GLFW maps keys by physical position (US QWERTY), not by keysym.
+# xdotool resolves keysym names to keycodes, so on non-US layouts
+# we must use the layout-specific keysym for the correct physical key.
+_layout=$(setxkbmap -query 2>/dev/null | awk '/layout/{print $2}')
+case "$_layout" in
+    fr)
+        # AZERTY: physical key positions differ from US QWERTY.
+        # Variable names = GLFW_KEY constant the app expects.
+        # Values = xdotool keysym that hits the correct physical key.
+        KEY_A="q"              # AC01 (phys A) has keysym 'q'
+        KEY_Q="a"              # AD01 (phys Q) has keysym 'a'
+        KEY_W="z"              # AD02 (phys W) has keysym 'z'
+        KEY_M="comma"          # AB07 (phys M) has keysym 'comma'
+        KEY_COMMA="semicolon"  # AB08 (phys ,) has keysym 'semicolon'
+        KEY_PERIOD="colon"     # AB09 (phys .) has keysym 'colon'
+        ;;
+    *)
+        KEY_A="a"
+        KEY_Q="q"
+        KEY_W="w"
+        KEY_M="m"
+        KEY_COMMA="comma"
+        KEY_PERIOD="period"
+        ;;
+esac
+
 run_scenario_full() {
     echo "Starting Integration Test Scenario (FULL)..."
 
@@ -49,7 +76,7 @@ run_scenario_full() {
 
     # 2. Styles
     echo "=> Testing Styles (1-6)"
-    for i in {1..6}; do xdotool key --delay 500 $i; done
+    for i in {1..6}; do xdotool key --delay 500 "$i"; done
     xdotool key --delay 500 2 # Style: Subtle
 
     # 8.b GI Diffuse 1-Bounce
@@ -70,19 +97,19 @@ run_scenario_full() {
     xdotool key --delay 500 b # Bloom
     xdotool key --delay 500 h # DoF
     xdotool key --delay 500 j # Auto Exposure
-    xdotool key --delay 500 m # Motion Blur
+    xdotool key --delay 500 "$KEY_M" # Motion Blur
     xdotool key --delay 500 x # FXAA
 
-    xdotool key --delay 500 w # Wireframe ON
-    xdotool key --delay 500 w # Wireframe OFF
+    xdotool key --delay 500 "$KEY_W" # Wireframe ON
+    xdotool key --delay 500 "$KEY_W" # Wireframe OFF
 
     echo "=> Toggling Sphere Sorting (O)"
     for i in {1..6}; do xdotool key --delay 500 o; done
 
     # 4. Camera Movement
     echo "=> Moving Camera"
-    for key in z d s a q e; do
-        xdotool keydown $key; sleep 0.5; xdotool keyup $key
+    for key in "$KEY_W" d s "$KEY_A" "$KEY_Q" e; do
+        xdotool keydown "$key"; sleep 0.5; xdotool keyup "$key"
     done
 
     # 5. PBR Debug Modes
@@ -133,17 +160,17 @@ run_scenario_full() {
     sleep 1
 
     echo "=> Sim Speed Up (period) / Down (comma)"
-    xdotool key --delay 300 period
-    xdotool key --delay 300 period
+    xdotool key --delay 300 "$KEY_PERIOD"
+    xdotool key --delay 300 "$KEY_PERIOD"
     sleep 0.5
-    xdotool key --delay 300 comma
+    xdotool key --delay 300 "$KEY_COMMA"
     sleep 0.5
 
     echo "=> Gravity Control (Shift+period / Shift+comma)"
-    xdotool key --delay 300 shift+period
-    xdotool key --delay 300 shift+period
+    xdotool key --delay 300 "shift+$KEY_PERIOD"
+    xdotool key --delay 300 "shift+$KEY_PERIOD"
     sleep 0.5
-    xdotool key --delay 300 shift+comma
+    xdotool key --delay 300 "shift+$KEY_COMMA"
     sleep 0.5
 
     echo "=> Time Reversal (Ctrl+Shift+G)"
@@ -176,7 +203,7 @@ run_scenario_minimal() {
 
     # 2. Styles
     echo "=> Testing Styles (1-6)"
-    for i in {1..6}; do xdotool key --delay 500 $i; done
+    for i in {1..6}; do xdotool key --delay 500 "$i"; done
     xdotool key --delay 500 2 # Style: Subtle
 
     # 3. Post-Process Effects
@@ -196,8 +223,8 @@ run_scenario_minimal() {
 
     # 4. Camera Movement
     echo "=> Moving Camera"
-    for key in z d s a; do
-        xdotool keydown $key; sleep 0.5; xdotool keyup $key
+    for key in "$KEY_W" d s "$KEY_A"; do
+        xdotool keydown "$key"; sleep 0.5; xdotool keyup "$key"
     done
 
     # 5. PBR Debug Modes
@@ -235,7 +262,7 @@ run_scenario_minimal() {
     sleep 1
 
     echo "=> Sim Speed Up (period)"
-    xdotool key --delay 300 period
+    xdotool key --delay 300 "$KEY_PERIOD"
     sleep 0.5
 
     echo "=> Time Reversal (Ctrl+Shift+G)"
