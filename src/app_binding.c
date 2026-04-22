@@ -122,6 +122,11 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_G, GLFW_MOD_SHIFT, "N-Body Gravity",
 	            "Toggles N-body gravitational sandbox mode.",
 	            BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
+	add_binding(
+	    GLFW_KEY_G,
+	    (int)((unsigned)GLFW_MOD_SHIFT | (unsigned)GLFW_MOD_CONTROL),
+	    "Time Reversal", "Reverses time direction in N-body simulation.",
+	    BINDING_CAT_VISUALS, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_PERIOD, 0, "Sim Speed Up",
 	            "Doubles the N-body simulation speed (max 64x).",
 	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);

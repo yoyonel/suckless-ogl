@@ -1174,10 +1174,12 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 	const NBodySim* sim = &app->scene.nbody_sim;
 	char text[NBODY_TEXT_BUFFER_SIZE];
 
-	/* Kinetic energy */
+	/* Kinetic energy + time direction */
 	float kinetic = nbody_kinetic_energy(sim);
-	(void)safe_snprintf(text, sizeof(text), "Ek: %.1f J | G: %.3f",
-	                    (double)kinetic, (double)sim->gravity);
+	const char* time_dir =
+	    (sim->target_time_scale < 0.0F) ? " \xe2\x8f\xaa" : "";
+	(void)safe_snprintf(text, sizeof(text), "Ek: %.1f J | G: %.3f%s",
+	                    (double)kinetic, (double)sim->gravity, time_dir);
 	ui_layout_text(layout, text, (float*)NBODY_INFO_COLOR);
 
 	/* Stability indicator */
