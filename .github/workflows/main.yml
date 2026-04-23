@@ -26,13 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
 
       - name: Cache Clang-Tidy Results
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cache/cltcache
@@ -63,7 +63,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -107,7 +107,7 @@ jobs:
 
       - name: Upload Images to Visual Storage Branch
         if: always()
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./visual_artifacts
@@ -126,7 +126,7 @@ jobs:
 
       - name: Upload Coverage Artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: build-coverage/coverage_report/
@@ -135,7 +135,7 @@ jobs:
   test-windows:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Install dependencies
@@ -162,7 +162,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -173,22 +173,22 @@ jobs:
 
       - name: Download Coverage for Preview
         if: github.event_name == 'pull_request'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: coverage-report
           path: site/coverage
 
       - name: Upload Documentation Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: doxygen-docs
           path: site/
 
       - name: Setup Node.js
         if: github.event_name == 'pull_request'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Deploy Documentation Preview (Pull Request)
         if: github.event_name == 'pull_request'
@@ -225,24 +225,24 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # 1. On récupère le site complet (MkDocs + Doxygen intégrés)
       - name: Download Documentation
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: doxygen-docs
           path: public-site
 
       # 2. On ajoute le rapport de couverture dans un sous-dossier
       - name: Download Coverage
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: coverage-report
           path: public-site/coverage
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public-site
@@ -261,7 +261,7 @@ jobs:
     env:
       EXTRA_CMAKE_FLAGS: ""
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build
         run: |
           git config --global --add safe.directory '*'
@@ -275,7 +275,7 @@ jobs:
           cmake --build build --parallel $(nproc)
           mv build/app build/app-${{ matrix.build_type }}
       - name: Upload Binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ matrix.build_type }}
           path: build/app-${{ matrix.build_type }}
@@ -286,7 +286,7 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install MinGW and Dependencies
         run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
       - name: Build Windows Release
@@ -301,7 +301,7 @@ jobs:
           cmake --build build-win --parallel $(nproc)
           mv build-win/app.exe build-win/app-Windows-Release.exe
       - name: Upload Windows Binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-Windows-Release
           path: build-win/app-Windows-Release.exe
@@ -312,11 +312,11 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Nécessaire pour les tags
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with: { path: artifacts }
 
       - name: Update Nightly Release
@@ -333,7 +333,7 @@ jobs:
           git push origin nightly --force
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && 'nightly' || github.ref_name }}
           name: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && 'Nightly Build' || github.ref_name }}
