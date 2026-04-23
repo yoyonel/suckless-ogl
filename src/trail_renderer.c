@@ -247,10 +247,10 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	static TrailVertex staging[MAX_TRAIL_VERTICES];
 	int total_verts = 0;
 
-	/* Track per-body start offsets for separate draw calls
-	 * (triangle strips can't be concatenated without degenerates). */
-	int body_start[NBODY_MAX_BODIES];
-	int body_count_v[NBODY_MAX_BODIES];
+	/* Track per-body start offsets and vertex counts for batched draw.
+	 * glMultiDrawArrays draws N independent strips in one call. */
+	GLint body_start[NBODY_MAX_BODIES];
+	GLsizei body_count_v[NBODY_MAX_BODIES];
 	int active_bodies = 0;
 
 	{
@@ -299,13 +299,13 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	/* Read depth but don't write — trails are transparent overlay */
 	glDepthMask(GL_FALSE);
 
-	/* Draw each body's trail as a separate triangle strip */
+	/* Draw all body trails in a single batched call.
+	 * glMultiDrawArrays draws N independent triangle strips without
+	 * degenerate vertices or per-strip driver overhead. */
 	{
 		PROFILE_ZONE(draw_ctx, "Trail Draw Calls");
-		for (int i = 0; i < active_bodies; i++) {
-			glDrawArrays(GL_TRIANGLE_STRIP, body_start[i],
-			             body_count_v[i]);
-		}
+		glMultiDrawArrays(GL_TRIANGLE_STRIP, body_start, body_count_v,
+		                  active_bodies);
 		PROFILE_ZONE_END(draw_ctx);
 	}
 
