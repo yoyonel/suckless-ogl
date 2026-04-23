@@ -30,8 +30,9 @@ The workflow is triggered automatically events:
 ### 1. `lint-and-format` (Quality)
 
 - **Goal**: Ensure code style and quality.
-- **Tools**: `clang-format`, `clang-tidy`, `ruff` (Python).
+- **Tools**: `clang-format`, `clang-tidy`, `ruff` (Python), `check_nolint.sh`.
 - **Checks**:
+  - **NOLINT guard**: Rejects any new `NOLINT` suppression vs the base branch (see [linting_strategy.md](linting_strategy.md#no-suppression-policy)).
   - Fails if `make format` results in file changes (enforces code style).
   - Runs `make lint` for static analysis.
 
