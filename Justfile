@@ -492,6 +492,10 @@ lint-full:
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py .lint_full
     @echo "✓ Full linting passed"
 
+# Check for new NOLINT suppressions introduced vs a base ref (default: origin/master)
+check-nolint base_ref="origin/master":
+    @bash scripts/check_nolint.sh {{base_ref}}
+
 # Trace Performance Analysis
 trace-perf:
     @echo "Analyzing GPU performance (Advanced Analysis)..."

@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0
 
       - name: Cache Clang-Tidy Results
         uses: actions/cache@v4
@@ -38,6 +39,12 @@ jobs:
           key: ${{ runner.os }}-cltcache-${{ hashFiles('src/**/*.c', 'include/**/*.h', '.clang-tidy', 'Makefile') }}
           restore-keys: |
             ${{ runner.os }}-cltcache-
+
+      - name: Check for new NOLINT suppressions
+        if: github.event_name == 'pull_request'
+        run: |
+          git config --global --add safe.directory '*'
+          make check-nolint CONTAINER_RUN="" NOLINT_BASE_REF="origin/${{ github.base_ref }}"
 
       - name: Run Format & Lint
         run: |

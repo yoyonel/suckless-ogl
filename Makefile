@@ -198,6 +198,9 @@ lint-full: $(LINT_FULL_JSON)
 	@$(DISTROBOX) python3 scripts/lint_incremental.py $(LINT_FULL_DIR)
 	@echo "✓ Full linting passed"
 
+check-nolint:
+	@bash scripts/check_nolint.sh $(NOLINT_BASE_REF)
+
 deps-setup:
 	@chmod +x scripts/setup_offline_deps.sh
 	@./scripts/setup_offline_deps.sh
