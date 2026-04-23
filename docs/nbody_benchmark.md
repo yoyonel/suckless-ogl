@@ -1,0 +1,287 @@
+# NBody Buffer Upload Benchmark
+
+## Purpose
+
+This benchmark provides a **repeatable, automated measurement** of the CPU-side
+cost of the NBody rendering pipeline's per-frame buffer uploads. It captures
+the exact code paths that were identified as sources of CPU↔GPU synchronization
+stalls (see [NBody Buffer Upload Optimization](nbody_buffer_optimization.md)).
+
+The benchmark produces a **baseline** — a reference measurement taken under
+controlled conditions — that serves two roles:
+
+1. **Validate optimizations**: confirm that a code change (e.g., buffer
+   orphaning) actually reduces upload latency.
+2. **Detect regressions**: if a future refactoring or feature addition
+   degrades upload performance, the benchmark will catch it.
+
+## What Is Measured
+
+The test file `tests/test_benchmark_buffer_upload.c` contains three tests:
+
+### 1. `test_benchmark_nbody_instance_update`
+
+Measures the **instance update pipeline** — the code path that runs every frame
+to push NBody sphere transforms and PBR materials to the GPU:
+
+```text
+nbody_step()              → O(N²) physics integration (Velocity Verlet)
+nbody_write_instances()   → Build SphereInstance array from simulation state
+instanced_group_update()  → Orphan + upload instance VBO (GL_DYNAMIC_DRAW)
+glFinish()                → Force GPU completion for accurate timing
+```
+
+The measurement window covers `nbody_write_instances` + `instanced_group_update`
++ `glFinish` — i.e., the **build + upload + sync** cost. The physics step runs
+outside the measurement to isolate upload latency from compute cost.
+
+The benchmark uses a **draw → update** ordering: the previous frame's draw call
+is submitted first, putting the VBO "in-flight" on the GPU, then the update is
+measured. This reproduces the real-world scenario where orphaning matters — the
+driver must handle a buffer that is still being read by the GPU.
+
+### 2. `test_benchmark_trail_renderer`
+
+Measures the **trail ribbon pipeline** — camera-facing ribbon geometry rebuilt
+entirely on the CPU every frame:
+
+```text
+trail_renderer_record()   → Record body positions into ring buffers
+trail_renderer_draw()     → Build ribbons + orphan + upload VBO + draw
+glFinish()                → Force GPU completion for accurate timing
+```
+
+The measurement covers the entire `trail_renderer_draw` call because the ribbon
+construction (CPU), VBO upload (CPU→GPU), and draw submission are tightly coupled
+inside that function.
+
+### 3. `test_instance_update_data_integrity`
+
+A **correctness test** (not a benchmark). Verifies that buffer orphaning does not
+corrupt data by:
+
+1. Running a physics step through the real API
+2. Uploading instances via `instanced_group_update` (which does orphan + subdata)
+3. Reading back the GPU buffer with `glGetBufferSubData`
+4. Comparing metallic, roughness, and albedo values within tolerance
+
+This test exists because buffer orphaning changes the backing store — if the
+driver or the application has a bug, data could be silently lost.
+
+## Architecture: Real API, Not Synthetic GL
+
+The benchmark uses **exclusively the real application functions**:
+
+| Component | Functions Used |
+|-----------|---------------|
+| NBody simulation | `nbody_init_preset`, `nbody_step`, `nbody_get_count`, `nbody_write_instances` |
+| Instance rendering | `instanced_group_init`, `instanced_group_update`, `instanced_group_draw`, `instanced_group_bind_mesh` |
+| Trail rendering | `trail_renderer_init`, `trail_renderer_record`, `trail_renderer_draw`, `trail_renderer_set_color` |
+| Mesh generation | `icosphere_generate`, `icosphere_free` |
+
+The only raw GL calls are:
+
+- **Icosphere VBO/NBO/EBO upload**: necessary because `instanced_group_bind_mesh`
+  expects pre-existing buffer objects (the mesh is static geometry, not part of
+  the dynamic upload path being measured).
+- **`glFinish()`**: forces GPU pipeline drain to get accurate wall-clock timing.
+- **`glGetBufferSubData()`**: in the integrity test, to read back GPU data.
+
+This design means the benchmark **automatically tracks code changes**. If
+`instanced_group_update` is refactored (e.g., switched to persistent mapped
+buffers), the benchmark measures the new implementation with zero modifications.
+
+## Test Parameters
+
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| `FRAMES` | 300 | Enough samples for statistical stability |
+| `WARMUP_FRAMES` | 60 | Primes driver JIT, fills trail ring buffers (256 slots) |
+| `SIMULATED_DT` | 1/60s | Matches real application frame rate |
+| `BENCH_SUBDIVISIONS` | 3 | Matches `INITIAL_SUBDIVISIONS` (3840 indices) |
+| Timer | `clock_gettime(CLOCK_MONOTONIC)` | Microsecond-precision, monotonic, no NTP drift |
+
+The warmup phase is critical: without it, the first ~30 frames show inflated
+timings due to driver shader compilation and buffer pool initialization.
+
+## Baseline Results
+
+Captured on the `perf/nbody-buffer-orphaning` branch **with orphaning applied**:
+
+### Instance Update Pipeline
+
+```text
+=== NBody Instance Update Benchmark ===
+Bodies: 14  |  Mesh: 3840 indices (subdiv 3)
+Frames: 300 (warmup: 60)
+Avg update+upload: 734.6 µs  (4.41% of 60fps budget)
+Min: 138.6 µs  |  Max: 7450.2 µs
+Total update time: 220.4 ms over 300 frames
+```
+
+### Trail Renderer Pipeline
+
+```text
+=== Trail Renderer Benchmark ===
+Bodies: 14  |  Trail depth: 256 samples
+Frames: 300 (warmup: 60)
+Avg draw (build+upload+render): 830.2 µs  (4.98% of 60fps budget)
+Min: 218.8 µs  |  Max: 5107.5 µs
+Total draw time: 249.1 ms over 300 frames
+```
+
+### Interpreting the Numbers
+
+- **Average (734/830 µs)**: the typical per-frame cost. Combined, the two
+  pipelines consume ~1.56 ms or **~9.4% of the 16.67 ms frame budget** at 60 FPS.
+  This leaves ~90% for all other work (PBR shading, post-processing, IBL, UI).
+
+- **Min (138/218 µs)**: the best case — no contention, driver recycles a buffer
+  immediately. This is the theoretical floor.
+
+- **Max (7450/5107 µs)**: occasional spikes from OS scheduling, driver GC, or
+  GPU clock frequency transitions. These outliers are normal in wall-clock
+  benchmarks and should be evaluated against the average, not in isolation.
+
+- **% of 60fps budget**: the key metric. If this number approaches 50%+, the
+  upload pipeline is a bottleneck. Under 10% means it's healthy overhead.
+
+### What the Baseline Represents
+
+This CI baseline was captured on a **software-rendered Mesa/llvmpipe context**
+(Xvfb, no physical GPU).
+
+!!! warning "Important limitation: no real GPU pipeline"
+    On llvmpipe, there is **no asynchronous GPU pipeline** — everything
+    executes synchronously on the CPU. The CPU↔GPU sync stall that orphaning
+    eliminates **does not exist** in this context. The timings essentially
+    measure `memcpy` cost + software driver overhead, not a real sync stall.
+
+Concretely:
+
+1. The absolute timings (µs) are **not representative of real GPU hardware**.
+   A discrete NVIDIA/AMD GPU will have radically different characteristics
+   (asynchronous DMA, hardware buffer pool, PCIe latency).
+2. The **relative** timings are still useful for detecting **code regressions**:
+   if a refactoring accidentally adds an O(N³) or an extra memcpy, the CI
+   baseline will catch it.
+3. This baseline **does NOT measure orphaning effectiveness** — it cannot
+   distinguish orphan vs non-orphan on llvmpipe.
+
+### Usage for Optimization (Real GPU)
+
+The primary purpose of this benchmark is to **guide the NBody pipeline
+optimization work**. For this, it must be run on the development machine
+with the real GPU:
+
+```bash
+# Direct execution with real GPU (no Xvfb)
+./build/tests/test_benchmark_buffer_upload
+```
+
+On a real GPU, the benchmark captures actual synchronization stalls:
+
+- **Orphaning vs without comparison**: checkout master (no orphaning),
+  measure → checkout branch (with orphaning), measure → compare the `Avg`.
+  The delta represents the eliminated stall time.
+- **Evaluating future optimizations**: double-buffering, persistent mapping,
+  compute ribbons — each approach is measured with the same tool.
+- **Max profile**: on real GPU, a high `Max` indicates a real synchronization
+  stall (GPU hadn't finished reading the buffer), not just OS noise.
+
+| Context | What is measured | Utility |
+|---------|-----------------|----------|
+| **Xvfb/llvmpipe** (CI) | memcpy + software driver overhead | Code regression detection |
+| **Real GPU** (dev) | Actual CPU↔GPU stall + DMA upload | Optimization validation, A/B comparison |
+
+## How to Run
+
+```bash
+# Single run — verbose output with timing details
+cd build && ctest -R test_benchmark_buffer_upload -V
+
+# From project root via just (runs full test suite including benchmark)
+just test-all
+
+# Direct execution (requires OpenGL context — use Xvfb if headless)
+./build/tests/test_benchmark_buffer_upload
+```
+
+## How to Use the Baseline
+
+### A/B Comparison Between Branches
+
+```bash
+# 1. Run benchmark on current branch, save output
+cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_current.txt
+
+# 2. Switch to comparison branch and rebuild
+git checkout master && just build
+
+# 3. Run benchmark again
+cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_master.txt
+
+# 4. Compare the "Avg update+upload" lines
+diff <(grep "Avg" /tmp/bench_master.txt) <(grep "Avg" /tmp/bench_current.txt)
+```
+
+### CI Regression Guard
+
+The benchmark is registered in `tests/CMakeLists.txt` as part of the
+`OPENGL_TESTS` list and runs under Xvfb in CI. To add a hard regression
+threshold, wrap the test with a CTest timeout or add assertions:
+
+```c
+// Example: fail if average exceeds 5ms (would indicate a sync stall)
+TEST_ASSERT_MESSAGE(avg_us < 5000.0,
+    "Instance update exceeds 5ms — possible sync regression");
+```
+
+This is intentionally **not** enabled yet because the absolute threshold depends
+on the CI runner hardware. Once baseline stability is confirmed across multiple
+CI runs, a threshold can be calibrated.
+
+### Tracking Over Time
+
+Record benchmark results in a simple log to track trends:
+
+```bash
+echo "$(git rev-parse --short HEAD) $(date +%F) $(ctest -R test_benchmark_buffer_upload -V 2>&1 | grep 'Avg')" >> perf_log.txt
+```
+
+## Maintenance
+
+### When to Update the Benchmark
+
+- **New dynamic buffer path**: if a new subsystem does per-frame VBO uploads
+  (e.g., particle system, cloth simulation), add a benchmark test following
+  the same pattern.
+- **API change**: if `instanced_group_update` or `trail_renderer_draw` change
+  signature, update the benchmark calls accordingly (the compiler will catch
+  most breakages).
+- **Parameter change**: if `NBODY_MAX_BODIES` or `TRAIL_MAX_POINTS` change,
+  the benchmark automatically adapts (it reads these from headers).
+
+### What NOT to Change
+
+- **Frame count and warmup**: changing `FRAMES` or `WARMUP_FRAMES` invalidates
+  comparison with previous baselines. If changed, document the reason and
+  re-establish the baseline.
+- **Timer function**: `clock_gettime(CLOCK_MONOTONIC)` is the reference clock.
+  Do not switch to `glfwGetTime` (lower resolution) or `rdtsc` (not portable).
+
+## Relationship to Other Benchmarks
+
+| Benchmark | Scope | Timer | Location |
+|-----------|-------|-------|----------|
+| **This (buffer upload)** | CPU-side upload latency for NBody | `clock_gettime` (CPU wall-clock) | `tests/test_benchmark_buffer_upload.c` |
+| [Effect Benchmark](effect_benchmark.md) | GPU cost of individual post-process effects | GPU timestamps (`glQueryCounter`) | `src/effect_benchmark.c` |
+| [Perf Benchmarking Protocol](perf_benchmarking_protocol.md) | Full application GPU profiling (multi-run, statistical) | GPU timestamps + `AdaptiveSampler` | `scripts/perf_benchmark.py` |
+| [Billboard Perf](billboard_optimization.md) | Billboard rendering throughput | CPU wall-clock | `tests/test_billboard_perf.c` |
+
+## References
+
+- [NBody Buffer Upload Optimization](nbody_buffer_optimization.md) — the optimization this benchmark validates
+- [OpenGL Wiki — Buffer Object Streaming](https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming)
+- [Performance Benchmarking Protocol](perf_benchmarking_protocol.md) — project-wide benchmarking methodology
+- [Effect Benchmark](effect_benchmark.md) — GPU-side effect cost measurement
