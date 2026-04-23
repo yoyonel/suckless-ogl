@@ -197,15 +197,17 @@ mkdir -p "$A_DIR"
 run_benchmark_series "$ORIG_BRANCH" "$A_DIR" "$BUILD_DIR"
 echo ""
 
-# --- Find the test commit to cherry-pick if needed ---
-# Look for the commit that added the benchmark test on the current branch
-BENCH_TEST_COMMIT=""
+# --- Find the test commits to cherry-pick if needed ---
+# Collect ALL commits that touch the benchmark test on the current branch
+# but are not on the reference branch (in chronological order, oldest first).
+BENCH_TEST_COMMITS=()
 if ! git log --oneline "$REF_BRANCH" -- "tests/$BENCH_PATTERN.c" 2>/dev/null | grep -q .; then
     # The benchmark test doesn't exist on the reference branch
-    # Find the commit that added it on the current branch
-    BENCH_TEST_COMMIT=$(git log --oneline --diff-filter=A "$ORIG_BRANCH" -- "tests/$BENCH_PATTERN.c" 2>/dev/null | head -1 | awk '{print $1}')
-    if [[ -n "$BENCH_TEST_COMMIT" ]]; then
-        log_info "Benchmark test not on '$REF_BRANCH' — will auto cherry-pick $BENCH_TEST_COMMIT"
+    while IFS= read -r sha; do
+        BENCH_TEST_COMMITS+=("$sha")
+    done < <(git log --reverse --format='%h' "$REF_BRANCH".."$ORIG_BRANCH" -- "tests/$BENCH_PATTERN.c" 2>/dev/null)
+    if [[ ${#BENCH_TEST_COMMITS[@]} -gt 0 ]]; then
+        log_info "Benchmark test not on '$REF_BRANCH' — will auto cherry-pick ${#BENCH_TEST_COMMITS[@]} commit(s): ${BENCH_TEST_COMMITS[*]}"
     else
         log_warn "Benchmark test not found on either branch — ref comparison may fail"
     fi
@@ -217,18 +219,26 @@ B_DIR="$RESULTS_DIR/reference"
 mkdir -p "$B_DIR"
 git checkout -q "$REF_BRANCH"
 
-# Cherry-pick the benchmark test temporarily (no commit) if needed
+# Cherry-pick the benchmark test commits temporarily (no commit) if needed
 CHERRY_PICKED=false
-if [[ -n "$BENCH_TEST_COMMIT" ]]; then
-    log_info "Cherry-picking benchmark test (no commit) for measurement..."
-    if git cherry-pick --no-commit "$BENCH_TEST_COMMIT" 2>/dev/null; then
+if [[ ${#BENCH_TEST_COMMITS[@]} -gt 0 ]]; then
+    log_info "Cherry-picking ${#BENCH_TEST_COMMITS[@]} benchmark commit(s) (no commit) for measurement..."
+    cherry_ok=true
+    for sha in "${BENCH_TEST_COMMITS[@]}"; do
+        if ! git cherry-pick --no-commit "$sha" 2>/dev/null; then
+            git cherry-pick --abort 2>/dev/null || true
+            cherry_ok=false
+            break
+        fi
+    done
+    if [[ "$cherry_ok" == true ]]; then
         CHERRY_PICKED=true
         log_ok "Benchmark test applied to $REF_BRANCH (temporary, not committed)"
     else
-        git cherry-pick --abort 2>/dev/null || true
+        git reset --hard HEAD 2>/dev/null || true
         log_warn "Cherry-pick failed — trying to just copy the test file..."
-        # Fallback: extract just the test file from the commit
-        git show "$BENCH_TEST_COMMIT:tests/$BENCH_PATTERN.c" > "tests/$BENCH_PATTERN.c" 2>/dev/null || true
+        # Fallback: extract just the test file from the latest commit on the branch
+        git show "$ORIG_BRANCH:tests/$BENCH_PATTERN.c" > "tests/$BENCH_PATTERN.c" 2>/dev/null || true
         CHERRY_PICKED=true
     fi
 fi
