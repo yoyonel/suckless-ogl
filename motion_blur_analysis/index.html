@@ -769,6 +769,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sphere_rendering/" class="md-nav__link">
         
   
@@ -1283,13 +1311,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#current-implementation-limitation-camera-only" class="md-nav__link">
+  <a href="#per-object-velocity-implemented" class="md-nav__link">
     <span class="md-ellipsis">
       
-        📉 Current Implementation Limitation: Camera-Only
+        ✅ Per-Object Velocity (Implemented)
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="✅ Per-Object Velocity (Implemented)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#instanced-rendering-path-pbr_ibl_instancedvert" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instanced Rendering Path (pbr_ibl_instanced.vert)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#billboardssbo-path-pbr_ibl_billboardvert-frag" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Billboard/SSBO Path (pbr_ibl_billboard.vert / .frag)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3332,14 +3399,26 @@
 <li><strong>Depth Weighting:</strong> Protects the foreground by disabling color blending when the sampled pixel is too far behind the center pixel (<code>depthDiff &gt; 1.0</code>).</li>
 <li><strong>Interleaved Gradient Noise:</strong> Prevents visual <em>banding</em> by transforming stripes from low sample counts into aesthetic film-grain-style noise.</li>
 </ol>
-<h3 id="current-implementation-limitation-camera-only">📉 Current Implementation Limitation: Camera-Only<a class="headerlink" href="#current-implementation-limitation-camera-only" title="Permanent link">¶</a></h3>
-<p>In <code>pbr_ibl_instanced.vert</code>, the current configuration calculates velocity (Velocity) only via the previous camera position (<code>previousViewProj</code> * the current local geometry position):</p>
-<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">CurrentClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">projection</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">WorldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">PreviousClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">WorldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<h3 id="per-object-velocity-implemented">✅ Per-Object Velocity (Implemented)<a class="headerlink" href="#per-object-velocity-implemented" title="Permanent link">¶</a></h3>
+<p>As of the <code>feat/per-object-motion-blur</code> branch, the velocity buffer now accounts for <strong>both camera motion and per-object motion</strong>. This was the most critical limitation of the original camera-only approach.</p>
+<h4 id="instanced-rendering-path-pbr_ibl_instancedvert">Instanced Rendering Path (<code>pbr_ibl_instanced.vert</code>)<a class="headerlink" href="#instanced-rendering-path-pbr_ibl_instancedvert" title="Permanent link">¶</a></h4>
+<p>A new vertex attribute <code>i_prev_center</code> (location 8) stores the sphere's previous frame position. The vertex shader reconstructs the previous world position:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">vec3</span><span class="w"> </span><span class="n">prevWorldPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i_prev_center</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">WorldPos</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">i_model</span><span class="p">[</span><span class="mi">3</span><span class="p">]));</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">PreviousClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">prevWorldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
 </span></code></pre></div>
-<p><strong>Why this is fully justified (for now):</strong>
-In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are static in World space. Only the camera moves or rotates. Therefore there is (yet) no concept of "Object" velocity. <strong>Camera Motion Blur</strong> is 100% sufficient at this stage of development.</p>
-<p><strong>However</strong>, once the engine implements dynamic entities (e.g., enemies or falling physics objects), the object's own velocity (its <em>Previous World Position</em>) would be <code>0</code> or at least incorrect, reflecting only camera velocity. An object crossing the screen quickly in front of a static camera would not register in the <em>Velocity Buffer</em> with the current setup and would appear hyper-sharp against the rest of the image.</p>
+<p>This captures both camera movement (via <code>previousViewProj</code>) and object movement (via <code>i_prev_center != current center</code>).</p>
+<h4 id="billboardssbo-path-pbr_ibl_billboardvert-frag">Billboard/SSBO Path (<code>pbr_ibl_billboard.vert</code> / <code>.frag</code>)<a class="headerlink" href="#billboardssbo-path-pbr_ibl_billboardvert-frag" title="Permanent link">¶</a></h4>
+<p>The SSBO struct stores <code>prev_center_x/y/z</code> as 3 separate floats (not <code>vec3</code>, to respect std430 alignment at offset 92). The fragment shader reconstructs:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">vec3</span><span class="w"> </span><span class="n">prevHitPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PrevSphereCenter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">sphereHitPos</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">SphereCenter</span><span class="p">);</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">prevClip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">prevHitPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="data-flow">Data Flow<a class="headerlink" href="#data-flow" title="Permanent link">¶</a></h4>
+<ul>
+<li><code>NBodyParticle.prev_position</code> snapshots position before each physics step</li>
+<li><code>nbody_write_instances()</code> copies <code>prev_position</code> → <code>SphereInstance.prev_center</code></li>
+<li>Static grid spheres have <code>prev_center == current center</code> → zero object velocity</li>
+<li><code>SphereInstance</code> remains 128 bytes (SIMD-aligned, validated by <code>_Static_assert</code>)</li>
+</ul>
 <hr>
 <h2 id="2-improvement-paths-speed-and-quality">2. Improvement Paths (Speed and Quality)<a class="headerlink" href="#2-improvement-paths-speed-and-quality" title="Permanent link">¶</a></h2>
 <p>To reach state-of-the-art quality, here are the possible optimizations and changes.</p>
@@ -3347,7 +3426,7 @@ In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are 
 <ul>
 <li><strong>Adaptive Sampling (Dynamic Sample Count):</strong>
   Currently, the shader always executes <code>mb_samples</code> iterations (8 by default), even if the pixel velocity is near zero (<code>speed &lt; 0.0001</code> is ignored but low values still pass through). A dynamic iteration count based on proportional velocity would save a monumental number of GPU cycles.
-  <div class="language-glsl highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">actual_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">TARGET_SAMPLES_PER_UNIT</span><span class="p">));</span>
+  <div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">actual_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">speed</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">TARGET_SAMPLES_PER_UNIT</span><span class="p">));</span>
 </span></code></pre></div></li>
 <li>
 <p><strong>Half-Resolution Reconstruction (TODO):</strong>
@@ -3361,11 +3440,8 @@ In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are 
 </code></pre></div>
 </li>
 <li>
-<p><strong>Per-Object and Skinned Velocity (Critical):</strong>
-  For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for <em>each</em> object.
-  </p><div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">PrevWorldPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span><span class="n">i_previous_model</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">in_position</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">));</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">PreviousClipPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">previousViewProj</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PrevWorldPos</span><span class="p">;</span>
-</span></code></pre></div><p></p>
+<p><strong>Per-Object and Skinned Velocity:</strong>
+  ~~For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for <em>each</em> object.~~ ✅ <strong>Implemented</strong> — per-object velocity is now active via <code>prev_center</code> in <code>SphereInstance</code>. The next frontier is per-vertex skinned velocity for animated meshes.</p>
 </li>
 <li><strong>Soft Depth-Testing:</strong>
   Replace the hard boolean depth test with a smooth weight using <code>smoothstep()</code>. Hard limits create grainy noise or pixel flickering on moving edges.</li>
@@ -3408,7 +3484,7 @@ In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are 
     A[Linear Blur \nStandard Suckless OGL] --&gt;|Creates straight lines and artifacts| B(Punch trajectory)
     C[Curved Blur \nRE Engine / SF6] --&gt;|Sampling along a circular arc| D(Anime/Manga-style stylized blur)</code></pre>
 <h3 id="the-verdict">The Verdict<a class="headerlink" href="#the-verdict" title="Permanent link">¶</a></h3>
-<p>For Suckless OGL to commercially compete with these renders, adding <em>Camera-only</em> blur is insufficient. <strong>Implementing previous model matrix (Previous Model Matrix) storage</strong> per instance (in <code>pbr_ibl_instanced.vert</code>) is the most immediate and rewarding next step.</p>
+<p>Suckless OGL now implements <strong>per-object motion blur</strong> via <code>prev_center</code> storage in the instance data, covering both camera and object velocity in the velocity buffer. The remaining improvement paths are: <strong>per-vertex skinned velocity</strong> for animated meshes, <strong>half-resolution reconstruction</strong> for performance, and <strong>adaptive sampling</strong> based on per-pixel velocity magnitude.</p>
 
 
 
@@ -3429,7 +3505,7 @@ In <strong>Suckless OGL</strong>, all 3D objects (like the PBR sphere grid) are 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 21, 2026 21:05:31 UTC">April 21, 2026</span>
   </span>
 
     

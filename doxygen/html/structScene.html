@@ -353,7 +353,7 @@ Data Fields</h2></td></tr>
 <tr class="separator:a56c4f69931f1e14c10dd361c22b2ffae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f279509666c30bd35ce7953ba34a3fa"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a2f279509666c30bd35ce7953ba34a3fa">billboard_ubo_ptr</a></td></tr>
 <tr class="separator:a2f279509666c30bd35ce7953ba34a3fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36fae8971d0b343ce2371079a34f5a93"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a36fae8971d0b343ce2371079a34f5a93">bound_ibl_textures</a> [<a class="el" href="scene_8h.html#aaf8fd5f0e57d456151c951e0f3715fc4afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td></tr>
+<tr class="memitem:a36fae8971d0b343ce2371079a34f5a93"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a36fae8971d0b343ce2371079a34f5a93">bound_ibl_textures</a> [<a class="el" href="scene_8h.html#a94798fdadfbf49a7c658ace669a1d310afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td></tr>
 <tr class="separator:a36fae8971d0b343ce2371079a34f5a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00a5903455a597ec330106a7b3c90c02"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a00a5903455a597ec330106a7b3c90c02">bound_sh_textures</a> [<a class="el" href="light__probes_8h.html#a6b7b47dd702d9e331586d485013fd1eaa5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]</td></tr>
 <tr class="separator:a00a5903455a597ec330106a7b3c90c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -381,6 +381,12 @@ Data Fields</h2></td></tr>
 <tr class="separator:a8341a40ddae1fff0b3c637190499b3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a305181f32e249fc80b71c0e6310f63d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a305181f32e249fc80b71c0e6310f63d9">aa_mode</a></td></tr>
 <tr class="separator:a305181f32e249fc80b71c0e6310f63d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e489fc77517cf9a6bdb47dd04c17ec9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNBodySim.html">NBodySim</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a6e489fc77517cf9a6bdb47dd04c17ec9">nbody_sim</a></td></tr>
+<tr class="separator:a6e489fc77517cf9a6bdb47dd04c17ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae713b1fbd03dbd2748c948095cc7d88c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTrailRenderer.html">TrailRenderer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#ae713b1fbd03dbd2748c948095cc7d88c">trail_renderer</a></td></tr>
+<tr class="separator:ae713b1fbd03dbd2748c948095cc7d88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa27b87c95269ade00d3eba9585625352"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#aa27b87c95269ade00d3eba9585625352">nbody_mode</a></td></tr>
+<tr class="separator:aa27b87c95269ade00d3eba9585625352"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a">billboard_uniforms</a></td></tr>
 <tr class="separator:abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24297c4f9eb1b50fcdb2496a41b26e0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f">instanced_uniforms</a></td></tr>
@@ -488,7 +494,7 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">GLuint Scene::bound_ibl_textures[<a class="el" href="scene_8h.html#aaf8fd5f0e57d456151c951e0f3715fc4afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td>
+          <td class="memname">GLuint Scene::bound_ibl_textures[<a class="el" href="scene_8h.html#a94798fdadfbf49a7c658ace669a1d310afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -823,6 +829,36 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Loaded material presets. </p>
+
+</div>
+</div>
+<a id="aa27b87c95269ade00d3eba9585625352"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa27b87c95269ade00d3eba9585625352">&#9670;&nbsp;</a></span>nbody_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Scene::nbody_mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Toggle: 0=grid, 1=N-body. </p>
+
+</div>
+</div>
+<a id="a6e489fc77517cf9a6bdb47dd04c17ec9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e489fc77517cf9a6bdb47dd04c17ec9">&#9670;&nbsp;</a></span>nbody_sim</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structNBodySim.html">NBodySim</a> Scene::nbody_sim</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>N-body gravitational simulation. </p>
 
 </div>
 </div>
@@ -1198,6 +1234,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>LOD of the shared icosphere. </p>
+
+</div>
+</div>
+<a id="ae713b1fbd03dbd2748c948095cc7d88c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae713b1fbd03dbd2748c948095cc7d88c">&#9670;&nbsp;</a></span>trail_renderer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTrailRenderer.html">TrailRenderer</a> Scene::trail_renderer</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Orbital trail renderer. </p>
 
 </div>
 </div>

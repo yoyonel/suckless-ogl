@@ -31,6 +31,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "material.h", "material_8h.html", "material_8h" ],
     [ "mem.h", "mem_8h.html", null ],
     [ "metric_stack.h", "metric__stack_8h.html", "metric__stack_8h" ],
+    [ "nbody.h", "nbody_8h.html", "nbody_8h" ],
     [ "pbr.h", "pbr_8h.html", "pbr_8h" ],
     [ "perf_mode.h", "perf__mode_8h.html", "perf__mode_8h" ],
     [ "perf_timer.h", "perf__timer_8h.html", "perf__timer_8h" ],
@@ -51,6 +52,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "tracy_gpu.h", "tracy__gpu_8h.html", "tracy__gpu_8h" ],
     [ "tracy_log.h", "tracy__log_8h.html", "tracy__log_8h" ],
     [ "tracy_manager.h", "tracy__manager_8h.html", "tracy__manager_8h" ],
+    [ "trail_renderer.h", "trail__renderer_8h.html", "trail__renderer_8h" ],
     [ "ui.h", "ui_8h.html", "ui_8h" ],
     [ "utils.h", "utils_8h.html", "utils_8h" ],
     [ "window.h", "window_8h.html", "window_8h" ]

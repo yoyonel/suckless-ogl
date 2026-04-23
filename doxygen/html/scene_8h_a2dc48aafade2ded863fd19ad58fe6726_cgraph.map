@@ -1,52 +1,52 @@
 <map id="scene_render" name="scene_render">
-<area shape="rect" id="node1" title="Renders the scene." alt="" coords="5,443,115,470"/>
+<area shape="rect" id="node1" title="Renders the scene." alt="" coords="5,527,115,554"/>
 <area shape="rect" id="node2" href="$billboard__rendering_8h.html#ae5de263a9690fe980c5c71c5bb2fa9e4" title="Updates instance data on the GPU by copying from another GPU buffer (e.g. SSBO)." alt="" coords="171,5,346,47"/>
 <area shape="rect" id="node3" href="$gl__debug_8h.html#a25be2ee4e0a9571435ad48c51f93da8a" title="Pop the current debug group from the OpenGL debug stack." alt="" coords="425,21,581,47"/>
 <area shape="rect" id="node4" href="$gl__debug_8h.html#aab0f03e3f09521ffa3e714fd12c61cf4" title="Push a named debug group onto the OpenGL debug stack." alt="" coords="421,122,584,149"/>
-<area shape="rect" id="node5" href="$light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread." alt="" coords="177,342,341,369"/>
+<area shape="rect" id="node5" href="$light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread." alt="" coords="177,291,341,318"/>
 <area shape="rect" id="node6" href="$light__probes_8h.html#ad70cf99a2b574df78d64d174738aea1f" title="Renders debug spheres for the probes." alt="" coords="187,393,331,435"/>
-<area shape="rect" id="node27" href="$scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a" title=" " alt="" coords="169,753,349,779"/>
-<area shape="rect" id="node37" href="$scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2" title=" " alt="" coords="169,978,348,1005"/>
-<area shape="rect" id="node41" href="$skybox_8h.html#a536ba7358b462e00242dcee43f6483c4" title="Renders the skybox to the current framebuffer." alt="" coords="200,494,317,521"/>
-<area shape="rect" id="node42" href="$sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on CPU." alt="" coords="172,1231,345,1258"/>
-<area shape="rect" id="node46" href="$sphere__sorting_8h.html#afb08c8f2f8876b56e8e5249aee59e6e1" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) using Radix Sort." alt="" coords="187,1283,330,1324"/>
-<area shape="rect" id="node48" href="$sphere__sorting_8h.html#a1b1931d3ca9613a3f9cb779c42d51336" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on GPU." alt="" coords="171,122,346,149"/>
-<area shape="rect" id="node50" href="$scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54" title=" " alt="" coords="163,1349,355,1375"/>
-<area shape="rect" id="node7" href="$utils_8h.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="1728,231,1835,258"/>
-<area shape="rect" id="node8" href="$shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="670,356,822,397"/>
+<area shape="rect" id="node24" href="$scene_8c.html#a93e3d35cbb4f25d0b5f7369726aafb9a" title=" " alt="" coords="169,818,349,845"/>
+<area shape="rect" id="node34" href="$scene_8c.html#a145a7ef9d48d9aa108fd6bdb8050f1b2" title=" " alt="" coords="169,1029,348,1055"/>
+<area shape="rect" id="node38" href="$skybox_8h.html#a536ba7358b462e00242dcee43f6483c4" title="Renders the skybox to the current framebuffer." alt="" coords="200,578,317,605"/>
+<area shape="rect" id="node39" href="$sphere__sorting_8h.html#a9c8f41ff57b420b02e547264f3a593ba" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on CPU." alt="" coords="172,1274,345,1301"/>
+<area shape="rect" id="node43" href="$sphere__sorting_8h.html#afb08c8f2f8876b56e8e5249aee59e6e1" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) using Radix Sort." alt="" coords="187,1376,330,1417"/>
+<area shape="rect" id="node45" href="$sphere__sorting_8h.html#a1b1931d3ca9613a3f9cb779c42d51336" title="Sorts the array of instances Back&#45;to&#45;Front (descending depth) on GPU." alt="" coords="171,122,346,149"/>
+<area shape="rect" id="node47" href="$scene_8c.html#a07d33cc6833b19b823bb6ecc235cdd54" title=" " alt="" coords="163,1325,355,1351"/>
+<area shape="rect" id="node48" href="$trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671" title="Builds ribbon geometry and renders all trails." alt="" coords="184,527,333,554"/>
+<area shape="rect" id="node7" href="$utils_8h.html#a6d506638d7043eb273a2a357591d3086" title="Safe wrapper around vsnprintf to format strings with bounds checking." alt="" coords="1135,223,1241,250"/>
+<area shape="rect" id="node8" href="$shader_8h.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="895,457,1047,499"/>
 <area shape="rect" id="node10" href="$shader_8h.html#ab37c4a413a068f69399c7b755b9f9254" title="Loads a linked program and caches all its active uniforms." alt="" coords="452,223,553,250"/>
-<area shape="rect" id="node21" href="$shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="444,426,561,453"/>
-<area shape="rect" id="node23" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="435,477,570,503"/>
-<area shape="rect" id="node24" href="$shader_8h.html#a7034c467af5884ca4950b6957eb84ff2" title=" " alt="" coords="437,325,568,351"/>
-<area shape="rect" id="node25" href="$shader_8h.html#a8e522e514b294864d7526ee4b2a518c7" title=" " alt="" coords="437,375,568,402"/>
-<area shape="rect" id="node26" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="455,527,551,554"/>
-<area shape="rect" id="node9" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1331,518,1481,545"/>
-<area shape="rect" id="node11" href="$shader_8c.html#a4e5e290bb3ee9bc8ebb158bcff2f584f" title="Special loader that injects #define directives before compilation." alt="" coords="651,305,841,331"/>
-<area shape="rect" id="node12" href="$shader_8c.html#acc220b763e100b654bfefbc7c04fe968" title=" " alt="" coords="895,452,1047,493"/>
-<area shape="rect" id="node14" href="$shader_8c.html#aceae7aeb168485f653ba9f1137f30468" title=" " alt="" coords="889,297,1052,339"/>
-<area shape="rect" id="node13" href="$shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6" title=" " alt="" coords="1100,463,1276,490"/>
-<area shape="rect" id="node15" href="$shader_8c.html#a9bcbcfd45e0f17ecd09523ad0d974859" title=" " alt="" coords="1108,303,1268,344"/>
-<area shape="rect" id="node16" href="$shader_8c.html#af23bbd523d928bb8a9d43c19a3a3dc82" title="Reads a shader file and injects defines." alt="" coords="1324,312,1488,353"/>
-<area shape="rect" id="node17" href="$shader_8c.html#a66f86edf5f10c44d07a691cd2c138f35" title=" " alt="" coords="1549,370,1667,397"/>
-<area shape="rect" id="node18" href="$shader_8c.html#a576159e7078a0f92b5e3739cd6b9248c" title=" " alt="" coords="1571,421,1645,447"/>
-<area shape="rect" id="node19" href="$shader_8c.html#a93ac1374538580c09782a98c15fae5fe" title=" " alt="" coords="1536,253,1680,295"/>
-<area shape="rect" id="node20" href="$io_8h.html#abc65c80f0bd0b33e7cf1128e6b0731cb" title="Reads an entire file into a null&#45;terminated string." alt="" coords="1559,319,1657,346"/>
-<area shape="rect" id="node22" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="670,421,822,463"/>
-<area shape="rect" id="node28" href="$billboard__rendering_8h.html#a5a12a5448656197b1da5248f2787da94" title="Executes the instanced draw call for all billboards in the group." alt="" coords="421,629,584,655"/>
-<area shape="rect" id="node29" href="$billboard__rendering_8h.html#afa635ea0d13d0604b1d5d507d1313e8c" title="Draws wireframe boxes for each instance." alt="" coords="421,680,584,721"/>
-<area shape="rect" id="node30" href="$billboard__rendering_8h.html#a3af9088559e98707680a4e7168dc8c3f" title="Draws filled quads for each instance (for debug transparency)." alt="" coords="421,745,584,787"/>
-<area shape="rect" id="node31" href="$billboard__rendering_8h.html#a2f5f403a6fe0038b60acfeebd3ae9b7c" title="Draws wireframe quads for each instance." alt="" coords="421,811,584,852"/>
-<area shape="rect" id="node32" href="$scene_8c.html#a7bd2995953630892fd2f63e154e471c7" title=" " alt="" coords="413,1029,592,1055"/>
-<area shape="rect" id="node33" href="$scene_8c.html#ab592a43644107cc963b5ba9ba827cfad" title="Binds SH 3D textures (units 8&#45;14) and probe SSBO only when changed. Units 8&#45;14 and SSBO binding 3 are..." alt="" coords="403,877,603,903"/>
-<area shape="rect" id="node34" href="$shader_8h.html#a52a09bf0e2b9843dffb619da33cce191" title=" " alt="" coords="431,927,574,954"/>
-<area shape="rect" id="node35" href="$shader_8h.html#ae3dae1b87c4546baa4d8a15731aeb11d" title=" " alt="" coords="423,978,583,1005"/>
-<area shape="rect" id="node36" href="$shader_8h.html#a3f165d2eafe768b4471f297b05b8db37" title=" " alt="" coords="424,578,581,605"/>
-<area shape="rect" id="node38" href="$instanced__rendering_8h.html#af70d42b318f921586735530dc3a533e5" title="Executes an indexed instanced draw call." alt="" coords="419,1079,587,1106"/>
-<area shape="rect" id="node39" href="$shader_8h.html#a768d1f5ad9d92eb365f9f9c9dd050b7a" title=" " alt="" coords="424,1130,581,1157"/>
-<area shape="rect" id="node40" href="$ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed" title="Renders the group using instanced drawing." alt="" coords="435,1181,570,1207"/>
-<area shape="rect" id="node43" href="$sphere__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843" title=" " alt="" coords="411,1231,594,1258"/>
-<area shape="rect" id="node44" href="$sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305" title="Grow CPU scratchpads to hold at least count elements." alt="" coords="423,1333,582,1359"/>
-<area shape="rect" id="node45" href="$sphere__sorting_8c.html#ab58f7a4a3d93d58b169574ff8e95079d" title="Upload count sorted instances from the CPU temp buffer to the SSBO." alt="" coords="417,1282,588,1309"/>
-<area shape="rect" id="node47" href="$sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de" title="Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using inte..." alt="" coords="421,1383,584,1410"/>
-<area shape="rect" id="node49" href="$sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b" title=" " alt="" coords="456,71,549,98"/>
+<area shape="rect" id="node18" href="$shader_8h.html#a461b117efc5c86ee8eabf8f80789ec32" title=" " alt="" coords="444,375,561,402"/>
+<area shape="rect" id="node20" href="$shader_8h.html#a8067eb11f7d8c682b855b9f019e20f69" title=" " alt="" coords="435,477,570,503"/>
+<area shape="rect" id="node21" href="$shader_8h.html#a7034c467af5884ca4950b6957eb84ff2" title=" " alt="" coords="437,274,568,301"/>
+<area shape="rect" id="node22" href="$shader_8h.html#a8e522e514b294864d7526ee4b2a518c7" title=" " alt="" coords="437,325,568,351"/>
+<area shape="rect" id="node23" href="$shader_8h.html#ad80a771bc794ef6b652f13449129b645" title="Activates the program for subsequent draw calls (glUseProgram)." alt="" coords="455,578,551,605"/>
+<area shape="rect" id="node9" href="$shader_8c.html#a377953af1b2ffd8ad74148f72f2bdc8d" title=" " alt="" coords="1331,406,1481,433"/>
+<area shape="rect" id="node11" href="$shader_8c.html#a4e5e290bb3ee9bc8ebb158bcff2f584f" title="Special loader that injects #define directives before compilation." alt="" coords="651,253,841,279"/>
+<area shape="rect" id="node12" href="$shader_8c.html#acc220b763e100b654bfefbc7c04fe968" title=" " alt="" coords="895,340,1047,381"/>
+<area shape="rect" id="node14" href="$shader_8c.html#aceae7aeb168485f653ba9f1137f30468" title=" " alt="" coords="889,275,1052,316"/>
+<area shape="rect" id="node13" href="$shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6" title=" " alt="" coords="1100,351,1276,378"/>
+<area shape="rect" id="node15" href="$shader_8c.html#a9bcbcfd45e0f17ecd09523ad0d974859" title=" " alt="" coords="1108,275,1268,316"/>
+<area shape="rect" id="node16" href="$shader_8c.html#af23bbd523d928bb8a9d43c19a3a3dc82" title="Reads a shader file and injects defines." alt="" coords="1324,275,1488,316"/>
+<area shape="rect" id="node17" href="$shader_8c.html#a66f86edf5f10c44d07a691cd2c138f35" title=" " alt="" coords="1536,282,1655,309"/>
+<area shape="rect" id="node19" href="$shader_8c.html#a82b9361a8e17eeb1635a867b925a1b6c" title="Retrieves a uniform location via binary search on the cache." alt="" coords="670,360,822,401"/>
+<area shape="rect" id="node25" href="$billboard__rendering_8h.html#a5a12a5448656197b1da5248f2787da94" title="Executes the instanced draw call for all billboards in the group." alt="" coords="421,629,584,655"/>
+<area shape="rect" id="node26" href="$billboard__rendering_8h.html#afa635ea0d13d0604b1d5d507d1313e8c" title="Draws wireframe boxes for each instance." alt="" coords="421,680,584,721"/>
+<area shape="rect" id="node27" href="$billboard__rendering_8h.html#a3af9088559e98707680a4e7168dc8c3f" title="Draws filled quads for each instance (for debug transparency)." alt="" coords="421,745,584,787"/>
+<area shape="rect" id="node28" href="$billboard__rendering_8h.html#a2f5f403a6fe0038b60acfeebd3ae9b7c" title="Draws wireframe quads for each instance." alt="" coords="421,811,584,852"/>
+<area shape="rect" id="node29" href="$scene_8c.html#a7bd2995953630892fd2f63e154e471c7" title=" " alt="" coords="413,1029,592,1055"/>
+<area shape="rect" id="node30" href="$scene_8c.html#ab592a43644107cc963b5ba9ba827cfad" title="Binds SH 3D textures (units 8&#45;14) and probe SSBO only when changed. Units 8&#45;14 and SSBO binding 3 are..." alt="" coords="403,1079,603,1106"/>
+<area shape="rect" id="node31" href="$shader_8h.html#a52a09bf0e2b9843dffb619da33cce191" title=" " alt="" coords="431,927,574,954"/>
+<area shape="rect" id="node32" href="$shader_8h.html#ae3dae1b87c4546baa4d8a15731aeb11d" title=" " alt="" coords="423,978,583,1005"/>
+<area shape="rect" id="node33" href="$shader_8h.html#a3f165d2eafe768b4471f297b05b8db37" title=" " alt="" coords="424,877,581,903"/>
+<area shape="rect" id="node35" href="$instanced__rendering_8h.html#af70d42b318f921586735530dc3a533e5" title="Executes an indexed instanced draw call." alt="" coords="419,1130,587,1157"/>
+<area shape="rect" id="node36" href="$shader_8h.html#a768d1f5ad9d92eb365f9f9c9dd050b7a" title=" " alt="" coords="424,1181,581,1207"/>
+<area shape="rect" id="node37" href="$ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed" title="Renders the group using instanced drawing." alt="" coords="435,1231,570,1258"/>
+<area shape="rect" id="node40" href="$sphere__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843" title=" " alt="" coords="411,1282,594,1309"/>
+<area shape="rect" id="node41" href="$sphere__sorting_8c.html#a88e5cba2551791a7bcb53abf2e02e305" title="Grow CPU scratchpads to hold at least count elements." alt="" coords="423,1333,582,1359"/>
+<area shape="rect" id="node42" href="$sphere__sorting_8c.html#ab58f7a4a3d93d58b169574ff8e95079d" title="Upload count sorted instances from the CPU temp buffer to the SSBO." alt="" coords="417,1383,588,1410"/>
+<area shape="rect" id="node44" href="$sphere__sorting_8c.html#a5d5aab931453148c66e46823323759de" title="Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using inte..." alt="" coords="421,1434,584,1461"/>
+<area shape="rect" id="node46" href="$sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b" title=" " alt="" coords="456,71,549,98"/>
+<area shape="rect" id="node49" href="$trail__renderer_8c.html#ab217da33cf26353e8cc9d29057cf44a3" title=" " alt="" coords="451,527,554,554"/>
+<area shape="rect" id="node50" href="$trail__renderer_8c.html#ad1ee77758d40d03deee40aca196f43fb" title=" " alt="" coords="709,527,783,554"/>
 </map>

@@ -769,6 +769,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sphere_rendering/" class="md-nav__link">
         
   
@@ -2368,6 +2396,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configuration-du-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration du Port
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zones-de-profilage-n-corps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zones de Profilage N-Corps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zones de Profilage N-Corps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#zones-cpu-thread-principal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zones CPU (Thread Principal)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zones-gpu-contexte-opengl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zones GPU (Contexte OpenGL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#voir-aussi" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3333,6 +3411,95 @@
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c"># Tracy est désactivé en Release pour un overhead nul</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="err">cmake</span><span class="w"> </span><span class="err">-B</span><span class="w"> </span><span class="err">build</span><span class="w"> </span><span class="err">-DCMAKE_BUILD_TYPE=Release</span><span class="w">  </span><span class="c"># Tracy automatiquement désactivé</span>
 </span></code></pre></div>
+<h2 id="configuration-du-port">Configuration du Port<a class="headerlink" href="#configuration-du-port" title="Permanent link">¶</a></h2>
+<p>Par défaut, Tracy utilise le port <strong>8086</strong> pour les données et le broadcast.
+Si ce port est déjà utilisé sur votre système, le <code>Justfile</code> détecte
+automatiquement un port libre :</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Automatique — utilise 8087 si 8086 est occupé</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>just<span class="w"> </span>tracy-server<span class="w">    </span><span class="c1"># Terminal 1</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>just<span class="w"> </span>run-tracy<span class="w">       </span><span class="c1"># Terminal 2</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Forçage manuel</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nv">TRACY_PORT</span><span class="o">=</span><span class="m">9090</span><span class="w"> </span>just<span class="w"> </span>tracy-server
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="nv">TRACY_PORT</span><span class="o">=</span><span class="m">9090</span><span class="w"> </span>just<span class="w"> </span>run-tracy
+</span></code></pre></div>
+<p>La variable <code>tracy_port</code> du Justfile sonde le port 8086 avec <code>ss</code> et
+bascule sur 8087 s'il est occupé. Le serveur utilise <code>-a 127.0.0.1 -p &lt;port&gt;</code>
+pour une connexion directe (pas de broadcast UDP).</p>
+<h2 id="zones-de-profilage-n-corps">Zones de Profilage N-Corps<a class="headerlink" href="#zones-de-profilage-n-corps" title="Permanent link">¶</a></h2>
+<p>Lorsque la simulation N-corps est active (<code>Shift+G</code>), les zones suivantes
+apparaissent dans Tracy :</p>
+<h3 id="zones-cpu-thread-principal">Zones CPU (Thread Principal)<a class="headerlink" href="#zones-cpu-thread-principal" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Parent</th>
+<th>Ce qu'elle mesure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBody Physics</code></td>
+<td>Frame</td>
+<td>Wrapper top-level N-corps</td>
+</tr>
+<tr>
+<td><code>NBody Verlet</code></td>
+<td>NBody Physics</td>
+<td>Gravité O(N²) + intégration Verlet</td>
+</tr>
+<tr>
+<td><code>NBody Trail Sample</code></td>
+<td>NBody Physics</td>
+<td>Enregistrement ring buffer traînées</td>
+</tr>
+<tr>
+<td><code>NBody Instance Build</code></td>
+<td>NBody Physics</td>
+<td>Génération matrices modèle</td>
+</tr>
+<tr>
+<td><code>NBody VBO Upload</code></td>
+<td>NBody Physics</td>
+<td>Stall <code>glBufferSubData</code></td>
+</tr>
+<tr>
+<td><code>Trail Ribbon Build</code></td>
+<td>NBody Trails</td>
+<td>Staging géométrie CPU</td>
+</tr>
+<tr>
+<td><code>Trail VBO Upload</code></td>
+<td>NBody Trails</td>
+<td>Upload buffer</td>
+</tr>
+<tr>
+<td><code>Trail Draw Calls</code></td>
+<td>NBody Trails</td>
+<td><code>glMultiDrawArrays</code> — N strips batchés</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zones-gpu-contexte-opengl">Zones GPU (Contexte OpenGL)<a class="headerlink" href="#zones-gpu-contexte-opengl" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Ce qu'elle mesure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Instanced Render</code></td>
+<td>Draw call instancié des sphères</td>
+</tr>
+<tr>
+<td><code>NBody Trails</code></td>
+<td>Passe de rendu des traînées</td>
+</tr>
+</tbody>
+</table>
 <h2 id="voir-aussi">Voir aussi<a class="headerlink" href="#voir-aussi" title="Permanent link">¶</a></h2>
 <ul>
 <li><a href="../gpu_profiling/">gpu_profiling.md</a> — Système de profilage GPU intégré</li>
@@ -3359,7 +3526,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="23 avril 2026 09:11:49 UTC">23 avril 2026</span>
   </span>
 
     

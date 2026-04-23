@@ -1,24 +1,5 @@
 var searchData=
 [
-  ['pbr_2ec_2211',['pbr.c',['../pbr_8c.html',1,'']]],
-  ['pbr_2eh_2212',['pbr.h',['../pbr_8h.html',1,'']]],
-  ['pbr_5ffunctions_2eglsl_2213',['pbr_functions.glsl',['../pbr__functions_8glsl.html',1,'']]],
-  ['pbr_5fibl_5fbillboard_2efrag_2214',['pbr_ibl_billboard.frag',['../pbr__ibl__billboard_8frag.html',1,'']]],
-  ['pbr_5fibl_5fbillboard_2evert_2215',['pbr_ibl_billboard.vert',['../pbr__ibl__billboard_8vert.html',1,'']]],
-  ['pbr_5fibl_5finstanced_2efrag_2216',['pbr_ibl_instanced.frag',['../pbr__ibl__instanced_8frag.html',1,'']]],
-  ['pbr_5fibl_5finstanced_2evert_2217',['pbr_ibl_instanced.vert',['../pbr__ibl__instanced_8vert.html',1,'']]],
-  ['pbr_5fibl_5fssbo_2evert_2218',['pbr_ibl_ssbo.vert',['../pbr__ibl__ssbo_8vert.html',1,'']]],
-  ['perf_5fmode_2ec_2219',['perf_mode.c',['../perf__mode_8c.html',1,'']]],
-  ['perf_5fmode_2eh_2220',['perf_mode.h',['../perf__mode_8h.html',1,'']]],
-  ['perf_5ftimer_2ec_2221',['perf_timer.c',['../perf__timer_8c.html',1,'']]],
-  ['perf_5ftimer_2eh_2222',['perf_timer.h',['../perf__timer_8h.html',1,'']]],
-  ['postprocess_2ec_2223',['postprocess.c',['../postprocess_8c.html',1,'']]],
-  ['postprocess_2efrag_2224',['postprocess.frag',['../postprocess_8frag.html',1,'']]],
-  ['postprocess_2eh_2225',['postprocess.h',['../postprocess_8h.html',1,'']]],
-  ['postprocess_2evert_2226',['postprocess.vert',['../postprocess_8vert.html',1,'']]],
-  ['postprocess_5finput_2ec_2227',['postprocess_input.c',['../postprocess__input_8c.html',1,'']]],
-  ['postprocess_5finput_2eh_2228',['postprocess_input.h',['../postprocess__input_8h.html',1,'']]],
-  ['postprocess_5fpresets_2eh_2229',['postprocess_presets.h',['../postprocess__presets_8h.html',1,'']]],
-  ['profiler_2eh_2230',['profiler.h',['../profiler_8h.html',1,'']]],
-  ['projection_5futils_2eglsl_2231',['projection_utils.glsl',['../projection__utils_8glsl.html',1,'']]]
+  ['nbody_2ec_2328',['nbody.c',['../nbody_8c.html',1,'']]],
+  ['nbody_2eh_2329',['nbody.h',['../nbody_8h.html',1,'']]]
 ];

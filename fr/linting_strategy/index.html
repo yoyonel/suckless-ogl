@@ -769,6 +769,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sphere_rendering/" class="md-nav__link">
         
   
@@ -2289,6 +2317,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#politique-anti-suppression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Politique anti-suppression
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Politique anti-suppression">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fonctionnement_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fonctionnement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#politique-dexception" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Politique d'exception
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3323,7 +3390,7 @@
 <p>Nous privilégions la philosophie « Suckless » :</p>
 <ul>
 <li>Minimiser les dépendances externes.</li>
-<li>Éviter les commentaires <code>NOLINT</code> sauf si absolument nécessaire (ex. : variables globales pour le contexte de test).</li>
+<li><strong>Les commentaires <code>NOLINT</code> sont interdits</strong> — corriger la cause racine (voir <a href="#politique-anti-suppression">Politique anti-suppression</a> ci-dessous).</li>
 <li>Utiliser <code>static const</code> ou <code>enum</code> plutôt que des nombres magiques.</li>
 </ul>
 <h2 id="mise-en-cache-incrementielle-fichiers-sentinelles">Mise en cache incrémentielle (fichiers sentinelles)<a class="headerlink" href="#mise-en-cache-incrementielle-fichiers-sentinelles" title="Permanent link">¶</a></h2>
@@ -3381,6 +3448,66 @@
 </span></code></pre></div>
 <p>Exécute la validation avec <code>--target-env opengl</code> (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs <code>layout(location=N)</code> manquants, qui empêchent silencieusement le debugger de shaders RenderDoc de fonctionner.</p>
 <p>Depuis mars 2026, <strong>les 33 fichiers shader passent la validation SPIR-V stricte</strong>. Le projet impose des <code>layout(location=N)</code> explicites sur tous les varyings et uniforms non-opaques, et <code>layout(binding=N)</code> sur tous les samplers/images. Voir <a href="../renderdoc_guide/#8-debogage-des-shaders-compatibilite-spir-v">renderdoc_guide.fr.md</a> pour le détail complet.</p>
+<h2 id="politique-anti-suppression">Politique anti-suppression<a class="headerlink" href="#politique-anti-suppression" title="Permanent link">¶</a></h2>
+<p><strong><code>NOLINT</code>, <code>NOLINTNEXTLINE</code> et <code>NOLINTBEGIN</code>/<code>NOLINTEND</code> sont interdits.</strong> L'approche correcte est toujours de corriger la cause racine.</p>
+<p>Un garde automatisé (<code>scripts/check_nolint.sh</code>) applique cette règle à chaque étape du workflow de développement :</p>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Déclencheur</th>
+<th>Mécanisme</th>
+<th>Bloquant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Commit local</strong></td>
+<td><code>git commit</code> sur <code>*.c</code> / <code>*.h</code></td>
+<td>Hook pre-commit (<code>check-nolint</code> dans <code>.pre-commit-config.yaml</code>)</td>
+<td>Oui (contournable : <code>--no-verify</code>)</td>
+</tr>
+<tr>
+<td><strong>Manuel local</strong></td>
+<td><code>just check-nolint</code> ou <code>make check-nolint</code></td>
+<td>Invocation directe du script</td>
+<td>Oui (exit 1)</td>
+</tr>
+<tr>
+<td><strong>CI — push</strong></td>
+<td>Push sur n'importe quelle branche</td>
+<td>Step du job <code>lint-and-format</code></td>
+<td>Oui — fait échouer le job</td>
+</tr>
+<tr>
+<td><strong>CI — pull request</strong></td>
+<td>PR ouverte/mise à jour ciblant master</td>
+<td>Step du job <code>lint-and-format</code></td>
+<td>Oui — fait échouer le job</td>
+</tr>
+<tr>
+<td><strong>CI — planifié</strong></td>
+<td>Cron nocturne (01h00 UTC)</td>
+<td>Step du job <code>lint-and-format</code></td>
+<td>Oui — fait échouer le job</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fonctionnement_1">Fonctionnement<a class="headerlink" href="#fonctionnement_1" title="Permanent link">¶</a></h3>
+<p>Le script compare <code>git diff &lt;base_ref&gt;...HEAD</code> sur les fichiers <code>*.c</code> et <code>*.h</code>, en cherchant les lignes ajoutées (<code>+</code>) contenant <code>NOLINT</code>. Si des occurrences sont trouvées, le check échoue avec la liste de toutes les violations.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Utilisation locale</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>just<span class="w"> </span>check-nolint<span class="w">                    </span><span class="c1"># Compare vs origin/master (défaut)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>just<span class="w"> </span>check-nolint<span class="w"> </span>origin/main<span class="w">        </span><span class="c1"># Ref de base personnalisée</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>make<span class="w"> </span>check-nolint<span class="w"> </span><span class="nv">NOLINT_BASE_REF</span><span class="o">=</span>origin/main
+</span></code></pre></div>
+<h3 id="politique-dexception">Politique d'exception<a class="headerlink" href="#politique-dexception" title="Permanent link">¶</a></h3>
+<p>Si la suppression est la <strong>seule option viable</strong>, elle nécessite :</p>
+<ol>
+<li>Un commentaire explicite expliquant pourquoi le fix n'est pas possible.</li>
+<li>Une évaluation confirmant qu'aucune alternative n'existe.</li>
+<li>Un ticket de suivi pour revisiter et retirer la suppression.</li>
+<li><strong>Validation explicite de l'utilisateur</strong> avant le commit (utiliser <code>--no-verify</code>).</li>
+</ol>
 
 
 
@@ -3401,7 +3528,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="31 mars 2026 14:19:58 UTC">31 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="23 avril 2026 07:51:16 UTC">23 avril 2026</span>
   </span>
 
     

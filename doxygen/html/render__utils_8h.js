@@ -17,6 +17,6 @@ var render__utils_8h =
     [ "render_utils_reset_texture_units", "render__utils_8h.html#a23d588b4941c69088af2dfe9b9f5e045", null ],
     [ "render_utils_restore_state", "render__utils_8h.html#aa6820952026feea828b06074d33f0a96", null ],
     [ "render_utils_save_state", "render__utils_8h.html#aa6f98bd6406323d50aa3beb34f2bd8a9", null ],
-    [ "render_utils_setup_sphere_instance_attributes", "render__utils_8h.html#a5bfd4e31069d2594b6b21ef1970bb578", null ],
+    [ "render_utils_setup_sphere_instance_attributes", "render__utils_8h.html#ad0ded121a4c02159475f95ac96ccef8b", null ],
     [ "render_utils_setup_ui_state", "render__utils_8h.html#adbe8e8e2842c2125b1d96b31225ebada", null ]
 ];

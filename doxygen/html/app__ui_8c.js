@@ -21,6 +21,7 @@ var app__ui_8c =
     [ "draw_loading_indicator", "app__ui_8c.html#ab1201a24aee78d93c5e82a3924ffec0a", null ],
     [ "draw_luminance_histogram_graph", "app__ui_8c.html#ac195a5b0693c9126eabbfb556e6cbf9f", null ],
     [ "draw_main_info_overlay", "app__ui_8c.html#a600c8e8156cfa1ae1ad50a82f9d1ee05", null ],
+    [ "draw_nbody_overlay", "app__ui_8c.html#a63249de861c8bca9d1bf3e0c4705f8ab", null ],
     [ "draw_text_centered", "app__ui_8c.html#a74c643caf4877bfc6c92caed2a7d779a", null ],
     [ "get_active_binding", "app__ui_8c.html#ac728a2c6b8100d42540b7471262c7284", null ],
     [ "get_key_base_color", "app__ui_8c.html#a7db775acc267773a5d45a5afc6844eeb", null ],

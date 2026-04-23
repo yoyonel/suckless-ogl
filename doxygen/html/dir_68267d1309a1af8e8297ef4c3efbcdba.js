@@ -29,6 +29,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "main.c", "main_8c.html", "main_8c" ],
     [ "material.c", "material_8c.html", "material_8c" ],
     [ "metric_stack.c", "metric__stack_8c.html", "metric__stack_8c" ],
+    [ "nbody.c", "nbody_8c.html", "nbody_8c" ],
     [ "pbr.c", "pbr_8c.html", "pbr_8c" ],
     [ "perf_mode.c", "perf__mode_8c.html", "perf__mode_8c" ],
     [ "perf_timer.c", "perf__timer_8c.html", "perf__timer_8c" ],
@@ -47,6 +48,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "texture.c", "texture_8c.html", "texture_8c" ],
     [ "tracy_log.c", "tracy__log_8c.html", "tracy__log_8c" ],
     [ "tracy_manager.c", "tracy__manager_8c.html", "tracy__manager_8c" ],
+    [ "trail_renderer.c", "trail__renderer_8c.html", "trail__renderer_8c" ],
     [ "ui.c", "ui_8c.html", "ui_8c" ],
     [ "utils.c", "utils_8c.html", "utils_8c" ],
     [ "window.c", "window_8c.html", "window_8c" ]

@@ -267,14 +267,16 @@ $(document).ready(function(){initNavTree('scene_8h.html',''); initResizable(); }
 <code>#include &quot;<a class="el" href="instanced__rendering_8h_source.html">instanced_rendering.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="light__probes_8h_source.html">light_probes.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="material_8h_source.html">material.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="nbody_8h_source.html">nbody.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="skybox_8h_source.html">skybox.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="trail__renderer_8h_source.html">trail_renderer.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for scene.h:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h__incl.svg" width="100%" height="552"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -326,15 +328,15 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a111471ae82d90ada8c12655b0b4f909e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specular Anti-Aliasing modes.  <a href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">More...</a><br /></td></tr>
 <tr class="separator:a111471ae82d90ada8c12655b0b4f909e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf8fd5f0e57d456151c951e0f3715fc4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#aaf8fd5f0e57d456151c951e0f3715fc4afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a> = 3
- }</td></tr>
-<tr class="separator:aaf8fd5f0e57d456151c951e0f3715fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94798fdadfbf49a7c658ace669a1d310"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#a94798fdadfbf49a7c658ace669a1d310aebec6fb7723313e6254ed99e59cd7d7d">TEXTURE_UNIT_IBL_START</a> = 15
+<tr class="memitem:a94798fdadfbf49a7c658ace669a1d310"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#a94798fdadfbf49a7c658ace669a1d310afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a> = 3
  }</td></tr>
 <tr class="separator:a94798fdadfbf49a7c658ace669a1d310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#ae4d5251432e1a9e6803c0240cc492e18a6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a> = 16
+<tr class="memitem:ae4d5251432e1a9e6803c0240cc492e18"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#ae4d5251432e1a9e6803c0240cc492e18aebec6fb7723313e6254ed99e59cd7d7d">TEXTURE_UNIT_IBL_START</a> = 15
  }</td></tr>
 <tr class="separator:ae4d5251432e1a9e6803c0240cc492e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ff5f2dff38e7639981794c43dc9167b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="scene_8h.html#a7ff5f2dff38e7639981794c43dc9167ba6818c4ecef753aa77e04ac872f381556">MAT4_FLOAT_COUNT</a> = 16
+ }</td></tr>
+<tr class="separator:a7ff5f2dff38e7639981794c43dc9167b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -355,25 +357,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e">scene_update_gpu_buffers</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="memdesc:a97b3fbf4a92687b0b76a08b452daa63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates GPU buffers for dynamic geometry (e.g. LOD changes).  <a href="scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e">More...</a><br /></td></tr>
 <tr class="separator:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a5aae4c13de3218ddecbd0e27985ca8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#a9a5aae4c13de3218ddecbd0e27985ca8">scene_toggle_nbody</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
+<tr class="memdesc:a9a5aae4c13de3218ddecbd0e27985ca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles N-body simulation mode on/off.  <a href="scene_8h.html#a9a5aae4c13de3218ddecbd0e27985ca8">More...</a><br /></td></tr>
+<tr class="separator:a9a5aae4c13de3218ddecbd0e27985ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa64367048d138627fede2551e1c9d1e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8h.html#aa64367048d138627fede2551e1c9d1e3">scene_nbody_update</a> (<a class="el" href="structScene.html">Scene</a> *scene, float delta_time)</td></tr>
+<tr class="memdesc:aa64367048d138627fede2551e1c9d1e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances the N-body simulation by one frame.  <a href="scene_8h.html#aa64367048d138627fede2551e1c9d1e3">More...</a><br /></td></tr>
+<tr class="separator:aa64367048d138627fede2551e1c9d1e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="aaf8fd5f0e57d456151c951e0f3715fc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf8fd5f0e57d456151c951e0f3715fc4">&#9670;&nbsp;</a></span>anonymous enum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaf8fd5f0e57d456151c951e0f3715fc4afd56f8a6cb1afc6b2ee324b1de154b4e"></a>IBL_TEXTURE_COUNT&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <a id="a94798fdadfbf49a7c658ace669a1d310"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a94798fdadfbf49a7c658ace669a1d310">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
@@ -386,7 +377,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a94798fdadfbf49a7c658ace669a1d310aebec6fb7723313e6254ed99e59cd7d7d"></a>TEXTURE_UNIT_IBL_START&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a94798fdadfbf49a7c658ace669a1d310afd56f8a6cb1afc6b2ee324b1de154b4e"></a>IBL_TEXTURE_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -403,7 +394,24 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae4d5251432e1a9e6803c0240cc492e18a6818c4ecef753aa77e04ac872f381556"></a>MAT4_FLOAT_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae4d5251432e1a9e6803c0240cc492e18aebec6fb7723313e6254ed99e59cd7d7d"></a>TEXTURE_UNIT_IBL_START&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a7ff5f2dff38e7639981794c43dc9167b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ff5f2dff38e7639981794c43dc9167b">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a7ff5f2dff38e7639981794c43dc9167ba6818c4ecef753aa77e04ac872f381556"></a>MAT4_FLOAT_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -595,6 +603,50 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="aa64367048d138627fede2551e1c9d1e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa64367048d138627fede2551e1c9d1e3">&#9670;&nbsp;</a></span>scene_nbody_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void scene_nbody_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>delta_time</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Advances the N-body simulation by one frame. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
+    <tr><td class="paramname">delta_time</td><td>Wall-clock time elapsed. </td></tr>
+    <tr><td class="paramname">cam_pos</td><td><a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> world position (for trail billboard). </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h_aa64367048d138627fede2551e1c9d1e3_cgraph.svg" width="100%" height="556"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a2dc48aafade2ded863fd19ad58fe6726"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2dc48aafade2ded863fd19ad58fe6726">&#9670;&nbsp;</a></span>scene_render()</h2>
 
@@ -674,6 +726,38 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h_a2dc48aafade2ded863fd19ad58fe6726_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a9a5aae4c13de3218ddecbd0e27985ca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a5aae4c13de3218ddecbd0e27985ca8">&#9670;&nbsp;</a></span>scene_toggle_nbody()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void scene_toggle_nbody </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structScene.html">Scene</a> *&#160;</td>
+          <td class="paramname"><em>scene</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Toggles N-body simulation mode on/off. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scene</td><td>Pointer to the scene. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="scene_8h_a9a5aae4c13de3218ddecbd0e27985ca8_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

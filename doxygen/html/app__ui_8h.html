@@ -309,7 +309,8 @@ Enumerations</h2></td></tr>
 , <a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be">ENV_TEXT_BUFFER_SIZE</a> = 256
 , <a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6">EXPOSURE_TEXT_BUFFER_SIZE</a> = 64
 , <br />
-&#160;&#160;<a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb">MODIFIER_BUFFER_SIZE</a> = 16
+&#160;&#160;<a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e">NBODY_TEXT_BUFFER_SIZE</a> = 128
+, <a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb">MODIFIER_BUFFER_SIZE</a> = 16
 , <a class="el" href="app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2">KEYBOARD_BUFFER_SIZE</a> = 256
 <br />
  }</td></tr>
@@ -458,6 +459,14 @@ Variables</h2></td></tr>
 <tr class="separator:aaf76e00a44e28d6b60824890cf02af45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1f3586315e20b83affb3ed2018dbaef"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#ad1f3586315e20b83affb3ed2018dbaef">DEBUG_ORANGE_COLOR</a> = {1.0F, 0.5F, 0.0F}</td></tr>
 <tr class="separator:ad1f3586315e20b83affb3ed2018dbaef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a003f5804a266ac5f391e765f05249fa8"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a003f5804a266ac5f391e765f05249fa8">NBODY_INFO_COLOR</a> = {0.4F, 0.8F, 1.0F}</td></tr>
+<tr class="separator:a003f5804a266ac5f391e765f05249fa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bcf04ab4c3479503b362038a26e5b7a"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a5bcf04ab4c3479503b362038a26e5b7a">NBODY_STABLE_COLOR</a> = {0.2F, 1.0F, 0.4F}</td></tr>
+<tr class="separator:a5bcf04ab4c3479503b362038a26e5b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d399607cb9c4f50940960d5e2c7aca3"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a7d399607cb9c4f50940960d5e2c7aca3">NBODY_DIVERGE_COLOR</a> = {1.0F, 0.3F, 0.2F}</td></tr>
+<tr class="separator:a7d399607cb9c4f50940960d5e2c7aca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab15eac0bcdadbc85968d2e2b50cd49f6"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#ab15eac0bcdadbc85968d2e2b50cd49f6">NBODY_STABILITY_THRESHOLD</a> = 0.05F</td></tr>
+<tr class="separator:ab15eac0bcdadbc85968d2e2b50cd49f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c6370f1e0e7703667c20c0215422723"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a5c6370f1e0e7703667c20c0215422723">HISTO_BAR_COLOR_GREEN</a> = {0.0F, 0.7F, 0.0F}</td></tr>
 <tr class="separator:a5c6370f1e0e7703667c20c0215422723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a037be618a76f8bc4f34b1eca628ba857"><td class="memItemLeft" align="right" valign="top">static const vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__ui_8h.html#a037be618a76f8bc4f34b1eca628ba857">HISTO_BAR_COLOR_BLUE</a> = {0.0F, 0.5F, 0.8F}</td></tr>
@@ -541,6 +550,7 @@ Variables</h2></td></tr>
 <tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635af857797fa834c37834916f6bb3ee3dd4"></a>RANGE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a654e69613c7186f04e4a268211ffa3be"></a>ENV_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6"></a>EXPOSURE_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a684cb1287adbb9f9d9fea9a73cac2d6e"></a>NBODY_TEXT_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a171cb50ddc248f742955e67859dce4cb"></a>MODIFIER_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a726ca809ffd3d67ab4b8476646f26635a21e53849e20feb2341e3e291731815c2"></a>KEYBOARD_BUFFER_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
@@ -2013,6 +2023,94 @@ Here is the call graph for this function:</div>
       <table class="memname">
         <tr>
           <td class="memname">const float LUMINANCE_EPSILON = 0.0001F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7d399607cb9c4f50940960d5e2c7aca3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d399607cb9c4f50940960d5e2c7aca3">&#9670;&nbsp;</a></span>NBODY_DIVERGE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 NBODY_DIVERGE_COLOR = {1.0F, 0.3F, 0.2F}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a003f5804a266ac5f391e765f05249fa8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a003f5804a266ac5f391e765f05249fa8">&#9670;&nbsp;</a></span>NBODY_INFO_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 NBODY_INFO_COLOR = {0.4F, 0.8F, 1.0F}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab15eac0bcdadbc85968d2e2b50cd49f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab15eac0bcdadbc85968d2e2b50cd49f6">&#9670;&nbsp;</a></span>NBODY_STABILITY_THRESHOLD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NBODY_STABILITY_THRESHOLD = 0.05F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5bcf04ab4c3479503b362038a26e5b7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bcf04ab4c3479503b362038a26e5b7a">&#9670;&nbsp;</a></span>NBODY_STABLE_COLOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const vec3 NBODY_STABLE_COLOR = {0.2F, 1.0F, 0.4F}</td>
         </tr>
       </table>
   </td>

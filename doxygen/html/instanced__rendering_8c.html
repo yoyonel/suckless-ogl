@@ -277,6 +277,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aefe48e60e9fa48c4ac3a7badb718bec4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4">instanced_group_bind_mesh</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, GLuint vbo, GLuint nbo, GLuint ebo)</td></tr>
 <tr class="memdesc:aefe48e60e9fa48c4ac3a7badb718bec4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds a procedural mesh (e.g., icosphere) to the instanced group.  <a href="instanced__rendering_8c.html#aefe48e60e9fa48c4ac3a7badb718bec4">More...</a><br /></td></tr>
 <tr class="separator:aefe48e60e9fa48c4ac3a7badb718bec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a080d716887f7858b0d9b745b078448"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#a5a080d716887f7858b0d9b745b078448">instanced_group_update</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *data, int count)</td></tr>
+<tr class="memdesc:a5a080d716887f7858b0d9b745b078448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the instance VBO with new data (e.g., N-body positions).  <a href="instanced__rendering_8c.html#a5a080d716887f7858b0d9b745b078448">More...</a><br /></td></tr>
+<tr class="separator:a5a080d716887f7858b0d9b745b078448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af70d42b318f921586735530dc3a533e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="instanced__rendering_8c.html#af70d42b318f921586735530dc3a533e5">instanced_group_draw</a> (<a class="el" href="structInstancedGroup.html">InstancedGroup</a> *group, size_t index_count)</td></tr>
 <tr class="memdesc:af70d42b318f921586735530dc3a533e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes an indexed instanced draw call.  <a href="instanced__rendering_8c.html#af70d42b318f921586735530dc3a533e5">More...</a><br /></td></tr>
 <tr class="separator:af70d42b318f921586735530dc3a533e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -443,6 +446,50 @@ Here is the call graph for this function:</div>
     <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
     <tr><td class="paramname">data</td><td>Initial data (optional). </td></tr>
     <tr><td class="paramname">count</td><td>Number of instances. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5a080d716887f7858b0d9b745b078448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a080d716887f7858b0d9b745b078448">&#9670;&nbsp;</a></span>instanced_group_update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void instanced_group_update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structInstancedGroup.html">InstancedGroup</a> *&#160;</td>
+          <td class="paramname"><em>group</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Updates the instance VBO with new data (e.g., N-body positions). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>Pointer to the group. </td></tr>
+    <tr><td class="paramname">data</td><td>New instance data array. </td></tr>
+    <tr><td class="paramname">count</td><td>Number of instances (must not exceed original allocation). </td></tr>
   </table>
   </dd>
 </dl>

@@ -769,6 +769,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../nbody_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sphere_rendering/" class="md-nav__link">
         
   
@@ -2664,13 +2692,74 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ressources-textures-et-tampons" class="md-nav__link">
+  <a href="#9-pixel-history-pixel-shader-debug-failed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ressources textures et tampons
+        9. Pixel History &amp; « Pixel shader debug failed »
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="9. Pixel History &amp; « Pixel shader debug failed »">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-comprendre-lerreur" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Comprendre l'erreur
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-causes-frequentes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Causes fréquentes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-la-solution-debugger-depuis-le-pixel-history-pas-levent-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 La solution : debugger depuis le Pixel History (pas l'Event Browser)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-specificites-du-shader-de-trails" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Spécificités du shader de trails
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-draws-batches-glmultidrawarrays-dans-le-pixel-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Draws batchés (glMultiDrawArrays) dans le Pixel History
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3655,7 +3744,80 @@ Convention de nommage : <code>Feature_ObjectType</code> (ex. <code>PostFX_Bloom<
 </tr>
 </tbody>
 </table>
-<h2 id="ressources-textures-et-tampons">Ressources textures et tampons<a class="headerlink" href="#ressources-textures-et-tampons" title="Permanent link">¶</a></h2>
+<h2 id="9-pixel-history-pixel-shader-debug-failed">9. Pixel History &amp; « Pixel shader debug failed »<a class="headerlink" href="#9-pixel-history-pixel-shader-debug-failed" title="Permanent link">¶</a></h2>
+<h3 id="91-comprendre-lerreur">9.1 Comprendre l'erreur<a class="headerlink" href="#91-comprendre-lerreur" title="Permanent link">¶</a></h3>
+<p>Quand on fait un clic droit sur un pixel puis <strong>Pixel History</strong>, RenderDoc liste tous les draw calls qui ont touché ce pixel. Chaque ligne montre l'<strong>Event ID (EID)</strong>, un aperçu avant/après, et un bouton <strong>Debug</strong>.</p>
+<p>Cliquer sur <strong>Debug</strong> rejoue l'invocation du fragment shader pour ce draw call, permettant de parcourir le code GLSL ligne par ligne. Cependant, RenderDoc affiche parfois :</p>
+<blockquote>
+<p><strong>Pixel shader debug failed</strong> — most likely this is caused by no write to the pixel at the current event.</p>
+</blockquote>
+<p>Cela signifie : <em>« J'ai essayé de rejouer le fragment shader pour ce draw call au pixel sélectionné, mais ce draw call n'a pas produit de fragment visible à ces coordonnées. »</em></p>
+<h3 id="92-causes-frequentes">9.2 Causes fréquentes<a class="headerlink" href="#92-causes-frequentes" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Cause</th>
+<th>Explication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mauvais EID sélectionné</strong></td>
+<td>Vous avez sélectionné un draw call dans l'Event Browser qui ne touche pas ce pixel. Plusieurs draws ont lieu dans la même passe — seuls certains écrivent sur un pixel donné.</td>
+</tr>
+<tr>
+<td><strong><code>discard</code> dans le fragment shader</strong></td>
+<td>Le shader rejette les fragments en dessous d'un seuil (ex. <code>if (alpha &lt; 0.005) { discard; }</code>). Le fragment a été exécuté mais n'a produit aucune sortie. RenderDoc ne peut pas debugger un fragment rejeté.</td>
+</tr>
+<tr>
+<td><strong>Rejet depth/stencil</strong></td>
+<td>Le fragment a été éliminé par le test de profondeur ou de stencil avant l'exécution du fragment shader, ou le résultat a été rejeté par un test de profondeur ultérieur.</td>
+</tr>
+<tr>
+<td><strong>Blending additif avec contribution nulle</strong></td>
+<td>Avec le blending <code>GL_SRC_ALPHA</code>, un fragment avec <code>alpha ≈ 0</code> ne contribue rien de visible, et RenderDoc peut ne pas l'enregistrer comme une « écriture ».</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-la-solution-debugger-depuis-le-pixel-history-pas-levent-browser">9.3 La solution : debugger depuis le Pixel History (pas l'Event Browser)<a class="headerlink" href="#93-la-solution-debugger-depuis-le-pixel-history-pas-levent-browser" title="Permanent link">¶</a></h3>
+<p>Le point clé : <strong>toujours partir du panneau Pixel History</strong>, pas de l'Event Browser.</p>
+<p><strong>Étape par étape :</strong></p>
+<ol>
+<li><strong>Clic droit</strong> sur le pixel à inspecter dans le Texture Viewer.</li>
+<li>Ouvrir l'onglet <strong>Pixel History</strong> (en bas à droite, à côté de « Pixel Context »).</li>
+<li>Dans la liste du Pixel History, trouver la ligne où <strong>Tex After</strong> affiche la couleur qui vous intéresse. La ligne montre :<ul>
+<li>L'EID (ex. <code>EID 72</code>)</li>
+<li><code>1 Fragments touc...</code> — confirme que le fragment shader a été exécuté et a écrit sur ce pixel</li>
+<li>Les valeurs de couleur avant/après</li>
+</ul>
+</li>
+<li><strong>Déplier</strong> cette ligne (cliquer la flèche <code>&gt;</code>) pour voir le fragment individuel.</li>
+<li>Cliquer sur le bouton <strong>Debug</strong> sur la <strong>ligne du fragment</strong> (pas la ligne de l'event).</li>
+</ol>
+<p>Cela fonctionne parce que RenderDoc sait que <em>ce fragment spécifique</em> a passé tous les tests (depth, stencil, discard) et a effectivement écrit dans le framebuffer.</p>
+<div class="admonition tip">
+<p class="admonition-title">Raccourci double-clic</p>
+<p>Vous pouvez <strong>double-cliquer</strong> sur une ligne EID dans le Pixel History pour sauter directement à cet event dans l'Event Browser. C'est utile pour inspecter l'état du pipeline (textures liées, uniforms, mode de blending) du draw call qui a écrit le pixel.</p>
+</div>
+<h3 id="94-specificites-du-shader-de-trails">9.4 Spécificités du shader de trails<a class="headerlink" href="#94-specificites-du-shader-de-trails" title="Permanent link">¶</a></h3>
+<p>Le fragment shader des trails (<code>shaders/trail.frag</code>) utilise un <code>discard</code> précoce pour les fragments quasi-transparents :</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.005</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="k">discard</span><span class="p">;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Concrètement :
+- <strong>La plupart des fragments aux bords du ruban échoueront au debug</strong> — ils sont rejetés par le seuil d'alpha.
+- <strong>Les fragments au centre du ruban se debuggent normalement</strong> — ils ont un alpha élevé et passent le seuil.
+- Pour debugger un fragment de bord, commenter temporairement le bloc <code>discard</code>, recompiler et recapturer. Le remettre ensuite.</p>
+<h3 id="95-draws-batches-glmultidrawarrays-dans-le-pixel-history">9.5 Draws batchés (glMultiDrawArrays) dans le Pixel History<a class="headerlink" href="#95-draws-batches-glmultidrawarrays-dans-le-pixel-history" title="Permanent link">¶</a></h3>
+<p>Avec <code>glMultiDrawArrays(GL_TRIANGLE_STRIP, starts, counts, N)</code>, RenderDoc décompose l'appel unique en N sous-draws dans l'Event Browser :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>67  glMultiDrawArrays(14)       ← event parent
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a> 68  glMultiDrawArrays[0](494)  ← sous-draw 0 (corps 0, 494 vertices)
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a> 69  glMultiDrawArrays[1](494)  ← sous-draw 1 (corps 1)
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a> ...
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a> 81  glMultiDrawArrays[13](494) ← sous-draw 13 (corps 13)
+</span></code></pre></div>
+<p>Dans le Pixel History, l'EID pointe vers le <strong>sous-draw spécifique</strong> qui a écrit le pixel (ex. <code>EID 72 — glMultiDrawArrays[5](494)</code>). On conserve la même granularité par corps qu'avec des appels <code>glDrawArrays</code> individuels, mais avec moins de surcharge CPU à l'exécution.</p>
 <p>L'inspecteur de ressources permet de visualiser :
 - Les textures à chaque étape (avant/après bloom, avant/après tonemapping)
 - L'état des tampons (UBO, SSBO, VBO)
@@ -3686,7 +3848,7 @@ Convention de nommage : <code>Feature_ObjectType</code> (ex. <code>PostFX_Bloom<
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="1 avril 2026 20:27:16 UTC">1 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="23 avril 2026 09:08:03 UTC">23 avril 2026</span>
   </span>
 
     

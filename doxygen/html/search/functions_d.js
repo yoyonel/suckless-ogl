@@ -1,5 +1,13 @@
 var searchData=
 [
-  ['next_5fpow2_2562',['next_pow2',['../sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b',1,'sphere_sorting.c']]],
-  ['normalize_5fvec3_2563',['normalize_vec3',['../icosphere_8c.html#af48e051641689a72f684355046f4ff0f',1,'icosphere.c']]]
+  ['nbody_5fenergy_5fdrift_2696',['nbody_energy_drift',['../nbody_8c.html#a78b7ac6a96f5c33ba9eaff7158368e17',1,'nbody_energy_drift(const NBodySim *sim):&#160;nbody.c'],['../nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17',1,'nbody_energy_drift(const NBodySim *sim):&#160;nbody.c']]],
+  ['nbody_5fget_5fcount_2697',['nbody_get_count',['../nbody_8h.html#a020022b8382ea053ca31222c03c7d1de',1,'nbody_get_count(const NBodySim *sim):&#160;nbody.c'],['../nbody_8c.html#a020022b8382ea053ca31222c03c7d1de',1,'nbody_get_count(const NBodySim *sim):&#160;nbody.c']]],
+  ['nbody_5finit_5fpreset_2698',['nbody_init_preset',['../nbody_8h.html#a2d44ddf095fb51334feb9e96d99bfcbe',1,'nbody_init_preset(NBodySim *sim):&#160;nbody.c'],['../nbody_8c.html#a2d44ddf095fb51334feb9e96d99bfcbe',1,'nbody_init_preset(NBodySim *sim):&#160;nbody.c']]],
+  ['nbody_5fkinetic_5fenergy_2699',['nbody_kinetic_energy',['../nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c',1,'nbody_kinetic_energy(const NBodySim *sim):&#160;nbody.c'],['../nbody_8c.html#ad6106b8761eae4cb34102c0d18fc705c',1,'nbody_kinetic_energy(const NBodySim *sim):&#160;nbody.c']]],
+  ['nbody_5fstep_2700',['nbody_step',['../nbody_8c.html#a6e554a86943358e558879e7073cb72b8',1,'nbody_step(NBodySim *sim, float delta_time):&#160;nbody.c'],['../nbody_8h.html#a6e554a86943358e558879e7073cb72b8',1,'nbody_step(NBodySim *sim, float delta_time):&#160;nbody.c']]],
+  ['nbody_5ftotal_5fenergy_2701',['nbody_total_energy',['../nbody_8h.html#a785533e1f63e381530bfb5c3531238dc',1,'nbody_total_energy(const NBodySim *sim):&#160;nbody.c'],['../nbody_8c.html#a785533e1f63e381530bfb5c3531238dc',1,'nbody_total_energy(const NBodySim *sim):&#160;nbody.c']]],
+  ['nbody_5fupdate_5ftime_5fscale_2702',['nbody_update_time_scale',['../nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4',1,'nbody_update_time_scale(NBodySim *sim, float delta_time):&#160;nbody.c'],['../nbody_8c.html#ad3b699a201318a9028b8ae81e58a5fc4',1,'nbody_update_time_scale(NBodySim *sim, float delta_time):&#160;nbody.c']]],
+  ['nbody_5fwrite_5finstances_2703',['nbody_write_instances',['../nbody_8h.html#acdce6fe24ec0f0cdb5ecc44872197b49',1,'nbody_write_instances(const NBodySim *sim, SphereInstance *out):&#160;nbody.c'],['../nbody_8c.html#acdce6fe24ec0f0cdb5ecc44872197b49',1,'nbody_write_instances(const NBodySim *sim, SphereInstance *out):&#160;nbody.c']]],
+  ['next_5fpow2_2704',['next_pow2',['../sphere__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b',1,'sphere_sorting.c']]],
+  ['normalize_5fvec3_2705',['normalize_vec3',['../icosphere_8c.html#af48e051641689a72f684355046f4ff0f',1,'icosphere.c']]]
 ];

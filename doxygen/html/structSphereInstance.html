@@ -277,15 +277,23 @@ Data Fields</h2></td></tr>
 <tr class="separator:a859fe5779df50fa40fc8390ec36ccc77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d2bc55858c30258d71b292ca7d6400c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#a3d2bc55858c30258d71b292ca7d6400c">padding</a></td></tr>
 <tr class="separator:a3d2bc55858c30258d71b292ca7d6400c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad37122b610dc8efa6e81900205b8af0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#aad37122b610dc8efa6e81900205b8af0">_pad</a> [9]</td></tr>
-<tr class="separator:aad37122b610dc8efa6e81900205b8af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab359ae69e2b8acbcb406c1fd1cf85dfa"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#ab359ae69e2b8acbcb406c1fd1cf85dfa">prev_center</a></td></tr>
+<tr class="separator:ab359ae69e2b8acbcb406c1fd1cf85dfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab39f121be82b9b51b29720664777b87"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#aab39f121be82b9b51b29720664777b87">prev_center_x</a></td></tr>
+<tr class="separator:aab39f121be82b9b51b29720664777b87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a679de14bf22a2671ec8892dab3d6f01e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#a679de14bf22a2671ec8892dab3d6f01e">prev_center_y</a></td></tr>
+<tr class="separator:a679de14bf22a2671ec8892dab3d6f01e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9dc1911c50fb529ab5196478c64cfe0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#ae9dc1911c50fb529ab5196478c64cfe0">prev_center_z</a></td></tr>
+<tr class="separator:ae9dc1911c50fb529ab5196478c64cfe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49554279875993a97273f5733ef7c44b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html#a49554279875993a97273f5733ef7c44b">_pad</a> [6]</td></tr>
+<tr class="separator:a49554279875993a97273f5733ef7c44b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Per-instance data sent to the shader via an instanced VBO. </p>
 <p>This structure is 64-byte aligned to ensure optimal GPU throughput and compatibility with SIMD-based sorting or physics. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a id="aad37122b610dc8efa6e81900205b8af0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad37122b610dc8efa6e81900205b8af0">&#9670;&nbsp;</a></span>_pad</h2>
+<a id="a49554279875993a97273f5733ef7c44b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49554279875993a97273f5733ef7c44b">&#9670;&nbsp;</a></span>_pad</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -370,6 +378,63 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Alignment padding. </p>
+
+</div>
+</div>
+<a id="ab359ae69e2b8acbcb406c1fd1cf85dfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab359ae69e2b8acbcb406c1fd1cf85dfa">&#9670;&nbsp;</a></span>prev_center</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vec3 SphereInstance::prev_center</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Previous frame center (for per-object motion blur). </p>
+
+</div>
+</div>
+<a id="aab39f121be82b9b51b29720664777b87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab39f121be82b9b51b29720664777b87">&#9670;&nbsp;</a></span>prev_center_x</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float SphereInstance::prev_center_x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a679de14bf22a2671ec8892dab3d6f01e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a679de14bf22a2671ec8892dab3d6f01e">&#9670;&nbsp;</a></span>prev_center_y</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float SphereInstance::prev_center_y</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae9dc1911c50fb529ab5196478c64cfe0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9dc1911c50fb529ab5196478c64cfe0">&#9670;&nbsp;</a></span>prev_center_z</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float SphereInstance::prev_center_z</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

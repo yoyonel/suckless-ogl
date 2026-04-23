@@ -268,6 +268,7 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <code>#include &quot;<a class="el" href="env__manager_8h_source.html">env_manager.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="nbody_8h_source.html">nbody.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__mode_8h_source.html">perf_mode.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="postprocess__input_8h_source.html">postprocess_input.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
@@ -275,6 +276,7 @@ $(document).ready(function(){initNavTree('app__input_8c.html',''); initResizable
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="window_8h_source.html">window.h</a>&quot;</code><br />
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
 <code>#include &lt;stb_image_write.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
@@ -288,12 +290,12 @@ Include dependency graph for app_input.c:</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:aac34dfe6c6b73b43a4656c9dce041034"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#aac34dfe6c6b73b43a4656c9dce041034a46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 10
+<tr class="memitem:a0944a4353780132eeab7b06e3e42291d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a0944a4353780132eeab7b06e3e42291da46099f3e33a2bfa5892c3e7bffae3321">PBR_DEBUG_MODE_COUNT</a> = 10
  }</td></tr>
-<tr class="separator:aac34dfe6c6b73b43a4656c9dce041034"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ed680fdb405e7195d9f14032851eebb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a0ed680fdb405e7195d9f14032851eebba4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
+<tr class="separator:a0944a4353780132eeab7b06e3e42291d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4790f45dcc812c1b00184a2edccdddf5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="app__input_8c.html#a4790f45dcc812c1b00184a2edccdddf5a4a400d8a348b628422a6de4f19fa7bce">NOTIF_BUF_SIZE</a> = 128
  }</td></tr>
-<tr class="separator:a0ed680fdb405e7195d9f14032851eebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a4790f45dcc812c1b00184a2edccdddf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -327,6 +329,16 @@ Functions</h2></td></tr>
 <tr class="separator:a4f475bca27fa1c22163a3904a8385547"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a626b17296c88e804d1a3e4c6c702d526"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a626b17296c88e804d1a3e4c6c702d526">handle_system_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="separator:a626b17296c88e804d1a3e4c6c702d526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade60a35fefe026a46db32f3ea1a5ca45"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#ade60a35fefe026a46db32f3ea1a5ca45">handle_g_key_input</a> (<a class="el" href="structApp.html">App</a> *app, int mods)</td></tr>
+<tr class="separator:ade60a35fefe026a46db32f3ea1a5ca45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0e351028503702166ebd5982661582d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#ac0e351028503702166ebd5982661582d">handle_sim_speed_input</a> (<a class="el" href="structApp.html">App</a> *app, bool speed_up)</td></tr>
+<tr class="separator:ac0e351028503702166ebd5982661582d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19a7e6005e57106a95ccaf91ee48a45a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a19a7e6005e57106a95ccaf91ee48a45a">handle_gravity_input</a> (<a class="el" href="structApp.html">App</a> *app, bool increase)</td></tr>
+<tr class="separator:a19a7e6005e57106a95ccaf91ee48a45a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a632e57e1c7a25d079452ad65e131a220"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a632e57e1c7a25d079452ad65e131a220">handle_sim_or_gravity_input</a> (<a class="el" href="structApp.html">App</a> *app, int mods, bool increase)</td></tr>
+<tr class="separator:a632e57e1c7a25d079452ad65e131a220"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdf7cc02163bc93dca3c36d67afa0490"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#afdf7cc02163bc93dca3c36d67afa0490">handle_o_key_input</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="separator:afdf7cc02163bc93dca3c36d67afa0490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a588f02e0bebbc36ff133173dd0392713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a588f02e0bebbc36ff133173dd0392713">handle_app_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
 <tr class="memdesc:a588f02e0bebbc36ff133173dd0392713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches application-level logic for key inputs.  <a href="app__input_8c.html#a588f02e0bebbc36ff133173dd0392713">More...</a><br /></td></tr>
 <tr class="separator:a588f02e0bebbc36ff133173dd0392713"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -348,12 +360,28 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:ac79f706b67486201a856196b4c5abfda"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#ac79f706b67486201a856196b4c5abfda">SIM_SPEED_FACTOR</a> = 2.0F</td></tr>
+<tr class="separator:ac79f706b67486201a856196b4c5abfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86a59a586d522e7a77aeba8925cf4f00"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a86a59a586d522e7a77aeba8925cf4f00">SIM_SPEED_MAX</a> = 64.0F</td></tr>
+<tr class="separator:a86a59a586d522e7a77aeba8925cf4f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05211eb0d4e391bebe54a73b01320bd7"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a05211eb0d4e391bebe54a73b01320bd7">SIM_SPEED_MIN</a> = 0.125F</td></tr>
+<tr class="separator:a05211eb0d4e391bebe54a73b01320bd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fe2379c45fec262f8dd066723ff88c3"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a1fe2379c45fec262f8dd066723ff88c3">SIM_SPEED_INV_FACTOR</a> = 0.5F</td></tr>
+<tr class="separator:a1fe2379c45fec262f8dd066723ff88c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a873901dcfa979699b2459b1965b5ed86"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a873901dcfa979699b2459b1965b5ed86">GRAVITY_FACTOR</a> = 2.0F</td></tr>
+<tr class="separator:a873901dcfa979699b2459b1965b5ed86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c2539cf5e6c40d09d617a58d40bb8ce"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#a2c2539cf5e6c40d09d617a58d40bb8ce">GRAVITY_MAX</a> = 128.0F</td></tr>
+<tr class="separator:a2c2539cf5e6c40d09d617a58d40bb8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af392ba03999d7d176a6e2155c76dfc84"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#af392ba03999d7d176a6e2155c76dfc84">GRAVITY_MIN_POSITIVE</a> = 0.125F</td></tr>
+<tr class="separator:af392ba03999d7d176a6e2155c76dfc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf3d3bb2b4b1a18b6c1593a9c7f34968"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#adf3d3bb2b4b1a18b6c1593a9c7f34968">GRAVITY_INV_FACTOR</a> = 0.5F</td></tr>
+<tr class="separator:adf3d3bb2b4b1a18b6c1593a9c7f34968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa1e3548abb0f29572e751cc61774d22"><td class="memItemLeft" align="right" valign="top">static const char *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8c.html#aaa1e3548abb0f29572e751cc61774d22">HELP_MODE_NAMES</a> []</td></tr>
 <tr class="separator:aaa1e3548abb0f29572e751cc61774d22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="aac34dfe6c6b73b43a4656c9dce041034"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac34dfe6c6b73b43a4656c9dce041034">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a0944a4353780132eeab7b06e3e42291d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0944a4353780132eeab7b06e3e42291d">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,13 +392,13 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aac34dfe6c6b73b43a4656c9dce041034a46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0944a4353780132eeab7b06e3e42291da46099f3e33a2bfa5892c3e7bffae3321"></a>PBR_DEBUG_MODE_COUNT&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
 </div>
-<a id="a0ed680fdb405e7195d9f14032851eebb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ed680fdb405e7195d9f14032851eebb">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a4790f45dcc812c1b00184a2edccdddf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4790f45dcc812c1b00184a2edccdddf5">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -381,7 +409,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0ed680fdb405e7195d9f14032851eebba4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4790f45dcc812c1b00184a2edccdddf5a4a400d8a348b628422a6de4f19fa7bce"></a>NOTIF_BUF_SIZE&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -863,6 +891,122 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="ade60a35fefe026a46db32f3ea1a5ca45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade60a35fefe026a46db32f3ea1a5ca45">&#9670;&nbsp;</a></span>handle_g_key_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool handle_g_key_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_ade60a35fefe026a46db32f3ea1a5ca45_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a19a7e6005e57106a95ccaf91ee48a45a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19a7e6005e57106a95ccaf91ee48a45a">&#9670;&nbsp;</a></span>handle_gravity_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_gravity_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>increase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_a19a7e6005e57106a95ccaf91ee48a45a_cgraph.svg" width="555" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="afdf7cc02163bc93dca3c36d67afa0490"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdf7cc02163bc93dca3c36d67afa0490">&#9670;&nbsp;</a></span>handle_o_key_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_o_key_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_afdf7cc02163bc93dca3c36d67afa0490_cgraph.svg" width="516" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
 <a id="af8794c576ee7a51b3733dc59e8f52f55"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af8794c576ee7a51b3733dc59e8f52f55">&#9670;&nbsp;</a></span>handle_overlay_input()</h2>
 
@@ -922,6 +1066,96 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_afb03f1c912b8d6ee442c51f99cccf89c_cgraph.svg" width="551" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a632e57e1c7a25d079452ad65e131a220"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a632e57e1c7a25d079452ad65e131a220">&#9670;&nbsp;</a></span>handle_sim_or_gravity_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_sim_or_gravity_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mods</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>increase</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8c_a632e57e1c7a25d079452ad65e131a220_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="ac0e351028503702166ebd5982661582d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e351028503702166ebd5982661582d">&#9670;&nbsp;</a></span>handle_sim_speed_input()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void handle_sim_speed_input </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>speed_up</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8c_ac0e351028503702166ebd5982661582d_cgraph.svg" width="548" height="88"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -1224,6 +1458,94 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a873901dcfa979699b2459b1965b5ed86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a873901dcfa979699b2459b1965b5ed86">&#9670;&nbsp;</a></span>GRAVITY_FACTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GRAVITY_FACTOR = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adf3d3bb2b4b1a18b6c1593a9c7f34968"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf3d3bb2b4b1a18b6c1593a9c7f34968">&#9670;&nbsp;</a></span>GRAVITY_INV_FACTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GRAVITY_INV_FACTOR = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c2539cf5e6c40d09d617a58d40bb8ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c2539cf5e6c40d09d617a58d40bb8ce">&#9670;&nbsp;</a></span>GRAVITY_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GRAVITY_MAX = 128.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af392ba03999d7d176a6e2155c76dfc84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af392ba03999d7d176a6e2155c76dfc84">&#9670;&nbsp;</a></span>GRAVITY_MIN_POSITIVE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float GRAVITY_MIN_POSITIVE = 0.125F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaa1e3548abb0f29572e751cc61774d22"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaa1e3548abb0f29572e751cc61774d22">&#9670;&nbsp;</a></span>HELP_MODE_NAMES</h2>
 
@@ -1246,6 +1568,94 @@ Here is the call graph for this function:</div>
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="stringliteral">&quot;Help: OFF&quot;</span>, <span class="stringliteral">&quot;Help: Keyboard&quot;</span>,</div>
 <div class="line">                                              <span class="stringliteral">&quot;Help: Gamepad&quot;</span>}</div>
 </div><!-- fragment -->
+</div>
+</div>
+<a id="ac79f706b67486201a856196b4c5abfda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac79f706b67486201a856196b4c5abfda">&#9670;&nbsp;</a></span>SIM_SPEED_FACTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float SIM_SPEED_FACTOR = 2.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1fe2379c45fec262f8dd066723ff88c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fe2379c45fec262f8dd066723ff88c3">&#9670;&nbsp;</a></span>SIM_SPEED_INV_FACTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float SIM_SPEED_INV_FACTOR = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86a59a586d522e7a77aeba8925cf4f00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86a59a586d522e7a77aeba8925cf4f00">&#9670;&nbsp;</a></span>SIM_SPEED_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float SIM_SPEED_MAX = 64.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a05211eb0d4e391bebe54a73b01320bd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05211eb0d4e391bebe54a73b01320bd7">&#9670;&nbsp;</a></span>SIM_SPEED_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float SIM_SPEED_MIN = 0.125F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
 </div>
 </div>
 </div><!-- contents -->
