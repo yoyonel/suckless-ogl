@@ -117,7 +117,7 @@ appear in Tracy:
 | `NBody VBO Upload` | NBody Physics | `glBufferSubData` stall |
 | `Trail Ribbon Build` | NBody Trails | CPU geometry staging |
 | `Trail VBO Upload` | NBody Trails | Buffer upload |
-| `Trail Draw Calls` | NBody Trails | `glDrawArrays` per body |
+| `Trail Draw Calls` | NBody Trails | `glMultiDrawArrays` — batched N strips |
 
 ### GPU Zones (OpenGL Context)
 

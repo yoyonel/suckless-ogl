@@ -395,7 +395,7 @@ The N-body pipeline is instrumented with fine-grained CPU profiling zones
 | `NBody VBO Upload` | `scene.c` | `instanced_group_update()` → `glBufferSubData` |
 | `Trail Ribbon Build` | `trail_renderer.c` | `build_ribbon()` × N bodies — CPU geometry staging |
 | `Trail VBO Upload` | `trail_renderer.c` | `glBufferSubData` — GPU buffer upload |
-| `Trail Draw Calls` | `trail_renderer.c` | `glDrawArrays` × N bodies |
+| `Trail Draw Calls` | `trail_renderer.c` | `glMultiDrawArrays` — batched N strips in 1 call |
 
 ### GPU Zones (`GPU_STAGE_PROFILER` — OpenGL Context)
 

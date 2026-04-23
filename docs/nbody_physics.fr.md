@@ -407,7 +407,7 @@ fin (visibles dans Tracy ou tout profileur compatible `PROFILE_ZONE`).
 | `NBody VBO Upload` | `scene.c` | `instanced_group_update()` → `glBufferSubData` |
 | `Trail Ribbon Build` | `trail_renderer.c` | `build_ribbon()` × N corps — staging géométrie CPU |
 | `Trail VBO Upload` | `trail_renderer.c` | `glBufferSubData` — upload buffer GPU |
-| `Trail Draw Calls` | `trail_renderer.c` | `glDrawArrays` × N corps |
+| `Trail Draw Calls` | `trail_renderer.c` | `glMultiDrawArrays` — N strips batchés en 1 appel |
 
 ### Zones GPU (`GPU_STAGE_PROFILER` — Contexte OpenGL)
 
