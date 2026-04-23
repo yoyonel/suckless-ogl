@@ -279,6 +279,14 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	{
 		PROFILE_ZONE(upload_ctx, "Trail VBO Upload");
 		glBindBuffer(GL_ARRAY_BUFFER, trail->vbo);
+		/* Orphan the old backing store so the GPU can keep reading it
+		 * while we write to a fresh allocation — avoids implicit sync.
+		 * Use the full capacity so the driver can recycle same-sized
+		 * allocations across frames. */
+		glBufferData(
+		    GL_ARRAY_BUFFER,
+		    (GLsizeiptr)(MAX_TRAIL_VERTICES * sizeof(TrailVertex)),
+		    NULL, GL_STREAM_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0,
 		                (GLsizeiptr)(total_verts * sizeof(TrailVertex)),
 		                staging);

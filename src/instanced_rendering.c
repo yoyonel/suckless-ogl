@@ -69,9 +69,12 @@ void instanced_group_update(InstancedGroup* group, const SphereInstance* data,
                             int count)
 {
 	group->instance_count = count;
+	GLsizeiptr size = (GLsizeiptr)(count * sizeof(SphereInstance));
 	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
-	glBufferSubData(GL_ARRAY_BUFFER, 0,
-	                (GLsizeiptr)(count * sizeof(SphereInstance)), data);
+	/* Orphan the old backing store so the GPU can keep reading it
+	 * while we write to a fresh allocation — avoids implicit sync. */
+	glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 void instanced_group_draw(InstancedGroup* group, size_t index_count)
