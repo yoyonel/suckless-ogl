@@ -27,8 +27,18 @@ trap 'rm -f "${DIFF_TMP}" "${NOLINT_TMP}"' EXIT
 
 git -c color.diff=false diff "${BASE_REF}"...HEAD -- '*.c' '*.h' > "${DIFF_TMP}"
 
-# Match added lines containing NOLINT (exclude diff header "+++" lines).
-grep -E '^\+[^+].*NOLINT' "${DIFF_TMP}" > "${NOLINT_TMP}" || true
+# Match added lines containing NOLINT with their file origin.
+# Parse the unified diff to track which file each hunk belongs to.
+awk '
+    /^diff --git/ { file = $NF; sub("^b/", "", file) }
+    /^@@ / {
+        # Extract the starting line number from the new-file side: @@ -x,y +L,N @@
+        match($0, /\+([0-9]+)/, m); line = m[1] - 1
+    }
+    /^\+[^+]/ { line++ }
+    /^\+[^+].*NOLINT/ { printf "%s:%d: %s\n", file, line, substr($0, 2) }
+    /^ /  { line++ }
+' "${DIFF_TMP}" > "${NOLINT_TMP}" || true
 
 if [ ! -s "${NOLINT_TMP}" ]; then
     echo "✓ No new NOLINT suppressions introduced."
