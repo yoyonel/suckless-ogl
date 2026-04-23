@@ -25,7 +25,7 @@
 #   - A display server (X11/Wayland) for real GPU context — do NOT run under Xvfb
 #
 # Environment:
-#   BENCHMARK_BUILD_CMD   Override build command (default: just build)
+#   The reference branch is built into 'build-bench-ref/' (cached across runs)
 #   BENCHMARK_NPROCS      Override parallel jobs for cmake
 
 set -euo pipefail
@@ -34,10 +34,10 @@ set -euo pipefail
 REF_BRANCH="${1:-master}"
 RUNS="${2:-5}"
 BENCH_PATTERN="${3:-test_benchmark_buffer_upload}"
-BUILD_CMD="${BENCHMARK_BUILD_CMD:-just build}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 BUILD_DIR="$PROJECT_DIR/build"
+REF_BUILD_DIR="$PROJECT_DIR/build-bench-ref"
 RESULTS_DIR="/tmp/benchmark_ab_$$"
 
 # --- Colors ---
@@ -98,8 +98,10 @@ log_info "Results dir: $RESULTS_DIR"
 echo ""
 
 # --- Locate benchmark binary ---
+# Args: $1=build_dir (optional, defaults to BUILD_DIR)
 find_bench_binary() {
-    local bin="$BUILD_DIR/tests/$BENCH_PATTERN"
+    local bdir="${1:-$BUILD_DIR}"
+    local bin="$bdir/tests/$BENCH_PATTERN"
     if [[ -x "$bin" ]]; then
         echo "$bin"
     else
@@ -107,17 +109,33 @@ find_bench_binary() {
     fi
 }
 
+# --- Build project into a specific directory ---
+# Args: $1=build_dir
+build_project() {
+    local bdir="$1"
+    if [[ ! -d "$bdir" ]]; then
+        cmake -G "Unix Makefiles" -B "$bdir" -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=ON > /dev/null 2>&1
+    fi
+    local nprocs
+    nprocs=$(nproc)
+    if [[ "$nprocs" -gt 2 ]]; then
+        nprocs=$((nprocs - 2))
+    fi
+    cmake --build "$bdir" --parallel "$nprocs"
+}
+
 # --- Run benchmark N times, save output ---
-# Args: $1=label $2=output_dir
+# Args: $1=label $2=output_dir $3=build_dir
 run_benchmark_series() {
     local label="$1"
     local outdir="$2"
+    local bdir="${3:-$BUILD_DIR}"
     local bin
 
-    log_info "Building ($label)..."
-    eval "$BUILD_CMD" > "$outdir/build.log" 2>&1 || die "Build failed for $label — see $outdir/build.log"
+    log_info "Building ($label) → $bdir"
+    build_project "$bdir" > "$outdir/build.log" 2>&1 || die "Build failed for $label — see $outdir/build.log"
 
-    if ! bin="$(find_bench_binary)"; then
+    if ! bin="$(find_bench_binary "$bdir")"; then
         log_error "Benchmark binary '$BENCH_PATTERN' not found after building $label"
         log_error ""
         log_error "The benchmark test must exist on BOTH branches."
@@ -176,7 +194,7 @@ compute_stats() {
 log_info "=== Phase 1/2: Current branch ($ORIG_BRANCH) ==="
 A_DIR="$RESULTS_DIR/current"
 mkdir -p "$A_DIR"
-run_benchmark_series "$ORIG_BRANCH" "$A_DIR"
+run_benchmark_series "$ORIG_BRANCH" "$A_DIR" "$BUILD_DIR"
 echo ""
 
 # --- Find the test commit to cherry-pick if needed ---
@@ -215,7 +233,7 @@ if [[ -n "$BENCH_TEST_COMMIT" ]]; then
     fi
 fi
 
-run_benchmark_series "$REF_BRANCH" "$B_DIR"
+run_benchmark_series "$REF_BRANCH" "$B_DIR" "$REF_BUILD_DIR"
 echo ""
 
 # --- Clean up cherry-pick and switch back ---
@@ -228,6 +246,25 @@ log_ok "Returned to branch: $ORIG_BRANCH"
 echo ""
 
 # --- Parse and compare ---
+
+# Display GL renderer from first run of each side
+A_RENDERER=$(grep -m1 "^GL Renderer:" "$A_DIR"/run_1.txt 2>/dev/null | sed 's/GL Renderer: //' || echo "unknown")
+A_GL_VER=$(grep -m1 "^GL Version:" "$A_DIR"/run_1.txt 2>/dev/null | sed 's/GL Version:  //' || echo "unknown")
+B_RENDERER=$(grep -m1 "^GL Renderer:" "$B_DIR"/run_1.txt 2>/dev/null | sed 's/GL Renderer: //' || echo "unknown")
+
+log_info "GL Renderer: ${BOLD}$A_RENDERER${NC}"
+log_info "GL Version:  $A_GL_VER"
+if [[ "$A_RENDERER" != "$B_RENDERER" ]]; then
+    log_warn "Reference used different renderer: $B_RENDERER"
+fi
+
+# Warn if software renderer
+if echo "$A_RENDERER" | grep -qi "llvmpipe\|softpipe\|swrast"; then
+    log_warn "Software renderer detected — results do NOT reflect real GPU performance"
+    log_warn "Run without Xvfb on a machine with a GPU for meaningful optimization data"
+fi
+echo ""
+
 log_info "${BOLD}=== A/B Comparison Results ===${NC}"
 echo ""
 
@@ -304,9 +341,3 @@ echo -e "  ${GREEN}▼ negative delta${NC} = current branch is FASTER (improveme
 echo -e "  ${RED}▲ positive delta${NC} = current branch is SLOWER (regression)"
 echo -e "  Values are mean ± stddev over $RUNS runs (µs)"
 echo ""
-
-# Check if running under software renderer
-if grep -q "llvmpipe\|softpipe\|swrast" "$A_DIR"/run_*.txt 2>/dev/null; then
-    log_warn "Software renderer detected — results do NOT reflect real GPU performance"
-    log_warn "Run without Xvfb on a machine with a GPU for meaningful optimization data"
-fi
