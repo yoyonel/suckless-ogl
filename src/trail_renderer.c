@@ -73,9 +73,8 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 
 	/* Attribute 1: color (vec3) + v (float) — packed as vec4 */
 	const size_t color_offset = offsetof(TrailVertex, color);
-	glVertexAttribPointer(
-	    1, 4, GL_FLOAT, GL_FALSE, stride,
-	    (const void*)color_offset);  // NOLINT(performance-no-int-to-ptr)
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride,
+	                      utils_buffer_offset(color_offset));
 	glEnableVertexAttribArray(1);
 
 	glBindVertexArray(0);

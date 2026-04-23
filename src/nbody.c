@@ -54,6 +54,16 @@ static float softened_orbital_vel(float grav, float central_mass, float orbit_r,
 /* Preset                                                                    */
 /* ========================================================================= */
 
+/* Central star properties for the default preset. */
+static const float CENTRAL_STAR_MASS = 100.0F;
+static const float CENTRAL_STAR_RADIUS = 1.5F;
+static const vec3 CENTRAL_STAR_ALBEDO = {1.0F, 0.76F, 0.34F};
+static const float CENTRAL_STAR_METALLIC = 1.0F;
+static const float CENTRAL_STAR_ROUGHNESS = 0.2F;
+
+/* Physics half-factor for kinetic energy (½mv²) and Verlet integration. */
+static const float HALF = 0.5F;
+
 /* Descriptor for an orbiting body in the preset. */
 struct OrbiterDef {
 	vec3 pos;      /**< Initial position. */
@@ -89,7 +99,6 @@ static const struct OrbiterDef ORBITERS[] = {
 
 static const int ORBITER_COUNT = (int)(sizeof(ORBITERS) / sizeof(ORBITERS[0]));
 
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 void nbody_init_preset(NBodySim* sim)
 {
 	(void)safe_memset(sim, sizeof(*sim), 0, sizeof(*sim));
@@ -99,17 +108,17 @@ void nbody_init_preset(NBodySim* sim)
 	sim->paused = false;
 
 	/* Body 0: Central star — gold/bronze, heavy, stationary */
-	const float star_r = 1.5F;
-	add_body(sim, (vec3){0.0F, 0.0F, 0.0F}, (vec3){0.0F, 0.0F, 0.0F},
-	         100.0F, star_r, (vec3){1.0F, 0.76F, 0.34F}, 1.0F, 0.2F);
+	add_body(sim, (vec3){0}, (vec3){0}, CENTRAL_STAR_MASS,
+	         CENTRAL_STAR_RADIUS, CENTRAL_STAR_ALBEDO,
+	         CENTRAL_STAR_METALLIC, CENTRAL_STAR_ROUGHNESS);
 
 	/* Add all orbiters from the table. */
 	for (int idx = 0; idx < ORBITER_COUNT; idx++) {
 		const struct OrbiterDef* orb = &ORBITERS[idx];
-		float spd =
-		    softened_orbital_vel(sim->gravity, 100.0F, orb->orbit_r,
-		                         star_r, orb->body_r) *
-		    orb->ecc;
+		float spd = softened_orbital_vel(
+		                sim->gravity, CENTRAL_STAR_MASS, orb->orbit_r,
+		                CENTRAL_STAR_RADIUS, orb->body_r) *
+		            orb->ecc;
 		vec3 vel = {orb->vel_dir[0] * spd, orb->vel_dir[1] * spd,
 		            orb->vel_dir[2] * spd};
 		add_body(sim, orb->pos, vel, orb->mass, orb->body_r,
@@ -143,14 +152,10 @@ void nbody_init_preset(NBodySim* sim)
 		              sim->bodies[i].prev_position);
 	}
 }
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 /* ========================================================================= */
 /* Energy diagnostics                                                        */
 /* ========================================================================= */
-
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-// NOLINTBEGIN(readability-identifier-length)
 
 /* E = Σ ½ m v² − Σ_{i<j} G m_i m_j / sqrt(r² + ε²)
  * Conserved (bounded oscillation) by the symplectic integrator. */
@@ -159,20 +164,20 @@ float nbody_total_energy(const NBodySim* sim)
 {
 	float kinetic = 0.0F;
 	for (int i = 0; i < sim->body_count; i++) {
-		vec3 v;
-		glm_vec3_copy((float*)sim->bodies[i].velocity, v);
-		kinetic += 0.5F * sim->bodies[i].mass * glm_vec3_dot(v, v);
+		vec3 vel;
+		glm_vec3_copy((float*)sim->bodies[i].velocity, vel);
+		kinetic += HALF * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
 	}
 
 	float potential = 0.0F;
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
 			vec3 diff;
-			vec3 pi;
-			vec3 pj;
-			glm_vec3_copy((float*)sim->bodies[i].position, pi);
-			glm_vec3_copy((float*)sim->bodies[j].position, pj);
-			glm_vec3_sub(pj, pi, diff);
+			vec3 pos_i;
+			vec3 pos_j;
+			glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
+			glm_vec3_copy((float*)sim->bodies[j].position, pos_j);
+			glm_vec3_sub(pos_j, pos_i, diff);
 			float eps2 = pair_softening_sq(sim->bodies[i].radius,
 			                               sim->bodies[j].radius);
 			float dist = sqrtf(glm_vec3_dot(diff, diff) + eps2);
@@ -184,14 +189,9 @@ float nbody_total_energy(const NBodySim* sim)
 	return kinetic + potential;
 }
 
-// NOLINTEND(readability-identifier-length)
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-
 /* ========================================================================= */
 /* Gravity & Integration                                                     */
 /* ========================================================================= */
-
-// NOLINTBEGIN(readability-identifier-length)
 
 /* O(N²) pairwise gravity with per-pair Plummer softening.
  * ε² = max(NBODY_SOFTENING_SQ, (F·(r_i+r_j))²)  */
@@ -205,11 +205,11 @@ static void compute_accelerations(const NBodySim* sim, vec3* accel)
 	for (int i = 0; i < sim->body_count; i++) {
 		for (int j = i + 1; j < sim->body_count; j++) {
 			vec3 diff;
-			vec3 pi;
-			vec3 pj;
-			glm_vec3_copy((float*)sim->bodies[i].position, pi);
-			glm_vec3_copy((float*)sim->bodies[j].position, pj);
-			glm_vec3_sub(pj, pi, diff);
+			vec3 pos_i;
+			vec3 pos_j;
+			glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
+			glm_vec3_copy((float*)sim->bodies[j].position, pos_j);
+			glm_vec3_sub(pos_j, pos_i, diff);
 
 			float eps2 = pair_softening_sq(sim->bodies[i].radius,
 			                               sim->bodies[j].radius);
@@ -218,54 +218,49 @@ static void compute_accelerations(const NBodySim* sim, vec3* accel)
 			float inv_dist3 = inv_dist * inv_dist * inv_dist;
 			float grav = sim->gravity * inv_dist3;
 
-			vec3 f;
-			glm_vec3_scale(diff, grav * sim->bodies[j].mass, f);
-			glm_vec3_add(accel[i], f, accel[i]);
+			vec3 force;
+			glm_vec3_scale(diff, grav * sim->bodies[j].mass, force);
+			glm_vec3_add(accel[i], force, accel[i]);
 
-			glm_vec3_scale(diff, grav * sim->bodies[i].mass, f);
-			glm_vec3_sub(accel[j], f, accel[j]);
+			glm_vec3_scale(diff, grav * sim->bodies[i].mass, force);
+			glm_vec3_sub(accel[j], force, accel[j]);
 		}
 	}
 }
 
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-
 /* Velocity Verlet (symplectic, 2nd order).
  * Energy oscillates with bounded amplitude thanks to Plummer softening. */
 
-static void integrate_step(NBodySim* sim,
-                           float dt)  // NOLINT(readability-identifier-length)
+static void integrate_step(NBodySim* sim, float delta_time)
 {
 	vec3 accel_old[NBODY_MAX_BODIES];
 	vec3 accel_new[NBODY_MAX_BODIES];
 
 	compute_accelerations(sim, accel_old);
 
-	/* x += v·dt + 0.5·a·dt² */
+	/* x += v·dt + ½·a·dt² */
 	for (int i = 0; i < sim->body_count; i++) {
 		vec3 tmp;
-		glm_vec3_scale(sim->bodies[i].velocity, dt, tmp);
+		glm_vec3_scale(sim->bodies[i].velocity, delta_time, tmp);
 		glm_vec3_add(sim->bodies[i].position, tmp,
 		             sim->bodies[i].position);
-		glm_vec3_scale(accel_old[i], 0.5F * dt * dt, tmp);
+		glm_vec3_scale(accel_old[i], HALF * delta_time * delta_time,
+		               tmp);
 		glm_vec3_add(sim->bodies[i].position, tmp,
 		             sim->bodies[i].position);
 	}
 
 	compute_accelerations(sim, accel_new);
 
-	/* v += 0.5·(a_old + a_new)·dt */
+	/* v += ½·(a_old + a_new)·dt */
 	for (int i = 0; i < sim->body_count; i++) {
 		vec3 avg;
 		glm_vec3_add(accel_old[i], accel_new[i], avg);
-		glm_vec3_scale(avg, 0.5F * dt, avg);
+		glm_vec3_scale(avg, HALF * delta_time, avg);
 		glm_vec3_add(sim->bodies[i].velocity, avg,
 		             sim->bodies[i].velocity);
 	}
 }
-
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-// NOLINTEND(readability-identifier-length)
 
 /* ========================================================================= */
 /* Public API                                                                */
@@ -324,20 +319,16 @@ int nbody_get_count(const NBodySim* sim)
 	return sim->body_count;
 }
 
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-
 float nbody_kinetic_energy(const NBodySim* sim)
 {
 	float kinetic = 0.0F;
 	for (int i = 0; i < sim->body_count; i++) {
 		vec3 vel;
 		glm_vec3_copy((float*)sim->bodies[i].velocity, vel);
-		kinetic += 0.5F * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
+		kinetic += HALF * sim->bodies[i].mass * glm_vec3_dot(vel, vel);
 	}
 	return kinetic;
 }
-
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 float nbody_energy_drift(const NBodySim* sim)
 {

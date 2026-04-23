@@ -19,8 +19,6 @@
  * Test parameters
  * ---------------------------------------------------------------------------*/
 
-// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-
 /** Simulated time for the long-run test (seconds). */
 static const float SIM_DURATION = 1200.0F;
 
@@ -39,7 +37,25 @@ static const float STEP_DT = 1.0F / 60.0F;
 /** Progress report interval in simulated seconds. */
 static const float REPORT_INTERVAL = 60.0F;
 
-// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+/** Velocity boost for perturbation tests. */
+static const float VELOCITY_BOOST = 10.0F;
+
+/** Maximum drift from perturbed energy level (conservation test). */
+static const float CONSERVATION_MAX_DRIFT = 0.20F;
+
+/** Lag spike delta-time values (seconds). */
+static const float LAG_SPIKE_DT = 0.5F;
+static const float SECONDARY_SPIKE_DT = 0.2F;
+
+/** Iteration counts for various tests. */
+enum {
+	CONSERVATION_STEPS = 120,
+	PAUSE_TEST_STEPS = 1000,
+	SPIKE_NORMAL_STEPS = 3600,
+	DRIFT_API_STEPS = 600,
+	ZERO_GRAV_STEPS = 120,
+	MSG_BUF_SIZE = 80,
+};
 
 void setUp(void)
 {
@@ -219,7 +235,7 @@ void test_nbody_long_run_stability(void)
 
 	/* Per-body: peak distance should not exceed MAX_BODY_DISTANCE. */
 	for (int i = 0; i < initial_count - 1; i++) {
-		char msg[80];  // NOLINT(readability-magic-numbers)
+		char msg[MSG_BUF_SIZE];
 		(void)snprintf(msg, sizeof(msg),
 		               "Body %d peak distance %.1f exceeds limit",
 		               i + 1, (double)dist_peak[i]);
@@ -270,21 +286,17 @@ void test_nbody_energy_conservation(void)
 	float energy_before = nbody_total_energy(&sim);
 
 	/* Boost body 1 velocity to inject energy */
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	sim.bodies[1].velocity[0] += 10.0F;
-	sim.bodies[1].velocity[1] += 10.0F;
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	sim.bodies[1].velocity[0] += VELOCITY_BOOST;
+	sim.bodies[1].velocity[1] += VELOCITY_BOOST;
 
 	float energy_boosted = nbody_total_energy(&sim);
 	TEST_ASSERT_GREATER_THAN_FLOAT(energy_before, energy_boosted);
 
 	/* Run 120 steps — energy should remain near the boosted level
 	 * (symplectic: bounded oscillation, no secular drift). */
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	for (int i = 0; i < 120; i++) {
+	for (int i = 0; i < CONSERVATION_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	float energy_after = nbody_total_energy(&sim);
 	printf("  [conservation] E0=%.2f  boosted=%.2f  after=%.2f\n",
@@ -296,7 +308,8 @@ void test_nbody_energy_conservation(void)
 	float drift = fabsf(energy_after - energy_boosted) /
 	              (fabsf(energy_boosted) + 1e-10F);
 	TEST_ASSERT_LESS_THAN_FLOAT_MESSAGE(
-	    0.20F, drift, "Energy drifted significantly from perturbed level");
+	    CONSERVATION_MAX_DRIFT, drift,
+	    "Energy drifted significantly from perturbed level");
 }
 
 /**
@@ -312,11 +325,9 @@ void test_nbody_paused_no_change(void)
 	                       sim.bodies[1].position[2]};
 
 	sim.paused = true;
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < PAUSE_TEST_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	TEST_ASSERT_EQUAL_FLOAT(pos_before[0], sim.bodies[1].position[0]);
 	TEST_ASSERT_EQUAL_FLOAT(pos_before[1], sim.bodies[1].position[1]);
@@ -336,13 +347,11 @@ void test_nbody_survives_dt_spikes(void)
 	/* Simulate a realistic app session:
 	 * - 1 huge spike (first frame: 0.5s)
 	 * - then normal frames at 60fps for 60s */
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	nbody_step(&sim, 0.5F); /* Lag spike */
-	nbody_step(&sim, 0.2F); /* Another spike */
-	for (int i = 0; i < 3600; i++) {
+	nbody_step(&sim, LAG_SPIKE_DT);
+	nbody_step(&sim, SECONDARY_SPIKE_DT);
+	for (int i = 0; i < SPIKE_NORMAL_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	float dist_star[NBODY_MAX_BODIES];
 	distances_from_star(&sim, dist_star);
@@ -392,11 +401,9 @@ void test_nbody_energy_drift_api(void)
 	TEST_ASSERT_FLOAT_WITHIN(1e-6F, 0.0F, drift);
 
 	/* After a few steps, drift should stay small (< 5%) */
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	for (int i = 0; i < 600; i++) {
+	for (int i = 0; i < DRIFT_API_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	drift = nbody_energy_drift(&sim);
 	printf("  [drift API] after 10s: drift = %.4f%%\n",
@@ -421,11 +428,9 @@ void test_nbody_zero_gravity(void)
 	                       sim.bodies[1].velocity[1],
 	                       sim.bodies[1].velocity[2]};
 
-	// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	for (int i = 0; i < 120; i++) {
+	for (int i = 0; i < ZERO_GRAV_STEPS; i++) {
 		nbody_step(&sim, STEP_DT);
 	}
-	// NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	/* With G=0, velocity should be unchanged (no forces). */
 	TEST_ASSERT_FLOAT_WITHIN(1e-4F, vel_before[0],
