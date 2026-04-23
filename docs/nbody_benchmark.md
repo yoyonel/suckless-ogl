@@ -196,32 +196,78 @@ On a real GPU, the benchmark captures actual synchronization stalls:
 
 ## How to Run
 
+### Quick Single Run (real GPU)
+
 ```bash
-# Single run — verbose output with timing details
+# Via Just recipe — builds if needed, runs directly (no Xvfb)
+just bench-nbody
+
+# Or run the binary directly
+./build/tests/test_benchmark_buffer_upload
+```
+
+### Run in CI / Test Suite (Xvfb)
+
+```bash
+# Verbose output via CTest (uses Xvfb wrapper)
 cd build && ctest -R test_benchmark_buffer_upload -V
 
-# From project root via just (runs full test suite including benchmark)
+# As part of the full test suite
 just test-all
-
-# Direct execution (requires OpenGL context — use Xvfb if headless)
-./build/tests/test_benchmark_buffer_upload
 ```
 
 ## How to Use the Baseline
 
-### A/B Comparison Between Branches
+### Automated A/B Comparison Between Branches
+
+The `just bench-ab` recipe automates the full A/B comparison workflow:
+
+```bash
+# Compare current branch vs master (5 runs per side, default)
+just bench-ab
+
+# Compare against a specific branch with custom run count
+just bench-ab origin/main 10
+```
+
+The recipe:
+
+1. Verifies the working tree is clean (commit or stash first)
+2. Builds and runs the benchmark N times on the current branch
+3. Switches to the reference branch (auto cherry-picks the benchmark test
+   if it doesn't exist on that branch)
+4. Builds and runs the benchmark N times on the reference
+5. Switches back to the original branch
+6. Computes mean ± stddev for each metric and prints a comparison table:
+
+```text
+Metric                            current-branch         master       Delta    Change
+──────────────────────────────  ───────────────  ───────────────  ──────────  ────────
+update+upload                      500.1±45.1      517.5±19.9  -17.4 µs  ▼-3.4%
+draw (build+upload+render)        1029.8±82.1      894.0±55.0  135.8 µs  ▲15.2%
+```
+
+- **▼ green** = current branch is faster (improvement)
+- **▲ red** = current branch is slower (regression)
+
+!!! tip "Real GPU required for meaningful results"
+    Run `just bench-ab` from a terminal with access to a real GPU.
+    Do **not** run under Xvfb — the results would only measure software
+    rendering overhead, not actual CPU↔GPU synchronization stalls.
+
+### Manual A/B (alternative)
 
 ```bash
 # 1. Run benchmark on current branch, save output
-cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_current.txt
+just bench-nbody 2>&1 | tee /tmp/bench_current.txt
 
 # 2. Switch to comparison branch and rebuild
 git checkout master && just build
 
 # 3. Run benchmark again
-cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_master.txt
+just bench-nbody 2>&1 | tee /tmp/bench_master.txt
 
-# 4. Compare the "Avg update+upload" lines
+# 4. Compare the "Avg" lines
 diff <(grep "Avg" /tmp/bench_master.txt) <(grep "Avg" /tmp/bench_current.txt)
 ```
 

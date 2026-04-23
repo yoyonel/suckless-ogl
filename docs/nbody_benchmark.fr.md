@@ -205,32 +205,79 @@ Sur un GPU réel, le benchmark capture les vrais stalls de synchronisation :
 
 ## Comment Exécuter
 
+### Exécution Rapide (GPU réel)
+
 ```bash
-# Exécution unique — sortie verbeuse avec détails de timing
+# Via recette Just — build si nécessaire, exécution directe (pas de Xvfb)
+just bench-nbody
+
+# Ou exécuter le binaire directement
+./build/tests/test_benchmark_buffer_upload
+```
+
+### Exécution en CI / Suite de Tests (Xvfb)
+
+```bash
+# Sortie verbeuse via CTest (utilise le wrapper Xvfb)
 cd build && ctest -R test_benchmark_buffer_upload -V
 
-# Depuis la racine du projet via just (lance toute la suite de tests incluant le benchmark)
+# Comme partie de la suite de tests complète
 just test-all
-
-# Exécution directe (nécessite un contexte OpenGL — utiliser Xvfb si headless)
-./build/tests/test_benchmark_buffer_upload
 ```
 
 ## Comment Utiliser la Baseline
 
-### Comparaison A/B Entre Branches
+### Comparaison A/B Automatisée Entre Branches
+
+La recette `just bench-ab` automatise le workflow complet de comparaison A/B :
+
+```bash
+# Comparer la branche courante vs master (5 runs par côté, défaut)
+just bench-ab
+
+# Comparer contre une branche spécifique avec un nombre de runs personnalisé
+just bench-ab origin/main 10
+```
+
+La recette :
+
+1. Vérifie que le working tree est propre (commit ou stash d'abord)
+2. Build et exécute le benchmark N fois sur la branche courante
+3. Bascule sur la branche de référence (cherry-pick automatique du test
+   de benchmark s'il n'existe pas sur cette branche)
+4. Build et exécute le benchmark N fois sur la référence
+5. Retourne sur la branche originale
+6. Calcule moyenne ± écart-type pour chaque métrique et affiche un tableau :
+
+```text
+Metric                            branche-courante         master       Delta    Change
+──────────────────────────────  ───────────────  ───────────────  ──────────  ────────
+update+upload                      500.1±45.1      517.5±19.9  -17.4 µs  ▼-3.4%
+draw (build+upload+render)        1029.8±82.1      894.0±55.0  135.8 µs  ▲15.2%
+```
+
+- **▼ vert** = la branche courante est plus rapide (amélioration)
+- **▲ rouge** = la branche courante est plus lente (régression)
+
+!!! tip "GPU réel requis pour des résultats significatifs"
+    Lancez `just bench-ab` depuis un terminal avec accès au vrai GPU.
+    Ne **pas** exécuter sous Xvfb — les résultats ne mesureraient que
+    l'overhead du rendu logiciel, pas les vrais stalls de synchronisation
+    CPU↔GPU.
+
+### Comparaison A/B Manuelle (alternative)
 
 ```bash
 # 1. Exécuter le benchmark sur la branche courante, sauvegarder la sortie
-cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_current.txt
+just bench-nbody 2>&1 | tee /tmp/bench_current.txt
 
 # 2. Basculer vers la branche de comparaison et rebuilder
 git checkout master && just build
 
 # 3. Re-exécuter le benchmark
-cd build && ctest -R test_benchmark_buffer_upload -V 2>&1 | tee /tmp/bench_master.txt
+just bench-nbody 2>&1 | tee /tmp/bench_master.txt
 
-# 4. Comparer les lignes "Avg update+upload"
+# 4. Comparer les lignes "Avg"
 diff <(grep "Avg" /tmp/bench_master.txt) <(grep "Avg" /tmp/bench_current.txt)
 ```
 
