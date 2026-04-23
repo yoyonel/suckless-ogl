@@ -300,9 +300,9 @@ log_info "  Current ($ORIG_BRANCH): $A_DIR/run_*.txt"
 log_info "  Reference ($REF_BRANCH): $B_DIR/run_*.txt"
 echo ""
 log_info "Interpretation:"
-echo "  ${GREEN}▼ negative delta${NC} = current branch is FASTER (improvement)"
-echo "  ${RED}▲ positive delta${NC} = current branch is SLOWER (regression)"
-echo "  Values are mean ± stddev over $RUNS runs (µs)"
+echo -e "  ${GREEN}▼ negative delta${NC} = current branch is FASTER (improvement)"
+echo -e "  ${RED}▲ positive delta${NC} = current branch is SLOWER (regression)"
+echo -e "  Values are mean ± stddev over $RUNS runs (µs)"
 echo ""
 
 # Check if running under software renderer
