@@ -339,6 +339,24 @@ void test_instance_update_data_integrity(void)
 
 int main(void)
 {
+	/* Print GL renderer info before any test (requires a context) */
+	if (!glfwInit()) {
+		return 1;
+	}
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	GLFWwindow* w = glfwCreateWindow(1, 1, "probe", NULL, NULL);
+	if (w) {
+		glfwMakeContextCurrent(w);
+		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		printf("GL Renderer: %s\n", glGetString(GL_RENDERER));
+		printf("GL Version:  %s\n", glGetString(GL_VERSION));
+		glfwDestroyWindow(w);
+	}
+	glfwTerminate();
+
 	UNITY_BEGIN();
 	RUN_TEST(test_benchmark_nbody_instance_update);
 	RUN_TEST(test_benchmark_trail_renderer);
