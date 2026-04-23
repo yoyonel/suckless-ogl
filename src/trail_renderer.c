@@ -11,7 +11,7 @@
 
 /* Maximum ribbon vertices: each body can produce up to
  * (TRAIL_MAX_POINTS - 1) segments × 2 vertices + 2 degenerate = ~514.
- * With NBODY_MAX_BODIES=16: 16 × 514 = 8224 vertices.
+ * With NBODY_MAX_BODIES=32: 32 × 514 = 16448 vertices.
  * Each vertex is 32 bytes → ~256 KB. Trivially small. */
 enum { MAX_TRAIL_VERTICES = NBODY_MAX_BODIES * ((TRAIL_MAX_POINTS * 2) + 4) };
 

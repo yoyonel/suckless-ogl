@@ -54,6 +54,41 @@ static float softened_orbital_vel(float grav, float central_mass, float orbit_r,
 /* Preset                                                                    */
 /* ========================================================================= */
 
+/* Descriptor for an orbiting body in the preset. */
+struct OrbiterDef {
+	vec3 pos;      /**< Initial position. */
+	vec3 vel_dir;  /**< Velocity direction (each component × orbital speed).
+	                */
+	float orbit_r; /**< Orbital radius (for speed computation). */
+	float body_r;  /**< Body radius. */
+	float mass;
+	vec3 albedo;
+	float metallic;
+	float roughness;
+	float ecc; /**< Eccentricity factor on orbital speed (1 = circular). */
+};
+
+/* clang-format off */
+static const struct OrbiterDef ORBITERS[] = {
+	/*          position              vel_dir        orb_r  r     mass  albedo              met   rough ecc  */
+	/* 1  Gold orbiter      */ {{ 3, 0, 0},      { 0, 1, 0},     3,   0.30F, 0.3F, {1.0F,0.84F,0.0F},  1.0F, 0.10F, 1.00F},
+	/* 2  Chrome moon       */ {{ 0, 5, 0.5F},   {-1, 0, 0},     5,   0.50F, 1.5F, {0.77F,0.78F,0.78F},1.0F, 0.05F, 1.00F},
+	/* 3  Silver moon       */ {{ 0,-1, 7},      { 1, 0, 0},     7,   0.60F, 2.0F, {0.85F,0.85F,0.90F},1.0F, 0.15F, 1.00F},
+	/* 4  Copper planet     */ {{-10, 0, 1.5F},  { 0,-1, 0},    10,   0.80F, 4.0F, {0.72F,0.45F,0.20F},1.0F, 0.30F, 1.00F},
+	/* 5  Cyan comet        */ {{ 8, 2, 2},      { 0, 1,-0.3F},  8,   0.40F, 0.5F, {0.15F,0.85F,0.95F},0.1F, 0.05F, 0.85F},
+	/* 6  Magenta comet     */ {{-3,11,-2},      { 0.5F, 0, 0.6F},11,  0.35F, 0.5F, {0.90F,0.20F,0.75F},0.1F, 0.05F, 0.85F},
+	/* 7  Emerald orbiter   */ {{ 4, 0.5F, 0},   { 0, 0, 1},     4,   0.35F, 0.6F, {0.15F,0.85F,0.30F},0.8F, 0.15F, 1.00F},
+	/* 8  Rose quartz       */ {{ 0,-10, 2},     { 1, 0, 0},    10,   0.55F, 1.8F, {0.90F,0.55F,0.65F},0.3F, 0.25F, 0.95F},
+	/* 9  Deep blue         */ {{ 0, 0,-3.5F},   { 0, 1, 0},     3.5F,0.30F, 0.4F, {0.10F,0.25F,0.95F},0.9F, 0.10F, 1.00F},
+	/* 10 Amber planet      */ {{ 9,-2, 0},      { 0, 1, 0},     9,   0.65F, 3.0F, {1.0F,0.60F,0.10F}, 0.7F, 0.30F, 1.00F},
+	/* 11 Violet comet      */ {{11, 2,-3},      {-0.4F, 0, 0.7F},11,  0.30F, 0.4F, {0.55F,0.15F,0.95F},0.2F, 0.08F, 0.92F},
+	/* 12 Turquoise moon    */ {{-6, 0,-1},      { 0, 1, 0},     6,   0.45F, 1.2F, {0.20F,0.80F,0.75F},0.6F, 0.12F, 1.00F},
+	/* 13 Crimson dwarf     */ {{-12,-2, 1},     { 0.3F, 0.7F, 0},12,  0.50F, 2.5F, {0.90F,0.12F,0.15F},0.85F,0.35F, 0.95F},
+};
+/* clang-format on */
+
+static const int ORBITER_COUNT = (int)(sizeof(ORBITERS) / sizeof(ORBITERS[0]));
+
 // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 void nbody_init_preset(NBodySim* sim)
 {
@@ -68,71 +103,17 @@ void nbody_init_preset(NBodySim* sim)
 	add_body(sim, (vec3){0.0F, 0.0F, 0.0F}, (vec3){0.0F, 0.0F, 0.0F},
 	         100.0F, star_r, (vec3){1.0F, 0.76F, 0.34F}, 1.0F, 0.2F);
 
-	/* Body 1: Tiny fast orbiter — gold, tight circular orbit in XY plane */
-	{
-		const float rad = 3.0F;
-		const float body_r = 0.3F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r);
-		add_body(sim, (vec3){rad, 0.0F, 0.0F}, (vec3){0.0F, vel, 0.0F},
-		         0.3F, body_r, (vec3){1.0F, 0.84F, 0.0F}, 1.0F, 0.1F);
-	}
-
-	/* Body 2: Chrome moon — circular orbit, slightly inclined */
-	{
-		const float rad = 5.0F;
-		const float body_r = 0.5F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r);
-		add_body(sim, (vec3){0.0F, rad, 0.5F}, (vec3){-vel, 0.0F, 0.0F},
-		         1.5F, body_r, (vec3){0.77F, 0.78F, 0.78F}, 1.0F,
-		         0.05F);
-	}
-
-	/* Body 3: Silver moon — different orbital plane (XZ) */
-	{
-		const float rad = 7.0F;
-		const float body_r = 0.6F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r);
-		add_body(sim, (vec3){0.0F, -1.0F, rad}, (vec3){vel, 0.0F, 0.0F},
-		         2.0F, body_r, (vec3){0.85F, 0.85F, 0.90F}, 1.0F,
-		         0.15F);
-	}
-
-	/* Body 4: Copper planet — wide circular orbit */
-	{
-		const float rad = 10.0F;
-		const float body_r = 0.8F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r);
-		add_body(sim, (vec3){-rad, 0.0F, 1.5F},
-		         (vec3){0.0F, -vel, 0.0F}, 4.0F, body_r,
-		         (vec3){0.72F, 0.45F, 0.20F}, 1.0F, 0.3F);
-	}
-
-	/* Body 5: Cyan glass comet — mildly elliptical orbit */
-	{
-		const float rad = 8.0F;
-		const float body_r = 0.4F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r) *
-		                  0.85F;
-		add_body(sim, (vec3){rad, 2.0F, 2.0F},
-		         (vec3){0.0F, vel, -vel * 0.3F}, 0.5F, body_r,
-		         (vec3){0.15F, 0.85F, 0.95F}, 0.1F, 0.05F);
-	}
-
-	/* Body 6: Magenta glass comet — mildly elliptical, different plane */
-	{
-		const float rad = 11.0F;
-		const float body_r = 0.35F;
-		const float vel = softened_orbital_vel(sim->gravity, 100.0F,
-		                                       rad, star_r, body_r) *
-		                  0.85F;
-		add_body(sim, (vec3){-3.0F, rad, -2.0F},
-		         (vec3){vel * 0.5F, 0.0F, vel * 0.6F}, 0.5F, body_r,
-		         (vec3){0.90F, 0.20F, 0.75F}, 0.1F, 0.05F);
+	/* Add all orbiters from the table. */
+	for (int idx = 0; idx < ORBITER_COUNT; idx++) {
+		const struct OrbiterDef* orb = &ORBITERS[idx];
+		float spd =
+		    softened_orbital_vel(sim->gravity, 100.0F, orb->orbit_r,
+		                         star_r, orb->body_r) *
+		    orb->ecc;
+		vec3 vel = {orb->vel_dir[0] * spd, orb->vel_dir[1] * spd,
+		            orb->vel_dir[2] * spd};
+		add_body(sim, orb->pos, vel, orb->mass, orb->body_r,
+		         orb->albedo, orb->metallic, orb->roughness);
 	}
 
 	/* Zero the total momentum so the center of mass stays fixed.

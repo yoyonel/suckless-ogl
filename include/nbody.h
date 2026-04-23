@@ -18,7 +18,7 @@
 #include <stdbool.h>
 
 /** Maximum number of bodies in the simulation. */
-enum { NBODY_MAX_BODIES = 16 };
+enum { NBODY_MAX_BODIES = 32 };
 
 /** Default gravitational constant (tuned for visual scale ~20 units). */
 static const float NBODY_DEFAULT_G = 1.0F;
