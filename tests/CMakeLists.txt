@@ -109,6 +109,7 @@ set(OPENGL_TESTS
     test_fxaa_synthetic
     test_render_utils
     test_benchmark_histogram
+    test_benchmark_buffer_upload
     test_gpu_profiler
     test_app_input
     test_app_metrics
