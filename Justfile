@@ -286,6 +286,20 @@ test-integration-apitrace: build
     @{{distrobox}} chmod +x scripts/test_integration_apitrace.sh
     @{{distrobox}} ./scripts/test_integration_apitrace.sh {{apitrace_bin}}
 
+# =============================================================================
+# Performance Benchmarks
+# =============================================================================
+
+# Run NBody buffer upload benchmark (uses real GPU — do NOT run under Xvfb)
+bench-nbody: build
+    @{{build_dir}}/tests/test_benchmark_buffer_upload
+
+# A/B benchmark: compare current branch vs master (or another ref)
+# Usage: just bench-ab [ref_branch] [runs]
+bench-ab ref="master" runs="5": build
+    @chmod +x scripts/benchmark_ab.sh
+    @./scripts/benchmark_ab.sh {{ref}} {{runs}}
+
 # Generate HTML code coverage report (llvm-cov)
 coverage:
     @echo "Building with coverage instrumentation..."
