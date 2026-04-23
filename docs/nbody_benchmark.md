@@ -168,6 +168,38 @@ Concretely:
 3. This baseline **does NOT measure orphaning effectiveness** — it cannot
    distinguish orphan vs non-orphan on llvmpipe.
 
+## A/B Results on Real Hardware
+
+Measured with `just bench-ab` on **Intel Iris Xe (RPL-U), Mesa 25.0.7-2**,
+3 consecutive runs of 5 iterations each:
+
+| Metric | Run 1 | Run 2 | Run 3 | Average |
+|--------|-------|-------|-------|---------|
+| `draw (build+upload+render)` | **-52.6%** | **-39.3%** | **-44.7%** | **~-45%** |
+| `update+upload` | -8.7% | +2.6% | -9.1% | **~0%** (noise) |
+
+### Analysis
+
+**Trail renderer (`draw`): stable ~45% improvement.** The orphaning pattern
+eliminates a real synchronization stall on Mesa/Intel. Without orphaning,
+`glBufferSubData` must wait for the GPU to finish reading the old buffer before
+writing the new one. With `glBufferData(NULL)` + `glBufferSubData`, Mesa
+allocates a new backing store immediately — no stall. The high stddev on master
+(193–682 µs) confirms sporadic stalls that disappear with orphaning.
+
+**Instance update (`update+upload`): no measurable gain.** The instance data is
+small (~50 KB for 14 bodies × `sizeof(SphereInstance)`), not enough to provoke
+a measurable stall. The ±5% variation is statistical noise.
+
+**Key takeaway:** buffer orphaning is most effective on large, frequently
+rebuilt buffers. The trail renderer's ~527 KB per-frame rebuild is the primary
+beneficiary. Instance data is too small to stall noticeably on modern drivers.
+
+!!! note "Driver-dependent behavior"
+    Some drivers (e.g., NVIDIA proprietary) may perform implicit orphaning
+    internally, making the explicit pattern redundant. Mesa/Intel does not,
+    which is why the gain is significant on this hardware.
+
 ### Usage for Optimization (Real GPU)
 
 The primary purpose of this benchmark is to **guide the NBody pipeline
@@ -234,11 +266,12 @@ The recipe:
 
 1. Verifies the working tree is clean (commit or stash first)
 2. Builds and runs the benchmark N times on the current branch
-3. Switches to the reference branch (auto cherry-picks the benchmark test
-   if it doesn't exist on that branch)
+3. Switches to the reference branch (auto cherry-picks all benchmark test
+   commits if the test doesn't exist on that branch)
 4. Builds and runs the benchmark N times on the reference
 5. Switches back to the original branch
-6. Computes mean ± stddev for each metric and prints a comparison table:
+6. Displays the GL renderer and version used for measurement
+7. Computes mean ± stddev for each metric and prints a comparison table:
 
 ```text
 Metric                            current-branch         master       Delta    Change
@@ -254,6 +287,21 @@ draw (build+upload+render)        1029.8±82.1      894.0±55.0  135.8 µs  ▲1
     Run `just bench-ab` from a terminal with access to a real GPU.
     Do **not** run under Xvfb — the results would only measure software
     rendering overhead, not actual CPU↔GPU synchronization stalls.
+
+#### A/B Script Features
+
+- **Build caching**: the reference branch builds into `build-bench-ref/`
+  (separate from the working `build/`). This directory persists across runs,
+  so subsequent A/B comparisons only rebuild changed files (incremental).
+- **GL renderer detection**: prints the GPU driver and version at the top
+  of the results. Warns if a software renderer (llvmpipe/softpipe) is
+  detected, or if the two sides used different renderers.
+- **Multi-commit cherry-pick**: when the benchmark test doesn't exist on
+  the reference branch, the script cherry-picks ALL commits touching the
+  test file (not just the initial add), ensuring features like GL renderer
+  printing are included.
+- **Automatic cleanup**: temporary cherry-picks are never committed; the
+  script restores the reference branch to its original state.
 
 ### Manual A/B (alternative)
 

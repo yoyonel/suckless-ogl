@@ -176,6 +176,41 @@ Concrètement :
 3. Cette baseline **ne mesure PAS l'efficacité de l'orphaning** — elle ne peut
    pas distinguer orphan vs non-orphan sur llvmpipe.
 
+## Résultats A/B sur Matériel Réel
+
+Mesurés avec `just bench-ab` sur **Intel Iris Xe (RPL-U), Mesa 25.0.7-2**,
+3 runs consécutifs de 5 itérations chacun :
+
+| Métrique | Run 1 | Run 2 | Run 3 | Moyenne |
+|----------|-------|-------|-------|---------|
+| `draw (build+upload+render)` | **-52.6%** | **-39.3%** | **-44.7%** | **~-45%** |
+| `update+upload` | -8.7% | +2.6% | -9.1% | **~0%** (bruit) |
+
+### Analyse
+
+**Trail renderer (`draw`) : amélioration stable de ~45%.** Le pattern d'orphaning
+élimine un vrai stall de synchronisation sur Mesa/Intel. Sans orphaning,
+`glBufferSubData` doit attendre que le GPU finisse de lire l'ancien buffer avant
+d'écrire le nouveau. Avec `glBufferData(NULL)` + `glBufferSubData`, Mesa alloue
+un nouveau backing store immédiatement — pas de stall. Le stddev élevé côté
+master (193–682 µs) confirme des stalls sporadiques qui disparaissent avec
+l'orphaning.
+
+**Mise à jour des instances (`update+upload`) : aucun gain mesurable.** Les
+données d'instances sont petites (~50 Ko pour 14 corps × `sizeof(SphereInstance)`),
+insuffisant pour provoquer un stall mesurable. La variation de ±5% est du bruit
+statistique.
+
+**Point clé :** le buffer orphaning est le plus efficace sur les buffers
+volumineux et fréquemment reconstruits. La reconstruction de ~527 Ko par frame
+du trail renderer est le principal bénéficiaire. Les données d'instances sont
+trop petites pour causer un stall notable sur les drivers modernes.
+
+!!! note "Comportement dépendant du driver"
+    Certains drivers (ex : NVIDIA propriétaire) effectuent un orphaning
+    implicite en interne, rendant le pattern explicite redondant. Mesa/Intel
+    ne le fait pas, c'est pourquoi le gain est significatif sur ce matériel.
+
 ### Utilisation pour l'Optimisation (GPU Réel)
 
 L'objectif premier de ce benchmark est de **guider le travail d'optimisation
@@ -243,11 +278,12 @@ La recette :
 
 1. Vérifie que le working tree est propre (commit ou stash d'abord)
 2. Build et exécute le benchmark N fois sur la branche courante
-3. Bascule sur la branche de référence (cherry-pick automatique du test
-   de benchmark s'il n'existe pas sur cette branche)
+3. Bascule sur la branche de référence (cherry-pick automatique de tous les
+   commits du test de benchmark s'il n'existe pas sur cette branche)
 4. Build et exécute le benchmark N fois sur la référence
 5. Retourne sur la branche originale
-6. Calcule moyenne ± écart-type pour chaque métrique et affiche un tableau :
+6. Affiche le renderer GL et la version utilisés pour la mesure
+7. Calcule moyenne ± écart-type pour chaque métrique et affiche un tableau :
 
 ```text
 Metric                            branche-courante         master       Delta    Change
@@ -264,6 +300,23 @@ draw (build+upload+render)        1029.8±82.1      894.0±55.0  135.8 µs  ▲1
     Ne **pas** exécuter sous Xvfb — les résultats ne mesureraient que
     l'overhead du rendu logiciel, pas les vrais stalls de synchronisation
     CPU↔GPU.
+
+#### Fonctionnalités du Script A/B
+
+- **Cache de build** : la branche de référence est compilée dans
+  `build-bench-ref/` (séparé du `build/` courant). Ce répertoire persiste
+  entre les runs, les comparaisons suivantes ne recompilent que les fichiers
+  modifiés (incrémental).
+- **Détection du renderer GL** : affiche le driver GPU et la version en haut
+  des résultats. Avertit si un renderer logiciel (llvmpipe/softpipe) est
+  détecté, ou si les deux côtés utilisent des renderers différents.
+- **Cherry-pick multi-commit** : quand le test de benchmark n'existe pas sur
+  la branche de référence, le script cherry-pick TOUS les commits touchant
+  le fichier de test (pas seulement l'ajout initial), garantissant que des
+  fonctionnalités comme l'affichage du renderer GL sont incluses.
+- **Nettoyage automatique** : les cherry-picks temporaires ne sont jamais
+  committés ; le script restaure la branche de référence dans son état
+  original.
 
 ### Comparaison A/B Manuelle (alternative)
 
