@@ -20,6 +20,15 @@ repos:
         pass_filenames: false
         stages: [pre-commit]
 
+    -   id: check-nolint
+        name: check-nolint
+        description: Reject new NOLINT suppressions vs origin/master.
+        entry: bash scripts/check_nolint.sh
+        language: system
+        files: \.(c|h)$
+        pass_filenames: false
+        stages: [pre-commit]
+
     -   id: make-format-check
         name: make format-check
         description: Verify formatting without modifying files (dry-run).

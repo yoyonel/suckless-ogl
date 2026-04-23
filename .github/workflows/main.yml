@@ -41,10 +41,10 @@ jobs:
             ${{ runner.os }}-cltcache-
 
       - name: Check for new NOLINT suppressions
-        if: github.event_name == 'pull_request'
         run: |
           git config --global --add safe.directory '*'
-          make check-nolint CONTAINER_RUN="" NOLINT_BASE_REF="origin/${{ github.base_ref }}"
+          BASE="origin/${{ github.base_ref || 'master' }}"
+          make check-nolint CONTAINER_RUN="" NOLINT_BASE_REF="${BASE}"
 
       - name: Run Format & Lint
         run: |
