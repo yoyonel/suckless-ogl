@@ -21,12 +21,14 @@
  * and compatibility with SIMD-based sorting or physics.
  */
 typedef struct {
-	mat4 model;      /**< 4x4 Transformation matrix. */
-	vec3 albedo;     /**< Base color (linear RGB). */
-	float metallic;  /**< PBR metallic factor (0.0 - 1.0). */
-	float roughness; /**< PBR roughness factor (0.0 - 1.0). */
-	float ao;        /**< Ambient occlusion factor. */
-	float padding;   /**< Alignment padding. */
+	mat4 model;       /**< 4x4 Transformation matrix. */
+	vec3 albedo;      /**< Base color (linear RGB). */
+	float metallic;   /**< PBR metallic factor (0.0 - 1.0). */
+	float roughness;  /**< PBR roughness factor (0.0 - 1.0). */
+	float ao;         /**< Ambient occlusion factor. */
+	float padding;    /**< Alignment padding. */
+	vec3 prev_center; /**< Previous frame center (for per-object motion
+	                     blur). */
 } __attribute__((aligned(SIMD_ALIGNMENT))) SphereInstance;
 
 /**
@@ -58,6 +60,15 @@ void instanced_group_init(InstancedGroup* group, const SphereInstance* data,
  */
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
                                GLuint ebo);
+
+/**
+ * @brief Updates the instance VBO with new data (e.g., N-body positions).
+ * @param group Pointer to the group.
+ * @param data New instance data array.
+ * @param count Number of instances (must not exceed original allocation).
+ */
+void instanced_group_update(InstancedGroup* group, const SphereInstance* data,
+                            int count);
 
 /**
  * @brief Executes an indexed instanced draw call.

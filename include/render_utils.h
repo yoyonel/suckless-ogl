@@ -220,10 +220,13 @@ GLuint render_utils_create_texture_2d(int width, int height,
  * @param offset_albedo Byte offset of the albedo field.
  * @param offset_metallic Byte offset of the metallic field (start of PBR
  * block).
+ * @param offset_prev_center Byte offset of the prev_center field (motion
+ * blur).
  */
 void render_utils_setup_sphere_instance_attributes(GLsizei stride,
                                                    size_t offset_albedo,
-                                                   size_t offset_metallic);
+                                                   size_t offset_metallic,
+                                                   size_t offset_prev_center);
 
 // -----------------------------------------------------------------------------
 // State Management

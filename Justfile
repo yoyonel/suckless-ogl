@@ -492,6 +492,10 @@ lint-full:
     @{{distrobox}} python3 {{justfile_directory()}}/scripts/lint_incremental.py .lint_full
     @echo "✓ Full linting passed"
 
+# Check for new NOLINT suppressions introduced vs a base ref (default: origin/master)
+check-nolint base_ref="origin/master":
+    @bash scripts/check_nolint.sh {{base_ref}}
+
 # Trace Performance Analysis
 trace-perf:
     @echo "Analyzing GPU performance (Advanced Analysis)..."
@@ -506,6 +510,7 @@ clean:
 # =============================================================================
 
 tracy_legacy := `if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ -n "$WAYLAND_DISPLAY" ]; then echo OFF; else echo ON; fi`
+tracy_port := env_var_or_default("TRACY_PORT", `ss -tlnH sport = :8086 2>/dev/null | grep -q . && echo 8087 || echo 8086`)
 
 # Build Tracy Server (X11 by default on Linux if LEGACY=ON)
 build-tracy-server:
@@ -514,13 +519,15 @@ build-tracy-server:
     @{{distrobox}} cmake -B deps/tracy/profiler/build -S deps/tracy/profiler -DCMAKE_BUILD_TYPE=Release -DLEGACY={{tracy_legacy}}
     @{{distrobox}} cmake --build deps/tracy/profiler/build --parallel {{nprocs}}
 
-# Run Tracy Server
+# Run Tracy Server (auto-detects free port, override with TRACY_PORT=N)
 tracy-server:
-    @./deps/tracy/profiler/build/tracy-profiler
+    @echo "Tracy server listening on port {{tracy_port}}"
+    @./deps/tracy/profiler/build/tracy-profiler -a 127.0.0.1 -p {{tracy_port}}
 
-# Build and run application with Tracy enabled
+# Build and run application with Tracy enabled (auto-detects free port)
 run-tracy: build-tracy
-    @./build-tracy/app
+    @echo "Tracy client connecting on port {{tracy_port}}"
+    @TRACY_PORT={{tracy_port}} ./build-tracy/app
 
 # Build application with Tracy enabled
 build-tracy:
@@ -549,7 +556,8 @@ test-integration-tracy-release: build-tracy-release
 
 # Run application with Tracy enabled in Release mode
 run-tracy-release: build-tracy-release
-    @./build-tracy-release/app
+    @echo "Tracy client connecting on port {{tracy_port}}"
+    @TRACY_PORT={{tracy_port}} ./build-tracy-release/app
 
 # =============================================================================
 # RenderDoc (Frame Analysis)

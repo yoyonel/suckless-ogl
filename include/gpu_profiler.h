@@ -30,6 +30,7 @@ static const int GPU_PROFILER_POSTPROCESS_COLOR = 0xB48EAD;
 static const int GPU_PROFILER_UI_COLOR = 0x4C566A;
 static const int GPU_PROFILER_GI_SYNC_COLOR = 0x8FBCBB;
 static const int GPU_PROFILER_GI_DEBUG_COLOR = 0xB48EAD;
+static const int GPU_PROFILER_NBODY_COLOR = 0xD8DEE9;
 
 /* --- Capture Settings --- */
 static const float GPU_PROFILER_WINDOW_DURATION_S = 0.5F;

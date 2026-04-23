@@ -16,7 +16,7 @@ Nous utilisons `clang-tidy` pour l'analyse statique. La configuration est défin
 Nous privilégions la philosophie « Suckless » :
 
 - Minimiser les dépendances externes.
-- Éviter les commentaires `NOLINT` sauf si absolument nécessaire (ex. : variables globales pour le contexte de test).
+- **Les commentaires `NOLINT` sont interdits** — corriger la cause racine (voir [Politique anti-suppression](#politique-anti-suppression) ci-dessous).
 - Utiliser `static const` ou `enum` plutôt que des nombres magiques.
 
 ## Mise en cache incrémentielle (fichiers sentinelles)
@@ -95,3 +95,37 @@ just lint-shaders-strict
 Exécute la validation avec `--target-env opengl` (règles SPIR-V). Ce mode remonte les problèmes comme les qualificateurs `layout(location=N)` manquants, qui empêchent silencieusement le debugger de shaders RenderDoc de fonctionner.
 
 Depuis mars 2026, **les 33 fichiers shader passent la validation SPIR-V stricte**. Le projet impose des `layout(location=N)` explicites sur tous les varyings et uniforms non-opaques, et `layout(binding=N)` sur tous les samplers/images. Voir [renderdoc_guide.fr.md](renderdoc_guide.fr.md#8-debogage-des-shaders-compatibilite-spir-v) pour le détail complet.
+
+## Politique anti-suppression
+
+**`NOLINT`, `NOLINTNEXTLINE` et `NOLINTBEGIN`/`NOLINTEND` sont interdits.** L'approche correcte est toujours de corriger la cause racine.
+
+Un garde automatisé (`scripts/check_nolint.sh`) applique cette règle à chaque étape du workflow de développement :
+
+| Étape | Déclencheur | Mécanisme | Bloquant |
+|-------|-------------|-----------|----------|
+| **Commit local** | `git commit` sur `*.c` / `*.h` | Hook pre-commit (`check-nolint` dans `.pre-commit-config.yaml`) | Oui (contournable : `--no-verify`) |
+| **Manuel local** | `just check-nolint` ou `make check-nolint` | Invocation directe du script | Oui (exit 1) |
+| **CI — push** | Push sur n'importe quelle branche | Step du job `lint-and-format` | Oui — fait échouer le job |
+| **CI — pull request** | PR ouverte/mise à jour ciblant master | Step du job `lint-and-format` | Oui — fait échouer le job |
+| **CI — planifié** | Cron nocturne (01h00 UTC) | Step du job `lint-and-format` | Oui — fait échouer le job |
+
+### Fonctionnement
+
+Le script compare `git diff <base_ref>...HEAD` sur les fichiers `*.c` et `*.h`, en cherchant les lignes ajoutées (`+`) contenant `NOLINT`. Si des occurrences sont trouvées, le check échoue avec la liste de toutes les violations.
+
+```bash
+# Utilisation locale
+just check-nolint                    # Compare vs origin/master (défaut)
+just check-nolint origin/main        # Ref de base personnalisée
+make check-nolint NOLINT_BASE_REF=origin/main
+```
+
+### Politique d'exception
+
+Si la suppression est la **seule option viable**, elle nécessite :
+
+1. Un commentaire explicite expliquant pourquoi le fix n'est pas possible.
+2. Une évaluation confirmant qu'aucune alternative n'existe.
+3. Un ticket de suivi pour revisiter et retirer la suppression.
+4. **Validation explicite de l'utilisateur** avant le commit (utiliser `--no-verify`).

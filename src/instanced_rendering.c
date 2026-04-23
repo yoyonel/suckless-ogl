@@ -22,7 +22,8 @@ static void setup_instance_attributes(void)
 {
 	render_utils_setup_sphere_instance_attributes(
 	    (GLsizei)sizeof(SphereInstance), offsetof(SphereInstance, albedo),
-	    offsetof(SphereInstance, metallic));
+	    offsetof(SphereInstance, metallic),
+	    offsetof(SphereInstance, prev_center));
 }
 
 void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
@@ -62,6 +63,15 @@ void instanced_group_bind_mesh(InstancedGroup* group, GLuint vbo, GLuint nbo,
 	}
 
 	glBindVertexArray(0);
+}
+
+void instanced_group_update(InstancedGroup* group, const SphereInstance* data,
+                            int count)
+{
+	group->instance_count = count;
+	glBindBuffer(GL_ARRAY_BUFFER, group->instance_vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 0,
+	                (GLsizeiptr)(count * sizeof(SphereInstance)), data);
 }
 
 void instanced_group_draw(InstancedGroup* group, size_t index_count)

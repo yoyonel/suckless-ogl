@@ -30,19 +30,36 @@ graph TD
 3. **Pondération avec la Profondeur (Depth Weighting) :** Protège le premier plan en désactivant le mélange de couleurs lorsque l'échantillon prélevé est trop éloigné derrière le pixel central (`depthDiff > 1.0`).
 4. **Bruit de Gradient (Interleaved Gradient Noise) :** Empêche le phénomène de *banding* visuel en transformant les stries liées à un faible nombre d'échantillons en bruit esthétique de style pellicule.
 
-### 📉 Limite de l'implémentation actuelle : Camera-Only
+### ✅ Vélocité Per-Object (Implémentée)
 
-Dans le fichier `pbr_ibl_instanced.vert`, on observe que la configuration actuelle ne calcule le déplacement (Velocity) que par le biais de l'ancienne position de la caméra (`previousViewProj` * la position de la géométrie locale actuelle) :
+Depuis la branche `feat/per-object-motion-blur`, le velocity buffer prend désormais en compte **à la fois le mouvement caméra et le mouvement per-objet**. C'était la limitation la plus critique de l'approche camera-only initiale.
+
+#### Chemin de rendu instancié (`pbr_ibl_instanced.vert`)
+
+Un nouvel attribut vertex `i_prev_center` (location 8) stocke la position du centre de la sphère à la frame précédente. Le vertex shader reconstruit la position monde précédente :
 
 ```glsl
-CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
-PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
+vec3 prevWorldPos = i_prev_center + (WorldPos - vec3(i_model[3]));
+PreviousClipPos = previousViewProj * vec4(prevWorldPos, 1.0);
 ```
 
-**Pourquoi c'est tout à fait justifié (pour le moment) :**
-Dans **Suckless OGL**, tous les objets 3D (comme la grille de sphères PBR) sont statiques dans l'espace "World". Seule la caméra se déplace ou effectue des rotations. Par conséquent, il n'y a pas (encore) de concept de vélocité "Objet" (Object Velocity). Le **Camera Motion Blur** est donc 100% suffisant à ce stade du développement.
+Cela capture à la fois le mouvement caméra (via `previousViewProj`) et le mouvement objet (via `i_prev_center != centre actuel`).
 
-**Toutefois**, dès lors que le moteur implémentera des entités dynamiques (ex: des ennemis ou des objets physiques qui tombent), la vélocité propre de l'objet (sa *Previous World Position*) ainsi calculée sera `0` ou du moins faussée devant ne refléter que de la vélocité caméra. Un objet traversant rapidement l'écran devant une caméra fixe ne s'imprimera pas dans le *Velocity Buffer* en l'état actuel et ressortira hyper net par dessus le reste de l'image.
+#### Chemin Billboard/SSBO (`pbr_ibl_billboard.vert` / `.frag`)
+
+La struct SSBO stocke `prev_center_x/y/z` en 3 floats séparés (pas `vec3`, pour respecter l'alignement std430 à l'offset 92). Le fragment shader reconstruit :
+
+```glsl
+vec3 prevHitPos = PrevSphereCenter + (sphereHitPos - SphereCenter);
+vec4 prevClip = previousViewProj * vec4(prevHitPos, 1.0);
+```
+
+#### Flux de données
+
+- `NBodyParticle.prev_position` capture la position avant chaque pas physique
+- `nbody_write_instances()` copie `prev_position` → `SphereInstance.prev_center`
+- Les sphères statiques de la grille ont `prev_center == centre actuel` → vélocité objet nulle
+- `SphereInstance` reste à 128 octets (aligné SIMD, validé par `_Static_assert`)
 
 ---
 
@@ -68,12 +85,8 @@ Afin d'atteindre l'état de l'art, voici les optimisations et changements possib
         3. Créer une passe spécifique (via compute ou quad écran) ne calculant *uniquement* que l'effet de flou dans cette texture allégée en couleurs et vélocités.
         4. Écrire et exécuter l'étape d'*upsample* bilatéral durant la passe `postprocess.frag` ou dans une passe dédiée, afin de recomposer judicieusement l'image finale sur les bords des objets définis par le `depth buffer`.
 
-* **Per-Object et Skinned Velocity (Critique) :**
-  Pour que le motion blur s'applique aux objets en mouvement ou aux personnages, il faut stocker et transmettre la matrice Modèle de la frame précédente pour *chaque* objet.
-  ```glsl
-  vec4 PrevWorldPos = vec3(i_previous_model * vec4(in_position, 1.0));
-  PreviousClipPos = previousViewProj * PrevWorldPos;
-  ```
+* **Per-Object et Skinned Velocity :**
+  ~~Pour que le motion blur s'applique aux objets en mouvement ou aux personnages, il faut stocker et transmettre la matrice Modèle de la frame précédente pour *chaque* objet.~~ ✅ **Implémenté** — la vélocité per-objet est désormais active via `prev_center` dans `SphereInstance`. La prochaine étape est la vélocité skinned per-vertex pour les maillages animés.
 * **Soft Depth-Testing :**
   Remplacer le test booléen et brutal de profondeur par une pondération lissée à l'aide d'un `smoothstep()`. Des limites dures créent un bruit granuleux ou des tremblements de pixels (flickering) sur les arêtes en mouvement.
 
@@ -124,4 +137,4 @@ graph LR
 ```
 
 ### Le Verdict
-Pour permettre à Suckless OGL de concurrencer commercialement ces rendus, l'ajout du *Camera-only* est insuffisant. **L'implémentation du stockage de l'ancienne matrice de modélisation (Previous Model Matrix)** par instance (dans `pbr_ibl_instanced.vert`) est l'étape la plus immédiate et gratifiante à entreprendre.
+Suckless OGL implémente désormais le **motion blur per-objet** via le stockage de `prev_center` dans les données d'instance, couvrant à la fois la vélocité caméra et objet dans le velocity buffer. Les pistes d'amélioration restantes sont : la **vélocité skinned per-vertex** pour les maillages animés, la **reconstruction demi-résolution** pour les performances, et l'**échantillonnage adaptatif** basé sur l'amplitude de vélocité par pixel.

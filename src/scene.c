@@ -123,6 +123,9 @@ static void scene_init_instancing(Scene* scene)
 		data[i].metallic = mat->metallic;
 		data[i].roughness = mat->roughness;
 		data[i].ao = 1.0F;
+		/* Static grid: prev_center = current center (no object motion)
+		 */
+		glm_vec3_copy(position, data[i].prev_center);
 	}
 
 	instanced_group_init(&scene->instanced_group, data, total_count);
@@ -547,6 +550,7 @@ void scene_cleanup(Scene* scene)
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
+	trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
@@ -999,7 +1003,126 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 #endif
 
+	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
+	 */
+	if (scene->nbody_mode) {
+		GPU_STAGE_PROFILER(profiler, "NBody Trails",
+		                   GPU_PROFILER_NBODY_COLOR);
+		gl_debug_push_group("NBody_Trails");
+		trail_renderer_draw(&scene->trail_renderer, view, proj,
+		                    camera_pos);
+		gl_debug_pop_group();
+	}
+
 	if (scene->show_probe_grid) {
 		light_probe_render_debug(&scene->probe_grid, view, proj);
 	}
+}
+
+/* ---------------------------------------------------------------------------
+ * N-Body simulation integration
+ * ---------------------------------------------------------------------------*/
+
+void scene_toggle_nbody(Scene* scene)
+{
+	scene->nbody_mode = !scene->nbody_mode;
+
+	if (scene->nbody_mode) {
+		/* Initialize simulation and trails */
+		nbody_init_preset(&scene->nbody_sim);
+
+		int count = nbody_get_count(&scene->nbody_sim);
+		if (!trail_renderer_init(&scene->trail_renderer, count)) {
+			scene->nbody_mode = 0;
+			return;
+		}
+
+		/* Set trail colors from body albedos (HDR-scaled) */
+		for (int i = 0; i < count; i++) {
+			trail_renderer_set_color(
+			    &scene->trail_renderer, i,
+			    scene->nbody_sim.bodies[i].albedo);
+		}
+
+		/* Write initial instance data and update GPU */
+		SphereInstance instances[NBODY_MAX_BODIES];
+		nbody_write_instances(&scene->nbody_sim, instances);
+		instanced_group_update(&scene->instanced_group, instances,
+		                       count);
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+		if (scene->sphere_instances) {
+			safe_memcpy(scene->sphere_instances,
+			            sizeof(SphereInstance) * (size_t)count,
+			            instances,
+			            sizeof(SphereInstance) * (size_t)count);
+			scene->sphere_instance_count = count;
+		}
+		scene->billboard_group.instance_count = count;
+#endif
+	} else {
+		/* Restore original material grid — clean up before re-init
+		 * to avoid leaking GPU buffers and CPU allocations */
+		trail_renderer_cleanup(&scene->trail_renderer);
+#ifdef USE_TRANSPARENT_BILLBOARDS
+		if (scene->sphere_instances) {
+			platform_aligned_free(scene->sphere_instances);
+			scene->sphere_instances = NULL;
+		}
+		sphere_sorter_cleanup(&scene->sphere_sorter);
+#endif
+		instanced_group_cleanup(&scene->instanced_group);
+		billboard_group_cleanup(&scene->billboard_group);
+		scene_init_instancing(scene);
+	}
+}
+
+void scene_nbody_update(Scene* scene, float delta_time)
+{
+	if (!scene->nbody_mode) {
+		return;
+	}
+
+	/* Smooth time-scale transition (decelerate → pause → reverse) */
+	nbody_update_time_scale(&scene->nbody_sim, delta_time);
+
+	/* Advance physics (Velocity Verlet, O(N²) gravity) */
+	{
+		PROFILE_ZONE(verlet_ctx, "NBody Verlet");
+		nbody_step(&scene->nbody_sim, delta_time);
+		PROFILE_ZONE_END(verlet_ctx);
+	}
+
+	/* Record trail positions into ring buffers */
+	{
+		PROFILE_ZONE(trail_ctx, "NBody Trail Sample");
+		trail_renderer_record(&scene->trail_renderer, &scene->nbody_sim,
+		                      delta_time);
+		PROFILE_ZONE_END(trail_ctx);
+	}
+
+	/* Build instance data and upload to GPU */
+	int count = nbody_get_count(&scene->nbody_sim);
+	SphereInstance instances[NBODY_MAX_BODIES];
+	{
+		PROFILE_ZONE(inst_ctx, "NBody Instance Build");
+		nbody_write_instances(&scene->nbody_sim, instances);
+		PROFILE_ZONE_END(inst_ctx);
+	}
+	{
+		PROFILE_ZONE(upload_ctx, "NBody VBO Upload");
+		instanced_group_update(&scene->instanced_group, instances,
+		                       count);
+		PROFILE_ZONE_END(upload_ctx);
+	}
+
+#ifdef USE_TRANSPARENT_BILLBOARDS
+	if (scene->sphere_instances) {
+		safe_memcpy(scene->sphere_instances,
+		            sizeof(SphereInstance) * (size_t)count, instances,
+		            sizeof(SphereInstance) * (size_t)count);
+		scene->sphere_instance_count = count;
+	}
+	scene->billboard_group.instance_count = count;
+#endif
 }

@@ -188,3 +188,73 @@ Reference mapping for the main PBR shaders (billboard and instanced share the sa
 | 2 | `brdfLUT` | sampler2D |
 | 3 | `ProbeBuffer` | SSBO |
 | 8–14 | `u_SHTexture0`–`6` | sampler3D |
+
+## 9. Pixel History & "Pixel Shader Debug Failed"
+
+### 9.1 Understanding the Error
+
+When right-clicking a pixel and selecting **Pixel History**, RenderDoc lists every draw call that touched that pixel. Each row shows the **Event ID (EID)**, a before/after preview, and a **Debug** button.
+
+Clicking **Debug** on a row replays that single fragment shader invocation so you can step through its GLSL source line by line. However, RenderDoc sometimes shows:
+
+> **Pixel shader debug failed** — most likely this is caused by no write to the pixel at the current event.
+
+This means: *"I tried to replay the fragment shader for this draw call at the pixel you selected, but that draw call did not actually produce a visible fragment at those coordinates."*
+
+### 9.2 Common Causes
+
+| Cause | Explanation |
+|-------|-------------|
+| **Wrong EID selected** | You selected a draw call in the Event Browser that doesn't touch the pixel. Multiple draws happen in the same pass — only some write to any given pixel. |
+| **`discard` in the fragment shader** | The shader discards fragments below a threshold (e.g., `if (alpha < 0.005) { discard; }`). The fragment was executed but produced no output. RenderDoc cannot debug a discarded fragment. |
+| **Depth/stencil rejection** | The fragment was killed by depth or stencil testing before the fragment shader ran, or the fragment shader ran but the result was discarded by a later depth test. |
+| **Additive blending with zero contribution** | With `GL_SRC_ALPHA` blending, a fragment with `alpha ≈ 0` contributes nothing visible, and RenderDoc may not record it as a "write". |
+
+### 9.3 The Fix: Debug from Pixel History (Not Event Browser)
+
+The key insight: **always start from the Pixel History panel**, not the Event Browser.
+
+**Step-by-step:**
+
+1. **Right-click** the pixel you want to inspect in the Texture Viewer.
+2. Open the **Pixel History** tab (bottom-right, next to "Pixel Context").
+3. In the Pixel History list, find the row where **Tex After** shows the color you're interested in. The row will show:
+    - The EID (e.g., `EID 72`)
+    - `1 Fragments touc...` — confirms the fragment shader executed and wrote to this pixel
+    - Before/after color values
+4. **Expand** that row (click the `>` arrow) to see the individual fragment.
+5. Click the **Debug** button on the **fragment row** (not the event row).
+
+This works because RenderDoc knows that *this specific fragment* passed all tests (depth, stencil, discard) and actually wrote to the framebuffer.
+
+!!! tip "Double-click shortcut"
+    You can **double-click** an EID row in Pixel History to jump directly to that event in the Event Browser. This is useful to inspect the pipeline state (bound textures, uniforms, blend mode) of the draw call that wrote the pixel.
+
+### 9.4 Trail Shader Specifics
+
+The trail fragment shader (`shaders/trail.frag`) uses an early `discard` for near-transparent fragments:
+
+```glsl
+if (alpha < 0.005) {
+    discard;
+}
+```
+
+This means:
+- **Most trail fragments at the ribbon edges will fail debug** — they are discarded by the alpha threshold.
+- **Center-of-ribbon fragments will debug fine** — they have high alpha and pass the threshold.
+- If you want to debug an edge fragment, temporarily comment out the `discard` block, rebuild, and recapture. Restore it afterward.
+
+### 9.5 Batched Draws (glMultiDrawArrays) in Pixel History
+
+When using `glMultiDrawArrays(GL_TRIANGLE_STRIP, starts, counts, N)`, RenderDoc expands the single API call into N sub-draws in the Event Browser:
+
+```text
+67  glMultiDrawArrays(14)       ← parent event
+ 68  glMultiDrawArrays[0](494)  ← sub-draw 0 (body 0, 494 vertices)
+ 69  glMultiDrawArrays[1](494)  ← sub-draw 1 (body 1)
+ ...
+ 81  glMultiDrawArrays[13](494) ← sub-draw 13 (body 13)
+```
+
+In Pixel History, the EID points to the **specific sub-draw** that wrote the pixel (e.g., `EID 72 — glMultiDrawArrays[5](494)`). This gives the same per-body granularity as individual `glDrawArrays` calls, but with lower CPU overhead at runtime.

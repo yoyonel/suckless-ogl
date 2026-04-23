@@ -31,6 +31,7 @@ L'audit a porté sur les structures suivantes identifiées comme gérant de la m
 | `PBRMaterial` | `name` (tableau fixe) | Nul | Structure POD (Plain Old Data). Copie sûre. |
 | `MaterialLib` | `materials` (tableau dynamique) | Nul | Géré exclusivement par pointeurs (`MaterialLib*`). Pas de copie par valeur. |
 | `SphereInstance` | Aucun (Vecteurs/Matrices) | Nul | Structure POD. Copie sûre (utilisée massivement dans `sphere_sorting.c`). |
+| `scene_init_instancing` | instance VBO, billboard VBO, `sphere_instances`, `sphere_sorter` | **Corrigé** | Le chemin de ré-init N-body OFF appelle désormais le cleanup avant la ré-init pour éviter une fuite de ~27 Ko par bascule. |
 
 ### Points Particulièrement Examinés
 

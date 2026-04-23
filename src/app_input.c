@@ -9,6 +9,7 @@
 #include "env_manager.h"
 #include "glad/glad.h"
 #include "log.h"
+#include "nbody.h"
 #include "perf_mode.h"
 #include "postprocess_input.h"
 #include "profiler.h"
@@ -16,6 +17,7 @@
 #include "utils.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stb_image_write.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +27,18 @@ enum { PBR_DEBUG_MODE_COUNT = 10 };
 
 /* Notification constants */
 enum { NOTIF_BUF_SIZE = 128 };
+
+/* N-Body simulation speed constants (powers of 2 for exact round-trip). */
+static const float SIM_SPEED_FACTOR = 2.0F;
+static const float SIM_SPEED_MAX = 64.0F;
+static const float SIM_SPEED_MIN = 0.125F;
+static const float SIM_SPEED_INV_FACTOR = 0.5F;
+
+/* N-Body gravity constants (power-of-2 steps, with G=0 special case). */
+static const float GRAVITY_FACTOR = 2.0F;
+static const float GRAVITY_MAX = 128.0F;
+static const float GRAVITY_MIN_POSITIVE = 0.125F;
+static const float GRAVITY_INV_FACTOR = 0.5F;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -430,6 +444,129 @@ static void handle_system_key_input(App* app, int key, int mods)
 	}
 }
 
+static bool handle_g_key_input(App* app, int mods)
+{
+	/* Ctrl+Shift+G: toggle time reversal */
+	const int ctrl_shift =
+	    (int)((unsigned)GLFW_MOD_SHIFT | (unsigned)GLFW_MOD_CONTROL);
+	if (((unsigned)mods & (unsigned)ctrl_shift) == (unsigned)ctrl_shift) {
+		NBodySim* sim = &app->scene.nbody_sim;
+		sim->target_time_scale = -sim->target_time_scale;
+		const char* dir =
+		    (sim->target_time_scale < 0.0F) ? "REVERSE" : "FORWARD";
+		LOG_INFO("suckless-ogl.app", "Time direction: %s (%.1fx)", dir,
+		         (double)sim->target_time_scale);
+		char buf[NOTIF_BUF_SIZE];
+		(void)safe_snprintf(buf, sizeof(buf), "Time: %s (%.1fx)", dir,
+		                    (double)fabsf(sim->target_time_scale));
+		action_notifier_push(&app->notifier, buf, NOTIF_DUR_LONG);
+		return true;
+	}
+	if (!check_flag(mods, GLFW_MOD_SHIFT)) {
+		return false;
+	}
+	scene_toggle_nbody(&app->scene);
+	LOG_INFO("suckless-ogl.app", "N-Body mode: %s",
+	         app->scene.nbody_mode ? "ON" : "OFF");
+	action_notifier_push(&app->notifier,
+	                     app->scene.nbody_mode ? "N-Body Gravity: ON"
+	                                           : "N-Body Gravity: OFF",
+	                     NOTIF_DUR_LONG);
+	return true;
+}
+
+static void handle_sim_speed_input(App* app, bool speed_up)
+{
+	NBodySim* sim = &app->scene.nbody_sim;
+	float mag = fabsf(sim->target_time_scale);
+	float sign = (sim->target_time_scale < 0.0F) ? -1.0F : 1.0F;
+	if (speed_up) {
+		mag *= SIM_SPEED_FACTOR;
+		if (mag > SIM_SPEED_MAX) {
+			mag = SIM_SPEED_MAX;
+		}
+	} else {
+		mag *= SIM_SPEED_INV_FACTOR;
+		if (mag < SIM_SPEED_MIN) {
+			mag = SIM_SPEED_MIN;
+		}
+	}
+	sim->target_time_scale = sign * mag;
+	sim->time_scale = sim->target_time_scale;
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Sim Speed: %.1fx", (double)mag);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_gravity_input(App* app, bool increase)
+{
+	NBodySim* sim = &app->scene.nbody_sim;
+	if (increase) {
+		if (sim->gravity == 0.0F) {
+			sim->gravity = GRAVITY_MIN_POSITIVE;
+		} else {
+			sim->gravity *= GRAVITY_FACTOR;
+			if (sim->gravity > GRAVITY_MAX) {
+				sim->gravity = GRAVITY_MAX;
+			}
+		}
+	} else {
+		sim->gravity *= GRAVITY_INV_FACTOR;
+		if (sim->gravity < GRAVITY_MIN_POSITIVE) {
+			sim->gravity = 0.0F;
+		}
+	}
+	/* Recalculate reference energy so drift only measures numerical error,
+	 * not the intentional physics parameter change. */
+	sim->initial_energy = nbody_total_energy(sim);
+
+	char buf[NOTIF_BUF_SIZE];
+	if (sim->gravity == 0.0F) {
+		(void)safe_snprintf(buf, sizeof(buf), "Gravity: OFF");
+	} else {
+		(void)safe_snprintf(buf, sizeof(buf), "Gravity: G=%.3f",
+		                    (double)sim->gravity);
+	}
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_sim_or_gravity_input(App* app, int mods, bool increase)
+{
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		handle_gravity_input(app, increase);
+	} else {
+		handle_sim_speed_input(app, increase);
+	}
+}
+
+static void handle_o_key_input(App* app)
+{
+	app->scene.sorting_mode =
+	    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
+	const char* mode_name = "Unknown";
+	const char* notif_name = "Sort: Unknown";
+
+	switch (app->scene.sorting_mode) {
+		case SORTING_MODE_CPU_QSORT:
+			mode_name = "CPU (qsort)";
+			notif_name = "Sort: CPU (qsort)";
+			break;
+		case SORTING_MODE_CPU_RADIX:
+			mode_name = "CPU (Radix)";
+			notif_name = "Sort: CPU (Radix)";
+			break;
+		case SORTING_MODE_GPU_BITONIC:
+			mode_name = "GPU (Bitonic)";
+			notif_name = "Sort: GPU (Bitonic)";
+			break;
+		default:
+			break;
+	}
+
+	LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s", mode_name);
+	action_notifier_push(&app->notifier, notif_name, NOTIF_DUR_NORMAL);
+}
+
 void handle_app_input(App* app, int key, int mods)
 {
 	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
@@ -466,32 +603,7 @@ void handle_app_input(App* app, int key, int mods)
 			                     NOTIF_DUR_NORMAL);
 			break;
 		case GLFW_KEY_O:
-			app->scene.sorting_mode =
-			    (app->scene.sorting_mode + 1) % SORTING_MODE_COUNT;
-			const char* mode_name = "Unknown";
-			const char* notif_name = "Sort: Unknown";
-
-			switch (app->scene.sorting_mode) {
-				case SORTING_MODE_CPU_QSORT:
-					mode_name = "CPU (qsort)";
-					notif_name = "Sort: CPU (qsort)";
-					break;
-				case SORTING_MODE_CPU_RADIX:
-					mode_name = "CPU (Radix)";
-					notif_name = "Sort: CPU (Radix)";
-					break;
-				case SORTING_MODE_GPU_BITONIC:
-					mode_name = "GPU (Bitonic)";
-					notif_name = "Sort: GPU (Bitonic)";
-					break;
-				default:
-					break;
-			}
-
-			LOG_INFO("suckless-ogl.app", "Sphere Sorting: %s",
-			         mode_name);
-			action_notifier_push(&app->notifier, notif_name,
-			                     NOTIF_DUR_NORMAL);
+			handle_o_key_input(app);
 			break;
 		case GLFW_KEY_T:
 			app->env_mgr.env_transition_mode =
@@ -536,6 +648,17 @@ void handle_app_input(App* app, int key, int mods)
 			                         ? "Skybox: ON"
 			                         : "Skybox: OFF",
 			                     NOTIF_DUR_NORMAL);
+			break;
+		case GLFW_KEY_G:
+			if (handle_g_key_input(app, mods)) {
+				return;
+			}
+			break;
+		case GLFW_KEY_PERIOD:
+			handle_sim_or_gravity_input(app, mods, true);
+			break;
+		case GLFW_KEY_COMMA:
+			handle_sim_or_gravity_input(app, mods, false);
 			break;
 		default:
 			break;

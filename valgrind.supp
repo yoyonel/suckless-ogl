@@ -33,3 +33,17 @@
    fun:glfwInit
    ...
 }
+{
+   mesa_gallium_cond
+   Memcheck:Cond
+   ...
+   obj:*/libgallium*.so*
+   ...
+}
+{
+   mesa_gallium_leaks
+   Memcheck:Leak
+   ...
+   obj:*/libgallium*.so*
+   ...
+}

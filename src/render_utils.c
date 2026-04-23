@@ -274,7 +274,8 @@ GLuint render_utils_create_texture_2d(int width, int height,
 
 void render_utils_setup_sphere_instance_attributes(GLsizei stride,
                                                    size_t offset_albedo,
-                                                   size_t offset_metallic)
+                                                   size_t offset_metallic,
+                                                   size_t offset_prev_center)
 {
 	GLuint index_vattrib = 2; /* Start at 2 (0=Pos, 1=Norm usually) */
 
@@ -301,6 +302,13 @@ void render_utils_setup_sphere_instance_attributes(GLsizei stride,
 	glEnableVertexAttribArray(index_vattrib);
 	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
 	                      utils_buffer_offset(offset_metallic));
+	glVertexAttribDivisor(index_vattrib, 1);
+	index_vattrib++;
+
+	/* prev_center (8) — previous frame center for per-object motion blur */
+	glEnableVertexAttribArray(index_vattrib);
+	glVertexAttribPointer(index_vattrib, 3, GL_FLOAT, GL_FALSE, stride,
+	                      utils_buffer_offset(offset_prev_center));
 	glVertexAttribDivisor(index_vattrib, 1);
 }
 

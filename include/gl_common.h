@@ -116,9 +116,10 @@ enum { MAX_VERTEX_ATTRIBS_BASELINE = 16 };
 /** @brief Starting index for instanced vertex attributes. */
 enum { INSTANCE_ATTR_START = 2 };
 
-/** @brief Starting index for synchronization vertex attributes (motion blur).
- */
-enum { SYNC_ATTR_START = 8 };
+/** @brief Starting index for synchronization vertex attributes.
+ *  Attributes 0-8 are used: 0=pos, 1=norm, 2-5=model, 6=albedo,
+ *  7=pbr, 8=prev_center (motion blur). Cleanup starts at 9. */
+enum { SYNC_ATTR_START = 9 };
 
 /** @brief Number of vertices in a standard screen-filling quad (2 triangles).
  */

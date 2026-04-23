@@ -30,19 +30,36 @@ graph TD
 3. **Depth Weighting:** Protects the foreground by disabling color blending when the sampled pixel is too far behind the center pixel (`depthDiff > 1.0`).
 4. **Interleaved Gradient Noise:** Prevents visual *banding* by transforming stripes from low sample counts into aesthetic film-grain-style noise.
 
-### 📉 Current Implementation Limitation: Camera-Only
+### ✅ Per-Object Velocity (Implemented)
 
-In `pbr_ibl_instanced.vert`, the current configuration calculates velocity (Velocity) only via the previous camera position (`previousViewProj` * the current local geometry position):
+As of the `feat/per-object-motion-blur` branch, the velocity buffer now accounts for **both camera motion and per-object motion**. This was the most critical limitation of the original camera-only approach.
+
+#### Instanced Rendering Path (`pbr_ibl_instanced.vert`)
+
+A new vertex attribute `i_prev_center` (location 8) stores the sphere's previous frame position. The vertex shader reconstructs the previous world position:
 
 ```glsl
-CurrentClipPos = projection * view * vec4(WorldPos, 1.0);
-PreviousClipPos = previousViewProj * vec4(WorldPos, 1.0);
+vec3 prevWorldPos = i_prev_center + (WorldPos - vec3(i_model[3]));
+PreviousClipPos = previousViewProj * vec4(prevWorldPos, 1.0);
 ```
 
-**Why this is fully justified (for now):**
-In **Suckless OGL**, all 3D objects (like the PBR sphere grid) are static in World space. Only the camera moves or rotates. Therefore there is (yet) no concept of "Object" velocity. **Camera Motion Blur** is 100% sufficient at this stage of development.
+This captures both camera movement (via `previousViewProj`) and object movement (via `i_prev_center != current center`).
 
-**However**, once the engine implements dynamic entities (e.g., enemies or falling physics objects), the object's own velocity (its *Previous World Position*) would be `0` or at least incorrect, reflecting only camera velocity. An object crossing the screen quickly in front of a static camera would not register in the *Velocity Buffer* with the current setup and would appear hyper-sharp against the rest of the image.
+#### Billboard/SSBO Path (`pbr_ibl_billboard.vert` / `.frag`)
+
+The SSBO struct stores `prev_center_x/y/z` as 3 separate floats (not `vec3`, to respect std430 alignment at offset 92). The fragment shader reconstructs:
+
+```glsl
+vec3 prevHitPos = PrevSphereCenter + (sphereHitPos - SphereCenter);
+vec4 prevClip = previousViewProj * vec4(prevHitPos, 1.0);
+```
+
+#### Data Flow
+
+- `NBodyParticle.prev_position` snapshots position before each physics step
+- `nbody_write_instances()` copies `prev_position` → `SphereInstance.prev_center`
+- Static grid spheres have `prev_center == current center` → zero object velocity
+- `SphereInstance` remains 128 bytes (SIMD-aligned, validated by `_Static_assert`)
 
 ---
 
@@ -68,12 +85,8 @@ To reach state-of-the-art quality, here are the possible optimizations and chang
         3. Create a dedicated pass (via compute or screen quad) that computes *only* the blur effect in this lightweight texture.
         4. Write and execute the bilateral upsample step during the `postprocess.frag` pass or a dedicated pass to recompose the final image cleanly on object edges defined by the `depth buffer`.
 
-* **Per-Object and Skinned Velocity (Critical):**
-  For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for *each* object.
-  ```glsl
-  vec4 PrevWorldPos = vec3(i_previous_model * vec4(in_position, 1.0));
-  PreviousClipPos = previousViewProj * PrevWorldPos;
-  ```
+* **Per-Object and Skinned Velocity:**
+  ~~For motion blur to apply to moving objects or characters, the previous frame's Model matrix must be stored and passed for *each* object.~~ ✅ **Implemented** — per-object velocity is now active via `prev_center` in `SphereInstance`. The next frontier is per-vertex skinned velocity for animated meshes.
 * **Soft Depth-Testing:**
   Replace the hard boolean depth test with a smooth weight using `smoothstep()`. Hard limits create grainy noise or pixel flickering on moving edges.
 
@@ -124,4 +137,4 @@ graph LR
 ```
 
 ### The Verdict
-For Suckless OGL to commercially compete with these renders, adding *Camera-only* blur is insufficient. **Implementing previous model matrix (Previous Model Matrix) storage** per instance (in `pbr_ibl_instanced.vert`) is the most immediate and rewarding next step.
+Suckless OGL now implements **per-object motion blur** via `prev_center` storage in the instance data, covering both camera and object velocity in the velocity buffer. The remaining improvement paths are: **per-vertex skinned velocity** for animated meshes, **half-resolution reconstruction** for performance, and **adaptive sampling** based on per-pixel velocity magnitude.

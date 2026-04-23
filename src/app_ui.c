@@ -6,6 +6,7 @@
 #include "app_binding.h"
 #include "app_settings.h"
 #include "glad/glad.h"
+#include "nbody.h"
 #include "postprocess.h"
 #include "texture.h"
 #include "ui.h"
@@ -20,6 +21,7 @@
 
 /* --- Forward Declarations (Internal) --- */
 static void draw_exposure_overlay(const App* app, UILayout* layout);
+static void draw_nbody_overlay(const App* app, UILayout* layout);
 static void draw_loading_indicator(const App* app);
 static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
                                    float total_h,
@@ -1163,6 +1165,35 @@ static void draw_exposure_overlay(const App* app, UILayout* layout)
 	ui_layout_text(layout, exposure_text, ENV_TEXT_COLOR);
 }
 
+static void draw_nbody_overlay(const App* app, UILayout* layout)
+{
+	if (app->overlay.text_overlay_mode < 1 || !app->scene.nbody_mode) {
+		return;
+	}
+
+	const NBodySim* sim = &app->scene.nbody_sim;
+	char text[NBODY_TEXT_BUFFER_SIZE];
+
+	/* Kinetic energy + time direction */
+	float kinetic = nbody_kinetic_energy(sim);
+	const char* time_dir =
+	    (sim->target_time_scale < 0.0F) ? " \xe2\x8f\xaa" : "";
+	(void)safe_snprintf(text, sizeof(text), "Ek: %.1f J | G: %.3f%s",
+	                    (double)kinetic, (double)sim->gravity, time_dir);
+	ui_layout_text(layout, text, (float*)NBODY_INFO_COLOR);
+
+	/* Stability indicator */
+	float drift = nbody_energy_drift(sim);
+	const char* status =
+	    (drift < NBODY_STABILITY_THRESHOLD) ? "Stable" : "Divergent";
+	const float* color = (drift < NBODY_STABILITY_THRESHOLD)
+	                         ? (const float*)NBODY_STABLE_COLOR
+	                         : (const float*)NBODY_DIVERGE_COLOR;
+	(void)safe_snprintf(text, sizeof(text), "Stability: %s (drift: %.2f%%)",
+	                    status, (double)(drift * 100.0F));
+	ui_layout_text(layout, text, (float*)color);
+}
+
 static void draw_loading_indicator(const App* app)
 {
 	if (app->scene.ibl_coord.state == IBL_STATE_IDLE &&
@@ -1212,6 +1243,7 @@ void app_render_ui(const App* app)
 	draw_main_info_overlay(app, &layout);
 	draw_cinematic_overlay(app, &layout);
 	draw_exposure_overlay(app, &layout);
+	draw_nbody_overlay(app, &layout);
 	draw_bloom_debug_status(app, &layout);
 	draw_loading_indicator(app);
 

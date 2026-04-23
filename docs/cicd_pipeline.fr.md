@@ -13,6 +13,7 @@ Le pipeline est défini dans `.github/workflows/` et s'exécute automatiquement 
 Analyse statique du code source :
 
 - **clang-tidy** : Analyse C/C++
+- **check_nolint.sh** : Garde anti-suppression NOLINT (voir [linting_strategy.fr.md](linting_strategy.fr.md#politique-anti-suppression))
 - **shellcheck** : Vérification des scripts shell
 - **yamllint** : Validation des fichiers YAML
 - **hadolint** : Lint du Dockerfile

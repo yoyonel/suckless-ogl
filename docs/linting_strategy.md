@@ -16,7 +16,7 @@ We use `clang-tidy` for static analysis. The configuration is defined in `.clang
 We prioritize "Suckless" philosophy:
 
 - Minimize external dependencies.
-- Avoid `NOLINT` comments unless absolutely necessary (e.g., global variables for test context).
+- **`NOLINT` comments are forbidden** — fix the root cause instead (see [No-Suppression Policy](#no-suppression-policy) below).
 - Use `static const` or `enum` instead of magic numbers.
 
 ## Incremental Caching (Sentinel Files)
@@ -95,3 +95,37 @@ just lint-shaders-strict
 Runs validation with `--target-env opengl` (SPIR-V rules). This surfaces issues like missing `layout(location=N)` qualifiers that cause RenderDoc's shader debugger to fail silently.
 
 As of March 2026, **all 33 shader files pass strict SPIR-V validation**. The project enforces explicit `layout(location=N)` on all varyings and non-opaque uniforms, and `layout(binding=N)` on all samplers/images. See [renderdoc_guide.md](renderdoc_guide.md#8-shader-debugging-spir-v-compatibility) for the full rationale.
+
+## No-Suppression Policy
+
+**`NOLINT`, `NOLINTNEXTLINE`, and `NOLINTBEGIN`/`NOLINTEND` are forbidden.** The correct approach is always to fix the root cause.
+
+An automated guard (`scripts/check_nolint.sh`) enforces this at every stage of the development workflow:
+
+| Stage | Trigger | Mechanism | Blocking |
+|-------|---------|-----------|----------|
+| **Local commit** | `git commit` on `*.c` / `*.h` | pre-commit hook (`check-nolint` in `.pre-commit-config.yaml`) | Yes (bypass: `--no-verify`) |
+| **Local manual** | `just check-nolint` or `make check-nolint` | Direct script invocation | Yes (exit 1) |
+| **CI — push** | Push to any branch | `lint-and-format` job step | Yes — fails the job |
+| **CI — pull request** | PR opened/updated targeting master | `lint-and-format` job step | Yes — fails the job |
+| **CI — scheduled** | Nightly cron (01:00 UTC) | `lint-and-format` job step | Yes — fails the job |
+
+### How it Works
+
+The script compares `git diff <base_ref>...HEAD` on `*.c` and `*.h` files, searching for added lines (`+`) containing `NOLINT`. If any are found, the check fails with a listing of all violations.
+
+```bash
+# Local usage
+just check-nolint                    # Compare vs origin/master (default)
+just check-nolint origin/main        # Custom base ref
+make check-nolint NOLINT_BASE_REF=origin/main
+```
+
+### Exception Policy
+
+If suppression is the **only viable path**, it requires:
+
+1. An explicit comment explaining why the fix is not possible.
+2. A clear assessment confirming no alternative exists.
+3. A tracking issue to revisit and remove the suppression.
+4. **Explicit user validation** before committing (use `--no-verify`).

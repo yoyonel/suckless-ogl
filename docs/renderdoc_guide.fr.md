@@ -209,7 +209,75 @@ Correspondance de référence pour les shaders PBR principaux (billboard et inst
 | 3 | `ProbeBuffer` | SSBO |
 | 8–14 | `u_SHTexture0`–`6` | sampler3D |
 
-## Ressources textures et tampons
+## 9. Pixel History & « Pixel shader debug failed »
+
+### 9.1 Comprendre l'erreur
+
+Quand on fait un clic droit sur un pixel puis **Pixel History**, RenderDoc liste tous les draw calls qui ont touché ce pixel. Chaque ligne montre l'**Event ID (EID)**, un aperçu avant/après, et un bouton **Debug**.
+
+Cliquer sur **Debug** rejoue l'invocation du fragment shader pour ce draw call, permettant de parcourir le code GLSL ligne par ligne. Cependant, RenderDoc affiche parfois :
+
+> **Pixel shader debug failed** — most likely this is caused by no write to the pixel at the current event.
+
+Cela signifie : *« J'ai essayé de rejouer le fragment shader pour ce draw call au pixel sélectionné, mais ce draw call n'a pas produit de fragment visible à ces coordonnées. »*
+
+### 9.2 Causes fréquentes
+
+| Cause | Explication |
+|-------|-------------|
+| **Mauvais EID sélectionné** | Vous avez sélectionné un draw call dans l'Event Browser qui ne touche pas ce pixel. Plusieurs draws ont lieu dans la même passe — seuls certains écrivent sur un pixel donné. |
+| **`discard` dans le fragment shader** | Le shader rejette les fragments en dessous d'un seuil (ex. `if (alpha < 0.005) { discard; }`). Le fragment a été exécuté mais n'a produit aucune sortie. RenderDoc ne peut pas debugger un fragment rejeté. |
+| **Rejet depth/stencil** | Le fragment a été éliminé par le test de profondeur ou de stencil avant l'exécution du fragment shader, ou le résultat a été rejeté par un test de profondeur ultérieur. |
+| **Blending additif avec contribution nulle** | Avec le blending `GL_SRC_ALPHA`, un fragment avec `alpha ≈ 0` ne contribue rien de visible, et RenderDoc peut ne pas l'enregistrer comme une « écriture ». |
+
+### 9.3 La solution : debugger depuis le Pixel History (pas l'Event Browser)
+
+Le point clé : **toujours partir du panneau Pixel History**, pas de l'Event Browser.
+
+**Étape par étape :**
+
+1. **Clic droit** sur le pixel à inspecter dans le Texture Viewer.
+2. Ouvrir l'onglet **Pixel History** (en bas à droite, à côté de « Pixel Context »).
+3. Dans la liste du Pixel History, trouver la ligne où **Tex After** affiche la couleur qui vous intéresse. La ligne montre :
+    - L'EID (ex. `EID 72`)
+    - `1 Fragments touc...` — confirme que le fragment shader a été exécuté et a écrit sur ce pixel
+    - Les valeurs de couleur avant/après
+4. **Déplier** cette ligne (cliquer la flèche `>`) pour voir le fragment individuel.
+5. Cliquer sur le bouton **Debug** sur la **ligne du fragment** (pas la ligne de l'event).
+
+Cela fonctionne parce que RenderDoc sait que *ce fragment spécifique* a passé tous les tests (depth, stencil, discard) et a effectivement écrit dans le framebuffer.
+
+!!! tip "Raccourci double-clic"
+    Vous pouvez **double-cliquer** sur une ligne EID dans le Pixel History pour sauter directement à cet event dans l'Event Browser. C'est utile pour inspecter l'état du pipeline (textures liées, uniforms, mode de blending) du draw call qui a écrit le pixel.
+
+### 9.4 Spécificités du shader de trails
+
+Le fragment shader des trails (`shaders/trail.frag`) utilise un `discard` précoce pour les fragments quasi-transparents :
+
+```glsl
+if (alpha < 0.005) {
+    discard;
+}
+```
+
+Concrètement :
+- **La plupart des fragments aux bords du ruban échoueront au debug** — ils sont rejetés par le seuil d'alpha.
+- **Les fragments au centre du ruban se debuggent normalement** — ils ont un alpha élevé et passent le seuil.
+- Pour debugger un fragment de bord, commenter temporairement le bloc `discard`, recompiler et recapturer. Le remettre ensuite.
+
+### 9.5 Draws batchés (glMultiDrawArrays) dans le Pixel History
+
+Avec `glMultiDrawArrays(GL_TRIANGLE_STRIP, starts, counts, N)`, RenderDoc décompose l'appel unique en N sous-draws dans l'Event Browser :
+
+```text
+67  glMultiDrawArrays(14)       ← event parent
+ 68  glMultiDrawArrays[0](494)  ← sous-draw 0 (corps 0, 494 vertices)
+ 69  glMultiDrawArrays[1](494)  ← sous-draw 1 (corps 1)
+ ...
+ 81  glMultiDrawArrays[13](494) ← sous-draw 13 (corps 13)
+```
+
+Dans le Pixel History, l'EID pointe vers le **sous-draw spécifique** qui a écrit le pixel (ex. `EID 72 — glMultiDrawArrays[5](494)`). On conserve la même granularité par corps qu'avec des appels `glDrawArrays` individuels, mais avec moins de surcharge CPU à l'exécution.
 
 L'inspecteur de ressources permet de visualiser :
 - Les textures à chaque étape (avant/après bloom, avant/après tonemapping)

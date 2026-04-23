@@ -14,6 +14,8 @@ flat layout(location = 7) in float AO;
 
 layout(location = 8) in vec4
     CurrentClipPos;  // Interpolated clip pos of the quad (juste pour l'AA)
+flat layout(location = 9) in vec3
+    PrevSphereCenter;  // Previous frame center (per-object motion blur)
 
 @header "billboard_ubo.glsl"
 
@@ -132,19 +134,19 @@ void main()
 #endif
 
 	// ------------------------------------------------------------------------
-	// VELOCITY CALCULATION (OPTIMIZATION "HACK")
+	// VELOCITY CALCULATION (Per-Object + Camera Motion)
 	// ------------------------------------------------------------------------
-	// Ici, on imite le comportement du vertex shader mesh, mais pixel par
-	// pixel.
+	// Combines camera movement (previousViewProj) AND object movement
+	// (PrevSphereCenter) for accurate per-pixel motion vectors.
 
 	// A. Position NDC Actuelle (Basée sur le point raytracé exact)
 	vec2 currentPosNDC = clipPosActual.xy / clipPosActual.w;
 
 	// B. Position NDC Précédente
-	// HACK : On suppose que la sphère est statique dans le monde (WorldPos
-	// frame N == WorldPos frame N-1). On projette sphereHitPos avec la
-	// matrice caméra précédente.
-	vec4 previousClip = previousViewProj * vec4(sphereHitPos, 1.0);
+	// Reconstruct previous hit position: offset the hit relative to the
+	// sphere center, then apply the same offset to the previous center.
+	vec3 prevHitPos = PrevSphereCenter + (sphereHitPos - SphereCenter);
+	vec4 previousClip = previousViewProj * vec4(prevHitPos, 1.0);
 	vec2 previousPosNDC = previousClip.xy / previousClip.w;
 
 	// C. Calcul du Delta

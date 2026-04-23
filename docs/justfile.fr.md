@@ -95,6 +95,9 @@ Le projet utilise `xdotool` et `Xvfb` pour simuler des interactions utilisateur 
 > [!TIP]
 > Utilisez `just test-integration` pour une vérification fonctionnelle rapide. Cela se termine en quelques secondes, alors que les variantes Valgrind peuvent prendre plusieurs minutes.
 
+> [!NOTE]
+> Le script d'intégration (`scripts/integration_scenarios.sh`) détecte automatiquement la disposition clavier via `setxkbmap` et remape les noms de keysym `xdotool` en conséquence.  Sur **AZERTY (fr)**, GLFW mappe les touches par position physique (US QWERTY), donc `xdotool key a` déclenche en réalité `GLFW_KEY_Q`.  Le script gère cela de manière transparente — aucune configuration manuelle nécessaire.
+
 ### Variantes de construction
 
 - **Release** : `just release` / `just run-release`
