@@ -13,6 +13,7 @@ var structApp =
     [ "frame_count", "structApp.html#ac928f1ac59fadeeb71128a951d16a230", null ],
     [ "gamepad", "structApp.html#a0167214e0ea437ede9604d75c4362cd8", null ],
     [ "gpu_profiler", "structApp.html#ae2f2a123b411b102f608538b1c3d68dc", null ],
+    [ "gpu_usage", "structApp.html#ad6126c8fda12fa288bb69bc6887a4ee7", null ],
     [ "height", "structApp.html#a5b13d0311b1a7dcb70a5c5774a419c31", null ],
     [ "is_fullscreen", "structApp.html#a965b5960ce14d78836f16e3260015caa", null ],
     [ "last_frame_time", "structApp.html#a3d5af2228652f4aae50381d4bc55a643", null ],

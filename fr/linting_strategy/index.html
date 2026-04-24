@@ -2568,6 +2568,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../effect_benchmark/" class="md-nav__link">
         
   
@@ -3494,7 +3522,12 @@
 </tbody>
 </table>
 <h3 id="fonctionnement_1">Fonctionnement<a class="headerlink" href="#fonctionnement_1" title="Permanent link">¶</a></h3>
-<p>Le script compare <code>git diff &lt;base_ref&gt;...HEAD</code> sur les fichiers <code>*.c</code> et <code>*.h</code>, en cherchant les lignes ajoutées (<code>+</code>) contenant <code>NOLINT</code>. Si des occurrences sont trouvées, le check échoue avec la liste de toutes les violations.</p>
+<p>Le script vérifie les nouveaux ajouts de <code>NOLINT</code> dans les fichiers <code>*.c</code> et <code>*.h</code> avec une approche à deux niveaux :</p>
+<ol>
+<li><strong>Changements commités</strong> : <code>git diff &lt;base_ref&gt;...HEAD</code> détecte les NOLINT dans le code déjà commité.</li>
+<li><strong>Changements stagés</strong> : <code>git diff --cached &lt;base_ref&gt;</code> détecte les NOLINT dans le contenu sur le point d'être commité (index). C'est essentiel lors du <code>pre-commit</code>, où <code>HEAD</code> pointe encore sur le commit précédent et le contenu stagé serait autrement invisible.</li>
+</ol>
+<p>Lorsque des fichiers stagés existent, leur contenu final est comparé à la ref de base, gérant correctement les cas où les changements stagés <em>ajoutent</em> ou <em>suppriment</em> des suppressions NOLINT. Si des lignes NOLINT nettes sont trouvées, le check échoue avec la liste de toutes les violations.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Utilisation locale</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>just<span class="w"> </span>check-nolint<span class="w">                    </span><span class="c1"># Compare vs origin/master (défaut)</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>just<span class="w"> </span>check-nolint<span class="w"> </span>origin/main<span class="w">        </span><span class="c1"># Ref de base personnalisée</span>
@@ -3528,7 +3561,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="23 avril 2026 07:51:16 UTC">23 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="24 avril 2026 12:39:27 UTC">24 avril 2026</span>
   </span>
 
     

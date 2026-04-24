@@ -85,14 +85,14 @@ var NAVTREEINDEX =
 "app__ui_8h.html#aeecd20cda3f7c87d60454435776fc666",
 "functions.html",
 "gpu__profiler__ui_8c.html#a1dbf31ba88950a696066589bc63d1ac0",
-"instanced__rendering_8h.html",
-"perf__mode_8c.html#a14e32f8e0379a6b587c9c163912ef738",
-"postprocess_8h.html#ad8f4b984f00cf828da892ab2aece57fd",
-"shader_8h.html#a7034c467af5884ca4950b6957eb84ff2",
-"structCachedSphere.html#afe1141c2feceaffab90d87571d8b7253",
-"structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0",
-"structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19",
-"structUniformEntry.html#af701efc47c9ae30cf18a5392789c92de"
+"icosphere_8h.html#aeabbf4b8c74fefac0070104ad779cd62",
+"pbr__ibl__instanced_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5",
+"postprocess_8h.html#aa46668e6882df082d99ef8735eadc8af",
+"shader_8c.html#af175eada3763b4ece51e0344ee4a0da0",
+"structBillboardUBO.html#ab32909fea72a6992de76af04132a0335",
+"structGrainParams.html#af7903eac181a996535bb25bc1f584a5c",
+"structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1",
+"structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

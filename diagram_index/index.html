@@ -581,6 +581,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gpu-usage-monitor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Usage Monitor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#motion-blur-implementation-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2538,6 +2549,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../gpu_usage_monitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPU Usage Monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../effect_benchmark/" class="md-nav__link">
         
   
@@ -4254,6 +4293,31 @@ deactivate Worker
 Main-&gt;&gt;GPU: Upload SH data to SSBO (glBufferSubData)
 Main-&gt;&gt;GPU: Draw call (Instanced or SSBO)
 Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Filtering)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="gpu-usage-monitor"><a href="../gpu_usage_monitor/">GPU Usage Monitor</a><a class="headerlink" href="#gpu-usage-monitor" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../gpu_usage_monitor/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `nouveau` | `drm-engine-gr` | NVIDIA (open-source driver) |</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>flowchart TD
+A[gpu_usage_init] --&gt; B[Scan /proc/self/fdinfo/]
+B --&gt; C{DRM render node?}
+C --&gt;|Yes| D[Read drm-driver &amp; drm-client-id]
+C --&gt;|No| B
+D --&gt; E{Duplicate client-id?}
+E --&gt;|Yes| B
+E --&gt;|No| F[Keep FILE* stream open]
+F --&gt; B
+B --&gt;|Done| G[Store driver + engine_key]
+H[gpu_usage_update] --&gt; I{500ms elapsed?}
+I --&gt;|No| J[Return early]
+I --&gt;|Yes| K[Re-read all streams]
+K --&gt; L[Sum engine time across FDs]
+L --&gt; M["GPU% = Δgpu / Δwall × 100"]
+M --&gt; N[Clamp 0–100%]</code></pre>
 
   </div>
 </div>
