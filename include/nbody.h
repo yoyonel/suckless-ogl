@@ -43,6 +43,26 @@ static const float NBODY_FIXED_DT = 1.0F / 120.0F;
  *  losing simulation time (12 Verlet steps per frame for N=14). */
 static const float NBODY_MAX_ACCUMULATOR = 1.0F / 10.0F;
 
+/** Confinement radius — bodies beyond this distance from the central star
+ *  experience a quadratic restoring potential V = ½k(r - r_max)².
+ *  The potential is conservative (Hamiltonian) so symplecticity is preserved.
+ */
+static const float NBODY_CONFINEMENT_RADIUS = 25.0F;
+
+/** Confinement stiffness — spring constant for the restoring force.
+ *  Higher values = harder wall, lower = softer bounce.
+ *  k·dt² ≈ 5·(1/120)² ≈ 0.0003 — well within stability limit. */
+static const float NBODY_CONFINEMENT_K = 5.0F;
+
+/** Radial damping coefficient in the confinement zone.
+ *  Effective damping is γ · (overshoot / r_max), so the base value
+ *  must be large enough that bodies near the boundary still feel it.
+ *  At r = 26 (overshoot 1): γ_eff = 20 × 1/25 = 0.8
+ *  At r = 30 (overshoot 5): γ_eff = 20 × 5/25 = 4.0
+ *  Only the radial (v·r̂) component is damped; tangential speed is
+ *  preserved so angular momentum is not destroyed. */
+static const float NBODY_CONFINEMENT_DAMPING = 20.0F;
+
 /**
  * @struct NBodyParticle
  * @brief A single gravitational body.
@@ -65,6 +85,21 @@ typedef struct {
 /** Rate at which time_scale transitions toward its target (units/s). */
 static const float NBODY_TIME_SCALE_RATE = 3.0F;
 
+/**
+ * @struct NBodyImpact
+ * @brief Records a confinement boundary hit for visual effects.
+ *
+ * One slot per body (indexed by body index).  Across the multiple
+ * integration sub-steps of a single frame, only the strongest
+ * outward velocity is kept — this naturally deduplicates.
+ */
+typedef struct {
+	vec3 position;  /**< World position of impact. */
+	vec3 color;     /**< Body albedo at impact. */
+	float velocity; /**< Peak outward radial speed this frame. */
+	bool active;    /**< True if body hit the boundary this frame. */
+} NBodyImpact;
+
 typedef struct {
 	NBodyParticle bodies[NBODY_MAX_BODIES]; /**< Array of bodies. */
 	int body_count;                         /**< Number of active bodies. */
@@ -73,7 +108,12 @@ typedef struct {
 	float time_scale;        /**< Speed multiplier (1.0 = real-time). */
 	float target_time_scale; /**< Smooth-transition target. */
 	float initial_energy;    /**< Total energy at init (E₀ reference). */
+	float sim_time;          /**< Monotonic simulation clock (seconds). */
 	bool paused;             /**< If true, simulation does not advance. */
+
+	/* Confinement impact events — one slot per body, cleared each frame.
+	 * Only the peak velocity across integration sub-steps is kept. */
+	NBodyImpact impacts[NBODY_MAX_BODIES]; /**< Per-body impacts. */
 } NBodySim;
 
 /**
@@ -123,6 +163,12 @@ float nbody_kinetic_energy(const NBodySim* sim);
  * Returns 0 when initial_energy is zero (no reference).
  */
 float nbody_energy_drift(const NBodySim* sim);
+
+/**
+ * Signed energy drift: negative = energy lost (damping),
+ * positive = energy gained (divergence).
+ */
+float nbody_energy_drift_signed(const NBodySim* sim);
 
 /**
  * @brief Smoothly transitions time_scale toward target_time_scale.
