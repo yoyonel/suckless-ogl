@@ -139,6 +139,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	gpu_profiler_init(&app->gpu_profiler);
 	gpu_profiler_ui_init(&app->timeline_ui);
+	gpu_usage_init(&app->gpu_usage);
 	effect_benchmark_init(&app->effect_bench, &app->postprocess,
 	                      &app->gpu_profiler);
 	app->log_gpu_metrics = 0; /* Console logging off by default */
@@ -178,6 +179,7 @@ void app_cleanup(App* app)
 
 	gpu_profiler_cleanup(&app->gpu_profiler);
 	gpu_profiler_ui_cleanup(&app->timeline_ui);
+	gpu_usage_cleanup(&app->gpu_usage);
 
 	window_destroy(app->window);
 	app->window = NULL;
@@ -244,6 +246,7 @@ void app_run(App* app)
 			app_ui_update(&app->overlay, app->delta_time);
 			postprocess_update_time(&app->postprocess,
 			                        (float)app->delta_time);
+			gpu_usage_update(&app->gpu_usage);
 			PROFILE_ZONE_END(ui_notif_ctx);
 		}
 

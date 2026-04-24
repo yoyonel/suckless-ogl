@@ -1084,6 +1084,14 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	                    current_fps, frame_time_ms);
 	ui_layout_text(layout, fps_text, DEFAULT_FONT_COLOR);
 
+	/* GPU Utilization (via DRM fdinfo, same as MangoHud) */
+	if (gpu_usage_is_available(&app->gpu_usage)) {
+		char gpu_text[MAX_FPS_TEXT_LENGTH];
+		(void)safe_snprintf(gpu_text, sizeof(gpu_text), "GPU: %.0f%%",
+		                    gpu_usage_get_load(&app->gpu_usage));
+		ui_layout_text(layout, gpu_text, DEFAULT_FONT_COLOR);
+	}
+
 	if (app->overlay.text_overlay_mode >= 2) {
 		static const size_t AVG_TEXT_SIZE = 64;
 		char avg_text[AVG_TEXT_SIZE];

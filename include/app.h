@@ -15,6 +15,7 @@
 #include "gl_common.h"
 #include "gpu_profiler.h"
 #include "gpu_profiler_ui.h"
+#include "gpu_usage.h"
 #include "perf_mode.h"
 #include "postprocess.h"
 #include "scene.h"
@@ -69,7 +70,8 @@ typedef struct App {
 	PerfModeContext perf_context; /**< Performance mode state context. */
 	ActionNotifier notifier;      /**< Temporary user notifications. */
 	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
-	int log_gpu_metrics; /**< Toggle console logging of GPU stats. */
+	int log_gpu_metrics;       /**< Toggle console logging of GPU stats. */
+	GPUUsageMonitor gpu_usage; /**< GPU utilization % via DRM fdinfo. */
 
 	/* --- Global GPU Resources --- */
 	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
