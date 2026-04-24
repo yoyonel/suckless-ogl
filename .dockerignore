@@ -1,9 +1,13 @@
 # Build artifacts
 build/
 build-*/
+_deps/
+deps/
 *.o
 *.a
 *.so
+*.profraw
+*.profdata
 
 # IDE and editor files
 .vscode/
@@ -18,19 +22,38 @@ build-*/
 .gitignore
 .gitmodules
 
-# Documentation
+# Documentation & site
 docs/
+site/
+doxygen_resources/
+Doxyfile
 README.md
 *.md
+
+# Tests (not needed for container build)
+tests/
+Testing/
 
 # Makefile and scripts not needed in container
 Makefile
 run.sh
 compile_flags.txt
+compile_commands.json
+cmake_output.txt
+valgrind.supp
+lsan.supp
+requirements-dev.txt
+toolchain-mingw.cmake
+default.profraw
+
+# CI / hooks
+.github/
+hooks/
+extractions/
 
 # Docker files themselves
 Dockerfile
 .dockerignore
 
-# scripts
+# Re-include entrypoint
 !entrypoint.sh

@@ -386,11 +386,30 @@ ci-docker-test: ci-docker-build
     @{{container_engine}} run --rm -v {{justfile_directory()}}:/workspace {{ci_image_name}} \
         sh -c "cmake {{extra_cmake_flags}} -B /tmp/build-ci -DCMAKE_C_FLAGS=-Wno-unused-variable && cmake --build /tmp/build-ci --target test_shader && cd /tmp/build-ci && xvfb-run -a ./tests/test_shader"
 
-# Run the application container with X11 forwarding
+# Run the application container with X11 forwarding (software rendering)
 docker-run:
-    @echo "Running Container with X11 forwarding..."
+    @echo "Running Container with X11 forwarding (software rendering)..."
     @xhost +local: > /dev/null 2>&1 || true
     @{{container_engine}} run --rm -it \
+        --cap-add=SYS_NICE \
+        --ulimit rtprio=99 \
+        --security-opt label=disable \
+        --network host \
+        -e DISPLAY={{env_var("DISPLAY")}} \
+        -e DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus" \
+        -v /run/user/$(id -u)/bus:/run/user/$(id -u)/bus \
+        -v /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+        {{image_name}} /bin/bash -c "export DISPLAY={{env_var("DISPLAY")}} && ./app"
+
+# Run the application container with host GPU passthrough (Intel/AMD via DRI)
+docker-run-gpu:
+    @echo "Running Container with GPU passthrough..."
+    @xhost +local: > /dev/null 2>&1 || true
+    @test -d /dev/dri || (echo "ERROR: /dev/dri not found — no GPU available" && exit 1)
+    @{{container_engine}} run --rm -it \
+        --device /dev/dri \
+        --group-add video \
         --cap-add=SYS_NICE \
         --ulimit rtprio=99 \
         --security-opt label=disable \

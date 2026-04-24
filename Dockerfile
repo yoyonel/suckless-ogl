@@ -17,11 +17,12 @@ WORKDIR /src
 # Copy project files
 COPY . .
 
-# Build with static libraries
+# Build with static libraries (no tests in container)
 RUN cmake -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang \
     -DBUILD_SHARED_LIBS=OFF \
+    -DBUILD_TESTS=OFF \
     && cmake --build build --parallel
 
 # Verify static linking
@@ -47,6 +48,7 @@ RUN dnf -y update && dnf -y install \
     mesa-libGL \
     mesa-libEGL \
     mesa-dri-drivers \
+    mesa-vulkan-drivers \
     libglvnd-glx \
     libglvnd-egl \
     xorg-x11-server-Xvfb \

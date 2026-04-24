@@ -11,8 +11,8 @@ This project includes a containerized build and runtime environment for consiste
 
 ### Build the Image
 
-```sh
-make docker-build
+```bash
+just docker-build
 ```
 
 This creates an optimized container image with:
@@ -23,8 +23,12 @@ This creates an optimized container image with:
 
 ### Run the Application
 
-```sh
-make docker-run
+```bash
+# Software rendering (Mesa llvmpipe)
+just docker-run
+
+# Hardware-accelerated rendering (Intel/AMD GPU)
+just docker-run-gpu
 ```
 
 Runs the application in a container with X11 forwarding to your host display.
@@ -47,6 +51,8 @@ RUN --mount=type=cache,target=/src/build \
     cmake -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DBUILD_TESTS=OFF \
     && cmake --build build --parallel \
     && cp build/app /tmp/app
 ```
@@ -58,8 +64,8 @@ RUN --mount=type=cache,target=/src/build \
 
 - Minimal runtime dependencies only:
   - `glfw` - Window and input handling
-  - `mesa-*` - OpenGL drivers
-  - `mesa-*` - OpenGL drivers
+  - `mesa-libGL`, `mesa-libEGL`, `mesa-dri-drivers` - OpenGL software rendering
+  - `mesa-vulkan-drivers` - Vulkan/DRI support for GPU passthrough
   - `xorg-x11-server-Xvfb` - Virtual framebuffer for headless rendering
   - `gamemode` - Runtime library for Performance Mode
 - Non-root user (`appuser`) for security
@@ -101,37 +107,90 @@ This enables:
 - **Headless rendering** for automated screenshots/validation
 - **Consistent environment** across different systems
 
-### Build Cache Optimization
+### Build Context Optimization
 
-The `.dockerignore` file excludes unnecessary files from the build context:
+The `.dockerignore` file aggressively excludes unnecessary files from the build context.
+Only the essential source files, shaders, assets, and CMake configuration are sent to Docker:
 
-```
+```text
 build/          # Build artifacts
 build-*/        # Coverage/debug builds
+_deps/          # CMake FetchContent cache (rebuilt in container)
+deps/           # Pre-built dependencies
 .git/           # Git history
 docs/           # Documentation
+site/           # MkDocs output
+tests/          # Test suite (disabled in container via -DBUILD_TESTS=OFF)
+Testing/        # CTest artifacts
 *.md            # Markdown files
+*.profraw       # LLVM profiling data
+*.profdata      # LLVM coverage data
 ```
 
-This reduces context size and speeds up `docker build`.
+This reduces context transfer from **~870 MB to ~2 MB**, dramatically speeding up `docker build`.
 
-## Makefile Targets
+!!! note "Tests disabled in container"
+    The container build uses `-DBUILD_TESTS=OFF` since the `tests/` directory is excluded
+    from the build context. This is intentional — unit tests run natively via `just test-all`.
 
-### Build Targets
+## Justfile Targets
 
-| Target | Description | `make` | `just` |
-|--------|-------------|--------|--------|
-| Build Image | Build image with layer caching | `docker-build` | `docker-build` |
-| Build No Cache | Force full rebuild | `docker-build-no-cache` | `docker-build-no-cache` |
-| Run App | Run with X11 forwarding | `docker-run` | `docker-run` |
+### Build & Run Targets
+
+| Target | Description | `just` command |
+|--------|-------------|----------------|
+| Build Image | Build image with layer caching | `just docker-build` |
+| Build No Cache | Force full rebuild | `just docker-build-no-cache` |
+| Run (Software) | Run with X11 forwarding (Mesa llvmpipe) | `just docker-run` |
+| Run (GPU) | Run with host GPU passthrough (Intel/AMD) | `just docker-run-gpu` |
 
 ### Maintenance Targets
 
-| Target | Description | `make` | `just` |
-|--------|-------------|--------|--------|
-| Clean Dangling | Remove dangling images | `docker-clean` | `docker-clean` |
-| Clean All | Prune all images and cache | `docker-clean-all` | `docker-clean-all` |
-| Disk Usage | Show disk usage stats | `docker-usage` | `docker-usage` |
+| Target | Description | `just` command |
+|--------|-------------|----------------|
+| Clean Dangling | Remove dangling images | `just docker-clean` |
+| Clean All | Prune all images and cache | `just docker-clean-all` |
+| Disk Usage | Show disk usage stats | `just docker-usage` |
+
+## GPU Passthrough
+
+By default, `just docker-run` uses **software rendering** (Mesa llvmpipe) via Xvfb.
+For hardware-accelerated rendering, use `just docker-run-gpu` which passes the host GPU
+through to the container via the DRI (Direct Rendering Infrastructure).
+
+### Requirements
+
+- Linux host with Intel or AMD GPU
+- `/dev/dri` device directory accessible
+- User in the `video` group on the host
+- X11 display available (`$DISPLAY` set)
+
+### How It Works
+
+```bash
+just docker-run-gpu
+```
+
+This mounts the host's GPU device and adds the `video` group:
+
+```bash
+docker run --rm -it \
+    --device /dev/dri \
+    --group-add video \
+    ...
+    suckless-ogl:latest /bin/bash -c "export DISPLAY=$DISPLAY && ./app"
+```
+
+### Performance Comparison
+
+| Mode | Renderer | IBL BRDF LUT Time |
+|------|----------|-------------------|
+| Software (`docker-run`) | llvmpipe (Mesa) | ~1000 ms |
+| GPU (`docker-run-gpu`) | Mesa Intel Iris Xe | ~88 ms |
+
+!!! warning "NVIDIA GPUs"
+    NVIDIA GPUs require the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html)
+    and `--gpus all` instead of `--device /dev/dri`. This is not yet supported by the project.
 
 ## Advanced Usage
 
@@ -162,12 +221,12 @@ make docker-build
 make docker-build
 ```
 
-### Running with Host X11
+### Running with Host X11 (Software Rendering)
 
-The `docker-run` target forwards X11:
+The `docker-run` target forwards X11 and uses software rendering:
 
-```sh
-make docker-run
+```bash
+just docker-run
 # Equivalent to:
 docker run --rm -it \
     --cap-add=SYS_NICE \
@@ -181,6 +240,8 @@ docker run --rm -it \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     suckless-ogl /bin/bash -c "export DISPLAY=$DISPLAY && ./app"
 ```
+
+For hardware-accelerated rendering with the host GPU, see [GPU Passthrough](#gpu-passthrough) above.
 
 ### GameMode & Real-Time Priority
 
