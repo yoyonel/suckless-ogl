@@ -38,8 +38,10 @@ static const float NBODY_SOFTENING_FACTOR = 2.0F;
 static const float NBODY_FIXED_DT = 1.0F / 120.0F;
 
 /** Maximum accumulated physics time per call to nbody_step.
- *  Prevents runaway integration after lag spikes or first frame. */
-static const float NBODY_MAX_ACCUMULATOR = 1.0F / 30.0F;
+ *  Prevents runaway integration after lag spikes or first frame.
+ *  Set to 1/10s to support frame rates as low as ~10 FPS without
+ *  losing simulation time (12 Verlet steps per frame for N=14). */
+static const float NBODY_MAX_ACCUMULATOR = 1.0F / 10.0F;
 
 /**
  * @struct NBodyParticle
