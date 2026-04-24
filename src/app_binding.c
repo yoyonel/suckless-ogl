@@ -139,6 +139,16 @@ void app_binding_registry_init(AppBindingRegistry* registry)
 	add_binding(GLFW_KEY_COMMA, GLFW_MOD_SHIFT, "Gravity Down",
 	            "Halves G (min 0.125, then OFF).", BINDING_CAT_VISUALS,
 	            BINDING_TYPE_CYCLE);
+	add_binding(
+	    GLFW_KEY_I, 0, "Cycle Neon Param",
+	    "Cycles through neon trail parameters (Intensity/Core/Width).",
+	    BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_I, GLFW_MOD_SHIFT, "Neon Param +",
+	            "Increases the currently selected neon trail parameter.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
+	add_binding(GLFW_KEY_I, GLFW_MOD_CONTROL, "Neon Param -",
+	            "Decreases the currently selected neon trail parameter.",
+	            BINDING_CAT_VISUALS, BINDING_TYPE_CYCLE);
 	add_binding(GLFW_KEY_H, 0, "Toggle DOF", "Toggles Depth of Field blur.",
 	            BINDING_CAT_POSTFX, BINDING_TYPE_TOGGLE);
 	add_binding(GLFW_KEY_H, GLFW_MOD_SHIFT, "Toggle DOF Debug",
