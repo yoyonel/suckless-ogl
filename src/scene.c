@@ -551,6 +551,7 @@ void scene_cleanup(Scene* scene)
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
 	trail_renderer_cleanup(&scene->trail_renderer);
+	shockwave_renderer_cleanup(&scene->shockwave_renderer);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
@@ -1021,6 +1022,12 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		trail_renderer_draw(&scene->trail_renderer, view, proj,
 		                    camera_pos);
 		gl_debug_pop_group();
+
+		/* Confinement shockwave VFX — additive, HDR, after trails */
+		gl_debug_push_group("Shockwave_VFX");
+		shockwave_draw(&scene->shockwave_renderer, view, proj,
+		               camera_pos, scene->nbody_sim.sim_time);
+		gl_debug_pop_group();
 	}
 
 	if (scene->show_probe_grid) {
@@ -1042,6 +1049,12 @@ void scene_toggle_nbody(Scene* scene)
 
 		int count = nbody_get_count(&scene->nbody_sim);
 		if (!trail_renderer_init(&scene->trail_renderer, count)) {
+			scene->nbody_mode = 0;
+			return;
+		}
+
+		if (!shockwave_renderer_init(&scene->shockwave_renderer)) {
+			trail_renderer_cleanup(&scene->trail_renderer);
 			scene->nbody_mode = 0;
 			return;
 		}
@@ -1073,6 +1086,7 @@ void scene_toggle_nbody(Scene* scene)
 		/* Restore original material grid — clean up before re-init
 		 * to avoid leaking GPU buffers and CPU allocations */
 		trail_renderer_cleanup(&scene->trail_renderer);
+		shockwave_renderer_cleanup(&scene->shockwave_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 		if (scene->billboard_instances) {
 			platform_aligned_free(scene->billboard_instances);
@@ -1101,6 +1115,17 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		nbody_step(&scene->nbody_sim, delta_time);
 		PROFILE_ZONE_END(verlet_ctx);
 	}
+
+	/* Forward confinement impacts to shockwave VFX */
+	for (int i = 1; i < scene->nbody_sim.body_count; i++) {
+		const NBodyImpact* imp = &scene->nbody_sim.impacts[i];
+		if (imp->active) {
+			shockwave_emit(&scene->shockwave_renderer,
+			               imp->position, imp->color, imp->velocity,
+			               scene->nbody_sim.sim_time);
+		}
+	}
+	shockwave_update(&scene->shockwave_renderer, scene->nbody_sim.sim_time);
 
 	/* Record trail positions into ring buffers */
 	{
