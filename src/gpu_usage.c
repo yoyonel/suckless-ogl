@@ -1,11 +1,13 @@
 #include "gpu_usage.h"
 
 #include "log.h"
-#include "platform/platform_time.h"
 #include "utils.h"
+#include <string.h>
+
+#ifdef __linux__
+#include "platform/platform_time.h"
 #include <dirent.h>
 #include <errno.h>
-#include <string.h>
 
 /* --- Constants --- */
 enum {
@@ -310,6 +312,34 @@ void gpu_usage_update(GPUUsageMonitor* mon)
 	mon->prev_gpu_time_ns = total_engine_ns;
 	mon->prev_wall_time_ns = now;
 }
+
+#else /* !__linux__ */
+
+void gpu_usage_init(GPUUsageMonitor* mon)
+{
+	if (!mon) {
+		return;
+	}
+	*mon = (GPUUsageMonitor){0};
+	mon->available = false;
+	LOG_WARN("gpu_usage", "DRM fdinfo not available on this platform");
+}
+
+void gpu_usage_cleanup(GPUUsageMonitor* mon)
+{
+	if (!mon) {
+		return;
+	}
+	mon->stream_count = 0;
+	mon->available = false;
+}
+
+void gpu_usage_update(GPUUsageMonitor* mon)
+{
+	(void)mon;
+}
+
+#endif /* __linux__ */
 
 float gpu_usage_get_load(const GPUUsageMonitor* mon)
 {
