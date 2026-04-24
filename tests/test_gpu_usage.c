@@ -1,7 +1,6 @@
 // tests/test_gpu_usage.c
 #include "gpu_usage.h"
 #include "unity.h"
-#include <string.h>
 
 void setUp(void)
 {
@@ -13,9 +12,7 @@ void tearDown(void)
 
 void test_gpu_usage_init_cleanup_lifecycle(void)
 {
-	GPUUsageMonitor mon;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&mon, 0, sizeof(GPUUsageMonitor));
+	GPUUsageMonitor mon = {0};
 
 	gpu_usage_init(&mon);
 	/* On any platform, init should succeed without crash */
@@ -46,9 +43,7 @@ void test_gpu_usage_is_available_null(void)
 
 void test_gpu_usage_get_load_unavailable(void)
 {
-	GPUUsageMonitor mon;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&mon, 0, sizeof(GPUUsageMonitor));
+	GPUUsageMonitor mon = {0};
 	mon.available = false;
 
 	float load = gpu_usage_get_load(&mon);
@@ -57,9 +52,7 @@ void test_gpu_usage_get_load_unavailable(void)
 
 void test_gpu_usage_update_unavailable_noop(void)
 {
-	GPUUsageMonitor mon;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&mon, 0, sizeof(GPUUsageMonitor));
+	GPUUsageMonitor mon = {0};
 	mon.available = false;
 	mon.load_percent = 0.0F;
 
@@ -70,9 +63,7 @@ void test_gpu_usage_update_unavailable_noop(void)
 
 void test_gpu_usage_cleanup_resets_state(void)
 {
-	GPUUsageMonitor mon;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&mon, 0, sizeof(GPUUsageMonitor));
+	GPUUsageMonitor mon = {0};
 
 	gpu_usage_init(&mon);
 	gpu_usage_cleanup(&mon);
@@ -83,9 +74,7 @@ void test_gpu_usage_cleanup_resets_state(void)
 
 void test_gpu_usage_double_cleanup_safe(void)
 {
-	GPUUsageMonitor mon;
-	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.bzero)
-	(void)memset(&mon, 0, sizeof(GPUUsageMonitor));
+	GPUUsageMonitor mon = {0};
 
 	gpu_usage_init(&mon);
 	gpu_usage_cleanup(&mon);
