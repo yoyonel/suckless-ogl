@@ -1,13 +1,13 @@
 var searchData=
 [
-  ['offset_3555',['offset',['../structColorGradingParams.html#aef2056f6ab8806d8afcb039f6aad33f9',1,'ColorGradingParams']]],
-  ['offset_5fsampler_3556',['offset_sampler',['../structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d',1,'GPUStage']]],
-  ['orbit_5fr_3557',['orbit_r',['../structOrbiterDef.html#a8bb8f8b9c8b7c96308d0867415ea084d',1,'OrbiterDef']]],
-  ['orbiter_5fcount_3558',['ORBITER_COUNT',['../nbody_8c.html#ad888daec2563bee11dd7621881516fc9',1,'nbody.c']]],
-  ['orbiters_3559',['ORBITERS',['../nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081',1,'nbody.c']]],
-  ['original_5findex_3560',['original_index',['../structSphereSortEntry.html#aed13255308b43481740f760886695969',1,'SphereSortEntry']]],
-  ['original_5fnice_3561',['original_nice',['../structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686',1,'PerfModeContext']]],
-  ['original_5fparam_3562',['original_param',['../structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924',1,'PerfModeContext']]],
-  ['original_5fpolicy_3563',['original_policy',['../structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39',1,'PerfModeContext']]],
-  ['overlay_3564',['overlay',['../structApp.html#a1c778e4cff23207babd19f8ba6496a6e',1,'App']]]
+  ['offset_3584',['offset',['../structColorGradingParams.html#aef2056f6ab8806d8afcb039f6aad33f9',1,'ColorGradingParams']]],
+  ['offset_5fsampler_3585',['offset_sampler',['../structGPUStage.html#a8aa9bdd6a39aef84f93e4a749187349d',1,'GPUStage']]],
+  ['orbit_5fr_3586',['orbit_r',['../structOrbiterDef.html#a8bb8f8b9c8b7c96308d0867415ea084d',1,'OrbiterDef']]],
+  ['orbiter_5fcount_3587',['ORBITER_COUNT',['../nbody_8c.html#ad888daec2563bee11dd7621881516fc9',1,'nbody.c']]],
+  ['orbiters_3588',['ORBITERS',['../nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081',1,'nbody.c']]],
+  ['original_5findex_3589',['original_index',['../structSphereSortEntry.html#aed13255308b43481740f760886695969',1,'SphereSortEntry']]],
+  ['original_5fnice_3590',['original_nice',['../structPerfModeContext.html#ab45237df04bfc4de37c223f552d25686',1,'PerfModeContext']]],
+  ['original_5fparam_3591',['original_param',['../structPerfModeContext.html#a01144e7c08a71144e50675947eb9a924',1,'PerfModeContext']]],
+  ['original_5fpolicy_3592',['original_policy',['../structPerfModeContext.html#a0a9459d468bcc63c73bc1d5667daed39',1,'PerfModeContext']]],
+  ['overlay_3593',['overlay',['../structApp.html#a1c778e4cff23207babd19f8ba6496a6e',1,'App']]]
 ];

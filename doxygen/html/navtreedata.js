@@ -82,17 +82,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui_8h.html#aeecd20cda3f7c87d60454435776fc666",
-"functions.html",
-"gpu__profiler__ui_8c.html#a1dbf31ba88950a696066589bc63d1ac0",
-"icosphere_8h.html#aeabbf4b8c74fefac0070104ad779cd62",
-"pbr__ibl__instanced_8frag.html#a06e3867b2ef1f1715391bd55fd702dd5",
-"postprocess_8h.html#aa46668e6882df082d99ef8735eadc8af",
-"shader_8c.html#af175eada3763b4ece51e0344ee4a0da0",
-"structBillboardUBO.html#ab32909fea72a6992de76af04132a0335",
-"structGrainParams.html#af7903eac181a996535bb25bc1f584a5c",
-"structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1",
-"structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5"
+"app__ui_8h.html#aebecb4aca5518dc86b7ba096ed227049",
+"fps_8h.html#a2d1f254700ad6cb8e2e7096a88029635",
+"gpu__profiler__ui_8c.html",
+"icosphere_8h.html#a98ec73bfde90923b7425adee892c7529",
+"pbr__ibl__billboard_8vert.html",
+"postprocess_8h.html#a9e0952cc10ca6b3d92996a4f7068e5ed",
+"shader_8c.html#ad982609bfce39b3f6ed4b89b9fc360b6",
+"structBillboardUBO.html#a8185459a1f68cde217a4f9bc739b6d5a",
+"structGrainParams.html#a51c672d90c812c686d9d395cb95a95b7",
+"structPostProcessPreset.html#a40d0d59ac2cd0abe56c818238ffa52e3",
+"structUIContext.html#ab4107aff07820adb38b338d426e6a434",
+"utils_8h.html#ac333249d502a536c37149f9397c09060"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

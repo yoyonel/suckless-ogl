@@ -1,5 +1,9 @@
 var NAVTREEINDEX8 =
 {
+"structBillboardUBO.html#a8185459a1f68cde217a4f9bc739b6d5a":[5,0,12,4],
+"structBillboardUBO.html#a88eab662214618362fea810fb6a74d5e":[5,0,12,7],
+"structBillboardUBO.html#a9e31f253fb1cf3c4b9b23ce81934c9d2":[5,0,12,10],
+"structBillboardUBO.html#aa630f13f2c4b0a638a1ecd589906723e":[5,0,12,9],
 "structBillboardUBO.html#ab32909fea72a6992de76af04132a0335":[5,0,12,14],
 "structBillboardUBO.html#ab3975b1dc1dbdfd133b9c74399e3c12d":[5,0,12,8],
 "structBillboardUBO.html#acf190a461d7a836a8145c058d7e03fbc":[5,0,12,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX8 =
 "structGlyphInfo.html#adf30300b7fb7d99e6b48d9f47d89d455":[5,0,37,7],
 "structGlyphInfo.html#aeee917883d36cc9bda1a0bf899a889c9":[5,0,37,3],
 "structGrainParams.html":[5,0,47],
-"structGrainParams.html#a4bfc5e3c5127242d9eac2516bd39d8f7":[5,0,47,2],
-"structGrainParams.html#a51c672d90c812c686d9d395cb95a95b7":[5,0,47,5],
-"structGrainParams.html#a5e968a3c61cdb03ea6d1751fdac683ce":[5,0,47,3],
-"structGrainParams.html#a8643f870d488dbfce3fed2e17131b345":[5,0,47,0],
-"structGrainParams.html#aa4897c87dbd8c4110503a4fb7d5304a6":[5,0,47,1]
+"structGrainParams.html#a4bfc5e3c5127242d9eac2516bd39d8f7":[5,0,47,2]
 };

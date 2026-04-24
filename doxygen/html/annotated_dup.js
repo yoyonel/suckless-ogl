@@ -91,6 +91,7 @@ var annotated_dup =
     [ "SSBOGroup", "structSSBOGroup.html", "structSSBOGroup" ],
     [ "TonemapParams", "structTonemapParams.html", "structTonemapParams" ],
     [ "TracyManager", "structTracyManager.html", null ],
+    [ "TrailNeonParams", "structTrailNeonParams.html", "structTrailNeonParams" ],
     [ "TrailRenderer", "structTrailRenderer.html", "structTrailRenderer" ],
     [ "TrailRing", "structTrailRing.html", "structTrailRing" ],
     [ "TrailVertex", "structTrailVertex.html", "structTrailVertex" ],

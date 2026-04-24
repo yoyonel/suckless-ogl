@@ -301,8 +301,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a899dfdc5391f2b4f698bc193cb3d1a14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8c.html#a899dfdc5391f2b4f698bc193cb3d1a14">trail_renderer_record</a> (<a class="el" href="structTrailRenderer.html">TrailRenderer</a> *trail, const <a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
 <tr class="memdesc:a899dfdc5391f2b4f698bc193cb3d1a14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records current positions from the simulation.  <a href="trail__renderer_8c.html#a899dfdc5391f2b4f698bc193cb3d1a14">More...</a><br /></td></tr>
 <tr class="separator:a899dfdc5391f2b4f698bc193cb3d1a14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab217da33cf26353e8cc9d29057cf44a3"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8c.html#ab217da33cf26353e8cc9d29057cf44a3">build_ribbon</a> (const <a class="el" href="structTrailRing.html">TrailRing</a> *ring, const vec3 color, const vec3 cam_pos, float body_radius, <a class="el" href="structTrailVertex.html">TrailVertex</a> *out)</td></tr>
-<tr class="separator:ab217da33cf26353e8cc9d29057cf44a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a047cb2df26a10dac1ba8132145b3a324"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8c.html#a047cb2df26a10dac1ba8132145b3a324">build_ribbon</a> (const <a class="el" href="structTrailRing.html">TrailRing</a> *ring, const vec3 color, const vec3 cam_pos, float body_radius, float hdr_intensity, float max_width, <a class="el" href="structTrailVertex.html">TrailVertex</a> *out)</td></tr>
+<tr class="separator:a047cb2df26a10dac1ba8132145b3a324"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd763c8aeaa80e4bfcdb166ea113af07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8c.html#acd763c8aeaa80e4bfcdb166ea113af07">trail_renderer_draw</a> (<a class="el" href="structTrailRenderer.html">TrailRenderer</a> *trail, mat4 view, mat4 proj, vec3 cam_pos)</td></tr>
 <tr class="memdesc:acd763c8aeaa80e4bfcdb166ea113af07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds ribbon geometry and renders all trails.  <a href="trail__renderer_8c.html#acd763c8aeaa80e4bfcdb166ea113af07">More...</a><br /></td></tr>
 <tr class="separator:acd763c8aeaa80e4bfcdb166ea113af07"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,8 +335,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab217da33cf26353e8cc9d29057cf44a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab217da33cf26353e8cc9d29057cf44a3">&#9670;&nbsp;</a></span>build_ribbon()</h2>
+<a id="a047cb2df26a10dac1ba8132145b3a324"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a047cb2df26a10dac1ba8132145b3a324">&#9670;&nbsp;</a></span>build_ribbon()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -371,6 +371,18 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>hdr_intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="structTrailVertex.html">TrailVertex</a> *&#160;</td>
           <td class="paramname"><em>out</em>&#160;</td>
         </tr>
@@ -389,7 +401,7 @@ Variables</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="trail__renderer_8c_ab217da33cf26353e8cc9d29057cf44a3_cgraph.svg" width="236" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="trail__renderer_8c_a047cb2df26a10dac1ba8132145b3a324_cgraph.svg" width="236" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -582,7 +594,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="trail__renderer_8c_acd763c8aeaa80e4bfcdb166ea113af07_cgraph.svg" width="100%" height="409"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="trail__renderer_8c_acd763c8aeaa80e4bfcdb166ea113af07_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 

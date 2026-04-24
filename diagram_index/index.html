@@ -603,6 +603,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#neon-trail-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neon Trail Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#performance-mode-notifications" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -989,6 +1000,34 @@
     
   
     N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../neon_trails/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Neon Trails
   
 
     
@@ -4348,6 +4387,23 @@ M --&gt;|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blur
 <pre class="mermaid"><code>graph LR
 A[Linear Blur \nStandard Suckless OGL] --&gt;|Creates straight lines and artifacts| B(Punch trajectory)
 C[Curved Blur \nRE Engine / SF6] --&gt;|Sampling along a circular arc| D(Anime/Manga-style stylized blur)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="neon-trail-rendering"><a href="../neon_trails/">Neon Trail Rendering</a><a class="headerlink" href="#neon-trail-rendering" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../neon_trails/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">Each change displays an on-screen notification with the current value.</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+A[TrailRenderer::neon] --&gt;|intensity, width| B[build_ribbon CPU]
+A --&gt;|core_exp| C[trail.frag GPU]
+B --&gt;|HDR vertices| D[VBO Upload]
+D --&gt; E[glMultiDrawArrays]
+C --&gt;|Neon profile| E
+E --&gt;|HDR output| F[Bloom Post-Process]
+F --&gt;|Wide halo| G[Final Composite]</code></pre>
 
   </div>
 </div>

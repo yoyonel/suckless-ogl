@@ -2,7 +2,14 @@ var trail__renderer_8h =
 [
     [ "TrailVertex", "structTrailVertex.html", "structTrailVertex" ],
     [ "TrailRing", "structTrailRing.html", "structTrailRing" ],
+    [ "TrailNeonParams", "structTrailNeonParams.html", "structTrailNeonParams" ],
     [ "TrailRenderer", "structTrailRenderer.html", "structTrailRenderer" ],
+    [ "TrailNeonParam", "trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b", [
+      [ "TRAIL_NEON_PARAM_INTENSITY", "trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef", null ],
+      [ "TRAIL_NEON_PARAM_CORE", "trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86", null ],
+      [ "TRAIL_NEON_PARAM_WIDTH", "trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e", null ],
+      [ "TRAIL_NEON_PARAM_COUNT", "trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba3d3561353a27be3250ac1821fe104381", null ]
+    ] ],
     [ "trail_renderer_cleanup", "trail__renderer_8h.html#a6fbcb92a34d5a00b5e17049d444e5d9e", null ],
     [ "trail_renderer_clear", "trail__renderer_8h.html#a66dbb77b4b30d862246d2ea40e189866", null ],
     [ "trail_renderer_draw", "trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671", null ],
@@ -11,5 +18,14 @@ var trail__renderer_8h =
     [ "trail_renderer_set_color", "trail__renderer_8h.html#a45701e1c31aa42e037c5c2921949b441", null ],
     [ "TRAIL_HDR_INTENSITY", "trail__renderer_8h.html#a3d4573c823d99094e05ef8813cfe95b4", null ],
     [ "TRAIL_MAX_WIDTH", "trail__renderer_8h.html#a4787e6fd0fac1a4ec43c98ed9bf449ba", null ],
+    [ "TRAIL_NEON_CORE_EXP_DEFAULT", "trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69", null ],
+    [ "TRAIL_NEON_CORE_MIN", "trail__renderer_8h.html#ab8add3fd9059ce9286080fc30901afd2", null ],
+    [ "TRAIL_NEON_CORE_STEP", "trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6", null ],
+    [ "TRAIL_NEON_INTENSITY_DEFAULT", "trail__renderer_8h.html#a4682a5b0a09be8ada60f762bd2bd4ed7", null ],
+    [ "TRAIL_NEON_INTENSITY_MIN", "trail__renderer_8h.html#ae48865aefa5f44067796b4771d230cc4", null ],
+    [ "TRAIL_NEON_INTENSITY_STEP", "trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e", null ],
+    [ "TRAIL_NEON_WIDTH_DEFAULT", "trail__renderer_8h.html#a6d280ba790249c1570a30ae26426fcd5", null ],
+    [ "TRAIL_NEON_WIDTH_MIN", "trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03", null ],
+    [ "TRAIL_NEON_WIDTH_STEP", "trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8", null ],
     [ "TRAIL_SAMPLE_INTERVAL", "trail__renderer_8h.html#ad65403268c340a602a289598ac94716d", null ]
 ];

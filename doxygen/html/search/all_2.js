@@ -118,5 +118,5 @@ var searchData=
   ['build_5fbrdf_5flut_5fmap_263',['build_brdf_lut_map',['../pbr_8h.html#a626c9aaaa1dea8809b7f5c9a745aac55',1,'build_brdf_lut_map(int size):&#160;pbr.c'],['../pbr_8c.html#a626c9aaaa1dea8809b7f5c9a745aac55',1,'build_brdf_lut_map(int size):&#160;pbr.c']]],
   ['build_5firradiance_5fmap_264',['build_irradiance_map',['../pbr_8h.html#a380eba0f8cc7fc6c292073aa718c7097',1,'build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold):&#160;pbr.c'],['../pbr_8c.html#a380eba0f8cc7fc6c292073aa718c7097',1,'build_irradiance_map(GLuint shader, GLuint env_hdr_tex, int size, float threshold):&#160;pbr.c']]],
   ['build_5fprefiltered_5fspecular_5fmap_265',['build_prefiltered_specular_map',['../pbr_8h.html#a81934f611c746e22958d99a325ea692f',1,'build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex, int width, int height, float threshold):&#160;pbr.c'],['../pbr_8c.html#a81934f611c746e22958d99a325ea692f',1,'build_prefiltered_specular_map(GLuint shader, GLuint env_hdr_tex, int width, int height, float threshold):&#160;pbr.c']]],
-  ['build_5fribbon_266',['build_ribbon',['../trail__renderer_8c.html#ab217da33cf26353e8cc9d29057cf44a3',1,'trail_renderer.c']]]
+  ['build_5fribbon_266',['build_ribbon',['../trail__renderer_8c.html#a047cb2df26a10dac1ba8132145b3a324',1,'trail_renderer.c']]]
 ];

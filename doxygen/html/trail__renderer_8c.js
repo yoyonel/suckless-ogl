@@ -1,6 +1,6 @@
 var trail__renderer_8c =
 [
-    [ "build_ribbon", "trail__renderer_8c.html#ab217da33cf26353e8cc9d29057cf44a3", null ],
+    [ "build_ribbon", "trail__renderer_8c.html#a047cb2df26a10dac1ba8132145b3a324", null ],
     [ "ring_get", "trail__renderer_8c.html#ad1ee77758d40d03deee40aca196f43fb", null ],
     [ "ring_push", "trail__renderer_8c.html#ab8304df93c00a7c412c710a51cc62c9b", null ],
     [ "trail_renderer_cleanup", "trail__renderer_8c.html#aff7e69ac17c34ee473f7a2df615f2f75", null ],
