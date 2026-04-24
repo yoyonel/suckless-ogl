@@ -19,7 +19,7 @@
 #include <cglm/types.h>
 #include <stdbool.h>
 
-/** Maximum trail sample points per body. At 60 samples/sec ≈ 4.3 seconds. */
+/** Maximum trail sample points per body. */
 enum { TRAIL_MAX_POINTS = 256 };
 
 /** HDR intensity multiplier — drives bloom for neon glow effect. */
@@ -30,6 +30,14 @@ static const float TRAIL_MAX_WIDTH = 0.24F;
 
 /** Minimum time between trail samples (seconds). */
 static const float TRAIL_SAMPLE_INTERVAL = 1.0F / 60.0F;
+
+/** Default trail duration in seconds (how long a trail persists). */
+static const float TRAIL_DURATION_DEFAULT = 4.0F;
+
+/** Minimum / maximum trail duration for runtime adjustment. */
+static const float TRAIL_DURATION_MIN = 0.5F;
+static const float TRAIL_DURATION_MAX = 30.0F;
+static const float TRAIL_DURATION_STEP = 0.5F;
 
 /**
  * @struct TrailVertex
@@ -50,8 +58,10 @@ typedef struct {
  */
 typedef struct {
 	vec3 points[TRAIL_MAX_POINTS]; /**< Circular buffer of positions. */
-	int head;                      /**< Write index (newest). */
-	int count;                     /**< Number of valid samples. */
+	float timestamps[TRAIL_MAX_POINTS]; /**< Simulation time at each sample.
+	                                     */
+	int head;                           /**< Write index (newest). */
+	int count;                          /**< Number of valid samples. */
 } TrailRing;
 
 /**
@@ -95,6 +105,8 @@ typedef struct {
 	TrailRing rings[NBODY_MAX_BODIES]; /**< Per-body position history. */
 	int body_count;                    /**< Number of tracked bodies. */
 	float sample_timer;                /**< Accumulator for sample rate. */
+	float sim_time;                    /**< Monotonic simulation time. */
+	float trail_duration;              /**< Trail lifetime in seconds. */
 
 	/* GPU Resources */
 	GLuint vao;       /**< VAO for ribbon geometry. */
@@ -136,6 +148,16 @@ void trail_renderer_set_color(TrailRenderer* tr, int body_index,
  */
 void trail_renderer_record(TrailRenderer* tr, const NBodySim* sim,
                            float delta_time);
+
+/**
+ * @brief Returns the current trail duration in seconds.
+ */
+float trail_renderer_get_duration(const TrailRenderer* tr);
+
+/**
+ * @brief Sets the trail duration in seconds (clamped to valid range).
+ */
+void trail_renderer_set_duration(TrailRenderer* tr, float duration);
 
 /**
  * @brief Builds ribbon geometry and renders all trails.

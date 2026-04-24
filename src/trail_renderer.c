@@ -23,10 +23,11 @@ static const float HALF = 0.5F;
  * Ring buffer helpers
  * ---------------------------------------------------------------------------*/
 
-static void ring_push(TrailRing* ring, const vec3 pos)
+static void ring_push(TrailRing* ring, const vec3 pos, float timestamp)
 {
 	ring->head = (ring->head + 1) % TRAIL_MAX_POINTS;
 	glm_vec3_copy((float*)pos, ring->points[ring->head]);
+	ring->timestamps[ring->head] = timestamp;
 	if (ring->count < TRAIL_MAX_POINTS) {
 		ring->count++;
 	}
@@ -38,6 +39,12 @@ static void ring_get(const TrailRing* ring, int age, vec3 out)
 	out[0] = ring->points[idx][0];
 	out[1] = ring->points[idx][1];
 	out[2] = ring->points[idx][2];
+}
+
+static float ring_get_timestamp(const TrailRing* ring, int age)
+{
+	int idx = (ring->head - age + TRAIL_MAX_POINTS) % TRAIL_MAX_POINTS;
+	return ring->timestamps[idx];
 }
 
 /* ---------------------------------------------------------------------------
@@ -86,6 +93,10 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 	trail->neon.core_exp = TRAIL_NEON_CORE_EXP_DEFAULT;
 	trail->neon.width = TRAIL_NEON_WIDTH_DEFAULT;
 
+	/* Initialize time-based trail parameters */
+	trail->trail_duration = TRAIL_DURATION_DEFAULT;
+	trail->sim_time = 0.0F;
+
 	return true;
 }
 
@@ -123,22 +134,23 @@ void trail_renderer_clear(TrailRenderer* trail)
 void trail_renderer_record(TrailRenderer* trail, const NBodySim* sim,
                            float delta_time)
 {
-	/* Scale sampling rate by time_scale so trail length in world units
-	 * stays constant regardless of simulation speed.  At 8× speed the
-	 * bodies move 8× faster, so we sample 8× more often — the ring
-	 * buffer evicts old points at the same *visual* pace.
-	 * fabsf() ensures sampling works under time reversal (negative
-	 * time_scale) — we always accumulate positive time for sampling. */
+	/* Advance simulation time by the effective (time-scaled) delta.
+	 * fabsf() ensures time reversal still advances the sampling clock —
+	 * we always accumulate positive time for trail recording. */
 	float effective_dt = delta_time * fabsf(sim->time_scale);
+	trail->sim_time += effective_dt;
 	trail->sample_timer += effective_dt;
 
 	/* Emit as many sub-samples as needed (catches large time_scale
-	 * jumps that skip multiple intervals in a single frame). */
+	 * jumps that skip multiple intervals in a single frame).
+	 * Each sample is stamped with the current sim_time so the ribbon
+	 * builder can compute age-based tapering independent of FPS. */
 	while (trail->sample_timer >= TRAIL_SAMPLE_INTERVAL) {
 		trail->sample_timer -= TRAIL_SAMPLE_INTERVAL;
 		for (int i = 0; i < sim->body_count && i < trail->body_count;
 		     i++) {
-			ring_push(&trail->rings[i], sim->bodies[i].position);
+			ring_push(&trail->rings[i], sim->bodies[i].position,
+			          trail->sim_time);
 		}
 	}
 }
@@ -155,7 +167,9 @@ void trail_renderer_record(TrailRenderer* trail, const NBodySim* sim,
 
 static int build_ribbon(const TrailRing* ring, const vec3 color,
                         const vec3 cam_pos, float body_radius,
-                        float hdr_intensity, float max_width, TrailVertex* out)
+                        float hdr_intensity, float max_width,
+                        float current_time, float trail_duration,
+                        TrailVertex* out)
 {
 	if (ring->count < 3) {
 		return 0;
@@ -163,13 +177,22 @@ static int build_ribbon(const TrailRing* ring, const vec3 color,
 
 	int vcount = 0;
 	const int num_pts = ring->count;
-	const float inv_n = 1.0F / (float)(num_pts - 1);
 
 	for (int idx = 0; idx < num_pts - 1; idx++) {
 		vec3 pos_cur;
 		vec3 pos_next;
 		ring_get(ring, idx, pos_cur);
 		ring_get(ring, idx + 1, pos_next);
+
+		/* Compute age from timestamp — independent of FPS */
+		float sample_time = ring_get_timestamp(ring, idx);
+		float age = (current_time - sample_time) / trail_duration;
+		if (age < 0.0F) {
+			age = 0.0F;
+		}
+		if (age > 1.0F) {
+			continue; /* Too old — skip this point */
+		}
 
 		/* Trail segment direction */
 		vec3 seg_dir;
@@ -202,9 +225,6 @@ static int build_ribbon(const TrailRing* ring, const vec3 color,
 		if (side_len > EPSILON) {
 			glm_vec3_scale(side, 1.0F / side_len, side);
 		}
-
-		/* Age factor: 0 = newest (head), 1 = oldest (tail) */
-		float age = (float)idx * inv_n;
 
 		/* Width: cubic taper, scaled by body radius for
 		 * proportional trails. Minimum radius clamp. */
@@ -267,6 +287,7 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 			    &trail->rings[i], trail->colors[i], cam_pos,
 			    1.0F, /* body_radius — could be passed in */
 			    trail->neon.intensity, trail->neon.width,
+			    trail->sim_time, trail->trail_duration,
 			    &staging[total_verts]);
 			if (vcount > 0) {
 				body_start[active_bodies] = start;
@@ -321,4 +342,24 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
+}
+
+/* ---------------------------------------------------------------------------
+ * Duration accessors
+ * ---------------------------------------------------------------------------*/
+
+float trail_renderer_get_duration(const TrailRenderer* trail)
+{
+	return trail->trail_duration;
+}
+
+void trail_renderer_set_duration(TrailRenderer* trail, float duration)
+{
+	if (duration < TRAIL_DURATION_MIN) {
+		duration = TRAIL_DURATION_MIN;
+	}
+	if (duration > TRAIL_DURATION_MAX) {
+		duration = TRAIL_DURATION_MAX;
+	}
+	trail->trail_duration = duration;
 }
