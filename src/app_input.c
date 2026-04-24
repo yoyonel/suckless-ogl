@@ -567,6 +567,72 @@ static void handle_o_key_input(App* app)
 	action_notifier_push(&app->notifier, notif_name, NOTIF_DUR_NORMAL);
 }
 
+static const char* const NEON_PARAM_NAMES[] = {"Intensity", "Core", "Width"};
+
+static void handle_neon_cycle(App* app)
+{
+	TrailNeonParams* neon = &app->scene.trail_renderer.neon;
+	neon->active = (neon->active + 1) % TRAIL_NEON_PARAM_COUNT;
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Neon: %s selected",
+	                    NEON_PARAM_NAMES[neon->active]);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_NORMAL);
+}
+
+static void handle_neon_adjust(App* app, int increase)
+{
+	TrailNeonParams* neon = &app->scene.trail_renderer.neon;
+	float sign = (increase != 0) ? 1.0F : -1.0F;
+	const char* name = NEON_PARAM_NAMES[neon->active];
+	float val = 0.0F;
+
+	switch (neon->active) {
+		case TRAIL_NEON_PARAM_INTENSITY:
+			neon->intensity += sign * TRAIL_NEON_INTENSITY_STEP;
+			if (neon->intensity < TRAIL_NEON_INTENSITY_MIN) {
+				neon->intensity = TRAIL_NEON_INTENSITY_MIN;
+			}
+			val = neon->intensity;
+			break;
+		case TRAIL_NEON_PARAM_CORE:
+			neon->core_exp += sign * TRAIL_NEON_CORE_STEP;
+			if (neon->core_exp < TRAIL_NEON_CORE_MIN) {
+				neon->core_exp = TRAIL_NEON_CORE_MIN;
+			}
+			val = neon->core_exp;
+			break;
+		case TRAIL_NEON_PARAM_WIDTH:
+			neon->width += sign * TRAIL_NEON_WIDTH_STEP;
+			if (neon->width < TRAIL_NEON_WIDTH_MIN) {
+				neon->width = TRAIL_NEON_WIDTH_MIN;
+			}
+			val = neon->width;
+			break;
+		default:
+			break;
+	}
+
+	char buf[NOTIF_BUF_SIZE];
+	(void)safe_snprintf(buf, sizeof(buf), "Neon %s: %.2f", name,
+	                    (double)val);
+	action_notifier_push(&app->notifier, buf, NOTIF_DUR_SHORT);
+}
+
+static int handle_neon_input(App* app, int key, int mods)
+{
+	if (key != GLFW_KEY_I) {
+		return 0;
+	}
+	if (check_flag(mods, GLFW_MOD_SHIFT)) {
+		handle_neon_adjust(app, 1);
+	} else if (check_flag(mods, GLFW_MOD_CONTROL)) {
+		handle_neon_adjust(app, 0);
+	} else {
+		handle_neon_cycle(app);
+	}
+	return 1;
+}
+
 void handle_app_input(App* app, int key, int mods)
 {
 	if (key >= GLFW_KEY_F1 && key <= GLFW_KEY_F12) {
@@ -659,6 +725,9 @@ void handle_app_input(App* app, int key, int mods)
 			break;
 		case GLFW_KEY_COMMA:
 			handle_sim_or_gravity_input(app, mods, false);
+			break;
+		case GLFW_KEY_I:
+			handle_neon_input(app, key, mods);
 			break;
 		default:
 			break;

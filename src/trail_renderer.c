@@ -81,6 +81,11 @@ bool trail_renderer_init(TrailRenderer* trail, int body_count)
 
 	glBindVertexArray(0);
 
+	/* Initialize neon glow defaults */
+	trail->neon.intensity = TRAIL_NEON_INTENSITY_DEFAULT;
+	trail->neon.core_exp = TRAIL_NEON_CORE_EXP_DEFAULT;
+	trail->neon.width = TRAIL_NEON_WIDTH_DEFAULT;
+
 	return true;
 }
 
@@ -149,7 +154,8 @@ void trail_renderer_record(TrailRenderer* trail, const NBodySim* sim,
  * ---------------------------------------------------------------------------*/
 
 static int build_ribbon(const TrailRing* ring, const vec3 color,
-                        const vec3 cam_pos, float body_radius, TrailVertex* out)
+                        const vec3 cam_pos, float body_radius,
+                        float hdr_intensity, float max_width, TrailVertex* out)
 {
 	if (ring->count < 3) {
 		return 0;
@@ -203,13 +209,13 @@ static int build_ribbon(const TrailRing* ring, const vec3 color,
 		/* Width: cubic taper, scaled by body radius for
 		 * proportional trails. Minimum radius clamp. */
 		float base_width =
-		    TRAIL_MAX_WIDTH * fmaxf(body_radius, MIN_BODY_RADIUS);
+		    max_width * fmaxf(body_radius, MIN_BODY_RADIUS);
 		float width = base_width * (1.0F - (age * age * age));
 
 		/* HDR color with quadratic intensity fade */
 		float intensity = (1.0F - age) * (1.0F - age);
 		vec3 hdr_color;
-		glm_vec3_scale((float*)color, TRAIL_HDR_INTENSITY * intensity,
+		glm_vec3_scale((float*)color, hdr_intensity * intensity,
 		               hdr_color);
 
 		/* Left vertex (v=0) */
@@ -260,6 +266,7 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 			int vcount = build_ribbon(
 			    &trail->rings[i], trail->colors[i], cam_pos,
 			    1.0F, /* body_radius — could be passed in */
+			    trail->neon.intensity, trail->neon.width,
 			    &staging[total_verts]);
 			if (vcount > 0) {
 				body_start[active_bodies] = start;
@@ -289,6 +296,7 @@ void trail_renderer_draw(TrailRenderer* trail, mat4 view, mat4 proj,
 	shader_use(trail->shader);
 	shader_set_mat4(trail->shader, "u_view", (const float*)view);
 	shader_set_mat4(trail->shader, "u_proj", (const float*)proj);
+	shader_set_float(trail->shader, "u_core_exp", trail->neon.core_exp);
 
 	glBindVertexArray(trail->vao);
 

@@ -22,11 +22,11 @@
 /** Maximum trail sample points per body. At 60 samples/sec ≈ 4.3 seconds. */
 enum { TRAIL_MAX_POINTS = 256 };
 
-/** HDR intensity multiplier — ensures bloom threshold is exceeded. */
-static const float TRAIL_HDR_INTENSITY = 3.0F;
+/** HDR intensity multiplier — drives bloom for neon glow effect. */
+static const float TRAIL_HDR_INTENSITY = 5.0F;
 
 /** Maximum ribbon half-width in world units. */
-static const float TRAIL_MAX_WIDTH = 0.18F;
+static const float TRAIL_MAX_WIDTH = 0.24F;
 
 /** Minimum time between trail samples (seconds). */
 static const float TRAIL_SAMPLE_INTERVAL = 1.0F / 60.0F;
@@ -55,6 +55,39 @@ typedef struct {
 } TrailRing;
 
 /**
+ * @enum TrailNeonParam
+ * @brief Identifies which neon parameter is being adjusted.
+ */
+typedef enum {
+	TRAIL_NEON_PARAM_INTENSITY = 0,
+	TRAIL_NEON_PARAM_CORE,
+	TRAIL_NEON_PARAM_WIDTH,
+	TRAIL_NEON_PARAM_COUNT
+} TrailNeonParam;
+
+/**
+ * @struct TrailNeonParams
+ * @brief Runtime-adjustable neon glow profile parameters.
+ */
+typedef struct {
+	float intensity; /**< HDR intensity multiplier (default 5.0). */
+	float core_exp;  /**< Core tightness exponent (default 12.0). */
+	float width;     /**< Ribbon half-width multiplier (default 0.24). */
+	TrailNeonParam active; /**< Currently selected param for adjustment. */
+} TrailNeonParams;
+
+/** Default neon parameter values. */
+static const float TRAIL_NEON_INTENSITY_DEFAULT = 5.0F;
+static const float TRAIL_NEON_CORE_EXP_DEFAULT = 12.0F;
+static const float TRAIL_NEON_WIDTH_DEFAULT = 0.24F;
+static const float TRAIL_NEON_INTENSITY_STEP = 0.5F;
+static const float TRAIL_NEON_CORE_STEP = 2.0F;
+static const float TRAIL_NEON_WIDTH_STEP = 0.02F;
+static const float TRAIL_NEON_INTENSITY_MIN = 0.5F;
+static const float TRAIL_NEON_CORE_MIN = 2.0F;
+static const float TRAIL_NEON_WIDTH_MIN = 0.04F;
+
+/**
  * @struct TrailRenderer
  * @brief Manages trail state and GPU resources for all bodies.
  */
@@ -71,6 +104,9 @@ typedef struct {
 
 	/* Per-body trail colors (HDR emissive). */
 	vec3 colors[NBODY_MAX_BODIES];
+
+	/* Runtime neon glow parameters */
+	TrailNeonParams neon; /**< Adjustable neon profile. */
 } TrailRenderer;
 
 /**
