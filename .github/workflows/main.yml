@@ -173,7 +173,7 @@ jobs:
 
       - name: Download Coverage for Preview
         if: github.event_name == 'pull_request'
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: coverage-report
           path: site/coverage
@@ -229,14 +229,14 @@ jobs:
 
       # 1. On récupère le site complet (MkDocs + Doxygen intégrés)
       - name: Download Documentation
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: doxygen-docs
           path: public-site
 
       # 2. On ajoute le rapport de couverture dans un sous-dossier
       - name: Download Coverage
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: coverage-report
           path: public-site/coverage
@@ -316,7 +316,7 @@ jobs:
         with:
           fetch-depth: 0 # Nécessaire pour les tags
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with: { path: artifacts }
 
       - name: Update Nightly Release
