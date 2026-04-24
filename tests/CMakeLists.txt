@@ -91,6 +91,7 @@ if(WIN32)
     list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader\\.c$")
     list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_api\\.c$")
     list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_uniforms_loc\\.c$")
+    list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gpu_usage\\.c$")
 endif()
 
 # Tests qui nécessitent OpenGL (à mettre dans Xvfb)
