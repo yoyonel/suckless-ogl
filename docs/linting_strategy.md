@@ -112,7 +112,12 @@ An automated guard (`scripts/check_nolint.sh`) enforces this at every stage of t
 
 ### How it Works
 
-The script compares `git diff <base_ref>...HEAD` on `*.c` and `*.h` files, searching for added lines (`+`) containing `NOLINT`. If any are found, the check fails with a listing of all violations.
+The script checks for new `NOLINT` additions in `*.c` and `*.h` files using a two-layer approach:
+
+1. **Committed changes**: `git diff <base_ref>...HEAD` detects NOLINT in already-committed code.
+2. **Staged changes**: `git diff --cached <base_ref>` detects NOLINT in content about to be committed (index). This is critical during `pre-commit`, where `HEAD` still points to the previous commit and staged content would otherwise be invisible.
+
+When staged files exist, their final content is compared against the base ref, correctly handling cases where staged changes *add* or *remove* NOLINT suppressions. If any net new NOLINT lines are found, the check fails with a listing of all violations.
 
 ```bash
 # Local usage
