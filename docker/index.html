@@ -2369,10 +2369,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#build-cache-optimization" class="md-nav__link">
+  <a href="#build-context-optimization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build Cache Optimization
+        Build Context Optimization
       
     </span>
   </a>
@@ -2385,22 +2385,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#makefile-targets" class="md-nav__link">
+  <a href="#justfile-targets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Makefile Targets
+        Justfile Targets
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Makefile Targets">
+    <nav class="md-nav" aria-label="Justfile Targets">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#build-targets" class="md-nav__link">
+  <a href="#build-run-targets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Build Targets
+        Build &amp; Run Targets
       
     </span>
   </a>
@@ -2412,6 +2412,56 @@
     <span class="md-ellipsis">
       
         Maintenance Targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpu-passthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Passthrough
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GPU Passthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Comparison
       
     </span>
   </a>
@@ -2458,10 +2508,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#running-with-host-x11" class="md-nav__link">
+  <a href="#running-with-host-x11-software-rendering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running with Host X11
+        Running with Host X11 (Software Rendering)
       
     </span>
   </a>
@@ -3518,7 +3568,7 @@
 </ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">¶</a></h2>
 <h3 id="build-the-image">Build the Image<a class="headerlink" href="#build-the-image" title="Permanent link">¶</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>make<span class="w"> </span>docker-build
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>just<span class="w"> </span>docker-build
 </span></code></pre></div>
 <p>This creates an optimized container image with:</p>
 <ul>
@@ -3527,7 +3577,11 @@
 <li>Xvfb for headless OpenGL rendering</li>
 </ul>
 <h3 id="run-the-application">Run the Application<a class="headerlink" href="#run-the-application" title="Permanent link">¶</a></h3>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>make<span class="w"> </span>docker-run
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Software rendering (Mesa llvmpipe)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>just<span class="w"> </span>docker-run
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Hardware-accelerated rendering (Intel/AMD GPU)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>just<span class="w"> </span>docker-run-gpu
 </span></code></pre></div>
 <p>Runs the application in a container with X11 forwarding to your host display.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h2>
@@ -3544,8 +3598,10 @@
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span>-G<span class="w"> </span>Ninja<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>-DCMAKE_BUILD_TYPE<span class="o">=</span>Release<span class="w"> </span><span class="se">\</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>--parallel<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>build/app<span class="w"> </span>/tmp/app
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>-DBUILD_SHARED_LIBS<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>-DBUILD_TESTS<span class="o">=</span>OFF<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>cmake<span class="w"> </span>--build<span class="w"> </span>build<span class="w"> </span>--parallel<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>build/app<span class="w"> </span>/tmp/app
 </span></code></pre></div>
 <blockquote>
 <p>[!TIP]
@@ -3555,8 +3611,8 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <ul>
 <li>Minimal runtime dependencies only:</li>
 <li><code>glfw</code> - Window and input handling</li>
-<li><code>mesa-*</code> - OpenGL drivers</li>
-<li><code>mesa-*</code> - OpenGL drivers</li>
+<li><code>mesa-libGL</code>, <code>mesa-libEGL</code>, <code>mesa-dri-drivers</code> - OpenGL software rendering</li>
+<li><code>mesa-vulkan-drivers</code> - Vulkan/DRI support for GPU passthrough</li>
 <li><code>xorg-x11-server-Xvfb</code> - Virtual framebuffer for headless rendering</li>
 <li><code>gamemode</code> - Runtime library for Performance Mode</li>
 <li>Non-root user (<code>appuser</code>) for security</li>
@@ -3594,44 +3650,58 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <li><strong>Headless rendering</strong> for automated screenshots/validation</li>
 <li><strong>Consistent environment</strong> across different systems</li>
 </ul>
-<h3 id="build-cache-optimization">Build Cache Optimization<a class="headerlink" href="#build-cache-optimization" title="Permanent link">¶</a></h3>
-<p>The <code>.dockerignore</code> file excludes unnecessary files from the build context:</p>
+<h3 id="build-context-optimization">Build Context Optimization<a class="headerlink" href="#build-context-optimization" title="Permanent link">¶</a></h3>
+<p>The <code>.dockerignore</code> file aggressively excludes unnecessary files from the build context.
+Only the essential source files, shaders, assets, and CMake configuration are sent to Docker:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>build/          # Build artifacts
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>build-*/        # Coverage/debug builds
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>.git/           # Git history
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>docs/           # Documentation
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>*.md            # Markdown files
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>_deps/          # CMake FetchContent cache (rebuilt in container)
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>deps/           # Pre-built dependencies
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>.git/           # Git history
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>docs/           # Documentation
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>site/           # MkDocs output
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>tests/          # Test suite (disabled in container via -DBUILD_TESTS=OFF)
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>Testing/        # CTest artifacts
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>*.md            # Markdown files
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>*.profraw       # LLVM profiling data
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>*.profdata      # LLVM coverage data
 </span></code></pre></div>
-<p>This reduces context size and speeds up <code>docker build</code>.</p>
-<h2 id="makefile-targets">Makefile Targets<a class="headerlink" href="#makefile-targets" title="Permanent link">¶</a></h2>
-<h3 id="build-targets">Build Targets<a class="headerlink" href="#build-targets" title="Permanent link">¶</a></h3>
+<p>This reduces context transfer from <strong>~870 MB to ~2 MB</strong>, dramatically speeding up <code>docker build</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Tests disabled in container</p>
+<p>The container build uses <code>-DBUILD_TESTS=OFF</code> since the <code>tests/</code> directory is excluded
+from the build context. This is intentional — unit tests run natively via <code>just test-all</code>.</p>
+</div>
+<h2 id="justfile-targets">Justfile Targets<a class="headerlink" href="#justfile-targets" title="Permanent link">¶</a></h2>
+<h3 id="build-run-targets">Build &amp; Run Targets<a class="headerlink" href="#build-run-targets" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
 <th>Target</th>
 <th>Description</th>
-<th><code>make</code></th>
-<th><code>just</code></th>
+<th><code>just</code> command</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Build Image</td>
 <td>Build image with layer caching</td>
-<td><code>docker-build</code></td>
-<td><code>docker-build</code></td>
+<td><code>just docker-build</code></td>
 </tr>
 <tr>
 <td>Build No Cache</td>
 <td>Force full rebuild</td>
-<td><code>docker-build-no-cache</code></td>
-<td><code>docker-build-no-cache</code></td>
+<td><code>just docker-build-no-cache</code></td>
 </tr>
 <tr>
-<td>Run App</td>
-<td>Run with X11 forwarding</td>
-<td><code>docker-run</code></td>
-<td><code>docker-run</code></td>
+<td>Run (Software)</td>
+<td>Run with X11 forwarding (Mesa llvmpipe)</td>
+<td><code>just docker-run</code></td>
+</tr>
+<tr>
+<td>Run (GPU)</td>
+<td>Run with host GPU passthrough (Intel/AMD)</td>
+<td><code>just docker-run-gpu</code></td>
 </tr>
 </tbody>
 </table>
@@ -3641,64 +3711,109 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <tr>
 <th>Target</th>
 <th>Description</th>
-<th><code>make</code></th>
-<th><code>just</code></th>
+<th><code>just</code> command</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Clean Dangling</td>
 <td>Remove dangling images</td>
-<td><code>docker-clean</code></td>
-<td><code>docker-clean</code></td>
+<td><code>just docker-clean</code></td>
 </tr>
 <tr>
 <td>Clean All</td>
 <td>Prune all images and cache</td>
-<td><code>docker-clean-all</code></td>
-<td><code>docker-clean-all</code></td>
+<td><code>just docker-clean-all</code></td>
 </tr>
 <tr>
 <td>Disk Usage</td>
 <td>Show disk usage stats</td>
-<td><code>docker-usage</code></td>
-<td><code>docker-usage</code></td>
+<td><code>just docker-usage</code></td>
 </tr>
 </tbody>
 </table>
+<h2 id="gpu-passthrough">GPU Passthrough<a class="headerlink" href="#gpu-passthrough" title="Permanent link">¶</a></h2>
+<p>By default, <code>just docker-run</code> uses <strong>software rendering</strong> (Mesa llvmpipe) via Xvfb.
+For hardware-accelerated rendering, use <code>just docker-run-gpu</code> which passes the host GPU
+through to the container via the DRI (Direct Rendering Infrastructure).</p>
+<h3 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">¶</a></h3>
+<ul>
+<li>Linux host with Intel or AMD GPU</li>
+<li><code>/dev/dri</code> device directory accessible</li>
+<li>User in the <code>video</code> group on the host</li>
+<li>X11 display available (<code>$DISPLAY</code> set)</li>
+</ul>
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>just<span class="w"> </span>docker-run-gpu
+</span></code></pre></div>
+<p>This mounts the host's GPU device and adds the <code>video</code> group:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span>--device<span class="w"> </span>/dev/dri<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span>--group-add<span class="w"> </span>video<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span>...
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span>suckless-ogl:latest<span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"export DISPLAY=</span><span class="nv">$DISPLAY</span><span class="s2"> &amp;&amp; ./app"</span>
+</span></code></pre></div>
+<h3 id="performance-comparison">Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Renderer</th>
+<th>IBL BRDF LUT Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Software (<code>docker-run</code>)</td>
+<td>llvmpipe (Mesa)</td>
+<td>~1000 ms</td>
+</tr>
+<tr>
+<td>GPU (<code>docker-run-gpu</code>)</td>
+<td>Mesa Intel Iris Xe</td>
+<td>~88 ms</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">NVIDIA GPUs</p>
+<p>NVIDIA GPUs require the <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html">NVIDIA Container Toolkit</a>
+and <code>--gpus all</code> instead of <code>--device /dev/dri</code>. This is not yet supported by the project.</p>
+</div>
 <h2 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">¶</a></h2>
 <h3 id="custom-container-engine">Custom Container Engine<a class="headerlink" href="#custom-container-engine" title="Permanent link">¶</a></h3>
 <p>The Makefile auto-detects Docker or Podman:</p>
-<div class="language-makefile highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">CONTAINER_ENGINE</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>docker<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>podman<span class="k">)</span>
+<div class="language-makefile highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">CONTAINER_ENGINE</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">$(</span>shell<span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>docker<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>podman<span class="k">)</span>
 </span></code></pre></div>
 <p>To force a specific engine:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">CONTAINER_ENGINE</span><span class="o">=</span>podman<span class="w"> </span>make<span class="w"> </span>docker-build
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nv">CONTAINER_ENGINE</span><span class="o">=</span>podman<span class="w"> </span>make<span class="w"> </span>docker-build
 </span></code></pre></div>
 <h3 id="incremental-builds">Incremental Builds<a class="headerlink" href="#incremental-builds" title="Permanent link">¶</a></h3>
 <p>Thanks to BuildKit cache mounts, subsequent builds are fast:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># First build: ~2-3 minutes (fetch deps, compile everything)</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>make<span class="w"> </span>docker-build
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Modify src/shader.c</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Second build: ~10-20 seconds (recompile only changed files)</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>make<span class="w"> </span>docker-build
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># First build: ~2-3 minutes (fetch deps, compile everything)</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>make<span class="w"> </span>docker-build
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Modify src/shader.c</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># Second build: ~10-20 seconds (recompile only changed files)</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>make<span class="w"> </span>docker-build
 </span></code></pre></div>
-<h3 id="running-with-host-x11">Running with Host X11<a class="headerlink" href="#running-with-host-x11" title="Permanent link">¶</a></h3>
-<p>The <code>docker-run</code> target forwards X11:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>make<span class="w"> </span>docker-run
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># Equivalent to:</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span>--cap-add<span class="o">=</span>SYS_NICE<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span>--ulimit<span class="w"> </span><span class="nv">rtprio</span><span class="o">=</span><span class="m">99</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span>--network<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span><span class="nv">$DISPLAY</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DBUS_SESSION_BUS_ADDRESS</span><span class="o">=</span><span class="s2">"unix:path=/run/user/</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">/bus"</span><span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span>-v<span class="w"> </span>/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus:/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span>-v<span class="w"> </span>/var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix:rw<span class="w"> </span><span class="se">\</span>
-</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span>suckless-ogl<span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"export DISPLAY=</span><span class="nv">$DISPLAY</span><span class="s2"> &amp;&amp; ./app"</span>
+<h3 id="running-with-host-x11-software-rendering">Running with Host X11 (Software Rendering)<a class="headerlink" href="#running-with-host-x11-software-rendering" title="Permanent link">¶</a></h3>
+<p>The <code>docker-run</code> target forwards X11 and uses software rendering:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>just<span class="w"> </span>docker-run
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># Equivalent to:</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span>--cap-add<span class="o">=</span>SYS_NICE<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span>--ulimit<span class="w"> </span><span class="nv">rtprio</span><span class="o">=</span><span class="m">99</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span>--security-opt<span class="w"> </span><span class="nv">label</span><span class="o">=</span>disable<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span>--network<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DISPLAY</span><span class="o">=</span><span class="nv">$DISPLAY</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span>-e<span class="w"> </span><span class="nv">DBUS_SESSION_BUS_ADDRESS</span><span class="o">=</span><span class="s2">"unix:path=/run/user/</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">/bus"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span>-v<span class="w"> </span>/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus:/run/user/<span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>/bus<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span>-v<span class="w"> </span>/var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix:rw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">    </span>suckless-ogl<span class="w"> </span>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"export DISPLAY=</span><span class="nv">$DISPLAY</span><span class="s2"> &amp;&amp; ./app"</span>
 </span></code></pre></div>
+<p>For hardware-accelerated rendering with the host GPU, see <a href="#gpu-passthrough">GPU Passthrough</a> above.</p>
 <h3 id="gamemode-real-time-priority">GameMode &amp; Real-Time Priority<a class="headerlink" href="#gamemode-real-time-priority" title="Permanent link">¶</a></h3>
 <p>To enable <strong>Performance Mode</strong> (SCHED_FIFO) and GameMode inside the container, specific permissions are required:</p>
 <ul>
@@ -3706,45 +3821,45 @@ The cache mount persists CMake's build directory between builds, dramatically sp
 <li><code>--ulimit rtprio=99</code>: Allows the non-root <code>appuser</code> to request real-time priority.</li>
 <li><strong>D-Bus Mounting</strong>: Essential for <code>libgamemode</code> to communicate with the host's GameMode daemon.</li>
 </ul>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>&gt; [!WARNING]
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>&gt; X11 forwarding requires `xhost +local:` which temporarily disables access control. This is handled automatically by the Makefile.
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>## Troubleshooting
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>### Build Cache Not Working
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>Ensure BuildKit is enabled:
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>```sh
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a># Docker
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>export DOCKER_BUILDKIT=1
-</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
-</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a># Podman (enabled by default)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>&gt; [!WARNING]
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>&gt; X11 forwarding requires `xhost +local:` which temporarily disables access control. This is handled automatically by the Makefile.
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>## Troubleshooting
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>### Build Cache Not Working
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>Ensure BuildKit is enabled:
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>```sh
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a># Docker
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>export DOCKER_BUILDKIT=1
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a># Podman (enabled by default)
 </span></code></pre></div>
 <h3 id="xvfb-fails-to-start">Xvfb Fails to Start<a class="headerlink" href="#xvfb-fails-to-start" title="Permanent link">¶</a></h3>
 <p>Check if port :99 is available:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>suckless-ogl<span class="w"> </span>/bin/bash
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># Inside container:</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Xvfb<span class="w"> </span>:99<span class="w"> </span>-screen<span class="w"> </span><span class="m">0</span><span class="w"> </span>1920x1080x24
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>suckless-ogl<span class="w"> </span>/bin/bash
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Inside container:</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Xvfb<span class="w"> </span>:99<span class="w"> </span>-screen<span class="w"> </span><span class="m">0</span><span class="w"> </span>1920x1080x24
 </span></code></pre></div>
 <h3 id="x11-permission-denied">X11 Permission Denied<a class="headerlink" href="#x11-permission-denied" title="Permanent link">¶</a></h3>
 <p>Reset xhost permissions:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>xhost<span class="w"> </span>+local:
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>make<span class="w"> </span>docker-run
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>xhost<span class="w"> </span>+local:
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>make<span class="w"> </span>docker-run
 </span></code></pre></div>
 <h2 id="cicd-integration">CI/CD Integration<a class="headerlink" href="#cicd-integration" title="Permanent link">¶</a></h2>
 <p>Example GitHub Actions workflow:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build Docker Image</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make docker-build</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Tests in Container</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="no">docker run --rm suckless-ogl /bin/bash -c "</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">      </span><span class="no">export DISPLAY=:99 &amp;&amp;</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">      </span><span class="no">Xvfb :99 &amp;</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">      </span><span class="no">sleep 2 &amp;&amp;</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">      </span><span class="no">./app --test</span>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="no">"</span>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build Docker Image</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">make docker-build</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Tests in Container</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="no">docker run --rm suckless-ogl /bin/bash -c "</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">      </span><span class="no">export DISPLAY=:99 &amp;&amp;</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">      </span><span class="no">Xvfb :99 &amp;</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">      </span><span class="no">sleep 2 &amp;&amp;</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">      </span><span class="no">./app --test</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="no">"</span>
 </span></code></pre></div>
 
 
@@ -3766,7 +3881,7 @@ The cache mount persists CMake's build directory between builds, dramatically sp
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 3, 2026 15:09:49 UTC">March 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 24, 2026 16:14:07 UTC">April 24, 2026</span>
   </span>
 
     
