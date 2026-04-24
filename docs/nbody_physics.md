@@ -139,14 +139,16 @@ fixed $\Delta t = 1/120\,\text{s}$ with a standard accumulator pattern:
 
 ```text
 accumulator += wall_dt × time_scale
-clamp accumulator to NBODY_MAX_ACCUMULATOR (1/30 s)
+clamp accumulator to NBODY_MAX_ACCUMULATOR (1/10 s)
 while accumulator >= NBODY_FIXED_DT:
     integrate_step(NBODY_FIXED_DT)
     accumulator -= NBODY_FIXED_DT
 ```
 
 The max-accumulator clamp prevents a spiral of death after lag spikes or on
-the first frame.
+the first frame.  The ceiling of $1/10\,\text{s}$ supports frame rates as
+low as ~10 FPS without losing simulation time (up to 12 Verlet steps per
+frame for $N = 14$ bodies — trivially cheap on the CPU).
 
 ---
 
@@ -262,7 +264,8 @@ All constants are defined in `include/nbody.h`:
 | `NBODY_SOFTENING_SQ` | 0.25 | Minimum $\varepsilon^2$ |
 | `NBODY_SOFTENING_FACTOR` | 2.0 | Per-pair softening multiplier |
 | `NBODY_FIXED_DT` | 1/120 s | Fixed integration timestep |
-| `NBODY_MAX_ACCUMULATOR` | 1/30 s | Max accumulated physics time |
+| `NBODY_MAX_ACCUMULATOR` | 1/10 s | Max accumulated physics time (supports ~10 FPS) |
+| `TRAIL_DURATION_DEFAULT` | 4.0 s | Trail lifetime in seconds (adjustable 0.5–30 s) |
 
 ---
 
@@ -361,21 +364,33 @@ $$\text{drift} = \frac{|E(t) - E_0|}{|E_0|}$$
 where $E_0$ is the total energy snapshot taken at initialisation (or after
 a gravity change).
 
-### Trail Length Stability
+### Trail Length Stability — Time-Based Sampling
 
-The trail sampling accumulator scales by `time_scale`:
+Trail length is controlled by a **duration parameter** (`trail_duration`,
+default 4.0 s, adjustable 0.5–30 s) rather than a fixed point count.  Each
+recorded sample carries a **timestamp** from a monotonic simulation clock:
 
 ```text
-effective_dt = wall_dt × time_scale
-sample_timer += effective_dt
+sim_time += wall_dt × |time_scale|
+sample_timer += wall_dt × |time_scale|
 while sample_timer >= TRAIL_SAMPLE_INTERVAL:
-    record positions
+    for each body:
+        ring_push(position, sim_time)   ← timestamped
     sample_timer -= TRAIL_SAMPLE_INTERVAL
 ```
 
-This ensures the trail ring buffer fills and evicts points at the same
-*visual* pace regardless of `time_scale`. At 8× speed, 8 samples are emitted
-per frame instead of 1, keeping trail length constant in world units.
+The ribbon builder then computes per-point age:
+
+$$\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}$$
+
+Points with $\text{age} > 1$ are discarded.  Width and intensity taper use
+this age factor instead of the point's ring-buffer index.
+
+**Why this matters at low FPS:**  At 15 FPS only ~15 samples/sec are recorded
+(fewer unique positions), but each carries the correct timestamp.  The ribbon
+still spans exactly `trail_duration` seconds of trajectory, so trail length
+is identical at 15 and 60 FPS.  At high `time_scale` (e.g. 8×), 8 samples
+are emitted per frame, preserving spatial fidelity.
 
 ---
 

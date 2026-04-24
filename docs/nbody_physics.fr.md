@@ -143,14 +143,17 @@ standard :
 
 ```text
 accumulateur += wall_dt × time_scale
-borner accumulateur à NBODY_MAX_ACCUMULATOR (1/30 s)
+borner accumulateur à NBODY_MAX_ACCUMULATOR (1/10 s)
 tant que accumulateur >= NBODY_FIXED_DT :
     integrate_step(NBODY_FIXED_DT)
     accumulateur -= NBODY_FIXED_DT
 ```
 
 Le bornage maximum de l'accumulateur empêche un emballement de l'intégration
-après des pics de latence ou lors de la première frame.
+après des pics de latence ou lors de la première frame.  Le plafond de
+$1/10\,\text{s}$ permet de supporter des framerates aussi bas que ~10 FPS
+sans perdre de temps simulé (jusqu'à 12 pas Verlet par frame pour
+$N = 14$ corps — trivial en CPU).
 
 ---
 
@@ -271,7 +274,8 @@ Toutes les constantes sont définies dans `include/nbody.h` :
 | `NBODY_SOFTENING_SQ` | 0.25 | $\varepsilon^2$ minimum |
 | `NBODY_SOFTENING_FACTOR` | 2.0 | Multiplicateur d'adoucissement par paire |
 | `NBODY_FIXED_DT` | 1/120 s | Pas de temps fixe d'intégration |
-| `NBODY_MAX_ACCUMULATOR` | 1/30 s | Temps physique accumulé maximum |
+| `NBODY_MAX_ACCUMULATOR` | 1/10 s | Temps physique accumulé maximum (supporte ~10 FPS) |
+| `TRAIL_DURATION_DEFAULT` | 4.0 s | Durée de vie des traînées en secondes (ajustable 0.5–30 s) |
 
 ---
 
@@ -373,21 +377,35 @@ $$\text{dérive} = \frac{|E(t) - E_0|}{|E_0|}$$
 où $E_0$ est le snapshot d'énergie totale pris à l'initialisation (ou après
 un changement de gravité).
 
-### Stabilité de la Longueur des Traînées
+### Stabilité de la Longueur des Traînées — Échantillonnage Temporel
 
-L'accumulateur d'échantillonnage des traînées est modulé par `time_scale` :
+La longueur des traînées est contrôlée par un **paramètre de durée**
+(`trail_duration`, défaut 4.0 s, ajustable 0.5–30 s) plutôt que par un
+nombre fixe de points.  Chaque échantillon enregistré porte un **timestamp**
+d'une horloge monotone de simulation :
 
 ```text
-effective_dt = wall_dt × time_scale
-sample_timer += effective_dt
-tant que sample_timer >= TRAIL_SAMPLE_INTERVAL:
-    enregistrer les positions
+sim_time += wall_dt × |time_scale|
+sample_timer += wall_dt × |time_scale|
+tant que sample_timer >= TRAIL_SAMPLE_INTERVAL :
+    pour chaque corps :
+        ring_push(position, sim_time)   ← horodaté
     sample_timer -= TRAIL_SAMPLE_INTERVAL
 ```
 
-Cela garantit que le ring buffer se remplit et évacue les points au même
-rythme *visuel* quel que soit `time_scale`. À 8×, 8 échantillons sont émis
-par frame au lieu de 1, gardant la longueur des traînées constante en unités monde.
+Le constructeur de ruban calcule ensuite l'âge par point :
+
+$$\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}$$
+
+Les points avec $\text{age} > 1$ sont ignorés.  La largeur et l'intensité
+utilisent ce facteur d'âge au lieu de l'index dans le ring buffer.
+
+**Pourquoi c'est important à bas FPS :**  À 15 FPS, seuls ~15 échantillons/sec
+sont enregistrés (moins de positions uniques), mais chacun porte le bon
+timestamp.  Le ruban couvre toujours exactement `trail_duration` secondes de
+trajectoire, donc la longueur des traînées est identique à 15 et 60 FPS.
+À `time_scale` élevé (ex. 8×), 8 échantillons sont émis par frame,
+préservant la fidélité spatiale.
 
 ---
 
