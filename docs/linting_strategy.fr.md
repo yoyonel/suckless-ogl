@@ -112,7 +112,12 @@ Un garde automatisé (`scripts/check_nolint.sh`) applique cette règle à chaque
 
 ### Fonctionnement
 
-Le script compare `git diff <base_ref>...HEAD` sur les fichiers `*.c` et `*.h`, en cherchant les lignes ajoutées (`+`) contenant `NOLINT`. Si des occurrences sont trouvées, le check échoue avec la liste de toutes les violations.
+Le script vérifie les nouveaux ajouts de `NOLINT` dans les fichiers `*.c` et `*.h` avec une approche à deux niveaux :
+
+1. **Changements commités** : `git diff <base_ref>...HEAD` détecte les NOLINT dans le code déjà commité.
+2. **Changements stagés** : `git diff --cached <base_ref>` détecte les NOLINT dans le contenu sur le point d'être commité (index). C'est essentiel lors du `pre-commit`, où `HEAD` pointe encore sur le commit précédent et le contenu stagé serait autrement invisible.
+
+Lorsque des fichiers stagés existent, leur contenu final est comparé à la ref de base, gérant correctement les cas où les changements stagés *ajoutent* ou *suppriment* des suppressions NOLINT. Si des lignes NOLINT nettes sont trouvées, le check échoue avec la liste de toutes les violations.
 
 ```bash
 # Utilisation locale

@@ -108,6 +108,7 @@ set(SOURCES
     src/gl_debug.c
     src/gpu_profiler.c
     src/gpu_profiler_ui.c
+    src/gpu_usage.c
     src/ibl_coordinator.c
     src/icosphere.c
     src/instanced_rendering.c

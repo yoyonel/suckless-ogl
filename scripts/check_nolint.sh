@@ -25,7 +25,37 @@ DIFF_TMP=$(mktemp)
 NOLINT_TMP=$(mktemp)
 trap 'rm -f "${DIFF_TMP}" "${NOLINT_TMP}"' EXIT
 
-git -c color.diff=false diff "${BASE_REF}"...HEAD -- '*.c' '*.h' > "${DIFF_TMP}"
+# Build a combined diff that represents what CI will see:
+# 1. Committed changes: origin/master...HEAD
+# 2. Staged changes: what's about to be committed (--cached vs HEAD)
+# By merging both, we catch NOLINT in already-pushed commits AND in
+# the current staged content. Crucially, if staged changes *remove*
+# NOLINT from a previous commit, the staged diff cancels them out.
+#
+# Strategy: extract the final state of staged C/H files and diff
+# that against origin/master, rather than naively concatenating diffs.
+
+STAGED_C_FILES=$(git diff --cached --name-only --diff-filter=d -- '*.c' '*.h' || true)
+
+if [ -n "${STAGED_C_FILES}" ]; then
+    # For files that are staged, diff their staged content vs base ref.
+    # For all other files, use the regular HEAD-based diff.
+    # shellcheck disable=SC2086
+    git -c color.diff=false diff --cached "${BASE_REF}" -- ${STAGED_C_FILES} > "${DIFF_TMP}"
+
+    # Non-staged tracked files: regular diff
+    NON_STAGED=$(git -c color.diff=false diff "${BASE_REF}"...HEAD --name-only -- '*.c' '*.h' || true)
+    for f in ${NON_STAGED}; do
+        # Skip files that are staged (already handled above)
+        if echo "${STAGED_C_FILES}" | grep -qxF "${f}"; then
+            continue
+        fi
+        git -c color.diff=false diff "${BASE_REF}"...HEAD -- "${f}" >> "${DIFF_TMP}"
+    done
+else
+    # No staged C/H files — use the regular committed diff only.
+    git -c color.diff=false diff "${BASE_REF}"...HEAD -- '*.c' '*.h' > "${DIFF_TMP}"
+fi
 
 # Match added lines containing NOLINT (exclude diff header "+++" lines).
 grep -E '^\+[^+].*NOLINT' "${DIFF_TMP}" > "${NOLINT_TMP}" || true
