@@ -226,6 +226,126 @@ is the correct approach for N-body gravity.
 
 ---
 
+## Confinement Potential
+
+Bodies that drift too far from the central star are pushed back by a
+**quadratic restoring potential** — a soft wall that keeps the simulation
+visually bounded without hard-clamping positions.
+
+### Physics
+
+For each body $i$ at distance $r_i$ from the star:
+
+$$V_\text{conf}(r) = \begin{cases}
+0 & r \le r_\text{max} \\
+\tfrac{1}{2} k (r - r_\text{max})^2 & r > r_\text{max}
+\end{cases}$$
+
+The resulting force is:
+
+$$\mathbf{F}_\text{conf} = -k\,(r - r_\text{max})\,\hat{\mathbf{r}}$$
+
+where $r_\text{max}$ = `NBODY_CONFINEMENT_RADIUS` (25 units) and $k$ =
+`NBODY_CONFINEMENT_K` (5.0).
+
+**Newton's 3rd law reaction** on the central star preserves centre-of-mass:
+
+$$\mathbf{F}_\text{star} = +k\,(r - r_\text{max})\,\hat{\mathbf{r}} \times \frac{m_i}{m_0}$$
+
+The potential is conservative, so the Velocity Verlet integrator remains
+symplectic inside the confinement zone.
+
+### Constants
+
+| Constant | Value | Role |
+|----------|-------|------|
+| `NBODY_CONFINEMENT_RADIUS` | 25.0 | Soft wall distance from star |
+| `NBODY_CONFINEMENT_K` | 5.0 | Spring stiffness ($k \cdot dt^2 \approx 0.0003$) |
+
+---
+
+## Proportional Radial Damping
+
+The confinement potential alone causes bodies to oscillate around the
+boundary (ping-pong trajectories).  A **proportional radial damping** term
+removes energy only from the outward velocity component, and only in the
+confinement zone:
+
+$$\gamma_\text{eff} = \gamma \cdot \frac{r - r_\text{max}}{r_\text{max}}$$
+
+where $\gamma$ = `NBODY_CONFINEMENT_DAMPING` (20.0).
+
+- **Radial only**: only the $(\mathbf{v} \cdot \hat{\mathbf{r}})$ component
+  is damped; tangential speed is preserved → angular momentum is conserved.
+- **Outward only**: damping is applied when $v_\text{radial} > 0$ (body
+  moving away from star).
+- **Proportional to overshoot**: near the boundary ($r \approx r_\text{max}$),
+  damping is negligible; far beyond, it is strong.  This lets the system
+  reach an equilibrium where orbits no longer cross the boundary and energy
+  drain stops (drift plateaus).
+- **Momentum conservation**: the impulse is transferred to the central star
+  ($\Delta v_\text{star} = -(m_i/m_0) \cdot \Delta v_i$).
+
+### Stability Indicator
+
+The HUD stability indicator uses **signed** energy drift to distinguish
+damping from divergence:
+
+| Colour | State | Condition | Display |
+|--------|-------|-----------|---------|
+| Green | Stable | $|\text{drift}| < 5\%$ | `drift: X.XX%` |
+| Yellow | Damping | $\text{drift}_\text{signed} < 0$ | `E: XX%` (retained) |
+| Red | Divergent | $\text{drift}_\text{signed} > 0$ | `drift: X.XX%` |
+
+In **Damping** mode, the display shows `E: XX%` = $100 \times (1 - |\text{drift}|)$,
+representing how much of the initial energy the system still has.  This avoids
+the confusing "drift: 349%" that would occur with the absolute metric.
+
+---
+
+## Shockwave Visual Effects
+
+When a body impacts the confinement boundary, a **shockwave ring** expands
+from the impact point, providing visual feedback for the otherwise invisible
+confinement zone.
+
+### Impact Detection
+
+Each integration sub-step checks whether a body's distance from the star
+exceeds `NBODY_CONFINEMENT_RADIUS` with a positive outward radial velocity.
+Impacts are recorded per-body in `NBodyImpact` slots — only the **peak
+velocity** across all sub-steps of a frame is kept, naturally deduplicating
+multiple hits from the fixed-timestep accumulator (~12 sub-steps/frame).
+
+### Rendering
+
+Shockwaves are rendered as **additive-blended screen-aligned quads** (billboard)
+with a procedural expanding ring pattern in the fragment shader:
+
+- **Ring profile**: `smoothstep` inner/outer edges around a time-dependent
+  centre radius
+- **HDR emissive**: output colour is scaled by 4× for bloom interaction
+- **Fade**: intensity = $(1 - \text{progress}^2)$ for quick ramp-up, slow fade
+- **Billboard**: quad faces camera using right/up vectors extracted from the
+  view matrix
+
+Up to `SHOCKWAVE_MAX_ACTIVE` (8) simultaneous shockwaves; oldest is evicted
+when full.  Duration is `SHOCKWAVE_DURATION` (1.2 s), max ring radius is
+`SHOCKWAVE_MAX_RADIUS` (6.0 world units).
+
+### Pipeline Position
+
+Shockwaves are drawn in the **HDR FBO**, after N-body trails and before
+post-processing.  This means bloom naturally amplifies the ring glow:
+
+```text
+scene_render() → Skybox → Spheres → NBody Trails → Shockwave VFX → Probes
+                                                      ↓
+                                              postprocess_end() → Bloom → ...
+```
+
+---
+
 ## Test Validation
 
 The automated test suite (`tests/test_nbody_stability.c`) verifies physics
@@ -234,7 +354,7 @@ invariants over long simulation runs:
 | Test | What it checks | Threshold |
 |------|---------------|-----------|
 | `test_nbody_single_step_sanity` | One step does not explode | Positions finite |
-| `test_nbody_energy_conservation` | Energy bounded after init boost | $\Delta E / E_0 < 5\%$ |
+| `test_nbody_energy_conservation` | Energy bounded after init boost | $\Delta E / E_0 < 65\%$ |
 | `test_nbody_paused_no_change` | Paused sim is perfectly frozen | Bit-exact |
 | `test_nbody_survives_dt_spikes` | Spike frames do not destabilise | All bodies $< 50$ units |
 | `test_nbody_long_run_stability` | 1 200 s simulation invariants | See below |
@@ -265,6 +385,13 @@ All constants are defined in `include/nbody.h`:
 | `NBODY_SOFTENING_FACTOR` | 2.0 | Per-pair softening multiplier |
 | `NBODY_FIXED_DT` | 1/120 s | Fixed integration timestep |
 | `NBODY_MAX_ACCUMULATOR` | 1/10 s | Max accumulated physics time (supports ~10 FPS) |
+| `NBODY_CONFINEMENT_RADIUS` | 25.0 | Soft wall distance from central star |
+| `NBODY_CONFINEMENT_K` | 5.0 | Confinement spring stiffness |
+| `NBODY_CONFINEMENT_DAMPING` | 20.0 | Radial damping base coefficient |
+| `SHOCKWAVE_MAX_ACTIVE` | 8 | Max simultaneous shockwaves |
+| `SHOCKWAVE_DURATION` | 1.2 s | Shockwave ring lifetime |
+| `SHOCKWAVE_MAX_RADIUS` | 6.0 | Max ring expansion (world units) |
+| `SHOCKWAVE_MIN_VELOCITY` | 0.2 | Min velocity to trigger shockwave |
 | `TRAIL_DURATION_DEFAULT` | 4.0 s | Trail lifetime in seconds (adjustable 0.5–30 s) |
 
 ---
@@ -347,22 +474,17 @@ are displayed:
 
 1. **Energy & Gravity:** `Ek: 77.1 J | G: 2.000` — kinetic energy
    $E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2$ and current $G$ value.
-2. **Stability:** `Stability: Stable (drift: 0.12%)` — shows whether the
-   integrator is conserving energy.
+2. **Stability:** colour-coded indicator with context-dependent metric:
 
-The stability indicator is colour-coded:
+| Colour | State | Metric | Example |
+|--------|-------|--------|---------|
+| Green | Stable | drift% | `Stability: Stable (drift: 0.12%)` |
+| Yellow | Damping | retained energy | `Stability: Damping (E: 78%)` |
+| Red | Divergent | drift% | `Stability: Divergent (drift: 6.42%)` |
 
-| Colour | State | Condition |
-|--------|-------|-----------|
-| Green | Stable | drift $< 5\%$ |
-| Red | Divergent | drift $\geq 5\%$ |
-
-Drift is computed as:
-
-$$\text{drift} = \frac{|E(t) - E_0|}{|E_0|}$$
-
-where $E_0$ is the total energy snapshot taken at initialisation (or after
-a gravity change).
+Drift is $|E(t) - E_0| / |E_0|$.  In Damping mode, retained energy is
+$100 \times (1 - \text{drift})$, showing how much energy the system still has
+(avoids confusing >100% drift values from long damping runs).
 
 ### Trail Length Stability — Time-Based Sampling
 
@@ -463,5 +585,9 @@ Validated with `just test-integration-valgrind-full` — **0 bytes definitely lo
 | `src/app_input.c` | Simulation speed (`,` / `.`) and gravity (Shift variants) keybindings |
 | `src/app_ui.c` | N-body HUD overlay (energy, gravity, stability) |
 | `src/app_binding.c` | F2 help overlay registration |
+| `include/shockwave.h` | Shockwave VFX API and data structures |
+| `src/shockwave.c` | Shockwave renderer (init, emit, update, draw) |
+| `shaders/shockwave.vert` | Billboard vertex shader (camera-facing quad) |
+| `shaders/shockwave.frag` | Procedural expanding ring fragment shader |
 | `shaders/trail.vert` | Trail vertex shader |
 | `shaders/trail.frag` | Trail fragment shader |
