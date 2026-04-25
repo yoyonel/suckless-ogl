@@ -18,17 +18,17 @@
 #include <stdbool.h>
 
 /** Maximum simultaneous active shockwaves. */
-enum { SHOCKWAVE_MAX_ACTIVE = 8 };
+enum { SHOCKWAVE_MAX_ACTIVE = 16 };
 
 /** Shockwave lifetime in seconds. */
-static const float SHOCKWAVE_DURATION = 1.2F;
+static const float SHOCKWAVE_DURATION = 1.2F * 3.0F;
 
 /** Maximum ring expansion radius in world units. */
 static const float SHOCKWAVE_MAX_RADIUS = 6.0F;
 
 /** Minimum velocity to trigger a shockwave (avoids spam from bodies
  *  barely grazing the boundary). */
-static const float SHOCKWAVE_MIN_VELOCITY = 0.2F;
+static const float SHOCKWAVE_MIN_VELOCITY = 0.05F;
 
 /** HDR intensity for the shockwave ring (drives bloom). */
 static const float SHOCKWAVE_HDR_INTENSITY = 4.0F;

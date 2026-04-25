@@ -1029,9 +1029,15 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			GPU_STAGE_PROFILER(profiler, "Shockwave VFX",
 			                   GPU_PROFILER_SHOCKWAVE_COLOR);
 			gl_debug_push_group("Shockwave_VFX");
+			if (scene->wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
 			shockwave_draw(&scene->shockwave_renderer, view, proj,
 			               camera_pos, scene->nbody_sim.sim_time,
 			               width, height);
+			if (scene->wireframe) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
 			gl_debug_pop_group();
 		}
 	}
