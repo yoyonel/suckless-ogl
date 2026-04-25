@@ -3,9 +3,10 @@
  * @brief Visual shockwave effect for N-body confinement boundary impacts.
  *
  * When a body crosses the confinement radius, a radial energy ring
- * expands from the impact point and fades out.  Rendered as additive
- * screen-aligned quads with a procedural ring pattern in the fragment
- * shader — no scene sampling required.
+ * expands from the impact point and fades out.  Rendered as
+ * screen-aligned quads that sample the scene behind them and apply
+ * radial UV distortion with chromatic aberration — a localized
+ * lens-like refraction effect.
  */
 
 #ifndef SHOCKWAVE_H
@@ -54,6 +55,14 @@ typedef struct {
 	Shader* shader; /**< Shockwave shader program. */
 	GLuint vao;     /**< Quad VAO. */
 	GLuint vbo;     /**< Quad VBO (4 vertices). */
+
+	/* Grab pass: copy of scene color before shockwave draw so the
+	 * fragment shader can read scene pixels without read/write hazard. */
+	GLuint grab_tex;        /**< Copy of scene color (RGBA16F). */
+	int grab_width;         /**< Allocated grab texture width. */
+	int grab_height;        /**< Allocated grab texture height. */
+	GLuint scene_color_tex; /**< Handle to live scene FBO color (set
+	                           externally). */
 } ShockwaveRenderer;
 
 /**
@@ -87,17 +96,24 @@ void shockwave_emit(ShockwaveRenderer* renderer, const vec3 position,
 void shockwave_update(ShockwaveRenderer* renderer, float sim_time);
 
 /**
- * @brief Draws all active shockwaves as additive billboards.
+ * @brief Draws all active shockwaves as billboard quads with lensing.
+ *
+ * Performs a grab pass (copies scene_color_tex to an internal texture)
+ * then draws billboard quads that sample the copy and apply radial
+ * UV distortion with chromatic aberration.
  *
  * Should be called after scene geometry, before post-processing.
  *
- * @param sw         Renderer state.
+ * @param renderer   Renderer state.
  * @param view       View matrix.
  * @param proj       Projection matrix.
  * @param camera_pos Camera world position.
  * @param sim_time   Current simulation time.
+ * @param screen_w   Viewport width in pixels.
+ * @param screen_h   Viewport height in pixels.
  */
 void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
-                    vec3 camera_pos, float sim_time);
+                    vec3 camera_pos, float sim_time, int screen_w,
+                    int screen_h);
 
 #endif /* SHOCKWAVE_H */

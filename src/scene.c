@@ -1023,10 +1023,12 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		                    camera_pos);
 		gl_debug_pop_group();
 
-		/* Confinement shockwave VFX — additive, HDR, after trails */
+		/* Confinement shockwave VFX — billboard lensing, after trails
+		 */
 		gl_debug_push_group("Shockwave_VFX");
 		shockwave_draw(&scene->shockwave_renderer, view, proj,
-		               camera_pos, scene->nbody_sim.sim_time);
+		               camera_pos, scene->nbody_sim.sim_time, width,
+		               height);
 		gl_debug_pop_group();
 	}
 

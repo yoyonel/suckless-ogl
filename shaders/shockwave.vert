@@ -1,11 +1,12 @@
 #version 430 core
 
 /*
- * shockwave.vert — Screen-aligned billboard for shockwave ring effect.
+ * shockwave.vert — Screen-aligned billboard for shockwave lensing effect.
  *
  * Each shockwave is rendered as a quad centered on the impact point,
  * always facing the camera.  The quad is scaled to the current ring
- * radius so the fragment shader only fills the area it needs.
+ * radius.  Outputs both local quad UV (for the ring profile) and
+ * screen-space UV (for sampling the scene grab texture).
  */
 
 layout(location = 0) in vec3 a_position; /* Unit quad [-1,1] */
@@ -16,7 +17,8 @@ uniform vec3 u_center;     /* World-space impact position */
 uniform vec3 u_camera_pos; /* Camera world position */
 uniform float u_radius;    /* Current ring radius (world units) */
 
-out vec2 vUV; /* [-1,1] quad coordinates for the fragment shader */
+out vec2 vUV;       /* [-1,1] quad coordinates for ring profile */
+out vec2 vScreenUV; /* [0,1] screen coordinates for scene sampling */
 
 void main()
 {
@@ -35,4 +37,7 @@ void main()
 	                 up * (a_position.y * u_radius);
 
 	gl_Position = u_proj * u_view * vec4(world_pos, 1.0);
+
+	/* Screen UV: perspective divide → NDC [-1,1] → UV [0,1] */
+	vScreenUV = gl_Position.xy / gl_Position.w * 0.5 + 0.5;
 }

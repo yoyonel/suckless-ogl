@@ -59,6 +59,10 @@ void shockwave_renderer_cleanup(ShockwaveRenderer* renderer)
 {
 	GL_SAFE_DELETE_BUFFER(renderer->vbo);
 	GL_SAFE_DELETE_VAO(renderer->vao);
+	if (renderer->grab_tex) {
+		glDeleteTextures(1, &renderer->grab_tex);
+		renderer->grab_tex = 0;
+	}
 	if (renderer->shader) {
 		shader_destroy(renderer->shader);
 		renderer->shader = NULL;
@@ -121,24 +125,71 @@ void shockwave_update(ShockwaveRenderer* renderer, float sim_time)
 }
 
 /* ---------------------------------------------------------------------------
+ * Grab pass: ensure grab_tex matches screen dimensions, then copy.
+ * ---------------------------------------------------------------------------*/
+
+static void ensure_grab_texture(ShockwaveRenderer* ren, int width, int height)
+{
+	if (ren->grab_tex && ren->grab_width == width &&
+	    ren->grab_height == height) {
+		return; /* already the right size */
+	}
+
+	if (!ren->grab_tex) {
+		glGenTextures(1, &ren->grab_tex);
+		glObjectLabel(GL_TEXTURE, ren->grab_tex, -1,
+		              "Shockwave_GrabTex");
+	}
+	glBindTexture(GL_TEXTURE_2D, ren->grab_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA,
+	             GL_HALF_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	ren->grab_width = width;
+	ren->grab_height = height;
+}
+
+/* ---------------------------------------------------------------------------
  * Rendering
  * ---------------------------------------------------------------------------*/
 
 void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
-                    vec3 camera_pos, float sim_time)
+                    vec3 camera_pos, float sim_time, int screen_w, int screen_h)
 {
 	if (renderer->count == 0 || !renderer->shader) {
 		return;
 	}
 
+	/* --- Grab pass: copy current scene color into grab_tex --- */
+	/* Cast away const: we only mutate the lazily-allocated grab texture,
+	 * which is an internal rendering resource, not logical state. */
+	ensure_grab_texture((ShockwaveRenderer*)renderer, screen_w, screen_h);
+
+	/* Copy from currently bound READ framebuffer (scene_fbo) */
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, renderer->grab_tex);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, screen_w, screen_h);
+
+	/* --- Draw billboard quads with lensing shader --- */
 	shader_use(renderer->shader);
 	shader_set_mat4(renderer->shader, "u_view", (float*)view);
 	shader_set_mat4(renderer->shader, "u_proj", (float*)proj);
 	shader_set_vec3(renderer->shader, "u_camera_pos", camera_pos);
 
-	/* Additive blending for energy glow */
+	/* Bind grab texture on unit 0 for the fragment shader */
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, renderer->grab_tex);
+	shader_set_int(renderer->shader, "u_grab_tex", 0);
+
+	/* Alpha blending: the distorted scene replaces the original pixels.
+	 * SRC_ALPHA / ONE_MINUS_SRC_ALPHA so the ring area shows distorted
+	 * scene and the outer fringe blends to the original. */
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
