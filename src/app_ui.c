@@ -1193,7 +1193,10 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 	/* Stability indicator — 3 levels:
 	 *   Stable    (green)  : |drift| < threshold
 	 *   Damping   (yellow) : energy lost (confinement dissipation)
-	 *   Divergent (red)    : energy gained (numerical instability) */
+	 *   Divergent (red)    : energy gained (numerical instability)
+	 *
+	 * In Damping mode, show retained energy ratio E(t)/E₀ instead of
+	 * drift% which grows unbounded as energy is dissipated. */
 	float drift_abs = nbody_energy_drift(sim);
 	float drift_signed = nbody_energy_drift_signed(sim);
 	const char* status = "Stable";
@@ -1208,8 +1211,23 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 		status = "Divergent";
 		color = (const float*)NBODY_DIVERGE_COLOR;
 	}
-	(void)safe_snprintf(text, sizeof(text), "Stability: %s (drift: %.2f%%)",
-	                    status, (double)(drift_abs * 100.0F));
+
+	if (drift_signed < 0.0F && drift_abs >= NBODY_STABILITY_THRESHOLD) {
+		/* Damping: show retained energy as 1 - |drift|.
+		 * Using drift_abs avoids sign issues with negative
+		 * total energy (bound gravitational systems). */
+		float retained = 1.0F - drift_abs;
+		if (retained < 0.0F) {
+			retained = 0.0F;
+		}
+		(void)safe_snprintf(text, sizeof(text),
+		                    "Stability: %s (E: %.0f%%)", status,
+		                    (double)(retained * 100.0F));
+	} else {
+		(void)safe_snprintf(text, sizeof(text),
+		                    "Stability: %s (drift: %.2f%%)", status,
+		                    (double)(drift_abs * 100.0F));
+	}
 	ui_layout_text(layout, text, (float*)color);
 }
 
