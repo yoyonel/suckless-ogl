@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "utils.h"
 #include <cglm/vec3.h>
+#include <math.h>
 
 /* Billboard quad: 4 vertices, triangle strip, centered at origin.
  * Scaled per-shockwave to the current ring radius in the vertex shader. */
@@ -112,7 +113,8 @@ void shockwave_update(ShockwaveRenderer* renderer, float sim_time)
 {
 	int write = 0;
 	for (int read = 0; read < renderer->count; read++) {
-		float age = sim_time - renderer->events[read].start_time;
+		/* Use absolute age so time reversal doesn't prevent cleanup */
+		float age = fabsf(sim_time - renderer->events[read].start_time);
 		if (age < SHOCKWAVE_DURATION) {
 			if (write != read) {
 				renderer->events[write] =
@@ -197,7 +199,8 @@ void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
 
 	for (int i = 0; i < renderer->count; i++) {
 		const ShockwaveEvent* evt = &renderer->events[i];
-		float age = sim_time - evt->start_time;
+		/* Absolute age: shockwaves expand correctly in time reversal */
+		float age = fabsf(sim_time - evt->start_time);
 		float progress = age / SHOCKWAVE_DURATION; /* 0..1 */
 
 		/* Ring expands over time */
