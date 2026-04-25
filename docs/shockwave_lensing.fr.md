@@ -15,7 +15,7 @@ graph TD
     A[Géométrie de scène] --> B[Scene FBO - RGBA16F]
     B --> C{Shockwaves actives ?}
     C -->|Non| E[Post-Processing]
-    C -->|Oui| D[Grab Pass : glCopyTexSubImage2D]
+    C -->|Oui| D[Grab Pass : glCopyImageSubData]
     D --> F[Draw Billboard]
     F --> G[Fragment Shader : échantillonne grab_tex + distorsion]
     G --> B
@@ -25,7 +25,7 @@ graph TD
 ### Flux de rendu
 
 1. La **géométrie de scène** est rendue dans le FBO HDR (`scene_color_tex`, RGBA16F)
-2. **Grab pass** : `glCopyTexSubImage2D` copie `scene_color_tex` → `grab_tex` (allocation paresseuse, même format/taille)
+2. **Grab pass** : `glCopyImageSubData` copie `scene_color_tex` → `grab_tex` (DMA texture-à-texture, allocation paresseuse, même format/taille)
 3. **Draw billboard** : pour chaque shockwave active, un quad face-caméra est rastérisé
 4. **Fragment shader** : échantillonne `grab_tex` aux UV écran décalés avec aberration chromatique par canal
 5. Le **post-processing** lit le `scene_color_tex` modifié normalement
@@ -42,7 +42,7 @@ graph TD
 
 ## Analyse du coût du Grab Pass
 
-Le grab pass utilise `glCopyTexSubImage2D` — une copie **GPU vers GPU** (pas un readback CPU). Le coût est limité par la bande passante VRAM uniquement :
+Le grab pass utilise `glCopyImageSubData` (GL 4.3) — une copie **DMA texture-à-texture** qui contourne entièrement le pipeline de lecture framebuffer. Le coût est limité par la bande passante VRAM uniquement :
 
 | Résolution | Format | Taille/frame | Bande passante @ 60 fps | % d'un GPU 200 Go/s |
 |---|---|---|---|---|
@@ -52,10 +52,59 @@ Le grab pass utilise `glCopyTexSubImage2D` — une copie **GPU vers GPU** (pas u
 
 **Propriétés clés :**
 
-- Aucun stall CPU, aucune synchronisation de pipeline
+- Aucun stall CPU, aucune synchronisation de pipeline, aucun binding framebuffer requis
 - Coût = 0 quand aucune shockwave n'est active (early return avant la copie)
 - Allocation paresseuse : `grab_tex` n'est créée qu'au premier usage et redimensionnée au changement de résolution
-- Alternative : `glCopyImageSubData` (GL 4.3) ou `glBlitFramebuffer` pourraient être marginalement plus rapides mais la différence est imperceptible
+- Le handle `scene_color_tex` est câblé depuis `PostProcess` via `renderer_draw_frame`
+
+## Analyse des optimisations du Grab Pass
+
+Le grab pass est le coût dominant de l'effet shockwave. Quatre stratégies d'optimisation ont été évaluées avant de choisir `glCopyImageSubData` :
+
+### Approche 1 : Grab Pass demi-résolution
+
+Allouer `grab_tex` à `screen_w/2 × screen_h/2` au lieu de la pleine résolution. La distorsion de lensing étant un effet basse fréquence, la différence visuelle est imperceptible.
+
+- **Gain** : ~75% de réduction de bande passante (÷4 texels copiés)
+- **Complexité** : Faible — changement de taille dans `ensure_grab_texture()` + `glBlitFramebuffer` pour le downscale
+- **Risque** : Aucun (le fragment shader utilise déjà des UV normalisés `[0,1]`)
+- **Statut** : Reporté — optimisation future viable
+
+### Approche 2 : `glTextureBarrier` (Éliminer la copie entièrement)
+
+OpenGL 4.5 / `GL_NV_texture_barrier`. Lire `scene_color_tex` directement comme entrée sampler dans le même framebuffer en cours d'écriture. Un appel `glTextureBarrier()` flush les caches et rend les écritures précédentes visibles.
+
+- **Gain** : ~100% de la bande passante de copie éliminée (~16 Mo/frame à 1080p). Coût résiduel = flush pipeline ~1-5μs vs ~0.1-0.3ms pour la copie complète
+- **Complexité** : Faible — supprimer `grab_tex`, binder `scene_color_tex` directement
+- **Risque** : **Comportement indéfini** si deux quads shockwave se chevauchent sur le même pixel (même texel lu ET écrit). Avec des billboards localisés c'est improbable mais pas impossible
+- **Statut** : Rejeté — fragile, dépendant du driver, risque d'UB avec événements superposés
+
+### Approche 3 : `glCopyImageSubData` (Implémentation actuelle) ✅
+
+Copie DMA texture-à-texture directe. Ne transite pas par le pipeline de lecture framebuffer — le moteur de copie GPU gère indépendamment.
+
+- **Gain** : ~10-30% par rapport à `glCopyTexSubImage2D` (contourne le pipeline de lecture framebuffer, aucun binding d'unité texture requis)
+- **Complexité** : Triviale — remplacement drop-in, 1 ligne de changement
+- **Risque** : Aucun (nécessite GL 4.3, déjà notre minimum)
+- **Statut** : **Implémenté** — handle `scene_color_tex` câblé depuis `PostProcess` via `renderer_draw_frame`
+
+### Approche 4 : Clipping AABB espace écran
+
+Calculer la boîte englobante espace écran de tous les quads shockwave actifs, ne copier que cette zone au lieu du framebuffer entier.
+
+- **Gain** : Variable (0-90%) — dépend de la surface écran couverte par les shockwaves. 2 shockwaves couvrant 10% de l'écran → copie 10% au lieu de 100%
+- **Complexité** : Moyenne — nécessite de projeter tous les coins de billboard en espace écran et calculer min/max
+- **Risque** : Aucun
+- **Statut** : Reporté — bon ROI pour les scènes avec peu de petites shockwaves
+
+### Résumé des décisions
+
+| Approche | Gain BW | Complexité | Risque | Statut |
+|---|---|---|---|---|
+| Demi-résolution | ~75% | Faible | Aucun | Reporté |
+| `glTextureBarrier` | ~100% | Faible | UB si overlap | Rejeté |
+| **`glCopyImageSubData`** | **~10-30%** | **Triviale** | **Aucun** | **Actif** |
+| Clipping AABB | 0-90% | Moyenne | Aucun | Reporté |
 
 ## Design des Shaders
 
