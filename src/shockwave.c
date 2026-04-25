@@ -171,10 +171,10 @@ void shockwave_draw(const ShockwaveRenderer* renderer, mat4 view, mat4 proj,
 	 * which is an internal rendering resource, not logical state. */
 	ensure_grab_texture((ShockwaveRenderer*)renderer, screen_w, screen_h);
 
-	/* Copy from currently bound READ framebuffer (scene_fbo) */
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, renderer->grab_tex);
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, screen_w, screen_h);
+	/* Texture-to-texture DMA copy (no framebuffer read pipeline). */
+	glCopyImageSubData(renderer->scene_color_tex, GL_TEXTURE_2D, 0, 0, 0, 0,
+	                   renderer->grab_tex, GL_TEXTURE_2D, 0, 0, 0, 0,
+	                   screen_w, screen_h, 1);
 
 	/* --- Draw billboard quads with lensing shader --- */
 	shader_use(renderer->shader);
