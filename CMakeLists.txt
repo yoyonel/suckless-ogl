@@ -130,7 +130,7 @@ set(SOURCES
     src/sh_math.c
     src/simd_utils.c
     src/skybox.c
-    src/sphere_sorting.c
+    src/billboard_sorting.c
     src/ssbo_rendering.c
     src/stb_image_impl.c
     src/texture.c

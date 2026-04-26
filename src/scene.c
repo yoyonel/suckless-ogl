@@ -2,6 +2,7 @@
 
 #include "app_settings.h"
 #include "billboard_rendering.h"
+#include "billboard_sorting.h"
 #include "gl_debug.h"
 #include "glad/glad.h"
 #include "ibl_coordinator.h"
@@ -14,7 +15,6 @@
 #include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
-#include "sphere_sorting.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -140,7 +140,7 @@ static void scene_init_instancing(Scene* scene)
 		            sizeof(SphereInstance) * (size_t)total_count, data,
 		            sizeof(SphereInstance) * (size_t)total_count);
 		scene->billboard_instance_count = total_count;
-		sphere_sorter_init(&scene->sphere_sorter, total_count);
+		billboard_sorter_init(&scene->billboard_sorter, total_count);
 	}
 #endif
 
@@ -237,7 +237,7 @@ static void scene_init_state(Scene* scene)
 	scene->billboard_ubo_ptr = NULL;
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
+	memset(&scene->billboard_sorter, 0, sizeof(BillboardSorter));
 
 	scene->dummy_black_tex =
 	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
@@ -546,7 +546,7 @@ void scene_cleanup(Scene* scene)
 		platform_aligned_free(scene->billboard_instances);
 		scene->billboard_instances = NULL;
 	}
-	sphere_sorter_cleanup(&scene->sphere_sorter);
+	billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
@@ -877,17 +877,21 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 				switch (scene->sorting_mode) {
 					case SORTING_MODE_CPU_QSORT:
-						sorted_ssbo = sphere_sorter_sort_cpu(
-						    &scene->sphere_sorter,
-						    scene->billboard_instances,
-						    scene
-						        ->billboard_instance_count,
-						    camera_pos);
+						sorted_ssbo =
+						    billboard_sorter_sort_cpu(
+						        &scene
+						             ->billboard_sorter,
+						        scene
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
+						        camera_pos);
 						break;
 					case SORTING_MODE_CPU_RADIX:
 						sorted_ssbo =
-						    sphere_sorter_sort_cpu_radix(
-						        &scene->sphere_sorter,
+						    billboard_sorter_sort_cpu_radix(
+						        &scene
+						             ->billboard_sorter,
 						        scene
 						            ->billboard_instances,
 						        scene
@@ -896,12 +900,15 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 						break;
 					case SORTING_MODE_GPU_BITONIC:
 					default:
-						sorted_ssbo = sphere_sorter_sort_gpu(
-						    &scene->sphere_sorter,
-						    scene->billboard_instances,
-						    scene
-						        ->billboard_instance_count,
-						    camera_pos);
+						sorted_ssbo =
+						    billboard_sorter_sort_gpu(
+						        &scene
+						             ->billboard_sorter,
+						        scene
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
+						        camera_pos);
 						break;
 				}
 			}
@@ -1068,7 +1075,7 @@ void scene_toggle_nbody(Scene* scene)
 			platform_aligned_free(scene->billboard_instances);
 			scene->billboard_instances = NULL;
 		}
-		sphere_sorter_cleanup(&scene->sphere_sorter);
+		billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 		instanced_group_cleanup(&scene->instanced_group);
 		billboard_group_cleanup(&scene->billboard_group);

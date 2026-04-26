@@ -1,7 +1,7 @@
+#include "billboard_sorting.h"
 #include "instanced_rendering.h"
 #include "mock_gl_standalone.h"  // For mock_gl_reset_calls if needed
-#include "sphere_sorting.h"
-#include <cglm/vec3.h>  // For vec3
+#include <cglm/vec3.h>           // For vec3
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,8 +12,8 @@ int main()
 {
 	printf("Starting Sphere Sorting Benchmark...\n");
 
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, TEST_INITIAL_CAPACITY);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, TEST_INITIAL_CAPACITY);
 
 	int count = TEST_COUNT;
 	SphereInstance* instances = calloc(count, sizeof(SphereInstance));
@@ -26,11 +26,11 @@ int main()
 
 	vec3 camera_pos = {0.0f, 0.0f, 0.0f};
 	GLuint ssbo =
-	    sphere_sorter_sort_gpu(&sorter, instances, count, camera_pos);
+	    billboard_sorter_sort_gpu(&sorter, instances, count, camera_pos);
 
 	printf("Sort dispatched. SSBO: %u\n", ssbo);
 
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 	free(instances);
 
 	printf("Done.\n");

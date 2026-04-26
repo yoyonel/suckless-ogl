@@ -3,6 +3,7 @@
 
 #include "app_settings.h"
 #include "billboard_rendering.h"
+#include "billboard_sorting.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
 #include "ibl_coordinator.h"
@@ -13,7 +14,6 @@
 #include "nbody.h"
 #include "shader.h"
 #include "skybox.h"
-#include "sphere_sorting.h"
 #include "trail_renderer.h"
 #include <cglm/cglm.h>
 
@@ -148,7 +148,7 @@ typedef struct Scene {
 #endif
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	SphereSorter sphere_sorter; /**< Sorter for alpha blending. */
+	BillboardSorter billboard_sorter; /**< Sorter for alpha blending. */
 	SphereInstance*
 	    billboard_instances;      /**< Persistent array for sorting. */
 	int billboard_instance_count; /**< Active billboard count. */

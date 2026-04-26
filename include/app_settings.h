@@ -51,7 +51,7 @@ static const unsigned int DEFAULT_STENCIL_MASK = 0xFF;
  * **If Defined**:
  * - Spheres are rendered as **Transparent** billboards (`GL_BLEND` enabled).
  * - Requires CPU-side sorting (Back-to-Front) every frame in `app_render()`.
- * - Uses `sphere_sorting.c` module.
+ * - Uses `billboard_sorting.c` module.
  * - Alpha channel allows true see-through glass effects.
  *
  * **If Undefined (Legacy/Fast Calculation)**:

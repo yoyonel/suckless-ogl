@@ -1,28 +1,28 @@
 /**
- * @file sphere_sorting.h
+ * @file billboard_sorting.h
  * @brief Back-to-front sorting for transparent geometry.
  *
  * This module provides an efficient sorting mechanism for sphere instances,
  * which is required for correct alpha blending of billboarded spheres.
  */
 
-#ifndef SPHERE_SORTING_H
-#define SPHERE_SORTING_H
+#ifndef BILLBOARD_SORTING_H
+#define BILLBOARD_SORTING_H
 
 #include "instanced_rendering.h"
 #include <cglm/cglm.h>
 
 /**
- * @struct SphereSortEntry
+ * @struct BillboardSortEntry
  * @brief Lightweight proxy for sorting data without moving large structs.
  */
 typedef struct {
 	int original_index; /**< Position in the source array. */
 	float depth;        /**< Squared distance from camera. */
-} SphereSortEntry;
+} BillboardSortEntry;
 
 /**
- * @struct SphereSorter
+ * @struct BillboardSorter
  * @brief Reusable memory context for sorting operations.
  */
 typedef struct {
@@ -39,26 +39,26 @@ typedef struct {
 	GLint loc_j;         /**< u_j uniform. */
 	GLint loc_k;         /**< u_k uniform. */
 
-	SphereSortEntry* entries;       /**< Scratchpad for CPU sorting. */
-	SphereSortEntry* entries_aux;   /**< Aux scratchpad for Radix Sort. */
-	SphereInstance* temp_instances; /**< Scratchpad for reordering. */
+	BillboardSortEntry* entries;     /**< Scratchpad for CPU sorting. */
+	BillboardSortEntry* entries_aux; /**< Aux scratchpad for Radix Sort. */
+	SphereInstance* temp_instances;  /**< Scratchpad for reordering. */
 	int ssbo_capacity; /**< Current allocated size of SSBOs (GPU). */
 	int cpu_capacity;  /**< Current allocated size of CPU scratchpads. */
 	int min_capacity;  /**< Minimum capacity to maintain. */
-} SphereSorter;
+} BillboardSorter;
 
 /**
  * @brief Allocates internal buffers for the sorter.
  * @param sorter Pointer to the struct.
  * @param initial_capacity Expected number of instances.
  */
-void sphere_sorter_init(SphereSorter* sorter, int initial_capacity);
+void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity);
 
 /**
  * @brief Destroys the sorter context.
  * @param sorter Pointer to the struct.
  */
-void sphere_sorter_cleanup(SphereSorter* sorter);
+void billboard_sorter_cleanup(BillboardSorter* sorter);
 
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth) on GPU.
@@ -72,9 +72,9 @@ void sphere_sorter_cleanup(SphereSorter* sorter);
  * @param camera_pos  World-space viewer position.
  * @return The SSBO handle containing the sorted instances.
  */
-GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
-                              const SphereInstance* instances, int count,
-                              const vec3 camera_pos);
+GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
+                                 const SphereInstance* instances, int count,
+                                 const vec3 camera_pos);
 
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth) on CPU.
@@ -87,9 +87,9 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
  * @param camera_pos  World-space viewer position.
  * @return The SSBO handle containing the sorted instances.
  */
-GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
-                              const SphereInstance* instances, int count,
-                              const vec3 camera_pos);
+GLuint billboard_sorter_sort_cpu(BillboardSorter* sorter,
+                                 const SphereInstance* instances, int count,
+                                 const vec3 camera_pos);
 
 /**
  * @brief Sorts the array of instances Back-to-Front (descending depth) using
@@ -100,8 +100,8 @@ GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
  * @param camera_pos  World-space viewer position (for depth).
  * @return The SSBO handle containing the sorted instances.
  */
-GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
-                                    const SphereInstance* instances, int count,
-                                    const vec3 camera_pos);
+GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
+                                       const SphereInstance* instances,
+                                       int count, const vec3 camera_pos);
 
-#endif /* SPHERE_SORTING_H */
+#endif /* BILLBOARD_SORTING_H */
