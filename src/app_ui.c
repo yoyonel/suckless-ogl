@@ -1190,15 +1190,44 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 	                    (double)kinetic, (double)sim->gravity, time_dir);
 	ui_layout_text(layout, text, (float*)NBODY_INFO_COLOR);
 
-	/* Stability indicator */
-	float drift = nbody_energy_drift(sim);
-	const char* status =
-	    (drift < NBODY_STABILITY_THRESHOLD) ? "Stable" : "Divergent";
-	const float* color = (drift < NBODY_STABILITY_THRESHOLD)
-	                         ? (const float*)NBODY_STABLE_COLOR
-	                         : (const float*)NBODY_DIVERGE_COLOR;
-	(void)safe_snprintf(text, sizeof(text), "Stability: %s (drift: %.2f%%)",
-	                    status, (double)(drift * 100.0F));
+	/* Stability indicator — 3 levels:
+	 *   Stable    (green)  : |drift| < threshold
+	 *   Damping   (yellow) : energy lost (confinement dissipation)
+	 *   Divergent (red)    : energy gained (numerical instability)
+	 *
+	 * In Damping mode, show retained energy ratio E(t)/E₀ instead of
+	 * drift% which grows unbounded as energy is dissipated. */
+	float drift_abs = nbody_energy_drift(sim);
+	float drift_signed = nbody_energy_drift_signed(sim);
+	const char* status = "Stable";
+	const float* color = (const float*)NBODY_STABLE_COLOR;
+	if (drift_abs < NBODY_STABILITY_THRESHOLD) {
+		status = "Stable";
+		color = (const float*)NBODY_STABLE_COLOR;
+	} else if (drift_signed < 0.0F) {
+		status = "Damping";
+		color = (const float*)NBODY_DAMPING_COLOR;
+	} else {
+		status = "Divergent";
+		color = (const float*)NBODY_DIVERGE_COLOR;
+	}
+
+	if (drift_signed < 0.0F && drift_abs >= NBODY_STABILITY_THRESHOLD) {
+		/* Damping: show retained energy as 1 - |drift|.
+		 * Using drift_abs avoids sign issues with negative
+		 * total energy (bound gravitational systems). */
+		float retained = 1.0F - drift_abs;
+		if (retained < 0.0F) {
+			retained = 0.0F;
+		}
+		(void)safe_snprintf(text, sizeof(text),
+		                    "Stability: %s (E: %.0f%%)", status,
+		                    (double)(retained * 100.0F));
+	} else {
+		(void)safe_snprintf(text, sizeof(text),
+		                    "Stability: %s (drift: %.2f%%)", status,
+		                    (double)(drift_abs * 100.0F));
+	}
 	ui_layout_text(layout, text, (float*)color);
 }
 

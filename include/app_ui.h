@@ -71,6 +71,7 @@ static const vec3 GRAPH_TEXT_COLOR = {0.8F, 0.8F, 0.8F};
 static const vec3 DEBUG_ORANGE_COLOR = {1.0F, 0.5F, 0.0F};
 static const vec3 NBODY_INFO_COLOR = {0.4F, 0.8F, 1.0F};
 static const vec3 NBODY_STABLE_COLOR = {0.2F, 1.0F, 0.4F};
+static const vec3 NBODY_DAMPING_COLOR = {1.0F, 0.8F, 0.2F};
 static const vec3 NBODY_DIVERGE_COLOR = {1.0F, 0.3F, 0.2F};
 static const float NBODY_STABILITY_THRESHOLD = 0.05F;
 static const vec3 HISTO_BAR_COLOR_GREEN = {0.0F, 0.7F, 0.0F};

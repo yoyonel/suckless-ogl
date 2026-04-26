@@ -50,6 +50,11 @@ void renderer_draw_frame(struct App* app_ref, Scene* scene,
 	glm_mat4_mul(proj, view, view_proj);
 	glm_mat4_inv(view_proj, inv_view_proj);
 
+	/* Provide scene FBO color handle so the shockwave grab pass can use
+	 * glCopyImageSubData (texture-to-texture DMA, no framebuffer read). */
+	scene->shockwave_renderer.scene_color_tex =
+	    postprocess->scene_color_tex;
+
 	{
 		GPU_STAGE_PROFILER(profiler, "Scene Render",
 		                   GPU_PROFILER_SCENE_COLOR);

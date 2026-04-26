@@ -13,6 +13,7 @@
 #include "material.h"
 #include "nbody.h"
 #include "shader.h"
+#include "shockwave.h"
 #include "skybox.h"
 #include "trail_renderer.h"
 #include <cglm/cglm.h>
@@ -222,7 +223,8 @@ typedef struct Scene {
 	/* --- N-Body Simulation --- */
 	NBodySim nbody_sim;           /**< N-body gravitational simulation. */
 	TrailRenderer trail_renderer; /**< Orbital trail renderer. */
-	int nbody_mode;               /**< Toggle: 0=grid, 1=N-body. */
+	ShockwaveRenderer shockwave_renderer; /**< Confinement impact VFX. */
+	int nbody_mode;                       /**< Toggle: 0=grid, 1=N-body. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */

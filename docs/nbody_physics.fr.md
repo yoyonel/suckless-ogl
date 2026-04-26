@@ -143,14 +143,17 @@ standard :
 
 ```text
 accumulateur += wall_dt × time_scale
-borner accumulateur à NBODY_MAX_ACCUMULATOR (1/30 s)
+borner accumulateur à NBODY_MAX_ACCUMULATOR (1/10 s)
 tant que accumulateur >= NBODY_FIXED_DT :
     integrate_step(NBODY_FIXED_DT)
     accumulateur -= NBODY_FIXED_DT
 ```
 
 Le bornage maximum de l'accumulateur empêche un emballement de l'intégration
-après des pics de latence ou lors de la première frame.
+après des pics de latence ou lors de la première frame.  Le plafond de
+$1/10\,\text{s}$ permet de supporter des framerates aussi bas que ~10 FPS
+sans perdre de temps simulé (jusqu'à 12 pas Verlet par frame pour
+$N = 14$ corps — trivial en CPU).
 
 ---
 
@@ -233,6 +236,132 @@ est l'approche correcte pour la gravité N-corps.
 
 ---
 
+## Potentiel de Confinement
+
+Les corps qui s'éloignent trop de l'étoile centrale sont repoussés par un
+**potentiel de rappel quadratique** — un mur souple qui garde la simulation
+visuellement bornée sans clamper brutalement les positions.
+
+### Physique
+
+Pour chaque corps $i$ à distance $r_i$ de l'étoile :
+
+$$V_\text{conf}(r) = \begin{cases}
+0 & r \le r_\text{max} \\
+\tfrac{1}{2} k (r - r_\text{max})^2 & r > r_\text{max}
+\end{cases}$$
+
+La force résultante est :
+
+$$\mathbf{F}_\text{conf} = -k\,(r - r_\text{max})\,\hat{\mathbf{r}}$$
+
+où $r_\text{max}$ = `NBODY_CONFINEMENT_RADIUS` (25 unités) et $k$ =
+`NBODY_CONFINEMENT_K` (5.0).
+
+**Réaction de Newton (3ème loi)** sur l'étoile centrale pour préserver le
+centre de masse :
+
+$$\mathbf{F}_\text{étoile} = +k\,(r - r_\text{max})\,\hat{\mathbf{r}} \times \frac{m_i}{m_0}$$
+
+Le potentiel est conservatif, donc l'intégrateur Velocity Verlet reste
+symplectique dans la zone de confinement.
+
+### Constantes
+
+| Constante | Valeur | Rôle |
+|-----------|--------|------|
+| `NBODY_CONFINEMENT_RADIUS` | 25.0 | Distance du mur souple depuis l'étoile |
+| `NBODY_CONFINEMENT_K` | 5.0 | Raideur du ressort ($k \cdot dt^2 \approx 0.0003$) |
+
+---
+
+## Amortissement Radial Proportionnel
+
+Le potentiel de confinement seul provoque des oscillations des corps autour
+de la frontière (trajectoires ping-pong). Un **amortissement radial
+proportionnel** retire de l'énergie uniquement à la composante radiale
+sortante, et seulement dans la zone de confinement :
+
+$$\gamma_\text{eff} = \gamma \cdot \frac{r - r_\text{max}}{r_\text{max}}$$
+
+où $\gamma$ = `NBODY_CONFINEMENT_DAMPING` (20.0).
+
+- **Radial uniquement** : seule la composante $(\mathbf{v} \cdot \hat{\mathbf{r}})$
+  est amortie ; la vitesse tangentielle est préservée → moment cinétique conservé.
+- **Sortant uniquement** : l'amortissement s'applique quand $v_\text{radial} > 0$
+  (corps s'éloignant de l'étoile).
+- **Proportionnel au dépassement** : près de la frontière ($r \approx r_\text{max}$),
+  l'amortissement est négligeable ; loin au-delà, il est fort. Cela permet au
+  système d'atteindre un équilibre où les orbites ne traversent plus la frontière
+  et la dissipation d'énergie se stabilise.
+- **Conservation de la quantité de mouvement** : l'impulsion est transférée à
+  l'étoile centrale ($\Delta v_\text{étoile} = -(m_i/m_0) \cdot \Delta v_i$).
+
+### Indicateur de Stabilité
+
+L'indicateur HUD utilise la dérive d'énergie **signée** pour distinguer
+l'amortissement de la divergence :
+
+| Couleur | État | Condition | Affichage |
+|---------|------|-----------|-----------|
+| Vert | Stable | $|\text{dérive}| < 5\%$ | `drift: X.XX%` |
+| Jaune | Damping | $\text{dérive}_\text{signée} < 0$ | `E: XX%` (retenue) |
+| Rouge | Divergent | $\text{dérive}_\text{signée} > 0$ | `drift: X.XX%` |
+
+En mode **Damping**, l'affichage montre `E: XX%` = $100 \times (1 - |\text{dérive}|)$,
+représentant combien d'énergie le système possède encore. Cela évite le
+confusant « drift: 349% » qui surviendrait avec la métrique absolue.
+
+---
+
+## Effets Visuels de Shockwave
+
+Quand un corps percute la frontière de confinement, un **anneau d'onde de
+choc** s'étend depuis le point d'impact, fournissant un retour visuel pour
+la zone de confinement autrement invisible.
+
+### Détection d'Impact
+
+Chaque sous-pas d'intégration vérifie si la distance d'un corps à l'étoile
+dépasse `NBODY_CONFINEMENT_RADIUS` avec une vitesse radiale sortante positive.
+Les impacts sont enregistrés par corps dans des slots `NBodyImpact` — seule
+la **vitesse maximale** de tous les sous-pas d'une frame est conservée,
+dédupliquant naturellement les hits multiples de l'accumulateur à pas fixe
+(~12 sous-pas/frame).
+
+### Rendu
+
+Les ondes de choc sont rendues comme des **quads alignés à l'écran en
+mélange additif** (billboard) avec un motif procédural d'anneau en expansion
+dans le fragment shader :
+
+- **Profil de l'anneau** : bords intérieurs/extérieurs `smoothstep` autour
+  d'un rayon central dépendant du temps
+- **Émissif HDR** : la couleur de sortie est multipliée par 4× pour
+  interagir avec le bloom
+- **Atténuation** : intensité = $(1 - \text{progression}^2)$, montée rapide,
+  extinction lente
+- **Billboard** : le quad fait face à la caméra via les vecteurs right/up
+  extraits de la matrice vue
+
+Jusqu'à `SHOCKWAVE_MAX_ACTIVE` (8) ondes de choc simultanées ; la plus
+ancienne est évincée quand le buffer est plein. Durée = `SHOCKWAVE_DURATION`
+(1.2 s), rayon max = `SHOCKWAVE_MAX_RADIUS` (6.0 unités monde).
+
+### Position dans le Pipeline
+
+Les ondes de choc sont dessinées dans le **FBO HDR**, après les traînées
+N-corps et avant le post-processing. Le bloom amplifie naturellement
+le halo de l'anneau :
+
+```text
+scene_render() → Skybox → Sphères → Traînées NBody → Shockwave VFX → Sondes
+                                                       ↓
+                                               postprocess_end() → Bloom → ...
+```
+
+---
+
 ## Validation par Tests
 
 La suite de tests automatisée (`tests/test_nbody_stability.c`) vérifie les
@@ -241,7 +370,7 @@ invariants physiques sur de longues simulations :
 | Test | Ce qu'il vérifie | Seuil |
 |------|-----------------|-------|
 | `test_nbody_single_step_sanity` | Un pas n'explose pas | Positions finies |
-| `test_nbody_energy_conservation` | Énergie bornée après boost initial | $\Delta E / E_0 < 5\%$ |
+| `test_nbody_energy_conservation` | Énergie bornée après boost initial | $\Delta E / E_0 < 65\%$ |
 | `test_nbody_paused_no_change` | Sim en pause parfaitement gelée | Identique bit à bit |
 | `test_nbody_survives_dt_spikes` | Les pics de frame ne déstabilisent pas | Tous les corps $< 50$ unités |
 | `test_nbody_long_run_stability` | Invariants sur 1 200 s | Voir ci-dessous |
@@ -271,7 +400,15 @@ Toutes les constantes sont définies dans `include/nbody.h` :
 | `NBODY_SOFTENING_SQ` | 0.25 | $\varepsilon^2$ minimum |
 | `NBODY_SOFTENING_FACTOR` | 2.0 | Multiplicateur d'adoucissement par paire |
 | `NBODY_FIXED_DT` | 1/120 s | Pas de temps fixe d'intégration |
-| `NBODY_MAX_ACCUMULATOR` | 1/30 s | Temps physique accumulé maximum |
+| `NBODY_MAX_ACCUMULATOR` | 1/10 s | Temps physique accumulé maximum (supporte ~10 FPS) |
+| `NBODY_CONFINEMENT_RADIUS` | 25.0 | Distance du mur souple depuis l'étoile |
+| `NBODY_CONFINEMENT_K` | 5.0 | Raideur du ressort de confinement |
+| `NBODY_CONFINEMENT_DAMPING` | 20.0 | Coefficient de base d'amortissement radial |
+| `SHOCKWAVE_MAX_ACTIVE` | 8 | Nombre max d'ondes de choc simultanées |
+| `SHOCKWAVE_DURATION` | 1.2 s | Durée de vie d'un anneau |
+| `SHOCKWAVE_MAX_RADIUS` | 6.0 | Rayon max d'expansion (unités monde) |
+| `SHOCKWAVE_MIN_VELOCITY` | 0.2 | Vitesse min pour déclencher une onde |
+| `TRAIL_DURATION_DEFAULT` | 4.0 s | Durée de vie des traînées en secondes (ajustable 0.5–30 s) |
 
 ---
 
@@ -356,38 +493,47 @@ lignes sont affichées :
 
 1. **Énergie & Gravité :** `Ek: 77.1 J | G: 2.000` — énergie cinétique
    $E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2$ et valeur courante de $G$.
-2. **Stabilité :** `Stability: Stable (drift: 0.12%)` — indique si
-   l'intégrateur conserve l'énergie.
+2. **Stabilité :** indicateur coloré avec métrique contextuelle :
 
-L'indicateur de stabilité est coloré :
+| Couleur | État | Métrique | Exemple |
+|---------|------|----------|---------|
+| Vert | Stable | dérive% | `Stability: Stable (drift: 0.12%)` |
+| Jaune | Damping | énergie retenue | `Stability: Damping (E: 78%)` |
+| Rouge | Divergent | dérive% | `Stability: Divergent (drift: 6.42%)` |
 
-| Couleur | État | Condition |
-|---------|------|-----------|
-| Vert | Stable | dérive $< 5\%$ |
-| Rouge | Divergent | dérive $\geq 5\%$ |
+La dérive est $|E(t) - E_0| / |E_0|$. En mode Damping, l'énergie retenue est
+$100 \times (1 - \text{dérive})$, montrant combien d'énergie le système
+possède encore (évite les valeurs de dérive >100% confusantes).
 
-La dérive est calculée par :
+### Stabilité de la Longueur des Traînées — Échantillonnage Temporel
 
-$$\text{dérive} = \frac{|E(t) - E_0|}{|E_0|}$$
-
-où $E_0$ est le snapshot d'énergie totale pris à l'initialisation (ou après
-un changement de gravité).
-
-### Stabilité de la Longueur des Traînées
-
-L'accumulateur d'échantillonnage des traînées est modulé par `time_scale` :
+La longueur des traînées est contrôlée par un **paramètre de durée**
+(`trail_duration`, défaut 4.0 s, ajustable 0.5–30 s) plutôt que par un
+nombre fixe de points.  Chaque échantillon enregistré porte un **timestamp**
+d'une horloge monotone de simulation :
 
 ```text
-effective_dt = wall_dt × time_scale
-sample_timer += effective_dt
-tant que sample_timer >= TRAIL_SAMPLE_INTERVAL:
-    enregistrer les positions
+sim_time += wall_dt × |time_scale|
+sample_timer += wall_dt × |time_scale|
+tant que sample_timer >= TRAIL_SAMPLE_INTERVAL :
+    pour chaque corps :
+        ring_push(position, sim_time)   ← horodaté
     sample_timer -= TRAIL_SAMPLE_INTERVAL
 ```
 
-Cela garantit que le ring buffer se remplit et évacue les points au même
-rythme *visuel* quel que soit `time_scale`. À 8×, 8 échantillons sont émis
-par frame au lieu de 1, gardant la longueur des traînées constante en unités monde.
+Le constructeur de ruban calcule ensuite l'âge par point :
+
+$$\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}$$
+
+Les points avec $\text{age} > 1$ sont ignorés.  La largeur et l'intensité
+utilisent ce facteur d'âge au lieu de l'index dans le ring buffer.
+
+**Pourquoi c'est important à bas FPS :**  À 15 FPS, seuls ~15 échantillons/sec
+sont enregistrés (moins de positions uniques), mais chacun porte le bon
+timestamp.  Le ruban couvre toujours exactement `trail_duration` secondes de
+trajectoire, donc la longueur des traînées est identique à 15 et 60 FPS.
+À `time_scale` élevé (ex. 8×), 8 échantillons sont émis par frame,
+préservant la fidélité spatiale.
 
 ---
 
@@ -460,5 +606,9 @@ Validé avec `just test-integration-valgrind-full` — **0 bytes definitely lost
 | `src/app_input.c` | Raccourcis vitesse de simulation (`,` / `.`) et gravité (variantes Shift) |
 | `src/app_ui.c` | Overlay HUD N-corps (énergie, gravité, stabilité) |
 | `src/app_binding.c` | Enregistrement dans l'overlay d'aide F2 |
+| `include/shockwave.h` | API et structures de données des ondes de choc |
+| `src/shockwave.c` | Renderer des ondes de choc (init, emit, update, draw) |
+| `shaders/shockwave.vert` | Vertex shader billboard (quad face caméra) |
+| `shaders/shockwave.frag` | Fragment shader d'anneau procédural en expansion |
 | `shaders/trail.vert` | Vertex shader des traînées |
 | `shaders/trail.frag` | Fragment shader des traînées |

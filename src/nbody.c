@@ -6,6 +6,9 @@
 #include <cglm/vec3.h>
 #include <math.h>
 
+/** Small epsilon to avoid division by zero. */
+static const float EPSILON = 1e-6F;
+
 /* ========================================================================= */
 /* Helpers                                                                   */
 /* ========================================================================= */
@@ -186,6 +189,24 @@ float nbody_total_energy(const NBodySim* sim)
 		}
 	}
 
+	/* Confinement potential: V = ½k(r - r_max)² for r > r_max.
+	 * Must match the force in compute_accelerations() for energy
+	 * conservation diagnostics to remain accurate. */
+	for (int i = 1; i < sim->body_count; i++) {
+		vec3 rel;
+		vec3 pos_i;
+		vec3 pos_star;
+		glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
+		glm_vec3_copy((float*)sim->bodies[0].position, pos_star);
+		glm_vec3_sub(pos_i, pos_star, rel);
+		float dist = glm_vec3_norm(rel);
+		if (dist > NBODY_CONFINEMENT_RADIUS) {
+			float overshoot = dist - NBODY_CONFINEMENT_RADIUS;
+			potential +=
+			    HALF * NBODY_CONFINEMENT_K * overshoot * overshoot;
+		}
+	}
+
 	return kinetic + potential;
 }
 
@@ -226,6 +247,35 @@ static void compute_accelerations(const NBodySim* sim, vec3* accel)
 			glm_vec3_sub(accel[j], force, accel[j]);
 		}
 	}
+
+	/* Confinement potential: F = -k·(r - r_max)·r̂  for r > r_max.
+	 * Measured from body[0] (central star). Newton's 3rd law: the
+	 * reaction force is applied to the star so momentum is conserved.
+	 * The acceleration is mass-independent (V ∝ m), so the reaction
+	 * on the star is scaled by mass_i / mass_0.
+	 * Conservative → Verlet stays symplectic. */
+	for (int i = 1; i < sim->body_count; i++) {
+		vec3 rel;
+		vec3 pos_i;
+		vec3 pos_star;
+		glm_vec3_copy((float*)sim->bodies[i].position, pos_i);
+		glm_vec3_copy((float*)sim->bodies[0].position, pos_star);
+		glm_vec3_sub(pos_i, pos_star, rel);
+		float dist = glm_vec3_norm(rel);
+		if (dist > NBODY_CONFINEMENT_RADIUS) {
+			float overshoot = dist - NBODY_CONFINEMENT_RADIUS;
+			float strength =
+			    -NBODY_CONFINEMENT_K * overshoot / dist;
+			vec3 confine_accel;
+			glm_vec3_scale(rel, strength, confine_accel);
+			glm_vec3_add(accel[i], confine_accel, accel[i]);
+			/* Newton 3rd law: reaction on star, mass-weighted. */
+			float ratio = sim->bodies[i].mass / sim->bodies[0].mass;
+			vec3 reaction;
+			glm_vec3_scale(confine_accel, ratio, reaction);
+			glm_vec3_sub(accel[0], reaction, accel[0]);
+		}
+	}
 }
 
 /* Velocity Verlet (symplectic, 2nd order).
@@ -260,6 +310,64 @@ static void integrate_step(NBodySim* sim, float delta_time)
 		glm_vec3_add(sim->bodies[i].velocity, avg,
 		             sim->bodies[i].velocity);
 	}
+
+	/* Radial damping in the confinement zone — proportional to overshoot.
+	 * γ_eff = γ · (r - r_max) / r_max : near the boundary the damping
+	 * is negligible, far beyond it the damping is strong.  This lets
+	 * the system reach an equilibrium where orbits no longer cross
+	 * the boundary and energy drain stops (drift plateaus).
+	 * Only the outward radial component is damped; tangential speed
+	 * is preserved → angular momentum conserved.
+	 * Momentum conservation: impulse transferred to star (body 0). */
+	for (int i = 1; i < sim->body_count; i++) {
+		vec3 rel;
+		glm_vec3_sub(sim->bodies[i].position, sim->bodies[0].position,
+		             rel);
+		float dist = glm_vec3_norm(rel);
+		if (dist > NBODY_CONFINEMENT_RADIUS && dist > EPSILON) {
+			/* Record impact for VFX — keep peak velocity per body
+			 */
+			float v_out =
+			    glm_vec3_dot(sim->bodies[i].velocity, rel) / dist;
+			if (v_out > sim->impacts[i].velocity) {
+				glm_vec3_copy(sim->bodies[i].position,
+				              sim->impacts[i].position);
+				glm_vec3_copy(sim->bodies[i].albedo,
+				              sim->impacts[i].color);
+				sim->impacts[i].velocity = v_out;
+				sim->impacts[i].active = true;
+			}
+
+			vec3 r_hat;
+			glm_vec3_scale(rel, 1.0F / dist, r_hat);
+			float v_radial =
+			    glm_vec3_dot(sim->bodies[i].velocity, r_hat);
+			if (v_radial > 0.0F) { /* outward only */
+				float overshoot =
+				    dist - NBODY_CONFINEMENT_RADIUS;
+				float damp =
+				    NBODY_CONFINEMENT_DAMPING *
+				    (overshoot / NBODY_CONFINEMENT_RADIUS) *
+				    delta_time;
+				if (damp > 1.0F) {
+					damp = 1.0F;
+				}
+				vec3 vel_damp;
+				glm_vec3_scale(r_hat, -v_radial * damp,
+				               vel_damp);
+				glm_vec3_add(sim->bodies[i].velocity, vel_damp,
+				             sim->bodies[i].velocity);
+				/* Momentum conservation: Δp_star = -Δp_i
+				 * → Δv_star = -(m_i/m_0)·dv */
+				float ratio =
+				    sim->bodies[i].mass / sim->bodies[0].mass;
+				vec3 dv_star;
+				glm_vec3_scale(vel_damp, -ratio, dv_star);
+				glm_vec3_add(sim->bodies[0].velocity, dv_star,
+				             sim->bodies[0].velocity);
+			}
+		}
+	}
 }
 
 /* ========================================================================= */
@@ -283,6 +391,12 @@ void nbody_step(NBodySim* sim, float delta_time)
 	float scaled_dt = delta_time * sim->time_scale;
 	sim->accumulator += scaled_dt;
 
+	/* Clear per-body impact flags from previous frame */
+	for (int i = 0; i < sim->body_count; i++) {
+		sim->impacts[i].active = false;
+		sim->impacts[i].velocity = 0.0F;
+	}
+
 	/* Clamp magnitude to prevent spiral of death */
 	if (sim->accumulator > NBODY_MAX_ACCUMULATOR) {
 		sim->accumulator = NBODY_MAX_ACCUMULATOR;
@@ -295,6 +409,7 @@ void nbody_step(NBodySim* sim, float delta_time)
 	while (fabsf(sim->accumulator) >= NBODY_FIXED_DT) {
 		integrate_step(sim, step);
 		sim->accumulator -= step;
+		sim->sim_time += step;
 	}
 }
 
@@ -340,6 +455,20 @@ float nbody_energy_drift(const NBodySim* sim)
 	float diff = current - ref_energy;
 	return (diff < 0.0F ? -diff : diff) /
 	       (ref_energy < 0.0F ? -ref_energy : ref_energy);
+}
+
+float nbody_energy_drift_signed(const NBodySim* sim)
+{
+	float ref_energy = sim->initial_energy;
+	if (ref_energy == 0.0F) {
+		return 0.0F;
+	}
+	float current = nbody_total_energy(sim);
+	/* For negative E0 (bound systems), energy becoming more negative
+	 * means energy was lost (damping) → report as negative drift. */
+	float diff = current - ref_energy;
+	float abs_ref = ref_energy < 0.0F ? -ref_energy : ref_energy;
+	return diff / abs_ref;
 }
 
 void nbody_update_time_scale(NBodySim* sim, float delta_time)

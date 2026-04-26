@@ -136,6 +136,7 @@ set(SOURCES
     src/texture.c
     src/tracy_gpu.cpp
     src/trail_renderer.c
+    src/shockwave.c
     src/tracy_log.c
     src/tracy_manager.c
     src/ui.c
