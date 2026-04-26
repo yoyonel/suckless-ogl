@@ -45,7 +45,7 @@ int main()
 
 	/* Initialize Mock Spheres */
 	int count = 2;
-	SphereInstance_POD spheres[2];
+	SphereInstance spheres[2];
 
 	/* Sphere 1 at (0,0,0) with scale 1.0 */
 	glm_mat4_identity(spheres[0].model);
@@ -69,7 +69,7 @@ int main()
 
 	/* Compute AABB (New Center-Based Logic) */
 	light_probe_grid_compute_aabb(&grid, spheres, count,
-	                              sizeof(SphereInstance_POD), 1.0f);
+	                              sizeof(SphereInstance), 1.0f);
 
 	printf("Computed AABB:\n");
 	printf("Min: (%.2f, %.2f, %.2f)\n", grid.aabb_min[0], grid.aabb_min[1],

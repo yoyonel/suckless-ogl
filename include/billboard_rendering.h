@@ -12,8 +12,8 @@
 #define BILLBOARD_RENDERING_H
 
 #include "gl_common.h"
-#include "instanced_rendering.h" /* For SphereInstance */
 #include "shader.h"
+#include "sphere_types.h"
 
 /**
  * @struct BillboardGroup

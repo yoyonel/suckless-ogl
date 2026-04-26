@@ -66,13 +66,13 @@ typedef struct {
 } CachedSphere;
 
 /* Helper to get position from POD */
-static void get_sphere_pos(const SphereInstance_POD* sphere, vec3 dest)
+static void get_sphere_pos(const SphereInstance* sphere, vec3 dest)
 {
 	glm_vec3_copy((float*)sphere->model[3], dest);
 }
 
 /* Helper to get scale from POD (assuming uniform) */
-static float get_sphere_radius(const SphereInstance_POD* sphere)
+static float get_sphere_radius(const SphereInstance* sphere)
 {
 	return glm_vec3_norm((float*)sphere->model[0]);
 }
@@ -90,8 +90,8 @@ void light_probe_grid_compute_aabb(LightProbeGrid* grid, const void* spheres,
 	vec3 max_b = {-FLT_MAX, -FLT_MAX, -FLT_MAX};
 
 	for (int i = 0; i < count; i++) {
-		const SphereInstance_POD* inst =
-		    (const SphereInstance_POD*)(base + ((size_t)i * stride));
+		const SphereInstance* inst =
+		    (const SphereInstance*)(base + ((size_t)i * stride));
 		vec3 pos;
 		get_sphere_pos(inst, pos);
 
@@ -305,7 +305,7 @@ static void light_probe_worker_compute_probe(LightProbeGrid* grid, int grid_x,
 }
 #endif
 
-static void* precompute_cached_spheres(SphereInstance_POD* local_scene,
+static void* precompute_cached_spheres(SphereInstance* local_scene,
                                        int local_count)
 {
 	CachedSphere* cached_scene = malloc(local_count * sizeof(CachedSphere));
@@ -353,11 +353,11 @@ static void* light_probe_worker(void* arg)
 		/* Snapshot scene data under lock to avoid race with
 		 * set_scene() */
 		int local_count = grid->scene_count;
-		SphereInstance_POD* local_scene = NULL;
+		SphereInstance* local_scene = NULL;
 		if (local_count > 0 && grid->scene_copy) {
 			size_t data_size =
-			    (size_t)local_count * sizeof(SphereInstance_POD);
-			local_scene = (SphereInstance_POD*)malloc(data_size);
+			    (size_t)local_count * sizeof(SphereInstance);
+			local_scene = (SphereInstance*)malloc(data_size);
 			if (local_scene) {
 				(void)safe_memcpy(local_scene, data_size,
 				                  grid->scene_copy, data_size);
@@ -502,15 +502,14 @@ void light_probe_grid_set_scene(LightProbeGrid* grid, const void* spheres,
 	}
 	grid->scene_count = count;
 
-	size_t size = count * sizeof(SphereInstance_POD);
-	grid->scene_copy = (SphereInstance_POD*)malloc(size);
+	size_t size = count * sizeof(SphereInstance);
+	grid->scene_copy = (SphereInstance*)malloc(size);
 	if (grid->scene_copy) {
 		const char* src = (const char*)spheres;
 		for (int i = 0; i < count; i++) {
-			(void)safe_memcpy(&grid->scene_copy[i],
-			                  sizeof(SphereInstance_POD),
-			                  src + ((size_t)i * stride),
-			                  sizeof(SphereInstance_POD));
+			(void)safe_memcpy(
+			    &grid->scene_copy[i], sizeof(SphereInstance),
+			    src + ((size_t)i * stride), sizeof(SphereInstance));
 		}
 	}
 	pthread_mutex_unlock(&grid->mutex);

@@ -1,7 +1,6 @@
 #include "billboard_rendering.h"
 
 #include "gl_common.h"
-#include "instanced_rendering.h"
 #include "render_utils.h"
 #include <assert.h>
 #include <stddef.h>
