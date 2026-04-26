@@ -144,8 +144,8 @@ static void scene_init_instancing(Scene* scene)
 	}
 #endif
 
-	instanced_group_bind_mesh(&scene->instanced_group, scene->sphere_vbo,
-	                          scene->sphere_nbo, scene->sphere_ebo);
+	instanced_group_bind_mesh(&scene->instanced_group, scene->icosphere_vbo,
+	                          scene->icosphere_nbo, scene->icosphere_ebo);
 	billboard_group_init(&scene->billboard_group, data, total_count);
 	billboard_group_prepare(&scene->billboard_group, scene->quad_vbo,
 	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
@@ -204,8 +204,8 @@ static void scene_init_ssbo(Scene* scene)
 	}
 
 	ssbo_group_init(&scene->ssbo_group, data, total_count);
-	ssbo_group_bind_mesh(&scene->ssbo_group, scene->sphere_vbo,
-	                     scene->sphere_nbo, scene->sphere_ebo);
+	ssbo_group_bind_mesh(&scene->ssbo_group, scene->icosphere_vbo,
+	                     scene->icosphere_nbo, scene->icosphere_ebo);
 
 	/* Initialize Light Probe Grid with Scene Data (SSBO Mode) */
 	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
@@ -428,10 +428,10 @@ int scene_init(Scene* scene)
 	skybox_init(&scene->skybox, scene->skybox_shader);
 	icosphere_init(&scene->geometry);
 
-	glGenVertexArrays(1, &scene->sphere_vao);
-	glGenBuffers(1, &scene->sphere_vbo);
-	glGenBuffers(1, &scene->sphere_nbo);
-	glGenBuffers(1, &scene->sphere_ebo);
+	glGenVertexArrays(1, &scene->icosphere_vao);
+	glGenBuffers(1, &scene->icosphere_vbo);
+	glGenBuffers(1, &scene->icosphere_nbo);
+	glGenBuffers(1, &scene->icosphere_ebo);
 
 	scene->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
@@ -497,10 +497,10 @@ static void scene_cleanup_shaders(Scene* scene)
 
 static void scene_cleanup_geometry_buffers(Scene* scene)
 {
-	GL_SAFE_DELETE_VAO(scene->sphere_vao);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_vbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_nbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_ebo);
+	GL_SAFE_DELETE_VAO(scene->icosphere_vao);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_vbo);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_nbo);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_ebo);
 }
 
 static void scene_cleanup_buffers(Scene* scene)
@@ -591,20 +591,20 @@ const char* aa_mode_to_string(AAMode mode)
 
 void scene_update_gpu_buffers(Scene* scene)
 {
-	glBindVertexArray(scene->sphere_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->sphere_vbo);
+	glBindVertexArray(scene->icosphere_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->icosphere_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.vertices.size * sizeof(vec3)),
 	             scene->geometry.vertices.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->sphere_nbo);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->icosphere_nbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.normals.size * sizeof(vec3)),
 	             scene->geometry.normals.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->sphere_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->icosphere_ebo);
 	glBufferData(
 	    GL_ELEMENT_ARRAY_BUFFER,
 	    (GLsizeiptr)(scene->geometry.indices.size * sizeof(unsigned int)),

@@ -175,10 +175,10 @@ typedef struct Scene {
 	Shader* skybox_shader;     /**< Skybox shader wrapper. */
 
 	/* --- GPU Resources --- */
-	GLuint sphere_vao;           /**< Shared geometry VAO. */
-	GLuint sphere_vbo;           /**< Shared vertex buffer. */
-	GLuint sphere_nbo;           /**< Shared normal buffer. */
-	GLuint sphere_ebo;           /**< Shared index buffer. */
+	GLuint icosphere_vao;        /**< Shared icosphere geometry VAO. */
+	GLuint icosphere_vbo;        /**< Shared icosphere vertex buffer. */
+	GLuint icosphere_nbo;        /**< Shared icosphere normal buffer. */
+	GLuint icosphere_ebo;        /**< Shared icosphere index buffer. */
 	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
 	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
 	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */

@@ -303,12 +303,13 @@ void app_run(App* app)
 
 #ifdef USE_SSBO_RENDERING
 			ssbo_group_bind_mesh(
-			    &app->scene.ssbo_group, app->scene.sphere_vbo,
-			    app->scene.sphere_nbo, app->scene.sphere_ebo);
+			    &app->scene.ssbo_group, app->scene.icosphere_vbo,
+			    app->scene.icosphere_nbo, app->scene.icosphere_ebo);
 #else
-			instanced_group_bind_mesh(
-			    &app->scene.instanced_group, app->scene.sphere_vbo,
-			    app->scene.sphere_nbo, app->scene.sphere_ebo);
+			instanced_group_bind_mesh(&app->scene.instanced_group,
+			                          app->scene.icosphere_vbo,
+			                          app->scene.icosphere_nbo,
+			                          app->scene.icosphere_ebo);
 #endif
 			last_subdiv = app->scene.subdivisions;
 			PROFILE_ZONE_END(ico_ctx);
