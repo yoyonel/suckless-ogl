@@ -411,16 +411,18 @@ graph TD
     end
 ```
 
-Chaque instance stocke :
+Chaque instance stocke (définie dans `include/sphere_types.h`) :
 
 ```c
 typedef struct SphereInstance {
-    mat4  model;      // 64 octets — matrice de transformation 4×4
-    vec3  albedo;     // 12 octets — couleur RVB
-    float metallic;   //  4 octets
-    float roughness;  //  4 octets
-    float ao;         //  4 octets — toujours 1.0
-} SphereInstance;     // Total : 88 octets par instance
+    mat4  model;       // 64 octets — matrice de transformation 4×4
+    vec3  albedo;      // 12 octets — couleur RVB
+    float metallic;    //  4 octets
+    float roughness;   //  4 octets
+    float ao;          //  4 octets — toujours 1.0
+    float padding;     //  4 octets — alignement
+    vec3  prev_center; // 12 octets — centre frame précédente (motion blur)
+} SphereInstance;      // Total : 128 octets par instance (aligné 64 octets)
 ```
 
 Deux groupes de rendu sont créés :
@@ -1212,6 +1214,7 @@ Voici une estimation de la consommation VRAM en régime stationnaire :
 | `src/ibl_coordinator.c` | Génération IBL progressive (spéculaire, irradiance) |
 | `src/pbr.c` | Génération BRDF LUT, helpers uniforms PBR |
 | `src/material.c` | Bibliothèque matériaux (chargement JSON) |
+| `include/sphere_types.h` | Définition canonique du type `SphereInstance` |
 | `src/instanced_rendering.c` | Gestion VAO/VBO draw instancié |
 | `src/billboard_rendering.c` | Quads billboard pour sphères transparentes |
 | `src/billboard_sorting.c` | Tri transparence CPU/GPU |

@@ -18,7 +18,7 @@ Repository: [yoyonel/suckless-ogl](https://github.com/yoyonel/suckless-ogl).
 | Subsystem | Key Files |
 |-----------|-----------|
 | **Core App** | `app.c`, `main.c`, `cli.c` |
-| **Rendering** | `renderer.c`, `instanced_rendering.c`, `ssbo_rendering.c`, `billboard_rendering.c` |
+| **Rendering** | `renderer.c`, `sphere_types.h`, `instanced_rendering.c`, `ssbo_rendering.c`, `billboard_rendering.c` |
 | **PBR / IBL** | `pbr.c`, `material.c`, `ibl_coordinator.c`, `light_probes.c`, `skybox.c` |
 | **Post-Processing** | `postprocess.c`, `effects/fx_*.c` (bloom, DoF, auto-exposure, FXAA, LUT, motion blur) |
 | **Shaders** | 55+ GLSL files in `shaders/` (vertex, fragment, compute) |
