@@ -3293,7 +3293,14 @@
 
 
 <h1 id="lexique-technique">Lexique Technique<a class="headerlink" href="#lexique-technique" title="Permanent link">¶</a></h1>
-<p>Ce lexique regroupe les termes et expressions techniques utilisés dans le projet, couvrant les aspects théoriques du rendu PBR, les optimisations géométriques et les concepts de bas niveau de l'API graphique.</p>
+<p>Ce lexique regroupe les termes et expressions techniques utilisés dans le projet, couvrant les aspects théoriques du rendu PBR, les optimisations géométriques, les concepts de bas niveau de l'API graphique, et le <strong>modèle de domaine</strong> utilisé dans l'ensemble du code source.</p>
+<div class="admonition info">
+<p class="admonition-title">Langage Ubiquitaire</p>
+<p>Les sections du modèle de domaine ci-dessous définissent la terminologie canonique du projet.
+Chaque terme inclut des <strong>alias à éviter</strong> — des mots à ne pas utiliser dans le code,
+les commentaires ou la documentation car ils créent de l'ambiguïté. Voir
+<a href="#ambiguites-signalees">Ambiguïtés signalées</a> pour les détails.</p>
+</div>
 <hr>
 <h2 id="rendu-physique-pbr-ibl">🎨 Rendu &amp; Physique (PBR / IBL)<a class="headerlink" href="#rendu-physique-pbr-ibl" title="Permanent link">¶</a></h2>
 <table>
@@ -3435,6 +3442,508 @@
 </tr>
 </tbody>
 </table>
+<hr>
+<h1 id="modele-de-domaine-langage-ubiquitaire">Modèle de Domaine — Langage Ubiquitaire<a class="headerlink" href="#modele-de-domaine-langage-ubiquitaire" title="Permanent link">¶</a></h1>
+<p>Les sections ci-dessous définissent le vocabulaire canonique pour les objets du domaine
+du projet, leurs relations et les ambiguïtés de nommage connues.</p>
+<h2 id="simulation">🪐 Simulation<a class="headerlink" href="#simulation" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Simulation N-Corps</strong></td>
+<td style="text-align: left;">Système gravitationnel de particules intégrant les positions des corps via Velocity Verlet avec adoucissement de Plummer.</td>
+<td style="text-align: left;">Simulation physique, système de particules</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Corps</strong> (Body)</td>
+<td style="text-align: left;">Une entité gravitationnelle unique avec position, vitesse, masse, rayon et propriétés PBR (<code>NBodyParticle</code>).</td>
+<td style="text-align: left;">Particule, sphère, objet</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Échelle de Temps</strong> (Time Scale)</td>
+<td style="text-align: left;">Un multiplicateur de vitesse signé qui transite en douceur entre temps réel, pause et inversion.</td>
+<td style="text-align: left;">Vitesse, taux de lecture</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Dérive d'Énergie</strong> (Energy Drift)</td>
+<td style="text-align: left;">L'écart relatif de l'énergie totale par rapport à la référence initiale, utilisé pour diagnostiquer la stabilité de l'intégrateur.</td>
+<td style="text-align: left;">Erreur d'énergie</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rendu-geometrie">🔷 Rendu — Géométrie<a class="headerlink" href="#rendu-geometrie" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Scène</strong> (Scene)</td>
+<td style="text-align: left;">Le conteneur racine de toute la géométrie 3D, des ressources GPU, des shaders et de la configuration de rendu (<code>Scene</code>).</td>
+<td style="text-align: left;">Monde, niveau, contexte</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Icosphère</strong> (Icosphere)</td>
+<td style="text-align: left;">Un maillage sphérique généré procéduralement par subdivision récursive d'un icosaèdre (<code>IcosphereGeometry</code>).</td>
+<td style="text-align: left;">Mesh sphère, UV sphere</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Groupe Instancié</strong> (Instanced Group)</td>
+<td style="text-align: left;">Un ensemble de sphères opaques dessinées en un seul appel <code>glDrawElementsInstanced</code> via un VBO partagé (<code>InstancedGroup</code>).</td>
+<td style="text-align: left;">Batch, groupe de dessin</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Billboard</strong></td>
+<td style="text-align: left;">Un quad aligné à l'écran qui rend une sphère via raycasting dans le fragment shader, moins coûteux que le rendu de maillage.</td>
+<td style="text-align: left;">Imposteur, sprite, quad</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Groupe de Billboards</strong> (Billboard Group)</td>
+<td style="text-align: left;">Un ensemble géré de <strong>Billboards</strong> avec un VAO partagé et un VBO par instance pour le dessin GPU (<code>BillboardGroup</code>).</td>
+<td style="text-align: left;">Batch de billboards</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Instance de Sphère</strong> (Sphere Instance)</td>
+<td style="text-align: left;">Un paquet de données par instance de 64 octets alignés (matrice modèle, matériau PBR, position précédente) envoyé au GPU (<code>SphereInstance</code>).</td>
+<td style="text-align: left;">Données d'instance</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Trieur de Sphères</strong> (Sphere Sorter)</td>
+<td style="text-align: left;">Le sous-système qui ordonne les <strong>Billboards</strong> transparents d'arrière en avant pour un mélange alpha correct (<code>SphereSorter</code>).</td>
+<td style="text-align: left;">Passe de tri</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mode de Tri</strong> (Sorting Mode)</td>
+<td style="text-align: left;">L'algorithme utilisé par le <strong>Trieur</strong> : qsort CPU, radix CPU ou bitonic GPU (<code>SortingMode</code>).</td>
+<td style="text-align: left;">Stratégie de tri</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rendu-ombrage-eclairage">🎨 Rendu — Ombrage &amp; Éclairage<a class="headerlink" href="#rendu-ombrage-eclairage" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Matériau PBR</strong> (PBR Material)</td>
+<td style="text-align: left;">Une description de surface avec albédo, métallique et rugosité pour le pipeline PBR (<code>PBRMaterial</code>).</td>
+<td style="text-align: left;">Matériau, surface</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bibliothèque de Matériaux</strong> (Material Library)</td>
+<td style="text-align: left;">Une collection de préréglages <strong>Matériau PBR</strong> nommés chargés depuis le disque (<code>MaterialLib</code>).</td>
+<td style="text-align: left;">Ensemble de matériaux</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Shader</strong></td>
+<td style="text-align: left;">Un programme OpenGL compilé avec cache automatique des uniforms et nettoyage RAII (struct <code>Shader</code>).</td>
+<td style="text-align: left;">Programme, shader program</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Uniform</strong></td>
+<td style="text-align: left;">Une variable GPU nommée définie par frame ou par draw ; les locations sont mises en cache dans un tableau trié pour une recherche <span class="arithmatex">\(O(\log n)\)</span> (<code>UniformEntry</code>).</td>
+<td style="text-align: left;">Paramètre shader, constante</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>UBO</strong></td>
+<td style="text-align: left;">Uniform Buffer Object — un bloc de données structuré côté GPU (layout std140) partagé entre les draw calls.</td>
+<td style="text-align: left;">Buffer de constantes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SSBO</strong></td>
+<td style="text-align: left;">Shader Storage Buffer Object — un buffer GPU en lecture/écriture pour les données volumineuses ou de taille variable.</td>
+<td style="text-align: left;">Buffer de stockage</td>
+</tr>
+</tbody>
+</table>
+<h2 id="image-based-lighting-ibl">🌍 Image-Based Lighting (IBL)<a class="headerlink" href="#image-based-lighting-ibl" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Coordinateur IBL</strong> (IBL Coordinator)</td>
+<td style="text-align: left;">La machine à états qui génère progressivement la <strong>Carte d'Irradiance</strong> et la <strong>Carte Spéculaire Préfiltrée</strong> à partir d'un environnement HDR sur plusieurs frames (<code>IBLCoordinator</code>).</td>
+<td style="text-align: left;">Pipeline IBL, générateur IBL</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>État IBL</strong> (IBL State)</td>
+<td style="text-align: left;">Une phase du cycle de vie du coordinateur : Idle → Luminance → Specular Init → Specular Mips → Irradiance → Done (<code>IBLState</code>).</td>
+<td style="text-align: left;">Étape IBL, phase IBL</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Carte d'Environnement</strong> (Environment Map)</td>
+<td style="text-align: left;">Une texture HDR équirectangulaire représentant l'éclairage à distance infinie.</td>
+<td style="text-align: left;">Carte HDR, texture skybox</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Carte d'Irradiance</strong> (Irradiance Map)</td>
+<td style="text-align: left;">Un cubemap basse fréquence encodant l'éclairage diffus de la <strong>Carte d'Environnement</strong> via convolution sphérique.</td>
+<td style="text-align: left;">Carte diffuse</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Carte Spéculaire Préfiltrée</strong> (Prefiltered Specular Map)</td>
+<td style="text-align: left;">Un cubemap à chaîne de mips où chaque niveau stocke les réflexions spéculaires à rugosité croissante.</td>
+<td style="text-align: left;">Carte spéculaire, prefilter map</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BRDF LUT</strong></td>
+<td style="text-align: left;">Une table de correspondance 2D encodant l'approximation split-sum pour l'intégrale BRDF spéculaire.</td>
+<td style="text-align: left;">BRDF lookup</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Gestionnaire d'Environnement</strong> (Environment Manager)</td>
+<td style="text-align: left;">Le sous-système gérant le chargement asynchrone des fichiers HDR, l'animation de transition et l'orchestration du <strong>Coordinateur IBL</strong> (<code>EnvManager</code>).</td>
+<td style="text-align: left;">Chargeur d'env</td>
+</tr>
+</tbody>
+</table>
+<h2 id="illumination-globale-gi">💡 Illumination Globale (GI)<a class="headerlink" href="#illumination-globale-gi" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Sonde Lumineuse</strong> (Light Probe)</td>
+<td style="text-align: left;">Un point de l'espace stockant 9 coefficients d'Harmoniques Sphériques L2 encodant l'irradiance locale (<code>LightProbe</code>).</td>
+<td style="text-align: left;">Probe, sonde SH</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Grille de Sondes Lumineuses</strong> (Light Probe Grid)</td>
+<td style="text-align: left;">Un réseau 3D de <strong>Sondes Lumineuses</strong> couvrant l'AABB de la scène, mis à jour de manière asynchrone sur un thread worker (<code>LightProbeGrid</code>).</td>
+<td style="text-align: left;">Grille de probes, grille GI</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SH9</strong></td>
+<td style="text-align: left;">Un ensemble de 9 coefficients d'Harmoniques Sphériques alignés vec4 (bande 0 + bande 1 + bande 2).</td>
+<td style="text-align: left;">Coefficients SH</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mode GI</strong> (GI Mode)</td>
+<td style="text-align: left;">La stratégie d'échantillonnage de l'éclairage indirect : Off, Texture 3D ou SSBO (<code>GIMode</code>).</td>
+<td style="text-align: left;">Méthode GI</td>
+</tr>
+</tbody>
+</table>
+<h2 id="skybox">🌌 Skybox<a class="headerlink" href="#skybox" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Skybox</strong></td>
+<td style="text-align: left;">Le renderer d'arrière-plan à distance infinie utilisant un quad plein écran avec échantillonnage raycasté de la <strong>Carte d'Environnement</strong> (struct <code>Skybox</code>).</td>
+<td style="text-align: left;">Fond, renderer d'env</td>
+</tr>
+</tbody>
+</table>
+<h2 id="effets-visuels">✨ Effets Visuels<a class="headerlink" href="#effets-visuels" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Traînée</strong> (Trail)</td>
+<td style="text-align: left;">Un ruban face-caméra rendu en blending additif avec émission HDR, montrant les positions passées d'un <strong>Corps</strong>.</td>
+<td style="text-align: left;">Chemin, ligne orbitale, trajectoire</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Renderer de Traînées</strong> (Trail Renderer)</td>
+<td style="text-align: left;">Le sous-système qui enregistre les positions des <strong>Corps</strong> dans des buffers circulaires et construit la géométrie de ruban triangle-strip à chaque frame (<code>TrailRenderer</code>).</td>
+<td style="text-align: left;">Gestionnaire de traînées</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Anneau de Traînée</strong> (Trail Ring)</td>
+<td style="text-align: left;">Un buffer circulaire de positions horodatées pour un <strong>Corps</strong>, utilisé pour générer la géométrie de <strong>Traînée</strong> (<code>TrailRing</code>).</td>
+<td style="text-align: left;">Historique de traînée</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Paramètres Néon</strong> (Neon Params)</td>
+<td style="text-align: left;">Profil de lueur ajustable en temps réel pour les <strong>Traînées</strong> : intensité HDR, resserrement du cœur et largeur du ruban (<code>TrailNeonParams</code>).</td>
+<td style="text-align: left;">Paramètres de lueur</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pipeline-de-post-traitement">🎬 Pipeline de Post-Traitement<a class="headerlink" href="#pipeline-de-post-traitement" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Post-Traitement</strong> (Post-Process)</td>
+<td style="text-align: left;">Le pipeline d'image multi-passes appliqué après le rendu de la scène : bloom, DoF, exposition, color grading, FXAA, brouillard, LUT, motion blur (<code>PostProcess</code>).</td>
+<td style="text-align: left;">Post-FX, compositing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Effet</strong> (Effect)</td>
+<td style="text-align: left;">Une passe unique de post-traitement (ex. Bloom, DoF, FXAA) activable via un flag bitmask (<code>PostProcessEffect</code>).</td>
+<td style="text-align: left;">Filtre, passe</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bloom</strong></td>
+<td style="text-align: left;">Un flou gaussien multi-résolution avec passe de seuillage simulant le saignement lumineux des zones HDR.</td>
+<td style="text-align: left;">Lueur, HDR bloom</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Profondeur de Champ</strong> (DoF)</td>
+<td style="text-align: left;">Un effet de flou bokeh contrôlé par la distance focale, la plage focale et le ratio anamorphique.</td>
+<td style="text-align: left;">Flou de focus, flou de lentille</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Auto-Exposition</strong> (Auto-Exposure)</td>
+<td style="text-align: left;">Adaptation automatique de la luminance basée sur un histogramme, ajustant l'exposition dans le temps.</td>
+<td style="text-align: left;">Adaptation oculaire</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Flou de Mouvement</strong> (Motion Blur)</td>
+<td style="text-align: left;">Flou directionnel par pixel basé sur un buffer de vélocité simulant le mouvement caméra/objet.</td>
+<td style="text-align: left;">Flou</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FXAA</strong></td>
+<td style="text-align: left;">Fast Approximate Anti-Aliasing — un filtre de lissage de contours en espace écran.</td>
+<td style="text-align: left;">Anti-aliasing, AA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Étalonnage Couleur</strong> (Color Grading)</td>
+<td style="text-align: left;">Ajustements style Unreal : saturation, contraste, gamma, gain, offset, lift (<code>ColorGradingParams</code>).</td>
+<td style="text-align: left;">Correction couleur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mappage Tonal</strong> (Tone Mapping)</td>
+<td style="text-align: left;">Courbe filmique ACES convertissant la radiance HDR en valeurs LDR affichables (<code>TonemapParams</code>).</td>
+<td style="text-align: left;">Mappage HDR</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Vignette</strong></td>
+<td style="text-align: left;">Effet d'assombrissement des bords d'écran avec intensité, douceur et rondeur ajustables (<code>VignetteParams</code>).</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Grain de Film</strong> (Film Grain)</td>
+<td style="text-align: left;">Bruit procédural superposé à l'image simulant la texture de pellicule analogique (<code>GrainParams</code>).</td>
+<td style="text-align: left;">Grain, bruit</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Aberration Chromatique</strong> (Chromatic Aberration)</td>
+<td style="text-align: left;">Décalage des canaux couleur simulant la dispersion de lentille (<code>ChromAbberationParams</code>).</td>
+<td style="text-align: left;">Chrom abbr, CA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Brouillard</strong> (Fog)</td>
+<td style="text-align: left;">Diffusion atmosphérique exponentielle basée sur la profondeur avec atténuation en hauteur (<code>FogParams</code>).</td>
+<td style="text-align: left;">Brouillard atmosphérique</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>LUT 3D</strong></td>
+<td style="text-align: left;">Table de correspondance couleur 3D pour le mappage de gamut et les transformations créatives.</td>
+<td style="text-align: left;">LUT couleur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Banding</strong></td>
+<td style="text-align: left;">Effet intentionnel de quantification/postérisation couleur avec modes : linéaire, dithered, perceptuel (<code>BandingParams</code>).</td>
+<td style="text-align: left;">Postérisation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Balance des Blancs</strong> (White Balance)</td>
+<td style="text-align: left;">Correction de température (Kelvin) et de teinte appliquée dans le pipeline couleur (<code>WhiteBalanceParams</code>).</td>
+<td style="text-align: left;">BB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="profilage-performance">📊 Profilage &amp; Performance<a class="headerlink" href="#profilage-performance" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Profileur GPU</strong> (GPU Profiler)</td>
+<td style="text-align: left;">Un système de requêtes OpenGL à double buffer mesurant le timing GPU par étage sans stall du pipeline (<code>GPUProfiler</code>).</td>
+<td style="text-align: left;">Timer, profileur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Étage GPU</strong> (GPU Stage)</td>
+<td style="text-align: left;">Une région de profilage nommée et hiérarchique (ex. "Scene", "Bloom", "Composite") avec couleur et durée (<code>GPUStage</code>).</td>
+<td style="text-align: left;">Section de profilage</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Échantillonneur Adaptatif</strong> (Adaptive Sampler)</td>
+<td style="text-align: left;">Un collecteur à fenêtre glissante qui échantillonne stochastiquement les métriques pour produire des moyennes lissées (<code>AdaptiveSampler</code>).</td>
+<td style="text-align: left;">Échantillonneur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Benchmark d'Effets</strong> (Effect Benchmark)</td>
+<td style="text-align: left;">Un runner de test A/B automatisé mesurant le coût GPU de l'activation de chaque <strong>Effet</strong> de post-traitement (<code>EffectBenchmark</code>).</td>
+<td style="text-align: left;">Test de perf</td>
+</tr>
+</tbody>
+</table>
+<h2 id="camera-entrees">🎥 Caméra &amp; Entrées<a class="headerlink" href="#camera-entrees" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Caméra</strong> (Camera)</td>
+<td style="text-align: left;">Un contrôleur première personne avec physique de momentum, head-bobbing, mode orbite et interpolation de rotation lissée (struct <code>Camera</code>).</td>
+<td style="text-align: left;">Visualiseur, œil</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Mode Orbite</strong> (Orbit Mode)</td>
+<td style="text-align: left;">Comportement de caméra où la position est dérivée de yaw/pitch/distance autour d'un point cible.</td>
+<td style="text-align: left;">Arcball, turntable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Registre de Raccourcis</strong> (Binding Registry)</td>
+<td style="text-align: left;">L'<code>AppBindingRegistry</code> qui associe les actions clavier/gamepad à des descriptions, affichées via l'overlay F2.</td>
+<td style="text-align: left;">Keymap, système d'aide</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ressources-gpu">🖥️ Ressources GPU<a class="headerlink" href="#ressources-gpu" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Terme</th>
+<th style="text-align: left;">Définition</th>
+<th style="text-align: left;">Alias à éviter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>VAO</strong></td>
+<td style="text-align: left;">Vertex Array Object — un handle OpenGL capturant les bindings d'attributs de sommets pour un draw call.</td>
+<td style="text-align: left;">Tableau de sommets</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>VBO</strong></td>
+<td style="text-align: left;">Vertex Buffer Object — un buffer GPU stockant les données de sommets (positions, normales, etc.).</td>
+<td style="text-align: left;">Buffer de sommets</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EBO</strong></td>
+<td style="text-align: left;">Element Buffer Object — un buffer d'index GPU pour le dessin indexé.</td>
+<td style="text-align: left;">Buffer d'index, IBO</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FBO</strong></td>
+<td style="text-align: left;">Framebuffer Object — une cible de rendu hors écran avec attachements couleur/profondeur/stencil.</td>
+<td style="text-align: left;">Framebuffer, render target</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Unité de Texture</strong> (Texture Unit)</td>
+<td style="text-align: left;">Un slot de binding numéroté où les textures sont attachées pour l'échantillonnage shader ; le moteur utilise une allocation par niveaux (SH: 8–14, IBL: 15–17).</td>
+<td style="text-align: left;">Slot de texture</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="relations">🔗 Relations<a class="headerlink" href="#relations" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph TD
+    Scene["Scène"] --&gt; InstancedGroup["Groupe Instancié"]
+    Scene --&gt; BillboardGroup["Groupe de Billboards"]
+    Scene --&gt; Skybox
+    Scene --&gt; NBody["Simulation N-Corps"]
+    Scene --&gt; TrailRenderer["Renderer de Traînées"]
+    Scene --&gt; IBLCoordinator["Coordinateur IBL"]
+    Scene --&gt; LightProbeGrid["Grille de Sondes Lumineuses"]
+    NBody --&gt;|"contient jusqu'à 32"| Body["Corps"]
+    Body --&gt;|"produit par frame"| SphereInstance["Instance de Sphère"]
+    TrailRenderer --&gt;|"un par Corps"| TrailRing["Anneau de Traînée"]
+    IBLCoordinator --&gt;|"génère"| IrradianceMap["Carte d'Irradiance"]
+    IBLCoordinator --&gt;|"génère"| SpecularMap["Carte Spéculaire Préfiltrée"]
+    LightProbeGrid --&gt;|"réseau de"| LightProbe["Sonde Lumineuse"]
+    LightProbe --&gt;|"stocke"| SH9
+    PostProcess["Post-Traitement"] --&gt;|"chaîne de"| Effect["Effet"]</code></pre>
+<ul>
+<li>Une <strong>Scène</strong> possède un <strong>Groupe Instancié</strong>, un <strong>Groupe de Billboards</strong>, une <strong>Skybox</strong>, une <strong>Simulation N-Corps</strong>, un <strong>Renderer de Traînées</strong>, un <strong>Coordinateur IBL</strong> et une <strong>Grille de Sondes Lumineuses</strong>.</li>
+<li>Une <strong>Simulation N-Corps</strong> contient jusqu'à 32 <strong>Corps</strong>. Chaque <strong>Corps</strong> produit une <strong>Instance de Sphère</strong> par frame.</li>
+<li>Le <strong>Renderer de Traînées</strong> maintient un <strong>Anneau de Traînée</strong> par <strong>Corps</strong> et construit la géométrie de ruban à chaque frame.</li>
+<li>Le <strong>Coordinateur IBL</strong> traite une <strong>Carte d'Environnement</strong> via une machine à états multi-frames pour produire une <strong>Carte d'Irradiance</strong> et une <strong>Carte Spéculaire Préfiltrée</strong>, en réutilisant le <strong>BRDF LUT</strong> partagé.</li>
+<li>La <strong>Grille de Sondes Lumineuses</strong> projette les positions et matériaux des <strong>Corps</strong> en coefficients <strong>SH9</strong> via un thread worker en arrière-plan.</li>
+<li>Le pipeline de <strong>Post-Traitement</strong> lit le <strong>FBO</strong> de la scène et applique une chaîne d'<strong>Effets</strong>, chacun contrôlé par un flag bitmask.</li>
+<li>Le <strong>Profileur GPU</strong> encapsule chaque sous-système de rendu dans un <strong>Étage GPU</strong> et rapporte le timing par frame via des <strong>Échantillonneurs Adaptatifs</strong>.</li>
+</ul>
+<hr>
+<h2 id="exemple-de-dialogue">💬 Exemple de Dialogue<a class="headerlink" href="#exemple-de-dialogue" title="Permanent link">¶</a></h2>
+<blockquote>
+<p><strong>Dev :</strong> « Quand on rend la scène, les <strong>Corps</strong> sont dessinés en tant que <strong>Billboards</strong> ou maillages <strong>Icosphère</strong> ? »</p>
+<p><strong>Expert domaine :</strong> « Les deux chemins existent. Le <strong>Groupe Instancié</strong> dessine les <strong>Corps</strong> opaques en tant que maillages <strong>Icosphère</strong> via <code>glDrawElementsInstanced</code>. Le <strong>Groupe de Billboards</strong> dessine les <strong>Corps</strong> transparents en tant que quads alignés à l'écran avec raycasting dans le fragment shader. Le <strong>Trieur de Sphères</strong> ordonne le tableau de <strong>Billboards</strong> d'arrière en avant avant chaque frame. »</p>
+<p><strong>Dev :</strong> « Et les données d'<strong>Instance de Sphère</strong> — c'est le même format pour les deux chemins ? »</p>
+<p><strong>Expert domaine :</strong> « Oui. <code>SphereInstance</code> est le paquet commun de 64 octets contenant la matrice modèle, le matériau PBR et la position précédente. Le <strong>Groupe Instancié</strong> et le <strong>Groupe de Billboards</strong> consomment les mêmes données, juste bindées à des VAOs différents. »</p>
+<p><strong>Dev :</strong> « Où se place le <strong>Renderer de Traînées</strong> dans le pipeline ? »</p>
+<p><strong>Expert domaine :</strong> « Après la géométrie de la scène, avant le <strong>Post-Traitement</strong>. Il enregistre la position de chaque <strong>Corps</strong> dans son <strong>Anneau de Traînée</strong>, construit la géométrie de ruban et dessine en blending additif dans le <strong>FBO</strong> HDR. Les <strong>Paramètres Néon</strong> contrôlent l'intensité de la lueur. »</p>
+</blockquote>
+<hr>
+<h2 id="ambiguites-signalees">⚠️ Ambiguïtés Signalées<a class="headerlink" href="#ambiguites-signalees" title="Permanent link">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Conflits de Terminologie Actifs</p>
+<p>Les mots suivants sont utilisés de manière ambiguë dans le code actuel.
+Chaque entrée identifie le conflit et recommande un usage canonique.</p>
+</div>
+<h3 id="sphere-sphere">« Sphere » (Sphère)<a class="headerlink" href="#sphere-sphere" title="Permanent link">¶</a></h3>
+<p><strong>Conflit :</strong> Utilisé pour 4 concepts distincts — le maillage <strong>Icosphère</strong>, un quad imposteur <strong>Billboard</strong>, une entité gravitationnelle <strong>Corps</strong>, et le paquet de données GPU <strong>Instance de Sphère</strong>.</p>
+<p><strong>Recommandation :</strong> Utiliser <strong>Corps</strong> pour les entités de simulation, <strong>Icosphère</strong> pour les données de maillage, <strong>Billboard</strong> pour la primitive de rendu, et <strong>Instance de Sphère</strong> pour le paquet de données GPU par objet. Voir <a href="https://github.com/yoyonel/suckless-ogl/issues/206">#206</a>.</p>
+<h3 id="shader">« Shader »<a class="headerlink" href="#shader" title="Permanent link">¶</a></h3>
+<p><strong>Conflit :</strong> Désigne à la fois la struct wrapper haut-niveau <code>Shader</code> (avec cache d'uniforms) et les handles <code>GLuint</code> bruts utilisés par les passes compute IBL.</p>
+<p><strong>Recommandation :</strong> Utiliser <strong>Shader</strong> pour le wrapper géré. Pour les handles GL bruts, utiliser le suffixe <code>_program</code> (ex. <code>spmap_program</code>). Voir <a href="https://github.com/yoyonel/suckless-ogl/issues/207">#207</a>.</p>
+<h3 id="probe-sonde">« Probe » (Sonde)<a class="headerlink" href="#probe-sonde" title="Permanent link">¶</a></h3>
+<p><strong>Conflit :</strong> Peut signifier une <strong>Sonde Lumineuse</strong> unique (point d'irradiance SH) ou la <strong>Grille de Sondes Lumineuses</strong> entière.</p>
+<p><strong>Recommandation :</strong> Toujours qualifier : une <strong>Sonde Lumineuse</strong> unique vs. la <strong>Grille de Sondes Lumineuses</strong>. Voir <a href="https://github.com/yoyonel/suckless-ogl/issues/208">#208</a>.</p>
+<h3 id="instance">« Instance »<a class="headerlink" href="#instance" title="Permanent link">¶</a></h3>
+<p><strong>Conflit :</strong> Apparaît dans <strong>Instance de Sphère</strong> (données GPU par objet) et <strong>Groupe Instancié</strong> (gestionnaire de draw calls).</p>
+<p><strong>Recommandation :</strong> Utiliser le nom composé complet pour désambiguïser. Voir <a href="https://github.com/yoyonel/suckless-ogl/issues/209">#209</a>.</p>
 
 
 
@@ -3455,7 +3964,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 mars 2026 16:00:54 UTC">25 mars 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 avril 2026 08:41:39 UTC">26 avril 2026</span>
   </span>
 
     

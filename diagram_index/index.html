@@ -581,6 +581,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#domain-model-ubiquitous-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Model — Ubiquitous Language
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gpu-usage-monitor" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4332,6 +4343,31 @@ deactivate Worker
 Main-&gt;&gt;GPU: Upload SH data to SSBO (glBufferSubData)
 Main-&gt;&gt;GPU: Draw call (Instanced or SSBO)
 Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Filtering)</code></pre>
+
+  </div>
+</div>
+
+<h2 id="domain-model-ubiquitous-language"><a href="../glossary/">Domain Model — Ubiquitous Language</a><a class="headerlink" href="#domain-model-ubiquitous-language" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../glossary/#relationships" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">🔗 Relationships</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+Scene --&gt; InstancedGroup["Instanced Group"]
+Scene --&gt; BillboardGroup["Billboard Group"]
+Scene --&gt; Skybox
+Scene --&gt; NBody["N-Body Simulation"]
+Scene --&gt; TrailRenderer["Trail Renderer"]
+Scene --&gt; IBLCoordinator["IBL Coordinator"]
+Scene --&gt; LightProbeGrid["Light Probe Grid"]
+NBody --&gt;|"contains up to 32"| Body
+Body --&gt;|"produces per frame"| SphereInstance["Sphere Instance"]
+TrailRenderer --&gt;|"one per Body"| TrailRing["Trail Ring"]
+IBLCoordinator --&gt;|"generates"| IrradianceMap["Irradiance Map"]
+IBLCoordinator --&gt;|"generates"| SpecularMap["Prefiltered Specular Map"]
+LightProbeGrid --&gt;|"lattice of"| LightProbe["Light Probe"]
+LightProbe --&gt;|"stores"| SH9
+PostProcess --&gt;|"chain of"| Effect</code></pre>
 
   </div>
 </div>

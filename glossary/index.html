@@ -3293,7 +3293,14 @@
 
 
 <h1 id="technical-glossary">Technical Glossary<a class="headerlink" href="#technical-glossary" title="Permanent link">¶</a></h1>
-<p>This glossary covers technical terms and expressions used in the project, spanning theoretical PBR rendering aspects, geometric optimizations, and low-level graphics API concepts.</p>
+<p>This glossary covers technical terms and expressions used in the project, spanning theoretical PBR rendering aspects, geometric optimizations, low-level graphics API concepts, and the <strong>domain model</strong> used throughout the codebase.</p>
+<div class="admonition info">
+<p class="admonition-title">Ubiquitous Language</p>
+<p>The domain model sections below define canonical terminology for the codebase.
+Each term includes <strong>aliases to avoid</strong> — words that should not be used in code,
+comments, or documentation because they create ambiguity. See
+<a href="#flagged-ambiguities">Flagged Ambiguities</a> for details.</p>
+</div>
 <hr>
 <h2 id="rendering-physics-pbr-ibl">🎨 Rendering &amp; Physics (PBR / IBL)<a class="headerlink" href="#rendering-physics-pbr-ibl" title="Permanent link">¶</a></h2>
 <table>
@@ -3435,6 +3442,508 @@
 </tr>
 </tbody>
 </table>
+<hr>
+<h1 id="domain-model-ubiquitous-language">Domain Model — Ubiquitous Language<a class="headerlink" href="#domain-model-ubiquitous-language" title="Permanent link">¶</a></h1>
+<p>The sections below define the canonical vocabulary for the project's domain objects,
+their relationships, and known naming ambiguities.</p>
+<h2 id="simulation">🪐 Simulation<a class="headerlink" href="#simulation" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>N-Body Simulation</strong></td>
+<td style="text-align: left;">A gravitational particle system that integrates body positions via Velocity Verlet with Plummer softening.</td>
+<td style="text-align: left;">Physics sim, particle system</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Body</strong></td>
+<td style="text-align: left;">A single gravitational entity with position, velocity, mass, radius, and PBR material properties (<code>NBodyParticle</code>).</td>
+<td style="text-align: left;">Particle, sphere, object</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Time Scale</strong></td>
+<td style="text-align: left;">A signed speed multiplier that smoothly transitions between real-time, pause, and reverse.</td>
+<td style="text-align: left;">Speed, playback rate</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Energy Drift</strong></td>
+<td style="text-align: left;">The relative deviation of total energy from the initial reference, used to diagnose integrator stability.</td>
+<td style="text-align: left;">Energy error, conservation error</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rendering-geometry">🔷 Rendering — Geometry<a class="headerlink" href="#rendering-geometry" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Scene</strong></td>
+<td style="text-align: left;">The top-level container for all 3D geometry, GPU resources, shaders, and rendering configuration (<code>Scene</code> struct).</td>
+<td style="text-align: left;">World, level, context</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Icosphere</strong></td>
+<td style="text-align: left;">A procedurally generated sphere mesh created by recursive subdivision of an icosahedron (<code>IcosphereGeometry</code>).</td>
+<td style="text-align: left;">Sphere mesh, UV sphere</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Instanced Group</strong></td>
+<td style="text-align: left;">A set of opaque sphere meshes drawn in a single <code>glDrawElementsInstanced</code> call via a shared VBO (<code>InstancedGroup</code>).</td>
+<td style="text-align: left;">Batch, draw group</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Billboard</strong></td>
+<td style="text-align: left;">A screen-aligned quad that renders a sphere via fragment-shader raycasting, cheaper than mesh rendering.</td>
+<td style="text-align: left;">Impostor, sprite, quad</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Billboard Group</strong></td>
+<td style="text-align: left;">A managed set of <strong>Billboards</strong> with a shared VAO and per-instance VBO for GPU-driven drawing (<code>BillboardGroup</code>).</td>
+<td style="text-align: left;">Billboard batch</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sphere Instance</strong></td>
+<td style="text-align: left;">A 64-byte-aligned per-instance data packet (model matrix, PBR material, previous position) sent to the GPU (<code>SphereInstance</code>).</td>
+<td style="text-align: left;">Instance data, per-object data</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sphere Sorter</strong></td>
+<td style="text-align: left;">The subsystem that orders transparent <strong>Billboards</strong> back-to-front for correct alpha blending (<code>SphereSorter</code>).</td>
+<td style="text-align: left;">Sort pass, transparency sort</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Sorting Mode</strong></td>
+<td style="text-align: left;">The algorithm used by the <strong>Sphere Sorter</strong>: CPU qsort, CPU radix, or GPU bitonic (<code>SortingMode</code>).</td>
+<td style="text-align: left;">Sort strategy</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rendering-shading-lighting">🎨 Rendering — Shading &amp; Lighting<a class="headerlink" href="#rendering-shading-lighting" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>PBR Material</strong></td>
+<td style="text-align: left;">A surface description with albedo, metallic, and roughness parameters for the physically-based rendering pipeline (<code>PBRMaterial</code>).</td>
+<td style="text-align: left;">Material, surface</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Material Library</strong></td>
+<td style="text-align: left;">A collection of named <strong>PBR Material</strong> presets loaded from disk (<code>MaterialLib</code>).</td>
+<td style="text-align: left;">Material set, palette</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Shader</strong></td>
+<td style="text-align: left;">A compiled OpenGL program with automatic uniform caching and RAII cleanup (<code>Shader</code> struct).</td>
+<td style="text-align: left;">Program, shader program</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Uniform</strong></td>
+<td style="text-align: left;">A named GPU variable set per-frame or per-draw; locations are cached in a sorted array for <span class="arithmatex">\(O(\log n)\)</span> lookup (<code>UniformEntry</code>).</td>
+<td style="text-align: left;">Shader parameter, constant</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>UBO</strong></td>
+<td style="text-align: left;">Uniform Buffer Object — a GPU-side block of structured data (std140 layout) shared across draw calls.</td>
+<td style="text-align: left;">Constant buffer, uniform block</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SSBO</strong></td>
+<td style="text-align: left;">Shader Storage Buffer Object — a read/write GPU buffer for large or variable-length data.</td>
+<td style="text-align: left;">Storage buffer</td>
+</tr>
+</tbody>
+</table>
+<h2 id="image-based-lighting-ibl">🌍 Image-Based Lighting (IBL)<a class="headerlink" href="#image-based-lighting-ibl" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>IBL Coordinator</strong></td>
+<td style="text-align: left;">The state machine that progressively generates <strong>Irradiance Map</strong> and <strong>Prefiltered Specular Map</strong> from an HDR environment across multiple frames (<code>IBLCoordinator</code>).</td>
+<td style="text-align: left;">IBL pipeline, IBL generator</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>IBL State</strong></td>
+<td style="text-align: left;">One phase of the coordinator's lifecycle: Idle → Luminance → Specular Init → Specular Mips → Irradiance → Done (<code>IBLState</code>).</td>
+<td style="text-align: left;">IBL step, IBL phase</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Environment Map</strong></td>
+<td style="text-align: left;">An equirectangular HDR texture representing the infinite-distance lighting environment.</td>
+<td style="text-align: left;">HDR map, skybox texture, env map</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Irradiance Map</strong></td>
+<td style="text-align: left;">A low-frequency cubemap encoding diffuse lighting from the <strong>Environment Map</strong> via spherical convolution.</td>
+<td style="text-align: left;">Diffuse map, irradiance cubemap</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Prefiltered Specular Map</strong></td>
+<td style="text-align: left;">A mip-chain cubemap where each level stores specular reflections at increasing roughness.</td>
+<td style="text-align: left;">Specular map, prefilter map</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BRDF LUT</strong></td>
+<td style="text-align: left;">A 2D lookup table encoding the split-sum approximation for the specular BRDF integral.</td>
+<td style="text-align: left;">BRDF lookup, integration map</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Environment Manager</strong></td>
+<td style="text-align: left;">The subsystem handling async HDR file loading, transition animation, and <strong>IBL Coordinator</strong> orchestration (<code>EnvManager</code>).</td>
+<td style="text-align: left;">Env loader</td>
+</tr>
+</tbody>
+</table>
+<h2 id="global-illumination-gi">💡 Global Illumination (GI)<a class="headerlink" href="#global-illumination-gi" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Light Probe</strong></td>
+<td style="text-align: left;">A point in space storing 9 L2 Spherical Harmonic coefficients that encode local irradiance (<code>LightProbe</code>).</td>
+<td style="text-align: left;">Probe, SH probe</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Light Probe Grid</strong></td>
+<td style="text-align: left;">A 3D lattice of <strong>Light Probes</strong> covering the scene AABB, updated asynchronously on a worker thread (<code>LightProbeGrid</code>).</td>
+<td style="text-align: left;">Probe grid, GI grid, irradiance volume</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SH9</strong></td>
+<td style="text-align: left;">A set of 9 vec4-aligned Spherical Harmonic coefficients (band 0 + band 1 + band 2).</td>
+<td style="text-align: left;">SH coefficients, harmonics</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GI Mode</strong></td>
+<td style="text-align: left;">The sampling strategy for indirect lighting: Off, 3D Texture, or SSBO (<code>GIMode</code>).</td>
+<td style="text-align: left;">GI method</td>
+</tr>
+</tbody>
+</table>
+<h2 id="skybox">🌌 Skybox<a class="headerlink" href="#skybox" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Skybox</strong></td>
+<td style="text-align: left;">The infinite-distance background renderer using a full-screen quad with raycasted <strong>Environment Map</strong> sampling (<code>Skybox</code> struct).</td>
+<td style="text-align: left;">Background, env renderer</td>
+</tr>
+</tbody>
+</table>
+<h2 id="visual-effects">✨ Visual Effects<a class="headerlink" href="#visual-effects" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Trail</strong></td>
+<td style="text-align: left;">A camera-facing ribbon rendered with additive blending and HDR emission, showing past positions of a <strong>Body</strong>.</td>
+<td style="text-align: left;">Path, orbit line, trajectory</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Trail Renderer</strong></td>
+<td style="text-align: left;">The subsystem that records <strong>Body</strong> positions into per-body ring buffers and builds ribbon triangle-strip geometry each frame (<code>TrailRenderer</code>).</td>
+<td style="text-align: left;">Trail manager</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Trail Ring</strong></td>
+<td style="text-align: left;">A circular buffer of timestamped positions for one <strong>Body</strong>, used to generate <strong>Trail</strong> geometry (<code>TrailRing</code>).</td>
+<td style="text-align: left;">Trail history, position buffer</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Neon Params</strong></td>
+<td style="text-align: left;">Runtime-adjustable glow profile for <strong>Trails</strong>: HDR intensity, core tightness, and ribbon width (<code>TrailNeonParams</code>).</td>
+<td style="text-align: left;">Glow settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="post-processing-pipeline">🎬 Post-Processing Pipeline<a class="headerlink" href="#post-processing-pipeline" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Post-Process</strong></td>
+<td style="text-align: left;">The multi-pass image pipeline applied after scene rendering: bloom, DoF, exposure, color grading, FXAA, fog, LUT, motion blur (<code>PostProcess</code>).</td>
+<td style="text-align: left;">Post-FX, compositing</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Effect</strong></td>
+<td style="text-align: left;">A single post-processing pass (e.g., Bloom, DoF, FXAA) that can be toggled via a bitmask flag (<code>PostProcessEffect</code>).</td>
+<td style="text-align: left;">Filter, pass</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Bloom</strong></td>
+<td style="text-align: left;">A multi-resolution bright-pass + Gaussian blur that simulates light bleeding from high-luminance areas.</td>
+<td style="text-align: left;">Glow, HDR bloom</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Depth of Field (DoF)</strong></td>
+<td style="text-align: left;">A bokeh-based blur effect controlled by focal distance, focal range, and anamorphic ratio.</td>
+<td style="text-align: left;">Focus blur, lens blur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Auto-Exposure</strong></td>
+<td style="text-align: left;">Histogram-based automatic luminance adaptation that adjusts exposure over time.</td>
+<td style="text-align: left;">Eye adaptation, auto-EV</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Motion Blur</strong></td>
+<td style="text-align: left;">Velocity-buffer-based per-pixel directional blur simulating camera/object movement.</td>
+<td style="text-align: left;">Blur</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FXAA</strong></td>
+<td style="text-align: left;">Fast Approximate Anti-Aliasing — a screen-space edge-smoothing filter.</td>
+<td style="text-align: left;">Anti-aliasing, AA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Color Grading</strong></td>
+<td style="text-align: left;">Unreal-style adjustments: saturation, contrast, gamma, gain, offset, lift (<code>ColorGradingParams</code>).</td>
+<td style="text-align: left;">Color correction</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tone Mapping</strong></td>
+<td style="text-align: left;">ACES-like filmic curve converting HDR radiance to displayable LDR values (<code>TonemapParams</code>).</td>
+<td style="text-align: left;">HDR mapping</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Vignette</strong></td>
+<td style="text-align: left;">Screen-edge darkening effect with adjustable intensity, smoothness, and roundness (<code>VignetteParams</code>).</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Film Grain</strong></td>
+<td style="text-align: left;">Procedural noise overlaid on the image to simulate analog film texture (<code>GrainParams</code>).</td>
+<td style="text-align: left;">Grain, noise</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Chromatic Aberration</strong></td>
+<td style="text-align: left;">Color channel offset simulating lens dispersion (<code>ChromAbberationParams</code>).</td>
+<td style="text-align: left;">Chrom abbr, CA</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fog</strong></td>
+<td style="text-align: left;">Exponential depth-based atmospheric scattering with height falloff (<code>FogParams</code>).</td>
+<td style="text-align: left;">Atmospheric fog, depth fog</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>LUT 3D</strong></td>
+<td style="text-align: left;">A 3D color lookup table for gamut mapping and creative color transforms.</td>
+<td style="text-align: left;">Color LUT, 3D LUT</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Banding</strong></td>
+<td style="text-align: left;">Intentional color quantization/posterization effect with multiple modes: linear, dithered, perceptual (<code>BandingParams</code>).</td>
+<td style="text-align: left;">Posterization</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>White Balance</strong></td>
+<td style="text-align: left;">Temperature (Kelvin) and tint correction applied in the color pipeline (<code>WhiteBalanceParams</code>).</td>
+<td style="text-align: left;">WB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="profiling-performance">📊 Profiling &amp; Performance<a class="headerlink" href="#profiling-performance" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>GPU Profiler</strong></td>
+<td style="text-align: left;">A double-buffered OpenGL query system that measures per-stage GPU timing without pipeline stalls (<code>GPUProfiler</code>).</td>
+<td style="text-align: left;">Timer, profiler</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GPU Stage</strong></td>
+<td style="text-align: left;">A named, hierarchical profiling region (e.g., "Scene", "Bloom", "Composite") with color and duration (<code>GPUStage</code>).</td>
+<td style="text-align: left;">Profiling section, timer zone</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adaptive Sampler</strong></td>
+<td style="text-align: left;">A rolling-window collector that stochastically samples metrics to produce smoothed averages (<code>AdaptiveSampler</code>).</td>
+<td style="text-align: left;">Sampler, metric collector</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Effect Benchmark</strong></td>
+<td style="text-align: left;">An automated A/B test runner that measures the GPU cost of toggling individual post-processing <strong>Effects</strong> (<code>EffectBenchmark</code>).</td>
+<td style="text-align: left;">Perf test</td>
+</tr>
+</tbody>
+</table>
+<h2 id="camera-input">🎥 Camera &amp; Input<a class="headerlink" href="#camera-input" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Camera</strong></td>
+<td style="text-align: left;">A first-person controller with momentum physics, head-bobbing, orbit mode, and smooth rotation interpolation (<code>Camera</code> struct).</td>
+<td style="text-align: left;">Viewer, eye</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Orbit Mode</strong></td>
+<td style="text-align: left;">Camera behavior where position is derived from yaw/pitch/distance around a target point.</td>
+<td style="text-align: left;">Arcball, turntable</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Binding Registry</strong></td>
+<td style="text-align: left;">The <code>AppBindingRegistry</code> that maps keyboard/gamepad actions to descriptions, displayed via the F2 overlay.</td>
+<td style="text-align: left;">Keymap, help system</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gpu-resources">🖥️ GPU Resources<a class="headerlink" href="#gpu-resources" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Term</th>
+<th style="text-align: left;">Definition</th>
+<th style="text-align: left;">Aliases to avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>VAO</strong></td>
+<td style="text-align: left;">Vertex Array Object — an OpenGL handle that captures vertex attribute bindings for a draw call.</td>
+<td style="text-align: left;">Vertex array</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>VBO</strong></td>
+<td style="text-align: left;">Vertex Buffer Object — a GPU buffer storing vertex data (positions, normals, etc.).</td>
+<td style="text-align: left;">Vertex buffer</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>EBO</strong></td>
+<td style="text-align: left;">Element Buffer Object — a GPU index buffer for indexed drawing.</td>
+<td style="text-align: left;">Index buffer, IBO</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FBO</strong></td>
+<td style="text-align: left;">Framebuffer Object — an off-screen render target with color/depth/stencil attachments.</td>
+<td style="text-align: left;">Framebuffer, render target</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Texture Unit</strong></td>
+<td style="text-align: left;">A numbered binding slot where textures are attached for shader sampling; the engine uses tiered allocation (SH: 8–14, IBL: 15–17).</td>
+<td style="text-align: left;">Texture slot, sampler unit</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="relationships">🔗 Relationships<a class="headerlink" href="#relationships" title="Permanent link">¶</a></h2>
+<pre class="mermaid"><code>graph TD
+    Scene --&gt; InstancedGroup["Instanced Group"]
+    Scene --&gt; BillboardGroup["Billboard Group"]
+    Scene --&gt; Skybox
+    Scene --&gt; NBody["N-Body Simulation"]
+    Scene --&gt; TrailRenderer["Trail Renderer"]
+    Scene --&gt; IBLCoordinator["IBL Coordinator"]
+    Scene --&gt; LightProbeGrid["Light Probe Grid"]
+    NBody --&gt;|"contains up to 32"| Body
+    Body --&gt;|"produces per frame"| SphereInstance["Sphere Instance"]
+    TrailRenderer --&gt;|"one per Body"| TrailRing["Trail Ring"]
+    IBLCoordinator --&gt;|"generates"| IrradianceMap["Irradiance Map"]
+    IBLCoordinator --&gt;|"generates"| SpecularMap["Prefiltered Specular Map"]
+    LightProbeGrid --&gt;|"lattice of"| LightProbe["Light Probe"]
+    LightProbe --&gt;|"stores"| SH9
+    PostProcess --&gt;|"chain of"| Effect</code></pre>
+<ul>
+<li>A <strong>Scene</strong> owns one <strong>Instanced Group</strong>, one <strong>Billboard Group</strong>, one <strong>Skybox</strong>, one <strong>N-Body Simulation</strong>, one <strong>Trail Renderer</strong>, one <strong>IBL Coordinator</strong>, and one <strong>Light Probe Grid</strong>.</li>
+<li>An <strong>N-Body Simulation</strong> contains up to 32 <strong>Bodies</strong>. Each <strong>Body</strong> produces one <strong>Sphere Instance</strong> per frame.</li>
+<li>The <strong>Trail Renderer</strong> maintains one <strong>Trail Ring</strong> per <strong>Body</strong> and builds ribbon geometry each frame.</li>
+<li>The <strong>IBL Coordinator</strong> processes one <strong>Environment Map</strong> through a multi-frame state machine to produce an <strong>Irradiance Map</strong> and a <strong>Prefiltered Specular Map</strong>, reusing the shared <strong>BRDF LUT</strong>.</li>
+<li>The <strong>Light Probe Grid</strong> projects <strong>Body</strong> positions and materials into <strong>SH9</strong> coefficients via a background worker thread.</li>
+<li>The <strong>Post-Process</strong> pipeline reads the scene <strong>FBO</strong> and applies a chain of <strong>Effects</strong>, each controlled by a bitmask flag.</li>
+<li>The <strong>GPU Profiler</strong> wraps each rendering subsystem in a <strong>GPU Stage</strong> and reports per-frame timing via <strong>Adaptive Samplers</strong>.</li>
+</ul>
+<hr>
+<h2 id="example-dialogue">💬 Example Dialogue<a class="headerlink" href="#example-dialogue" title="Permanent link">¶</a></h2>
+<blockquote>
+<p><strong>Dev:</strong> "When we render the scene, are the <strong>Bodies</strong> drawn as <strong>Billboards</strong> or <strong>Icosphere</strong> meshes?"</p>
+<p><strong>Domain expert:</strong> "Both paths exist. The <strong>Instanced Group</strong> draws opaque <strong>Bodies</strong> as <strong>Icosphere</strong> meshes via <code>glDrawElementsInstanced</code>. The <strong>Billboard Group</strong> draws transparent <strong>Bodies</strong> as screen-aligned quads with raycasting in the fragment shader. The <strong>Sphere Sorter</strong> orders the <strong>Billboard</strong> array back-to-front before each frame."</p>
+<p><strong>Dev:</strong> "And the <strong>Sphere Instance</strong> data — is it the same for both paths?"</p>
+<p><strong>Domain expert:</strong> "Yes. <code>SphereInstance</code> is the common 64-byte packet containing the model matrix, PBR material, and previous position. Both the <strong>Instanced Group</strong> and the <strong>Billboard Group</strong> consume the same data, just bound to different VAOs."</p>
+<p><strong>Dev:</strong> "Where does the <strong>Trail Renderer</strong> fit in the pipeline?"</p>
+<p><strong>Domain expert:</strong> "After scene geometry, before <strong>Post-Process</strong>. It records each <strong>Body</strong>'s position into its <strong>Trail Ring</strong>, builds ribbon geometry, and draws with additive blending into the HDR <strong>FBO</strong>. The <strong>Neon Params</strong> control the glow intensity."</p>
+</blockquote>
+<hr>
+<h2 id="flagged-ambiguities">⚠️ Flagged Ambiguities<a class="headerlink" href="#flagged-ambiguities" title="Permanent link">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Active Terminology Conflicts</p>
+<p>The following words are used ambiguously in the current codebase.
+Each entry identifies the conflict and recommends canonical usage.</p>
+</div>
+<h3 id="sphere">"Sphere"<a class="headerlink" href="#sphere" title="Permanent link">¶</a></h3>
+<p><strong>Conflict:</strong> Used for 4 distinct concepts — the <strong>Icosphere</strong> mesh, a <strong>Billboard</strong> impostor quad, a gravitational <strong>Body</strong>, and the <strong>Sphere Instance</strong> GPU data packet.</p>
+<p><strong>Recommendation:</strong> Use <strong>Body</strong> for simulation entities, <strong>Icosphere</strong> for the mesh data, <strong>Billboard</strong> for the rendering primitive, and <strong>Sphere Instance</strong> for the per-object GPU data packet. See <a href="https://github.com/yoyonel/suckless-ogl/issues/206">#206</a>.</p>
+<h3 id="shader">"Shader"<a class="headerlink" href="#shader" title="Permanent link">¶</a></h3>
+<p><strong>Conflict:</strong> Refers both to the high-level <code>Shader</code> wrapper struct (with uniform caching) and to raw <code>GLuint</code> program handles used by IBL compute passes.</p>
+<p><strong>Recommendation:</strong> Use <strong>Shader</strong> for the managed wrapper. For raw GL handles, use the suffix <code>_program</code> (e.g., <code>spmap_program</code>). See <a href="https://github.com/yoyonel/suckless-ogl/issues/207">#207</a>.</p>
+<h3 id="probe">"Probe"<a class="headerlink" href="#probe" title="Permanent link">¶</a></h3>
+<p><strong>Conflict:</strong> Could mean a single <strong>Light Probe</strong> (SH irradiance sample point) or the entire <strong>Light Probe Grid</strong>.</p>
+<p><strong>Recommendation:</strong> Always qualify: a single <strong>Light Probe</strong> vs. the <strong>Light Probe Grid</strong>. See <a href="https://github.com/yoyonel/suckless-ogl/issues/208">#208</a>.</p>
+<h3 id="instance">"Instance"<a class="headerlink" href="#instance" title="Permanent link">¶</a></h3>
+<p><strong>Conflict:</strong> Appears in both <strong>Sphere Instance</strong> (per-object GPU data) and <strong>Instanced Group</strong> (draw-call manager).</p>
+<p><strong>Recommendation:</strong> Use the full compound noun to disambiguate. See <a href="https://github.com/yoyonel/suckless-ogl/issues/209">#209</a>.</p>
 
 
 
@@ -3455,7 +3964,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 25, 2026 16:00:54 UTC">March 25, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 26, 2026 08:41:39 UTC">April 26, 2026</span>
   </span>
 
     
