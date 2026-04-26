@@ -303,9 +303,9 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad747589adbee4869476d732ee75ba20c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#ad747589adbee4869476d732ee75ba20c">ibl_coordinator_init</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, GLuint shader_spmap, GLuint shader_irmap, GLuint shader_lum_pass1, GLuint shader_lum_pass2)</td></tr>
-<tr class="memdesc:ad747589adbee4869476d732ee75ba20c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the IBL coordinator with necessary shader resources.  <a href="ibl__coordinator_8h.html#ad747589adbee4869476d732ee75ba20c">More...</a><br /></td></tr>
-<tr class="separator:ad747589adbee4869476d732ee75ba20c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a076ded1b24635b548a16e161d45735c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">ibl_coordinator_init</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord, GLuint spmap_program, GLuint irmap_program, GLuint lum_pass1_program, GLuint lum_pass2_program)</td></tr>
+<tr class="memdesc:a076ded1b24635b548a16e161d45735c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the IBL coordinator with necessary shader resources.  <a href="ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3">More...</a><br /></td></tr>
+<tr class="separator:a076ded1b24635b548a16e161d45735c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7af04c7b19cdf6fd658af855351f19ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">ibl_coordinator_cleanup</a> (<a class="el" href="structIBLCoordinator.html">IBLCoordinator</a> *coord)</td></tr>
 <tr class="memdesc:a7af04c7b19cdf6fd658af855351f19ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleanups any pending resources held by the coordinator.  <a href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad">More...</a><br /></td></tr>
 <tr class="separator:a7af04c7b19cdf6fd658af855351f19ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -450,8 +450,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="ad747589adbee4869476d732ee75ba20c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad747589adbee4869476d732ee75ba20c">&#9670;&nbsp;</a></span>ibl_coordinator_init()</h2>
+<a id="a076ded1b24635b548a16e161d45735c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a076ded1b24635b548a16e161d45735c3">&#9670;&nbsp;</a></span>ibl_coordinator_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -466,25 +466,25 @@ Here is the call graph for this function:</div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_spmap</em>, </td>
+          <td class="paramname"><em>spmap_program</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_irmap</em>, </td>
+          <td class="paramname"><em>irmap_program</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_lum_pass1</em>, </td>
+          <td class="paramname"><em>lum_pass1_program</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">GLuint&#160;</td>
-          <td class="paramname"><em>shader_lum_pass2</em>&#160;</td>
+          <td class="paramname"><em>lum_pass2_program</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -498,17 +498,17 @@ Here is the call graph for this function:</div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">coord</td><td>Pointer to the coordinator instance. </td></tr>
-    <tr><td class="paramname">shader_spmap</td><td>Handle to the specular pre-filter shader. </td></tr>
-    <tr><td class="paramname">shader_irmap</td><td>Handle to the irradiance convolution shader. </td></tr>
-    <tr><td class="paramname">shader_lum_pass1</td><td>Handle to luminance pass 1 shader. </td></tr>
-    <tr><td class="paramname">shader_lum_pass2</td><td>Handle to luminance pass 2 shader. </td></tr>
+    <tr><td class="paramname">spmap_program</td><td>Handle to the specular pre-filter shader. </td></tr>
+    <tr><td class="paramname">irmap_program</td><td>Handle to the irradiance convolution shader. </td></tr>
+    <tr><td class="paramname">lum_pass1_program</td><td>Handle to luminance pass 1 shader. </td></tr>
+    <tr><td class="paramname">lum_pass2_program</td><td>Handle to luminance pass 2 shader. </td></tr>
   </table>
   </dd>
 </dl>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_ad747589adbee4869476d732ee75ba20c_cgraph.svg" width="379" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="ibl__coordinator_8h_a076ded1b24635b548a16e161d45735c3_cgraph.svg" width="379" height="190"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

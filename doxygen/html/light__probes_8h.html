@@ -320,9 +320,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7c6afc74398af12423f7175864b6128a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a">light_probe_grid_sync</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
 <tr class="memdesc:a7c6afc74398af12423f7175864b6128a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if results are ready and uploads to GPU. Should be called on main thread.  <a href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a">More...</a><br /></td></tr>
 <tr class="separator:a7c6afc74398af12423f7175864b6128a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad70cf99a2b574df78d64d174738aea1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8h.html#ad70cf99a2b574df78d64d174738aea1f">light_probe_render_debug</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, mat4 view, mat4 proj)</td></tr>
-<tr class="memdesc:ad70cf99a2b574df78d64d174738aea1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders debug spheres for the probes.  <a href="light__probes_8h.html#ad70cf99a2b574df78d64d174738aea1f">More...</a><br /></td></tr>
-<tr class="separator:ad70cf99a2b574df78d64d174738aea1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a467b1b3835e8530de39ed71333f08f31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8h.html#a467b1b3835e8530de39ed71333f08f31">light_probe_grid_render_debug</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid, mat4 view, mat4 proj)</td></tr>
+<tr class="memdesc:a467b1b3835e8530de39ed71333f08f31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renders debug spheres for the probes.  <a href="light__probes_8h.html#a467b1b3835e8530de39ed71333f08f31">More...</a><br /></td></tr>
+<tr class="separator:a467b1b3835e8530de39ed71333f08f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c8fc97128572ecc44171194266abf88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="light__probes_8h.html#a6c8fc97128572ecc44171194266abf88">light_probe_grid_cleanup</a> (<a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *grid)</td></tr>
 <tr class="memdesc:a6c8fc97128572ecc44171194266abf88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans up all resources (CPU, GPU, Threads).  <a href="light__probes_8h.html#a6c8fc97128572ecc44171194266abf88">More...</a><br /></td></tr>
 <tr class="separator:a6c8fc97128572ecc44171194266abf88"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -579,6 +579,56 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="a467b1b3835e8530de39ed71333f08f31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a467b1b3835e8530de39ed71333f08f31">&#9670;&nbsp;</a></span>light_probe_grid_render_debug()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void light_probe_grid_render_debug </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
+          <td class="paramname"><em>grid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>view</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">mat4&#160;</td>
+          <td class="paramname"><em>proj</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Renders debug spheres for the probes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">grid</td><td>Pointer to grid. </td></tr>
+    <tr><td class="paramname">view</td><td>View matrix. </td></tr>
+    <tr><td class="paramname">proj</td><td>Projection matrix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8h_a467b1b3835e8530de39ed71333f08f31_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
 <a id="a9a3fc14269f1f5bfab72ddc185ed4b0a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a3fc14269f1f5bfab72ddc185ed4b0a">&#9670;&nbsp;</a></span>light_probe_grid_set_bounds()</h2>
 
@@ -700,56 +750,6 @@ Here is the call graph for this function:</div>
 </div><div class="memdoc">
 
 <p>Signals the worker thread to perform an SH update. </p>
-
-</div>
-</div>
-<a id="ad70cf99a2b574df78d64d174738aea1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad70cf99a2b574df78d64d174738aea1f">&#9670;&nbsp;</a></span>light_probe_render_debug()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void light_probe_render_debug </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structLightProbeGrid.html">LightProbeGrid</a> *&#160;</td>
-          <td class="paramname"><em>grid</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">mat4&#160;</td>
-          <td class="paramname"><em>view</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">mat4&#160;</td>
-          <td class="paramname"><em>proj</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Renders debug spheres for the probes. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">grid</td><td>Pointer to grid. </td></tr>
-    <tr><td class="paramname">view</td><td>View matrix. </td></tr>
-    <tr><td class="paramname">proj</td><td>Projection matrix. </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="dynheader">
-Here is the call graph for this function:</div>
-<div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="light__probes_8h_ad70cf99a2b574df78d64d174738aea1f_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-</div>
-</div>
 
 </div>
 </div>

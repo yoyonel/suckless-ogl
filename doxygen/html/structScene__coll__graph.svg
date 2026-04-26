@@ -213,18 +213,18 @@ var sectionId = 'dynsection-0';
 <polygon fill="#9a32cd" stroke="#9a32cd" points="254.82,-384.81 244.23,-385.21 252.76,-391.5 254.82,-384.81"/>
 <text text-anchor="middle" x="336.5" y="-424.61" font-family="Helvetica,sans-Serif" font-size="10.00"> shader</text>
 </g>
-<!-- Node28 -->
-<g id="node28" class="node">
-<title>Node28</title>
-<g id="a_node28"><a xlink:href="structLightProbeGrid.html" target="_top" xlink:title=" ">
+<!-- Node26 -->
+<g id="node26" class="node">
+<title>Node26</title>
+<g id="a_node26"><a xlink:href="structLightProbeGrid.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="407,-415.11 407,-434.11 496,-434.11 496,-415.11 407,-415.11"/>
 <text text-anchor="middle" x="451.5" y="-422.11" font-family="Helvetica,sans-Serif" font-size="10.00">LightProbeGrid</text>
 </a>
 </g>
 </g>
-<!-- Node9&#45;&gt;Node28 -->
-<g id="edge30" class="edge">
-<title>Node9&#45;&gt;Node28</title>
+<!-- Node9&#45;&gt;Node26 -->
+<g id="edge27" class="edge">
+<title>Node9&#45;&gt;Node26</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M254.1,-369.81C287.21,-364.03 338.05,-360 377,-378.61 388.4,-384.05 384.92,-393 395,-400.61 402.88,-406.55 412.45,-411.37 421.42,-415.08"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="253.18,-366.42 244.01,-371.73 254.48,-373.3 253.18,-366.42"/>
 <text text-anchor="middle" x="336.5" y="-392.61" font-family="Helvetica,sans-Serif" font-size="10.00"> aabb_shader</text>
@@ -260,21 +260,21 @@ var sectionId = 'dynsection-0';
 <title>Node11&#45;&gt;Node1</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M275.3,-273.21C374.07,-277.86 576.74,-287.41 643.86,-290.57"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="275.37,-269.71 265.22,-272.74 275.04,-276.7 275.37,-269.71"/>
-<text text-anchor="middle" x="451.5" y="-286.61" font-family="Helvetica,sans-Serif" font-size="10.00"> sphere_instances</text>
+<text text-anchor="middle" x="451.5" y="-286.61" font-family="Helvetica,sans-Serif" font-size="10.00"> billboard_instances</text>
 </g>
-<!-- Node23 -->
-<g id="node23" class="node">
-<title>Node23</title>
-<g id="a_node23"><a xlink:href="structSphereSorter.html" target="_top" xlink:title="Reusable memory context for sorting operations.">
-<polygon fill="white" stroke="black" points="411.5,-236.11 411.5,-255.11 491.5,-255.11 491.5,-236.11 411.5,-236.11"/>
-<text text-anchor="middle" x="451.5" y="-243.11" font-family="Helvetica,sans-Serif" font-size="10.00">SphereSorter</text>
+<!-- Node30 -->
+<g id="node30" class="node">
+<title>Node30</title>
+<g id="a_node30"><a xlink:href="structBillboardSorter.html" target="_top" xlink:title="Reusable memory context for sorting operations.">
+<polygon fill="white" stroke="black" points="407,-236.11 407,-255.11 496,-255.11 496,-236.11 407,-236.11"/>
+<text text-anchor="middle" x="451.5" y="-243.11" font-family="Helvetica,sans-Serif" font-size="10.00">BillboardSorter</text>
 </a>
 </g>
 </g>
-<!-- Node11&#45;&gt;Node23 -->
-<g id="edge24" class="edge">
-<title>Node11&#45;&gt;Node23</title>
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M275.43,-263.09C282.35,-262.22 289.34,-261.37 296,-260.61 335.22,-256.12 380.15,-251.86 411.41,-249.03"/>
+<!-- Node11&#45;&gt;Node30 -->
+<g id="edge32" class="edge">
+<title>Node11&#45;&gt;Node30</title>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M275.43,-263.09C282.35,-262.22 289.34,-261.37 296,-260.61 333.35,-256.34 375.87,-252.27 406.84,-249.45"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="274.85,-259.64 265.38,-264.38 275.74,-266.58 274.85,-259.64"/>
 <text text-anchor="middle" x="336.5" y="-263.61" font-family="Helvetica,sans-Serif" font-size="10.00"> temp_instances</text>
 </g>
@@ -446,132 +446,132 @@ var sectionId = 'dynsection-0';
 <polygon fill="#9a32cd" stroke="#9a32cd" points="502.86,-79.15 493.49,-84.09 503.89,-86.07 502.86,-79.15"/>
 <text text-anchor="middle" x="576" y="-109.61" font-family="Helvetica,sans-Serif" font-size="10.00"> billboard_uniforms</text>
 </g>
-<!-- Node23&#45;&gt;Node1 -->
-<g id="edge23" class="edge">
-<title>Node23&#45;&gt;Node1</title>
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M501.6,-245.89C537.07,-247.43 585.64,-252.35 626,-266.61 636.04,-270.15 646.2,-276.55 653.76,-281.98"/>
-<polygon fill="#9a32cd" stroke="#9a32cd" points="501.62,-242.38 491.5,-245.52 501.37,-249.38 501.62,-242.38"/>
-<text text-anchor="middle" x="576" y="-269.61" font-family="Helvetica,sans-Serif" font-size="10.00"> sphere_sorter</text>
-</g>
-<!-- Node24 -->
-<g id="node24" class="node">
-<title>Node24</title>
-<g id="a_node24"><a xlink:href="structSphereSortEntry.html" target="_top" xlink:title="Lightweight proxy for sorting data without moving large structs.">
-<polygon fill="white" stroke="black" points="171.5,-205.11 171.5,-224.11 266.5,-224.11 266.5,-205.11 171.5,-205.11"/>
-<text text-anchor="middle" x="219" y="-212.11" font-family="Helvetica,sans-Serif" font-size="10.00">SphereSortEntry</text>
-</a>
-</g>
-</g>
-<!-- Node24&#45;&gt;Node23 -->
-<g id="edge25" class="edge">
-<title>Node24&#45;&gt;Node23</title>
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M276.9,-216.53C306.84,-218.16 344.07,-221.14 377,-226.61 390.78,-228.9 405.75,-232.55 418.56,-236.04"/>
-<polygon fill="#9a32cd" stroke="#9a32cd" points="276.79,-213.02 266.63,-216.01 276.44,-220.01 276.79,-213.02"/>
-<text text-anchor="middle" x="336.5" y="-240.61" font-family="Helvetica,sans-Serif" font-size="10.00"> entries</text>
-<text text-anchor="middle" x="336.5" y="-229.61" font-family="Helvetica,sans-Serif" font-size="10.00">entries_aux</text>
-</g>
-<!-- Node25 -->
-<g id="node25" class="node">
-<title>Node25</title>
-<g id="a_node25"><a xlink:href="structSkybox.html" target="_top" xlink:title="Persistent state and resource handles for the environment renderer.">
+<!-- Node23 -->
+<g id="node23" class="node">
+<title>Node23</title>
+<g id="a_node23"><a xlink:href="structSkybox.html" target="_top" xlink:title="Persistent state and resource handles for the environment renderer.">
 <polygon fill="white" stroke="black" points="425.5,-46.11 425.5,-65.11 477.5,-65.11 477.5,-46.11 425.5,-46.11"/>
 <text text-anchor="middle" x="451.5" y="-53.11" font-family="Helvetica,sans-Serif" font-size="10.00">Skybox</text>
 </a>
 </g>
 </g>
-<!-- Node25&#45;&gt;Node1 -->
-<g id="edge26" class="edge">
-<title>Node25&#45;&gt;Node1</title>
+<!-- Node23&#45;&gt;Node1 -->
+<g id="edge23" class="edge">
+<title>Node23&#45;&gt;Node1</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M487.45,-46.2C526.27,-38.05 588.43,-32.21 626,-65.61 658.98,-94.92 664.84,-242.7 665.81,-282"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="486.61,-42.8 477.63,-48.41 488.15,-49.63 486.61,-42.8"/>
 <text text-anchor="middle" x="576" y="-68.61" font-family="Helvetica,sans-Serif" font-size="10.00"> skybox</text>
 </g>
-<!-- Node26 -->
-<g id="node26" class="node">
-<title>Node26</title>
-<g id="a_node26"><a xlink:href="structNBodySim.html" target="_top" xlink:title="State container for the N&#45;body simulation.">
+<!-- Node24 -->
+<g id="node24" class="node">
+<title>Node24</title>
+<g id="a_node24"><a xlink:href="structNBodySim.html" target="_top" xlink:title="State container for the N&#45;body simulation.">
 <polygon fill="white" stroke="black" points="417.5,-8.11 417.5,-27.11 485.5,-27.11 485.5,-8.11 417.5,-8.11"/>
 <text text-anchor="middle" x="451.5" y="-15.11" font-family="Helvetica,sans-Serif" font-size="10.00">NBodySim</text>
 </a>
 </g>
 </g>
-<!-- Node26&#45;&gt;Node1 -->
-<g id="edge27" class="edge">
-<title>Node26&#45;&gt;Node1</title>
+<!-- Node24&#45;&gt;Node1 -->
+<g id="edge24" class="edge">
+<title>Node24&#45;&gt;Node1</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M495.21,-5.9C534.24,1.97 591.05,5.91 626,-25.61 664.84,-60.64 666.34,-238.02 666.1,-281.82"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="494.22,-2.54 485.2,-8.09 495.71,-9.38 494.22,-2.54"/>
 <text text-anchor="middle" x="576" y="-28.61" font-family="Helvetica,sans-Serif" font-size="10.00"> nbody_sim</text>
 </g>
+<!-- Node25 -->
+<g id="node25" class="node">
+<title>Node25</title>
+<g id="a_node25"><a xlink:href="structNBodyParticle.html" target="_top" xlink:title="A single gravitational body.">
+<polygon fill="white" stroke="black" points="176.5,-8.11 176.5,-27.11 261.5,-27.11 261.5,-8.11 176.5,-8.11"/>
+<text text-anchor="middle" x="219" y="-15.11" font-family="Helvetica,sans-Serif" font-size="10.00">NBodyParticle</text>
+</a>
+</g>
+</g>
+<!-- Node25&#45;&gt;Node24 -->
+<g id="edge25" class="edge">
+<title>Node25&#45;&gt;Node24</title>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M271.79,-17.61C316.32,-17.61 379.2,-17.61 417.28,-17.61"/>
+<polygon fill="#9a32cd" stroke="#9a32cd" points="271.74,-14.11 261.74,-17.61 271.74,-21.11 271.74,-14.11"/>
+<text text-anchor="middle" x="336.5" y="-20.61" font-family="Helvetica,sans-Serif" font-size="10.00"> bodies</text>
+</g>
+<!-- Node26&#45;&gt;Node1 -->
+<g id="edge26" class="edge">
+<title>Node26&#45;&gt;Node1</title>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M506.1,-412.72C542.95,-402.44 591.3,-384.56 626,-355.61 644.11,-340.5 656.53,-315 662.31,-301.19"/>
+<polygon fill="#9a32cd" stroke="#9a32cd" points="504.79,-409.45 496.03,-415.42 506.6,-416.21 504.79,-409.45"/>
+<text text-anchor="middle" x="576" y="-408.61" font-family="Helvetica,sans-Serif" font-size="10.00"> probe_grid</text>
+</g>
 <!-- Node27 -->
 <g id="node27" class="node">
 <title>Node27</title>
-<g id="a_node27"><a xlink:href="structNBodyParticle.html" target="_top" xlink:title="A single gravitational body.">
-<polygon fill="white" stroke="black" points="176.5,-8.11 176.5,-27.11 261.5,-27.11 261.5,-8.11 176.5,-8.11"/>
-<text text-anchor="middle" x="219" y="-15.11" font-family="Helvetica,sans-Serif" font-size="10.00">NBodyParticle</text>
+<g id="a_node27"><a xlink:href="structLightProbe.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="185,-309.11 185,-328.11 253,-328.11 253,-309.11 185,-309.11"/>
+<text text-anchor="middle" x="219" y="-316.11" font-family="Helvetica,sans-Serif" font-size="10.00">LightProbe</text>
 </a>
 </g>
 </g>
 <!-- Node27&#45;&gt;Node26 -->
 <g id="edge28" class="edge">
 <title>Node27&#45;&gt;Node26</title>
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M271.79,-17.61C316.32,-17.61 379.2,-17.61 417.28,-17.61"/>
-<polygon fill="#9a32cd" stroke="#9a32cd" points="271.74,-14.11 261.74,-17.61 271.74,-21.11 271.74,-14.11"/>
-<text text-anchor="middle" x="336.5" y="-20.61" font-family="Helvetica,sans-Serif" font-size="10.00"> bodies</text>
-</g>
-<!-- Node28&#45;&gt;Node1 -->
-<g id="edge29" class="edge">
-<title>Node28&#45;&gt;Node1</title>
-<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M506.1,-412.72C542.95,-402.44 591.3,-384.56 626,-355.61 644.11,-340.5 656.53,-315 662.31,-301.19"/>
-<polygon fill="#9a32cd" stroke="#9a32cd" points="504.79,-409.45 496.03,-415.42 506.6,-416.21 504.79,-409.45"/>
-<text text-anchor="middle" x="576" y="-408.61" font-family="Helvetica,sans-Serif" font-size="10.00"> probe_grid</text>
-</g>
-<!-- Node29 -->
-<g id="node29" class="node">
-<title>Node29</title>
-<g id="a_node29"><a xlink:href="structLightProbe.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="185,-309.11 185,-328.11 253,-328.11 253,-309.11 185,-309.11"/>
-<text text-anchor="middle" x="219" y="-316.11" font-family="Helvetica,sans-Serif" font-size="10.00">LightProbe</text>
-</a>
-</g>
-</g>
-<!-- Node29&#45;&gt;Node28 -->
-<g id="edge31" class="edge">
-<title>Node29&#45;&gt;Node28</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M263.53,-316.14C298.18,-316.53 345.87,-322.67 377,-349.61 395.18,-365.34 378.6,-383.04 395,-400.61 400.8,-406.82 408.49,-411.51 416.29,-415.01"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="263.21,-312.64 253.22,-316.18 263.24,-319.64 263.21,-312.64"/>
 <text text-anchor="middle" x="336.5" y="-352.61" font-family="Helvetica,sans-Serif" font-size="10.00"> probes</text>
 </g>
-<!-- Node30 -->
-<g id="node30" class="node">
-<title>Node30</title>
-<g id="a_node30"><a xlink:href="structSH9.html" target="_top" xlink:title=" ">
+<!-- Node28 -->
+<g id="node28" class="node">
+<title>Node28</title>
+<g id="a_node28"><a xlink:href="structSH9.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="23,-309.11 23,-328.11 59,-328.11 59,-309.11 23,-309.11"/>
 <text text-anchor="middle" x="41" y="-316.11" font-family="Helvetica,sans-Serif" font-size="10.00">SH9</text>
 </a>
 </g>
 </g>
-<!-- Node30&#45;&gt;Node29 -->
-<g id="edge32" class="edge">
-<title>Node30&#45;&gt;Node29</title>
+<!-- Node28&#45;&gt;Node27 -->
+<g id="edge29" class="edge">
+<title>Node28&#45;&gt;Node27</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M69.34,-318.61C100.52,-318.61 151.51,-318.61 184.91,-318.61"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="69.2,-315.11 59.2,-318.61 69.2,-322.11 69.2,-315.11"/>
 <text text-anchor="middle" x="121" y="-321.61" font-family="Helvetica,sans-Serif" font-size="10.00"> sh_data</text>
 </g>
-<!-- Node31 -->
-<g id="node31" class="node">
-<title>Node31</title>
-<g id="a_node31"><a xlink:href="structSphereInstance__POD.html" target="_top" xlink:title=" ">
+<!-- Node29 -->
+<g id="node29" class="node">
+<title>Node29</title>
+<g id="a_node29"><a xlink:href="structSphereInstance__POD.html" target="_top" xlink:title=" ">
 <polygon fill="white" stroke="black" points="160,-441.11 160,-460.11 278,-460.11 278,-441.11 160,-441.11"/>
 <text text-anchor="middle" x="219" y="-448.11" font-family="Helvetica,sans-Serif" font-size="10.00">SphereInstance_POD</text>
 </a>
 </g>
 </g>
-<!-- Node31&#45;&gt;Node28 -->
-<g id="edge33" class="edge">
-<title>Node31&#45;&gt;Node28</title>
+<!-- Node29&#45;&gt;Node26 -->
+<g id="edge30" class="edge">
+<title>Node29&#45;&gt;Node26</title>
 <path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M288.52,-444.13C316.04,-441.4 348.05,-438.05 377,-434.61 386.59,-433.47 396.87,-432.14 406.61,-430.83"/>
 <polygon fill="#9a32cd" stroke="#9a32cd" points="287.82,-440.68 278.21,-445.15 288.5,-447.65 287.82,-440.68"/>
 <text text-anchor="middle" x="336.5" y="-445.61" font-family="Helvetica,sans-Serif" font-size="10.00"> scene_copy</text>
+</g>
+<!-- Node30&#45;&gt;Node1 -->
+<g id="edge31" class="edge">
+<title>Node30&#45;&gt;Node1</title>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M506.13,-246.1C541.13,-247.86 587.33,-252.95 626,-266.61 636.04,-270.15 646.2,-276.55 653.76,-281.98"/>
+<polygon fill="#9a32cd" stroke="#9a32cd" points="506.25,-242.6 496.11,-245.67 505.95,-249.59 506.25,-242.6"/>
+<text text-anchor="middle" x="576" y="-269.61" font-family="Helvetica,sans-Serif" font-size="10.00"> billboard_sorter</text>
+</g>
+<!-- Node31 -->
+<g id="node31" class="node">
+<title>Node31</title>
+<g id="a_node31"><a xlink:href="structBillboardSortEntry.html" target="_top" xlink:title="Lightweight proxy for sorting data without moving large structs.">
+<polygon fill="white" stroke="black" points="166.5,-205.11 166.5,-224.11 271.5,-224.11 271.5,-205.11 166.5,-205.11"/>
+<text text-anchor="middle" x="219" y="-212.11" font-family="Helvetica,sans-Serif" font-size="10.00">BillboardSortEntry</text>
+</a>
+</g>
+</g>
+<!-- Node31&#45;&gt;Node30 -->
+<g id="edge33" class="edge">
+<title>Node31&#45;&gt;Node30</title>
+<path fill="none" stroke="#9a32cd" stroke-dasharray="5,2" d="M281.56,-216.79C310.65,-218.47 345.76,-221.42 377,-226.61 390.78,-228.9 405.75,-232.55 418.56,-236.04"/>
+<polygon fill="#9a32cd" stroke="#9a32cd" points="281.71,-213.3 271.54,-216.25 281.34,-220.29 281.71,-213.3"/>
+<text text-anchor="middle" x="336.5" y="-240.61" font-family="Helvetica,sans-Serif" font-size="10.00"> entries</text>
+<text text-anchor="middle" x="336.5" y="-229.61" font-family="Helvetica,sans-Serif" font-size="10.00">entries_aux</text>
 </g>
 </g>
 </svg>

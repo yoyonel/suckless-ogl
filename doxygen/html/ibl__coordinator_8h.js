@@ -12,7 +12,7 @@ var ibl__coordinator_8h =
     ] ],
     [ "ibl_coordinator_cleanup", "ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad", null ],
     [ "ibl_coordinator_get_results", "ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82", null ],
-    [ "ibl_coordinator_init", "ibl__coordinator_8h.html#ad747589adbee4869476d732ee75ba20c", null ],
+    [ "ibl_coordinator_init", "ibl__coordinator_8h.html#a076ded1b24635b548a16e161d45735c3", null ],
     [ "ibl_coordinator_reset", "ibl__coordinator_8h.html#a0bff11f3337e1e69179225a25757bcc0", null ],
     [ "ibl_coordinator_start", "ibl__coordinator_8h.html#a5d1af54d0b28b93dd3f10c5cf2a9efe3", null ],
     [ "ibl_coordinator_update", "ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8", null ]

@@ -262,6 +262,7 @@ $(document).ready(function(){initNavTree('scene_8c.html',''); initResizable(); }
 <div class="textblock"><code>#include &quot;<a class="el" href="scene_8h_source.html">scene.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="billboard__rendering_8h_source.html">billboard_rendering.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="billboard__sorting_8h_source.html">billboard_sorting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gl__debug_8h_source.html">gl_debug.h</a>&quot;</code><br />
 <code>#include &quot;glad/glad.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ibl__coordinator_8h_source.html">ibl_coordinator.h</a>&quot;</code><br />
@@ -274,7 +275,6 @@ $(document).ready(function(){initNavTree('scene_8c.html',''); initResizable(); }
 <code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="render__utils_8h_source.html">render_utils.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="sphere__sorting_8h_source.html">sphere_sorting.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="utils_8h_source.html">utils.h</a>&quot;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
@@ -341,7 +341,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a97b3fbf4a92687b0b76a08b452daa63e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates GPU buffers for dynamic geometry (e.g. LOD changes).  <a href="scene_8c.html#a97b3fbf4a92687b0b76a08b452daa63e">More...</a><br /></td></tr>
 <tr class="separator:a97b3fbf4a92687b0b76a08b452daa63e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab592a43644107cc963b5ba9ba827cfad"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">scene_bind_probe_textures</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
-<tr class="memdesc:ab592a43644107cc963b5ba9ba827cfad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds SH 3D textures (units 8-14) and probe SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D.  <a href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">More...</a><br /></td></tr>
+<tr class="memdesc:ab592a43644107cc963b5ba9ba827cfad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds SH 3D textures (units 8-14) and light probe grid SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D.  <a href="scene_8c.html#ab592a43644107cc963b5ba9ba827cfad">More...</a><br /></td></tr>
 <tr class="separator:ab592a43644107cc963b5ba9ba827cfad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7bd2995953630892fd2f63e154e471c7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="scene_8c.html#a7bd2995953630892fd2f63e154e471c7">scene_bind_ibl_textures</a> (<a class="el" href="structScene.html">Scene</a> *scene)</td></tr>
 <tr class="separator:a7bd2995953630892fd2f63e154e471c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -511,7 +511,7 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Binds SH 3D textures (units 8-14) and probe SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D. </p>
+<p>Binds SH 3D textures (units 8-14) and light probe grid SSBO only when changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache. Invalidated after <a class="el" href="light__probes_8h.html#a7c6afc74398af12423f7175864b6128a" title="Checks if results are ready and uploads to GPU. Should be called on main thread.">light_probe_grid_sync()</a> which clobbers GL_TEXTURE_3D. </p>
 
 </div>
 </div>

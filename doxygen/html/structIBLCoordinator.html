@@ -295,14 +295,14 @@ Data Fields</h2></td></tr>
 <tr class="separator:a14287ac19c5a9cfc3fc8825c51036669"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aade18713ee8f17933fc0a05c5c6da12c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aade18713ee8f17933fc0a05c5c6da12c">pending_irr_tex</a></td></tr>
 <tr class="separator:aade18713ee8f17933fc0a05c5c6da12c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29dbfacff79b3b1a011c0b114573343b"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a29dbfacff79b3b1a011c0b114573343b">shader_spmap</a></td></tr>
-<tr class="separator:a29dbfacff79b3b1a011c0b114573343b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabe82399c187f13ee5fb1c7cec1f243a"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#aabe82399c187f13ee5fb1c7cec1f243a">shader_irmap</a></td></tr>
-<tr class="separator:aabe82399c187f13ee5fb1c7cec1f243a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad744f5faa761586f5a4ee2e2c15ef0a5"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ad744f5faa761586f5a4ee2e2c15ef0a5">shader_lum_pass1</a></td></tr>
-<tr class="separator:ad744f5faa761586f5a4ee2e2c15ef0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe4fa9a642288dbcdf707f378a6108c4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#abe4fa9a642288dbcdf707f378a6108c4">shader_lum_pass2</a></td></tr>
-<tr class="separator:abe4fa9a642288dbcdf707f378a6108c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9fc947f4086bd1f6148282bebfe63d1"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">spmap_program</a></td></tr>
+<tr class="separator:ae9fc947f4086bd1f6148282bebfe63d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a58c3eb0c5e578b55dc23a3b16becde"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a4a58c3eb0c5e578b55dc23a3b16becde">irmap_program</a></td></tr>
+<tr class="separator:a4a58c3eb0c5e578b55dc23a3b16becde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acca6b2979c075f85a0c43079a887d952"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#acca6b2979c075f85a0c43079a887d952">lum_pass1_program</a></td></tr>
+<tr class="separator:acca6b2979c075f85a0c43079a887d952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08f663ef2c3ea59070786bd9f1534ddb"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a08f663ef2c3ea59070786bd9f1534ddb">lum_pass2_program</a></td></tr>
+<tr class="separator:a08f663ef2c3ea59070786bd9f1534ddb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a558216b46bac01e44c7dbbcda27d7f70"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#a558216b46bac01e44c7dbbcda27d7f70">lum_ssbo</a> [2]</td></tr>
 <tr class="separator:a558216b46bac01e44c7dbbcda27d7f70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8a3c6a002c92639218e6c394ea2998d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPBRSpecUniforms.html">PBRSpecUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">spec_uniforms</a></td></tr>
@@ -387,6 +387,21 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="a4a58c3eb0c5e578b55dc23a3b16becde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a58c3eb0c5e578b55dc23a3b16becde">&#9670;&nbsp;</a></span>irmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::irmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Irradiance convolution compute shader. </p>
+
+</div>
+</div>
 <a id="a37cf9dd1cf7fdda6b709b93b9ba4b89e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37cf9dd1cf7fdda6b709b93b9ba4b89e">&#9670;&nbsp;</a></span>irr_uniforms</h2>
 
@@ -399,6 +414,36 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Cached uniforms for irradiance shader. </p>
+
+</div>
+</div>
+<a id="acca6b2979c075f85a0c43079a887d952"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acca6b2979c075f85a0c43079a887d952">&#9670;&nbsp;</a></span>lum_pass1_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::lum_pass1_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance reduction pass 1. </p>
+
+</div>
+</div>
+<a id="a08f663ef2c3ea59070786bd9f1534ddb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08f663ef2c3ea59070786bd9f1534ddb">&#9670;&nbsp;</a></span>lum_pass2_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::lum_pass2_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance reduction pass 2. </p>
 
 </div>
 </div>
@@ -492,66 +537,6 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a id="aabe82399c187f13ee5fb1c7cec1f243a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabe82399c187f13ee5fb1c7cec1f243a">&#9670;&nbsp;</a></span>shader_irmap</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint IBLCoordinator::shader_irmap</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Irradiance convolution compute shader. </p>
-
-</div>
-</div>
-<a id="ad744f5faa761586f5a4ee2e2c15ef0a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad744f5faa761586f5a4ee2e2c15ef0a5">&#9670;&nbsp;</a></span>shader_lum_pass1</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint IBLCoordinator::shader_lum_pass1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Luminance reduction pass 1. </p>
-
-</div>
-</div>
-<a id="abe4fa9a642288dbcdf707f378a6108c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe4fa9a642288dbcdf707f378a6108c4">&#9670;&nbsp;</a></span>shader_lum_pass2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint IBLCoordinator::shader_lum_pass2</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Luminance reduction pass 2. </p>
-
-</div>
-</div>
-<a id="a29dbfacff79b3b1a011c0b114573343b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a29dbfacff79b3b1a011c0b114573343b">&#9670;&nbsp;</a></span>shader_spmap</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">GLuint IBLCoordinator::shader_spmap</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Specular pre-filter compute shader. </p>
-
-</div>
-</div>
 <a id="ab8a3c6a002c92639218e6c394ea2998d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab8a3c6a002c92639218e6c394ea2998d">&#9670;&nbsp;</a></span>spec_uniforms</h2>
 
@@ -564,6 +549,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Cached uniforms for specular shader. </p>
+
+</div>
+</div>
+<a id="ae9fc947f4086bd1f6148282bebfe63d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9fc947f4086bd1f6148282bebfe63d1">&#9670;&nbsp;</a></span>spmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint IBLCoordinator::spmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Specular pre-filter compute shader. </p>
 
 </div>
 </div>

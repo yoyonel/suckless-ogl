@@ -82,9 +82,9 @@ var sectionId = 'dynsection-2';
 <!-- Node3 -->
 <g id="node3" class="node">
 <title>Node3</title>
-<g id="a_node3"><a xlink:href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad" target="_top" xlink:title="Cleanups any pending resources held by the coordinator.">
-<polygon fill="white" stroke="black" points="140.5,-380.5 140.5,-399.5 273.5,-399.5 273.5,-380.5 140.5,-380.5"/>
-<text text-anchor="middle" x="207" y="-387.5" font-family="Helvetica,sans-Serif" font-size="10.00">ibl_coordinator_cleanup</text>
+<g id="a_node3"><a xlink:href="billboard__sorting_8h.html#ad7a360778f7d79b99618da36773fb1fd" target="_top" xlink:title="Destroys the sorter context.">
+<polygon fill="white" stroke="black" points="138.5,-380.5 138.5,-399.5 275.5,-399.5 275.5,-380.5 138.5,-380.5"/>
+<text text-anchor="middle" x="207" y="-387.5" font-family="Helvetica,sans-Serif" font-size="10.00">billboard_sorter_cleanup</text>
 </a>
 </g>
 </g>
@@ -94,125 +94,125 @@ var sectionId = 'dynsection-2';
 <path fill="none" stroke="midnightblue" d="M47.58,-228.63C53.95,-255.68 75.82,-332.86 125,-371 127.3,-372.78 129.74,-374.41 132.29,-375.88"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="130.77,-379.03 141.28,-380.33 133.87,-372.76 130.77,-379.03"/>
 </g>
-<!-- Node5 -->
-<g id="node5" class="node">
-<title>Node5</title>
-<g id="a_node5"><a xlink:href="icosphere_8h.html#a5d46fa05e1dc89e653b23558a202774f" target="_top" xlink:title="Frees all dynamic memory in the icosphere container.">
-<polygon fill="white" stroke="black" points="162.5,-342.5 162.5,-361.5 251.5,-361.5 251.5,-342.5 162.5,-342.5"/>
-<text text-anchor="middle" x="207" y="-349.5" font-family="Helvetica,sans-Serif" font-size="10.00">icosphere_free</text>
+<!-- Node4 -->
+<g id="node4" class="node">
+<title>Node4</title>
+<g id="a_node4"><a xlink:href="ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad" target="_top" xlink:title="Cleanups any pending resources held by the coordinator.">
+<polygon fill="white" stroke="black" points="140.5,-342.5 140.5,-361.5 273.5,-361.5 273.5,-342.5 140.5,-342.5"/>
+<text text-anchor="middle" x="207" y="-349.5" font-family="Helvetica,sans-Serif" font-size="10.00">ibl_coordinator_cleanup</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node5 -->
-<g id="edge4" class="edge">
-<title>Node1&#45;&gt;Node5</title>
-<path fill="none" stroke="midnightblue" d="M49.37,-228.75C58.75,-251.02 84.87,-305.77 125,-333 133.25,-338.6 142.93,-342.56 152.68,-345.35"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="151.85,-348.75 162.4,-347.78 153.55,-341.96 151.85,-348.75"/>
+<!-- Node1&#45;&gt;Node4 -->
+<g id="edge3" class="edge">
+<title>Node1&#45;&gt;Node4</title>
+<path fill="none" stroke="midnightblue" d="M49.37,-228.75C58.75,-251.02 84.87,-305.77 125,-333 127.96,-335.01 131.1,-336.8 134.37,-338.41"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="133.27,-341.75 143.84,-342.46 136.02,-335.31 133.27,-341.75"/>
 </g>
-<!-- Node8 -->
-<g id="node8" class="node">
-<title>Node8</title>
-<g id="a_node8"><a xlink:href="instanced__rendering_8h.html#a1c3f138d496ea038ba38d988c71d6884" target="_top" xlink:title="Releases all GPU resources for the instanced group.">
-<polygon fill="white" stroke="black" points="137,-304.5 137,-323.5 277,-323.5 277,-304.5 137,-304.5"/>
-<text text-anchor="middle" x="207" y="-311.5" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_cleanup</text>
+<!-- Node6 -->
+<g id="node6" class="node">
+<title>Node6</title>
+<g id="a_node6"><a xlink:href="icosphere_8h.html#a5d46fa05e1dc89e653b23558a202774f" target="_top" xlink:title="Frees all dynamic memory in the icosphere container.">
+<polygon fill="white" stroke="black" points="162.5,-304.5 162.5,-323.5 251.5,-323.5 251.5,-304.5 162.5,-304.5"/>
+<text text-anchor="middle" x="207" y="-311.5" font-family="Helvetica,sans-Serif" font-size="10.00">icosphere_free</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node8 -->
-<g id="edge7" class="edge">
-<title>Node1&#45;&gt;Node8</title>
-<path fill="none" stroke="midnightblue" d="M52.67,-228.62C65.36,-244.93 93.44,-277.9 125,-295 129.22,-297.29 133.71,-299.3 138.33,-301.08"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="137.36,-304.44 147.95,-304.39 139.64,-297.82 137.36,-304.44"/>
+<!-- Node1&#45;&gt;Node6 -->
+<g id="edge5" class="edge">
+<title>Node1&#45;&gt;Node6</title>
+<path fill="none" stroke="midnightblue" d="M52.67,-228.62C65.36,-244.93 93.44,-277.9 125,-295 133.48,-299.6 143.05,-303.09 152.57,-305.74"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="151.86,-309.17 162.41,-308.21 153.56,-302.38 151.86,-309.17"/>
 </g>
 <!-- Node9 -->
 <g id="node9" class="node">
 <title>Node9</title>
-<g id="a_node9"><a xlink:href="light__probes_8h.html#a6c8fc97128572ecc44171194266abf88" target="_top" xlink:title="Cleans up all resources (CPU, GPU, Threads).">
-<polygon fill="white" stroke="black" points="137.5,-152.5 137.5,-171.5 276.5,-171.5 276.5,-152.5 137.5,-152.5"/>
-<text text-anchor="middle" x="207" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">light_probe_grid_cleanup</text>
+<g id="a_node9"><a xlink:href="instanced__rendering_8h.html#a1c3f138d496ea038ba38d988c71d6884" target="_top" xlink:title="Releases all GPU resources for the instanced group.">
+<polygon fill="white" stroke="black" points="137,-266.5 137,-285.5 277,-285.5 277,-266.5 137,-266.5"/>
+<text text-anchor="middle" x="207" y="-273.5" font-family="Helvetica,sans-Serif" font-size="10.00">instanced_group_cleanup</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node9 -->
 <g id="edge8" class="edge">
 <title>Node1&#45;&gt;Node9</title>
-<path fill="none" stroke="midnightblue" d="M62.72,-209.43C78.52,-200.98 102.78,-188.82 125,-181 132.28,-178.44 140.05,-176.12 147.79,-174.05"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="148.71,-177.43 157.54,-171.57 146.98,-170.65 148.71,-177.43"/>
+<path fill="none" stroke="midnightblue" d="M62.72,-228.57C78.52,-237.02 102.78,-249.18 125,-257 132.28,-259.56 140.05,-261.88 147.79,-263.95"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="146.98,-267.35 157.54,-266.43 148.71,-260.57 146.98,-267.35"/>
 </g>
-<!-- Node12 -->
-<g id="node12" class="node">
-<title>Node12</title>
-<g id="a_node12"><a xlink:href="material_8h.html#aa231f444b37b3b2f771ad22b78b2acb3" target="_top" xlink:title="Frees all memory associated with a material library.">
-<polygon fill="white" stroke="black" points="157,-228.5 157,-247.5 257,-247.5 257,-228.5 157,-228.5"/>
-<text text-anchor="middle" x="207" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">material_free_lib</text>
+<!-- Node10 -->
+<g id="node10" class="node">
+<title>Node10</title>
+<g id="a_node10"><a xlink:href="light__probes_8h.html#a6c8fc97128572ecc44171194266abf88" target="_top" xlink:title="Cleans up all resources (CPU, GPU, Threads).">
+<polygon fill="white" stroke="black" points="137.5,-228.5 137.5,-247.5 276.5,-247.5 276.5,-228.5 137.5,-228.5"/>
+<text text-anchor="middle" x="207" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">light_probe_grid_cleanup</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node12 -->
-<g id="edge11" class="edge">
-<title>Node1&#45;&gt;Node12</title>
-<path fill="none" stroke="midnightblue" d="M89.36,-224.19C107.06,-226.29 127.76,-228.74 146.77,-230.99"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="146.48,-234.48 156.82,-232.18 147.3,-227.53 146.48,-234.48"/>
+<!-- Node1&#45;&gt;Node10 -->
+<g id="edge9" class="edge">
+<title>Node1&#45;&gt;Node10</title>
+<path fill="none" stroke="midnightblue" d="M89.36,-224.19C101.19,-225.59 114.36,-227.15 127.48,-228.7"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="127.13,-232.19 137.47,-229.89 127.95,-225.24 127.13,-232.19"/>
 </g>
 <!-- Node13 -->
 <g id="node13" class="node">
 <title>Node13</title>
-<g id="a_node13"><a xlink:href="scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="125,-266.5 125,-285.5 289,-285.5 289,-266.5 125,-266.5"/>
-<text text-anchor="middle" x="207" y="-273.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_gpu_resources</text>
+<g id="a_node13"><a xlink:href="material_8h.html#aa231f444b37b3b2f771ad22b78b2acb3" target="_top" xlink:title="Frees all memory associated with a material library.">
+<polygon fill="white" stroke="black" points="157,-190.5 157,-209.5 257,-209.5 257,-190.5 157,-190.5"/>
+<text text-anchor="middle" x="207" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">material_free_lib</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node13 -->
 <g id="edge12" class="edge">
 <title>Node1&#45;&gt;Node13</title>
-<path fill="none" stroke="midnightblue" d="M62.72,-228.57C78.52,-237.02 102.78,-249.18 125,-257 132.28,-259.56 140.05,-261.88 147.79,-263.95"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="146.98,-267.35 157.54,-266.43 148.71,-260.57 146.98,-267.35"/>
+<path fill="none" stroke="midnightblue" d="M89.36,-213.81C107.06,-211.71 127.76,-209.26 146.77,-207.01"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="147.3,-210.47 156.82,-205.82 146.48,-203.52 147.3,-210.47"/>
 </g>
-<!-- Node17 -->
-<g id="node17" class="node">
-<title>Node17</title>
-<g id="a_node17"><a xlink:href="scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="141,-190.5 141,-209.5 273,-209.5 273,-190.5 141,-190.5"/>
-<text text-anchor="middle" x="207" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_shaders</text>
+<!-- Node14 -->
+<g id="node14" class="node">
+<title>Node14</title>
+<g id="a_node14"><a xlink:href="scene_8c.html#a20b2a5cc121cfbd0c2a1696ead862bc3" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="125,-114.5 125,-133.5 289,-133.5 289,-114.5 125,-114.5"/>
+<text text-anchor="middle" x="207" y="-121.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_gpu_resources</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node17 -->
-<g id="edge16" class="edge">
-<title>Node1&#45;&gt;Node17</title>
-<path fill="none" stroke="midnightblue" d="M89.36,-213.81C102.13,-212.3 116.46,-210.6 130.59,-208.93"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="131.3,-212.37 140.82,-207.72 130.48,-205.42 131.3,-212.37"/>
+<!-- Node1&#45;&gt;Node14 -->
+<g id="edge13" class="edge">
+<title>Node1&#45;&gt;Node14</title>
+<path fill="none" stroke="midnightblue" d="M52.67,-209.38C65.36,-193.07 93.44,-160.1 125,-143 129.22,-140.71 133.71,-138.7 138.33,-136.92"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="139.64,-140.18 147.95,-133.61 137.36,-133.56 139.64,-140.18"/>
 </g>
-<!-- Node19 -->
-<g id="node19" class="node">
-<title>Node19</title>
-<g id="a_node19"><a xlink:href="skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0" target="_top" xlink:title="Cleans up GPU resources.">
-<polygon fill="white" stroke="black" points="159.5,-114.5 159.5,-133.5 254.5,-133.5 254.5,-114.5 159.5,-114.5"/>
-<text text-anchor="middle" x="207" y="-121.5" font-family="Helvetica,sans-Serif" font-size="10.00">skybox_cleanup</text>
+<!-- Node18 -->
+<g id="node18" class="node">
+<title>Node18</title>
+<g id="a_node18"><a xlink:href="scene_8c.html#a50a9a525b6a64adff72514d309f6e0e9" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="141,-0.5 141,-19.5 273,-19.5 273,-0.5 141,-0.5"/>
+<text text-anchor="middle" x="207" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_shaders</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node19 -->
-<g id="edge18" class="edge">
-<title>Node1&#45;&gt;Node19</title>
-<path fill="none" stroke="midnightblue" d="M52.67,-209.38C65.36,-193.07 93.44,-160.1 125,-143 132.66,-138.85 141.2,-135.6 149.79,-133.06"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="150.7,-136.44 159.46,-130.48 148.9,-129.67 150.7,-136.44"/>
+<!-- Node1&#45;&gt;Node18 -->
+<g id="edge17" class="edge">
+<title>Node1&#45;&gt;Node18</title>
+<path fill="none" stroke="midnightblue" d="M46.5,-209.33C50.28,-177.99 66.6,-78.44 125,-29 127.07,-27.24 129.28,-25.64 131.59,-24.19"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="133.73,-27.01 140.93,-19.24 130.46,-20.82 133.73,-27.01"/>
 </g>
 <!-- Node20 -->
 <g id="node20" class="node">
 <title>Node20</title>
-<g id="a_node20"><a xlink:href="sphere__sorting_8h.html#a159532007839ad93c627f7173c755616" target="_top" xlink:title="Destroys the sorter context.">
-<polygon fill="white" stroke="black" points="143.5,-76.5 143.5,-95.5 270.5,-95.5 270.5,-76.5 143.5,-76.5"/>
-<text text-anchor="middle" x="207" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">sphere_sorter_cleanup</text>
+<g id="a_node20"><a xlink:href="skybox_8h.html#a426022a6fba8e5f57863e91b5ce3a3a0" target="_top" xlink:title="Cleans up GPU resources.">
+<polygon fill="white" stroke="black" points="159.5,-76.5 159.5,-95.5 254.5,-95.5 254.5,-76.5 159.5,-76.5"/>
+<text text-anchor="middle" x="207" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">skybox_cleanup</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node20 -->
 <g id="edge19" class="edge">
 <title>Node1&#45;&gt;Node20</title>
-<path fill="none" stroke="midnightblue" d="M49.37,-209.25C58.75,-186.98 84.87,-132.23 125,-105 127.96,-102.99 131.1,-101.2 134.37,-99.59"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="136.02,-102.69 143.84,-95.54 133.27,-96.25 136.02,-102.69"/>
+<path fill="none" stroke="midnightblue" d="M49.37,-209.25C58.75,-186.98 84.87,-132.23 125,-105 132.38,-99.99 140.92,-96.29 149.62,-93.57"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="150.73,-96.89 159.46,-90.88 148.89,-90.14 150.73,-96.89"/>
 </g>
 <!-- Node21 -->
 <g id="node21" class="node">
@@ -233,158 +233,158 @@ var sectionId = 'dynsection-2';
 <g id="node22" class="node">
 <title>Node22</title>
 <g id="a_node22"><a xlink:href="trail__renderer_8h.html#a6fbcb92a34d5a00b5e17049d444e5d9e" target="_top" xlink:title="Releases all GPU resources.">
-<polygon fill="white" stroke="black" points="144,-0.5 144,-19.5 270,-19.5 270,-0.5 144,-0.5"/>
-<text text-anchor="middle" x="207" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">trail_renderer_cleanup</text>
+<polygon fill="white" stroke="black" points="144,-152.5 144,-171.5 270,-171.5 270,-152.5 144,-152.5"/>
+<text text-anchor="middle" x="207" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">trail_renderer_cleanup</text>
 </a>
 </g>
 </g>
 <!-- Node1&#45;&gt;Node22 -->
 <g id="edge21" class="edge">
 <title>Node1&#45;&gt;Node22</title>
-<path fill="none" stroke="midnightblue" d="M46.5,-209.33C50.28,-177.99 66.6,-78.44 125,-29 127.93,-26.52 131.12,-24.35 134.49,-22.46"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="136.24,-25.5 143.77,-18.04 133.24,-19.18 136.24,-25.5"/>
+<path fill="none" stroke="midnightblue" d="M62.72,-209.43C78.52,-200.98 102.78,-188.82 125,-181 132.28,-178.44 140.05,-176.12 147.79,-174.05"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="148.71,-177.43 157.54,-171.57 146.98,-170.65 148.71,-177.43"/>
 </g>
-<!-- Node4 -->
-<g id="node4" class="node">
-<title>Node4</title>
-<g id="a_node4"><a xlink:href="ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0" target="_top" xlink:title="Resets the coordinator to IDLE state.">
-<polygon fill="white" stroke="black" points="342,-380.5 342,-399.5 461,-399.5 461,-380.5 342,-380.5"/>
-<text text-anchor="middle" x="401.5" y="-387.5" font-family="Helvetica,sans-Serif" font-size="10.00">ibl_coordinator_reset</text>
+<!-- Node5 -->
+<g id="node5" class="node">
+<title>Node5</title>
+<g id="a_node5"><a xlink:href="ibl__coordinator_8c.html#a0bff11f3337e1e69179225a25757bcc0" target="_top" xlink:title="Resets the coordinator to IDLE state.">
+<polygon fill="white" stroke="black" points="342,-342.5 342,-361.5 461,-361.5 461,-342.5 342,-342.5"/>
+<text text-anchor="middle" x="401.5" y="-349.5" font-family="Helvetica,sans-Serif" font-size="10.00">ibl_coordinator_reset</text>
 </a>
 </g>
 </g>
-<!-- Node3&#45;&gt;Node4 -->
-<g id="edge3" class="edge">
-<title>Node3&#45;&gt;Node4</title>
-<path fill="none" stroke="midnightblue" d="M273.71,-390C292.45,-390 312.92,-390 331.83,-390"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="331.86,-393.5 341.86,-390 331.86,-386.5 331.86,-393.5"/>
-</g>
-<!-- Node6 -->
-<g id="node6" class="node">
-<title>Node6</title>
-<g id="a_node6"><a xlink:href="icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62" target="_top" xlink:title="Frees the internal buffer of a UintArray.">
-<polygon fill="white" stroke="black" points="358.5,-342.5 358.5,-361.5 444.5,-361.5 444.5,-342.5 358.5,-342.5"/>
-<text text-anchor="middle" x="401.5" y="-349.5" font-family="Helvetica,sans-Serif" font-size="10.00">uintarray_free</text>
-</a>
-</g>
-</g>
-<!-- Node5&#45;&gt;Node6 -->
-<g id="edge5" class="edge">
-<title>Node5&#45;&gt;Node6</title>
-<path fill="none" stroke="midnightblue" d="M251.68,-352C280.26,-352 317.76,-352 347.96,-352"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="348.31,-355.5 358.31,-352 348.31,-348.5 348.31,-355.5"/>
+<!-- Node4&#45;&gt;Node5 -->
+<g id="edge4" class="edge">
+<title>Node4&#45;&gt;Node5</title>
+<path fill="none" stroke="midnightblue" d="M273.71,-352C292.45,-352 312.92,-352 331.83,-352"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="331.86,-355.5 341.86,-352 331.86,-348.5 331.86,-355.5"/>
 </g>
 <!-- Node7 -->
 <g id="node7" class="node">
 <title>Node7</title>
-<g id="a_node7"><a xlink:href="icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a" target="_top" xlink:title="Frees the internal buffer of a Vec3Array.">
-<polygon fill="white" stroke="black" points="356.5,-304.5 356.5,-323.5 446.5,-323.5 446.5,-304.5 356.5,-304.5"/>
-<text text-anchor="middle" x="401.5" y="-311.5" font-family="Helvetica,sans-Serif" font-size="10.00">vec3array_free</text>
+<g id="a_node7"><a xlink:href="icosphere_8c.html#aeabbf4b8c74fefac0070104ad779cd62" target="_top" xlink:title="Frees the internal buffer of a UintArray.">
+<polygon fill="white" stroke="black" points="358.5,-304.5 358.5,-323.5 444.5,-323.5 444.5,-304.5 358.5,-304.5"/>
+<text text-anchor="middle" x="401.5" y="-311.5" font-family="Helvetica,sans-Serif" font-size="10.00">uintarray_free</text>
 </a>
 </g>
 </g>
-<!-- Node5&#45;&gt;Node7 -->
+<!-- Node6&#45;&gt;Node7 -->
 <g id="edge6" class="edge">
-<title>Node5&#45;&gt;Node7</title>
-<path fill="none" stroke="midnightblue" d="M251.68,-343.38C279.79,-337.83 316.52,-330.58 346.46,-324.67"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="347.19,-328.09 356.33,-322.72 345.84,-321.22 347.19,-328.09"/>
+<title>Node6&#45;&gt;Node7</title>
+<path fill="none" stroke="midnightblue" d="M251.68,-314C280.26,-314 317.76,-314 347.96,-314"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="348.31,-317.5 358.31,-314 348.31,-310.5 348.31,-317.5"/>
 </g>
-<!-- Node10 -->
-<g id="node10" class="node">
-<title>Node10</title>
-<g id="a_node10"><a xlink:href="light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df" target="_top" xlink:title="Cleans up CPU resources.">
-<polygon fill="white" stroke="black" points="330,-152.5 330,-171.5 473,-171.5 473,-152.5 330,-152.5"/>
-<text text-anchor="middle" x="401.5" y="-159.5" font-family="Helvetica,sans-Serif" font-size="10.00">light_probe_grid_free_cpu</text>
+<!-- Node8 -->
+<g id="node8" class="node">
+<title>Node8</title>
+<g id="a_node8"><a xlink:href="icosphere_8c.html#ad4ff3644bfe858f66d74316bbf80c39a" target="_top" xlink:title="Frees the internal buffer of a Vec3Array.">
+<polygon fill="white" stroke="black" points="356.5,-266.5 356.5,-285.5 446.5,-285.5 446.5,-266.5 356.5,-266.5"/>
+<text text-anchor="middle" x="401.5" y="-273.5" font-family="Helvetica,sans-Serif" font-size="10.00">vec3array_free</text>
 </a>
 </g>
 </g>
-<!-- Node9&#45;&gt;Node10 -->
-<g id="edge9" class="edge">
-<title>Node9&#45;&gt;Node10</title>
-<path fill="none" stroke="midnightblue" d="M276.68,-162C290.58,-162 305.32,-162 319.6,-162"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="319.9,-165.5 329.9,-162 319.9,-158.5 319.9,-165.5"/>
+<!-- Node6&#45;&gt;Node8 -->
+<g id="edge7" class="edge">
+<title>Node6&#45;&gt;Node8</title>
+<path fill="none" stroke="midnightblue" d="M251.68,-305.38C279.79,-299.83 316.52,-292.58 346.46,-286.67"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="347.19,-290.09 356.33,-284.72 345.84,-283.22 347.19,-290.09"/>
 </g>
 <!-- Node11 -->
 <g id="node11" class="node">
 <title>Node11</title>
-<g id="a_node11"><a xlink:href="shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b" target="_top" xlink:title="Destroys the shader wrapper and deletes the GL program.">
-<polygon fill="white" stroke="black" points="355.5,-57.5 355.5,-76.5 447.5,-76.5 447.5,-57.5 355.5,-57.5"/>
-<text text-anchor="middle" x="401.5" y="-64.5" font-family="Helvetica,sans-Serif" font-size="10.00">shader_destroy</text>
+<g id="a_node11"><a xlink:href="light__probes_8c.html#af2faf1cd11e22b3cedfba8ea055224df" target="_top" xlink:title="Cleans up CPU resources.">
+<polygon fill="white" stroke="black" points="330,-228.5 330,-247.5 473,-247.5 473,-228.5 330,-228.5"/>
+<text text-anchor="middle" x="401.5" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">light_probe_grid_free_cpu</text>
 </a>
 </g>
 </g>
-<!-- Node9&#45;&gt;Node11 -->
+<!-- Node10&#45;&gt;Node11 -->
 <g id="edge10" class="edge">
-<title>Node9&#45;&gt;Node11</title>
-<path fill="none" stroke="midnightblue" d="M261.2,-152.48C270.66,-149.96 280.27,-146.84 289,-143 324.25,-127.5 360.19,-100.58 381.41,-83.29"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="383.84,-85.82 389.31,-76.74 379.37,-80.43 383.84,-85.82"/>
+<title>Node10&#45;&gt;Node11</title>
+<path fill="none" stroke="midnightblue" d="M276.68,-238C290.58,-238 305.32,-238 319.6,-238"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="319.9,-241.5 329.9,-238 319.9,-234.5 319.9,-241.5"/>
 </g>
-<!-- Node14 -->
-<g id="node14" class="node">
-<title>Node14</title>
-<g id="a_node14"><a xlink:href="scene_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="337.5,-266.5 337.5,-285.5 465.5,-285.5 465.5,-266.5 337.5,-266.5"/>
-<text text-anchor="middle" x="401.5" y="-273.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_buffers</text>
+<!-- Node12 -->
+<g id="node12" class="node">
+<title>Node12</title>
+<g id="a_node12"><a xlink:href="shader_8h.html#a54bf3663058663ec7530cd1a0a1af00b" target="_top" xlink:title="Destroys the shader wrapper and deletes the GL program.">
+<polygon fill="white" stroke="black" points="355.5,-190.5 355.5,-209.5 447.5,-209.5 447.5,-190.5 355.5,-190.5"/>
+<text text-anchor="middle" x="401.5" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">shader_destroy</text>
 </a>
 </g>
 </g>
-<!-- Node13&#45;&gt;Node14 -->
-<g id="edge13" class="edge">
-<title>Node13&#45;&gt;Node14</title>
-<path fill="none" stroke="midnightblue" d="M289.08,-276C301.68,-276 314.64,-276 327.06,-276"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="327.35,-279.5 337.35,-276 327.35,-272.5 327.35,-279.5"/>
-</g>
-<!-- Node16 -->
-<g id="node16" class="node">
-<title>Node16</title>
-<g id="a_node16"><a xlink:href="scene_8c.html#a5d03299a2403acf2110589d4800f4b95" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="334.5,-228.5 334.5,-247.5 468.5,-247.5 468.5,-228.5 334.5,-228.5"/>
-<text text-anchor="middle" x="401.5" y="-235.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_textures</text>
-</a>
-</g>
-</g>
-<!-- Node13&#45;&gt;Node16 -->
-<g id="edge15" class="edge">
-<title>Node13&#45;&gt;Node16</title>
-<path fill="none" stroke="midnightblue" d="M256.58,-266.41C282.66,-261.26 315.01,-254.88 342.42,-249.47"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="343.14,-252.89 352.27,-247.52 341.78,-246.02 343.14,-252.89"/>
+<!-- Node10&#45;&gt;Node12 -->
+<g id="edge11" class="edge">
+<title>Node10&#45;&gt;Node12</title>
+<path fill="none" stroke="midnightblue" d="M256.58,-228.41C283.56,-223.08 317.23,-216.44 345.21,-210.91"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="346.11,-214.3 355.25,-208.93 344.76,-207.44 346.11,-214.3"/>
 </g>
 <!-- Node15 -->
 <g id="node15" class="node">
 <title>Node15</title>
-<g id="a_node15"><a xlink:href="scene_8c.html#a24bdb02de96abeaa6a2fbdc577022c24" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="514,-261 514,-291 655,-291 655,-261 514,-261"/>
-<text text-anchor="start" x="522" y="-279" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_geometry</text>
-<text text-anchor="middle" x="584.5" y="-268" font-family="Helvetica,sans-Serif" font-size="10.00">_buffers</text>
+<g id="a_node15"><a xlink:href="scene_8c.html#af38744aa42e41f95b6dc75a7f1ffb57d" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="337.5,-133.5 337.5,-152.5 465.5,-152.5 465.5,-133.5 337.5,-133.5"/>
+<text text-anchor="middle" x="401.5" y="-140.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_buffers</text>
 </a>
 </g>
 </g>
 <!-- Node14&#45;&gt;Node15 -->
 <g id="edge14" class="edge">
 <title>Node14&#45;&gt;Node15</title>
-<path fill="none" stroke="midnightblue" d="M465.55,-276C477.87,-276 490.93,-276 503.71,-276"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="503.88,-279.5 513.88,-276 503.88,-272.5 503.88,-279.5"/>
+<path fill="none" stroke="midnightblue" d="M289.08,-132C301.68,-133.25 314.64,-134.53 327.06,-135.75"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="327.06,-139.27 337.35,-136.77 327.74,-132.3 327.06,-139.27"/>
 </g>
-<!-- Node18 -->
-<g id="node18" class="node">
-<title>Node18</title>
-<g id="a_node18"><a xlink:href="scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="black" points="325,-190.5 325,-209.5 478,-209.5 478,-190.5 325,-190.5"/>
-<text text-anchor="middle" x="401.5" y="-197.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_pbr_shaders</text>
+<!-- Node17 -->
+<g id="node17" class="node">
+<title>Node17</title>
+<g id="a_node17"><a xlink:href="scene_8c.html#a5d03299a2403acf2110589d4800f4b95" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="334.5,-95.5 334.5,-114.5 468.5,-114.5 468.5,-95.5 334.5,-95.5"/>
+<text text-anchor="middle" x="401.5" y="-102.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_textures</text>
 </a>
 </g>
 </g>
-<!-- Node17&#45;&gt;Node18 -->
-<g id="edge17" class="edge">
-<title>Node17&#45;&gt;Node18</title>
-<path fill="none" stroke="midnightblue" d="M273.17,-200C286.51,-200 300.75,-200 314.68,-200"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="314.76,-203.5 324.76,-200 314.76,-196.5 314.76,-203.5"/>
+<!-- Node14&#45;&gt;Node17 -->
+<g id="edge16" class="edge">
+<title>Node14&#45;&gt;Node17</title>
+<path fill="none" stroke="midnightblue" d="M289.08,-116C300.76,-114.84 312.75,-113.66 324.33,-112.52"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="324.78,-115.99 334.39,-111.53 324.09,-109.02 324.78,-115.99"/>
 </g>
-<!-- Node22&#45;&gt;Node11 -->
+<!-- Node16 -->
+<g id="node16" class="node">
+<title>Node16</title>
+<g id="a_node16"><a xlink:href="scene_8c.html#a24bdb02de96abeaa6a2fbdc577022c24" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="514,-128 514,-158 655,-158 655,-128 514,-128"/>
+<text text-anchor="start" x="522" y="-146" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_geometry</text>
+<text text-anchor="middle" x="584.5" y="-135" font-family="Helvetica,sans-Serif" font-size="10.00">_buffers</text>
+</a>
+</g>
+</g>
+<!-- Node15&#45;&gt;Node16 -->
+<g id="edge15" class="edge">
+<title>Node15&#45;&gt;Node16</title>
+<path fill="none" stroke="midnightblue" d="M465.55,-143C477.87,-143 490.93,-143 503.71,-143"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="503.88,-146.5 513.88,-143 503.88,-139.5 503.88,-146.5"/>
+</g>
+<!-- Node19 -->
+<g id="node19" class="node">
+<title>Node19</title>
+<g id="a_node19"><a xlink:href="scene_8c.html#ae38a190b0dc00819aec7e5afc1d32d10" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="black" points="325,-0.5 325,-19.5 478,-19.5 478,-0.5 325,-0.5"/>
+<text text-anchor="middle" x="401.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00">scene_cleanup_pbr_shaders</text>
+</a>
+</g>
+</g>
+<!-- Node18&#45;&gt;Node19 -->
+<g id="edge18" class="edge">
+<title>Node18&#45;&gt;Node19</title>
+<path fill="none" stroke="midnightblue" d="M273.17,-10C286.51,-10 300.75,-10 314.68,-10"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="314.76,-13.5 324.76,-10 314.76,-6.5 314.76,-13.5"/>
+</g>
+<!-- Node22&#45;&gt;Node12 -->
 <g id="edge22" class="edge">
-<title>Node22&#45;&gt;Node11</title>
-<path fill="none" stroke="midnightblue" d="M252.34,-19.57C264.3,-22.38 277.2,-25.61 289,-29 314.74,-36.39 343.32,-46.16 365.1,-53.94"/>
-<polygon fill="midnightblue" stroke="midnightblue" points="364,-57.27 374.6,-57.36 366.37,-50.68 364,-57.27"/>
+<title>Node22&#45;&gt;Node12</title>
+<path fill="none" stroke="midnightblue" d="M256.58,-171.59C283.56,-176.92 317.23,-183.56 345.21,-189.09"/>
+<polygon fill="midnightblue" stroke="midnightblue" points="344.76,-192.56 355.25,-191.07 346.11,-185.7 344.76,-192.56"/>
 </g>
 </g>
 </svg>

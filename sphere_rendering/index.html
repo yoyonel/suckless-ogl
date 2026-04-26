@@ -897,10 +897,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#spheresorter-architecture" class="md-nav__link">
+  <a href="#billboardsorter-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SphereSorter Architecture
+        BillboardSorter Architecture
       
     </span>
   </a>
@@ -3352,17 +3352,17 @@
 <p>This document details the "High Quality" rendering implementation for sphere instances (impostor billboards), including CPU sorting for correct transparency and an analytic anti-aliasing technique for perfect edges.</p>
 <h2 id="1-sphere-sorting-transparency">1. Sphere Sorting (Transparency)<a class="headerlink" href="#1-sphere-sorting-transparency" title="Permanent link">¶</a></h2>
 <p>To correctly handle Transparency Alpha Blending (<code>GL_SRC_ALPHA</code>, <code>GL_ONE_MINUS_SRC_ALPHA</code>), objects must be drawn from furthest to closest (Back-to-Front) relative to the camera.</p>
-<h3 id="spheresorter-architecture">SphereSorter Architecture<a class="headerlink" href="#spheresorter-architecture" title="Permanent link">¶</a></h3>
-<p>The sorting system is encapsulated in the <code>sphere_sorting</code> module (<code>src/sphere_sorting.c</code>).</p>
+<h3 id="billboardsorter-architecture">BillboardSorter Architecture<a class="headerlink" href="#billboardsorter-architecture" title="Permanent link">¶</a></h3>
+<p>The sorting system is encapsulated in the <code>billboard_sorting</code> module (<code>src/billboard_sorting.c</code>).</p>
 <ol>
 <li><strong>Data</strong>:<ul>
 <li>Instances (<code>SphereInstance</code>) are stored contiguously.</li>
-<li>An intermediate structure <code>SphereSortEntry</code> contains <code>{ index, depth }</code> for each sphere.</li>
+<li>An intermediate structure <code>BillboardSortEntry</code> contains <code>{ index, depth }</code> for each sphere.</li>
 </ul>
 </li>
 <li><strong>Algorithm</strong>:<ul>
 <li>Each frame, the squared distance (<code>glm_vec3_distance2</code>) between the camera and each sphere is calculated.</li>
-<li>Standard <code>qsort</code> is used to sort <code>SphereSortEntry</code> keys by descending depth (Back-to-Front).</li>
+<li>Standard <code>qsort</code> is used to sort <code>BillboardSortEntry</code> keys by descending depth (Back-to-Front).</li>
 <li>A temporary sorted instance buffer is reconstructed.</li>
 </ul>
 </li>
@@ -3374,7 +3374,7 @@
 <h3 id="rendering-pipeline">Rendering Pipeline<a class="headerlink" href="#rendering-pipeline" title="Permanent link">¶</a></h3>
 <p>If the <code>USE_TRANSPARENT_BILLBOARDS</code> macro is enabled and "Transparent" mode is active (Key <code>T</code>):
 1.  <strong>Skybox Render</strong> (First, depth write).
-2.  <strong>CPU Sort</strong> of spheres via <code>sphere_sorter_sort</code>.
+2.  <strong>CPU Sort</strong> of spheres via <code>billboard_sorter_sort</code>.
 3.  <strong>Upload</strong> sorted data via <code>glBufferSubData</code>.
 4.  <strong>Draw</strong> spheres with Blending enabled and Depth Write <strong>disabled</strong> (Read-Only).</p>
 <h3 id="ray-tracing-diagram">Ray-Tracing Diagram<a class="headerlink" href="#ray-tracing-diagram" title="Permanent link">¶</a></h3>
@@ -3446,7 +3446,7 @@ This <code>edge_factor_val</code> darkens (or makes transparent) pixels that str
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 2, 2026 23:27:58 UTC">February 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 26, 2026 13:27:32 UTC">April 26, 2026</span>
   </span>
 
     
