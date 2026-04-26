@@ -662,7 +662,7 @@ void light_probe_grid_cleanup(LightProbeGrid* grid)
 	light_probe_grid_free_cpu(grid);
 }
 
-void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
+void light_probe_grid_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj)
 {
 	if (!grid || !grid->ssbo) {
 		return;

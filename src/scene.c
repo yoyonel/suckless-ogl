@@ -613,9 +613,10 @@ void scene_update_gpu_buffers(Scene* scene)
 }
 
 /**
- * @brief Binds SH 3D textures (units 8-14) and probe SSBO only when changed.
- * Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache.
- * Invalidated after light_probe_grid_sync() which clobbers GL_TEXTURE_3D.
+ * @brief Binds SH 3D textures (units 8-14) and light probe grid SSBO only when
+ * changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to
+ * cache. Invalidated after light_probe_grid_sync() which clobbers
+ * GL_TEXTURE_3D.
  */
 static void scene_bind_probe_textures(Scene* scene)
 {
@@ -837,7 +838,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* GI Probe SSBO sync — must happen before Spheres read it */
 	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
-		PROFILE_ZONE(gi_sync_ctx, "GI Probe Sync (buffer upload)");
+		PROFILE_ZONE(gi_sync_ctx,
+		             "GI Light Probe Grid Sync (buffer upload)");
 		light_probe_grid_sync(&scene->probe_grid);
 		/* Sync clobbers 3D texture bindings on the current unit
 		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
@@ -1021,7 +1023,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 	}
 
 	if (scene->show_probe_grid) {
-		light_probe_render_debug(&scene->probe_grid, view, proj);
+		light_probe_grid_render_debug(&scene->probe_grid, view, proj);
 	}
 }
 
