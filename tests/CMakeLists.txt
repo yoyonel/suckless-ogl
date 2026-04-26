@@ -73,9 +73,9 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shader_limit\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_camera_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_gamepad_input\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_coordinator\\.c$")
-list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting\\.c$")
-list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sphere_sorting\\.c$")
-list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_sphere_sorting_perf\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_billboard_sorting\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_billboard_sorting\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_benchmark_billboard_sorting_perf\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_precision\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_sh_integration\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
@@ -480,17 +480,17 @@ endif()
 
 # TEST BENCHMARK SPHERE SORTING (MOCKED)
 # =============================================================================
-add_executable(test_benchmark_sphere_sorting
-    test_benchmark_sphere_sorting.c
-    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+add_executable(test_benchmark_billboard_sorting
+    test_benchmark_billboard_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
-target_sources(test_benchmark_sphere_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
+target_sources(test_benchmark_billboard_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
 
-target_include_directories(test_benchmark_sphere_sorting PRIVATE
+target_include_directories(test_benchmark_billboard_sorting PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
@@ -498,14 +498,14 @@ target_include_directories(test_benchmark_sphere_sorting PRIVATE
     ${stb_SOURCE_DIR}
 )
 
-target_link_libraries(test_benchmark_sphere_sorting PRIVATE cglm m)
+target_link_libraries(test_benchmark_billboard_sorting PRIVATE cglm m)
 
 if(WIN32)
-    add_test(NAME test_benchmark_sphere_sorting
-             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_sphere_sorting>)
+    add_test(NAME test_benchmark_billboard_sorting
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_billboard_sorting>)
 else()
-    add_test(NAME test_benchmark_sphere_sorting
-             COMMAND test_benchmark_sphere_sorting)
+    add_test(NAME test_benchmark_billboard_sorting
+             COMMAND test_benchmark_billboard_sorting)
 endif()
 # NOTES ET DOCUMENTATION
 # =============================================================================
@@ -537,18 +537,18 @@ endif()
 # =============================================================================
 # SPHERE SORTING TESTS (MOCKED)
 # =============================================================================
-add_executable(test_sphere_sorting
-    test_sphere_sorting.c
+add_executable(test_billboard_sorting
+    test_billboard_sorting.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
-    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
 )
-target_sources(test_sphere_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
-target_include_directories(test_sphere_sorting PRIVATE
+target_sources(test_billboard_sorting PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
+target_include_directories(test_billboard_sorting PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
@@ -556,25 +556,25 @@ target_include_directories(test_sphere_sorting PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
-target_link_libraries(test_sphere_sorting PRIVATE cglm m)
+target_link_libraries(test_billboard_sorting PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_sphere_sorting
-             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_sphere_sorting>)
+    add_test(NAME test_billboard_sorting
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_billboard_sorting>)
 else()
-    add_test(NAME test_sphere_sorting COMMAND test_sphere_sorting)
+    add_test(NAME test_billboard_sorting COMMAND test_billboard_sorting)
 endif()
 
-add_executable(test_benchmark_sphere_sorting_perf
-    test_benchmark_sphere_sorting_perf.c
+add_executable(test_benchmark_billboard_sorting_perf
+    test_benchmark_billboard_sorting_perf.c
     ${unity_SOURCE_DIR}/src/unity.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_shader_compute.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
-    ${CMAKE_SOURCE_DIR}/src/sphere_sorting.c
+    ${CMAKE_SOURCE_DIR}/src/billboard_sorting.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
 )
-target_sources(test_benchmark_sphere_sorting_perf PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
-target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
+target_sources(test_benchmark_billboard_sorting_perf PRIVATE ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c)
+target_include_directories(test_benchmark_billboard_sorting_perf PRIVATE
     ${CMAKE_SOURCE_DIR}/tests/mocks
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
     ${CMAKE_SOURCE_DIR}/src
@@ -582,12 +582,12 @@ target_include_directories(test_benchmark_sphere_sorting_perf PRIVATE
     ${stb_SOURCE_DIR}
     ${unity_SOURCE_DIR}/src
 )
-target_link_libraries(test_benchmark_sphere_sorting_perf PRIVATE cglm m)
+target_link_libraries(test_benchmark_billboard_sorting_perf PRIVATE cglm m)
 if(WIN32)
-    add_test(NAME test_benchmark_sphere_sorting_perf
-             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_sphere_sorting_perf>)
+    add_test(NAME test_benchmark_billboard_sorting_perf
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_benchmark_billboard_sorting_perf>)
 else()
-    add_test(NAME test_benchmark_sphere_sorting_perf COMMAND test_benchmark_sphere_sorting_perf)
+    add_test(NAME test_benchmark_billboard_sorting_perf COMMAND test_benchmark_billboard_sorting_perf)
 endif()
 
 # =============================================================================

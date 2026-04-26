@@ -2,6 +2,7 @@
 
 #include "app_settings.h"
 #include "billboard_rendering.h"
+#include "billboard_sorting.h"
 #include "gl_debug.h"
 #include "glad/glad.h"
 #include "ibl_coordinator.h"
@@ -14,7 +15,6 @@
 #include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
-#include "sphere_sorting.h"
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -135,17 +135,17 @@ static void scene_init_instancing(Scene* scene)
 	void* raw_mem = platform_aligned_alloc(
 	    sizeof(SphereInstance) * (size_t)total_count, SIMD_ALIGNMENT);
 	if (raw_mem) {
-		scene->sphere_instances = (SphereInstance*)raw_mem;
-		safe_memcpy(scene->sphere_instances,
+		scene->billboard_instances = (SphereInstance*)raw_mem;
+		safe_memcpy(scene->billboard_instances,
 		            sizeof(SphereInstance) * (size_t)total_count, data,
 		            sizeof(SphereInstance) * (size_t)total_count);
-		scene->sphere_instance_count = total_count;
-		sphere_sorter_init(&scene->sphere_sorter, total_count);
+		scene->billboard_instance_count = total_count;
+		billboard_sorter_init(&scene->billboard_sorter, total_count);
 	}
 #endif
 
-	instanced_group_bind_mesh(&scene->instanced_group, scene->sphere_vbo,
-	                          scene->sphere_nbo, scene->sphere_ebo);
+	instanced_group_bind_mesh(&scene->instanced_group, scene->icosphere_vbo,
+	                          scene->icosphere_nbo, scene->icosphere_ebo);
 	billboard_group_init(&scene->billboard_group, data, total_count);
 	billboard_group_prepare(&scene->billboard_group, scene->quad_vbo,
 	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
@@ -204,8 +204,8 @@ static void scene_init_ssbo(Scene* scene)
 	}
 
 	ssbo_group_init(&scene->ssbo_group, data, total_count);
-	ssbo_group_bind_mesh(&scene->ssbo_group, scene->sphere_vbo,
-	                     scene->sphere_nbo, scene->sphere_ebo);
+	ssbo_group_bind_mesh(&scene->ssbo_group, scene->icosphere_vbo,
+	                     scene->icosphere_nbo, scene->icosphere_ebo);
 
 	/* Initialize Light Probe Grid with Scene Data (SSBO Mode) */
 	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
@@ -237,7 +237,7 @@ static void scene_init_state(Scene* scene)
 	scene->billboard_ubo_ptr = NULL;
 
 	// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-	memset(&scene->sphere_sorter, 0, sizeof(SphereSorter));
+	memset(&scene->billboard_sorter, 0, sizeof(BillboardSorter));
 
 	scene->dummy_black_tex =
 	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
@@ -325,21 +325,21 @@ static int scene_init_billboard_shader(Scene* scene)
 
 static int scene_init_compute_resources(Scene* scene)
 {
-	scene->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
-	scene->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
-	scene->shader_lum_pass1 =
+	scene->spmap_program = shader_load_compute("shaders/IBL/spmap.glsl");
+	scene->irmap_program = shader_load_compute("shaders/IBL/irmap.glsl");
+	scene->lum_pass1_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
-	scene->shader_lum_pass2 =
+	scene->lum_pass2_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 
-	if (!scene->shader_spmap || !scene->shader_irmap ||
-	    !scene->shader_lum_pass1 || !scene->shader_lum_pass2) {
+	if (!scene->spmap_program || !scene->irmap_program ||
+	    !scene->lum_pass1_program || !scene->lum_pass2_program) {
 		return 0;
 	}
 
-	ibl_coordinator_init(&scene->ibl_coord, scene->shader_spmap,
-	                     scene->shader_irmap, scene->shader_lum_pass1,
-	                     scene->shader_lum_pass2);
+	ibl_coordinator_init(&scene->ibl_coord, scene->spmap_program,
+	                     scene->irmap_program, scene->lum_pass1_program,
+	                     scene->lum_pass2_program);
 	return 1;
 }
 
@@ -428,10 +428,10 @@ int scene_init(Scene* scene)
 	skybox_init(&scene->skybox, scene->skybox_shader);
 	icosphere_init(&scene->geometry);
 
-	glGenVertexArrays(1, &scene->sphere_vao);
-	glGenBuffers(1, &scene->sphere_vbo);
-	glGenBuffers(1, &scene->sphere_nbo);
-	glGenBuffers(1, &scene->sphere_ebo);
+	glGenVertexArrays(1, &scene->icosphere_vao);
+	glGenBuffers(1, &scene->icosphere_vbo);
+	glGenBuffers(1, &scene->icosphere_nbo);
+	glGenBuffers(1, &scene->icosphere_ebo);
 
 	scene->material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
@@ -480,8 +480,8 @@ static void scene_cleanup_pbr_shaders(Scene* scene)
 #ifdef USE_SSBO_RENDERING
 	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
 #endif
-	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
+	GL_SAFE_DELETE_PROGRAM(scene->spmap_program);
+	GL_SAFE_DELETE_PROGRAM(scene->irmap_program);
 }
 
 static void scene_cleanup_shaders(Scene* scene)
@@ -491,16 +491,16 @@ static void scene_cleanup_shaders(Scene* scene)
 	SHADER_SAFE_DESTROY(scene->debug_shader);
 	SHADER_SAFE_DESTROY(scene->debug_line_shader);
 	SHADER_SAFE_DESTROY(scene->skybox_shader);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass1);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
+	GL_SAFE_DELETE_PROGRAM(scene->lum_pass1_program);
+	GL_SAFE_DELETE_PROGRAM(scene->lum_pass2_program);
 }
 
 static void scene_cleanup_geometry_buffers(Scene* scene)
 {
-	GL_SAFE_DELETE_VAO(scene->sphere_vao);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_vbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_nbo);
-	GL_SAFE_DELETE_BUFFER(scene->sphere_ebo);
+	GL_SAFE_DELETE_VAO(scene->icosphere_vao);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_vbo);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_nbo);
+	GL_SAFE_DELETE_BUFFER(scene->icosphere_ebo);
 }
 
 static void scene_cleanup_buffers(Scene* scene)
@@ -542,11 +542,11 @@ void scene_cleanup(Scene* scene)
 	icosphere_free(&scene->geometry);
 	skybox_cleanup(&scene->skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	if (scene->sphere_instances) {
-		platform_aligned_free(scene->sphere_instances);
-		scene->sphere_instances = NULL;
+	if (scene->billboard_instances) {
+		platform_aligned_free(scene->billboard_instances);
+		scene->billboard_instances = NULL;
 	}
-	sphere_sorter_cleanup(&scene->sphere_sorter);
+	billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
@@ -591,20 +591,20 @@ const char* aa_mode_to_string(AAMode mode)
 
 void scene_update_gpu_buffers(Scene* scene)
 {
-	glBindVertexArray(scene->sphere_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->sphere_vbo);
+	glBindVertexArray(scene->icosphere_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->icosphere_vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.vertices.size * sizeof(vec3)),
 	             scene->geometry.vertices.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->sphere_nbo);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->icosphere_nbo);
 	glBufferData(GL_ARRAY_BUFFER,
 	             (GLsizeiptr)(scene->geometry.normals.size * sizeof(vec3)),
 	             scene->geometry.normals.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), (void*)0);
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->sphere_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, scene->icosphere_ebo);
 	glBufferData(
 	    GL_ELEMENT_ARRAY_BUFFER,
 	    (GLsizeiptr)(scene->geometry.indices.size * sizeof(unsigned int)),
@@ -613,9 +613,10 @@ void scene_update_gpu_buffers(Scene* scene)
 }
 
 /**
- * @brief Binds SH 3D textures (units 8-14) and probe SSBO only when changed.
- * Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to cache.
- * Invalidated after light_probe_grid_sync() which clobbers GL_TEXTURE_3D.
+ * @brief Binds SH 3D textures (units 8-14) and light probe grid SSBO only when
+ * changed. Units 8-14 and SSBO binding 3 are exclusive to PBR passes — safe to
+ * cache. Invalidated after light_probe_grid_sync() which clobbers
+ * GL_TEXTURE_3D.
  */
 static void scene_bind_probe_textures(Scene* scene)
 {
@@ -837,7 +838,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* GI Probe SSBO sync — must happen before Spheres read it */
 	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
-		PROFILE_ZONE(gi_sync_ctx, "GI Probe Sync (buffer upload)");
+		PROFILE_ZONE(gi_sync_ctx,
+		             "GI Light Probe Grid Sync (buffer upload)");
 		light_probe_grid_sync(&scene->probe_grid);
 		/* Sync clobbers 3D texture bindings on the current unit
 		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
@@ -878,30 +880,36 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 				switch (scene->sorting_mode) {
 					case SORTING_MODE_CPU_QSORT:
 						sorted_ssbo =
-						    sphere_sorter_sort_cpu(
-						        &scene->sphere_sorter,
-						        scene->sphere_instances,
+						    billboard_sorter_sort_cpu(
+						        &scene
+						             ->billboard_sorter,
 						        scene
-						            ->sphere_instance_count,
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
 						        camera_pos);
 						break;
 					case SORTING_MODE_CPU_RADIX:
 						sorted_ssbo =
-						    sphere_sorter_sort_cpu_radix(
-						        &scene->sphere_sorter,
-						        scene->sphere_instances,
+						    billboard_sorter_sort_cpu_radix(
+						        &scene
+						             ->billboard_sorter,
 						        scene
-						            ->sphere_instance_count,
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
 						        camera_pos);
 						break;
 					case SORTING_MODE_GPU_BITONIC:
 					default:
 						sorted_ssbo =
-						    sphere_sorter_sort_gpu(
-						        &scene->sphere_sorter,
-						        scene->sphere_instances,
+						    billboard_sorter_sort_gpu(
+						        &scene
+						             ->billboard_sorter,
 						        scene
-						            ->sphere_instance_count,
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
 						        camera_pos);
 						break;
 				}
@@ -911,14 +919,15 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			 * sort functions — vertex shader reads it directly
 			 * via gl_InstanceID (no VBO copy needed). */
 			scene->billboard_group.instance_count =
-			    scene->sphere_instance_count;
+			    scene->billboard_instance_count;
 
 			/* Legacy VBO copy only for debug wireframe overlay
-			 * (debug_line_shader reads per-instance attributes) */
+			 * (debug_line_shader reads per-SphereInstance
+			 * attributes) */
 			if (scene->wireframe) {
 				billboard_group_update_from_buffer(
 				    &scene->billboard_group, sorted_ssbo,
-				    scene->sphere_instance_count);
+				    scene->billboard_instance_count);
 			}
 
 			/* 2. Actual Billboard Rendering */
@@ -1015,7 +1024,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 	}
 
 	if (scene->show_probe_grid) {
-		light_probe_render_debug(&scene->probe_grid, view, proj);
+		light_probe_grid_render_debug(&scene->probe_grid, view, proj);
 	}
 }
 
@@ -1044,19 +1053,19 @@ void scene_toggle_nbody(Scene* scene)
 			    scene->nbody_sim.bodies[i].albedo);
 		}
 
-		/* Write initial instance data and update GPU */
+		/* Write initial SphereInstance data and upload to GPU */
 		SphereInstance instances[NBODY_MAX_BODIES];
 		nbody_write_instances(&scene->nbody_sim, instances);
 		instanced_group_update(&scene->instanced_group, instances,
 		                       count);
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-		if (scene->sphere_instances) {
-			safe_memcpy(scene->sphere_instances,
+		if (scene->billboard_instances) {
+			safe_memcpy(scene->billboard_instances,
 			            sizeof(SphereInstance) * (size_t)count,
 			            instances,
 			            sizeof(SphereInstance) * (size_t)count);
-			scene->sphere_instance_count = count;
+			scene->billboard_instance_count = count;
 		}
 		scene->billboard_group.instance_count = count;
 #endif
@@ -1065,11 +1074,11 @@ void scene_toggle_nbody(Scene* scene)
 		 * to avoid leaking GPU buffers and CPU allocations */
 		trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-		if (scene->sphere_instances) {
-			platform_aligned_free(scene->sphere_instances);
-			scene->sphere_instances = NULL;
+		if (scene->billboard_instances) {
+			platform_aligned_free(scene->billboard_instances);
+			scene->billboard_instances = NULL;
 		}
-		sphere_sorter_cleanup(&scene->sphere_sorter);
+		billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 		instanced_group_cleanup(&scene->instanced_group);
 		billboard_group_cleanup(&scene->billboard_group);
@@ -1101,7 +1110,7 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		PROFILE_ZONE_END(trail_ctx);
 	}
 
-	/* Build instance data and upload to GPU */
+	/* Build SphereInstance data and upload to GPU */
 	int count = nbody_get_count(&scene->nbody_sim);
 	SphereInstance instances[NBODY_MAX_BODIES];
 	{
@@ -1117,11 +1126,11 @@ void scene_nbody_update(Scene* scene, float delta_time)
 	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	if (scene->sphere_instances) {
-		safe_memcpy(scene->sphere_instances,
+	if (scene->billboard_instances) {
+		safe_memcpy(scene->billboard_instances,
 		            sizeof(SphereInstance) * (size_t)count, instances,
 		            sizeof(SphereInstance) * (size_t)count);
-		scene->sphere_instance_count = count;
+		scene->billboard_instance_count = count;
 	}
 	scene->billboard_group.instance_count = count;
 #endif

@@ -142,7 +142,7 @@ digraph ProjectStructure {
 
 - `pbr.c`: Configures PBR shaders.
 - `material.c`: Manages the material library.
-- `sphere_sorting.c`: Sorts transparent instances (Back-to-Front).
+- `billboard_sorting.c`: Sorts transparent instances (Back-to-Front).
 
 ## Improvements over Original Code
 

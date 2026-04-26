@@ -7,15 +7,15 @@ This document details the "High Quality" rendering implementation for sphere ins
 
 To correctly handle Transparency Alpha Blending (`GL_SRC_ALPHA`, `GL_ONE_MINUS_SRC_ALPHA`), objects must be drawn from furthest to closest (Back-to-Front) relative to the camera.
 
-### SphereSorter Architecture
-The sorting system is encapsulated in the `sphere_sorting` module (`src/sphere_sorting.c`).
+### BillboardSorter Architecture
+The sorting system is encapsulated in the `billboard_sorting` module (`src/billboard_sorting.c`).
 
 1.  **Data**:
     -   Instances (`SphereInstance`) are stored contiguously.
-    -   An intermediate structure `SphereSortEntry` contains `{ index, depth }` for each sphere.
+    -   An intermediate structure `BillboardSortEntry` contains `{ index, depth }` for each sphere.
 2.  **Algorithm**:
     -   Each frame, the squared distance (`glm_vec3_distance2`) between the camera and each sphere is calculated.
-    -   Standard `qsort` is used to sort `SphereSortEntry` keys by descending depth (Back-to-Front).
+    -   Standard `qsort` is used to sort `BillboardSortEntry` keys by descending depth (Back-to-Front).
     -   A temporary sorted instance buffer is reconstructed.
 3.  **SIMD Optimization**:
     -   Instance buffers are allocated via `aligned_alloc` with 64-byte alignment (`SIMD_ALIGNMENT`) to optimize memory access and enable potential AVX vectorization.
@@ -23,7 +23,7 @@ The sorting system is encapsulated in the `sphere_sorting` module (`src/sphere_s
 ### Rendering Pipeline
 If the `USE_TRANSPARENT_BILLBOARDS` macro is enabled and "Transparent" mode is active (Key `T`):
 1.  **Skybox Render** (First, depth write).
-2.  **CPU Sort** of spheres via `sphere_sorter_sort`.
+2.  **CPU Sort** of spheres via `billboard_sorter_sort`.
 3.  **Upload** sorted data via `glBufferSubData`.
 4.  **Draw** spheres with Blending enabled and Depth Write **disabled** (Read-Only).
 

@@ -781,6 +781,25 @@ ADAPT --> EXP[Exposure Tex]
   </div>
 </div>
 
+<div class="diagram-item">
+  <a href="../auto_exposure_opt_report/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">A notification (&quot;AE Path: Fragment&quot; / &quot;AE Path: Compute&quot;) confirms the switch. The GPU Profiler label also changes dynamically to reflect which path is active.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+SCENE[Scene Color Texture]
+SCENE --> SWITCH{active_path?}
+SWITCH -->|Fragment| FRAG["FS Quad -> FBO 64x64"]
+SWITCH -->|Compute| COMP["CS Dispatch 4x4 WG"]
+FRAG --> DS_TEX[Downsample Tex R32F]
+COMP --> DS_TEX
+DS_TEX --> ADAPT["CS: Adaptation 1x1"]
+ADAPT --> EXP[Exposure Tex]
+```
+
+  </div>
+</div>
+
 
 ## [Environment Transitions](../env_transitions/)
 
@@ -914,6 +933,31 @@ GPU-->>Main: FBOs recreated (OK)
 </div>
 
 
+## [Gamepad Camera Control](../gamepad/)
+
+<div class="diagram-item">
+  <a href="../gamepad/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">physics step.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+subgraph "Per Frame (1x)"
+GLFW[GLFW Gamepad API] --> POLL[gamepad_input_poll]
+POLL -->|deadzone filter| AXES[state.axes cache]
+POLL -->|edge detect| BTN[GamepadActions: L1/R1/Share]
+end
+subgraph "Per Physics Step (Nx)"
+KB[camera_build_keyboard_input] --> MI[cam.move_input]
+AXES --> WRITE[gamepad_write_input]
+WRITE -->|overlay| MI
+MI --> PHYS[camera_fixed_update]
+end
+```
+
+  </div>
+</div>
+
+
 ## [Global Illumination (1-Bounce)](../global_illumination/)
 
 <div class="diagram-item">
@@ -952,6 +996,64 @@ Note over GPU: Fragments sample irradiance from 8 adjacent probes (Trilinear Fil
 </div>
 
 
+## [Domain Model — Ubiquitous Language](../glossary/)
+
+<div class="diagram-item">
+  <a href="../glossary/#relationships" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">🔗 Relationships</a> : <span style="opacity: 0.6; font-size: 0.85em;">---</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+Scene --> InstancedGroup["Instanced Group"]
+Scene --> BillboardGroup["Billboard Group"]
+Scene --> Skybox
+Scene --> NBody["N-Body Simulation"]
+Scene --> TrailRenderer["Trail Renderer"]
+Scene --> IBLCoordinator["IBL Coordinator"]
+Scene --> LightProbeGrid["Light Probe Grid"]
+NBody -->|"contains up to 32"| Body
+Body -->|"produces per frame"| SphereInstance["Sphere Instance"]
+TrailRenderer -->|"one per Body"| TrailRing["Trail Ring"]
+IBLCoordinator -->|"generates"| IrradianceMap["Irradiance Map"]
+IBLCoordinator -->|"generates"| SpecularMap["Prefiltered Specular Map"]
+LightProbeGrid -->|"lattice of"| LightProbe["Light Probe"]
+LightProbe -->|"stores"| SH9
+PostProcess -->|"chain of"| Effect
+```
+
+  </div>
+</div>
+
+
+## [GPU Usage Monitor](../gpu_usage_monitor/)
+
+<div class="diagram-item">
+  <a href="../gpu_usage_monitor/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `nouveau` | `drm-engine-gr` | NVIDIA (open-source driver) |</span>
+  <div class="mermaid-preview">
+
+```mermaid
+flowchart TD
+A[gpu_usage_init] --> B[Scan /proc/self/fdinfo/]
+B --> C{DRM render node?}
+C -->|Yes| D[Read drm-driver & drm-client-id]
+C -->|No| B
+D --> E{Duplicate client-id?}
+E -->|Yes| B
+E -->|No| F[Keep FILE* stream open]
+F --> B
+B -->|Done| G[Store driver + engine_key]
+H[gpu_usage_update] --> I{500ms elapsed?}
+I -->|No| J[Return early]
+I -->|Yes| K[Re-read all streams]
+K --> L[Sum engine time across FDs]
+L --> M["GPU% = Δgpu / Δwall × 100"]
+M --> N[Clamp 0–100%]
+```
+
+  </div>
+</div>
+
+
 ## [Motion Blur Implementation Analysis](../motion_blur_analysis/)
 
 <div class="diagram-item">
@@ -982,6 +1084,27 @@ M -->|8-frame Sampling + Interleaved Gradient Noise + Depth Weighting| O[Blurred
 graph LR
 A[Linear Blur \nStandard Suckless OGL] -->|Creates straight lines and artifacts| B(Punch trajectory)
 C[Curved Blur \nRE Engine / SF6] -->|Sampling along a circular arc| D(Anime/Manga-style stylized blur)
+```
+
+  </div>
+</div>
+
+
+## [Neon Trail Rendering](../neon_trails/)
+
+<div class="diagram-item">
+  <a href="../neon_trails/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">Each change displays an on-screen notification with the current value.</span>
+  <div class="mermaid-preview">
+
+```mermaid
+graph TD
+A[TrailRenderer::neon] -->|intensity, width| B[build_ribbon CPU]
+A -->|core_exp| C[trail.frag GPU]
+B -->|HDR vertices| D[VBO Upload]
+D --> E[glMultiDrawArrays]
+C -->|Neon profile| E
+E -->|HDR output| F[Bloom Post-Process]
+F -->|Wide halo| G[Final Composite]
 ```
 
   </div>

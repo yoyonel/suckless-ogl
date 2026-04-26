@@ -1,5 +1,5 @@
+#include "billboard_sorting.h"
 #include "platform/platform_utils.h"
-#include "sphere_sorting.h"
 #include "unity.h"
 #include <cglm/cglm.h>
 #include <stdlib.h>
@@ -33,7 +33,7 @@ static SphereInstance* create_dummy_instances(int count, int min_capacity)
 	int alloc_count = (count > min_capacity) ? count : min_capacity;
 	SphereInstance* instances = NULL;
 	/* Use platform_aligned_alloc to match sorter allocation strategy */
-	/* SIMD_ALIGNMENT is available via sphere_sorting.h ->
+	/* SIMD_ALIGNMENT is available via billboard_sorting.h ->
 	 * instanced_rendering.h -> gl_common.h */
 	instances = (SphereInstance*)platform_aligned_alloc(
 	    (size_t)alloc_count * sizeof(SphereInstance), SIMD_ALIGNMENT);
@@ -62,10 +62,10 @@ static void set_position(SphereInstance* inst, float x_coord, float y_coord,
 	inst->model[Z_INDEX][Z_OFFSET] = z_coord;
 }
 
-void test_SphereSorter_Init_ShouldAllocateBuffers(void)
+void test_BillboardSorter_Init_ShouldAllocateBuffers(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, INIT_CAPACITY);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, INIT_CAPACITY);
 
 	TEST_ASSERT_NOT_NULL(sorter.entries);
 	TEST_ASSERT_NOT_NULL(sorter.entries_aux);
@@ -74,14 +74,14 @@ void test_SphereSorter_Init_ShouldAllocateBuffers(void)
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.cpu_capacity);
 	TEST_ASSERT_EQUAL_INT(INIT_CAPACITY, sorter.min_capacity);
 
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 }
 
-void test_SphereSorter_Cleanup_ShouldFreeBuffers(void)
+void test_BillboardSorter_Cleanup_ShouldFreeBuffers(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, INIT_CAPACITY);
-	sphere_sorter_cleanup(&sorter);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, INIT_CAPACITY);
+	billboard_sorter_cleanup(&sorter);
 
 	TEST_ASSERT_NULL(sorter.entries);
 	TEST_ASSERT_NULL(sorter.temp_instances);
@@ -89,10 +89,10 @@ void test_SphereSorter_Cleanup_ShouldFreeBuffers(void)
 	TEST_ASSERT_EQUAL_INT(0, sorter.min_capacity);
 }
 
-void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
+void test_BillboardSorter_Sort_ShouldOrderBackToFront(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, TEST_COUNT_4);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, TEST_COUNT_4);
 
 	int count = TEST_COUNT_3;
 	/* Ensure allocated buffer is at least min_capacity (4) even if count is
@@ -119,7 +119,7 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	/* Expected Order: Far (-20), Middle (-10), Near (-5) */
 	/* Indices should become: 1, 2, 0 */
 
-	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
+	(void)billboard_sorter_sort_cpu(&sorter, instances, count, camera_pos);
 
 	/* Check First (Furthest) */
 	const int MAT_Z_INDEX = 3;
@@ -145,13 +145,13 @@ void test_SphereSorter_Sort_ShouldOrderBackToFront(void)
 	                         sorter.temp_instances[2].roughness);
 
 	platform_aligned_free(instances);
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 }
 
-void test_SphereSorter_SortRadix_ShouldOrderBackToFront(void)
+void test_BillboardSorter_SortRadix_ShouldOrderBackToFront(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, TEST_COUNT_4);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, TEST_COUNT_4);
 
 	int count = TEST_COUNT_3;
 	SphereInstance* instances =
@@ -171,8 +171,8 @@ void test_SphereSorter_SortRadix_ShouldOrderBackToFront(void)
 	set_position(&instances[2], COORD_ZERO, COORD_ZERO, COORD_NEG_10);
 	instances[2].roughness = ROUGHNESS_C;
 
-	(void)sphere_sorter_sort_cpu_radix(&sorter, instances, count,
-	                                   camera_pos);
+	(void)billboard_sorter_sort_cpu_radix(&sorter, instances, count,
+	                                      camera_pos);
 
 	const int MAT_Z_INDEX = 3;
 	const int MAT_Z_OFFSET = 2;
@@ -195,13 +195,13 @@ void test_SphereSorter_SortRadix_ShouldOrderBackToFront(void)
 	                         sorter.temp_instances[2].roughness);
 
 	platform_aligned_free(instances);
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 }
 
-void test_SphereSorter_Resize_ShouldHandleMoreThanCapacity(void)
+void test_BillboardSorter_Resize_ShouldHandleMoreThanCapacity(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, SMALL_CAPACITY); /* Small capacity (2) */
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, SMALL_CAPACITY); /* Small capacity (2) */
 
 	int count = TEST_COUNT_5; /* 5 */
 	/* Allocates max(5, 2) = 5 */
@@ -210,19 +210,19 @@ void test_SphereSorter_Resize_ShouldHandleMoreThanCapacity(void)
 	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
 
 	/* Just check it doesn't crash and resizes */
-	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
+	(void)billboard_sorter_sort_cpu(&sorter, instances, count, camera_pos);
 
 	/* Check that capacity grew */
 	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
 
 	platform_aligned_free(instances);
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 }
 
-void test_SphereSorter_CapacitySync_ShouldNotCrash(void)
+void test_BillboardSorter_CapacitySync_ShouldNotCrash(void)
 {
-	SphereSorter sorter;
-	sphere_sorter_init(&sorter, SMALL_CAPACITY);
+	BillboardSorter sorter;
+	billboard_sorter_init(&sorter, SMALL_CAPACITY);
 
 	/* Simulate GPU path growing 'ssbo_capacity' to 100 */
 	sorter.ssbo_capacity = 100;
@@ -236,22 +236,22 @@ void test_SphereSorter_CapacitySync_ShouldNotCrash(void)
 	vec3 camera_pos = {COORD_ZERO, COORD_ZERO, COORD_ZERO};
 
 	/* This would SIGSEGV if capacity sync is broken */
-	(void)sphere_sorter_sort_cpu(&sorter, instances, count, camera_pos);
+	(void)billboard_sorter_sort_cpu(&sorter, instances, count, camera_pos);
 
 	TEST_ASSERT_GREATER_OR_EQUAL(count, sorter.cpu_capacity);
 
 	platform_aligned_free(instances);
-	sphere_sorter_cleanup(&sorter);
+	billboard_sorter_cleanup(&sorter);
 }
 
 int main(void)
 {
 	UNITY_BEGIN();
-	RUN_TEST(test_SphereSorter_Init_ShouldAllocateBuffers);
-	RUN_TEST(test_SphereSorter_Cleanup_ShouldFreeBuffers);
-	RUN_TEST(test_SphereSorter_Sort_ShouldOrderBackToFront);
-	RUN_TEST(test_SphereSorter_SortRadix_ShouldOrderBackToFront);
-	RUN_TEST(test_SphereSorter_Resize_ShouldHandleMoreThanCapacity);
-	RUN_TEST(test_SphereSorter_CapacitySync_ShouldNotCrash);
+	RUN_TEST(test_BillboardSorter_Init_ShouldAllocateBuffers);
+	RUN_TEST(test_BillboardSorter_Cleanup_ShouldFreeBuffers);
+	RUN_TEST(test_BillboardSorter_Sort_ShouldOrderBackToFront);
+	RUN_TEST(test_BillboardSorter_SortRadix_ShouldOrderBackToFront);
+	RUN_TEST(test_BillboardSorter_Resize_ShouldHandleMoreThanCapacity);
+	RUN_TEST(test_BillboardSorter_CapacitySync_ShouldNotCrash);
 	return UNITY_END();
 }

@@ -3,6 +3,7 @@
 
 #include "app_settings.h"
 #include "billboard_rendering.h"
+#include "billboard_sorting.h"
 #include "gl_common.h"
 #include "gpu_profiler.h"
 #include "ibl_coordinator.h"
@@ -13,7 +14,6 @@
 #include "nbody.h"
 #include "shader.h"
 #include "skybox.h"
-#include "sphere_sorting.h"
 #include "trail_renderer.h"
 #include <cglm/cglm.h>
 
@@ -148,9 +148,10 @@ typedef struct Scene {
 #endif
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	SphereSorter sphere_sorter;       /**< Sorter for alpha blending. */
-	SphereInstance* sphere_instances; /**< Persistent array for sorting. */
-	int sphere_instance_count;        /**< Active sphere count. */
+	BillboardSorter billboard_sorter; /**< Sorter for alpha blending. */
+	SphereInstance*
+	    billboard_instances;      /**< Persistent array for sorting. */
+	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
 	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
@@ -174,10 +175,10 @@ typedef struct Scene {
 	Shader* skybox_shader;     /**< Skybox shader wrapper. */
 
 	/* --- GPU Resources --- */
-	GLuint sphere_vao;           /**< Shared geometry VAO. */
-	GLuint sphere_vbo;           /**< Shared vertex buffer. */
-	GLuint sphere_nbo;           /**< Shared normal buffer. */
-	GLuint sphere_ebo;           /**< Shared index buffer. */
+	GLuint icosphere_vao;        /**< Shared icosphere geometry VAO. */
+	GLuint icosphere_vbo;        /**< Shared icosphere vertex buffer. */
+	GLuint icosphere_nbo;        /**< Shared icosphere normal buffer. */
+	GLuint icosphere_ebo;        /**< Shared icosphere index buffer. */
 	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
 	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
 	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
@@ -187,10 +188,10 @@ typedef struct Scene {
 	GLuint irradiance_tex;       /**< Active Irradiance map. */
 	GLuint brdf_lut_tex;         /**< Shared BRDF lookup table. */
 	GLuint empty_vao;            /**< Vertex-less drawing VAO. */
-	GLuint shader_spmap;         /**< Internal IBL specular shader. */
-	GLuint shader_irmap;         /**< Internal IBL irradiance shader. */
-	GLuint shader_lum_pass1;     /**< Luminance downsample pass. */
-	GLuint shader_lum_pass2;     /**< Mean luminance compute pass. */
+	GLuint spmap_program;        /**< Internal IBL specular shader. */
+	GLuint irmap_program;        /**< Internal IBL irradiance shader. */
+	GLuint lum_pass1_program;    /**< Luminance downsample pass. */
+	GLuint lum_pass2_program;    /**< Mean luminance compute pass. */
 	GLuint dummy_black_tex;      /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex;      /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */

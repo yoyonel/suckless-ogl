@@ -123,8 +123,8 @@ Added `PROFILE_ZONE` CPU markers at key synchronization points:
 |:---|:---|:---|
 | `"GPU Query Readback (sync)"` | `gpu_profiler.c` | Measure blocking `glGetQueryObjectui64v` loop |
 | `"GI Probe Sync (buffer upload)"` | `scene.c` | `glBufferSubData` SSBO + 3D texture packing for GI probes |
-| `"GPU Sort: SSBO Upload"` | `sphere_sorting.c` | Instance data transfer to GPU |
-| `"GPU Sort: Compute Dispatch"` | `sphere_sorting.c` | Full dispatch + barrier chain |
+| `"GPU Sort: SSBO Upload"` | `billboard_sorting.c` | Instance data transfer to GPU |
+| `"GPU Sort: Compute Dispatch"` | `billboard_sorting.c` | Full dispatch + barrier chain |
 | `"PostProcess UBO Upload"` | `postprocess.c` | `glBufferSubData` implicit sync detection |
 
 ## Phase 2: Main Loop Reordering (**Tested — Invalidated**)

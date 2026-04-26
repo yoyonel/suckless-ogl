@@ -429,11 +429,11 @@ par l'appel précédent pour éviter les fuites de buffers GPU et de mémoire CP
 /* Nettoyage avant ré-init (scene.c — branche N-body OFF) */
 trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-if (scene->sphere_instances) {
-    platform_aligned_free(scene->sphere_instances);
-    scene->sphere_instances = NULL;
+if (scene->billboard_instances) {
+    platform_aligned_free(scene->billboard_instances);
+    scene->billboard_instances = NULL;
 }
-sphere_sorter_cleanup(&scene->sphere_sorter);
+billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 instanced_group_cleanup(&scene->instanced_group);
 billboard_group_cleanup(&scene->billboard_group);

@@ -119,7 +119,7 @@ void light_probe_grid_sync(LightProbeGrid* grid);
  * @param view View matrix.
  * @param proj Projection matrix.
  */
-void light_probe_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj);
+void light_probe_grid_render_debug(LightProbeGrid* grid, mat4 view, mat4 proj);
 
 /**
  * @brief Cleans up all resources (CPU, GPU, Threads).

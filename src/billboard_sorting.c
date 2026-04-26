@@ -1,4 +1,4 @@
-#include "sphere_sorting.h"
+#include "billboard_sorting.h"
 
 #include "gl_common.h" /* For SIMD_ALIGNMENT */
 #include "gl_debug.h"
@@ -57,7 +57,7 @@ static int next_pow2(int val)
  * @brief Grow CPU scratchpads to hold at least @p count elements.
  * @return true on success, false on allocation failure.
  */
-static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
+static bool ensure_cpu_capacity(BillboardSorter* sorter, int count)
 {
 	if (count <= sorter->cpu_capacity) {
 		return true;
@@ -68,9 +68,9 @@ static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
 	void* new_temp = NULL;
 
 	new_entries = platform_aligned_alloc(
-	    (size_t)count * sizeof(SphereSortEntry), SIMD_ALIGNMENT);
+	    (size_t)count * sizeof(BillboardSortEntry), SIMD_ALIGNMENT);
 	new_aux = platform_aligned_alloc(
-	    (size_t)count * sizeof(SphereSortEntry), SIMD_ALIGNMENT);
+	    (size_t)count * sizeof(BillboardSortEntry), SIMD_ALIGNMENT);
 	new_temp = platform_aligned_alloc(
 	    (size_t)count * sizeof(SphereInstance), SIMD_ALIGNMENT);
 
@@ -88,8 +88,8 @@ static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
 	platform_aligned_free(sorter->entries_aux);
 	platform_aligned_free(sorter->temp_instances);
 
-	sorter->entries = (SphereSortEntry*)new_entries;
-	sorter->entries_aux = (SphereSortEntry*)new_aux;
+	sorter->entries = (BillboardSortEntry*)new_entries;
+	sorter->entries_aux = (BillboardSortEntry*)new_aux;
 	sorter->temp_instances = (SphereInstance*)new_temp;
 	sorter->cpu_capacity = count;
 	return true;
@@ -99,7 +99,7 @@ static bool ensure_cpu_capacity(SphereSorter* sorter, int count)
  * @brief Upload @p count sorted instances from the CPU temp buffer to the SSBO.
  * @return The SSBO handle containing the data.
  */
-static GLuint upload_sorted_to_ssbo(SphereSorter* sorter, int count)
+static GLuint upload_sorted_to_ssbo(BillboardSorter* sorter, int count)
 {
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, sorter->instance_ssbo);
 	if (count > sorter->ssbo_capacity) {
@@ -120,12 +120,12 @@ static GLuint upload_sorted_to_ssbo(SphereSorter* sorter, int count)
 	return sorter->instance_ssbo;
 }
 
-void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
+void billboard_sorter_init(BillboardSorter* sorter, int initial_capacity)
 {
 	sorter->compute_program =
 	    shader_load_compute("shaders/sphere_sort.glsl");
 	if (sorter->compute_program == 0) {
-		LOG_ERROR("SphereSorter", "Failed to load compute shader");
+		LOG_ERROR("BillboardSorter", "Failed to load compute shader");
 	}
 
 	/* Cache uniform locations once. */
@@ -149,18 +149,18 @@ void sphere_sorter_init(SphereSorter* sorter, int initial_capacity)
 	sorter->cpu_capacity = sorter->min_capacity;
 
 	/* Pre-allocate scratchpad for CPU sorting with SIMD alignment */
-	sorter->entries = (SphereSortEntry*)platform_aligned_alloc(
-	    (size_t)sorter->min_capacity * sizeof(SphereSortEntry),
+	sorter->entries = (BillboardSortEntry*)platform_aligned_alloc(
+	    (size_t)sorter->min_capacity * sizeof(BillboardSortEntry),
 	    SIMD_ALIGNMENT);
-	sorter->entries_aux = (SphereSortEntry*)platform_aligned_alloc(
-	    (size_t)sorter->min_capacity * sizeof(SphereSortEntry),
+	sorter->entries_aux = (BillboardSortEntry*)platform_aligned_alloc(
+	    (size_t)sorter->min_capacity * sizeof(BillboardSortEntry),
 	    SIMD_ALIGNMENT);
 	sorter->temp_instances = (SphereInstance*)platform_aligned_alloc(
 	    (size_t)sorter->min_capacity * sizeof(SphereInstance),
 	    SIMD_ALIGNMENT);
 }
 
-void sphere_sorter_cleanup(SphereSorter* sorter)
+void billboard_sorter_cleanup(BillboardSorter* sorter)
 {
 	GL_SAFE_DELETE_BUFFER(sorter->instance_ssbo);
 	GL_SAFE_DELETE_BUFFER(sorter->index_ssbo);
@@ -177,9 +177,9 @@ void sphere_sorter_cleanup(SphereSorter* sorter)
 	sorter->min_capacity = 0;
 }
 
-GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
-                              const SphereInstance* instances, int count,
-                              const vec3 camera_pos)
+GLuint billboard_sorter_sort_gpu(BillboardSorter* sorter,
+                                 const SphereInstance* instances, int count,
+                                 const vec3 camera_pos)
 {
 	if (count <= 0 || sorter->compute_program == 0) {
 		return sorter->instance_ssbo;
@@ -311,8 +311,8 @@ GLuint sphere_sorter_sort_gpu(SphereSorter* sorter,
 }
 static int compare_sphere_entries(const void* lhs, const void* rhs)
 {
-	const SphereSortEntry* entry_lhs = (const SphereSortEntry*)lhs;
-	const SphereSortEntry* entry_rhs = (const SphereSortEntry*)rhs;
+	const BillboardSortEntry* entry_lhs = (const BillboardSortEntry*)lhs;
+	const BillboardSortEntry* entry_rhs = (const BillboardSortEntry*)rhs;
 
 	/* Back-to-Front (descending depth) */
 	if (entry_lhs->depth > entry_rhs->depth) {
@@ -324,9 +324,9 @@ static int compare_sphere_entries(const void* lhs, const void* rhs)
 	return 0;
 }
 
-GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
-                              const SphereInstance* instances, int count,
-                              const vec3 camera_pos)
+GLuint billboard_sorter_sort_cpu(BillboardSorter* sorter,
+                                 const SphereInstance* instances, int count,
+                                 const vec3 camera_pos)
 {
 	if (count <= 0 || !instances) {
 		return sorter->instance_ssbo;
@@ -354,7 +354,7 @@ GLuint sphere_sorter_sort_cpu(SphereSorter* sorter,
 	}
 
 	/* 3. Sort entries */
-	qsort(sorter->entries, (size_t)count, sizeof(SphereSortEntry),
+	qsort(sorter->entries, (size_t)count, sizeof(BillboardSortEntry),
 	      compare_sphere_entries);
 
 	/* 4. Reorder instances based on sorted entries */
@@ -384,9 +384,9 @@ static inline uint32_t float_to_sortable_uint(float f_val)
 	return val_conv.uint_val ^ mask;
 }
 
-GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
-                                    const SphereInstance* instances, int count,
-                                    const vec3 camera_pos)
+GLuint billboard_sorter_sort_cpu_radix(BillboardSorter* sorter,
+                                       const SphereInstance* instances,
+                                       int count, const vec3 camera_pos)
 {
 	if (count <= 0 || !instances) {
 		return sorter->instance_ssbo;
@@ -405,25 +405,31 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 		float depth = glm_vec3_distance2((float*)instances[i].model[3],
 		                                 (float*)camera_pos);
 		sorter->entries[i].original_index = i;
-		/* Use memcpy to write the sortable key into the depth field
-		 * without violating strict aliasing. */
-		uint32_t key = float_to_sortable_uint(depth);
-		// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-		memcpy(&sorter->entries[i].depth, &key, sizeof(uint32_t));
+		/* Write sortable key into the depth field via union to avoid
+		 * strict aliasing issues (same approach as
+		 * float_to_sortable_uint). */
+		union {
+			float f;
+			uint32_t u;
+		} pun;
+		pun.u = float_to_sortable_uint(depth);
+		sorter->entries[i].depth = pun.f;
 	}
 
 	/* 3. Radix Sort (4 passes of 8 bits) */
-	SphereSortEntry* current_in = sorter->entries;
-	SphereSortEntry* current_out = sorter->entries_aux;
+	BillboardSortEntry* current_in = sorter->entries;
+	BillboardSortEntry* current_out = sorter->entries_aux;
 
 	for (int shift = 0; shift < RADIX_SHIFT_LIMIT;
 	     shift += RADIX_BITS_PER_PASS) {
 		int counts[RADIX_BUCKETS] = {0};
 		for (int i = 0; i < count; i++) {
-			uint32_t key = 0;
-			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			memcpy(&key, &current_in[i].depth, sizeof(uint32_t));
-			counts[((unsigned int)key >> (unsigned int)shift) &
+			union {
+				float f;
+				uint32_t u;
+			} pun;
+			pun.f = current_in[i].depth;
+			counts[((unsigned int)pun.u >> (unsigned int)shift) &
 			       (unsigned int)RADIX_MASK]++;
 		}
 
@@ -437,17 +443,19 @@ GLuint sphere_sorter_sort_cpu_radix(SphereSorter* sorter,
 		}
 
 		for (int i = 0; i < count; i++) {
-			uint32_t key = 0;
-			// NOLINTNEXTLINE(clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling)
-			memcpy(&key, &current_in[i].depth, sizeof(uint32_t));
+			union {
+				float f;
+				uint32_t u;
+			} pun;
+			pun.f = current_in[i].depth;
 			unsigned int bucket =
-			    ((unsigned int)key >> (unsigned int)shift) &
+			    ((unsigned int)pun.u >> (unsigned int)shift) &
 			    (unsigned int)RADIX_MASK;
 			current_out[offsets[bucket]++] = current_in[i];
 		}
 
 		/* Ping-pong */
-		SphereSortEntry* temp_ptr = current_in;
+		BillboardSortEntry* temp_ptr = current_in;
 		current_in = current_out;
 		current_out = temp_ptr;
 	}

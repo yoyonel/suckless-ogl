@@ -80,7 +80,7 @@ du projet, leurs relations et les ambiguïtés de nommage connues.
 | **Billboard** | Un quad aligné à l'écran qui rend une sphère via raycasting dans le fragment shader, moins coûteux que le rendu de maillage. | Imposteur, sprite, quad |
 | **Groupe de Billboards** (Billboard Group) | Un ensemble géré de **Billboards** avec un VAO partagé et un VBO par instance pour le dessin GPU (`BillboardGroup`). | Batch de billboards |
 | **Instance de Sphère** (Sphere Instance) | Un paquet de données par instance de 64 octets alignés (matrice modèle, matériau PBR, position précédente) envoyé au GPU (`SphereInstance`). | Données d'instance |
-| **Trieur de Sphères** (Sphere Sorter) | Le sous-système qui ordonne les **Billboards** transparents d'arrière en avant pour un mélange alpha correct (`SphereSorter`). | Passe de tri |
+| **Trieur de Billboards** (Billboard Sorter) | Le sous-système qui ordonne les **Billboards** transparents d'arrière en avant pour un mélange alpha correct (`BillboardSorter`). | Passe de tri |
 | **Mode de Tri** (Sorting Mode) | L'algorithme utilisé par le **Trieur** : qsort CPU, radix CPU ou bitonic GPU (`SortingMode`). | Stratégie de tri |
 
 ## 🎨 Rendu — Ombrage & Éclairage
@@ -215,7 +215,7 @@ graph TD
 
 > **Dev :** « Quand on rend la scène, les **Corps** sont dessinés en tant que **Billboards** ou maillages **Icosphère** ? »
 >
-> **Expert domaine :** « Les deux chemins existent. Le **Groupe Instancié** dessine les **Corps** opaques en tant que maillages **Icosphère** via `glDrawElementsInstanced`. Le **Groupe de Billboards** dessine les **Corps** transparents en tant que quads alignés à l'écran avec raycasting dans le fragment shader. Le **Trieur de Sphères** ordonne le tableau de **Billboards** d'arrière en avant avant chaque frame. »
+> **Expert domaine :** « Les deux chemins existent. Le **Groupe Instancié** dessine les **Corps** opaques en tant que maillages **Icosphère** via `glDrawElementsInstanced`. Le **Groupe de Billboards** dessine les **Corps** transparents en tant que quads alignés à l'écran avec raycasting dans le fragment shader. Le **Trieur de Billboards** ordonne le tableau de **Billboards** d'arrière en avant avant chaque frame. »
 >
 > **Dev :** « Et les données d'**Instance de Sphère** — c'est le même format pour les deux chemins ? »
 >
