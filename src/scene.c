@@ -922,7 +922,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			    scene->billboard_instance_count;
 
 			/* Legacy VBO copy only for debug wireframe overlay
-			 * (debug_line_shader reads per-instance attributes) */
+			 * (debug_line_shader reads per-SphereInstance
+			 * attributes) */
 			if (scene->wireframe) {
 				billboard_group_update_from_buffer(
 				    &scene->billboard_group, sorted_ssbo,
@@ -1052,7 +1053,7 @@ void scene_toggle_nbody(Scene* scene)
 			    scene->nbody_sim.bodies[i].albedo);
 		}
 
-		/* Write initial instance data and update GPU */
+		/* Write initial SphereInstance data and upload to GPU */
 		SphereInstance instances[NBODY_MAX_BODIES];
 		nbody_write_instances(&scene->nbody_sim, instances);
 		instanced_group_update(&scene->instanced_group, instances,
@@ -1109,7 +1110,7 @@ void scene_nbody_update(Scene* scene, float delta_time)
 		PROFILE_ZONE_END(trail_ctx);
 	}
 
-	/* Build instance data and upload to GPU */
+	/* Build SphereInstance data and upload to GPU */
 	int count = nbody_get_count(&scene->nbody_sim);
 	SphereInstance instances[NBODY_MAX_BODIES];
 	{
