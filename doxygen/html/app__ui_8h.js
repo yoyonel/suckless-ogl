@@ -68,6 +68,7 @@ var app__ui_8h =
     [ "LEGEND_X_START_FACTOR", "app__ui_8h.html#af6455b39d8b0d631e0e76dde6635ae67", null ],
     [ "LEGEND_Y_FACTOR", "app__ui_8h.html#a22b04358badd54ebe5ee64b4c850f96a", null ],
     [ "LUMINANCE_EPSILON", "app__ui_8h.html#a2f98977b6b578bddebc5e2d078b7baca", null ],
+    [ "NBODY_DAMPING_COLOR", "app__ui_8h.html#a4e27a16413328c0e40c5800a17deed9b", null ],
     [ "NBODY_DIVERGE_COLOR", "app__ui_8h.html#a7d399607cb9c4f50940960d5e2c7aca3", null ],
     [ "NBODY_INFO_COLOR", "app__ui_8h.html#a003f5804a266ac5f391e765f05249fa8", null ],
     [ "NBODY_STABILITY_THRESHOLD", "app__ui_8h.html#ab15eac0bcdadbc85968d2e2b50cd49f6", null ],

@@ -309,12 +309,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a78b7ac6a96f5c33ba9eaff7158368e17">nbody_energy_drift</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
 <tr class="memdesc:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the relative energy drift |E(t) - E₀| / |E₀|.  <a href="nbody_8c.html#a78b7ac6a96f5c33ba9eaff7158368e17">More...</a><br /></td></tr>
 <tr class="separator:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41041d18672c901e03f26b9c9e6fced8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a41041d18672c901e03f26b9c9e6fced8">nbody_energy_drift_signed</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
+<tr class="separator:a41041d18672c901e03f26b9c9e6fced8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3b699a201318a9028b8ae81e58a5fc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ad3b699a201318a9028b8ae81e58a5fc4">nbody_update_time_scale</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
 <tr class="memdesc:ad3b699a201318a9028b8ae81e58a5fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Smoothly transitions time_scale toward target_time_scale.  <a href="nbody_8c.html#ad3b699a201318a9028b8ae81e58a5fc4">More...</a><br /></td></tr>
 <tr class="separator:ad3b699a201318a9028b8ae81e58a5fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9">EPSILON</a> = 1e-6F</td></tr>
+<tr class="separator:ab84b0a39a5bcd3e4bd1a2d19b015bde9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a99cac32ad7b70302025b40f7aad6fa"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a5a99cac32ad7b70302025b40f7aad6fa">CENTRAL_STAR_MASS</a> = 100.0F</td></tr>
 <tr class="separator:a5a99cac32ad7b70302025b40f7aad6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ede174920bd38216f842f697f50ac60"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8c.html#a7ede174920bd38216f842f697f50ac60">CENTRAL_STAR_RADIUS</a> = 1.5F</td></tr>
@@ -511,6 +515,31 @@ Here is the call graph for this function:</div>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a78b7ac6a96f5c33ba9eaff7158368e17_cgraph.svg" width="540" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a41041d18672c901e03f26b9c9e6fced8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41041d18672c901e03f26b9c9e6fced8">&#9670;&nbsp;</a></span>nbody_energy_drift_signed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nbody_energy_drift_signed </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structNBodySim.html">NBodySim</a> *&#160;</td>
+          <td class="paramname"><em>sim</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signed energy drift: negative = energy lost (damping), positive = energy gained (divergence). </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8c_a41041d18672c901e03f26b9c9e6fced8_cgraph.svg" width="540" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -936,6 +965,29 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab84b0a39a5bcd3e4bd1a2d19b015bde9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab84b0a39a5bcd3e4bd1a2d19b015bde9">&#9670;&nbsp;</a></span>EPSILON</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float EPSILON = 1e-6F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Small epsilon to avoid division by zero. </p>
 
 </div>
 </div>

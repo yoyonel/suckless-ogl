@@ -13,7 +13,7 @@
         <link rel="prev" href="../global_illumination/">
       
       
-        <link rel="next" href="../neon_trails/">
+        <link rel="next" href="../shockwave_lensing/">
       
       
         
@@ -1012,6 +1012,123 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#confinement-potential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confinement Potential
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Confinement Potential">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proportional-radial-damping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proportional Radial Damping
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Proportional Radial Damping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stability-indicator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stability Indicator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shockwave-visual-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shockwave Visual Effects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shockwave Visual Effects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#impact-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pipeline Position
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1124,10 +1241,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trail-length-stability" class="md-nav__link">
+  <a href="#trail-length-stability-time-based-sampling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trail Length Stability
+        Trail Length Stability — Time-Based Sampling
       
     </span>
   </a>
@@ -1204,6 +1321,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3759,13 +3904,15 @@ would break symplecticity).</p>
 <p>Variable timesteps destroy the symplectic property.  The simulation uses a
 fixed <span class="arithmatex">\(\Delta t = 1/120\,\text{s}\)</span> with a standard accumulator pattern:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>accumulator += wall_dt × time_scale
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>clamp accumulator to NBODY_MAX_ACCUMULATOR (1/30 s)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>clamp accumulator to NBODY_MAX_ACCUMULATOR (1/10 s)
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>while accumulator &gt;= NBODY_FIXED_DT:
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    integrate_step(NBODY_FIXED_DT)
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    accumulator -= NBODY_FIXED_DT
 </span></code></pre></div>
 <p>The max-accumulator clamp prevents a spiral of death after lag spikes or on
-the first frame.</p>
+the first frame.  The ceiling of <span class="arithmatex">\(1/10\,\text{s}\)</span> supports frame rates as
+low as ~10 FPS without losing simulation time (up to 12 Verlet steps per
+frame for <span class="arithmatex">\(N = 14\)</span> bodies — trivially cheap on the CPU).</p>
 <hr>
 <h2 id="approaches-tried-and-rejected">Approaches Tried and Rejected<a class="headerlink" href="#approaches-tried-and-rejected" title="Permanent link">¶</a></h2>
 <p>During development, several alternative techniques were tested and
@@ -3817,6 +3964,135 @@ is the correct approach for N-body gravity.</p>
 <li><a href="https://en.wikipedia.org/wiki/Position-based_dynamics">Position Based Dynamics — Wikipedia</a></li>
 </ul>
 <hr>
+<h2 id="confinement-potential">Confinement Potential<a class="headerlink" href="#confinement-potential" title="Permanent link">¶</a></h2>
+<p>Bodies that drift too far from the central star are pushed back by a
+<strong>quadratic restoring potential</strong> — a soft wall that keeps the simulation
+visually bounded without hard-clamping positions.</p>
+<h3 id="physics">Physics<a class="headerlink" href="#physics" title="Permanent link">¶</a></h3>
+<p>For each body <span class="arithmatex">\(i\)</span> at distance <span class="arithmatex">\(r_i\)</span> from the star:</p>
+<div class="arithmatex">\[V_\text{conf}(r) = \begin{cases}
+0 &amp; r \le r_\text{max} \\
+\tfrac{1}{2} k (r - r_\text{max})^2 &amp; r &gt; r_\text{max}
+\end{cases}\]</div>
+<p>The resulting force is:</p>
+<div class="arithmatex">\[\mathbf{F}_\text{conf} = -k\,(r - r_\text{max})\,\hat{\mathbf{r}}\]</div>
+<p>where <span class="arithmatex">\(r_\text{max}\)</span> = <code>NBODY_CONFINEMENT_RADIUS</code> (25 units) and <span class="arithmatex">\(k\)</span> =
+<code>NBODY_CONFINEMENT_K</code> (5.0).</p>
+<p><strong>Newton's 3<sup>rd</sup> law reaction</strong> on the central star preserves centre-of-mass:</p>
+<div class="arithmatex">\[\mathbf{F}_\text{star} = +k\,(r - r_\text{max})\,\hat{\mathbf{r}} \times \frac{m_i}{m_0}\]</div>
+<p>The potential is conservative, so the Velocity Verlet integrator remains
+symplectic inside the confinement zone.</p>
+<h3 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Soft wall distance from star</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Spring stiffness (<span class="arithmatex">\(k \cdot dt^2 \approx 0.0003\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="proportional-radial-damping">Proportional Radial Damping<a class="headerlink" href="#proportional-radial-damping" title="Permanent link">¶</a></h2>
+<p>The confinement potential alone causes bodies to oscillate around the
+boundary (ping-pong trajectories).  A <strong>proportional radial damping</strong> term
+removes energy only from the outward velocity component, and only in the
+confinement zone:</p>
+<div class="arithmatex">\[\gamma_\text{eff} = \gamma \cdot \frac{r - r_\text{max}}{r_\text{max}}\]</div>
+<p>where <span class="arithmatex">\(\gamma\)</span> = <code>NBODY_CONFINEMENT_DAMPING</code> (20.0).</p>
+<ul>
+<li><strong>Radial only</strong>: only the <span class="arithmatex">\((\mathbf{v} \cdot \hat{\mathbf{r}})\)</span> component
+  is damped; tangential speed is preserved → angular momentum is conserved.</li>
+<li><strong>Outward only</strong>: damping is applied when <span class="arithmatex">\(v_\text{radial} &gt; 0\)</span> (body
+  moving away from star).</li>
+<li><strong>Proportional to overshoot</strong>: near the boundary (<span class="arithmatex">\(r \approx r_\text{max}\)</span>),
+  damping is negligible; far beyond, it is strong.  This lets the system
+  reach an equilibrium where orbits no longer cross the boundary and energy
+  drain stops (drift plateaus).</li>
+<li><strong>Momentum conservation</strong>: the impulse is transferred to the central star
+  (<span class="arithmatex">\(\Delta v_\text{star} = -(m_i/m_0) \cdot \Delta v_i\)</span>).</li>
+</ul>
+<h3 id="stability-indicator">Stability Indicator<a class="headerlink" href="#stability-indicator" title="Permanent link">¶</a></h3>
+<p>The HUD stability indicator uses <strong>signed</strong> energy drift to distinguish
+damping from divergence:</p>
+<table>
+<thead>
+<tr>
+<th>Colour</th>
+<th>State</th>
+<th>Condition</th>
+<th>Display</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Green</td>
+<td>Stable</td>
+<td>$</td>
+<td>\text{drift}</td>
+</tr>
+<tr>
+<td>Yellow</td>
+<td>Damping</td>
+<td><span class="arithmatex">\(\text{drift}_\text{signed} &lt; 0\)</span></td>
+<td><code>E: XX%</code> (retained)</td>
+</tr>
+<tr>
+<td>Red</td>
+<td>Divergent</td>
+<td><span class="arithmatex">\(\text{drift}_\text{signed} &gt; 0\)</span></td>
+<td><code>drift: X.XX%</code></td>
+</tr>
+</tbody>
+</table>
+<p>In <strong>Damping</strong> mode, the display shows <code>E: XX%</code> = <span class="arithmatex">\(100 \times (1 - |\text{drift}|)\)</span>,
+representing how much of the initial energy the system still has.  This avoids
+the confusing "drift: 349%" that would occur with the absolute metric.</p>
+<hr>
+<h2 id="shockwave-visual-effects">Shockwave Visual Effects<a class="headerlink" href="#shockwave-visual-effects" title="Permanent link">¶</a></h2>
+<p>When a body impacts the confinement boundary, a <strong>shockwave ring</strong> expands
+from the impact point, providing visual feedback for the otherwise invisible
+confinement zone.</p>
+<h3 id="impact-detection">Impact Detection<a class="headerlink" href="#impact-detection" title="Permanent link">¶</a></h3>
+<p>Each integration sub-step checks whether a body's distance from the star
+exceeds <code>NBODY_CONFINEMENT_RADIUS</code> with a positive outward radial velocity.
+Impacts are recorded per-body in <code>NBodyImpact</code> slots — only the <strong>peak
+velocity</strong> across all sub-steps of a frame is kept, naturally deduplicating
+multiple hits from the fixed-timestep accumulator (~12 sub-steps/frame).</p>
+<h3 id="rendering">Rendering<a class="headerlink" href="#rendering" title="Permanent link">¶</a></h3>
+<p>Shockwaves are rendered as <strong>additive-blended screen-aligned quads</strong> (billboard)
+with a procedural expanding ring pattern in the fragment shader:</p>
+<ul>
+<li><strong>Ring profile</strong>: <code>smoothstep</code> inner/outer edges around a time-dependent
+  centre radius</li>
+<li><strong>HDR emissive</strong>: output colour is scaled by 4× for bloom interaction</li>
+<li><strong>Fade</strong>: intensity = <span class="arithmatex">\((1 - \text{progress}^2)\)</span> for quick ramp-up, slow fade</li>
+<li><strong>Billboard</strong>: quad faces camera using right/up vectors extracted from the
+  view matrix</li>
+</ul>
+<p>Up to <code>SHOCKWAVE_MAX_ACTIVE</code> (8) simultaneous shockwaves; oldest is evicted
+when full.  Duration is <code>SHOCKWAVE_DURATION</code> (1.2 s), max ring radius is
+<code>SHOCKWAVE_MAX_RADIUS</code> (6.0 world units).</p>
+<h3 id="pipeline-position">Pipeline Position<a class="headerlink" href="#pipeline-position" title="Permanent link">¶</a></h3>
+<p>Shockwaves are drawn in the <strong>HDR FBO</strong>, after N-body trails and before
+post-processing.  This means bloom naturally amplifies the ring glow:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>scene_render() → Skybox → Spheres → NBody Trails → Shockwave VFX → Probes
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                                      ↓
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                              postprocess_end() → Bloom → ...
+</span></code></pre></div>
+<hr>
 <h2 id="test-validation">Test Validation<a class="headerlink" href="#test-validation" title="Permanent link">¶</a></h2>
 <p>The automated test suite (<code>tests/test_nbody_stability.c</code>) verifies physics
 invariants over long simulation runs:</p>
@@ -3837,7 +4113,7 @@ invariants over long simulation runs:</p>
 <tr>
 <td><code>test_nbody_energy_conservation</code></td>
 <td>Energy bounded after init boost</td>
-<td><span class="arithmatex">\(\Delta E / E_0 &lt; 5\%\)</span></td>
+<td><span class="arithmatex">\(\Delta E / E_0 &lt; 65\%\)</span></td>
 </tr>
 <tr>
 <td><code>test_nbody_paused_no_change</code></td>
@@ -3942,8 +4218,48 @@ invariants over long simulation runs:</p>
 </tr>
 <tr>
 <td><code>NBODY_MAX_ACCUMULATOR</code></td>
-<td>1/30 s</td>
-<td>Max accumulated physics time</td>
+<td>1/10 s</td>
+<td>Max accumulated physics time (supports ~10 FPS)</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Soft wall distance from central star</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Confinement spring stiffness</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_DAMPING</code></td>
+<td>20.0</td>
+<td>Radial damping base coefficient</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_ACTIVE</code></td>
+<td>8</td>
+<td>Max simultaneous shockwaves</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_DURATION</code></td>
+<td>1.2 s</td>
+<td>Shockwave ring lifetime</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_RADIUS</code></td>
+<td>6.0</td>
+<td>Max ring expansion (world units)</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MIN_VELOCITY</code></td>
+<td>0.2</td>
+<td>Min velocity to trigger shockwave</td>
+</tr>
+<tr>
+<td><code>TRAIL_DURATION_DEFAULT</code></td>
+<td>4.0 s</td>
+<td>Trail lifetime in seconds (adjustable 0.5–30 s)</td>
 </tr>
 </tbody>
 </table>
@@ -4051,46 +4367,61 @@ are displayed:</p>
 <ol>
 <li><strong>Energy &amp; Gravity:</strong> <code>Ek: 77.1 J | G: 2.000</code> — kinetic energy
    <span class="arithmatex">\(E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2\)</span> and current <span class="arithmatex">\(G\)</span> value.</li>
-<li><strong>Stability:</strong> <code>Stability: Stable (drift: 0.12%)</code> — shows whether the
-   integrator is conserving energy.</li>
+<li><strong>Stability:</strong> colour-coded indicator with context-dependent metric:</li>
 </ol>
-<p>The stability indicator is colour-coded:</p>
 <table>
 <thead>
 <tr>
 <th>Colour</th>
 <th>State</th>
-<th>Condition</th>
+<th>Metric</th>
+<th>Example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Green</td>
 <td>Stable</td>
-<td>drift <span class="arithmatex">\(&lt; 5\%\)</span></td>
+<td>drift%</td>
+<td><code>Stability: Stable (drift: 0.12%)</code></td>
+</tr>
+<tr>
+<td>Yellow</td>
+<td>Damping</td>
+<td>retained energy</td>
+<td><code>Stability: Damping (E: 78%)</code></td>
 </tr>
 <tr>
 <td>Red</td>
 <td>Divergent</td>
-<td>drift <span class="arithmatex">\(\geq 5\%\)</span></td>
+<td>drift%</td>
+<td><code>Stability: Divergent (drift: 6.42%)</code></td>
 </tr>
 </tbody>
 </table>
-<p>Drift is computed as:</p>
-<div class="arithmatex">\[\text{drift} = \frac{|E(t) - E_0|}{|E_0|}\]</div>
-<p>where <span class="arithmatex">\(E_0\)</span> is the total energy snapshot taken at initialisation (or after
-a gravity change).</p>
-<h3 id="trail-length-stability">Trail Length Stability<a class="headerlink" href="#trail-length-stability" title="Permanent link">¶</a></h3>
-<p>The trail sampling accumulator scales by <code>time_scale</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>effective_dt = wall_dt × time_scale
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sample_timer += effective_dt
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>while sample_timer &gt;= TRAIL_SAMPLE_INTERVAL:
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    record positions
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    sample_timer -= TRAIL_SAMPLE_INTERVAL
+<p>Drift is <span class="arithmatex">\(|E(t) - E_0| / |E_0|\)</span>.  In Damping mode, retained energy is
+<span class="arithmatex">\(100 \times (1 - \text{drift})\)</span>, showing how much energy the system still has
+(avoids confusing &gt;100% drift values from long damping runs).</p>
+<h3 id="trail-length-stability-time-based-sampling">Trail Length Stability — Time-Based Sampling<a class="headerlink" href="#trail-length-stability-time-based-sampling" title="Permanent link">¶</a></h3>
+<p>Trail length is controlled by a <strong>duration parameter</strong> (<code>trail_duration</code>,
+default 4.0 s, adjustable 0.5–30 s) rather than a fixed point count.  Each
+recorded sample carries a <strong>timestamp</strong> from a monotonic simulation clock:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sim_time += wall_dt × |time_scale|
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sample_timer += wall_dt × |time_scale|
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>while sample_timer &gt;= TRAIL_SAMPLE_INTERVAL:
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    for each body:
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        ring_push(position, sim_time)   ← timestamped
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    sample_timer -= TRAIL_SAMPLE_INTERVAL
 </span></code></pre></div>
-<p>This ensures the trail ring buffer fills and evicts points at the same
-<em>visual</em> pace regardless of <code>time_scale</code>. At 8× speed, 8 samples are emitted
-per frame instead of 1, keeping trail length constant in world units.</p>
+<p>The ribbon builder then computes per-point age:</p>
+<div class="arithmatex">\[\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}\]</div>
+<p>Points with <span class="arithmatex">\(\text{age} &gt; 1\)</span> are discarded.  Width and intensity taper use
+this age factor instead of the point's ring-buffer index.</p>
+<p><strong>Why this matters at low FPS:</strong>  At 15 FPS only ~15 samples/sec are recorded
+(fewer unique positions), but each carries the correct timestamp.  The ribbon
+still spans exactly <code>trail_duration</code> seconds of trajectory, so trail length
+is identical at 15 and 60 FPS.  At high <code>time_scale</code> (e.g. 8×), 8 samples
+are emitted per frame, preserving spatial fidelity.</p>
 <hr>
 <h2 id="profiling-zones">Profiling Zones<a class="headerlink" href="#profiling-zones" title="Permanent link">¶</a></h2>
 <p>The N-body pipeline is instrumented with fine-grained CPU profiling zones
@@ -4175,18 +4506,18 @@ per frame instead of 1, keeping trail length constant in world units.</p>
 grid by calling <code>scene_init_instancing()</code> a second time.  This re-init path must
 first release every resource allocated by the previous init call to avoid GPU
 buffer and CPU memory leaks:</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/* Cleanup before re-init (scene.c — N-body OFF branch) */</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">trail_renderer_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">trail_renderer</span><span class="p">);</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#ifdef USE_TRANSPARENT_BILLBOARDS</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">platform_aligned_free</span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">);</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">billboard_sorter_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_sorter</span><span class="p">);</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cp">#endif</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">instanced_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">instanced_group</span><span class="p">);</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">billboard_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_group</span><span class="p">);</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">scene_init_instancing</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cm">/* Cleanup before re-init (scene.c — N-body OFF branch) */</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">trail_renderer_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">trail_renderer</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#ifdef USE_TRANSPARENT_BILLBOARDS</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">platform_aligned_free</span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">);</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">billboard_sorter_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_sorter</span><span class="p">);</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="cp">#endif</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">instanced_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">instanced_group</span><span class="p">);</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">billboard_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_group</span><span class="p">);</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">scene_init_instancing</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
 </span></code></pre></div>
 <p>The cleanup mirrors what <code>scene_cleanup()</code> does at application exit.  Without it,
 each ON → OFF toggle leaked ~27 KB (4 blocks: instance VBO, billboard VBO,
@@ -4235,6 +4566,22 @@ aligned instance array, sphere sorter).</p>
 <td>F2 help overlay registration</td>
 </tr>
 <tr>
+<td><code>include/shockwave.h</code></td>
+<td>Shockwave VFX API and data structures</td>
+</tr>
+<tr>
+<td><code>src/shockwave.c</code></td>
+<td>Shockwave renderer (init, emit, update, draw)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.vert</code></td>
+<td>Billboard vertex shader (camera-facing quad)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.frag</code></td>
+<td>Procedural expanding ring fragment shader</td>
+</tr>
+<tr>
 <td><code>shaders/trail.vert</code></td>
 <td>Trail vertex shader</td>
 </tr>
@@ -4264,7 +4611,7 @@ aligned instance array, sphere sorter).</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 26, 2026 13:27:32 UTC">April 26, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 25, 2026 12:54:33 UTC">April 25, 2026</span>
   </span>
 
     

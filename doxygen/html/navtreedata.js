@@ -82,18 +82,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui_8h.html#aebecb4aca5518dc86b7ba096ed227049",
-"env__manager_8c.html#a5a8e4c362fb7ec501f8d5d5556af04bb",
-"gpu__profiler_8h.html#a2bc152ef4d2da90b79cdaebf10581816",
-"icosphere_8c.html#a207fd5507206d307cd63f95374fcd00d",
-"pbr_8h.html#aae7b31749ecdf5e4a064b8bd0d4f74c7",
-"postprocess_8h.html#a61256b363d5eee27d7a269338b5e4c5b",
-"shader_8c.html#a52a09bf0e2b9843dffb619da33cce191",
-"structBillboardSorter.html#a20b35b0a4e71456affb6ee75f77489c9",
-"structGamepadState.html#a57a6f8ac377f9da9a70368f5a8bf90f5",
-"structPostProcess.html#ad295fa8bdbe10ab35d122decf9b77ba5",
-"structUIContext.html#ab4107aff07820adb38b338d426e6a434",
-"utils_8h.html#ac333249d502a536c37149f9397c09060"
+"app__ui_8h.html#ae97efd99556e79d62aa2299b0b87b607",
+"env__manager_8c.html#a2be9d0e288060ee8fc01063fae7417aa",
+"gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3",
+"ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8",
+"pbr_8h.html#a01b429d5a8f495e2e01428fc05cb7610",
+"postprocess_8h.html#a4885a5e722dcddd4f99ed7a8714416af",
+"sh__probe_8glsl.html#af76936b4f5273c1c4f09fb3586560fa9",
+"structAppUIOverlay.html",
+"structGPUQueryBuffer.html",
+"structPBRSpecUniforms.html#a0a8721216be4beb02eeb47a53593f2ac",
+"structShockwaveRenderer.html#a24a1a775f9eb7fb10d1fd324fda18bd0",
+"ui_8c.html#a5ef7672ec0be8cbe08dfecd7dad395a7"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

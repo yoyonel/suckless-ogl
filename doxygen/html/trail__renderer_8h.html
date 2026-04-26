@@ -299,9 +299,9 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a0ed680fdb405e7195d9f14032851eebb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="trail__renderer_8h.html#a0ed680fdb405e7195d9f14032851eebbaf87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a> = 256
+<tr class="memitem:a0944a4353780132eeab7b06e3e42291d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="trail__renderer_8h.html#a0944a4353780132eeab7b06e3e42291daf87c84c7806bccc5e676f390a7b31678">TRAIL_MAX_POINTS</a> = 256
  }</td></tr>
-<tr class="separator:a0ed680fdb405e7195d9f14032851eebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a0944a4353780132eeab7b06e3e42291d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeea0fca6776525f01d227a71e9f21b8b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8b">TrailNeonParam</a> { <a class="el" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8badc2b327c75aee62c0cad58121021e9ef">TRAIL_NEON_PARAM_INTENSITY</a> = 0
 , <a class="el" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba81282d66a5516dddd84953b8e822aa86">TRAIL_NEON_PARAM_CORE</a>
 , <a class="el" href="trail__renderer_8h.html#aeea0fca6776525f01d227a71e9f21b8ba6165cee39a58de759970574639839a0e">TRAIL_NEON_PARAM_WIDTH</a>
@@ -321,6 +321,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a7e1c8078c51686832375c5f3f520b3e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6">trail_renderer_record</a> (<a class="el" href="structTrailRenderer.html">TrailRenderer</a> *tr, const <a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
 <tr class="memdesc:a7e1c8078c51686832375c5f3f520b3e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records current positions from the simulation.  <a href="trail__renderer_8h.html#a7e1c8078c51686832375c5f3f520b3e6">More...</a><br /></td></tr>
 <tr class="separator:a7e1c8078c51686832375c5f3f520b3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10f80d37b2756126f0989e21f24c1417"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a10f80d37b2756126f0989e21f24c1417">trail_renderer_get_duration</a> (const <a class="el" href="structTrailRenderer.html">TrailRenderer</a> *tr)</td></tr>
+<tr class="memdesc:a10f80d37b2756126f0989e21f24c1417"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current trail duration in seconds.  <a href="trail__renderer_8h.html#a10f80d37b2756126f0989e21f24c1417">More...</a><br /></td></tr>
+<tr class="separator:a10f80d37b2756126f0989e21f24c1417"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad796ac6e55dc2e5e8f3889babffd9f99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#ad796ac6e55dc2e5e8f3889babffd9f99">trail_renderer_set_duration</a> (<a class="el" href="structTrailRenderer.html">TrailRenderer</a> *tr, float duration)</td></tr>
+<tr class="memdesc:ad796ac6e55dc2e5e8f3889babffd9f99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the trail duration in seconds (clamped to valid range).  <a href="trail__renderer_8h.html#ad796ac6e55dc2e5e8f3889babffd9f99">More...</a><br /></td></tr>
+<tr class="separator:ad796ac6e55dc2e5e8f3889babffd9f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7db1447b4499e66bd9f20ab3174a671"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671">trail_renderer_draw</a> (<a class="el" href="structTrailRenderer.html">TrailRenderer</a> *tr, mat4 view, mat4 proj, vec3 cam_pos)</td></tr>
 <tr class="memdesc:af7db1447b4499e66bd9f20ab3174a671"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds ribbon geometry and renders all trails.  <a href="trail__renderer_8h.html#af7db1447b4499e66bd9f20ab3174a671">More...</a><br /></td></tr>
 <tr class="separator:af7db1447b4499e66bd9f20ab3174a671"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -339,6 +345,14 @@ Variables</h2></td></tr>
 <tr class="separator:a4787e6fd0fac1a4ec43c98ed9bf449ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad65403268c340a602a289598ac94716d"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#ad65403268c340a602a289598ac94716d">TRAIL_SAMPLE_INTERVAL</a> = 1.0F / 60.0F</td></tr>
 <tr class="separator:ad65403268c340a602a289598ac94716d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74ce508c09a63cbec3cd0f1017e2d8c5"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a74ce508c09a63cbec3cd0f1017e2d8c5">TRAIL_DURATION_DEFAULT</a> = 4.0F</td></tr>
+<tr class="separator:a74ce508c09a63cbec3cd0f1017e2d8c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab80eca51a868157a5bba3a75e72abb1f"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#ab80eca51a868157a5bba3a75e72abb1f">TRAIL_DURATION_MIN</a> = 0.5F</td></tr>
+<tr class="separator:ab80eca51a868157a5bba3a75e72abb1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a410780d43ed6c5f3ea3f046f81343e9b"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a410780d43ed6c5f3ea3f046f81343e9b">TRAIL_DURATION_MAX</a> = 30.0F</td></tr>
+<tr class="separator:a410780d43ed6c5f3ea3f046f81343e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a610eafa3ffd25101b37ee160d93bbaa2"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a610eafa3ffd25101b37ee160d93bbaa2">TRAIL_DURATION_STEP</a> = 0.5F</td></tr>
+<tr class="separator:a610eafa3ffd25101b37ee160d93bbaa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4682a5b0a09be8ada60f762bd2bd4ed7"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a4682a5b0a09be8ada60f762bd2bd4ed7">TRAIL_NEON_INTENSITY_DEFAULT</a> = 5.0F</td></tr>
 <tr class="separator:a4682a5b0a09be8ada60f762bd2bd4ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a451af5322713fbd9e4b339f4afc86e69"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="trail__renderer_8h.html#a451af5322713fbd9e4b339f4afc86e69">TRAIL_NEON_CORE_EXP_DEFAULT</a> = 12.0F</td></tr>
@@ -367,8 +381,8 @@ Variables</h2></td></tr>
 <li>Additive blending for glow accumulation </li>
 </ul>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a0ed680fdb405e7195d9f14032851eebb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ed680fdb405e7195d9f14032851eebb">&#9670;&nbsp;</a></span>anonymous enum</h2>
+<a id="a0944a4353780132eeab7b06e3e42291d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0944a4353780132eeab7b06e3e42291d">&#9670;&nbsp;</a></span>anonymous enum</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -378,9 +392,9 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Maximum trail sample points per body. At 60 samples/sec ≈ 4.3 seconds. </p>
+<p>Maximum trail sample points per body. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0ed680fdb405e7195d9f14032851eebbaf87c84c7806bccc5e676f390a7b31678"></a>TRAIL_MAX_POINTS&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0944a4353780132eeab7b06e3e42291daf87c84c7806bccc5e676f390a7b31678"></a>TRAIL_MAX_POINTS&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -517,9 +531,29 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="trail__renderer_8h_af7db1447b4499e66bd9f20ab3174a671_cgraph.svg" width="100%" height="442"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="trail__renderer_8h_af7db1447b4499e66bd9f20ab3174a671_cgraph.svg" width="100%" height="472"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
+
+</div>
+</div>
+<a id="a10f80d37b2756126f0989e21f24c1417"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10f80d37b2756126f0989e21f24c1417">&#9670;&nbsp;</a></span>trail_renderer_get_duration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float trail_renderer_get_duration </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTrailRenderer.html">TrailRenderer</a> *&#160;</td>
+          <td class="paramname"><em>tr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the current trail duration in seconds. </p>
 
 </div>
 </div>
@@ -661,7 +695,127 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
+<a id="ad796ac6e55dc2e5e8f3889babffd9f99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad796ac6e55dc2e5e8f3889babffd9f99">&#9670;&nbsp;</a></span>trail_renderer_set_duration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void trail_renderer_set_duration </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTrailRenderer.html">TrailRenderer</a> *&#160;</td>
+          <td class="paramname"><em>tr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>duration</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the trail duration in seconds (clamped to valid range). </p>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a74ce508c09a63cbec3cd0f1017e2d8c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74ce508c09a63cbec3cd0f1017e2d8c5">&#9670;&nbsp;</a></span>TRAIL_DURATION_DEFAULT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float TRAIL_DURATION_DEFAULT = 4.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Default trail duration in seconds (how long a trail persists). </p>
+
+</div>
+</div>
+<a id="a410780d43ed6c5f3ea3f046f81343e9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a410780d43ed6c5f3ea3f046f81343e9b">&#9670;&nbsp;</a></span>TRAIL_DURATION_MAX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float TRAIL_DURATION_MAX = 30.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab80eca51a868157a5bba3a75e72abb1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab80eca51a868157a5bba3a75e72abb1f">&#9670;&nbsp;</a></span>TRAIL_DURATION_MIN</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float TRAIL_DURATION_MIN = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Minimum / maximum trail duration for runtime adjustment. </p>
+
+</div>
+</div>
+<a id="a610eafa3ffd25101b37ee160d93bbaa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a610eafa3ffd25101b37ee160d93bbaa2">&#9670;&nbsp;</a></span>TRAIL_DURATION_STEP</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float TRAIL_DURATION_STEP = 0.5F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3d4573c823d99094e05ef8813cfe95b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3d4573c823d99094e05ef8813cfe95b4">&#9670;&nbsp;</a></span>TRAIL_HDR_INTENSITY</h2>
 

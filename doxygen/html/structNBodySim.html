@@ -265,7 +265,7 @@ $(document).ready(function(){initNavTree('structNBodySim.html',''); initResizabl
 <div class="dynheader">
 Collaboration diagram for NBodySim:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structNBodySim__coll__graph.svg" width="124" height="127"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structNBodySim__coll__graph.svg" width="259" height="127"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -285,8 +285,12 @@ Data Fields</h2></td></tr>
 <tr class="separator:a8ab28ed426bf008abdf122806930be2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27ace004d1c3b31296f8e42d7aca98cd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodySim.html#a27ace004d1c3b31296f8e42d7aca98cd">initial_energy</a></td></tr>
 <tr class="separator:a27ace004d1c3b31296f8e42d7aca98cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceb905f716dc58ea27f06064362b3079"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodySim.html#aceb905f716dc58ea27f06064362b3079">sim_time</a></td></tr>
+<tr class="separator:aceb905f716dc58ea27f06064362b3079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a853adc6d46d93bba8728cfdc350f485b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodySim.html#a853adc6d46d93bba8728cfdc350f485b">paused</a></td></tr>
 <tr class="separator:a853adc6d46d93bba8728cfdc350f485b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4fd2ae205f64a894417f5a7d03bdb00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNBodyImpact.html">NBodyImpact</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodySim.html#ad4fd2ae205f64a894417f5a7d03bdb00">impacts</a> [<a class="el" href="nbody_8h.html#aaf8fd5f0e57d456151c951e0f3715fc4a4a415bff49a2b0923c1fe9f82e90e6a7">NBODY_MAX_BODIES</a>]</td></tr>
+<tr class="separator:ad4fd2ae205f64a894417f5a7d03bdb00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>State container for the N-body simulation. </p>
@@ -351,6 +355,21 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
+<a id="ad4fd2ae205f64a894417f5a7d03bdb00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4fd2ae205f64a894417f5a7d03bdb00">&#9670;&nbsp;</a></span>impacts</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structNBodyImpact.html">NBodyImpact</a> NBodySim::impacts[<a class="el" href="nbody_8h.html#aaf8fd5f0e57d456151c951e0f3715fc4a4a415bff49a2b0923c1fe9f82e90e6a7">NBODY_MAX_BODIES</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Per-body impacts. </p>
+
+</div>
+</div>
 <a id="a27ace004d1c3b31296f8e42d7aca98cd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a27ace004d1c3b31296f8e42d7aca98cd">&#9670;&nbsp;</a></span>initial_energy</h2>
 
@@ -378,6 +397,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>If true, simulation does not advance. </p>
+
+</div>
+</div>
+<a id="aceb905f716dc58ea27f06064362b3079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceb905f716dc58ea27f06064362b3079">&#9670;&nbsp;</a></span>sim_time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float NBodySim::sim_time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Monotonic simulation clock (seconds). </p>
 
 </div>
 </div>

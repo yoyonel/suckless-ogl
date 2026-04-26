@@ -429,54 +429,54 @@ var sectionId = 'dynsection-4';
 <path fill="none" stroke="midnightblue" d="M29.1,-544.32C29.85,-601.61 36.4,-892.46 92,-957.5 95.17,-961.21 98.9,-964.35 102.99,-967.01"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="101.34,-970.1 111.8,-971.83 104.7,-963.96 101.34,-970.1"/>
 </g>
-<!-- Node275 -->
+<!-- Node279 -->
 <g id="node47" class="node">
-<title>Node275</title>
+<title>Node279</title>
 <g id="a_node47"><a xlink:href="scene_8h.html#aa64367048d138627fede2551e1c9d1e3" target="_top" xlink:title="Advances the N&#45;body simulation by one frame.">
 <polygon fill="white" stroke="red" points="110,-126 110,-145 229,-145 229,-126 110,-126"/>
 <text text-anchor="middle" x="169.5" y="-133" font-family="Helvetica,sans-Serif" font-size="10.00">scene_nbody_update</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node275 -->
+<!-- Node1&#45;&gt;Node279 -->
 <g id="edge53" class="edge">
-<title>Node1&#45;&gt;Node275</title>
+<title>Node1&#45;&gt;Node279</title>
 <path fill="none" stroke="midnightblue" d="M29.21,-524.94C30.59,-471.57 39.93,-210.87 92,-154.5 94.61,-151.67 97.58,-149.23 100.79,-147.14"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="102.59,-150.14 109.76,-142.34 99.29,-143.96 102.59,-150.14"/>
 </g>
-<!-- Node285 -->
+<!-- Node291 -->
 <g id="node48" class="node">
-<title>Node285</title>
+<title>Node291</title>
 <g id="a_node48"><a xlink:href="scene_8h.html#a97b3fbf4a92687b0b76a08b452daa63e" target="_top" xlink:title="Updates GPU buffers for dynamic geometry (e.g. LOD changes).">
 <polygon fill="white" stroke="black" points="96.5,-88 96.5,-107 242.5,-107 242.5,-88 96.5,-88"/>
 <text text-anchor="middle" x="169.5" y="-95" font-family="Helvetica,sans-Serif" font-size="10.00">scene_update_gpu_buffers</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node285 -->
+<!-- Node1&#45;&gt;Node291 -->
 <g id="edge54" class="edge">
-<title>Node1&#45;&gt;Node285</title>
+<title>Node1&#45;&gt;Node291</title>
 <path fill="none" stroke="midnightblue" d="M29.06,-524.75C29.58,-467.83 35.06,-179.05 92,-116.5 93.2,-115.18 94.48,-113.94 95.83,-112.79"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="97.95,-115.58 104.17,-107 93.96,-109.82 97.95,-115.58"/>
 </g>
-<!-- Node286 -->
+<!-- Node292 -->
 <g id="node49" class="node">
-<title>Node286</title>
+<title>Node292</title>
 <g id="a_node49"><a xlink:href="ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b" target="_top" xlink:title="Binds a mesh (VBO/EBO) to the SSBO VAO.">
 <polygon fill="white" stroke="black" points="104,-50 104,-69 235,-69 235,-50 104,-50"/>
 <text text-anchor="middle" x="169.5" y="-57" font-family="Helvetica,sans-Serif" font-size="10.00">ssbo_group_bind_mesh</text>
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node286 -->
+<!-- Node1&#45;&gt;Node292 -->
 <g id="edge55" class="edge">
-<title>Node1&#45;&gt;Node286</title>
+<title>Node1&#45;&gt;Node292</title>
 <path fill="none" stroke="midnightblue" d="M28.92,-524.66C28.64,-464.56 30.15,-147.29 92,-78.5 93.06,-77.32 94.18,-76.21 95.35,-75.17"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="97.66,-77.82 103.76,-69.16 93.59,-72.12 97.66,-77.82"/>
 </g>
-<!-- Node287 -->
+<!-- Node293 -->
 <g id="node50" class="node">
-<title>Node287</title>
+<title>Node293</title>
 <g id="a_node50"><a xlink:href="tracy__manager_8h.html#a15f341fbf0f0311899c1103b2ef05bc0" target="_top" xlink:title="Asynchronously capture and send screenshots to Tracy. Should be called once per frame.">
 <polygon fill="white" stroke="black" points="105,-0.5 105,-30.5 234,-30.5 234,-0.5 105,-0.5"/>
 <text text-anchor="start" x="113" y="-18.5" font-family="Helvetica,sans-Serif" font-size="10.00">tracy_manager_update</text>
@@ -484,9 +484,9 @@ var sectionId = 'dynsection-4';
 </a>
 </g>
 </g>
-<!-- Node1&#45;&gt;Node287 -->
+<!-- Node1&#45;&gt;Node293 -->
 <g id="edge56" class="edge">
-<title>Node1&#45;&gt;Node287</title>
+<title>Node1&#45;&gt;Node293</title>
 <path fill="none" stroke="midnightblue" d="M28.88,-524.73C28.28,-462.19 27.95,-117.96 92,-40.5 93.48,-38.71 95.1,-37.04 96.82,-35.49"/>
 <polygon fill="midnightblue" stroke="midnightblue" points="99.03,-38.21 104.98,-29.44 94.87,-32.58 99.03,-38.21"/>
 </g>

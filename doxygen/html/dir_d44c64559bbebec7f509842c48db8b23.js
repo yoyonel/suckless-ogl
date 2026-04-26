@@ -46,6 +46,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "scene.h", "scene_8h.html", "scene_8h" ],
     [ "sh_math.h", "sh__math_8h.html", "sh__math_8h" ],
     [ "shader.h", "shader_8h.html", "shader_8h" ],
+    [ "shockwave.h", "shockwave_8h.html", "shockwave_8h" ],
     [ "simd_utils.h", "simd__utils_8h.html", "simd__utils_8h" ],
     [ "skybox.h", "skybox_8h.html", "skybox_8h" ],
     [ "ssbo_rendering.h", "ssbo__rendering_8h.html", "ssbo__rendering_8h" ],

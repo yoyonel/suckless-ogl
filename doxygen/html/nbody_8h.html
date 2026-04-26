@@ -285,6 +285,9 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodyParticle.html">NBodyParticle</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A single gravitational body.  <a href="structNBodyParticle.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodyImpact.html">NBodyImpact</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records a confinement boundary hit for visual effects.  <a href="structNBodyImpact.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNBodySim.html">NBodySim</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">State container for the N-body simulation.  <a href="structNBodySim.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -318,6 +321,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17">nbody_energy_drift</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
 <tr class="memdesc:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the relative energy drift |E(t) - E₀| / |E₀|.  <a href="nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17">More...</a><br /></td></tr>
 <tr class="separator:a78b7ac6a96f5c33ba9eaff7158368e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41041d18672c901e03f26b9c9e6fced8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8">nbody_energy_drift_signed</a> (const <a class="el" href="structNBodySim.html">NBodySim</a> *sim)</td></tr>
+<tr class="separator:a41041d18672c901e03f26b9c9e6fced8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3b699a201318a9028b8ae81e58a5fc4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4">nbody_update_time_scale</a> (<a class="el" href="structNBodySim.html">NBodySim</a> *sim, float delta_time)</td></tr>
 <tr class="memdesc:ad3b699a201318a9028b8ae81e58a5fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Smoothly transitions time_scale toward target_time_scale.  <a href="nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4">More...</a><br /></td></tr>
 <tr class="separator:ad3b699a201318a9028b8ae81e58a5fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -332,8 +337,14 @@ Variables</h2></td></tr>
 <tr class="separator:a8f6ffb88d46f1bd72ef995526bec33b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ed40716bb15fc1dda0a941920a448c4"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a6ed40716bb15fc1dda0a941920a448c4">NBODY_FIXED_DT</a> = 1.0F / 120.0F</td></tr>
 <tr class="separator:a6ed40716bb15fc1dda0a941920a448c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63380969f164f080d6ab4ba45dbc1a7d"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a63380969f164f080d6ab4ba45dbc1a7d">NBODY_MAX_ACCUMULATOR</a> = 1.0F / 30.0F</td></tr>
+<tr class="memitem:a63380969f164f080d6ab4ba45dbc1a7d"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a63380969f164f080d6ab4ba45dbc1a7d">NBODY_MAX_ACCUMULATOR</a> = 1.0F / 10.0F</td></tr>
 <tr class="separator:a63380969f164f080d6ab4ba45dbc1a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8f51c259d139638ee86cf612823e891"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#ab8f51c259d139638ee86cf612823e891">NBODY_CONFINEMENT_RADIUS</a> = 25.0F</td></tr>
+<tr class="separator:ab8f51c259d139638ee86cf612823e891"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade46901540bfd5553911f666d34b5d64"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#ade46901540bfd5553911f666d34b5d64">NBODY_CONFINEMENT_K</a> = 5.0F</td></tr>
+<tr class="separator:ade46901540bfd5553911f666d34b5d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41b4a1c471dbb7d7b05c8764d13b834f"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#a41b4a1c471dbb7d7b05c8764d13b834f">NBODY_CONFINEMENT_DAMPING</a> = 20.0F</td></tr>
+<tr class="separator:a41b4a1c471dbb7d7b05c8764d13b834f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3f85af87e6867a74b629e2707e4007e"><td class="memItemLeft" align="right" valign="top">static const float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="nbody_8h.html#aa3f85af87e6867a74b629e2707e4007e">NBODY_TIME_SCALE_RATE</a> = 3.0F</td></tr>
 <tr class="separator:aa3f85af87e6867a74b629e2707e4007e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -383,6 +394,31 @@ Variables</h2></td></tr>
 Here is the call graph for this function:</div>
 <div class="dyncontent">
 <div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8h_a78b7ac6a96f5c33ba9eaff7158368e17_cgraph.svg" width="540" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a41041d18672c901e03f26b9c9e6fced8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41041d18672c901e03f26b9c9e6fced8">&#9670;&nbsp;</a></span>nbody_energy_drift_signed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float nbody_energy_drift_signed </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structNBodySim.html">NBodySim</a> *&#160;</td>
+          <td class="paramname"><em>sim</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signed energy drift: negative = energy lost (damping), positive = energy gained (divergence). </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="nbody_8h_a41041d18672c901e03f26b9c9e6fced8_cgraph.svg" width="540" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -605,6 +641,75 @@ Here is the call graph for this function:</div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a41b4a1c471dbb7d7b05c8764d13b834f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41b4a1c471dbb7d7b05c8764d13b834f">&#9670;&nbsp;</a></span>NBODY_CONFINEMENT_DAMPING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NBODY_CONFINEMENT_DAMPING = 20.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Radial damping coefficient in the confinement zone. Effective damping is γ · (overshoot / r_max), so the base value must be large enough that bodies near the boundary still feel it. At r = 26 (overshoot 1): γ_eff = 20 × 1/25 = 0.8 At r = 30 (overshoot 5): γ_eff = 20 × 5/25 = 4.0 Only the radial (v·r̂) component is damped; tangential speed is preserved so angular momentum is not destroyed. </p>
+
+</div>
+</div>
+<a id="ade46901540bfd5553911f666d34b5d64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade46901540bfd5553911f666d34b5d64">&#9670;&nbsp;</a></span>NBODY_CONFINEMENT_K</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NBODY_CONFINEMENT_K = 5.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Confinement stiffness — spring constant for the restoring force. Higher values = harder wall, lower = softer bounce. k·dt² ≈ 5·(1/120)² ≈ 0.0003 — well within stability limit. </p>
+
+</div>
+</div>
+<a id="ab8f51c259d139638ee86cf612823e891"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8f51c259d139638ee86cf612823e891">&#9670;&nbsp;</a></span>NBODY_CONFINEMENT_RADIUS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const float NBODY_CONFINEMENT_RADIUS = 25.0F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Confinement radius — bodies beyond this distance from the central star experience a quadratic restoring potential V = ½k(r - r_max)². The potential is conservative (Hamiltonian) so symplecticity is preserved. </p>
+
+</div>
+</div>
 <a id="a6a4edda8f48209ff7c612e289c26a5b5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6a4edda8f48209ff7c612e289c26a5b5">&#9670;&nbsp;</a></span>NBODY_DEFAULT_G</h2>
 
@@ -661,7 +766,7 @@ Here is the call graph for this function:</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const float NBODY_MAX_ACCUMULATOR = 1.0F / 30.0F</td>
+          <td class="memname">const float NBODY_MAX_ACCUMULATOR = 1.0F / 10.0F</td>
         </tr>
       </table>
   </td>
@@ -670,7 +775,7 @@ Here is the call graph for this function:</div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Maximum accumulated physics time per call to nbody_step. Prevents runaway integration after lag spikes or first frame. </p>
+<p>Maximum accumulated physics time per call to nbody_step. Prevents runaway integration after lag spikes or first frame. Set to 1/10s to support frame rates as low as ~10 FPS without losing simulation time (12 Verlet steps per frame for N=14). </p>
 
 </div>
 </div>

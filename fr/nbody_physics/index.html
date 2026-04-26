@@ -13,7 +13,7 @@
         <link rel="prev" href="../global_illumination/">
       
       
-        <link rel="next" href="../neon_trails/">
+        <link rel="next" href="../shockwave_lensing/">
       
       
         
@@ -1012,6 +1012,123 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#potentiel-de-confinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Potentiel de Confinement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Potentiel de Confinement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physique" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physique
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#amortissement-radial-proportionnel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Amortissement Radial Proportionnel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Amortissement Radial Proportionnel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#indicateur-de-stabilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Indicateur de Stabilité
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#effets-visuels-de-shockwave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Effets Visuels de Shockwave
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Effets Visuels de Shockwave">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detection-dimpact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Détection d'Impact
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendu
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#position-dans-le-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position dans le Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#validation-par-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1124,10 +1241,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#stabilite-de-la-longueur-des-trainees" class="md-nav__link">
+  <a href="#stabilite-de-la-longueur-des-trainees-echantillonnage-temporel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stabilité de la Longueur des Traînées
+        Stabilité de la Longueur des Traînées — Échantillonnage Temporel
       
     </span>
   </a>
@@ -1204,6 +1321,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3763,13 +3908,16 @@ symplecticité).</p>
 utilise un <span class="arithmatex">\(\Delta t = 1/120\,\text{s}\)</span> fixe avec un motif d'accumulateur
 standard :</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>accumulateur += wall_dt × time_scale
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>borner accumulateur à NBODY_MAX_ACCUMULATOR (1/30 s)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>borner accumulateur à NBODY_MAX_ACCUMULATOR (1/10 s)
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>tant que accumulateur &gt;= NBODY_FIXED_DT :
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    integrate_step(NBODY_FIXED_DT)
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    accumulateur -= NBODY_FIXED_DT
 </span></code></pre></div>
 <p>Le bornage maximum de l'accumulateur empêche un emballement de l'intégration
-après des pics de latence ou lors de la première frame.</p>
+après des pics de latence ou lors de la première frame.  Le plafond de
+<span class="arithmatex">\(1/10\,\text{s}\)</span> permet de supporter des framerates aussi bas que ~10 FPS
+sans perdre de temps simulé (jusqu'à 12 pas Verlet par frame pour
+<span class="arithmatex">\(N = 14\)</span> corps — trivial en CPU).</p>
 <hr>
 <h2 id="approches-testees-et-rejetees">Approches Testées et Rejetées<a class="headerlink" href="#approches-testees-et-rejetees" title="Permanent link">¶</a></h2>
 <p>Au cours du développement, plusieurs techniques alternatives ont été testées
@@ -3826,6 +3974,141 @@ est l'approche correcte pour la gravité N-corps.</p>
 <li><a href="https://en.wikipedia.org/wiki/Position-based_dynamics">Position Based Dynamics — Wikipedia</a></li>
 </ul>
 <hr>
+<h2 id="potentiel-de-confinement">Potentiel de Confinement<a class="headerlink" href="#potentiel-de-confinement" title="Permanent link">¶</a></h2>
+<p>Les corps qui s'éloignent trop de l'étoile centrale sont repoussés par un
+<strong>potentiel de rappel quadratique</strong> — un mur souple qui garde la simulation
+visuellement bornée sans clamper brutalement les positions.</p>
+<h3 id="physique">Physique<a class="headerlink" href="#physique" title="Permanent link">¶</a></h3>
+<p>Pour chaque corps <span class="arithmatex">\(i\)</span> à distance <span class="arithmatex">\(r_i\)</span> de l'étoile :</p>
+<div class="arithmatex">\[V_\text{conf}(r) = \begin{cases}
+0 &amp; r \le r_\text{max} \\
+\tfrac{1}{2} k (r - r_\text{max})^2 &amp; r &gt; r_\text{max}
+\end{cases}\]</div>
+<p>La force résultante est :</p>
+<div class="arithmatex">\[\mathbf{F}_\text{conf} = -k\,(r - r_\text{max})\,\hat{\mathbf{r}}\]</div>
+<p>où <span class="arithmatex">\(r_\text{max}\)</span> = <code>NBODY_CONFINEMENT_RADIUS</code> (25 unités) et <span class="arithmatex">\(k\)</span> =
+<code>NBODY_CONFINEMENT_K</code> (5.0).</p>
+<p><strong>Réaction de Newton (3ème loi)</strong> sur l'étoile centrale pour préserver le
+centre de masse :</p>
+<div class="arithmatex">\[\mathbf{F}_\text{étoile} = +k\,(r - r_\text{max})\,\hat{\mathbf{r}} \times \frac{m_i}{m_0}\]</div>
+<p>Le potentiel est conservatif, donc l'intégrateur Velocity Verlet reste
+symplectique dans la zone de confinement.</p>
+<h3 id="constantes">Constantes<a class="headerlink" href="#constantes" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Constante</th>
+<th>Valeur</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Distance du mur souple depuis l'étoile</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Raideur du ressort (<span class="arithmatex">\(k \cdot dt^2 \approx 0.0003\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="amortissement-radial-proportionnel">Amortissement Radial Proportionnel<a class="headerlink" href="#amortissement-radial-proportionnel" title="Permanent link">¶</a></h2>
+<p>Le potentiel de confinement seul provoque des oscillations des corps autour
+de la frontière (trajectoires ping-pong). Un <strong>amortissement radial
+proportionnel</strong> retire de l'énergie uniquement à la composante radiale
+sortante, et seulement dans la zone de confinement :</p>
+<div class="arithmatex">\[\gamma_\text{eff} = \gamma \cdot \frac{r - r_\text{max}}{r_\text{max}}\]</div>
+<p>où <span class="arithmatex">\(\gamma\)</span> = <code>NBODY_CONFINEMENT_DAMPING</code> (20.0).</p>
+<ul>
+<li><strong>Radial uniquement</strong> : seule la composante <span class="arithmatex">\((\mathbf{v} \cdot \hat{\mathbf{r}})\)</span>
+  est amortie ; la vitesse tangentielle est préservée → moment cinétique conservé.</li>
+<li><strong>Sortant uniquement</strong> : l'amortissement s'applique quand <span class="arithmatex">\(v_\text{radial} &gt; 0\)</span>
+  (corps s'éloignant de l'étoile).</li>
+<li><strong>Proportionnel au dépassement</strong> : près de la frontière (<span class="arithmatex">\(r \approx r_\text{max}\)</span>),
+  l'amortissement est négligeable ; loin au-delà, il est fort. Cela permet au
+  système d'atteindre un équilibre où les orbites ne traversent plus la frontière
+  et la dissipation d'énergie se stabilise.</li>
+<li><strong>Conservation de la quantité de mouvement</strong> : l'impulsion est transférée à
+  l'étoile centrale (<span class="arithmatex">\(\Delta v_\text{étoile} = -(m_i/m_0) \cdot \Delta v_i\)</span>).</li>
+</ul>
+<h3 id="indicateur-de-stabilite">Indicateur de Stabilité<a class="headerlink" href="#indicateur-de-stabilite" title="Permanent link">¶</a></h3>
+<p>L'indicateur HUD utilise la dérive d'énergie <strong>signée</strong> pour distinguer
+l'amortissement de la divergence :</p>
+<table>
+<thead>
+<tr>
+<th>Couleur</th>
+<th>État</th>
+<th>Condition</th>
+<th>Affichage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vert</td>
+<td>Stable</td>
+<td>$</td>
+<td>\text{dérive}</td>
+</tr>
+<tr>
+<td>Jaune</td>
+<td>Damping</td>
+<td><span class="arithmatex">\(\text{dérive}_\text{signée} &lt; 0\)</span></td>
+<td><code>E: XX%</code> (retenue)</td>
+</tr>
+<tr>
+<td>Rouge</td>
+<td>Divergent</td>
+<td><span class="arithmatex">\(\text{dérive}_\text{signée} &gt; 0\)</span></td>
+<td><code>drift: X.XX%</code></td>
+</tr>
+</tbody>
+</table>
+<p>En mode <strong>Damping</strong>, l'affichage montre <code>E: XX%</code> = <span class="arithmatex">\(100 \times (1 - |\text{dérive}|)\)</span>,
+représentant combien d'énergie le système possède encore. Cela évite le
+confusant « drift: 349% » qui surviendrait avec la métrique absolue.</p>
+<hr>
+<h2 id="effets-visuels-de-shockwave">Effets Visuels de Shockwave<a class="headerlink" href="#effets-visuels-de-shockwave" title="Permanent link">¶</a></h2>
+<p>Quand un corps percute la frontière de confinement, un <strong>anneau d'onde de
+choc</strong> s'étend depuis le point d'impact, fournissant un retour visuel pour
+la zone de confinement autrement invisible.</p>
+<h3 id="detection-dimpact">Détection d'Impact<a class="headerlink" href="#detection-dimpact" title="Permanent link">¶</a></h3>
+<p>Chaque sous-pas d'intégration vérifie si la distance d'un corps à l'étoile
+dépasse <code>NBODY_CONFINEMENT_RADIUS</code> avec une vitesse radiale sortante positive.
+Les impacts sont enregistrés par corps dans des slots <code>NBodyImpact</code> — seule
+la <strong>vitesse maximale</strong> de tous les sous-pas d'une frame est conservée,
+dédupliquant naturellement les hits multiples de l'accumulateur à pas fixe
+(~12 sous-pas/frame).</p>
+<h3 id="rendu">Rendu<a class="headerlink" href="#rendu" title="Permanent link">¶</a></h3>
+<p>Les ondes de choc sont rendues comme des <strong>quads alignés à l'écran en
+mélange additif</strong> (billboard) avec un motif procédural d'anneau en expansion
+dans le fragment shader :</p>
+<ul>
+<li><strong>Profil de l'anneau</strong> : bords intérieurs/extérieurs <code>smoothstep</code> autour
+  d'un rayon central dépendant du temps</li>
+<li><strong>Émissif HDR</strong> : la couleur de sortie est multipliée par 4× pour
+  interagir avec le bloom</li>
+<li><strong>Atténuation</strong> : intensité = <span class="arithmatex">\((1 - \text{progression}^2)\)</span>, montée rapide,
+  extinction lente</li>
+<li><strong>Billboard</strong> : le quad fait face à la caméra via les vecteurs right/up
+  extraits de la matrice vue</li>
+</ul>
+<p>Jusqu'à <code>SHOCKWAVE_MAX_ACTIVE</code> (8) ondes de choc simultanées ; la plus
+ancienne est évincée quand le buffer est plein. Durée = <code>SHOCKWAVE_DURATION</code>
+(1.2 s), rayon max = <code>SHOCKWAVE_MAX_RADIUS</code> (6.0 unités monde).</p>
+<h3 id="position-dans-le-pipeline">Position dans le Pipeline<a class="headerlink" href="#position-dans-le-pipeline" title="Permanent link">¶</a></h3>
+<p>Les ondes de choc sont dessinées dans le <strong>FBO HDR</strong>, après les traînées
+N-corps et avant le post-processing. Le bloom amplifie naturellement
+le halo de l'anneau :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>scene_render() → Skybox → Sphères → Traînées NBody → Shockwave VFX → Sondes
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>                                                       ↓
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                               postprocess_end() → Bloom → ...
+</span></code></pre></div>
+<hr>
 <h2 id="validation-par-tests">Validation par Tests<a class="headerlink" href="#validation-par-tests" title="Permanent link">¶</a></h2>
 <p>La suite de tests automatisée (<code>tests/test_nbody_stability.c</code>) vérifie les
 invariants physiques sur de longues simulations :</p>
@@ -3846,7 +4129,7 @@ invariants physiques sur de longues simulations :</p>
 <tr>
 <td><code>test_nbody_energy_conservation</code></td>
 <td>Énergie bornée après boost initial</td>
-<td><span class="arithmatex">\(\Delta E / E_0 &lt; 5\%\)</span></td>
+<td><span class="arithmatex">\(\Delta E / E_0 &lt; 65\%\)</span></td>
 </tr>
 <tr>
 <td><code>test_nbody_paused_no_change</code></td>
@@ -3951,8 +4234,48 @@ invariants physiques sur de longues simulations :</p>
 </tr>
 <tr>
 <td><code>NBODY_MAX_ACCUMULATOR</code></td>
-<td>1/30 s</td>
-<td>Temps physique accumulé maximum</td>
+<td>1/10 s</td>
+<td>Temps physique accumulé maximum (supporte ~10 FPS)</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_RADIUS</code></td>
+<td>25.0</td>
+<td>Distance du mur souple depuis l'étoile</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_K</code></td>
+<td>5.0</td>
+<td>Raideur du ressort de confinement</td>
+</tr>
+<tr>
+<td><code>NBODY_CONFINEMENT_DAMPING</code></td>
+<td>20.0</td>
+<td>Coefficient de base d'amortissement radial</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_ACTIVE</code></td>
+<td>8</td>
+<td>Nombre max d'ondes de choc simultanées</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_DURATION</code></td>
+<td>1.2 s</td>
+<td>Durée de vie d'un anneau</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MAX_RADIUS</code></td>
+<td>6.0</td>
+<td>Rayon max d'expansion (unités monde)</td>
+</tr>
+<tr>
+<td><code>SHOCKWAVE_MIN_VELOCITY</code></td>
+<td>0.2</td>
+<td>Vitesse min pour déclencher une onde</td>
+</tr>
+<tr>
+<td><code>TRAIL_DURATION_DEFAULT</code></td>
+<td>4.0 s</td>
+<td>Durée de vie des traînées en secondes (ajustable 0.5–30 s)</td>
 </tr>
 </tbody>
 </table>
@@ -4063,46 +4386,63 @@ lignes sont affichées :</p>
 <ol>
 <li><strong>Énergie &amp; Gravité :</strong> <code>Ek: 77.1 J | G: 2.000</code> — énergie cinétique
    <span class="arithmatex">\(E_k = \sum \tfrac{1}{2} m_i |\mathbf{v}_i|^2\)</span> et valeur courante de <span class="arithmatex">\(G\)</span>.</li>
-<li><strong>Stabilité :</strong> <code>Stability: Stable (drift: 0.12%)</code> — indique si
-   l'intégrateur conserve l'énergie.</li>
+<li><strong>Stabilité :</strong> indicateur coloré avec métrique contextuelle :</li>
 </ol>
-<p>L'indicateur de stabilité est coloré :</p>
 <table>
 <thead>
 <tr>
 <th>Couleur</th>
 <th>État</th>
-<th>Condition</th>
+<th>Métrique</th>
+<th>Exemple</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Vert</td>
 <td>Stable</td>
-<td>dérive <span class="arithmatex">\(&lt; 5\%\)</span></td>
+<td>dérive%</td>
+<td><code>Stability: Stable (drift: 0.12%)</code></td>
+</tr>
+<tr>
+<td>Jaune</td>
+<td>Damping</td>
+<td>énergie retenue</td>
+<td><code>Stability: Damping (E: 78%)</code></td>
 </tr>
 <tr>
 <td>Rouge</td>
 <td>Divergent</td>
-<td>dérive <span class="arithmatex">\(\geq 5\%\)</span></td>
+<td>dérive%</td>
+<td><code>Stability: Divergent (drift: 6.42%)</code></td>
 </tr>
 </tbody>
 </table>
-<p>La dérive est calculée par :</p>
-<div class="arithmatex">\[\text{dérive} = \frac{|E(t) - E_0|}{|E_0|}\]</div>
-<p>où <span class="arithmatex">\(E_0\)</span> est le snapshot d'énergie totale pris à l'initialisation (ou après
-un changement de gravité).</p>
-<h3 id="stabilite-de-la-longueur-des-trainees">Stabilité de la Longueur des Traînées<a class="headerlink" href="#stabilite-de-la-longueur-des-trainees" title="Permanent link">¶</a></h3>
-<p>L'accumulateur d'échantillonnage des traînées est modulé par <code>time_scale</code> :</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>effective_dt = wall_dt × time_scale
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sample_timer += effective_dt
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>tant que sample_timer &gt;= TRAIL_SAMPLE_INTERVAL:
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    enregistrer les positions
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    sample_timer -= TRAIL_SAMPLE_INTERVAL
+<p>La dérive est <span class="arithmatex">\(|E(t) - E_0| / |E_0|\)</span>. En mode Damping, l'énergie retenue est
+<span class="arithmatex">\(100 \times (1 - \text{dérive})\)</span>, montrant combien d'énergie le système
+possède encore (évite les valeurs de dérive &gt;100% confusantes).</p>
+<h3 id="stabilite-de-la-longueur-des-trainees-echantillonnage-temporel">Stabilité de la Longueur des Traînées — Échantillonnage Temporel<a class="headerlink" href="#stabilite-de-la-longueur-des-trainees-echantillonnage-temporel" title="Permanent link">¶</a></h3>
+<p>La longueur des traînées est contrôlée par un <strong>paramètre de durée</strong>
+(<code>trail_duration</code>, défaut 4.0 s, ajustable 0.5–30 s) plutôt que par un
+nombre fixe de points.  Chaque échantillon enregistré porte un <strong>timestamp</strong>
+d'une horloge monotone de simulation :</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sim_time += wall_dt × |time_scale|
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sample_timer += wall_dt × |time_scale|
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>tant que sample_timer &gt;= TRAIL_SAMPLE_INTERVAL :
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    pour chaque corps :
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        ring_push(position, sim_time)   ← horodaté
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    sample_timer -= TRAIL_SAMPLE_INTERVAL
 </span></code></pre></div>
-<p>Cela garantit que le ring buffer se remplit et évacue les points au même
-rythme <em>visuel</em> quel que soit <code>time_scale</code>. À 8×, 8 échantillons sont émis
-par frame au lieu de 1, gardant la longueur des traînées constante en unités monde.</p>
+<p>Le constructeur de ruban calcule ensuite l'âge par point :</p>
+<div class="arithmatex">\[\text{age} = \frac{\text{sim\_time} - \text{timestamp}}{\text{trail\_duration}}\]</div>
+<p>Les points avec <span class="arithmatex">\(\text{age} &gt; 1\)</span> sont ignorés.  La largeur et l'intensité
+utilisent ce facteur d'âge au lieu de l'index dans le ring buffer.</p>
+<p><strong>Pourquoi c'est important à bas FPS :</strong>  À 15 FPS, seuls ~15 échantillons/sec
+sont enregistrés (moins de positions uniques), mais chacun porte le bon
+timestamp.  Le ruban couvre toujours exactement <code>trail_duration</code> secondes de
+trajectoire, donc la longueur des traînées est identique à 15 et 60 FPS.
+À <code>time_scale</code> élevé (ex. 8×), 8 échantillons sont émis par frame,
+préservant la fidélité spatiale.</p>
 <hr>
 <h2 id="zones-de-profilage">Zones de Profilage<a class="headerlink" href="#zones-de-profilage" title="Permanent link">¶</a></h2>
 <p>Le pipeline N-corps est instrumenté avec des zones de profilage CPU à grain
@@ -4187,18 +4527,18 @@ fin (visibles dans Tracy ou tout profileur compatible <code>PROFILE_ZONE</code>)
 de matériaux originale en appelant <code>scene_init_instancing()</code> une seconde fois.
 Ce chemin de ré-initialisation doit d'abord libérer chaque ressource allouée
 par l'appel précédent pour éviter les fuites de buffers GPU et de mémoire CPU :</p>
-<div class="language-c highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cm">/* Nettoyage avant ré-init (scene.c — branche N-body OFF) */</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">trail_renderer_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">trail_renderer</span><span class="p">);</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#ifdef USE_TRANSPARENT_BILLBOARDS</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="n">platform_aligned_free</span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">);</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">}</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">billboard_sorter_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_sorter</span><span class="p">);</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="cp">#endif</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">instanced_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">instanced_group</span><span class="p">);</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">billboard_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_group</span><span class="p">);</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">scene_init_instancing</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
+<div class="language-c highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cm">/* Nettoyage avant ré-init (scene.c — branche N-body OFF) */</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">trail_renderer_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">trail_renderer</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#ifdef USE_TRANSPARENT_BILLBOARDS</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="n">platform_aligned_free</span><span class="p">(</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="p">);</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">}</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">billboard_sorter_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_sorter</span><span class="p">);</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="cp">#endif</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">instanced_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">instanced_group</span><span class="p">);</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">billboard_group_cleanup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">scene</span><span class="o">-&gt;</span><span class="n">billboard_group</span><span class="p">);</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">scene_init_instancing</span><span class="p">(</span><span class="n">scene</span><span class="p">);</span>
 </span></code></pre></div>
 <p>Le nettoyage reproduit ce que fait <code>scene_cleanup()</code> à la fermeture de
 l'application.  Sans cela, chaque bascule ON → OFF fuyait ~27 Ko (4 blocs :
@@ -4247,6 +4587,22 @@ instance VBO, billboard VBO, tableau d'instances aligné, trieur de sphères).</
 <td>Enregistrement dans l'overlay d'aide F2</td>
 </tr>
 <tr>
+<td><code>include/shockwave.h</code></td>
+<td>API et structures de données des ondes de choc</td>
+</tr>
+<tr>
+<td><code>src/shockwave.c</code></td>
+<td>Renderer des ondes de choc (init, emit, update, draw)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.vert</code></td>
+<td>Vertex shader billboard (quad face caméra)</td>
+</tr>
+<tr>
+<td><code>shaders/shockwave.frag</code></td>
+<td>Fragment shader d'anneau procédural en expansion</td>
+</tr>
+<tr>
 <td><code>shaders/trail.vert</code></td>
 <td>Vertex shader des traînées</td>
 </tr>
@@ -4276,7 +4632,7 @@ instance VBO, billboard VBO, tableau d'instances aligné, trieur de sphères).</
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="26 avril 2026 13:27:32 UTC">26 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="25 avril 2026 12:54:33 UTC">25 avril 2026</span>
   </span>
 
     

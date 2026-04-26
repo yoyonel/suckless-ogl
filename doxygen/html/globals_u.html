@@ -297,6 +297,15 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 <li>u_cam_pos
 : <a class="el" href="sphere__sort_8glsl.html#ae25a97e47f52d72afd377058c7fbd877">sphere_sort.glsl</a>
 </li>
+<li>u_camera_pos
+: <a class="el" href="shockwave_8vert.html#a1c6eb18f6de93286f5f21bc9ec2ffeeb">shockwave.vert</a>
+</li>
+<li>u_center
+: <a class="el" href="shockwave_8vert.html#add0f4fe52e65d79462b0524097291274">shockwave.vert</a>
+</li>
+<li>u_color
+: <a class="el" href="shockwave_8frag.html#a8a8d82f3e78fcb597d5d514999e6cc28">shockwave.frag</a>
+</li>
 <li>u_core_exp
 : <a class="el" href="trail_8frag.html#a7a197de3d9649a7675f18ec73325ec84">trail.frag</a>
 </li>
@@ -306,20 +315,34 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 <li>u_count_pot
 : <a class="el" href="sphere__sort_8glsl.html#a783290ed66db149184d1fa8be9ab9654">sphere_sort.glsl</a>
 </li>
+<li>u_grab_tex
+: <a class="el" href="shockwave_8frag.html#ad19c3913911c79831ce137e9ac3fd4b3">shockwave.frag</a>
+</li>
+<li>u_intensity
+: <a class="el" href="shockwave_8frag.html#a6ff8b4a73b2630804b8e11be2f8e0dc5">shockwave.frag</a>
+</li>
 <li>u_j
 : <a class="el" href="sphere__sort_8glsl.html#a7121a10b559750db51fbc41416945728">sphere_sort.glsl</a>
 </li>
 <li>u_k
 : <a class="el" href="sphere__sort_8glsl.html#af555618d67bce5fc4371651fa4c1a201">sphere_sort.glsl</a>
 </li>
+<li>u_progress
+: <a class="el" href="shockwave_8frag.html#a2854f638d30d25f756d13ac15a163b35">shockwave.frag</a>
+</li>
 <li>u_proj
 : <a class="el" href="trail_8vert.html#a94942be874ee1adee1d647ff25a284ee">trail.vert</a>
+, <a class="el" href="shockwave_8vert.html#a94942be874ee1adee1d647ff25a284ee">shockwave.vert</a>
+</li>
+<li>u_radius
+: <a class="el" href="shockwave_8vert.html#a355abb2216742143626f240f0fc42531">shockwave.vert</a>
 </li>
 <li>u_stage
 : <a class="el" href="sphere__sort_8glsl.html#a1a9494a3fb2bfffa87ffdbdb6124f49c">sphere_sort.glsl</a>
 </li>
 <li>u_view
-: <a class="el" href="trail_8vert.html#a1c71793072b8ab091d877eb922d15f40">trail.vert</a>
+: <a class="el" href="shockwave_8vert.html#a1c71793072b8ab091d877eb922d15f40">shockwave.vert</a>
+, <a class="el" href="trail_8vert.html#a1c71793072b8ab091d877eb922d15f40">trail.vert</a>
 </li>
 <li>ui_begin()
 : <a class="el" href="ui_8h.html#a5356c389352db784027765ad0ef3aca5">ui.h</a>
@@ -341,8 +364,8 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 , <a class="el" href="ui_8c.html#a58a7b78e7956c02bde43fa68449deb66">ui.c</a>
 </li>
 <li>ui_draw_rect()
-: <a class="el" href="ui_8c.html#ae939146f2938232fc48f970745ecf26a">ui.c</a>
-, <a class="el" href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui.h</a>
+: <a class="el" href="ui_8h.html#ae939146f2938232fc48f970745ecf26a">ui.h</a>
+, <a class="el" href="ui_8c.html#ae939146f2938232fc48f970745ecf26a">ui.c</a>
 </li>
 <li>ui_draw_rect_ex()
 : <a class="el" href="ui_8h.html#a092e3880109fbbe26972f6c5e3866c17">ui.h</a>
@@ -365,8 +388,8 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 , <a class="el" href="ui_8c.html#a74067bc67d31c6d82fa3b548a3729670">ui.c</a>
 </li>
 <li>ui_draw_text_scaled()
-: <a class="el" href="ui_8h.html#acb75a0a726f807c7362e0d26a2c8e74b">ui.h</a>
-, <a class="el" href="ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b">ui.c</a>
+: <a class="el" href="ui_8c.html#acb75a0a726f807c7362e0d26a2c8e74b">ui.c</a>
+, <a class="el" href="ui_8h.html#acb75a0a726f807c7362e0d26a2c8e74b">ui.h</a>
 </li>
 <li>ui_draw_textured_quad()
 : <a class="el" href="ui_8h.html#ab36623b8b8e36a7938c53db20b6f54bc">ui.h</a>
@@ -439,8 +462,8 @@ $(document).ready(function(){initNavTree('globals_u.html',''); initResizable(); 
 , <a class="el" href="icosphere_8c.html#a70b42040760df4cb07a39ec7277675b6">icosphere.c</a>
 </li>
 <li>uintarray_push()
-: <a class="el" href="icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.c</a>
-, <a class="el" href="icosphere_8h.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.h</a>
+: <a class="el" href="icosphere_8h.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.h</a>
+, <a class="el" href="icosphere_8c.html#aa2189f83dd8d2cf024cbcf29be0c8b45">icosphere.c</a>
 </li>
 <li>update_current_shader()
 : <a class="el" href="postprocess_8c.html#ab8bf3262e6e6564d91b8fb8ba41207d7">postprocess.c</a>

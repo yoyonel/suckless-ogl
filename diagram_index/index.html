@@ -658,6 +658,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#shockwave-lensing-effect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shockwave Lensing Effect
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#synchronization-asynchrony-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1011,6 +1022,34 @@
     
   
     N-Body Physics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shockwave_lensing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shockwave Lensing
   
 
     
@@ -4623,6 +4662,24 @@ Note right of GPU: Work queued, no stall
 end
 CPU-&gt;&gt;GPU: glMemoryBarrier(IMAGE_ACCESS_BIT)
 Note right of GPU: Single flush before sampling</code></pre>
+
+  </div>
+</div>
+
+<h2 id="shockwave-lensing-effect"><a href="../shockwave_lensing/">Shockwave Lensing Effect</a><a class="headerlink" href="#shockwave-lensing-effect" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../shockwave_lensing/#architecture" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Architecture</a> : <span style="opacity: 0.6; font-size: 0.85em;">3. Additive HDR glow — ring edge emits body-colored light that drives bloom</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+A[Scene Geometry] --&gt; B[Scene FBO - RGBA16F]
+B --&gt; C{Any active shockwaves?}
+C --&gt;|No| E[Post-Processing]
+C --&gt;|Yes| D[Grab Pass: glCopyImageSubData]
+D --&gt; F[Billboard Draw]
+F --&gt; G[Fragment Shader: sample grab_tex + distort]
+G --&gt; B
+B --&gt; E</code></pre>
 
   </div>
 </div>

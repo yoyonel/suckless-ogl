@@ -1,8 +1,10 @@
 var nbody_8h =
 [
     [ "NBodyParticle", "structNBodyParticle.html", "structNBodyParticle" ],
+    [ "NBodyImpact", "structNBodyImpact.html", "structNBodyImpact" ],
     [ "NBodySim", "structNBodySim.html", "structNBodySim" ],
     [ "nbody_energy_drift", "nbody_8h.html#a78b7ac6a96f5c33ba9eaff7158368e17", null ],
+    [ "nbody_energy_drift_signed", "nbody_8h.html#a41041d18672c901e03f26b9c9e6fced8", null ],
     [ "nbody_get_count", "nbody_8h.html#a020022b8382ea053ca31222c03c7d1de", null ],
     [ "nbody_init_preset", "nbody_8h.html#a2d44ddf095fb51334feb9e96d99bfcbe", null ],
     [ "nbody_kinetic_energy", "nbody_8h.html#ad6106b8761eae4cb34102c0d18fc705c", null ],
@@ -10,6 +12,9 @@ var nbody_8h =
     [ "nbody_total_energy", "nbody_8h.html#a785533e1f63e381530bfb5c3531238dc", null ],
     [ "nbody_update_time_scale", "nbody_8h.html#ad3b699a201318a9028b8ae81e58a5fc4", null ],
     [ "nbody_write_instances", "nbody_8h.html#acdce6fe24ec0f0cdb5ecc44872197b49", null ],
+    [ "NBODY_CONFINEMENT_DAMPING", "nbody_8h.html#a41b4a1c471dbb7d7b05c8764d13b834f", null ],
+    [ "NBODY_CONFINEMENT_K", "nbody_8h.html#ade46901540bfd5553911f666d34b5d64", null ],
+    [ "NBODY_CONFINEMENT_RADIUS", "nbody_8h.html#ab8f51c259d139638ee86cf612823e891", null ],
     [ "NBODY_DEFAULT_G", "nbody_8h.html#a6a4edda8f48209ff7c612e289c26a5b5", null ],
     [ "NBODY_FIXED_DT", "nbody_8h.html#a6ed40716bb15fc1dda0a941920a448c4", null ],
     [ "NBODY_MAX_ACCUMULATOR", "nbody_8h.html#a63380969f164f080d6ab4ba45dbc1a7d", null ],

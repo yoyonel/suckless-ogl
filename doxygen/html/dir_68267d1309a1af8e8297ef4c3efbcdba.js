@@ -42,6 +42,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "scene.c", "scene_8c.html", "scene_8c" ],
     [ "sh_math.c", "sh__math_8c.html", "sh__math_8c" ],
     [ "shader.c", "shader_8c.html", "shader_8c" ],
+    [ "shockwave.c", "shockwave_8c.html", "shockwave_8c" ],
     [ "simd_utils.c", "simd__utils_8c.html", "simd__utils_8c" ],
     [ "skybox.c", "skybox_8c.html", "skybox_8c" ],
     [ "ssbo_rendering.c", "ssbo__rendering_8c.html", "ssbo__rendering_8c" ],

@@ -26,6 +26,7 @@ var gpu__profiler_8h =
     [ "GPU_PROFILER_POSTPROCESS_COLOR", "gpu__profiler_8h.html#abd0c592d103323ccce000e5d19984d4f", null ],
     [ "GPU_PROFILER_ROW_HEIGHT", "gpu__profiler_8h.html#a38fa5cee53311a3ed73706c471efced4", null ],
     [ "GPU_PROFILER_SCENE_COLOR", "gpu__profiler_8h.html#a5fc6d9431cf5e2dd0075cc15774b6d0d", null ],
+    [ "GPU_PROFILER_SHOCKWAVE_COLOR", "gpu__profiler_8h.html#ad987218ea719efa5980a816a8f97a6a4", null ],
     [ "GPU_PROFILER_TOTAL_FRAME_COLOR", "gpu__profiler_8h.html#abb09d067ee2fcb5f5d5ed2d6c0ac4261", null ],
     [ "GPU_PROFILER_UI_COLOR", "gpu__profiler_8h.html#a388547b561eddbdc99ff020cf0563178", null ],
     [ "GPU_PROFILER_WINDOW_DURATION_S", "gpu__profiler_8h.html#aaa59b1c944badb2c3f31ae476850cb92", null ],

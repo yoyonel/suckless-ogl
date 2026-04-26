@@ -47,6 +47,7 @@ var structScene =
     [ "probe_grid", "structScene.html#ae90c5482f86844efba9b2a176cc21b6f", null ],
     [ "quad_vbo", "structScene.html#af0dac4c2a74b1a604666ca3017c49a73", null ],
     [ "recycled_hdr_tex", "structScene.html#a606909f5d607437bdd11f2a9c7b43378", null ],
+    [ "shockwave_renderer", "structScene.html#a45150ffe09e3216b8044db16ae4caccf", null ],
     [ "show_envmap", "structScene.html#a365027ddce9dabf851566fa1a853140d", null ],
     [ "show_probe_grid", "structScene.html#a2bfed78163b907505fe6fcdbca173127", null ],
     [ "skybox", "structScene.html#a0d44e91b19d9417ecabe9d4c01f715f1", null ],

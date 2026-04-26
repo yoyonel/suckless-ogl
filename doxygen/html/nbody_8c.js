@@ -5,6 +5,7 @@ var nbody_8c =
     [ "compute_accelerations", "nbody_8c.html#ae9e2804d731349e3f4e0f65f5a36dcfb", null ],
     [ "integrate_step", "nbody_8c.html#ab6a96395996f9dc317f21e5c8dfaa868", null ],
     [ "nbody_energy_drift", "nbody_8c.html#a78b7ac6a96f5c33ba9eaff7158368e17", null ],
+    [ "nbody_energy_drift_signed", "nbody_8c.html#a41041d18672c901e03f26b9c9e6fced8", null ],
     [ "nbody_get_count", "nbody_8c.html#a020022b8382ea053ca31222c03c7d1de", null ],
     [ "nbody_init_preset", "nbody_8c.html#a2d44ddf095fb51334feb9e96d99bfcbe", null ],
     [ "nbody_kinetic_energy", "nbody_8c.html#ad6106b8761eae4cb34102c0d18fc705c", null ],
@@ -19,6 +20,7 @@ var nbody_8c =
     [ "CENTRAL_STAR_METALLIC", "nbody_8c.html#aa5cd6cb09bcd5800016fc387219e3eed", null ],
     [ "CENTRAL_STAR_RADIUS", "nbody_8c.html#a7ede174920bd38216f842f697f50ac60", null ],
     [ "CENTRAL_STAR_ROUGHNESS", "nbody_8c.html#a370b1d72840f536b26c878c68b7cda5d", null ],
+    [ "EPSILON", "nbody_8c.html#ab84b0a39a5bcd3e4bd1a2d19b015bde9", null ],
     [ "HALF", "nbody_8c.html#afa3135741751552ed8178c386a2cad14", null ],
     [ "ORBITER_COUNT", "nbody_8c.html#ad888daec2563bee11dd7621881516fc9", null ],
     [ "ORBITERS", "nbody_8c.html#ad892a791c6e4bf3115a2c5b1bac46081", null ]

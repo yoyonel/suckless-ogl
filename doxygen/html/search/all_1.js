@@ -28,7 +28,7 @@ var searchData=
   ['actionnotifier_42',['ActionNotifier',['../structActionNotifier.html',1,'']]],
   ['activate_5fgamemode_43',['activate_gamemode',['../perf__mode_8c.html#a14e32f8e0379a6b587c9c163912ef738',1,'perf_mode.c']]],
   ['activate_5fnative_44',['activate_native',['../perf__mode_8c.html#a3248ef5884dfcaa4a23445e299cdc5b4',1,'perf_mode.c']]],
-  ['active_45',['active',['../structActionNotification.html#ada8c321e013c078247b46a54feb1c094',1,'ActionNotification::active()'],['../structGPUTimer.html#a201abfdb16060bb48581a6003a7bb635',1,'GPUTimer::active()'],['../structTrailNeonParams.html#a4fe1fff63221d8328900235982c073bf',1,'TrailNeonParams::active()']]],
+  ['active_45',['active',['../structActionNotification.html#ada8c321e013c078247b46a54feb1c094',1,'ActionNotification::active()'],['../structNBodyImpact.html#a7594a311f8c2d6ebafc9db5c4227c8b4',1,'NBodyImpact::active()'],['../structGPUTimer.html#a201abfdb16060bb48581a6003a7bb635',1,'GPUTimer::active()'],['../structTrailNeonParams.html#a4fe1fff63221d8328900235982c073bf',1,'TrailNeonParams::active()']]],
   ['active_5feffects_46',['active_effects',['../structPostProcessUBO.html#a775f7afa7348f5b96c8f199cf0cfe433',1,'PostProcessUBO::active_effects()'],['../structPostProcess.html#a30dfc3030196ea124e2134aec8776e95',1,'PostProcess::active_effects()'],['../structPostProcessPreset.html#a81fff6e04a4ac67920c56c1071da42c3',1,'PostProcessPreset::active_effects()']]],
   ['adaptive_5fsampler_2ec_47',['adaptive_sampler.c',['../adaptive__sampler_8c.html',1,'']]],
   ['adaptive_5fsampler_2eh_48',['adaptive_sampler.h',['../adaptive__sampler_8h.html',1,'']]],

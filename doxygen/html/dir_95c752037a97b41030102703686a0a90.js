@@ -25,6 +25,8 @@ var dir_95c752037a97b41030102703686a0a90 =
     [ "postprocess.vert", "postprocess_8vert.html", "postprocess_8vert" ],
     [ "projection_utils.glsl", "projection__utils_8glsl.html", "projection__utils_8glsl" ],
     [ "sh_probe.glsl", "sh__probe_8glsl.html", "sh__probe_8glsl" ],
+    [ "shockwave.frag", "shockwave_8frag.html", "shockwave_8frag" ],
+    [ "shockwave.vert", "shockwave_8vert.html", "shockwave_8vert" ],
     [ "sphere_sort.glsl", "sphere__sort_8glsl.html", "sphere__sort_8glsl" ],
     [ "trail.frag", "trail_8frag.html", "trail_8frag" ],
     [ "trail.vert", "trail_8vert.html", "trail_8vert" ],
