@@ -135,11 +135,11 @@ static void scene_init_instancing(Scene* scene)
 	void* raw_mem = platform_aligned_alloc(
 	    sizeof(SphereInstance) * (size_t)total_count, SIMD_ALIGNMENT);
 	if (raw_mem) {
-		scene->sphere_instances = (SphereInstance*)raw_mem;
-		safe_memcpy(scene->sphere_instances,
+		scene->billboard_instances = (SphereInstance*)raw_mem;
+		safe_memcpy(scene->billboard_instances,
 		            sizeof(SphereInstance) * (size_t)total_count, data,
 		            sizeof(SphereInstance) * (size_t)total_count);
-		scene->sphere_instance_count = total_count;
+		scene->billboard_instance_count = total_count;
 		sphere_sorter_init(&scene->sphere_sorter, total_count);
 	}
 #endif
@@ -542,9 +542,9 @@ void scene_cleanup(Scene* scene)
 	icosphere_free(&scene->geometry);
 	skybox_cleanup(&scene->skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	if (scene->sphere_instances) {
-		platform_aligned_free(scene->sphere_instances);
-		scene->sphere_instances = NULL;
+	if (scene->billboard_instances) {
+		platform_aligned_free(scene->billboard_instances);
+		scene->billboard_instances = NULL;
 	}
 	sphere_sorter_cleanup(&scene->sphere_sorter);
 #endif
@@ -877,32 +877,31 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 				switch (scene->sorting_mode) {
 					case SORTING_MODE_CPU_QSORT:
-						sorted_ssbo =
-						    sphere_sorter_sort_cpu(
-						        &scene->sphere_sorter,
-						        scene->sphere_instances,
-						        scene
-						            ->sphere_instance_count,
-						        camera_pos);
+						sorted_ssbo = sphere_sorter_sort_cpu(
+						    &scene->sphere_sorter,
+						    scene->billboard_instances,
+						    scene
+						        ->billboard_instance_count,
+						    camera_pos);
 						break;
 					case SORTING_MODE_CPU_RADIX:
 						sorted_ssbo =
 						    sphere_sorter_sort_cpu_radix(
 						        &scene->sphere_sorter,
-						        scene->sphere_instances,
 						        scene
-						            ->sphere_instance_count,
+						            ->billboard_instances,
+						        scene
+						            ->billboard_instance_count,
 						        camera_pos);
 						break;
 					case SORTING_MODE_GPU_BITONIC:
 					default:
-						sorted_ssbo =
-						    sphere_sorter_sort_gpu(
-						        &scene->sphere_sorter,
-						        scene->sphere_instances,
-						        scene
-						            ->sphere_instance_count,
-						        camera_pos);
+						sorted_ssbo = sphere_sorter_sort_gpu(
+						    &scene->sphere_sorter,
+						    scene->billboard_instances,
+						    scene
+						        ->billboard_instance_count,
+						    camera_pos);
 						break;
 				}
 			}
@@ -911,14 +910,14 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			 * sort functions — vertex shader reads it directly
 			 * via gl_InstanceID (no VBO copy needed). */
 			scene->billboard_group.instance_count =
-			    scene->sphere_instance_count;
+			    scene->billboard_instance_count;
 
 			/* Legacy VBO copy only for debug wireframe overlay
 			 * (debug_line_shader reads per-instance attributes) */
 			if (scene->wireframe) {
 				billboard_group_update_from_buffer(
 				    &scene->billboard_group, sorted_ssbo,
-				    scene->sphere_instance_count);
+				    scene->billboard_instance_count);
 			}
 
 			/* 2. Actual Billboard Rendering */
@@ -1051,12 +1050,12 @@ void scene_toggle_nbody(Scene* scene)
 		                       count);
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-		if (scene->sphere_instances) {
-			safe_memcpy(scene->sphere_instances,
+		if (scene->billboard_instances) {
+			safe_memcpy(scene->billboard_instances,
 			            sizeof(SphereInstance) * (size_t)count,
 			            instances,
 			            sizeof(SphereInstance) * (size_t)count);
-			scene->sphere_instance_count = count;
+			scene->billboard_instance_count = count;
 		}
 		scene->billboard_group.instance_count = count;
 #endif
@@ -1065,9 +1064,9 @@ void scene_toggle_nbody(Scene* scene)
 		 * to avoid leaking GPU buffers and CPU allocations */
 		trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-		if (scene->sphere_instances) {
-			platform_aligned_free(scene->sphere_instances);
-			scene->sphere_instances = NULL;
+		if (scene->billboard_instances) {
+			platform_aligned_free(scene->billboard_instances);
+			scene->billboard_instances = NULL;
 		}
 		sphere_sorter_cleanup(&scene->sphere_sorter);
 #endif
@@ -1117,11 +1116,11 @@ void scene_nbody_update(Scene* scene, float delta_time)
 	}
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	if (scene->sphere_instances) {
-		safe_memcpy(scene->sphere_instances,
+	if (scene->billboard_instances) {
+		safe_memcpy(scene->billboard_instances,
 		            sizeof(SphereInstance) * (size_t)count, instances,
 		            sizeof(SphereInstance) * (size_t)count);
-		scene->sphere_instance_count = count;
+		scene->billboard_instance_count = count;
 	}
 	scene->billboard_group.instance_count = count;
 #endif

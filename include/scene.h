@@ -148,9 +148,10 @@ typedef struct Scene {
 #endif
 
 #ifdef USE_TRANSPARENT_BILLBOARDS
-	SphereSorter sphere_sorter;       /**< Sorter for alpha blending. */
-	SphereInstance* sphere_instances; /**< Persistent array for sorting. */
-	int sphere_instance_count;        /**< Active sphere count. */
+	SphereSorter sphere_sorter; /**< Sorter for alpha blending. */
+	SphereInstance*
+	    billboard_instances;      /**< Persistent array for sorting. */
+	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
 	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
