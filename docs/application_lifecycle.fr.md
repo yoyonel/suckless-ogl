@@ -341,10 +341,10 @@ Chaque subdivision : division des arêtes aux milieux, normalisation sur la sph�
 ### 4.5 — Buffers GPU
 
 ```c
-glGenVertexArrays(1, &scene->sphere_vao);
-glGenBuffers(1, &scene->sphere_vbo);   // Positions
-glGenBuffers(1, &scene->sphere_nbo);   // Normales
-glGenBuffers(1, &scene->sphere_ebo);   // Indices (triangles)
+glGenVertexArrays(1, &scene->icosphere_vao);
+glGenBuffers(1, &scene->icosphere_vbo);   // Positions
+glGenBuffers(1, &scene->icosphere_nbo);   // Normales
+glGenBuffers(1, &scene->icosphere_ebo);   // Indices (triangles)
 ```
 
 De la géométrie utilitaire supplémentaire est créée :
@@ -1214,7 +1214,7 @@ Voici une estimation de la consommation VRAM en régime stationnaire :
 | `src/material.c` | Bibliothèque matériaux (chargement JSON) |
 | `src/instanced_rendering.c` | Gestion VAO/VBO draw instancié |
 | `src/billboard_rendering.c` | Quads billboard pour sphères transparentes |
-| `src/sphere_sorting.c` | Tri transparence CPU/GPU |
+| `src/billboard_sorting.c` | Tri transparence CPU/GPU |
 | `src/async_loader.c` | Thread I/O arrière-plan (pthread) |
 | `src/camera.c` | Caméra orbitale, physique pas fixe |
 | `src/gl_debug.c` | Callback messages debug OpenGL |

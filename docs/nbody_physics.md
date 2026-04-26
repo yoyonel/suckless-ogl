@@ -417,11 +417,11 @@ buffer and CPU memory leaks:
 /* Cleanup before re-init (scene.c — N-body OFF branch) */
 trail_renderer_cleanup(&scene->trail_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
-if (scene->sphere_instances) {
-    platform_aligned_free(scene->sphere_instances);
-    scene->sphere_instances = NULL;
+if (scene->billboard_instances) {
+    platform_aligned_free(scene->billboard_instances);
+    scene->billboard_instances = NULL;
 }
-sphere_sorter_cleanup(&scene->sphere_sorter);
+billboard_sorter_cleanup(&scene->billboard_sorter);
 #endif
 instanced_group_cleanup(&scene->instanced_group);
 billboard_group_cleanup(&scene->billboard_group);

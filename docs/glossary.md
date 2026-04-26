@@ -80,8 +80,8 @@ their relationships, and known naming ambiguities.
 | **Billboard** | A screen-aligned quad that renders a sphere via fragment-shader raycasting, cheaper than mesh rendering. | Impostor, sprite, quad |
 | **Billboard Group** | A managed set of **Billboards** with a shared VAO and per-instance VBO for GPU-driven drawing (`BillboardGroup`). | Billboard batch |
 | **Sphere Instance** | A 64-byte-aligned per-instance data packet (model matrix, PBR material, previous position) sent to the GPU (`SphereInstance`). | Instance data, per-object data |
-| **Sphere Sorter** | The subsystem that orders transparent **Billboards** back-to-front for correct alpha blending (`SphereSorter`). | Sort pass, transparency sort |
-| **Sorting Mode** | The algorithm used by the **Sphere Sorter**: CPU qsort, CPU radix, or GPU bitonic (`SortingMode`). | Sort strategy |
+| **Billboard Sorter** | The subsystem that orders transparent **Billboards** back-to-front for correct alpha blending (`BillboardSorter`). | Sort pass, transparency sort |
+| **Sorting Mode** | The algorithm used by the **Billboard Sorter**: CPU qsort, CPU radix, or GPU bitonic (`SortingMode`). | Sort strategy |
 
 ## 🎨 Rendering — Shading & Lighting
 
@@ -215,7 +215,7 @@ graph TD
 
 > **Dev:** "When we render the scene, are the **Bodies** drawn as **Billboards** or **Icosphere** meshes?"
 >
-> **Domain expert:** "Both paths exist. The **Instanced Group** draws opaque **Bodies** as **Icosphere** meshes via `glDrawElementsInstanced`. The **Billboard Group** draws transparent **Bodies** as screen-aligned quads with raycasting in the fragment shader. The **Sphere Sorter** orders the **Billboard** array back-to-front before each frame."
+> **Domain expert:** "Both paths exist. The **Instanced Group** draws opaque **Bodies** as **Icosphere** meshes via `glDrawElementsInstanced`. The **Billboard Group** draws transparent **Bodies** as screen-aligned quads with raycasting in the fragment shader. The **Billboard Sorter** orders the **Billboard** array back-to-front before each frame."
 >
 > **Dev:** "And the **Sphere Instance** data — is it the same for both paths?"
 >

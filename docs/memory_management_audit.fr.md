@@ -30,12 +30,12 @@ L'audit a porté sur les structures suivantes identifiées comme gérant de la m
 | `AsyncRequest` | `float_data`, `half_data` | Bas | Utilise un pattern de "transfert de propriété destructif" sécurisé dans `async_loader_poll`. |
 | `PBRMaterial` | `name` (tableau fixe) | Nul | Structure POD (Plain Old Data). Copie sûre. |
 | `MaterialLib` | `materials` (tableau dynamique) | Nul | Géré exclusivement par pointeurs (`MaterialLib*`). Pas de copie par valeur. |
-| `SphereInstance` | Aucun (Vecteurs/Matrices) | Nul | Structure POD. Copie sûre (utilisée massivement dans `sphere_sorting.c`). |
-| `scene_init_instancing` | instance VBO, billboard VBO, `sphere_instances`, `sphere_sorter` | **Corrigé** | Le chemin de ré-init N-body OFF appelle désormais le cleanup avant la ré-init pour éviter une fuite de ~27 Ko par bascule. |
+| `SphereInstance` | Aucun (Vecteurs/Matrices) | Nul | Structure POD. Copie sûre (utilisée massivement dans `billboard_sorting.c`). |
+| `scene_init_instancing` | instance VBO, billboard VBO, `billboard_instances`, `billboard_sorter` | **Corrigé** | Le chemin de ré-init N-body OFF appelle désormais le cleanup avant la ré-init pour éviter une fuite de ~27 Ko par bascule. |
 
 ### Points Particulièrement Examinés
 
-* **`sphere_sorting.c`** : Effectue des copies de `SphereInstance` lors du tri. C'est parfaitement sûr car `SphereInstance` ne contient que des types par valeur (mathématiques cglm).
+* **`billboard_sorting.c`** : Effectue des copies de `SphereInstance` lors du tri. C'est parfaitement sûr car `SphereInstance` ne contient que des types par valeur (mathématiques cglm).
 * **`async_loader.c`** : Le passage de `AsyncRequest` du thread worker au thread principal est sécurisé. Le loader met explicitement à `NULL` ses pointeurs internes après la copie vers le demandeur, évitant ainsi tout conflit de propriété.
 
 ## 4. Recommandations et Bonnes Pratiques

@@ -2,9 +2,9 @@
 
 Ce document décrit l'architecture de rendu des sphères PBR avec tri Back-to-Front et anti-aliasing analytique.
 
-## Architecture : SphereSorter
+## Architecture : BillboardSorter
 
-La classe `SphereSorter` gère le tri des sphères pour le rendu correct de la transparence.
+La classe `BillboardSorter` gère le tri des sphères pour le rendu correct de la transparence.
 
 ```c
 typedef struct {
@@ -12,7 +12,7 @@ typedef struct {
     float* depths;                // Profondeurs pré-calculées
     uint32_t* sorted_indices;     // Indices triés (Back-to-Front)
     uint32_t count;
-} SphereSorter;
+} BillboardSorter;
 ```
 
 ## Tri Back-to-Front
@@ -31,7 +31,7 @@ for (uint32_t i = 0; i < sorter->count; i++) {
 }
 
 // Tri (voir gpu_sorting.md pour les algorithmes)
-sphere_sorter_sort(sorter, sort_backend);
+billboard_sorter_sort(sorter, sort_backend);
 ```
 
 ## Anti-aliasing analytique via discriminant
@@ -71,7 +71,7 @@ Les sphères sont rendues en une seule passe via `glDrawArraysInstanced` :
 
 ```c
 // Mettre à jour le VBO des instances avec les données triées
-glBindBuffer(GL_ARRAY_BUFFER, sphere_vbo);
+glBindBuffer(GL_ARRAY_BUFFER, icosphere_vbo);
 glBufferSubData(GL_ARRAY_BUFFER, 0,
                 sorter->count * sizeof(SphereInstance),
                 sorter->sorted_instances);

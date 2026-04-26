@@ -341,10 +341,10 @@ Each subdivision: split edges at midpoints, normalize onto unit sphere, cache mi
 ### 4.5 — GPU Buffers
 
 ```c
-glGenVertexArrays(1, &scene->sphere_vao);
-glGenBuffers(1, &scene->sphere_vbo);   // Positions
-glGenBuffers(1, &scene->sphere_nbo);   // Normals
-glGenBuffers(1, &scene->sphere_ebo);   // Indices (triangles)
+glGenVertexArrays(1, &scene->icosphere_vao);
+glGenBuffers(1, &scene->icosphere_vbo);   // Positions
+glGenBuffers(1, &scene->icosphere_nbo);   // Normals
+glGenBuffers(1, &scene->icosphere_ebo);   // Indices (triangles)
 ```
 
 Additional utility geometry is created:
@@ -1214,7 +1214,7 @@ Here's an estimate of VRAM consumption at steady state:
 | `src/material.c` | Material library (JSON loading) |
 | `src/instanced_rendering.c` | VAO/VBO instanced draw management |
 | `src/billboard_rendering.c` | Billboard quads for transparent spheres |
-| `src/sphere_sorting.c` | CPU/GPU transparency sorting |
+| `src/billboard_sorting.c` | CPU/GPU transparency sorting |
 | `src/async_loader.c` | Background I/O thread (pthread) |
 | `src/camera.c` | Orbit camera, fixed-timestep physics |
 | `src/gl_debug.c` | OpenGL debug message callback |
