@@ -188,10 +188,10 @@ typedef struct Scene {
 	GLuint irradiance_tex;       /**< Active Irradiance map. */
 	GLuint brdf_lut_tex;         /**< Shared BRDF lookup table. */
 	GLuint empty_vao;            /**< Vertex-less drawing VAO. */
-	GLuint shader_spmap;         /**< Internal IBL specular shader. */
-	GLuint shader_irmap;         /**< Internal IBL irradiance shader. */
-	GLuint shader_lum_pass1;     /**< Luminance downsample pass. */
-	GLuint shader_lum_pass2;     /**< Mean luminance compute pass. */
+	GLuint spmap_program;        /**< Internal IBL specular shader. */
+	GLuint irmap_program;        /**< Internal IBL irradiance shader. */
+	GLuint lum_pass1_program;    /**< Luminance downsample pass. */
+	GLuint lum_pass2_program;    /**< Mean luminance compute pass. */
 	GLuint dummy_black_tex;      /**< Safe fallback (0,0,0,1). */
 	GLuint dummy_white_tex;      /**< Safe fallback (1,1,1,1). */
 	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */

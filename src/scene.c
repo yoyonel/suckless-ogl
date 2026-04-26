@@ -325,21 +325,21 @@ static int scene_init_billboard_shader(Scene* scene)
 
 static int scene_init_compute_resources(Scene* scene)
 {
-	scene->shader_spmap = shader_load_compute("shaders/IBL/spmap.glsl");
-	scene->shader_irmap = shader_load_compute("shaders/IBL/irmap.glsl");
-	scene->shader_lum_pass1 =
+	scene->spmap_program = shader_load_compute("shaders/IBL/spmap.glsl");
+	scene->irmap_program = shader_load_compute("shaders/IBL/irmap.glsl");
+	scene->lum_pass1_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
-	scene->shader_lum_pass2 =
+	scene->lum_pass2_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 
-	if (!scene->shader_spmap || !scene->shader_irmap ||
-	    !scene->shader_lum_pass1 || !scene->shader_lum_pass2) {
+	if (!scene->spmap_program || !scene->irmap_program ||
+	    !scene->lum_pass1_program || !scene->lum_pass2_program) {
 		return 0;
 	}
 
-	ibl_coordinator_init(&scene->ibl_coord, scene->shader_spmap,
-	                     scene->shader_irmap, scene->shader_lum_pass1,
-	                     scene->shader_lum_pass2);
+	ibl_coordinator_init(&scene->ibl_coord, scene->spmap_program,
+	                     scene->irmap_program, scene->lum_pass1_program,
+	                     scene->lum_pass2_program);
 	return 1;
 }
 
@@ -480,8 +480,8 @@ static void scene_cleanup_pbr_shaders(Scene* scene)
 #ifdef USE_SSBO_RENDERING
 	SHADER_SAFE_DESTROY(scene->pbr_ssbo_shader);
 #endif
-	GL_SAFE_DELETE_PROGRAM(scene->shader_spmap);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_irmap);
+	GL_SAFE_DELETE_PROGRAM(scene->spmap_program);
+	GL_SAFE_DELETE_PROGRAM(scene->irmap_program);
 }
 
 static void scene_cleanup_shaders(Scene* scene)
@@ -491,8 +491,8 @@ static void scene_cleanup_shaders(Scene* scene)
 	SHADER_SAFE_DESTROY(scene->debug_shader);
 	SHADER_SAFE_DESTROY(scene->debug_line_shader);
 	SHADER_SAFE_DESTROY(scene->skybox_shader);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass1);
-	GL_SAFE_DELETE_PROGRAM(scene->shader_lum_pass2);
+	GL_SAFE_DELETE_PROGRAM(scene->lum_pass1_program);
+	GL_SAFE_DELETE_PROGRAM(scene->lum_pass2_program);
 }
 
 static void scene_cleanup_geometry_buffers(Scene* scene)

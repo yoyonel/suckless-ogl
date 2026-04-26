@@ -51,11 +51,11 @@ typedef struct {
 	GLuint pending_irr_tex;  /**< Target irradiance map handle. */
 
 	/* --- Dependencies (Injected) --- */
-	GLuint shader_spmap;     /**< Specular pre-filter compute shader. */
-	GLuint shader_irmap;     /**< Irradiance convolution compute shader. */
-	GLuint shader_lum_pass1; /**< Luminance reduction pass 1. */
-	GLuint shader_lum_pass2; /**< Luminance reduction pass 2. */
-	GLuint lum_ssbo[2];      /**< SSBOs for luminance reduction. */
+	GLuint spmap_program;     /**< Specular pre-filter compute shader. */
+	GLuint irmap_program;     /**< Irradiance convolution compute shader. */
+	GLuint lum_pass1_program; /**< Luminance reduction pass 1. */
+	GLuint lum_pass2_program; /**< Luminance reduction pass 2. */
+	GLuint lum_ssbo[2];       /**< SSBOs for luminance reduction. */
 
 	PBRSpecUniforms
 	    spec_uniforms; /**< Cached uniforms for specular shader. */
@@ -76,14 +76,14 @@ typedef struct {
 /**
  * @brief Initializes the IBL coordinator with necessary shader resources.
  * @param coord Pointer to the coordinator instance.
- * @param shader_spmap Handle to the specular pre-filter shader.
- * @param shader_irmap Handle to the irradiance convolution shader.
- * @param shader_lum_pass1 Handle to luminance pass 1 shader.
- * @param shader_lum_pass2 Handle to luminance pass 2 shader.
+ * @param spmap_program Handle to the specular pre-filter shader.
+ * @param irmap_program Handle to the irradiance convolution shader.
+ * @param lum_pass1_program Handle to luminance pass 1 shader.
+ * @param lum_pass2_program Handle to luminance pass 2 shader.
  */
-void ibl_coordinator_init(IBLCoordinator* coord, GLuint shader_spmap,
-                          GLuint shader_irmap, GLuint shader_lum_pass1,
-                          GLuint shader_lum_pass2);
+void ibl_coordinator_init(IBLCoordinator* coord, GLuint spmap_program,
+                          GLuint irmap_program, GLuint lum_pass1_program,
+                          GLuint lum_pass2_program);
 
 /**
  * @brief Cleanups any pending resources held by the coordinator.
