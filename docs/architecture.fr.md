@@ -19,7 +19,7 @@ Gère l'affichage de la superposition d'informations, du clavier interactif et d
 
 ### `app_input` — Gestion des entrées
 
-Traite les événements clavier et souris via les callbacks GLFW.
+Traite les événements clavier et souris via les callbacks GLFW. Utilise `AppInputContext` (bundle de pointeurs ciblés) pour se découpler de l'objet God `App`, suivant le même pattern que `PostProcessInputContext`.
 
 **Responsabilités :**
 - Dispatch des commandes depuis les frappes clavier

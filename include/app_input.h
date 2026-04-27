@@ -5,14 +5,67 @@
  * This module manages all high-level input logic, bridging GLFW raw events
  * to application-specific actions like post-processing toggles, environment
  * map switching, and camera movement.
+ *
+ * Input handlers receive an AppInputContext (focused pointer bundle) instead
+ * of the full App struct, following the same pattern as PostProcessInputContext
+ * and camera_input.
  */
 
 #ifndef APP_INPUT_H
 #define APP_INPUT_H
 
-typedef struct App App;
-typedef struct Camera Camera;
 #include "gl_common.h"
+
+/* Forward declarations — avoids pulling heavy headers into app_input.h */
+typedef struct Camera Camera;
+typedef struct Scene Scene;
+typedef struct PostProcess PostProcess;
+typedef struct EnvManager EnvManager;
+typedef struct ActionNotifier ActionNotifier;
+typedef struct AppUIOverlay AppUIOverlay;
+typedef struct GPUProfilerUI GPUProfilerUI;
+typedef struct EffectBenchmark EffectBenchmark;
+typedef struct PerfModeContext PerfModeContext;
+typedef struct GamepadState GamepadState;
+typedef struct AsyncLoader AsyncLoader;
+
+/**
+ * @struct AppInputContext
+ * @brief Focused context for application-level input handling.
+ *
+ * Decouples input logic from the App God Object by exposing only the
+ * fields that input handlers actually need. Constructed once per frame
+ * (or per callback) from App fields in app.c.
+ */
+typedef struct {
+	GLFWwindow* window;
+	Camera* camera;
+	Scene* scene;
+	PostProcess* postprocess;
+	EnvManager* env_mgr;
+	ActionNotifier* notifier;
+	AppUIOverlay* overlay;
+	GPUProfilerUI* timeline_ui;
+	EffectBenchmark* effect_bench;
+	PerfModeContext* perf_context;
+	GamepadState* gamepad;
+	AsyncLoader* async_loader;
+
+	/* Mutable scalar state (pointers so mutations propagate to App) */
+	int* width;
+	int* height;
+	int* camera_enabled;
+	int* is_fullscreen;
+	int* saved_x;
+	int* saved_y;
+	int* saved_width;
+	int* saved_height;
+	int* resize_pending;
+	int* pending_width;
+	int* pending_height;
+	int* perf_mode_active;
+	int* log_gpu_metrics;
+} AppInputContext;
 
 /**
  * @brief Primary GLFW key callback.
@@ -60,35 +113,35 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
  * @brief Dispatches application-level logic for key inputs.
  *
  * Handles system-wide shortcuts (ESC to exit, Space to pause, etc.).
- * @param app Pointer to the application state.
+ * @param ctx Pointer to the input context.
  * @param key Locked key code.
  * @param mods Active modifiers.
  */
-void handle_app_input(App* app, int key, int mods);
+void handle_app_input(AppInputContext* ctx, int key, int mods);
 
 /* --- Internal Logic Bridge Functions --- */
 
 /**
  * @brief Handles input for cycling environment maps.
- * @param app Pointer to the application state.
+ * @param ctx Pointer to the input context.
  * @param action GLFW action (Press/Release).
  * @param mods Modifiers.
  * @param key Directional key.
  */
-void app_handle_env_input(App* app, int action, int mods, int key);
+void app_handle_env_input(AppInputContext* ctx, int action, int mods, int key);
 
 /**
  * @brief Toggles the application window between Windowed and Fullscreen.
- * @param app Pointer to the application state.
+ * @param ctx Pointer to the input context.
  * @param window GLFW window handle.
  */
-void app_toggle_fullscreen(App* app, GLFWwindow* window);
+void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window);
 
 /**
  * @brief Captures the current framebuffer and saves it as a PNG file.
- * @param app Pointer to the application state.
+ * @param ctx Pointer to the input context.
  * @param filename Output file path (should end in .png).
  */
-void app_save_png_frame(App* app, const char* filename);
+void app_save_png_frame(AppInputContext* ctx, const char* filename);
 
 #endif /* APP_INPUT_H */

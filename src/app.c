@@ -256,13 +256,24 @@ void app_run(App* app)
 			if (app->camera_enabled) {
 				gamepad_input_poll(&app->gamepad, &gp_actions);
 			}
-			if (gp_actions.env_next) {
-				app_handle_env_input(app, GLFW_PRESS, 0,
-				                     GLFW_KEY_PAGE_UP);
-			}
-			if (gp_actions.env_prev) {
-				app_handle_env_input(app, GLFW_PRESS, 0,
-				                     GLFW_KEY_PAGE_DOWN);
+			if (gp_actions.env_next || gp_actions.env_prev) {
+				AppInputContext env_ctx = {
+				    .window = app->window,
+				    .scene = &app->scene,
+				    .env_mgr = &app->env_mgr,
+				    .notifier = &app->notifier,
+				    .async_loader = app->async_loader,
+				};
+				if (gp_actions.env_next) {
+					app_handle_env_input(&env_ctx,
+					                     GLFW_PRESS, 0,
+					                     GLFW_KEY_PAGE_UP);
+				}
+				if (gp_actions.env_prev) {
+					app_handle_env_input(
+					    &env_ctx, GLFW_PRESS, 0,
+					    GLFW_KEY_PAGE_DOWN);
+				}
 			}
 			if (gp_actions.camera_reset) {
 				camera_init(

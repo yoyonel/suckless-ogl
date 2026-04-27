@@ -49,7 +49,7 @@ typedef enum {
  * @struct EffectBenchResult
  * @brief Timing result for a single effect.
  */
-typedef struct {
+typedef struct EffectBenchResult {
 	const char* name;        /**< Human-readable effect name. */
 	unsigned int effect_bit; /**< PostProcessEffect bitmask value. */
 	float mean_ms;           /**< Mean composite time with effect OFF. */
@@ -61,7 +61,7 @@ typedef struct {
  * @struct EffectBenchmark
  * @brief State for the automated benchmark sweep.
  */
-typedef struct {
+typedef struct EffectBenchmark {
 	BenchPhase phase;
 	PostProcess* postprocess;
 	GPUProfiler* profiler;

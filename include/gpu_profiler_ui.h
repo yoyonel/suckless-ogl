@@ -9,7 +9,7 @@
  * @struct GPUProfilerUI
  * @brief Manages the visual state and animations for the GPU timeline.
  */
-typedef struct {
+typedef struct GPUProfilerUI {
 	GPUProfiler display_profiler; /**< Snapshot of profiler data for UI. */
 	float box_height;      /**< Current target height of background. */
 	float prev_box_height; /**< Previous height for LERP. */

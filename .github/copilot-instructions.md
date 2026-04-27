@@ -22,7 +22,7 @@ Repository: [yoyonel/suckless-ogl](https://github.com/yoyonel/suckless-ogl).
 | **PBR / IBL** | `pbr.c`, `material.c`, `ibl_coordinator.c`, `light_probes.c`, `skybox.c` |
 | **Post-Processing** | `postprocess.c`, `effects/fx_*.c` (bloom, DoF, auto-exposure, FXAA, LUT, motion blur) |
 | **Shaders** | 55+ GLSL files in `shaders/` (vertex, fragment, compute) |
-| **Input** | `app_input.c`, `camera_input.c`, `postprocess_input.c`, `app_binding.c` |
+| **Input** | `app_input.c` (`AppInputContext`), `camera_input.c`, `postprocess_input.c` (`PostProcessInputContext`), `app_binding.c` |
 | **Profiling** | `gpu_profiler.c`, `perf_timer.c`, `tracy_manager.c`, `effect_benchmark.c` |
 | **Tests** | 59 test files in `tests/` (Unity framework, visual regression, benchmarks) |
 

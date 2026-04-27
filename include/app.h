@@ -111,8 +111,6 @@ void app_run(App* app);
  */
 void app_update(App* app);
 
-#include "app_input.h"
-
 enum { TRACY_SCREENSHOT_WIDTH = 320, TRACY_SCREENSHOT_HEIGHT = 180 };
 
 #endif /* APP_H */
