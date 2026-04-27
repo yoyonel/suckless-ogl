@@ -87,6 +87,32 @@ static TestState* get_test_state(void)
 #define g_ref_cache (get_test_state()->ref_cache)
 #define g_ref_cache_count (get_test_state()->ref_cache_count)
 
+static void test_render_ui_trampoline(void* user_data)
+{
+	app_render_ui((const App*)user_data);
+}
+
+static RenderContext test_render_ctx_from_app(App* app)
+{
+	return (RenderContext){
+	    .scene = &app->scene,
+	    .postprocess = &app->postprocess,
+	    .camera = &app->camera,
+	    .profiler = &app->gpu_profiler,
+	    .profiler_ui = &app->timeline_ui,
+	    .env_mgr = &app->env_mgr,
+	    .notifier = &app->notifier,
+	    .effect_bench = &app->effect_bench,
+	    .width = app->width,
+	    .height = app->height,
+	    .delta_time = app->delta_time,
+	    .frame_count = app->frame_count,
+	    .log_gpu_metrics = app->log_gpu_metrics,
+	    .render_ui = test_render_ui_trampoline,
+	    .render_ui_data = app,
+	};
+}
+
 static void preload_reference(const char* test_name)
 {
 	if (g_ref_cache_count >= MAX_CACHED_REFS) {
@@ -377,14 +403,11 @@ static void pipeline_run_test_loop(const char* test_tag,
 			}
 
 			app_update(&g_test_app);
-			renderer_draw_frame(
-			    &g_test_app, &g_test_app.scene,
-			    &g_test_app.postprocess, &g_test_app.camera,
-			    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
-			    &g_test_app.env_mgr, &g_test_app.notifier,
-			    &g_test_app.effect_bench, g_test_app.width,
-			    g_test_app.height, g_test_app.delta_time,
-			    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+			{
+				RenderContext rctx =
+				    test_render_ctx_from_app(&g_test_app);
+				renderer_draw_frame(&rctx);
+			}
 
 			// Start async readback for Viewpoint I
 			glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -528,13 +551,11 @@ static void pre_render_auto_exposure(const ViewPoint* vpoint, void* data)
 	for (int frame = 0; frame < warmup_frames; frame++) {
 		g_test_app.frame_count++;
 		app_update(&g_test_app);
-		renderer_draw_frame(
-		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
-		    &g_test_app.camera, &g_test_app.gpu_profiler,
-		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
-		    &g_test_app.notifier, &g_test_app.effect_bench,
-		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
-		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+		{
+			RenderContext rctx =
+			    test_render_ctx_from_app(&g_test_app);
+			renderer_draw_frame(&rctx);
+		}
 	}
 }
 
@@ -562,13 +583,10 @@ static void pre_render_motion_blur(const ViewPoint* vpoint, void* data)
 	camera_update_vectors(&g_test_app.camera);
 
 	app_update(&g_test_app);
-	renderer_draw_frame(&g_test_app, &g_test_app.scene,
-	                    &g_test_app.postprocess, &g_test_app.camera,
-	                    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
-	                    &g_test_app.env_mgr, &g_test_app.notifier,
-	                    &g_test_app.effect_bench, g_test_app.width,
-	                    g_test_app.height, g_test_app.delta_time,
-	                    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+	{
+		RenderContext rctx = test_render_ctx_from_app(&g_test_app);
+		renderer_draw_frame(&rctx);
+	}
 
 	// Restore camera to exact baseline for the pipeline's capture render
 	g_test_app.camera.yaw = vpoint->yaw;
@@ -587,13 +605,11 @@ static void pre_render_sony_a7siii(const ViewPoint* vpoint, void* data)
 	const int warmup_frames = 128;
 	for (int frame = 0; frame < warmup_frames; frame++) {
 		app_update(&g_test_app);
-		renderer_draw_frame(
-		    &g_test_app, &g_test_app.scene, &g_test_app.postprocess,
-		    &g_test_app.camera, &g_test_app.gpu_profiler,
-		    &g_test_app.timeline_ui, &g_test_app.env_mgr,
-		    &g_test_app.notifier, &g_test_app.effect_bench,
-		    g_test_app.width, g_test_app.height, g_test_app.delta_time,
-		    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+		{
+			RenderContext rctx =
+			    test_render_ctx_from_app(&g_test_app);
+			renderer_draw_frame(&rctx);
+		}
 	}
 }
 
