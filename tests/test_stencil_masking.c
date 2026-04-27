@@ -19,6 +19,32 @@ enum {
 static App g_test_app;
 static bool g_app_initialized = false;
 
+static void test_render_ui_trampoline(void* user_data)
+{
+	app_render_ui((const App*)user_data);
+}
+
+static RenderContext test_render_ctx_from_app(App* app)
+{
+	return (RenderContext){
+	    .scene = &app->scene,
+	    .postprocess = &app->postprocess,
+	    .camera = &app->camera,
+	    .profiler = &app->gpu_profiler,
+	    .profiler_ui = &app->timeline_ui,
+	    .env_mgr = &app->env_mgr,
+	    .notifier = &app->notifier,
+	    .effect_bench = &app->effect_bench,
+	    .width = app->width,
+	    .height = app->height,
+	    .delta_time = app->delta_time,
+	    .frame_count = app->frame_count,
+	    .log_gpu_metrics = app->log_gpu_metrics,
+	    .render_ui = test_render_ui_trampoline,
+	    .render_ui_data = app,
+	};
+}
+
 static const float TEST_CAMERA_Z = 50.0F;
 static const float TEST_CAMERA_YAW = -90.0F;
 static const float TEST_CAMERA_PITCH = 0.0F;
@@ -64,13 +90,10 @@ void test_stencil_depth_consistency(void)
 	}
 
 	/* 4. Render a frame */
-	renderer_draw_frame(&g_test_app, &g_test_app.scene,
-	                    &g_test_app.postprocess, &g_test_app.camera,
-	                    &g_test_app.gpu_profiler, &g_test_app.timeline_ui,
-	                    &g_test_app.env_mgr, &g_test_app.notifier,
-	                    &g_test_app.effect_bench, g_test_app.width,
-	                    g_test_app.height, g_test_app.delta_time,
-	                    g_test_app.frame_count, g_test_app.log_gpu_metrics);
+	{
+		RenderContext rctx = test_render_ctx_from_app(&g_test_app);
+		renderer_draw_frame(&rctx);
+	}
 
 	/* 5. Bind the scene FBO to read from it */
 	glBindFramebuffer(GL_FRAMEBUFFER, g_test_app.postprocess.scene_fbo);
