@@ -187,6 +187,11 @@ void app_cleanup(App* app)
 	tracy_manager_cleanup(&app->tracy_mgr);
 }
 
+static void app_render_ui_trampoline(void* user_data)
+{
+	app_render_ui((const App*)user_data);
+}
+
 void app_run(App* app)
 {
 	int last_subdiv = -1;
@@ -340,12 +345,24 @@ void app_run(App* app)
 
 		{
 			PROFILE_ZONE(render_ctx, "App Render");
-			renderer_draw_frame(
-			    app, &app->scene, &app->postprocess, &app->camera,
-			    &app->gpu_profiler, &app->timeline_ui,
-			    &app->env_mgr, &app->notifier, &app->effect_bench,
-			    app->width, app->height, app->delta_time,
-			    app->frame_count, app->log_gpu_metrics);
+			RenderContext rctx = {
+			    .scene = &app->scene,
+			    .postprocess = &app->postprocess,
+			    .camera = &app->camera,
+			    .profiler = &app->gpu_profiler,
+			    .profiler_ui = &app->timeline_ui,
+			    .env_mgr = &app->env_mgr,
+			    .notifier = &app->notifier,
+			    .effect_bench = &app->effect_bench,
+			    .width = app->width,
+			    .height = app->height,
+			    .delta_time = app->delta_time,
+			    .frame_count = app->frame_count,
+			    .log_gpu_metrics = app->log_gpu_metrics,
+			    .render_ui = app_render_ui_trampoline,
+			    .render_ui_data = app,
+			};
+			renderer_draw_frame(&rctx);
 			PROFILE_ZONE_END(render_ctx);
 		}
 
