@@ -1,9 +1,9 @@
 var searchData=
 [
   ['pad_5fside_3694',['PAD_SIDE',['../gpu__profiler__ui_8c.html#a34df31e8ecf9f924a8f31fffd643620c',1,'gpu_profiler_ui.c']]],
-  ['padding_3695',['padding',['../structSphereInstance__POD.html#ad9dad8d916023553c790bae3b010ebd0',1,'SphereInstance_POD::padding()'],['../structSphereInstance.html#a3d2bc55858c30258d71b292ca7d6400c',1,'SphereInstance::padding()'],['../structUILayout.html#a951795d8c9d444653b986658057c6cf3',1,'UILayout::padding()']]],
+  ['padding_3695',['padding',['../structUILayout.html#a951795d8c9d444653b986658057c6cf3',1,'UILayout::padding()'],['../structSphereInstance.html#a3d2bc55858c30258d71b292ca7d6400c',1,'SphereInstance::padding()']]],
   ['panel_5fframe_5falpha_3696',['PANEL_FRAME_ALPHA',['../app__ui_8h.html#aebecb4aca5518dc86b7ba096ed227049',1,'app_ui.h']]],
-  ['parent_5findex_3697',['parent_index',['../structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da',1,'GPUStageInfo::parent_index()'],['../structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021',1,'GPUStage::parent_index()']]],
+  ['parent_5findex_3697',['parent_index',['../structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021',1,'GPUStage::parent_index()'],['../structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da',1,'GPUStageInfo::parent_index()']]],
   ['path_3698',['path',['../structAsyncRequest.html#a790bd417ab046e08aa8a4bdb945aa995',1,'AsyncRequest']]],
   ['paused_3699',['paused',['../structNBodySim.html#a853adc6d46d93bba8728cfdc350f485b',1,'NBodySim']]],
   ['pbo_5fid_3700',['pbo_id',['../structAsyncRequest.html#af5954290e1bec60ae5bb883574d3c8ad',1,'AsyncRequest']]],
@@ -33,7 +33,7 @@ var searchData=
   ['points_3724',['points',['../structTrailRing.html#af02ca242c71b05cd912d05cf5d9a121e',1,'TrailRing']]],
   ['polygon_5fmode_3725',['polygon_mode',['../structGLStateBackup.html#aa72b34ad29bf4465618484e53f16590d',1,'GLStateBackup']]],
   ['pos_3726',['pos',['../structOrbiterDef.html#a80b801839b77258821878ffe06d60c27',1,'OrbiterDef::pos()'],['../structCachedSphere.html#a092218e457a4c9777c13467b5c1899f4',1,'CachedSphere::pos()']]],
-  ['position_3727',['position',['../structNBodyImpact.html#a7a29516b7bc43932ea3ca7a5b00765ff',1,'NBodyImpact::position()'],['../structCamera.html#a6bd96884fb5fb652b71042f2d7f0122c',1,'Camera::position()'],['../structGPUProfilerUI.html#a0748c683404423a1ac0fd8bd559c9ba5',1,'GPUProfilerUI::position()'],['../structNBodyParticle.html#afa869f9bba96d38295ca33e293294a2d',1,'NBodyParticle::position()'],['../structShockwaveEvent.html#a0c766497ce706247606e1e90d82ee428',1,'ShockwaveEvent::position()'],['../structTrailVertex.html#adddac6fa3f63d5f26a9ac787a786a3de',1,'TrailVertex::position()']]],
+  ['position_3727',['position',['../structShockwaveEvent.html#a0c766497ce706247606e1e90d82ee428',1,'ShockwaveEvent::position()'],['../structCamera.html#a6bd96884fb5fb652b71042f2d7f0122c',1,'Camera::position()'],['../structGPUProfilerUI.html#a0748c683404423a1ac0fd8bd559c9ba5',1,'GPUProfilerUI::position()'],['../structNBodyParticle.html#afa869f9bba96d38295ca33e293294a2d',1,'NBodyParticle::position()'],['../structNBodyImpact.html#a7a29516b7bc43932ea3ca7a5b00765ff',1,'NBodyImpact::position()'],['../structTrailVertex.html#adddac6fa3f63d5f26a9ac787a786a3de',1,'TrailVertex::position()']]],
   ['postprocess_3728',['postprocess',['../structPostProcessInputContext.html#ad58aa2e1df24141750c399839898b747',1,'PostProcessInputContext::postprocess()'],['../structApp.html#a8578e2324ad0fa6a1cdac64e91f5aaa6',1,'App::postprocess()'],['../structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd',1,'EffectBenchmark::postprocess()']]],
   ['postprocess_5fshader_3729',['postprocess_shader',['../structPostProcess.html#a6e96c4bdbafb4d9427515ae7f0dd0212',1,'PostProcess']]],
   ['prefilter_5fmap_3730',['prefilter_map',['../structInstancedUniforms.html#a5a3e26736c34743ba517f700b78fd4de',1,'InstancedUniforms']]],

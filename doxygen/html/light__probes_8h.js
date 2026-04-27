@@ -1,6 +1,5 @@
 var light__probes_8h =
 [
-    [ "SphereInstance_POD", "structSphereInstance__POD.html", "structSphereInstance__POD" ],
     [ "LightProbe", "structLightProbe.html", "structLightProbe" ],
     [ "LightProbeGrid", "structLightProbeGrid.html", "structLightProbeGrid" ],
     [ "light_probe_grid_cleanup", "light__probes_8h.html#a6c8fc97128572ecc44171194266abf88", null ],

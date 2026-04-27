@@ -14,7 +14,7 @@ var structLightProbeGrid =
     [ "probes", "structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f", null ],
     [ "results_ready", "structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9", null ],
     [ "running", "structLightProbeGrid.html#af6e6ba7991b4456336c97cfd84c9315b", null ],
-    [ "scene_copy", "structLightProbeGrid.html#adb8dfcc2bc61559996c08ef28f742f6e", null ],
+    [ "scene_copy", "structLightProbeGrid.html#a0008bdfe0dd6ebad75dec5f54b9c54b2", null ],
     [ "scene_count", "structLightProbeGrid.html#a211bb382e4ab8b38bec9dbfd710a5c11", null ],
     [ "sh_textures", "structLightProbeGrid.html#a323b83773260781cdea517f6b7cc91c2", null ],
     [ "ssbo", "structLightProbeGrid.html#a5813f10e8ecf944f51b56208ea234954", null ],

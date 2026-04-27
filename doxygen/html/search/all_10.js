@@ -1,7 +1,7 @@
 var searchData=
 [
   ['pad_5fside_1363',['PAD_SIDE',['../gpu__profiler__ui_8c.html#a34df31e8ecf9f924a8f31fffd643620c',1,'gpu_profiler_ui.c']]],
-  ['padding_1364',['padding',['../structSphereInstance.html#a3d2bc55858c30258d71b292ca7d6400c',1,'SphereInstance::padding()'],['../structSphereInstance__POD.html#ad9dad8d916023553c790bae3b010ebd0',1,'SphereInstance_POD::padding()'],['../structUILayout.html#a951795d8c9d444653b986658057c6cf3',1,'UILayout::padding()']]],
+  ['padding_1364',['padding',['../structSphereInstance.html#a3d2bc55858c30258d71b292ca7d6400c',1,'SphereInstance::padding()'],['../structUILayout.html#a951795d8c9d444653b986658057c6cf3',1,'UILayout::padding()']]],
   ['pair_5fsoftening_5fsq_1365',['pair_softening_sq',['../nbody_8c.html#abab840d83fa7507c61eb4a4b12b6c0dc',1,'nbody.c']]],
   ['panel_5fframe_5falpha_1366',['PANEL_FRAME_ALPHA',['../app__ui_8h.html#aebecb4aca5518dc86b7ba096ed227049',1,'app_ui.h']]],
   ['parent_5findex_1367',['parent_index',['../structGPUStage.html#a04b7e19c041f12d71a8c8c46190f9021',1,'GPUStage::parent_index()'],['../structGPUStageInfo.html#af2e86ce838419e80b22d8087a397c6da',1,'GPUStageInfo::parent_index()']]],
@@ -196,7 +196,7 @@ var searchData=
   ['postprocessinputcontext_1556',['PostProcessInputContext',['../structPostProcessInputContext.html',1,'']]],
   ['postprocesspreset_1557',['PostProcessPreset',['../structPostProcessPreset.html',1,'']]],
   ['postprocessubo_1558',['PostProcessUBO',['../structPostProcessUBO.html',1,'']]],
-  ['precompute_5fcached_5fspheres_1559',['precompute_cached_spheres',['../light__probes_8c.html#a5733f69942faa6b841b0a7dd65b01f8d',1,'light_probes.c']]],
+  ['precompute_5fcached_5fspheres_1559',['precompute_cached_spheres',['../light__probes_8c.html#ae681f0db1ed1b55c737edb5d5ff861e0',1,'light_probes.c']]],
   ['prefilter_5fmap_1560',['prefilter_map',['../structInstancedUniforms.html#a5a3e26736c34743ba517f700b78fd4de',1,'InstancedUniforms']]],
   ['prefiltered_5fspecular_5fmap_5fsize_1561',['PREFILTERED_SPECULAR_MAP_SIZE',['../group__Environment.html#gac0ba165d3405de365ee4b6af426db7ac',1,'app_settings.h']]],
   ['prefix_5fbuffer_5fsize_1562',['PREFIX_BUFFER_SIZE',['../log_8c.html#af715e26dfffd1f8de1c18449e2770cffa3ff11c2ebc27e50d70960f12741444fb',1,'log.c']]],

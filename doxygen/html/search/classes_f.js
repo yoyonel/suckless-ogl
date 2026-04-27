@@ -8,7 +8,6 @@ var searchData=
   ['shockwaverenderer_2334',['ShockwaveRenderer',['../structShockwaveRenderer.html',1,'']]],
   ['skybox_2335',['Skybox',['../structSkybox.html',1,'']]],
   ['sphereinstance_2336',['SphereInstance',['../structSphereInstance.html',1,'']]],
-  ['sphereinstance_5fpod_2337',['SphereInstance_POD',['../structSphereInstance__POD.html',1,'']]],
-  ['sphereinstancessbo_2338',['SphereInstanceSSBO',['../structSphereInstanceSSBO.html',1,'']]],
-  ['ssbogroup_2339',['SSBOGroup',['../structSSBOGroup.html',1,'']]]
+  ['sphereinstancessbo_2337',['SphereInstanceSSBO',['../structSphereInstanceSSBO.html',1,'']]],
+  ['ssbogroup_2338',['SSBOGroup',['../structSSBOGroup.html',1,'']]]
 ];

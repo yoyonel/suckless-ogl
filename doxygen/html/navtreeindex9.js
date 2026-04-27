@@ -1,5 +1,7 @@
 var NAVTREEINDEX9 =
 {
+"structGPUProfilerUI.html#ae5e79d83d225a190f207e18ba1413e42":[5,0,42,1],
+"structGPUProfilerUI.html#afdd3666d9201efc39d955f1c2c6cb670":[5,0,42,0],
 "structGPUQueryBuffer.html":[5,0,43],
 "structGPUQueryBuffer.html#a0cc788bc5b9334b1e0639e33bd4f2a66":[5,0,43,3],
 "structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54":[5,0,43,2],
@@ -171,6 +173,7 @@ var NAVTREEINDEX9 =
 "structLightProbe.html#a01ff8e8d631d43158606c73102b224da":[5,0,61,0],
 "structLightProbe.html#adf243c027b1162800901618aa2185f07":[5,0,61,1],
 "structLightProbeGrid.html":[5,0,62],
+"structLightProbeGrid.html#a0008bdfe0dd6ebad75dec5f54b9c54b2":[5,0,62,14],
 "structLightProbeGrid.html#a0156e32f129150cce4b021c39020cc2d":[5,0,62,20],
 "structLightProbeGrid.html#a13535533e5f97ab4b574d0939fe0bab5":[5,0,62,2],
 "structLightProbeGrid.html#a1fdee833b89fa7c79b474373d195fa65":[5,0,62,10],
@@ -188,7 +191,6 @@ var NAVTREEINDEX9 =
 "structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f":[5,0,62,11],
 "structLightProbeGrid.html#ac04f9da630dd16e28f7e32c85d7c80b2":[5,0,62,1],
 "structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9":[5,0,62,12],
-"structLightProbeGrid.html#adb8dfcc2bc61559996c08ef28f742f6e":[5,0,62,14],
 "structLightProbeGrid.html#ae82048a9e65f83d48d3d5861f702e5d2":[5,0,62,5],
 "structLightProbeGrid.html#af6e6ba7991b4456336c97cfd84c9315b":[5,0,62,13],
 "structLightProbeGrid.html#aff85ca45aa315c8061e5b1d81ea0a73a":[5,0,62,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX9 =
 "structPBRMaterial.html#a080d9fec8ffd04454686d6299176c5a4":[5,0,72,0],
 "structPBRMaterial.html#a3d8eb6071a7df80bee915d23a4c31103":[5,0,72,1],
 "structPBRMaterial.html#a6d10204864085abe3dca544bc6c9699e":[5,0,72,3],
-"structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4":[5,0,72,2],
-"structPBRSpecUniforms.html":[5,0,73],
-"structPBRSpecUniforms.html#a093dd76c96c1eee1ee2bafd4189d5932":[5,0,73,1]
+"structPBRMaterial.html#aef8992ba32db72b23adeaee4e5a335e4":[5,0,72,2]
 };

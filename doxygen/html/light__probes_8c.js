@@ -11,8 +11,8 @@ var light__probes_8c =
     [ "SH_COEFF_COUNT", "light__probes_8c.html#aa5a6429b639acc6c76b9a7f59ed59572", null ],
     [ "USE_SH_BAKE_FACTORS", "light__probes_8c.html#a43a3c5d2c87cf7cee5f60e3502852d6d", null ],
     [ "compute_probe_sh", "light__probes_8c.html#a5c10cfc74aacb0946926259cbd7610fd", null ],
-    [ "get_sphere_pos", "light__probes_8c.html#a1b4f94a86c083d61f890fda97ef2fe16", null ],
-    [ "get_sphere_radius", "light__probes_8c.html#aae0f4052ea12af0778e9eaf89ba58610", null ],
+    [ "get_sphere_pos", "light__probes_8c.html#a338c4d4188abbbfc6646566d6e4465cf", null ],
+    [ "get_sphere_radius", "light__probes_8c.html#ac2d94e4994527bae8373ac34109506d8", null ],
     [ "is_probe_inside_sphere", "light__probes_8c.html#abde5719c10df3a99d455b1664addce2a", null ],
     [ "light_probe_grid_cleanup", "light__probes_8c.html#a6c8fc97128572ecc44171194266abf88", null ],
     [ "light_probe_grid_compute_aabb", "light__probes_8c.html#a1b221eea19814ee6e47b8d1ec8a05400", null ],
@@ -26,5 +26,5 @@ var light__probes_8c =
     [ "light_probe_grid_update_async", "light__probes_8c.html#a97344a57a3a68fb6c2e832f1fb3086cd", null ],
     [ "light_probe_worker", "light__probes_8c.html#a717fb0537d37b3a34cc1321510dabcb5", null ],
     [ "light_probe_worker_compute_probe", "light__probes_8c.html#a1e903f61e016f1bb69fc006c5b73ad12", null ],
-    [ "precompute_cached_spheres", "light__probes_8c.html#a5733f69942faa6b841b0a7dd65b01f8d", null ]
+    [ "precompute_cached_spheres", "light__probes_8c.html#ae681f0db1ed1b55c737edb5d5ff861e0", null ]
 ];

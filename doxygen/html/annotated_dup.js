@@ -89,7 +89,6 @@ var annotated_dup =
     [ "ShockwaveRenderer", "structShockwaveRenderer.html", "structShockwaveRenderer" ],
     [ "Skybox", "structSkybox.html", "structSkybox" ],
     [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ],
-    [ "SphereInstance_POD", "structSphereInstance__POD.html", "structSphereInstance__POD" ],
     [ "SphereInstanceSSBO", "structSphereInstanceSSBO.html", "structSphereInstanceSSBO" ],
     [ "SSBOGroup", "structSSBOGroup.html", "structSSBOGroup" ],
     [ "TonemapParams", "structTonemapParams.html", "structTonemapParams" ],

@@ -1,6 +1,5 @@
 var instanced__rendering_8h =
 [
-    [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ],
     [ "InstancedGroup", "structInstancedGroup.html", "structInstancedGroup" ],
     [ "instanced_group_bind_mesh", "instanced__rendering_8h.html#aefe48e60e9fa48c4ac3a7badb718bec4", null ],
     [ "instanced_group_cleanup", "instanced__rendering_8h.html#a1c3f138d496ea038ba38d988c71d6884", null ],

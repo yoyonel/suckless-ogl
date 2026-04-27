@@ -49,6 +49,9 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "shockwave.h", "shockwave_8h.html", "shockwave_8h" ],
     [ "simd_utils.h", "simd__utils_8h.html", "simd__utils_8h" ],
     [ "skybox.h", "skybox_8h.html", "skybox_8h" ],
+    [ "sphere_types.h", "sphere__types_8h.html", [
+      [ "SphereInstance", "structSphereInstance.html", "structSphereInstance" ]
+    ] ],
     [ "ssbo_rendering.h", "ssbo__rendering_8h.html", "ssbo__rendering_8h" ],
     [ "texture.h", "texture_8h.html", "texture_8h" ],
     [ "tracy_gpu.h", "tracy__gpu_8h.html", "tracy__gpu_8h" ],

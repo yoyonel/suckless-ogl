@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=11" />
   <meta name="generator" content="Doxygen 1.9.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Suckless OGL: SphereInstance_POD Struct Reference</title>
+  <title>Suckless OGL: include/sphere_types.h File Reference</title>
   <link href="tabs.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="dynsections.js"></script>
@@ -192,8 +192,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
-      <li><a href="files.html"><span>Files</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -214,9 +214,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
   </div>
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
-      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
-      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -232,7 +231,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('structSphereInstance__POD.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('sphere__types_8h.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -252,123 +251,46 @@ $(document).ready(function(){initNavTree('structSphereInstance__POD.html',''); i
 
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Data Fields</a>  </div>
+<a href="#nested-classes">Data Structures</a>  </div>
   <div class="headertitle">
-<div class="title">SphereInstance_POD Struct Reference</div>  </div>
+<div class="title">sphere_types.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="light__probes_8h_source.html">light_probes.h</a>&gt;</code></p>
+<p>Pure-data type for per-instance sphere attributes.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &lt;cglm/cglm.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for sphere_types.h:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="sphere__types_8h__incl.svg" width="435" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="sphere__types_8h__dep__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div>
+<p><a href="sphere__types_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Data Fields</h2></td></tr>
-<tr class="memitem:a118ade78f5b30174ee59dac750b2c49d"><td class="memItemLeft" align="right" valign="top">mat4&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#a118ade78f5b30174ee59dac750b2c49d">model</a></td></tr>
-<tr class="separator:a118ade78f5b30174ee59dac750b2c49d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0057f842a248ff335c854fadb4977173"><td class="memItemLeft" align="right" valign="top">vec3&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#a0057f842a248ff335c854fadb4977173">albedo</a></td></tr>
-<tr class="separator:a0057f842a248ff335c854fadb4977173"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c50606909111fc2c136ce0496a93abb"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#a2c50606909111fc2c136ce0496a93abb">metallic</a></td></tr>
-<tr class="separator:a2c50606909111fc2c136ce0496a93abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20a2c790c62f51e7bf5bff6f87bf3a40"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#a20a2c790c62f51e7bf5bff6f87bf3a40">roughness</a></td></tr>
-<tr class="separator:a20a2c790c62f51e7bf5bff6f87bf3a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14f63d34d2bf08320f10f1f775b8a3b3"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#a14f63d34d2bf08320f10f1f775b8a3b3">ao</a></td></tr>
-<tr class="separator:a14f63d34d2bf08320f10f1f775b8a3b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9dad8d916023553c790bae3b010ebd0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance__POD.html#ad9dad8d916023553c790bae3b010ebd0">padding</a></td></tr>
-<tr class="separator:ad9dad8d916023553c790bae3b010ebd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSphereInstance.html">SphereInstance</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Per-instance data sent to the shader via an instanced VBO.  <a href="structSphereInstance.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Field Documentation</h2>
-<a id="a0057f842a248ff335c854fadb4977173"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0057f842a248ff335c854fadb4977173">&#9670;&nbsp;</a></span>albedo</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">vec3 SphereInstance_POD::albedo</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a14f63d34d2bf08320f10f1f775b8a3b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a14f63d34d2bf08320f10f1f775b8a3b3">&#9670;&nbsp;</a></span>ao</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float SphereInstance_POD::ao</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2c50606909111fc2c136ce0496a93abb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c50606909111fc2c136ce0496a93abb">&#9670;&nbsp;</a></span>metallic</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float SphereInstance_POD::metallic</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a118ade78f5b30174ee59dac750b2c49d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a118ade78f5b30174ee59dac750b2c49d">&#9670;&nbsp;</a></span>model</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">mat4 SphereInstance_POD::model</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad9dad8d916023553c790bae3b010ebd0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad9dad8d916023553c790bae3b010ebd0">&#9670;&nbsp;</a></span>padding</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float SphereInstance_POD::padding</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a20a2c790c62f51e7bf5bff6f87bf3a40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20a2c790c62f51e7bf5bff6f87bf3a40">&#9670;&nbsp;</a></span>roughness</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float SphereInstance_POD::roughness</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/<a class="el" href="light__probes_8h_source.html">light_probes.h</a></li>
-</ul>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Pure-data type for per-instance sphere attributes. </p>
+<p>This header defines the canonical <a class="el" href="structSphereInstance.html" title="Per-instance data sent to the shader via an instanced VBO.">SphereInstance</a> layout shared by the instanced renderer, billboard renderer, N-body simulation, light probes, and sorting subsystems. It depends only on cglm types and the SIMD_ALIGNMENT constant from <a class="el" href="gl__common_8h.html" title="Common OpenGL definitions, RAII helpers, and utilities.">gl_common.h</a> — no OpenGL entry points are referenced directly. </p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="structSphereInstance__POD.html">SphereInstance_POD</a></li>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="sphere__types_8h.html">sphere_types.h</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>
