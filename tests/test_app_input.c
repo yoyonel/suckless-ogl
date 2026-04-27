@@ -10,6 +10,37 @@
 
 static App* test_app = NULL;
 
+static AppInputContext test_ctx_from_app(App* app)
+{
+	return (AppInputContext){
+	    .window = app->window,
+	    .camera = &app->camera,
+	    .scene = &app->scene,
+	    .postprocess = &app->postprocess,
+	    .env_mgr = &app->env_mgr,
+	    .notifier = &app->notifier,
+	    .overlay = &app->overlay,
+	    .timeline_ui = &app->timeline_ui,
+	    .effect_bench = &app->effect_bench,
+	    .perf_context = &app->perf_context,
+	    .gamepad = &app->gamepad,
+	    .async_loader = app->async_loader,
+	    .width = &app->width,
+	    .height = &app->height,
+	    .camera_enabled = &app->camera_enabled,
+	    .is_fullscreen = &app->is_fullscreen,
+	    .saved_x = &app->saved_x,
+	    .saved_y = &app->saved_y,
+	    .saved_width = &app->saved_width,
+	    .saved_height = &app->saved_height,
+	    .resize_pending = &app->resize_pending,
+	    .pending_width = &app->pending_width,
+	    .pending_height = &app->pending_height,
+	    .perf_mode_active = &app->perf_mode_active,
+	    .log_gpu_metrics = &app->log_gpu_metrics,
+	};
+}
+
 void setUp(void)
 {
 	if (!glfwInit()) {
@@ -76,47 +107,48 @@ void test_framebuffer_size_callback(void)
  */
 void test_handle_app_input_exhaustive(void)
 {
+	AppInputContext ctx = test_ctx_from_app(test_app);
 	/* Base toggles */
 	int val_before = test_app->overlay.text_overlay_mode;
-	handle_app_input(test_app, GLFW_KEY_F1, 0);
+	handle_app_input(&ctx, GLFW_KEY_F1, 0);
 	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
-	handle_app_input(test_app, GLFW_KEY_F2, 0);
+	handle_app_input(&ctx, GLFW_KEY_F2, 0);
 	TEST_ASSERT_EQUAL(HELP_MODE_KEYBOARD, test_app->overlay.show_help);
-	handle_app_input(test_app, GLFW_KEY_F3, 0);
+	handle_app_input(&ctx, GLFW_KEY_F3, 0);
 	TEST_ASSERT_TRUE(test_app->timeline_ui.visible);
-	handle_app_input(test_app, GLFW_KEY_F4, 0);
+	handle_app_input(&ctx, GLFW_KEY_F4, 0);
 	TEST_ASSERT_TRUE(test_app->log_gpu_metrics);
-	handle_app_input(test_app, GLFW_KEY_Z, 0);
+	handle_app_input(&ctx, GLFW_KEY_Z, 0);
 	TEST_ASSERT_TRUE(test_app->scene.wireframe);
-	handle_app_input(test_app, GLFW_KEY_C, 0);
+	handle_app_input(&ctx, GLFW_KEY_C, 0);
 	TEST_ASSERT_TRUE(test_app->camera_enabled);
-	handle_app_input(test_app, GLFW_KEY_L, 0);
+	handle_app_input(&ctx, GLFW_KEY_L, 0);
 	TEST_ASSERT_TRUE(test_app->scene.billboard_mode);
-	handle_app_input(test_app, GLFW_KEY_K, 0);
+	handle_app_input(&ctx, GLFW_KEY_K, 0);
 	TEST_ASSERT_TRUE(test_app->scene.show_envmap);
 
 	/* PBR Debug Modes (cycle) */
 	int initial_debug = test_app->scene.pbr_debug_mode;
-	handle_app_input(test_app, GLFW_KEY_F5, 0);
+	handle_app_input(&ctx, GLFW_KEY_F5, 0);
 	TEST_ASSERT_EQUAL((initial_debug + 1) % 9,
 	                  test_app->scene.pbr_debug_mode);
 
 	/* Banding Styles (cycle) */
 	/* First press enables banding and sets idx to 0 (Linear) */
-	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(&ctx, GLFW_KEY_7, 0);
 	TEST_ASSERT_EQUAL(BANDING_MODE_LINEAR,
 	                  test_app->postprocess.banding.mode);
 	/* Enable banding manually to test cycle */
 	postprocess_enable(&test_app->postprocess, POSTFX_BANDING);
-	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(&ctx, GLFW_KEY_7, 0);
 	TEST_ASSERT_EQUAL(BANDING_MODE_DITHERED,
 	                  test_app->postprocess.banding.mode);
-	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(&ctx, GLFW_KEY_7, 0);
 	TEST_ASSERT_EQUAL(BANDING_MODE_PERCEPTUAL,
 	                  test_app->postprocess.banding.mode);
 
 	/* Benchmark */
-	handle_app_input(test_app, GLFW_KEY_8, 0);
+	handle_app_input(&ctx, GLFW_KEY_8, 0);
 	/* Benchmark might need more mocking if it calls GL, but let's check
 	 * flag if it exists */
 }
@@ -131,83 +163,84 @@ void test_handle_app_input_exhaustive(void)
  */
 void test_handle_postprocess_input_exhaustive(void)
 {
+	AppInputContext ctx = test_ctx_from_app(test_app);
 	/* Basic toggles */
-	handle_app_input(test_app, GLFW_KEY_V, 0);
+	handle_app_input(&ctx, GLFW_KEY_V, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_VIGNETTE));
-	handle_app_input(test_app, GLFW_KEY_G, 0);
+	handle_app_input(&ctx, GLFW_KEY_G, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_GRAIN));
-	handle_app_input(test_app, GLFW_KEY_B, 0);
+	handle_app_input(&ctx, GLFW_KEY_B, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_BLOOM));
-	handle_app_input(test_app, GLFW_KEY_M, 0);
+	handle_app_input(&ctx, GLFW_KEY_M, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_MOTION_BLUR));
 
 	/* Reset */
-	handle_app_input(test_app, GLFW_KEY_0, 0);
+	handle_app_input(&ctx, GLFW_KEY_0, 0);
 	/* Check some default values */
 
 	/* Exposure */
 	float exp_before = test_app->postprocess.exposure.exposure;
-	handle_app_input(test_app, GLFW_KEY_KP_ADD, 0);
+	handle_app_input(&ctx, GLFW_KEY_KP_ADD, 0);
 	TEST_ASSERT_TRUE(test_app->postprocess.exposure.exposure > exp_before);
 
 	/* Complex toggles (SHIFT) */
 	/* Motion Blur Debug Cycle */
-	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_M, GLFW_MOD_SHIFT);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
 	                                        POSTFX_MOTION_BLUR_DEBUG));
-	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_M, GLFW_MOD_SHIFT);
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
 	                                         POSTFX_MOTION_BLUR_DEBUG));
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
 	                                        POSTFX_VECTOR_FIELD_DEBUG));
-	handle_app_input(test_app, GLFW_KEY_M, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_M, GLFW_MOD_SHIFT);
 	TEST_ASSERT_FALSE(postprocess_is_enabled(&test_app->postprocess,
 	                                         POSTFX_VECTOR_FIELD_DEBUG));
 
 	/* FXAA Toggle and Debug */
-	handle_app_input(test_app, GLFW_KEY_X, 0);
+	handle_app_input(&ctx, GLFW_KEY_X, 0);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA));
-	handle_app_input(test_app, GLFW_KEY_X, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_X, GLFW_MOD_SHIFT);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_FXAA_DEBUG));
 
 	/* DOF Debug */
-	handle_app_input(test_app, GLFW_KEY_H, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_H, GLFW_MOD_SHIFT);
 	TEST_ASSERT_TRUE(
 	    postprocess_is_enabled(&test_app->postprocess, POSTFX_DOF_DEBUG));
 
 	/* Auto Exposure Debug */
-	handle_app_input(test_app, GLFW_KEY_J, GLFW_MOD_SHIFT);
+	handle_app_input(&ctx, GLFW_KEY_J, GLFW_MOD_SHIFT);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
 	                                        POSTFX_EXPOSURE_DEBUG));
 
 	/* Stencil Debug */
-	handle_app_input(test_app, GLFW_KEY_F6, 0);
+	handle_app_input(&ctx, GLFW_KEY_F6, 0);
 	TEST_ASSERT_TRUE(postprocess_is_enabled(&test_app->postprocess,
 	                                        POSTFX_STENCIL_DEBUG));
 
 	/* Presets 2-6 */
-	handle_app_input(test_app, GLFW_KEY_2, 0);
-	handle_app_input(test_app, GLFW_KEY_3, 0);
-	handle_app_input(test_app, GLFW_KEY_4, 0);
-	handle_app_input(test_app, GLFW_KEY_5, 0);
-	handle_app_input(test_app, GLFW_KEY_6, 0);
+	handle_app_input(&ctx, GLFW_KEY_2, 0);
+	handle_app_input(&ctx, GLFW_KEY_3, 0);
+	handle_app_input(&ctx, GLFW_KEY_4, 0);
+	handle_app_input(&ctx, GLFW_KEY_5, 0);
+	handle_app_input(&ctx, GLFW_KEY_6, 0);
 
 	/* Banding Style Cycle (trigger multiple times) */
-	handle_app_input(test_app, GLFW_KEY_7, 0);
-	handle_app_input(test_app, GLFW_KEY_7, 0);
+	handle_app_input(&ctx, GLFW_KEY_7, 0);
+	handle_app_input(&ctx, GLFW_KEY_7, 0);
 
 	/* Benchmark (multiple times for 'already running' branch) */
-	handle_app_input(test_app, GLFW_KEY_8, 0);
-	handle_app_input(test_app, GLFW_KEY_8, 0);
+	handle_app_input(&ctx, GLFW_KEY_8, 0);
+	handle_app_input(&ctx, GLFW_KEY_8, 0);
 
 	/* Reload (just logs) */
-	handle_app_input(test_app, GLFW_KEY_R, 0);
+	handle_app_input(&ctx, GLFW_KEY_R, 0);
 }
 
 /**
@@ -278,10 +311,11 @@ void test_key_callback_dispatch(void)
  */
 void test_subdiv_input(void)
 {
+	AppInputContext ctx = test_ctx_from_app(test_app);
 	test_app->scene.subdivisions = 2;
-	handle_app_input(test_app, GLFW_KEY_UP, 0);
+	handle_app_input(&ctx, GLFW_KEY_UP, 0);
 	TEST_ASSERT_EQUAL(3, test_app->scene.subdivisions);
-	handle_app_input(test_app, GLFW_KEY_DOWN, 0);
+	handle_app_input(&ctx, GLFW_KEY_DOWN, 0);
 	TEST_ASSERT_EQUAL(2, test_app->scene.subdivisions);
 }
 
@@ -294,15 +328,16 @@ void test_subdiv_input(void)
  */
 void test_misc_system_input(void)
 {
+	AppInputContext ctx = test_ctx_from_app(test_app);
 	/* Fullscreen toggle */
-	handle_app_input(test_app, GLFW_KEY_F, 0);
+	handle_app_input(&ctx, GLFW_KEY_F, 0);
 
 	/* Screenshot */
-	handle_app_input(test_app, GLFW_KEY_P, 0);
+	handle_app_input(&ctx, GLFW_KEY_P, 0);
 	remove("capture_frame.png");
 
 	/* Reset */
-	handle_app_input(test_app, GLFW_KEY_SPACE, 0);
+	handle_app_input(&ctx, GLFW_KEY_SPACE, 0);
 }
 
 /**
@@ -314,10 +349,11 @@ void test_misc_system_input(void)
  */
 void test_env_input_exhaustive(void)
 {
+	AppInputContext ctx = test_ctx_from_app(test_app);
 	/* Test PageUp/Down for envmap switching */
-	app_handle_env_input(test_app, GLFW_RELEASE, 0, GLFW_KEY_PAGE_UP);
-	app_handle_env_input(test_app, GLFW_PRESS, 0, GLFW_KEY_PAGE_UP);
-	app_handle_env_input(test_app, GLFW_PRESS, 0, GLFW_KEY_PAGE_DOWN);
+	app_handle_env_input(&ctx, GLFW_RELEASE, 0, GLFW_KEY_PAGE_UP);
+	app_handle_env_input(&ctx, GLFW_PRESS, 0, GLFW_KEY_PAGE_UP);
+	app_handle_env_input(&ctx, GLFW_PRESS, 0, GLFW_KEY_PAGE_DOWN);
 }
 
 int main(void)
