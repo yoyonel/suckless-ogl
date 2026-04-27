@@ -82,18 +82,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e",
-"env__manager_8c.html",
-"gpu__profiler_8h.html",
-"ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82",
-"pbr_8h.html",
-"postprocess_8h.html#a478a7691189f64138ffea55e94d0be7b",
-"sh__probe_8glsl.html#ae983ca5ff558cf0d904c82d0cd92efe9",
-"structAppBindingRegistry.html",
-"structFpsCounter.html#a2d613eb7c17b1b907ae291c0938a73a2",
-"structNBodySim.html#aa6b5e12d1552407be8270b31c0308e56",
-"structScene.html#ae713b1fbd03dbd2748c948095cc7d88c",
-"trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03"
+"app__ui_8h.html#ae34ca930ba8175fe6d5e0e59ef5256f2",
+"effect__benchmark_8h_source.html",
+"gpu__profiler_8c.html#ae819b47b90af9fa7965f5fc44331ac1d",
+"ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad",
+"pbr_8c.html#afe447daec33b49a4068deabf4f2cd96c",
+"postprocess_8h.html#a47114280aafaff716053e0b12be92dca",
+"sh__probe_8glsl.html#add944c2af48d7a8c0bdf95e2e36edfa7",
+"structAppBinding.html#ab8a6a6c6d6353f4fe31ac336fa4ee91f",
+"structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732",
+"structNBodySim.html#a92427533fd2b09bc5e12bca9276e9a85",
+"structScene.html#a896b30612f7921d033a63e983cc04d02",
+"trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

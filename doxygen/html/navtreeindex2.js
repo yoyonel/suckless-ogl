@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"effect__benchmark_8h_source.html":[6,0,2,14],
 "env__manager_8c.html":[6,0,4,15],
 "env__manager_8c.html#a2be9d0e288060ee8fc01063fae7417aa":[6,0,4,15,8],
 "env__manager_8c.html#a5a8e4c362fb7ec501f8d5d5556af04bb":[6,0,4,15,9],
@@ -148,8 +149,8 @@ var NAVTREEINDEX2 =
 "globals_defs.html":[6,1,6],
 "globals_e.html":[6,1,0,5],
 "globals_enum.html":[6,1,4],
-"globals_eval.html":[6,1,5],
 "globals_eval.html":[6,1,5,0],
+"globals_eval.html":[6,1,5],
 "globals_eval_b.html":[6,1,5,1],
 "globals_eval_c.html":[6,1,5,2],
 "globals_eval_d.html":[6,1,5,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "gpu__profiler_8c.html#aab4caa95e9c5f77266939ae13806b530":[6,0,4,19,6],
 "gpu__profiler_8c.html#ab17e7cd8eee4584edcb55508c3b69325":[6,0,4,19,8],
 "gpu__profiler_8c.html#abb8eabbef66554b6e1646f398037face":[6,0,4,19,4],
-"gpu__profiler_8c.html#ad016cfb60498ffc8dfb74333a226d5e9":[6,0,4,19,7],
-"gpu__profiler_8c.html#ae819b47b90af9fa7965f5fc44331ac1d":[6,0,4,19,2]
+"gpu__profiler_8c.html#ad016cfb60498ffc8dfb74333a226d5e9":[6,0,4,19,7]
 };

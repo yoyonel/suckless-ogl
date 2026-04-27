@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"structAppBinding.html#ab8a6a6c6d6353f4fe31ac336fa4ee91f":[5,0,5,1],
 "structAppBindingRegistry.html":[5,0,6],
 "structAppBindingRegistry.html#a76165a733f65baeae3d54725e4714a2e":[5,0,6,1],
 "structAppBindingRegistry.html#acc1da4766fa82381d7b44ec402279a8d":[5,0,6,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "structFogParams.html#a2b6201229d58c2ce154aad513e4e6d82":[5,0,33,2],
 "structFogParams.html#a40dc43eeaa21e642ca99b78b1f256d54":[5,0,33,3],
 "structFogParams.html#a8970d2b4d4fc54514ff2bbed7a1ac9f3":[5,0,33,0],
-"structFpsCounter.html":[5,0,34],
-"structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732":[5,0,34,0]
+"structFpsCounter.html":[5,0,34]
 };

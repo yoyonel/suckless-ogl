@@ -82,6 +82,7 @@ var annotated_dup =
     [ "PostProcessInputContext", "structPostProcessInputContext.html", "structPostProcessInputContext" ],
     [ "PostProcessPreset", "structPostProcessPreset.html", "structPostProcessPreset" ],
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
+    [ "RenderContext", "structRenderContext.html", "structRenderContext" ],
     [ "Scene", "structScene.html", "structScene" ],
     [ "SH9", "structSH9.html", "structSH9" ],
     [ "Shader", "structShader.html", "structShader" ],
