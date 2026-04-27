@@ -251,6 +251,7 @@ $(document).ready(function(){initNavTree('app__input_8h.html',''); initResizable
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">app_input.h File Reference</div>  </div>
@@ -269,12 +270,18 @@ Include dependency graph for app_input.h:</div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h__dep__incl.svg" width="650" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h__dep__incl.svg" width="235" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div>
 <p><a href="app__input_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html">AppInputContext</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focused context for application-level input handling.  <a href="structAppInputContext.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a286930f4e8ede059b83ff6eafa2ff718"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a286930f4e8ede059b83ff6eafa2ff718">key_callback</a> (<a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *window, int key, int scancode, int action, int mods)</td></tr>
@@ -289,25 +296,26 @@ Functions</h2></td></tr>
 <tr class="memitem:a5180f7bf2b71421af837035824a8c8ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac">framebuffer_size_callback</a> (<a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *window, int width, int height)</td></tr>
 <tr class="memdesc:a5180f7bf2b71421af837035824a8c8ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary GLFW framebuffer size callback.  <a href="app__input_8h.html#a5180f7bf2b71421af837035824a8c8ac">More...</a><br /></td></tr>
 <tr class="separator:a5180f7bf2b71421af837035824a8c8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a588f02e0bebbc36ff133173dd0392713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a588f02e0bebbc36ff133173dd0392713">handle_app_input</a> (<a class="el" href="structApp.html">App</a> *app, int key, int mods)</td></tr>
-<tr class="memdesc:a588f02e0bebbc36ff133173dd0392713"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches application-level logic for key inputs.  <a href="app__input_8h.html#a588f02e0bebbc36ff133173dd0392713">More...</a><br /></td></tr>
-<tr class="separator:a588f02e0bebbc36ff133173dd0392713"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a5bd036fc9913a0b441d5a2121daf0f0e">app_handle_env_input</a> (<a class="el" href="structApp.html">App</a> *app, int action, int mods, int key)</td></tr>
-<tr class="memdesc:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for cycling environment maps.  <a href="app__input_8h.html#a5bd036fc9913a0b441d5a2121daf0f0e">More...</a><br /></td></tr>
-<tr class="separator:a5bd036fc9913a0b441d5a2121daf0f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a479d0af6d3acd4e6dc4e13cd29b9b63d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a479d0af6d3acd4e6dc4e13cd29b9b63d">app_toggle_fullscreen</a> (<a class="el" href="structApp.html">App</a> *app, <a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *window)</td></tr>
-<tr class="memdesc:a479d0af6d3acd4e6dc4e13cd29b9b63d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles the application window between Windowed and Fullscreen.  <a href="app__input_8h.html#a479d0af6d3acd4e6dc4e13cd29b9b63d">More...</a><br /></td></tr>
-<tr class="separator:a479d0af6d3acd4e6dc4e13cd29b9b63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ad0dce8449731259f77702aeba8e457"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a9ad0dce8449731259f77702aeba8e457">app_save_png_frame</a> (<a class="el" href="structApp.html">App</a> *app, const char *filename)</td></tr>
-<tr class="memdesc:a9ad0dce8449731259f77702aeba8e457"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the current framebuffer and saves it as a PNG file.  <a href="app__input_8h.html#a9ad0dce8449731259f77702aeba8e457">More...</a><br /></td></tr>
-<tr class="separator:a9ad0dce8449731259f77702aeba8e457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d63ad1a32fac850f5605d3aa86a14d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a1d63ad1a32fac850f5605d3aa86a14d1">handle_app_input</a> (<a class="el" href="structAppInputContext.html">AppInputContext</a> *ctx, int key, int mods)</td></tr>
+<tr class="memdesc:a1d63ad1a32fac850f5605d3aa86a14d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches application-level logic for key inputs.  <a href="app__input_8h.html#a1d63ad1a32fac850f5605d3aa86a14d1">More...</a><br /></td></tr>
+<tr class="separator:a1d63ad1a32fac850f5605d3aa86a14d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d0f19f7bfea020e20384f68ca1c0c41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a9d0f19f7bfea020e20384f68ca1c0c41">app_handle_env_input</a> (<a class="el" href="structAppInputContext.html">AppInputContext</a> *ctx, int action, int mods, int key)</td></tr>
+<tr class="memdesc:a9d0f19f7bfea020e20384f68ca1c0c41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles input for cycling environment maps.  <a href="app__input_8h.html#a9d0f19f7bfea020e20384f68ca1c0c41">More...</a><br /></td></tr>
+<tr class="separator:a9d0f19f7bfea020e20384f68ca1c0c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade6689829860792608f4d1339c52a987"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#ade6689829860792608f4d1339c52a987">app_toggle_fullscreen</a> (<a class="el" href="structAppInputContext.html">AppInputContext</a> *ctx, <a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *window)</td></tr>
+<tr class="memdesc:ade6689829860792608f4d1339c52a987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles the application window between Windowed and Fullscreen.  <a href="app__input_8h.html#ade6689829860792608f4d1339c52a987">More...</a><br /></td></tr>
+<tr class="separator:ade6689829860792608f4d1339c52a987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2baeec3c1c8b4b797122ee40faa97e59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">app_save_png_frame</a> (<a class="el" href="structAppInputContext.html">AppInputContext</a> *ctx, const char *filename)</td></tr>
+<tr class="memdesc:a2baeec3c1c8b4b797122ee40faa97e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the current framebuffer and saves it as a PNG file.  <a href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">More...</a><br /></td></tr>
+<tr class="separator:a2baeec3c1c8b4b797122ee40faa97e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User input orchestration and application state toggles. </p>
-<p>This module manages all high-level input logic, bridging GLFW raw events to application-specific actions like post-processing toggles, environment map switching, and camera movement. </p>
+<p>This module manages all high-level input logic, bridging GLFW raw events to application-specific actions like post-processing toggles, environment map switching, and camera movement.</p>
+<p>Input handlers receive an <a class="el" href="structAppInputContext.html" title="Focused context for application-level input handling.">AppInputContext</a> (focused pointer bundle) instead of the full <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> struct, following the same pattern as <a class="el" href="structPostProcessInputContext.html" title="Context required for post-processing input handling.">PostProcessInputContext</a> and camera_input. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a5bd036fc9913a0b441d5a2121daf0f0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bd036fc9913a0b441d5a2121daf0f0e">&#9670;&nbsp;</a></span>app_handle_env_input()</h2>
+<a id="a9d0f19f7bfea020e20384f68ca1c0c41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d0f19f7bfea020e20384f68ca1c0c41">&#9670;&nbsp;</a></span>app_handle_env_input()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -315,8 +323,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void app_handle_env_input </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
+          <td class="paramtype"><a class="el" href="structAppInputContext.html">AppInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -347,7 +355,7 @@ Functions</h2></td></tr>
 <p>Handles input for cycling environment maps. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to the input context. </td></tr>
     <tr><td class="paramname">action</td><td>GLFW action (Press/Release). </td></tr>
     <tr><td class="paramname">mods</td><td>Modifiers. </td></tr>
     <tr><td class="paramname">key</td><td>Directional key. </td></tr>
@@ -357,14 +365,14 @@ Functions</h2></td></tr>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a5bd036fc9913a0b441d5a2121daf0f0e_cgraph.svg" width="100%" height="470"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a9d0f19f7bfea020e20384f68ca1c0c41_cgraph.svg" width="100%" height="470"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
 </div>
 </div>
-<a id="a9ad0dce8449731259f77702aeba8e457"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ad0dce8449731259f77702aeba8e457">&#9670;&nbsp;</a></span>app_save_png_frame()</h2>
+<a id="a2baeec3c1c8b4b797122ee40faa97e59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2baeec3c1c8b4b797122ee40faa97e59">&#9670;&nbsp;</a></span>app_save_png_frame()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -372,8 +380,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void app_save_png_frame </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
+          <td class="paramtype"><a class="el" href="structAppInputContext.html">AppInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -392,7 +400,7 @@ Here is the call graph for this function:</div>
 <p>Captures the current framebuffer and saves it as a PNG file. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to the input context. </td></tr>
     <tr><td class="paramname">filename</td><td>Output file path (should end in .png). </td></tr>
   </table>
   </dd>
@@ -400,8 +408,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a479d0af6d3acd4e6dc4e13cd29b9b63d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a479d0af6d3acd4e6dc4e13cd29b9b63d">&#9670;&nbsp;</a></span>app_toggle_fullscreen()</h2>
+<a id="ade6689829860792608f4d1339c52a987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade6689829860792608f4d1339c52a987">&#9670;&nbsp;</a></span>app_toggle_fullscreen()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -409,8 +417,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void app_toggle_fullscreen </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
+          <td class="paramtype"><a class="el" href="structAppInputContext.html">AppInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -429,7 +437,7 @@ Here is the call graph for this function:</div>
 <p>Toggles the application window between Windowed and Fullscreen. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to the input context. </td></tr>
     <tr><td class="paramname">window</td><td>GLFW window handle. </td></tr>
   </table>
   </dd>
@@ -479,11 +487,17 @@ Here is the call graph for this function:</div>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Reallocates many GPU textures via <code>postprocess_resize</code>. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h_a5180f7bf2b71421af837035824a8c8ac_cgraph.svg" width="435" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
 
 </div>
 </div>
-<a id="a588f02e0bebbc36ff133173dd0392713"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a588f02e0bebbc36ff133173dd0392713">&#9670;&nbsp;</a></span>handle_app_input()</h2>
+<a id="a1d63ad1a32fac850f5605d3aa86a14d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d63ad1a32fac850f5605d3aa86a14d1">&#9670;&nbsp;</a></span>handle_app_input()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -491,8 +505,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="memname">void handle_app_input </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
+          <td class="paramtype"><a class="el" href="structAppInputContext.html">AppInputContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -517,7 +531,7 @@ Here is the call graph for this function:</div>
 <p>Dispatches application-level logic for key inputs. </p>
 <p>Handles system-wide shortcuts (ESC to exit, Space to pause, etc.). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">app</td><td>Pointer to the application state. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to the input context. </td></tr>
     <tr><td class="paramname">key</td><td>Locked key code. </td></tr>
     <tr><td class="paramname">mods</td><td>Active modifiers. </td></tr>
   </table>
@@ -526,7 +540,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a588f02e0bebbc36ff133173dd0392713_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a1d63ad1a32fac850f5605d3aa86a14d1_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 
@@ -640,7 +654,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h_af4ca2891044ac10a664b8d83ce590f1f_cgraph.svg" width="579" height="104"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h_af4ca2891044ac10a664b8d83ce590f1f_cgraph.svg" width="595" height="155"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 
@@ -690,7 +704,7 @@ Here is the call graph for this function:</div>
 <div class="dynheader">
 Here is the call graph for this function:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h_a06ad2502008f16fbcf01dfaa7f7bc9ea_cgraph.svg" width="559" height="52"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="app__input_8h_a06ad2502008f16fbcf01dfaa7f7bc9ea_cgraph.svg" width="579" height="104"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 

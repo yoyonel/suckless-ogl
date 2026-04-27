@@ -82,18 +82,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui_8h.html#ae97efd99556e79d62aa2299b0b87b607",
-"env__manager_8c.html#a2be9d0e288060ee8fc01063fae7417aa",
-"gpu__profiler_8h.html#a077b530bc1be19ecc056d48a6d4793f3",
-"ibl__coordinator_8h.html#ac4e66403e82cf9193c1eeb0a534b90d8",
-"pbr_8h.html#a01b429d5a8f495e2e01428fc05cb7610",
-"postprocess_8h.html#a4885a5e722dcddd4f99ed7a8714416af",
-"sh__probe_8glsl.html#af76936b4f5273c1c4f09fb3586560fa9",
-"structAppBindingRegistry.html#a76165a733f65baeae3d54725e4714a2e",
-"structGPUProfilerUI.html#ae5e79d83d225a190f207e18ba1413e42",
-"structPBRSpecUniforms.html",
-"structShockwaveRenderer.html#a139ccd4127cdb7912422f13b692b4a50",
-"ui_8c.html#a895be99a8fe46f071860fd021e113463"
+"app__ui_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e",
+"env__manager_8c.html",
+"gpu__profiler_8h.html",
+"ibl__coordinator_8h.html#a897ce59e5e3e582ff1385f4c9e2c7f82",
+"pbr_8h.html",
+"postprocess_8h.html#a478a7691189f64138ffea55e94d0be7b",
+"sh__probe_8glsl.html#ae983ca5ff558cf0d904c82d0cd92efe9",
+"structAppBindingRegistry.html",
+"structFpsCounter.html#a2d613eb7c17b1b907ae291c0938a73a2",
+"structNBodySim.html#aa6b5e12d1552407be8270b31c0308e56",
+"structScene.html#ae713b1fbd03dbd2748c948095cc7d88c",
+"trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
