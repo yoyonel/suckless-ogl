@@ -39,7 +39,7 @@ typedef struct {
 
 ### La capture « Dry-Run »
 
-Lorsque la superposition d'aide est visible (`app->show_help == true`), le `key_callback` dans `app_input.c` entre en mode **Dry-Run** :
+Lorsque la superposition d'aide est visible (`ctx->overlay->show_help != HELP_MODE_OFF`), le `key_callback` dans `app_input.c` entre en mode **Dry-Run** :
 
 - Il intercepte les appuis de touches.
 - Il met à jour `app->help_pressed_key` et `app->help_pressed_mods`.

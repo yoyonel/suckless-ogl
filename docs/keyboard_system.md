@@ -39,7 +39,7 @@ typedef struct {
 
 ### The "Dry-Run" Capture
 
-When the help overlay is visible (`app->show_help == true`), the `key_callback` in `app_input.c` enters a **Dry-Run** mode:
+When the help overlay is visible (`ctx->overlay->show_help != HELP_MODE_OFF`), the `key_callback` in `app_input.c` enters a **Dry-Run** mode:
 
 - It intercepts key presses.
 - It updates `app->help_pressed_key` and `app->help_pressed_mods`.
