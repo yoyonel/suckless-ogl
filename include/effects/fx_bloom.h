@@ -4,8 +4,8 @@
 #include "gl_common.h"
 #include "shader.h"
 
-/* Forward declaration */
-struct PostProcess;
+/* Forward declarations */
+struct EffectContext;
 
 enum { BLOOM_MIP_LEVELS = 5 };
 
@@ -36,19 +36,20 @@ typedef struct {
 } BloomFX;
 
 /* Initialisation des ressources Bloom */
-int fx_bloom_init(struct PostProcess* post_processing);
+int fx_bloom_init(BloomFX* bloom, int width, int height);
 
 /* Libération des ressources */
-void fx_bloom_cleanup(struct PostProcess* post_processing);
+void fx_bloom_cleanup(BloomFX* bloom);
 
 /* Rendu de l'effet */
-void fx_bloom_render(struct PostProcess* post_processing);
+void fx_bloom_render(BloomFX* bloom, const BloomParams* params,
+                     const struct EffectContext* ctx);
 
 /* Upload des paramètres vers le shader principal */
 void fx_bloom_upload_params(Shader* shader, const BloomParams* params);
 
-/* Getters for shared shaders */
-Shader* fx_bloom_get_downsample_shader(struct PostProcess* post_processing);
-Shader* fx_bloom_get_upsample_shader(struct PostProcess* post_processing);
+/* Getters for shared shaders (used by DoF) */
+Shader* fx_bloom_get_downsample_shader(BloomFX* bloom);
+Shader* fx_bloom_get_upsample_shader(BloomFX* bloom);
 
 #endif /* FX_BLOOM_H */
