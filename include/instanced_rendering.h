@@ -11,25 +11,7 @@
 #define INSTANCED_RENDERING_H
 
 #include "gl_common.h"
-#include <cglm/cglm.h>
-
-/**
- * @struct SphereInstance
- * @brief Per-instance data sent to the shader via an instanced VBO.
- *
- * This structure is 64-byte aligned to ensure optimal GPU throughput
- * and compatibility with SIMD-based sorting or physics.
- */
-typedef struct {
-	mat4 model;       /**< 4x4 Transformation matrix. */
-	vec3 albedo;      /**< Base color (linear RGB). */
-	float metallic;   /**< PBR metallic factor (0.0 - 1.0). */
-	float roughness;  /**< PBR roughness factor (0.0 - 1.0). */
-	float ao;         /**< Ambient occlusion factor. */
-	float padding;    /**< Alignment padding. */
-	vec3 prev_center; /**< Previous frame center (for per-object motion
-	                     blur). */
-} __attribute__((aligned(SIMD_ALIGNMENT))) SphereInstance;
+#include "sphere_types.h"
 
 /**
  * @struct InstancedGroup

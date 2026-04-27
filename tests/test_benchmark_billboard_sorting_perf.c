@@ -1,6 +1,5 @@
 #include "billboard_sorting.h"
 #include "gl_common.h"
-#include "instanced_rendering.h"
 #include "platform/platform_utils.h"
 #include <cglm/cglm.h>
 #include <stdio.h>

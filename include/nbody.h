@@ -13,7 +13,7 @@
 #ifndef NBODY_H
 #define NBODY_H
 
-#include "instanced_rendering.h"
+#include "sphere_types.h"
 #include <cglm/types.h>
 #include <stdbool.h>
 

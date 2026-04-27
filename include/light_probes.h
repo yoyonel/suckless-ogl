@@ -3,18 +3,9 @@
 
 #include "sh_math.h"
 #include "shader.h"
+#include "sphere_types.h"
 #include <cglm/cglm.h>
 #include <pthread.h>
-
-/* Forward declaration from instanced_rendering.h */
-typedef struct {
-	mat4 model;
-	vec3 albedo;
-	float metallic;
-	float roughness;
-	float ao;
-	float padding;
-} SphereInstance_POD;
 
 /** @brief Number of 3D textures used for packing SH coefficients (7 = 28
  * channels for 9 L2 coeffs) */
@@ -42,7 +33,7 @@ typedef struct {
 	int total_probes;
 
 	/* Scene Copy for Async Update */
-	SphereInstance_POD* scene_copy;
+	SphereInstance* scene_copy;
 	int scene_count;
 
 	/* Threading */

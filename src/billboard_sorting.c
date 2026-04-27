@@ -2,7 +2,6 @@
 
 #include "gl_common.h" /* For SIMD_ALIGNMENT */
 #include "gl_debug.h"
-#include "instanced_rendering.h" /* For SphereInstance */
 #include "log.h"
 #include "platform/platform_utils.h"
 #include "profiler.h"

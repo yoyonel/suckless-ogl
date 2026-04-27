@@ -9,7 +9,7 @@
 #ifndef BILLBOARD_SORTING_H
 #define BILLBOARD_SORTING_H
 
-#include "instanced_rendering.h"
+#include "sphere_types.h"
 #include <cglm/cglm.h>
 
 /**
