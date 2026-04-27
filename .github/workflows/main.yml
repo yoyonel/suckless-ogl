@@ -126,7 +126,7 @@ jobs:
 
       - name: Upload Coverage Artifact
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: build-coverage/coverage_report/
@@ -179,7 +179,7 @@ jobs:
           path: site/coverage
 
       - name: Upload Documentation Artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: doxygen-docs
           path: site/
@@ -275,7 +275,7 @@ jobs:
           cmake --build build --parallel $(nproc)
           mv build/app build/app-${{ matrix.build_type }}
       - name: Upload Binaries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: app-${{ matrix.build_type }}
           path: build/app-${{ matrix.build_type }}
@@ -301,7 +301,7 @@ jobs:
           cmake --build build-win --parallel $(nproc)
           mv build-win/app.exe build-win/app-Windows-Release.exe
       - name: Upload Windows Binary
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: app-Windows-Release
           path: build-win/app-Windows-Release.exe
