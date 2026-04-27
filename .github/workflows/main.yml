@@ -116,7 +116,7 @@ jobs:
 
       - name: Post Visual Comment on PR
         if: always() && github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@v3
         env:
           VISUAL_COMMENT: ${{ env.VISUAL_COMMENT }}
         with:
@@ -208,7 +208,7 @@ jobs:
 
       - name: Comment Preview Link on PR
         if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
+        uses: mshick/add-pr-comment@v3
         with:
           message-id: docs-preview
           message: |
