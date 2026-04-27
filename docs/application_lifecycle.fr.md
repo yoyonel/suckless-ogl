@@ -770,7 +770,7 @@ Cela assure une physique déterministe indépendamment du frame rate, tandis que
 
 ## Chapitre 9 — Rendu d'une Frame
 
-`renderer_draw_frame()` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestre le pipeline de rendu complet pour chaque frame.
+`renderer_draw_frame(const RenderContext* ctx)` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestre le pipeline de rendu complet pour chaque frame. Elle reçoit une seule struct `RenderContext` contenant tout l'état par frame (scène, caméra, postprocess, profiler, dimensions, etc.) au lieu de paramètres individuels, découplant le renderer de l'objet God `App`.
 
 ### 9.1 — Architecture Haut Niveau d'une Frame
 
@@ -1204,7 +1204,7 @@ Voici une estimation de la consommation VRAM en régime stationnaire :
 | `src/app.c` | `app_init()`, `app_run()`, `app_cleanup()` |
 | `src/window.c` | Création contexte GLFW + OpenGL |
 | `src/scene.c` | État scène, géométrie, instancing, passes de rendu |
-| `src/renderer.c` | Orchestration frame (`renderer_draw_frame`) |
+| `src/renderer.c` | Orchestration frame (`renderer_draw_frame`, `RenderContext`) |
 | `src/skybox.c` | Rendu environnement équirectangulaire |
 | `src/postprocess.c` | Pipeline post-traitement complet (7 étapes) |
 | `src/icosphere.c` | Génération mesh icosphère récursive |

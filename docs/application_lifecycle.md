@@ -770,7 +770,7 @@ This ensures deterministic physics regardless of frame rate, while rotation stay
 
 ## Chapter 9 — Rendering a Frame
 
-`renderer_draw_frame()` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame.
+`renderer_draw_frame(const RenderContext* ctx)` ([src/renderer.c](https://github.com/yoyonel/suckless-ogl/blob/master/src/renderer.c)) orchestrates the full rendering pipeline for each frame. It receives a single `RenderContext` struct containing all per-frame state (scene, camera, postprocess, profiler, dimensions, etc.) instead of individual parameters, decoupling the renderer from the `App` God Object.
 
 ### 9.1 — High-Level Frame Architecture
 
@@ -1204,7 +1204,7 @@ Here's an estimate of VRAM consumption at steady state:
 | `src/app.c` | `app_init()`, `app_run()`, `app_cleanup()` |
 | `src/window.c` | GLFW + OpenGL context creation |
 | `src/scene.c` | Scene state, geometry, instancing, render passes |
-| `src/renderer.c` | Frame orchestration (`renderer_draw_frame`) |
+| `src/renderer.c` | Frame orchestration (`renderer_draw_frame`, `RenderContext`) |
 | `src/skybox.c` | Equirectangular environment rendering |
 | `src/postprocess.c` | Full post-processing pipeline (7 stages) |
 | `src/icosphere.c` | Recursive icosphere mesh generation |
