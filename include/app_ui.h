@@ -300,7 +300,7 @@ enum {
 	    sizeof(GAMEPAD_LAYOUT) / sizeof(GAMEPAD_LAYOUT[0])
 };
 
-typedef struct {
+typedef struct AppUIOverlay {
 	UIContext ui;
 	KeyboardLayoutConfig kbd_config;
 

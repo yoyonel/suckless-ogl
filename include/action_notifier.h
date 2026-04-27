@@ -27,7 +27,7 @@
  * @struct ActionNotification
  * @brief Represents a single active notification.
  */
-typedef struct {
+typedef struct ActionNotification {
 	char text[MAX_ACTION_TEXT_LENGTH];
 	float lifetime;     /**< Current time active (seconds). */
 	float max_lifetime; /**< Total time to display (seconds). */
@@ -38,7 +38,7 @@ typedef struct {
  * @struct ActionNotifier
  * @brief Manager for action notifications.
  */
-typedef struct {
+typedef struct ActionNotifier {
 	ActionNotification notes[MAX_ACTION_NOTIFICATIONS];
 } ActionNotifier;
 

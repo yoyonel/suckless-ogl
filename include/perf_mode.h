@@ -49,7 +49,7 @@ typedef enum {
  * @struct PerfModeContext
  * @brief State container for performance mode.
  */
-typedef struct {
+typedef struct PerfModeContext {
 	PerfModeState state;               /**< Current activity state. */
 	PerfModeBackend backend;           /**< Selected backend. */
 	int original_policy;               /**< Saved scheduler policy. */
