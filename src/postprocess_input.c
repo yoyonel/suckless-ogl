@@ -65,10 +65,11 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 			postprocess_apply_preset(ctx->postprocess,
 			                         &PRESET_DEFAULT);
 			postprocess_set_exposure(
-			    ctx->postprocess, ctx->postprocess->auto_threshold);
+			    ctx->postprocess,
+			    ctx->postprocess->readback.auto_threshold);
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Style: Aucun (rendu pur) - Exposure: %.2f",
-			         ctx->postprocess->auto_threshold);
+			         ctx->postprocess->readback.auto_threshold);
 			action_notifier_push(ctx->notifier,
 			                     "Style: Pure Render",
 			                     NOTIF_DUR_LONG);
@@ -256,7 +257,8 @@ static void handle_preset_input(const PostProcessInputContext* ctx, int key,
 			postprocess_apply_preset(ctx->postprocess,
 			                         &PRESET_DEFAULT);
 			postprocess_set_exposure(
-			    ctx->postprocess, ctx->postprocess->auto_threshold);
+			    ctx->postprocess,
+			    ctx->postprocess->readback.auto_threshold);
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Color Grading: Reset to Defaults");
 			action_notifier_push(ctx->notifier,

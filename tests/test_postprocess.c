@@ -81,12 +81,12 @@ void test_postprocess_init_creates_resources(void)
 	// Vérification que le pointeur est bien stocké
 	TEST_ASSERT_EQUAL_PTR(&gpu_profiler_system, post_proc.gpu_profiler);
 
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_fbo);
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_color_tex);
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.scene_depth_tex);
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vao);
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.screen_quad_vbo);
-	TEST_ASSERT_NOT_EQUAL(0, post_proc.postprocess_shader);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.gpu.scene_fbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.gpu.scene_color_tex);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.gpu.scene_depth_tex);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.gpu.screen_quad_vao);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.gpu.screen_quad_vbo);
+	TEST_ASSERT_NOT_EQUAL(0, post_proc.shaders.postprocess_shader);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.fbo);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.bloom_fx.mips[0].texture);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.dof_fx.fbo);
@@ -177,10 +177,10 @@ void test_postprocess_resize(void)
 	TEST_ASSERT_EQUAL(NewDimension, post_proc.width);
 	TEST_ASSERT_EQUAL(NewDimension, post_proc.height);
 
-	TEST_ASSERT_TRUE(glIsFramebuffer(post_proc.scene_fbo));
-	TEST_ASSERT_TRUE(glIsTexture(post_proc.scene_color_tex));
+	TEST_ASSERT_TRUE(glIsFramebuffer(post_proc.gpu.scene_fbo));
+	TEST_ASSERT_TRUE(glIsTexture(post_proc.gpu.scene_color_tex));
 
-	glBindTexture(GL_TEXTURE_2D, post_proc.scene_color_tex);
+	glBindTexture(GL_TEXTURE_2D, post_proc.gpu.scene_color_tex);
 	int tex_w = GL_INVALID;
 	int tex_h = GL_INVALID;
 	glGetTexLevelParameteriv(GL_TEXTURE_2D, TEX_LEVEL_0, GL_TEXTURE_WIDTH,
@@ -199,15 +199,15 @@ void test_postprocess_cleanup(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	GLuint fbo_id = post_proc.scene_fbo;
-	GLuint tex_id = post_proc.scene_color_tex;
+	GLuint fbo_id = post_proc.gpu.scene_fbo;
+	GLuint tex_id = post_proc.gpu.scene_color_tex;
 
 	postprocess_cleanup(&post_proc);
 
 	TEST_ASSERT_FALSE(glIsFramebuffer(fbo_id));
 	TEST_ASSERT_FALSE(glIsTexture(tex_id));
-	TEST_ASSERT_EQUAL(GL_INVALID, post_proc.scene_fbo);
-	TEST_ASSERT_NULL(post_proc.postprocess_shader);
+	TEST_ASSERT_EQUAL(GL_INVALID, post_proc.gpu.scene_fbo);
+	TEST_ASSERT_NULL(post_proc.shaders.postprocess_shader);
 }
 
 void test_postprocess_optimization_switch(void)
@@ -216,17 +216,17 @@ void test_postprocess_optimization_switch(void)
 	postprocess_init(&post_proc, &gpu_profiler_system, SmallTestWidth,
 	                 SmallTestHeight);
 
-	TEST_ASSERT_TRUE(post_proc.is_optimized);
-	GLuint original_program = post_proc.postprocess_shader->program;
+	TEST_ASSERT_TRUE(post_proc.shaders.is_optimized);
+	GLuint original_program = post_proc.shaders.postprocess_shader->program;
 
 	postprocess_use_dynamic(&post_proc);
-	TEST_ASSERT_FALSE(post_proc.is_optimized);
+	TEST_ASSERT_FALSE(post_proc.shaders.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(original_program,
-	                      post_proc.postprocess_shader->program);
+	                      post_proc.shaders.postprocess_shader->program);
 
 	unsigned int opt_flags = (unsigned int)(POSTFX_VIGNETTE | POSTFX_GRAIN);
 	postprocess_compile_optimized(&post_proc, opt_flags);
-	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	TEST_ASSERT_TRUE(post_proc.shaders.is_optimized);
 
 	postprocess_cleanup(&post_proc);
 }
@@ -238,14 +238,14 @@ void test_postprocess_optimized_preset_switch(void)
 	                 SmallTestHeight);
 
 	postprocess_compile_optimized(&post_proc, post_proc.active_effects);
-	TEST_ASSERT_TRUE(post_proc.is_optimized);
-	GLuint first_program = post_proc.postprocess_shader->program;
+	TEST_ASSERT_TRUE(post_proc.shaders.is_optimized);
+	GLuint first_program = post_proc.shaders.postprocess_shader->program;
 
 	postprocess_apply_preset(&post_proc, &PRESET_CINEMATIC);
 
-	TEST_ASSERT_TRUE(post_proc.is_optimized);
+	TEST_ASSERT_TRUE(post_proc.shaders.is_optimized);
 	TEST_ASSERT_NOT_EQUAL(first_program,
-	                      post_proc.postprocess_shader->program);
+	                      post_proc.shaders.postprocess_shader->program);
 
 	postprocess_cleanup(&post_proc);
 }

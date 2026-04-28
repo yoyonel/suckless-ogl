@@ -66,7 +66,8 @@ void test_histogram_caching_and_continuity(void)
 
 	// 2. Mock PBO content for Frame 1 (reads from index 1)
 	int write_idx = 1;
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, post_proc->histogram_pbo[write_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER,
+	             post_proc->readback.histogram_pbo[write_idx]);
 	float* mock_data =
 	    (float*)malloc((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float));
 	for (int i = 0; i < MAP_SIZE * MAP_SIZE; i++) {
@@ -77,7 +78,7 @@ void test_histogram_caching_and_continuity(void)
 	    (GLsizeiptr)((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float)),
 	    mock_data);
 	free(mock_data);
-	post_proc->histogram_sync[write_idx] =
+	post_proc->readback.histogram_sync[write_idx] =
 	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	glFlush();
 	glFinish();  // Ensure data is ready
@@ -94,9 +95,9 @@ void test_histogram_caching_and_continuity(void)
 	// In the test, we mock a slow GPU by either deleting the sync OR
 	// replacing it with a non-signaled one.
 	// Simplest: clear the sync to simulate it's NOT ready.
-	if (post_proc->histogram_sync[0]) {
-		glDeleteSync(post_proc->histogram_sync[0]);
-		post_proc->histogram_sync[0] = NULL;
+	if (post_proc->readback.histogram_sync[0]) {
+		glDeleteSync(post_proc->readback.histogram_sync[0]);
+		post_proc->readback.histogram_sync[0] = NULL;
 	}
 
 	result = postprocess_compute_luminance_histogram(
@@ -121,10 +122,10 @@ void test_histogram_auto_trigger_when_ae_off(void)
 	glBindTexture(GL_TEXTURE_2D, dummy_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, RENDER_WIDTH, RENDER_HEIGHT,
 	             0, GL_RGBA, GL_FLOAT, NULL);
-	post_proc.scene_color_tex = dummy_tex;
+	post_proc.gpu.scene_color_tex = dummy_tex;
 
 	postprocess_end(&post_proc);
-	TEST_ASSERT_NOT_NULL(post_proc.histogram_sync[1]);
+	TEST_ASSERT_NOT_NULL(post_proc.readback.histogram_sync[1]);
 
 	glDeleteTextures(1, &dummy_tex);
 	postprocess_cleanup(&post_proc);
@@ -143,7 +144,8 @@ void test_histogram_cache_no_accumulation(void)
 
 	// Fill index 1 with -5.0f
 	int write_idx = 1;
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, post_proc.histogram_pbo[write_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER,
+	             post_proc.readback.histogram_pbo[write_idx]);
 	float* data1 =
 	    (float*)malloc((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float));
 	for (int i = 0; i < MAP_SIZE * MAP_SIZE; i++)
@@ -152,7 +154,7 @@ void test_histogram_cache_no_accumulation(void)
 	    GL_PIXEL_PACK_BUFFER, 0,
 	    (GLsizeiptr)((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float)), data1);
 	free(data1);
-	post_proc.histogram_sync[write_idx] =
+	post_proc.readback.histogram_sync[write_idx] =
 	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	glFlush();
 	glFinish();
@@ -164,7 +166,8 @@ void test_histogram_cache_no_accumulation(void)
 
 	// Load 5.0F into index 0
 	write_idx = 0;
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, post_proc.histogram_pbo[write_idx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER,
+	             post_proc.readback.histogram_pbo[write_idx]);
 	float* data2 =
 	    (float*)malloc((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float));
 	for (int i = 0; i < MAP_SIZE * MAP_SIZE; i++)
@@ -174,10 +177,10 @@ void test_histogram_cache_no_accumulation(void)
 	    (GLsizeiptr)((size_t)(MAP_SIZE * MAP_SIZE) * sizeof(float)), data2);
 	free(data2);
 	// Delete any auto-triggered sync to avoid interference
-	if (post_proc.histogram_sync[write_idx]) {
-		glDeleteSync(post_proc.histogram_sync[write_idx]);
+	if (post_proc.readback.histogram_sync[write_idx]) {
+		glDeleteSync(post_proc.readback.histogram_sync[write_idx]);
 	}
-	post_proc.histogram_sync[write_idx] =
+	post_proc.readback.histogram_sync[write_idx] =
 	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 	glFlush();
 	glFinish();

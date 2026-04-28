@@ -50,11 +50,11 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->width = width;
 	post_processing->height = height;
 	post_processing->time = 0.0F;
-	post_processing->is_optimized = false;
+	post_processing->shaders.is_optimized = false;
 	post_processing->ubo_dirty = true;
-	post_processing->compiled_flags = ~0U;
+	post_processing->shaders.compiled_flags = ~0U;
 
-	post_processing->shader_cache_count = 0;
+	post_processing->shaders.shader_cache_count = 0;
 	post_processing->banding_preset_idx = 0;
 
 	/* Paramètres par défaut */
@@ -103,8 +103,8 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->auto_exposure.speed_up = EXPOSURE_SPEED_UP;
 	post_processing->auto_exposure.speed_down = EXPOSURE_SPEED_DOWN;
 	post_processing->auto_exposure.key_value = EXPOSURE_DEFAULT_KEY_VALUE;
-	post_processing->current_exposure = 1.0F;
-	post_processing->auto_threshold = 1.0F;
+	post_processing->readback.current_exposure = 1.0F;
+	post_processing->readback.auto_threshold = 1.0F;
 
 	/* Initialisation Motion Blur */
 	if (!fx_motion_blur_init(&post_processing->motion_blur_fx,
@@ -130,24 +130,24 @@ int postprocess_init(PostProcess* post_processing,
 	    DEFAULT_FXAA_EDGE_THRESHOLD_MIN;
 
 	/* Initialize Exposure PBOs */
-	glGenBuffers(2, post_processing->exposure_pbo);
+	glGenBuffers(2, post_processing->readback.exposure_pbo);
 	for (int i = 0; i < 2; i++) {
 		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             post_processing->exposure_pbo[i]);
+		             post_processing->readback.exposure_pbo[i]);
 		glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float), NULL,
 		             GL_STREAM_READ);
-		post_processing->exposure_sync[i] = NULL;
+		post_processing->readback.exposure_sync[i] = NULL;
 	}
 
 	/* Initialize Histogram PBOs (64x64 floats) */
-	glGenBuffers(2, post_processing->histogram_pbo);
+	glGenBuffers(2, post_processing->readback.histogram_pbo);
 	for (int i = 0; i < 2; i++) {
 		glBindBuffer(GL_PIXEL_PACK_BUFFER,
-		             post_processing->histogram_pbo[i]);
+		             post_processing->readback.histogram_pbo[i]);
 		glBufferData(GL_PIXEL_PACK_BUFFER,
 		             (GLsizeiptr)(LUM_HISTOGRAM_SIZE * sizeof(float)),
 		             NULL, GL_STREAM_READ);
-		post_processing->histogram_sync[i] = NULL;
+		post_processing->readback.histogram_sync[i] = NULL;
 	}
 	glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
@@ -194,9 +194,10 @@ int postprocess_init(PostProcess* post_processing,
 	}
 
 	/* Créer le quad plein écran */
-	render_utils_create_fullscreen_quad(&post_processing->screen_quad_vao,
-	                                    &post_processing->screen_quad_vbo);
-	if (post_processing->screen_quad_vao == 0) {
+	render_utils_create_fullscreen_quad(
+	    &post_processing->gpu.screen_quad_vao,
+	    &post_processing->gpu.screen_quad_vbo);
+	if (post_processing->gpu.screen_quad_vao == 0) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create screen quad");
 		destroy_framebuffer(post_processing);
@@ -209,11 +210,12 @@ int postprocess_init(PostProcess* post_processing,
 	                              post_processing->active_effects);
 
 	/* Initialize UBO */
-	glGenBuffers(1, &post_processing->settings_ubo);
-	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
+	glGenBuffers(1, &post_processing->gpu.settings_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, post_processing->gpu.settings_ubo);
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(PostProcessUBO), NULL,
 	             GL_DYNAMIC_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, post_processing->settings_ubo);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0,
+	                 post_processing->gpu.settings_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	if (!fx_auto_exposure_init(&post_processing->auto_exposure_fx)) {
@@ -258,10 +260,10 @@ int postprocess_init(PostProcess* post_processing,
 	         "Post-processing initialized (%dx%d)", width, height);
 
 	/* Create dummy uint texture for stencil */
-	post_processing->dummy_uint_tex =
+	post_processing->gpu.dummy_uint_tex =
 	    render_utils_create_texture_2d(1, 1, GL_R8UI, 1, "Dummy Stencil");
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->dummy_uint_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->gpu.dummy_uint_tex);
 	uint32_t zero = 0;
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RED_INTEGER,
 	                GL_UNSIGNED_INT, &zero);
@@ -273,46 +275,50 @@ int postprocess_init(PostProcess* post_processing,
 void postprocess_set_dummy_textures(PostProcess* post_processing,
                                     GLuint dummy_black)
 {
-	post_processing->dummy_black_tex = dummy_black;
+	post_processing->gpu.dummy_black_tex = dummy_black;
 	LOG_INFO("suckless-ogl.postprocess", "Dummy texture set: %u",
 	         dummy_black);
 }
 
 static void destroy_framebuffer(PostProcess* post_processing)
 {
-	GL_SAFE_DELETE_TEXTURE(post_processing->scene_color_tex);
-	GL_SAFE_DELETE_TEXTURE(post_processing->velocity_tex);
-	GL_SAFE_DELETE_TEXTURE(post_processing->scene_depth_tex);
-	GL_SAFE_DELETE_TEXTURE(post_processing->scene_stencil_view);
-	GL_SAFE_DELETE_FRAMEBUFFER(post_processing->scene_fbo);
+	GL_SAFE_DELETE_TEXTURE(post_processing->gpu.scene_color_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->gpu.velocity_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->gpu.scene_depth_tex);
+	GL_SAFE_DELETE_TEXTURE(post_processing->gpu.scene_stencil_view);
+	GL_SAFE_DELETE_FRAMEBUFFER(post_processing->gpu.scene_fbo);
 
 	/* Bridge Unit 0 with dummy to avoid invalid state warnings during
 	 * resize
 	 */
-	if (post_processing->dummy_black_tex) {
+	if (post_processing->gpu.dummy_black_tex) {
 		render_utils_bind_texture_safe(
-		    GL_TEXTURE0, 0, post_processing->dummy_black_tex);
+		    GL_TEXTURE0, 0, post_processing->gpu.dummy_black_tex);
 	}
 }
 
 static void destroy_screen_quad(PostProcess* post_processing)
 {
-	GL_SAFE_DELETE_VAO(post_processing->screen_quad_vao);
-	GL_SAFE_DELETE_BUFFER(post_processing->screen_quad_vbo);
+	GL_SAFE_DELETE_VAO(post_processing->gpu.screen_quad_vao);
+	GL_SAFE_DELETE_BUFFER(post_processing->gpu.screen_quad_vbo);
 }
 
 static void destroy_readback_buffers(PostProcess* post_processing)
 {
 	for (int i = 0; i < 2; i++) {
-		GL_SAFE_DELETE_BUFFER(post_processing->exposure_pbo[i]);
-		GL_SAFE_DELETE_BUFFER(post_processing->histogram_pbo[i]);
-		if (post_processing->exposure_sync[i]) {
-			glDeleteSync(post_processing->exposure_sync[i]);
-			post_processing->exposure_sync[i] = NULL;
+		GL_SAFE_DELETE_BUFFER(
+		    post_processing->readback.exposure_pbo[i]);
+		GL_SAFE_DELETE_BUFFER(
+		    post_processing->readback.histogram_pbo[i]);
+		if (post_processing->readback.exposure_sync[i]) {
+			glDeleteSync(
+			    post_processing->readback.exposure_sync[i]);
+			post_processing->readback.exposure_sync[i] = NULL;
 		}
-		if (post_processing->histogram_sync[i]) {
-			glDeleteSync(post_processing->histogram_sync[i]);
-			post_processing->histogram_sync[i] = NULL;
+		if (post_processing->readback.histogram_sync[i]) {
+			glDeleteSync(
+			    post_processing->readback.histogram_sync[i]);
+			post_processing->readback.histogram_sync[i] = NULL;
 		}
 	}
 }
@@ -320,15 +326,15 @@ static void destroy_readback_buffers(PostProcess* post_processing)
 static void destroy_cached_shaders(PostProcess* post_processing)
 {
 	/* Destroy cached shaders */
-	for (int i = 0; i < post_processing->shader_cache_count; i++) {
-		if (post_processing->shader_cache[i].shader) {
+	for (int i = 0; i < post_processing->shaders.shader_cache_count; i++) {
+		if (post_processing->shaders.shader_cache[i].shader) {
 			/* SHADER_SAFE_DESTROY will handle internal program +
 			 * struct free */
 			SHADER_SAFE_DESTROY(
-			    post_processing->shader_cache[i].shader);
+			    post_processing->shaders.shader_cache[i].shader);
 		}
 	}
-	post_processing->shader_cache_count = 0;
+	post_processing->shaders.shader_cache_count = 0;
 }
 
 void postprocess_cleanup(PostProcess* post_processing)
@@ -337,28 +343,28 @@ void postprocess_cleanup(PostProcess* post_processing)
 		return;
 	}
 
-	if (post_processing->dummy_uint_tex) {
-		glDeleteTextures(1, &post_processing->dummy_uint_tex);
-		post_processing->dummy_uint_tex = 0;
+	if (post_processing->gpu.dummy_uint_tex) {
+		glDeleteTextures(1, &post_processing->gpu.dummy_uint_tex);
+		post_processing->gpu.dummy_uint_tex = 0;
 	}
 
 	destroy_readback_buffers(post_processing);
 	destroy_framebuffer(post_processing);
 	destroy_screen_quad(post_processing);
 
-	GL_SAFE_DELETE_BUFFER(post_processing->settings_ubo);
+	GL_SAFE_DELETE_BUFFER(post_processing->gpu.settings_ubo);
 
 	/* Main shader might be one of the cached ones.
 	 * Nullify it if it's in the cache so it's not destroyed twice. */
 	if (is_shader_in_cache(post_processing,
-	                       post_processing->postprocess_shader)) {
-		post_processing->postprocess_shader = NULL;
+	                       post_processing->shaders.postprocess_shader)) {
+		post_processing->shaders.postprocess_shader = NULL;
 	}
 
 	destroy_cached_shaders(post_processing);
 
 	/* Destroy postprocess_shader if it wasn't in the cache */
-	SHADER_SAFE_DESTROY(post_processing->postprocess_shader);
+	SHADER_SAFE_DESTROY(post_processing->shaders.postprocess_shader);
 
 	fx_bloom_cleanup(&post_processing->bloom_fx);
 	fx_dof_cleanup(&post_processing->dof_fx);
@@ -414,13 +420,13 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 	 */
 	render_utils_reset_texture_units(GL_TEXTURE0,
 	                                 POSTPROCESS_TEX_UNIT_DOF_BLUR + 1,
-	                                 post_processing->dummy_black_tex);
+	                                 post_processing->gpu.dummy_black_tex);
 
 	/* Bind the real velocity texture on unit 4 to prevent sampling errors
 	 */
-	if (post_processing->velocity_tex) {
+	if (post_processing->gpu.velocity_tex) {
 		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY);
-		glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+		glBindTexture(GL_TEXTURE_2D, post_processing->gpu.velocity_tex);
 	}
 
 	/* Reset to Unit 0 for subsequent generic bindings */
@@ -437,26 +443,29 @@ static void postprocess_on_state_change(PostProcess* post_processing)
 	 * when re-enabling */
 	if (!postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
 		for (int i = 0; i < 2; i++) {
-			if (post_processing->exposure_sync[i]) {
-				glDeleteSync(post_processing->exposure_sync[i]);
-				post_processing->exposure_sync[i] = NULL;
+			if (post_processing->readback.exposure_sync[i]) {
+				glDeleteSync(
+				    post_processing->readback.exposure_sync[i]);
+				post_processing->readback.exposure_sync[i] =
+				    NULL;
 			}
 		}
 	}
 	if (!postprocess_is_enabled(post_processing, POSTFX_EXPOSURE_DEBUG)) {
 		for (int i = 0; i < 2; i++) {
-			if (post_processing->histogram_sync[i]) {
-				glDeleteSync(
-				    post_processing->histogram_sync[i]);
-				post_processing->histogram_sync[i] = NULL;
+			if (post_processing->readback.histogram_sync[i]) {
+				glDeleteSync(post_processing->readback
+				                 .histogram_sync[i]);
+				post_processing->readback.histogram_sync[i] =
+				    NULL;
 			}
 		}
 	}
 
 	post_processing->ubo_dirty = true;
-	if (post_processing->is_optimized) {
+	if (post_processing->shaders.is_optimized) {
 		if (post_processing->active_effects ==
-		    post_processing->compiled_flags) {
+		    post_processing->shaders.compiled_flags) {
 			return;
 		}
 		LOG_INFO(
@@ -583,7 +592,7 @@ float postprocess_get_exposure(PostProcess* post_processing)
 	/* Return the cached value from the last async readback to avoid
 	 * synchronous GPU stalls. If AE is disabled, return manual exposure. */
 	if (postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
-		return post_processing->current_exposure;
+		return post_processing->readback.current_exposure;
 	}
 	return post_processing->exposure.exposure;
 }
@@ -698,7 +707,7 @@ void postprocess_apply_preset(PostProcess* post_processing,
 void postprocess_begin(PostProcess* post_processing)
 {
 	/* Rendre dans notre framebuffer */
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->gpu.scene_fbo);
 	glClearStencil(0);
 	glClear((GLbitfield)GL_COLOR_BUFFER_BIT |
 	        (GLbitfield)GL_DEPTH_BUFFER_BIT |
@@ -719,7 +728,7 @@ void postprocess_end(PostProcess* post_processing)
 
 	/* Bind shared screen quad VAO once for all fullscreen passes
 	 * (Bloom, DoF, AE downsample, Final Composite). */
-	glBindVertexArray(post_processing->screen_quad_vao);
+	glBindVertexArray(post_processing->gpu.screen_quad_vao);
 
 	/* Générer le bloom (si activé) avant de binder le framebuffer par
 	 * défaut */
@@ -728,7 +737,7 @@ void postprocess_end(PostProcess* post_processing)
 		                   GPU_PROFILER_BLOOM_COLOR);
 		gl_debug_push_group("PostFX_Bloom");
 		const EffectContext bloom_ctx = {
-		    .src_tex = post_processing->scene_color_tex,
+		    .src_tex = post_processing->gpu.scene_color_tex,
 		    .width = post_processing->width,
 		    .height = post_processing->height,
 		};
@@ -747,7 +756,7 @@ void postprocess_end(PostProcess* post_processing)
 		gl_debug_push_group("PostFX_DepthOfField");
 		{
 			const EffectContext dof_ctx = {
-			    .src_tex = post_processing->scene_color_tex,
+			    .src_tex = post_processing->gpu.scene_color_tex,
 			    .width = post_processing->width,
 			    .height = post_processing->height,
 			};
@@ -775,7 +784,7 @@ void postprocess_end(PostProcess* post_processing)
 		 * Debug is on */
 		{
 			const EffectContext ae_ctx = {
-			    .src_tex = post_processing->scene_color_tex,
+			    .src_tex = post_processing->gpu.scene_color_tex,
 			    .width = post_processing->width,
 			    .height = post_processing->height,
 			    .delta_time = post_processing->delta_time,
@@ -788,28 +797,32 @@ void postprocess_end(PostProcess* post_processing)
 
 		/* Trigger Async Readbacks for current frame (will be ready in
 		 * next frames) */
-		int write_idx = (int)((post_processing->frame_count + 1) % 2);
+		int write_idx =
+		    (int)((post_processing->readback.frame_count + 1) % 2);
 
-		if (ae_active && !post_processing->exposure_sync[write_idx]) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER,
-			             post_processing->exposure_pbo[write_idx]);
+		if (ae_active &&
+		    !post_processing->readback.exposure_sync[write_idx]) {
+			glBindBuffer(
+			    GL_PIXEL_PACK_BUFFER,
+			    post_processing->readback.exposure_pbo[write_idx]);
 			glBindTexture(
 			    GL_TEXTURE_2D,
 			    post_processing->auto_exposure_fx.exposure_tex);
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-			post_processing->exposure_sync[write_idx] =
+			post_processing->readback.exposure_sync[write_idx] =
 			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 		}
 
 		if (debug_active &&
-		    !post_processing->histogram_sync[write_idx]) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER,
-			             post_processing->histogram_pbo[write_idx]);
+		    !post_processing->readback.histogram_sync[write_idx]) {
+			glBindBuffer(
+			    GL_PIXEL_PACK_BUFFER,
+			    post_processing->readback.histogram_pbo[write_idx]);
 			glBindTexture(
 			    GL_TEXTURE_2D,
 			    post_processing->auto_exposure_fx.downsample_tex);
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-			post_processing->histogram_sync[write_idx] =
+			post_processing->readback.histogram_sync[write_idx] =
 			    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 		}
 
@@ -829,7 +842,7 @@ void postprocess_end(PostProcess* post_processing)
 		gl_debug_push_group("PostFX_MotionBlur_Compute");
 		{
 			const EffectContext mb_ctx = {
-			    .velocity_tex = post_processing->velocity_tex,
+			    .velocity_tex = post_processing->gpu.velocity_tex,
 			    .width = post_processing->width,
 			    .height = post_processing->height,
 			};
@@ -856,11 +869,12 @@ void postprocess_end(PostProcess* post_processing)
 		glDisable(GL_DEPTH_TEST);
 
 		/* Utiliser le shader de post-processing */
-		shader_use(post_processing->postprocess_shader);
+		shader_use(post_processing->shaders.postprocess_shader);
 
 		/* Bind la texture de la scène */
 		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_SCENE);
-		glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->gpu.scene_color_tex);
 
 		/* Bind la texture de Bloom */
 		GLuint bloom_tex = 0;
@@ -886,18 +900,19 @@ void postprocess_end(PostProcess* post_processing)
 
 		render_utils_bind_texture_safe(
 		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_BLOOM, bloom_tex,
-		    post_processing->dummy_black_tex);
+		    post_processing->gpu.dummy_black_tex);
 
 		/* Upload LUT3D params */
 		if (postprocess_is_enabled(post_processing, POSTFX_LUT3D)) {
 			fx_lut3d_upload_params(
-			    post_processing->postprocess_shader,
+			    post_processing->shaders.postprocess_shader,
 			    &post_processing->lut3d);
 		}
 
 		/* Bind la texture de Profondeur (pour le DoF) */
 		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_DEPTH);
-		glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+		glBindTexture(GL_TEXTURE_2D,
+		              post_processing->gpu.scene_depth_tex);
 
 		/* Bind Exposure Texture (Unit 3) */
 		glActiveTexture(GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_EXPOSURE);
@@ -908,8 +923,8 @@ void postprocess_end(PostProcess* post_processing)
 		 * resize */
 		render_utils_bind_texture_safe(
 		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_VELOCITY,
-		    post_processing->velocity_tex,
-		    post_processing->dummy_black_tex);
+		    post_processing->gpu.velocity_tex,
+		    post_processing->gpu.dummy_black_tex);
 
 		/* Bind Neighbor Max Texture (Unit 5) */
 		glActiveTexture(GL_TEXTURE0 +
@@ -924,13 +939,14 @@ void postprocess_end(PostProcess* post_processing)
 		/* Bind Stencil Texture View (Unit 7) */
 		render_utils_bind_texture_safe(
 		    GL_TEXTURE0 + POSTPROCESS_TEX_UNIT_STENCIL,
-		    post_processing->scene_stencil_view,
-		    post_processing->dummy_uint_tex);
+		    post_processing->gpu.scene_stencil_view,
+		    post_processing->gpu.dummy_uint_tex);
 
 		/* Upload UBO: always update time/effects header, full rebuild
 		 * only when parameters changed (ubo_dirty). */
 		PROFILE_ZONE(ubo_upload_ctx, "PostProcess UBO Upload");
-		glBindBuffer(GL_UNIFORM_BUFFER, post_processing->settings_ubo);
+		glBindBuffer(GL_UNIFORM_BUFFER,
+		             post_processing->gpu.settings_ubo);
 		if (post_processing->ubo_dirty) {
 			PostProcessUBO ubo = {0};
 			ubo.active_effects = post_processing->active_effects;
@@ -1063,7 +1079,7 @@ void postprocess_end(PostProcess* post_processing)
 		 */
 		render_utils_reset_texture_units(
 		    0, POSTPROCESS_TEX_UNIT_STENCIL + 1,
-		    post_processing->dummy_black_tex);
+		    post_processing->gpu.dummy_black_tex);
 
 		/* Render LUT Cube Visualization (if enabled) */
 		{
@@ -1094,34 +1110,34 @@ void postprocess_update_time(PostProcess* post_processing, float delta_time)
 
 GLuint postprocess_get_exposure_pbo(PostProcess* post_processing, int index)
 {
-	return post_processing->exposure_pbo[index];
+	return post_processing->readback.exposure_pbo[index];
 }
 
 GLuint postprocess_get_histogram_pbo(PostProcess* post_processing, int index)
 {
-	return post_processing->histogram_pbo[index];
+	return post_processing->readback.histogram_pbo[index];
 }
 
 GLsync postprocess_get_exposure_sync(PostProcess* post_processing, int index)
 {
-	return post_processing->exposure_sync[index];
+	return post_processing->readback.exposure_sync[index];
 }
 
 GLsync postprocess_get_histogram_sync(PostProcess* post_processing, int index)
 {
-	return post_processing->histogram_sync[index];
+	return post_processing->readback.histogram_sync[index];
 }
 
 void postprocess_set_exposure_sync(PostProcess* post_processing, int index,
                                    GLsync sync)
 {
-	post_processing->exposure_sync[index] = sync;
+	post_processing->readback.exposure_sync[index] = sync;
 }
 
 void postprocess_set_histogram_sync(PostProcess* post_processing, int index,
                                     GLsync sync)
 {
-	post_processing->histogram_sync[index] = sync;
+	post_processing->readback.histogram_sync[index] = sync;
 }
 
 static const float LUM_MIN_EXTREME = 1e30F;
@@ -1130,29 +1146,32 @@ static const float LUM_MAX_EXTREME = -1e30F;
 void postprocess_update_readbacks(PostProcess* post_processing,
                                   uint64_t frame_count)
 {
-	post_processing->frame_count = frame_count;
+	post_processing->readback.frame_count = frame_count;
 
 	if (!postprocess_is_enabled(post_processing, POSTFX_AUTO_EXPOSURE)) {
 		return;
 	}
 
 	int read_idx = (int)(frame_count % 2);
-	GLsync current_sync = post_processing->exposure_sync[read_idx];
+	GLsync current_sync = post_processing->readback.exposure_sync[read_idx];
 
 	if (current_sync) {
 		GLenum res = glClientWaitSync(current_sync, 0, 0);
 		if (res == GL_ALREADY_SIGNALED ||
 		    res == GL_CONDITION_SATISFIED) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER,
-			             post_processing->exposure_pbo[read_idx]);
+			glBindBuffer(
+			    GL_PIXEL_PACK_BUFFER,
+			    post_processing->readback.exposure_pbo[read_idx]);
 			float* ptr = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER,
 			                                 GL_READ_ONLY);
 			if (ptr) {
-				post_processing->current_exposure = *ptr;
+				post_processing->readback.current_exposure =
+				    *ptr;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			}
 			glDeleteSync(current_sync);
-			post_processing->exposure_sync[read_idx] = NULL;
+			post_processing->readback.exposure_sync[read_idx] =
+			    NULL;
 		}
 	}
 }
@@ -1160,7 +1179,7 @@ void postprocess_update_readbacks(PostProcess* post_processing,
 void postprocess_set_exposure_target(PostProcess* post_processing,
                                      float threshold)
 {
-	post_processing->auto_threshold = threshold;
+	post_processing->readback.auto_threshold = threshold;
 	postprocess_set_exposure(post_processing, threshold);
 }
 
@@ -1196,9 +1215,9 @@ static void trigger_histogram_readback(PostProcess* post_processing,
 	glBindTexture(GL_TEXTURE_2D,
 	              post_processing->auto_exposure_fx.downsample_tex);
 	glBindBuffer(GL_PIXEL_PACK_BUFFER,
-	             post_processing->histogram_pbo[write_idx]);
+	             post_processing->readback.histogram_pbo[write_idx]);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_FLOAT, 0);
-	post_processing->histogram_sync[write_idx] =
+	post_processing->readback.histogram_sync[write_idx] =
 	    glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -1221,15 +1240,17 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 	*max_lum = HISTO_MAX_INIT;
 
 	int read_idx = (int)(frame_count % 2);
-	GLsync current_sync = post_processing->histogram_sync[read_idx];
+	GLsync current_sync =
+	    post_processing->readback.histogram_sync[read_idx];
 
 	int processed = 0;
 	if (current_sync) {
 		GLenum res = glClientWaitSync(current_sync, 0, 0);
 		if (res == GL_ALREADY_SIGNALED ||
 		    res == GL_CONDITION_SATISFIED) {
-			glBindBuffer(GL_PIXEL_PACK_BUFFER,
-			             post_processing->histogram_pbo[read_idx]);
+			glBindBuffer(
+			    GL_PIXEL_PACK_BUFFER,
+			    post_processing->readback.histogram_pbo[read_idx]);
 			float* lum_data = (float*)glMapBuffer(
 			    GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
@@ -1239,35 +1260,41 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 				 */
 				for (int i = 0;
 				     i < POSTPROCESS_HISTOGRAM_BUCKETS; i++) {
-					post_processing->last_buckets[i] = 0;
+					post_processing->readback
+					    .last_buckets[i] = 0;
 				}
 
 				*min_lum = LUM_MIN_EXTREME;
 				*max_lum = LUM_MAX_EXTREME;
 
 				fill_histogram_buckets(
-				    lum_data, post_processing->last_buckets,
+				    lum_data,
+				    post_processing->readback.last_buckets,
 				    size, min_lum, max_lum);
-				post_processing->last_min_lum = *min_lum;
-				post_processing->last_max_lum = *max_lum;
-				post_processing->last_histogram_updated = 1;
+				post_processing->readback.last_min_lum =
+				    *min_lum;
+				post_processing->readback.last_max_lum =
+				    *max_lum;
+				post_processing->readback
+				    .last_histogram_updated = 1;
 				glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
 			}
 			glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
 			glDeleteSync(current_sync);
-			post_processing->histogram_sync[read_idx] = NULL;
+			post_processing->readback.histogram_sync[read_idx] =
+			    NULL;
 		}
 	}
 
 	/* Provide continuous data from cache if available */
-	if (post_processing->last_histogram_updated) {
+	if (post_processing->readback.last_histogram_updated) {
 		for (int i = 0; i < size && i < POSTPROCESS_HISTOGRAM_BUCKETS;
 		     i++) {
-			buckets[i] = post_processing->last_buckets[i];
+			buckets[i] = post_processing->readback.last_buckets[i];
 		}
-		*min_lum = post_processing->last_min_lum;
-		*max_lum = post_processing->last_max_lum;
+		*min_lum = post_processing->readback.last_min_lum;
+		*max_lum = post_processing->readback.last_max_lum;
 		processed = 1;
 	}
 
@@ -1275,7 +1302,7 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 	 * This is a safety fallback for standalone tests or benchmarks.
 	 */
 	int write_idx = (int)((frame_count + 1) % 2);
-	if (!post_processing->histogram_sync[write_idx]) {
+	if (!post_processing->readback.histogram_sync[write_idx]) {
 		trigger_histogram_readback(post_processing, write_idx);
 	}
 
@@ -1295,8 +1322,8 @@ static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader)
 	if (!shader) {
 		return false;
 	}
-	for (int i = 0; i < post_processing->shader_cache_count; i++) {
-		if (post_processing->shader_cache[i].shader == shader) {
+	for (int i = 0; i < post_processing->shaders.shader_cache_count; i++) {
+		if (post_processing->shaders.shader_cache[i].shader == shader) {
 			return true;
 		}
 	}
@@ -1310,7 +1337,7 @@ static bool is_shader_in_cache(PostProcess* post_processing, Shader* shader)
  */
 static void setup_sampler_uniforms(PostProcess* post_processing)
 {
-	Shader* shader = post_processing->postprocess_shader;
+	Shader* shader = post_processing->shaders.postprocess_shader;
 	if (!shader) {
 		return;
 	}
@@ -1336,28 +1363,29 @@ static int create_framebuffer(PostProcess* post_processing)
 	glActiveTexture(GL_TEXTURE0);
 
 	/* Créer le framebuffer */
-	glGenFramebuffers(1, &post_processing->scene_fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->scene_fbo);
+	glGenFramebuffers(1, &post_processing->gpu.scene_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, post_processing->gpu.scene_fbo);
 
 	/* Créer la texture de couleur (HDR) */
-	post_processing->scene_color_tex = render_utils_create_texture_2d(
+	post_processing->gpu.scene_color_tex = render_utils_create_texture_2d(
 	    post_processing->width, post_processing->height, GL_RGBA16F, 1,
 	    "Scene Color (HDR)");
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->gpu.scene_color_tex);
 	// render_utils sets LINEAR/LINEAR by default for levels=1
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-	                       GL_TEXTURE_2D, post_processing->scene_color_tex,
-	                       0);
+	                       GL_TEXTURE_2D,
+	                       post_processing->gpu.scene_color_tex, 0);
 
 	/* Créer la texture de vélocité (GL_RG16F) */
-	post_processing->velocity_tex = render_utils_create_texture_2d(
+	post_processing->gpu.velocity_tex = render_utils_create_texture_2d(
 	    post_processing->width, post_processing->height, GL_RG16F, 1,
 	    "Velocity Buffer");
-	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->gpu.velocity_tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
-	                       GL_TEXTURE_2D, post_processing->velocity_tex, 0);
+	                       GL_TEXTURE_2D, post_processing->gpu.velocity_tex,
+	                       0);
 
 	/* Neighbor Max Texture (RG16F) */
 
@@ -1367,27 +1395,27 @@ static int create_framebuffer(PostProcess* post_processing)
 
 	/* Créer la texture de profondeur (D32F_S8 pour précision max + stencil)
 	 */
-	post_processing->scene_depth_tex = render_utils_create_texture_2d(
+	post_processing->gpu.scene_depth_tex = render_utils_create_texture_2d(
 	    post_processing->width, post_processing->height,
 	    GL_DEPTH32F_STENCIL8, 1, "Scene Depth (D32F_S8)");
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_depth_tex);
+	glBindTexture(GL_TEXTURE_2D, post_processing->gpu.scene_depth_tex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-	                       GL_TEXTURE_2D, post_processing->scene_depth_tex,
-	                       0);
+	                       GL_TEXTURE_2D,
+	                       post_processing->gpu.scene_depth_tex, 0);
 
 	/* Créer une vue Texture View pour accéder au Stencil uniquement */
-	glGenTextures(1, &post_processing->scene_stencil_view);
+	glGenTextures(1, &post_processing->gpu.scene_stencil_view);
 	/* Utiliser le même format compatible (class 64-bit/32F_S8) mais changer
 	 * le mode de lecture */
-	glTextureView(post_processing->scene_stencil_view, GL_TEXTURE_2D,
-	              post_processing->scene_depth_tex, GL_DEPTH32F_STENCIL8, 0,
-	              1, 0, 1);
-	glObjectLabel(GL_TEXTURE, post_processing->scene_stencil_view, -1,
+	glTextureView(post_processing->gpu.scene_stencil_view, GL_TEXTURE_2D,
+	              post_processing->gpu.scene_depth_tex,
+	              GL_DEPTH32F_STENCIL8, 0, 1, 0, 1);
+	glObjectLabel(GL_TEXTURE, post_processing->gpu.scene_stencil_view, -1,
 	              "Scene Stencil View");
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_stencil_view);
+	glBindTexture(GL_TEXTURE_2D, post_processing->gpu.scene_stencil_view);
 	/* Mode Stencil Index: Permet de lire le canal Stencil (uint) via
 	 * usampler2D */
 	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_STENCIL_TEXTURE_MODE,
@@ -1453,24 +1481,27 @@ static void log_optimized_effects(unsigned int flags)
 static Shader* find_shader_in_cache(PostProcess* post_processing,
                                     unsigned int static_flags)
 {
-	for (int i = 0; i < post_processing->shader_cache_count; i++) {
-		if (post_processing->shader_cache[i].flags == static_flags) {
+	for (int i = 0; i < post_processing->shaders.shader_cache_count; i++) {
+		if (post_processing->shaders.shader_cache[i].flags ==
+		    static_flags) {
 			/* Found it! Move to front (LRU policy) */
 			if (i > 0) {
 				ShaderCacheEntry entry =
-				    post_processing->shader_cache[i];
+				    post_processing->shaders.shader_cache[i];
 
 				/* Manual shift to avoid insecure memmove
 				 * warnings */
 				for (int j = i; j > 0; j--) {
-					post_processing->shader_cache[j] =
-					    post_processing
-					        ->shader_cache[j - 1];
+					post_processing->shaders
+					    .shader_cache[j] =
+					    post_processing->shaders
+					        .shader_cache[j - 1];
 				}
 
-				post_processing->shader_cache[0] = entry;
+				post_processing->shaders.shader_cache[0] =
+				    entry;
 			}
-			return post_processing->shader_cache[0].shader;
+			return post_processing->shaders.shader_cache[0].shader;
 		}
 	}
 	return NULL;
@@ -1480,14 +1511,14 @@ static void update_current_shader(PostProcess* post_processing,
                                   Shader* new_shader, bool is_optimized)
 {
 	/* Destroy previous shader only if it was dynamic (not in cache) */
-	if (post_processing->postprocess_shader &&
+	if (post_processing->shaders.postprocess_shader &&
 	    !is_shader_in_cache(post_processing,
-	                        post_processing->postprocess_shader)) {
-		shader_destroy(post_processing->postprocess_shader);
+	                        post_processing->shaders.postprocess_shader)) {
+		shader_destroy(post_processing->shaders.postprocess_shader);
 	}
 
-	post_processing->postprocess_shader = new_shader;
-	post_processing->is_optimized = is_optimized;
+	post_processing->shaders.postprocess_shader = new_shader;
+	post_processing->shaders.is_optimized = is_optimized;
 
 	/* Sampler→unit bindings are per-program state.
 	 * Set them once when the active shader changes. */
@@ -1501,13 +1532,13 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	/* Check cache first */
 	Shader* cached = find_shader_in_cache(post_processing, static_flags);
 	if (cached) {
-		if (post_processing->postprocess_shader != cached) {
+		if (post_processing->shaders.postprocess_shader != cached) {
 			update_current_shader(post_processing, cached, true);
 			LOG_INFO("suckless-ogl.postprocess",
 			         "Using CACHED shader for flags 0x%08X",
 			         static_flags);
 		}
-		post_processing->compiled_flags = static_flags;
+		post_processing->shaders.compiled_flags = static_flags;
 		PROFILE_ZONE_END(ctx);
 		return;
 	}
@@ -1537,31 +1568,32 @@ void postprocess_compile_optimized(PostProcess* post_processing,
 	if (new_shader) {
 		new_shader->silent_warnings = true;
 		update_current_shader(post_processing, new_shader, true);
-		post_processing->compiled_flags = static_flags;
+		post_processing->shaders.compiled_flags = static_flags;
 
 		/* Add to cache */
 		/* Move existing entries down to make room at index 0 */
-		int move_count = post_processing->shader_cache_count;
+		int move_count = post_processing->shaders.shader_cache_count;
 		if (move_count == SHADER_CACHE_SIZE) {
 			/* Cache full: Evict LRU (last entry) */
-			shader_destroy(
-			    post_processing->shader_cache[SHADER_CACHE_SIZE - 1]
-			        .shader);
+			shader_destroy(post_processing->shaders
+			                   .shader_cache[SHADER_CACHE_SIZE - 1]
+			                   .shader);
 			move_count--; /* Only move first 31 items */
 		} else {
-			post_processing->shader_cache_count++;
+			post_processing->shaders.shader_cache_count++;
 		}
 
 		if (move_count > 0) {
 			/* Manual shift to avoid insecure memmove warnings */
 			for (int j = move_count; j > 0; j--) {
-				post_processing->shader_cache[j] =
-				    post_processing->shader_cache[j - 1];
+				post_processing->shaders.shader_cache[j] =
+				    post_processing->shaders
+				        .shader_cache[j - 1];
 			}
 		}
 
-		post_processing->shader_cache[0].flags = static_flags;
-		post_processing->shader_cache[0].shader = new_shader;
+		post_processing->shaders.shader_cache[0].flags = static_flags;
+		post_processing->shaders.shader_cache[0].shader = new_shader;
 
 		log_optimized_effects(static_flags);
 	} else {

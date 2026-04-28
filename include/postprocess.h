@@ -347,16 +347,67 @@ typedef struct {
 GL_ASSERT_UBO_ALIGNMENT(PostProcessUBO);
 
 /**
- * @struct PostProcess
- * @brief Main pipeline state for post-processing.
+ * @struct PPGPUResources
+ * @brief GPU handles for the post-processing pipeline (FBOs, textures, UBO).
  */
-typedef struct PostProcess {
-	/* FBO principal et textures */
+typedef struct {
 	GLuint scene_fbo;          /**< Main HDR framebuffer. */
 	GLuint scene_color_tex;    /**< RGBA16F HDR texture. */
 	GLuint velocity_tex;       /**< RG16F Motion vector texture. */
 	GLuint scene_depth_tex;    /**< D32F Depth texture. */
 	GLuint scene_stencil_view; /**< Stencil view of depth texture. */
+	GLuint screen_quad_vao;    /**< Shared quad for passes. */
+	GLuint screen_quad_vbo;    /**< Quad vertices. */
+	GLuint settings_ubo;       /**< GPU buffer for parameters. */
+	GLuint dummy_black_tex;    /**< Fallback texture. */
+	GLuint dummy_uint_tex;     /**< Fallback unsigned-int texture. */
+} PPGPUResources;
+
+/**
+ * @struct PPShaderState
+ * @brief Shader management state for the optimized uber-shader pipeline.
+ */
+typedef struct {
+	Shader* postprocess_shader;  /**< Main Uber-shader. */
+	Shader* tile_max_shader;     /**< Motion blur helper. */
+	Shader* neighbor_max_shader; /**< Motion blur helper. */
+	bool is_optimized; /**< true if Uber-shader uses static preprocessor
+	                      flags. */
+	unsigned int
+	    compiled_flags; /**< Flags used for the current optimized shader. */
+	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
+	int shader_cache_count;
+} PPShaderState;
+
+/**
+ * @struct PPExposureReadback
+ * @brief Async GPU readback state for exposure and histogram.
+ */
+typedef struct {
+	GLuint
+	    exposure_pbo[2]; /**< Pixel Buffer Object for mean luma readback. */
+	GLuint histogram_pbo[2];  /**< Pixel Buffer Object for luminance
+	                             histogram  readback. */
+	GLsync exposure_sync[2];  /**< Sync objects to avoid CPU stalls on
+	                             exposure  readback. */
+	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
+	                             histogram readback. */
+	float current_exposure;   /**< Cached exposure from GPU readback. */
+	float auto_threshold;     /**< Dynamic exposure target. */
+	int last_buckets[POSTPROCESS_HISTOGRAM_BUCKETS];
+	float last_min_lum;
+	float last_max_lum;
+	int last_histogram_updated;
+	uint64_t frame_count; /**< Internal frame counter for readback sync. */
+} PPExposureReadback;
+
+/**
+ * @struct PostProcess
+ * @brief Main pipeline state for post-processing.
+ */
+typedef struct PostProcess {
+	/* GPU Resources */
+	PPGPUResources gpu; /**< FBOs, textures, UBO, quad. */
 
 	/* Module Resources */
 	BloomFX bloom_fx;                /**< Bloom subsystem. */
@@ -366,16 +417,8 @@ typedef struct PostProcess {
 	LUT3DFX lut3d_fx;                /**< 3D LUT subsystem. */
 	LUTVizFX lut_viz_fx;             /**< LUT visualization. */
 
-	/* Render Utilities */
-	GLuint screen_quad_vao; /**< Shared quad for passes. */
-	GLuint screen_quad_vbo; /**< Quad vertices. */
-
-	GLuint settings_ubo; /**< GPU buffer for parameters. */
-
-	/* Core Shaders */
-	Shader* postprocess_shader;  /**< Main Uber-shader. */
-	Shader* tile_max_shader;     /**< Motion blur helper. */
-	Shader* neighbor_max_shader; /**< Motion blur helper. */
+	/* Shader Management */
+	PPShaderState shaders; /**< Uber-shader pipeline state. */
 
 	int width;  /**< Target resolution width. */
 	int height; /**< Target resolution height. */
@@ -399,44 +442,15 @@ typedef struct PostProcess {
 	FogParams fog;
 	LUT3DParams lut3d;
 
-	float time;             /**< Accumulated time for noise/animation. */
-	float delta_time;       /**< Last frame delta. */
-	GLuint dummy_black_tex; /**< Fallback texture. */
-	GLuint dummy_uint_tex;
-
-	bool is_optimized; /**< true if Uber-shader uses static preprocessor
-	                      flags. */
-	bool ubo_dirty;    /**< true when UBO needs re-upload. */
-
-	unsigned int
-	    compiled_flags; /**< Flags used for the current optimized shader. */
-
-	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
-	int shader_cache_count;
+	float time;       /**< Accumulated time for noise/animation. */
+	float delta_time; /**< Last frame delta. */
+	bool ubo_dirty;   /**< true when UBO needs re-upload. */
 
 	GPUProfiler* gpu_profiler;
 	int banding_preset_idx; /**< Internal index for preset cycling. */
 
-	/* --- Exposure Readback --- */
-	GLuint
-	    exposure_pbo[2]; /**< Pixel Buffer Object for mean luma readback. */
-	GLuint histogram_pbo[2];  /**< Pixel Buffer Object for luminance
-	                             histogram  readback. */
-	GLsync exposure_sync[2];  /**< Sync objects to avoid CPU stalls on
-	                             exposure  readback. */
-	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
-	                             histogram readback. */
-
-	float current_exposure; /**< Cached exposure from GPU readback. */
-	float auto_threshold;   /**< Dynamic exposure target. */
-
-	/* --- Histogram Cache (Avoid UI flickering) --- */
-	int last_buckets[POSTPROCESS_HISTOGRAM_BUCKETS];
-	float last_min_lum;
-	float last_max_lum;
-	int last_histogram_updated;
-
-	uint64_t frame_count; /**< Internal frame counter for readback sync. */
+	/* Exposure Readback */
+	PPExposureReadback readback; /**< Async GPU readback state. */
 } PostProcess;
 
 /* --- Lifecycle --- */
