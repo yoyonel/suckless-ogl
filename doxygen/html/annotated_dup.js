@@ -8,6 +8,7 @@ var annotated_dup =
     [ "AppBinding", "structAppBinding.html", "structAppBinding" ],
     [ "AppBindingRegistry", "structAppBindingRegistry.html", "structAppBindingRegistry" ],
     [ "AppInputContext", "structAppInputContext.html", "structAppInputContext" ],
+    [ "AppProfiling", "structAppProfiling.html", "structAppProfiling" ],
     [ "AppUIOverlay", "structAppUIOverlay.html", "structAppUIOverlay" ],
     [ "AsyncLoader", "structAsyncLoader.html", "structAsyncLoader" ],
     [ "AsyncRequest", "structAsyncRequest.html", "structAsyncRequest" ],
