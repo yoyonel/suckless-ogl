@@ -98,8 +98,8 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
 	    .camera = &app->camera,
-	    .profiler = &app->gpu_profiler,
-	    .profiler_ui = &app->timeline_ui,
+	    .profiler = &app->profiling.gpu_profiler,
+	    .profiler_ui = &app->profiling.timeline_ui,
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
@@ -107,7 +107,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .height = app->height,
 	    .delta_time = app->delta_time,
 	    .frame_count = app->frame_count,
-	    .log_gpu_metrics = app->log_gpu_metrics,
+	    .log_gpu_metrics = app->profiling.log_gpu_metrics,
 	    .render_ui = test_render_ui_trampoline,
 	    .render_ui_data = app,
 	};
@@ -504,7 +504,7 @@ static void apply_subtle_auto_exposure(const ViewPoint* vpoint, void* data)
 	postprocess_enable(&g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
 	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
 	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
-	g_test_app.log_gpu_metrics = 1;
+	g_test_app.profiling.log_gpu_metrics = 1;
 
 	// Note: warmup frames are handled inside the app_update cycles in the
 	// main loop. We might need a special case for this if 16 frames is not
