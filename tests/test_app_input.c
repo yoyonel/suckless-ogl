@@ -20,9 +20,9 @@ static AppInputContext test_ctx_from_app(App* app)
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
 	    .overlay = &app->overlay,
-	    .timeline_ui = &app->timeline_ui,
+	    .timeline_ui = &app->profiling.timeline_ui,
 	    .effect_bench = &app->effect_bench,
-	    .perf_context = &app->perf_context,
+	    .perf_context = &app->profiling.perf_context,
 	    .gamepad = &app->gamepad,
 	    .async_loader = app->async_loader,
 	    .width = &app->width,
@@ -36,8 +36,8 @@ static AppInputContext test_ctx_from_app(App* app)
 	    .resize_pending = &app->resize_pending,
 	    .pending_width = &app->pending_width,
 	    .pending_height = &app->pending_height,
-	    .perf_mode_active = &app->perf_mode_active,
-	    .log_gpu_metrics = &app->log_gpu_metrics,
+	    .perf_mode_active = &app->profiling.perf_mode_active,
+	    .log_gpu_metrics = &app->profiling.log_gpu_metrics,
 	};
 }
 
@@ -67,9 +67,9 @@ void setUp(void)
 
 	/* Initialize sub-systems to avoid segfaults */
 	action_notifier_init(&test_app->notifier);
-	gpu_profiler_init(&test_app->gpu_profiler);
+	gpu_profiler_init(&test_app->profiling.gpu_profiler);
 	effect_benchmark_init(&test_app->effect_bench, &test_app->postprocess,
-	                      &test_app->gpu_profiler);
+	                      &test_app->profiling.gpu_profiler);
 	test_app->postprocess.active_effects = 0;
 	test_app->width = 640;
 	test_app->height = 480;
@@ -115,9 +115,9 @@ void test_handle_app_input_exhaustive(void)
 	handle_app_input(&ctx, GLFW_KEY_F2, 0);
 	TEST_ASSERT_EQUAL(HELP_MODE_KEYBOARD, test_app->overlay.show_help);
 	handle_app_input(&ctx, GLFW_KEY_F3, 0);
-	TEST_ASSERT_TRUE(test_app->timeline_ui.visible);
+	TEST_ASSERT_TRUE(test_app->profiling.timeline_ui.visible);
 	handle_app_input(&ctx, GLFW_KEY_F4, 0);
-	TEST_ASSERT_TRUE(test_app->log_gpu_metrics);
+	TEST_ASSERT_TRUE(test_app->profiling.log_gpu_metrics);
 	handle_app_input(&ctx, GLFW_KEY_Z, 0);
 	TEST_ASSERT_TRUE(test_app->scene.wireframe);
 	handle_app_input(&ctx, GLFW_KEY_C, 0);

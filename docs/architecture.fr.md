@@ -70,6 +70,14 @@ La structure `Scene` est progressivement décomposée en sous-structs par domain
 
 Cela réduit le nombre de champs directs de `Scene` et localise les changements par domaine.
 
+### Décomposition de App (AppProfiling)
+
+La structure `App` est progressivement décomposée en sous-structs par domaine :
+
+- **`AppProfiling`** (`include/app.h`) : regroupe le profiling et les métriques — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Accès via `app->profiling.gpu_profiler`, etc.
+
+Cela réduit le nombre de champs directs de `App` (8 champs → 1 sous-struct) et localise les changements liés au monitoring de performance.
+
 ### Découplage des effets (EffectContext)
 
 Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont progressivement découplés de l'objet God `PostProcess` via un seam `EffectContext` :

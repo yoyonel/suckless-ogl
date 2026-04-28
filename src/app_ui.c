@@ -1074,10 +1074,12 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	float current_fps = 0.0F;
 	float frame_time_ms = 0.0F;
 
-	if (app->fps_counter.average_frame_time > 0.0F) {
-		current_fps = 1.0F / (float)app->fps_counter.average_frame_time;
+	if (app->profiling.fps_counter.average_frame_time > 0.0F) {
+		current_fps =
+		    1.0F / (float)app->profiling.fps_counter.average_frame_time;
 		frame_time_ms =
-		    (float)app->fps_counter.average_frame_time * MS_PER_SECOND;
+		    (float)app->profiling.fps_counter.average_frame_time *
+		    MS_PER_SECOND;
 	}
 
 	(void)safe_snprintf(fps_text, sizeof(fps_text), "FPS: %.1f (%.2f ms)",
@@ -1085,10 +1087,11 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	ui_layout_text(layout, fps_text, DEFAULT_FONT_COLOR);
 
 	/* GPU Utilization (via DRM fdinfo, same as MangoHud) */
-	if (gpu_usage_is_available(&app->gpu_usage)) {
+	if (gpu_usage_is_available(&app->profiling.gpu_usage)) {
 		char gpu_text[MAX_FPS_TEXT_LENGTH];
-		(void)safe_snprintf(gpu_text, sizeof(gpu_text), "GPU: %.0f%%",
-		                    gpu_usage_get_load(&app->gpu_usage));
+		(void)safe_snprintf(
+		    gpu_text, sizeof(gpu_text), "GPU: %.0f%%",
+		    gpu_usage_get_load(&app->profiling.gpu_usage));
 		ui_layout_text(layout, gpu_text, DEFAULT_FONT_COLOR);
 	}
 
@@ -1296,8 +1299,8 @@ void app_render_ui(const App* app)
 		app_draw_gamepad_help_overlay(app);
 	}
 
-	gpu_profiler_ui_draw((GPUProfilerUI*)&app->timeline_ui, ui_ctx,
-	                     app->width, app->height);
+	gpu_profiler_ui_draw((GPUProfilerUI*)&app->profiling.timeline_ui,
+	                     ui_ctx, app->width, app->height);
 	action_notifier_draw((ActionNotifier*)&app->notifier, ui_ctx,
 	                     app->width, app->height);
 

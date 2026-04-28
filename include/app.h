@@ -31,6 +31,21 @@ typedef struct AsyncLoader
     AsyncLoader; /**< Forward declaration of AsyncLoader. */
 
 /**
+ * @struct AppProfiling
+ * @brief Profiling, metrics, and performance monitoring grouped together.
+ */
+typedef struct AppProfiling {
+	FpsCounter fps_counter;       /**< Rolling average FPS manager. */
+	GPUProfiler gpu_profiler;     /**< GPU timer query profiler. */
+	GPUProfilerUI timeline_ui;    /**< GPU profiler timeline overlay. */
+	TracyManager tracy_mgr;       /**< Tracy instrumentation manager. */
+	GPUUsageMonitor gpu_usage;    /**< GPU utilization % via DRM fdinfo. */
+	PerfModeContext perf_context; /**< Performance mode state context. */
+	int perf_mode_active; /**< Performance/GameMode optimization active. */
+	int log_gpu_metrics;  /**< Toggle console logging of GPU stats. */
+} AppProfiling;
+
+/**
  * @struct App
  * @brief The central state container for the entire application.
  */
@@ -45,11 +60,9 @@ typedef struct App {
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
 	/* --- Sub-Modules (RAII/In-Place) --- */
-	FpsCounter fps_counter;      /**< Rolling average FPS manager. */
+	AppProfiling profiling;      /**< Profiling and metrics sub-system. */
 	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	GPUProfiler gpu_profiler;
-	GPUProfilerUI timeline_ui;
-	AppUIOverlay overlay; /**< Overlay and text rendering state. */
+	AppUIOverlay overlay;        /**< Overlay and text rendering state. */
 	AppBindingRegistry binding_registry;
 
 	Camera camera;        /**< View/Proj state. */
@@ -66,16 +79,11 @@ typedef struct App {
 	int pending_height;            /**< Deferred resize target height. */
 	int camera_enabled;            /**< Pause camera movement. */
 	EnvManager env_mgr;            /**< Environment/IBL state. */
-	int perf_mode_active; /**< Performance/GameMode optimization active. */
-	PerfModeContext perf_context; /**< Performance mode state context. */
-	ActionNotifier notifier;      /**< Temporary user notifications. */
-	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
-	int log_gpu_metrics;       /**< Toggle console logging of GPU stats. */
-	GPUUsageMonitor gpu_usage; /**< GPU utilization % via DRM fdinfo. */
+	ActionNotifier notifier;       /**< Temporary user notifications. */
+	EffectBenchmark effect_bench;  /**< A/B effect cost measurement. */
 
 	/* --- Global GPU Resources --- */
-	GLuint lum_ssbo[2];     /**< Double-buffered storage for luminance. */
-	TracyManager tracy_mgr; /**< Tracy instrumentation manager. */
+	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */
 
 	/* --- Global Configuration Uniforms --- */
 	float u_metallic;  /**< Override metallic for all objects. */

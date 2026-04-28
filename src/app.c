@@ -63,7 +63,7 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	/* Initialize Tracy Manager */
-	tracy_manager_init(&app->tracy_mgr, width, height);
+	tracy_manager_init(&app->profiling.tracy_mgr, width, height);
 
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
@@ -83,7 +83,7 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	app->async_loader = async_loader_create(&app->tracy_mgr);
+	app->async_loader = async_loader_create(&app->profiling.tracy_mgr);
 	if (!app->async_loader) {
 		return 0;
 	}
@@ -113,14 +113,15 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_exposure = DEFAULT_EXPOSURE;
 	glEnable(GL_DEPTH_TEST);
 
-	fps_init(&app->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
+	fps_init(&app->profiling.fps_counter, DEFAULT_FPS_SMOOTHING,
+	         DEFAULT_FPS_WINDOW);
 	adaptive_sampler_init(&app->fps_sampler, DEFAULT_FPS_WINDOW,
 	                      DEFAULT_FPS_SAMPLER_SIZE, DEFAULT_FPS_TARGET);
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
 
-	if (!postprocess_init(&app->postprocess, &app->gpu_profiler, width,
-	                      height)) {
+	if (!postprocess_init(&app->postprocess, &app->profiling.gpu_profiler,
+	                      width, height)) {
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess,
@@ -134,15 +135,15 @@ int app_init(App* app, int width, int height, const char* title)
 	                              app->postprocess.active_effects);
 #endif
 
-	perf_mode_init(&app->perf_context);
+	perf_mode_init(&app->profiling.perf_context);
 	action_notifier_init(&app->notifier);
 
-	gpu_profiler_init(&app->gpu_profiler);
-	gpu_profiler_ui_init(&app->timeline_ui);
-	gpu_usage_init(&app->gpu_usage);
+	gpu_profiler_init(&app->profiling.gpu_profiler);
+	gpu_profiler_ui_init(&app->profiling.timeline_ui);
+	gpu_usage_init(&app->profiling.gpu_usage);
 	effect_benchmark_init(&app->effect_bench, &app->postprocess,
-	                      &app->gpu_profiler);
-	app->log_gpu_metrics = 0; /* Console logging off by default */
+	                      &app->profiling.gpu_profiler);
+	app->profiling.log_gpu_metrics = 0; /* Console logging off by default */
 
 	return 1;
 }
@@ -175,16 +176,16 @@ void app_cleanup(App* app)
 		app->lum_histogram_buffer = NULL;
 	}
 
-	perf_mode_cleanup(&app->perf_context);
+	perf_mode_cleanup(&app->profiling.perf_context);
 
-	gpu_profiler_cleanup(&app->gpu_profiler);
-	gpu_profiler_ui_cleanup(&app->timeline_ui);
-	gpu_usage_cleanup(&app->gpu_usage);
+	gpu_profiler_cleanup(&app->profiling.gpu_profiler);
+	gpu_profiler_ui_cleanup(&app->profiling.timeline_ui);
+	gpu_usage_cleanup(&app->profiling.gpu_usage);
 
 	window_destroy(app->window);
 	app->window = NULL;
 
-	tracy_manager_cleanup(&app->tracy_mgr);
+	tracy_manager_cleanup(&app->profiling.tracy_mgr);
 }
 
 static void app_render_ui_trampoline(void* user_data)
@@ -216,13 +217,16 @@ void app_run(App* app)
 		}
 
 		bool profiling_enabled =
-		    (app->timeline_ui.visible || app->log_gpu_metrics != 0 ||
+		    (app->profiling.timeline_ui.visible ||
+		     app->profiling.log_gpu_metrics != 0 ||
 		     effect_benchmark_is_running(&app->effect_bench)) != 0;
-		gpu_profiler_set_enabled(&app->gpu_profiler, profiling_enabled);
-		gpu_profiler_begin_frame(&app->gpu_profiler, app->frame_count);
+		gpu_profiler_set_enabled(&app->profiling.gpu_profiler,
+		                         profiling_enabled);
+		gpu_profiler_begin_frame(&app->profiling.gpu_profiler,
+		                         app->frame_count);
 
 		/* 1. Global Measure (includes CPU update and GPU swap) */
-		GPU_STAGE_PROFILER(&app->gpu_profiler, "Total Frame",
+		GPU_STAGE_PROFILER(&app->profiling.gpu_profiler, "Total Frame",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
 		{
@@ -231,7 +235,7 @@ void app_run(App* app)
 			double current_time = glfwGetTime();
 			app->delta_time = current_time - app->last_frame_time;
 			app->last_frame_time = current_time;
-			fps_update(&app->fps_counter, app->delta_time,
+			fps_update(&app->profiling.fps_counter, app->delta_time,
 			           current_time);
 			adaptive_sampler_should_sample(
 			    &app->fps_sampler, (float)app->delta_time,
@@ -251,7 +255,7 @@ void app_run(App* app)
 			app_ui_update(&app->overlay, app->delta_time);
 			postprocess_update_time(&app->postprocess,
 			                        (float)app->delta_time);
-			gpu_usage_update(&app->gpu_usage);
+			gpu_usage_update(&app->profiling.gpu_usage);
 			PROFILE_ZONE_END(ui_notif_ctx);
 		}
 
@@ -349,8 +353,8 @@ void app_run(App* app)
 			    .scene = &app->scene,
 			    .postprocess = &app->postprocess,
 			    .camera = &app->camera,
-			    .profiler = &app->gpu_profiler,
-			    .profiler_ui = &app->timeline_ui,
+			    .profiler = &app->profiling.gpu_profiler,
+			    .profiler_ui = &app->profiling.timeline_ui,
 			    .env_mgr = &app->env_mgr,
 			    .notifier = &app->notifier,
 			    .effect_bench = &app->effect_bench,
@@ -358,7 +362,7 @@ void app_run(App* app)
 			    .height = app->height,
 			    .delta_time = app->delta_time,
 			    .frame_count = app->frame_count,
-			    .log_gpu_metrics = app->log_gpu_metrics,
+			    .log_gpu_metrics = app->profiling.log_gpu_metrics,
 			    .render_ui = app_render_ui_trampoline,
 			    .render_ui_data = app,
 			};
@@ -368,12 +372,14 @@ void app_run(App* app)
 
 		{
 			PROFILE_ZONE(tracy_mark_ctx, "Tracy Mark/Screenshots");
-			tracy_manager_update_screenshots(&app->tracy_mgr, app);
+			tracy_manager_update_screenshots(
+			    &app->profiling.tracy_mgr, app);
 			PROFILE_ZONE_END(tracy_mark_ctx);
 		}
 
 		{
-			GPU_STAGE_PROFILER(&app->gpu_profiler, "Swap Buffers",
+			GPU_STAGE_PROFILER(&app->profiling.gpu_profiler,
+			                   "Swap Buffers",
 			                   GPU_PROFILER_UI_COLOR);
 			PROFILE_ZONE(swap_ctx, "GLFW SwapBuffers");
 			glfwSwapBuffers(app->window);
