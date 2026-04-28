@@ -1,0 +1,28 @@
+var structAppInputContext =
+[
+    [ "async_loader", "structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516", null ],
+    [ "camera", "structAppInputContext.html#aa22ede3fbd57b28bc5979e2174a12c59", null ],
+    [ "camera_enabled", "structAppInputContext.html#a8a648b3c0d6abeba07b83607dbcea39d", null ],
+    [ "effect_bench", "structAppInputContext.html#ad010c6d11e3fbc8240c27d7710638e21", null ],
+    [ "env_mgr", "structAppInputContext.html#abdb758c084e367120fc60af45fcf8a1e", null ],
+    [ "gamepad", "structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b", null ],
+    [ "height", "structAppInputContext.html#a4037473adf9e4515586be2a8b3d7d375", null ],
+    [ "is_fullscreen", "structAppInputContext.html#ae2cadaf1fa39af87091f84c7dc8c8957", null ],
+    [ "log_gpu_metrics", "structAppInputContext.html#ac47fff061e9c16efcc63fcfbbfa2f304", null ],
+    [ "notifier", "structAppInputContext.html#a4f2657f2dd9debfe011747ce643a8ac6", null ],
+    [ "overlay", "structAppInputContext.html#ae9ed81377392d7e726b76c301ea3cf2c", null ],
+    [ "pending_height", "structAppInputContext.html#a05bc4e02a34cf1b6fc7d7f6e60fc55c3", null ],
+    [ "pending_width", "structAppInputContext.html#a2d11531ca1f969158eaee06971d71457", null ],
+    [ "perf_context", "structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8", null ],
+    [ "perf_mode_active", "structAppInputContext.html#adb37ddae7632e27f04cad2e179926c14", null ],
+    [ "postprocess", "structAppInputContext.html#ad0660fcc8300d5fbdad8a2e80ffd921b", null ],
+    [ "resize_pending", "structAppInputContext.html#a56f03b8ea5870141d70eb67678db4870", null ],
+    [ "saved_height", "structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9", null ],
+    [ "saved_width", "structAppInputContext.html#acd48b90c8643c0d2505688819ae92484", null ],
+    [ "saved_x", "structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad", null ],
+    [ "saved_y", "structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da", null ],
+    [ "scene", "structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1", null ],
+    [ "timeline_ui", "structAppInputContext.html#a9a024b1267e74915dc2721e391913397", null ],
+    [ "width", "structAppInputContext.html#acb891570d79be6d7cd83b285a5a5a036", null ],
+    [ "window", "structAppInputContext.html#aef424306ce284114f58dea80cfcd9323", null ]
+];
