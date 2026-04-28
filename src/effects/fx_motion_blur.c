@@ -1,9 +1,9 @@
 #include "effects/fx_motion_blur.h"
 
+#include "effects/effect_context.h"
 #include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
-#include "postprocess.h"
 #include "shader.h"
 #include <cglm/mat4.h>
 #include <cglm/types.h>
@@ -17,14 +17,12 @@ static const float DEFAULT_MB_INTENSITY = 1.0F;
 static const float DEFAULT_MB_MAX_VELOCITY = 0.05F;
 static const int DEFAULT_MB_SAMPLES = 8;
 
-int fx_motion_blur_init(PostProcess* post_processing)
+int fx_motion_blur_init(MotionBlurFX* mb_fx, MotionBlurParams* params)
 {
-	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
-
-	/* 1. Initialiser les paramètres par défaut dans PostProcess */
-	post_processing->motion_blur.intensity = DEFAULT_MB_INTENSITY;
-	post_processing->motion_blur.max_velocity = DEFAULT_MB_MAX_VELOCITY;
-	post_processing->motion_blur.samples = DEFAULT_MB_SAMPLES;
+	/* 1. Initialiser les paramètres par défaut */
+	params->intensity = DEFAULT_MB_INTENSITY;
+	params->max_velocity = DEFAULT_MB_MAX_VELOCITY;
+	params->samples = DEFAULT_MB_SAMPLES;
 
 	/* 2. Charger les shaders */
 	mb_fx->tile_max_shader =
@@ -47,14 +45,11 @@ int fx_motion_blur_init(PostProcess* post_processing)
 	/* 3. Initialiser les matrices */
 	glm_mat4_identity(mb_fx->previous_view_proj);
 
-	/* 4. Créer les textures */
-	return fx_motion_blur_resize(post_processing);
+	return 1;
 }
 
-void fx_motion_blur_cleanup(PostProcess* post_processing)
+void fx_motion_blur_cleanup(MotionBlurFX* mb_fx)
 {
-	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
-
 	if (mb_fx->tile_max_tex) {
 		glDeleteTextures(1, &mb_fx->tile_max_tex);
 		mb_fx->tile_max_tex = 0;
@@ -67,19 +62,15 @@ void fx_motion_blur_cleanup(PostProcess* post_processing)
 	SHADER_SAFE_DESTROY(mb_fx->neighbor_max_shader);
 }
 
-int fx_motion_blur_resize(PostProcess* post_processing)
+int fx_motion_blur_resize(MotionBlurFX* mb_fx, int width, int height)
 {
 	/* Ensure Unit 0 is active for initial texture setup */
 	glActiveTexture(GL_TEXTURE0);
 
-	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
-
 	int tile_width =
-	    (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	    MB_COMPUTE_GROUP_SIZE;
+	    (width + (MB_COMPUTE_GROUP_SIZE - 1)) / MB_COMPUTE_GROUP_SIZE;
 	int tile_height =
-	    (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	    MB_COMPUTE_GROUP_SIZE;
+	    (height + (MB_COMPUTE_GROUP_SIZE - 1)) / MB_COMPUTE_GROUP_SIZE;
 
 	if (tile_width < 1) {
 		tile_width = 1;
@@ -108,17 +99,13 @@ int fx_motion_blur_resize(PostProcess* post_processing)
 	return 1;
 }
 
-void fx_motion_blur_render(PostProcess* post_processing)
+void fx_motion_blur_render(MotionBlurFX* mb_fx, const EffectContext* ctx)
 {
-	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
-
 	/* Tile dimensions (one tile per 16x16 pixel block) */
 	int tile_count_x =
-	    (post_processing->width + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	    MB_COMPUTE_GROUP_SIZE;
+	    (ctx->width + (MB_COMPUTE_GROUP_SIZE - 1)) / MB_COMPUTE_GROUP_SIZE;
 	int tile_count_y =
-	    (post_processing->height + (MB_COMPUTE_GROUP_SIZE - 1)) /
-	    MB_COMPUTE_GROUP_SIZE;
+	    (ctx->height + (MB_COMPUTE_GROUP_SIZE - 1)) / MB_COMPUTE_GROUP_SIZE;
 
 	/* Pass 1: Tile Max Velocity
 	 * Each workgroup (16x16 threads) processes one 16x16 pixel tile,
@@ -127,7 +114,7 @@ void fx_motion_blur_render(PostProcess* post_processing)
 	shader_use(mb_fx->tile_max_shader);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->velocity_tex);
+	glBindTexture(GL_TEXTURE_2D, ctx->velocity_tex);
 
 	glBindImageTexture(1, mb_fx->tile_max_tex, 0, GL_FALSE, 0,
 	                   GL_WRITE_ONLY, GL_RG16F);
@@ -166,10 +153,8 @@ void fx_motion_blur_render(PostProcess* post_processing)
 	 * for this stage is therefore unreliable on this driver. */
 }
 
-void fx_motion_blur_update_matrices(PostProcess* post_processing,
-                                    mat4 view_proj)
+void fx_motion_blur_update_matrices(MotionBlurFX* mb_fx, mat4 view_proj)
 {
-	MotionBlurFX* mb_fx = &post_processing->motion_blur_fx;
 	glm_mat4_copy(view_proj, mb_fx->previous_view_proj);
 }
 

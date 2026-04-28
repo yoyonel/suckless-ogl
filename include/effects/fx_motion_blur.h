@@ -6,7 +6,7 @@
 #include <cglm/types.h>
 
 /* Forward declaration */
-struct PostProcess;
+struct EffectContext;
 
 /* Paramètres pour le Motion Blur */
 typedef struct {
@@ -25,20 +25,20 @@ typedef struct {
 } MotionBlurFX;
 
 /* Initialisation des ressources Motion Blur */
-int fx_motion_blur_init(struct PostProcess* post_processing);
+int fx_motion_blur_init(MotionBlurFX* mb_fx, MotionBlurParams* params);
 
 /* Libération des ressources */
-void fx_motion_blur_cleanup(struct PostProcess* post_processing);
+void fx_motion_blur_cleanup(MotionBlurFX* mb_fx);
 
 /* Redimensionnement des textures (tile/neighbor max) */
-int fx_motion_blur_resize(struct PostProcess* post_processing);
+int fx_motion_blur_resize(MotionBlurFX* mb_fx, int width, int height);
 
 /* Rendu de l'effet (Passes Compute pour Tile/Neighbor Max) */
-void fx_motion_blur_render(struct PostProcess* post_processing);
+void fx_motion_blur_render(MotionBlurFX* mb_fx,
+                           const struct EffectContext* ctx);
 
 /* Mise à jour de la matrice de vue-projection précédente */
-void fx_motion_blur_update_matrices(struct PostProcess* post_processing,
-                                    mat4 view_proj);
+void fx_motion_blur_update_matrices(MotionBlurFX* mb_fx, mat4 view_proj);
 
 /* Envoi des paramètres au shader final */
 void fx_motion_blur_upload_params(Shader* shader,

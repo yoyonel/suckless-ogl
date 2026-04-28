@@ -2,7 +2,6 @@
 
 #include "gl_common.h"
 #include "log.h"
-#include "postprocess.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,18 +15,16 @@ enum LUT3DConstants {
 	LUT_SIZE_VALUE_OFFSET = 12
 };
 
-int fx_lut3d_init(PostProcess* post_processing)
+int fx_lut3d_init(LUT3DFX* lut3d_sys)
 {
-	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
 	lut3d_sys->lut_tex = 0;
 	lut3d_sys->current_size = 0;
 	lut3d_sys->current_lut_idx = 0;
 	return 0;
 }
 
-void fx_lut3d_cleanup(PostProcess* post_processing)
+void fx_lut3d_cleanup(LUT3DFX* lut3d_sys)
 {
-	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
 	if (lut3d_sys->lut_tex) {
 		glDeleteTextures(1, &lut3d_sys->lut_tex);
 		lut3d_sys->lut_tex = 0;
@@ -64,7 +61,8 @@ static int parse_lut_line(const char* line, float* lut_data, int* entry_count,
 	return 0;
 }
 
-int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
+int fx_lut3d_load_cube(LUT3DFX* lut3d_sys, LUT3DParams* params,
+                       const char* path)
 {
 	FILE* cube_file = fopen(path, "r");
 	if (!cube_file) {
@@ -123,7 +121,6 @@ int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
 		return -3;
 	}
 
-	LUT3DFX* lut3d_sys = &post_processing->lut3d_fx;
 	if (lut3d_sys->lut_tex) {
 		glDeleteTextures(1, &lut3d_sys->lut_tex);
 	}
@@ -141,8 +138,8 @@ int fx_lut3d_load_cube(PostProcess* post_processing, const char* path)
 
 	free(lut_data);
 	lut3d_sys->current_size = lut_size;
-	post_processing->lut3d.texture = lut3d_sys->lut_tex;
-	post_processing->lut3d.size = lut_size;
+	params->texture = lut3d_sys->lut_tex;
+	params->size = lut_size;
 
 	return 0;
 }

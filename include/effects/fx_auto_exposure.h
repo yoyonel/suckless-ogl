@@ -4,8 +4,8 @@
 #include "gl_common.h"
 #include "shader.h"
 
-/* Forward declaration */
-struct PostProcess;
+/* Forward declarations */
+struct EffectContext;
 
 #define EXPOSURE_MIN_LUM 0.05F
 #define EXPOSURE_DEFAULT_MAX_LUM 5000.0F
@@ -49,22 +49,23 @@ typedef struct {
 } AutoExposureFX;
 
 /* Initialisation des ressources Auto Exposure */
-int fx_auto_exposure_init(struct PostProcess* post_processing);
+int fx_auto_exposure_init(AutoExposureFX* auto_exp);
 
 /* Libération des ressources */
-void fx_auto_exposure_cleanup(struct PostProcess* post_processing);
+void fx_auto_exposure_cleanup(AutoExposureFX* auto_exp);
 
 /* Rendu de l'effet (Downsample + Adaptation) */
-void fx_auto_exposure_render(struct PostProcess* post_processing);
+void fx_auto_exposure_render(AutoExposureFX* auto_exp,
+                             const AutoExposureParams* params,
+                             const struct EffectContext* ctx);
 
 /* Récupère la valeur d'exposition actuelle (du GPU) */
-float fx_auto_exposure_get_current_exposure(
-    struct PostProcess* post_processing);
+float fx_auto_exposure_get_current_exposure(AutoExposureFX* auto_exp);
 
 /* Toggle entre fragment et compute downsample path */
-void fx_auto_exposure_toggle_path(struct PostProcess* post_processing);
+void fx_auto_exposure_toggle_path(AutoExposureFX* auto_exp);
 
 /* Retourne le nom du path actif */
-const char* fx_auto_exposure_path_name(struct PostProcess* post_processing);
+const char* fx_auto_exposure_path_name(AutoExposureFX* auto_exp);
 
 #endif /* FX_AUTO_EXPOSURE_H */

@@ -294,8 +294,9 @@ static void handle_fxaa_input(const PostProcessInputContext* ctx, int mods)
 
 static void handle_ae_path_toggle(const PostProcessInputContext* ctx)
 {
-	fx_auto_exposure_toggle_path(ctx->postprocess);
-	const char* pname = fx_auto_exposure_path_name(ctx->postprocess);
+	fx_auto_exposure_toggle_path(&ctx->postprocess->auto_exposure_fx);
+	const char* pname =
+	    fx_auto_exposure_path_name(&ctx->postprocess->auto_exposure_fx);
 	char buf[NOTIF_BUF_SIZE];
 	(void)safe_snprintf(buf, sizeof(buf), "AE Path: %s", pname);
 	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_NORMAL);

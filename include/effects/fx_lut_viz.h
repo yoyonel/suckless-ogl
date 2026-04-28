@@ -4,7 +4,8 @@
 #include "gl_common.h"
 #include "shader.h"
 
-struct PostProcess;
+/* Forward declarations */
+struct EffectContext;
 
 /**
  * @struct LUTVizFX
@@ -21,16 +22,20 @@ typedef struct {
 /**
  * @brief Initializes the LUT visualization resources.
  */
-int fx_lut_viz_init(struct PostProcess* post_processing);
+int fx_lut_viz_init(LUTVizFX* viz);
 
 /**
  * @brief Releases GPU resources.
  */
-void fx_lut_viz_cleanup(struct PostProcess* post_processing);
+void fx_lut_viz_cleanup(LUTVizFX* viz);
 
 /**
  * @brief Renders the LUT lattice.
+ * @param viz      LUT visualization resources.
+ * @param lut3d_tex OpenGL 3D texture handle (0 = skip).
+ * @param ctx      Pipeline context (width/height).
  */
-void fx_lut_viz_render(struct PostProcess* post_processing);
+void fx_lut_viz_render(LUTVizFX* viz, GLuint lut3d_tex,
+                       const struct EffectContext* ctx);
 
 #endif /* FX_LUT_VIZ_H */

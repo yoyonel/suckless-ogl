@@ -1,16 +1,19 @@
 #include "effects/fx_lut_viz.h"
 
+#include "effects/effect_context.h"
 #include "log.h"
-#include "postprocess.h"
 #include "shader.h"
+#include <cglm/affine.h>  // IWYU pragma: keep
+#include <cglm/cam.h>     // IWYU pragma: keep
+#include <cglm/mat4.h>
+#include <cglm/types.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
 enum LUTVizConstants { DEFAULT_LUT_VIZ_GRID_SIZE = 32 };
 
-int fx_lut_viz_init(PostProcess* post_processing)
+int fx_lut_viz_init(LUTVizFX* viz)
 {
-	LUTVizFX* viz = &post_processing->lut_viz_fx;
 	viz->grid_size = DEFAULT_LUT_VIZ_GRID_SIZE;
 	viz->is_enabled = false;
 
@@ -63,9 +66,8 @@ int fx_lut_viz_init(PostProcess* post_processing)
 	return 0;
 }
 
-void fx_lut_viz_cleanup(PostProcess* post_processing)
+void fx_lut_viz_cleanup(LUTVizFX* viz)
 {
-	LUTVizFX* viz = &post_processing->lut_viz_fx;
 	if (viz->vao) {
 		glDeleteVertexArrays(1, &viz->vao);
 	}
@@ -77,10 +79,10 @@ void fx_lut_viz_cleanup(PostProcess* post_processing)
 	}
 }
 
-void fx_lut_viz_render(PostProcess* post_processing)
+void fx_lut_viz_render(LUTVizFX* viz, GLuint lut3d_tex,
+                       const EffectContext* ctx)
 {
-	LUTVizFX* viz = &post_processing->lut_viz_fx;
-	if (!viz->is_enabled || !post_processing->lut3d.texture) {
+	if (!viz->is_enabled || !lut3d_tex) {
 		return;
 	}
 
@@ -88,7 +90,7 @@ void fx_lut_viz_render(PostProcess* post_processing)
 
 	/* Pass 3D LUT texture */
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, post_processing->lut3d.texture);
+	glBindTexture(GL_TEXTURE_3D, lut3d_tex);
 	shader_set_int(viz->shader, "u_lut3d", 0);
 
 	/* Set MVP with auto-rotation for visualization */
@@ -111,10 +113,8 @@ void fx_lut_viz_render(PostProcess* post_processing)
 
 	glm_lookat((vec3){0.0F, 0.0F, cam_z}, (vec3){0.0F, 0.0F, 0.0F},
 	           (vec3){0.0F, 1.0F, 0.0F}, view);
-	glm_perspective(
-	    glm_rad(fov),
-	    (float)post_processing->width / (float)post_processing->height,
-	    znear, zfar, proj);
+	glm_perspective(glm_rad(fov), (float)ctx->width / (float)ctx->height,
+	                znear, zfar, proj);
 
 	glm_mat4_mul(proj, view, mvp);
 	glm_mat4_mul(mvp, model, mvp);
