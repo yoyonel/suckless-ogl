@@ -127,7 +127,10 @@ set(SOURCES
     src/postprocess.c
     src/postprocess_input.c
     src/render_utils.c
-    src/scene.c
+    src/scene_cleanup.c
+    src/scene_init.c
+    src/scene_nbody.c
+    src/scene_render.c
     src/shader.c
     src/sh_math.c
     src/simd_utils.c
