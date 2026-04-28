@@ -145,6 +145,15 @@ typedef struct SceneVisuals {
 } SceneVisuals;
 
 /**
+ * @struct SceneSimulation
+ * @brief N-body simulation state grouped to reduce Scene fan-out.
+ */
+typedef struct SceneSimulation {
+	NBodySim nbody_sim; /**< N-body gravitational simulation. */
+	int nbody_mode;     /**< Toggle: 0=grid, 1=N-body. */
+} SceneSimulation;
+
+/**
  * @struct Scene
  * @brief Encapsulates all 3D scene data, geometry, and rendering state.
  */
@@ -231,8 +240,7 @@ typedef struct Scene {
 	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 
 	/* --- N-Body Simulation --- */
-	NBodySim nbody_sim; /**< N-body gravitational simulation. */
-	int nbody_mode;     /**< Toggle: 0=grid, 1=N-body. */
+	SceneSimulation simulation; /**< N-body simulation sub-system. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
