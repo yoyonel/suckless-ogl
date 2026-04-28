@@ -11,7 +11,7 @@ Repository: [yoyonel/suckless-ogl](https://github.com/yoyonel/suckless-ogl).
 - Project board: https://github.com/users/yoyonel/projects/3
 - Milestones: `gh api repos/yoyonel/suckless-ogl/milestones?state=all`
 - Open issues: `gh issue list --state open`
-- Refer to [docs/github-settings.md](../../docs/github-settings.md) for label taxonomy and project structure.
+- Refer to [docs/github-settings.md](../docs/github-settings.md) for label taxonomy and project structure.
 
 ## Architecture Overview
 
@@ -203,4 +203,4 @@ just test-validation-layers     # Vulkan validation layers
 - Run `just help` for available recipes
 - Consult `mkdocs.yml` for doc structure
 - Review project board: https://github.com/users/yoyonel/projects/3
-- Label reference: [docs/github-settings.md](../../docs/github-settings.md)
+- Label reference: [docs/github-settings.md](../docs/github-settings.md)
