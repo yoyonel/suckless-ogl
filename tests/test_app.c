@@ -97,7 +97,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	return (RenderContext){
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
-	    .camera = &app->camera,
+	    .camera = &app->input.camera,
 	    .profiler = &app->profiling.gpu_profiler,
 	    .profiler_ui = &app->profiling.timeline_ui,
 	    .env_mgr = &app->env_mgr,
@@ -389,14 +389,14 @@ static void pipeline_run_test_loop(const char* test_tag,
 			const ViewPoint* vpoint = &G_VIEWPOINTS[i];
 			glm_vec3_copy((vec3){vpoint->pos[0], vpoint->pos[1],
 			                     vpoint->pos[2]},
-			              g_test_app.camera.position);
+			              g_test_app.input.camera.position);
 			glm_vec3_copy(
 			    (vec3){vpoint->world_up[0], vpoint->world_up[1],
 			           vpoint->world_up[2]},
-			    g_test_app.camera.world_up);
-			g_test_app.camera.yaw = vpoint->yaw;
-			g_test_app.camera.pitch = vpoint->pitch;
-			camera_update_vectors(&g_test_app.camera);
+			    g_test_app.input.camera.world_up);
+			g_test_app.input.camera.yaw = vpoint->yaw;
+			g_test_app.input.camera.pitch = vpoint->pitch;
+			camera_update_vectors(&g_test_app.input.camera);
 
 			if (pre_render) {
 				pre_render(vpoint, user_data);
@@ -568,19 +568,19 @@ static void pre_render_motion_blur(const ViewPoint* vpoint, void* data)
 	// generating deterministic velocity vectors.
 	float angle_disp = ANGLE_DISPLACEMENT;
 	if (strcmp(vpoint->name, "front") == 0) {
-		g_test_app.camera.yaw -= angle_disp;
+		g_test_app.input.camera.yaw -= angle_disp;
 	} else if (strcmp(vpoint->name, "back") == 0) {
-		g_test_app.camera.yaw += angle_disp;
+		g_test_app.input.camera.yaw += angle_disp;
 	} else if (strcmp(vpoint->name, "left") == 0) {
-		g_test_app.camera.pitch -= angle_disp;
+		g_test_app.input.camera.pitch -= angle_disp;
 	} else if (strcmp(vpoint->name, "right") == 0) {
-		g_test_app.camera.pitch += angle_disp;
+		g_test_app.input.camera.pitch += angle_disp;
 	} else if (strcmp(vpoint->name, "top") == 0) {
-		g_test_app.camera.pitch -= angle_disp;
+		g_test_app.input.camera.pitch -= angle_disp;
 	} else if (strcmp(vpoint->name, "bottom") == 0) {
-		g_test_app.camera.pitch += angle_disp;
+		g_test_app.input.camera.pitch += angle_disp;
 	}
-	camera_update_vectors(&g_test_app.camera);
+	camera_update_vectors(&g_test_app.input.camera);
 
 	app_update(&g_test_app);
 	{
@@ -589,9 +589,9 @@ static void pre_render_motion_blur(const ViewPoint* vpoint, void* data)
 	}
 
 	// Restore camera to exact baseline for the pipeline's capture render
-	g_test_app.camera.yaw = vpoint->yaw;
-	g_test_app.camera.pitch = vpoint->pitch;
-	camera_update_vectors(&g_test_app.camera);
+	g_test_app.input.camera.yaw = vpoint->yaw;
+	g_test_app.input.camera.pitch = vpoint->pitch;
+	camera_update_vectors(&g_test_app.input.camera);
 }
 
 static void pre_render_sony_a7siii(const ViewPoint* vpoint, void* data)
@@ -643,7 +643,7 @@ static void test_app_camera_initialization(void)
 	                         "App should be initialized");
 
 	// Verify camera is properly initialized
-	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, g_test_app.camera.zoom);
+	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, g_test_app.input.camera.zoom);
 }
 
 /**

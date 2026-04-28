@@ -33,7 +33,7 @@ static inline AppInputContext app_input_ctx_from_app(App* app)
 {
 	return (AppInputContext){
 	    .window = app->window,
-	    .camera = &app->camera,
+	    .camera = &app->input.camera,
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
 	    .env_mgr = &app->env_mgr,
@@ -42,11 +42,11 @@ static inline AppInputContext app_input_ctx_from_app(App* app)
 	    .timeline_ui = &app->profiling.timeline_ui,
 	    .effect_bench = &app->effect_bench,
 	    .perf_context = &app->profiling.perf_context,
-	    .gamepad = &app->gamepad,
+	    .gamepad = &app->input.gamepad,
 	    .async_loader = app->async_loader,
 	    .width = &app->width,
 	    .height = &app->height,
-	    .camera_enabled = &app->camera_enabled,
+	    .camera_enabled = &app->input.camera_enabled,
 	    .is_fullscreen = &app->is_fullscreen,
 	    .saved_x = &app->saved_x,
 	    .saved_y = &app->saved_y,

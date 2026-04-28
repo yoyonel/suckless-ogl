@@ -32,18 +32,18 @@ int app_init(App* app, int width, int height, const char* title)
 	app->width = width;
 	app->height = height;
 
-	app->camera_enabled = true;
+	app->input.camera_enabled = true;
 	app->is_fullscreen = false;
 	app->resize_pending = 0;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
 	/* Initialize Help UI state */
-	app_binding_registry_init(&app->binding_registry);
+	app_binding_registry_init(&app->input.binding_registry);
 
-	camera_init(&app->camera, DEFAULT_CAMERA_DISTANCE, DEFAULT_CAMERA_YAW,
-	            DEFAULT_CAMERA_PITCH);
-	gamepad_input_init(&app->gamepad);
+	camera_init(&app->input.camera, DEFAULT_CAMERA_DISTANCE,
+	            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
+	gamepad_input_init(&app->input.gamepad);
 
 	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->window) {
@@ -57,7 +57,7 @@ int app_init(App* app, int width, int height, const char* title)
 	glfwSetScrollCallback(app->window, scroll_callback);
 	glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
 
-	if (app->camera_enabled) {
+	if (app->input.camera_enabled) {
 		glfwSetInputMode(app->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
 	}
@@ -115,7 +115,7 @@ int app_init(App* app, int width, int height, const char* title)
 
 	fps_init(&app->profiling.fps_counter, DEFAULT_FPS_SMOOTHING,
 	         DEFAULT_FPS_WINDOW);
-	adaptive_sampler_init(&app->fps_sampler, DEFAULT_FPS_WINDOW,
+	adaptive_sampler_init(&app->input.fps_sampler, DEFAULT_FPS_WINDOW,
 	                      DEFAULT_FPS_SAMPLER_SIZE, DEFAULT_FPS_TARGET);
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
@@ -169,7 +169,7 @@ void app_cleanup(App* app)
 
 	async_coordinator_cleanup(&app->async_coord);
 
-	adaptive_sampler_cleanup(&app->fps_sampler);
+	adaptive_sampler_cleanup(&app->input.fps_sampler);
 
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
@@ -238,11 +238,11 @@ void app_run(App* app)
 			fps_update(&app->profiling.fps_counter, app->delta_time,
 			           current_time);
 			adaptive_sampler_should_sample(
-			    &app->fps_sampler, (float)app->delta_time,
+			    &app->input.fps_sampler, (float)app->delta_time,
 			    current_time, app->frame_count);
-			if (adaptive_sampler_is_finished(&app->fps_sampler,
-			                                 current_time)) {
-				adaptive_sampler_reset(&app->fps_sampler,
+			if (adaptive_sampler_is_finished(
+			        &app->input.fps_sampler, current_time)) {
+				adaptive_sampler_reset(&app->input.fps_sampler,
 				                       current_time);
 			}
 			PROFILE_ZONE_END(timing_ctx);
@@ -262,8 +262,9 @@ void app_run(App* app)
 		{
 			PROFILE_ZONE(camera_ctx, "Camera Physics");
 			GamepadActions gp_actions = {0, 0, 0};
-			if (app->camera_enabled) {
-				gamepad_input_poll(&app->gamepad, &gp_actions);
+			if (app->input.camera_enabled) {
+				gamepad_input_poll(&app->input.gamepad,
+				                   &gp_actions);
 			}
 			if (gp_actions.env_next || gp_actions.env_prev) {
 				AppInputContext env_ctx = {
@@ -286,32 +287,34 @@ void app_run(App* app)
 			}
 			if (gp_actions.camera_reset) {
 				camera_init(
-				    &app->camera, DEFAULT_CAMERA_DISTANCE,
+				    &app->input.camera, DEFAULT_CAMERA_DISTANCE,
 				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
 				app->scene.env_lod = DEFAULT_ENV_LOD;
 				action_notifier_push(&app->notifier,
 				                     "Camera & LOD Reset",
 				                     NOTIF_DUR_LONG);
 			}
-			app->camera.physics_accumulator +=
+			app->input.camera.physics_accumulator +=
 			    (float)app->delta_time;
-			while (app->camera.physics_accumulator >=
-			       app->camera.fixed_timestep) {
-				camera_build_keyboard_input(&app->camera);
-				gamepad_write_input(&app->gamepad,
-				                    &app->camera);
-				camera_fixed_update(&app->camera);
-				app->camera.physics_accumulator -=
-				    app->camera.fixed_timestep;
+			while (app->input.camera.physics_accumulator >=
+			       app->input.camera.fixed_timestep) {
+				camera_build_keyboard_input(&app->input.camera);
+				gamepad_write_input(&app->input.gamepad,
+				                    &app->input.camera);
+				camera_fixed_update(&app->input.camera);
+				app->input.camera.physics_accumulator -=
+				    app->input.camera.fixed_timestep;
 			}
 
-			float alpha = app->camera.rotation_smoothing;
-			app->camera.yaw +=
-			    (app->camera.yaw_target - app->camera.yaw) * alpha;
-			app->camera.pitch +=
-			    (app->camera.pitch_target - app->camera.pitch) *
+			float alpha = app->input.camera.rotation_smoothing;
+			app->input.camera.yaw += (app->input.camera.yaw_target -
+			                          app->input.camera.yaw) *
+			                         alpha;
+			app->input.camera.pitch +=
+			    (app->input.camera.pitch_target -
+			     app->input.camera.pitch) *
 			    alpha;
-			camera_update_vectors(&app->camera);
+			camera_update_vectors(&app->input.camera);
 			PROFILE_ZONE_END(camera_ctx);
 		}
 
@@ -352,7 +355,7 @@ void app_run(App* app)
 			RenderContext rctx = {
 			    .scene = &app->scene,
 			    .postprocess = &app->postprocess,
-			    .camera = &app->camera,
+			    .camera = &app->input.camera,
 			    .profiler = &app->profiling.gpu_profiler,
 			    .profiler_ui = &app->profiling.timeline_ui,
 			    .env_mgr = &app->env_mgr,

@@ -605,8 +605,8 @@ static void gp_overlay_poll_active(const App* app,
 		active[i] = false;
 	}
 	GLFWgamepadstate gp_state;
-	if (!glfwJoystickIsGamepad(app->gamepad.joystick_id) ||
-	    !glfwGetGamepadState(app->gamepad.joystick_id, &gp_state)) {
+	if (!glfwJoystickIsGamepad(app->input.gamepad.joystick_id) ||
+	    !glfwGetGamepadState(app->input.gamepad.joystick_id, &gp_state)) {
 		return;
 	}
 	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
@@ -617,12 +617,12 @@ static void gp_overlay_poll_active(const App* app,
 		}
 		if (gpc->gp_axis >= 0 &&
 		    gp_axis_active(gp_state.axes, gpc->gp_axis,
-		                   &app->gamepad)) {
+		                   &app->input.gamepad)) {
 			active[i] = true;
 		}
 		if (gpc->gp_axis2 >= 0 &&
 		    gp_axis_active(gp_state.axes, gpc->gp_axis2,
-		                   &app->gamepad)) {
+		                   &app->input.gamepad)) {
 			active[i] = true;
 		}
 	}
@@ -826,13 +826,13 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	const float global_dim_mult = (float)app->overlay.help_global_dim;
 	int effective_mods = 0;
 	(void)get_active_binding(
-	    &app->binding_registry, app->overlay.help_pressed_key,
+	    &app->input.binding_registry, app->overlay.help_pressed_key,
 	    app->overlay.help_pressed_mods, &effective_mods);
 
 	int hovered_effective_mods = 0;
 	if (app->overlay.help_hovered_key != -1) {
 		(void)get_active_binding(
-		    &app->binding_registry, app->overlay.help_hovered_key,
+		    &app->input.binding_registry, app->overlay.help_hovered_key,
 		    app->overlay.help_pressed_mods, &hovered_effective_mods);
 	}
 
@@ -853,8 +853,8 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 
 		vec3 base_col;
 		bool has_binding = false;
-		get_key_base_color(&app->binding_registry, kpos->key, base_col,
-		                   &has_binding);
+		get_key_base_color(&app->input.binding_registry, kpos->key,
+		                   base_col, &has_binding);
 
 		bool is_pressed = is_key_active_in_overlay(
 		    kpos->key, app->overlay.help_pressed_key, effective_mods);
@@ -890,8 +890,8 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		if (is_pressed || is_hovered) {
 			vec3 base_col;
 			bool has_binding = false;
-			get_key_base_color(&app->binding_registry, kpos->key,
-			                   base_col, &has_binding);
+			get_key_base_color(&app->input.binding_registry,
+			                   kpos->key, base_col, &has_binding);
 			if (is_pressed || is_hovered) {
 				glm_vec3_clamp(base_col, KEY_PRESS_BRIGHTEN_MIN,
 				               1.0F);
@@ -928,7 +928,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		                          ? app->overlay.help_pressed_mods
 		                          : 0;
 		const AppBinding* binding = get_active_binding(
-		    &app->binding_registry, target_key, desc_mods, NULL);
+		    &app->input.binding_registry, target_key, desc_mods, NULL);
 
 		if (binding != NULL) {
 			/* Show detailed description below help */
@@ -1099,7 +1099,7 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 		static const size_t AVG_TEXT_SIZE = 64;
 		char avg_text[AVG_TEXT_SIZE];
 		float sampled_avg =
-		    adaptive_sampler_get_average(&app->fps_sampler);
+		    adaptive_sampler_get_average(&app->input.fps_sampler);
 		(void)safe_snprintf(avg_text, sizeof(avg_text),
 		                    "Sampled Avg: %.2f", sampled_avg);
 		ui_layout_text(layout, avg_text, DEFAULT_FONT_COLOR);
@@ -1108,8 +1108,9 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	/* 2. Position */
 	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-	                    app->camera.position[0], app->camera.position[1],
-	                    app->camera.position[2]);
+	                    app->input.camera.position[0],
+	                    app->input.camera.position[1],
+	                    app->input.camera.position[2]);
 	ui_layout_text(layout, pos_text, DEFAULT_FONT_COLOR);
 
 	/* 3. Environment */

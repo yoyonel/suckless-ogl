@@ -14,7 +14,7 @@ static AppInputContext test_ctx_from_app(App* app)
 {
 	return (AppInputContext){
 	    .window = app->window,
-	    .camera = &app->camera,
+	    .camera = &app->input.camera,
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
 	    .env_mgr = &app->env_mgr,
@@ -23,11 +23,11 @@ static AppInputContext test_ctx_from_app(App* app)
 	    .timeline_ui = &app->profiling.timeline_ui,
 	    .effect_bench = &app->effect_bench,
 	    .perf_context = &app->profiling.perf_context,
-	    .gamepad = &app->gamepad,
+	    .gamepad = &app->input.gamepad,
 	    .async_loader = app->async_loader,
 	    .width = &app->width,
 	    .height = &app->height,
-	    .camera_enabled = &app->camera_enabled,
+	    .camera_enabled = &app->input.camera_enabled,
 	    .is_fullscreen = &app->is_fullscreen,
 	    .saved_x = &app->saved_x,
 	    .saved_y = &app->saved_y,
@@ -121,7 +121,7 @@ void test_handle_app_input_exhaustive(void)
 	handle_app_input(&ctx, GLFW_KEY_Z, 0);
 	TEST_ASSERT_TRUE(test_app->scene.wireframe);
 	handle_app_input(&ctx, GLFW_KEY_C, 0);
-	TEST_ASSERT_TRUE(test_app->camera_enabled);
+	TEST_ASSERT_TRUE(test_app->input.camera_enabled);
 	handle_app_input(&ctx, GLFW_KEY_L, 0);
 	TEST_ASSERT_TRUE(test_app->scene.billboard_mode);
 	handle_app_input(&ctx, GLFW_KEY_K, 0);
@@ -254,11 +254,12 @@ void test_camera_movement_keys(void)
 	int keys[] = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A,
 	              GLFW_KEY_D, GLFW_KEY_Q, GLFW_KEY_E};
 	for (int i = 0; i < 6; i++) {
-		camera_input_handle_key(&test_app->camera, keys[i], GLFW_PRESS);
+		camera_input_handle_key(&test_app->input.camera, keys[i],
+		                        GLFW_PRESS);
 		/* Check some flag in camera. W should set move_forward, etc.
 		   But since we don't assert every single one, just ensure it
 		   doesn't crash and covers the lines. */
-		camera_input_handle_key(&test_app->camera, keys[i],
+		camera_input_handle_key(&test_app->input.camera, keys[i],
 		                        GLFW_RELEASE);
 	}
 }
@@ -272,12 +273,14 @@ void test_camera_movement_keys(void)
  */
 void test_mouse_and_scroll_exhaustive(void)
 {
-	test_app->camera_enabled = true;
-	test_app->camera.first_mouse = 1;
+	test_app->input.camera_enabled = true;
+	test_app->input.camera.first_mouse = 1;
 	mouse_callback(test_app->window, 100.0, 100.0);
 	mouse_callback(test_app->window, 110.0, 120.0);
-	TEST_ASSERT_EQUAL_FLOAT(110.0F, (float)test_app->camera.last_mouse_x);
-	TEST_ASSERT_EQUAL_FLOAT(120.0F, (float)test_app->camera.last_mouse_y);
+	TEST_ASSERT_EQUAL_FLOAT(110.0F,
+	                        (float)test_app->input.camera.last_mouse_x);
+	TEST_ASSERT_EQUAL_FLOAT(120.0F,
+	                        (float)test_app->input.camera.last_mouse_y);
 
 	scroll_callback(test_app->window, 0.0, 1.0);
 	scroll_callback(test_app->window, 0.0, -1.0);
