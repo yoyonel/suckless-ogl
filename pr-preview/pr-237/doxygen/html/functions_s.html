@@ -1,0 +1,573 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: Data Fields</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li class="current"><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow3" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="functions.html"><span>All</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
+    </ul>
+  </div>
+  <div id="navrow4" class="tabs3">
+    <ul class="tablist">
+      <li><a href="functions.html#index__5F"><span>_</span></a></li>
+      <li><a href="functions_a.html#index_a"><span>a</span></a></li>
+      <li><a href="functions_b.html#index_b"><span>b</span></a></li>
+      <li><a href="functions_c.html#index_c"><span>c</span></a></li>
+      <li><a href="functions_d.html#index_d"><span>d</span></a></li>
+      <li><a href="functions_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_f.html#index_f"><span>f</span></a></li>
+      <li><a href="functions_g.html#index_g"><span>g</span></a></li>
+      <li><a href="functions_h.html#index_h"><span>h</span></a></li>
+      <li><a href="functions_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_j.html#index_j"><span>j</span></a></li>
+      <li><a href="functions_k.html#index_k"><span>k</span></a></li>
+      <li><a href="functions_l.html#index_l"><span>l</span></a></li>
+      <li><a href="functions_m.html#index_m"><span>m</span></a></li>
+      <li><a href="functions_n.html#index_n"><span>n</span></a></li>
+      <li><a href="functions_o.html#index_o"><span>o</span></a></li>
+      <li><a href="functions_p.html#index_p"><span>p</span></a></li>
+      <li><a href="functions_q.html#index_q"><span>q</span></a></li>
+      <li><a href="functions_r.html#index_r"><span>r</span></a></li>
+      <li class="current"><a href="functions_s.html#index_s"><span>s</span></a></li>
+      <li><a href="functions_t.html#index_t"><span>t</span></a></li>
+      <li><a href="functions_u.html#index_u"><span>u</span></a></li>
+      <li><a href="functions_v.html#index_v"><span>v</span></a></li>
+      <li><a href="functions_w.html#index_w"><span>w</span></a></li>
+      <li><a href="functions_x.html#index_x"><span>x</span></a></li>
+      <li><a href="functions_y.html#index_y"><span>y</span></a></li>
+      <li><a href="functions_z.html#index_z"><span>z</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('functions_s.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="contents">
+<div class="textblock">Here is a list of all struct and union fields with links to the structures/unions they belong to:</div>
+
+<h3><a id="index_s"></a>- s -</h3><ul>
+<li>sample_count
+: <a class="el" href="structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62">EffectBenchmark</a>
+</li>
+<li>sample_timer
+: <a class="el" href="structTrailRenderer.html#a82d0b15e7daf9435c3c74b10f0964f2c">TrailRenderer</a>
+</li>
+<li>samples
+: <a class="el" href="structAdaptiveSampler.html#a977ef8d15e114b541f5ba4f2d45e1b4a">AdaptiveSampler</a>
+</li>
+<li>samples_taken
+: <a class="el" href="structAdaptiveSampler.html#acb9bc43ec19184ff441d1c8bbdf8bc1d">AdaptiveSampler</a>
+</li>
+<li>saturation
+: <a class="el" href="structColorGradingParams.html#a23cfe62ae92a53e26bebbbb3edd7b139">ColorGradingParams</a>
+</li>
+<li>saved_effects
+: <a class="el" href="structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8">EffectBenchmark</a>
+</li>
+<li>saved_height
+: <a class="el" href="structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9">AppInputContext</a>
+, <a class="el" href="structAppWindow.html#a780bfdc037d3e743323a729fe258a39d">AppWindow</a>
+</li>
+<li>saved_width
+: <a class="el" href="structAppInputContext.html#acd48b90c8643c0d2505688819ae92484">AppInputContext</a>
+, <a class="el" href="structAppWindow.html#ac02b8afb4418b16b1d6600b24c738e57">AppWindow</a>
+</li>
+<li>saved_x
+: <a class="el" href="structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad">AppInputContext</a>
+, <a class="el" href="structAppWindow.html#a9dddf18de25ca46d77dffc76ba8c7b99">AppWindow</a>
+</li>
+<li>saved_y
+: <a class="el" href="structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da">AppInputContext</a>
+, <a class="el" href="structAppWindow.html#a4d2a59b776582515dcddd4396db7d300">AppWindow</a>
+</li>
+<li>scene
+: <a class="el" href="structApp.html#ac9c2d3c6cb7e168bc2a0477c551cdfeb">App</a>
+, <a class="el" href="structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1">AppInputContext</a>
+, <a class="el" href="structHdrScanContext.html#af8a408cab6a65e1d6fdb45a17aa89e16">HdrScanContext</a>
+, <a class="el" href="structRenderContext.html#a7d6a36b1c63f8ffc3c16e002451e44df">RenderContext</a>
+</li>
+<li>scene_color_tex
+: <a class="el" href="structPPGPUResources.html#a7b0e2526bcc4d3e5b24291c41b256c37">PPGPUResources</a>
+, <a class="el" href="structShockwaveRenderer.html#a1bf2cd328a6e89cb6c53c63ca6b63923">ShockwaveRenderer</a>
+</li>
+<li>scene_copy
+: <a class="el" href="structLightProbeGrid.html#a0008bdfe0dd6ebad75dec5f54b9c54b2">LightProbeGrid</a>
+</li>
+<li>scene_count
+: <a class="el" href="structLightProbeGrid.html#a211bb382e4ab8b38bec9dbfd710a5c11">LightProbeGrid</a>
+</li>
+<li>scene_depth_tex
+: <a class="el" href="structPPGPUResources.html#abba03cab59484794be219fee7f1daffa">PPGPUResources</a>
+</li>
+<li>scene_fbo
+: <a class="el" href="structPPGPUResources.html#a3ff1cbfdf2aacd8ddd488253c87ad42e">PPGPUResources</a>
+</li>
+<li>scene_stencil_view
+: <a class="el" href="structPPGPUResources.html#aac4a8b1001d2f5a079f2e0584992e0f8">PPGPUResources</a>
+</li>
+<li>screen_height
+: <a class="el" href="structUILayout.html#a6c80586815470c2782e7ea1105deeecc">UILayout</a>
+</li>
+<li>screen_quad_vao
+: <a class="el" href="structPPGPUResources.html#a05412258e94faf76b67e4d8784b9a395">PPGPUResources</a>
+</li>
+<li>screen_quad_vbo
+: <a class="el" href="structPPGPUResources.html#ab6e90b1652201c3f0a834871fd209dba">PPGPUResources</a>
+</li>
+<li>screen_size
+: <a class="el" href="structBillboardUBO.html#a12b17eef385b58c3e2574cfe9045bef3">BillboardUBO</a>
+</li>
+<li>screen_texel_size
+: <a class="el" href="structPostProcessUBO.html#a9338c978ff5e60f94297a6c68ed6ae73">PostProcessUBO</a>
+</li>
+<li>screen_width
+: <a class="el" href="structUILayout.html#abecaeffeb6ae4e65c39d3511e75272e5">UILayout</a>
+</li>
+<li>sensitivity
+: <a class="el" href="structCamera.html#a5431c8caefafb42a667ca4c801bef07f">Camera</a>
+</li>
+<li>settings_ubo
+: <a class="el" href="structPPGPUResources.html#a2a1b08a958218644f57d5a2fc1a2be82">PPGPUResources</a>
+</li>
+<li>sh_data
+: <a class="el" href="structLightProbe.html#adf243c027b1162800901618aa2185f07">LightProbe</a>
+</li>
+<li>sh_textures
+: <a class="el" href="structBillboardUniforms.html#a21361381527b46bd31aa0a6807a51bc2">BillboardUniforms</a>
+, <a class="el" href="structInstancedUniforms.html#a45102246fffcb58399776dd6405d1ab4">InstancedUniforms</a>
+, <a class="el" href="structLightProbeGrid.html#a323b83773260781cdea517f6b7cc91c2">LightProbeGrid</a>
+</li>
+<li>shader
+: <a class="el" href="structShaderCacheEntry.html#a209e3490880088cfef5562b0e790e33f">ShaderCacheEntry</a>
+, <a class="el" href="structShockwaveRenderer.html#af1db0761d83004b4f6c997bf1b6bee30">ShockwaveRenderer</a>
+, <a class="el" href="structTrailRenderer.html#a5fe190d038615f049365c812f60b6ccd">TrailRenderer</a>
+, <a class="el" href="structUIContext.html#a91a4a19720fbcf5908113e8da9eb755a">UIContext</a>
+</li>
+<li>shader_cache
+: <a class="el" href="structPPShaderState.html#ae97de8f4a92974d561946bab2dc893c1">PPShaderState</a>
+</li>
+<li>shader_cache_count
+: <a class="el" href="structPPShaderState.html#abbe7d789dfd31a51f2952a88f338919e">PPShaderState</a>
+</li>
+<li>shaders
+: <a class="el" href="structPostProcess.html#a0a473e5615f9975ff758e179afd2e90f">PostProcess</a>
+, <a class="el" href="structScene.html#af9ac8ef9afe5ab3787a5036f83a2d4b3">Scene</a>
+</li>
+<li>shadows_max
+: <a class="el" href="structGrainParams.html#a51c672d90c812c686d9d395cb95a95b7">GrainParams</a>
+</li>
+<li>shockwave_renderer
+: <a class="el" href="structSceneVisuals.html#a4a70708500c964eca2b8fbb6e32e4ec1">SceneVisuals</a>
+</li>
+<li>shoulder
+: <a class="el" href="structTonemapParams.html#ae62273ec08e1b073f61826886ebd760f">TonemapParams</a>
+</li>
+<li>show_envmap
+: <a class="el" href="structSceneConfig.html#aa9122aa9684717e2f3c70822ebd9e20e">SceneConfig</a>
+</li>
+<li>show_exposure_debug
+: <a class="el" href="structAppUIOverlay.html#aedfde5844a99212367d1b0e6b48de4ac">AppUIOverlay</a>
+</li>
+<li>show_help
+: <a class="el" href="structAppUIOverlay.html#a72456159ffdab40c9370960861a9ef6f">AppUIOverlay</a>
+</li>
+<li>show_info_overlay
+: <a class="el" href="structAppUIOverlay.html#af099301dcf7af6ebfbb05138479b77cc">AppUIOverlay</a>
+</li>
+<li>show_probe_grid
+: <a class="el" href="structSceneConfig.html#a3418ff14b9b44108f04db9336122d5ac">SceneConfig</a>
+</li>
+<li>silent_warnings
+: <a class="el" href="structShader.html#a3cab8e98d59adca31fc046c28278b697">Shader</a>
+</li>
+<li>sim_time
+: <a class="el" href="structNBodySim.html#aceb905f716dc58ea27f06064362b3079">NBodySim</a>
+, <a class="el" href="structTrailRenderer.html#a986d214bd6bb2a9dd4ee03520217642f">TrailRenderer</a>
+</li>
+<li>simulation
+: <a class="el" href="structScene.html#a8fa214fdf8e1f5d3cffb4d181bb53248">Scene</a>
+</li>
+<li>size
+: <a class="el" href="structMetricStack.html#a1efbff4d0974864c6e07fe75e13eeb7d">MetricStack</a>
+, <a class="el" href="structUintArray.html#a3db59ce72483af21815e000173042687">UintArray</a>
+, <a class="el" href="structVec3Array.html#a4bc9c8d7aba0505c26fac3df7be1f54a">Vec3Array</a>
+</li>
+<li>skybox
+: <a class="el" href="structSceneShaders.html#a95784c65abc8cd175ec51a1bedd81069">SceneShaders</a>
+, <a class="el" href="structSceneVisuals.html#a0ef3c8494a9616d7b521bbc4d4113aa3">SceneVisuals</a>
+</li>
+<li>slope
+: <a class="el" href="structTonemapParams.html#a9d17bdf5c9ffa45b65a9d9014d7d94a3">TonemapParams</a>
+</li>
+<li>smoothed_x
+: <a class="el" href="structCamera.html#a92ff8aacdacb2a809ec447e3440a7f42">Camera</a>
+</li>
+<li>smoothed_y
+: <a class="el" href="structCamera.html#a7e9ca5e6bc696a40c77866f0449fd0f8">Camera</a>
+</li>
+<li>smoothness
+: <a class="el" href="structVignetteParams.html#a1c4f92e55f6bc56d5b2223d87e8a400d">VignetteParams</a>
+</li>
+<li>sorted_instance_ssbo
+: <a class="el" href="structBillboardSorter.html#acec5dd153babd0b224c37ba8aceffae6">BillboardSorter</a>
+</li>
+<li>sorting_mode
+: <a class="el" href="structSceneConfig.html#a60ccdd5dfeeec9409260efbdad345418">SceneConfig</a>
+</li>
+<li>spec_prefiltered_tex
+: <a class="el" href="structSceneGPUResources.html#add6d4463089e7fa543af54ccdaeeea08">SceneGPUResources</a>
+</li>
+<li>spec_uniforms
+: <a class="el" href="structIBLCoordinator.html#ab8a3c6a002c92639218e6c394ea2998d">IBLCoordinator</a>
+</li>
+<li>specular_aa_enabled
+: <a class="el" href="structBillboardUBO.html#ad2dd948396000eeb5fb29c89b3d077cb">BillboardUBO</a>
+, <a class="el" href="structSceneConfig.html#a94de9f0fa6fcb8d63baa2be48fe89f07">SceneConfig</a>
+</li>
+<li>spinner_shader
+: <a class="el" href="structUIContext.html#a6c948d739612b8dfeebc4865f3230347">UIContext</a>
+</li>
+<li>spmap_program
+: <a class="el" href="structIBLCoordinator.html#ae9fc947f4086bd1f6148282bebfe63d1">IBLCoordinator</a>
+, <a class="el" href="structSceneGPUResources.html#a6feedd48ab2f3938c0253802da31c13d">SceneGPUResources</a>
+</li>
+<li>ssbo
+: <a class="el" href="structLightProbeGrid.html#a5813f10e8ecf944f51b56208ea234954">LightProbeGrid</a>
+, <a class="el" href="structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc">SSBOGroup</a>
+</li>
+<li>ssbo_capacity
+: <a class="el" href="structBillboardSorter.html#a36092b844c19fa636ecdf9f667388d2f">BillboardSorter</a>
+</li>
+<li>stack
+: <a class="el" href="structMetricStack.html#a3f2ed238f489aac47c071e4ff9a8798e">MetricStack</a>
+</li>
+<li>stage_count
+: <a class="el" href="structGPUProfiler.html#a120420e2f3b927e34e1694b16dec4a7a">GPUProfiler</a>
+, <a class="el" href="structGPUQueryBuffer.html#a11e51c88a688b83cfb4d3e42aeb50f54">GPUQueryBuffer</a>
+</li>
+<li>stage_gpu_max
+: <a class="el" href="structIBLCoordinator.html#a6fb478126bc6cbe108879f1877780c7a">IBLCoordinator</a>
+</li>
+<li>stage_gpu_min
+: <a class="el" href="structIBLCoordinator.html#ac2d6543725765afb9881d93ec893401e">IBLCoordinator</a>
+</li>
+<li>stage_gpu_sum
+: <a class="el" href="structIBLCoordinator.html#a864f974c3d91fdd67ce7475b91f74de0">IBLCoordinator</a>
+</li>
+<li>stage_info
+: <a class="el" href="structGPUQueryBuffer.html#a0cc788bc5b9334b1e0639e33bd4f2a66">GPUQueryBuffer</a>
+</li>
+<li>stage_slice_count
+: <a class="el" href="structIBLCoordinator.html#aaac58f28cd2f8fed9653758a8b9931f4">IBLCoordinator</a>
+</li>
+<li>stage_timer
+: <a class="el" href="structIBLCoordinator.html#ac80feec6db7c68ff02c0ee21d741f0c3">IBLCoordinator</a>
+</li>
+<li>stages
+: <a class="el" href="structGPUProfiler.html#aa37b69615626569fb9356bcfc9cc7d3a">GPUProfiler</a>
+</li>
+<li>start
+: <a class="el" href="structFogParams.html#a40dc43eeaa21e642ca99b78b1f256d54">FogParams</a>
+, <a class="el" href="structPerfTimer.html#a9774d7f04ce62906b42dfd0059a1cf7e">PerfTimer</a>
+</li>
+<li>start_offset_ms
+: <a class="el" href="structGPUStage.html#a6d3a71fa172a28744673e9cc0a1331a7">GPUStage</a>
+</li>
+<li>start_time
+: <a class="el" href="structShockwaveEvent.html#a728d33b7541267b07d553aeacd43dcbf">ShockwaveEvent</a>
+</li>
+<li>start_x
+: <a class="el" href="structUILayout.html#a7b85b790687f2339b78851574fe1ad63">UILayout</a>
+</li>
+<li>state
+: <a class="el" href="structAsyncRequest.html#ac4cd174106cd4357e69f05d238c753ae">AsyncRequest</a>
+, <a class="el" href="structIBLCoordinator.html#ad86d6a415c26a59e240146dc5adb03b0">IBLCoordinator</a>
+, <a class="el" href="structPcg32.html#adb4c215369532bb9846b6f60f30f5c75">Pcg32</a>
+, <a class="el" href="structPerfModeContext.html#a2cd10780d3c30c53e8053dd7c26e72df">PerfModeContext</a>
+</li>
+<li>stddev_ms
+: <a class="el" href="structEffectBenchResult.html#adbf7bbc368e1ff441c1bee518ad15c72">EffectBenchResult</a>
+</li>
+<li>stream_count
+: <a class="el" href="structGPUUsageMonitor.html#a0d0dcf9039370a5d6354f76d7c9ee117">GPUUsageMonitor</a>
+</li>
+<li>streams
+: <a class="el" href="structGPUUsageMonitor.html#ace661c99712846bc010fcb3ab72f93d8">GPUUsageMonitor</a>
+</li>
+<li>strength
+: <a class="el" href="structChromAbberationParams.html#ad26bbe4ea7605eb2a107043f11ebfd6b">ChromAbberationParams</a>
+</li>
+<li>subdivisions
+: <a class="el" href="structSceneConfig.html#a32acfa2a691e6a39ab88481d8d003d34">SceneConfig</a>
+</li>
+<li>submission_time
+: <a class="el" href="structAsyncRequest.html#ab3905494d911571b697b852533107e8f">AsyncRequest</a>
+</li>
+<li>subpix
+: <a class="el" href="structFXAAParams.html#a27035966c0ff561b9a4e9dc7d88e7442">FXAAParams</a>
+</li>
+<li>sum_ms
+: <a class="el" href="structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018">EffectBenchmark</a>
+</li>
+<li>sum_sq_ms
+: <a class="el" href="structEffectBenchmark.html#a03558a74825fb72dfabd3b335cd65c4d">EffectBenchmark</a>
+</li>
+<li>sys_timer
+: <a class="el" href="structAsyncLoader.html#a55f43e0bbe1c12882b51086002eb63dc">AsyncLoader</a>
+</li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
