@@ -4,6 +4,8 @@
 #include "adaptive_sampler.h"
 #include "app.h"
 #include "app_binding.h"
+#include "app_input_state.h"
+#include "app_profiling.h"
 #include "app_settings.h"
 #include "glad/glad.h"
 #include "nbody.h"
@@ -605,8 +607,8 @@ static void gp_overlay_poll_active(const App* app,
 		active[i] = false;
 	}
 	GLFWgamepadstate gp_state;
-	if (!glfwJoystickIsGamepad(app->input.gamepad.joystick_id) ||
-	    !glfwGetGamepadState(app->input.gamepad.joystick_id, &gp_state)) {
+	if (!glfwJoystickIsGamepad(app->input->gamepad.joystick_id) ||
+	    !glfwGetGamepadState(app->input->gamepad.joystick_id, &gp_state)) {
 		return;
 	}
 	for (int i = 0; i < GAMEPAD_LAYOUT_COUNT; i++) {
@@ -617,12 +619,12 @@ static void gp_overlay_poll_active(const App* app,
 		}
 		if (gpc->gp_axis >= 0 &&
 		    gp_axis_active(gp_state.axes, gpc->gp_axis,
-		                   &app->input.gamepad)) {
+		                   &app->input->gamepad)) {
 			active[i] = true;
 		}
 		if (gpc->gp_axis2 >= 0 &&
 		    gp_axis_active(gp_state.axes, gpc->gp_axis2,
-		                   &app->input.gamepad)) {
+		                   &app->input->gamepad)) {
 			active[i] = true;
 		}
 	}
@@ -826,14 +828,15 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 	const float global_dim_mult = (float)app->overlay.help_global_dim;
 	int effective_mods = 0;
 	(void)get_active_binding(
-	    &app->input.binding_registry, app->overlay.help_pressed_key,
+	    &app->input->binding_registry, app->overlay.help_pressed_key,
 	    app->overlay.help_pressed_mods, &effective_mods);
 
 	int hovered_effective_mods = 0;
 	if (app->overlay.help_hovered_key != -1) {
-		(void)get_active_binding(
-		    &app->input.binding_registry, app->overlay.help_hovered_key,
-		    app->overlay.help_pressed_mods, &hovered_effective_mods);
+		(void)get_active_binding(&app->input->binding_registry,
+		                         app->overlay.help_hovered_key,
+		                         app->overlay.help_pressed_mods,
+		                         &hovered_effective_mods);
 	}
 
 	const unsigned int num_keys =
@@ -853,7 +856,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 
 		vec3 base_col;
 		bool has_binding = false;
-		get_key_base_color(&app->input.binding_registry, kpos->key,
+		get_key_base_color(&app->input->binding_registry, kpos->key,
 		                   base_col, &has_binding);
 
 		bool is_pressed = is_key_active_in_overlay(
@@ -890,7 +893,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		if (is_pressed || is_hovered) {
 			vec3 base_col;
 			bool has_binding = false;
-			get_key_base_color(&app->input.binding_registry,
+			get_key_base_color(&app->input->binding_registry,
 			                   kpos->key, base_col, &has_binding);
 			if (is_pressed || is_hovered) {
 				glm_vec3_clamp(base_col, KEY_PRESS_BRIGHTEN_MIN,
@@ -928,7 +931,7 @@ static void draw_help_overlay_keys(const App* app, float start_x, float start_y,
 		                          ? app->overlay.help_pressed_mods
 		                          : 0;
 		const AppBinding* binding = get_active_binding(
-		    &app->input.binding_registry, target_key, desc_mods, NULL);
+		    &app->input->binding_registry, target_key, desc_mods, NULL);
 
 		if (binding != NULL) {
 			/* Show detailed description below help */
@@ -1074,11 +1077,12 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	float current_fps = 0.0F;
 	float frame_time_ms = 0.0F;
 
-	if (app->profiling.fps_counter.average_frame_time > 0.0F) {
+	if (app->profiling->fps_counter.average_frame_time > 0.0F) {
 		current_fps =
-		    1.0F / (float)app->profiling.fps_counter.average_frame_time;
+		    1.0F /
+		    (float)app->profiling->fps_counter.average_frame_time;
 		frame_time_ms =
-		    (float)app->profiling.fps_counter.average_frame_time *
+		    (float)app->profiling->fps_counter.average_frame_time *
 		    MS_PER_SECOND;
 	}
 
@@ -1087,11 +1091,11 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	ui_layout_text(layout, fps_text, DEFAULT_FONT_COLOR);
 
 	/* GPU Utilization (via DRM fdinfo, same as MangoHud) */
-	if (gpu_usage_is_available(&app->profiling.gpu_usage)) {
+	if (gpu_usage_is_available(&app->profiling->gpu_usage)) {
 		char gpu_text[MAX_FPS_TEXT_LENGTH];
 		(void)safe_snprintf(
 		    gpu_text, sizeof(gpu_text), "GPU: %.0f%%",
-		    gpu_usage_get_load(&app->profiling.gpu_usage));
+		    gpu_usage_get_load(&app->profiling->gpu_usage));
 		ui_layout_text(layout, gpu_text, DEFAULT_FONT_COLOR);
 	}
 
@@ -1099,7 +1103,7 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 		static const size_t AVG_TEXT_SIZE = 64;
 		char avg_text[AVG_TEXT_SIZE];
 		float sampled_avg =
-		    adaptive_sampler_get_average(&app->input.fps_sampler);
+		    adaptive_sampler_get_average(&app->input->fps_sampler);
 		(void)safe_snprintf(avg_text, sizeof(avg_text),
 		                    "Sampled Avg: %.2f", sampled_avg);
 		ui_layout_text(layout, avg_text, DEFAULT_FONT_COLOR);
@@ -1108,9 +1112,9 @@ static void draw_main_info_overlay(const App* app, UILayout* layout)
 	/* 2. Position */
 	char pos_text[DEBUG_TEXT_BUFFER_SIZE];
 	(void)safe_snprintf(pos_text, sizeof(pos_text), "Pos: %.1f, %.1f, %.1f",
-	                    app->input.camera.position[0],
-	                    app->input.camera.position[1],
-	                    app->input.camera.position[2]);
+	                    app->input->camera.position[0],
+	                    app->input->camera.position[1],
+	                    app->input->camera.position[2]);
 	ui_layout_text(layout, pos_text, DEFAULT_FONT_COLOR);
 
 	/* 3. Environment */
@@ -1300,8 +1304,8 @@ void app_render_ui(const App* app)
 		app_draw_gamepad_help_overlay(app);
 	}
 
-	gpu_profiler_ui_draw((GPUProfilerUI*)&app->profiling.timeline_ui,
-	                     ui_ctx, app->width, app->height);
+	gpu_profiler_ui_draw(&app->profiling->timeline_ui, ui_ctx, app->width,
+	                     app->height);
 	action_notifier_draw((ActionNotifier*)&app->notifier, ui_ctx,
 	                     app->width, app->height);
 

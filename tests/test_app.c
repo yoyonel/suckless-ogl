@@ -1,5 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "app.h"
+#include "app_input_state.h"
+#include "app_profiling.h"
 #include "camera.h"
 #include "main.h"
 #include "postprocess_presets.h"
@@ -97,9 +99,9 @@ static RenderContext test_render_ctx_from_app(App* app)
 	return (RenderContext){
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
-	    .camera = &app->input.camera,
-	    .profiler = &app->profiling.gpu_profiler,
-	    .profiler_ui = &app->profiling.timeline_ui,
+	    .camera = &app->input->camera,
+	    .profiler = &app->profiling->gpu_profiler,
+	    .profiler_ui = &app->profiling->timeline_ui,
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
@@ -107,7 +109,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .height = app->height,
 	    .delta_time = app->delta_time,
 	    .frame_count = app->frame_count,
-	    .log_gpu_metrics = app->profiling.log_gpu_metrics,
+	    .log_gpu_metrics = app->profiling->log_gpu_metrics,
 	    .render_ui = test_render_ui_trampoline,
 	    .render_ui_data = app,
 	};
@@ -389,14 +391,14 @@ static void pipeline_run_test_loop(const char* test_tag,
 			const ViewPoint* vpoint = &G_VIEWPOINTS[i];
 			glm_vec3_copy((vec3){vpoint->pos[0], vpoint->pos[1],
 			                     vpoint->pos[2]},
-			              g_test_app.input.camera.position);
+			              g_test_app.input->camera.position);
 			glm_vec3_copy(
 			    (vec3){vpoint->world_up[0], vpoint->world_up[1],
 			           vpoint->world_up[2]},
-			    g_test_app.input.camera.world_up);
-			g_test_app.input.camera.yaw = vpoint->yaw;
-			g_test_app.input.camera.pitch = vpoint->pitch;
-			camera_update_vectors(&g_test_app.input.camera);
+			    g_test_app.input->camera.world_up);
+			g_test_app.input->camera.yaw = vpoint->yaw;
+			g_test_app.input->camera.pitch = vpoint->pitch;
+			camera_update_vectors(&g_test_app.input->camera);
 
 			if (pre_render) {
 				pre_render(vpoint, user_data);
@@ -504,7 +506,7 @@ static void apply_subtle_auto_exposure(const ViewPoint* vpoint, void* data)
 	postprocess_enable(&g_test_app.postprocess, POSTFX_AUTO_EXPOSURE);
 	postprocess_disable(&g_test_app.postprocess, POSTFX_VIGNETTE);
 	postprocess_disable(&g_test_app.postprocess, POSTFX_GRAIN);
-	g_test_app.profiling.log_gpu_metrics = 1;
+	g_test_app.profiling->log_gpu_metrics = 1;
 
 	// Note: warmup frames are handled inside the app_update cycles in the
 	// main loop. We might need a special case for this if 16 frames is not
@@ -568,19 +570,19 @@ static void pre_render_motion_blur(const ViewPoint* vpoint, void* data)
 	// generating deterministic velocity vectors.
 	float angle_disp = ANGLE_DISPLACEMENT;
 	if (strcmp(vpoint->name, "front") == 0) {
-		g_test_app.input.camera.yaw -= angle_disp;
+		g_test_app.input->camera.yaw -= angle_disp;
 	} else if (strcmp(vpoint->name, "back") == 0) {
-		g_test_app.input.camera.yaw += angle_disp;
+		g_test_app.input->camera.yaw += angle_disp;
 	} else if (strcmp(vpoint->name, "left") == 0) {
-		g_test_app.input.camera.pitch -= angle_disp;
+		g_test_app.input->camera.pitch -= angle_disp;
 	} else if (strcmp(vpoint->name, "right") == 0) {
-		g_test_app.input.camera.pitch += angle_disp;
+		g_test_app.input->camera.pitch += angle_disp;
 	} else if (strcmp(vpoint->name, "top") == 0) {
-		g_test_app.input.camera.pitch -= angle_disp;
+		g_test_app.input->camera.pitch -= angle_disp;
 	} else if (strcmp(vpoint->name, "bottom") == 0) {
-		g_test_app.input.camera.pitch += angle_disp;
+		g_test_app.input->camera.pitch += angle_disp;
 	}
-	camera_update_vectors(&g_test_app.input.camera);
+	camera_update_vectors(&g_test_app.input->camera);
 
 	app_update(&g_test_app);
 	{
@@ -589,9 +591,9 @@ static void pre_render_motion_blur(const ViewPoint* vpoint, void* data)
 	}
 
 	// Restore camera to exact baseline for the pipeline's capture render
-	g_test_app.input.camera.yaw = vpoint->yaw;
-	g_test_app.input.camera.pitch = vpoint->pitch;
-	camera_update_vectors(&g_test_app.input.camera);
+	g_test_app.input->camera.yaw = vpoint->yaw;
+	g_test_app.input->camera.pitch = vpoint->pitch;
+	camera_update_vectors(&g_test_app.input->camera);
 }
 
 static void pre_render_sony_a7siii(const ViewPoint* vpoint, void* data)
@@ -643,7 +645,7 @@ static void test_app_camera_initialization(void)
 	                         "App should be initialized");
 
 	// Verify camera is properly initialized
-	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, g_test_app.input.camera.zoom);
+	TEST_ASSERT_GREATER_THAN_FLOAT(0.0F, g_test_app.input->camera.zoom);
 }
 
 /**
