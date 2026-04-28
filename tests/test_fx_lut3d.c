@@ -59,7 +59,8 @@ static void test_lut3d_load_invalid_file(void)
 	PostProcess post_proc = {0};
 	postprocess_init(&post_proc, &g_gpu_profiler_system, TEST_WIDTH,
 	                 TEST_HEIGHT);
-	int result = fx_lut3d_load_cube(&post_proc, "non_existent.cube");
+	int result = fx_lut3d_load_cube(&post_proc.lut3d_fx, &post_proc.lut3d,
+	                                "non_existent.cube");
 	TEST_ASSERT_NOT_EQUAL(0, result);
 	postprocess_cleanup(&post_proc);
 }
@@ -88,7 +89,8 @@ static void test_lut3d_load_valid_mock_cube(void)
 	postprocess_init(&post_proc, &g_gpu_profiler_system, TEST_WIDTH,
 	                 TEST_HEIGHT);
 
-	int result = fx_lut3d_load_cube(&post_proc, lut_path);
+	int result =
+	    fx_lut3d_load_cube(&post_proc.lut3d_fx, &post_proc.lut3d, lut_path);
 	TEST_ASSERT_EQUAL(0, result);
 	TEST_ASSERT_NOT_EQUAL(0, post_proc.lut3d.texture);
 
@@ -117,7 +119,8 @@ static void test_lut3d_cleanup_removes_texture(void)
 	PostProcess post_proc = {0};
 	postprocess_init(&post_proc, &g_gpu_profiler_system, TEST_WIDTH,
 	                 TEST_HEIGHT);
-	(void)fx_lut3d_load_cube(&post_proc, lut_path);
+	(void)fx_lut3d_load_cube(&post_proc.lut3d_fx, &post_proc.lut3d,
+	                         lut_path);
 	GLuint tex = post_proc.lut3d.texture;
 	TEST_ASSERT_TRUE(glIsTexture(tex));
 
