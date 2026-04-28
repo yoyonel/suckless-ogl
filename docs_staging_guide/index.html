@@ -2828,6 +2828,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#preview-url-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preview URL Format
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#setup-instructions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2840,21 +2851,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-obtain-a-surge-token" class="md-nav__link">
+  <a href="#repository-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Obtain a Surge Token
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#2-configure-github-secrets" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2. Configure GitHub Secrets
+        Repository Configuration
       
     </span>
   </a>
@@ -2875,6 +2875,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Workflow Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pr-preview-deploy-preview-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PR Preview (deploy-preview job)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-deployment-deploy-pages-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Production Deployment (deploy-pages job)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#preview-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preview Content
+      
+    </span>
+  </a>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2890,10 +2929,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#clearing-previews" class="md-nav__link">
+  <a href="#automatic-cleanup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Clearing Previews
+        Automatic Cleanup
       
     </span>
   </a>
@@ -2901,10 +2940,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#security" class="md-nav__link">
+  <a href="#manual-cleanup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security
+        Manual Cleanup
       
     </span>
   </a>
@@ -2913,6 +2952,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3377,50 +3427,82 @@
 
 
 <h1 id="documentation-staging-preview-guide">Documentation Staging &amp; Preview Guide<a class="headerlink" href="#documentation-staging-preview-guide" title="Permanent link">¶</a></h1>
-<p>This project automatically generates and deploys a live preview of the Doxygen documentation for every Pull Request. This allows for functional validation of documentation changes before merging.</p>
+<p>This project automatically generates and deploys a live preview of the documentation for every Pull Request. This allows for functional validation of documentation changes before merging.</p>
 <h2 id="how-it-works">How it Works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h2>
 <ol>
 <li><strong>Trigger</strong>: Every push to a Pull Request triggers the <code>documentation</code> job in GitHub Actions.</li>
-<li><strong>Generation</strong>: Doxygen builds the HTML documentation.</li>
-<li><strong>Deployment</strong>: The documentation is deployed to <a href="https://surge.sh">Surge.sh</a> using a unique domain per PR: <code>suckless-ogl-pr-[NUMBER].surge.sh</code>.</li>
+<li><strong>Generation</strong>: MkDocs + Doxygen build the full documentation site.</li>
+<li><strong>Deployment</strong>: The documentation is deployed to <a href="https://pages.github.com/">GitHub Pages</a> as a subdirectory under <code>pr-preview/pr-&lt;NUMBER&gt;/</code> using <a href="https://github.com/rossjrw/pr-preview-action"><code>rossjrw/pr-preview-action</code></a>.</li>
 <li><strong>Feedback</strong>: A comment is automatically posted on the Pull Request with a link to the live preview.</li>
+<li><strong>Cleanup</strong>: When the PR is closed or merged, the preview is automatically removed.</li>
 </ol>
-<h2 id="setup-instructions">Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permanent link">¶</a></h2>
-<p>To enable automated deployments, you must configure a <code>SURGE_TOKEN</code> in your repository secrets.</p>
-<h3 id="1-obtain-a-surge-token">1. Obtain a Surge Token<a class="headerlink" href="#1-obtain-a-surge-token" title="Permanent link">¶</a></h3>
-<p>If you haven't used Surge before, you can install it and generate a token via CLI:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>npx<span class="w"> </span>surge<span class="w"> </span>token
+<h2 id="preview-url-format">Preview URL Format<a class="headerlink" href="#preview-url-format" title="Permanent link">¶</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>https://yoyonel.github.io/suckless-ogl/pr-preview/pr-&lt;NUMBER&gt;/
 </span></code></pre></div>
-<ul>
-<li>If you don't have an account, it will prompt you to create one.</li>
-<li>Copy the provided token string.</li>
-</ul>
-<h3 id="2-configure-github-secrets">2. Configure GitHub Secrets<a class="headerlink" href="#2-configure-github-secrets" title="Permanent link">¶</a></h3>
+<p>For example, PR #42 would be available at:
+<code>https://yoyonel.github.io/suckless-ogl/pr-preview/pr-42/</code></p>
+<h2 id="setup-instructions">Setup Instructions<a class="headerlink" href="#setup-instructions" title="Permanent link">¶</a></h2>
+<p>No external tokens or services are required. The deployment uses the built-in <code>GITHUB_TOKEN</code> provided by GitHub Actions.</p>
+<h3 id="repository-configuration">Repository Configuration<a class="headerlink" href="#repository-configuration" title="Permanent link">¶</a></h3>
 <ol>
-<li>Navigate to your GitHub repository.</li>
-<li>Go to <strong>Settings</strong> &gt; <strong>Secrets and variables</strong> &gt; <strong>Actions</strong>.</li>
-<li>Create a <strong>New repository secret</strong>.</li>
-<li>Set the <strong>Name</strong> to <code>SURGE_TOKEN</code>.</li>
-<li>Paste your token into the <strong>Value</strong> field.</li>
+<li>Navigate to your GitHub repository <strong>Settings</strong> &gt; <strong>Pages</strong>.</li>
+<li>Ensure the source is set to <strong>Deploy from a branch</strong> (<code>gh-pages</code>).</li>
+<li>In <strong>Settings</strong> &gt; <strong>Actions</strong> &gt; <strong>General</strong> &gt; <strong>Workflow permissions</strong>, select <strong>Read and write permissions</strong>.</li>
 </ol>
 <h2 id="workflow-integration">Workflow Integration<a class="headerlink" href="#workflow-integration" title="Permanent link">¶</a></h2>
-<p>The staging logic is defined in <code>.github/workflows/main.yml</code>. It uses the <code>mshick/add-pr-comment</code> action to keep you informed:</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Comment Preview Link on PR</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event_name == 'pull_request'</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mshick/add-pr-comment@v2</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">message</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="no">## 📚 Documentation Preview</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="no">The Doxygen documentation for this PR has been generated and is ready for review:</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="no">🔗 **[Preview Link](${{ env.PREVIEW_URL }})**</span>
+<p>The preview logic is split into two jobs in <code>.github/workflows/main.yml</code>:</p>
+<h3 id="pr-preview-deploy-preview-job">PR Preview (deploy-preview job)<a class="headerlink" href="#pr-preview-deploy-preview-job" title="Permanent link">¶</a></h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">deploy-preview</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">needs</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">documentation</span><span class="p p-Indicator">]</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event_name == 'pull_request' &amp;&amp; always()</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">concurrency</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">preview-${{ github.ref }}</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="nt">steps</span><span class="p">:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v6</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v8</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event.action != 'closed'</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doxygen-docs</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">preview-site</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rossjrw/pr-preview-action@v1</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="nt">source-dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./preview-site/</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="nt">preview-branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="nt">umbrella-dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pr-preview</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="nt">action</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="nt">comment</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </span></code></pre></div>
+<h3 id="production-deployment-deploy-pages-job">Production Deployment (deploy-pages job)<a class="headerlink" href="#production-deployment-deploy-pages-job" title="Permanent link">¶</a></h3>
+<p>The production deployment on <code>master</code> uses <code>JamesIves/github-pages-deploy-action</code> with <code>clean-exclude: pr-preview</code> to preserve active PR previews:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JamesIves/github-pages-deploy-action@v4</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gh-pages</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./public-site</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">clean-exclude</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pr-preview</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">force</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span></code></pre></div>
+<h2 id="preview-content">Preview Content<a class="headerlink" href="#preview-content" title="Permanent link">¶</a></h2>
+<p>The preview includes the <strong>full documentation site</strong>:</p>
+<ul>
+<li>MkDocs documentation (architecture, guides, API)</li>
+<li>Doxygen API reference</li>
+<li>Coverage reports</li>
+</ul>
 <h2 id="maintenance">Maintenance<a class="headerlink" href="#maintenance" title="Permanent link">¶</a></h2>
-<h3 id="clearing-previews">Clearing Previews<a class="headerlink" href="#clearing-previews" title="Permanent link">¶</a></h3>
-<p>Surge.sh keeps the deployments indefinitely. Since the domains are reused per PR number, new pushes simply overwrite the previous version. If you need to manually tear down a preview:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>npx<span class="w"> </span>surge<span class="w"> </span>teardown<span class="w"> </span>suckless-ogl-pr-<span class="o">[</span>NUMBER<span class="o">]</span>.surge.sh<span class="w"> </span>--token<span class="w"> </span>your_token
+<h3 id="automatic-cleanup">Automatic Cleanup<a class="headerlink" href="#automatic-cleanup" title="Permanent link">¶</a></h3>
+<p>Previews are automatically removed when a PR is closed or merged. The <code>pull_request: closed</code> event triggers the <code>deploy-preview</code> job with <code>action: auto</code>, which detects the close and removes the <code>pr-preview/pr-&lt;N&gt;/</code> directory from <code>gh-pages</code>.</p>
+<h3 id="manual-cleanup">Manual Cleanup<a class="headerlink" href="#manual-cleanup" title="Permanent link">¶</a></h3>
+<p>If a preview was not properly cleaned up, you can remove it manually:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>gh-pages
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>rm<span class="w"> </span>-rf<span class="w"> </span>pr-preview/pr-&lt;NUMBER&gt;
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git<span class="w"> </span>add<span class="w"> </span>-A<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"chore: remove stale PR preview"</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>gh-pages
 </span></code></pre></div>
-<h3 id="security">Security<a class="headerlink" href="#security" title="Permanent link">¶</a></h3>
-<p>The <code>SURGE_TOKEN</code> allows anyone with access to it to deploy sites to your Surge account. Keep it secret and only store it in GitHub Secrets.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../cicd_pipeline/">cicd_pipeline.md</a> — Full CI/CD pipeline overview</li>
+<li><a href="../documentation_system/">documentation_system.md</a> — Documentation system overview</li>
+</ul>
 
 
 
@@ -3441,7 +3523,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 3, 2026 09:50:52 UTC">February 3, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 28, 2026 21:17:45 UTC">April 28, 2026</span>
   </span>
 
     
