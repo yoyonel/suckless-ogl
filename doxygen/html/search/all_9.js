@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['ibl_5fcoord_980',['ibl_coord',['../structScene.html#afb33c450fd5349271fcbf6ef282498da',1,'Scene']]],
+  ['ibl_5fcoord_980',['ibl_coord',['../structSceneLighting.html#a236eb3c46ee65975aae8d8bccf7a4ca2',1,'SceneLighting']]],
   ['ibl_5fcoordinator_2ec_981',['ibl_coordinator.c',['../ibl__coordinator_8c.html',1,'']]],
   ['ibl_5fcoordinator_2eh_982',['ibl_coordinator.h',['../ibl__coordinator_8h.html',1,'']]],
   ['ibl_5fcoordinator_5fcleanup_983',['ibl_coordinator_cleanup',['../ibl__coordinator_8c.html#a7af04c7b19cdf6fd658af855351f19ad',1,'ibl_coordinator_cleanup(IBLCoordinator *coord):&#160;ibl_coordinator.c'],['../ibl__coordinator_8h.html#a7af04c7b19cdf6fd658af855351f19ad',1,'ibl_coordinator_cleanup(IBLCoordinator *coord):&#160;ibl_coordinator.c']]],

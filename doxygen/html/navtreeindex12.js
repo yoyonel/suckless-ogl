@@ -1,5 +1,7 @@
 var NAVTREEINDEX12 =
 {
+"trail__renderer_8c.html#ad1ee77758d40d03deee40aca196f43fb":[6,0,4,50,1],
+"trail__renderer_8c.html#afa3135741751552ed8178c386a2cad14":[6,0,4,50,13],
 "trail__renderer_8c.html#aff7e69ac17c34ee473f7a2df615f2f75":[6,0,4,50,4],
 "trail__renderer_8h.html":[6,0,2,55],
 "trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e":[6,0,2,55,24],

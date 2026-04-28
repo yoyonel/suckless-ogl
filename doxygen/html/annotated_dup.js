@@ -84,6 +84,7 @@ var annotated_dup =
     [ "PostProcessUBO", "structPostProcessUBO.html", "structPostProcessUBO" ],
     [ "RenderContext", "structRenderContext.html", "structRenderContext" ],
     [ "Scene", "structScene.html", "structScene" ],
+    [ "SceneLighting", "structSceneLighting.html", "structSceneLighting" ],
     [ "SceneSimulation", "structSceneSimulation.html", "structSceneSimulation" ],
     [ "SceneVisuals", "structSceneVisuals.html", "structSceneVisuals" ],
     [ "SH9", "structSH9.html", "structSH9" ],
