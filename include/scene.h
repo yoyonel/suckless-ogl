@@ -154,6 +154,16 @@ typedef struct SceneSimulation {
 } SceneSimulation;
 
 /**
+ * @struct SceneLighting
+ * @brief IBL, probes, and materials grouped to reduce Scene fan-out.
+ */
+typedef struct SceneLighting {
+	MaterialLib* material_lib; /**< Loaded material presets. */
+	IBLCoordinator ibl_coord;  /**< IBL state machine. */
+	LightProbeGrid probe_grid; /**< Global Illumination spatial grid. */
+} SceneLighting;
+
+/**
  * @struct Scene
  * @brief Encapsulates all 3D scene data, geometry, and rendering state.
  */
@@ -174,14 +184,11 @@ typedef struct Scene {
 	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
-	SceneVisuals visuals;      /**< Visual effects sub-system. */
-	MaterialLib* material_lib; /**< Loaded material presets. */
-	char** hdr_files;          /**< List of found HDR files in assets. */
-	int hdr_count;             /**< Number of available environment maps. */
-	int current_hdr_index;     /**< Index of active HDR in file list. */
-	IBLCoordinator ibl_coord;  /**< IBL state machine (Compute shaders owned
-	                              by Scene). */
-	LightProbeGrid probe_grid; /**< Global Illumination spatial grid. */
+	SceneVisuals visuals;   /**< Visual effects sub-system. */
+	SceneLighting lighting; /**< IBL, probes, and materials. */
+	char** hdr_files;       /**< List of found HDR files in assets. */
+	int hdr_count;          /**< Number of available environment maps. */
+	int current_hdr_index;  /**< Index of active HDR in file list. */
 
 	/* --- Shaders --- */
 	Shader* pbr_instanced_shader; /**< Shared PBR shader for opaque geo. */

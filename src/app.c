@@ -412,9 +412,9 @@ void app_update(App* app)
 	}
 
 	if (app->env_mgr.env_map_loading_step > 0) {
-		env_manager_process_loading_step(&app->env_mgr,
-		                                 &app->scene.recycled_hdr_tex,
-		                                 &app->scene.ibl_coord);
+		env_manager_process_loading_step(
+		    &app->env_mgr, &app->scene.recycled_hdr_tex,
+		    &app->scene.lighting.ibl_coord);
 	}
 
 	env_manager_update_ibl(&app->env_mgr, &app->scene, &app->postprocess,
