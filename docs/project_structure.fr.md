@@ -16,6 +16,15 @@ suckless-ogl/
 │   ├── app_binding.c     # Registre des raccourcis
 │   └── platform/         # Couche de portabilité
 ├── include/              # En-têtes C
+│   ├── app.h             # Structure App principale
+│   ├── scene.h           # Agrégat Scene (inclut les sous-structs)
+│   ├── scene_config.h    # SceneConfig : flags runtime et enums
+│   ├── scene_gpu_resources.h # SceneGPUResources : handles GLuint
+│   ├── scene_lighting.h  # SceneLighting : IBL, probes, matériaux
+│   ├── scene_shaders.h   # SceneShaders : pointeurs Shader
+│   ├── scene_simulation.h # SceneSimulation : état N-body
+│   ├── scene_visuals.h   # SceneVisuals : skybox, trails, shockwave
+│   └── ...
 ├── shaders/              # Shaders GLSL
 │   ├── pbr.vert/.frag    # Shader PBR principal
 │   ├── skybox.vert/.frag # Rendu de la skybox

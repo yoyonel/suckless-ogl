@@ -100,8 +100,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 static void handle_pbr_debug_mode(AppInputContext* ctx)
 {
-	ctx->scene->pbr_debug_mode =
-	    (ctx->scene->pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
+	ctx->scene->config.pbr_debug_mode =
+	    (ctx->scene->config.pbr_debug_mode + 1) % PBR_DEBUG_MODE_COUNT;
 	const char* modeNames[] = {"Final PBR",
 	                           "Albedo",
 	                           "Normal",
@@ -113,18 +113,19 @@ static void handle_pbr_debug_mode(AppInputContext* ctx)
 	                           "BRDF LUT",
 	                           "1-Bounce GI (Probes)"};
 	LOG_INFO("suckless-ogl.app", "PBR Debug Mode: %s",
-	         modeNames[ctx->scene->pbr_debug_mode]);
+	         modeNames[ctx->scene->config.pbr_debug_mode]);
 
 	char buf[NOTIF_BUF_SIZE];
 	(void)safe_snprintf(buf, sizeof(buf), "Debug: %s",
-	                    modeNames[ctx->scene->pbr_debug_mode]);
+	                    modeNames[ctx->scene->config.pbr_debug_mode]);
 	action_notifier_push(ctx->notifier, buf, NOTIF_DUR_LONG);
 }
 
 static void handle_aa_mode_input(AppInputContext* ctx)
 {
-	ctx->scene->aa_mode = (ctx->scene->aa_mode + 1) % AA_MODE_COUNT;
-	const char* mode_name = aa_mode_to_string(ctx->scene->aa_mode);
+	ctx->scene->config.aa_mode =
+	    (ctx->scene->config.aa_mode + 1) % AA_MODE_COUNT;
+	const char* mode_name = aa_mode_to_string(ctx->scene->config.aa_mode);
 	LOG_INFO("suckless-ogl.app", "Specular AA Mode: %s", mode_name);
 
 	char buf[NOTIF_BUF_SIZE];
@@ -139,16 +140,16 @@ void app_handle_env_input(AppInputContext* ctx, int action, int mods, int key)
 	}
 	if (key == GLFW_KEY_PAGE_UP) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			ctx->scene->env_lod += LOD_STEP;
-			if (ctx->scene->env_lod > MAX_ENV_LOD) {
-				ctx->scene->env_lod = MAX_ENV_LOD;
+			ctx->scene->config.env_lod += LOD_STEP;
+			if (ctx->scene->config.env_lod > MAX_ENV_LOD) {
+				ctx->scene->config.env_lod = MAX_ENV_LOD;
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         ctx->scene->env_lod);
+			         ctx->scene->config.env_lod);
 			char lod_buf[NOTIF_BUF_SIZE];
 			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
 			                    "Env LOD: %.1F",
-			                    ctx->scene->env_lod);
+			                    ctx->scene->config.env_lod);
 			action_notifier_push(ctx->notifier, lod_buf,
 			                     NOTIF_DUR_SHORT);
 		} else if (ctx->scene->hdr_count > 1) {
@@ -176,16 +177,16 @@ void app_handle_env_input(AppInputContext* ctx, int action, int mods, int key)
 		}
 	} else if (key == GLFW_KEY_PAGE_DOWN) {
 		if (check_flag(mods, GLFW_MOD_SHIFT)) {
-			ctx->scene->env_lod -= LOD_STEP;
-			if (ctx->scene->env_lod < MIN_ENV_LOD) {
-				ctx->scene->env_lod = MIN_ENV_LOD;
+			ctx->scene->config.env_lod -= LOD_STEP;
+			if (ctx->scene->config.env_lod < MIN_ENV_LOD) {
+				ctx->scene->config.env_lod = MIN_ENV_LOD;
 			}
 			LOG_INFO("suckless-ogl.app", "Env LOD: %.1F",
-			         ctx->scene->env_lod);
+			         ctx->scene->config.env_lod);
 			char lod_buf[NOTIF_BUF_SIZE];
 			(void)safe_snprintf(lod_buf, sizeof(lod_buf),
 			                    "Env LOD: %.1F",
-			                    ctx->scene->env_lod);
+			                    ctx->scene->config.env_lod);
 			action_notifier_push(ctx->notifier, lod_buf,
 			                     NOTIF_DUR_SHORT);
 		} else if (ctx->scene->hdr_count > 1) {
@@ -236,19 +237,20 @@ static void handle_overlay_input(AppInputContext* ctx)
 static void handle_subdiv_input(AppInputContext* ctx, int key)
 {
 	int changed = 0;
-	if (key == GLFW_KEY_UP && ctx->scene->subdivisions < MAX_SUBDIV) {
-		ctx->scene->subdivisions++;
+	if (key == GLFW_KEY_UP &&
+	    ctx->scene->config.subdivisions < MAX_SUBDIV) {
+		ctx->scene->config.subdivisions++;
 		changed = 1;
 	} else if (key == GLFW_KEY_DOWN &&
-	           ctx->scene->subdivisions > MIN_SUBDIV) {
-		ctx->scene->subdivisions--;
+	           ctx->scene->config.subdivisions > MIN_SUBDIV) {
+		ctx->scene->config.subdivisions--;
 		changed = 1;
 	}
 
 	if (changed) {
 		char buf[NOTIF_BUF_SIZE];
 		(void)safe_snprintf(buf, sizeof(buf), "Subdiv: %d",
-		                    ctx->scene->subdivisions);
+		                    ctx->scene->config.subdivisions);
 		action_notifier_push(ctx->notifier, buf, NOTIF_DUR_SHORT);
 	}
 }
@@ -425,22 +427,25 @@ static bool handle_f_key_input(AppInputContext* ctx, int key, int mods)
 static void handle_y_key_input(AppInputContext* ctx, int mods)
 {
 	if ((unsigned int)mods & (unsigned int)GLFW_MOD_SHIFT) {
-		ctx->scene->show_probe_grid = !ctx->scene->show_probe_grid;
+		ctx->scene->config.show_probe_grid =
+		    !ctx->scene->config.show_probe_grid;
 		LOG_INFO("suckless-ogl.app", "Probe Grid Debug: %s",
-		         ctx->scene->show_probe_grid ? "ON" : "OFF");
-		action_notifier_push(
-		    ctx->notifier,
-		    ctx->scene->show_probe_grid ? "Probes: ON" : "Probes: OFF",
-		    NOTIF_DUR_NORMAL);
+		         ctx->scene->config.show_probe_grid ? "ON" : "OFF");
+		action_notifier_push(ctx->notifier,
+		                     ctx->scene->config.show_probe_grid
+		                         ? "Probes: ON"
+		                         : "Probes: OFF",
+		                     NOTIF_DUR_NORMAL);
 	} else {
-		ctx->scene->gi_mode = (ctx->scene->gi_mode + 1) % GI_MODE_COUNT;
+		ctx->scene->config.gi_mode =
+		    (ctx->scene->config.gi_mode + 1) % GI_MODE_COUNT;
 		const char* mode_names[] = {"OFF", "3D Texture", "SSBO"};
 		LOG_INFO("suckless-ogl.app", "GI Mode: %s",
-		         mode_names[ctx->scene->gi_mode]);
+		         mode_names[ctx->scene->config.gi_mode]);
 
 		char buf[NOTIF_BUF_SIZE];
 		(void)safe_snprintf(buf, sizeof(buf), "GI: %s",
-		                    mode_names[ctx->scene->gi_mode]);
+		                    mode_names[ctx->scene->config.gi_mode]);
 		action_notifier_push(ctx->notifier, buf, NOTIF_DUR_NORMAL);
 	}
 }
@@ -454,9 +459,10 @@ static void handle_system_key_input(AppInputContext* ctx, int key, int mods)
 			                     NOTIF_DUR_LONG);
 			break;
 		case GLFW_KEY_Z:
-			ctx->scene->wireframe = !ctx->scene->wireframe;
+			ctx->scene->config.wireframe =
+			    !ctx->scene->config.wireframe;
 			action_notifier_push(ctx->notifier,
-			                     ctx->scene->wireframe
+			                     ctx->scene->config.wireframe
 			                         ? "Wireframe: ON"
 			                         : "Wireframe: OFF",
 			                     NOTIF_DUR_NORMAL);
@@ -471,7 +477,7 @@ static void handle_system_key_input(AppInputContext* ctx, int key, int mods)
 		case GLFW_KEY_SPACE:
 			camera_init(ctx->camera, DEFAULT_CAMERA_DISTANCE,
 			            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
-			ctx->scene->env_lod = DEFAULT_ENV_LOD;
+			ctx->scene->config.env_lod = DEFAULT_ENV_LOD;
 			LOG_INFO("suckless-ogl.app", "Camera and LOD reset");
 			action_notifier_push(ctx->notifier,
 			                     "Camera & LOD Reset",
@@ -588,12 +594,12 @@ static void handle_sim_or_gravity_input(AppInputContext* ctx, int mods,
 
 static void handle_o_key_input(AppInputContext* ctx)
 {
-	ctx->scene->sorting_mode =
-	    (ctx->scene->sorting_mode + 1) % SORTING_MODE_COUNT;
+	ctx->scene->config.sorting_mode =
+	    (ctx->scene->config.sorting_mode + 1) % SORTING_MODE_COUNT;
 	const char* mode_name = "Unknown";
 	const char* notif_name = "Sort: Unknown";
 
-	switch (ctx->scene->sorting_mode) {
+	switch (ctx->scene->config.sorting_mode) {
 		case SORTING_MODE_CPU_QSORT:
 			mode_name = "CPU (qsort)";
 			notif_name = "Sort: CPU (qsort)";
@@ -704,14 +710,15 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			handle_y_key_input(ctx, mods);
 			break;
 		case GLFW_KEY_L:
-			ctx->scene->billboard_mode =
-			    !ctx->scene->billboard_mode;
+			ctx->scene->config.billboard_mode =
+			    !ctx->scene->config.billboard_mode;
 			// app_update_instancing_mode(app) was empty and
 			// removed.
-			LOG_INFO("suckless-ogl.app", "Billboard Mode: %s",
-			         ctx->scene->billboard_mode ? "ON" : "OFF");
+			LOG_INFO(
+			    "suckless-ogl.app", "Billboard Mode: %s",
+			    ctx->scene->config.billboard_mode ? "ON" : "OFF");
 			action_notifier_push(ctx->notifier,
-			                     ctx->scene->billboard_mode
+			                     ctx->scene->config.billboard_mode
 			                         ? "Billboards: ON"
 			                         : "Billboards: OFF",
 			                     NOTIF_DUR_NORMAL);
@@ -743,22 +750,23 @@ void handle_app_input(AppInputContext* ctx, int key, int mods)
 			if (check_flag(mods, GLFW_MOD_SHIFT)) {
 				handle_aa_mode_input(ctx);
 			} else {
-				ctx->scene->specular_aa_enabled =
-				    !ctx->scene->specular_aa_enabled;
+				ctx->scene->config.specular_aa_enabled =
+				    !ctx->scene->config.specular_aa_enabled;
 				action_notifier_push(
 				    ctx->notifier,
-				    ctx->scene->specular_aa_enabled
+				    ctx->scene->config.specular_aa_enabled
 				        ? "Specular AA: ON"
 				        : "Specular AA: OFF",
 				    NOTIF_DUR_SHORT);
 			}
 			break;
 		case GLFW_KEY_K:
-			ctx->scene->show_envmap = !ctx->scene->show_envmap;
+			ctx->scene->config.show_envmap =
+			    !ctx->scene->config.show_envmap;
 			LOG_INFO("suckless-ogl.app", "Envmap: %s",
-			         ctx->scene->show_envmap ? "ON" : "OFF");
+			         ctx->scene->config.show_envmap ? "ON" : "OFF");
 			action_notifier_push(ctx->notifier,
-			                     ctx->scene->show_envmap
+			                     ctx->scene->config.show_envmap
 			                         ? "Skybox: ON"
 			                         : "Skybox: OFF",
 			                     NOTIF_DUR_NORMAL);

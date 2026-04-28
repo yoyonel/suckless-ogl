@@ -186,7 +186,7 @@ void setUp(void)
 		int timeout = POLL_TIMEOUT_ITERATIONS;
 		double last_time = glfwGetTime();
 		while (
-		    (g_test_app.scene.hdr_texture == 0 ||
+		    (g_test_app.scene.gpu.hdr_texture == 0 ||
 		     g_test_app.env_mgr.transition_state != TRANSITION_IDLE) &&
 		    timeout-- > 0) {
 			double current_time = glfwGetTime();
@@ -200,8 +200,8 @@ void setUp(void)
 		}
 
 		// Cache the loaded texture for subsequent tests
-		if (g_test_app.scene.hdr_texture != 0) {
-			g_cached_hdr_texture = g_test_app.scene.hdr_texture;
+		if (g_test_app.scene.gpu.hdr_texture != 0) {
+			g_cached_hdr_texture = g_test_app.scene.gpu.hdr_texture;
 		}
 
 		// Initialize PBOs for async pixel readback (optimization#2)
@@ -225,7 +225,7 @@ void setUp(void)
 		preload_all_references();
 	} else if (g_cached_hdr_texture != 0) {
 		// Reuse cached texture for subsequent tests
-		g_test_app.scene.hdr_texture = g_cached_hdr_texture;
+		g_test_app.scene.gpu.hdr_texture = g_cached_hdr_texture;
 	}
 }
 

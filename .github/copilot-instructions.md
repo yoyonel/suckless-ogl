@@ -18,13 +18,14 @@ Repository: [yoyonel/suckless-ogl](https://github.com/yoyonel/suckless-ogl).
 | Subsystem | Key Files |
 |-----------|-----------|
 | **Core App** | `app.c`, `main.c`, `cli.c` |
+| **Scene** | `scene.c`, `scene.h`, `scene_gpu_resources.h`, `scene_shaders.h`, `scene_config.h`, `scene_visuals.h`, `scene_lighting.h`, `scene_simulation.h` |
 | **Rendering** | `renderer.c` (`RenderContext`), `sphere_types.h`, `instanced_rendering.c`, `ssbo_rendering.c`, `billboard_rendering.c` |
 | **PBR / IBL** | `pbr.c`, `material.c`, `ibl_coordinator.c`, `light_probes.c`, `skybox.c` |
 | **Post-Processing** | `postprocess.c`, `effects/fx_*.c` (bloom, DoF, auto-exposure, FXAA, LUT, motion blur), `effect_context.h` (`EffectContext` seam) |
 | **Shaders** | 55+ GLSL files in `shaders/` (vertex, fragment, compute) |
 | **Input** | `app_input.c` (`AppInputContext`), `camera_input.c`, `postprocess_input.c` (`PostProcessInputContext`), `app_binding.c` |
 | **Profiling** | `gpu_profiler.c`, `perf_timer.c`, `tracy_manager.c`, `effect_benchmark.c` |
-| **Tests** | 59 test files in `tests/` (Unity framework, visual regression, benchmarks) |
+| **Tests** | 63 test files in `tests/` (Unity framework, visual regression, benchmarks) |
 
 ## Build & Test
 

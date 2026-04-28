@@ -42,7 +42,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app_input_state_init(app->input);
 	app->is_fullscreen = false;
 	app->resize_pending = 0;
-	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
+	app->scene.config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
 	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
@@ -121,7 +121,7 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 	postprocess_set_dummy_textures(&app->postprocess,
-	                               app->scene.dummy_black_tex);
+	                               app->scene.gpu.dummy_black_tex);
 	postprocess_set_exposure(&app->postprocess,
 	                         app->postprocess.auto_threshold);
 	postprocess_enable(&app->postprocess, POSTFX_FXAA);
@@ -279,7 +279,7 @@ void app_run(App* app)
 				            DEFAULT_CAMERA_DISTANCE,
 				            DEFAULT_CAMERA_YAW,
 				            DEFAULT_CAMERA_PITCH);
-				app->scene.env_lod = DEFAULT_ENV_LOD;
+				app->scene.config.env_lod = DEFAULT_ENV_LOD;
 				action_notifier_push(&app->notifier,
 				                     "Camera & LOD Reset",
 				                     NOTIF_DUR_LONG);
@@ -310,23 +310,24 @@ void app_run(App* app)
 			PROFILE_ZONE_END(camera_ctx);
 		}
 
-		if (app->scene.subdivisions != last_subdiv) {
+		if (app->scene.config.subdivisions != last_subdiv) {
 			PROFILE_ZONE(ico_ctx, "Icosphere Regen");
 			icosphere_generate(&app->scene.geometry,
-			                   app->scene.subdivisions);
+			                   app->scene.config.subdivisions);
 			scene_update_gpu_buffers(&app->scene);
 
 #ifdef USE_SSBO_RENDERING
-			ssbo_group_bind_mesh(
-			    &app->scene.ssbo_group, app->scene.icosphere_vbo,
-			    app->scene.icosphere_nbo, app->scene.icosphere_ebo);
+			ssbo_group_bind_mesh(&app->scene.ssbo_group,
+			                     app->scene.gpu.icosphere_vbo,
+			                     app->scene.gpu.icosphere_nbo,
+			                     app->scene.gpu.icosphere_ebo);
 #else
 			instanced_group_bind_mesh(&app->scene.instanced_group,
-			                          app->scene.icosphere_vbo,
-			                          app->scene.icosphere_nbo,
-			                          app->scene.icosphere_ebo);
+			                          app->scene.gpu.icosphere_vbo,
+			                          app->scene.gpu.icosphere_nbo,
+			                          app->scene.gpu.icosphere_ebo);
 #endif
-			last_subdiv = app->scene.subdivisions;
+			last_subdiv = app->scene.config.subdivisions;
 			PROFILE_ZONE_END(ico_ctx);
 		}
 
@@ -396,10 +397,10 @@ void app_update(App* app)
 	 * frame as PBO Setup & Map.
 	 */
 	if (app->async_coord.pending_prealloc_w > 0) {
-		app->scene.recycled_hdr_tex =
+		app->scene.gpu.recycled_hdr_tex =
 		    texture_preallocate_hdr(app->async_coord.pending_prealloc_w,
 		                            app->async_coord.pending_prealloc_h,
-		                            app->scene.recycled_hdr_tex);
+		                            app->scene.gpu.recycled_hdr_tex);
 		app->async_coord.pending_prealloc_w = 0;
 		app->async_coord.pending_prealloc_h = 0;
 	}
@@ -414,7 +415,7 @@ void app_update(App* app)
 
 	if (app->env_mgr.env_map_loading_step > 0) {
 		env_manager_process_loading_step(
-		    &app->env_mgr, &app->scene.recycled_hdr_tex,
+		    &app->env_mgr, &app->scene.gpu.recycled_hdr_tex,
 		    &app->scene.lighting.ibl_coord);
 	}
 
