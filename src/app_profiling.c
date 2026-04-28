@@ -1,0 +1,24 @@
+#include "app_profiling.h"
+
+#include "app_settings.h"
+
+void app_profiling_init(AppProfiling* prof, int width, int height)
+{
+	tracy_manager_init(&prof->tracy_mgr, width, height);
+	fps_init(&prof->fps_counter, DEFAULT_FPS_SMOOTHING, DEFAULT_FPS_WINDOW);
+	perf_mode_init(&prof->perf_context);
+	gpu_profiler_init(&prof->gpu_profiler);
+	gpu_profiler_ui_init(&prof->timeline_ui);
+	gpu_usage_init(&prof->gpu_usage);
+	prof->perf_mode_active = 0;
+	prof->log_gpu_metrics = 0;
+}
+
+void app_profiling_cleanup(AppProfiling* prof)
+{
+	perf_mode_cleanup(&prof->perf_context);
+	gpu_profiler_cleanup(&prof->gpu_profiler);
+	gpu_profiler_ui_cleanup(&prof->timeline_ui);
+	gpu_usage_cleanup(&prof->gpu_usage);
+	tracy_manager_cleanup(&prof->tracy_mgr);
+}
