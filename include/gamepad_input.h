@@ -11,7 +11,7 @@
 #ifndef GAMEPAD_INPUT_H
 #define GAMEPAD_INPUT_H
 
-typedef struct Camera Camera;
+#include "gamepad_context.h"
 
 /** Maximum number of gamepad buttons tracked for edge detection. */
 #define GAMEPAD_BUTTON_COUNT 15
@@ -72,16 +72,15 @@ void gamepad_input_init(GamepadState* state);
 void gamepad_input_poll(GamepadState* state, GamepadActions* actions);
 
 /**
- * @brief Writes gamepad axes into cam->move_input and applies look.
+ * @brief Writes gamepad axes into a GamepadContext.
  *
- * Overlays analog stick values onto the camera's unified move_input.
- * Must be called after camera_build_keyboard_input and before
- * camera_fixed_update each physics step.
+ * Overlays analog stick values onto move_input and applies look
+ * (yaw/pitch).  The caller bridges Camera ↔ GamepadContext.
  *
  * @param state Pointer to the gamepad state (with cached axes).
- * @param cam   Pointer to the camera to drive.
+ * @param ctx   Pointer to the context to write into.
  */
-void gamepad_write_input(const GamepadState* state, Camera* cam);
+void gamepad_write_input(const GamepadState* state, GamepadContext* ctx);
 
 /**
  * @brief Applies a dead-zone filter to an axis value.
