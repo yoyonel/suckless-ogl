@@ -70,13 +70,14 @@ La structure `Scene` est progressivement décomposée en sous-structs par domain
 
 Cela réduit le nombre de champs directs de `Scene` et localise les changements par domaine.
 
-### Décomposition de App (AppProfiling)
+### Décomposition de App (AppProfiling, AppInput)
 
 La structure `App` est progressivement décomposée en sous-structs par domaine :
 
 - **`AppProfiling`** (`include/app.h`) : regroupe le profiling et les métriques — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Accès via `app->profiling.gpu_profiler`, etc.
+- **`AppInput`** (`include/app.h`) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Accès via `app->input.camera`, etc.
 
-Cela réduit le nombre de champs directs de `App` (8 champs → 1 sous-struct) et localise les changements liés au monitoring de performance.
+Cela réduit le nombre de champs directs de `App` (13 champs → 2 sous-structs) et localise les changements par domaine.
 
 ### Découplage des effets (EffectContext)
 

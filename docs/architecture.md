@@ -110,13 +110,14 @@ The `Scene` struct is being decomposed into domain-aligned sub-structs:
 
 This reduces `Scene`'s direct field count and localizes domain-specific changes.
 
-### App Decomposition (AppProfiling)
+### App Decomposition (AppProfiling, AppInput)
 
 The `App` struct is being decomposed into domain-aligned sub-structs:
 
 - **`AppProfiling`** (`include/app.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling.gpu_profiler`, etc.
+- **`AppInput`** (`include/app.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input.camera`, etc.
 
-This reduces `App`'s direct field count (8 fields → 1 sub-struct) and localizes performance-monitoring changes.
+This reduces `App`'s direct field count (13 fields → 2 sub-structs) and localizes domain-specific changes.
 
 ### Effect Decoupling (EffectContext)
 
