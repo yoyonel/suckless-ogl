@@ -25,16 +25,16 @@ void setUp(void)
 	g_test_app = malloc(sizeof(App));
 	memset(g_test_app, 0, sizeof(App));
 
-	g_test_app->window =
+	g_test_app->win.handle =
 	    glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Test", NULL, NULL);
-	if (!g_test_app->window) {
+	if (!g_test_app->win.handle) {
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to create GLFW window");
 	}
-	glfwMakeContextCurrent(g_test_app->window);
+	glfwMakeContextCurrent(g_test_app->win.handle);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		glfwDestroyWindow(g_test_app->window);
+		glfwDestroyWindow(g_test_app->win.handle);
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
@@ -47,8 +47,8 @@ void setUp(void)
 
 void tearDown(void)
 {
-	if (g_test_app->window) {
-		glfwDestroyWindow(g_test_app->window);
+	if (g_test_app->win.handle) {
+		glfwDestroyWindow(g_test_app->win.handle);
 	}
 	free(g_test_app);
 	glfwTerminate();

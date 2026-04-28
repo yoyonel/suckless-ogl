@@ -150,11 +150,11 @@ This enables `GL_DEBUG_OUTPUT_SYNCHRONOUS` and registers a callback ([src/gl_deb
 
 ```c
 glfwSwapInterval(0);                    // VSync OFF — unlimited FPS
-glfwSetKeyCallback(app->window, key_callback);
-glfwSetCursorPosCallback(app->window, mouse_callback);
-glfwSetScrollCallback(app->window, scroll_callback);
-glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
-glfwSetInputMode(app->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  // FPS-style
+glfwSetKeyCallback(app->win.handle, key_callback);
+glfwSetCursorPosCallback(app->win.handle, mouse_callback);
+glfwSetScrollCallback(app->win.handle, scroll_callback);
+glfwSetFramebufferSizeCallback(app->win.handle, framebuffer_size_callback);
+glfwSetInputMode(app->win.handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  // FPS-style
 ```
 
 The cursor is captured in **relative mode** — mouse movements produce delta offsets for orbit camera control, not absolute screen coordinates.
@@ -740,9 +740,9 @@ graph TB
 ### 8.1 — Deferred Resize
 
 ```c
-if (app->resize_pending) {
-    postprocess_resize(&app->postprocess, app->pending_width, app->pending_height);
-    app->resize_pending = 0;
+if (app->win.resize_pending) {
+    postprocess_resize(&app->postprocess, app->win.pending_width, app->win.pending_height);
+    app->win.resize_pending = 0;
 }
 ```
 

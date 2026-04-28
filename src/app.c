@@ -40,25 +40,26 @@ int app_init(App* app, int width, int height, const char* title)
 	}
 
 	app_input_state_init(app->input);
-	app->is_fullscreen = false;
-	app->resize_pending = 0;
+	app->win.is_fullscreen = false;
+	app->win.resize_pending = 0;
 	app->scene.config.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
 
-	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
-	if (!app->window) {
+	app->win.handle = window_create(width, height, title, DEFAULT_SAMPLES);
+	if (!app->win.handle) {
 		return 0;
 	}
 
 	glfwSwapInterval(0);
-	glfwSetWindowUserPointer(app->window, app);
-	glfwSetKeyCallback(app->window, key_callback);
-	glfwSetCursorPosCallback(app->window, mouse_callback);
-	glfwSetScrollCallback(app->window, scroll_callback);
-	glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
+	glfwSetWindowUserPointer(app->win.handle, app);
+	glfwSetKeyCallback(app->win.handle, key_callback);
+	glfwSetCursorPosCallback(app->win.handle, mouse_callback);
+	glfwSetScrollCallback(app->win.handle, scroll_callback);
+	glfwSetFramebufferSizeCallback(app->win.handle,
+	                               framebuffer_size_callback);
 
 	if (app->input->camera_enabled) {
-		glfwSetInputMode(app->window, GLFW_CURSOR,
+		glfwSetInputMode(app->win.handle, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
 	}
 
@@ -173,8 +174,8 @@ void app_cleanup(App* app)
 	free(app->profiling);
 	app->profiling = NULL;
 
-	window_destroy(app->window);
-	app->window = NULL;
+	window_destroy(app->win.handle);
+	app->win.handle = NULL;
 }
 
 static void app_render_ui_trampoline(void* user_data)
@@ -185,7 +186,7 @@ static void app_render_ui_trampoline(void* user_data)
 void app_run(App* app)
 {
 	int last_subdiv = -1;
-	while (!glfwWindowShouldClose(app->window)) {
+	while (!glfwWindowShouldClose(app->win.handle)) {
 		{
 			PROFILE_ZONE(poll_ctx, "GLFW PollEvents (Start)");
 			glfwPollEvents();
@@ -196,12 +197,12 @@ void app_run(App* app)
 		 * Heavy GPU work (FBO/texture recreation) is done here, safely
 		 * outside any GLFW callback context, after the mode switch and
 		 * event processing are fully complete. */
-		if (app->resize_pending) {
+		if (app->win.resize_pending) {
 			PROFILE_ZONE(resize_ctx, "PostProcess Resize");
 			postprocess_resize(&app->postprocess,
-			                   app->pending_width,
-			                   app->pending_height);
-			app->resize_pending = 0;
+			                   app->win.pending_width,
+			                   app->win.pending_height);
+			app->win.resize_pending = 0;
 			PROFILE_ZONE_END(resize_ctx);
 		}
 
@@ -257,7 +258,7 @@ void app_run(App* app)
 			}
 			if (gp_actions.env_next || gp_actions.env_prev) {
 				AppInputContext env_ctx = {
-				    .window = app->window,
+				    .window = app->win.handle,
 				    .scene = &app->scene,
 				    .env_mgr = &app->env_mgr,
 				    .notifier = &app->notifier,
@@ -394,7 +395,7 @@ void app_run(App* app)
 			                   "Swap Buffers",
 			                   GPU_PROFILER_UI_COLOR);
 			PROFILE_ZONE(swap_ctx, "GLFW SwapBuffers");
-			glfwSwapBuffers(app->window);
+			glfwSwapBuffers(app->win.handle);
 			PROFILE_ZONE_END(swap_ctx);
 		}
 

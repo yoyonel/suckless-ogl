@@ -73,16 +73,33 @@ La structure `Scene` est entièrement décomposée en six sous-structs par domai
 
 Cela réduit le nombre de champs directs de `Scene` de ~50 à ~19 et déplace les définitions de types par domaine hors du monolithique `scene.h`.
 
-### Décomposition de App (AppProfiling, AppInput)
+### Décomposition de App (AppProfiling, AppInput, AppWindow)
 
-La structure `App` est progressivement décomposée en sous-structs par domaine :
+La structure `App` est décomposée en sous-structs par domaine :
 
-- **`AppProfiling`** (`include/app_profiling.h`) : regroupe le profiling et les métriques — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Accès via `app->profiling.gpu_profiler`, etc. Init/cleanup délégués à `app_profiling_init()` / `app_profiling_cleanup()` dans `src/app_profiling.c`.
-- **`AppInput`** (`include/app_input_state.h`) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Accès via `app->input.camera`, etc. Init/cleanup délégués à `app_input_state_init()` / `app_input_state_cleanup()` dans `src/app_input_state.c`.
+- **`AppProfiling`** (`include/app_profiling.h`) : regroupe le profiling et les métriques — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Accès via `app->profiling->gpu_profiler`, etc. Init/cleanup délégués à `app_profiling_init()` / `app_profiling_cleanup()` dans `src/app_profiling.c`.
+- **`AppInput`** (`include/app_input_state.h`) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Accès via `app->input->camera`, etc. Init/cleanup délégués à `app_input_state_init()` / `app_input_state_cleanup()` dans `src/app_input_state.c`.
+- **`AppWindow`** (`include/app_window.h`) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Accès via `app->win.handle`, `app->win.is_fullscreen`, etc.
 
 > **Note de nommage** : `app_input_state.h` héberge la définition de la sous-struct `AppInput`, tandis que le fichier existant `app_input.h` héberge le seam `AppInputContext` (bundle de pointeurs ciblés pour les handlers d'entrée, issue #204).
 
-Cela réduit le nombre de champs directs de `App` (13 champs → 2 sous-structs) et le nombre d'includes de `app.h` de 22 à 14 (sous la cible ≤15). Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant `app.c` focalisé sur l'orchestration.
+Cela réduit le nombre de champs directs de `App` de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant `app.c` focalisé sur l'orchestration.
+
+### Décomposition de PostProcess (PPGPUResources, PPShaderState, PPExposureReadback)
+
+La structure `PostProcess` est décomposée en trois sous-structs par domaine :
+
+- **`PPGPUResources`** (`postprocess.h`) : tous les handles de ressources GPU — FBOs, textures, PBOs, SSBOs d'histogramme. Accès via `postprocess.gpu.scene_fbo`, etc.
+- **`PPShaderState`** (`postprocess.h`) : programmes de shaders et état de compilation — IDs de shaders, flags d'optimisation. Accès via `postprocess.shaders.program`, etc.
+- **`PPExposureReadback`** (`postprocess.h`) : état de readback asynchrone de l'exposition — handles PBO, fence, index de readback. Accès via `postprocess.readback.histogram_pbo`, etc.
+
+### Seam GamepadContext
+
+Le `GamepadContext` (`include/gamepad_context.h`) découple `gamepad_input.c` de `camera.h` :
+
+- Contient uniquement la tranche minimale d'état caméra nécessaire pour l'entrée gamepad : `move_input[3]`, `yaw_target`, `pitch_target`, `fixed_timestep`, limites de pitch.
+- `gamepad_write_input()` prend `GamepadContext*` au lieu de `Camera*`.
+- Pattern bridge : `Camera ↔ GamepadContext` au site d'appel dans `app.c`.
 
 ### Découplage des effets (EffectContext)
 

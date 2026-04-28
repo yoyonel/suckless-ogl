@@ -3,6 +3,7 @@
 
 #include "action_notifier.h"
 #include "app_ui.h"
+#include "app_window.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
 #include "effect_benchmark.h"
@@ -29,10 +30,10 @@ typedef struct App {
 	/* --- Pointers and Dynamic Objects --- */
 	Scene scene;             /**< The 3D scene (Includes GI Probe Grid). */
 	PostProcess postprocess; /**< Main post-processing pipeline. */
-	GLFWwindow* window;      /**< The GLFW window context. */
-	double last_frame_time;  /**< Absolute time of last frame start. */
-	double delta_time;       /**< Time elapsed since last frame. */
-	uint64_t frame_count;    /**< Monotonic frame counter. */
+	AppWindow win; /**< Window handle, fullscreen & resize state. */
+	double last_frame_time;      /**< Absolute time of last frame start. */
+	double delta_time;           /**< Time elapsed since last frame. */
+	uint64_t frame_count;        /**< Monotonic frame counter. */
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
 	/* --- Sub-Modules (Opaque, Heap-Allocated) --- */
@@ -41,17 +42,11 @@ typedef struct App {
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 
 	/* --- App State Flags and Values --- */
-	int width;                     /**< Current window/viewport width. */
-	int height;                    /**< Current window/viewport height. */
-	int is_fullscreen;             /**< Fullscreen toggle state. */
-	int saved_x, saved_y;          /**< Cached pos for window restore. */
-	int saved_width, saved_height; /**< Cached size for window restore. */
-	int resize_pending;            /**< Deferred resize flag. */
-	int pending_width;             /**< Deferred resize target width. */
-	int pending_height;            /**< Deferred resize target height. */
-	EnvManager env_mgr;            /**< Environment/IBL state. */
-	ActionNotifier notifier;       /**< Temporary user notifications. */
-	EffectBenchmark effect_bench;  /**< A/B effect cost measurement. */
+	int width;                    /**< Current window/viewport width. */
+	int height;                   /**< Current window/viewport height. */
+	EnvManager env_mgr;           /**< Environment/IBL state. */
+	ActionNotifier notifier;      /**< Temporary user notifications. */
+	EffectBenchmark effect_bench; /**< A/B effect cost measurement. */
 
 	/* --- Global GPU Resources --- */
 	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */

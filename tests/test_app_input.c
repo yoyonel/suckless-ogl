@@ -15,7 +15,7 @@ static App* test_app = NULL;
 static AppInputContext test_ctx_from_app(App* app)
 {
 	return (AppInputContext){
-	    .window = app->window,
+	    .window = app->win.handle,
 	    .camera = &app->input->camera,
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
@@ -30,14 +30,14 @@ static AppInputContext test_ctx_from_app(App* app)
 	    .width = &app->width,
 	    .height = &app->height,
 	    .camera_enabled = &app->input->camera_enabled,
-	    .is_fullscreen = &app->is_fullscreen,
-	    .saved_x = &app->saved_x,
-	    .saved_y = &app->saved_y,
-	    .saved_width = &app->saved_width,
-	    .saved_height = &app->saved_height,
-	    .resize_pending = &app->resize_pending,
-	    .pending_width = &app->pending_width,
-	    .pending_height = &app->pending_height,
+	    .is_fullscreen = &app->win.is_fullscreen,
+	    .saved_x = &app->win.saved_x,
+	    .saved_y = &app->win.saved_y,
+	    .saved_width = &app->win.saved_width,
+	    .saved_height = &app->win.saved_height,
+	    .resize_pending = &app->win.resize_pending,
+	    .pending_width = &app->win.pending_width,
+	    .pending_height = &app->win.pending_height,
 	    .perf_mode_active = &app->profiling->perf_mode_active,
 	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
 	};
@@ -52,20 +52,20 @@ void setUp(void)
 	test_app = malloc(sizeof(App));
 	memset(test_app, 0, sizeof(App));
 
-	test_app->window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
-	if (!test_app->window) {
+	test_app->win.handle = glfwCreateWindow(640, 480, "Test", NULL, NULL);
+	if (!test_app->win.handle) {
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to create GLFW window");
 	}
-	glfwMakeContextCurrent(test_app->window);
+	glfwMakeContextCurrent(test_app->win.handle);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		glfwDestroyWindow(test_app->window);
+		glfwDestroyWindow(test_app->win.handle);
 		glfwTerminate();
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
-	glfwSetWindowUserPointer(test_app->window, test_app);
+	glfwSetWindowUserPointer(test_app->win.handle, test_app);
 
 	/* Initialize sub-systems to avoid segfaults */
 	test_app->profiling = calloc(1, sizeof(*test_app->profiling));
@@ -81,8 +81,8 @@ void setUp(void)
 
 void tearDown(void)
 {
-	if (test_app->window) {
-		glfwDestroyWindow(test_app->window);
+	if (test_app->win.handle) {
+		glfwDestroyWindow(test_app->win.handle);
 	}
 	free(test_app->profiling);
 	free(test_app->input);
@@ -99,7 +99,7 @@ void tearDown(void)
  */
 void test_framebuffer_size_callback(void)
 {
-	framebuffer_size_callback(test_app->window, 1280, 720);
+	framebuffer_size_callback(test_app->win.handle, 1280, 720);
 	TEST_ASSERT_EQUAL(1280, test_app->width);
 	TEST_ASSERT_EQUAL(720, test_app->height);
 }
@@ -281,15 +281,15 @@ void test_mouse_and_scroll_exhaustive(void)
 {
 	test_app->input->camera_enabled = true;
 	test_app->input->camera.first_mouse = 1;
-	mouse_callback(test_app->window, 100.0, 100.0);
-	mouse_callback(test_app->window, 110.0, 120.0);
+	mouse_callback(test_app->win.handle, 100.0, 100.0);
+	mouse_callback(test_app->win.handle, 110.0, 120.0);
 	TEST_ASSERT_EQUAL_FLOAT(110.0F,
 	                        (float)test_app->input->camera.last_mouse_x);
 	TEST_ASSERT_EQUAL_FLOAT(120.0F,
 	                        (float)test_app->input->camera.last_mouse_y);
 
-	scroll_callback(test_app->window, 0.0, 1.0);
-	scroll_callback(test_app->window, 0.0, -1.0);
+	scroll_callback(test_app->win.handle, 0.0, 1.0);
+	scroll_callback(test_app->win.handle, 0.0, -1.0);
 }
 
 /**
@@ -303,11 +303,11 @@ void test_key_callback_dispatch(void)
 {
 	/* key_callback should dispatch to handle_app_input */
 	test_app->overlay.text_overlay_mode = 0;
-	key_callback(test_app->window, GLFW_KEY_F1, 0, GLFW_PRESS, 0);
+	key_callback(test_app->win.handle, GLFW_KEY_F1, 0, GLFW_PRESS, 0);
 	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 
 	/* Release should be ignored for these toggles but covered */
-	key_callback(test_app->window, GLFW_KEY_F1, 0, GLFW_RELEASE, 0);
+	key_callback(test_app->win.handle, GLFW_KEY_F1, 0, GLFW_RELEASE, 0);
 	TEST_ASSERT_EQUAL(1, test_app->overlay.text_overlay_mode);
 }
 

@@ -33,9 +33,13 @@ icosphere/
 ├── include/
 │   ├── app.h               # Main App Structure
 │   ├── app_env.h
-│   ├── app_input.h
+│   ├── app_input.h         # AppInputContext seam
+│   ├── app_input_state.h   # AppInput sub-struct
+│   ├── app_profiling.h     # AppProfiling sub-struct
 │   ├── app_scene.h
 │   ├── app_ui.h
+│   ├── app_window.h        # AppWindow sub-struct
+│   ├── gamepad_context.h   # GamepadContext seam
 │   ├── scene.h             # Scene aggregate (includes sub-structs)
 │   ├── scene_config.h      # SceneConfig: runtime flags & enums
 │   ├── scene_gpu_resources.h # SceneGPUResources: GLuint handles
