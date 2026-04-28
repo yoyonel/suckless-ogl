@@ -60,6 +60,15 @@ App
     └── EffectContext  (seam vers les effets individuels)
 ```
 
+### Décomposition de Scene (SceneVisuals)
+
+La structure `Scene` est progressivement décomposée en sous-structs par domaine :
+
+- **`SceneVisuals`** (`include/scene.h`) : regroupe les effets visuels — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Accès via `scene->visuals.skybox`, etc.
+- Les phases suivantes extrairont `SceneSimulation` (N-body, tri) et `SceneLighting` (IBL, probes, matériaux).
+
+Cela réduit le nombre de champs directs de `Scene` et localise les changements d'effets visuels.
+
 ### Découplage des effets (EffectContext)
 
 Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont progressivement découplés de l'objet God `PostProcess` via un seam `EffectContext` :
