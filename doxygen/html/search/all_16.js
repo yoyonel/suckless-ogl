@@ -30,8 +30,9 @@ var searchData=
   ['vignetteparams_2201',['VignetteParams',['../structVignetteParams.html',1,'']]],
   ['visibility_5fthreshold_2202',['VISIBILITY_THRESHOLD',['../gpu__profiler__ui_8c.html#add190d66a5136e9b1893c6346f3bd8fd',1,'gpu_profiler_ui.c']]],
   ['visible_2203',['visible',['../structGPUProfilerUI.html#aa87fc5730d3e0b7ceeb0cd4ac4e99076',1,'GPUProfilerUI']]],
-  ['vscreenuv_2204',['vScreenUV',['../shockwave_8frag.html#a43eaa5778581dfc7fb7194899dba1856',1,'vScreenUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ad091037a49625e6073f25f64f7bf01b9',1,'vScreenUV():&#160;shockwave.vert']]],
-  ['vu_2205',['vU',['../trail_8frag.html#af0f14d49ec50df87d4ae326b2949421b',1,'vU():&#160;trail.frag'],['../trail_8vert.html#a4a0a784b83e68be908027a941b10c4f2',1,'vU():&#160;trail.vert']]],
-  ['vuv_2206',['vUV',['../shockwave_8frag.html#a39fca2c8fe34ab0c307cdd0f7e7f53d6',1,'vUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ace76a4317d4c3bca0c463eeb635e48f3',1,'vUV():&#160;shockwave.vert']]],
-  ['vv_2207',['vV',['../trail_8frag.html#ad6503792f845b41c177a54cdd23243d4',1,'vV():&#160;trail.frag'],['../trail_8vert.html#afe49d0e7b52feab8af54a19aefa1133c',1,'vV():&#160;trail.vert']]]
+  ['visuals_2204',['visuals',['../structScene.html#a6d8baf79ea98a4cfbbff9fda49cd6c7f',1,'Scene']]],
+  ['vscreenuv_2205',['vScreenUV',['../shockwave_8frag.html#a43eaa5778581dfc7fb7194899dba1856',1,'vScreenUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ad091037a49625e6073f25f64f7bf01b9',1,'vScreenUV():&#160;shockwave.vert']]],
+  ['vu_2206',['vU',['../trail_8frag.html#af0f14d49ec50df87d4ae326b2949421b',1,'vU():&#160;trail.frag'],['../trail_8vert.html#a4a0a784b83e68be908027a941b10c4f2',1,'vU():&#160;trail.vert']]],
+  ['vuv_2207',['vUV',['../shockwave_8frag.html#a39fca2c8fe34ab0c307cdd0f7e7f53d6',1,'vUV():&#160;shockwave.frag'],['../shockwave_8vert.html#ace76a4317d4c3bca0c463eeb635e48f3',1,'vUV():&#160;shockwave.vert']]],
+  ['vv_2208',['vV',['../trail_8frag.html#ad6503792f845b41c177a54cdd23243d4',1,'vV():&#160;trail.frag'],['../trail_8vert.html#afe49d0e7b52feab8af54a19aefa1133c',1,'vV():&#160;trail.vert']]]
 ];

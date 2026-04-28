@@ -92,8 +92,8 @@ var NAVTREEINDEX =
 "structAppBinding.html#ab8a6a6c6d6353f4fe31ac336fa4ee91f",
 "structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732",
 "structNBodySim.html#a92427533fd2b09bc5e12bca9276e9a85",
-"structScene.html#a896b30612f7921d033a63e983cc04d02",
-"trail__renderer_8h.html#a28466e53642ccc00abfbef94ea20a3f6"
+"structScene.html#a8e5068f97bbee1f5c72cc9dfce3e6ab0",
+"trail__renderer_8h.html#a02a553a9b863bec6c23078a1b273ae0e"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

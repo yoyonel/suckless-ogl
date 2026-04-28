@@ -105,7 +105,7 @@ var searchData=
   ['trail_5fneon_5fwidth_5fdefault_2044',['TRAIL_NEON_WIDTH_DEFAULT',['../trail__renderer_8h.html#a6d280ba790249c1570a30ae26426fcd5',1,'trail_renderer.h']]],
   ['trail_5fneon_5fwidth_5fmin_2045',['TRAIL_NEON_WIDTH_MIN',['../trail__renderer_8h.html#accb8b262bafa0490c6ef39b14b95fc03',1,'trail_renderer.h']]],
   ['trail_5fneon_5fwidth_5fstep_2046',['TRAIL_NEON_WIDTH_STEP',['../trail__renderer_8h.html#a50b00d157377faeecc98e7eed5e97ac8',1,'trail_renderer.h']]],
-  ['trail_5frenderer_2047',['trail_renderer',['../structScene.html#ae713b1fbd03dbd2748c948095cc7d88c',1,'Scene']]],
+  ['trail_5frenderer_2047',['trail_renderer',['../structSceneVisuals.html#abdd2ce072165d99c89ce71bdb93a4737',1,'SceneVisuals']]],
   ['trail_5frenderer_2ec_2048',['trail_renderer.c',['../trail__renderer_8c.html',1,'']]],
   ['trail_5frenderer_2eh_2049',['trail_renderer.h',['../trail__renderer_8h.html',1,'']]],
   ['trail_5frenderer_5fcleanup_2050',['trail_renderer_cleanup',['../trail__renderer_8h.html#a6fbcb92a34d5a00b5e17049d444e5d9e',1,'trail_renderer_cleanup(TrailRenderer *tr):&#160;trail_renderer.c'],['../trail__renderer_8c.html#aff7e69ac17c34ee473f7a2df615f2f75',1,'trail_renderer_cleanup(TrailRenderer *trail):&#160;trail_renderer.c']]],

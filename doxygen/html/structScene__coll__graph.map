@@ -1,35 +1,36 @@
 <map id="Scene" name="Scene">
-<area shape="rect" id="node1" title="Encapsulates all 3D scene data, geometry, and rendering state." alt="" coords="857,465,919,492"/>
-<area shape="rect" id="node2" href="$structInstancedGroup.html" title="Manages mesh&#45;based instanced spheres on the GPU." alt="" coords="530,16,654,43"/>
-<area shape="rect" id="node3" href="$structIcosphereGeometry.html" title="Container for procedural mesh data." alt="" coords="517,67,667,93"/>
-<area shape="rect" id="node4" href="$structVec3Array.html" title="Dynamic array for cglm vec3 types." alt="" coords="245,9,333,36"/>
-<area shape="rect" id="node5" href="$structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices)." alt="" coords="247,60,331,87"/>
-<area shape="rect" id="node6" href="$structMaterialLib.html" title="A collection of material presets loaded from disk or defined at runtime." alt="" coords="545,123,639,149"/>
-<area shape="rect" id="node7" href="$structPBRMaterial.html" title="Surface properties for the physically&#45;based rendering pipeline." alt="" coords="237,111,340,137"/>
-<area shape="rect" id="node8" href="$structBillboardGroup.html" title="Manages a set of billboarded instances on the GPU." alt="" coords="533,185,651,212"/>
-<area shape="rect" id="node9" href="$structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup." alt="" coords="255,460,322,487"/>
-<area shape="rect" id="node18" href="$structShockwaveRenderer.html" title="Manages and renders active shockwave effects." alt="" coords="515,287,669,313"/>
-<area shape="rect" id="node20" href="$structTrailRenderer.html" title="Manages trail state and GPU resources for all bodies." alt="" coords="538,509,646,536"/>
-<area shape="rect" id="node29" href="$structLightProbeGrid.html" title=" " alt="" coords="533,841,651,868"/>
-<area shape="rect" id="node10" href="$structUniformEntry.html" title="Cached uniform metadata for fast lookup." alt="" coords="5,460,115,487"/>
-<area shape="rect" id="node11" href="$structSphereInstance.html" title="Per&#45;instance data sent to the shader via an instanced VBO." alt="" coords="227,856,350,883"/>
-<area shape="rect" id="node32" href="$structBillboardSorter.html" title="Reusable memory context for sorting operations." alt="" coords="533,949,651,976"/>
-<area shape="rect" id="node12" href="$structInstancedUniforms.html" title="Cached uniform locations for PBR instanced rendering." alt="" coords="519,337,665,364"/>
-<area shape="rect" id="node13" href="$structIBLCoordinator.html" title="Manages the progressive IBL generation process." alt="" coords="533,236,651,263"/>
-<area shape="rect" id="node14" href="$structPBRSpecUniforms.html" title="Cached uniform locations for specular prefiltering shader." alt="" coords="219,161,358,188"/>
-<area shape="rect" id="node15" href="$structPBRLumUniforms.html" title="Cached uniform locations for luminance reduction shader." alt="" coords="221,212,357,239"/>
-<area shape="rect" id="node16" href="$structPerfTimer.html" title="CPU high&#45;precision timer." alt="" coords="245,263,332,289"/>
-<area shape="rect" id="node17" href="$structPBRIrrUniforms.html" title="Cached uniform locations for radiance convolution shader." alt="" coords="227,313,350,340"/>
-<area shape="rect" id="node19" href="$structShockwaveEvent.html" title="One active shockwave expanding from an impact point." alt="" coords="222,364,355,391"/>
-<area shape="rect" id="node21" href="$structTrailNeonParams.html" title="Runtime&#45;adjustable neon glow profile parameters." alt="" coords="223,523,354,549"/>
-<area shape="rect" id="node22" href="$structTrailRing.html" title="Ring buffer of recorded positions for one body." alt="" coords="249,573,328,600"/>
-<area shape="rect" id="node23" href="$structDebugUniforms.html" title="Cached uniform locations for debug line rendering." alt="" coords="530,611,654,637"/>
-<area shape="rect" id="node24" href="$structBillboardUniforms.html" title="Cached uniform locations for billboard rendering." alt="" coords="522,661,662,688"/>
-<area shape="rect" id="node25" href="$structSkybox.html" title="Persistent state and resource handles for the environment renderer." alt="" coords="557,712,627,739"/>
-<area shape="rect" id="node26" href="$structNBodySim.html" title="State container for the N&#45;body simulation." alt="" coords="547,560,637,587"/>
-<area shape="rect" id="node27" href="$structNBodyImpact.html" title="Records a confinement boundary hit for visual effects." alt="" coords="233,624,344,651"/>
-<area shape="rect" id="node28" href="$structNBodyParticle.html" title="A single gravitational body." alt="" coords="232,675,345,701"/>
-<area shape="rect" id="node30" href="$structLightProbe.html" title=" " alt="" coords="243,907,334,933"/>
-<area shape="rect" id="node31" href="$structSH9.html" title=" " alt="" coords="36,907,84,933"/>
-<area shape="rect" id="node33" href="$structBillboardSortEntry.html" title="Lightweight proxy for sorting data without moving large structs." alt="" coords="219,1009,359,1036"/>
+<area shape="rect" id="node1" title="Encapsulates all 3D scene data, geometry, and rendering state." alt="" coords="1127,479,1188,505"/>
+<area shape="rect" id="node2" href="$structInstancedGroup.html" title="Manages mesh&#45;based instanced spheres on the GPU." alt="" coords="808,28,932,55"/>
+<area shape="rect" id="node3" href="$structIcosphereGeometry.html" title="Container for procedural mesh data." alt="" coords="795,79,945,105"/>
+<area shape="rect" id="node4" href="$structVec3Array.html" title="Dynamic array for cglm vec3 types." alt="" coords="483,8,571,35"/>
+<area shape="rect" id="node5" href="$structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices)." alt="" coords="485,59,569,85"/>
+<area shape="rect" id="node6" href="$structMaterialLib.html" title="A collection of material presets loaded from disk or defined at runtime." alt="" coords="823,149,917,176"/>
+<area shape="rect" id="node7" href="$structPBRMaterial.html" title="Surface properties for the physically&#45;based rendering pipeline." alt="" coords="475,109,578,136"/>
+<area shape="rect" id="node8" href="$structBillboardGroup.html" title="Manages a set of billboarded instances on the GPU." alt="" coords="811,239,929,265"/>
+<area shape="rect" id="node9" href="$structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup." alt="" coords="245,532,312,559"/>
+<area shape="rect" id="node21" href="$structShockwaveRenderer.html" title="Manages and renders active shockwave effects." alt="" coords="449,464,604,491"/>
+<area shape="rect" id="node23" href="$structTrailRenderer.html" title="Manages trail state and GPU resources for all bodies." alt="" coords="473,413,581,440"/>
+<area shape="rect" id="node30" href="$structLightProbeGrid.html" title=" " alt="" coords="811,737,929,764"/>
+<area shape="rect" id="node10" href="$structUniformEntry.html" title="Cached uniform metadata for fast lookup." alt="" coords="5,532,115,559"/>
+<area shape="rect" id="node11" href="$structSphereInstance.html" title="Per&#45;instance data sent to the shader via an instanced VBO." alt="" coords="465,911,588,937"/>
+<area shape="rect" id="node33" href="$structBillboardSorter.html" title="Reusable memory context for sorting operations." alt="" coords="811,860,929,887"/>
+<area shape="rect" id="node12" href="$structInstancedUniforms.html" title="Cached uniform locations for PBR instanced rendering." alt="" coords="797,453,943,480"/>
+<area shape="rect" id="node13" href="$structIBLCoordinator.html" title="Manages the progressive IBL generation process." alt="" coords="811,289,929,316"/>
+<area shape="rect" id="node14" href="$structPBRSpecUniforms.html" title="Cached uniform locations for specular prefiltering shader." alt="" coords="457,160,596,187"/>
+<area shape="rect" id="node15" href="$structPBRLumUniforms.html" title="Cached uniform locations for luminance reduction shader." alt="" coords="459,211,595,237"/>
+<area shape="rect" id="node16" href="$structPerfTimer.html" title="CPU high&#45;precision timer." alt="" coords="483,261,570,288"/>
+<area shape="rect" id="node17" href="$structPBRIrrUniforms.html" title="Cached uniform locations for radiance convolution shader." alt="" coords="465,312,588,339"/>
+<area shape="rect" id="node18" href="$structDebugUniforms.html" title="Cached uniform locations for debug line rendering." alt="" coords="808,555,932,581"/>
+<area shape="rect" id="node19" href="$structBillboardUniforms.html" title="Cached uniform locations for billboard rendering." alt="" coords="800,605,940,632"/>
+<area shape="rect" id="node20" href="$structSceneVisuals.html" title="Visual effects grouped into a sub&#45;struct to reduce Scene fan&#45;out." alt="" coords="816,403,924,429"/>
+<area shape="rect" id="node22" href="$structShockwaveEvent.html" title="One active shockwave expanding from an impact point." alt="" coords="212,463,345,489"/>
+<area shape="rect" id="node24" href="$structTrailNeonParams.html" title="Runtime&#45;adjustable neon glow profile parameters." alt="" coords="213,372,344,399"/>
+<area shape="rect" id="node25" href="$structTrailRing.html" title="Ring buffer of recorded positions for one body." alt="" coords="239,321,318,348"/>
+<area shape="rect" id="node26" href="$structSkybox.html" title="Persistent state and resource handles for the environment renderer." alt="" coords="492,363,561,389"/>
+<area shape="rect" id="node27" href="$structNBodySim.html" title="State container for the N&#45;body simulation." alt="" coords="825,656,915,683"/>
+<area shape="rect" id="node28" href="$structNBodyImpact.html" title="Records a confinement boundary hit for visual effects." alt="" coords="471,653,582,680"/>
+<area shape="rect" id="node29" href="$structNBodyParticle.html" title="A single gravitational body." alt="" coords="470,603,583,629"/>
+<area shape="rect" id="node31" href="$structLightProbe.html" title=" " alt="" coords="481,781,572,808"/>
+<area shape="rect" id="node32" href="$structSH9.html" title=" " alt="" coords="255,781,303,808"/>
+<area shape="rect" id="node34" href="$structBillboardSortEntry.html" title="Lightweight proxy for sorting data without moving large structs." alt="" coords="457,860,597,887"/>
 </map>

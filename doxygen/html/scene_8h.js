@@ -4,6 +4,7 @@ var scene_8h =
     [ "DebugUniforms", "structDebugUniforms.html", "structDebugUniforms" ],
     [ "BillboardUBO", "structBillboardUBO.html", "structBillboardUBO" ],
     [ "BillboardUniforms", "structBillboardUniforms.html", "structBillboardUniforms" ],
+    [ "SceneVisuals", "structSceneVisuals.html", "structSceneVisuals" ],
     [ "Scene", "structScene.html", "structScene" ],
     [ "AAMode", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909e", [
       [ "AA_MODE_SCREEN_SPACE", "scene_8h.html#a111471ae82d90ada8c12655b0b4f909eadb95af9dc37b555fd5dcf0056c685e61", null ],
