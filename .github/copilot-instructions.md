@@ -20,7 +20,7 @@ Repository: [yoyonel/suckless-ogl](https://github.com/yoyonel/suckless-ogl).
 | **Core App** | `app.c`, `main.c`, `cli.c` |
 | **Rendering** | `renderer.c` (`RenderContext`), `sphere_types.h`, `instanced_rendering.c`, `ssbo_rendering.c`, `billboard_rendering.c` |
 | **PBR / IBL** | `pbr.c`, `material.c`, `ibl_coordinator.c`, `light_probes.c`, `skybox.c` |
-| **Post-Processing** | `postprocess.c`, `effects/fx_*.c` (bloom, DoF, auto-exposure, FXAA, LUT, motion blur) |
+| **Post-Processing** | `postprocess.c`, `effects/fx_*.c` (bloom, DoF, auto-exposure, FXAA, LUT, motion blur), `effect_context.h` (`EffectContext` seam) |
 | **Shaders** | 55+ GLSL files in `shaders/` (vertex, fragment, compute) |
 | **Input** | `app_input.c` (`AppInputContext`), `camera_input.c`, `postprocess_input.c` (`PostProcessInputContext`), `app_binding.c` |
 | **Profiling** | `gpu_profiler.c`, `perf_timer.c`, `tracy_manager.c`, `effect_benchmark.c` |
