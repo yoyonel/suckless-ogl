@@ -71,7 +71,7 @@ var searchData=
   ['probes_3808',['probes',['../structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f',1,'LightProbeGrid']]],
   ['profiler_3809',['profiler',['../structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782',1,'EffectBenchmark::profiler()'],['../structRenderContext.html#a18c5684ad7a664ba0f0d7c34378c53c9',1,'RenderContext::profiler()'],['../structGPUStageRAII.html#ae03ebf3cd4e205eb74ae352b29ee0c65',1,'GPUStageRAII::profiler()']]],
   ['profiler_5fui_3810',['profiler_ui',['../structRenderContext.html#a1f56b51b1c424c8256e9201f3842169e',1,'RenderContext']]],
-  ['profiling_3811',['profiling',['../structApp.html#a6d1a45a184b59a0860e417ae01dfdcdf',1,'App']]],
+  ['profiling_3811',['profiling',['../structApp.html#a6c4ecc29f155f2fe61362f464ae742dd',1,'App']]],
   ['program_3812',['program',['../structShader.html#af036f983d35fe0f8f31dedc009b3645e',1,'Shader']]],
   ['projection_3813',['projection',['../structBillboardUBO.html#ad10c12cf4b25e5194cdb03605528f042',1,'BillboardUBO::projection()'],['../structDebugUniforms.html#aee47c024df55254c5e44129172962190',1,'DebugUniforms::projection()'],['../structInstancedUniforms.html#af9b84adb504164380adc9e590a44e483',1,'InstancedUniforms::projection()']]],
   ['ptr_3814',['ptr',['../structChunk.html#aae4f6d33a06f8a40cadf17e3d2bcffc7',1,'Chunk']]]
