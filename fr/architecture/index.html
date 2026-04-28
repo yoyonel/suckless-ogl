@@ -629,6 +629,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Propriété des données">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#decouplage-des-effets-effectcontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Découplage des effets (EffectContext)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3409,7 +3426,16 @@
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── GPUProfiler    (métriques temporelles GPU)
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── AsyncLoader    (chargement asynchrone)
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>└── PostProcess    (effets de post-traitement)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    └── EffectContext  (seam vers les effets individuels)
 </span></code></pre></div>
+<h3 id="decouplage-des-effets-effectcontext">Découplage des effets (EffectContext)<a class="headerlink" href="#decouplage-des-effets-effectcontext" title="Permanent link">¶</a></h3>
+<p>Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont progressivement découplés de l'objet God <code>PostProcess</code> via un seam <code>EffectContext</code> :</p>
+<ul>
+<li><strong><code>EffectContext</code></strong> (<code>include/effects/effect_context.h</code>) : snapshot read-only de l'état partagé du pipeline (texture source, dimensions viewport, textures profondeur/vélocité, exposition).</li>
+<li>Les effets reçoivent <code>(FX*, Params*, const EffectContext*)</code> au lieu de <code>PostProcess*</code>.</li>
+<li>Cela élimine la dépendance bidirectionnelle : <code>postprocess.h</code> → <code>fx_*.h</code> (pour l'embedding des structs) reste, mais <code>fx_*.c</code> → <code>postprocess.h</code> est supprimé.</li>
+<li>Actuellement migré : <strong>bloom</strong>. Les effets restants suivront le même pattern.</li>
+</ul>
 <h2 id="configuration-cmake">Configuration CMake<a class="headerlink" href="#configuration-cmake" title="Permanent link">¶</a></h2>
 <p>Les modules sont compilés séparément et liés à l'exécutable principal :</p>
 <div class="language-cmake highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">target_sources</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">PRIVATE</span>
@@ -3441,7 +3467,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="27 avril 2026 09:11:48 UTC">27 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="28 avril 2026 07:12:57 UTC">28 avril 2026</span>
   </span>
 
     
