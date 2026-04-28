@@ -1,6 +1,5 @@
 #include "gamepad_input.h"
 
-#include "camera.h"
 #include "log.h"
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE
@@ -135,7 +134,7 @@ void gamepad_input_poll(GamepadState* state, GamepadActions* actions)
 	gamepad_poll_buttons(state, &pad, actions);
 }
 
-void gamepad_write_input(const GamepadState* state, Camera* cam)
+void gamepad_write_input(const GamepadState* state, GamepadContext* ctx)
 {
 	if (!state->connected) {
 		return;
@@ -148,10 +147,10 @@ void gamepad_write_input(const GamepadState* state, Camera* cam)
 	float stick_ly = state->axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
 
 	if (fabsf(stick_lx) > 0.0F) {
-		cam->move_input[0] = stick_lx * state->move_sensitivity;
+		ctx->move_input[0] = stick_lx * state->move_sensitivity;
 	}
 	if (fabsf(stick_ly) > 0.0F) {
-		cam->move_input[2] = -stick_ly * state->move_sensitivity;
+		ctx->move_input[2] = -stick_ly * state->move_sensitivity;
 	}
 
 	/* Triggers → move_input[1] (up/down).
@@ -160,7 +159,7 @@ void gamepad_write_input(const GamepadState* state, Camera* cam)
 	float trig_left = state->axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER];
 
 	if (trig_right > 0.0F || trig_left > 0.0F) {
-		cam->move_input[1] =
+		ctx->move_input[1] =
 		    (trig_right - trig_left) * state->move_sensitivity;
 	}
 
@@ -170,15 +169,15 @@ void gamepad_write_input(const GamepadState* state, Camera* cam)
 
 	if (fabsf(stick_rx) > 0.0F || fabsf(stick_ry) > 0.0F) {
 		float look_speed =
-		    state->look_sensitivity * cam->fixed_timestep;
-		cam->yaw_target += stick_rx * look_speed;
-		cam->pitch_target -= stick_ry * look_speed;
+		    state->look_sensitivity * ctx->fixed_timestep;
+		ctx->yaw_target += stick_rx * look_speed;
+		ctx->pitch_target -= stick_ry * look_speed;
 
-		if (cam->pitch_target > DEFAULT_MAX_PITCH) {
-			cam->pitch_target = DEFAULT_MAX_PITCH;
+		if (ctx->pitch_target > ctx->max_pitch) {
+			ctx->pitch_target = ctx->max_pitch;
 		}
-		if (cam->pitch_target < DEFAULT_MIN_PITCH) {
-			cam->pitch_target = DEFAULT_MIN_PITCH;
+		if (ctx->pitch_target < ctx->min_pitch) {
+			ctx->pitch_target = ctx->min_pitch;
 		}
 	}
 }

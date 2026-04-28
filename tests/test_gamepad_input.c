@@ -7,6 +7,30 @@
 #include <stdarg.h>
 #include <string.h>
 
+/* ---- Camera ↔ GamepadContext bridge helpers ---- */
+
+static GamepadContext gamepad_ctx_from_camera(const Camera* cam)
+{
+	return (GamepadContext){
+	    .move_input = {cam->move_input[0], cam->move_input[1],
+	                   cam->move_input[2]},
+	    .yaw_target = cam->yaw_target,
+	    .pitch_target = cam->pitch_target,
+	    .fixed_timestep = cam->fixed_timestep,
+	    .max_pitch = DEFAULT_MAX_PITCH,
+	    .min_pitch = DEFAULT_MIN_PITCH,
+	};
+}
+
+static void gamepad_ctx_to_camera(const GamepadContext* ctx, Camera* cam)
+{
+	cam->move_input[0] = ctx->move_input[0];
+	cam->move_input[1] = ctx->move_input[1];
+	cam->move_input[2] = ctx->move_input[2];
+	cam->yaw_target = ctx->yaw_target;
+	cam->pitch_target = ctx->pitch_target;
+}
+
 /* ---- Stub for log_message (avoids linking log.c + platform deps) ---- */
 void log_message(LogLevel level, const char* tag, const char* fmt, ...)
 {
@@ -142,7 +166,9 @@ void test_poll_without_gamepad_does_nothing(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	TEST_ASSERT_EQUAL(0, state.connected);
 	/* move_input should stay zero. */
@@ -169,7 +195,9 @@ void test_poll_left_stick_forward_adds_velocity(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	TEST_ASSERT_EQUAL(1, state.connected);
 	/* move_input[2] should be positive (forward). */
@@ -197,7 +225,9 @@ void test_poll_right_stick_yaw(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	/* Yaw should have increased (looking right). */
 	TEST_ASSERT_TRUE(cam.yaw_target > yaw_before);
@@ -218,7 +248,9 @@ void test_poll_triggers_vertical_movement(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	/* move_input[1] should be positive (up). */
 	TEST_ASSERT_TRUE(cam.move_input[1] > 0.0F);
@@ -239,7 +271,9 @@ void test_poll_left_trigger_moves_down(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	/* move_input[1] should be negative (down). */
 	TEST_ASSERT_TRUE(cam.move_input[1] < 0.0F);
@@ -299,7 +333,9 @@ void test_poll_sticks_in_deadzone_no_effect(void)
 
 	gamepad_input_poll(&state, NULL);
 	camera_build_keyboard_input(&cam);
-	gamepad_write_input(&state, &cam);
+	GamepadContext gctx = gamepad_ctx_from_camera(&cam);
+	gamepad_write_input(&state, &gctx);
+	gamepad_ctx_to_camera(&gctx, &cam);
 
 	/* All inputs should be zero (within deadzone). */
 	TEST_ASSERT_FLOAT_WITHIN(0.0001F, 0.0F, cam.move_input[0]);
