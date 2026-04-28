@@ -1,60 +1,101 @@
 # Documentation Staging & Preview Guide
 
-This project automatically generates and deploys a live preview of the Doxygen documentation for every Pull Request. This allows for functional validation of documentation changes before merging.
+This project automatically generates and deploys a live preview of the documentation for every Pull Request. This allows for functional validation of documentation changes before merging.
 
 ## How it Works
 
-1.  **Trigger**: Every push to a Pull Request triggers the `documentation` job in GitHub Actions.
-2.  **Generation**: Doxygen builds the HTML documentation.
-3.  **Deployment**: The documentation is deployed to [Surge.sh](https://surge.sh) using a unique domain per PR: `suckless-ogl-pr-[NUMBER].surge.sh`.
-4.  **Feedback**: A comment is automatically posted on the Pull Request with a link to the live preview.
+1. **Trigger**: Every push to a Pull Request triggers the `documentation` job in GitHub Actions.
+2. **Generation**: MkDocs + Doxygen build the full documentation site.
+3. **Deployment**: The documentation is deployed to [GitHub Pages](https://pages.github.com/) as a subdirectory under `pr-preview/pr-<NUMBER>/` using [`rossjrw/pr-preview-action`](https://github.com/rossjrw/pr-preview-action).
+4. **Feedback**: A comment is automatically posted on the Pull Request with a link to the live preview.
+5. **Cleanup**: When the PR is closed or merged, the preview is automatically removed.
+
+## Preview URL Format
+
+```text
+https://yoyonel.github.io/suckless-ogl/pr-preview/pr-<NUMBER>/
+```
+
+For example, PR #42 would be available at:
+`https://yoyonel.github.io/suckless-ogl/pr-preview/pr-42/`
 
 ## Setup Instructions
 
-To enable automated deployments, you must configure a `SURGE_TOKEN` in your repository secrets.
+No external tokens or services are required. The deployment uses the built-in `GITHUB_TOKEN` provided by GitHub Actions.
 
-### 1. Obtain a Surge Token
+### Repository Configuration
 
-If you haven't used Surge before, you can install it and generate a token via CLI:
-
-```sh
-npx surge token
-```
-
-- If you don't have an account, it will prompt you to create one.
-- Copy the provided token string.
-
-### 2. Configure GitHub Secrets
-
-1. Navigate to your GitHub repository.
-2. Go to **Settings** > **Secrets and variables** > **Actions**.
-3. Create a **New repository secret**.
-4. Set the **Name** to `SURGE_TOKEN`.
-5. Paste your token into the **Value** field.
+1. Navigate to your GitHub repository **Settings** > **Pages**.
+2. Ensure the source is set to **Deploy from a branch** (`gh-pages`).
+3. In **Settings** > **Actions** > **General** > **Workflow permissions**, select **Read and write permissions**.
 
 ## Workflow Integration
 
-The staging logic is defined in `.github/workflows/main.yml`. It uses the `mshick/add-pr-comment` action to keep you informed:
+The preview logic is split into two jobs in `.github/workflows/main.yml`:
+
+### PR Preview (deploy-preview job)
 
 ```yaml
-- name: Comment Preview Link on PR
-  if: github.event_name == 'pull_request'
-  uses: mshick/add-pr-comment@v2
-  with:
-    message: |
-      ## 📚 Documentation Preview
-      The Doxygen documentation for this PR has been generated and is ready for review:
-      🔗 **[Preview Link](${{ env.PREVIEW_URL }})**
+deploy-preview:
+  needs: [documentation]
+  if: github.event_name == 'pull_request' && always()
+  runs-on: ubuntu-latest
+  concurrency: preview-${{ github.ref }}
+  steps:
+    - uses: actions/checkout@v6
+    - uses: actions/download-artifact@v8
+      if: github.event.action != 'closed'
+      with:
+        name: doxygen-docs
+        path: preview-site
+    - uses: rossjrw/pr-preview-action@v1
+      with:
+        source-dir: ./preview-site/
+        preview-branch: gh-pages
+        umbrella-dir: pr-preview
+        action: auto
+        comment: true
 ```
+
+### Production Deployment (deploy-pages job)
+
+The production deployment on `master` uses `JamesIves/github-pages-deploy-action` with `clean-exclude: pr-preview` to preserve active PR previews:
+
+```yaml
+- uses: JamesIves/github-pages-deploy-action@v4
+  with:
+    branch: gh-pages
+    folder: ./public-site
+    clean-exclude: pr-preview
+    force: false
+```
+
+## Preview Content
+
+The preview includes the **full documentation site**:
+
+- MkDocs documentation (architecture, guides, API)
+- Doxygen API reference
+- Coverage reports
 
 ## Maintenance
 
-### Clearing Previews
-Surge.sh keeps the deployments indefinitely. Since the domains are reused per PR number, new pushes simply overwrite the previous version. If you need to manually tear down a preview:
+### Automatic Cleanup
 
-```sh
-npx surge teardown suckless-ogl-pr-[NUMBER].surge.sh --token your_token
+Previews are automatically removed when a PR is closed or merged. The `pull_request: closed` event triggers the `deploy-preview` job with `action: auto`, which detects the close and removes the `pr-preview/pr-<N>/` directory from `gh-pages`.
+
+### Manual Cleanup
+
+If a preview was not properly cleaned up, you can remove it manually:
+
+```bash
+git checkout gh-pages
+rm -rf pr-preview/pr-<NUMBER>
+git add -A && git commit -m "chore: remove stale PR preview"
+git push origin gh-pages
 ```
 
-### Security
-The `SURGE_TOKEN` allows anyone with access to it to deploy sites to your Surge account. Keep it secret and only store it in GitHub Secrets.
+## See Also
+
+- [cicd_pipeline.md](./cicd_pipeline.md) — Full CI/CD pipeline overview
+- [documentation_system.md](./documentation_system.md) — Documentation system overview
