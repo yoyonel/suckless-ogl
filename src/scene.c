@@ -425,7 +425,7 @@ int scene_init(Scene* scene)
 	render_utils_create_quad_vbo(&scene->quad_vbo);
 	render_utils_create_wire_cube_vbo(&scene->wire_cube_vbo);
 	render_utils_create_wire_quad_vbo(&scene->wire_quad_vbo);
-	skybox_init(&scene->skybox, scene->skybox_shader);
+	skybox_init(&scene->visuals.skybox, scene->skybox_shader);
 	icosphere_init(&scene->geometry);
 
 	glGenVertexArrays(1, &scene->icosphere_vao);
@@ -540,7 +540,7 @@ void scene_cleanup(Scene* scene)
 	}
 
 	icosphere_free(&scene->geometry);
-	skybox_cleanup(&scene->skybox);
+	skybox_cleanup(&scene->visuals.skybox);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 	if (scene->billboard_instances) {
 		platform_aligned_free(scene->billboard_instances);
@@ -550,8 +550,8 @@ void scene_cleanup(Scene* scene)
 #endif
 	instanced_group_cleanup(&scene->instanced_group);
 	billboard_group_cleanup(&scene->billboard_group);
-	trail_renderer_cleanup(&scene->trail_renderer);
-	shockwave_renderer_cleanup(&scene->shockwave_renderer);
+	trail_renderer_cleanup(&scene->visuals.trail_renderer);
+	shockwave_renderer_cleanup(&scene->visuals.shockwave_renderer);
 #ifdef USE_SSBO_RENDERING
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
@@ -858,7 +858,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		gl_debug_push_group("Skybox_Pass");
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
-		skybox_render(&scene->skybox, scene->skybox_shader,
+		skybox_render(&scene->visuals.skybox, scene->skybox_shader,
 		              scene->hdr_texture, scene->dummy_black_tex,
 		              inv_view_proj, scene->env_lod);
 		glEnable(GL_DEPTH_TEST);
@@ -1019,7 +1019,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 		GPU_STAGE_PROFILER(profiler, "NBody Trails",
 		                   GPU_PROFILER_NBODY_COLOR);
 		gl_debug_push_group("NBody_Trails");
-		trail_renderer_draw(&scene->trail_renderer, view, proj,
+		trail_renderer_draw(&scene->visuals.trail_renderer, view, proj,
 		                    camera_pos);
 		gl_debug_pop_group();
 
@@ -1032,9 +1032,10 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			}
-			shockwave_draw(&scene->shockwave_renderer, view, proj,
-			               camera_pos, scene->nbody_sim.sim_time,
-			               width, height);
+			shockwave_draw(&scene->visuals.shockwave_renderer, view,
+			               proj, camera_pos,
+			               scene->nbody_sim.sim_time, width,
+			               height);
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
@@ -1060,13 +1061,15 @@ void scene_toggle_nbody(Scene* scene)
 		nbody_init_preset(&scene->nbody_sim);
 
 		int count = nbody_get_count(&scene->nbody_sim);
-		if (!trail_renderer_init(&scene->trail_renderer, count)) {
+		if (!trail_renderer_init(&scene->visuals.trail_renderer,
+		                         count)) {
 			scene->nbody_mode = 0;
 			return;
 		}
 
-		if (!shockwave_renderer_init(&scene->shockwave_renderer)) {
-			trail_renderer_cleanup(&scene->trail_renderer);
+		if (!shockwave_renderer_init(
+		        &scene->visuals.shockwave_renderer)) {
+			trail_renderer_cleanup(&scene->visuals.trail_renderer);
 			scene->nbody_mode = 0;
 			return;
 		}
@@ -1074,7 +1077,7 @@ void scene_toggle_nbody(Scene* scene)
 		/* Set trail colors from body albedos (HDR-scaled) */
 		for (int i = 0; i < count; i++) {
 			trail_renderer_set_color(
-			    &scene->trail_renderer, i,
+			    &scene->visuals.trail_renderer, i,
 			    scene->nbody_sim.bodies[i].albedo);
 		}
 
@@ -1097,8 +1100,8 @@ void scene_toggle_nbody(Scene* scene)
 	} else {
 		/* Restore original material grid — clean up before re-init
 		 * to avoid leaking GPU buffers and CPU allocations */
-		trail_renderer_cleanup(&scene->trail_renderer);
-		shockwave_renderer_cleanup(&scene->shockwave_renderer);
+		trail_renderer_cleanup(&scene->visuals.trail_renderer);
+		shockwave_renderer_cleanup(&scene->visuals.shockwave_renderer);
 #ifdef USE_TRANSPARENT_BILLBOARDS
 		if (scene->billboard_instances) {
 			platform_aligned_free(scene->billboard_instances);
@@ -1132,18 +1135,19 @@ void scene_nbody_update(Scene* scene, float delta_time)
 	for (int i = 1; i < scene->nbody_sim.body_count; i++) {
 		const NBodyImpact* imp = &scene->nbody_sim.impacts[i];
 		if (imp->active) {
-			shockwave_emit(&scene->shockwave_renderer,
+			shockwave_emit(&scene->visuals.shockwave_renderer,
 			               imp->position, imp->color, imp->velocity,
 			               scene->nbody_sim.sim_time);
 		}
 	}
-	shockwave_update(&scene->shockwave_renderer, scene->nbody_sim.sim_time);
+	shockwave_update(&scene->visuals.shockwave_renderer,
+	                 scene->nbody_sim.sim_time);
 
 	/* Record trail positions into ring buffers */
 	{
 		PROFILE_ZONE(trail_ctx, "NBody Trail Sample");
-		trail_renderer_record(&scene->trail_renderer, &scene->nbody_sim,
-		                      delta_time);
+		trail_renderer_record(&scene->visuals.trail_renderer,
+		                      &scene->nbody_sim, delta_time);
 		PROFILE_ZONE_END(trail_ctx);
 	}
 
