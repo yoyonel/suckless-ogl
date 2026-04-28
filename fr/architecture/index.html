@@ -644,10 +644,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#decomposition-de-app-appprofiling-appinput" class="md-nav__link">
+  <a href="#decomposition-de-app-appprofiling-appinput-appwindow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Décomposition de App (AppProfiling, AppInput)
+        Décomposition de App (AppProfiling, AppInput, AppWindow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#decomposition-de-postprocess-ppgpuresources-ppshaderstate-ppexposurereadback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Décomposition de PostProcess (PPGPUResources, PPShaderState, PPExposureReadback)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seam-gamepadcontext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seam GamepadContext
       
     </span>
   </a>
@@ -3461,16 +3483,31 @@
 <li><strong><code>SceneLighting</code></strong> (<code>include/scene_lighting.h</code>) : IBL, probes et matériaux — <code>IBLCoordinator</code>, <code>LightProbeGrid</code>, <code>MaterialLib*</code>. Accès via <code>scene-&gt;lighting.ibl_coord</code>, etc.</li>
 </ul>
 <p>Cela réduit le nombre de champs directs de <code>Scene</code> de ~50 à ~19 et déplace les définitions de types par domaine hors du monolithique <code>scene.h</code>.</p>
-<h3 id="decomposition-de-app-appprofiling-appinput">Décomposition de App (AppProfiling, AppInput)<a class="headerlink" href="#decomposition-de-app-appprofiling-appinput" title="Permanent link">¶</a></h3>
-<p>La structure <code>App</code> est progressivement décomposée en sous-structs par domaine :</p>
+<h3 id="decomposition-de-app-appprofiling-appinput-appwindow">Décomposition de App (AppProfiling, AppInput, AppWindow)<a class="headerlink" href="#decomposition-de-app-appprofiling-appinput-appwindow" title="Permanent link">¶</a></h3>
+<p>La structure <code>App</code> est décomposée en sous-structs par domaine :</p>
 <ul>
-<li><strong><code>AppProfiling</code></strong> (<code>include/app_profiling.h</code>) : regroupe le profiling et les métriques — <code>GPUProfiler</code>, <code>GPUProfilerUI</code>, <code>FpsCounter</code>, <code>TracyManager</code>, <code>GPUUsageMonitor</code>, <code>PerfModeContext</code>, <code>perf_mode_active</code>, <code>log_gpu_metrics</code>. Accès via <code>app-&gt;profiling.gpu_profiler</code>, etc. Init/cleanup délégués à <code>app_profiling_init()</code> / <code>app_profiling_cleanup()</code> dans <code>src/app_profiling.c</code>.</li>
-<li><strong><code>AppInput</code></strong> (<code>include/app_input_state.h</code>) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — <code>Camera</code>, <code>GamepadState</code>, <code>AppBindingRegistry</code>, <code>AdaptiveSampler</code>, <code>camera_enabled</code>. Accès via <code>app-&gt;input.camera</code>, etc. Init/cleanup délégués à <code>app_input_state_init()</code> / <code>app_input_state_cleanup()</code> dans <code>src/app_input_state.c</code>.</li>
+<li><strong><code>AppProfiling</code></strong> (<code>include/app_profiling.h</code>) : regroupe le profiling et les métriques — <code>GPUProfiler</code>, <code>GPUProfilerUI</code>, <code>FpsCounter</code>, <code>TracyManager</code>, <code>GPUUsageMonitor</code>, <code>PerfModeContext</code>, <code>perf_mode_active</code>, <code>log_gpu_metrics</code>. Accès via <code>app-&gt;profiling-&gt;gpu_profiler</code>, etc. Init/cleanup délégués à <code>app_profiling_init()</code> / <code>app_profiling_cleanup()</code> dans <code>src/app_profiling.c</code>.</li>
+<li><strong><code>AppInput</code></strong> (<code>include/app_input_state.h</code>) : regroupe la caméra, le gamepad, les raccourcis clavier et le lissage d'entrée — <code>Camera</code>, <code>GamepadState</code>, <code>AppBindingRegistry</code>, <code>AdaptiveSampler</code>, <code>camera_enabled</code>. Accès via <code>app-&gt;input-&gt;camera</code>, etc. Init/cleanup délégués à <code>app_input_state_init()</code> / <code>app_input_state_cleanup()</code> dans <code>src/app_input_state.c</code>.</li>
+<li><strong><code>AppWindow</code></strong> (<code>include/app_window.h</code>) : regroupe le handle de fenêtre GLFW et tout l'état fenêtre/resize — <code>GLFWwindow* handle</code>, <code>is_fullscreen</code>, <code>saved_x/y</code>, <code>saved_width/height</code>, <code>resize_pending</code>, <code>pending_width/height</code>. Accès via <code>app-&gt;win.handle</code>, <code>app-&gt;win.is_fullscreen</code>, etc.</li>
 </ul>
 <blockquote>
 <p><strong>Note de nommage</strong> : <code>app_input_state.h</code> héberge la définition de la sous-struct <code>AppInput</code>, tandis que le fichier existant <code>app_input.h</code> héberge le seam <code>AppInputContext</code> (bundle de pointeurs ciblés pour les handlers d'entrée, issue #204).</p>
 </blockquote>
-<p>Cela réduit le nombre de champs directs de <code>App</code> (13 champs → 2 sous-structs) et le nombre d'includes de <code>app.h</code> de 22 à 14 (sous la cible ≤15). Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant <code>app.c</code> focalisé sur l'orchestration.</p>
+<p>Cela réduit le nombre de champs directs de <code>App</code> de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant <code>app.c</code> focalisé sur l'orchestration.</p>
+<h3 id="decomposition-de-postprocess-ppgpuresources-ppshaderstate-ppexposurereadback">Décomposition de PostProcess (PPGPUResources, PPShaderState, PPExposureReadback)<a class="headerlink" href="#decomposition-de-postprocess-ppgpuresources-ppshaderstate-ppexposurereadback" title="Permanent link">¶</a></h3>
+<p>La structure <code>PostProcess</code> est décomposée en trois sous-structs par domaine :</p>
+<ul>
+<li><strong><code>PPGPUResources</code></strong> (<code>postprocess.h</code>) : tous les handles de ressources GPU — FBOs, textures, PBOs, SSBOs d'histogramme. Accès via <code>postprocess.gpu.scene_fbo</code>, etc.</li>
+<li><strong><code>PPShaderState</code></strong> (<code>postprocess.h</code>) : programmes de shaders et état de compilation — IDs de shaders, flags d'optimisation. Accès via <code>postprocess.shaders.program</code>, etc.</li>
+<li><strong><code>PPExposureReadback</code></strong> (<code>postprocess.h</code>) : état de readback asynchrone de l'exposition — handles PBO, fence, index de readback. Accès via <code>postprocess.readback.histogram_pbo</code>, etc.</li>
+</ul>
+<h3 id="seam-gamepadcontext">Seam GamepadContext<a class="headerlink" href="#seam-gamepadcontext" title="Permanent link">¶</a></h3>
+<p>Le <code>GamepadContext</code> (<code>include/gamepad_context.h</code>) découple <code>gamepad_input.c</code> de <code>camera.h</code> :</p>
+<ul>
+<li>Contient uniquement la tranche minimale d'état caméra nécessaire pour l'entrée gamepad : <code>move_input[3]</code>, <code>yaw_target</code>, <code>pitch_target</code>, <code>fixed_timestep</code>, limites de pitch.</li>
+<li><code>gamepad_write_input()</code> prend <code>GamepadContext*</code> au lieu de <code>Camera*</code>.</li>
+<li>Pattern bridge : <code>Camera ↔ GamepadContext</code> au site d'appel dans <code>app.c</code>.</li>
+</ul>
 <h3 id="decouplage-des-effets-effectcontext">Découplage des effets (EffectContext)<a class="headerlink" href="#decouplage-des-effets-effectcontext" title="Permanent link">¶</a></h3>
 <p>Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont entièrement découplés de l'objet God <code>PostProcess</code> via un seam <code>EffectContext</code> :</p>
 <ul>
@@ -3510,7 +3547,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="28 avril 2026 15:14:14 UTC">28 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="28 avril 2026 21:55:28 UTC">28 avril 2026</span>
   </span>
 
     

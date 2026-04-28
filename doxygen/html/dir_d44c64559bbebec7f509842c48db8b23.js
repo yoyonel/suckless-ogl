@@ -10,6 +10,9 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "app_profiling.h", "app__profiling_8h.html", "app__profiling_8h" ],
     [ "app_settings.h", "app__settings_8h.html", "app__settings_8h" ],
     [ "app_ui.h", "app__ui_8h.html", "app__ui_8h" ],
+    [ "app_window.h", "app__window_8h.html", [
+      [ "AppWindow", "structAppWindow.html", "structAppWindow" ]
+    ] ],
     [ "async_loader.h", "async__loader_8h.html", "async__loader_8h" ],
     [ "billboard_rendering.h", "billboard__rendering_8h.html", "billboard__rendering_8h" ],
     [ "billboard_sorting.h", "billboard__sorting_8h.html", "billboard__sorting_8h" ],
