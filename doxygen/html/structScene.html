@@ -381,10 +381,8 @@ Data Fields</h2></td></tr>
 <tr class="separator:a8341a40ddae1fff0b3c637190499b3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a305181f32e249fc80b71c0e6310f63d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="scene_8h.html#a111471ae82d90ada8c12655b0b4f909e">AAMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a305181f32e249fc80b71c0e6310f63d9">aa_mode</a></td></tr>
 <tr class="separator:a305181f32e249fc80b71c0e6310f63d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e489fc77517cf9a6bdb47dd04c17ec9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNBodySim.html">NBodySim</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a6e489fc77517cf9a6bdb47dd04c17ec9">nbody_sim</a></td></tr>
-<tr class="separator:a6e489fc77517cf9a6bdb47dd04c17ec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa27b87c95269ade00d3eba9585625352"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#aa27b87c95269ade00d3eba9585625352">nbody_mode</a></td></tr>
-<tr class="separator:aa27b87c95269ade00d3eba9585625352"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fa214fdf8e1f5d3cffb4d181bb53248"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSceneSimulation.html">SceneSimulation</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a8fa214fdf8e1f5d3cffb4d181bb53248">simulation</a></td></tr>
+<tr class="separator:a8fa214fdf8e1f5d3cffb4d181bb53248"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a">billboard_uniforms</a></td></tr>
 <tr class="separator:abe2548d91bae8e908c5f2e8e2b9e0a8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24297c4f9eb1b50fcdb2496a41b26e0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f">instanced_uniforms</a></td></tr>
@@ -980,36 +978,6 @@ Data Fields</h2></td></tr>
 
 </div>
 </div>
-<a id="aa27b87c95269ade00d3eba9585625352"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa27b87c95269ade00d3eba9585625352">&#9670;&nbsp;</a></span>nbody_mode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Scene::nbody_mode</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Toggle: 0=grid, 1=N-body. </p>
-
-</div>
-</div>
-<a id="a6e489fc77517cf9a6bdb47dd04c17ec9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e489fc77517cf9a6bdb47dd04c17ec9">&#9670;&nbsp;</a></span>nbody_sim</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structNBodySim.html">NBodySim</a> Scene::nbody_sim</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>N-body gravitational simulation. </p>
-
-</div>
-</div>
 <a id="a963fa306ad4c6a1745d0419a3698df32"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a963fa306ad4c6a1745d0419a3698df32">&#9670;&nbsp;</a></span>pbr_billboard_shader</h2>
 
@@ -1127,6 +1095,21 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Debug visualization of probes. </p>
+
+</div>
+</div>
+<a id="a8fa214fdf8e1f5d3cffb4d181bb53248"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fa214fdf8e1f5d3cffb4d181bb53248">&#9670;&nbsp;</a></span>simulation</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structSceneSimulation.html">SceneSimulation</a> Scene::simulation</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>N-body simulation sub-system. </p>
 
 </div>
 </div>
