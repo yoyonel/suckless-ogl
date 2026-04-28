@@ -92,8 +92,8 @@ var NAVTREEINDEX =
 "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a",
 "structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782",
 "structLightProbeGrid.html#a9ba082f37a70c6e80d5ff49169462339",
-"structScene.html",
-"tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0"
+"structSH9.html",
+"tracy__log_8c.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

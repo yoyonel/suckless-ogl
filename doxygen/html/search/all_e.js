@@ -34,7 +34,7 @@ var searchData=
   ['nbodyparticle_1347',['NBodyParticle',['../structNBodyParticle.html',1,'']]],
   ['nbodysim_1348',['NBodySim',['../structNBodySim.html',1,'']]],
   ['near_5fplane_1349',['NEAR_PLANE',['../group__Camera.html#gad5fa76fb7b0a7fc897818a74135250de',1,'app_settings.h']]],
-  ['neighbor_5fmax_5fshader_1350',['neighbor_max_shader',['../structPostProcess.html#a33f165abd3e1ff6e37b8055277097a83',1,'PostProcess']]],
+  ['neighbor_5fmax_5fshader_1350',['neighbor_max_shader',['../structPPShaderState.html#ad16c81c96445f827422d684dfd70607c',1,'PPShaderState']]],
   ['neon_1351',['neon',['../structTrailRenderer.html#a067bde5dbf3273f4cdbaf69a50394d79',1,'TrailRenderer']]],
   ['neon_5fparam_5fnames_1352',['NEON_PARAM_NAMES',['../app__input_8c.html#a3117f2d127c019514eddd85a4697b429',1,'app_input.c']]],
   ['next_1353',['next',['../structChunk.html#a18bb30292f0e37772147fc4811534522',1,'Chunk::next()'],['../structLoadedBuffer.html#a08de67c79ace27f48143223f9a423078',1,'LoadedBuffer::next()']]],

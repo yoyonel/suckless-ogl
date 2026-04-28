@@ -139,7 +139,7 @@ var searchData=
   ['asyncstate_153',['AsyncState',['../async__loader_8h.html#a0488a63f39b401416c2e517f89a5a209',1,'async_loader.h']]],
   ['auto_5fexposure_154',['auto_exposure',['../structPostProcess.html#a8362e441c1070f454241f61975e5be5c',1,'PostProcess']]],
   ['auto_5fexposure_5ffx_155',['auto_exposure_fx',['../structPostProcess.html#a3e461c228e9958518b604890bcfb198b',1,'PostProcess']]],
-  ['auto_5fthreshold_156',['auto_threshold',['../structPostProcess.html#a6396a2a05929a9fa1bab80db6c66e9ba',1,'PostProcess']]],
+  ['auto_5fthreshold_156',['auto_threshold',['../structPPExposureReadback.html#a7b8e6a12b111749203b5455f48602719',1,'PPExposureReadback']]],
   ['available_157',['available',['../structGPUUsageMonitor.html#a815a9e1cb99076dd7da00fb098b1d4eb',1,'GPUUsageMonitor']]],
   ['average_5fframe_5ftime_158',['average_frame_time',['../structFpsCounter.html#a17cfe0d94e6f5994b7f54d8033557732',1,'FpsCounter']]],
   ['avg_5fdt_159',['avg_dt',['../structAdaptiveSampler.html#aea3449f2c179f805502b448ffe780650',1,'AdaptiveSampler']]],

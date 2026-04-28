@@ -102,7 +102,7 @@ var searchData=
   ['is_5ffullscreen_1091',['is_fullscreen',['../structAppInputContext.html#ae2cadaf1fa39af87091f84c7dc8c8957',1,'AppInputContext::is_fullscreen()'],['../structApp.html#a965b5960ce14d78836f16e3260015caa',1,'App::is_fullscreen()']]],
   ['is_5fkey_5factive_5fin_5foverlay_1092',['is_key_active_in_overlay',['../app__ui_8c.html#a79e4807fa5dc8741de93d060381548f8',1,'app_ui.c']]],
   ['is_5fmodifier_5frelevant_1093',['is_modifier_relevant',['../app__ui_8c.html#a2c6ab23480ae4de17b6ff39d29cdc36e',1,'app_ui.c']]],
-  ['is_5foptimized_1094',['is_optimized',['../structPostProcess.html#aeec30b0b35a67ee1d2492b5cc2202c22',1,'PostProcess']]],
+  ['is_5foptimized_1094',['is_optimized',['../structPPShaderState.html#a1fceef8f856eb249c899ac764c89ebf9',1,'PPShaderState']]],
   ['is_5fprobe_5finside_5fsphere_1095',['is_probe_inside_sphere',['../light__probes_8c.html#abde5719c10df3a99d455b1664addce2a',1,'light_probes.c']]],
   ['is_5fsafe_5ffilename_1096',['is_safe_filename',['../utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953',1,'is_safe_filename(const char *filename):&#160;utils.c'],['../utils_8c.html#a0e22037461cd1f39af6f4ed6619bf953',1,'is_safe_filename(const char *filename):&#160;utils.c']]],
   ['is_5fsafe_5frelative_5fpath_1097',['is_safe_relative_path',['../utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1',1,'is_safe_relative_path(const char *path):&#160;utils.c'],['../utils_8c.html#a520044f64f3253a0c6842b6f80b4e6d1',1,'is_safe_relative_path(const char *path):&#160;utils.c']]],

@@ -70,8 +70,8 @@ var searchData=
   ['expected_5fsphere_5finstance_5fsize_644',['EXPECTED_SPHERE_INSTANCE_SIZE',['../billboard__sorting_8c.html#a458e651af6690959efa2afb96be7d609a3d24f3bd15551e76fb73dc53915c550b',1,'billboard_sorting.c']]],
   ['exposure_645',['exposure',['../structPostProcessPreset.html#a72e94687c1c3bd420232bb853c30bee1',1,'PostProcessPreset::exposure()'],['../structPostProcess.html#a50a6cfbff2d74a962ebd0d7a9eed09fb',1,'PostProcess::exposure()'],['../structExposureParams.html#ad64f6a686954459b4435cc0a0a8570a7',1,'ExposureParams::exposure()']]],
   ['exposure_5fmanual_646',['exposure_manual',['../structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e',1,'PostProcessUBO']]],
-  ['exposure_5fpbo_647',['exposure_pbo',['../structPostProcess.html#ac8525d546170939238907adbe2429a78',1,'PostProcess']]],
-  ['exposure_5fsync_648',['exposure_sync',['../structPostProcess.html#a11699f767b7388da6d8ee5a3b3463e64',1,'PostProcess']]],
+  ['exposure_5fpbo_647',['exposure_pbo',['../structPPExposureReadback.html#ae00274c14b24eba9e9aba08b80970525',1,'PPExposureReadback']]],
+  ['exposure_5fsync_648',['exposure_sync',['../structPPExposureReadback.html#a358fc488663739dae590afe0f6f5f935',1,'PPExposureReadback']]],
   ['exposure_5ftext_5fbuffer_5fsize_649',['EXPOSURE_TEXT_BUFFER_SIZE',['../app__ui_8h.html#a726ca809ffd3d67ab4b8476646f26635a4e8447b9e47500d76a84900bca1215d6',1,'app_ui.h']]],
   ['exposureparams_650',['ExposureParams',['../structExposureParams.html',1,'']]]
 ];

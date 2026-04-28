@@ -1,5 +1,11 @@
 var NAVTREEINDEX12 =
 {
+"tracy__log_8c.html":[6,0,4,53],
+"tracy__log_8c.html#ad84562542acabb8d1b352d557c7c7e7c":[6,0,4,53,0],
+"tracy__log_8h.html":[6,0,2,62],
+"tracy__log_8h.html#ad84562542acabb8d1b352d557c7c7e7c":[6,0,2,62,0],
+"tracy__log_8h_source.html":[6,0,2,62],
+"tracy__manager_8c.html":[6,0,4,54],
 "tracy__manager_8c.html#a15f341fbf0f0311899c1103b2ef05bc0":[6,0,4,54,5],
 "tracy__manager_8c.html#a165df50ba6be5436b945f2b65e112b5a":[6,0,4,54,2],
 "tracy__manager_8c.html#a6eb1bd30b5bd993a46af5c06232ef4f8":[6,0,4,54,3],
