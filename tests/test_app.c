@@ -207,7 +207,7 @@ void setUp(void)
 		// Initialize PBOs for async pixel readback (optimization#2)
 		int fb_width = 0;
 		int fb_height = 0;
-		glfwGetFramebufferSize(g_test_app.window, &fb_width,
+		glfwGetFramebufferSize(g_test_app.win.handle, &fb_width,
 		                       &fb_height);
 		size_t pixel_data_size =
 		    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
@@ -374,7 +374,7 @@ static void pipeline_run_test_loop(const char* test_tag,
 {
 	int fb_width = 0;
 	int fb_height = 0;
-	glfwGetFramebufferSize(g_test_app.window, &fb_width, &fb_height);
+	glfwGetFramebufferSize(g_test_app.win.handle, &fb_width, &fb_height);
 	size_t pixel_data_size =
 	    (size_t)(fb_width * fb_height * BYTES_PER_PIXEL);
 

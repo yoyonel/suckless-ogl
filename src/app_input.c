@@ -34,7 +34,7 @@
 static inline AppInputContext app_input_ctx_from_app(App* app)
 {
 	return (AppInputContext){
-	    .window = app->window,
+	    .window = app->win.handle,
 	    .camera = &app->input->camera,
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
@@ -49,14 +49,14 @@ static inline AppInputContext app_input_ctx_from_app(App* app)
 	    .width = &app->width,
 	    .height = &app->height,
 	    .camera_enabled = &app->input->camera_enabled,
-	    .is_fullscreen = &app->is_fullscreen,
-	    .saved_x = &app->saved_x,
-	    .saved_y = &app->saved_y,
-	    .saved_width = &app->saved_width,
-	    .saved_height = &app->saved_height,
-	    .resize_pending = &app->resize_pending,
-	    .pending_width = &app->pending_width,
-	    .pending_height = &app->pending_height,
+	    .is_fullscreen = &app->win.is_fullscreen,
+	    .saved_x = &app->win.saved_x,
+	    .saved_y = &app->win.saved_y,
+	    .saved_width = &app->win.saved_width,
+	    .saved_height = &app->win.saved_height,
+	    .resize_pending = &app->win.resize_pending,
+	    .pending_width = &app->win.pending_width,
+	    .pending_height = &app->win.pending_height,
 	    .perf_mode_active = &app->profiling->perf_mode_active,
 	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
 	};
