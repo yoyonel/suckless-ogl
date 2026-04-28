@@ -29,7 +29,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	return (RenderContext){
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
-	    .camera = &app->camera,
+	    .camera = &app->input.camera,
 	    .profiler = &app->profiling.gpu_profiler,
 	    .profiler_ui = &app->profiling.timeline_ui,
 	    .env_mgr = &app->env_mgr,
@@ -76,12 +76,12 @@ void test_stencil_depth_consistency(void)
 	/* 1. Ensure scene is ready */
 
 	/* 2. Set camera to look at center area */
-	g_test_app.camera.position[0] = 0.0F;
-	g_test_app.camera.position[1] = 0.0F;
-	g_test_app.camera.position[2] = TEST_CAMERA_Z;
-	g_test_app.camera.yaw = TEST_CAMERA_YAW;
-	g_test_app.camera.pitch = TEST_CAMERA_PITCH;
-	camera_update_vectors(&g_test_app.camera);
+	g_test_app.input.camera.position[0] = 0.0F;
+	g_test_app.input.camera.position[1] = 0.0F;
+	g_test_app.input.camera.position[2] = TEST_CAMERA_Z;
+	g_test_app.input.camera.yaw = TEST_CAMERA_YAW;
+	g_test_app.input.camera.pitch = TEST_CAMERA_PITCH;
+	camera_update_vectors(&g_test_app.input.camera);
 
 	/* 3. Wait for scene to be ready */
 	for (int i = 0; i < POLL_TIMEOUT; i++) {

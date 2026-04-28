@@ -46,6 +46,19 @@ typedef struct AppProfiling {
 } AppProfiling;
 
 /**
+ * @struct AppInput
+ * @brief Camera, gamepad, key-bindings, and input smoothing grouped together.
+ */
+typedef struct AppInput {
+	Camera camera;        /**< View/Proj state. */
+	GamepadState gamepad; /**< Controller/gamepad input state. */
+	AppBindingRegistry
+	    binding_registry;        /**< Key-binding overlay registry. */
+	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
+	int camera_enabled;          /**< Pause camera movement. */
+} AppInput;
+
+/**
  * @struct App
  * @brief The central state container for the entire application.
  */
@@ -60,13 +73,9 @@ typedef struct App {
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
 	/* --- Sub-Modules (RAII/In-Place) --- */
-	AppProfiling profiling;      /**< Profiling and metrics sub-system. */
-	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	AppUIOverlay overlay;        /**< Overlay and text rendering state. */
-	AppBindingRegistry binding_registry;
-
-	Camera camera;        /**< View/Proj state. */
-	GamepadState gamepad; /**< Controller/gamepad input state. */
+	AppProfiling profiling; /**< Profiling and metrics sub-system. */
+	AppInput input;       /**< Camera, gamepad, key-bindings sub-system. */
+	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 
 	/* --- App State Flags and Values --- */
 	int width;                     /**< Current window/viewport width. */
@@ -77,7 +86,6 @@ typedef struct App {
 	int resize_pending;            /**< Deferred resize flag. */
 	int pending_width;             /**< Deferred resize target width. */
 	int pending_height;            /**< Deferred resize target height. */
-	int camera_enabled;            /**< Pause camera movement. */
 	EnvManager env_mgr;            /**< Environment/IBL state. */
 	ActionNotifier notifier;       /**< Temporary user notifications. */
 	EffectBenchmark effect_bench;  /**< A/B effect cost measurement. */
