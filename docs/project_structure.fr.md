@@ -17,6 +17,11 @@ suckless-ogl/
 │   └── platform/         # Couche de portabilité
 ├── include/              # En-têtes C
 │   ├── app.h             # Structure App principale
+│   ├── app_input.h       # Seam AppInputContext
+│   ├── app_input_state.h # Sous-struct AppInput
+│   ├── app_profiling.h   # Sous-struct AppProfiling
+│   ├── app_window.h      # Sous-struct AppWindow
+│   ├── gamepad_context.h # Seam GamepadContext
 │   ├── scene.h           # Agrégat Scene (inclut les sous-structs)
 │   ├── scene_config.h    # SceneConfig : flags runtime et enums
 │   ├── scene_gpu_resources.h # SceneGPUResources : handles GLuint

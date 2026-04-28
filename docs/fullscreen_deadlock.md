@@ -132,9 +132,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 
     // Only set the request flag
-    app->pending_width = width;
-    app->pending_height = height;
-    app->resize_pending = 1;
+    app->win.pending_width = width;
+    app->win.pending_height = height;
+    app->win.resize_pending = 1;
 }
 ```
 
@@ -150,9 +150,9 @@ The actual heavy lifting (`postprocess_resize`) is moved to the start of the nex
 // Inside app_run() while loop
 glfwPollEvents();
 
-if (app->resize_pending) {
-    postprocess_resize(&app->postprocess, app->pending_width, app->pending_height);
-    app->resize_pending = 0;
+if (app->win.resize_pending) {
+    postprocess_resize(&app->postprocess, app->win.pending_width, app->win.pending_height);
+    app->win.resize_pending = 0;
 }
 ```
 

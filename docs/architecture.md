@@ -113,16 +113,33 @@ The `Scene` struct is fully decomposed into six domain-aligned sub-structs, each
 
 This reduces `Scene`'s direct field count from ~50 to ~19 and moves domain-specific type definitions out of the monolithic `scene.h`.
 
-### App Decomposition (AppProfiling, AppInput)
+### App Decomposition (AppProfiling, AppInput, AppWindow)
 
-The `App` struct is being decomposed into domain-aligned sub-structs:
+The `App` struct is decomposed into domain-aligned sub-structs:
 
-- **`AppProfiling`** (`include/app_profiling.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling.gpu_profiler`, etc. Init/cleanup delegated to `app_profiling_init()` / `app_profiling_cleanup()` in `src/app_profiling.c`.
-- **`AppInput`** (`include/app_input_state.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input.camera`, etc. Init/cleanup delegated to `app_input_state_init()` / `app_input_state_cleanup()` in `src/app_input_state.c`.
+- **`AppProfiling`** (`include/app_profiling.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling->gpu_profiler`, etc. Init/cleanup delegated to `app_profiling_init()` / `app_profiling_cleanup()` in `src/app_profiling.c`.
+- **`AppInput`** (`include/app_input_state.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input->camera`, etc. Init/cleanup delegated to `app_input_state_init()` / `app_input_state_cleanup()` in `src/app_input_state.c`.
+- **`AppWindow`** (`include/app_window.h`): Groups GLFW window handle and all window/resize state — `GLFWwindow* handle`, `is_fullscreen`, `saved_x/y`, `saved_width/height`, `resize_pending`, `pending_width/height`. Access via `app->win.handle`, `app->win.is_fullscreen`, etc.
 
 > **Naming note**: `app_input_state.h` hosts the `AppInput` sub-struct definition, while the existing `app_input.h` hosts the `AppInputContext` seam (focused pointer bundle for input handlers, issue #204).
 
-This reduces `App`'s direct field count (13 fields → 2 sub-structs) and `app.h`'s include count from 22 to 14 (below the ≤15 target). Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
+This reduces `App`'s direct field count from 24 to ~17. Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
+
+### PostProcess Decomposition (PPGPUResources, PPShaderState, PPExposureReadback)
+
+The `PostProcess` struct is decomposed into three domain-aligned sub-structs:
+
+- **`PPGPUResources`** (`postprocess.h`): All GPU resource handles — FBOs, textures, PBOs, histogram SSBOs. Access via `postprocess.gpu.scene_fbo`, etc.
+- **`PPShaderState`** (`postprocess.h`): Shader programs and compilation state — shader IDs, optimization flags. Access via `postprocess.shaders.program`, etc.
+- **`PPExposureReadback`** (`postprocess.h`): Async exposure readback state — PBO handles, fence, readback index. Access via `postprocess.readback.histogram_pbo`, etc.
+
+### GamepadContext Seam
+
+The `GamepadContext` (`include/gamepad_context.h`) decouples `gamepad_input.c` from `camera.h`:
+
+- Contains only the minimal camera state slice needed for gamepad input: `move_input[3]`, `yaw_target`, `pitch_target`, `fixed_timestep`, pitch limits.
+- `gamepad_write_input()` takes `GamepadContext*` instead of `Camera*`.
+- Bridge pattern: `Camera ↔ GamepadContext` at the call site in `app.c`.
 
 ### Effect Decoupling (EffectContext)
 
