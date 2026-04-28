@@ -5,9 +5,6 @@
 #include "shader.h"
 #include <stdbool.h>
 
-/* Forward declaration */
-struct PostProcess;
-
 /**
  * @struct LUT3DParams
  * @brief Parameters for 3D LUT gamut mapping.
@@ -31,24 +28,26 @@ typedef struct {
 
 /**
  * @brief Prepares resources for 3D LUT processing.
- * @param post_processing Pointer to main pipeline.
+ * @param lut3d_sys Pointer to the LUT3D subsystem.
  * @return 0 on success.
  */
-int fx_lut3d_init(struct PostProcess* post_processing);
+int fx_lut3d_init(LUT3DFX* lut3d_sys);
 
 /**
  * @brief Releases GPU resources.
- * @param post_processing Pointer to main pipeline.
+ * @param lut3d_sys Pointer to the LUT3D subsystem.
  */
-void fx_lut3d_cleanup(struct PostProcess* post_processing);
+void fx_lut3d_cleanup(LUT3DFX* lut3d_sys);
 
 /**
  * @brief Parses a .cube file and uploads it to a 3D texture.
- * @param post_processing Pointer to main pipeline.
- * @param path Path to the Adobe .cube file.
+ * @param lut3d_sys Pointer to the LUT3D subsystem.
+ * @param params    Output params (texture + size updated on success).
+ * @param path      Path to the Adobe .cube file.
  * @return 0 on success, negative on error.
  */
-int fx_lut3d_load_cube(struct PostProcess* post_processing, const char* path);
+int fx_lut3d_load_cube(LUT3DFX* lut3d_sys, LUT3DParams* params,
+                       const char* path);
 
 /**
  * @brief Uploads LUT parameters to the destination shader.

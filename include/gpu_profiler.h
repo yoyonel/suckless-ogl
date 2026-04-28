@@ -85,7 +85,7 @@ typedef struct {
  * @struct GPUProfiler
  * @brief Manages GPU timing using double-buffered queries to avoid stalls.
  */
-typedef struct {
+typedef struct GPUProfiler {
 	GPUStage stages[MAX_GPU_STAGES];
 	int stage_count; /**< Number of stages from last completed read-back
 	                    (used by UI for display). */

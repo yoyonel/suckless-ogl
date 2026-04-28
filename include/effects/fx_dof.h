@@ -4,8 +4,9 @@
 #include "gl_common.h"
 #include "shader.h"
 
-/* Forward declaration */
-struct PostProcess;
+/* Forward declarations */
+struct EffectContext;
+struct BloomFX;
 
 /* Paramètres pour le Depth of Field */
 typedef struct {
@@ -24,16 +25,17 @@ typedef struct {
 } DoFFX;
 
 /* Initialisation des ressources DoF */
-int fx_dof_init(struct PostProcess* post_processing);
+int fx_dof_init(DoFFX* dof);
 
 /* Libération des ressources */
-void fx_dof_cleanup(struct PostProcess* post_processing);
+void fx_dof_cleanup(DoFFX* dof);
 
 /* Redimensionnement des ressources */
-int fx_dof_resize(struct PostProcess* post_processing);
+int fx_dof_resize(DoFFX* dof, int width, int height);
 
 /* Rendu de l'effet */
-void fx_dof_render(struct PostProcess* post_processing);
+void fx_dof_render(DoFFX* dof, const DoFParams* params, struct BloomFX* bloom,
+                   const struct EffectContext* ctx);
 
 /* Upload des paramètres vers le shader principal */
 void fx_dof_upload_params(Shader* shader, const DoFParams* params);

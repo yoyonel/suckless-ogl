@@ -539,11 +539,11 @@ Chaque effet de post-traitement initialise ses propres ressources. Les effets re
 
 | Effet | Ressources GPU |
 |-------|---------------|
-| **Bloom** | FBOs en chaîne mip (6 niveaux), textures prefiltre/downsample/upsample. Découplé via `EffectContext` : `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)` |
-| **Profondeur de Champ** | Texture de flou, texture CoC (Cercle de Confusion) |
-| **Auto-Exposition** | Texture downsample luminance, 2× PBOs (readback), 2× fences GLSync |
-| **Flou de Mouvement** | Texture vélocité tile-max (compute), texture neighbor-max (compute) |
-| **LUT 3D** | 32³ `GL_TEXTURE_3D` chargée depuis fichiers `.cube` |
+| **Bloom** | FBOs en chaîne mip (6 niveaux), textures prefiltre/downsample/upsample. `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)` |
+| **Profondeur de Champ** | Texture de flou, texture temporaire (ping-pong). `fx_dof_render(DoFFX*, DoFParams*, BloomFX*, EffectContext*)` — emprunte les shaders bloom pour downsample/upsample |
+| **Auto-Exposition** | Texture downsample luminance, 2× PBOs (readback), 2× fences GLSync. `fx_auto_exposure_render(AutoExposureFX*, AutoExposureParams*, EffectContext*)` |
+| **Flou de Mouvement** | Texture vélocité tile-max (compute), texture neighbor-max (compute). `fx_motion_blur_render(MotionBlurFX*, EffectContext*)` |
+| **LUT 3D** | 32³ `GL_TEXTURE_3D` chargée depuis fichiers `.cube`. `fx_lut3d_load_cube(LUT3DFX*, LUT3DParams*, const char*)` |
 
 ### 5.3 — UBO (Uniform Buffer Object)
 

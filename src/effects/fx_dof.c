@@ -1,40 +1,21 @@
 #include "effects/fx_dof.h"
 
+#include "effects/effect_context.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_utils.h"
 #include "gl_common.h"
-#include "log.h"
-#include "postprocess.h"
 #include "shader.h"
 #include <cglm/types.h>
 #include <stddef.h>
 
-int fx_dof_init(PostProcess* post_processing)
+int fx_dof_init(DoFFX* dof)
 {
-	DoFFX* dof = &post_processing->dof_fx;
-
 	glGenFramebuffers(1, &dof->fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, dof->fbo);
-
-	if (!fx_dof_resize(post_processing)) {
-		return 0;
-	}
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) !=
-	    GL_FRAMEBUFFER_COMPLETE) {
-		LOG_ERROR("suckless-ogl.postprocess.dof",
-		          "Failed to create DoF framebuffer");
-		return 0;
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return 1;
 }
 
-void fx_dof_cleanup(PostProcess* post_processing)
+void fx_dof_cleanup(DoFFX* dof)
 {
-	DoFFX* dof = &post_processing->dof_fx;
-
 	if (dof->fbo) {
 		glDeleteFramebuffers(1, &dof->fbo);
 		dof->fbo = 0;
@@ -49,15 +30,13 @@ void fx_dof_cleanup(PostProcess* post_processing)
 	}
 }
 
-int fx_dof_resize(PostProcess* post_processing)
+int fx_dof_resize(DoFFX* dof, int width, int height)
 {
 	/* Ensure Unit 0 is active for initial texture setup */
 	glActiveTexture(GL_TEXTURE0);
 
-	DoFFX* dof = &post_processing->dof_fx;
-
-	int dof_width = post_processing->width / 4;
-	int dof_height = post_processing->height / 4;
+	int dof_width = width / 4;
+	int dof_height = height / 4;
 	if (dof_width < 1) {
 		dof_width = 1;
 	}
@@ -89,16 +68,11 @@ int fx_dof_resize(PostProcess* post_processing)
 	return 1;
 }
 
-void fx_dof_render(PostProcess* post_processing)
+void fx_dof_render(DoFFX* dof, const DoFParams* params, BloomFX* bloom,
+                   const EffectContext* ctx)
 {
-	if (!postprocess_is_enabled(post_processing, POSTFX_DOF) &&
-	    !postprocess_is_enabled(post_processing, POSTFX_DOF_DEBUG)) {
-		return;
-	}
-
-	DoFFX* dof = &post_processing->dof_fx;
-	int dof_width = post_processing->width / 4;
-	int dof_height = post_processing->height / 4;
+	int dof_width = ctx->width / 4;
+	int dof_height = ctx->height / 4;
 	if (dof_width < 1) {
 		dof_width = 1;
 	}
@@ -115,18 +89,16 @@ void fx_dof_render(PostProcess* post_processing)
 	                       GL_TEXTURE_2D, dof->temp_tex, 0);
 
 	/* Pass 0: Set Anamorphic Scale */
-	float ratio = post_processing->dof.anamorphic_ratio;
+	float ratio = params->anamorphic_ratio;
 	vec2 texel_scale = {1.0F, ratio};
 
-	Shader* ds_shader =
-	    fx_bloom_get_downsample_shader(&post_processing->bloom_fx);
+	Shader* ds_shader = fx_bloom_get_downsample_shader(bloom);
 	shader_use(ds_shader);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+	glBindTexture(GL_TEXTURE_2D, ctx->src_tex);
 
-	vec2 src_res = {(float)post_processing->width,
-	                (float)post_processing->height};
+	vec2 src_res = {(float)ctx->width, (float)ctx->height};
 	shader_set_vec2(ds_shader, "srcResolution", (float*)&src_res);
 	shader_set_vec2(ds_shader, "texelScale", (float*)&texel_scale);
 
@@ -136,8 +108,7 @@ void fx_dof_render(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, dof->blur_tex, 0);
 
-	Shader* us_shader =
-	    fx_bloom_get_upsample_shader(&post_processing->bloom_fx);
+	Shader* us_shader = fx_bloom_get_upsample_shader(bloom);
 	shader_use(us_shader);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -148,7 +119,7 @@ void fx_dof_render(PostProcess* post_processing)
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, post_processing->width, post_processing->height);
+	glViewport(0, 0, ctx->width, ctx->height);
 }
 
 void fx_dof_upload_params(Shader* shader, const DoFParams* params)

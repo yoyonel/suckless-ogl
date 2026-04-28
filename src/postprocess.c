@@ -107,14 +107,17 @@ int postprocess_init(PostProcess* post_processing,
 	post_processing->auto_threshold = 1.0F;
 
 	/* Initialisation Motion Blur */
-	if (!fx_motion_blur_init(post_processing)) {
+	if (!fx_motion_blur_init(&post_processing->motion_blur_fx,
+	                         &post_processing->motion_blur)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create motion blur resources");
 		/* On continue quand même */
 	}
+	fx_motion_blur_resize(&post_processing->motion_blur_fx,
+	                      post_processing->width, post_processing->height);
 
 	/* Initialisation LUT Viz */
-	if (fx_lut_viz_init(post_processing) != 0) {
+	if (fx_lut_viz_init(&post_processing->lut_viz_fx) != 0) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create LUT viz resources");
 		/* On continue quand même */
@@ -213,18 +216,18 @@ int postprocess_init(PostProcess* post_processing,
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, post_processing->settings_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	if (!fx_auto_exposure_init(post_processing)) {
+	if (!fx_auto_exposure_init(&post_processing->auto_exposure_fx)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create auto exposure resources");
 		destroy_framebuffer(post_processing);
 		fx_bloom_cleanup(&post_processing->bloom_fx);
-		fx_dof_cleanup(post_processing);
+		fx_dof_cleanup(&post_processing->dof_fx);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
 
 	/* Créer les ressources DoF */
-	if (!fx_dof_init(post_processing)) {
+	if (!fx_dof_init(&post_processing->dof_fx)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create dof resources");
 		destroy_framebuffer(post_processing);
@@ -232,9 +235,19 @@ int postprocess_init(PostProcess* post_processing,
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
+	if (!fx_dof_resize(&post_processing->dof_fx, post_processing->width,
+	                   post_processing->height)) {
+		LOG_ERROR("suckless-ogl.postprocess",
+		          "Failed to resize dof resources");
+		fx_dof_cleanup(&post_processing->dof_fx);
+		destroy_framebuffer(post_processing);
+		fx_bloom_cleanup(&post_processing->bloom_fx);
+		destroy_screen_quad(post_processing);
+		return 0;
+	}
 
 	/* Créer les ressources 3D LUT */
-	if (fx_lut3d_init(post_processing) != 0) {
+	if (fx_lut3d_init(&post_processing->lut3d_fx) != 0) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create 3D LUT resources");
 		/* On continue quand même */
@@ -348,11 +361,11 @@ void postprocess_cleanup(PostProcess* post_processing)
 	SHADER_SAFE_DESTROY(post_processing->postprocess_shader);
 
 	fx_bloom_cleanup(&post_processing->bloom_fx);
-	fx_dof_cleanup(post_processing);
-	fx_auto_exposure_cleanup(post_processing);
-	fx_motion_blur_cleanup(post_processing);
-	fx_lut_viz_cleanup(post_processing);
-	fx_lut3d_cleanup(post_processing);
+	fx_dof_cleanup(&post_processing->dof_fx);
+	fx_auto_exposure_cleanup(&post_processing->auto_exposure_fx);
+	fx_motion_blur_cleanup(&post_processing->motion_blur_fx);
+	fx_lut_viz_cleanup(&post_processing->lut_viz_fx);
+	fx_lut3d_cleanup(&post_processing->lut3d_fx);
 
 	LOG_INFO("suckless-ogl.postprocess", "Post-processing cleaned up");
 }
@@ -391,8 +404,10 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 		          "Failed to resize bloom resources");
 	}
 
-	fx_dof_resize(post_processing);
-	fx_motion_blur_resize(post_processing);
+	fx_dof_resize(&post_processing->dof_fx, post_processing->width,
+	              post_processing->height);
+	fx_motion_blur_resize(&post_processing->motion_blur_fx,
+	                      post_processing->width, post_processing->height);
 
 	/* Final Bridge: Ensure ALL used units are in a valid state.
 	 * NVIDIA driver validates units used by the last shader before resize.
@@ -730,7 +745,16 @@ void postprocess_end(PostProcess* post_processing)
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "DoF",
 		                   GPU_PROFILER_DOF_COLOR);
 		gl_debug_push_group("PostFX_DepthOfField");
-		fx_dof_render(post_processing);
+		{
+			const EffectContext dof_ctx = {
+			    .src_tex = post_processing->scene_color_tex,
+			    .width = post_processing->width,
+			    .height = post_processing->height,
+			};
+			fx_dof_render(&post_processing->dof_fx,
+			              &post_processing->dof,
+			              &post_processing->bloom_fx, &dof_ctx);
+		}
 		gl_debug_pop_group();
 	}
 
@@ -749,7 +773,18 @@ void postprocess_end(PostProcess* post_processing)
 
 		/* We always need the downsample/luminance pass if either AE or
 		 * Debug is on */
-		fx_auto_exposure_render(post_processing);
+		{
+			const EffectContext ae_ctx = {
+			    .src_tex = post_processing->scene_color_tex,
+			    .width = post_processing->width,
+			    .height = post_processing->height,
+			    .delta_time = post_processing->delta_time,
+			    .gpu_profiler = post_processing->gpu_profiler,
+			};
+			fx_auto_exposure_render(
+			    &post_processing->auto_exposure_fx,
+			    &post_processing->auto_exposure, &ae_ctx);
+		}
 
 		/* Trigger Async Readbacks for current frame (will be ready in
 		 * next frames) */
@@ -792,7 +827,15 @@ void postprocess_end(PostProcess* post_processing)
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "MB Compute",
 		                   GPU_PROFILER_MOTION_BLUR_COLOR);
 		gl_debug_push_group("PostFX_MotionBlur_Compute");
-		fx_motion_blur_render(post_processing);
+		{
+			const EffectContext mb_ctx = {
+			    .velocity_tex = post_processing->velocity_tex,
+			    .width = post_processing->width,
+			    .height = post_processing->height,
+			};
+			fx_motion_blur_render(&post_processing->motion_blur_fx,
+			                      &mb_ctx);
+		}
 		gl_debug_pop_group();
 	}
 
@@ -1023,7 +1066,15 @@ void postprocess_end(PostProcess* post_processing)
 		    post_processing->dummy_black_tex);
 
 		/* Render LUT Cube Visualization (if enabled) */
-		fx_lut_viz_render(post_processing);
+		{
+			const EffectContext lut_viz_ctx = {
+			    .width = post_processing->width,
+			    .height = post_processing->height,
+			};
+			fx_lut_viz_render(&post_processing->lut_viz_fx,
+			                  post_processing->lut3d.texture,
+			                  &lut_viz_ctx);
+		}
 
 		gl_debug_pop_group(); /* PostFX_Final_Composite */
 	}
@@ -1233,7 +1284,8 @@ int postprocess_compute_luminance_histogram(PostProcess* post_processing,
 
 void postprocess_update_matrices(PostProcess* post_processing, mat4 view_proj)
 {
-	fx_motion_blur_update_matrices(post_processing, view_proj);
+	fx_motion_blur_update_matrices(&post_processing->motion_blur_fx,
+	                               view_proj);
 }
 
 /* Fonctions privées */
@@ -1543,5 +1595,6 @@ void postprocess_set_lut3d(PostProcess* post_processing, float intensity,
 
 int postprocess_load_lut3d(PostProcess* post_processing, const char* path)
 {
-	return fx_lut3d_load_cube(post_processing, path);
+	return fx_lut3d_load_cube(&post_processing->lut3d_fx,
+	                          &post_processing->lut3d, path);
 }

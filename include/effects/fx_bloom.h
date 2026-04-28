@@ -25,7 +25,7 @@ typedef struct {
 } BloomMip;
 
 /* Structure regroupant les ressources graphiques du Bloom */
-typedef struct {
+typedef struct BloomFX {
 	Shader* prefilter_shader;
 	Shader* downsample_shader;
 	Shader* upsample_shader;

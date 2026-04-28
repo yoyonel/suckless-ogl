@@ -123,12 +123,12 @@ This reduces `App`'s direct field count (13 fields → 2 sub-structs) and `app.h
 
 ### Effect Decoupling (EffectContext)
 
-Post-processing effects (bloom, DoF, auto-exposure, motion blur, LUT, LUT viz) are progressively decoupled from the `PostProcess` God Object via an `EffectContext` seam:
+Post-processing effects (bloom, DoF, auto-exposure, motion blur, LUT, LUT viz) are fully decoupled from the `PostProcess` God Object via an `EffectContext` seam:
 
 - **`EffectContext`** (`include/effects/effect_context.h`): Read-only snapshot of shared pipeline state (source texture, viewport dimensions, depth/velocity textures, exposure).
 - Effects receive `(FX*, Params*, const EffectContext*)` instead of `PostProcess*`.
 - This eliminates the bidirectional dependency: `postprocess.h` → `fx_*.h` (for struct embedding) remains, but `fx_*.c` → `postprocess.h` is removed.
-- Currently migrated: **bloom**. Remaining effects will follow the same pattern.
+- All effects are now fully migrated: **bloom**, **DoF**, **auto-exposure**, **motion blur**, **LUT 3D**, and **LUT viz**. No effect source file includes `postprocess.h` anymore.
 
 ## Build System
 
