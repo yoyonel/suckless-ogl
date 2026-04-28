@@ -179,7 +179,7 @@ def generate_report(sha, repository, pr_number=None):
 
     comment += "\n> [!TIP]\n"
     if pr_number:
-        interactive_url = f"https://suckless-ogl-pr-{pr_number}.surge.sh/coverage/visual_tests/index.html"
+        interactive_url = f"https://yoyonel.github.io/suckless-ogl/pr-preview/pr-{pr_number}/coverage/visual_tests/index.html"
         comment += f"> Accédez au **[Rapport Interactif Complet]({interactive_url})** pour filtrer par vue/mode/effet et utiliser la loupe.\n"
     else:
         comment += "> Accédez au rapport interactif complet dans l'onglet **Summary** du CI pour filtrer par vue/mode/effet.\n"
