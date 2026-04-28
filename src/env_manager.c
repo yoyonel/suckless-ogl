@@ -131,10 +131,10 @@ int env_manager_trigger_transition(EnvManager* mgr, AsyncLoader* loader,
 
 static void capture_snapshot(Scene* scene, int width, int height)
 {
-	if (scene->transition_snapshot_tex == 0) {
-		glGenTextures(1, &scene->transition_snapshot_tex);
+	if (scene->gpu.transition_snapshot_tex == 0) {
+		glGenTextures(1, &scene->gpu.transition_snapshot_tex);
 	}
-	glBindTexture(GL_TEXTURE_2D, scene->transition_snapshot_tex);
+	glBindTexture(GL_TEXTURE_2D, scene->gpu.transition_snapshot_tex);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
 	             GL_UNSIGNED_BYTE, NULL);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
@@ -151,26 +151,26 @@ static void finalize_ibl_swap(Scene* scene, PostProcess* postproc,
 	postprocess_set_exposure_target(postproc, threshold);
 
 	/* Recycle the old HDR texture instead of deleting it */
-	if (scene->hdr_texture) {
-		if (scene->recycled_hdr_tex) {
+	if (scene->gpu.hdr_texture) {
+		if (scene->gpu.recycled_hdr_tex) {
 			/* If we already have one (weird edge case),
 			 * delete the old one */
-			glDeleteTextures(1, &scene->recycled_hdr_tex);
+			glDeleteTextures(1, &scene->gpu.recycled_hdr_tex);
 		}
-		scene->recycled_hdr_tex = scene->hdr_texture;
-		/* scene->hdr_texture will be overwritten below */
+		scene->gpu.recycled_hdr_tex = scene->gpu.hdr_texture;
+		/* scene->gpu.hdr_texture will be overwritten below */
 	}
 
-	if (scene->spec_prefiltered_tex) {
-		glDeleteTextures(1, &scene->spec_prefiltered_tex);
+	if (scene->gpu.spec_prefiltered_tex) {
+		glDeleteTextures(1, &scene->gpu.spec_prefiltered_tex);
 	}
-	if (scene->irradiance_tex) {
-		glDeleteTextures(1, &scene->irradiance_tex);
+	if (scene->gpu.irradiance_tex) {
+		glDeleteTextures(1, &scene->gpu.irradiance_tex);
 	}
 
-	scene->hdr_texture = hdr_tex;
-	scene->spec_prefiltered_tex = spec_tex;
-	scene->irradiance_tex = irr_tex;
+	scene->gpu.hdr_texture = hdr_tex;
+	scene->gpu.spec_prefiltered_tex = spec_tex;
+	scene->gpu.irradiance_tex = irr_tex;
 
 	LOG_INFO("suckless-ogl.env", "[Frame %llu] Environment swap finalized.",
 	         (unsigned long long)frame_count);
@@ -292,26 +292,27 @@ void env_manager_render_overlay(const EnvManager* mgr, const Scene* scene)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDisable(GL_DEPTH_TEST);
 
-		shader_use(scene->debug_shader);
-		shader_set_int(scene->debug_shader, "u_tex", 0);
-		shader_set_float(scene->debug_shader, "u_alpha",
+		shader_use(scene->shaders.debug);
+		shader_set_int(scene->shaders.debug, "u_tex", 0);
+		shader_set_float(scene->shaders.debug, "u_alpha",
 		                 mgr->transition_alpha);
-		shader_set_int(scene->debug_shader, "u_bypass_processing", 1);
-		shader_set_float(scene->debug_shader, "lod", 0.0F);
+		shader_set_int(scene->shaders.debug, "u_bypass_processing", 1);
+		shader_set_float(scene->shaders.debug, "lod", 0.0F);
 
 		glActiveTexture(GL_TEXTURE0);
 		if (mgr->env_transition_mode == ENV_TRANSITION_CROSSFADE &&
-		    scene->transition_snapshot_tex != 0 &&
+		    scene->gpu.transition_snapshot_tex != 0 &&
 		    mgr->transition_state == TRANSITION_FADE_IN) {
 			/* Crossfade: Bind snapshot texture */
 			glBindTexture(GL_TEXTURE_2D,
-			              scene->transition_snapshot_tex);
+			              scene->gpu.transition_snapshot_tex);
 		} else {
 			/* Black Screen / Initial Load: Bind dummy black */
-			glBindTexture(GL_TEXTURE_2D, scene->dummy_black_tex);
+			glBindTexture(GL_TEXTURE_2D,
+			              scene->gpu.dummy_black_tex);
 		}
 
-		glBindVertexArray(scene->quad_vbo);
+		glBindVertexArray(scene->gpu.quad_vbo);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);
 
