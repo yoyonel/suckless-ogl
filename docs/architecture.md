@@ -100,13 +100,13 @@ To avoid cyclic dependencies:
 - Module headers are included at the **end** of `app.h` to ensure they can see the full `App` definition if necessary (though they primarily use pointers).
 - Specialized source files (`.c`) include `app.h` and the required renderer headers directly.
 
-### Scene Decomposition (SceneVisuals, SceneSimulation)
+### Scene Decomposition (SceneVisuals, SceneSimulation, SceneLighting)
 
 The `Scene` struct is being decomposed into domain-aligned sub-structs:
 
 - **`SceneVisuals`** (`include/scene.h`): Groups visual effects — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Access via `scene->visuals.skybox`, etc.
 - **`SceneSimulation`** (`include/scene.h`): Groups N-body state — `NBodySim`, `nbody_mode`. Access via `scene->simulation.nbody_sim`, etc.
-- Future phase will extract `SceneLighting` (IBL, probes, materials).
+- **`SceneLighting`** (`include/scene.h`): Groups IBL, probes, and materials — `IBLCoordinator`, `LightProbeGrid`, `MaterialLib*`. Access via `scene->lighting.ibl_coord`, etc.
 
 This reduces `Scene`'s direct field count and localizes domain-specific changes.
 

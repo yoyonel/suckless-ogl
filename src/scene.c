@@ -90,8 +90,8 @@ static void scene_scan_hdr_files(Scene* scene)
 
 static void scene_init_instancing(Scene* scene)
 {
-	const int total_count =
-	    MIN(scene->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int total_count = MIN(scene->lighting.material_lib->count,
+	                            DEFAULT_COLS * DEFAULT_COLS);
 	const int cols = DEFAULT_COLS;
 	const int rows = (total_count + cols - 1) / cols;
 	const float spacing = DEFAULT_SPACING;
@@ -118,7 +118,7 @@ static void scene_init_instancing(Scene* scene)
 		vec3 position = {pos_x, pos_y, 0.0F};
 		// NOLINTNEXTLINE(misc-include-cleaner)
 		glm_translate(data[i].model, position);
-		PBRMaterial* mat = &scene->material_lib->materials[i];
+		PBRMaterial* mat = &scene->lighting.material_lib->materials[i];
 		glm_vec3_copy(mat->albedo, data[i].albedo);
 		data[i].metallic = mat->metallic;
 		data[i].roughness = mat->roughness;
@@ -151,15 +151,15 @@ static void scene_init_instancing(Scene* scene)
 	                        scene->wire_quad_vbo, scene->wire_cube_vbo);
 
 	/* Initialize Light Probe Grid with Scene Data */
-	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
-	                           sizeof(SphereInstance));
+	light_probe_grid_set_scene(&scene->lighting.probe_grid, data,
+	                           total_count, sizeof(SphereInstance));
 
 	/* Initialize Light Probe Grid Bounding Box with Scene Data */
-	light_probe_grid_compute_aabb(&scene->probe_grid, data, total_count,
-	                              sizeof(SphereInstance),
+	light_probe_grid_compute_aabb(&scene->lighting.probe_grid, data,
+	                              total_count, sizeof(SphereInstance),
 	                              DEFAULT_SPACING * HALF_OFFSET_MULTIPLIER);
 	/* Trigger initial async calculation */
-	light_probe_grid_update_async(&scene->probe_grid);
+	light_probe_grid_update_async(&scene->lighting.probe_grid);
 
 	free(data);
 }
@@ -167,8 +167,8 @@ static void scene_init_instancing(Scene* scene)
 #ifdef USE_SSBO_RENDERING
 static void scene_init_ssbo(Scene* scene)
 {
-	const int total_count =
-	    MIN(scene->material_lib->count, DEFAULT_COLS * DEFAULT_COLS);
+	const int total_count = MIN(scene->lighting.material_lib->count,
+	                            DEFAULT_COLS * DEFAULT_COLS);
 	const int cols = DEFAULT_COLS;
 	const int rows = (total_count + cols - 1) / cols;
 	const float spacing = DEFAULT_SPACING;
@@ -194,7 +194,7 @@ static void scene_init_ssbo(Scene* scene)
 		                      (grid_h * HALF_OFFSET_MULTIPLIER));
 		vec3 position = {pos_x, pos_y, 0.0F};
 		glm_translate(data[i].model, position);
-		PBRMaterial* mat = &scene->material_lib->materials[i];
+		PBRMaterial* mat = &scene->lighting.material_lib->materials[i];
 		glm_vec3_copy(mat->albedo, data[i].albedo);
 		data[i].metallic = mat->metallic;
 		data[i].roughness = mat->roughness;
@@ -208,14 +208,14 @@ static void scene_init_ssbo(Scene* scene)
 	                     scene->icosphere_nbo, scene->icosphere_ebo);
 
 	/* Initialize Light Probe Grid with Scene Data (SSBO Mode) */
-	light_probe_grid_set_scene(&scene->probe_grid, data, total_count,
-	                           sizeof(SphereInstanceSSBO));
+	light_probe_grid_set_scene(&scene->lighting.probe_grid, data,
+	                           total_count, sizeof(SphereInstanceSSBO));
 
 	/* Initialize Light Probe Grid Bounding Box with Scene Data */
-	light_probe_grid_compute_aabb(&scene->probe_grid, data, total_count,
-	                              sizeof(SphereInstanceSSBO),
+	light_probe_grid_compute_aabb(&scene->lighting.probe_grid, data,
+	                              total_count, sizeof(SphereInstanceSSBO),
 	                              DEFAULT_SPACING * HALF_OFFSET_MULTIPLIER);
-	light_probe_grid_update_async(&scene->probe_grid);
+	light_probe_grid_update_async(&scene->lighting.probe_grid);
 
 	free(data);
 }
@@ -337,7 +337,7 @@ static int scene_init_compute_resources(Scene* scene)
 		return 0;
 	}
 
-	ibl_coordinator_init(&scene->ibl_coord, scene->spmap_program,
+	ibl_coordinator_init(&scene->lighting.ibl_coord, scene->spmap_program,
 	                     scene->irmap_program, scene->lum_pass1_program,
 	                     scene->lum_pass2_program);
 	return 1;
@@ -433,7 +433,7 @@ int scene_init(Scene* scene)
 	glGenBuffers(1, &scene->icosphere_nbo);
 	glGenBuffers(1, &scene->icosphere_ebo);
 
-	scene->material_lib =
+	scene->lighting.material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
 
 	if (!scene_init_compute_resources(scene)) {
@@ -442,14 +442,14 @@ int scene_init(Scene* scene)
 
 	/* Initialize Probe Grid: dense grid covering the full sphere extent. */
 	{
-		int sphere_count = scene->material_lib->count;
+		int sphere_count = scene->lighting.material_lib->count;
 		if (sphere_count > (DEFAULT_COLS * DEFAULT_COLS)) {
 			sphere_count = DEFAULT_COLS * DEFAULT_COLS;
 		}
 		const int pcols = DEFAULT_COLS;
 		const int prows = (sphere_count + pcols - 1) / pcols;
-		light_probe_grid_init(&scene->probe_grid, (2 * pcols) + 1,
-		                      (2 * prows) + 1, 3);
+		light_probe_grid_init(&scene->lighting.probe_grid,
+		                      (2 * pcols) + 1, (2 * prows) + 1, 3);
 	}
 
 	Shader* inst_shader = NULL;
@@ -556,16 +556,16 @@ void scene_cleanup(Scene* scene)
 	ssbo_group_cleanup(&scene->ssbo_group);
 #endif
 
-	if (scene->material_lib) {
-		material_free_lib(scene->material_lib);
-		scene->material_lib = NULL;
+	if (scene->lighting.material_lib) {
+		material_free_lib(scene->lighting.material_lib);
+		scene->lighting.material_lib = NULL;
 	}
 
 	scene_cleanup_shaders(scene);
 	scene_cleanup_gpu_resources(scene);
 
-	ibl_coordinator_cleanup(&scene->ibl_coord);
-	light_probe_grid_cleanup(&scene->probe_grid);
+	ibl_coordinator_cleanup(&scene->lighting.ibl_coord);
+	light_probe_grid_cleanup(&scene->lighting.probe_grid);
 
 	if (scene->hdr_files) {
 		for (int i = 0; i < scene->hdr_count; i++) {
@@ -622,7 +622,7 @@ void scene_update_gpu_buffers(Scene* scene)
 static void scene_bind_probe_textures(Scene* scene)
 {
 	for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
-		GLuint tex = scene->probe_grid.sh_textures[i];
+		GLuint tex = scene->lighting.probe_grid.sh_textures[i];
 		if (tex != scene->bound_sh_textures[i]) {
 			glActiveTexture(
 			    (GLenum)(GL_TEXTURE0 + TEXTURE_UNIT_SH_START + i));
@@ -631,10 +631,10 @@ static void scene_bind_probe_textures(Scene* scene)
 		}
 	}
 
-	if (scene->probe_grid.ssbo != scene->bound_probe_ssbo) {
+	if (scene->lighting.probe_grid.ssbo != scene->bound_probe_ssbo) {
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
-		                 scene->probe_grid.ssbo);
-		scene->bound_probe_ssbo = scene->probe_grid.ssbo;
+		                 scene->lighting.probe_grid.ssbo);
+		scene->bound_probe_ssbo = scene->lighting.probe_grid.ssbo;
 	}
 }
 
@@ -677,13 +677,15 @@ static void scene_render_billboards(Scene* scene, mat4 view, mat4 proj,
 		ubo.debug_mode = scene->pbr_debug_mode;
 		ubo.screen_size[0] = (float)width;
 		ubo.screen_size[1] = (float)height;
-		glm_vec3_copy(scene->probe_grid.aabb_min, ubo.probe_grid_min);
+		glm_vec3_copy(scene->lighting.probe_grid.aabb_min,
+		              ubo.probe_grid_min);
 		ubo.gi_mode = (int32_t)scene->gi_mode;
-		glm_vec3_copy(scene->probe_grid.aabb_max, ubo.probe_grid_max);
+		glm_vec3_copy(scene->lighting.probe_grid.aabb_max,
+		              ubo.probe_grid_max);
 		ubo.specular_aa_enabled = scene->specular_aa_enabled;
-		ubo.probe_grid_dim[0] = scene->probe_grid.grid_dim[0];
-		ubo.probe_grid_dim[1] = scene->probe_grid.grid_dim[1];
-		ubo.probe_grid_dim[2] = scene->probe_grid.grid_dim[2];
+		ubo.probe_grid_dim[0] = scene->lighting.probe_grid.grid_dim[0];
+		ubo.probe_grid_dim[1] = scene->lighting.probe_grid.grid_dim[1];
+		ubo.probe_grid_dim[2] = scene->lighting.probe_grid.grid_dim[2];
 		ubo.aa_mode = scene->aa_mode;
 
 		if (scene->billboard_ubo_ptr) {
@@ -797,15 +799,15 @@ static void scene_render_instanced(Scene* scene, mat4 view, mat4 proj,
 
 	/* Probe Grid spatial bounds and GI Toggle */
 	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_min,
-	                    scene->probe_grid.aabb_min);
+	                    scene->lighting.probe_grid.aabb_min);
 	shader_set_vec3_loc(scene->instanced_uniforms.probe_grid_max,
-	                    scene->probe_grid.aabb_max);
+	                    scene->lighting.probe_grid.aabb_max);
 
 	if (scene->instanced_uniforms.probe_grid_dim != -1) {
 		glUniform3i(scene->instanced_uniforms.probe_grid_dim,
-		            scene->probe_grid.grid_dim[0],
-		            scene->probe_grid.grid_dim[1],
-		            scene->probe_grid.grid_dim[2]);
+		            scene->lighting.probe_grid.grid_dim[0],
+		            scene->lighting.probe_grid.grid_dim[1],
+		            scene->lighting.probe_grid.grid_dim[2]);
 	}
 	shader_set_int_loc(scene->instanced_uniforms.gi_mode,
 	                   (int)scene->gi_mode);
@@ -841,7 +843,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 	if (scene->gi_mode != GI_MODE_OFF || scene->show_probe_grid) {
 		PROFILE_ZONE(gi_sync_ctx,
 		             "GI Light Probe Grid Sync (buffer upload)");
-		light_probe_grid_sync(&scene->probe_grid);
+		light_probe_grid_sync(&scene->lighting.probe_grid);
 		/* Sync clobbers 3D texture bindings on the current unit
 		 * via glBindTexture(GL_TEXTURE_3D, 0) — invalidate cache
 		 * so scene_bind_probe_textures() will re-bind. */
@@ -1044,7 +1046,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 	}
 
 	if (scene->show_probe_grid) {
-		light_probe_grid_render_debug(&scene->probe_grid, view, proj);
+		light_probe_grid_render_debug(&scene->lighting.probe_grid, view,
+		                              proj);
 	}
 }
 

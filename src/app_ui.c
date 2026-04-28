@@ -1234,7 +1234,7 @@ static void draw_nbody_overlay(const App* app, UILayout* layout)
 
 static void draw_loading_indicator(const App* app)
 {
-	if (app->scene.ibl_coord.state == IBL_STATE_IDLE &&
+	if (app->scene.lighting.ibl_coord.state == IBL_STATE_IDLE &&
 	    !app->env_mgr.env_map_loading) {
 		return;
 	}

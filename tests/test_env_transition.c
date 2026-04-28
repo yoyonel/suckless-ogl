@@ -61,7 +61,7 @@ void test_transition_initial_state(void)
 {
 	g_test_app->env_mgr.transition_state = TRANSITION_WAIT_IBL;
 	g_test_app->env_mgr.transition_alpha = 1.0F;
-	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	env_manager_update_ibl(
@@ -80,7 +80,7 @@ void test_transition_crossfade_flow(void)
 {
 	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_CROSSFADE;
 	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
-	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	env_manager_update_ibl(
@@ -103,7 +103,7 @@ void test_transition_black_screen_flow(void)
 {
 	g_test_app->env_mgr.env_transition_mode = ENV_TRANSITION_BLACK_SCREEN;
 	g_test_app->env_mgr.transition_state = TRANSITION_LOADING;
-	g_test_app->scene.ibl_coord.state = IBL_STATE_DONE;
+	g_test_app->scene.lighting.ibl_coord.state = IBL_STATE_DONE;
 
 	/* Simulate state machine processing */
 	env_manager_update_ibl(

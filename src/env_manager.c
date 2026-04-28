@@ -185,8 +185,8 @@ static void handle_ibl_done_wait_state(EnvManager* mgr, Scene* scene,
 	GLuint irr_tex = 0;
 	float threshold = 0.0F;
 
-	if (ibl_coordinator_get_results(&scene->ibl_coord, &hdr_tex, &spec_tex,
-	                                &irr_tex, &threshold)) {
+	if (ibl_coordinator_get_results(&scene->lighting.ibl_coord, &hdr_tex,
+	                                &spec_tex, &irr_tex, &threshold)) {
 		finalize_ibl_swap(scene, postproc, hdr_tex, spec_tex, irr_tex,
 		                  threshold, frame_count);
 		mgr->transition_state = TRANSITION_FADE_IN;
@@ -211,8 +211,8 @@ static void handle_ibl_done_loading_state(EnvManager* mgr, Scene* scene,
 		GLuint irr_tex = 0;
 		float threshold = 0.0F;
 
-		if (ibl_coordinator_get_results(&scene->ibl_coord, &hdr_tex,
-		                                &spec_tex, &irr_tex,
+		if (ibl_coordinator_get_results(&scene->lighting.ibl_coord,
+		                                &hdr_tex, &spec_tex, &irr_tex,
 		                                &threshold)) {
 			capture_snapshot(scene, width, height);
 			finalize_ibl_swap(scene, postproc, hdr_tex, spec_tex,
@@ -227,7 +227,8 @@ void env_manager_update_ibl(EnvManager* mgr, Scene* scene,
                             PostProcess* postproc, uint64_t frame_count,
                             int width, int height)
 {
-	IBLState state = ibl_coordinator_update(&scene->ibl_coord, frame_count);
+	IBLState state =
+	    ibl_coordinator_update(&scene->lighting.ibl_coord, frame_count);
 
 	if (state == IBL_STATE_DONE) {
 		if (mgr->transition_state == TRANSITION_WAIT_IBL) {
@@ -263,9 +264,9 @@ void env_manager_update_transition(EnvManager* mgr, Scene* scene,
 			GLuint spec_tex = 0;
 			GLuint irr_tex = 0;
 			float threshold = 0.0F;
-			if (ibl_coordinator_get_results(&scene->ibl_coord,
-			                                &hdr_tex, &spec_tex,
-			                                &irr_tex, &threshold)) {
+			if (ibl_coordinator_get_results(
+			        &scene->lighting.ibl_coord, &hdr_tex, &spec_tex,
+			        &irr_tex, &threshold)) {
 				finalize_ibl_swap(scene, postproc, hdr_tex,
 				                  spec_tex, irr_tex, threshold,
 				                  frame_count);

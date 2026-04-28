@@ -60,13 +60,13 @@ App
     └── EffectContext  (seam vers les effets individuels)
 ```
 
-### Décomposition de Scene (SceneVisuals, SceneSimulation)
+### Décomposition de Scene (SceneVisuals, SceneSimulation, SceneLighting)
 
 La structure `Scene` est progressivement décomposée en sous-structs par domaine :
 
 - **`SceneVisuals`** (`include/scene.h`) : regroupe les effets visuels — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Accès via `scene->visuals.skybox`, etc.
 - **`SceneSimulation`** (`include/scene.h`) : regroupe l'état N-body — `NBodySim`, `nbody_mode`. Accès via `scene->simulation.nbody_sim`, etc.
-- La phase suivante extraira `SceneLighting` (IBL, probes, matériaux).
+- **`SceneLighting`** (`include/scene.h`) : regroupe IBL, probes et matériaux — `IBLCoordinator`, `LightProbeGrid`, `MaterialLib*`. Accès via `scene->lighting.ibl_coord`, etc.
 
 Cela réduit le nombre de champs directs de `Scene` et localise les changements par domaine.
 
