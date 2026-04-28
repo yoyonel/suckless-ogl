@@ -110,6 +110,14 @@ The `Scene` struct is being decomposed into domain-aligned sub-structs:
 
 This reduces `Scene`'s direct field count and localizes domain-specific changes.
 
+### App Decomposition (AppProfiling)
+
+The `App` struct is being decomposed into domain-aligned sub-structs:
+
+- **`AppProfiling`** (`include/app.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling.gpu_profiler`, etc.
+
+This reduces `App`'s direct field count (8 fields → 1 sub-struct) and localizes performance-monitoring changes.
+
 ### Effect Decoupling (EffectContext)
 
 Post-processing effects (bloom, DoF, auto-exposure, motion blur, LUT, LUT viz) are progressively decoupled from the `PostProcess` God Object via an `EffectContext` seam:
