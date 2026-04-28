@@ -1,5 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include "app.h"
+#include "app_input_state.h"
+#include "app_profiling.h"
 #include "gl_common.h"
 #include "main.h"
 #include "renderer.h"
@@ -29,9 +31,9 @@ static RenderContext test_render_ctx_from_app(App* app)
 	return (RenderContext){
 	    .scene = &app->scene,
 	    .postprocess = &app->postprocess,
-	    .camera = &app->input.camera,
-	    .profiler = &app->profiling.gpu_profiler,
-	    .profiler_ui = &app->profiling.timeline_ui,
+	    .camera = &app->input->camera,
+	    .profiler = &app->profiling->gpu_profiler,
+	    .profiler_ui = &app->profiling->timeline_ui,
 	    .env_mgr = &app->env_mgr,
 	    .notifier = &app->notifier,
 	    .effect_bench = &app->effect_bench,
@@ -39,7 +41,7 @@ static RenderContext test_render_ctx_from_app(App* app)
 	    .height = app->height,
 	    .delta_time = app->delta_time,
 	    .frame_count = app->frame_count,
-	    .log_gpu_metrics = app->profiling.log_gpu_metrics,
+	    .log_gpu_metrics = app->profiling->log_gpu_metrics,
 	    .render_ui = test_render_ui_trampoline,
 	    .render_ui_data = app,
 	};
@@ -76,12 +78,12 @@ void test_stencil_depth_consistency(void)
 	/* 1. Ensure scene is ready */
 
 	/* 2. Set camera to look at center area */
-	g_test_app.input.camera.position[0] = 0.0F;
-	g_test_app.input.camera.position[1] = 0.0F;
-	g_test_app.input.camera.position[2] = TEST_CAMERA_Z;
-	g_test_app.input.camera.yaw = TEST_CAMERA_YAW;
-	g_test_app.input.camera.pitch = TEST_CAMERA_PITCH;
-	camera_update_vectors(&g_test_app.input.camera);
+	g_test_app.input->camera.position[0] = 0.0F;
+	g_test_app.input->camera.position[1] = 0.0F;
+	g_test_app.input->camera.position[2] = TEST_CAMERA_Z;
+	g_test_app.input->camera.yaw = TEST_CAMERA_YAW;
+	g_test_app.input->camera.pitch = TEST_CAMERA_PITCH;
+	camera_update_vectors(&g_test_app.input->camera);
 
 	/* 3. Wait for scene to be ready */
 	for (int i = 0; i < POLL_TIMEOUT; i++) {

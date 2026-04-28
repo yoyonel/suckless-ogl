@@ -28,7 +28,18 @@ int app_init(App* app, int width, int height, const char* title)
 	app->width = width;
 	app->height = height;
 
-	app_input_state_init(&app->input);
+	app->input = calloc(1, sizeof(*app->input));
+	if (!app->input) {
+		return 0;
+	}
+	app->profiling = calloc(1, sizeof(*app->profiling));
+	if (!app->profiling) {
+		free(app->input);
+		app->input = NULL;
+		return 0;
+	}
+
+	app_input_state_init(app->input);
 	app->is_fullscreen = false;
 	app->resize_pending = 0;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
@@ -46,13 +57,13 @@ int app_init(App* app, int width, int height, const char* title)
 	glfwSetScrollCallback(app->window, scroll_callback);
 	glfwSetFramebufferSizeCallback(app->window, framebuffer_size_callback);
 
-	if (app->input.camera_enabled) {
+	if (app->input->camera_enabled) {
 		glfwSetInputMode(app->window, GLFW_CURSOR,
 		                 GLFW_CURSOR_DISABLED);
 	}
 
 	/* Initialize all profiling sub-systems (needs GL context) */
-	app_profiling_init(&app->profiling, width, height);
+	app_profiling_init(app->profiling, width, height);
 
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
@@ -72,7 +83,7 @@ int app_init(App* app, int width, int height, const char* title)
 		return 0;
 	}
 
-	app->async_loader = async_loader_create(&app->profiling.tracy_mgr);
+	app->async_loader = async_loader_create(&app->profiling->tracy_mgr);
 	if (!app->async_loader) {
 		return 0;
 	}
@@ -105,7 +116,7 @@ int app_init(App* app, int width, int height, const char* title)
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
 
-	if (!postprocess_init(&app->postprocess, &app->profiling.gpu_profiler,
+	if (!postprocess_init(&app->postprocess, &app->profiling->gpu_profiler,
 	                      width, height)) {
 		return 0;
 	}
@@ -123,7 +134,7 @@ int app_init(App* app, int width, int height, const char* title)
 	action_notifier_init(&app->notifier);
 
 	effect_benchmark_init(&app->effect_bench, &app->postprocess,
-	                      &app->profiling.gpu_profiler);
+	                      &app->profiling->gpu_profiler);
 
 	return 1;
 }
@@ -149,14 +160,18 @@ void app_cleanup(App* app)
 
 	async_coordinator_cleanup(&app->async_coord);
 
-	app_input_state_cleanup(&app->input);
+	app_input_state_cleanup(app->input);
+	free(app->input);
+	app->input = NULL;
 
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 		app->lum_histogram_buffer = NULL;
 	}
 
-	app_profiling_cleanup(&app->profiling);
+	app_profiling_cleanup(app->profiling);
+	free(app->profiling);
+	app->profiling = NULL;
 
 	window_destroy(app->window);
 	app->window = NULL;
@@ -191,16 +206,16 @@ void app_run(App* app)
 		}
 
 		bool profiling_enabled =
-		    (app->profiling.timeline_ui.visible ||
-		     app->profiling.log_gpu_metrics != 0 ||
+		    (app->profiling->timeline_ui.visible ||
+		     app->profiling->log_gpu_metrics != 0 ||
 		     effect_benchmark_is_running(&app->effect_bench)) != 0;
-		gpu_profiler_set_enabled(&app->profiling.gpu_profiler,
+		gpu_profiler_set_enabled(&app->profiling->gpu_profiler,
 		                         profiling_enabled);
-		gpu_profiler_begin_frame(&app->profiling.gpu_profiler,
+		gpu_profiler_begin_frame(&app->profiling->gpu_profiler,
 		                         app->frame_count);
 
 		/* 1. Global Measure (includes CPU update and GPU swap) */
-		GPU_STAGE_PROFILER(&app->profiling.gpu_profiler, "Total Frame",
+		GPU_STAGE_PROFILER(&app->profiling->gpu_profiler, "Total Frame",
 		                   GPU_PROFILER_TOTAL_FRAME_COLOR);
 
 		{
@@ -209,14 +224,14 @@ void app_run(App* app)
 			double current_time = glfwGetTime();
 			app->delta_time = current_time - app->last_frame_time;
 			app->last_frame_time = current_time;
-			fps_update(&app->profiling.fps_counter, app->delta_time,
-			           current_time);
+			fps_update(&app->profiling->fps_counter,
+			           app->delta_time, current_time);
 			adaptive_sampler_should_sample(
-			    &app->input.fps_sampler, (float)app->delta_time,
+			    &app->input->fps_sampler, (float)app->delta_time,
 			    current_time, app->frame_count);
 			if (adaptive_sampler_is_finished(
-			        &app->input.fps_sampler, current_time)) {
-				adaptive_sampler_reset(&app->input.fps_sampler,
+			        &app->input->fps_sampler, current_time)) {
+				adaptive_sampler_reset(&app->input->fps_sampler,
 				                       current_time);
 			}
 			PROFILE_ZONE_END(timing_ctx);
@@ -229,15 +244,15 @@ void app_run(App* app)
 			app_ui_update(&app->overlay, app->delta_time);
 			postprocess_update_time(&app->postprocess,
 			                        (float)app->delta_time);
-			gpu_usage_update(&app->profiling.gpu_usage);
+			gpu_usage_update(&app->profiling->gpu_usage);
 			PROFILE_ZONE_END(ui_notif_ctx);
 		}
 
 		{
 			PROFILE_ZONE(camera_ctx, "Camera Physics");
 			GamepadActions gp_actions = {0, 0, 0};
-			if (app->input.camera_enabled) {
-				gamepad_input_poll(&app->input.gamepad,
+			if (app->input->camera_enabled) {
+				gamepad_input_poll(&app->input->gamepad,
 				                   &gp_actions);
 			}
 			if (gp_actions.env_next || gp_actions.env_prev) {
@@ -260,35 +275,38 @@ void app_run(App* app)
 				}
 			}
 			if (gp_actions.camera_reset) {
-				camera_init(
-				    &app->input.camera, DEFAULT_CAMERA_DISTANCE,
-				    DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
+				camera_init(&app->input->camera,
+				            DEFAULT_CAMERA_DISTANCE,
+				            DEFAULT_CAMERA_YAW,
+				            DEFAULT_CAMERA_PITCH);
 				app->scene.env_lod = DEFAULT_ENV_LOD;
 				action_notifier_push(&app->notifier,
 				                     "Camera & LOD Reset",
 				                     NOTIF_DUR_LONG);
 			}
-			app->input.camera.physics_accumulator +=
+			app->input->camera.physics_accumulator +=
 			    (float)app->delta_time;
-			while (app->input.camera.physics_accumulator >=
-			       app->input.camera.fixed_timestep) {
-				camera_build_keyboard_input(&app->input.camera);
-				gamepad_write_input(&app->input.gamepad,
-				                    &app->input.camera);
-				camera_fixed_update(&app->input.camera);
-				app->input.camera.physics_accumulator -=
-				    app->input.camera.fixed_timestep;
+			while (app->input->camera.physics_accumulator >=
+			       app->input->camera.fixed_timestep) {
+				camera_build_keyboard_input(
+				    &app->input->camera);
+				gamepad_write_input(&app->input->gamepad,
+				                    &app->input->camera);
+				camera_fixed_update(&app->input->camera);
+				app->input->camera.physics_accumulator -=
+				    app->input->camera.fixed_timestep;
 			}
 
-			float alpha = app->input.camera.rotation_smoothing;
-			app->input.camera.yaw += (app->input.camera.yaw_target -
-			                          app->input.camera.yaw) *
-			                         alpha;
-			app->input.camera.pitch +=
-			    (app->input.camera.pitch_target -
-			     app->input.camera.pitch) *
+			float alpha = app->input->camera.rotation_smoothing;
+			app->input->camera.yaw +=
+			    (app->input->camera.yaw_target -
+			     app->input->camera.yaw) *
 			    alpha;
-			camera_update_vectors(&app->input.camera);
+			app->input->camera.pitch +=
+			    (app->input->camera.pitch_target -
+			     app->input->camera.pitch) *
+			    alpha;
+			camera_update_vectors(&app->input->camera);
 			PROFILE_ZONE_END(camera_ctx);
 		}
 
@@ -329,9 +347,9 @@ void app_run(App* app)
 			RenderContext rctx = {
 			    .scene = &app->scene,
 			    .postprocess = &app->postprocess,
-			    .camera = &app->input.camera,
-			    .profiler = &app->profiling.gpu_profiler,
-			    .profiler_ui = &app->profiling.timeline_ui,
+			    .camera = &app->input->camera,
+			    .profiler = &app->profiling->gpu_profiler,
+			    .profiler_ui = &app->profiling->timeline_ui,
 			    .env_mgr = &app->env_mgr,
 			    .notifier = &app->notifier,
 			    .effect_bench = &app->effect_bench,
@@ -339,7 +357,7 @@ void app_run(App* app)
 			    .height = app->height,
 			    .delta_time = app->delta_time,
 			    .frame_count = app->frame_count,
-			    .log_gpu_metrics = app->profiling.log_gpu_metrics,
+			    .log_gpu_metrics = app->profiling->log_gpu_metrics,
 			    .render_ui = app_render_ui_trampoline,
 			    .render_ui_data = app,
 			};
@@ -350,12 +368,12 @@ void app_run(App* app)
 		{
 			PROFILE_ZONE(tracy_mark_ctx, "Tracy Mark/Screenshots");
 			tracy_manager_update_screenshots(
-			    &app->profiling.tracy_mgr, app);
+			    &app->profiling->tracy_mgr, app);
 			PROFILE_ZONE_END(tracy_mark_ctx);
 		}
 
 		{
-			GPU_STAGE_PROFILER(&app->profiling.gpu_profiler,
+			GPU_STAGE_PROFILER(&app->profiling->gpu_profiler,
 			                   "Swap Buffers",
 			                   GPU_PROFILER_UI_COLOR);
 			PROFILE_ZONE(swap_ctx, "GLFW SwapBuffers");

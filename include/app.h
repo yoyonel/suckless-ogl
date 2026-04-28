@@ -2,8 +2,6 @@
 #define APP_H
 
 #include "action_notifier.h"
-#include "app_input_state.h"
-#include "app_profiling.h"
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
@@ -19,6 +17,10 @@
 #include "ssbo_rendering.h"
 #endif
 
+/* --- Opaque sub-struct forward declarations --- */
+typedef struct AppProfiling AppProfiling;
+typedef struct AppInput AppInput;
+
 /**
  * @struct App
  * @brief The central state container for the entire application.
@@ -33,9 +35,9 @@ typedef struct App {
 	uint64_t frame_count;    /**< Monotonic frame counter. */
 	float* lum_histogram_buffer; /**< Pre-allocated buffer for histogram. */
 
-	/* --- Sub-Modules (RAII/In-Place) --- */
-	AppProfiling profiling; /**< Profiling and metrics sub-system. */
-	AppInput input;       /**< Camera, gamepad, key-bindings sub-system. */
+	/* --- Sub-Modules (Opaque, Heap-Allocated) --- */
+	AppProfiling* profiling; /**< Profiling and metrics sub-system. */
+	AppInput* input;      /**< Camera, gamepad, key-bindings sub-system. */
 	AppUIOverlay overlay; /**< Overlay and text rendering state. */
 
 	/* --- App State Flags and Values --- */
