@@ -11,5 +11,5 @@ var gamepad__input_8h =
     [ "gamepad_apply_deadzone", "gamepad__input_8h.html#a8918722fe2ae5795c45d1b192cfc7c0c", null ],
     [ "gamepad_input_init", "gamepad__input_8h.html#a7675da2a057eba16844b2250a15a8f56", null ],
     [ "gamepad_input_poll", "gamepad__input_8h.html#ae5e7070f32bd2ddff5493d970654dd30", null ],
-    [ "gamepad_write_input", "gamepad__input_8h.html#a0172eef66adc551ec0c8f5c539a62cc7", null ]
+    [ "gamepad_write_input", "gamepad__input_8h.html#afa50c87039ef832f969bafb592445eff", null ]
 ];

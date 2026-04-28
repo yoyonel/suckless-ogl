@@ -39,6 +39,7 @@ var annotated_dup =
     [ "FpsCounter", "structFpsCounter.html", "structFpsCounter" ],
     [ "FXAAParams", "structFXAAParams.html", "structFXAAParams" ],
     [ "GamepadActions", "structGamepadActions.html", "structGamepadActions" ],
+    [ "GamepadContext", "structGamepadContext.html", "structGamepadContext" ],
     [ "GamepadControlPos", "structGamepadControlPos.html", "structGamepadControlPos" ],
     [ "GamepadState", "structGamepadState.html", "structGamepadState" ],
     [ "GLStateBackup", "structGLStateBackup.html", "structGLStateBackup" ],

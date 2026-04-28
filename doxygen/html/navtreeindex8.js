@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"structApp.html#a6c4ecc29f155f2fe61362f464ae742dd":[5,0,4,17],
+"structApp.html#a6ca474ac6ab816680d6faa9c3446d229":[5,0,4,24],
 "structApp.html#a77a8a8df9ae179b73369d99d1b151d9a":[5,0,4,10],
 "structApp.html#a7caa82c0efd0b2e28c7a09e86970081a":[5,0,4,4],
 "structApp.html#a8578e2324ad0fa6a1cdac64e91f5aaa6":[5,0,4,16],
@@ -247,7 +249,5 @@ var NAVTREEINDEX8 =
 "structEffectBenchmark.html#a980803474b73b8f5df4875aab2db5cd7":[5,0,28,6],
 "structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018":[5,0,28,16],
 "structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d":[5,0,28,4],
-"structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8":[5,0,28,15],
-"structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943":[5,0,28,9],
-"structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3":[5,0,28,0]
+"structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8":[5,0,28,15]
 };

@@ -258,14 +258,13 @@ $(document).ready(function(){initNavTree('gamepad__input_8c.html',''); initResiz
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="gamepad__input_8h_source.html">gamepad_input.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="camera_8h_source.html">camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
 <code>#include &lt;GLFW/glfw3.h&gt;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for gamepad_input.c:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="gamepad__input_8c__incl.svg" width="559" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="gamepad__input_8c__incl.svg" width="459" height="187"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 </div>
 </div><table class="memberdecls">
@@ -290,9 +289,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ae5e7070f32bd2ddff5493d970654dd30"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30">gamepad_input_poll</a> (<a class="el" href="structGamepadState.html">GamepadState</a> *state, <a class="el" href="structGamepadActions.html">GamepadActions</a> *actions)</td></tr>
 <tr class="memdesc:ae5e7070f32bd2ddff5493d970654dd30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polls GLFW gamepad state and detects button events.  <a href="gamepad__input_8c.html#ae5e7070f32bd2ddff5493d970654dd30">More...</a><br /></td></tr>
 <tr class="separator:ae5e7070f32bd2ddff5493d970654dd30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0172eef66adc551ec0c8f5c539a62cc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gamepad__input_8c.html#a0172eef66adc551ec0c8f5c539a62cc7">gamepad_write_input</a> (const <a class="el" href="structGamepadState.html">GamepadState</a> *state, <a class="el" href="structCamera.html">Camera</a> *cam)</td></tr>
-<tr class="memdesc:a0172eef66adc551ec0c8f5c539a62cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes gamepad axes into cam-&gt;move_input and applies look.  <a href="gamepad__input_8c.html#a0172eef66adc551ec0c8f5c539a62cc7">More...</a><br /></td></tr>
-<tr class="separator:a0172eef66adc551ec0c8f5c539a62cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa50c87039ef832f969bafb592445eff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gamepad__input_8c.html#afa50c87039ef832f969bafb592445eff">gamepad_write_input</a> (const <a class="el" href="structGamepadState.html">GamepadState</a> *state, <a class="el" href="structGamepadContext.html">GamepadContext</a> *ctx)</td></tr>
+<tr class="memdesc:afa50c87039ef832f969bafb592445eff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes gamepad axes into a <a class="el" href="structGamepadContext.html" title="Minimal camera state slice for gamepad input application.">GamepadContext</a>.  <a href="gamepad__input_8c.html#afa50c87039ef832f969bafb592445eff">More...</a><br /></td></tr>
+<tr class="separator:afa50c87039ef832f969bafb592445eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a088324ad8995e3eb76024e3e79083d48"></a>
@@ -478,8 +477,8 @@ Here is the call graph for this function:</div>
 
 </div>
 </div>
-<a id="a0172eef66adc551ec0c8f5c539a62cc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0172eef66adc551ec0c8f5c539a62cc7">&#9670;&nbsp;</a></span>gamepad_write_input()</h2>
+<a id="afa50c87039ef832f969bafb592445eff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa50c87039ef832f969bafb592445eff">&#9670;&nbsp;</a></span>gamepad_write_input()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -493,8 +492,8 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structCamera.html">Camera</a> *&#160;</td>
-          <td class="paramname"><em>cam</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structGamepadContext.html">GamepadContext</a> *&#160;</td>
+          <td class="paramname"><em>ctx</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -504,12 +503,12 @@ Here is the call graph for this function:</div>
       </table>
 </div><div class="memdoc">
 
-<p>Writes gamepad axes into cam-&gt;move_input and applies look. </p>
-<p>Overlays analog stick values onto the camera's unified move_input. Must be called after camera_build_keyboard_input and before camera_fixed_update each physics step.</p>
+<p>Writes gamepad axes into a <a class="el" href="structGamepadContext.html" title="Minimal camera state slice for gamepad input application.">GamepadContext</a>. </p>
+<p>Overlays analog stick values onto move_input and applies look (yaw/pitch). The caller bridges <a class="el" href="structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties.">Camera</a> ↔ <a class="el" href="structGamepadContext.html" title="Minimal camera state slice for gamepad input application.">GamepadContext</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>Pointer to the gamepad state (with cached axes). </td></tr>
-    <tr><td class="paramname">cam</td><td>Pointer to the camera to drive. </td></tr>
+    <tr><td class="paramname">ctx</td><td>Pointer to the context to write into. </td></tr>
   </table>
   </dd>
 </dl>

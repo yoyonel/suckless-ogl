@@ -84,16 +84,16 @@ var NAVTREEINDEX =
 "../../index.html",
 "app__ui_8h.html#aaf76e00a44e28d6b60824890cf02af45",
 "effect__benchmark_8h.html#a392e325c2453fe315ac40f4f4a1194a3",
-"globals_x.html",
-"ibl__coordinator_8c.html#aeca35c868d46274d0d55fc83628a3cce",
-"pbr_8c.html#a4751ae91e8a7caee11606c0b95b59715",
-"postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b",
-"sh__math_8c.html#a9624fdfc28e11cd9503f2fe43a4ba4b0",
-"structApp.html#a77a8a8df9ae179b73369d99d1b151d9a",
-"structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782",
-"structLightProbeGrid.html#a9ba082f37a70c6e80d5ff49169462339",
-"structSH9.html",
-"tracy__log_8c.html"
+"globals_vars_z.html",
+"ibl__coordinator_8c.html#ad724e11eb756c49bf2e1f0603946b3e0",
+"pbr_8c.html#a2e45982e37b3d9cbcaa5454ddbb5a660",
+"postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da",
+"sh__math_8c.html#a8a9da4256dd3690ceb03fbab9f7bd03c",
+"structApp.html#a6c4ecc29f155f2fe61362f464ae742dd",
+"structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943",
+"structLightProbeGrid.html#a211bb382e4ab8b38bec9dbfd710a5c11",
+"structRenderContext.html#a3dc178776cecb1fda586e0a257a87e4f",
+"texture_8h.html#aec66cef20e7ef9260fd363ab5408a594"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

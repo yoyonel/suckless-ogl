@@ -19,6 +19,9 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "effect_benchmark.h", "effect__benchmark_8h.html", "effect__benchmark_8h" ],
     [ "env_manager.h", "env__manager_8h.html", "env__manager_8h" ],
     [ "fps.h", "fps_8h.html", "fps_8h" ],
+    [ "gamepad_context.h", "gamepad__context_8h.html", [
+      [ "GamepadContext", "structGamepadContext.html", "structGamepadContext" ]
+    ] ],
     [ "gamepad_input.h", "gamepad__input_8h.html", "gamepad__input_8h" ],
     [ "gl_common.h", "gl__common_8h.html", "gl__common_8h" ],
     [ "gl_debug.h", "gl__debug_8h.html", "gl__debug_8h" ],
