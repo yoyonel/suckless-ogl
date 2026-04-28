@@ -17,7 +17,7 @@ The workflow is triggered automatically events:
 - **Pull Requests**:
   - Runs quality checks (Lint, Format).
   - Runs unit tests and visual regression tests.
-  - Generates a documentation preview (deployed to Surge.sh).
+  - Generates a documentation preview (deployed to GitHub Pages).
 - **Tags (`v*`)**:
   - Triggers a **Stable Release** build.
   - Creates a GitHub Release with the corresponding version number.
@@ -52,7 +52,7 @@ The workflow is triggered automatically events:
 - **Tools**: Doxygen, Graphviz, MkDocs.
 - **Outputs**:
   - Combines manual Markdown docs and auto-generated C API docs.
-  - **Pull Requests**: Deploys a preview link to [Surge.sh](https://surge.sh).
+  - **Pull Requests**: Deploys a preview link to [GitHub Pages](https://pages.github.com/) under `pr-preview/pr-<N>/`.
   - **Master/Main**: Prepares artifacts for GitHub Pages deployment.
 
 ### 4. `build-production` (Compilation)

@@ -15,7 +15,9 @@ on:
   pull_request:
     # Pour tout le reste, on passe par les PRs (master/main comme cibles)
     # Cela garantit un seul run par commit dans une PR
+    # 'closed' is needed for PR preview cleanup on GitHub Pages
     branches: ["master", "main"]
+    types: [opened, reopened, synchronize, closed]
   schedule:
     # Build nightly tous les jours à 01h00 UTC
     - cron: '0 1 * * *'
@@ -23,6 +25,7 @@ on:
 jobs:
   # --- JOB 1 : QUALITÉ ET LINT (RAPIDE) ---
   lint-and-format:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     steps:
@@ -58,6 +61,7 @@ jobs:
 
   # --- JOB 2 : TESTS, COUVERTURE ET CAPTURES VISUELLES (LENT) ---
   test-and-coverage:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
@@ -133,6 +137,7 @@ jobs:
 
   # --- NEW JOB : TESTS WINDOWS (WINE) ---
   test-windows:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -157,6 +162,7 @@ jobs:
   # --- JOB 3 : DOCS, DIAGRAMMES ET QUALITÉ DOC ---
   documentation:
     needs: [test-and-coverage]
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}-ci:latest
     env:
@@ -184,40 +190,37 @@ jobs:
           name: doxygen-docs
           path: site/
 
-      - name: Setup Node.js
-        if: github.event_name == 'pull_request'
-        uses: actions/setup-node@v6
+  # --- JOB 3b : DEPLOY PR PREVIEW TO GITHUB PAGES ---
+  deploy-preview:
+    needs: [documentation]
+    if: github.event_name == 'pull_request' && always()
+    runs-on: ubuntu-latest
+    concurrency: preview-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download Documentation Artifact
+        if: github.event.action != 'closed'
+        uses: actions/download-artifact@v8
         with:
-          node-version: '22'
+          name: doxygen-docs
+          path: preview-site
 
-      - name: Deploy Documentation Preview (Pull Request)
-        if: github.event_name == 'pull_request'
-        env:
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
-        run: |
-          if [ -z "$SURGE_TOKEN" ]; then
-            echo "⚠️ SURGE_TOKEN est vide ou indisponible (PR provenant d'un fork potentiellement)."
-            echo "⏭️ Déploiement du preview Surge ignoré pour ne pas briser le CI."
-            echo "PREVIEW_URL=(Aperçu non disponible pour les forks)" >> $GITHUB_ENV
-            exit 0
-          fi
-          PR_NUMBER=${{ github.event.number }}
-          DEPLOY_DOMAIN="suckless-ogl-pr-$PR_NUMBER.surge.sh"
-          npx surge site/ $DEPLOY_DOMAIN --token $SURGE_TOKEN
-          echo "PREVIEW_URL=https://$DEPLOY_DOMAIN" >> $GITHUB_ENV
-
-      - name: Comment Preview Link on PR
-        if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v3
+      - name: Download Coverage for Preview
+        if: github.event.action != 'closed'
+        uses: actions/download-artifact@v8
         with:
-          message-id: docs-preview
-          message: |
-            ## ⚗️ Documentation Preview
-            The Doxygen documentation for this PR has been generated and is ready for review:
+          name: coverage-report
+          path: preview-site/coverage
 
-            🔗 **[Preview Link](${{ env.PREVIEW_URL }})**
-
-            *Last updated: ${{ github.event.pull_request.updated_at || 'Just now' }} (commit: ${{ github.sha }})*
+      - name: Deploy PR Preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./preview-site/
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto
+          comment: true
 
   # --- JOB 4 : DÉPLOIEMENT UNIFIÉ VERS GITHUB PAGES ---
   deploy-pages:
@@ -242,12 +245,12 @@ jobs:
           path: public-site/coverage
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public-site
-          keep_files: false
-          destination_dir: .
+          branch: gh-pages
+          folder: ./public-site
+          clean-exclude: pr-preview
+          force: false
 
   # --- JOB 3 : BUILDS DE PRODUCTION ---
   build-production:
