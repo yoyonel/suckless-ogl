@@ -135,6 +135,16 @@ typedef struct {
 } BillboardUniforms;
 
 /**
+ * @struct SceneVisuals
+ * @brief Visual effects grouped into a sub-struct to reduce Scene fan-out.
+ */
+typedef struct SceneVisuals {
+	Skybox skybox;                        /**< Environment renderer. */
+	TrailRenderer trail_renderer;         /**< Orbital trail renderer. */
+	ShockwaveRenderer shockwave_renderer; /**< Confinement impact VFX. */
+} SceneVisuals;
+
+/**
  * @struct Scene
  * @brief Encapsulates all 3D scene data, geometry, and rendering state.
  */
@@ -155,7 +165,7 @@ typedef struct Scene {
 	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
-	Skybox skybox; /**< Environment renderer (Shaders owned by Scene). */
+	SceneVisuals visuals;      /**< Visual effects sub-system. */
 	MaterialLib* material_lib; /**< Loaded material presets. */
 	char** hdr_files;          /**< List of found HDR files in assets. */
 	int hdr_count;             /**< Number of available environment maps. */
@@ -221,10 +231,8 @@ typedef struct Scene {
 	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
 
 	/* --- N-Body Simulation --- */
-	NBodySim nbody_sim;           /**< N-body gravitational simulation. */
-	TrailRenderer trail_renderer; /**< Orbital trail renderer. */
-	ShockwaveRenderer shockwave_renderer; /**< Confinement impact VFX. */
-	int nbody_mode;                       /**< Toggle: 0=grid, 1=N-body. */
+	NBodySim nbody_sim; /**< N-body gravitational simulation. */
+	int nbody_mode;     /**< Toggle: 0=grid, 1=N-body. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */

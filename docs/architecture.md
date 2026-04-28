@@ -100,6 +100,15 @@ To avoid cyclic dependencies:
 - Module headers are included at the **end** of `app.h` to ensure they can see the full `App` definition if necessary (though they primarily use pointers).
 - Specialized source files (`.c`) include `app.h` and the required renderer headers directly.
 
+### Scene Decomposition (SceneVisuals)
+
+The `Scene` struct is being decomposed into domain-aligned sub-structs:
+
+- **`SceneVisuals`** (`include/scene.h`): Groups visual effects — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Access via `scene->visuals.skybox`, etc.
+- Future phases will extract `SceneSimulation` (N-body, sorting) and `SceneLighting` (IBL, probes, materials).
+
+This reduces `Scene`'s direct field count and localizes visual-effect changes.
+
 ### Effect Decoupling (EffectContext)
 
 Post-processing effects (bloom, DoF, auto-exposure, motion blur, LUT, LUT viz) are progressively decoupled from the `PostProcess` God Object via an `EffectContext` seam:
