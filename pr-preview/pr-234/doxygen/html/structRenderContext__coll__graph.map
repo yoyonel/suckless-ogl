@@ -1,0 +1,52 @@
+<map id="RenderContext" name="RenderContext">
+<area shape="rect" id="node1" title="All state needed by renderer_draw_frame for a single frame. Populated by the caller (App or test harn..." alt="" coords="1475,1565,1593,1592"/>
+<area shape="rect" id="node2" href="$structEffectBenchmark.html" title="State for the automated benchmark sweep." alt="" coords="1205,1539,1339,1565"/>
+<area shape="rect" id="node3" href="$structPostProcess.html" title="Main pipeline state for post&#45;processing." alt="" coords="896,1256,996,1283"/>
+<area shape="rect" id="node4" href="$structExposureParams.html" title="Manual exposure tuning." alt="" coords="523,952,653,979"/>
+<area shape="rect" id="node5" href="$structChromAbberationParams.html" title="Focal&#45;length distortion simulation." alt="" coords="496,1003,680,1029"/>
+<area shape="rect" id="node6" href="$structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup." alt="" coords="243,775,309,801"/>
+<area shape="rect" id="node13" href="$structShaderCacheEntry.html" title="Cache entry for optimized shaders." alt="" coords="517,901,659,928"/>
+<area shape="rect" id="node36" href="$structLightProbeGrid.html" title=" " alt="" coords="529,273,647,300"/>
+<area shape="rect" id="node39" href="$structSceneShaders.html" title="All shader pointers owned by the scene." alt="" coords="717,597,831,624"/>
+<area shape="rect" id="node46" href="$structShockwaveRenderer.html" title="Manages and renders active shockwave effects." alt="" coords="511,749,665,776"/>
+<area shape="rect" id="node47" href="$structTrailRenderer.html" title="Manages trail state and GPU resources for all bodies." alt="" coords="534,800,642,827"/>
+<area shape="rect" id="node7" href="$structUniformEntry.html" title="Cached uniform metadata for fast lookup." alt="" coords="5,775,115,801"/>
+<area shape="rect" id="node8" href="$structTonemapParams.html" title="ACES&#45;like filmic tonemapping curve parameters." alt="" coords="523,1155,653,1181"/>
+<area shape="rect" id="node9" href="$structColorGradingParams.html" title="Unreal&#45;style color grading parameters." alt="" coords="511,1205,665,1232"/>
+<area shape="rect" id="node10" href="$structGrainParams.html" title="Fine&#45;grained controls for film noise." alt="" coords="535,1256,641,1283"/>
+<area shape="rect" id="node11" href="$structBandingParams.html" title="Controls for color banding/quantization." alt="" coords="527,1307,649,1333"/>
+<area shape="rect" id="node12" href="$structFXAAParams.html" title="Parameters for Fast Approximate Anti&#45;Aliasing." alt="" coords="535,1449,641,1476"/>
+<area shape="rect" id="node14" href="$structWhiteBalanceParams.html" title="Temperature and tint correction." alt="" coords="508,1500,668,1527"/>
+<area shape="rect" id="node15" href="$structGPUProfiler.html" title="Manages GPU timing using double&#45;buffered queries to avoid stalls." alt="" coords="540,1575,636,1601"/>
+<area shape="rect" id="node24" href="$structGPUProfilerUI.html" title="Manages the visual state and animations for the GPU timeline." alt="" coords="1059,1637,1170,1664"/>
+<area shape="rect" id="node16" href="$structGPUStage.html" title="Represents a single profiling stage (e.g., &quot;Shadow Map&quot;, &quot;G&#45;Buffer&quot;)." alt="" coords="233,1524,319,1551"/>
+<area shape="rect" id="node17" href="$structMetricStack.html" title=" " alt="" coords="227,1575,325,1601"/>
+<area shape="rect" id="node18" href="$structGPUQueryBuffer.html" title="Set of GL queries for one frame, with stage metadata." alt="" coords="212,1625,340,1652"/>
+<area shape="rect" id="node19" href="$structFogParams.html" title="Depth&#45;based atmospheric fog parameters." alt="" coords="541,1104,635,1131"/>
+<area shape="rect" id="node20" href="$structVignetteParams.html" title="Controls for the screen&#45;edge darkening effect." alt="" coords="525,1053,651,1080"/>
+<area shape="rect" id="node21" href="$structEffectBenchResult.html" title="Timing result for a single effect." alt="" coords="876,1539,1016,1565"/>
+<area shape="rect" id="node22" href="$structActionNotifier.html" title="Manager for action notifications." alt="" coords="1217,1652,1327,1679"/>
+<area shape="rect" id="node23" href="$structActionNotification.html" title="Represents a single active notification." alt="" coords="877,1703,1015,1729"/>
+<area shape="rect" id="node25" href="$structEnvManager.html" title="Encapsulates state for environment loading, transitions, and IBL." alt="" coords="1221,1703,1323,1729"/>
+<area shape="rect" id="node26" href="$structAsyncRequest.html" title="Container for asynchronous load results and metadata." alt="" coords="889,1753,1003,1780"/>
+<area shape="rect" id="node27" href="$structCamera.html" title="Represents a 3D camera with orientation, movement, and physical properties." alt="" coords="1235,1753,1309,1780"/>
+<area shape="rect" id="node28" href="$structScene.html" title="Encapsulates all 3D scene data, geometry, and rendering state." alt="" coords="1241,440,1303,467"/>
+<area shape="rect" id="node29" href="$structInstancedGroup.html" title="Manages mesh&#45;based instanced spheres on the GPU." alt="" coords="884,667,1008,693"/>
+<area shape="rect" id="node30" href="$structIcosphereGeometry.html" title="Container for procedural mesh data." alt="" coords="871,717,1021,744"/>
+<area shape="rect" id="node31" href="$structVec3Array.html" title="Dynamic array for cglm vec3 types." alt="" coords="544,648,632,675"/>
+<area shape="rect" id="node32" href="$structUintArray.html" title="Dynamic array for unsigned integers (mostly for mesh indices)." alt="" coords="546,699,630,725"/>
+<area shape="rect" id="node33" href="$structSceneLighting.html" title="IBL, probes, and materials grouped to reduce Scene fan&#45;out." alt="" coords="889,136,1003,163"/>
+<area shape="rect" id="node34" href="$structMaterialLib.html" title="A collection of material presets loaded from disk or defined at runtime." alt="" coords="541,187,635,213"/>
+<area shape="rect" id="node35" href="$structIBLCoordinator.html" title="Manages the progressive IBL generation process." alt="" coords="529,136,647,163"/>
+<area shape="rect" id="node37" href="$structSphereInstance.html" title="Per&#45;instance data sent to the shader via an instanced VBO." alt="" coords="215,273,337,300"/>
+<area shape="rect" id="node50" href="$structBillboardSorter.html" title="Reusable memory context for sorting operations." alt="" coords="715,443,833,469"/>
+<area shape="rect" id="node38" href="$structBillboardGroup.html" title="Manages a set of billboarded instances on the GPU." alt="" coords="887,187,1005,213"/>
+<area shape="rect" id="node40" href="$structSceneGPUResources.html" title="All GPU resource handles owned by the scene." alt="" coords="868,237,1024,264"/>
+<area shape="rect" id="node41" href="$structInstancedUniforms.html" title="Cached uniform locations for PBR instanced rendering." alt="" coords="873,288,1019,315"/>
+<area shape="rect" id="node42" href="$structDebugUniforms.html" title="Cached uniform locations for debug line rendering." alt="" coords="884,339,1008,365"/>
+<area shape="rect" id="node43" href="$structBillboardUniforms.html" title="Cached uniform locations for billboard rendering." alt="" coords="876,389,1016,416"/>
+<area shape="rect" id="node44" href="$structSceneConfig.html" title="Render configuration flags and toggles." alt="" coords="895,440,997,467"/>
+<area shape="rect" id="node45" href="$structSceneVisuals.html" title="Visual effects grouped into a sub&#45;struct to reduce Scene fan&#45;out." alt="" coords="892,777,1000,804"/>
+<area shape="rect" id="node48" href="$structSkybox.html" title="Persistent state and resource handles for the environment renderer." alt="" coords="553,851,623,877"/>
+<area shape="rect" id="node49" href="$structSceneSimulation.html" title="N&#45;body simulation state grouped to reduce Scene fan&#45;out." alt="" coords="881,553,1011,580"/>
+</map>
