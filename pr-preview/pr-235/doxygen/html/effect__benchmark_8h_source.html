@@ -1,0 +1,387 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/effect_benchmark.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('effect__benchmark_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">effect_benchmark.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="effect__benchmark_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#ifndef EFFECT_BENCHMARK_H</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define EFFECT_BENCHMARK_H</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gpu__profiler_8h.html">gpu_profiler.h</a>&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="postprocess_8h.html">postprocess.h</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#a88278dde776540885581da0ccc334688">   25</a></span>&#160;<span class="preprocessor">#define BENCH_MEASURE_FRAMES 120</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#a32364a6ecc95da5700c972dd897ce7ce">   28</a></span>&#160;<span class="preprocessor">#define BENCH_WARMUP_FRAMES 30</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#a680de61ceb066f9d9fcc08841e207189">   31</a></span>&#160;<span class="preprocessor">#define BENCH_MAX_EFFECTS 16</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#a48057cafce182b9a4c978453fe4edf25">   34</a></span>&#160;<span class="preprocessor">#define BENCH_TIMEOUT_MS 2000.0F</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">   40</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668aa4c8fb68c1ecd828d64d3b0b2ba131a7">   41</a></span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668aa4c8fb68c1ecd828d64d3b0b2ba131a7">BENCH_IDLE</a> = 0,  </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a6f0571df4d33e19c70b94975b5f496f9">   42</a></span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a6f0571df4d33e19c70b94975b5f496f9">BENCH_BASELINE</a>,  </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a8d3df8ad7cf19ec12bdd46c4265e5dca">   43</a></span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a8d3df8ad7cf19ec12bdd46c4265e5dca">BENCH_STABILIZE</a>, </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668ab2b5ceab8536f0ad10f4115d8cb0d170">   44</a></span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668ab2b5ceab8536f0ad10f4115d8cb0d170">BENCH_EFFECT_TEST</a>, </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a068777e606e97d22331b39339acc4625">BENCH_DONE</a>         </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a068777e606e97d22331b39339acc4625">   46</a></span>&#160;} <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">BenchPhase</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html">   52</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structEffectBenchResult.html">EffectBenchResult</a> {</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4">   53</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4">name</a>;        </div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html#a52e4e89dae932aba6c2ea471e959639d">   54</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structEffectBenchResult.html#a52e4e89dae932aba6c2ea471e959639d">effect_bit</a>; </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html#a11d184dd70730a52ff539c9e45cc7416">   55</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchResult.html#a11d184dd70730a52ff539c9e45cc7416">mean_ms</a>;           </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html#adbf7bbc368e1ff441c1bee518ad15c72">   56</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchResult.html#adbf7bbc368e1ff441c1bee518ad15c72">stddev_ms</a>;         </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structEffectBenchResult.html#af3d76e143d086c35aa36516dfc05526c">   57</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchResult.html#af3d76e143d086c35aa36516dfc05526c">cost_ms</a>;           </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;} <a class="code" href="structEffectBenchResult.html">EffectBenchResult</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html">   64</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structEffectBenchmark.html">EffectBenchmark</a> {</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943">   65</a></span>&#160;    <a class="code" href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">BenchPhase</a> <a class="code" href="structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943">phase</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd">   66</a></span>&#160;    <a class="code" href="structPostProcess.html">PostProcess</a>* <a class="code" href="structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd">postprocess</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782">   67</a></span>&#160;    <a class="code" href="structGPUProfiler.html">GPUProfiler</a>* <a class="code" href="structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782">profiler</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">/* Original state (restored at end) */</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8">   70</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8">saved_effects</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">/* Benchmark mask: all benchmarkable effects forced ON */</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c">   73</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c">benchmark_effects</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">/* Effect table */</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c">   77</a></span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c">name</a>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb">   78</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb">bit</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a980803474b73b8f5df4875aab2db5cd7">   79</a></span>&#160;    } <a class="code" href="structEffectBenchmark.html#a980803474b73b8f5df4875aab2db5cd7">effects</a>[<a class="code" href="effect__benchmark_8h.html#a680de61ceb066f9d9fcc08841e207189">BENCH_MAX_EFFECTS</a>];</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6">   80</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6">effect_count</a>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="comment">/* Current sweep position */</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d">   83</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d">current_effect_idx</a>; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca">   84</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca">frame_counter</a>;      </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e">   85</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e">timeout_timer</a>; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">/* Accumulation */</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018">   88</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018">sum_ms</a>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a03558a74825fb72dfabd3b335cd65c4d">   89</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="structEffectBenchmark.html#a03558a74825fb72dfabd3b335cd65c4d">sum_sq_ms</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62">   90</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62">sample_count</a>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="comment">/* Results */</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3">   93</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3">baseline_mean_ms</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6">   94</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6">baseline_stddev_ms</a>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855">   95</a></span>&#160;    <a class="code" href="structEffectBenchResult.html">EffectBenchResult</a> <a class="code" href="structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855">results</a>[<a class="code" href="effect__benchmark_8h.html#a680de61ceb066f9d9fcc08841e207189">BENCH_MAX_EFFECTS</a>];</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf">   96</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf">result_count</a>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;} <a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordtype">void</span> <a class="code" href="effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153">effect_benchmark_init</a>(<a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* bench, <a class="code" href="structPostProcess.html">PostProcess</a>* postprocess,</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                           <a class="code" href="structGPUProfiler.html">GPUProfiler</a>* profiler);</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="effect__benchmark_8h.html#aa2cc8b49697d1f8554bc69ce6c5a77d2">effect_benchmark_start</a>(<a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* bench);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb">effect_benchmark_update</a>(<a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* bench);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0">effect_benchmark_is_running</a>(<span class="keyword">const</span> <a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* bench);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keywordtype">void</span> <a class="code" href="effect__benchmark_8h.html#a392e325c2453fe315ac40f4f4a1194a3">effect_benchmark_log_results</a>(<span class="keyword">const</span> <a class="code" href="structEffectBenchmark.html">EffectBenchmark</a>* bench);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* EFFECT_BENCHMARK_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_a392e325c2453fe315ac40f4f4a1194a3"><div class="ttname"><a href="effect__benchmark_8h.html#a392e325c2453fe315ac40f4f4a1194a3">effect_benchmark_log_results</a></div><div class="ttdeci">void effect_benchmark_log_results(const EffectBenchmark *bench)</div><div class="ttdoc">Logs all results to the console via LOG_INFO.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.c:310</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_a464b97790ca4fcafceaf5aeb93e5f1e0"><div class="ttname"><a href="effect__benchmark_8h.html#a464b97790ca4fcafceaf5aeb93e5f1e0">effect_benchmark_is_running</a></div><div class="ttdeci">bool effect_benchmark_is_running(const EffectBenchmark *bench)</div><div class="ttdoc">Returns true if a benchmark is currently running.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.c:181</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_a680de61ceb066f9d9fcc08841e207189"><div class="ttname"><a href="effect__benchmark_8h.html#a680de61ceb066f9d9fcc08841e207189">BENCH_MAX_EFFECTS</a></div><div class="ttdeci">#define BENCH_MAX_EFFECTS</div><div class="ttdoc">Maximum number of effects that can be benchmarked.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:31</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_aa2cc8b49697d1f8554bc69ce6c5a77d2"><div class="ttname"><a href="effect__benchmark_8h.html#aa2cc8b49697d1f8554bc69ce6c5a77d2">effect_benchmark_start</a></div><div class="ttdeci">bool effect_benchmark_start(EffectBenchmark *bench)</div><div class="ttdoc">Starts a new benchmark sweep.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.c:145</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_ab2258d0fffc9b1ed65bf0e0310341153"><div class="ttname"><a href="effect__benchmark_8h.html#ab2258d0fffc9b1ed65bf0e0310341153">effect_benchmark_init</a></div><div class="ttdeci">void effect_benchmark_init(EffectBenchmark *bench, PostProcess *postprocess, GPUProfiler *profiler)</div><div class="ttdoc">Initializes the benchmark (call once at startup).</div><div class="ttdef"><b>Definition:</b> effect_benchmark.c:126</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_ace04d12739b82c375dbef5ebc4a6c4eb"><div class="ttname"><a href="effect__benchmark_8h.html#ace04d12739b82c375dbef5ebc4a6c4eb">effect_benchmark_update</a></div><div class="ttdeci">bool effect_benchmark_update(EffectBenchmark *bench)</div><div class="ttdoc">Per-frame update. Call after gpu_profiler_begin_frame().</div><div class="ttdef"><b>Definition:</b> effect_benchmark.c:188</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668">BenchPhase</a></div><div class="ttdeci">BenchPhase</div><div class="ttdoc">State machine phases for the benchmark sweep.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:40</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668a068777e606e97d22331b39339acc4625"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a068777e606e97d22331b39339acc4625">BENCH_DONE</a></div><div class="ttdeci">@ BENCH_DONE</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:45</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668a6f0571df4d33e19c70b94975b5f496f9"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a6f0571df4d33e19c70b94975b5f496f9">BENCH_BASELINE</a></div><div class="ttdeci">@ BENCH_BASELINE</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:42</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668a8d3df8ad7cf19ec12bdd46c4265e5dca"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668a8d3df8ad7cf19ec12bdd46c4265e5dca">BENCH_STABILIZE</a></div><div class="ttdeci">@ BENCH_STABILIZE</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:43</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668aa4c8fb68c1ecd828d64d3b0b2ba131a7"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668aa4c8fb68c1ecd828d64d3b0b2ba131a7">BENCH_IDLE</a></div><div class="ttdeci">@ BENCH_IDLE</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:41</div></div>
+<div class="ttc" id="aeffect__benchmark_8h_html_af534d602e88970685cf5efc61cac2668ab2b5ceab8536f0ad10f4115d8cb0d170"><div class="ttname"><a href="effect__benchmark_8h.html#af534d602e88970685cf5efc61cac2668ab2b5ceab8536f0ad10f4115d8cb0d170">BENCH_EFFECT_TEST</a></div><div class="ttdeci">@ BENCH_EFFECT_TEST</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:44</div></div>
+<div class="ttc" id="agpu__profiler_8h_html"><div class="ttname"><a href="gpu__profiler_8h.html">gpu_profiler.h</a></div></div>
+<div class="ttc" id="apostprocess_8h_html"><div class="ttname"><a href="postprocess_8h.html">postprocess.h</a></div><div class="ttdoc">High-level post-processing pipeline and effects.</div></div>
+<div class="ttc" id="astructEffectBenchResult_html"><div class="ttname"><a href="structEffectBenchResult.html">EffectBenchResult</a></div><div class="ttdoc">Timing result for a single effect.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:52</div></div>
+<div class="ttc" id="astructEffectBenchResult_html_a11d184dd70730a52ff539c9e45cc7416"><div class="ttname"><a href="structEffectBenchResult.html#a11d184dd70730a52ff539c9e45cc7416">EffectBenchResult::mean_ms</a></div><div class="ttdeci">float mean_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:55</div></div>
+<div class="ttc" id="astructEffectBenchResult_html_a52e4e89dae932aba6c2ea471e959639d"><div class="ttname"><a href="structEffectBenchResult.html#a52e4e89dae932aba6c2ea471e959639d">EffectBenchResult::effect_bit</a></div><div class="ttdeci">unsigned int effect_bit</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:54</div></div>
+<div class="ttc" id="astructEffectBenchResult_html_a72b5b5c164277ed64a2e9755be69bed4"><div class="ttname"><a href="structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4">EffectBenchResult::name</a></div><div class="ttdeci">const char * name</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:53</div></div>
+<div class="ttc" id="astructEffectBenchResult_html_adbf7bbc368e1ff441c1bee518ad15c72"><div class="ttname"><a href="structEffectBenchResult.html#adbf7bbc368e1ff441c1bee518ad15c72">EffectBenchResult::stddev_ms</a></div><div class="ttdeci">float stddev_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:56</div></div>
+<div class="ttc" id="astructEffectBenchResult_html_af3d76e143d086c35aa36516dfc05526c"><div class="ttname"><a href="structEffectBenchResult.html#af3d76e143d086c35aa36516dfc05526c">EffectBenchResult::cost_ms</a></div><div class="ttdeci">float cost_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:57</div></div>
+<div class="ttc" id="astructEffectBenchmark_html"><div class="ttname"><a href="structEffectBenchmark.html">EffectBenchmark</a></div><div class="ttdoc">State for the automated benchmark sweep.</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:64</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a03558a74825fb72dfabd3b335cd65c4d"><div class="ttname"><a href="structEffectBenchmark.html#a03558a74825fb72dfabd3b335cd65c4d">EffectBenchmark::sum_sq_ms</a></div><div class="ttdeci">double sum_sq_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:89</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a0d18f4caa8f8f7e6364064c34cd06855"><div class="ttname"><a href="structEffectBenchmark.html#a0d18f4caa8f8f7e6364064c34cd06855">EffectBenchmark::results</a></div><div class="ttdeci">EffectBenchResult results[16]</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:95</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a256387ce14cec3d9507b0a5d717076dd"><div class="ttname"><a href="structEffectBenchmark.html#a256387ce14cec3d9507b0a5d717076dd">EffectBenchmark::postprocess</a></div><div class="ttdeci">PostProcess * postprocess</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:66</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a2737f49891ffbe714746a32cf11b61eb"><div class="ttname"><a href="structEffectBenchmark.html#a2737f49891ffbe714746a32cf11b61eb">EffectBenchmark::bit</a></div><div class="ttdeci">unsigned int bit</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:78</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a4f3a198ad214843cee8d2458d870977c"><div class="ttname"><a href="structEffectBenchmark.html#a4f3a198ad214843cee8d2458d870977c">EffectBenchmark::benchmark_effects</a></div><div class="ttdeci">unsigned int benchmark_effects</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:73</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a5570067e4d3fcfef5b15f03c479043bf"><div class="ttname"><a href="structEffectBenchmark.html#a5570067e4d3fcfef5b15f03c479043bf">EffectBenchmark::result_count</a></div><div class="ttdeci">int result_count</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:96</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a79d97bd733308bb7ec220e6c011318ca"><div class="ttname"><a href="structEffectBenchmark.html#a79d97bd733308bb7ec220e6c011318ca">EffectBenchmark::frame_counter</a></div><div class="ttdeci">int frame_counter</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:84</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a7a715afb88af5ee0ad035d6efd85d7b6"><div class="ttname"><a href="structEffectBenchmark.html#a7a715afb88af5ee0ad035d6efd85d7b6">EffectBenchmark::baseline_stddev_ms</a></div><div class="ttdeci">float baseline_stddev_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:94</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a815f87d6736220fc45aba683e7db368c"><div class="ttname"><a href="structEffectBenchmark.html#a815f87d6736220fc45aba683e7db368c">EffectBenchmark::name</a></div><div class="ttdeci">const char * name</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:77</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_a980803474b73b8f5df4875aab2db5cd7"><div class="ttname"><a href="structEffectBenchmark.html#a980803474b73b8f5df4875aab2db5cd7">EffectBenchmark::effects</a></div><div class="ttdeci">struct EffectBenchmark::@10 effects[16]</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_aa2e12f9a4587d05fc8b598815c9d4018"><div class="ttname"><a href="structEffectBenchmark.html#aa2e12f9a4587d05fc8b598815c9d4018">EffectBenchmark::sum_ms</a></div><div class="ttdeci">double sum_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:88</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_aae970b279f6912cc14a3dce048011f0d"><div class="ttname"><a href="structEffectBenchmark.html#aae970b279f6912cc14a3dce048011f0d">EffectBenchmark::current_effect_idx</a></div><div class="ttdeci">int current_effect_idx</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:83</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_aaeb7d4e1e13086effefd6254cd790bb8"><div class="ttname"><a href="structEffectBenchmark.html#aaeb7d4e1e13086effefd6254cd790bb8">EffectBenchmark::saved_effects</a></div><div class="ttdeci">unsigned int saved_effects</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:70</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_ab96ea8c286a3c1811c352ceb8a4e7943"><div class="ttname"><a href="structEffectBenchmark.html#ab96ea8c286a3c1811c352ceb8a4e7943">EffectBenchmark::phase</a></div><div class="ttdeci">BenchPhase phase</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:65</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_abfe73eb09d4305ea49e23f77df6598d3"><div class="ttname"><a href="structEffectBenchmark.html#abfe73eb09d4305ea49e23f77df6598d3">EffectBenchmark::baseline_mean_ms</a></div><div class="ttdeci">float baseline_mean_ms</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:93</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_ac0e95ac0a2ce63de9f51ca9abc0b8782"><div class="ttname"><a href="structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782">EffectBenchmark::profiler</a></div><div class="ttdeci">GPUProfiler * profiler</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:67</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_ac929acca947fc6775e56639c3cba2b62"><div class="ttname"><a href="structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62">EffectBenchmark::sample_count</a></div><div class="ttdeci">int sample_count</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:90</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_aef1bfcff17f53693a66e9ce6cb8562b6"><div class="ttname"><a href="structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6">EffectBenchmark::effect_count</a></div><div class="ttdeci">int effect_count</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:80</div></div>
+<div class="ttc" id="astructEffectBenchmark_html_aefb6fe128a0dfff07ce6791fcae87c6e"><div class="ttname"><a href="structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e">EffectBenchmark::timeout_timer</a></div><div class="ttdeci">float timeout_timer</div><div class="ttdef"><b>Definition:</b> effect_benchmark.h:85</div></div>
+<div class="ttc" id="astructGPUProfiler_html"><div class="ttname"><a href="structGPUProfiler.html">GPUProfiler</a></div><div class="ttdoc">Manages GPU timing using double-buffered queries to avoid stalls.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:88</div></div>
+<div class="ttc" id="astructPostProcess_html"><div class="ttname"><a href="structPostProcess.html">PostProcess</a></div><div class="ttdoc">Main pipeline state for post-processing.</div><div class="ttdef"><b>Definition:</b> postprocess.h:408</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="effect__benchmark_8h.html">effect_benchmark.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
