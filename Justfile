@@ -251,15 +251,15 @@ test-integration-tracy: build-tracy
     @chmod +x scripts/test_integration_generic.sh
     @{{distrobox}} ./scripts/test_integration_generic.sh ./build-tracy/app
 
-# Run UI integration test under Valgrind (Minimal scenario, Debug build for symbols)
-test-integration-valgrind: build
+# Run UI integration test under Valgrind (Minimal scenario, no -march=native)
+test-integration-valgrind: build-valgrind
     @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
-    @{{distrobox}} bash scripts/test_integration_valgrind.sh
+    @{{distrobox}} env VALGRIND_BUILD_DIR=build-valgrind bash scripts/test_integration_valgrind.sh
 
-# Run UI integration test under Valgrind (Full scenario, Debug build for symbols)
-test-integration-valgrind-full: build
+# Run UI integration test under Valgrind (Full scenario, no -march=native)
+test-integration-valgrind-full: build-valgrind
     @{{distrobox}} chmod +x scripts/test_integration_valgrind.sh
-    @{{distrobox}} bash scripts/test_integration_valgrind.sh full
+    @{{distrobox}} env VALGRIND_BUILD_DIR=build-valgrind bash scripts/test_integration_valgrind.sh full
 
 # Run full UI integration test under ASan
 test-integration-asan: asan
@@ -331,9 +331,16 @@ asan:
     @{{distrobox}} cmake -G "Unix Makefiles" -B build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_ASAN=ON -DENABLE_UNITY_BUILD=OFF
     @{{distrobox}} cmake --build build-asan --parallel {{nprocs}}
 
+# Build for Valgrind (no -march=native to avoid unsupported GFNI/AVX instructions)
+build-valgrind:
+    @echo "Building for Valgrind (no native arch)..."
+    @mkdir -p build-valgrind
+    @{{distrobox}} cmake -G "Unix Makefiles" -B build-valgrind -DCMAKE_BUILD_TYPE=Debug -DENABLE_NATIVE_ARCH=OFF
+    @{{distrobox}} cmake --build build-valgrind --parallel {{nprocs}}
+
 # Run Valgrind (Default) to detect leaks/errors
-memcheck: build
-    @{{distrobox}} valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose {{build_dir}}/app
+memcheck: build-valgrind
+    @{{distrobox}} valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose build-valgrind/app
 
 # Run AddressSanitizer (ASan) to detect leaks/errors
 memcheck-asan: asan

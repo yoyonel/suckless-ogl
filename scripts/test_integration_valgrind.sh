@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-APP_PATH="./build/app"
+BUILD_DIR="${VALGRIND_BUILD_DIR:-./build}"
+APP_PATH="$BUILD_DIR/app"
 WINDOW_NAME="Icosphere Phong"
 LOG_FILE="valgrind_integration.log"
 SCENARIO="${1:-minimal}"  # "minimal" (default) or "full"
