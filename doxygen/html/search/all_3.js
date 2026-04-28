@@ -68,7 +68,7 @@ var searchData=
   ['colors_357',['colors',['../structTrailRenderer.html#a42736add9cd8e8d0902da76e096969a6',1,'TrailRenderer']]],
   ['common_2eglsl_358',['common.glsl',['../common_8glsl.html',1,'']]],
   ['compare_5fsphere_5fentries_359',['compare_sphere_entries',['../billboard__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843',1,'billboard_sorting.c']]],
-  ['compare_5fstrings_360',['compare_strings',['../scene_8c.html#a8af94b56d6cef5f5143fd60907cb02f9',1,'scene.c']]],
+  ['compare_5fstrings_360',['compare_strings',['../scene__init_8c.html#a8af94b56d6cef5f5143fd60907cb02f9',1,'scene_init.c']]],
   ['compiled_5fflags_361',['compiled_flags',['../structPostProcess.html#ac754f84387246ac8b1b018ac4fc1884b',1,'PostProcess']]],
   ['compute_5faccelerations_362',['compute_accelerations',['../nbody_8c.html#ae9e2804d731349e3f4e0f65f5a36dcfb',1,'nbody.c']]],
   ['compute_5fdebug_363',['compute_debug',['../pbr__functions_8glsl.html#ac09e000bb011c60d5497779ad123a3eb',1,'pbr_functions.glsl']]],

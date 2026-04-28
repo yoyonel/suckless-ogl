@@ -48,6 +48,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "scene.h", "scene_8h.html", "scene_8h" ],
     [ "scene_config.h", "scene__config_8h.html", "scene__config_8h" ],
     [ "scene_gpu_resources.h", "scene__gpu__resources_8h.html", "scene__gpu__resources_8h" ],
+    [ "scene_internal.h", "scene__internal_8h.html", "scene__internal_8h" ],
     [ "scene_lighting.h", "scene__lighting_8h.html", [
       [ "SceneLighting", "structSceneLighting.html", "structSceneLighting" ]
     ] ],

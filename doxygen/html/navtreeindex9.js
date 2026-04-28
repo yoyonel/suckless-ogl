@@ -1,5 +1,11 @@
 var NAVTREEINDEX9 =
 {
+"structEffectBenchmark.html#ac0e95ac0a2ce63de9f51ca9abc0b8782":[5,0,28,11],
+"structEffectBenchmark.html#ac929acca947fc6775e56639c3cba2b62":[5,0,28,14],
+"structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6":[5,0,28,5],
+"structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e":[5,0,28,18],
+"structEffectEntry.html":[5,0,30],
+"structEffectEntry.html#a2b1fcbb5687fc282c3cebcae8b0afc84":[5,0,30,0],
 "structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6":[5,0,30,1],
 "structEffectMetadata.html":[5,0,31],
 "structEffectMetadata.html#a12901db32eca74ecd4106bf6e24f0711":[5,0,31,0],
@@ -243,11 +249,5 @@ var NAVTREEINDEX9 =
 "structLightProbeGrid.html#a54faa3e8f5a1150a59e23f1038a31ab3":[5,0,65,4],
 "structLightProbeGrid.html#a5813f10e8ecf944f51b56208ea234954":[5,0,65,17],
 "structLightProbeGrid.html#a7b7ac239b2e21629e23af65a286418d9":[5,0,65,9],
-"structLightProbeGrid.html#a8bcadf5e4400b0d6382e0d6f490b8340":[5,0,65,8],
-"structLightProbeGrid.html#a9ba082f37a70c6e80d5ff49169462339":[5,0,65,6],
-"structLightProbeGrid.html#aafba53eac0b80c3b59ff1e837c815262":[5,0,65,19],
-"structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f":[5,0,65,11],
-"structLightProbeGrid.html#ac04f9da630dd16e28f7e32c85d7c80b2":[5,0,65,1],
-"structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9":[5,0,65,12],
-"structLightProbeGrid.html#ae82048a9e65f83d48d3d5861f702e5d2":[5,0,65,5]
+"structLightProbeGrid.html#a8bcadf5e4400b0d6382e0d6f490b8340":[5,0,65,8]
 };
