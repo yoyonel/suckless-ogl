@@ -12,6 +12,9 @@
 
 #include "gl_common.h"
 
+/* Forward declaration */
+struct GPUProfiler;
+
 /**
  * @struct EffectContext
  * @brief Read-only snapshot of pipeline state for a single frame.
@@ -24,6 +27,8 @@ typedef struct EffectContext {
 	GLuint depth_tex;    /**< Scene depth texture. */
 	GLuint velocity_tex; /**< Motion vector texture. */
 	float exposure;      /**< Current exposure value. */
+	struct GPUProfiler*
+	    gpu_profiler; /**< Optional GPU profiler (may be NULL). */
 } EffectContext;
 
 #endif /* EFFECT_CONTEXT_H */
