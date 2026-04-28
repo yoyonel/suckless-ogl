@@ -118,7 +118,8 @@ void fx_dof_render(PostProcess* post_processing)
 	float ratio = post_processing->dof.anamorphic_ratio;
 	vec2 texel_scale = {1.0F, ratio};
 
-	Shader* ds_shader = fx_bloom_get_downsample_shader(post_processing);
+	Shader* ds_shader =
+	    fx_bloom_get_downsample_shader(&post_processing->bloom_fx);
 	shader_use(ds_shader);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -135,7 +136,8 @@ void fx_dof_render(PostProcess* post_processing)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, dof->blur_tex, 0);
 
-	Shader* us_shader = fx_bloom_get_upsample_shader(post_processing);
+	Shader* us_shader =
+	    fx_bloom_get_upsample_shader(&post_processing->bloom_fx);
 	shader_use(us_shader);
 
 	glActiveTexture(GL_TEXTURE0);

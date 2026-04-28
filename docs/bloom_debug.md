@@ -23,9 +23,12 @@ The Bloom effect is constructed through multiple stages (Prefilter, Downsample c
 
 When `POSTFX_BLOOM_DEBUG` is active in the `active_effects` bitmask:
 
-1. `fx_bloom_render` executes only up to the requested `debug_step`.
-2. The pipeline uses `goto end_bloom` to bypass unnecessary work.
-3. The `postprocess.frag` shader detects the debug flag and outputs the sampled `bloomTexture` directly, bypassing other effects (Film Grain, Vignette, etc.) for a clean visualization.
+1. `postprocess.c` builds an `EffectContext` (source texture, viewport dimensions) and calls `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)`.
+2. `fx_bloom_render` executes only up to the requested `debug_step`.
+3. The pipeline uses `goto end_bloom` to bypass unnecessary work.
+4. The `postprocess.frag` shader detects the debug flag and outputs the sampled `bloomTexture` directly, bypassing other effects (Film Grain, Vignette, etc.) for a clean visualization.
+
+> **Note**: Since the EffectContext decoupling, `fx_bloom.c` no longer includes `postprocess.h`. Bloom receives only what it needs via `EffectContext` + `BloomParams`.
 
 ### UI Integration
 

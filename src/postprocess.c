@@ -1,6 +1,7 @@
 #include "postprocess.h"
 
 #include "app_settings.h"
+#include "effects/effect_context.h"
 #include "effects/fx_auto_exposure.h"
 #include "effects/fx_bloom.h"
 #include "effects/fx_dof.h"
@@ -181,7 +182,8 @@ int postprocess_init(PostProcess* post_processing,
 	}
 
 	/* Créer les ressources Bloom */
-	if (!fx_bloom_init(post_processing)) {
+	if (!fx_bloom_init(&post_processing->bloom_fx, post_processing->width,
+	                   post_processing->height)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create bloom resources");
 		destroy_framebuffer(post_processing);
@@ -195,7 +197,7 @@ int postprocess_init(PostProcess* post_processing,
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create screen quad");
 		destroy_framebuffer(post_processing);
-		fx_bloom_cleanup(post_processing);
+		fx_bloom_cleanup(&post_processing->bloom_fx);
 		return 0;
 	}
 
@@ -215,7 +217,7 @@ int postprocess_init(PostProcess* post_processing,
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create auto exposure resources");
 		destroy_framebuffer(post_processing);
-		fx_bloom_cleanup(post_processing);
+		fx_bloom_cleanup(&post_processing->bloom_fx);
 		fx_dof_cleanup(post_processing);
 		destroy_screen_quad(post_processing);
 		return 0;
@@ -226,7 +228,7 @@ int postprocess_init(PostProcess* post_processing,
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to create dof resources");
 		destroy_framebuffer(post_processing);
-		fx_bloom_cleanup(post_processing);
+		fx_bloom_cleanup(&post_processing->bloom_fx);
 		destroy_screen_quad(post_processing);
 		return 0;
 	}
@@ -345,7 +347,7 @@ void postprocess_cleanup(PostProcess* post_processing)
 	/* Destroy postprocess_shader if it wasn't in the cache */
 	SHADER_SAFE_DESTROY(post_processing->postprocess_shader);
 
-	fx_bloom_cleanup(post_processing);
+	fx_bloom_cleanup(&post_processing->bloom_fx);
 	fx_dof_cleanup(post_processing);
 	fx_auto_exposure_cleanup(post_processing);
 	fx_motion_blur_cleanup(post_processing);
@@ -382,8 +384,9 @@ void postprocess_resize(PostProcess* post_processing, int width, int height)
 		          "Failed to resize framebuffer");
 	}
 
-	fx_bloom_cleanup(post_processing);
-	if (!fx_bloom_init(post_processing)) {
+	fx_bloom_cleanup(&post_processing->bloom_fx);
+	if (!fx_bloom_init(&post_processing->bloom_fx, post_processing->width,
+	                   post_processing->height)) {
 		LOG_ERROR("suckless-ogl.postprocess",
 		          "Failed to resize bloom resources");
 	}
@@ -709,7 +712,13 @@ void postprocess_end(PostProcess* post_processing)
 		GPU_STAGE_PROFILER(post_processing->gpu_profiler, "Bloom",
 		                   GPU_PROFILER_BLOOM_COLOR);
 		gl_debug_push_group("PostFX_Bloom");
-		fx_bloom_render(post_processing);
+		const EffectContext bloom_ctx = {
+		    .src_tex = post_processing->scene_color_tex,
+		    .width = post_processing->width,
+		    .height = post_processing->height,
+		};
+		fx_bloom_render(&post_processing->bloom_fx,
+		                &post_processing->bloom, &bloom_ctx);
 		gl_debug_pop_group();
 	}
 

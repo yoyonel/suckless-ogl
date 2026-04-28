@@ -57,7 +57,17 @@ App
 ├── GPUProfiler    (métriques temporelles GPU)
 ├── AsyncLoader    (chargement asynchrone)
 └── PostProcess    (effets de post-traitement)
+    └── EffectContext  (seam vers les effets individuels)
 ```
+
+### Découplage des effets (EffectContext)
+
+Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, LUT, LUT viz) sont progressivement découplés de l'objet God `PostProcess` via un seam `EffectContext` :
+
+- **`EffectContext`** (`include/effects/effect_context.h`) : snapshot read-only de l'état partagé du pipeline (texture source, dimensions viewport, textures profondeur/vélocité, exposition).
+- Les effets reçoivent `(FX*, Params*, const EffectContext*)` au lieu de `PostProcess*`.
+- Cela élimine la dépendance bidirectionnelle : `postprocess.h` → `fx_*.h` (pour l'embedding des structs) reste, mais `fx_*.c` → `postprocess.h` est supprimé.
+- Actuellement migré : **bloom**. Les effets restants suivront le même pattern.
 
 ## Configuration CMake
 

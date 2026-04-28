@@ -29,6 +29,14 @@ Lors de l'activation du mode de débogage, la **Superposition d'informations pri
 - Le niveau de mip actif
 - Les paramètres courants (seuil, intensité)
 
+## Architecture
+
+Depuis l'introduction du seam `EffectContext`, le module bloom est découplé de `PostProcess` :
+
+- `postprocess.c` construit un `EffectContext` (texture source, dimensions viewport) et appelle `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)`
+- `fx_bloom.c` n'inclut plus `postprocess.h` — il reçoit uniquement ce dont il a besoin via `EffectContext` + `BloomParams`
+- Le debug mode fonctionne de manière identique : `debug_step` et `debug_mip` sont des champs de `BloomFX`
+
 ## Voir aussi
 
 - [exposure_analysis.md](./exposure_analysis.md) — Interaction entre exposition et bloom

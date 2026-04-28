@@ -535,11 +535,11 @@ graph LR
 
 ### 5.2 — Ressources des Sous-Effets
 
-Chaque effet de post-traitement initialise ses propres ressources :
+Chaque effet de post-traitement initialise ses propres ressources. Les effets reçoivent l'état partagé du pipeline via une struct `EffectContext` (texture source, dimensions viewport, textures profondeur/vélocité, exposition) plutôt qu'un pointeur direct vers `PostProcess`. Ce seam découple les effets individuels des détails internes du pipeline.
 
 | Effet | Ressources GPU |
 |-------|---------------|
-| **Bloom** | FBOs en chaîne mip (6 niveaux), textures prefiltre/downsample/upsample |
+| **Bloom** | FBOs en chaîne mip (6 niveaux), textures prefiltre/downsample/upsample. Découplé via `EffectContext` : `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)` |
 | **Profondeur de Champ** | Texture de flou, texture CoC (Cercle de Confusion) |
 | **Auto-Exposition** | Texture downsample luminance, 2× PBOs (readback), 2× fences GLSync |
 | **Flou de Mouvement** | Texture vélocité tile-max (compute), texture neighbor-max (compute) |

@@ -100,6 +100,15 @@ To avoid cyclic dependencies:
 - Module headers are included at the **end** of `app.h` to ensure they can see the full `App` definition if necessary (though they primarily use pointers).
 - Specialized source files (`.c`) include `app.h` and the required renderer headers directly.
 
+### Effect Decoupling (EffectContext)
+
+Post-processing effects (bloom, DoF, auto-exposure, motion blur, LUT, LUT viz) are progressively decoupled from the `PostProcess` God Object via an `EffectContext` seam:
+
+- **`EffectContext`** (`include/effects/effect_context.h`): Read-only snapshot of shared pipeline state (source texture, viewport dimensions, depth/velocity textures, exposure).
+- Effects receive `(FX*, Params*, const EffectContext*)` instead of `PostProcess*`.
+- This eliminates the bidirectional dependency: `postprocess.h` → `fx_*.h` (for struct embedding) remains, but `fx_*.c` → `postprocess.h` is removed.
+- Currently migrated: **bloom**. Remaining effects will follow the same pattern.
+
 ## Build System
 
 The `CMakeLists.txt` has been updated to include the new source files. The `app` executable and `test_app` integration test both link against the new modular structure.

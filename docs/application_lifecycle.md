@@ -535,11 +535,11 @@ graph LR
 
 ### 5.2 — Sub-Effect Resources
 
-Each post-processing effect initializes its own resources:
+Each post-processing effect initializes its own resources. Effects receive shared pipeline state through an `EffectContext` struct (source texture, viewport dimensions, depth/velocity textures, exposure) rather than a direct pointer to `PostProcess`. This seam decouples individual effects from the pipeline internals.
 
 | Effect | GPU Resources |
 |--------|--------------|
-| **Bloom** | Mip-chain FBOs (6 levels), prefilter/downsample/upsample textures |
+| **Bloom** | Mip-chain FBOs (6 levels), prefilter/downsample/upsample textures. Decoupled via `EffectContext`: `fx_bloom_render(BloomFX*, BloomParams*, EffectContext*)` |
 | **DoF** | Blur texture, CoC (Circle of Confusion) texture |
 | **Auto-Exposure** | Luminance downsample texture, 2× PBOs (readback), 2× GLSync fences |
 | **Motion Blur** | Tile-max velocity texture (compute), neighbor-max texture (compute) |

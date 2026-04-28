@@ -1,19 +1,17 @@
 #include "effects/fx_bloom.h"
 
+#include "effects/effect_context.h"
 #include "effects/fx_utils.h"
 #include "gl_common.h"
 #include "log.h"
-#include "postprocess.h"
 #include "shader.h"
 #include <cglm/types.h>
 #include <stddef.h>
 
-int fx_bloom_init(PostProcess* post_processing)
+int fx_bloom_init(BloomFX* bloom, int width, int height)
 {
 	/* Ensure Unit 0 is active for initial texture setup */
 	glActiveTexture(GL_TEXTURE0);
-
-	BloomFX* bloom = &post_processing->bloom_fx;
 
 	/* Load Shaders */
 	bloom->prefilter_shader = shader_load("shaders/postprocess.vert",
@@ -27,7 +25,7 @@ int fx_bloom_init(PostProcess* post_processing)
 	    !bloom->upsample_shader) {
 		LOG_ERROR("suckless-ogl.postprocess.bloom",
 		          "Failed to load bloom shaders");
-		fx_bloom_cleanup(post_processing);
+		fx_bloom_cleanup(bloom);
 		return 0;
 	}
 
@@ -43,25 +41,25 @@ int fx_bloom_init(PostProcess* post_processing)
 	glGenFramebuffers(1, &bloom->fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
 
-	int width = post_processing->width;
-	int height = post_processing->height;
+	int mip_w = width;
+	int mip_h = height;
 
 	for (int i = 0; i < BLOOM_MIP_LEVELS; i++) {
-		width /= 2;
-		height /= 2;
-		if (width < 1) {
-			width = 1;
+		mip_w /= 2;
+		mip_h /= 2;
+		if (mip_w < 1) {
+			mip_w = 1;
 		}
-		if (height < 1) {
-			height = 1;
+		if (mip_h < 1) {
+			mip_h = 1;
 		}
 
-		bloom->mips[i].width = width;
-		bloom->mips[i].height = height;
+		bloom->mips[i].width = mip_w;
+		bloom->mips[i].height = mip_h;
 
 		FXTextureConfig tex_config = {
-		    .width = width,
-		    .height = height,
+		    .width = mip_w,
+		    .height = mip_h,
 		    .internal_format = GL_R11F_G11F_B10F,
 		    .format = GL_RGB,
 		    .type = GL_FLOAT,
@@ -77,10 +75,8 @@ int fx_bloom_init(PostProcess* post_processing)
 	return 1;
 }
 
-void fx_bloom_cleanup(PostProcess* post_processing)
+void fx_bloom_cleanup(BloomFX* bloom)
 {
-	BloomFX* bloom = &post_processing->bloom_fx;
-
 	if (bloom->fbo) {
 		glDeleteFramebuffers(1, &bloom->fbo);
 		bloom->fbo = 0;
@@ -98,25 +94,21 @@ void fx_bloom_cleanup(PostProcess* post_processing)
 	SHADER_SAFE_DESTROY(bloom->upsample_shader);
 }
 
-void fx_bloom_render(PostProcess* post_processing)
+void fx_bloom_render(BloomFX* bloom, const BloomParams* params,
+                     const EffectContext* ctx)
 {
-	if (!postprocess_is_enabled(post_processing, POSTFX_BLOOM)) {
-		return;
-	}
-
-	BloomFX* bloom = &post_processing->bloom_fx;
 	glBindFramebuffer(GL_FRAMEBUFFER, bloom->fbo);
 	glDisable(GL_DEPTH_TEST);
 
 	/* 1. Prefilter */
 	shader_use(bloom->prefilter_shader);
 	shader_set_float(bloom->prefilter_shader, "threshold",
-	                 post_processing->bloom.threshold);
+	                 params->threshold);
 	shader_set_float(bloom->prefilter_shader, "knee",
-	                 post_processing->bloom.soft_threshold);
+	                 params->soft_threshold);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, post_processing->scene_color_tex);
+	glBindTexture(GL_TEXTURE_2D, ctx->src_tex);
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 	                       GL_TEXTURE_2D, bloom->mips[0].texture, 0);
@@ -124,7 +116,7 @@ void fx_bloom_render(PostProcess* post_processing)
 
 	glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 
-	if (post_processing->bloom_fx.debug_step == 1) { /* Prefilter only */
+	if (bloom->debug_step == 1) { /* Prefilter only */
 		goto end_bloom;
 	}
 
@@ -153,14 +145,14 @@ void fx_bloom_render(PostProcess* post_processing)
 		glDrawArrays(GL_TRIANGLES, 0, SCREEN_QUAD_VERTEX_COUNT);
 	}
 
-	if (post_processing->bloom_fx.debug_step == 2) { /* Downsample only */
+	if (bloom->debug_step == 2) { /* Downsample only */
 		goto end_bloom;
 	}
 
 	/* 3. Upsample with Blending */
 	shader_use(bloom->upsample_shader);
 	shader_set_float(bloom->upsample_shader, "filterRadius",
-	                 post_processing->bloom.radius);
+	                 params->radius);
 	vec2 neutralScale = {1.0F, 1.0F};
 	shader_set_vec2(bloom->upsample_shader, "texelScale",
 	                (float*)&neutralScale);
@@ -187,7 +179,7 @@ void fx_bloom_render(PostProcess* post_processing)
 
 end_bloom:
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, post_processing->width, post_processing->height);
+	glViewport(0, 0, ctx->width, ctx->height);
 }
 
 void fx_bloom_upload_params(Shader* shader, const BloomParams* params)
@@ -195,12 +187,12 @@ void fx_bloom_upload_params(Shader* shader, const BloomParams* params)
 	shader_set_float(shader, "bloom.intensity", params->intensity);
 }
 
-Shader* fx_bloom_get_downsample_shader(PostProcess* post_processing)
+Shader* fx_bloom_get_downsample_shader(BloomFX* bloom)
 {
-	return post_processing->bloom_fx.downsample_shader;
+	return bloom->downsample_shader;
 }
 
-Shader* fx_bloom_get_upsample_shader(PostProcess* post_processing)
+Shader* fx_bloom_get_upsample_shader(BloomFX* bloom)
 {
-	return post_processing->bloom_fx.upsample_shader;
+	return bloom->upsample_shader;
 }
