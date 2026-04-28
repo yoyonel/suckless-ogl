@@ -4,18 +4,14 @@
 #include "app_settings.h"
 #include "billboard_rendering.h"
 #include "billboard_sorting.h"
-#include "gl_common.h"
-#include "gpu_profiler.h"
-#include "ibl_coordinator.h"
 #include "icosphere.h"
 #include "instanced_rendering.h"
-#include "light_probes.h"
-#include "material.h"
-#include "nbody.h"
-#include "shader.h"
-#include "shockwave.h"
-#include "skybox.h"
-#include "trail_renderer.h"
+#include "scene_config.h"
+#include "scene_gpu_resources.h"
+#include "scene_lighting.h"
+#include "scene_shaders.h"
+#include "scene_simulation.h"
+#include "scene_visuals.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
@@ -23,46 +19,12 @@
 #endif
 
 typedef struct PostProcess PostProcess;
-
-/**
- * @enum SortingMode
- * @brief Sorting algorithms for transparent billboards.
- */
-typedef enum {
-	SORTING_MODE_CPU_QSORT = 0,
-	SORTING_MODE_CPU_RADIX,
-	SORTING_MODE_GPU_BITONIC,
-	SORTING_MODE_COUNT /**< Sentinel — must remain last. */
-} SortingMode;
-
-/**
- * @enum GIMode
- * @brief Global Illumination sampling methods.
- */
-typedef enum {
-	GI_MODE_OFF = 0,
-	GI_MODE_3D_TEX,
-	GI_MODE_SSBO,
-	GI_MODE_COUNT
-} GIMode;
-
-/**
- * @enum AAMode
- * @brief Specular Anti-Aliasing modes.
- */
-typedef enum {
-	AA_MODE_SCREEN_SPACE = 0,
-	AA_MODE_CURVATURE,
-	AA_MODE_COUNT
-} AAMode;
+typedef struct GPUProfiler GPUProfiler;
 
 /**
  * @struct InstancedUniforms
  * @brief Cached uniform locations for PBR instanced rendering.
  */
-
-enum { IBL_TEXTURE_COUNT = 3 };
-enum { TEXTURE_UNIT_IBL_START = 15 };
 
 typedef struct {
 	GLint irradiance_map;        /**< Location of 'irradianceMap' */
@@ -135,35 +97,6 @@ typedef struct {
 } BillboardUniforms;
 
 /**
- * @struct SceneVisuals
- * @brief Visual effects grouped into a sub-struct to reduce Scene fan-out.
- */
-typedef struct SceneVisuals {
-	Skybox skybox;                        /**< Environment renderer. */
-	TrailRenderer trail_renderer;         /**< Orbital trail renderer. */
-	ShockwaveRenderer shockwave_renderer; /**< Confinement impact VFX. */
-} SceneVisuals;
-
-/**
- * @struct SceneSimulation
- * @brief N-body simulation state grouped to reduce Scene fan-out.
- */
-typedef struct SceneSimulation {
-	NBodySim nbody_sim; /**< N-body gravitational simulation. */
-	int nbody_mode;     /**< Toggle: 0=grid, 1=N-body. */
-} SceneSimulation;
-
-/**
- * @struct SceneLighting
- * @brief IBL, probes, and materials grouped to reduce Scene fan-out.
- */
-typedef struct SceneLighting {
-	MaterialLib* material_lib; /**< Loaded material presets. */
-	IBLCoordinator ibl_coord;  /**< IBL state machine. */
-	LightProbeGrid probe_grid; /**< Global Illumination spatial grid. */
-} SceneLighting;
-
-/**
  * @struct Scene
  * @brief Encapsulates all 3D scene data, geometry, and rendering state.
  */
@@ -184,70 +117,18 @@ typedef struct Scene {
 	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
-	SceneVisuals visuals;   /**< Visual effects sub-system. */
-	SceneLighting lighting; /**< IBL, probes, and materials. */
-	char** hdr_files;       /**< List of found HDR files in assets. */
-	int hdr_count;          /**< Number of available environment maps. */
-	int current_hdr_index;  /**< Index of active HDR in file list. */
-
-	/* --- Shaders --- */
-	Shader* pbr_instanced_shader; /**< Shared PBR shader for opaque geo. */
-	Shader*
-	    pbr_billboard_shader; /**< Shader for volumetric/alpha spheres. */
-#ifdef USE_SSBO_RENDERING
-	Shader* pbr_ssbo_shader; /**< Optimized SSBO shader. */
-#endif
-	Shader* debug_shader;      /**< Generic debug/visualization shader. */
-	Shader* debug_line_shader; /**< Shader for wireframe lines. */
-	Shader* skybox_shader;     /**< Skybox shader wrapper. */
-
-	/* --- GPU Resources --- */
-	GLuint icosphere_vao;        /**< Shared icosphere geometry VAO. */
-	GLuint icosphere_vbo;        /**< Shared icosphere vertex buffer. */
-	GLuint icosphere_nbo;        /**< Shared icosphere normal buffer. */
-	GLuint icosphere_ebo;        /**< Shared icosphere index buffer. */
-	GLuint quad_vbo;             /**< Shared full-screen quad (FSQ). */
-	GLuint wire_cube_vbo;        /**< Shared wireframe cube. */
-	GLuint wire_quad_vbo;        /**< Shared wireframe quad. */
-	GLuint hdr_texture;          /**< Active HDR cubemap. */
-	GLuint recycled_hdr_tex;     /**< Recycled texture for next load. */
-	GLuint spec_prefiltered_tex; /**< Active Specular map. */
-	GLuint irradiance_tex;       /**< Active Irradiance map. */
-	GLuint brdf_lut_tex;         /**< Shared BRDF lookup table. */
-	GLuint empty_vao;            /**< Vertex-less drawing VAO. */
-	GLuint spmap_program;        /**< Internal IBL specular shader. */
-	GLuint irmap_program;        /**< Internal IBL irradiance shader. */
-	GLuint lum_pass1_program;    /**< Luminance downsample pass. */
-	GLuint lum_pass2_program;    /**< Mean luminance compute pass. */
-	GLuint dummy_black_tex;      /**< Safe fallback (0,0,0,1). */
-	GLuint dummy_white_tex;      /**< Safe fallback (1,1,1,1). */
-	GLuint lum_ssbo[2]; /**< Double-buffered storage for luminance. */
-	GLuint transition_snapshot_tex; /**< For crossfade mode. */
-	GLuint billboard_ubo;    /**< UBO for billboard per-frame uniforms. */
-	void* billboard_ubo_ptr; /**< Persistent mapped CPU pointer for UBO. */
-
-	/* --- IBL Binding Cache (Tier 5 — units 15-17) --- */
-	GLuint bound_ibl_textures[IBL_TEXTURE_COUNT]; /**< Last IBL active. */
-
-	/* --- SH/Probe Binding Cache (Tier 3 — units 8-14 + SSBO 3) --- */
-	GLuint bound_sh_textures[SH_TEXTURE_COUNT]; /**< Last SH tex bound. */
-	GLuint bound_probe_ssbo; /**< Last probe SSBO bound. */
-
-	/* --- Render Configuration --- */
-	int wireframe;            /**< OpenGL wireframe mode toggle. */
-	int billboard_mode;       /**< Toggle for billboard rendering path. */
-	SortingMode sorting_mode; /**< Selected sorting algorithm. */
-	int pbr_debug_mode;       /**< Swap to wireframe/normal/roughness */
-	int show_envmap;          /**< Draw skybox toggle. */
-	float env_lod;            /**< Skybox blurriness. */
-	int subdivisions;         /**< LOD of the shared icosphere. */
-	GIMode gi_mode;           /**< Selected GI sampling method. */
-	int show_probe_grid;      /**< Debug visualization of probes. */
-	int specular_aa_enabled;  /**< Screen-Space Specular Anti-Aliasing. */
-	AAMode aa_mode;           /**< AA Mode: Screen-space or Curvature. */
-
-	/* --- N-Body Simulation --- */
+	/* --- Domain Sub-Structs --- */
+	SceneVisuals visuals;       /**< Visual effects sub-system. */
+	SceneLighting lighting;     /**< IBL, probes, and materials. */
 	SceneSimulation simulation; /**< N-body simulation sub-system. */
+	SceneGPUResources gpu;      /**< GPU resource handles. */
+	SceneShaders shaders;       /**< Shader pointers. */
+	SceneConfig config;         /**< Render configuration. */
+
+	/* --- HDR Environment --- */
+	char** hdr_files;      /**< List of found HDR files in assets. */
+	int hdr_count;         /**< Number of available environment maps. */
+	int current_hdr_index; /**< Index of active HDR in file list. */
 
 	/* --- Uniform Caches --- */
 	BillboardUniforms billboard_uniforms; /**< Cached locations. */
