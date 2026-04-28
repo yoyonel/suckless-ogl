@@ -85,7 +85,7 @@ void test_benchmark_histogram(void)
 	app.postprocess.auto_exposure_fx.downsample_tex = tex;
 
 	// Initialize PBOs for the test
-	glGenBuffers(2, app.postprocess.histogram_pbo);
+	glGenBuffers(2, app.postprocess.readback.histogram_pbo);
 	for (int i = 0; i < 2; i++) {
 		glBindBuffer(
 		    GL_PIXEL_PACK_BUFFER,
@@ -144,7 +144,7 @@ void test_benchmark_histogram(void)
 
 	// Cleanup
 	glDeleteTextures(1, &tex);
-	glDeleteBuffers(2, app.postprocess.histogram_pbo);
+	glDeleteBuffers(2, app.postprocess.readback.histogram_pbo);
 	for (int i = 0; i < 2; i++) {
 		GLsync current_sync =
 		    postprocess_get_histogram_sync(&app.postprocess, i);

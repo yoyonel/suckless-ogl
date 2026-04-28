@@ -98,7 +98,7 @@ void test_stencil_depth_consistency(void)
 	}
 
 	/* 5. Bind the scene FBO to read from it */
-	glBindFramebuffer(GL_FRAMEBUFFER, g_test_app.postprocess.scene_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, g_test_app.postprocess.gpu.scene_fbo);
 
 	size_t pixel_count = (size_t)(TEST_WIDTH * TEST_HEIGHT);
 

@@ -96,7 +96,7 @@ static void apply_effects(EffectBenchmark* bench, unsigned int effects)
 {
 	bench->postprocess->active_effects = effects;
 	bench->postprocess->ubo_dirty = true;
-	if (bench->postprocess->is_optimized) {
+	if (bench->postprocess->shaders.is_optimized) {
 		postprocess_compile_optimized(bench->postprocess, effects);
 	}
 }

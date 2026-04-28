@@ -47,7 +47,7 @@ void renderer_draw_frame(const RenderContext* ctx)
 	/* Provide scene FBO color handle so the shockwave grab pass can use
 	 * glCopyImageSubData (texture-to-texture DMA, no framebuffer read). */
 	ctx->scene->visuals.shockwave_renderer.scene_color_tex =
-	    ctx->postprocess->scene_color_tex;
+	    ctx->postprocess->gpu.scene_color_tex;
 
 	{
 		GPU_STAGE_PROFILER(ctx->profiler, "Scene Render",

@@ -123,7 +123,7 @@ int app_init(App* app, int width, int height, const char* title)
 	postprocess_set_dummy_textures(&app->postprocess,
 	                               app->scene.gpu.dummy_black_tex);
 	postprocess_set_exposure(&app->postprocess,
-	                         app->postprocess.auto_threshold);
+	                         app->postprocess.readback.auto_threshold);
 	postprocess_enable(&app->postprocess, POSTFX_FXAA);
 
 #ifdef ENABLE_SHADER_OPTIMIZATION
