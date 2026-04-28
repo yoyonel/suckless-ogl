@@ -47,3 +47,12 @@
    obj:*/libgallium*.so*
    ...
 }
+{
+   mesa_glObjectLabel_strdup
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   ...
+   fun:*renderer_init
+}
