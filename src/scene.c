@@ -1015,7 +1015,7 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 	/* --- N-Body orbital trails (rendered after spheres, into HDR FBO) ---
 	 */
-	if (scene->nbody_mode) {
+	if (scene->simulation.nbody_mode) {
 		GPU_STAGE_PROFILER(profiler, "NBody Trails",
 		                   GPU_PROFILER_NBODY_COLOR);
 		gl_debug_push_group("NBody_Trails");
@@ -1034,8 +1034,8 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 			}
 			shockwave_draw(&scene->visuals.shockwave_renderer, view,
 			               proj, camera_pos,
-			               scene->nbody_sim.sim_time, width,
-			               height);
+			               scene->simulation.nbody_sim.sim_time,
+			               width, height);
 			if (scene->wireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
@@ -1054,23 +1054,23 @@ void scene_render(Scene* scene, GPUProfiler* profiler, mat4 view, mat4 proj,
 
 void scene_toggle_nbody(Scene* scene)
 {
-	scene->nbody_mode = !scene->nbody_mode;
+	scene->simulation.nbody_mode = !scene->simulation.nbody_mode;
 
-	if (scene->nbody_mode) {
+	if (scene->simulation.nbody_mode) {
 		/* Initialize simulation and trails */
-		nbody_init_preset(&scene->nbody_sim);
+		nbody_init_preset(&scene->simulation.nbody_sim);
 
-		int count = nbody_get_count(&scene->nbody_sim);
+		int count = nbody_get_count(&scene->simulation.nbody_sim);
 		if (!trail_renderer_init(&scene->visuals.trail_renderer,
 		                         count)) {
-			scene->nbody_mode = 0;
+			scene->simulation.nbody_mode = 0;
 			return;
 		}
 
 		if (!shockwave_renderer_init(
 		        &scene->visuals.shockwave_renderer)) {
 			trail_renderer_cleanup(&scene->visuals.trail_renderer);
-			scene->nbody_mode = 0;
+			scene->simulation.nbody_mode = 0;
 			return;
 		}
 
@@ -1078,12 +1078,12 @@ void scene_toggle_nbody(Scene* scene)
 		for (int i = 0; i < count; i++) {
 			trail_renderer_set_color(
 			    &scene->visuals.trail_renderer, i,
-			    scene->nbody_sim.bodies[i].albedo);
+			    scene->simulation.nbody_sim.bodies[i].albedo);
 		}
 
 		/* Write initial SphereInstance data and upload to GPU */
 		SphereInstance instances[NBODY_MAX_BODIES];
-		nbody_write_instances(&scene->nbody_sim, instances);
+		nbody_write_instances(&scene->simulation.nbody_sim, instances);
 		instanced_group_update(&scene->instanced_group, instances,
 		                       count);
 
@@ -1117,46 +1117,47 @@ void scene_toggle_nbody(Scene* scene)
 
 void scene_nbody_update(Scene* scene, float delta_time)
 {
-	if (!scene->nbody_mode) {
+	if (!scene->simulation.nbody_mode) {
 		return;
 	}
 
 	/* Smooth time-scale transition (decelerate → pause → reverse) */
-	nbody_update_time_scale(&scene->nbody_sim, delta_time);
+	nbody_update_time_scale(&scene->simulation.nbody_sim, delta_time);
 
 	/* Advance physics (Velocity Verlet, O(N²) gravity) */
 	{
 		PROFILE_ZONE(verlet_ctx, "NBody Verlet");
-		nbody_step(&scene->nbody_sim, delta_time);
+		nbody_step(&scene->simulation.nbody_sim, delta_time);
 		PROFILE_ZONE_END(verlet_ctx);
 	}
 
 	/* Forward confinement impacts to shockwave VFX */
-	for (int i = 1; i < scene->nbody_sim.body_count; i++) {
-		const NBodyImpact* imp = &scene->nbody_sim.impacts[i];
+	for (int i = 1; i < scene->simulation.nbody_sim.body_count; i++) {
+		const NBodyImpact* imp =
+		    &scene->simulation.nbody_sim.impacts[i];
 		if (imp->active) {
 			shockwave_emit(&scene->visuals.shockwave_renderer,
 			               imp->position, imp->color, imp->velocity,
-			               scene->nbody_sim.sim_time);
+			               scene->simulation.nbody_sim.sim_time);
 		}
 	}
 	shockwave_update(&scene->visuals.shockwave_renderer,
-	                 scene->nbody_sim.sim_time);
+	                 scene->simulation.nbody_sim.sim_time);
 
 	/* Record trail positions into ring buffers */
 	{
 		PROFILE_ZONE(trail_ctx, "NBody Trail Sample");
 		trail_renderer_record(&scene->visuals.trail_renderer,
-		                      &scene->nbody_sim, delta_time);
+		                      &scene->simulation.nbody_sim, delta_time);
 		PROFILE_ZONE_END(trail_ctx);
 	}
 
 	/* Build SphereInstance data and upload to GPU */
-	int count = nbody_get_count(&scene->nbody_sim);
+	int count = nbody_get_count(&scene->simulation.nbody_sim);
 	SphereInstance instances[NBODY_MAX_BODIES];
 	{
 		PROFILE_ZONE(inst_ctx, "NBody Instance Build");
-		nbody_write_instances(&scene->nbody_sim, instances);
+		nbody_write_instances(&scene->simulation.nbody_sim, instances);
 		PROFILE_ZONE_END(inst_ctx);
 	}
 	{
