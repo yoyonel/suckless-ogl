@@ -60,15 +60,18 @@ App
     └── EffectContext  (seam vers les effets individuels)
 ```
 
-### Décomposition de Scene (SceneVisuals, SceneSimulation, SceneLighting)
+### Décomposition de Scene
 
-La structure `Scene` est progressivement décomposée en sous-structs par domaine :
+La structure `Scene` est entièrement décomposée en six sous-structs par domaine, chacune dans son propre header :
 
-- **`SceneVisuals`** (`include/scene.h`) : regroupe les effets visuels — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Accès via `scene->visuals.skybox`, etc.
-- **`SceneSimulation`** (`include/scene.h`) : regroupe l'état N-body — `NBodySim`, `nbody_mode`. Accès via `scene->simulation.nbody_sim`, etc.
-- **`SceneLighting`** (`include/scene.h`) : regroupe IBL, probes et matériaux — `IBLCoordinator`, `LightProbeGrid`, `MaterialLib*`. Accès via `scene->lighting.ibl_coord`, etc.
+- **`SceneGPUResources`** (`include/scene_gpu_resources.h`) : tous les handles de ressources GPU — 28 GLuint pour textures, buffers, VAOs, programmes compute, plus le billboard UBO et les caches de binding IBL/SH. Accès via `scene->gpu.hdr_texture`, `scene->gpu.icosphere_vbo`, etc.
+- **`SceneShaders`** (`include/scene_shaders.h`) : tous les pointeurs de shaders — `pbr_instanced`, `pbr_billboard`, `debug`, `debug_line`, `skybox` (+ conditionnel `pbr_ssbo`). Accès via `scene->shaders.pbr_instanced`, etc.
+- **`SceneConfig`** (`include/scene_config.h`) : configuration runtime — `wireframe`, `billboard_mode`, `sorting_mode`, `pbr_debug_mode`, `show_envmap`, `env_lod`, `subdivisions`, `gi_mode`, `show_probe_grid`, `specular_aa_enabled`, `aa_mode`. Définit aussi les enums `SortingMode`, `GIMode`, `AAMode`. Accès via `scene->config.wireframe`, etc.
+- **`SceneVisuals`** (`include/scene_visuals.h`) : effets visuels — `Skybox`, `TrailRenderer`, `ShockwaveRenderer`. Accès via `scene->visuals.skybox`, etc.
+- **`SceneSimulation`** (`include/scene_simulation.h`) : état N-body — `NBodySim`, `nbody_mode`. Accès via `scene->simulation.nbody_sim`, etc.
+- **`SceneLighting`** (`include/scene_lighting.h`) : IBL, probes et matériaux — `IBLCoordinator`, `LightProbeGrid`, `MaterialLib*`. Accès via `scene->lighting.ibl_coord`, etc.
 
-Cela réduit le nombre de champs directs de `Scene` et localise les changements par domaine.
+Cela réduit le nombre de champs directs de `Scene` de ~50 à ~19 et déplace les définitions de types par domaine hors du monolithique `scene.h`.
 
 ### Décomposition de App (AppProfiling, AppInput)
 

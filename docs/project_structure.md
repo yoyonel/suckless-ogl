@@ -36,6 +36,13 @@ icosphere/
 │   ├── app_input.h
 │   ├── app_scene.h
 │   ├── app_ui.h
+│   ├── scene.h             # Scene aggregate (includes sub-structs)
+│   ├── scene_config.h      # SceneConfig: runtime flags & enums
+│   ├── scene_gpu_resources.h # SceneGPUResources: GLuint handles
+│   ├── scene_lighting.h    # SceneLighting: IBL, probes, materials
+│   ├── scene_shaders.h     # SceneShaders: Shader pointers
+│   ├── scene_simulation.h  # SceneSimulation: N-body state
+│   ├── scene_visuals.h     # SceneVisuals: skybox, trails, shockwave
 │   └── ...
 │
 ├── shaders/
