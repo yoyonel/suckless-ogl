@@ -114,10 +114,12 @@ This reduces `Scene`'s direct field count and localizes domain-specific changes.
 
 The `App` struct is being decomposed into domain-aligned sub-structs:
 
-- **`AppProfiling`** (`include/app.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling.gpu_profiler`, etc.
-- **`AppInput`** (`include/app.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input.camera`, etc.
+- **`AppProfiling`** (`include/app_profiling.h`): Groups profiling and metrics — `GPUProfiler`, `GPUProfilerUI`, `FpsCounter`, `TracyManager`, `GPUUsageMonitor`, `PerfModeContext`, `perf_mode_active`, `log_gpu_metrics`. Access via `app->profiling.gpu_profiler`, etc. Init/cleanup delegated to `app_profiling_init()` / `app_profiling_cleanup()` in `src/app_profiling.c`.
+- **`AppInput`** (`include/app_input_state.h`): Groups camera, gamepad, key-bindings, and input smoothing — `Camera`, `GamepadState`, `AppBindingRegistry`, `AdaptiveSampler`, `camera_enabled`. Access via `app->input.camera`, etc. Init/cleanup delegated to `app_input_state_init()` / `app_input_state_cleanup()` in `src/app_input_state.c`.
 
-This reduces `App`'s direct field count (13 fields → 2 sub-structs) and localizes domain-specific changes.
+> **Naming note**: `app_input_state.h` hosts the `AppInput` sub-struct definition, while the existing `app_input.h` hosts the `AppInputContext` seam (focused pointer bundle for input handlers, issue #204).
+
+This reduces `App`'s direct field count (13 fields → 2 sub-structs) and `app.h`'s include count from 22 to 14 (below the ≤15 target). Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
 
 ### Effect Decoupling (EffectContext)
 

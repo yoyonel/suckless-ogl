@@ -94,7 +94,9 @@ set(SOURCES
     src/app_binding.c
     src/env_manager.c
     src/app_input.c
+    src/app_input_state.c
     src/app_metrics.c
+    src/app_profiling.c
     src/app_ui.c
     src/async_loader.c
     src/async_coordinator.c

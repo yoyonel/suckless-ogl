@@ -1,18 +1,14 @@
 #include "app.h"
 
 #include "action_notifier.h"
-#include "adaptive_sampler.h"
-#include "app_binding.h"
 #include "app_input.h"
+#include "app_input_state.h"
+#include "app_profiling.h"
 #include "app_settings.h"
 #include "app_ui.h"
 #include "async_loader.h"
-#include "camera.h"
-#include "fps.h"
-#include "gamepad_input.h"
 #include "gl_common.h"
 #include "glad/glad.h"
-#include "perf_mode.h"
 #include "postprocess.h"
 #include "profiler.h"
 #include "renderer.h"
@@ -32,18 +28,11 @@ int app_init(App* app, int width, int height, const char* title)
 	app->width = width;
 	app->height = height;
 
-	app->input.camera_enabled = true;
+	app_input_state_init(&app->input);
 	app->is_fullscreen = false;
 	app->resize_pending = 0;
 	app->scene.specular_aa_enabled = DEFAULT_SPECULAR_AA_ENABLED;
 	app->env_mgr.is_first_load = true;
-
-	/* Initialize Help UI state */
-	app_binding_registry_init(&app->input.binding_registry);
-
-	camera_init(&app->input.camera, DEFAULT_CAMERA_DISTANCE,
-	            DEFAULT_CAMERA_YAW, DEFAULT_CAMERA_PITCH);
-	gamepad_input_init(&app->input.gamepad);
 
 	app->window = window_create(width, height, title, DEFAULT_SAMPLES);
 	if (!app->window) {
@@ -62,8 +51,8 @@ int app_init(App* app, int width, int height, const char* title)
 		                 GLFW_CURSOR_DISABLED);
 	}
 
-	/* Initialize Tracy Manager */
-	tracy_manager_init(&app->profiling.tracy_mgr, width, height);
+	/* Initialize all profiling sub-systems (needs GL context) */
+	app_profiling_init(&app->profiling, width, height);
 
 	/* Transition Snapshot Initialization (GL Context Ready) */
 	/* Transition Initialization (Starts Black, fades in when IBL is done)
@@ -113,10 +102,6 @@ int app_init(App* app, int width, int height, const char* title)
 	app->u_exposure = DEFAULT_EXPOSURE;
 	glEnable(GL_DEPTH_TEST);
 
-	fps_init(&app->profiling.fps_counter, DEFAULT_FPS_SMOOTHING,
-	         DEFAULT_FPS_WINDOW);
-	adaptive_sampler_init(&app->input.fps_sampler, DEFAULT_FPS_WINDOW,
-	                      DEFAULT_FPS_SAMPLER_SIZE, DEFAULT_FPS_TARGET);
 	app->last_frame_time = glfwGetTime();
 	app_ui_init(&app->overlay);
 
@@ -135,15 +120,10 @@ int app_init(App* app, int width, int height, const char* title)
 	                              app->postprocess.active_effects);
 #endif
 
-	perf_mode_init(&app->profiling.perf_context);
 	action_notifier_init(&app->notifier);
 
-	gpu_profiler_init(&app->profiling.gpu_profiler);
-	gpu_profiler_ui_init(&app->profiling.timeline_ui);
-	gpu_usage_init(&app->profiling.gpu_usage);
 	effect_benchmark_init(&app->effect_bench, &app->postprocess,
 	                      &app->profiling.gpu_profiler);
-	app->profiling.log_gpu_metrics = 0; /* Console logging off by default */
 
 	return 1;
 }
@@ -169,23 +149,17 @@ void app_cleanup(App* app)
 
 	async_coordinator_cleanup(&app->async_coord);
 
-	adaptive_sampler_cleanup(&app->input.fps_sampler);
+	app_input_state_cleanup(&app->input);
 
 	if (app->lum_histogram_buffer) {
 		free(app->lum_histogram_buffer);
 		app->lum_histogram_buffer = NULL;
 	}
 
-	perf_mode_cleanup(&app->profiling.perf_context);
-
-	gpu_profiler_cleanup(&app->profiling.gpu_profiler);
-	gpu_profiler_ui_cleanup(&app->profiling.timeline_ui);
-	gpu_usage_cleanup(&app->profiling.gpu_usage);
+	app_profiling_cleanup(&app->profiling);
 
 	window_destroy(app->window);
 	app->window = NULL;
-
-	tracy_manager_cleanup(&app->profiling.tracy_mgr);
 }
 
 static void app_render_ui_trampoline(void* user_data)

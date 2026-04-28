@@ -2,61 +2,22 @@
 #define APP_H
 
 #include "action_notifier.h"
-#include "adaptive_sampler.h"
-#include "app_binding.h"
+#include "app_input_state.h"
+#include "app_profiling.h"
 #include "app_ui.h"
 #include "async/async_coordinator.h"
 #include "async_loader.h"
-#include "camera.h"
 #include "effect_benchmark.h"
 #include "env_manager.h"
-#include "fps.h"
-#include "gamepad_input.h"
 #include "gl_common.h"
-#include "gpu_profiler.h"
-#include "gpu_profiler_ui.h"
-#include "gpu_usage.h"
-#include "perf_mode.h"
 #include "postprocess.h"
 #include "scene.h"
-#include "tracy_manager.h"
 #include "ui.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING
 #include "ssbo_rendering.h"
 #endif
-
-typedef struct AsyncLoader
-    AsyncLoader; /**< Forward declaration of AsyncLoader. */
-
-/**
- * @struct AppProfiling
- * @brief Profiling, metrics, and performance monitoring grouped together.
- */
-typedef struct AppProfiling {
-	FpsCounter fps_counter;       /**< Rolling average FPS manager. */
-	GPUProfiler gpu_profiler;     /**< GPU timer query profiler. */
-	GPUProfilerUI timeline_ui;    /**< GPU profiler timeline overlay. */
-	TracyManager tracy_mgr;       /**< Tracy instrumentation manager. */
-	GPUUsageMonitor gpu_usage;    /**< GPU utilization % via DRM fdinfo. */
-	PerfModeContext perf_context; /**< Performance mode state context. */
-	int perf_mode_active; /**< Performance/GameMode optimization active. */
-	int log_gpu_metrics;  /**< Toggle console logging of GPU stats. */
-} AppProfiling;
-
-/**
- * @struct AppInput
- * @brief Camera, gamepad, key-bindings, and input smoothing grouped together.
- */
-typedef struct AppInput {
-	Camera camera;        /**< View/Proj state. */
-	GamepadState gamepad; /**< Controller/gamepad input state. */
-	AppBindingRegistry
-	    binding_registry;        /**< Key-binding overlay registry. */
-	AdaptiveSampler fps_sampler; /**< Jitter compensation for input. */
-	int camera_enabled;          /**< Pause camera movement. */
-} AppInput;
 
 /**
  * @struct App
