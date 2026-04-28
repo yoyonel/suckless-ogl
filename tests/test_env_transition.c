@@ -93,7 +93,7 @@ void test_transition_crossfade_flow(void)
 	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->env_mgr.transition_alpha);
 	/* Snapshot texture should have been generated */
 	TEST_ASSERT_NOT_EQUAL(TEXTURE_ID_ZERO,
-	                      g_test_app->scene.transition_snapshot_tex);
+	                      g_test_app->scene.gpu.transition_snapshot_tex);
 }
 
 /**
