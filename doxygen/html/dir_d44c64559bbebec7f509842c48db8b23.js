@@ -46,6 +46,20 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "render_utils.h", "render__utils_8h.html", "render__utils_8h" ],
     [ "renderer.h", "renderer_8h.html", "renderer_8h" ],
     [ "scene.h", "scene_8h.html", "scene_8h" ],
+    [ "scene_config.h", "scene__config_8h.html", "scene__config_8h" ],
+    [ "scene_gpu_resources.h", "scene__gpu__resources_8h.html", "scene__gpu__resources_8h" ],
+    [ "scene_lighting.h", "scene__lighting_8h.html", [
+      [ "SceneLighting", "structSceneLighting.html", "structSceneLighting" ]
+    ] ],
+    [ "scene_shaders.h", "scene__shaders_8h.html", [
+      [ "SceneShaders", "structSceneShaders.html", "structSceneShaders" ]
+    ] ],
+    [ "scene_simulation.h", "scene__simulation_8h.html", [
+      [ "SceneSimulation", "structSceneSimulation.html", "structSceneSimulation" ]
+    ] ],
+    [ "scene_visuals.h", "scene__visuals_8h.html", [
+      [ "SceneVisuals", "structSceneVisuals.html", "structSceneVisuals" ]
+    ] ],
     [ "sh_math.h", "sh__math_8h.html", "sh__math_8h" ],
     [ "shader.h", "shader_8h.html", "shader_8h" ],
     [ "shockwave.h", "shockwave_8h.html", "shockwave_8h" ],

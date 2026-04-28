@@ -1,5 +1,17 @@
 var NAVTREEINDEX8 =
 {
+"structApp.html#a98fb5751f6d76d3a04b8f24c7cd8964b":[5,0,4,14],
+"structApp.html#aaf171711fa39a8318d0bd376a1c3775a":[5,0,4,0],
+"structApp.html#ac928f1ac59fadeeb71128a951d16a230":[5,0,4,5],
+"structApp.html#ac9c2d3c6cb7e168bc2a0477c551cdfeb":[5,0,4,23],
+"structApp.html#acd0c299e250ea192d73ba4aede950f09":[5,0,4,25],
+"structApp.html#ad17a9b98100ad81c3331e77099a5e27c":[5,0,4,20],
+"structApp.html#ad6d1aeb1371627cc3333ac800b5dfa1e":[5,0,4,7],
+"structApp.html#ae23d2d96f024e64c81f150041c6f93af":[5,0,4,1],
+"structApp.html#aef1a3d3437fe0e693c8676aa9b7a22f5":[5,0,4,12],
+"structAppBinding.html":[5,0,5],
+"structAppBinding.html#a03ba0ed924c7be895103dcb977068829":[5,0,5,3],
+"structAppBinding.html#a2530a44d2e624cd65cfdb4648943bf80":[5,0,5,0],
 "structAppBinding.html#a3614c2f12a4d978ef843e1bab7590f84":[5,0,5,4],
 "structAppBinding.html#a364c9511a0a9d54c22578530e29508bf":[5,0,5,5],
 "structAppBinding.html#a73268845e366013f41d7b6bd79b35915":[5,0,5,2],
@@ -237,17 +249,5 @@ var NAVTREEINDEX8 =
 "structEffectBenchmark.html#aef1bfcff17f53693a66e9ce6cb8562b6":[5,0,28,5],
 "structEffectBenchmark.html#aefb6fe128a0dfff07ce6791fcae87c6e":[5,0,28,18],
 "structEffectEntry.html":[5,0,30],
-"structEffectEntry.html#a2b1fcbb5687fc282c3cebcae8b0afc84":[5,0,30,0],
-"structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6":[5,0,30,1],
-"structEffectMetadata.html":[5,0,31],
-"structEffectMetadata.html#a12901db32eca74ecd4106bf6e24f0711":[5,0,31,0],
-"structEffectMetadata.html#a5bcaaec894500aabd5aa2e9412666098":[5,0,31,1],
-"structEffectMetadata.html#ac6608946101117dc9b73ac112842fc55":[5,0,31,2],
-"structEntry.html":[5,0,32],
-"structEntry.html#a11b54d2c760fbc815d707ab6fb57ba27":[5,0,32,1],
-"structEntry.html#ae0a7a0122df35034c855f0ec52f95f6f":[5,0,32,0],
-"structEnvManager.html":[5,0,33],
-"structEnvManager.html#a0489b1c48416410cfe48ce98a6d9d765":[5,0,33,5],
-"structEnvManager.html#a0ed2ca068700618fc7bef23d206ee0c7":[5,0,33,3],
-"structEnvManager.html#a2b72817d4e05c74c7590cf385931b05b":[5,0,33,8]
+"structEffectEntry.html#a2b1fcbb5687fc282c3cebcae8b0afc84":[5,0,30,0]
 };

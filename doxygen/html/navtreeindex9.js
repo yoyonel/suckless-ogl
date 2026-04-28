@@ -1,5 +1,17 @@
 var NAVTREEINDEX9 =
 {
+"structEffectEntry.html#a5f0827b78e6641d97d51c3d7db0855c6":[5,0,30,1],
+"structEffectMetadata.html":[5,0,31],
+"structEffectMetadata.html#a12901db32eca74ecd4106bf6e24f0711":[5,0,31,0],
+"structEffectMetadata.html#a5bcaaec894500aabd5aa2e9412666098":[5,0,31,1],
+"structEffectMetadata.html#ac6608946101117dc9b73ac112842fc55":[5,0,31,2],
+"structEntry.html":[5,0,32],
+"structEntry.html#a11b54d2c760fbc815d707ab6fb57ba27":[5,0,32,1],
+"structEntry.html#ae0a7a0122df35034c855f0ec52f95f6f":[5,0,32,0],
+"structEnvManager.html":[5,0,33],
+"structEnvManager.html#a0489b1c48416410cfe48ce98a6d9d765":[5,0,33,5],
+"structEnvManager.html#a0ed2ca068700618fc7bef23d206ee0c7":[5,0,33,3],
+"structEnvManager.html#a2b72817d4e05c74c7590cf385931b05b":[5,0,33,8],
 "structEnvManager.html#a3601c5ddf3a485dd14bc14e193b74850":[5,0,33,6],
 "structEnvManager.html#a56f6c95940e65b8e764a4c5c5b1b8969":[5,0,33,1],
 "structEnvManager.html#a6304914ea761b162c1cdaddca2263c08":[5,0,33,0],
@@ -237,17 +249,5 @@ var NAVTREEINDEX9 =
 "structLightProbeGrid.html#aafff25c4b7bab33a76246749cadc6e8f":[5,0,65,11],
 "structLightProbeGrid.html#ac04f9da630dd16e28f7e32c85d7c80b2":[5,0,65,1],
 "structLightProbeGrid.html#ad7c5b35422e7eda10921658526f854f9":[5,0,65,12],
-"structLightProbeGrid.html#ae82048a9e65f83d48d3d5861f702e5d2":[5,0,65,5],
-"structLightProbeGrid.html#af6e6ba7991b4456336c97cfd84c9315b":[5,0,65,13],
-"structLightProbeGrid.html#aff85ca45aa315c8061e5b1d81ea0a73a":[5,0,65,0],
-"structLoadedBuffer.html":[5,0,66],
-"structLoadedBuffer.html#a08de67c79ace27f48143223f9a423078":[5,0,66,1],
-"structLoadedBuffer.html#aab42ed78eb04e97315cb610877f4e0ae":[5,0,66,0],
-"structMaterialLib.html":[5,0,67],
-"structMaterialLib.html#a1421f7bc086ca3e77678beba8fe2c37f":[5,0,67,1],
-"structMaterialLib.html#a8951aab4be6950b1bbf5aac0686e1820":[5,0,67,0],
-"structMetricStack.html":[5,0,68],
-"structMetricStack.html#a1efbff4d0974864c6e07fe75e13eeb7d":[5,0,68,0],
-"structMetricStack.html#a3f2ed238f489aac47c071e4ff9a8798e":[5,0,68,1],
-"structNBodyImpact.html":[5,0,69]
+"structLightProbeGrid.html#ae82048a9e65f83d48d3d5861f702e5d2":[5,0,65,5]
 };
