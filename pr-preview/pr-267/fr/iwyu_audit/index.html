@@ -3685,7 +3685,7 @@ compilation conditionnelle. <strong>Toujours vérifier avant d'appliquer</strong
 <tr>
 <td>Suppressions headers système</td>
 <td style="text-align: right;">26</td>
-<td>Appliquées (3 étaient des faux positifs)</td>
+<td>Appliquées (5 étaient des faux positifs)</td>
 </tr>
 <tr>
 <td>Suppressions headers projet</td>
@@ -3699,8 +3699,8 @@ compilation conditionnelle. <strong>Toujours vérifier avant d'appliquer</strong
 </tr>
 <tr>
 <td>Faux positifs détectés</td>
-<td style="text-align: right;">4</td>
-<td><code>sched.h</code>, <code>immintrin.h</code>, <code>stdarg.h</code>+<code>stdint.h</code> dans <code>utils.h</code></td>
+<td style="text-align: right;">6</td>
+<td><code>sched.h</code>, <code>immintrin.h</code>, <code>stdarg.h</code>+<code>stdint.h</code> dans <code>utils.h</code>, <code>string.h</code> dans <code>perf_timer.c</code>, <code>pthread.h</code> dans <code>tracy_manager.h</code></td>
 </tr>
 <tr>
 <td>Corrections en cascade</td>
@@ -3709,15 +3709,17 @@ compilation conditionnelle. <strong>Toujours vérifier avant d'appliquer</strong
 </tr>
 <tr>
 <td><strong>Includes supprimés (net)</strong></td>
-<td style="text-align: right;"><strong>35</strong></td>
+<td style="text-align: right;"><strong>33</strong></td>
 <td>Sur 29 fichiers</td>
 </tr>
 </tbody>
 </table>
 <h3 id="taux-de-faux-positifs">Taux de faux positifs<a class="headerlink" href="#taux-de-faux-positifs" title="Permanent link">¶</a></h3>
-<p>Sur 41 suppressions tentées, 4 étaient des faux positifs (<strong>~10%</strong>). Cela
+<p>Sur 41 suppressions tentées, 6 étaient des faux positifs (<strong>~15%</strong>). Cela
 confirme que les suggestions IWYU doivent toujours être traitées comme
-consultatives, pas autoritatives.</p>
+consultatives, pas autoritatives. Deux faux positifs (<code>string.h</code> dans
+<code>perf_timer.c</code>, <code>pthread.h</code> dans <code>tracy_manager.h</code>) ont été détectés par
+la CI : ils sont utilisés dans des blocs <code>#ifdef TRACY_ENABLE</code> invisibles à IWYU.</p>
 <h2 id="integration-ci-et-pre-push">Intégration CI et Pre-Push<a class="headerlink" href="#integration-ci-et-pre-push" title="Permanent link">¶</a></h2>
 <p>IWYU est intégré à deux niveaux :</p>
 <h3 id="hook-pre-push-rapide-fichiers-modifies">Hook Pre-Push (rapide, fichiers modifiés)<a class="headerlink" href="#hook-pre-push-rapide-fichiers-modifies" title="Permanent link">¶</a></h3>
@@ -3804,6 +3806,14 @@ faux positifs confirmés. Entrées actuelles :</p>
 <td><code>app.h</code></td>
 <td>Include transitif défensif dans <code>app_ui.c</code></td>
 </tr>
+<tr>
+<td><code>string.h</code></td>
+<td><code>strlen</code> dans une macro <code>TRACY_ENABLE</code> (<code>perf_timer.c</code>)</td>
+</tr>
+<tr>
+<td><code>pthread.h</code></td>
+<td><code>pthread_mutex_t</code> dans un bloc <code>TRACY_ENABLE</code> (<code>tracy_manager.h</code>)</td>
+</tr>
 </tbody>
 </table>
 <h3 id="fichier-de-mapping">Fichier de mapping<a class="headerlink" href="#fichier-de-mapping" title="Permanent link">¶</a></h3>
@@ -3838,7 +3848,7 @@ sortie brute IWYU.</p>
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 16:37:52 UTC">29 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 19:33:27 UTC">29 avril 2026</span>
   </span>
 
     
