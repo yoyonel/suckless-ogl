@@ -1,0 +1,727 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: SceneGPUResources Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('structSceneGPUResources.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle">
+<div class="title">SceneGPUResources Struct Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>All GPU resource handles owned by the scene.  
+ <a href="structSceneGPUResources.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="scene__gpu__resources_8h_source.html">scene_gpu_resources.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:aa25eaac8c8a03e6f4354e3f1a81569b7"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#aa25eaac8c8a03e6f4354e3f1a81569b7">icosphere_vao</a></td></tr>
+<tr class="separator:aa25eaac8c8a03e6f4354e3f1a81569b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02c10eeafea9b8dfe56b7a79820d41a9"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a02c10eeafea9b8dfe56b7a79820d41a9">icosphere_vbo</a></td></tr>
+<tr class="separator:a02c10eeafea9b8dfe56b7a79820d41a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9b7cfbbb8f3f6d715428bce89c1f81c"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#ae9b7cfbbb8f3f6d715428bce89c1f81c">icosphere_nbo</a></td></tr>
+<tr class="separator:ae9b7cfbbb8f3f6d715428bce89c1f81c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e974fa623b1f07520a3007ba43a6a0"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a42e974fa623b1f07520a3007ba43a6a0">icosphere_ebo</a></td></tr>
+<tr class="separator:a42e974fa623b1f07520a3007ba43a6a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19bef946526b4a58d05046e869f490b9"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a19bef946526b4a58d05046e869f490b9">quad_vbo</a></td></tr>
+<tr class="separator:a19bef946526b4a58d05046e869f490b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cca1b2684a5a4baac7e7dacf7698997"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a3cca1b2684a5a4baac7e7dacf7698997">wire_cube_vbo</a></td></tr>
+<tr class="separator:a3cca1b2684a5a4baac7e7dacf7698997"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9301d244f480f9c2cbe3599cf4354a76"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a9301d244f480f9c2cbe3599cf4354a76">wire_quad_vbo</a></td></tr>
+<tr class="separator:a9301d244f480f9c2cbe3599cf4354a76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c8da84ecf7d4d7b18791866eb342234"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a8c8da84ecf7d4d7b18791866eb342234">empty_vao</a></td></tr>
+<tr class="separator:a8c8da84ecf7d4d7b18791866eb342234"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7522459b2c9081d06deb6e9494791ab4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a7522459b2c9081d06deb6e9494791ab4">hdr_texture</a></td></tr>
+<tr class="separator:a7522459b2c9081d06deb6e9494791ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3be0d5781beff46ca7791032d6f242b9"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a3be0d5781beff46ca7791032d6f242b9">recycled_hdr_tex</a></td></tr>
+<tr class="separator:a3be0d5781beff46ca7791032d6f242b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add6d4463089e7fa543af54ccdaeeea08"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#add6d4463089e7fa543af54ccdaeeea08">spec_prefiltered_tex</a></td></tr>
+<tr class="separator:add6d4463089e7fa543af54ccdaeeea08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80849dfa7a1d2afa58a92fb17bc2e86d"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a80849dfa7a1d2afa58a92fb17bc2e86d">irradiance_tex</a></td></tr>
+<tr class="separator:a80849dfa7a1d2afa58a92fb17bc2e86d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1262225aadf5e83be86251c29d025e56"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a1262225aadf5e83be86251c29d025e56">brdf_lut_tex</a></td></tr>
+<tr class="separator:a1262225aadf5e83be86251c29d025e56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fe915e5ed8ac30655f635954805aac4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a3fe915e5ed8ac30655f635954805aac4">dummy_black_tex</a></td></tr>
+<tr class="separator:a3fe915e5ed8ac30655f635954805aac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c14dcd5d4e7a7c6c48e09fc739ab6a0"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a1c14dcd5d4e7a7c6c48e09fc739ab6a0">dummy_white_tex</a></td></tr>
+<tr class="separator:a1c14dcd5d4e7a7c6c48e09fc739ab6a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16a0947a8194c3d1836c4f05cb0e9ac3"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a16a0947a8194c3d1836c4f05cb0e9ac3">transition_snapshot_tex</a></td></tr>
+<tr class="separator:a16a0947a8194c3d1836c4f05cb0e9ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6feedd48ab2f3938c0253802da31c13d"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a6feedd48ab2f3938c0253802da31c13d">spmap_program</a></td></tr>
+<tr class="separator:a6feedd48ab2f3938c0253802da31c13d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30b01c0ee13abe7c9f36926dc5f9c4cd"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a30b01c0ee13abe7c9f36926dc5f9c4cd">irmap_program</a></td></tr>
+<tr class="separator:a30b01c0ee13abe7c9f36926dc5f9c4cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a119621177c42192c2fb863cab38aae84"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a119621177c42192c2fb863cab38aae84">lum_pass1_program</a></td></tr>
+<tr class="separator:a119621177c42192c2fb863cab38aae84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85138e4a183e912521dbc4bf3bcf97ba"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a85138e4a183e912521dbc4bf3bcf97ba">lum_pass2_program</a></td></tr>
+<tr class="separator:a85138e4a183e912521dbc4bf3bcf97ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69795d71f5003e19e913915c2118e515"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a69795d71f5003e19e913915c2118e515">lum_ssbo</a> [2]</td></tr>
+<tr class="separator:a69795d71f5003e19e913915c2118e515"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a606a942238754b65ac83b0b165e1f9d0"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a606a942238754b65ac83b0b165e1f9d0">billboard_ubo</a></td></tr>
+<tr class="separator:a606a942238754b65ac83b0b165e1f9d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a820b0b30713f21f2401282caca849acd"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a820b0b30713f21f2401282caca849acd">billboard_ubo_ptr</a></td></tr>
+<tr class="separator:a820b0b30713f21f2401282caca849acd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8cdcdc332bb5e1f8cc5ef089fa9643b"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#ad8cdcdc332bb5e1f8cc5ef089fa9643b">bound_ibl_textures</a> [<a class="el" href="scene__gpu__resources_8h.html#adb49720dc49f7d4e4cf9adbf2948e409afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td></tr>
+<tr class="separator:ad8cdcdc332bb5e1f8cc5ef089fa9643b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93a6f0f9c080e2effd6ceb5be19a9ced"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a93a6f0f9c080e2effd6ceb5be19a9ced">bound_sh_textures</a> [<a class="el" href="light__probes_8h.html#a16af7b253440dadd46a80a4b9fddba4da5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]</td></tr>
+<tr class="separator:a93a6f0f9c080e2effd6ceb5be19a9ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6009e9d67c40898fc788af0cb50fb49f"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneGPUResources.html#a6009e9d67c40898fc788af0cb50fb49f">bound_probe_ssbo</a></td></tr>
+<tr class="separator:a6009e9d67c40898fc788af0cb50fb49f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>All GPU resource handles owned by the scene. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a606a942238754b65ac83b0b165e1f9d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a606a942238754b65ac83b0b165e1f9d0">&#9670;&nbsp;</a></span>billboard_ubo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::billboard_ubo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>UBO for billboard per-frame uniforms. </p>
+
+</div>
+</div>
+<a id="a820b0b30713f21f2401282caca849acd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a820b0b30713f21f2401282caca849acd">&#9670;&nbsp;</a></span>billboard_ubo_ptr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* SceneGPUResources::billboard_ubo_ptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Persistent mapped CPU pointer for UBO. </p>
+
+</div>
+</div>
+<a id="ad8cdcdc332bb5e1f8cc5ef089fa9643b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8cdcdc332bb5e1f8cc5ef089fa9643b">&#9670;&nbsp;</a></span>bound_ibl_textures</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::bound_ibl_textures[<a class="el" href="scene__gpu__resources_8h.html#adb49720dc49f7d4e4cf9adbf2948e409afd56f8a6cb1afc6b2ee324b1de154b4e">IBL_TEXTURE_COUNT</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last IBL active. </p>
+
+</div>
+</div>
+<a id="a6009e9d67c40898fc788af0cb50fb49f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6009e9d67c40898fc788af0cb50fb49f">&#9670;&nbsp;</a></span>bound_probe_ssbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::bound_probe_ssbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last probe SSBO bound. </p>
+
+</div>
+</div>
+<a id="a93a6f0f9c080e2effd6ceb5be19a9ced"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93a6f0f9c080e2effd6ceb5be19a9ced">&#9670;&nbsp;</a></span>bound_sh_textures</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::bound_sh_textures[<a class="el" href="light__probes_8h.html#a16af7b253440dadd46a80a4b9fddba4da5d6ff6546c5072f21b7dca2a5b52752e">SH_TEXTURE_COUNT</a>]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Last SH tex bound. </p>
+
+</div>
+</div>
+<a id="a1262225aadf5e83be86251c29d025e56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1262225aadf5e83be86251c29d025e56">&#9670;&nbsp;</a></span>brdf_lut_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::brdf_lut_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared BRDF lookup table. </p>
+
+</div>
+</div>
+<a id="a3fe915e5ed8ac30655f635954805aac4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fe915e5ed8ac30655f635954805aac4">&#9670;&nbsp;</a></span>dummy_black_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::dummy_black_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Safe fallback (0,0,0,1). </p>
+
+</div>
+</div>
+<a id="a1c14dcd5d4e7a7c6c48e09fc739ab6a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c14dcd5d4e7a7c6c48e09fc739ab6a0">&#9670;&nbsp;</a></span>dummy_white_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::dummy_white_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Safe fallback (1,1,1,1). </p>
+
+</div>
+</div>
+<a id="a8c8da84ecf7d4d7b18791866eb342234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c8da84ecf7d4d7b18791866eb342234">&#9670;&nbsp;</a></span>empty_vao</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::empty_vao</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Vertex-less drawing VAO. </p>
+
+</div>
+</div>
+<a id="a7522459b2c9081d06deb6e9494791ab4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7522459b2c9081d06deb6e9494791ab4">&#9670;&nbsp;</a></span>hdr_texture</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::hdr_texture</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active HDR cubemap. </p>
+
+</div>
+</div>
+<a id="a42e974fa623b1f07520a3007ba43a6a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e974fa623b1f07520a3007ba43a6a0">&#9670;&nbsp;</a></span>icosphere_ebo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::icosphere_ebo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared icosphere index buffer. </p>
+
+</div>
+</div>
+<a id="ae9b7cfbbb8f3f6d715428bce89c1f81c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9b7cfbbb8f3f6d715428bce89c1f81c">&#9670;&nbsp;</a></span>icosphere_nbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::icosphere_nbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared icosphere normal buffer. </p>
+
+</div>
+</div>
+<a id="aa25eaac8c8a03e6f4354e3f1a81569b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa25eaac8c8a03e6f4354e3f1a81569b7">&#9670;&nbsp;</a></span>icosphere_vao</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::icosphere_vao</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared icosphere geometry VAO. </p>
+
+</div>
+</div>
+<a id="a02c10eeafea9b8dfe56b7a79820d41a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02c10eeafea9b8dfe56b7a79820d41a9">&#9670;&nbsp;</a></span>icosphere_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::icosphere_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared icosphere vertex buffer. </p>
+
+</div>
+</div>
+<a id="a30b01c0ee13abe7c9f36926dc5f9c4cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30b01c0ee13abe7c9f36926dc5f9c4cd">&#9670;&nbsp;</a></span>irmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::irmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal IBL irradiance shader. </p>
+
+</div>
+</div>
+<a id="a80849dfa7a1d2afa58a92fb17bc2e86d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80849dfa7a1d2afa58a92fb17bc2e86d">&#9670;&nbsp;</a></span>irradiance_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::irradiance_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active Irradiance map. </p>
+
+</div>
+</div>
+<a id="a119621177c42192c2fb863cab38aae84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a119621177c42192c2fb863cab38aae84">&#9670;&nbsp;</a></span>lum_pass1_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::lum_pass1_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Luminance downsample pass. </p>
+
+</div>
+</div>
+<a id="a85138e4a183e912521dbc4bf3bcf97ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85138e4a183e912521dbc4bf3bcf97ba">&#9670;&nbsp;</a></span>lum_pass2_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::lum_pass2_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Mean luminance compute pass. </p>
+
+</div>
+</div>
+<a id="a69795d71f5003e19e913915c2118e515"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69795d71f5003e19e913915c2118e515">&#9670;&nbsp;</a></span>lum_ssbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::lum_ssbo[2]</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Double-buffered storage for luminance. </p>
+
+</div>
+</div>
+<a id="a19bef946526b4a58d05046e869f490b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19bef946526b4a58d05046e869f490b9">&#9670;&nbsp;</a></span>quad_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::quad_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared full-screen quad (FSQ). </p>
+
+</div>
+</div>
+<a id="a3be0d5781beff46ca7791032d6f242b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3be0d5781beff46ca7791032d6f242b9">&#9670;&nbsp;</a></span>recycled_hdr_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::recycled_hdr_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Recycled texture for next load. </p>
+
+</div>
+</div>
+<a id="add6d4463089e7fa543af54ccdaeeea08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add6d4463089e7fa543af54ccdaeeea08">&#9670;&nbsp;</a></span>spec_prefiltered_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::spec_prefiltered_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Active Specular map. </p>
+
+</div>
+</div>
+<a id="a6feedd48ab2f3938c0253802da31c13d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6feedd48ab2f3938c0253802da31c13d">&#9670;&nbsp;</a></span>spmap_program</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::spmap_program</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Internal IBL specular shader. </p>
+
+</div>
+</div>
+<a id="a16a0947a8194c3d1836c4f05cb0e9ac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16a0947a8194c3d1836c4f05cb0e9ac3">&#9670;&nbsp;</a></span>transition_snapshot_tex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::transition_snapshot_tex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>For crossfade mode. </p>
+
+</div>
+</div>
+<a id="a3cca1b2684a5a4baac7e7dacf7698997"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cca1b2684a5a4baac7e7dacf7698997">&#9670;&nbsp;</a></span>wire_cube_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::wire_cube_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe cube. </p>
+
+</div>
+</div>
+<a id="a9301d244f480f9c2cbe3599cf4354a76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9301d244f480f9c2cbe3599cf4354a76">&#9670;&nbsp;</a></span>wire_quad_vbo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint SceneGPUResources::wire_quad_vbo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Shared wireframe quad. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="scene__gpu__resources_8h_source.html">scene_gpu_resources.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structSceneGPUResources.html">SceneGPUResources</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
