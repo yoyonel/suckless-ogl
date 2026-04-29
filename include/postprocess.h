@@ -23,13 +23,13 @@
 #include "effects/fx_lut3d.h"
 #include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
-#include "gpu_profiler.h"
 #include "pp_exposure_readback.h"
 #include "pp_gpu_resources.h"
 #include "pp_params.h"
 #include "pp_shader_state.h"
-#include "pp_ubo.h"
-#include <cglm/cglm.h>
+#include <cglm/types.h>
+
+typedef struct GPUProfiler GPUProfiler;
 
 /* --- FX-specific DEFAULT VALUES (owned by PostProcess init) --- */
 #define DEFAULT_BLOOM_INTENSITY 0.0F
