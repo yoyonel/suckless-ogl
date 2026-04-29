@@ -14,10 +14,10 @@
 #include "async_loader.h"
 #include "gl_common.h"
 #include "ibl_coordinator.h"
-#include "postprocess.h"
 
 // Forward declarations
 typedef struct Scene Scene;
+typedef struct PostProcess PostProcess;
 
 /**
  * @struct EnvManager
