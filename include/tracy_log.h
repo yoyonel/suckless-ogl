@@ -2,7 +2,6 @@
 #define TRACY_LOG_H
 
 #include "log.h"
-#include <stddef.h>
 
 /**
  * @brief Sends a log message to Tracy if enabled.

@@ -3,7 +3,6 @@
 #include "log.h"
 #include "utils.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 /* DEFAULT_MAX_FILE_SIZE (16MB) based on previous shader limit */
 enum { DEFAULT_MAX_FILE_SIZE = 16 * 1024 * 1024 };

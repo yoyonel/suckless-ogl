@@ -8,12 +8,9 @@
 
 #ifndef APP_UI_H
 #define APP_UI_H
-#include "app_settings.h"
 #include "glad/glad.h"
 #include "ui.h"
-#include <GLFW/glfw3.h>
 #include <cglm/types.h>
-#include <stdbool.h>
 
 /* Histogram bucket count (used by tests and postprocess) */
 enum { HISTO_BUCKETS = 256 };

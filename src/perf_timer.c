@@ -1,7 +1,6 @@
 #include "perf_timer.h"
 
 #include "log.h"
-#include <string.h>
 #include <time.h>  // Pour clock_gettime et CLOCK_MONOTONIC
 
 // ============================================================================

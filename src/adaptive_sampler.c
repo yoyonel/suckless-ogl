@@ -1,9 +1,7 @@
 #include "adaptive_sampler.h"
 
 #include <stdint.h> /* uintptr_t */
-#include <stdio.h>  /* For FILE* if needed */
 #include <stdlib.h> /* malloc, free */
-#include <string.h> /* memset */
 #include <time.h>   /* time() for seed */
 
 /* --- Minimal PCG32 Implementation --- */

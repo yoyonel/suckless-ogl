@@ -5,8 +5,6 @@
 #include "utils.h"
 #include <ctype.h>
 #include <stddef.h>
-#include <stdio.h>
-#include <string.h>
 
 // -----------------------------------------------------------------------------
 // Texture Management

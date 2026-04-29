@@ -11,7 +11,6 @@
 #include "gl_common.h"
 #include "postprocess.h"
 #include "scene.h"
-#include "ui.h"
 #include <cglm/cglm.h>
 
 #ifdef USE_SSBO_RENDERING

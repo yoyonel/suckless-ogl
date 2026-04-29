@@ -1,5 +1,4 @@
 #include "app_settings.h"
-#include "effects/fx_auto_exposure.h"
 #include "effects/fx_motion_blur.h"
 #include "gl_common.h"
 #include "postprocess.h"

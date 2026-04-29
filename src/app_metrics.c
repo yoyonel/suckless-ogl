@@ -5,7 +5,6 @@
 #include "log.h"
 #include "utils.h"
 #include <stdio.h>
-#include <string.h>
 
 static void format_missed_frames(const AdaptiveSampler* sampler, char* buffer,
                                  size_t size)

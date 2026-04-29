@@ -6,13 +6,10 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 /**
  * @brief Helper to securely cast an integer offset to a pointer, often used for

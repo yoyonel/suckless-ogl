@@ -17,7 +17,6 @@
 #include "tracy_gpu.h"
 #include "window.h"
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include <stdlib.h>
 #include <string.h>
 

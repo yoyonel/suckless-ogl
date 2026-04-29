@@ -12,7 +12,6 @@
 #define BILLBOARD_RENDERING_H
 
 #include "gl_common.h"
-#include "shader.h"
 #include "sphere_types.h"
 
 /**

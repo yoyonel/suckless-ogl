@@ -8,7 +8,6 @@
 #include "shader.h"
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 
 /* Verify that C struct matches the GLSL layout (128 bytes). */
 enum { EXPECTED_SPHERE_INSTANCE_SIZE = 128 };

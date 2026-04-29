@@ -8,8 +8,6 @@
 #include "tracy_gpu.h"
 #endif
 
-#include <pthread.h>
-
 typedef struct App App;
 
 /**

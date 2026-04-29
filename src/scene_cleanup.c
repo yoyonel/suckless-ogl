@@ -1,6 +1,5 @@
 #include "billboard_rendering.h"
 #include "billboard_sorting.h"
-#include "glad/glad.h"
 #include "ibl_coordinator.h"
 #include "instanced_rendering.h"
 #include "light_probes.h"
