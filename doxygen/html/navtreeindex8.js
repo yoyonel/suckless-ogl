@@ -1,5 +1,9 @@
 var NAVTREEINDEX8 =
 {
+"structAdaptiveSampler.html#acb9bc43ec19184ff441d1c8bbdf8bc1d":[5,0,3,6],
+"structAdaptiveSampler.html#acc268edf242901d552cc1e1e01db4db7":[5,0,3,8],
+"structAdaptiveSampler.html#ad71125d15d0a4668f2fe312bc8494abc":[5,0,3,0],
+"structAdaptiveSampler.html#aea3449f2c179f805502b448ffe780650":[5,0,3,1],
 "structApp.html":[5,0,4],
 "structApp.html#a05c8b971ea75c65f19686a057df48059":[5,0,4,19],
 "structApp.html#a1c778e4cff23207babd19f8ba6496a6e":[5,0,4,12],
@@ -245,9 +249,5 @@ var NAVTREEINDEX8 =
 "structEdgeHash.html":[5,0,28],
 "structEdgeHash.html#a94dc3d90fddb3d99ecb8ced2e45802ff":[5,0,28,0],
 "structEdgeHash.html#abf74ac823023fa22a196e161bae695ec":[5,0,28,1],
-"structEdgeHash.html#ace0fcc8d2741d15211878c3b837016f4":[5,0,28,2],
-"structEffectBenchResult.html":[5,0,30],
-"structEffectBenchResult.html#a11d184dd70730a52ff539c9e45cc7416":[5,0,30,2],
-"structEffectBenchResult.html#a52e4e89dae932aba6c2ea471e959639d":[5,0,30,1],
-"structEffectBenchResult.html#a72b5b5c164277ed64a2e9755be69bed4":[5,0,30,3]
+"structEdgeHash.html#ace0fcc8d2741d15211878c3b837016f4":[5,0,28,2]
 };

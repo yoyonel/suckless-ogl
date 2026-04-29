@@ -82,18 +82,18 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "../../index.html",
-"app__ui_8c.html#aed8604ac57827f2f1bf7dccb8b78bea4",
-"effect__benchmark_8h.html",
-"globals_vars_w.html",
-"ibl__coordinator_8c.html#ac4e66403e82cf9193c1eeb0a534b90d8",
-"pbr_8c.html",
-"postprocess_8h.html#a3a30e58d88bfa2568ada6fc829dd83b6",
-"scene__render_8c.html#ad63ee708be73ae184d1233ad69cf077f",
-"structApp.html",
-"structEffectBenchResult.html#adbf7bbc368e1ff441c1bee518ad15c72",
-"structKeyPos.html#af2c2bd4e8c7f4610f95d9c4000e31d79",
-"structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83",
-"texture_8c.html#a94dc4fc43b2c6f3610a1582be71e7dd4"
+"app__ui__layout_8h.html#a7c14cd7a2d27eb618bd10e2600e7e2f0",
+"effect__benchmark_8c.html#ace04d12739b82c375dbef5ebc4a6c4eb",
+"globals_vars_u.html",
+"ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2",
+"nbody_8h.html#ad7bc6f91a172aff337338f864f38d5d0",
+"postprocess_8h.html#a222b8356f0589002c336b3b47ef99be5",
+"scene__render_8c.html#a7bd2995953630892fd2f63e154e471c7",
+"structAdaptiveSampler.html#acb9bc43ec19184ff441d1c8bbdf8bc1d",
+"structEffectBenchResult.html",
+"structKeyPos.html#a1139a786d66817ab9377c3d27471b0fa",
+"structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1",
+"texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

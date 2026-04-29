@@ -10,6 +10,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "app_profiling.h", "app__profiling_8h.html", "app__profiling_8h" ],
     [ "app_settings.h", "app__settings_8h.html", "app__settings_8h" ],
     [ "app_ui.h", "app__ui_8h.html", "app__ui_8h" ],
+    [ "app_ui_layout.h", "app__ui__layout_8h.html", "app__ui__layout_8h" ],
     [ "app_window.h", "app__window_8h.html", [
       [ "AppWindow", "structAppWindow.html", "structAppWindow" ]
     ] ],
@@ -30,6 +31,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "gl_debug.h", "gl__debug_8h.html", "gl__debug_8h" ],
     [ "gpu_profiler.h", "gpu__profiler_8h.html", "gpu__profiler_8h" ],
     [ "gpu_profiler_ui.h", "gpu__profiler__ui_8h.html", "gpu__profiler__ui_8h" ],
+    [ "gpu_profiler_ui_layout.h", "gpu__profiler__ui__layout_8h.html", "gpu__profiler__ui__layout_8h" ],
     [ "gpu_usage.h", "gpu__usage_8h.html", "gpu__usage_8h" ],
     [ "ibl_coordinator.h", "ibl__coordinator_8h.html", "ibl__coordinator_8h" ],
     [ "icosphere.h", "icosphere_8h.html", "icosphere_8h" ],
