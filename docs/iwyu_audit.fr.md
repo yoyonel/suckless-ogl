@@ -122,18 +122,20 @@ L'audit IWYU initial de suckless-ogl a identifié :
 
 | Catégorie | Nombre | Statut |
 |-----------|-------:|--------|
-| Suppressions headers système | 26 | Appliquées (3 étaient des faux positifs) |
+| Suppressions headers système | 26 | Appliquées (5 étaient des faux positifs) |
 | Suppressions headers projet | 8 | Appliquées |
 | `gl_common.h` → `glad/glad.h` | 33 | Reporté (nécessite refactoring header-fanout) |
-| Faux positifs détectés | 4 | `sched.h`, `immintrin.h`, `stdarg.h`+`stdint.h` dans `utils.h` |
+| Faux positifs détectés | 6 | `sched.h`, `immintrin.h`, `stdarg.h`+`stdint.h` dans `utils.h`, `string.h` dans `perf_timer.c`, `pthread.h` dans `tracy_manager.h` |
 | Corrections en cascade | 2 | `src/utils.c` (+`stdarg.h`/`stdint.h`), `src/postprocess_input.c` (+`app_settings.h`) |
-| **Includes supprimés (net)** | **35** | Sur 29 fichiers |
+| **Includes supprimés (net)** | **33** | Sur 29 fichiers |
 
 ### Taux de faux positifs
 
-Sur 41 suppressions tentées, 4 étaient des faux positifs (**~10%**). Cela
+Sur 41 suppressions tentées, 6 étaient des faux positifs (**~15%**). Cela
 confirme que les suggestions IWYU doivent toujours être traitées comme
-consultatives, pas autoritatives.
+consultatives, pas autoritatives. Deux faux positifs (`string.h` dans
+`perf_timer.c`, `pthread.h` dans `tracy_manager.h`) ont été détectés par
+la CI : ils sont utilisés dans des blocs `#ifdef TRACY_ENABLE` invisibles à IWYU.
 
 ## Intégration CI et Pre-Push
 
@@ -193,6 +195,8 @@ faux positifs confirmés. Entrées actuelles :
 | `GLFW/glfw3.h` | L'API de `app_binding.h` concerne les bindings GLFW |
 | `gpu_profiler.h` | `GPUProfiler*` dans la struct de `effect_benchmark.h` |
 | `app.h` | Include transitif défensif dans `app_ui.c` |
+| `string.h` | `strlen` dans une macro `TRACY_ENABLE` (`perf_timer.c`) |
+| `pthread.h` | `pthread_mutex_t` dans un bloc `TRACY_ENABLE` (`tracy_manager.h`) |
 
 ### Fichier de mapping
 

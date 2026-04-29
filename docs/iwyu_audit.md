@@ -120,17 +120,19 @@ The initial IWYU audit of suckless-ogl identified:
 
 | Category | Count | Status |
 |----------|------:|--------|
-| System header removals | 26 | Applied (3 were false positives) |
+| System header removals | 26 | Applied (5 were false positives) |
 | Project header removals | 8 | Applied |
 | `gl_common.h` → `glad/glad.h` | 33 | Deferred (needs header-fanout refactoring) |
-| False positives caught | 4 | `sched.h`, `immintrin.h`, `stdarg.h`+`stdint.h` in `utils.h` |
+| False positives caught | 6 | `sched.h`, `immintrin.h`, `stdarg.h`+`stdint.h` in `utils.h`, `string.h` in `perf_timer.c`, `pthread.h` in `tracy_manager.h` |
 | Cascading fixes needed | 2 | `src/utils.c` (+`stdarg.h`/`stdint.h`), `src/postprocess_input.c` (+`app_settings.h`) |
-| **Net includes removed** | **35** | Across 29 files |
+| **Net includes removed** | **33** | Across 29 files |
 
 ### False Positive Rate
 
-Out of 41 attempted removals, 4 were false positives (**~10%**). This confirms
+Out of 41 attempted removals, 6 were false positives (**~15%**). This confirms
 IWYU suggestions should always be treated as advisory, not authoritative.
+Two false positives (`string.h` in `perf_timer.c`, `pthread.h` in `tracy_manager.h`)
+were caught by CI: they are used inside `#ifdef TRACY_ENABLE` blocks invisible to IWYU.
 
 ## Integration with CI and Pre-Push
 
@@ -190,6 +192,8 @@ false positives. Current entries:
 | `GLFW/glfw3.h` | `app_binding.h` API is about GLFW bindings |
 | `gpu_profiler.h` | `GPUProfiler*` in `effect_benchmark.h` struct |
 | `app.h` | Defensive transitive include in `app_ui.c` |
+| `string.h` | `strlen` in `TRACY_ENABLE` macro (`perf_timer.c`) |
+| `pthread.h` | `pthread_mutex_t` in `TRACY_ENABLE` block (`tracy_manager.h`) |
 
 ### Mapping File
 
