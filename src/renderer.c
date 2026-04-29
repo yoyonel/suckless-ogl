@@ -1,9 +1,16 @@
 #include "renderer.h"
 
+#include "action_notifier.h"
+#include "camera.h"
+#include "effect_benchmark.h"
+#include "env_manager.h"
 #include "gl_common.h"
 #include "gl_debug.h"
 #include "gpu_profiler.h"
+#include "gpu_profiler_ui.h"
+#include "postprocess.h"
 #include "profiler.h"
+#include "scene.h"
 #include <GLFW/glfw3.h>
 
 void renderer_draw_frame(const RenderContext* ctx)

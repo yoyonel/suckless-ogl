@@ -110,6 +110,15 @@ Les effets de post-traitement (bloom, DoF, auto-exposition, flou de mouvement, L
 - Cela élimine la dépendance bidirectionnelle : `postprocess.h` → `fx_*.h` (pour l'embedding des structs) reste, mais `fx_*.c` → `postprocess.h` est supprimé.
 - Tous les effets sont désormais entièrement migrés : **bloom**, **DoF**, **auto-exposition**, **flou de mouvement**, **LUT 3D** et **LUT viz**. Plus aucun fichier source d'effet n'inclut `postprocess.h`.
 
+### Nettoyage des dépendances d'en-têtes (env_manager.h, renderer.h)
+
+Deux en-têtes de modules transportaient des includes transitifs inutiles, augmentant le couplage et le coût de recompilation :
+
+- **`env_manager.h`** : incluait `postprocess.h` alors qu'il n'utilise que `PostProcess*` dans les signatures de fonctions. Remplacé par une déclaration anticipée `typedef struct PostProcess PostProcess;`. L'include concret reste dans `env_manager.c` qui appelle `postprocess_set_exposure_target()`.
+- **`renderer.h`** : incluait 9 en-têtes projet (`action_notifier.h`, `camera.h`, `effect_benchmark.h`, `env_manager.h`, `gpu_profiler.h`, `gpu_profiler_ui.h`, `postprocess.h`, `scene.h`, `ui.h`) alors que `RenderContext` ne contient que des pointeurs. Tous remplacés par des déclarations anticipées. Seuls `<stdbool.h>` et `<stdint.h>` restent comme includes concrets. Le fichier `.c` inclut les en-têtes complets nécessaires.
+
+**Principe** : un en-tête qui n'utilise un type qu'à travers un pointeur ou une référence doit faire une déclaration anticipée de ce type, pas inclure sa définition complète. Cela réduit la propagation des includes et accélère les builds incrémentaux.
+
 ## Configuration CMake
 
 Les modules sont compilés séparément et liés à l'exécutable principal :

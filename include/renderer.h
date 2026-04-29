@@ -1,16 +1,18 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "action_notifier.h"
-#include "camera.h"
-#include "effect_benchmark.h"
-#include "env_manager.h"
-#include "gpu_profiler.h"
-#include "gpu_profiler_ui.h"
-#include "postprocess.h"
-#include "scene.h"
-#include "ui.h"
+#include <stdbool.h>
 #include <stdint.h>
+
+/* Forward declarations — RenderContext holds only pointers. */
+typedef struct Scene Scene;
+typedef struct PostProcess PostProcess;
+typedef struct Camera Camera;
+typedef struct GPUProfiler GPUProfiler;
+typedef struct GPUProfilerUI GPUProfilerUI;
+typedef struct EnvManager EnvManager;
+typedef struct ActionNotifier ActionNotifier;
+typedef struct EffectBenchmark EffectBenchmark;
 
 /**
  * @brief Callback type for rendering the UI overlay.
