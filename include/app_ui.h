@@ -10,7 +10,6 @@
 #define APP_UI_H
 #include "glad/glad.h"
 #include "ui.h"
-#include <cglm/types.h>
 
 /* Histogram bucket count (used by tests and postprocess) */
 enum { HISTO_BUCKETS = 256 };

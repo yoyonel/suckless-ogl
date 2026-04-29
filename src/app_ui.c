@@ -11,7 +11,6 @@
 #include "ui.h"
 #include "utils.h"
 #include <GLFW/glfw3.h>
-#include <cglm/types.h>
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
