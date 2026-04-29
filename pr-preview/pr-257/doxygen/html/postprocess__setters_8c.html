@@ -1,0 +1,1322 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/postprocess_setters.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('postprocess__setters_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle">
+<div class="title">postprocess_setters.c File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="postprocess_8h_source.html">postprocess.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for postprocess_setters.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:aa747a4eb6f575c9d9fc7e97df5c8e847"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aa747a4eb6f575c9d9fc7e97df5c8e847">postprocess_on_state_change</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:aa747a4eb6f575c9d9fc7e97df5c8e847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a881dafb2be086301f57008f8c73f545b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a881dafb2be086301f57008f8c73f545b">postprocess_enable</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:a881dafb2be086301f57008f8c73f545b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables a specific effect.  <a href="postprocess__setters_8c.html#a881dafb2be086301f57008f8c73f545b">More...</a><br /></td></tr>
+<tr class="separator:a881dafb2be086301f57008f8c73f545b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa46668e6882df082d99ef8735eadc8af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aa46668e6882df082d99ef8735eadc8af">postprocess_disable</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:aa46668e6882df082d99ef8735eadc8af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disables a specific effect.  <a href="postprocess__setters_8c.html#aa46668e6882df082d99ef8735eadc8af">More...</a><br /></td></tr>
+<tr class="separator:aa46668e6882df082d99ef8735eadc8af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e1be83610a9debc59503b380a0bcd1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a90e1be83610a9debc59503b380a0bcd1">postprocess_toggle</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:a90e1be83610a9debc59503b380a0bcd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggles the current state of an effect.  <a href="postprocess__setters_8c.html#a90e1be83610a9debc59503b380a0bcd1">More...</a><br /></td></tr>
+<tr class="separator:a90e1be83610a9debc59503b380a0bcd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9163a0102d9d7b05ae4c091b9358f9f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#af9163a0102d9d7b05ae4c091b9358f9f">postprocess_is_enabled</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a> effect)</td></tr>
+<tr class="memdesc:af9163a0102d9d7b05ae4c091b9358f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if an effect is currently active.  <a href="postprocess__setters_8c.html#af9163a0102d9d7b05ae4c091b9358f9f">More...</a><br /></td></tr>
+<tr class="separator:af9163a0102d9d7b05ae4c091b9358f9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcef69ea56c03cb233d5e3a9abaeea56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#adcef69ea56c03cb233d5e3a9abaeea56">postprocess_set_vignette</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float smoothness, float roundness)</td></tr>
+<tr class="separator:adcef69ea56c03cb233d5e3a9abaeea56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f062fb8af9a8119ae2702e3237bfebf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a3f062fb8af9a8119ae2702e3237bfebf">postprocess_set_grain</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity)</td></tr>
+<tr class="separator:a3f062fb8af9a8119ae2702e3237bfebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a791edfadb846c4f16be12dad6e4c2a6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a791edfadb846c4f16be12dad6e4c2a6a">postprocess_set_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float exposure)</td></tr>
+<tr class="separator:a791edfadb846c4f16be12dad6e4c2a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5066d2f5e623ccd15daa08b67596d555"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a5066d2f5e623ccd15daa08b67596d555">postprocess_set_chrom_abbr</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
+<tr class="separator:a5066d2f5e623ccd15daa08b67596d555"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a311dcc7f7b99bb8af261b080d3bfd3ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a311dcc7f7b99bb8af261b080d3bfd3ec">postprocess_set_white_balance</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float temperature, float tint)</td></tr>
+<tr class="separator:a311dcc7f7b99bb8af261b080d3bfd3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a165620c3d499ce76f904f684dd7a4c99"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a165620c3d499ce76f904f684dd7a4c99">postprocess_set_color_grading</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float saturation, float contrast, float gamma, float gain, float offset, float lift)</td></tr>
+<tr class="separator:a165620c3d499ce76f904f684dd7a4c99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dfdbd52fd26553208453d418e3ecca4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a7dfdbd52fd26553208453d418e3ecca4">postprocess_set_tonemapper</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float slope, float toe, float shoulder, float black_clip, float white_clip)</td></tr>
+<tr class="separator:a7dfdbd52fd26553208453d418e3ecca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a8a48d84f2ba23d4a1a5d678618d29e7b">postprocess_set_bloom</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, float threshold, float soft_threshold)</td></tr>
+<tr class="separator:a8a48d84f2ba23d4a1a5d678618d29e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aace03323c05270449d59a40291940736"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aace03323c05270449d59a40291940736">postprocess_set_dof</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float focal_distance, float focal_range, float bokeh_scale)</td></tr>
+<tr class="separator:aace03323c05270449d59a40291940736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac39bb0e2a4deb34497384fb628161e1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#ac39bb0e2a4deb34497384fb628161e1d">postprocess_set_dof_anamorphic</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float anamorphic_ratio)</td></tr>
+<tr class="separator:ac39bb0e2a4deb34497384fb628161e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc341dd9baaf0c15b099d5ad9c076f2b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#abc341dd9baaf0c15b099d5ad9c076f2b">postprocess_get_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:abc341dd9baaf0c15b099d5ad9c076f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce07fd263254dd72c5afc8c199f3913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a6ce07fd263254dd72c5afc8c199f3913">postprocess_set_auto_exposure</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float min_luminance, float max_luminance, float speed_up, float speed_down, float key_value)</td></tr>
+<tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebaafeb093d652eb93e6f91a55a60566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_set_fxaa</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float subpix, float edge_threshold, float edge_threshold_min)</td></tr>
+<tr class="separator:aebaafeb093d652eb93e6f91a55a60566"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b604741ce9e478c27bce5bad0255bcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_set_banding</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> mode, float levels)</td></tr>
+<tr class="separator:a4b604741ce9e478c27bce5bad0255bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4459034743ba0085c3687dd0a6c89133"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a4459034743ba0085c3687dd0a6c89133">postprocess_set_banding_dither</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
+<tr class="separator:a4459034743ba0085c3687dd0a6c89133"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a3a30e58d88bfa2568ada6fc829dd83b6">postprocess_set_banding_perceptual</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float gamma)</td></tr>
+<tr class="separator:a3a30e58d88bfa2568ada6fc829dd83b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a4a5f36a8b51d36d743840c7acc4a9e55">postprocess_set_banding_channels</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float red, float green, float blue)</td></tr>
+<tr class="separator:a4a5f36a8b51d36d743840c7acc4a9e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa05f15141eaea413a19e1155ee7406bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aa05f15141eaea413a19e1155ee7406bd">postprocess_set_fog</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float density, float start, float height_falloff, float fog_r, float fog_g, float fog_b)</td></tr>
+<tr class="separator:aa05f15141eaea413a19e1155ee7406bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3a420879557bc5bfc4a57cab113f1dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aa3a420879557bc5bfc4a57cab113f1dd">postprocess_set_grading_ue_default</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing)</td></tr>
+<tr class="separator:aa3a420879557bc5bfc4a57cab113f1dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">postprocess_apply_preset</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, const <a class="el" href="structPostProcessPreset.html">PostProcessPreset</a> *preset)</td></tr>
+<tr class="memdesc:a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies all settings from a preset atomically.  <a href="postprocess__setters_8c.html#a6bf66ac3a443cdd5f9fdd5cf9d37b409">More...</a><br /></td></tr>
+<tr class="separator:a6bf66ac3a443cdd5f9fdd5cf9d37b409"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cd72937cb98646d0ad08640bb17a6c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#a5cd72937cb98646d0ad08640bb17a6c7">postprocess_set_lut3d</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float intensity, GLuint texture)</td></tr>
+<tr class="separator:a5cd72937cb98646d0ad08640bb17a6c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf82157a553e11616a59e0b37ab6318e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess__setters_8c.html#aaf82157a553e11616a59e0b37ab6318e">postprocess_load_lut3d</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, const char *path)</td></tr>
+<tr class="separator:aaf82157a553e11616a59e0b37ab6318e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a6bf66ac3a443cdd5f9fdd5cf9d37b409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bf66ac3a443cdd5f9fdd5cf9d37b409">&#9670;&nbsp;</a></span>postprocess_apply_preset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_apply_preset </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structPostProcessPreset.html">PostProcessPreset</a> *&#160;</td>
+          <td class="paramname"><em>preset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Applies all settings from a preset atomically. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">post_processing</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">preset</td><td>Pointer to the preset values. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="postprocess__presets_8h.html" title="Extern declarations for predefined post-processing pipeline presets.">postprocess_presets.h</a> </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_a6bf66ac3a443cdd5f9fdd5cf9d37b409_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aa46668e6882df082d99ef8735eadc8af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa46668e6882df082d99ef8735eadc8af">&#9670;&nbsp;</a></span>postprocess_disable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_disable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Disables a specific effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_aa46668e6882df082d99ef8735eadc8af_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a881dafb2be086301f57008f8c73f545b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a881dafb2be086301f57008f8c73f545b">&#9670;&nbsp;</a></span>postprocess_enable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_enable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enables a specific effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_a881dafb2be086301f57008f8c73f545b_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="abc341dd9baaf0c15b099d5ad9c076f2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc341dd9baaf0c15b099d5ad9c076f2b">&#9670;&nbsp;</a></span>postprocess_get_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float postprocess_get_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_abc341dd9baaf0c15b099d5ad9c076f2b_cgraph.svg" width="431" height="38"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="af9163a0102d9d7b05ae4c091b9358f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9163a0102d9d7b05ae4c091b9358f9f">&#9670;&nbsp;</a></span>postprocess_is_enabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int postprocess_is_enabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns true if an effect is currently active. </p>
+
+</div>
+</div>
+<a id="aaf82157a553e11616a59e0b37ab6318e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf82157a553e11616a59e0b37ab6318e">&#9670;&nbsp;</a></span>postprocess_load_lut3d()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int postprocess_load_lut3d </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa747a4eb6f575c9d9fc7e97df5c8e847"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa747a4eb6f575c9d9fc7e97df5c8e847">&#9670;&nbsp;</a></span>postprocess_on_state_change()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void postprocess_on_state_change </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_aa747a4eb6f575c9d9fc7e97df5c8e847_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a6ce07fd263254dd72c5afc8c199f3913"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce07fd263254dd72c5afc8c199f3913">&#9670;&nbsp;</a></span>postprocess_set_auto_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_auto_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>min_luminance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>max_luminance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>speed_up</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>speed_down</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>key_value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4b604741ce9e478c27bce5bad0255bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b604741ce9e478c27bce5bad0255bcf">&#9670;&nbsp;</a></span>postprocess_set_banding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>levels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4a5f36a8b51d36d743840c7acc4a9e55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a5f36a8b51d36d743840c7acc4a9e55">&#9670;&nbsp;</a></span>postprocess_set_banding_channels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_channels </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>red</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>green</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>blue</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4459034743ba0085c3687dd0a6c89133"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4459034743ba0085c3687dd0a6c89133">&#9670;&nbsp;</a></span>postprocess_set_banding_dither()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_dither </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>strength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a30e58d88bfa2568ada6fc829dd83b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a30e58d88bfa2568ada6fc829dd83b6">&#9670;&nbsp;</a></span>postprocess_set_banding_perceptual()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_banding_perceptual </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gamma</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a48d84f2ba23d4a1a5d678618d29e7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a48d84f2ba23d4a1a5d678618d29e7b">&#9670;&nbsp;</a></span>postprocess_set_bloom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_bloom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>soft_threshold</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5066d2f5e623ccd15daa08b67596d555"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5066d2f5e623ccd15daa08b67596d555">&#9670;&nbsp;</a></span>postprocess_set_chrom_abbr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_chrom_abbr </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>strength</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a165620c3d499ce76f904f684dd7a4c99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a165620c3d499ce76f904f684dd7a4c99">&#9670;&nbsp;</a></span>postprocess_set_color_grading()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_color_grading </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>saturation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>contrast</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gamma</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>gain</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>lift</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aace03323c05270449d59a40291940736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aace03323c05270449d59a40291940736">&#9670;&nbsp;</a></span>postprocess_set_dof()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_dof </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>focal_distance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>focal_range</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>bokeh_scale</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac39bb0e2a4deb34497384fb628161e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac39bb0e2a4deb34497384fb628161e1d">&#9670;&nbsp;</a></span>postprocess_set_dof_anamorphic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_dof_anamorphic </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>anamorphic_ratio</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a791edfadb846c4f16be12dad6e4c2a6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a791edfadb846c4f16be12dad6e4c2a6a">&#9670;&nbsp;</a></span>postprocess_set_exposure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_exposure </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>exposure</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa05f15141eaea413a19e1155ee7406bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa05f15141eaea413a19e1155ee7406bd">&#9670;&nbsp;</a></span>postprocess_set_fog()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_fog </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>density</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>height_falloff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>fog_r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>fog_g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>fog_b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aebaafeb093d652eb93e6f91a55a60566"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebaafeb093d652eb93e6f91a55a60566">&#9670;&nbsp;</a></span>postprocess_set_fxaa()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_fxaa </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>subpix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>edge_threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>edge_threshold_min</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa3a420879557bc5bfc4a57cab113f1dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3a420879557bc5bfc4a57cab113f1dd">&#9670;&nbsp;</a></span>postprocess_set_grading_ue_default()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_grading_ue_default </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_aa3a420879557bc5bfc4a57cab113f1dd_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a3f062fb8af9a8119ae2702e3237bfebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f062fb8af9a8119ae2702e3237bfebf">&#9670;&nbsp;</a></span>postprocess_set_grain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_grain </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5cd72937cb98646d0ad08640bb17a6c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cd72937cb98646d0ad08640bb17a6c7">&#9670;&nbsp;</a></span>postprocess_set_lut3d()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_lut3d </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GLuint&#160;</td>
+          <td class="paramname"><em>texture</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7dfdbd52fd26553208453d418e3ecca4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dfdbd52fd26553208453d418e3ecca4">&#9670;&nbsp;</a></span>postprocess_set_tonemapper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_tonemapper </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>slope</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>toe</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>shoulder</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>black_clip</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>white_clip</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adcef69ea56c03cb233d5e3a9abaeea56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcef69ea56c03cb233d5e3a9abaeea56">&#9670;&nbsp;</a></span>postprocess_set_vignette()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_vignette </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>intensity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>smoothness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>roundness</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a311dcc7f7b99bb8af261b080d3bfd3ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a311dcc7f7b99bb8af261b080d3bfd3ec">&#9670;&nbsp;</a></span>postprocess_set_white_balance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_set_white_balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>temperature</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>tint</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90e1be83610a9debc59503b380a0bcd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90e1be83610a9debc59503b380a0bcd1">&#9670;&nbsp;</a></span>postprocess_toggle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void postprocess_toggle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td>
+          <td class="paramname"><em>post_processing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">PostProcessEffect</a>&#160;</td>
+          <td class="paramname"><em>effect</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Toggles the current state of an effect. </p>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="postprocess__setters_8c_a90e1be83610a9debc59503b380a0bcd1_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="postprocess__setters_8c.html">postprocess_setters.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

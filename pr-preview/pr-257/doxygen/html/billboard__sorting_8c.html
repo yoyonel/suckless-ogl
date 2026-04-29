@@ -1,0 +1,1053 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: src/billboard_sorting.c File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('billboard__sorting_8c.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
+  <div class="headertitle">
+<div class="title">billboard_sorting.c File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="billboard__sorting_8h_source.html">billboard_sorting.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="gl__debug_8h_source.html">gl_debug.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="log_8h_source.html">log.h</a>&quot;</code><br />
+<code>#include &quot;platform/platform_utils.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="profiler_8h_source.html">profiler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for billboard_sorting.c:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="billboard__sorting_8c__incl.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a77867ab4129f63159b37bca3b652a798"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a77867ab4129f63159b37bca3b652a798a3d24f3bd15551e76fb73dc53915c550b">EXPECTED_SPHERE_INSTANCE_SIZE</a> = 128
+ }</td></tr>
+<tr class="separator:a77867ab4129f63159b37bca3b652a798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16685eea158879e41b101ca3634de462"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a16685eea158879e41b101ca3634de462a977681261e84b7671049e4d74c29552e">WORKGROUP_SIZE</a> = 1024
+ }</td></tr>
+<tr class="separator:a16685eea158879e41b101ca3634de462"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2970898e8a43ce21e1cc510d49f1b89d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a2970898e8a43ce21e1cc510d49f1b89dacbe96d34bad52c1c1c6fa3663f66ff43">DEFAULT_MIN_CAPACITY</a> = 64
+ }</td></tr>
+<tr class="separator:a2970898e8a43ce21e1cc510d49f1b89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa231099d07583c3ed0981e0bb665f55"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#afa231099d07583c3ed0981e0bb665f55af8df5c1debfe68fac8947ff4a8cbcb36">MAX_SINGLE_PASS_COUNT</a> = 1024
+ }</td></tr>
+<tr class="separator:afa231099d07583c3ed0981e0bb665f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a394b3903fbf00ba2b6243f60689a5a5f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a394b3903fbf00ba2b6243f60689a5a5fad26222a07cb422b43370dc72182b72cd">RADIX_BITS_PER_PASS</a> = 8
+ }</td></tr>
+<tr class="separator:a394b3903fbf00ba2b6243f60689a5a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac205be2172292384dd687b5471a87edd"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#ac205be2172292384dd687b5471a87eddaeae28fcea22c1ab335c08f7d63bb35a7">RADIX_BUCKETS</a> = 256
+ }</td></tr>
+<tr class="separator:ac205be2172292384dd687b5471a87edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a157d5577a5b2f5986037d0d09c7dc77d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a157d5577a5b2f5986037d0d09c7dc77dab66a8307e63dad074f39fc2c2f1eb971">RADIX_SHIFT_LIMIT</a> = 32
+ }</td></tr>
+<tr class="separator:a157d5577a5b2f5986037d0d09c7dc77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fb9092bcdeada2d206bdc74afbbe122"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="billboard__sorting_8c.html#a1fb9092bcdeada2d206bdc74afbbe122ad8da0cb042e3227f3d9a7bf544fab0cb">RADIX_MASK</a> = 0xFFU
+ }</td></tr>
+<tr class="separator:a1fb9092bcdeada2d206bdc74afbbe122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:afb01139cbc167de435d4e49cc3e293ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#afb01139cbc167de435d4e49cc3e293ec">_Static_assert</a> (sizeof(<a class="el" href="structSphereInstance.html">SphereInstance</a>)==<a class="el" href="billboard__sorting_8c.html#a77867ab4129f63159b37bca3b652a798a3d24f3bd15551e76fb73dc53915c550b">EXPECTED_SPHERE_INSTANCE_SIZE</a>, &quot;SphereInstance size must match GLSL std430 <a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a> (128 B)&quot;)</td></tr>
+<tr class="separator:afb01139cbc167de435d4e49cc3e293ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dcb764e029c15c8bb949432cdc6b88b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a8dcb764e029c15c8bb949432cdc6b88b">next_pow2</a> (int val)</td></tr>
+<tr class="separator:a8dcb764e029c15c8bb949432cdc6b88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cc62bb240dd047fbb8f117badfb03a8"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a8cc62bb240dd047fbb8f117badfb03a8">ensure_cpu_capacity</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, int count)</td></tr>
+<tr class="memdesc:a8cc62bb240dd047fbb8f117badfb03a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Grow CPU scratchpads to hold at least <code>count</code> elements.  <a href="billboard__sorting_8c.html#a8cc62bb240dd047fbb8f117badfb03a8">More...</a><br /></td></tr>
+<tr class="separator:a8cc62bb240dd047fbb8f117badfb03a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7336426436cf583ae1c93b6cef937f3f"><td class="memItemLeft" align="right" valign="top">static GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a7336426436cf583ae1c93b6cef937f3f">upload_sorted_to_ssbo</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, int count)</td></tr>
+<tr class="memdesc:a7336426436cf583ae1c93b6cef937f3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Upload <code>count</code> sorted instances from the CPU temp buffer to the SSBO.  <a href="billboard__sorting_8c.html#a7336426436cf583ae1c93b6cef937f3f">More...</a><br /></td></tr>
+<tr class="separator:a7336426436cf583ae1c93b6cef937f3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e7ee0aa8c5ef73be74bfe3f9bba3205"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a8e7ee0aa8c5ef73be74bfe3f9bba3205">billboard_sorter_init</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, int initial_capacity)</td></tr>
+<tr class="memdesc:a8e7ee0aa8c5ef73be74bfe3f9bba3205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates internal buffers for the sorter.  <a href="billboard__sorting_8c.html#a8e7ee0aa8c5ef73be74bfe3f9bba3205">More...</a><br /></td></tr>
+<tr class="separator:a8e7ee0aa8c5ef73be74bfe3f9bba3205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7a360778f7d79b99618da36773fb1fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#ad7a360778f7d79b99618da36773fb1fd">billboard_sorter_cleanup</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter)</td></tr>
+<tr class="memdesc:ad7a360778f7d79b99618da36773fb1fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the sorter context.  <a href="billboard__sorting_8c.html#ad7a360778f7d79b99618da36773fb1fd">More...</a><br /></td></tr>
+<tr class="separator:ad7a360778f7d79b99618da36773fb1fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e0b31ffd7cd8db6aa71284ffac670c4"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a4e0b31ffd7cd8db6aa71284ffac670c4">billboard_sorter_sort_gpu</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a4e0b31ffd7cd8db6aa71284ffac670c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on GPU.  <a href="billboard__sorting_8c.html#a4e0b31ffd7cd8db6aa71284ffac670c4">More...</a><br /></td></tr>
+<tr class="separator:a4e0b31ffd7cd8db6aa71284ffac670c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57be5e118fd5533df2275e84d89e1843"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a57be5e118fd5533df2275e84d89e1843">compare_sphere_entries</a> (const void *lhs, const void *rhs)</td></tr>
+<tr class="separator:a57be5e118fd5533df2275e84d89e1843"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec701145359c500f4af067ef11e050e6"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#aec701145359c500f4af067ef11e050e6">billboard_sorter_sort_cpu</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:aec701145359c500f4af067ef11e050e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) on CPU.  <a href="billboard__sorting_8c.html#aec701145359c500f4af067ef11e050e6">More...</a><br /></td></tr>
+<tr class="separator:aec701145359c500f4af067ef11e050e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d5aab931453148c66e46823323759de"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a5d5aab931453148c66e46823323759de">float_to_sortable_uint</a> (float f_val)</td></tr>
+<tr class="memdesc:a5d5aab931453148c66e46823323759de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using integer radix sort.  <a href="billboard__sorting_8c.html#a5d5aab931453148c66e46823323759de">More...</a><br /></td></tr>
+<tr class="separator:a5d5aab931453148c66e46823323759de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34714dfd087e0b6f3176014fde266235"><td class="memItemLeft" align="right" valign="top">GLuint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a34714dfd087e0b6f3176014fde266235">billboard_sorter_sort_cpu_radix</a> (<a class="el" href="structBillboardSorter.html">BillboardSorter</a> *sorter, const <a class="el" href="structSphereInstance.html">SphereInstance</a> *instances, int count, const vec3 camera_pos)</td></tr>
+<tr class="memdesc:a34714dfd087e0b6f3176014fde266235"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sorts the array of instances Back-to-Front (descending depth) using Radix Sort.  <a href="billboard__sorting_8c.html#a34714dfd087e0b6f3176014fde266235">More...</a><br /></td></tr>
+<tr class="separator:a34714dfd087e0b6f3176014fde266235"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:aec8224722de5e61973f9e3b8078d365d"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#aec8224722de5e61973f9e3b8078d365d">FLOAT_SIGN_MASK</a> = 0x80000000U</td></tr>
+<tr class="separator:aec8224722de5e61973f9e3b8078d365d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa24402addbc33eefed827c01a79243c7"><td class="memItemLeft" align="right" valign="top">static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#aa24402addbc33eefed827c01a79243c7">FLOAT_COMPLEMENT_MASK</a> = 0xFFFFFFFFU</td></tr>
+<tr class="separator:aa24402addbc33eefed827c01a79243c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab504c79c02fbbbb3b5f723fc5e70e1b0"><td class="memItemLeft" align="right" valign="top">static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#ab504c79c02fbbbb3b5f723fc5e70e1b0">BIT_SHIFT_8</a> = 8U</td></tr>
+<tr class="separator:ab504c79c02fbbbb3b5f723fc5e70e1b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3fa2312fad06af4b08eccb275556a8"><td class="memItemLeft" align="right" valign="top">static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#acb3fa2312fad06af4b08eccb275556a8">BIT_SHIFT_16</a> = 16U</td></tr>
+<tr class="separator:acb3fa2312fad06af4b08eccb275556a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a01d56be5ca4245c6ebd28f0b7458e6"><td class="memItemLeft" align="right" valign="top">static const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="billboard__sorting_8c.html#a3a01d56be5ca4245c6ebd28f0b7458e6">GPU_ENTRY_SIZE</a> = 8</td></tr>
+<tr class="separator:a3a01d56be5ca4245c6ebd28f0b7458e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a77867ab4129f63159b37bca3b652a798"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77867ab4129f63159b37bca3b652a798">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a77867ab4129f63159b37bca3b652a798a3d24f3bd15551e76fb73dc53915c550b"></a>EXPECTED_SPHERE_INSTANCE_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a16685eea158879e41b101ca3634de462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16685eea158879e41b101ca3634de462">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a16685eea158879e41b101ca3634de462a977681261e84b7671049e4d74c29552e"></a>WORKGROUP_SIZE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a2970898e8a43ce21e1cc510d49f1b89d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2970898e8a43ce21e1cc510d49f1b89d">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2970898e8a43ce21e1cc510d49f1b89dacbe96d34bad52c1c1c6fa3663f66ff43"></a>DEFAULT_MIN_CAPACITY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="afa231099d07583c3ed0981e0bb665f55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa231099d07583c3ed0981e0bb665f55">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="afa231099d07583c3ed0981e0bb665f55af8df5c1debfe68fac8947ff4a8cbcb36"></a>MAX_SINGLE_PASS_COUNT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a394b3903fbf00ba2b6243f60689a5a5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a394b3903fbf00ba2b6243f60689a5a5f">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a394b3903fbf00ba2b6243f60689a5a5fad26222a07cb422b43370dc72182b72cd"></a>RADIX_BITS_PER_PASS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="ac205be2172292384dd687b5471a87edd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac205be2172292384dd687b5471a87edd">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ac205be2172292384dd687b5471a87eddaeae28fcea22c1ab335c08f7d63bb35a7"></a>RADIX_BUCKETS&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a157d5577a5b2f5986037d0d09c7dc77d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a157d5577a5b2f5986037d0d09c7dc77d">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a157d5577a5b2f5986037d0d09c7dc77dab66a8307e63dad074f39fc2c2f1eb971"></a>RADIX_SHIFT_LIMIT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a1fb9092bcdeada2d206bdc74afbbe122"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fb9092bcdeada2d206bdc74afbbe122">&#9670;&nbsp;</a></span>anonymous enum</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1fb9092bcdeada2d206bdc74afbbe122ad8da0cb042e3227f3d9a7bf544fab0cb"></a>RADIX_MASK&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="afb01139cbc167de435d4e49cc3e293ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb01139cbc167de435d4e49cc3e293ec">&#9670;&nbsp;</a></span>_Static_assert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">_Static_assert </td>
+          <td>(</td>
+          <td class="paramtype">sizeof(<a class="el" href="structSphereInstance.html">SphereInstance</a>)&#160;</td>
+          <td class="paramname"> = <code>=<a class="el" href="billboard__sorting_8c.html#a77867ab4129f63159b37bca3b652a798a3d24f3bd15551e76fb73dc53915c550b">EXPECTED_SPHERE_INSTANCE_SIZE</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;SphereInstance size must match GLSL std430 <a class="el" href="ui__spinner_8vert.html#a6659993bb1adc51b0e9dd695009c85c0">layout</a> (128 B)&quot;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad7a360778f7d79b99618da36773fb1fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7a360778f7d79b99618da36773fb1fd">&#9670;&nbsp;</a></span>billboard_sorter_cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void billboard_sorter_cleanup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Destroys the sorter context. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Pointer to the struct. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8e7ee0aa8c5ef73be74bfe3f9bba3205"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e7ee0aa8c5ef73be74bfe3f9bba3205">&#9670;&nbsp;</a></span>billboard_sorter_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void billboard_sorter_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>initial_capacity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allocates internal buffers for the sorter. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Pointer to the struct. </td></tr>
+    <tr><td class="paramname">initial_capacity</td><td>Expected number of instances. </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="billboard__sorting_8c_a8e7ee0aa8c5ef73be74bfe3f9bba3205_cgraph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+
+</div>
+</div>
+<a id="aec701145359c500f4af067ef11e050e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec701145359c500f4af067ef11e050e6">&#9670;&nbsp;</a></span>billboard_sorter_sort_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint billboard_sorter_sort_cpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) on CPU. </p>
+<p>Uses qsort on the host and uploads the result to the SSBO.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances (will be copied and sorted internally). </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__sorting_8c_aec701145359c500f4af067ef11e050e6_cgraph.svg" width="428" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a34714dfd087e0b6f3176014fde266235"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34714dfd087e0b6f3176014fde266235">&#9670;&nbsp;</a></span>billboard_sorter_sort_cpu_radix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint billboard_sorter_sort_cpu_radix </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) using Radix Sort. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Array of instances. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position (for depth). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__sorting_8c_a34714dfd087e0b6f3176014fde266235_cgraph.svg" width="386" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a4e0b31ffd7cd8db6aa71284ffac670c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e0b31ffd7cd8db6aa71284ffac670c4">&#9670;&nbsp;</a></span>billboard_sorter_sort_gpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GLuint billboard_sorter_sort_gpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structSphereInstance.html">SphereInstance</a> *&#160;</td>
+          <td class="paramname"><em>instances</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const vec3&#160;</td>
+          <td class="paramname"><em>camera_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sorts the array of instances Back-to-Front (descending depth) on GPU. </p>
+<p>Uploads instances to an SSBO, sorts them using a compute shader, and prepares them for rendering.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sorter</td><td>Memory context. </td></tr>
+    <tr><td class="paramname">instances</td><td>Pointer to the array of instances to upload. </td></tr>
+    <tr><td class="paramname">count</td><td>Active element count. </td></tr>
+    <tr><td class="paramname">camera_pos</td><td>World-space viewer position. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the sorted instances. </dd></dl>
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="billboard__sorting_8c_a4e0b31ffd7cd8db6aa71284ffac670c4_cgraph.svg" width="408" height="139"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+
+</div>
+</div>
+<a id="a57be5e118fd5533df2275e84d89e1843"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57be5e118fd5533df2275e84d89e1843">&#9670;&nbsp;</a></span>compare_sphere_entries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int compare_sphere_entries </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8cc62bb240dd047fbb8f117badfb03a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cc62bb240dd047fbb8f117badfb03a8">&#9670;&nbsp;</a></span>ensure_cpu_capacity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool ensure_cpu_capacity </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Grow CPU scratchpads to hold at least <code>count</code> elements. </p>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on allocation failure. </dd></dl>
+
+</div>
+</div>
+<a id="a5d5aab931453148c66e46823323759de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d5aab931453148c66e46823323759de">&#9670;&nbsp;</a></span>float_to_sortable_uint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static uint32_t float_to_sortable_uint </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>f_val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Converts a float to a uint32_t that preserves order (IEEE 754). This allows sorting floats using integer radix sort. </p>
+
+</div>
+</div>
+<a id="a8dcb764e029c15c8bb949432cdc6b88b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dcb764e029c15c8bb949432cdc6b88b">&#9670;&nbsp;</a></span>next_pow2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int next_pow2 </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7336426436cf583ae1c93b6cef937f3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7336426436cf583ae1c93b6cef937f3f">&#9670;&nbsp;</a></span>upload_sorted_to_ssbo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static GLuint upload_sorted_to_ssbo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structBillboardSorter.html">BillboardSorter</a> *&#160;</td>
+          <td class="paramname"><em>sorter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Upload <code>count</code> sorted instances from the CPU temp buffer to the SSBO. </p>
+<dl class="section return"><dt>Returns</dt><dd>The SSBO handle containing the data. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="acb3fa2312fad06af4b08eccb275556a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb3fa2312fad06af4b08eccb275556a8">&#9670;&nbsp;</a></span>BIT_SHIFT_16</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned int BIT_SHIFT_16 = 16U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab504c79c02fbbbb3b5f723fc5e70e1b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab504c79c02fbbbb3b5f723fc5e70e1b0">&#9670;&nbsp;</a></span>BIT_SHIFT_8</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned int BIT_SHIFT_8 = 8U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Bit-shift constants for next_pow2 (named to satisfy linter). </p>
+
+</div>
+</div>
+<a id="aa24402addbc33eefed827c01a79243c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa24402addbc33eefed827c01a79243c7">&#9670;&nbsp;</a></span>FLOAT_COMPLEMENT_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t FLOAT_COMPLEMENT_MASK = 0xFFFFFFFFU</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aec8224722de5e61973f9e3b8078d365d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec8224722de5e61973f9e3b8078d365d">&#9670;&nbsp;</a></span>FLOAT_SIGN_MASK</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uint32_t FLOAT_SIGN_MASK = 0x80000000U</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a01d56be5ca4245c6ebd28f0b7458e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a01d56be5ca4245c6ebd28f0b7458e6">&#9670;&nbsp;</a></span>GPU_ENTRY_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t GPU_ENTRY_SIZE = 8</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Size of the <a class="el" href="structEntry.html">Entry</a> struct in the compute shader: int (4) + float (4). </p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="billboard__sorting_8c.html">billboard_sorting.c</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
