@@ -132,11 +132,71 @@ The initial IWYU audit of suckless-ogl identified:
 Out of 41 attempted removals, 4 were false positives (**~10%**). This confirms
 IWYU suggestions should always be treated as advisory, not authoritative.
 
-## Integration with CI
+## Integration with CI and Pre-Push
 
-IWYU is not (yet) enforced in CI. The current strategy is periodic manual
-audits. See issue [#266](https://github.com/yoyonel/suckless-ogl/issues/266)
-for the planned CI dependency metrics gate.
+IWYU is integrated at two levels:
+
+### Pre-Push Hook (fast, on changed files)
+
+The pre-push hook runs IWYU only on staged `.c` files, checking for
+**unused includes** (`should remove`). Known false positives are filtered
+through an allowlist in `scripts/iwyu_check.sh`.
+
+```bash
+# Manual invocation (same as pre-push hook)
+just iwyu-check                     # Changed files vs origin/master
+just iwyu-check feat/my-branch      # Changed files vs specific ref
+
+# Or directly
+bash scripts/iwyu_check.sh --staged           # Staged files only
+bash scripts/iwyu_check.sh --changed          # vs origin/master
+bash scripts/iwyu_check.sh src/app.c src/io.c # Specific files
+```
+
+Typical runtime: **2–5 seconds** per changed file.
+
+### CI Job (full scan, advisory)
+
+The GitHub Actions `lint-and-format` job includes an advisory IWYU step
+that scans all 76+ source files. It uses `continue-on-error: true` so it
+reports findings without blocking the pipeline.
+
+```bash
+# Local equivalent of the CI scan
+just iwyu                # Full scan, all src/*.c, verbose
+```
+
+Typical runtime: **2–3 minutes** for the full codebase.
+
+### Justfile Recipes
+
+| Recipe | Description |
+|--------|-------------|
+| `just iwyu` | Full scan (CI-grade, all src/*.c files) |
+| `just iwyu-check [REF]` | Changed files only (vs `origin/master` or custom ref) |
+
+### Known False Positives (Allowlist)
+
+The script maintains an allowlist in `scripts/iwyu_check.sh` for confirmed
+false positives. Current entries:
+
+| Pattern | Reason |
+|---------|--------|
+| `gl_common.h` | Provides RAII macros beyond `glad.h` |
+| `cglm/cglm.h` | Umbrella header; IWYU wants sub-headers |
+| `postprocess.h` | Transitive struct dependency from `app.h` |
+| `sched.h` | `struct sched_param` in struct field |
+| `immintrin.h` | AVX/F16C umbrella header |
+| `GLFW/glfw3.h` | `app_binding.h` API is about GLFW bindings |
+| `gpu_profiler.h` | `GPUProfiler*` in `effect_benchmark.h` struct |
+| `app.h` | Defensive transitive include in `app_ui.c` |
+
+### Mapping File
+
+The project includes `.iwyu.imp` — an IWYU mapping file that declares
+`gl_common.h` as the public facade for `glad/glad.h` and `cglm/cglm.h`
+as the umbrella for cglm sub-headers. This reduces noise in the raw
+IWYU output.
 
 ## Related
 

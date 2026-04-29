@@ -135,11 +135,71 @@ Sur 41 suppressions tentées, 4 étaient des faux positifs (**~10%**). Cela
 confirme que les suggestions IWYU doivent toujours être traitées comme
 consultatives, pas autoritatives.
 
-## Intégration CI
+## Intégration CI et Pre-Push
 
-IWYU n'est pas (encore) appliqué en CI. La stratégie actuelle est un audit
-manuel périodique. Voir l'issue [#266](https://github.com/yoyonel/suckless-ogl/issues/266)
-pour la gate CI de métriques de dépendances prévue.
+IWYU est intégré à deux niveaux :
+
+### Hook Pre-Push (rapide, fichiers modifiés)
+
+Le hook pre-push exécute IWYU uniquement sur les fichiers `.c` stagés,
+vérifiant les **includes inutilisés** (`should remove`). Les faux positifs
+connus sont filtrés via une allowlist dans `scripts/iwyu_check.sh`.
+
+```bash
+# Invocation manuelle (équivalent du hook pre-push)
+just iwyu-check                     # Fichiers modifiés vs origin/master
+just iwyu-check feat/my-branch      # Fichiers modifiés vs ref spécifique
+
+# Ou directement
+bash scripts/iwyu_check.sh --staged           # Fichiers stagés uniquement
+bash scripts/iwyu_check.sh --changed          # vs origin/master
+bash scripts/iwyu_check.sh src/app.c src/io.c # Fichiers spécifiques
+```
+
+Durée typique : **2–5 secondes** par fichier modifié.
+
+### Job CI (scan complet, consultatif)
+
+Le job GitHub Actions `lint-and-format` inclut une étape IWYU consultative
+qui scanne les 76+ fichiers source. Elle utilise `continue-on-error: true`
+pour signaler les problèmes sans bloquer le pipeline.
+
+```bash
+# Équivalent local du scan CI
+just iwyu                # Scan complet, tous les src/*.c, verbose
+```
+
+Durée typique : **2–3 minutes** pour l'ensemble du codebase.
+
+### Recettes Justfile
+
+| Recette | Description |
+|---------|-------------|
+| `just iwyu` | Scan complet (grade CI, tous les src/*.c) |
+| `just iwyu-check [REF]` | Fichiers modifiés uniquement (vs `origin/master` ou ref custom) |
+
+### Faux positifs connus (Allowlist)
+
+Le script maintient une allowlist dans `scripts/iwyu_check.sh` pour les
+faux positifs confirmés. Entrées actuelles :
+
+| Pattern | Raison |
+|---------|--------|
+| `gl_common.h` | Fournit des macros RAII au-delà de `glad.h` |
+| `cglm/cglm.h` | Header parapluie ; IWYU veut les sous-headers |
+| `postprocess.h` | Dépendance struct transitive depuis `app.h` |
+| `sched.h` | `struct sched_param` dans un champ de struct |
+| `immintrin.h` | Header parapluie AVX/F16C |
+| `GLFW/glfw3.h` | L'API de `app_binding.h` concerne les bindings GLFW |
+| `gpu_profiler.h` | `GPUProfiler*` dans la struct de `effect_benchmark.h` |
+| `app.h` | Include transitif défensif dans `app_ui.c` |
+
+### Fichier de mapping
+
+Le projet inclut `.iwyu.imp` — un fichier de mapping IWYU qui déclare
+`gl_common.h` comme façade publique de `glad/glad.h` et `cglm/cglm.h`
+comme parapluie des sous-headers cglm. Cela réduit le bruit dans la
+sortie brute IWYU.
 
 ## Voir aussi
 
