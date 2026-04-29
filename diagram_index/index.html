@@ -4019,6 +4019,82 @@ READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
   </div>
 </div>
 
+<div class="diagram-item">
+  <a href="../architecture/#include-dependency-graph" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Include-Dependency Graph</a> : <span style="opacity: 0.6; font-size: 0.85em;">Top-level module dependencies (project headers only, excludes system and vendor headers):</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+APP[app.h]:::aggregate
+SCENE[scene.h]:::aggregate
+PP[postprocess.h]:::aggregate
+REND[renderer.h]:::leaf
+%% App sub-structs
+APP_PROF[app_profiling.h]:::substruct
+APP_INP[app_input_state.h]:::substruct
+APP_WIN[app_window.h]:::substruct
+APP_UI[app_ui.h]:::substruct
+%% Scene sub-structs
+SC_GPU[scene_gpu_resources.h]:::substruct
+SC_SH[scene_shaders.h]:::substruct
+SC_CFG[scene_config.h]:::substruct
+SC_VIS[scene_visuals.h]:::substruct
+SC_SIM[scene_simulation.h]:::substruct
+SC_LIT[scene_lighting.h]:::substruct
+%% PostProcess sub-headers
+PP_PAR[pp_params.h]:::substruct
+PP_GPU[pp_gpu_resources.h]:::substruct
+PP_SHD[pp_shader_state.h]:::substruct
+PP_RDB[pp_exposure_readback.h]:::substruct
+%% Effects
+FX_BL[fx_bloom.h]:::effect
+FX_DOF[fx_dof.h]:::effect
+FX_AE[fx_auto_exposure.h]:::effect
+FX_MB[fx_motion_blur.h]:::effect
+FX_LUT[fx_lut3d.h]:::effect
+EC[effect_context.h]:::effect
+%% App -&gt; direct deps
+APP --&gt; SCENE
+APP --&gt; PP
+APP --&gt; APP_UI
+APP --&gt; APP_WIN
+%% App sub-structs (owned, not included by app.h)
+APP -.-&gt;|"owned"| APP_PROF
+APP -.-&gt;|"owned"| APP_INP
+%% Scene -&gt; sub-structs
+SCENE --&gt; SC_GPU
+SCENE --&gt; SC_SH
+SCENE --&gt; SC_CFG
+SCENE --&gt; SC_VIS
+SCENE --&gt; SC_SIM
+SCENE --&gt; SC_LIT
+%% PostProcess -&gt; sub-headers + effects
+PP --&gt; PP_PAR
+PP --&gt; PP_GPU
+PP --&gt; PP_SHD
+PP --&gt; PP_RDB
+PP --&gt; FX_BL
+PP --&gt; FX_DOF
+PP --&gt; FX_AE
+PP --&gt; FX_MB
+PP --&gt; FX_LUT
+%% Effect decoupling
+FX_BL -.-&gt;|"runtime"| EC
+FX_DOF -.-&gt;|"runtime"| EC
+FX_AE -.-&gt;|"runtime"| EC
+FX_MB -.-&gt;|"runtime"| EC
+FX_LUT -.-&gt;|"runtime"| EC
+%% Renderer uses forward-decls only
+REND -.-&gt;|"fwd-decl"| APP
+REND -.-&gt;|"fwd-decl"| SCENE
+REND -.-&gt;|"fwd-decl"| PP</code></pre>
+
+  </div>
+</div>
+
 <h2 id="asynchronous-environment-map-loader"><a href="../async_loader/">Asynchronous Environment Map Loader</a><a class="headerlink" href="#asynchronous-environment-map-loader" title="Permanent link">¶</a></h2>
 <div class="diagram-item">
   <a href="../async_loader/#scheduling-sequence" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">Scheduling Sequence</a> : <span style="opacity: 0.6; font-size: 0.85em;">The complexity of the PBO-based approach is handled by spliting the work across several frames:</span>
