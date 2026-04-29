@@ -2,6 +2,7 @@
 
 #include "gl_common.h"
 #include "log.h"
+#include "shader.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

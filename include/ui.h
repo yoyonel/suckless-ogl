@@ -12,8 +12,10 @@
 /** @brief Number of supported glyphs in the font atlas. */
 #define ASCII_CHAR_COUNT 96
 
-#include "shader.h"
+#include "gl_common.h"
 #include <cglm/cglm.h>
+
+typedef struct Shader Shader;
 
 /**
  * @struct GlyphInfo

@@ -68,7 +68,7 @@ typedef struct {
  * @brief Wrapper for an OpenGL program with uniform caching and automatic
  * cleanup.
  */
-typedef struct {
+typedef struct Shader {
 	GLuint program;        /**< OpenGL Program handle. */
 	char* name;            /**< Descriptive name for debugging (owned). */
 	UniformEntry* entries; /**< Sorted array of cached uniforms. */

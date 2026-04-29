@@ -13,9 +13,10 @@
 #define SHOCKWAVE_H
 
 #include "gl_common.h"
-#include "shader.h"
 #include <cglm/types.h>
 #include <stdbool.h>
+
+typedef struct Shader Shader;
 
 /** Maximum simultaneous active shockwaves. */
 enum { SHOCKWAVE_MAX_ACTIVE = 16 };

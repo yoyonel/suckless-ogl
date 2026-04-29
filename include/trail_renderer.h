@@ -15,9 +15,10 @@
 
 #include "gl_common.h"
 #include "nbody.h"
-#include "shader.h"
 #include <cglm/types.h>
 #include <stdbool.h>
+
+typedef struct Shader Shader;
 
 /** Maximum trail sample points per body. */
 enum { TRAIL_MAX_POINTS = 256 };

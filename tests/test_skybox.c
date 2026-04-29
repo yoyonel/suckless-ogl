@@ -1,4 +1,5 @@
 // tests/test_skybox.c
+#include "shader.h"
 #include "skybox.h"
 #include "unity.h"
 #include <cglm/cam.h>

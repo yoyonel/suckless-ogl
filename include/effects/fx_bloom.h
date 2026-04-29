@@ -2,7 +2,7 @@
 #define FX_BLOOM_H
 
 #include "gl_common.h"
-#include "shader.h"
+typedef struct Shader Shader;
 
 /* Forward declarations */
 struct EffectContext;

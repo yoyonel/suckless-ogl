@@ -17,9 +17,10 @@
 #ifndef EFFECT_BENCHMARK_H
 #define EFFECT_BENCHMARK_H
 
-#include "gpu_profiler.h"
-#include "postprocess.h"
 #include <stdbool.h>
+
+typedef struct PostProcess PostProcess;
+typedef struct GPUProfiler GPUProfiler;
 
 /** @brief Number of frames to measure per phase (warmup excluded). */
 #define BENCH_MEASURE_FRAMES 120

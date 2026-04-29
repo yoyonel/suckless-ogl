@@ -2,7 +2,9 @@
 #define FX_LUT_VIZ_H
 
 #include "gl_common.h"
-#include "shader.h"
+#include <stdbool.h>
+
+typedef struct Shader Shader;
 
 /* Forward declarations */
 struct EffectContext;

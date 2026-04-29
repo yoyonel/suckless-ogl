@@ -11,8 +11,9 @@
 #define SKYBOX_H
 
 #include "gl_common.h"
-#include "shader.h"
 #include <cglm/types.h>
+
+typedef struct Shader Shader;
 
 /**
  * @struct Skybox

@@ -8,7 +8,9 @@
 
 #include "effect_benchmark.h"
 
+#include "gpu_profiler.h"
 #include "log.h"
+#include "postprocess.h"
 #include <math.h>
 #include <string.h>
 

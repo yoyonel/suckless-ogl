@@ -22,7 +22,7 @@
  * This structure is 64-byte aligned to ensure optimal GPU throughput
  * and compatibility with SIMD-based sorting or physics.
  */
-typedef struct {
+typedef struct SphereInstance {
 	mat4 model;       /**< 4x4 Transformation matrix. */
 	vec3 albedo;      /**< Base color (linear RGB). */
 	float metallic;   /**< PBR metallic factor (0.0 - 1.0). */

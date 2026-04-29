@@ -2,7 +2,7 @@
 #define FX_MOTION_BLUR_H
 
 #include "gl_common.h"
-#include "shader.h"
+typedef struct Shader Shader;
 #include <cglm/types.h>
 
 /* Forward declaration */
