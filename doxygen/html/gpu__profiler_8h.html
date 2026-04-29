@@ -264,11 +264,10 @@ $(document).ready(function(){initNavTree('gpu__profiler_8h.html',''); initResiza
 <code>#include &quot;<a class="el" href="metric__stack_8h_source.html">metric_stack.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="perf__timer_8h_source.html">perf_timer.h</a>&quot;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="app__settings_8h_source.html">app_settings.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for gpu_profiler.h:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h__incl.svg" width="640" height="262"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="gpu__profiler_8h__incl.svg" width="100%" height="496"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -412,8 +411,8 @@ Variables</h2></td></tr>
 <div class="line">        __attribute__((cleanup(<a class="code" href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a>))) \</div>
 <div class="line">        __attribute__((unused)) = {profiler_ptr};        \</div>
 <div class="line">    gpu_profiler_start_stage(profiler_ptr, name, color)</div>
-<div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:170</div></div>
-<div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:161</div></div>
+<div class="ttc" id="agpu__profiler_8h_html_aaca3fdb25b304688a5aedf1a57d276d9"><div class="ttname"><a href="gpu__profiler_8h.html#aaca3fdb25b304688a5aedf1a57d276d9">gpu_stage_cleanup_raii</a></div><div class="ttdeci">static void gpu_stage_cleanup_raii(GPUStageRAII *stage_raii)</div><div class="ttdoc">Internal cleanup function for GPUStageRAII.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:168</div></div>
+<div class="ttc" id="astructGPUStageRAII_html"><div class="ttname"><a href="structGPUStageRAII.html">GPUStageRAII</a></div><div class="ttdoc">RAII container for automatic GPU stage management and Tracy zones.</div><div class="ttdef"><b>Definition:</b> gpu_profiler.h:159</div></div>
 </div><!-- fragment -->
 <p>Scoped GPU profiling stage. Automatically ends on scope exit. </p>
 
