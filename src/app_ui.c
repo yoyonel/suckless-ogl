@@ -1,12 +1,8 @@
 #include "app_ui.h"
 
-#include "action_notifier.h"
-#include "adaptive_sampler.h"
 #include "app.h"
-#include "app_binding.h"
 #include "app_input_state.h"
 #include "app_profiling.h"
-#include "app_settings.h"
 #include "app_ui_layout.h" /* Private: layout constants, keyboard/gamepad data */
 #include "glad/glad.h"
 #include "nbody.h"
@@ -17,10 +13,7 @@
 #include <GLFW/glfw3.h>
 #include <cglm/types.h>
 #include <math.h>
-#include <stb_image.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 /* --- Forward Declarations (Internal) --- */

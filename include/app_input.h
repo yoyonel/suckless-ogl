@@ -17,6 +17,7 @@
 #include "gl_common.h"
 
 /* Forward declarations — avoids pulling heavy headers into app_input.h */
+typedef struct App App;
 typedef struct Camera Camera;
 typedef struct Scene Scene;
 typedef struct PostProcess PostProcess;
@@ -143,5 +144,14 @@ void app_toggle_fullscreen(AppInputContext* ctx, GLFWwindow* window);
  * @param filename Output file path (should end in .png).
  */
 void app_save_png_frame(AppInputContext* ctx, const char* filename);
+
+/**
+ * @brief Constructs an AppInputContext from the full App state.
+ *
+ * Bridges between the GLFW user-pointer (App*) and the decoupled
+ * input API (AppInputContext*). Defined in app.c to keep the heavy
+ * App sub-struct includes out of app_input.c.
+ */
+AppInputContext app_input_ctx_from_app(App* app);
 
 #endif /* APP_INPUT_H */
