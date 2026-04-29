@@ -109,6 +109,7 @@ typedef struct __GLsync* GLsync;
 #define GL_FRONT_AND_BACK 0x0408
 #define GL_SRC_ALPHA 0x0302
 #define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_ONE 1
 #define GL_FILL 0x1B02
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
 #define GL_STREAM_DRAW 0x88E0
