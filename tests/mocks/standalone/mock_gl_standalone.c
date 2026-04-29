@@ -701,3 +701,39 @@ void gl_debug_push_group(const char* name)
 void gl_debug_pop_group(void)
 {
 }
+
+void glDepthMask(GLboolean flag)
+{
+	(void)flag;
+}
+void glEnablei(GLenum target, GLuint index)
+{
+	(void)target;
+	(void)index;
+}
+void glDisablei(GLenum target, GLuint index)
+{
+	(void)target;
+	(void)index;
+}
+void glPolygonOffset(GLfloat factor, GLfloat units)
+{
+	(void)factor;
+	(void)units;
+}
+void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass)
+{
+	(void)sfail;
+	(void)dpfail;
+	(void)dppass;
+}
+void glStencilFunc(GLenum func, GLint ref, GLuint mask)
+{
+	(void)func;
+	(void)ref;
+	(void)mask;
+}
+void glStencilMask(GLuint mask)
+{
+	(void)mask;
+}

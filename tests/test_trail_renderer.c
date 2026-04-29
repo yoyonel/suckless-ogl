@@ -76,11 +76,6 @@ void shader_set_mat4(Shader* shader, const char* name, const float* val)
 
 /* ---- Extra GL mocks not in mock_gl_standalone ---- */
 
-void glDepthMask(GLboolean flag)
-{
-	(void)flag;
-}
-
 void glMultiDrawArrays(GLenum mode, const GLint* first,
                        const GLsizei* count_arr, GLsizei drawcount)
 {

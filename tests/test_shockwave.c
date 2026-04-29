@@ -99,11 +99,6 @@ void glCopyImageSubData(GLuint srcName, GLenum srcTarget, GLint srcLevel,
 	(void)srcDepth;
 }
 
-void glDepthMask(GLboolean flag)
-{
-	(void)flag;
-}
-
 /* ---- Include source under test ---- */
 #include "shockwave.c"
 
