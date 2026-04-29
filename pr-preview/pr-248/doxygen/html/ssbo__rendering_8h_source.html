@@ -1,0 +1,314 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/ssbo_rendering.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('ssbo__rendering_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">ssbo_rendering.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="ssbo__rendering_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#ifndef SSBO_RENDERING_H</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define SSBO_RENDERING_H</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;cglm/types.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html">   22</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#aafcfc24641b39d9e23f84729fc8d5254">   23</a></span>&#160;    mat4 <a class="code" href="structSphereInstanceSSBO.html#aafcfc24641b39d9e23f84729fc8d5254">model</a>;        </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#a36e944158ecc66dac537e683355c3612">   24</a></span>&#160;    vec3 <a class="code" href="structSphereInstanceSSBO.html#a36e944158ecc66dac537e683355c3612">albedo</a>;       </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#a16e3d53f226b3c0f6596f4c56345d990">   25</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structSphereInstanceSSBO.html#a16e3d53f226b3c0f6596f4c56345d990">metallic</a>;    </div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6">   26</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6">roughness</a>;   </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#ad1a810cbf576b8626534d9c366be440e">   27</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structSphereInstanceSSBO.html#ad1a810cbf576b8626534d9c366be440e">ao</a>;          </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structSphereInstanceSSBO.html#ad85153e7c453578678358c0f087cc203">   28</a></span>&#160;    <span class="keywordtype">float</span> _padding[2]; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;} <a class="code" href="structSphereInstanceSSBO.html">SphereInstanceSSBO</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structSSBOGroup.html">   35</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc">   36</a></span>&#160;    GLuint <a class="code" href="structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc">ssbo</a>;        </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structSSBOGroup.html#ab2a439d9863247c019588a0c140ce56a">   37</a></span>&#160;    GLuint <a class="code" href="structSSBOGroup.html#ab2a439d9863247c019588a0c140ce56a">vao</a>;         </div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structSSBOGroup.html#a9ecc6353d561eeb1c521d0fca1260d32">   38</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structSSBOGroup.html#a9ecc6353d561eeb1c521d0fca1260d32">instance_count</a>; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;} <a class="code" href="structSSBOGroup.html">SSBOGroup</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ssbo__rendering_8h.html#a73e2cabf9e00de5334f443463ccee660">ssbo_group_init</a>(<a class="code" href="structSSBOGroup.html">SSBOGroup</a>* group, <span class="keyword">const</span> <a class="code" href="structSphereInstanceSSBO.html">SphereInstanceSSBO</a>* data,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                     <span class="keywordtype">int</span> count);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b">ssbo_group_bind_mesh</a>(<a class="code" href="structSSBOGroup.html">SSBOGroup</a>* group, GLuint vbo, GLuint nbo, GLuint ebo);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed">ssbo_group_draw</a>(<a class="code" href="structSSBOGroup.html">SSBOGroup</a>* group, <span class="keywordtype">size_t</span> index_count);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keywordtype">void</span> <a class="code" href="ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_group_cleanup</a>(<a class="code" href="structSSBOGroup.html">SSBOGroup</a>* group);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SSBO_RENDERING_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="assbo__rendering_8h_html_a286490847ce95171c2e25ac6adf3d8ed"><div class="ttname"><a href="ssbo__rendering_8h.html#a286490847ce95171c2e25ac6adf3d8ed">ssbo_group_draw</a></div><div class="ttdeci">void ssbo_group_draw(SSBOGroup *group, size_t index_count)</div><div class="ttdoc">Renders the group using instanced drawing.</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.c:62</div></div>
+<div class="ttc" id="assbo__rendering_8h_html_a63cfa5e26eb0905cd645f1e665a8517b"><div class="ttname"><a href="ssbo__rendering_8h.html#a63cfa5e26eb0905cd645f1e665a8517b">ssbo_group_bind_mesh</a></div><div class="ttdeci">void ssbo_group_bind_mesh(SSBOGroup *group, GLuint vbo, GLuint nbo, GLuint ebo)</div><div class="ttdoc">Binds a mesh (VBO/EBO) to the SSBO VAO.</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.c:35</div></div>
+<div class="ttc" id="assbo__rendering_8h_html_a73e2cabf9e00de5334f443463ccee660"><div class="ttname"><a href="ssbo__rendering_8h.html#a73e2cabf9e00de5334f443463ccee660">ssbo_group_init</a></div><div class="ttdeci">void ssbo_group_init(SSBOGroup *group, const SphereInstanceSSBO *data, int count)</div><div class="ttdoc">Initializes an SSBO group with instance data.</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.c:7</div></div>
+<div class="ttc" id="assbo__rendering_8h_html_aae9fda89e7e2fe2746ac18af43fc988f"><div class="ttname"><a href="ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f">ssbo_group_cleanup</a></div><div class="ttdeci">void ssbo_group_cleanup(SSBOGroup *group)</div><div class="ttdoc">Releases GPU resources.</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.c:72</div></div>
+<div class="ttc" id="astructSSBOGroup_html"><div class="ttname"><a href="structSSBOGroup.html">SSBOGroup</a></div><div class="ttdoc">GPU resources for an SSBO-based render group.</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:35</div></div>
+<div class="ttc" id="astructSSBOGroup_html_a9ecc6353d561eeb1c521d0fca1260d32"><div class="ttname"><a href="structSSBOGroup.html#a9ecc6353d561eeb1c521d0fca1260d32">SSBOGroup::instance_count</a></div><div class="ttdeci">int instance_count</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:38</div></div>
+<div class="ttc" id="astructSSBOGroup_html_ab2a439d9863247c019588a0c140ce56a"><div class="ttname"><a href="structSSBOGroup.html#ab2a439d9863247c019588a0c140ce56a">SSBOGroup::vao</a></div><div class="ttdeci">GLuint vao</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:37</div></div>
+<div class="ttc" id="astructSSBOGroup_html_acf2098bd4aace6a658d3d287f1ff6dbc"><div class="ttname"><a href="structSSBOGroup.html#acf2098bd4aace6a658d3d287f1ff6dbc">SSBOGroup::ssbo</a></div><div class="ttdeci">GLuint ssbo</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:36</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html"><div class="ttname"><a href="structSphereInstanceSSBO.html">SphereInstanceSSBO</a></div><div class="ttdoc">Aligned structure for SSBO storage (std430 layout).</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:22</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html_a16e3d53f226b3c0f6596f4c56345d990"><div class="ttname"><a href="structSphereInstanceSSBO.html#a16e3d53f226b3c0f6596f4c56345d990">SphereInstanceSSBO::metallic</a></div><div class="ttdeci">float metallic</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:25</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html_a36e944158ecc66dac537e683355c3612"><div class="ttname"><a href="structSphereInstanceSSBO.html#a36e944158ecc66dac537e683355c3612">SphereInstanceSSBO::albedo</a></div><div class="ttdeci">vec3 albedo</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:24</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html_a7fc7f068b7ff8868c9c3b7c211190bd6"><div class="ttname"><a href="structSphereInstanceSSBO.html#a7fc7f068b7ff8868c9c3b7c211190bd6">SphereInstanceSSBO::roughness</a></div><div class="ttdeci">float roughness</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:26</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html_aafcfc24641b39d9e23f84729fc8d5254"><div class="ttname"><a href="structSphereInstanceSSBO.html#aafcfc24641b39d9e23f84729fc8d5254">SphereInstanceSSBO::model</a></div><div class="ttdeci">mat4 model</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:23</div></div>
+<div class="ttc" id="astructSphereInstanceSSBO_html_ad1a810cbf576b8626534d9c366be440e"><div class="ttname"><a href="structSphereInstanceSSBO.html#ad1a810cbf576b8626534d9c366be440e">SphereInstanceSSBO::ao</a></div><div class="ttdeci">float ao</div><div class="ttdef"><b>Definition:</b> ssbo_rendering.h:27</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="ssbo__rendering_8h.html">ssbo_rendering.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>

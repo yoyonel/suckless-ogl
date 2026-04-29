@@ -1,0 +1,433 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/pp_ubo.h Source File</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('pp__ubo_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">pp_ubo.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="pp__ubo_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef PP_UBO_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define PP_UBO_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="gl__common_8h.html">gl_common.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;cglm/types.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html">   21</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a775f7afa7348f5b96c8f199cf0cfe433">   22</a></span>&#160;    uint32_t <a class="code" href="structPostProcessUBO.html#a775f7afa7348f5b96c8f199cf0cfe433">active_effects</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1">   23</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1">time</a>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a9338c978ff5e60f94297a6c68ed6ae73">   24</a></span>&#160;    <span class="keywordtype">float</span> screen_texel_size[2]; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">/* Vignette */</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a2484a2fc1ee249fbf5d8b7a4533800bd">   27</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a2484a2fc1ee249fbf5d8b7a4533800bd">vignette_intensity</a>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17">   28</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17">vignette_smoothness</a>;</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#af1479d005dd0e49ac717e94e94f57af5">   29</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#af1479d005dd0e49ac717e94e94f57af5">vignette_roundness</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a8742e99b08d281f70d3a8270240c9f94">   30</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a8742e99b08d281f70d3a8270240c9f94">_pad1</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">/* Grain */</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a1e3b6c1b48667503426b3a26f4f206e5">   33</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a1e3b6c1b48667503426b3a26f4f206e5">grain_intensity</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa2425df0b1e55edf105d49774923f429">   34</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa2425df0b1e55edf105d49774923f429">grain_intensity_shadows</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#af3c068584c32a7c08cf419806cf8e451">   35</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#af3c068584c32a7c08cf419806cf8e451">grain_intensity_midtones</a>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83">   36</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83">grain_intensity_highlights</a>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a8a5c0301076f7a1b49a29f2e37d05706">   37</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a8a5c0301076f7a1b49a29f2e37d05706">grain_shadows_max</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5">   38</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5">grain_highlights_min</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a1948c890ba8d1f6116f5fbd6e128236e">   39</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a1948c890ba8d1f6116f5fbd6e128236e">grain_texel_size</a>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d">   40</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d">_pad2</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">/* Exposure */</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e">   43</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e">exposure_manual</a>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a5b24c09724575d011993acc1aed9a649">   44</a></span>&#160;    <span class="keywordtype">float</span> _pad3[3];</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="comment">/* Chrom Abbr */</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#af4f5bd0a4cd69d06260bfefeca532408">   47</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#af4f5bd0a4cd69d06260bfefeca532408">chrom_abbr_strength</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#adb8d6417c3e72a29cc49f28cdb01dcc1">   48</a></span>&#160;    <span class="keywordtype">float</span> _pad4[3];</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">/* White Balance */</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aaa07e291612b995131ad67d6d86edcd4">   51</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aaa07e291612b995131ad67d6d86edcd4">wb_temperature</a>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa6270b574e6e1dcbb39b95131a670e04">   52</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa6270b574e6e1dcbb39b95131a670e04">wb_tint</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a2d0c32d4257d2d46784e56cc9b49a693">   53</a></span>&#160;    <span class="keywordtype">float</span> _pad5[2];</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="comment">/* Color Grading */</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa6bab6801073d901a92b0b0fa33b2165">   56</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa6bab6801073d901a92b0b0fa33b2165">grading_saturation</a>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a99c0c02fc2f06609b4f4244d62a75a29">   57</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a99c0c02fc2f06609b4f4244d62a75a29">grading_contrast</a>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a7f721ae1600da1dc33a4697bf0452c2b">   58</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a7f721ae1600da1dc33a4697bf0452c2b">grading_gamma</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aec6743ba4d29c3b5a93681471dc83e44">   59</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aec6743ba4d29c3b5a93681471dc83e44">grading_gain</a>;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aab05187e5c4746657b8363c02f3e2c71">   60</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aab05187e5c4746657b8363c02f3e2c71">grading_offset</a>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a5d9e9add44ca2aa51a2600b8d5bd07fe">   61</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a5d9e9add44ca2aa51a2600b8d5bd07fe">grading_lift</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a258476d724b61f003924bb9e45cdd6c9">   62</a></span>&#160;    <span class="keywordtype">float</span> _pad6[2];</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="comment">/* Tonemapper */</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a063b35f06a7757f47d129543b08e1ed6">   65</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a063b35f06a7757f47d129543b08e1ed6">tonemap_slope</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a63a5f01e15533e2ba3a3a43263973121">   66</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a63a5f01e15533e2ba3a3a43263973121">tonemap_toe</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa5c84316b3a06f9b6f42ef177ad05d3c">   67</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa5c84316b3a06f9b6f42ef177ad05d3c">tonemap_shoulder</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e">   68</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e">tonemap_black_clip</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a7a20b9afd2c51dda3ee75ed965712f1f">   69</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a7a20b9afd2c51dda3ee75ed965712f1f">tonemap_white_clip</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a5ad040a5b5b0c91803774d33010190af">   70</a></span>&#160;    <span class="keywordtype">float</span> _pad7[3];</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">/* Bloom */</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ab72ad6afd17b3c1c3650c9c862eed363">   73</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#ab72ad6afd17b3c1c3650c9c862eed363">bloom_intensity</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795">   74</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795">bloom_threshold</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3">   75</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3">bloom_soft_threshold</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a580d1c80c7f5742a4a06bed8c291599d">   76</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a580d1c80c7f5742a4a06bed8c291599d">bloom_radius</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="comment">/* DoF */</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f">   79</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f">dof_focal_distance</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37">   80</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37">dof_focal_range</a>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">   81</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">dof_bokeh_scale</a>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a5d6535eff8e1d25edced0ba342f14f77">   82</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a5d6535eff8e1d25edced0ba342f14f77">dof_anamorphic_ratio</a>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="comment">/* Motion Blur */</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183">   85</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183">mb_intensity</a>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496">   86</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496">mb_max_velocity</a>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1">   87</a></span>&#160;    int32_t <a class="code" href="structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1">mb_samples</a>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a849d02c11676f16bd0e100e08318655b">   88</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a849d02c11676f16bd0e100e08318655b">_pad9</a>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">/* FXAA */</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a4f05d36951eaffa6a4d1a92139ac7896">   91</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a4f05d36951eaffa6a4d1a92139ac7896">fxaa_quality_subpix</a>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a7d8fdbdb8b5859a836de2a135ae59a6a">   92</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a7d8fdbdb8b5859a836de2a135ae59a6a">fxaa_quality_edge_threshold</a>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a15d965d04d44d41ace1f1d805bc4efa0">   93</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a15d965d04d44d41ace1f1d805bc4efa0">fxaa_quality_edge_threshold_min</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0">   94</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0">_pad10</a>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="comment">/* Banding (32 bytes) */</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f">   97</a></span>&#160;    int32_t <a class="code" href="structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f">banding_mode</a>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10">   98</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10">banding_levels</a>;</div>
+<div class="line"><a name="l00099"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#aa32f26494de331b477b19ad6efac8243">   99</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#aa32f26494de331b477b19ad6efac8243">banding_dither_strength</a>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19">  100</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19">banding_perceptual_gamma</a>;</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a167c5ae398b9ef7bfcec015323c8505e">  101</a></span>&#160;    <span class="keywordtype">float</span> banding_channel_levels[3];</div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f">  102</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f">_pad11</a>;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="comment">/* Fog (32 bytes) */</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ab34d6f58cc8e2d4dc2b10c6b13daa934">  105</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#ab34d6f58cc8e2d4dc2b10c6b13daa934">fog_density</a>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a8b969cc1702edaddfca7c90a0a2dcc9d">  106</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a8b969cc1702edaddfca7c90a0a2dcc9d">fog_start</a>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a093c67f60fbf8f68a033e127437b4c91">  107</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a093c67f60fbf8f68a033e127437b4c91">fog_height_falloff</a>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a971deee388be15c24a2fdb7040bf5ac4">  108</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a971deee388be15c24a2fdb7040bf5ac4">_pad12</a>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#ab7f5b3a43944ba3063fb3b3135296c87">  109</a></span>&#160;    vec3 <a class="code" href="structPostProcessUBO.html#ab7f5b3a43944ba3063fb3b3135296c87">fog_color</a>;</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a168d45780bb9c3d39451ad5e44bd6b20">  110</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a168d45780bb9c3d39451ad5e44bd6b20">_pad13</a>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="comment">/* 3D LUT (16 bytes) */</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a8115a6646b5a1c9a91e1bc56535eba59">  113</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="structPostProcessUBO.html#a8115a6646b5a1c9a91e1bc56535eba59">lut3d_intensity</a>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="structPostProcessUBO.html#a0cce7024ac79bb972d456f1aa13877b7">  114</a></span>&#160;    <span class="keywordtype">float</span> _pad14[3];</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;} <a class="code" href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">GL_UBO_ALIGNED</a> <a class="code" href="structPostProcessUBO.html">PostProcessUBO</a>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="pp__ubo_8h.html#a2f3b5c5d4d64b3bad8be49c8005b9f1d">  117</a></span>&#160;<a class="code" href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">GL_ASSERT_UBO_ALIGNMENT</a>(<a class="code" href="structPostProcessUBO.html">PostProcessUBO</a>);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* PP_UBO_H */</span><span class="preprocessor"></span></div>
+<div class="ttc" id="agl__common_8h_html"><div class="ttname"><a href="gl__common_8h.html">gl_common.h</a></div><div class="ttdoc">Common OpenGL definitions, RAII helpers, and utilities.</div></div>
+<div class="ttc" id="agl__common_8h_html_a1ecc4ae37fb4080a41e0c8b7e7b84cbd"><div class="ttname"><a href="gl__common_8h.html#a1ecc4ae37fb4080a41e0c8b7e7b84cbd">GL_ASSERT_UBO_ALIGNMENT</a></div><div class="ttdeci">#define GL_ASSERT_UBO_ALIGNMENT(type)</div><div class="ttdoc">Compile-time assertion that a UBO struct meets AVX alignment. Place after the typedef to catch miscon...</div><div class="ttdef"><b>Definition:</b> gl_common.h:154</div></div>
+<div class="ttc" id="agl__common_8h_html_a5f8ac9d31ca569461fe7a38ba64b50cb"><div class="ttname"><a href="gl__common_8h.html#a5f8ac9d31ca569461fe7a38ba64b50cb">GL_UBO_ALIGNED</a></div><div class="ttdeci">#define GL_UBO_ALIGNED</div><div class="ttdoc">Attribute to apply on UBO typedef to enforce AVX alignment. Usage: } GL_UBO_ALIGNED MyUBOType;.</div><div class="ttdef"><b>Definition:</b> gl_common.h:147</div></div>
+<div class="ttc" id="astructPostProcessUBO_html"><div class="ttname"><a href="structPostProcessUBO.html">PostProcessUBO</a></div><div class="ttdoc">Shared Uniform Buffer structure for shaders.</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:21</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a063b35f06a7757f47d129543b08e1ed6"><div class="ttname"><a href="structPostProcessUBO.html#a063b35f06a7757f47d129543b08e1ed6">PostProcessUBO::tonemap_slope</a></div><div class="ttdeci">float tonemap_slope</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:65</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a093c67f60fbf8f68a033e127437b4c91"><div class="ttname"><a href="structPostProcessUBO.html#a093c67f60fbf8f68a033e127437b4c91">PostProcessUBO::fog_height_falloff</a></div><div class="ttdeci">float fog_height_falloff</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:107</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a15d965d04d44d41ace1f1d805bc4efa0"><div class="ttname"><a href="structPostProcessUBO.html#a15d965d04d44d41ace1f1d805bc4efa0">PostProcessUBO::fxaa_quality_edge_threshold_min</a></div><div class="ttdeci">float fxaa_quality_edge_threshold_min</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:93</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a168d45780bb9c3d39451ad5e44bd6b20"><div class="ttname"><a href="structPostProcessUBO.html#a168d45780bb9c3d39451ad5e44bd6b20">PostProcessUBO::_pad13</a></div><div class="ttdeci">float _pad13</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:110</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a1948c890ba8d1f6116f5fbd6e128236e"><div class="ttname"><a href="structPostProcessUBO.html#a1948c890ba8d1f6116f5fbd6e128236e">PostProcessUBO::grain_texel_size</a></div><div class="ttdeci">float grain_texel_size</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:39</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a1e3b6c1b48667503426b3a26f4f206e5"><div class="ttname"><a href="structPostProcessUBO.html#a1e3b6c1b48667503426b3a26f4f206e5">PostProcessUBO::grain_intensity</a></div><div class="ttdeci">float grain_intensity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:33</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a2484a2fc1ee249fbf5d8b7a4533800bd"><div class="ttname"><a href="structPostProcessUBO.html#a2484a2fc1ee249fbf5d8b7a4533800bd">PostProcessUBO::vignette_intensity</a></div><div class="ttdeci">float vignette_intensity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:27</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a2572d4aadbd88130e0075156ebf1e65f"><div class="ttname"><a href="structPostProcessUBO.html#a2572d4aadbd88130e0075156ebf1e65f">PostProcessUBO::dof_focal_distance</a></div><div class="ttdeci">float dof_focal_distance</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:79</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a2f5095821bd9d8d740e593e0d4973d3e"><div class="ttname"><a href="structPostProcessUBO.html#a2f5095821bd9d8d740e593e0d4973d3e">PostProcessUBO::exposure_manual</a></div><div class="ttdeci">float exposure_manual</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:43</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a4737e47adec3865753961e7729a2bc19"><div class="ttname"><a href="structPostProcessUBO.html#a4737e47adec3865753961e7729a2bc19">PostProcessUBO::banding_perceptual_gamma</a></div><div class="ttdeci">float banding_perceptual_gamma</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:100</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a4f05d36951eaffa6a4d1a92139ac7896"><div class="ttname"><a href="structPostProcessUBO.html#a4f05d36951eaffa6a4d1a92139ac7896">PostProcessUBO::fxaa_quality_subpix</a></div><div class="ttdeci">float fxaa_quality_subpix</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:91</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a580d1c80c7f5742a4a06bed8c291599d"><div class="ttname"><a href="structPostProcessUBO.html#a580d1c80c7f5742a4a06bed8c291599d">PostProcessUBO::bloom_radius</a></div><div class="ttdeci">float bloom_radius</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:76</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a5d6535eff8e1d25edced0ba342f14f77"><div class="ttname"><a href="structPostProcessUBO.html#a5d6535eff8e1d25edced0ba342f14f77">PostProcessUBO::dof_anamorphic_ratio</a></div><div class="ttdeci">float dof_anamorphic_ratio</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:82</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a5d9e9add44ca2aa51a2600b8d5bd07fe"><div class="ttname"><a href="structPostProcessUBO.html#a5d9e9add44ca2aa51a2600b8d5bd07fe">PostProcessUBO::grading_lift</a></div><div class="ttdeci">float grading_lift</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:61</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a63a5f01e15533e2ba3a3a43263973121"><div class="ttname"><a href="structPostProcessUBO.html#a63a5f01e15533e2ba3a3a43263973121">PostProcessUBO::tonemap_toe</a></div><div class="ttdeci">float tonemap_toe</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:66</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a6914a6701ec1d2de02ced6d4d53015b5"><div class="ttname"><a href="structPostProcessUBO.html#a6914a6701ec1d2de02ced6d4d53015b5">PostProcessUBO::grain_highlights_min</a></div><div class="ttdeci">float grain_highlights_min</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:38</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a6dd03fd01a95936e7a2126f0d89b7f10"><div class="ttname"><a href="structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10">PostProcessUBO::banding_levels</a></div><div class="ttdeci">float banding_levels</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:98</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a70b3f1b0ff2d3dba7b22a864fa611dd3"><div class="ttname"><a href="structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3">PostProcessUBO::bloom_soft_threshold</a></div><div class="ttdeci">float bloom_soft_threshold</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:75</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a775f7afa7348f5b96c8f199cf0cfe433"><div class="ttname"><a href="structPostProcessUBO.html#a775f7afa7348f5b96c8f199cf0cfe433">PostProcessUBO::active_effects</a></div><div class="ttdeci">uint32_t active_effects</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:22</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a7a20b9afd2c51dda3ee75ed965712f1f"><div class="ttname"><a href="structPostProcessUBO.html#a7a20b9afd2c51dda3ee75ed965712f1f">PostProcessUBO::tonemap_white_clip</a></div><div class="ttdeci">float tonemap_white_clip</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:69</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a7d8fdbdb8b5859a836de2a135ae59a6a"><div class="ttname"><a href="structPostProcessUBO.html#a7d8fdbdb8b5859a836de2a135ae59a6a">PostProcessUBO::fxaa_quality_edge_threshold</a></div><div class="ttdeci">float fxaa_quality_edge_threshold</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:92</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a7f721ae1600da1dc33a4697bf0452c2b"><div class="ttname"><a href="structPostProcessUBO.html#a7f721ae1600da1dc33a4697bf0452c2b">PostProcessUBO::grading_gamma</a></div><div class="ttdeci">float grading_gamma</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:58</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a8115a6646b5a1c9a91e1bc56535eba59"><div class="ttname"><a href="structPostProcessUBO.html#a8115a6646b5a1c9a91e1bc56535eba59">PostProcessUBO::lut3d_intensity</a></div><div class="ttdeci">float lut3d_intensity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:113</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a83c3724991b2e48ab31140edb81c6b37"><div class="ttname"><a href="structPostProcessUBO.html#a83c3724991b2e48ab31140edb81c6b37">PostProcessUBO::dof_focal_range</a></div><div class="ttdeci">float dof_focal_range</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:80</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a849d02c11676f16bd0e100e08318655b"><div class="ttname"><a href="structPostProcessUBO.html#a849d02c11676f16bd0e100e08318655b">PostProcessUBO::_pad9</a></div><div class="ttdeci">float _pad9</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:88</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a8742e99b08d281f70d3a8270240c9f94"><div class="ttname"><a href="structPostProcessUBO.html#a8742e99b08d281f70d3a8270240c9f94">PostProcessUBO::_pad1</a></div><div class="ttdeci">float _pad1</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:30</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a8a5c0301076f7a1b49a29f2e37d05706"><div class="ttname"><a href="structPostProcessUBO.html#a8a5c0301076f7a1b49a29f2e37d05706">PostProcessUBO::grain_shadows_max</a></div><div class="ttdeci">float grain_shadows_max</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:37</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a8b969cc1702edaddfca7c90a0a2dcc9d"><div class="ttname"><a href="structPostProcessUBO.html#a8b969cc1702edaddfca7c90a0a2dcc9d">PostProcessUBO::fog_start</a></div><div class="ttdeci">float fog_start</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:106</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a94d807fb361fa9afbdfd0654375b1b5f"><div class="ttname"><a href="structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f">PostProcessUBO::banding_mode</a></div><div class="ttdeci">int32_t banding_mode</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:97</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a971deee388be15c24a2fdb7040bf5ac4"><div class="ttname"><a href="structPostProcessUBO.html#a971deee388be15c24a2fdb7040bf5ac4">PostProcessUBO::_pad12</a></div><div class="ttdeci">float _pad12</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:108</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a99c0c02fc2f06609b4f4244d62a75a29"><div class="ttname"><a href="structPostProcessUBO.html#a99c0c02fc2f06609b4f4244d62a75a29">PostProcessUBO::grading_contrast</a></div><div class="ttdeci">float grading_contrast</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:57</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_a9cea44f7762ede4d26e419d3b383d67e"><div class="ttname"><a href="structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e">PostProcessUBO::tonemap_black_clip</a></div><div class="ttdeci">float tonemap_black_clip</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:68</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa2425df0b1e55edf105d49774923f429"><div class="ttname"><a href="structPostProcessUBO.html#aa2425df0b1e55edf105d49774923f429">PostProcessUBO::grain_intensity_shadows</a></div><div class="ttdeci">float grain_intensity_shadows</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:34</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa32f26494de331b477b19ad6efac8243"><div class="ttname"><a href="structPostProcessUBO.html#aa32f26494de331b477b19ad6efac8243">PostProcessUBO::banding_dither_strength</a></div><div class="ttdeci">float banding_dither_strength</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:99</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa5c84316b3a06f9b6f42ef177ad05d3c"><div class="ttname"><a href="structPostProcessUBO.html#aa5c84316b3a06f9b6f42ef177ad05d3c">PostProcessUBO::tonemap_shoulder</a></div><div class="ttdeci">float tonemap_shoulder</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:67</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa5d417564b872204f7b9634c584c0b17"><div class="ttname"><a href="structPostProcessUBO.html#aa5d417564b872204f7b9634c584c0b17">PostProcessUBO::vignette_smoothness</a></div><div class="ttdeci">float vignette_smoothness</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:28</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa6270b574e6e1dcbb39b95131a670e04"><div class="ttname"><a href="structPostProcessUBO.html#aa6270b574e6e1dcbb39b95131a670e04">PostProcessUBO::wb_tint</a></div><div class="ttdeci">float wb_tint</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:52</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa6bab6801073d901a92b0b0fa33b2165"><div class="ttname"><a href="structPostProcessUBO.html#aa6bab6801073d901a92b0b0fa33b2165">PostProcessUBO::grading_saturation</a></div><div class="ttdeci">float grading_saturation</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:56</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aa9e4407b3914675e10daee43045532e0"><div class="ttname"><a href="structPostProcessUBO.html#aa9e4407b3914675e10daee43045532e0">PostProcessUBO::_pad10</a></div><div class="ttdeci">float _pad10</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:94</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aaa07e291612b995131ad67d6d86edcd4"><div class="ttname"><a href="structPostProcessUBO.html#aaa07e291612b995131ad67d6d86edcd4">PostProcessUBO::wb_temperature</a></div><div class="ttdeci">float wb_temperature</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:51</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aab047ad0796e0fadb03bcdf5cb083496"><div class="ttname"><a href="structPostProcessUBO.html#aab047ad0796e0fadb03bcdf5cb083496">PostProcessUBO::mb_max_velocity</a></div><div class="ttdeci">float mb_max_velocity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:86</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aab05187e5c4746657b8363c02f3e2c71"><div class="ttname"><a href="structPostProcessUBO.html#aab05187e5c4746657b8363c02f3e2c71">PostProcessUBO::grading_offset</a></div><div class="ttdeci">float grading_offset</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:60</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ab34d6f58cc8e2d4dc2b10c6b13daa934"><div class="ttname"><a href="structPostProcessUBO.html#ab34d6f58cc8e2d4dc2b10c6b13daa934">PostProcessUBO::fog_density</a></div><div class="ttdeci">float fog_density</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:105</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ab72ad6afd17b3c1c3650c9c862eed363"><div class="ttname"><a href="structPostProcessUBO.html#ab72ad6afd17b3c1c3650c9c862eed363">PostProcessUBO::bloom_intensity</a></div><div class="ttdeci">float bloom_intensity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:73</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ab7f5b3a43944ba3063fb3b3135296c87"><div class="ttname"><a href="structPostProcessUBO.html#ab7f5b3a43944ba3063fb3b3135296c87">PostProcessUBO::fog_color</a></div><div class="ttdeci">vec3 fog_color</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:109</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_abbc15293e2741be57c0b72457a91a3f1"><div class="ttname"><a href="structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1">PostProcessUBO::mb_samples</a></div><div class="ttdeci">int32_t mb_samples</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:87</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_abc60c498256ea0570981cd2db6144d6d"><div class="ttname"><a href="structPostProcessUBO.html#abc60c498256ea0570981cd2db6144d6d">PostProcessUBO::_pad2</a></div><div class="ttdeci">float _pad2</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:40</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ad01e22490be7ed4152e0c8a3c9898f8f"><div class="ttname"><a href="structPostProcessUBO.html#ad01e22490be7ed4152e0c8a3c9898f8f">PostProcessUBO::_pad11</a></div><div class="ttdeci">float _pad11</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:102</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ad9ff83e9a979f95277fba9cf3d064795"><div class="ttname"><a href="structPostProcessUBO.html#ad9ff83e9a979f95277fba9cf3d064795">PostProcessUBO::bloom_threshold</a></div><div class="ttdeci">float bloom_threshold</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:74</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_ada493a61e292289e4f96e71617e10f83"><div class="ttname"><a href="structPostProcessUBO.html#ada493a61e292289e4f96e71617e10f83">PostProcessUBO::grain_intensity_highlights</a></div><div class="ttdeci">float grain_intensity_highlights</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:36</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_add9027c5cec4f9f02fc537dabb20f183"><div class="ttname"><a href="structPostProcessUBO.html#add9027c5cec4f9f02fc537dabb20f183">PostProcessUBO::mb_intensity</a></div><div class="ttdeci">float mb_intensity</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:85</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aec6743ba4d29c3b5a93681471dc83e44"><div class="ttname"><a href="structPostProcessUBO.html#aec6743ba4d29c3b5a93681471dc83e44">PostProcessUBO::grading_gain</a></div><div class="ttdeci">float grading_gain</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:59</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_aed1bd38c048bc6ec7b3a761f39d2f4f1"><div class="ttname"><a href="structPostProcessUBO.html#aed1bd38c048bc6ec7b3a761f39d2f4f1">PostProcessUBO::time</a></div><div class="ttdeci">float time</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:23</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_af1479d005dd0e49ac717e94e94f57af5"><div class="ttname"><a href="structPostProcessUBO.html#af1479d005dd0e49ac717e94e94f57af5">PostProcessUBO::vignette_roundness</a></div><div class="ttdeci">float vignette_roundness</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:29</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_af3c068584c32a7c08cf419806cf8e451"><div class="ttname"><a href="structPostProcessUBO.html#af3c068584c32a7c08cf419806cf8e451">PostProcessUBO::grain_intensity_midtones</a></div><div class="ttdeci">float grain_intensity_midtones</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:35</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_af4f5bd0a4cd69d06260bfefeca532408"><div class="ttname"><a href="structPostProcessUBO.html#af4f5bd0a4cd69d06260bfefeca532408">PostProcessUBO::chrom_abbr_strength</a></div><div class="ttdeci">float chrom_abbr_strength</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:47</div></div>
+<div class="ttc" id="astructPostProcessUBO_html_af724bf579c4c3e2389a14302b9445032"><div class="ttname"><a href="structPostProcessUBO.html#af724bf579c4c3e2389a14302b9445032">PostProcessUBO::dof_bokeh_scale</a></div><div class="ttdeci">float dof_bokeh_scale</div><div class="ttdef"><b>Definition:</b> pp_ubo.h:81</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="pp__ubo_8h.html">pp_ubo.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
