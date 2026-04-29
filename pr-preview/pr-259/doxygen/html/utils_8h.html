@@ -1,0 +1,891 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: include/utils.h File Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>Globals</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('utils_8h.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
+  <div class="headertitle">
+<div class="title">utils.h File Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Zero-overhead utility functions and RAII cleanup helpers.  
+<a href="#details">More...</a></p>
+<div class="textblock"><code>#include &lt;stdarg.h&gt;</code><br />
+<code>#include &lt;stdbool.h&gt;</code><br />
+<code>#include &lt;stddef.h&gt;</code><br />
+<code>#include &lt;stdint.h&gt;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Include dependency graph for utils.h:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="utils_8h__incl.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div><div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="utils_8h__dep__incl.svg" width="100%" height="384"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+</div>
+</div>
+<p><a href="utils_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a407e52a6dbfea9c852630e98baaa92b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">CLEANUP_FILE</a>&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a>)))</td></tr>
+<tr class="memdesc:a407e52a6dbfea9c852630e98baaa92b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define a <code>FILE*</code> that closes itself at scope exit.  <a href="utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7">More...</a><br /></td></tr>
+<tr class="separator:a407e52a6dbfea9c852630e98baaa92b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad97bdfdff8c5dc389611f822f8cabe2c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">RAII_SATISFY_FILE</a>(f)&#160;&#160;&#160;(void)0</td></tr>
+<tr class="memdesc:ad97bdfdff8c5dc389611f822f8cabe2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Satisfies Static Analyzers for file resource management.  <a href="utils_8h.html#ad97bdfdff8c5dc389611f822f8cabe2c">More...</a><br /></td></tr>
+<tr class="separator:ad97bdfdff8c5dc389611f822f8cabe2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac333249d502a536c37149f9397c09060"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ac333249d502a536c37149f9397c09060">CLEANUP_FREE</a>&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="utils_8h.html#a60d756fd34ef42d063535564a151e219">cleanup_free</a>)))</td></tr>
+<tr class="memdesc:ac333249d502a536c37149f9397c09060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Macro to define a pointer that frees itself at scope exit.  <a href="utils_8h.html#ac333249d502a536c37149f9397c09060">More...</a><br /></td></tr>
+<tr class="separator:ac333249d502a536c37149f9397c09060"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a564c7a8df26c5d2ea991c2285332a857"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">RAII_SATISFY_FREE</a>(p)&#160;&#160;&#160;(void)0</td></tr>
+<tr class="memdesc:a564c7a8df26c5d2ea991c2285332a857"><td class="mdescLeft">&#160;</td><td class="mdescRight">Satisfies Static Analyzers for memory resource management.  <a href="utils_8h.html#a564c7a8df26c5d2ea991c2285332a857">More...</a><br /></td></tr>
+<tr class="separator:a564c7a8df26c5d2ea991c2285332a857"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a832eee68ae25daaa8503b7ba52acddec"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">TRANSFER_OWNERSHIP</a>(ptr)</td></tr>
+<tr class="memdesc:a832eee68ae25daaa8503b7ba52acddec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transfers ownership of an RAII-managed variable to the caller.  <a href="utils_8h.html#a832eee68ae25daaa8503b7ba52acddec">More...</a><br /></td></tr>
+<tr class="separator:a832eee68ae25daaa8503b7ba52acddec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">utils_buffer_offset</a> (size_t offset)</td></tr>
+<tr class="memdesc:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets.  <a href="utils_8h.html#ae197851a258ffbaf4a1d82ee9a3a03ab">More...</a><br /></td></tr>
+<tr class="separator:ae197851a258ffbaf4a1d82ee9a3a03ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d506638d7043eb273a2a357591d3086"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a6d506638d7043eb273a2a357591d3086">safe_snprintf</a> (char *buf, size_t buf_size, const char *format,...)</td></tr>
+<tr class="memdesc:a6d506638d7043eb273a2a357591d3086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around vsnprintf to format strings with bounds checking.  <a href="utils_8h.html#a6d506638d7043eb273a2a357591d3086">More...</a><br /></td></tr>
+<tr class="separator:a6d506638d7043eb273a2a357591d3086"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe907a059a85eecc3b288d41b903d5e7"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abe907a059a85eecc3b288d41b903d5e7">check_flag</a> (int value, int flag)</td></tr>
+<tr class="memdesc:abe907a059a85eecc3b288d41b903d5e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitwise flag check helper.  <a href="utils_8h.html#abe907a059a85eecc3b288d41b903d5e7">More...</a><br /></td></tr>
+<tr class="separator:abe907a059a85eecc3b288d41b903d5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa17d18069f6b28bc27de7af0f1961171"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa17d18069f6b28bc27de7af0f1961171">safe_calloc</a> (size_t num, size_t size)</td></tr>
+<tr class="memdesc:aa17d18069f6b28bc27de7af0f1961171"><td class="mdescLeft">&#160;</td><td class="mdescRight">calloc wrapper with zero-size check.  <a href="utils_8h.html#aa17d18069f6b28bc27de7af0f1961171">More...</a><br /></td></tr>
+<tr class="separator:aa17d18069f6b28bc27de7af0f1961171"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332">safe_memcpy</a> (void *dest, size_t dest_size, const void *src, size_t count)</td></tr>
+<tr class="memdesc:abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="mdescLeft">&#160;</td><td class="mdescRight">memcpy wrapper with bounds checking.  <a href="utils_8h.html#abeb736cfb3c1a73ff0b6c3fabc20b332">More...</a><br /></td></tr>
+<tr class="separator:abeb736cfb3c1a73ff0b6c3fabc20b332"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0d7c61e364406aa652f12a630642256"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#aa0d7c61e364406aa652f12a630642256">safe_memset</a> (void *dest, size_t dest_size, int value, size_t count)</td></tr>
+<tr class="memdesc:aa0d7c61e364406aa652f12a630642256"><td class="mdescLeft">&#160;</td><td class="mdescRight">memset wrapper with bounds checking.  <a href="utils_8h.html#aa0d7c61e364406aa652f12a630642256">More...</a><br /></td></tr>
+<tr class="separator:aa0d7c61e364406aa652f12a630642256"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075">safe_strncpy</a> (char *dest, size_t dest_size, const char *src, size_t src_size)</td></tr>
+<tr class="memdesc:a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncpy to ensure null-termination.  <a href="utils_8h.html#a9bdebcf7f8b13e9a0d4e0d96e8f3b075">More...</a><br /></td></tr>
+<tr class="separator:a9bdebcf7f8b13e9a0d4e0d96e8f3b075"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a7da5d8902e26bfe1fcb9e660e1677ea3">safe_strncat</a> (char *dest, size_t dest_size, const char *src)</td></tr>
+<tr class="memdesc:a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safe wrapper around strncat to ensure bounds safety.  <a href="utils_8h.html#a7da5d8902e26bfe1fcb9e660e1677ea3">More...</a><br /></td></tr>
+<tr class="separator:a7da5d8902e26bfe1fcb9e660e1677ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e22037461cd1f39af6f4ed6619bf953"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953">is_safe_filename</a> (const char *filename)</td></tr>
+<tr class="memdesc:a0e22037461cd1f39af6f4ed6619bf953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a filename to prevent path traversal and shell injection.  <a href="utils_8h.html#a0e22037461cd1f39af6f4ed6619bf953">More...</a><br /></td></tr>
+<tr class="separator:a0e22037461cd1f39af6f4ed6619bf953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a520044f64f3253a0c6842b6f80b4e6d1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1">is_safe_relative_path</a> (const char *path)</td></tr>
+<tr class="memdesc:a520044f64f3253a0c6842b6f80b4e6d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Validates a relative path to prevent arbitrary file access.  <a href="utils_8h.html#a520044f64f3253a0c6842b6f80b4e6d1">More...</a><br /></td></tr>
+<tr class="separator:a520044f64f3253a0c6842b6f80b4e6d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55529722f47ff4c9bc4b65d398008fc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a> (FILE **file_ptr)</td></tr>
+<tr class="memdesc:a55529722f47ff4c9bc4b65d398008fc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>FILE*</code>.  <a href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">More...</a><br /></td></tr>
+<tr class="separator:a55529722f47ff4c9bc4b65d398008fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60d756fd34ef42d063535564a151e219"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="utils_8h.html#a60d756fd34ef42d063535564a151e219">cleanup_free</a> (void *ptr_ptr)</td></tr>
+<tr class="memdesc:a60d756fd34ef42d063535564a151e219"><td class="mdescLeft">&#160;</td><td class="mdescRight">RAII callback for <code>free()</code>.  <a href="utils_8h.html#a60d756fd34ef42d063535564a151e219">More...</a><br /></td></tr>
+<tr class="separator:a60d756fd34ef42d063535564a151e219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Zero-overhead utility functions and RAII cleanup helpers. </p>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a407e52a6dbfea9c852630e98baaa92b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a407e52a6dbfea9c852630e98baaa92b7">&#9670;&nbsp;</a></span>CLEANUP_FILE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CLEANUP_FILE&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4">cleanup_file</a>)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Macro to define a <code>FILE*</code> that closes itself at scope exit. </p>
+
+</div>
+</div>
+<a id="ac333249d502a536c37149f9397c09060"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac333249d502a536c37149f9397c09060">&#9670;&nbsp;</a></span>CLEANUP_FREE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define CLEANUP_FREE&#160;&#160;&#160;__attribute__((cleanup(<a class="el" href="utils_8h.html#a60d756fd34ef42d063535564a151e219">cleanup_free</a>)))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Macro to define a pointer that frees itself at scope exit. </p>
+
+</div>
+</div>
+<a id="ad97bdfdff8c5dc389611f822f8cabe2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad97bdfdff8c5dc389611f822f8cabe2c">&#9670;&nbsp;</a></span>RAII_SATISFY_FILE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RAII_SATISFY_FILE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">f</td><td>)</td>
+          <td>&#160;&#160;&#160;(void)0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Satisfies Static Analyzers for file resource management. </p>
+
+</div>
+</div>
+<a id="a564c7a8df26c5d2ea991c2285332a857"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a564c7a8df26c5d2ea991c2285332a857">&#9670;&nbsp;</a></span>RAII_SATISFY_FREE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define RAII_SATISFY_FREE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">p</td><td>)</td>
+          <td>&#160;&#160;&#160;(void)0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Satisfies Static Analyzers for memory resource management. </p>
+
+</div>
+</div>
+<a id="a832eee68ae25daaa8503b7ba52acddec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a832eee68ae25daaa8503b7ba52acddec">&#9670;&nbsp;</a></span>TRANSFER_OWNERSHIP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TRANSFER_OWNERSHIP</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ptr</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    ({                                        \</div>
+<div class="line">        __typeof__(ptr) _tmp_ptr = (ptr); \</div>
+<div class="line">        (ptr) = 0;                        \</div>
+<div class="line">        _tmp_ptr;                         \</div>
+<div class="line">    })</div>
+</div><!-- fragment -->
+<p>Transfers ownership of an RAII-managed variable to the caller. </p>
+<p>Sets the local variable to NULL to prevent the <code>cleanup</code> attribute from triggering. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="abe907a059a85eecc3b288d41b903d5e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe907a059a85eecc3b288d41b903d5e7">&#9670;&nbsp;</a></span>check_flag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool check_flag </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>flag</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Bitwise flag check helper. </p>
+
+</div>
+</div>
+<a id="a55529722f47ff4c9bc4b65d398008fc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55529722f47ff4c9bc4b65d398008fc4">&#9670;&nbsp;</a></span>cleanup_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cleanup_file </td>
+          <td>(</td>
+          <td class="paramtype">FILE **&#160;</td>
+          <td class="paramname"><em>file_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>RAII callback for <code>FILE*</code>. </p>
+
+</div>
+</div>
+<a id="a60d756fd34ef42d063535564a151e219"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60d756fd34ef42d063535564a151e219">&#9670;&nbsp;</a></span>cleanup_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void cleanup_free </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>RAII callback for <code>free()</code>. </p>
+
+</div>
+</div>
+<a id="a0e22037461cd1f39af6f4ed6619bf953"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e22037461cd1f39af6f4ed6619bf953">&#9670;&nbsp;</a></span>is_safe_filename()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_safe_filename </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Validates a filename to prevent path traversal and shell injection. </p>
+<p>Rejects strings containing path separators ('/', '\') or directory traversal sequences ("..") or current directory (".").</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>The filename to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the filename is safe, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a520044f64f3253a0c6842b6f80b4e6d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a520044f64f3253a0c6842b6f80b4e6d1">&#9670;&nbsp;</a></span>is_safe_relative_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool is_safe_relative_path </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Validates a relative path to prevent arbitrary file access. </p>
+<p>Rejects absolute paths, parent directory traversal (".."), and platform-specific path features like backslashes or drive letters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The relative path to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the path is safe, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="aa17d18069f6b28bc27de7af0f1961171"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa17d18069f6b28bc27de7af0f1961171">&#9670;&nbsp;</a></span>safe_calloc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* safe_calloc </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>calloc wrapper with zero-size check. </p>
+
+</div>
+</div>
+<a id="abeb736cfb3c1a73ff0b6c3fabc20b332"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abeb736cfb3c1a73ff0b6c3fabc20b332">&#9670;&nbsp;</a></span>safe_memcpy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool safe_memcpy </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>memcpy wrapper with bounds checking. </p>
+
+</div>
+</div>
+<a id="aa0d7c61e364406aa652f12a630642256"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0d7c61e364406aa652f12a630642256">&#9670;&nbsp;</a></span>safe_memset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool safe_memset </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>memset wrapper with bounds checking. </p>
+
+</div>
+</div>
+<a id="a6d506638d7043eb273a2a357591d3086"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d506638d7043eb273a2a357591d3086">&#9670;&nbsp;</a></span>safe_snprintf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int safe_snprintf </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>buf_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Safe wrapper around vsnprintf to format strings with bounds checking. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>Destination buffer. </td></tr>
+    <tr><td class="paramname">buf_size</td><td>Buffer capacity. </td></tr>
+    <tr><td class="paramname">format</td><td>Printf-style format string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>number of characters written (excluding null terminator) on success, -1 if truncated or error. </dd></dl>
+
+</div>
+</div>
+<a id="a7da5d8902e26bfe1fcb9e660e1677ea3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7da5d8902e26bfe1fcb9e660e1677ea3">&#9670;&nbsp;</a></span>safe_strncat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void safe_strncat </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Safe wrapper around strncat to ensure bounds safety. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination buffer. </td></tr>
+    <tr><td class="paramname">dest_size</td><td>Total size of destination buffer. </td></tr>
+    <tr><td class="paramname">src</td><td>Source string. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9bdebcf7f8b13e9a0d4e0d96e8f3b075"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bdebcf7f8b13e9a0d4e0d96e8f3b075">&#9670;&nbsp;</a></span>safe_strncpy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void safe_strncpy </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>dest_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>src_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Safe wrapper around strncpy to ensure null-termination. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination buffer. </td></tr>
+    <tr><td class="paramname">dest_size</td><td>Size of destination buffer. </td></tr>
+    <tr><td class="paramname">src</td><td>Source string. </td></tr>
+    <tr><td class="paramname">src_size</td><td>Max characters to copy (or just use sizeof(dest)). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae197851a258ffbaf4a1d82ee9a3a03ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae197851a258ffbaf4a1d82ee9a3a03ab">&#9670;&nbsp;</a></span>utils_buffer_offset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void* utils_buffer_offset </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>offset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Helper to securely cast an integer offset to a pointer, often used for VBO/EBO byte offsets. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">offset</td><td>The byte offset to cast. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A void pointer representing the offset. </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="utils_8h.html">utils.h</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
