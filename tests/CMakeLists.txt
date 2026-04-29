@@ -86,6 +86,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_nbody\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_shockwave\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_trail_renderer\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_postprocess_input\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_render\\.c$")
 
 # Exclure les tests spécifiques à POSIX sur Windows
 if(WIN32)
@@ -895,6 +896,47 @@ if(WIN32)
              COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_postprocess_input>)
 else()
     add_test(NAME test_postprocess_input COMMAND test_postprocess_input)
+endif()
+
+# =============================================================================
+# SCENE RENDER (STANDALONE MOCKED)
+# =============================================================================
+add_executable(test_scene_render
+    test_scene_render.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+)
+if(ENABLE_TRACY)
+    target_sources(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_scene_render PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+    ${glad_BINARY_DIR}/include
+)
+if(ENABLE_TRACY)
+    target_include_directories(test_scene_render PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(test_scene_render PRIVATE cglm m)
+else()
+    target_link_libraries(test_scene_render PRIVATE cglm)
+endif()
+
+if(WIN32)
+    add_test(NAME test_scene_render
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_render>)
+else()
+    add_test(NAME test_scene_render COMMAND test_scene_render)
 endif()
 
 # =============================================================================
