@@ -3,7 +3,6 @@
 
 #include "gl_common.h"
 #include "shader.h"
-#include <stdbool.h>
 
 /**
  * @struct LUT3DParams

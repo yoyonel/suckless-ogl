@@ -2,7 +2,6 @@
 
 #include "gl_common.h"
 #include "log.h"
-#include <stddef.h>
 
 void fx_utils_create_texture(GLuint* tex, const FXTextureConfig* config)
 {

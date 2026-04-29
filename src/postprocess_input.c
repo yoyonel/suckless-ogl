@@ -1,5 +1,6 @@
 #include "postprocess_input.h"
 
+#include "app_settings.h"
 #include "effects/fx_auto_exposure.h"
 #include "log.h"
 #include "postprocess_presets.h"

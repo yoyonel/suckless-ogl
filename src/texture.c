@@ -8,7 +8,6 @@
 #include <math.h>
 #include <stb_image.h>
 #include <stddef.h>
-#include <stdio.h>
 
 static const uint32_t TRACY_COLOR_TEXTURE_UPLOAD = 0xAAAA55;
 static const uint32_t TRACY_COLOR_TEXTURE_STORAGE = 0xAA55AA;

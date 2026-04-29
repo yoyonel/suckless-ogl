@@ -1,0 +1,23 @@
+# IWYU Mapping File for suckless-ogl
+# See: https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/IWYUMappings.md
+#
+# Tells IWYU about project-specific include relationships so it doesn't
+# suggest replacing umbrella/facade headers with their internal includes.
+
+[
+  # gl_common.h is our OpenGL facade — provides glad + RAII macros (GL_CHECK, GL_GROUP).
+  # IWYU wants to replace it with glad/glad.h, but we need the RAII macros.
+  { include: ["<glad/glad.h>",        "private", "\"gl_common.h\"", "public"] },
+  { include: ["<KHR/khrplatform.h>",  "private", "\"gl_common.h\"", "public"] },
+
+  # cglm/cglm.h is the umbrella header for cglm — keep it.
+  { include: ["<cglm/affine.h>",  "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/cam.h>",     "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/mat4.h>",    "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/vec3.h>",    "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/vec4.h>",    "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/quat.h>",    "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/io.h>",      "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/util.h>",    "private", "<cglm/cglm.h>", "public"] },
+  { include: ["<cglm/sphere.h>",  "private", "<cglm/cglm.h>", "public"] }
+]

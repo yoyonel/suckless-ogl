@@ -7,7 +7,6 @@
 #define TEXTURE_H
 
 #include "gl_common.h"
-#include <stdint.h>
 
 enum { MAX_TEXTURE_DIMENSION = 8192 };
 

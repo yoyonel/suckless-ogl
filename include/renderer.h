@@ -1,7 +1,6 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <stdbool.h>
 #include <stdint.h>
 
 /* Forward declarations — RenderContext holds only pointers. */

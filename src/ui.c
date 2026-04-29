@@ -12,7 +12,6 @@
 #include <cglm/types.h>   // IWYU pragma: keep
 #include <cglm/vec3.h>    // IWYU pragma: keep
 #include <stb_truetype.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -38,8 +38,6 @@ static const float GPU_PROFILER_WINDOW_DURATION_S = 0.5F;
 static const float GPU_PROFILER_WINDOW_TRANSITION_S = 0.2F;
 static const float GPU_PROFILER_ROW_HEIGHT = 28.0F;
 
-#include "app_settings.h"
-
 /**
  * @struct GPUStage
  * @brief Represents a single profiling stage (e.g., "Shadow Map", "G-Buffer").

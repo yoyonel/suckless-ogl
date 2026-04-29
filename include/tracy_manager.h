@@ -6,9 +6,8 @@
 #ifdef TRACY_ENABLE
 #include "tracy/TracyC.h"
 #include "tracy_gpu.h"
-#endif
-
 #include <pthread.h>
+#endif
 
 typedef struct App App;
 

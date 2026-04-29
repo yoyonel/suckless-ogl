@@ -12,8 +12,6 @@
 
 #include "gl_common.h"
 #include "shader.h"
-#include <cglm/cam.h>
-#include <cglm/mat4.h>
 #include <cglm/types.h>
 
 /**

@@ -158,6 +158,12 @@ foreach(test_file ${TEST_SOURCES})
 
     # Working directory = racine du projet
     set_tests_properties(${test_name} PROPERTIES WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+    # Serialize OpenGL tests to prevent GPU/display contention when running
+    # with ctest -j$(nproc). Non-GPU tests remain fully parallelizable.
+    if(${test_name} IN_LIST OPENGL_TESTS)
+        set_tests_properties(${test_name} PROPERTIES RESOURCE_LOCK "gpu")
+    endif()
 endforeach()
 
 # =============================================================================

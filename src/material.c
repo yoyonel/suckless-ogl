@@ -4,7 +4,6 @@
 #include "log.h"
 #include "utils.h"
 #include <cJSON.h>
-#include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

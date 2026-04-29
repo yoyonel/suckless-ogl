@@ -2,7 +2,6 @@
 #define SUCKLESS_OGL_PLATFORM_FS_H
 
 #include <stdbool.h>
-#include <stddef.h>
 
 /**
  * @brief Callback for directory enumeration.

@@ -10,9 +10,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "utils.h"
-#include <float.h>
 #include <stdlib.h>
-#include <string.h>
 
 static const int MAX_PATH_LENGTH = 256;
 
