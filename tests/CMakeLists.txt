@@ -82,6 +82,7 @@ list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_coordinator\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_async_loader\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_texture_security\\.c$")
 list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_ibl_extract\\.c$")
+list(FILTER TEST_SOURCES EXCLUDE REGEX ".*test_scene_nbody\\.c$")
 
 # Exclure les tests spécifiques à POSIX sur Windows
 if(WIN32)
@@ -727,6 +728,46 @@ if(WIN32)
 else()
     add_test(NAME test_texture_security COMMAND test_texture_security)
 endif()
+# =============================================================================
+# SCENE N-BODY (STANDALONE MOCKED)
+# =============================================================================
+add_executable(test_scene_nbody
+    test_scene_nbody.c
+    ${unity_SOURCE_DIR}/src/unity.c
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
+    ${CMAKE_SOURCE_DIR}/src/nbody.c
+    ${CMAKE_SOURCE_DIR}/src/utils.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
+)
+if(ENABLE_TRACY)
+    target_sources(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public/TracyClient.cpp")
+endif()
+
+target_include_directories(test_scene_nbody PRIVATE
+    ${CMAKE_SOURCE_DIR}/tests/mocks
+    ${CMAKE_SOURCE_DIR}/tests/mocks/standalone
+    ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/include
+    ${stb_SOURCE_DIR}
+    ${unity_SOURCE_DIR}/src
+)
+if(ENABLE_TRACY)
+    target_include_directories(test_scene_nbody PRIVATE "${CMAKE_SOURCE_DIR}/deps/tracy/public")
+endif()
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(test_scene_nbody PRIVATE cglm m)
+else()
+    target_link_libraries(test_scene_nbody PRIVATE cglm)
+endif()
+
+if(WIN32)
+    add_test(NAME test_scene_nbody
+             COMMAND ${CMAKE_SOURCE_DIR}/.github/workflows/scripts/run_test_with_xvfb.sh $<TARGET_FILE:test_scene_nbody>)
+else()
+    add_test(NAME test_scene_nbody COMMAND test_scene_nbody)
+endif()
+
 # =============================================================================
 # IBL EXTRACTION TOOL (STANDALONE)
 # =============================================================================
