@@ -109,7 +109,15 @@ typedef struct __GLsync* GLsync;
 #define GL_FRONT_AND_BACK 0x0408
 #define GL_SRC_ALPHA 0x0302
 #define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_ONE 1
 #define GL_FILL 0x1B02
+#define GL_LINE 0x1B01
+#define GL_STENCIL_TEST 0x0B90
+#define GL_KEEP 0x1E00
+#define GL_REPLACE 0x1E01
+#define GL_ALWAYS 0x0207
+#define GL_POLYGON_OFFSET_FILL 0x8037
+#define GL_POLYGON_OFFSET_LINE 0x2A02
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
 #define GL_STREAM_DRAW 0x88E0
 #define GL_TEXTURE_WIDTH 0x1000
@@ -261,5 +269,13 @@ void glGetActiveUniform(GLuint program, GLuint index, GLsizei bufSize,
 GLsync glFenceSync(GLenum condition, GLbitfield flags);
 GLenum glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout);
 void glDeleteSync(GLsync sync);
+
+void glDepthMask(GLboolean flag);
+void glEnablei(GLenum target, GLuint index);
+void glDisablei(GLenum target, GLuint index);
+void glPolygonOffset(GLfloat factor, GLfloat units);
+void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass);
+void glStencilFunc(GLenum func, GLint ref, GLuint mask);
+void glStencilMask(GLuint mask);
 
 #endif

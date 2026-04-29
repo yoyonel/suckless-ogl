@@ -58,13 +58,22 @@ typedef struct GLFWvidmode {
 #define GLFW_KEY_6 54
 #define GLFW_KEY_7 55
 #define GLFW_KEY_8 56
+#define GLFW_KEY_9 57
+#define GLFW_KEY_B 66
+#define GLFW_KEY_U 85
 #define GLFW_KEY_KP_0 320
 #define GLFW_KEY_KP_ADD 334
 #define GLFW_KEY_KP_SUBTRACT 333
 
 #define GLFW_MOD_SHIFT 0x0001
+#define GLFW_MOD_CONTROL 0x0002
+#define GLFW_MOD_ALT 0x0004
 #define GLFW_KEY_LEFT_SHIFT 340
 #define GLFW_KEY_RIGHT_SHIFT 344
+#define GLFW_KEY_F7 296
+#define GLFW_KEY_F8 297
+#define GLFW_KEY_F10 299
+#define GLFW_KEY_F11 300
 
 #define GLFW_CURSOR 0x00033001
 #define GLFW_CURSOR_NORMAL 0x00034001
