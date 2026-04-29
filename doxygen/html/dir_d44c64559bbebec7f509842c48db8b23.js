@@ -48,6 +48,13 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "postprocess.h", "postprocess_8h.html", "postprocess_8h" ],
     [ "postprocess_input.h", "postprocess__input_8h.html", "postprocess__input_8h" ],
     [ "postprocess_presets.h", "postprocess__presets_8h.html", "postprocess__presets_8h" ],
+    [ "pp_exposure_readback.h", "pp__exposure__readback_8h.html", "pp__exposure__readback_8h" ],
+    [ "pp_gpu_resources.h", "pp__gpu__resources_8h.html", [
+      [ "PPGPUResources", "structPPGPUResources.html", "structPPGPUResources" ]
+    ] ],
+    [ "pp_params.h", "pp__params_8h.html", "pp__params_8h" ],
+    [ "pp_shader_state.h", "pp__shader__state_8h.html", "pp__shader__state_8h" ],
+    [ "pp_ubo.h", "pp__ubo_8h.html", "pp__ubo_8h" ],
     [ "profiler.h", "profiler_8h.html", "profiler_8h" ],
     [ "render_utils.h", "render__utils_8h.html", "render__utils_8h" ],
     [ "renderer.h", "renderer_8h.html", "renderer_8h" ],
@@ -64,6 +71,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "scene_simulation.h", "scene__simulation_8h.html", [
       [ "SceneSimulation", "structSceneSimulation.html", "structSceneSimulation" ]
     ] ],
+    [ "scene_uniforms.h", "scene__uniforms_8h.html", "scene__uniforms_8h" ],
     [ "scene_visuals.h", "scene__visuals_8h.html", [
       [ "SceneVisuals", "structSceneVisuals.html", "structSceneVisuals" ]
     ] ],

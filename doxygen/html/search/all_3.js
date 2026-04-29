@@ -46,8 +46,8 @@ var searchData=
   ['cleanup_5fctx_337',['CLEANUP_CTX',['../shader_8c.html#af36a2b599facb84c8d6e2a39ea7011d1',1,'shader.c']]],
   ['cleanup_5ffile_338',['CLEANUP_FILE',['../utils_8h.html#a407e52a6dbfea9c852630e98baaa92b7',1,'utils.h']]],
   ['cleanup_5ffile_339',['cleanup_file',['../utils_8h.html#a55529722f47ff4c9bc4b65d398008fc4',1,'utils.h']]],
-  ['cleanup_5ffree_340',['cleanup_free',['../utils_8h.html#a60d756fd34ef42d063535564a151e219',1,'utils.h']]],
-  ['cleanup_5ffree_341',['CLEANUP_FREE',['../utils_8h.html#ac333249d502a536c37149f9397c09060',1,'utils.h']]],
+  ['cleanup_5ffree_340',['CLEANUP_FREE',['../utils_8h.html#ac333249d502a536c37149f9397c09060',1,'utils.h']]],
+  ['cleanup_5ffree_341',['cleanup_free',['../utils_8h.html#a60d756fd34ef42d063535564a151e219',1,'utils.h']]],
   ['cleanup_5fgl_5fdebug_5fgroup_342',['cleanup_gl_debug_group',['../gl__common_8h.html#ac192a54fd8e4a35cb9c5cba07be2b7dc',1,'gl_common.h']]],
   ['cleanup_5fgl_5ftexture_343',['cleanup_gl_texture',['../gl__common_8h.html#a24ca9be2bf7f08f4039806dd06ac6a33',1,'gl_common.h']]],
   ['cleanup_5fgl_5fuse_5fprogram_344',['cleanup_gl_use_program',['../gl__common_8h.html#ad15b0974fb88bf43476a2ba10cc58447',1,'gl_common.h']]],
@@ -118,5 +118,5 @@ var searchData=
   ['current_5fstage_5findex_409',['current_stage_index',['../structGPUProfiler.html#a6fe4616fb811074d7d8b3150d1a7c7be',1,'GPUProfiler']]],
   ['current_5ftexture_410',['current_texture',['../structUIContext.html#a52ecf5ff0d8fbc54b9c2586c587a1dbf',1,'UIContext']]],
   ['cursor_5fy_411',['cursor_y',['../structUILayout.html#a692c37340a75ca97fb112f2402e0bd23',1,'UILayout']]],
-  ['cyber_5ftitle_5fcolor_412',['CYBER_TITLE_COLOR',['../app__ui_8h.html#aed8604ac57827f2f1bf7dccb8b78bea4',1,'app_ui.h']]]
+  ['cyber_5ftitle_5fcolor_412',['CYBER_TITLE_COLOR',['../app__ui_8c.html#aed8604ac57827f2f1bf7dccb8b78bea4',1,'app_ui.c']]]
 ];

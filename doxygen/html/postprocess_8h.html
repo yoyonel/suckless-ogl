@@ -268,11 +268,13 @@ $(document).ready(function(){initNavTree('postprocess_8h.html',''); initResizabl
 <code>#include &quot;effects/fx_lut3d.h&quot;</code><br />
 <code>#include &quot;effects/fx_lut_viz.h&quot;</code><br />
 <code>#include &quot;effects/fx_motion_blur.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="gl__common_8h_source.html">gl_common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="gpu__profiler_8h_source.html">gpu_profiler.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="shader_8h_source.html">shader.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__exposure__readback_8h_source.html">pp_exposure_readback.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__gpu__resources_8h_source.html">pp_gpu_resources.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__params_8h_source.html">pp_params.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__shader__state_8h_source.html">pp_shader_state.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="pp__ubo_8h_source.html">pp_ubo.h</a>&quot;</code><br />
 <code>#include &lt;cglm/cglm.h&gt;</code><br />
-<code>#include &lt;cglm/types.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for postprocess.h:</div>
 <div class="dyncontent">
@@ -290,51 +292,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColorGradingParams.html">ColorGradingParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unreal-style color grading parameters.  <a href="structColorGradingParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structVignetteParams.html">VignetteParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Controls for the screen-edge darkening effect.  <a href="structVignetteParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGrainParams.html">GrainParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fine-grained controls for film noise.  <a href="structGrainParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structExposureParams.html">ExposureParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manual exposure tuning.  <a href="structExposureParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChromAbberationParams.html">ChromAbberationParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focal-length distortion simulation.  <a href="structChromAbberationParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structWhiteBalanceParams.html">WhiteBalanceParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temperature and tint correction.  <a href="structWhiteBalanceParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTonemapParams.html">TonemapParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ACES-like filmic tonemapping curve parameters.  <a href="structTonemapParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFXAAParams.html">FXAAParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters for Fast Approximate Anti-Aliasing.  <a href="structFXAAParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBandingParams.html">BandingParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Controls for color banding/quantization.  <a href="structBandingParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFogParams.html">FogParams</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth-based atmospheric fog parameters.  <a href="structFogParams.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structShaderCacheEntry.html">ShaderCacheEntry</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cache entry for optimized shaders.  <a href="structShaderCacheEntry.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcessUBO.html">PostProcessUBO</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared Uniform Buffer structure for shaders.  <a href="structPostProcessUBO.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPGPUResources.html">PPGPUResources</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GPU handles for the post-processing pipeline (FBOs, textures, UBO).  <a href="structPPGPUResources.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPShaderState.html">PPShaderState</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> management state for the optimized uber-shader pipeline.  <a href="structPPShaderState.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPPExposureReadback.html">PPExposureReadback</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async GPU readback state for exposure and histogram.  <a href="structPPExposureReadback.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structPostProcess.html">PostProcess</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main pipeline state for post-processing.  <a href="structPostProcess.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -344,26 +301,6 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a7d38280252925a54dc81b01fc5c11032"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a7d38280252925a54dc81b01fc5c11032">POSTPROCESS_HISTOGRAM_BUCKETS</a>&#160;&#160;&#160;256</td></tr>
-<tr class="separator:a7d38280252925a54dc81b01fc5c11032"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d5161cecc700143fa60fc6e4f9ca79f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4d5161cecc700143fa60fc6e4f9ca79f">DEFAULT_VIGNETTE_INTENSITY</a>&#160;&#160;&#160;0.8F</td></tr>
-<tr class="separator:a4d5161cecc700143fa60fc6e4f9ca79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24987b89075e8bfcef95322a2f55da3a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a24987b89075e8bfcef95322a2f55da3a">DEFAULT_VIGNETTE_SMOOTHNESS</a>&#160;&#160;&#160;0.5F</td></tr>
-<tr class="separator:a24987b89075e8bfcef95322a2f55da3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a678aa31207d5058c820d96471b712ff8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a678aa31207d5058c820d96471b712ff8">DEFAULT_VIGNETTE_ROUNDNESS</a>&#160;&#160;&#160;1.0F</td></tr>
-<tr class="separator:a678aa31207d5058c820d96471b712ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61256b363d5eee27d7a269338b5e4c5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a61256b363d5eee27d7a269338b5e4c5b">DEFAULT_GRAIN_INTENSITY</a>&#160;&#160;&#160;0.02F</td></tr>
-<tr class="separator:a61256b363d5eee27d7a269338b5e4c5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27c46a0e6b1c3f38980c3fa336cc9b9d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a27c46a0e6b1c3f38980c3fa336cc9b9d">DEFAULT_GRAIN_SHADOWS_MAX</a>&#160;&#160;&#160;0.09F</td></tr>
-<tr class="separator:a27c46a0e6b1c3f38980c3fa336cc9b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71e99cbd7ef9e6cc79aa31b14a5422cc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a71e99cbd7ef9e6cc79aa31b14a5422cc">DEFAULT_GRAIN_HIGHLIGHTS_MIN</a>&#160;&#160;&#160;0.5F</td></tr>
-<tr class="separator:a71e99cbd7ef9e6cc79aa31b14a5422cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6015b9293bcf3bebdebc87307513cd8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aa6015b9293bcf3bebdebc87307513cd8">DEFAULT_GRAIN_TEXEL_SIZE</a>&#160;&#160;&#160;1.0F</td></tr>
-<tr class="separator:aa6015b9293bcf3bebdebc87307513cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaae531cfd777bb448be1f0dd3cfcb8cf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aaae531cfd777bb448be1f0dd3cfcb8cf">DEFAULT_EXPOSURE</a>&#160;&#160;&#160;1.00F</td></tr>
-<tr class="separator:aaae531cfd777bb448be1f0dd3cfcb8cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5fbed1e09f43ec4d9d0587a2fe982a04"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a5fbed1e09f43ec4d9d0587a2fe982a04">DEFAULT_CHROM_ABBR_STRENGTH</a>&#160;&#160;&#160;0.005F</td></tr>
-<tr class="separator:a5fbed1e09f43ec4d9d0587a2fe982a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a64a9e1a6bbe5e74db0f77c17c04ee918">DEFAULT_BLOOM_INTENSITY</a>&#160;&#160;&#160;0.0F</td></tr>
 <tr class="separator:a64a9e1a6bbe5e74db0f77c17c04ee918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdd4a3cba1a04e1866e280b84a064dee"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#acdd4a3cba1a04e1866e280b84a064dee">DEFAULT_BLOOM_THRESHOLD</a>&#160;&#160;&#160;1.0F</td></tr>
@@ -372,12 +309,6 @@ Macros</h2></td></tr>
 <tr class="separator:a222b8356f0589002c336b3b47ef99be5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a160badf1723b03fe88e13e84e1410a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a3a160badf1723b03fe88e13e84e1410a">DEFAULT_BLOOM_RADIUS</a>&#160;&#160;&#160;1.0F</td></tr>
 <tr class="separator:a3a160badf1723b03fe88e13e84e1410a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf826df7e5a98400decd6c5abaf1b273"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#abf826df7e5a98400decd6c5abaf1b273">DEFAULT_FXAA_SUBPIX</a>&#160;&#160;&#160;0.75F</td></tr>
-<tr class="separator:abf826df7e5a98400decd6c5abaf1b273"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c0fe09de30b31265a39842dcf30b994"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4c0fe09de30b31265a39842dcf30b994">DEFAULT_FXAA_EDGE_THRESHOLD</a>&#160;&#160;&#160;0.125F</td></tr>
-<tr class="separator:a4c0fe09de30b31265a39842dcf30b994"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b1c10a66d180ff45ebec6829b1a5f1c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8b1c10a66d180ff45ebec6829b1a5f1c">DEFAULT_FXAA_EDGE_THRESHOLD_MIN</a>&#160;&#160;&#160;0.063F</td></tr>
-<tr class="separator:a8b1c10a66d180ff45ebec6829b1a5f1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a8704ac8e54f944f1ff3218c4ef5f59e4">DEFAULT_DOF_FOCAL_DISTANCE</a>&#160;&#160;&#160;20.0F</td></tr>
 <tr class="separator:a8704ac8e54f944f1ff3218c4ef5f59e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63ba03e343f9b5cabd43b1cb6a9839d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a63ba03e343f9b5cabd43b1cb6a9839d9">DEFAULT_DOF_FOCAL_RANGE</a>&#160;&#160;&#160;5.0F</td></tr>
@@ -386,34 +317,6 @@ Macros</h2></td></tr>
 <tr class="separator:a478a7691189f64138ffea55e94d0be7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e0952cc10ca6b3d92996a4f7068e5ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a9e0952cc10ca6b3d92996a4f7068e5ed">DEFAULT_DOF_ANAMORPHIC_RATIO</a>&#160;&#160;&#160;	1.0F</td></tr>
 <tr class="separator:a9e0952cc10ca6b3d92996a4f7068e5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a917e9af207be1811116e495774c4f546"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a917e9af207be1811116e495774c4f546">DEFAULT_BANDING_LEVELS</a>&#160;&#160;&#160;256.0F</td></tr>
-<tr class="separator:a917e9af207be1811116e495774c4f546"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74432b07cb03f520e6a1c7c4194c9951"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a74432b07cb03f520e6a1c7c4194c9951">DEFAULT_FOG_DENSITY</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:a74432b07cb03f520e6a1c7c4194c9951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4885a5e722dcddd4f99ed7a8714416af"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4885a5e722dcddd4f99ed7a8714416af">DEFAULT_FOG_START</a>&#160;&#160;&#160;10.0F</td></tr>
-<tr class="separator:a4885a5e722dcddd4f99ed7a8714416af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05bcf0f1686a33ce9c66e6930f0e7f3d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a05bcf0f1686a33ce9c66e6930f0e7f3d">DEFAULT_FOG_HEIGHT_FALLOFF</a>&#160;&#160;&#160;0.1F</td></tr>
-<tr class="separator:a05bcf0f1686a33ce9c66e6930f0e7f3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d1f3b8a87bf2fec030edf72216c395c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a9d1f3b8a87bf2fec030edf72216c395c">DEFAULT_FOG_COLOR_R</a>&#160;&#160;&#160;0.5F</td></tr>
-<tr class="separator:a9d1f3b8a87bf2fec030edf72216c395c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af429d2bf0c7ecc710235d5f05ee2c9b7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af429d2bf0c7ecc710235d5f05ee2c9b7">DEFAULT_FOG_COLOR_G</a>&#160;&#160;&#160;0.6F</td></tr>
-<tr class="separator:af429d2bf0c7ecc710235d5f05ee2c9b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b025bbcf7ef45b0dda81d819a9c4a84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1b025bbcf7ef45b0dda81d819a9c4a84">DEFAULT_FOG_COLOR_B</a>&#160;&#160;&#160;0.7F</td></tr>
-<tr class="separator:a1b025bbcf7ef45b0dda81d819a9c4a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5ac917a4a0b7f557e0149cd2517d08e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af5ac917a4a0b7f557e0149cd2517d08e">DEFAULT_WB_TEMP</a>&#160;&#160;&#160;6500.0F</td></tr>
-<tr class="separator:af5ac917a4a0b7f557e0149cd2517d08e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad168e611abd1a1d07b4ec631de12c8d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ad168e611abd1a1d07b4ec631de12c8d2">DEFAULT_WB_TINT</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:ad168e611abd1a1d07b4ec631de12c8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24c921857e67d965067a90def2a6d3de"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a24c921857e67d965067a90def2a6d3de">DEFAULT_FILMIC_SLOPE</a>&#160;&#160;&#160;1.0F</td></tr>
-<tr class="separator:a24c921857e67d965067a90def2a6d3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af950c3b89015622c6f11daef618bef2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#af950c3b89015622c6f11daef618bef2d">DEFAULT_FILMIC_TOE</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:af950c3b89015622c6f11daef618bef2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a074b2000111396e1a6e510adee780e88"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a074b2000111396e1a6e510adee780e88">DEFAULT_FILMIC_SHOULDER</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:a074b2000111396e1a6e510adee780e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2730de020cb919591ad08c99d9298a2a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a2730de020cb919591ad08c99d9298a2a">DEFAULT_FILMIC_BLACK_CLIP</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:a2730de020cb919591ad08c99d9298a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8f4b984f00cf828da892ab2aece57fd"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#ad8f4b984f00cf828da892ab2aece57fd">DEFAULT_FILMIC_WHITE_CLIP</a>&#160;&#160;&#160;0.0F</td></tr>
-<tr class="separator:ad8f4b984f00cf828da892ab2aece57fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">DEFAULT_ACTIVE_EFFECTS</a></td></tr>
 <tr class="memdesc:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default mask of active effects.  <a href="postprocess_8h.html#a1c16e8ea94b93cbf379ceca837be3d2d">More...</a><br /></td></tr>
 <tr class="separator:a1c16e8ea94b93cbf379ceca837be3d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -452,25 +355,9 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a01df437b0efb1a48be039d241c9baf7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bitmask flags for enabling/disabling individual effects.  <a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7b">More...</a><br /></td></tr>
 <tr class="separator:a01df437b0efb1a48be039d241c9baf7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d814419b634cf8406ae065aea9a2ad2"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> { <br />
-&#160;&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a">BANDING_MODE_LINEAR</a> = 0
-, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc">BANDING_MODE_DITHERED</a> = 1
-, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da">BANDING_MODE_PERCEPTUAL</a> = 2
-, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b">BANDING_MODE_CHANNEL</a> = 3
-, <br />
-&#160;&#160;<a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89">BANDING_MODE_LUMINANCE</a> = 4
-<br />
- }</td></tr>
-<tr class="memdesc:a1d814419b634cf8406ae065aea9a2ad2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Styles of color quantization.  <a href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">More...</a><br /></td></tr>
-<tr class="separator:a1d814419b634cf8406ae065aea9a2ad2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94798fdadfbf49a7c658ace669a1d310"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <a class="el" href="postprocess_8h.html#a94798fdadfbf49a7c658ace669a1d310a9337d358c52b7f56750005f4028cc504">SHADER_CACHE_SIZE</a> = 64
- }</td></tr>
-<tr class="separator:a94798fdadfbf49a7c658ace669a1d310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2f3b5c5d4d64b3bad8be49c8005b9f1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a2f3b5c5d4d64b3bad8be49c8005b9f1d">_Static_assert</a> (_Alignof(<a class="el" href="structPostProcessUBO.html">PostProcessUBO</a>) &gt;=<a class="el" href="gl__common_8h.html#aaf105ae5beaca1dee30ae54530691fcea0178e01bb43e84986ca3cf7d7cdbb660">GL_UBO_ALIGNMENT</a>, &quot;PostProcessUBO&quot; &quot; must be &gt;= 32-byte aligned for AVX (cglm)&quot;)</td></tr>
-<tr class="separator:a2f3b5c5d4d64b3bad8be49c8005b9f1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b">postprocess_init</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="structGPUProfiler.html">GPUProfiler</a> *external_profiler, int width, int height)</td></tr>
 <tr class="memdesc:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the post-processing pipeline.  <a href="postprocess_8h.html#a2bc2aa1dea945700e2e0ce539fffd53b">More...</a><br /></td></tr>
 <tr class="separator:a2bc2aa1dea945700e2e0ce539fffd53b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -529,7 +416,7 @@ Functions</h2></td></tr>
 <tr class="separator:a6ce07fd263254dd72c5afc8c199f3913"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebaafeb093d652eb93e6f91a55a60566"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#aebaafeb093d652eb93e6f91a55a60566">postprocess_set_fxaa</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float subpix, float edge_threshold, float edge_threshold_min)</td></tr>
 <tr class="separator:aebaafeb093d652eb93e6f91a55a60566"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b604741ce9e478c27bce5bad0255bcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_set_banding</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> mode, float levels)</td></tr>
+<tr class="memitem:a4b604741ce9e478c27bce5bad0255bcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4b604741ce9e478c27bce5bad0255bcf">postprocess_set_banding</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, <a class="el" href="pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a> mode, float levels)</td></tr>
 <tr class="separator:a4b604741ce9e478c27bce5bad0255bcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4459034743ba0085c3687dd0a6c89133"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="postprocess_8h.html#a4459034743ba0085c3687dd0a6c89133">postprocess_set_banding_dither</a> (<a class="el" href="structPostProcess.html">PostProcess</a> *post_processing, float strength)</td></tr>
 <tr class="separator:a4459034743ba0085c3687dd0a6c89133"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -582,7 +469,14 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>High-level post-processing pipeline and effects. </p>
-<p>This module manages the multi-pass post-processing pipeline, including blooming, auto-exposure, color grading, motion blur, and tone mapping. It uses a centralized Uniform Buffer Object (UBO) for settings. </p>
+<p>This module manages the multi-pass post-processing pipeline, including blooming, auto-exposure, color grading, motion blur, and tone mapping. It uses a centralized Uniform Buffer Object (UBO) for settings.</p>
+<p>Implementation details are split across sub-headers:</p><ul>
+<li><a class="el" href="pp__params_8h.html" title="Parameter structs and defaults for uber-shader post-processing effects.">pp_params.h</a> — Uber-shader effect parameter structs and defaults</li>
+<li><a class="el" href="pp__ubo_8h.html" title="GPU-side Uniform Buffer Object layout for the post-processing uber-shader.">pp_ubo.h</a> — GPU-side UBO layout (std140)</li>
+<li><a class="el" href="pp__gpu__resources_8h.html" title="GPU resource handles for the post-processing pipeline.">pp_gpu_resources.h</a> — FBO, texture, and UBO handles</li>
+<li><a class="el" href="pp__shader__state_8h.html" title="Shader management state for the optimized uber-shader pipeline.">pp_shader_state.h</a> — <a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> cache and compilation state</li>
+<li><a class="el" href="pp__exposure__readback_8h.html" title="Async GPU readback state for exposure and histogram.">pp_exposure_readback.h</a> — Async GPU readback for AE/histogram </li>
+</ul>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a1c16e8ea94b93cbf379ceca837be3d2d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c16e8ea94b93cbf379ceca837be3d2d">&#9670;&nbsp;</a></span>DEFAULT_ACTIVE_EFFECTS</h2>
@@ -597,26 +491,11 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    ((<span class="keywordtype">unsigned</span> int)<a class="code" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a> | (<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>)<a class="code" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a> | \</div>
 <div class="line">     (<span class="keywordtype">unsigned</span> int)<a class="code" href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a>)</div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition:</b> postprocess.h:86</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition:</b> postprocess.h:97</div></div>
-<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:83</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba235edebbb116ac614c2fc8d7b4da4062">POSTFX_COLOR_GRADING</a></div><div class="ttdeci">@ POSTFX_COLOR_GRADING</div><div class="ttdef"><b>Definition:</b> postprocess.h:57</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7ba88a907d778033981c1bd6662cd608075">POSTFX_FXAA</a></div><div class="ttdeci">@ POSTFX_FXAA</div><div class="ttdef"><b>Definition:</b> postprocess.h:68</div></div>
+<div class="ttc" id="apostprocess_8h_html_a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48"><div class="ttname"><a href="postprocess_8h.html#a01df437b0efb1a48be039d241c9baf7baddeeb28c5ec980e589c41959326dac48">POSTFX_EXPOSURE</a></div><div class="ttdeci">@ POSTFX_EXPOSURE</div><div class="ttdef"><b>Definition:</b> postprocess.h:54</div></div>
 </div><!-- fragment -->
 <p>Default mask of active effects. </p>
-
-</div>
-</div>
-<a id="a917e9af207be1811116e495774c4f546"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a917e9af207be1811116e495774c4f546">&#9670;&nbsp;</a></span>DEFAULT_BANDING_LEVELS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_BANDING_LEVELS&#160;&#160;&#160;256.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>8-bit simulation. </p>
 
 </div>
 </div>
@@ -670,20 +549,6 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">#define DEFAULT_BLOOM_THRESHOLD&#160;&#160;&#160;1.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a5fbed1e09f43ec4d9d0587a2fe982a04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5fbed1e09f43ec4d9d0587a2fe982a04">&#9670;&nbsp;</a></span>DEFAULT_CHROM_ABBR_STRENGTH</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_CHROM_ABBR_STRENGTH&#160;&#160;&#160;0.005F</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -747,406 +612,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aaae531cfd777bb448be1f0dd3cfcb8cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaae531cfd777bb448be1f0dd3cfcb8cf">&#9670;&nbsp;</a></span>DEFAULT_EXPOSURE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_EXPOSURE&#160;&#160;&#160;1.00F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2730de020cb919591ad08c99d9298a2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2730de020cb919591ad08c99d9298a2a">&#9670;&nbsp;</a></span>DEFAULT_FILMIC_BLACK_CLIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FILMIC_BLACK_CLIP&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a074b2000111396e1a6e510adee780e88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a074b2000111396e1a6e510adee780e88">&#9670;&nbsp;</a></span>DEFAULT_FILMIC_SHOULDER</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FILMIC_SHOULDER&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a24c921857e67d965067a90def2a6d3de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24c921857e67d965067a90def2a6d3de">&#9670;&nbsp;</a></span>DEFAULT_FILMIC_SLOPE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FILMIC_SLOPE&#160;&#160;&#160;1.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af950c3b89015622c6f11daef618bef2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af950c3b89015622c6f11daef618bef2d">&#9670;&nbsp;</a></span>DEFAULT_FILMIC_TOE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FILMIC_TOE&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad8f4b984f00cf828da892ab2aece57fd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8f4b984f00cf828da892ab2aece57fd">&#9670;&nbsp;</a></span>DEFAULT_FILMIC_WHITE_CLIP</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FILMIC_WHITE_CLIP&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1b025bbcf7ef45b0dda81d819a9c4a84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b025bbcf7ef45b0dda81d819a9c4a84">&#9670;&nbsp;</a></span>DEFAULT_FOG_COLOR_B</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_COLOR_B&#160;&#160;&#160;0.7F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af429d2bf0c7ecc710235d5f05ee2c9b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af429d2bf0c7ecc710235d5f05ee2c9b7">&#9670;&nbsp;</a></span>DEFAULT_FOG_COLOR_G</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_COLOR_G&#160;&#160;&#160;0.6F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9d1f3b8a87bf2fec030edf72216c395c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d1f3b8a87bf2fec030edf72216c395c">&#9670;&nbsp;</a></span>DEFAULT_FOG_COLOR_R</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_COLOR_R&#160;&#160;&#160;0.5F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a74432b07cb03f520e6a1c7c4194c9951"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74432b07cb03f520e6a1c7c4194c9951">&#9670;&nbsp;</a></span>DEFAULT_FOG_DENSITY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_DENSITY&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a05bcf0f1686a33ce9c66e6930f0e7f3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05bcf0f1686a33ce9c66e6930f0e7f3d">&#9670;&nbsp;</a></span>DEFAULT_FOG_HEIGHT_FALLOFF</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_HEIGHT_FALLOFF&#160;&#160;&#160;0.1F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4885a5e722dcddd4f99ed7a8714416af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4885a5e722dcddd4f99ed7a8714416af">&#9670;&nbsp;</a></span>DEFAULT_FOG_START</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FOG_START&#160;&#160;&#160;10.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4c0fe09de30b31265a39842dcf30b994"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c0fe09de30b31265a39842dcf30b994">&#9670;&nbsp;</a></span>DEFAULT_FXAA_EDGE_THRESHOLD</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FXAA_EDGE_THRESHOLD&#160;&#160;&#160;0.125F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8b1c10a66d180ff45ebec6829b1a5f1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b1c10a66d180ff45ebec6829b1a5f1c">&#9670;&nbsp;</a></span>DEFAULT_FXAA_EDGE_THRESHOLD_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FXAA_EDGE_THRESHOLD_MIN&#160;&#160;&#160;0.063F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abf826df7e5a98400decd6c5abaf1b273"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf826df7e5a98400decd6c5abaf1b273">&#9670;&nbsp;</a></span>DEFAULT_FXAA_SUBPIX</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_FXAA_SUBPIX&#160;&#160;&#160;0.75F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a71e99cbd7ef9e6cc79aa31b14a5422cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71e99cbd7ef9e6cc79aa31b14a5422cc">&#9670;&nbsp;</a></span>DEFAULT_GRAIN_HIGHLIGHTS_MIN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_GRAIN_HIGHLIGHTS_MIN&#160;&#160;&#160;0.5F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a61256b363d5eee27d7a269338b5e4c5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61256b363d5eee27d7a269338b5e4c5b">&#9670;&nbsp;</a></span>DEFAULT_GRAIN_INTENSITY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_GRAIN_INTENSITY&#160;&#160;&#160;0.02F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default film grain strength. </p>
-
-</div>
-</div>
-<a id="a27c46a0e6b1c3f38980c3fa336cc9b9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a27c46a0e6b1c3f38980c3fa336cc9b9d">&#9670;&nbsp;</a></span>DEFAULT_GRAIN_SHADOWS_MAX</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_GRAIN_SHADOWS_MAX&#160;&#160;&#160;0.09F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa6015b9293bcf3bebdebc87307513cd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6015b9293bcf3bebdebc87307513cd8">&#9670;&nbsp;</a></span>DEFAULT_GRAIN_TEXEL_SIZE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_GRAIN_TEXEL_SIZE&#160;&#160;&#160;1.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4d5161cecc700143fa60fc6e4f9ca79f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d5161cecc700143fa60fc6e4f9ca79f">&#9670;&nbsp;</a></span>DEFAULT_VIGNETTE_INTENSITY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_VIGNETTE_INTENSITY&#160;&#160;&#160;0.8F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default vignette strength. </p>
-
-</div>
-</div>
-<a id="a678aa31207d5058c820d96471b712ff8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a678aa31207d5058c820d96471b712ff8">&#9670;&nbsp;</a></span>DEFAULT_VIGNETTE_ROUNDNESS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_VIGNETTE_ROUNDNESS&#160;&#160;&#160;1.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default vignette shape. </p>
-
-</div>
-</div>
-<a id="a24987b89075e8bfcef95322a2f55da3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24987b89075e8bfcef95322a2f55da3a">&#9670;&nbsp;</a></span>DEFAULT_VIGNETTE_SMOOTHNESS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_VIGNETTE_SMOOTHNESS&#160;&#160;&#160;0.5F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Default vignette falloff. </p>
-
-</div>
-</div>
-<a id="af5ac917a4a0b7f557e0149cd2517d08e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5ac917a4a0b7f557e0149cd2517d08e">&#9670;&nbsp;</a></span>DEFAULT_WB_TEMP</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_WB_TEMP&#160;&#160;&#160;6500.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad168e611abd1a1d07b4ec631de12c8d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad168e611abd1a1d07b4ec631de12c8d2">&#9670;&nbsp;</a></span>DEFAULT_WB_TINT</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define DEFAULT_WB_TINT&#160;&#160;&#160;0.0F</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7d38280252925a54dc81b01fc5c11032"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d38280252925a54dc81b01fc5c11032">&#9670;&nbsp;</a></span>POSTPROCESS_HISTOGRAM_BUCKETS</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define POSTPROCESS_HISTOGRAM_BUCKETS&#160;&#160;&#160;256</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a94798fdadfbf49a7c658ace669a1d310"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94798fdadfbf49a7c658ace669a1d310">&#9670;&nbsp;</a></span>anonymous enum</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">anonymous enum</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a94798fdadfbf49a7c658ace669a1d310a9337d358c52b7f56750005f4028cc504"></a>SHADER_CACHE_SIZE&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
-<a id="a1d814419b634cf8406ae065aea9a2ad2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d814419b634cf8406ae065aea9a2ad2">&#9670;&nbsp;</a></span>BandingMode</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Styles of color quantization. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2a625aed1c320de704d16b50821164446a"></a>BANDING_MODE_LINEAR&#160;</td><td class="fielddoc"><p>Standard uniform (Posterization). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2a0940f0bf2e46d58e67d9d0986a4972fc"></a>BANDING_MODE_DITHERED&#160;</td><td class="fielddoc"><p>Ordered dithering (Bayer). </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2aa101736103435318051d846584b9c1da"></a>BANDING_MODE_PERCEPTUAL&#160;</td><td class="fielddoc"><p>Gamma-weighted. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ae5332deeb5c1a7bcf2e7c9ee49c3712b"></a>BANDING_MODE_CHANNEL&#160;</td><td class="fielddoc"><p>RGB independent. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="a1d814419b634cf8406ae065aea9a2ad2ab308f4cae9b45f1530c383b6b621af89"></a>BANDING_MODE_LUMINANCE&#160;</td><td class="fielddoc"><p>Grayscale quantization + Tint. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
 <a id="a01df437b0efb1a48be039d241c9baf7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a01df437b0efb1a48be039d241c9baf7b">&#9670;&nbsp;</a></span>PostProcessEffect</h2>
 
@@ -1210,34 +676,6 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a2f3b5c5d4d64b3bad8be49c8005b9f1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f3b5c5d4d64b3bad8be49c8005b9f1d">&#9670;&nbsp;</a></span>_Static_assert()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">_Static_assert </td>
-          <td>(</td>
-          <td class="paramtype">_Alignof(<a class="el" href="structPostProcessUBO.html">PostProcessUBO</a>) &gt;=&#160;</td>
-          <td class="paramname"><em>GL_UBO_ALIGNMENT</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&quot;PostProcessUBO&quot; &quot; must be &gt;= 32-byte aligned for AVX (cglm)&quot;&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a6bf66ac3a443cdd5f9fdd5cf9d37b409"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6bf66ac3a443cdd5f9fdd5cf9d37b409">&#9670;&nbsp;</a></span>postprocess_apply_preset()</h2>
 
@@ -1905,7 +1343,7 @@ Here is the call graph for this function:</div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="postprocess_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="pp__params_8h.html#a1d814419b634cf8406ae065aea9a2ad2">BandingMode</a>&#160;</td>
           <td class="paramname"><em>mode</em>, </td>
         </tr>
         <tr>
