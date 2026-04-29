@@ -199,6 +199,13 @@ Two module headers carried unnecessary transitive includes, increasing coupling 
 - **`env_manager.h`**: Previously included `postprocess.h` even though it only uses `PostProcess*` in function signatures. Replaced with a forward declaration `typedef struct PostProcess PostProcess;`. The concrete include stays in `env_manager.c` which calls `postprocess_set_exposure_target()`.
 - **`renderer.h`**: Previously included 9 project headers (`action_notifier.h`, `camera.h`, `effect_benchmark.h`, `env_manager.h`, `gpu_profiler.h`, `gpu_profiler_ui.h`, `postprocess.h`, `scene.h`, `ui.h`) even though `RenderContext` holds only pointers. All replaced with forward declarations. Only `<stdbool.h>` and `<stdint.h>` remain as concrete includes. The `.c` file includes the full headers it needs.
 
+### Include Fan-Out Reduction (app_input.c, app_ui.c)
+
+The two highest fan-out source files were trimmed by moving the `app_input_ctx_from_app()` bridge function to `app.c` and removing unused/transitively-redundant includes:
+
+- **`app_input.c`**: 25 → 17 includes. The bridge function was the sole reason for including `app.h`, `app_profiling.h`, and `app_input_state.h`. Moving it to `app.c` (which already includes all three) eliminates the coupling. Additional removals: `window.h` (never used), `action_notifier.h`, `app_settings.h`, `nbody.h`, `glad/glad.h`, `GLFW/glfw3.h` (all transitively available through remaining includes).
+- **`app_ui.c`**: 23 → 16 includes. Removed `stb_image.h` (zero `stbi_*` calls), `<stdio.h>` and `<stdlib.h>` (no direct usage), plus 4 transitively-redundant headers (`action_notifier.h`, `adaptive_sampler.h`, `app_binding.h`, `app_settings.h`).
+
 **Principle**: A header that only uses a type through a pointer or reference should forward-declare that type, not include its full definition. This reduces include fan-out and speeds up incremental builds.
 
 ## Build System
