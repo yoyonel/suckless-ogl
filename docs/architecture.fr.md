@@ -159,6 +159,13 @@ Deux en-têtes de modules transportaient des includes transitifs inutiles, augme
 - **`env_manager.h`** : incluait `postprocess.h` alors qu'il n'utilise que `PostProcess*` dans les signatures de fonctions. Remplacé par une déclaration anticipée `typedef struct PostProcess PostProcess;`. L'include concret reste dans `env_manager.c` qui appelle `postprocess_set_exposure_target()`.
 - **`renderer.h`** : incluait 9 en-têtes projet (`action_notifier.h`, `camera.h`, `effect_benchmark.h`, `env_manager.h`, `gpu_profiler.h`, `gpu_profiler_ui.h`, `postprocess.h`, `scene.h`, `ui.h`) alors que `RenderContext` ne contient que des pointeurs. Tous remplacés par des déclarations anticipées. Seuls `<stdbool.h>` et `<stdint.h>` restent comme includes concrets. Le fichier `.c` inclut les en-têtes complets nécessaires.
 
+### Réduction du fan-out d'includes (app_input.c, app_ui.c)
+
+Les deux fichiers sources avec le plus haut fan-out d'includes ont été allégés en déplaçant la fonction pont `app_input_ctx_from_app()` vers `app.c` et en supprimant les includes inutilisés ou transitivement redondants :
+
+- **`app_input.c`** : 25 → 17 includes. La fonction pont était la seule raison d'inclure `app.h`, `app_profiling.h` et `app_input_state.h`. Son déplacement vers `app.c` (qui inclut déjà ces trois en-têtes) élimine le couplage. Suppressions additionnelles : `window.h` (jamais utilisé), `action_notifier.h`, `app_settings.h`, `nbody.h`, `glad/glad.h`, `GLFW/glfw3.h` (tous disponibles transitivement).
+- **`app_ui.c`** : 23 → 16 includes. Suppression de `stb_image.h` (aucun appel `stbi_*`), `<stdio.h>` et `<stdlib.h>` (aucune utilisation directe), plus 4 en-têtes transitivement redondants (`action_notifier.h`, `adaptive_sampler.h`, `app_binding.h`, `app_settings.h`).
+
 **Principe** : un en-tête qui n'utilise un type qu'à travers un pointeur ou une référence doit faire une déclaration anticipée de ce type, pas inclure sa définition complète. Cela réduit la propagation des includes et accélère les builds incrémentaux.
 
 ## Configuration CMake

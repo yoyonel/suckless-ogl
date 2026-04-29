@@ -442,3 +442,33 @@ void app_update(App* app)
 	                              &app->postprocess, app->delta_time,
 	                              app->frame_count);
 }
+AppInputContext app_input_ctx_from_app(App* app)
+{
+	return (AppInputContext){
+	    .window = app->win.handle,
+	    .camera = &app->input->camera,
+	    .scene = &app->scene,
+	    .postprocess = &app->postprocess,
+	    .env_mgr = &app->env_mgr,
+	    .notifier = &app->notifier,
+	    .overlay = &app->overlay,
+	    .timeline_ui = &app->profiling->timeline_ui,
+	    .effect_bench = &app->effect_bench,
+	    .perf_context = &app->profiling->perf_context,
+	    .gamepad = &app->input->gamepad,
+	    .async_loader = app->async_loader,
+	    .width = &app->width,
+	    .height = &app->height,
+	    .camera_enabled = &app->input->camera_enabled,
+	    .is_fullscreen = &app->win.is_fullscreen,
+	    .saved_x = &app->win.saved_x,
+	    .saved_y = &app->win.saved_y,
+	    .saved_width = &app->win.saved_width,
+	    .saved_height = &app->win.saved_height,
+	    .resize_pending = &app->win.resize_pending,
+	    .pending_width = &app->win.pending_width,
+	    .pending_height = &app->win.pending_height,
+	    .perf_mode_active = &app->profiling->perf_mode_active,
+	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
+	};
+}

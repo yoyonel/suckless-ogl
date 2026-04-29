@@ -1,66 +1,21 @@
 #include "app_input.h"
 
-#include "action_notifier.h"
-#include "app.h"
-#include "app_input_state.h"
-#include "app_profiling.h"
-#include "app_settings.h"
 #include "app_ui.h"
 #include "camera.h"
 #include "camera_input.h"
 #include "env_manager.h"
-#include "glad/glad.h"
+#include "gamepad_input.h"
+#include "gpu_profiler_ui.h"
 #include "log.h"
-#include "nbody.h"
 #include "perf_mode.h"
 #include "postprocess_input.h"
 #include "profiler.h"
 #include "scene.h"
 #include "utils.h"
-#include "window.h"
-#include <GLFW/glfw3.h>
 #include <math.h>
 #include <stb_image_write.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-/**
- * @brief Constructs an AppInputContext from the full App state.
- *
- * Used by GLFW callbacks to bridge between the GLFW user-pointer (App*)
- * and the decoupled input API (AppInputContext*).
- */
-static inline AppInputContext app_input_ctx_from_app(App* app)
-{
-	return (AppInputContext){
-	    .window = app->win.handle,
-	    .camera = &app->input->camera,
-	    .scene = &app->scene,
-	    .postprocess = &app->postprocess,
-	    .env_mgr = &app->env_mgr,
-	    .notifier = &app->notifier,
-	    .overlay = &app->overlay,
-	    .timeline_ui = &app->profiling->timeline_ui,
-	    .effect_bench = &app->effect_bench,
-	    .perf_context = &app->profiling->perf_context,
-	    .gamepad = &app->input->gamepad,
-	    .async_loader = app->async_loader,
-	    .width = &app->width,
-	    .height = &app->height,
-	    .camera_enabled = &app->input->camera_enabled,
-	    .is_fullscreen = &app->win.is_fullscreen,
-	    .saved_x = &app->win.saved_x,
-	    .saved_y = &app->win.saved_y,
-	    .saved_width = &app->win.saved_width,
-	    .saved_height = &app->win.saved_height,
-	    .resize_pending = &app->win.resize_pending,
-	    .pending_width = &app->win.pending_width,
-	    .pending_height = &app->win.pending_height,
-	    .perf_mode_active = &app->profiling->perf_mode_active,
-	    .log_gpu_metrics = &app->profiling->log_gpu_metrics,
-	};
-}
 
 enum { PBR_DEBUG_MODE_COUNT = 10 };
 
