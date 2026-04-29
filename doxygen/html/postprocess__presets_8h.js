@@ -1,6 +1,5 @@
 var postprocess__presets_8h =
 [
-    [ "BANDING_COMMON_BASE", "postprocess__presets_8h.html#a22e570c40e5db4b737aea148dc26f222", null ],
     [ "PRESET_ANALOG", "postprocess__presets_8h.html#a60fe8e6a1bb6ba06e48ec0b2e86fdc9a", null ],
     [ "PRESET_BLUEPRINT", "postprocess__presets_8h.html#a3abfc57b5f619bc3146c177011303082", null ],
     [ "PRESET_BW_CONTRAST", "postprocess__presets_8h.html#ac9cc116db2f7808142c2f582f5642098", null ],

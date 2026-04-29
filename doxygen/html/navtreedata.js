@@ -88,12 +88,12 @@ var NAVTREEINDEX =
 "ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2",
 "nbody_8h.html#ad7bc6f91a172aff337338f864f38d5d0",
 "postprocess_8h.html#a222b8356f0589002c336b3b47ef99be5",
-"scene__render_8c.html#a7bd2995953630892fd2f63e154e471c7",
-"structAdaptiveSampler.html#acb9bc43ec19184ff441d1c8bbdf8bc1d",
-"structEffectBenchResult.html",
-"structKeyPos.html#a1139a786d66817ab9377c3d27471b0fa",
-"structPostProcessUBO.html#abbc15293e2741be57c0b72457a91a3f1",
-"texture_8c.html#a59a6aeb7e1f2eef3491ac07ba4f6f9e3"
+"scene__init_8c.html#ae1059056f3f15c15286cfec8e2ec2092",
+"structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825",
+"structDebugUniforms.html#a0d687aac6362eef26e35209a4c479467",
+"structInstancedUniforms.html#a226af0bd8fc9414c2e5296ecc5b9b45f",
+"structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e",
+"structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

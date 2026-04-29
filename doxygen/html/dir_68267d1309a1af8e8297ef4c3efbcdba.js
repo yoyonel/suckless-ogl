@@ -39,6 +39,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "perf_timer.c", "perf__timer_8c.html", "perf__timer_8c" ],
     [ "postprocess.c", "postprocess_8c.html", "postprocess_8c" ],
     [ "postprocess_input.c", "postprocess__input_8c.html", "postprocess__input_8c" ],
+    [ "postprocess_presets.c", "postprocess__presets_8c.html", "postprocess__presets_8c" ],
     [ "render_utils.c", "render__utils_8c.html", "render__utils_8c" ],
     [ "renderer.c", "renderer_8c.html", "renderer_8c" ],
     [ "scene_cleanup.c", "scene__cleanup_8c.html", "scene__cleanup_8c" ],

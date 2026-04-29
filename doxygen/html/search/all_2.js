@@ -6,7 +6,7 @@ var searchData=
   ['background_2evert_167',['background.vert',['../background_8vert.html',1,'']]],
   ['banding_168',['banding',['../structPostProcessPreset.html#a6f762dab60d7c55557c3d35f58847a20',1,'PostProcessPreset::banding()'],['../structPostProcess.html#af411419ec733b3e01c935b9f646d1a82',1,'PostProcess::banding()']]],
   ['banding_5fchannel_5flevels_169',['banding_channel_levels',['../structPostProcessUBO.html#a167c5ae398b9ef7bfcec015323c8505e',1,'PostProcessUBO']]],
-  ['banding_5fcommon_5fbase_170',['BANDING_COMMON_BASE',['../postprocess__presets_8h.html#a22e570c40e5db4b737aea148dc26f222',1,'postprocess_presets.h']]],
+  ['banding_5fcommon_5fbase_170',['BANDING_COMMON_BASE',['../postprocess__presets_8c.html#a22e570c40e5db4b737aea148dc26f222',1,'postprocess_presets.c']]],
   ['banding_5fdither_5fstrength_171',['banding_dither_strength',['../structPostProcessUBO.html#aa32f26494de331b477b19ad6efac8243',1,'PostProcessUBO']]],
   ['banding_5flevels_172',['banding_levels',['../structPostProcessUBO.html#a6dd03fd01a95936e7a2126f0d89b7f10',1,'PostProcessUBO']]],
   ['banding_5fmode_173',['banding_mode',['../structPostProcessUBO.html#a94d807fb361fa9afbdfd0654375b1b5f',1,'PostProcessUBO']]],
