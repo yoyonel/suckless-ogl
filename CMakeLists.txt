@@ -126,6 +126,7 @@ set(SOURCES
     src/perf_timer.c
     src/postprocess.c
     src/postprocess_input.c
+    src/postprocess_presets.c
     src/render_utils.c
     src/scene_cleanup.c
     src/scene_init.c
