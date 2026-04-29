@@ -34,6 +34,8 @@ ALLOWLIST=(
     'GLFW/glfw3\.h'      # app_binding.h API is about GLFW key bindings (design choice)
     'gpu_profiler\.h'    # effect_benchmark.h uses GPUProfiler* in struct (IWYU misses it)
     '"app\.h"'           # app_ui.c uses App transitively — defensive include
+    'string\.h'          # perf_timer.c: strlen in TRACY_ENABLE macro (invisible to IWYU)
+    'pthread\.h'         # tracy_manager.h: pthread_mutex_t in TRACY_ENABLE block
 )
 
 # --- Argument parsing ---
