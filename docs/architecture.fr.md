@@ -85,13 +85,23 @@ La structure `App` est décomposée en sous-structs par domaine :
 
 Cela réduit le nombre de champs directs de `App` de 24 à ~17. Chaque header de sous-struct possède ses dépendances de type et ses fonctions de délégation, gardant `app.c` focalisé sur l'orchestration.
 
-### Décomposition de PostProcess (PPGPUResources, PPShaderState, PPExposureReadback)
+### Décomposition du header PostProcess
 
-La structure `PostProcess` est décomposée en trois sous-structs par domaine :
+Les définitions de types de `PostProcess` sont décomposées en cinq sous-headers, suivant le même pattern que la décomposition de Scene. `postprocess.h` (648 → 330 lignes) ne contient plus que la struct agrégat `PostProcess`, l'enum `PostProcessEffect`, `PostProcessPreset` et les signatures de fonctions.
 
-- **`PPGPUResources`** (`postprocess.h`) : tous les handles de ressources GPU — FBOs, textures, PBOs, SSBOs d'histogramme. Accès via `postprocess.gpu.scene_fbo`, etc.
-- **`PPShaderState`** (`postprocess.h`) : programmes de shaders et état de compilation — IDs de shaders, flags d'optimisation. Accès via `postprocess.shaders.program`, etc.
-- **`PPExposureReadback`** (`postprocess.h`) : état de readback asynchrone de l'exposition — handles PBO, fence, index de readback. Accès via `postprocess.readback.histogram_pbo`, etc.
+- **`pp_params.h`** : les 10 structs de paramètres des effets uber-shader (`VignetteParams`, `GrainParams`, `ExposureParams`, `ChromAbberationParams`, `WhiteBalanceParams`, `ColorGradingParams`, `TonemapParams`, `FXAAParams`, `BandingParams`, `FogParams`) plus l'enum `BandingMode` et les valeurs `DEFAULT_*`. Les effets avec leur propre pipeline multi-pass (`BloomParams`, `DoFParams`, `AutoExposureParams`, `MotionBlurParams`, `LUT3DParams`) vivent dans leurs headers `fx_*.h` respectifs.
+- **`pp_ubo.h`** : layout GPU `PostProcessUBO` (std140) — correspond au UBO du uber-shader GLSL.
+- **`pp_gpu_resources.h`** : struct `PPGPUResources` — FBOs, textures, handle UBO, quad écran.
+- **`pp_shader_state.h`** : `PPShaderState` + `ShaderCacheEntry` — état de compilation et cache de shaders.
+- **`pp_exposure_readback.h`** : struct `PPExposureReadback` — readback PBO asynchrone pour l'auto-exposition et l'histogramme.
+
+### Extraction du cache d'uniformes Scene
+
+Les structs de cache d'uniformes shader (`InstancedUniforms`, `DebugUniforms`, `BillboardUBO`, `BillboardUniforms`, `MAT4_FLOAT_COUNT`) sont extraites de `scene.h` (194 → 120 lignes) vers `scene_uniforms.h`. Ce sont des détails d'implémentation GPU accessibles uniquement par `scene_render.c` et `scene_init.c`. La struct `Scene` conserve ses champs d'uniformes par valeur ; les définitions de types sont simplement déplacées vers un sous-header ciblé.
+
+### Privatisation des données de layout UI
+
+Les données de layout statiques (tableau `KEY_LAYOUT_QWERTY[]` de 66 entrées, tableau `GAMEPAD_LAYOUT[]` de 16 entrées, ~60 constantes visuelles, définitions des structs `KeyPos`/`GamepadControlPos`) sont déplacées de `app_ui.h` (387 → 128 lignes) vers `app_ui.c`. Le header public n'expose plus que `HelpMode`, `AppUIOverlay` et 8 signatures de fonctions. Cela élimine la duplication des tableaux `static const` entre les unités de traduction et rend les modifications de layout locales à la recompilation.
 
 ### Seam GamepadContext
 

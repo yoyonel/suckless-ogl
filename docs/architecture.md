@@ -125,13 +125,23 @@ The `App` struct is decomposed into domain-aligned sub-structs:
 
 This reduces `App`'s direct field count from 24 to ~17. Each sub-struct header owns its type dependencies and its delegation functions, keeping `app.c` focused on orchestration.
 
-### PostProcess Decomposition (PPGPUResources, PPShaderState, PPExposureReadback)
+### PostProcess Header Decomposition
 
-The `PostProcess` struct is decomposed into three domain-aligned sub-structs:
+The `PostProcess` struct's type definitions are decomposed into five sub-headers, following the same pattern as the Scene decomposition. `postprocess.h` (648 → 330 lines) now only contains the aggregate `PostProcess` struct, `PostProcessEffect` enum, `PostProcessPreset`, and function signatures.
 
-- **`PPGPUResources`** (`postprocess.h`): All GPU resource handles — FBOs, textures, PBOs, histogram SSBOs. Access via `postprocess.gpu.scene_fbo`, etc.
-- **`PPShaderState`** (`postprocess.h`): Shader programs and compilation state — shader IDs, optimization flags. Access via `postprocess.shaders.program`, etc.
-- **`PPExposureReadback`** (`postprocess.h`): Async exposure readback state — PBO handles, fence, readback index. Access via `postprocess.readback.histogram_pbo`, etc.
+- **`pp_params.h`**: All 10 uber-shader effect parameter structs (`VignetteParams`, `GrainParams`, `ExposureParams`, `ChromAbberationParams`, `WhiteBalanceParams`, `ColorGradingParams`, `TonemapParams`, `FXAAParams`, `BandingParams`, `FogParams`) plus the `BandingMode` enum and `DEFAULT_*` values. Effects with their own multi-pass pipeline (`BloomParams`, `DoFParams`, `AutoExposureParams`, `MotionBlurParams`, `LUT3DParams`) live in their respective `fx_*.h` headers.
+- **`pp_ubo.h`**: GPU-side `PostProcessUBO` layout (std140) — matches the GLSL uber-shader UBO.
+- **`pp_gpu_resources.h`**: `PPGPUResources` struct — FBOs, textures, UBO handle, screen quad.
+- **`pp_shader_state.h`**: `PPShaderState` + `ShaderCacheEntry` — shader compilation and caching state.
+- **`pp_exposure_readback.h`**: `PPExposureReadback` struct — async PBO readback for auto-exposure and histogram.
+
+### Scene Uniform Cache Extraction
+
+Shader uniform cache structs (`InstancedUniforms`, `DebugUniforms`, `BillboardUBO`, `BillboardUniforms`, `MAT4_FLOAT_COUNT`) are extracted from `scene.h` (194 → 120 lines) into `scene_uniforms.h`. These are GPU implementation details only accessed by `scene_render.c` and `scene_init.c`. The `Scene` struct retains its by-value uniform fields; the type definitions simply move to a focused sub-header.
+
+### UI Layout Data Privatization
+
+Static layout data (66-entry `KEY_LAYOUT_QWERTY[]`, 16-entry `GAMEPAD_LAYOUT[]`, ~60 visual constants, `KeyPos`/`GamepadControlPos` struct definitions) is moved from `app_ui.h` (387 → 128 lines) into `app_ui.c`. The public header now exposes only `HelpMode`, `AppUIOverlay`, and 8 function signatures. This eliminates duplicated `static const` arrays across translation units and makes layout changes recompile-local.
 
 ### GamepadContext Seam
 
