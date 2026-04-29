@@ -95,6 +95,38 @@ Les définitions de types de `PostProcess` sont décomposées en cinq sous-heade
 - **`pp_shader_state.h`** : `PPShaderState` + `ShaderCacheEntry` — état de compilation et cache de shaders.
 - **`pp_exposure_readback.h`** : struct `PPExposureReadback` — readback PBO asynchrone pour l'auto-exposition et l'histogramme.
 
+### Découpage des unités de traduction PostProcess
+
+Le monolithique `postprocess.c` (1634 lignes) est découpé en six unités de traduction ciblées par domaine, chacune sous 360 lignes :
+
+| UT | Lignes | Responsabilité |
+|----|--------|----------------|
+| `postprocess_init.c` | 358 | Initialisation, création des framebuffers, redimensionnement, textures factices |
+| `postprocess_apply.c` | 360 | Passes de rendu begin/end, synchronisation UBO, passes bloom/DoF/AE/MB/composite |
+| `postprocess_setters.c` | 268 | Enable/disable/toggle, setters de paramètres, application de presets |
+| `postprocess_shader.c` | 223 | Recherche dans le cache de shaders, compilation optimisée, switching dynamique |
+| `postprocess_readback.c` | 199 | Readback PBO, calcul d'histogramme, luminance, mise à jour des matrices |
+| `postprocess_cleanup.c` | 97 | Libération des ressources (FBOs, quad, buffers de readback, cache de shaders) |
+
+```mermaid
+graph TD
+    PP_H[postprocess.h<br/><i>API publique</i>]
+    PP_INT[postprocess_internal.h<br/><i>enums partagés + déclarations pp_</i>]
+    PP_INT --> PP_H
+    INIT[postprocess_init.c] --> PP_INT
+    APPLY[postprocess_apply.c] --> PP_INT
+    SHADER[postprocess_shader.c] --> PP_INT
+    CLEANUP[postprocess_cleanup.c] --> PP_INT
+    SETTERS[postprocess_setters.c] --> PP_H
+    READBACK[postprocess_readback.c] --> PP_H
+```
+
+**Header interne** `postprocess_internal.h` fournit :
+
+- Les enums d'unités de texture (`POSTPROCESS_TEX_UNIT_SCENE`, `_BLOOM`, `_DOF`, etc.)
+- Les déclarations de fonctions internes préfixées `pp_` partagées entre les UT (ex. `pp_create_framebuffer`, `pp_destroy_framebuffer`, `pp_setup_sampler_uniforms`, `pp_update_current_shader`, `pp_is_shader_in_cache`)
+- Inclus uniquement par les UT nécessitant l'état interne partagé ; `postprocess_setters.c` et `postprocess_readback.c` n'ont besoin que du `postprocess.h` public
+
 ### Extraction du cache d'uniformes Scene
 
 Les structs de cache d'uniformes shader (`InstancedUniforms`, `DebugUniforms`, `BillboardUBO`, `BillboardUniforms`, `MAT4_FLOAT_COUNT`) sont extraites de `scene.h` (194 → 120 lignes) vers `scene_uniforms.h`. Ce sont des détails d'implémentation GPU accessibles uniquement par `scene_render.c` et `scene_init.c`. La struct `Scene` conserve ses champs d'uniformes par valeur ; les définitions de types sont simplement déplacées vers un sous-header ciblé.
