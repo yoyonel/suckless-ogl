@@ -666,6 +666,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#decoupage-des-unites-de-traduction-postprocess" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Découpage des unités de traduction PostProcess
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#extraction-du-cache-duniformes-scene" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3536,6 +3547,65 @@
 <li><strong><code>pp_shader_state.h</code></strong> : <code>PPShaderState</code> + <code>ShaderCacheEntry</code> — état de compilation et cache de shaders.</li>
 <li><strong><code>pp_exposure_readback.h</code></strong> : struct <code>PPExposureReadback</code> — readback PBO asynchrone pour l'auto-exposition et l'histogramme.</li>
 </ul>
+<h3 id="decoupage-des-unites-de-traduction-postprocess">Découpage des unités de traduction PostProcess<a class="headerlink" href="#decoupage-des-unites-de-traduction-postprocess" title="Permanent link">¶</a></h3>
+<p>Le monolithique <code>postprocess.c</code> (1634 lignes) est découpé en six unités de traduction ciblées par domaine, chacune sous 360 lignes :</p>
+<table>
+<thead>
+<tr>
+<th>UT</th>
+<th>Lignes</th>
+<th>Responsabilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postprocess_init.c</code></td>
+<td>358</td>
+<td>Initialisation, création des framebuffers, redimensionnement, textures factices</td>
+</tr>
+<tr>
+<td><code>postprocess_apply.c</code></td>
+<td>360</td>
+<td>Passes de rendu begin/end, synchronisation UBO, passes bloom/DoF/AE/MB/composite</td>
+</tr>
+<tr>
+<td><code>postprocess_setters.c</code></td>
+<td>268</td>
+<td>Enable/disable/toggle, setters de paramètres, application de presets</td>
+</tr>
+<tr>
+<td><code>postprocess_shader.c</code></td>
+<td>223</td>
+<td>Recherche dans le cache de shaders, compilation optimisée, switching dynamique</td>
+</tr>
+<tr>
+<td><code>postprocess_readback.c</code></td>
+<td>199</td>
+<td>Readback PBO, calcul d'histogramme, luminance, mise à jour des matrices</td>
+</tr>
+<tr>
+<td><code>postprocess_cleanup.c</code></td>
+<td>97</td>
+<td>Libération des ressources (FBOs, quad, buffers de readback, cache de shaders)</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>graph TD
+    PP_H[postprocess.h&lt;br/&gt;&lt;i&gt;API publique&lt;/i&gt;]
+    PP_INT[postprocess_internal.h&lt;br/&gt;&lt;i&gt;enums partagés + déclarations pp_&lt;/i&gt;]
+    PP_INT --&gt; PP_H
+    INIT[postprocess_init.c] --&gt; PP_INT
+    APPLY[postprocess_apply.c] --&gt; PP_INT
+    SHADER[postprocess_shader.c] --&gt; PP_INT
+    CLEANUP[postprocess_cleanup.c] --&gt; PP_INT
+    SETTERS[postprocess_setters.c] --&gt; PP_H
+    READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
+<p><strong>Header interne</strong> <code>postprocess_internal.h</code> fournit :</p>
+<ul>
+<li>Les enums d'unités de texture (<code>POSTPROCESS_TEX_UNIT_SCENE</code>, <code>_BLOOM</code>, <code>_DOF</code>, etc.)</li>
+<li>Les déclarations de fonctions internes préfixées <code>pp_</code> partagées entre les UT (ex. <code>pp_create_framebuffer</code>, <code>pp_destroy_framebuffer</code>, <code>pp_setup_sampler_uniforms</code>, <code>pp_update_current_shader</code>, <code>pp_is_shader_in_cache</code>)</li>
+<li>Inclus uniquement par les UT nécessitant l'état interne partagé ; <code>postprocess_setters.c</code> et <code>postprocess_readback.c</code> n'ont besoin que du <code>postprocess.h</code> public</li>
+</ul>
 <h3 id="extraction-du-cache-duniformes-scene">Extraction du cache d'uniformes Scene<a class="headerlink" href="#extraction-du-cache-duniformes-scene" title="Permanent link">¶</a></h3>
 <p>Les structs de cache d'uniformes shader (<code>InstancedUniforms</code>, <code>DebugUniforms</code>, <code>BillboardUBO</code>, <code>BillboardUniforms</code>, <code>MAT4_FLOAT_COUNT</code>) sont extraites de <code>scene.h</code> (194 → 120 lignes) vers <code>scene_uniforms.h</code>. Ce sont des détails d'implémentation GPU accessibles uniquement par <code>scene_render.c</code> et <code>scene_init.c</code>. La struct <code>Scene</code> conserve ses champs d'uniformes par valeur ; les définitions de types sont simplement déplacées vers un sous-header ciblé.</p>
 <h3 id="privatisation-des-donnees-de-layout-ui">Privatisation des données de layout UI<a class="headerlink" href="#privatisation-des-donnees-de-layout-ui" title="Permanent link">¶</a></h3>
@@ -3593,7 +3663,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 08:31:51 UTC">29 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 11:14:21 UTC">29 avril 2026</span>
   </span>
 
     

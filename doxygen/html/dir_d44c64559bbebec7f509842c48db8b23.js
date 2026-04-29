@@ -49,6 +49,7 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "perf_timer.h", "perf__timer_8h.html", "perf__timer_8h" ],
     [ "postprocess.h", "postprocess_8h.html", "postprocess_8h" ],
     [ "postprocess_input.h", "postprocess__input_8h.html", "postprocess__input_8h" ],
+    [ "postprocess_internal.h", "postprocess__internal_8h.html", "postprocess__internal_8h" ],
     [ "postprocess_presets.h", "postprocess__presets_8h.html", "postprocess__presets_8h" ],
     [ "pp_exposure_readback.h", "pp__exposure__readback_8h.html", "pp__exposure__readback_8h" ],
     [ "pp_gpu_resources.h", "pp__gpu__resources_8h.html", [

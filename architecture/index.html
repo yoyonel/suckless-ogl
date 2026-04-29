@@ -633,6 +633,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#postprocess-translation-unit-split" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PostProcess Translation-Unit Split
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#scene-uniform-cache-extraction" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3517,6 +3528,65 @@
 <li><strong><code>pp_shader_state.h</code></strong>: <code>PPShaderState</code> + <code>ShaderCacheEntry</code> — shader compilation and caching state.</li>
 <li><strong><code>pp_exposure_readback.h</code></strong>: <code>PPExposureReadback</code> struct — async PBO readback for auto-exposure and histogram.</li>
 </ul>
+<h3 id="postprocess-translation-unit-split">PostProcess Translation-Unit Split<a class="headerlink" href="#postprocess-translation-unit-split" title="Permanent link">¶</a></h3>
+<p>The monolithic <code>postprocess.c</code> (1634 lines) is split into six domain-focused translation units, each under 360 lines:</p>
+<table>
+<thead>
+<tr>
+<th>TU</th>
+<th>Lines</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>postprocess_init.c</code></td>
+<td>358</td>
+<td>Initialization, framebuffer creation, resize, dummy textures</td>
+</tr>
+<tr>
+<td><code>postprocess_apply.c</code></td>
+<td>360</td>
+<td>Begin/end render pass, UBO sync, bloom/DoF/AE/MB/composite passes</td>
+</tr>
+<tr>
+<td><code>postprocess_setters.c</code></td>
+<td>268</td>
+<td>Enable/disable/toggle, parameter setters, preset application</td>
+</tr>
+<tr>
+<td><code>postprocess_shader.c</code></td>
+<td>223</td>
+<td>Shader cache lookup, optimized compile, dynamic switching</td>
+</tr>
+<tr>
+<td><code>postprocess_readback.c</code></td>
+<td>199</td>
+<td>PBO readback, histogram computation, luminance, matrix updates</td>
+</tr>
+<tr>
+<td><code>postprocess_cleanup.c</code></td>
+<td>97</td>
+<td>Resource teardown (FBOs, quad, readback buffers, shader cache)</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>graph TD
+    PP_H[postprocess.h&lt;br/&gt;&lt;i&gt;public API&lt;/i&gt;]
+    PP_INT[postprocess_internal.h&lt;br/&gt;&lt;i&gt;shared enums + pp_ decls&lt;/i&gt;]
+    PP_INT --&gt; PP_H
+    INIT[postprocess_init.c] --&gt; PP_INT
+    APPLY[postprocess_apply.c] --&gt; PP_INT
+    SHADER[postprocess_shader.c] --&gt; PP_INT
+    CLEANUP[postprocess_cleanup.c] --&gt; PP_INT
+    SETTERS[postprocess_setters.c] --&gt; PP_H
+    READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
+<p><strong>Internal header</strong> <code>postprocess_internal.h</code> provides:</p>
+<ul>
+<li>Texture unit enums (<code>POSTPROCESS_TEX_UNIT_SCENE</code>, <code>_BLOOM</code>, <code>_DOF</code>, etc.)</li>
+<li><code>pp_</code>-prefixed internal function declarations shared across TUs (e.g. <code>pp_create_framebuffer</code>, <code>pp_destroy_framebuffer</code>, <code>pp_setup_sampler_uniforms</code>, <code>pp_update_current_shader</code>, <code>pp_is_shader_in_cache</code>)</li>
+<li>Only included by TUs that need shared internal state; <code>postprocess_setters.c</code> and <code>postprocess_readback.c</code> only need the public <code>postprocess.h</code></li>
+</ul>
 <h3 id="scene-uniform-cache-extraction">Scene Uniform Cache Extraction<a class="headerlink" href="#scene-uniform-cache-extraction" title="Permanent link">¶</a></h3>
 <p>Shader uniform cache structs (<code>InstancedUniforms</code>, <code>DebugUniforms</code>, <code>BillboardUBO</code>, <code>BillboardUniforms</code>, <code>MAT4_FLOAT_COUNT</code>) are extracted from <code>scene.h</code> (194 → 120 lines) into <code>scene_uniforms.h</code>. These are GPU implementation details only accessed by <code>scene_render.c</code> and <code>scene_init.c</code>. The <code>Scene</code> struct retains its by-value uniform fields; the type definitions simply move to a focused sub-header.</p>
 <h3 id="ui-layout-data-privatization">UI Layout Data Privatization<a class="headerlink" href="#ui-layout-data-privatization" title="Permanent link">¶</a></h3>
@@ -3570,7 +3640,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 29, 2026 08:31:51 UTC">April 29, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 29, 2026 11:14:21 UTC">April 29, 2026</span>
   </span>
 
     

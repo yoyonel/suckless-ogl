@@ -87,13 +87,14 @@ var NAVTREEINDEX =
 "globals_vars_u.html",
 "ibl__coordinator_8c.html#a8f96a85df00d4def5770e47ad2bb96b2",
 "nbody_8h.html#ad7bc6f91a172aff337338f864f38d5d0",
-"postprocess_8h.html#a222b8356f0589002c336b3b47ef99be5",
-"scene__init_8c.html#ae1059056f3f15c15286cfec8e2ec2092",
-"structActionNotifier.html#a5aef1dd4aeeaa10ff2e1c7855c05c825",
-"structDebugUniforms.html#a0d687aac6362eef26e35209a4c479467",
-"structInstancedUniforms.html#a226af0bd8fc9414c2e5296ecc5b9b45f",
-"structPostProcessUBO.html#a9cea44f7762ede4d26e419d3b383d67e",
-"structUniformEntry.html#a650cc6f65a739b51dc2644d8c87c95b9"
+"postprocess__cleanup_8c.html#aff62c837ec8fdb56fb854ea33a87e30f",
+"scene__config_8h_source.html",
+"stb__image__impl_8c.html#a07af50300e5cc077c6b31a4d2e8af32a",
+"structChunk.html",
+"structIncludeContext.html#a73a98e6ea42120b5df3da42d1a6a04f6",
+"structPostProcessUBO.html#a70b3f1b0ff2d3dba7b22a864fa611dd3",
+"structUIVertex.html#a3f24b6e8f7adda62eaac1c5c588c6f3d",
+"window_8h.html#a128a5d8ec24e20109240171317add4f8"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

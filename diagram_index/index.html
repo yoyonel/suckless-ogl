@@ -504,6 +504,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#architecture-documentation-refactoring-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Documentation - Refactoring Core
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#asynchronous-environment-map-loader" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3985,6 +3996,25 @@ SORT --&gt; FBO
 SPHERES --&gt; BLOOM
 COMP --&gt; UI
 UI --&gt; SWAP["glfwSwapBuffers()"]</code></pre>
+
+  </div>
+</div>
+
+<h2 id="architecture-documentation-refactoring-core"><a href="../architecture/">Architecture Documentation - Refactoring Core</a><a class="headerlink" href="#architecture-documentation-refactoring-core" title="Permanent link">¶</a></h2>
+<div class="diagram-item">
+  <a href="../architecture/#postprocess-translation-unit-split" style="font-weight: 500; font-size: 1.1em; color: var(--md-typeset-a-color);">PostProcess Translation-Unit Split</a> : <span style="opacity: 0.6; font-size: 0.85em;">| `postprocesscleanup.c` | 97 | Resource teardown (FBOs, quad, readback buffers, shader cache) |</span>
+  <div class="mermaid-preview">
+
+<pre class="mermaid"><code>graph TD
+PP_H[postprocess.h&lt;br/&gt;&lt;i&gt;public API&lt;/i&gt;]
+PP_INT[postprocess_internal.h&lt;br/&gt;&lt;i&gt;shared enums + pp_ decls&lt;/i&gt;]
+PP_INT --&gt; PP_H
+INIT[postprocess_init.c] --&gt; PP_INT
+APPLY[postprocess_apply.c] --&gt; PP_INT
+SHADER[postprocess_shader.c] --&gt; PP_INT
+CLEANUP[postprocess_cleanup.c] --&gt; PP_INT
+SETTERS[postprocess_setters.c] --&gt; PP_H
+READBACK[postprocess_readback.c] --&gt; PP_H</code></pre>
 
   </div>
 </div>
