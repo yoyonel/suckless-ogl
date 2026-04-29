@@ -5,6 +5,13 @@
  * This module manages the multi-pass post-processing pipeline, including
  * blooming, auto-exposure, color grading, motion blur, and tone mapping.
  * It uses a centralized Uniform Buffer Object (UBO) for settings.
+ *
+ * Implementation details are split across sub-headers:
+ * - pp_params.h — Uber-shader effect parameter structs and defaults
+ * - pp_ubo.h — GPU-side UBO layout (std140)
+ * - pp_gpu_resources.h — FBO, texture, and UBO handles
+ * - pp_shader_state.h — Shader cache and compilation state
+ * - pp_exposure_readback.h — Async GPU readback for AE/histogram
  */
 
 #ifndef POSTPROCESS_H
@@ -16,33 +23,19 @@
 #include "effects/fx_lut3d.h"
 #include "effects/fx_lut_viz.h"
 #include "effects/fx_motion_blur.h"
-#include "gl_common.h"
 #include "gpu_profiler.h"
-#include "shader.h"
+#include "pp_exposure_readback.h"
+#include "pp_gpu_resources.h"
+#include "pp_params.h"
+#include "pp_shader_state.h"
+#include "pp_ubo.h"
 #include <cglm/cglm.h>
-#include <cglm/types.h>
 
-/* --- DEFAULT VALUES --- */
-#define POSTPROCESS_HISTOGRAM_BUCKETS 256
-
-#define DEFAULT_VIGNETTE_INTENSITY 0.8F  /**< Default vignette strength. */
-#define DEFAULT_VIGNETTE_SMOOTHNESS 0.5F /**< Default vignette falloff. */
-#define DEFAULT_VIGNETTE_ROUNDNESS 1.0F  /**< Default vignette shape. */
-#define DEFAULT_GRAIN_INTENSITY 0.02F    /**< Default film grain strength. */
-#define DEFAULT_GRAIN_SHADOWS_MAX 0.09F
-#define DEFAULT_GRAIN_HIGHLIGHTS_MIN 0.5F
-#define DEFAULT_GRAIN_TEXEL_SIZE 1.0F
-#define DEFAULT_EXPOSURE 1.00F
-#define DEFAULT_CHROM_ABBR_STRENGTH 0.005F
+/* --- FX-specific DEFAULT VALUES (owned by PostProcess init) --- */
 #define DEFAULT_BLOOM_INTENSITY 0.0F
 #define DEFAULT_BLOOM_THRESHOLD 1.0F
 #define DEFAULT_BLOOM_SOFT_THRESHOLD 0.5F
 #define DEFAULT_BLOOM_RADIUS 1.0F
-
-/* FXAA Defaults */
-#define DEFAULT_FXAA_SUBPIX 0.75F
-#define DEFAULT_FXAA_EDGE_THRESHOLD 0.125F
-#define DEFAULT_FXAA_EDGE_THRESHOLD_MIN 0.063F
 
 /* DoF defaults */
 #define DEFAULT_DOF_FOCAL_DISTANCE 20.0F
@@ -50,28 +43,6 @@
 #define DEFAULT_DOF_BOKEH_SCALE 10.0F
 #define DEFAULT_DOF_ANAMORPHIC_RATIO \
 	1.0F /**< 1.0 = Spherical, 2.0 = Anamorphic */
-
-/* Banding defaults */
-#define DEFAULT_BANDING_LEVELS 256.0F /**< 8-bit simulation. */
-
-/* Fog Defaults */
-#define DEFAULT_FOG_DENSITY 0.0F
-#define DEFAULT_FOG_START 10.0F
-#define DEFAULT_FOG_HEIGHT_FALLOFF 0.1F
-#define DEFAULT_FOG_COLOR_R 0.5F
-#define DEFAULT_FOG_COLOR_G 0.6F
-#define DEFAULT_FOG_COLOR_B 0.7F
-
-/* White Balance Defaults */
-#define DEFAULT_WB_TEMP 6500.0F
-#define DEFAULT_WB_TINT 0.0F
-
-/* Filmic Defaults (Safe Neutrals) */
-#define DEFAULT_FILMIC_SLOPE 1.0F
-#define DEFAULT_FILMIC_TOE 0.0F
-#define DEFAULT_FILMIC_SHOULDER 0.0F
-#define DEFAULT_FILMIC_BLACK_CLIP 0.0F
-#define DEFAULT_FILMIC_WHITE_CLIP 0.0F
 
 /**
  * @enum PostProcessEffect
@@ -111,295 +82,6 @@ typedef enum {
 #define DEFAULT_ACTIVE_EFFECTS                                                \
 	((unsigned int)POSTFX_EXPOSURE | (unsigned int)POSTFX_COLOR_GRADING | \
 	 (unsigned int)POSTFX_FXAA)
-
-/**
- * @struct ColorGradingParams
- * @brief Unreal-style color grading parameters.
- */
-typedef struct {
-	float saturation; /**< 0.0 (Grayscale) to 2.0. */
-	float contrast;   /**< 0.0 to 2.0. */
-	float gamma;      /**< 0.0 to 2.0. */
-	float gain;       /**< 0.0 to 2.0. */
-	float offset;     /**< -1.0 to 1.0. */
-	float lift;       /**< 0.0 to 1.0. */
-} ColorGradingParams;
-
-/**
- * @struct VignetteParams
- * @brief Controls for the screen-edge darkening effect.
- */
-typedef struct {
-	float intensity;  /**< Strength of the outer shadow. */
-	float smoothness; /**< Falloff sharpness. */
-	float roundness;  /**< Circle vs Rect shape. */
-} VignetteParams;
-
-/**
- * @struct GrainParams
- * @brief Fine-grained controls for film noise.
- */
-typedef struct {
-	float intensity;            /**< Global grain strength. */
-	float intensity_shadows;    /**< Shadow-area scaling. */
-	float intensity_midtones;   /**< Mid-tone-area scaling. */
-	float intensity_highlights; /**< Highlight-area scaling. */
-	float shadows_max;          /**< Max luma for shadow grain. */
-	float highlights_min;       /**< Min luma for highlight grain. */
-	float texel_size;           /**< Particle scale. */
-} GrainParams;
-
-/**
- * @struct ExposureParams
- * @brief Manual exposure tuning.
- */
-typedef struct {
-	float exposure; /**< Stops of exposure compensation. */
-} ExposureParams;
-
-/**
- * @struct ChromAbberationParams
- * @brief Focal-length distortion simulation.
- */
-typedef struct {
-	float strength; /**< Offset distance for color channels. */
-} ChromAbberationParams;
-
-/**
- * @struct WhiteBalanceParams
- * @brief Temperature and tint correction.
- */
-typedef struct {
-	float temperature; /**< Target color temperature in Kelvin. */
-	float tint;        /**< Green-Magenta balance. */
-} WhiteBalanceParams;
-
-/**
- * @struct TonemapParams
- * @brief ACES-like filmic tonemapping curve parameters.
- */
-typedef struct {
-	float slope;      /**< Contrast slope. */
-	float toe;        /**< Dark compression. */
-	float shoulder;   /**< Bright compression. */
-	float black_clip; /**< Absolute black cutoff. */
-	float white_clip; /**< Absolute white cutoff. */
-} TonemapParams;
-
-/**
- * @struct FXAAParams
- * @brief Parameters for Fast Approximate Anti-Aliasing.
- */
-typedef struct {
-	float subpix;         /**< Sub-pixel quality (0.0 - 1.0). */
-	float edge_threshold; /**< Edge detection threshold (0.063 - 0.333). */
-	float edge_threshold_min; /**< Minimum edge threshold (0.0312 - 0.0833).
-	                           */
-} FXAAParams;
-
-/**
- * @enum BandingMode
- * @brief Styles of color quantization.
- */
-typedef enum {
-	BANDING_MODE_LINEAR = 0,     /**< Standard uniform (Posterization). */
-	BANDING_MODE_DITHERED = 1,   /**< Ordered dithering (Bayer). */
-	BANDING_MODE_PERCEPTUAL = 2, /**< Gamma-weighted. */
-	BANDING_MODE_CHANNEL = 3,    /**< RGB independent. */
-	BANDING_MODE_LUMINANCE = 4   /**< Grayscale quantization + Tint. */
-} BandingMode;
-
-/**
- * @struct BandingParams
- * @brief Controls for color banding/quantization.
- */
-typedef struct {
-	int32_t mode;           /**< Banding algorithm to use. */
-	float levels;           /**< Global quantization levels. */
-	float dither_strength;  /**< Intensity of the dither pattern. */
-	float perceptual_gamma; /**< Gamma curve for perceptual mode. */
-	vec3 channel_levels;    /**< Independent RGB levels. */
-} BandingParams;
-
-/**
- * @struct FogParams
- * @brief Depth-based atmospheric fog parameters.
- */
-typedef struct {
-	float density;        /**< Exponential fog density. */
-	float start;          /**< Near distance where fog begins. */
-	float height_falloff; /**< Vertical attenuation factor. */
-	float color[3];       /**< Fog color (linear RGB). */
-} FogParams;
-
-/**
- * @struct ShaderCacheEntry
- * @brief Cache entry for optimized shaders.
- */
-typedef struct {
-	unsigned int flags;
-	Shader* shader;
-} ShaderCacheEntry;
-
-enum { SHADER_CACHE_SIZE = 64 };
-
-/**
- * @struct PostProcessUBO
- * @brief Shared Uniform Buffer structure for shaders.
- * @note Must match `layout(std140)` in GLSL.
- */
-typedef struct {
-	uint32_t active_effects;
-	float time;
-	float screen_texel_size[2]; /**< 1.0 / vec2(width, height) */
-
-	/* Vignette */
-	float vignette_intensity;
-	float vignette_smoothness;
-	float vignette_roundness;
-	float _pad1;
-
-	/* Grain */
-	float grain_intensity;
-	float grain_intensity_shadows;
-	float grain_intensity_midtones;
-	float grain_intensity_highlights;
-	float grain_shadows_max;
-	float grain_highlights_min;
-	float grain_texel_size;
-	float _pad2;
-
-	/* Exposure */
-	float exposure_manual;
-	float _pad3[3];
-
-	/* Chrom Abbr */
-	float chrom_abbr_strength;
-	float _pad4[3];
-
-	/* White Balance */
-	float wb_temperature;
-	float wb_tint;
-	float _pad5[2];
-
-	/* Color Grading */
-	float grading_saturation;
-	float grading_contrast;
-	float grading_gamma;
-	float grading_gain;
-	float grading_offset;
-	float grading_lift;
-	float _pad6[2];
-
-	/* Tonemapper */
-	float tonemap_slope;
-	float tonemap_toe;
-	float tonemap_shoulder;
-	float tonemap_black_clip;
-	float tonemap_white_clip;
-	float _pad7[3];
-
-	/* Bloom */
-	float bloom_intensity;
-	float bloom_threshold;
-	float bloom_soft_threshold;
-	float bloom_radius;
-
-	/* DoF */
-	float dof_focal_distance;
-	float dof_focal_range;
-	float dof_bokeh_scale;
-	float dof_anamorphic_ratio;
-
-	/* Motion Blur */
-	float mb_intensity;
-	float mb_max_velocity;
-	int32_t mb_samples;
-	float _pad9;
-
-	/* FXAA */
-	float fxaa_quality_subpix;
-	float fxaa_quality_edge_threshold;
-	float fxaa_quality_edge_threshold_min;
-	float _pad10;
-
-	/* Banding (32 bytes) */
-	int32_t banding_mode;
-	float banding_levels;
-	float banding_dither_strength;
-	float banding_perceptual_gamma;
-	float banding_channel_levels[3];
-	float _pad11;
-
-	/* Fog (32 bytes) */
-	float fog_density;
-	float fog_start;
-	float fog_height_falloff;
-	float _pad12;
-	vec3 fog_color;
-	float _pad13;
-
-	/* 3D LUT (16 bytes) */
-	float lut3d_intensity;
-	float _pad14[3];
-} GL_UBO_ALIGNED PostProcessUBO;
-
-GL_ASSERT_UBO_ALIGNMENT(PostProcessUBO);
-
-/**
- * @struct PPGPUResources
- * @brief GPU handles for the post-processing pipeline (FBOs, textures, UBO).
- */
-typedef struct {
-	GLuint scene_fbo;          /**< Main HDR framebuffer. */
-	GLuint scene_color_tex;    /**< RGBA16F HDR texture. */
-	GLuint velocity_tex;       /**< RG16F Motion vector texture. */
-	GLuint scene_depth_tex;    /**< D32F Depth texture. */
-	GLuint scene_stencil_view; /**< Stencil view of depth texture. */
-	GLuint screen_quad_vao;    /**< Shared quad for passes. */
-	GLuint screen_quad_vbo;    /**< Quad vertices. */
-	GLuint settings_ubo;       /**< GPU buffer for parameters. */
-	GLuint dummy_black_tex;    /**< Fallback texture. */
-	GLuint dummy_uint_tex;     /**< Fallback unsigned-int texture. */
-} PPGPUResources;
-
-/**
- * @struct PPShaderState
- * @brief Shader management state for the optimized uber-shader pipeline.
- */
-typedef struct {
-	Shader* postprocess_shader;  /**< Main Uber-shader. */
-	Shader* tile_max_shader;     /**< Motion blur helper. */
-	Shader* neighbor_max_shader; /**< Motion blur helper. */
-	bool is_optimized; /**< true if Uber-shader uses static preprocessor
-	                      flags. */
-	unsigned int
-	    compiled_flags; /**< Flags used for the current optimized shader. */
-	ShaderCacheEntry shader_cache[SHADER_CACHE_SIZE];
-	int shader_cache_count;
-} PPShaderState;
-
-/**
- * @struct PPExposureReadback
- * @brief Async GPU readback state for exposure and histogram.
- */
-typedef struct {
-	GLuint
-	    exposure_pbo[2]; /**< Pixel Buffer Object for mean luma readback. */
-	GLuint histogram_pbo[2];  /**< Pixel Buffer Object for luminance
-	                             histogram  readback. */
-	GLsync exposure_sync[2];  /**< Sync objects to avoid CPU stalls on
-	                             exposure  readback. */
-	GLsync histogram_sync[2]; /**< Sync objects to avoid CPU stalls on
-	                             histogram readback. */
-	float current_exposure;   /**< Cached exposure from GPU readback. */
-	float auto_threshold;     /**< Dynamic exposure target. */
-	int last_buckets[POSTPROCESS_HISTOGRAM_BUCKETS];
-	float last_min_lum;
-	float last_max_lum;
-	int last_histogram_updated;
-	uint64_t frame_count; /**< Internal frame counter for readback sync. */
-} PPExposureReadback;
 
 /**
  * @struct PostProcess
