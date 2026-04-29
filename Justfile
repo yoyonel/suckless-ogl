@@ -498,6 +498,14 @@ lint:
     @{{distrobox}} ruff check scripts/trace_analyze.py .github/workflows/scripts/test_trace_analyze.py
     @{{distrobox}} bash scripts/lint_shaders.sh
 
+# IWYU full scan (all src/*.c files — CI grade, ~2-3 min)
+iwyu:
+    @bash scripts/iwyu_check.sh --full --verbose {{build_dir}}
+
+# IWYU check on files changed vs a base ref (default: origin/master)
+iwyu-check base_ref="origin/master":
+    @BASE_REF={{base_ref}} bash scripts/iwyu_check.sh --changed {{build_dir}}
+
 # Lint shaders with strict SPIR-V validation (surfaces RenderDoc-class issues)
 lint-shaders-strict:
     @{{distrobox}} bash scripts/lint_shaders.sh --strict

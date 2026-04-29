@@ -59,6 +59,22 @@ jobs:
           make lint CONTAINER_RUN=""
           make lint-full CONTAINER_RUN=""
 
+      - name: IWYU Include Hygiene (advisory)
+        if: always()
+        continue-on-error: true
+        run: |
+          git config --global --add safe.directory '*'
+          if ! command -v include-what-you-use &>/dev/null; then
+            echo "⚠ IWYU not installed in CI image, skipping"
+            exit 0
+          fi
+          # Build compile_commands.json if not present
+          if [ ! -f build/compile_commands.json ]; then
+            cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G "Unix Makefiles"
+            cmake --build build -j"$(nproc)"
+          fi
+          bash scripts/iwyu_check.sh --full build
+
   # --- JOB 2 : TESTS, COUVERTURE ET CAPTURES VISUELLES (LENT) ---
   test-and-coverage:
     if: github.event.action != 'closed'

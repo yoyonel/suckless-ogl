@@ -46,3 +46,12 @@ repos:
         files: \.(c|h)$
         pass_filenames: false
         stages: [pre-push]
+
+    -   id: iwyu-check
+        name: iwyu-check
+        description: Check for unused includes (IWYU) on staged C files.
+        entry: bash scripts/iwyu_check.sh --staged
+        language: system
+        files: \.(c|h)$
+        pass_filenames: false
+        stages: [pre-push]

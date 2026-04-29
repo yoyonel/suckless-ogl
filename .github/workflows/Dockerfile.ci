@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     clang \
     llvm \
     clang-tidy \
+    iwyu \
     git \
     libgl1-mesa-dev \
     libglew-dev \
