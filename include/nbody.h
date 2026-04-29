@@ -100,7 +100,7 @@ typedef struct {
 	bool active;    /**< True if body hit the boundary this frame. */
 } NBodyImpact;
 
-typedef struct {
+typedef struct NBodySim {
 	NBodyParticle bodies[NBODY_MAX_BODIES]; /**< Array of bodies. */
 	int body_count;                         /**< Number of active bodies. */
 	float gravity;           /**< Gravitational constant G. */

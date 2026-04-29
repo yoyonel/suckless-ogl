@@ -1,6 +1,7 @@
 #include "light_probes.h"
 #include "mock_gl_standalone.h"
 #include "shader.h"
+#include "sphere_types.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>

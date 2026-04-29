@@ -10,6 +10,7 @@
 #include "mock_gl_standalone.h"
 
 /* Type-providing headers */
+#include "shader.h"
 #include "trail_renderer.h"
 #include "unity.h"
 #include <math.h>

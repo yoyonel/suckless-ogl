@@ -6,8 +6,9 @@
  * @brief Shader management state for the optimized uber-shader pipeline.
  */
 
-#include "shader.h"
 #include <stdbool.h>
+
+typedef struct Shader Shader;
 
 /**
  * @struct ShaderCacheEntry

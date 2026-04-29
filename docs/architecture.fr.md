@@ -159,6 +159,28 @@ Deux en-têtes de modules transportaient des includes transitifs inutiles, augme
 - **`env_manager.h`** : incluait `postprocess.h` alors qu'il n'utilise que `PostProcess*` dans les signatures de fonctions. Remplacé par une déclaration anticipée `typedef struct PostProcess PostProcess;`. L'include concret reste dans `env_manager.c` qui appelle `postprocess_set_exposure_target()`.
 - **`renderer.h`** : incluait 9 en-têtes projet (`action_notifier.h`, `camera.h`, `effect_benchmark.h`, `env_manager.h`, `gpu_profiler.h`, `gpu_profiler_ui.h`, `postprocess.h`, `scene.h`, `ui.h`) alors que `RenderContext` ne contient que des pointeurs. Tous remplacés par des déclarations anticipées. Seuls `<stdbool.h>` et `<stdint.h>` restent comme includes concrets. Le fichier `.c` inclut les en-têtes complets nécessaires.
 
+### Extension des déclarations anticipées (Phase 10)
+
+Passe systématique remplaçant `#include "shader.h"` (et autres includes pointeur-only) par `typedef struct X X;` dans 13 en-têtes supplémentaires. Les structs `Shader`, `NBodySim` et `SphereInstance` ont reçu des tags de struct explicites (auparavant anonymes) pour permettre la déclaration anticipée.
+
+| En-tête | Types déclarés | Notes |
+|---------|---------------|-------|
+| `effect_benchmark.h` | `PostProcess*`, `GPUProfiler*` | Supprime 2 includes lourds |
+| `trail_renderer.h` | `Shader*` | Conserve `nbody.h` pour la constante `NBODY_MAX_BODIES` |
+| `light_probes.h` | `Shader*`, `SphereInstance*` | Supprime 2 includes |
+| `skybox.h` | `Shader*` | |
+| `shockwave.h` | `Shader*` | |
+| `ui.h` | `Shader*` | Ajoute `gl_common.h` pour `GLuint` |
+| `pp_shader_state.h` | `Shader*` | |
+| `fx_bloom.h` | `Shader*` | |
+| `fx_dof.h` | `Shader*` | |
+| `fx_lut3d.h` | `Shader*` | |
+| `fx_lut_viz.h` | `Shader*` | Ajoute `<stdbool.h>` pour `bool` |
+| `fx_auto_exposure.h` | `Shader*` | |
+| `fx_motion_blur.h` | `Shader*` | |
+
+**Résultat** : 24 en-têtes utilisent désormais des déclarations anticipées (contre 6 avant cette passe). Chaque fichier `.c` correspondant ajoute l'`#include` complet nécessaire pour la définition concrète du type.
+
 ### Réduction du fan-out d'includes (app_input.c, app_ui.c)
 
 Les deux fichiers sources avec le plus haut fan-out d'includes ont été allégés en déplaçant la fonction pont `app_input_ctx_from_app()` vers `app.c` et en supprimant les includes inutilisés ou transitivement redondants :
@@ -230,8 +252,11 @@ Chaque module expose son interface via un en-tête dans `include/` avec le préf
 | `gpu_profiler.h` | 7 | En-tête de domaine |
 | `utils.h` | 7 | Utilitaires divers |
 | `renderer.h` | 0 | Déclarations anticipées uniquement ✅ |
+| `effect_benchmark.h` | 1 | Était 3 — décl. anticipées ✅ |
+| `light_probes.h` | 2 | Était 4 — décl. anticipées ✅ |
+| `fx_*.h` (effets) | 0–1 | Tous utilisent des décl. anticipées pour `Shader*` ✅ |
 
-**Principe** : les en-têtes agrégats (`app.h`, `scene.h`, `postprocess.h`) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5.
+**Principe** : les en-têtes agrégats (`app.h`, `scene.h`, `postprocess.h`) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5. **24 en-têtes** utilisent désormais des déclarations anticipées.
 
 ### Couverture de test (LLVM-Cov, avril 2026)
 

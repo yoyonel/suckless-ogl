@@ -96,7 +96,7 @@ digraph Architecture {
 The `App` struct (defined in `app.h`) remains the central state container. Most modules take a pointer to `App` as their first argument.
 
 To avoid cyclic dependencies:
-- Core struct definitions (`App`, `Camera`, `AsyncRequest`) use named structs instead of anonymous ones to support forward declarations.
+- Core struct definitions (`App`, `Camera`, `AsyncRequest`, `Shader`, `NBodySim`, `SphereInstance`) use named structs instead of anonymous ones to support forward declarations.
 - Module headers are included at the **end** of `app.h` to ensure they can see the full `App` definition if necessary (though they primarily use pointers).
 - Specialized source files (`.c`) include `app.h` and the required renderer headers directly.
 
@@ -199,6 +199,28 @@ Two module headers carried unnecessary transitive includes, increasing coupling 
 - **`env_manager.h`**: Previously included `postprocess.h` even though it only uses `PostProcess*` in function signatures. Replaced with a forward declaration `typedef struct PostProcess PostProcess;`. The concrete include stays in `env_manager.c` which calls `postprocess_set_exposure_target()`.
 - **`renderer.h`**: Previously included 9 project headers (`action_notifier.h`, `camera.h`, `effect_benchmark.h`, `env_manager.h`, `gpu_profiler.h`, `gpu_profiler_ui.h`, `postprocess.h`, `scene.h`, `ui.h`) even though `RenderContext` holds only pointers. All replaced with forward declarations. Only `<stdbool.h>` and `<stdint.h>` remain as concrete includes. The `.c` file includes the full headers it needs.
 
+### Extended Forward Declarations (Phase 10)
+
+Systematic pass replacing `#include "shader.h"` (and other pointer-only includes) with `typedef struct X X;` across 13 additional headers. The `Shader`, `NBodySim`, and `SphereInstance` structs received explicit struct tags (previously anonymous) to enable forward-declaration.
+
+| Header | Forward-declared types | Notes |
+|--------|----------------------|-------|
+| `effect_benchmark.h` | `PostProcess*`, `GPUProfiler*` | Removes 2 heavy includes |
+| `trail_renderer.h` | `Shader*` | Keeps `nbody.h` for `NBODY_MAX_BODIES` constant |
+| `light_probes.h` | `Shader*`, `SphereInstance*` | Removes 2 includes |
+| `skybox.h` | `Shader*` | |
+| `shockwave.h` | `Shader*` | |
+| `ui.h` | `Shader*` | Adds `gl_common.h` for `GLuint` |
+| `pp_shader_state.h` | `Shader*` | |
+| `fx_bloom.h` | `Shader*` | |
+| `fx_dof.h` | `Shader*` | |
+| `fx_lut3d.h` | `Shader*` | |
+| `fx_lut_viz.h` | `Shader*` | Adds `<stdbool.h>` for `bool` |
+| `fx_auto_exposure.h` | `Shader*` | |
+| `fx_motion_blur.h` | `Shader*` | |
+
+**Result**: 24 headers now use forward declarations (was 6 before this pass). Each corresponding `.c` file adds the full `#include` it needs for the concrete type definition.
+
 ### Include Fan-Out Reduction (app_input.c, app_ui.c)
 
 The two highest fan-out source files were trimmed by moving the `app_input_ctx_from_app()` bridge function to `app.c` and removing unused/transitively-redundant includes:
@@ -263,8 +285,11 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 | `gpu_profiler.h` | 7 | Domain header |
 | `utils.h` | 7 | Utility grab-bag |
 | `renderer.h` | 0 | Forward-decl only ✅ |
+| `effect_benchmark.h` | 1 | Was 3 — forward-decl ✅ |
+| `light_probes.h` | 2 | Was 4 — forward-decl ✅ |
+| `fx_*.h` (effects) | 0–1 | All use forward-decl for `Shader*` ✅ |
 
-**Principle**: aggregate headers (`app.h`, `scene.h`, `postprocess.h`) naturally have high fan-out. Leaf module headers should stay ≤ 5.
+**Principle**: aggregate headers (`app.h`, `scene.h`, `postprocess.h`) naturally have high fan-out. Leaf module headers should stay ≤ 5. **24 headers** now use forward declarations.
 
 ### Test Coverage (LLVM-Cov, April 2026)
 

@@ -2,10 +2,11 @@
 #define LIGHT_PROBES_H
 
 #include "sh_math.h"
-#include "shader.h"
-#include "sphere_types.h"
 #include <cglm/cglm.h>
 #include <pthread.h>
+
+typedef struct Shader Shader;
+typedef struct SphereInstance SphereInstance;
 
 /** @brief Number of 3D textures used for packing SH coefficients (7 = 28
  * channels for 9 L2 coeffs) */

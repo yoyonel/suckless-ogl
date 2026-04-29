@@ -7,6 +7,7 @@
 #include "profiler.h"
 #include "render_utils.h"
 #include "shader.h"
+#include "sphere_types.h"
 #include "utils.h"
 #include <float.h>
 #include <math.h>

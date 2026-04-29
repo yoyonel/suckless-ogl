@@ -2,7 +2,7 @@
 #define FX_LUT3D_H
 
 #include "gl_common.h"
-#include "shader.h"
+typedef struct Shader Shader;
 
 /**
  * @struct LUT3DParams
