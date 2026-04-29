@@ -654,6 +654,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#header-dependency-cleanup-env_managerh-rendererh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Dependency Cleanup (env_manager.h, renderer.h)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3497,6 +3508,13 @@
 <li>This eliminates the bidirectional dependency: <code>postprocess.h</code> → <code>fx_*.h</code> (for struct embedding) remains, but <code>fx_*.c</code> → <code>postprocess.h</code> is removed.</li>
 <li>All effects are now fully migrated: <strong>bloom</strong>, <strong>DoF</strong>, <strong>auto-exposure</strong>, <strong>motion blur</strong>, <strong>LUT 3D</strong>, and <strong>LUT viz</strong>. No effect source file includes <code>postprocess.h</code> anymore.</li>
 </ul>
+<h3 id="header-dependency-cleanup-env_managerh-rendererh">Header Dependency Cleanup (env_manager.h, renderer.h)<a class="headerlink" href="#header-dependency-cleanup-env_managerh-rendererh" title="Permanent link">¶</a></h3>
+<p>Two module headers carried unnecessary transitive includes, increasing coupling and recompilation cost:</p>
+<ul>
+<li><strong><code>env_manager.h</code></strong>: Previously included <code>postprocess.h</code> even though it only uses <code>PostProcess*</code> in function signatures. Replaced with a forward declaration <code>typedef struct PostProcess PostProcess;</code>. The concrete include stays in <code>env_manager.c</code> which calls <code>postprocess_set_exposure_target()</code>.</li>
+<li><strong><code>renderer.h</code></strong>: Previously included 9 project headers (<code>action_notifier.h</code>, <code>camera.h</code>, <code>effect_benchmark.h</code>, <code>env_manager.h</code>, <code>gpu_profiler.h</code>, <code>gpu_profiler_ui.h</code>, <code>postprocess.h</code>, <code>scene.h</code>, <code>ui.h</code>) even though <code>RenderContext</code> holds only pointers. All replaced with forward declarations. Only <code>&lt;stdbool.h&gt;</code> and <code>&lt;stdint.h&gt;</code> remain as concrete includes. The <code>.c</code> file includes the full headers it needs.</li>
+</ul>
+<p><strong>Principle</strong>: A header that only uses a type through a pointer or reference should forward-declare that type, not include its full definition. This reduces include fan-out and speeds up incremental builds.</p>
 <h2 id="build-system">Build System<a class="headerlink" href="#build-system" title="Permanent link">¶</a></h2>
 <p>The <code>CMakeLists.txt</code> has been updated to include the new source files. The <code>app</code> executable and <code>test_app</code> integration test both link against the new modular structure.</p>
 <h2 id="performance-impact">Performance Impact<a class="headerlink" href="#performance-impact" title="Permanent link">¶</a></h2>
@@ -3524,7 +3542,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 28, 2026 21:55:28 UTC">April 28, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 29, 2026 07:16:47 UTC">April 29, 2026</span>
   </span>
 
     
