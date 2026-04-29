@@ -216,3 +216,150 @@ The `CMakeLists.txt` has been updated to include the new source files. The `app`
 
 - **Compilation**: Parallel compilation is now more effective as changes to UI don't require re-compiling the IBL logic.
 - **Runtime**: Zero overhead, as functions are simply moved into separate translation units. Inlining is still possible for performance-critical functions if they were moved to headers (though not currently required).
+
+## Metrics & Health
+
+> Last updated: April 2026 (Phase 10 — Architecture Deepening V)
+
+### Codebase Size
+
+| Category | Files | Total LOC |
+|----------|------:|----------:|
+| Sources (`src/*.c`) | 66 | 20 556 |
+| Headers (`include/*.h`) | 87 | 7 839 |
+| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Shaders (`shaders/`) | 60 | — |
+
+### LOC per Module (top 15)
+
+| Module | LOC | Notes |
+|--------|----:|-------|
+| `postprocess.c` | 1 634 | Legacy monolith — split into 6 TUs (see PostProcess TU Split) |
+| `app_ui.c` | 1 317 | UI rendering + layout data (privatized) |
+| `app_input.c` | 925 | Keyboard/mouse input dispatch |
+| `ui.c` | 879 | Dear ImGui integration |
+| `shader.c` | 870 | Shader compilation & linking |
+| `light_probes.c` | 752 | Light probe grid |
+| `postprocess_presets.c` | 525 | Preset definitions |
+| `scene_render.c` | 494 | Scene draw calls |
+| `postprocess_input.c` | 486 | Post-process keyboard controls |
+| `nbody.c` | 486 | N-body simulation (CPU + compute) |
+| `scene_init.c` | 476 | Scene resource creation |
+| `app.c` | 474 | Orchestrator (main loop) |
+| `billboard_sorting.c` | 472 | Billboard depth sort |
+| `ibl_coordinator.c` | 443 | IBL state machine |
+| `async_loader.c` | 422 | Async HDR loading |
+
+**Guideline**: modules > 500 LOC are candidates for further decomposition.
+
+### Header Include Fan-Out
+
+| Header | #includes | Status |
+|--------|----------:|--------|
+| `scene.h` | 14 | Aggregate — expected |
+| `app.h` | 13 | Reduced from 22 (Phase 3) |
+| `postprocess.h` | 11 | Aggregate — expected |
+| `app_profiling.h` | 7 | Sub-struct — acceptable |
+| `gpu_profiler.h` | 7 | Domain header |
+| `utils.h` | 7 | Utility grab-bag |
+| `renderer.h` | 0 | Forward-decl only ✅ |
+
+**Principle**: aggregate headers (`app.h`, `scene.h`, `postprocess.h`) naturally have high fan-out. Leaf module headers should stay ≤ 5.
+
+### Test Coverage (LLVM-Cov, April 2026)
+
+| Metric | Value | Target |
+|--------|------:|-------:|
+| Lines | 66.6% | ≥ 78% |
+| Functions | 83.1% | ≥ 85% |
+| Branches | 53.6% | ≥ 50% ✅ |
+
+68 tests pass (unit + integration, CTest).
+
+## Include-Dependency Graph
+
+Top-level module dependencies (project headers only, excludes system and vendor headers):
+
+```mermaid
+graph TD
+    classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+    classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+
+    APP[app.h]:::aggregate
+    SCENE[scene.h]:::aggregate
+    PP[postprocess.h]:::aggregate
+    REND[renderer.h]:::leaf
+
+    %% App sub-structs
+    APP_PROF[app_profiling.h]:::substruct
+    APP_INP[app_input_state.h]:::substruct
+    APP_WIN[app_window.h]:::substruct
+    APP_UI[app_ui.h]:::substruct
+
+    %% Scene sub-structs
+    SC_GPU[scene_gpu_resources.h]:::substruct
+    SC_SH[scene_shaders.h]:::substruct
+    SC_CFG[scene_config.h]:::substruct
+    SC_VIS[scene_visuals.h]:::substruct
+    SC_SIM[scene_simulation.h]:::substruct
+    SC_LIT[scene_lighting.h]:::substruct
+
+    %% PostProcess sub-headers
+    PP_PAR[pp_params.h]:::substruct
+    PP_GPU[pp_gpu_resources.h]:::substruct
+    PP_SHD[pp_shader_state.h]:::substruct
+    PP_RDB[pp_exposure_readback.h]:::substruct
+
+    %% Effects
+    FX_BL[fx_bloom.h]:::effect
+    FX_DOF[fx_dof.h]:::effect
+    FX_AE[fx_auto_exposure.h]:::effect
+    FX_MB[fx_motion_blur.h]:::effect
+    FX_LUT[fx_lut3d.h]:::effect
+    EC[effect_context.h]:::effect
+
+    %% App → direct deps
+    APP --> SCENE
+    APP --> PP
+    APP --> APP_UI
+    APP --> APP_WIN
+
+    %% App sub-structs (owned, not included by app.h)
+    APP -.->|"owned"| APP_PROF
+    APP -.->|"owned"| APP_INP
+
+    %% Scene → sub-structs
+    SCENE --> SC_GPU
+    SCENE --> SC_SH
+    SCENE --> SC_CFG
+    SCENE --> SC_VIS
+    SCENE --> SC_SIM
+    SCENE --> SC_LIT
+
+    %% PostProcess → sub-headers + effects
+    PP --> PP_PAR
+    PP --> PP_GPU
+    PP --> PP_SHD
+    PP --> PP_RDB
+    PP --> FX_BL
+    PP --> FX_DOF
+    PP --> FX_AE
+    PP --> FX_MB
+    PP --> FX_LUT
+
+    %% Effect decoupling
+    FX_BL -.->|"runtime"| EC
+    FX_DOF -.->|"runtime"| EC
+    FX_AE -.->|"runtime"| EC
+    FX_MB -.->|"runtime"| EC
+    FX_LUT -.->|"runtime"| EC
+
+    %% Renderer uses forward-decls only
+    REND -.->|"fwd-decl"| APP
+    REND -.->|"fwd-decl"| SCENE
+    REND -.->|"fwd-decl"| PP
+```
+
+**Legend**: Solid arrows = `#include` dependency. Dashed arrows = forward declaration or runtime-only dependency. Colors: 🟡 aggregate, 🔵 sub-struct, 🟢 leaf, 🟣 effect.

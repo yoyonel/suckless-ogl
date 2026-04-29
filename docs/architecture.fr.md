@@ -183,3 +183,150 @@ target_sources(app PRIVATE
 ```
 
 Chaque module expose son interface via un en-tête dans `include/` avec le préfixe correspondant (`app_ui.h`, `app_input.h`, etc.).
+
+## Métriques & Santé
+
+> Dernière mise à jour : avril 2026 (Phase 10 — Architecture Deepening V)
+
+### Taille du codebase
+
+| Catégorie | Fichiers | LOC total |
+|-----------|----------:|----------:|
+| Sources (`src/*.c`) | 66 | 20 556 |
+| En-têtes (`include/*.h`) | 87 | 7 839 |
+| Tests (`tests/test_*.c`) | 69 | 12 666 |
+| Shaders (`shaders/`) | 60 | — |
+
+### LOC par module (top 15)
+
+| Module | LOC | Notes |
+|--------|----:|-------|
+| `postprocess.c` | 1 634 | Monolithe historique — découpé en 6 UT (voir Découpage PostProcess) |
+| `app_ui.c` | 1 317 | Rendu UI + données de layout (privatisées) |
+| `app_input.c` | 925 | Dispatch entrées clavier/souris |
+| `ui.c` | 879 | Intégration Dear ImGui |
+| `shader.c` | 870 | Compilation & édition de liens shaders |
+| `light_probes.c` | 752 | Grille de sondes lumineuses |
+| `postprocess_presets.c` | 525 | Définitions de presets |
+| `scene_render.c` | 494 | Appels de rendu de la scène |
+| `postprocess_input.c` | 486 | Contrôles clavier post-process |
+| `nbody.c` | 486 | Simulation N-body (CPU + compute) |
+| `scene_init.c` | 476 | Création des ressources scène |
+| `app.c` | 474 | Orchestrateur (boucle principale) |
+| `billboard_sorting.c` | 472 | Tri en profondeur des billboards |
+| `ibl_coordinator.c` | 443 | Machine d'état IBL |
+| `async_loader.c` | 422 | Chargement HDR asynchrone |
+
+**Règle** : les modules > 500 LOC sont candidats à une décomposition ultérieure.
+
+### Fan-out d'includes des en-têtes
+
+| En-tête | #includes | Statut |
+|---------|----------:|--------|
+| `scene.h` | 14 | Agrégat — attendu |
+| `app.h` | 13 | Réduit de 22 (Phase 3) |
+| `postprocess.h` | 11 | Agrégat — attendu |
+| `app_profiling.h` | 7 | Sous-struct — acceptable |
+| `gpu_profiler.h` | 7 | En-tête de domaine |
+| `utils.h` | 7 | Utilitaires divers |
+| `renderer.h` | 0 | Déclarations anticipées uniquement ✅ |
+
+**Principe** : les en-têtes agrégats (`app.h`, `scene.h`, `postprocess.h`) ont naturellement un fan-out élevé. Les en-têtes de modules feuilles doivent rester ≤ 5.
+
+### Couverture de test (LLVM-Cov, avril 2026)
+
+| Métrique | Valeur | Cible |
+|----------|-------:|------:|
+| Lignes | 66,6 % | ≥ 78 % |
+| Fonctions | 83,1 % | ≥ 85 % |
+| Branches | 53,6 % | ≥ 50 % ✅ |
+
+68 tests passent (unitaires + intégration, CTest).
+
+## Graphe de dépendances include
+
+Dépendances des modules principaux (en-têtes projet uniquement, hors système et vendeur) :
+
+```mermaid
+graph TD
+    classDef aggregate fill:#1a1b26,stroke:#e0af68,color:#e0af68,stroke-width:2
+    classDef substruct fill:#1a1b26,stroke:#7aa2f7,color:#7aa2f7
+    classDef leaf fill:#1a1b26,stroke:#9ece6a,color:#9ece6a
+    classDef effect fill:#1a1b26,stroke:#bb9af7,color:#bb9af7
+
+    APP[app.h]:::aggregate
+    SCENE[scene.h]:::aggregate
+    PP[postprocess.h]:::aggregate
+    REND[renderer.h]:::leaf
+
+    %% Sous-structs App
+    APP_PROF[app_profiling.h]:::substruct
+    APP_INP[app_input_state.h]:::substruct
+    APP_WIN[app_window.h]:::substruct
+    APP_UI[app_ui.h]:::substruct
+
+    %% Sous-structs Scene
+    SC_GPU[scene_gpu_resources.h]:::substruct
+    SC_SH[scene_shaders.h]:::substruct
+    SC_CFG[scene_config.h]:::substruct
+    SC_VIS[scene_visuals.h]:::substruct
+    SC_SIM[scene_simulation.h]:::substruct
+    SC_LIT[scene_lighting.h]:::substruct
+
+    %% Sous-headers PostProcess
+    PP_PAR[pp_params.h]:::substruct
+    PP_GPU[pp_gpu_resources.h]:::substruct
+    PP_SHD[pp_shader_state.h]:::substruct
+    PP_RDB[pp_exposure_readback.h]:::substruct
+
+    %% Effets
+    FX_BL[fx_bloom.h]:::effect
+    FX_DOF[fx_dof.h]:::effect
+    FX_AE[fx_auto_exposure.h]:::effect
+    FX_MB[fx_motion_blur.h]:::effect
+    FX_LUT[fx_lut3d.h]:::effect
+    EC[effect_context.h]:::effect
+
+    %% App → dépendances directes
+    APP --> SCENE
+    APP --> PP
+    APP --> APP_UI
+    APP --> APP_WIN
+
+    %% Sous-structs App (possédées, pas incluses par app.h)
+    APP -.->|"possédée"| APP_PROF
+    APP -.->|"possédée"| APP_INP
+
+    %% Scene → sous-structs
+    SCENE --> SC_GPU
+    SCENE --> SC_SH
+    SCENE --> SC_CFG
+    SCENE --> SC_VIS
+    SCENE --> SC_SIM
+    SCENE --> SC_LIT
+
+    %% PostProcess → sous-headers + effets
+    PP --> PP_PAR
+    PP --> PP_GPU
+    PP --> PP_SHD
+    PP --> PP_RDB
+    PP --> FX_BL
+    PP --> FX_DOF
+    PP --> FX_AE
+    PP --> FX_MB
+    PP --> FX_LUT
+
+    %% Découplage des effets
+    FX_BL -.->|"runtime"| EC
+    FX_DOF -.->|"runtime"| EC
+    FX_AE -.->|"runtime"| EC
+    FX_MB -.->|"runtime"| EC
+    FX_LUT -.->|"runtime"| EC
+
+    %% Renderer utilise uniquement des déclarations anticipées
+    REND -.->|"décl. anticipée"| APP
+    REND -.->|"décl. anticipée"| SCENE
+    REND -.->|"décl. anticipée"| PP
+```
+
+**Légende** : Flèches pleines = dépendance `#include`. Flèches pointillées = déclaration anticipée ou dépendance runtime. Couleurs : 🟡 agrégat, 🔵 sous-struct, 🟢 feuille, 🟣 effet.
