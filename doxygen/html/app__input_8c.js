@@ -2,7 +2,6 @@ var app__input_8c =
 [
     [ "app_close_help", "app__input_8c.html#aa0f674c7071ab2a2fdbeb3353204988d", null ],
     [ "app_handle_env_input", "app__input_8c.html#a9d0f19f7bfea020e20384f68ca1c0c41", null ],
-    [ "app_input_ctx_from_app", "app__input_8c.html#ae5e95c544c0f3c70a62058a628796dac", null ],
     [ "app_save_png_frame", "app__input_8c.html#a2baeec3c1c8b4b797122ee40faa97e59", null ],
     [ "app_toggle_fullscreen", "app__input_8c.html#ade6689829860792608f4d1339c52a987", null ],
     [ "app_toggle_help", "app__input_8c.html#ad80b1c13102d8f4f88a8b0b11e27fef1", null ],

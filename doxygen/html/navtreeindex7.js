@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"scene__config_8h.html#aac88ebd5c5caa1b7a2710e32788e69c1aee17ae6b7b49d12a0a1c326ce4b4c7c1":[6,0,2,56,3,3],
 "scene__config_8h_source.html":[6,0,2,56],
 "scene__gpu__resources_8h.html":[6,0,2,57],
 "scene__gpu__resources_8h_source.html":[6,0,2,57],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "ssbo__rendering_8h.html#aae9fda89e7e2fe2746ac18af43fc988f":[6,0,2,70,3],
 "ssbo__rendering_8h_source.html":[6,0,2,70],
 "stb__image__impl_8c.html":[6,0,4,57],
-"stb__image__impl_8c.html#a04faac13c8df95cac0a8583cc2e4eef9":[6,0,4,57,5],
-"stb__image__impl_8c.html#a05a9b1bc74a9e2aeac2e844c24939215":[6,0,4,57,6]
+"stb__image__impl_8c.html#a04faac13c8df95cac0a8583cc2e4eef9":[6,0,4,57,5]
 };

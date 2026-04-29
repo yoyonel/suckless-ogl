@@ -308,6 +308,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2baeec3c1c8b4b797122ee40faa97e59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">app_save_png_frame</a> (<a class="el" href="structAppInputContext.html">AppInputContext</a> *ctx, const char *filename)</td></tr>
 <tr class="memdesc:a2baeec3c1c8b4b797122ee40faa97e59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures the current framebuffer and saves it as a PNG file.  <a href="app__input_8h.html#a2baeec3c1c8b4b797122ee40faa97e59">More...</a><br /></td></tr>
 <tr class="separator:a2baeec3c1c8b4b797122ee40faa97e59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a39ad19162e3daedcb6b073cbf90de5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAppInputContext.html">AppInputContext</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="app__input_8h.html#a9a39ad19162e3daedcb6b073cbf90de5">app_input_ctx_from_app</a> (<a class="el" href="structApp.html">App</a> *app)</td></tr>
+<tr class="memdesc:a9a39ad19162e3daedcb6b073cbf90de5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an <a class="el" href="structAppInputContext.html" title="Focused context for application-level input handling.">AppInputContext</a> from the full <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> state.  <a href="app__input_8h.html#a9a39ad19162e3daedcb6b073cbf90de5">More...</a><br /></td></tr>
+<tr class="separator:a9a39ad19162e3daedcb6b073cbf90de5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User input orchestration and application state toggles. </p>
@@ -368,6 +371,27 @@ Here is the call graph for this function:</div>
 <div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="app__input_8h_a9d0f19f7bfea020e20384f68ca1c0c41_cgraph.svg" width="100%" height="470"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div>
+
+</div>
+</div>
+<a id="a9a39ad19162e3daedcb6b073cbf90de5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a39ad19162e3daedcb6b073cbf90de5">&#9670;&nbsp;</a></span>app_input_ctx_from_app()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAppInputContext.html">AppInputContext</a> app_input_ctx_from_app </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structApp.html">App</a> *&#160;</td>
+          <td class="paramname"><em>app</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructs an <a class="el" href="structAppInputContext.html" title="Focused context for application-level input handling.">AppInputContext</a> from the full <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> state. </p>
+<p>Bridges between the GLFW user-pointer (App*) and the decoupled input API (AppInputContext*). Defined in <a class="el" href="app_8c.html">app.c</a> to keep the heavy <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> sub-struct includes out of <a class="el" href="app__input_8c.html">app_input.c</a>. </p>
 
 </div>
 </div>

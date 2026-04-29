@@ -731,6 +731,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#reduction-du-fan-out-dincludes-app_inputc-app_uic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Réduction du fan-out d'includes (app_input.c, app_ui.c)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3631,6 +3642,12 @@
 <li><strong><code>env_manager.h</code></strong> : incluait <code>postprocess.h</code> alors qu'il n'utilise que <code>PostProcess*</code> dans les signatures de fonctions. Remplacé par une déclaration anticipée <code>typedef struct PostProcess PostProcess;</code>. L'include concret reste dans <code>env_manager.c</code> qui appelle <code>postprocess_set_exposure_target()</code>.</li>
 <li><strong><code>renderer.h</code></strong> : incluait 9 en-têtes projet (<code>action_notifier.h</code>, <code>camera.h</code>, <code>effect_benchmark.h</code>, <code>env_manager.h</code>, <code>gpu_profiler.h</code>, <code>gpu_profiler_ui.h</code>, <code>postprocess.h</code>, <code>scene.h</code>, <code>ui.h</code>) alors que <code>RenderContext</code> ne contient que des pointeurs. Tous remplacés par des déclarations anticipées. Seuls <code>&lt;stdbool.h&gt;</code> et <code>&lt;stdint.h&gt;</code> restent comme includes concrets. Le fichier <code>.c</code> inclut les en-têtes complets nécessaires.</li>
 </ul>
+<h3 id="reduction-du-fan-out-dincludes-app_inputc-app_uic">Réduction du fan-out d'includes (app_input.c, app_ui.c)<a class="headerlink" href="#reduction-du-fan-out-dincludes-app_inputc-app_uic" title="Permanent link">¶</a></h3>
+<p>Les deux fichiers sources avec le plus haut fan-out d'includes ont été allégés en déplaçant la fonction pont <code>app_input_ctx_from_app()</code> vers <code>app.c</code> et en supprimant les includes inutilisés ou transitivement redondants :</p>
+<ul>
+<li><strong><code>app_input.c</code></strong> : 25 → 17 includes. La fonction pont était la seule raison d'inclure <code>app.h</code>, <code>app_profiling.h</code> et <code>app_input_state.h</code>. Son déplacement vers <code>app.c</code> (qui inclut déjà ces trois en-têtes) élimine le couplage. Suppressions additionnelles : <code>window.h</code> (jamais utilisé), <code>action_notifier.h</code>, <code>app_settings.h</code>, <code>nbody.h</code>, <code>glad/glad.h</code>, <code>GLFW/glfw3.h</code> (tous disponibles transitivement).</li>
+<li><strong><code>app_ui.c</code></strong> : 23 → 16 includes. Suppression de <code>stb_image.h</code> (aucun appel <code>stbi_*</code>), <code>&lt;stdio.h&gt;</code> et <code>&lt;stdlib.h&gt;</code> (aucune utilisation directe), plus 4 en-têtes transitivement redondants (<code>action_notifier.h</code>, <code>adaptive_sampler.h</code>, <code>app_binding.h</code>, <code>app_settings.h</code>).</li>
+</ul>
 <p><strong>Principe</strong> : un en-tête qui n'utilise un type qu'à travers un pointeur ou une référence doit faire une déclaration anticipée de ce type, pas inclure sa définition complète. Cela réduit la propagation des includes et accélère les builds incrémentaux.</p>
 <h2 id="configuration-cmake">Configuration CMake<a class="headerlink" href="#configuration-cmake" title="Permanent link">¶</a></h2>
 <p>Les modules sont compilés séparément et liés à l'exécutable principal :</p>
@@ -3663,7 +3680,7 @@
     <span class="md-icon" title="Dernière mise à jour">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 11:14:21 UTC">29 avril 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="29 avril 2026 12:27:56 UTC">29 avril 2026</span>
   </span>
 
     

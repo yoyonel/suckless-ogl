@@ -1,5 +1,6 @@
 var NAVTREEINDEX12 =
 {
+"structUIVertex.html#a3853aa5e70519a69ac9da0c419ab0527":[5,0,116,3],
 "structUIVertex.html#a3f24b6e8f7adda62eaac1c5c588c6f3d":[5,0,116,1],
 "structUIVertex.html#a41765e1cc6c021cf6bf8aeec59303f68":[5,0,116,4],
 "structUIVertex.html#a4fee68b2deb88e7dafe92823c555c22e":[5,0,116,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX12 =
 "utils_8h_source.html":[6,0,2,77],
 "window_8c.html":[6,0,4,64],
 "window_8c.html#a128a5d8ec24e20109240171317add4f8":[6,0,4,64,0],
-"window_8c.html#ad31b45f175d070f99c1a82cb93b2c82d":[6,0,4,64,1],
-"window_8h.html":[6,0,2,78]
+"window_8c.html#ad31b45f175d070f99c1a82cb93b2c82d":[6,0,4,64,1]
 };

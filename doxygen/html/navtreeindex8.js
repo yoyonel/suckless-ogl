@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"stb__image__impl_8c.html#a05a9b1bc74a9e2aeac2e844c24939215":[6,0,4,57,6],
 "stb__image__impl_8c.html#a07af50300e5cc077c6b31a4d2e8af32a":[6,0,4,57,3],
 "stb__image__impl_8c.html#a18372412ad2fc3ce1e3240b3cf0efe78":[6,0,4,57,0],
 "stb__image__impl_8c.html#a357d3564409e68f1b694e06f7beeca7e":[6,0,4,57,9],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "structCamera.html#aefce35f5e3696809239d092200df58f6":[5,0,21,17],
 "structCamera.html#af6afe26877fcc97ec78392684a418e70":[5,0,21,10],
 "structCamera.html#aff4fd1aa62994840f7742b698f15313e":[5,0,21,28],
-"structChromAbberationParams.html":[5,0,22],
-"structChromAbberationParams.html#ad26bbe4ea7605eb2a107043f11ebfd6b":[5,0,22,0]
+"structChromAbberationParams.html":[5,0,22]
 };
