@@ -72,7 +72,7 @@ var searchData=
   ['billboard_5fubo_233',['billboard_ubo',['../structSceneGPUResources.html#a606a942238754b65ac83b0b165e1f9d0',1,'SceneGPUResources']]],
   ['billboard_5fubo_2eglsl_234',['billboard_ubo.glsl',['../billboard__ubo_8glsl.html',1,'']]],
   ['billboard_5fubo_5fptr_235',['billboard_ubo_ptr',['../structSceneGPUResources.html#a820b0b30713f21f2401282caca849acd',1,'SceneGPUResources']]],
-  ['billboard_5funiforms_236',['billboard_uniforms',['../structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a',1,'Scene']]],
+  ['billboard_5funiforms_236',['billboard_uniforms',['../structSceneShaders.html#a8836da2467d808b6bfef8d74f49224c2',1,'SceneShaders']]],
   ['billboardgroup_237',['BillboardGroup',['../structBillboardGroup.html',1,'']]],
   ['billboardsortentry_238',['BillboardSortEntry',['../structBillboardSortEntry.html',1,'']]],
   ['billboardsorter_239',['BillboardSorter',['../structBillboardSorter.html',1,'']]],

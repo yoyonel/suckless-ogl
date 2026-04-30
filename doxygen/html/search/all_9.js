@@ -76,7 +76,7 @@ var searchData=
   ['instanced_5fgroup_5fupdate_1067',['instanced_group_update',['../instanced__rendering_8c.html#a5a080d716887f7858b0d9b745b078448',1,'instanced_group_update(InstancedGroup *group, const SphereInstance *data, int count):&#160;instanced_rendering.c'],['../instanced__rendering_8h.html#a5a080d716887f7858b0d9b745b078448',1,'instanced_group_update(InstancedGroup *group, const SphereInstance *data, int count):&#160;instanced_rendering.c']]],
   ['instanced_5frendering_2ec_1068',['instanced_rendering.c',['../instanced__rendering_8c.html',1,'']]],
   ['instanced_5frendering_2eh_1069',['instanced_rendering.h',['../instanced__rendering_8h.html',1,'']]],
-  ['instanced_5funiforms_1070',['instanced_uniforms',['../structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f',1,'Scene']]],
+  ['instanced_5funiforms_1070',['instanced_uniforms',['../structSceneShaders.html#a746306b7bea3bae54bb2ba92933babb5',1,'SceneShaders']]],
   ['instancedata_1071',['InstanceData',['../structInstanceData.html',1,'']]],
   ['instancedgroup_1072',['InstancedGroup',['../structInstancedGroup.html',1,'']]],
   ['instanceduniforms_1073',['InstancedUniforms',['../structInstancedUniforms.html',1,'']]],

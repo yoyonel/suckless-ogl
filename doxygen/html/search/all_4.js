@@ -18,7 +18,7 @@ var searchData=
   ['debug_5ftex_2evert_428',['debug_tex.vert',['../debug__tex_8vert.html',1,'']]],
   ['debug_5ftext_5fbuffer_5fsize_429',['DEBUG_TEXT_BUFFER_SIZE',['../app__ui__layout_8h.html#a726ca809ffd3d67ab4b8476646f26635ae3db8bdcc51e0d388cbd4e5f75acd4ba',1,'app_ui_layout.h']]],
   ['debug_5ftext_5fy_5foffset_430',['DEBUG_TEXT_Y_OFFSET',['../app__ui__layout_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e',1,'app_ui_layout.h']]],
-  ['debug_5funiforms_431',['debug_uniforms',['../structScene.html#a49fd2adaae51e86db305a341efab4fdb',1,'Scene']]],
+  ['debug_5funiforms_431',['debug_uniforms',['../structSceneShaders.html#a9129368623baae99bb86d84faeaeb7f8',1,'SceneShaders']]],
   ['debug_5fview_5fbits_432',['DEBUG_VIEW_BITS',['../effect__benchmark_8c.html#aad4decdb1046f72a12447643599656be',1,'effect_benchmark.c']]],
   ['debugmessageentry_433',['DebugMessageEntry',['../structDebugMessageEntry.html',1,'']]],
   ['debuguniforms_434',['DebugUniforms',['../structDebugUniforms.html',1,'']]],

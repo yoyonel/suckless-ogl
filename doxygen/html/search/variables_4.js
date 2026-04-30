@@ -8,7 +8,7 @@ var searchData=
   ['debug_5forange_5fcolor_3372',['DEBUG_ORANGE_COLOR',['../app__ui__layout_8h.html#ad1f3586315e20b83affb3ed2018dbaef',1,'app_ui_layout.h']]],
   ['debug_5fshader_3373',['debug_shader',['../structLightProbeGrid.html#a2604167e6ebc00c173389e37beb9edd8',1,'LightProbeGrid']]],
   ['debug_5ftext_5fy_5foffset_3374',['DEBUG_TEXT_Y_OFFSET',['../app__ui__layout_8h.html#ae527e2f8b8f74a9ae74728cf7e1eef0e',1,'app_ui_layout.h']]],
-  ['debug_5funiforms_3375',['debug_uniforms',['../structScene.html#a49fd2adaae51e86db305a341efab4fdb',1,'Scene']]],
+  ['debug_5funiforms_3375',['debug_uniforms',['../structSceneShaders.html#a9129368623baae99bb86d84faeaeb7f8',1,'SceneShaders']]],
   ['debug_5fview_5fbits_3376',['DEBUG_VIEW_BITS',['../effect__benchmark_8c.html#aad4decdb1046f72a12447643599656be',1,'effect_benchmark.c']]],
   ['decay_5ffactor_3377',['decay_factor',['../structFpsCounter.html#a34e1065e92b525c81d91b2f58bac1173',1,'FpsCounter']]],
   ['default_5fao_3378',['DEFAULT_AO',['../group__PBR.html#ga333d7e08b7c0e4275823e92f9182c455',1,'app_settings.h']]],

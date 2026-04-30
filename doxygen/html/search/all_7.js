@@ -105,7 +105,7 @@ var searchData=
   ['gp_5frow_5ftriggers_802',['GP_ROW_TRIGGERS',['../app__ui__layout_8h.html#abed82baf7f470b522273a3e37c24c600adbf18f5436b81d28ad2c6f48e591a8c6',1,'app_ui_layout.h']]],
   ['gp_5fsmall_5flabel_5fscale_803',['GP_SMALL_LABEL_SCALE',['../app__ui_8c.html#af6a4cd2b290e70b89a9b3ca96c6d8689',1,'app_ui.c']]],
   ['gp_5ftrigger_5fnorm_804',['GP_TRIGGER_NORM',['../app__ui_8c.html#a8913760ddb525fced3aebc3519c7c8a7',1,'app_ui.c']]],
-  ['gpu_805',['gpu',['../structScene.html#ad511438b54279a73e72946fbc844a0c3',1,'Scene::gpu()'],['../structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9',1,'PostProcess::gpu()'],['../structHybridTimer.html#a733adeac52db45de06419e84cf61c93e',1,'HybridTimer::gpu()']]],
+  ['gpu_805',['gpu',['../structScene.html#a9406b08b6e33eca3b04c34d3d388e190',1,'Scene::gpu()'],['../structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9',1,'PostProcess::gpu()'],['../structHybridTimer.html#a733adeac52db45de06419e84cf61c93e',1,'HybridTimer::gpu()']]],
   ['gpu_5fentry_5fsize_806',['GPU_ENTRY_SIZE',['../billboard__sorting_8c.html#a3a01d56be5ca4245c6ebd28f0b7458e6',1,'billboard_sorting.c']]],
   ['gpu_5fidentifier_5fraw_5fbuf_5fsize_807',['GPU_IDENTIFIER_RAW_BUF_SIZE',['../render__utils_8c.html#afa9be5679ab03d785820f2474c5ccc6ea088b803bc4a6432888162268cf640155',1,'render_utils.c']]],
   ['gpu_5fmeasure_5flog_808',['GPU_MEASURE_LOG',['../perf__timer_8h.html#abd41b4ab68073a6cbd6723d5899061dc',1,'perf_timer.h']]],

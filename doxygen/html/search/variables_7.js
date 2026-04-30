@@ -27,7 +27,7 @@ var searchData=
   ['gp_5flayout_5frows_3530',['GP_LAYOUT_ROWS',['../app__ui_8c.html#a31a731d480b2f7695594a443dc6a67db',1,'app_ui.c']]],
   ['gp_5fsmall_5flabel_5fscale_3531',['GP_SMALL_LABEL_SCALE',['../app__ui_8c.html#af6a4cd2b290e70b89a9b3ca96c6d8689',1,'app_ui.c']]],
   ['gp_5ftrigger_5fnorm_3532',['GP_TRIGGER_NORM',['../app__ui_8c.html#a8913760ddb525fced3aebc3519c7c8a7',1,'app_ui.c']]],
-  ['gpu_3533',['gpu',['../structHybridTimer.html#a733adeac52db45de06419e84cf61c93e',1,'HybridTimer::gpu()'],['../structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9',1,'PostProcess::gpu()'],['../structScene.html#ad511438b54279a73e72946fbc844a0c3',1,'Scene::gpu()']]],
+  ['gpu_3533',['gpu',['../structHybridTimer.html#a733adeac52db45de06419e84cf61c93e',1,'HybridTimer::gpu()'],['../structPostProcess.html#a1813de0e43098c83bdc497a1b23bdfb9',1,'PostProcess::gpu()'],['../structScene.html#a9406b08b6e33eca3b04c34d3d388e190',1,'Scene::gpu()']]],
   ['gpu_5fentry_5fsize_3534',['GPU_ENTRY_SIZE',['../billboard__sorting_8c.html#a3a01d56be5ca4245c6ebd28f0b7458e6',1,'billboard_sorting.c']]],
   ['gpu_5fprofiler_3535',['gpu_profiler',['../structPostProcess.html#acb108231128817d5e9f495a70df22f1b',1,'PostProcess::gpu_profiler()'],['../structAppProfiling.html#aec657f534af6d550357cb2185e5e99c8',1,'AppProfiling::gpu_profiler()']]],
   ['gpu_5fprofiler_5fauto_5fexposure_5fcolor_3536',['GPU_PROFILER_AUTO_EXPOSURE_COLOR',['../gpu__profiler_8h.html#af1f8369d455a6e5d2c482050201fcd1b',1,'gpu_profiler.h']]],

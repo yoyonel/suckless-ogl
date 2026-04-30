@@ -28,7 +28,7 @@ var searchData=
   ['instance_5fssbo_3652',['instance_ssbo',['../structBillboardSorter.html#a20b35b0a4e71456affb6ee75f77489c9',1,'BillboardSorter']]],
   ['instance_5fvbo_3653',['instance_vbo',['../structInstancedGroup.html#a72212d073a8f1139834b646f466750f4',1,'InstancedGroup::instance_vbo()'],['../structBillboardGroup.html#a423b20ae2e3c109e7b93b04338697e77',1,'BillboardGroup::instance_vbo()']]],
   ['instanced_5fgroup_3654',['instanced_group',['../structScene.html#ae7d6fc5a84cd03ad435946e8841cedad',1,'Scene']]],
-  ['instanced_5funiforms_3655',['instanced_uniforms',['../structScene.html#a24297c4f9eb1b50fcdb2496a41b26e0f',1,'Scene']]],
+  ['instanced_5funiforms_3655',['instanced_uniforms',['../structSceneShaders.html#a746306b7bea3bae54bb2ba92933babb5',1,'SceneShaders']]],
   ['intensity_3656',['intensity',['../structTrailNeonParams.html#ab8483aaa0f010e21a779433cafc5346f',1,'TrailNeonParams::intensity()'],['../structShockwaveEvent.html#a156ef98aeb245e8c44969210caf41e11',1,'ShockwaveEvent::intensity()'],['../structGrainParams.html#aa4897c87dbd8c4110503a4fb7d5304a6',1,'GrainParams::intensity()'],['../structVignetteParams.html#af9f66376e2484c96e86f2418e9885e8f',1,'VignetteParams::intensity()']]],
   ['intensity_5fhighlights_3657',['intensity_highlights',['../structGrainParams.html#a4bfc5e3c5127242d9eac2516bd39d8f7',1,'GrainParams']]],
   ['intensity_5fmidtones_3658',['intensity_midtones',['../structGrainParams.html#a5e968a3c61cdb03ea6d1751fdac683ce',1,'GrainParams']]],

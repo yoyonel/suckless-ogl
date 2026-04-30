@@ -258,14 +258,14 @@ $(document).ready(function(){initNavTree('structSceneShaders.html',''); initResi
 </div><!--header-->
 <div class="contents">
 
-<p>All shader pointers owned by the scene.  
+<p>All shader pointers and uniform caches owned by the scene.  
  <a href="structSceneShaders.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="scene__shaders_8h_source.html">scene_shaders.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for SceneShaders:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" frameborder="0" src="structSceneShaders__coll__graph.svg" width="160" height="275"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+<div class="center"><iframe scrolling="no" frameborder="0" src="structSceneShaders__coll__graph.svg" width="636" height="275"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
 </div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -281,10 +281,31 @@ Data Fields</h2></td></tr>
 <tr class="separator:aecc0cb5172b564e0024959dbdabcf0c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95784c65abc8cd175ec51a1bedd81069"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structShader.html">Shader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneShaders.html#a95784c65abc8cd175ec51a1bedd81069">skybox</a></td></tr>
 <tr class="separator:a95784c65abc8cd175ec51a1bedd81069"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8836da2467d808b6bfef8d74f49224c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneShaders.html#a8836da2467d808b6bfef8d74f49224c2">billboard_uniforms</a></td></tr>
+<tr class="separator:a8836da2467d808b6bfef8d74f49224c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a746306b7bea3bae54bb2ba92933babb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneShaders.html#a746306b7bea3bae54bb2ba92933babb5">instanced_uniforms</a></td></tr>
+<tr class="separator:a746306b7bea3bae54bb2ba92933babb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9129368623baae99bb86d84faeaeb7f8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structDebugUniforms.html">DebugUniforms</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSceneShaders.html#a9129368623baae99bb86d84faeaeb7f8">debug_uniforms</a></td></tr>
+<tr class="separator:a9129368623baae99bb86d84faeaeb7f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>All shader pointers owned by the scene. </p>
+<div class="textblock"><p>All shader pointers and uniform caches owned by the scene. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a id="a8836da2467d808b6bfef8d74f49224c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8836da2467d808b6bfef8d74f49224c2">&#9670;&nbsp;</a></span>billboard_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structBillboardUniforms.html">BillboardUniforms</a> SceneShaders::billboard_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
+
+</div>
+</div>
 <a id="a0246acaf41fe0371aad5cd3a59fdfe6a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0246acaf41fe0371aad5cd3a59fdfe6a">&#9670;&nbsp;</a></span>debug</h2>
 
@@ -312,6 +333,36 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p><a class="el" href="structShader.html" title="Wrapper for an OpenGL program with uniform caching and automatic cleanup.">Shader</a> for wireframe lines. </p>
+
+</div>
+</div>
+<a id="a9129368623baae99bb86d84faeaeb7f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9129368623baae99bb86d84faeaeb7f8">&#9670;&nbsp;</a></span>debug_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structDebugUniforms.html">DebugUniforms</a> SceneShaders::debug_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
+
+</div>
+</div>
+<a id="a746306b7bea3bae54bb2ba92933babb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a746306b7bea3bae54bb2ba92933babb5">&#9670;&nbsp;</a></span>instanced_uniforms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structInstancedUniforms.html">InstancedUniforms</a> SceneShaders::instanced_uniforms</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Cached locations. </p>
 
 </div>
 </div>

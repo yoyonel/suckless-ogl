@@ -30,7 +30,7 @@ var searchData=
   ['billboard_5fsorter_3276',['billboard_sorter',['../structScene.html#a8949bc9a64e5b8a7d13af728ef12b1d7',1,'Scene']]],
   ['billboard_5fubo_3277',['billboard_ubo',['../structSceneGPUResources.html#a606a942238754b65ac83b0b165e1f9d0',1,'SceneGPUResources']]],
   ['billboard_5fubo_5fptr_3278',['billboard_ubo_ptr',['../structSceneGPUResources.html#a820b0b30713f21f2401282caca849acd',1,'SceneGPUResources']]],
-  ['billboard_5funiforms_3279',['billboard_uniforms',['../structScene.html#abe2548d91bae8e908c5f2e8e2b9e0a8a',1,'Scene']]],
+  ['billboard_5funiforms_3279',['billboard_uniforms',['../structSceneShaders.html#a8836da2467d808b6bfef8d74f49224c2',1,'SceneShaders']]],
   ['bind_5ftype_3280',['bind_type',['../structGamepadControlPos.html#a6909542a6401c225f5863c0756cc8fef',1,'GamepadControlPos']]],
   ['binding_5fdest_5ftexture_3281',['BINDING_DEST_TEXTURE',['../pbr_8c.html#aa491eae0c7780d7ceee29175380adc09',1,'pbr.c']]],
   ['binding_5fenv_5fmap_3282',['BINDING_ENV_MAP',['../pbr_8c.html#afaf8e347ba781b760c16e0e3f32fa74e',1,'pbr.c']]],
