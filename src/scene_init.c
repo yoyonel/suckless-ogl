@@ -12,7 +12,10 @@
 #include "platform/platform_utils.h"
 #include "render_utils.h"
 #include "scene.h"
+#include "scene_gpu_resources.h"
 #include "scene_internal.h"
+#include "scene_shaders.h"
+#include "scene_simulation.h"
 #include "shader.h"
 #include "utils.h"
 #include <stdlib.h>
@@ -142,12 +145,12 @@ void scene_init_instancing(Scene* scene)
 #endif
 
 	instanced_group_bind_mesh(
-	    &scene->instanced_group, scene->gpu.icosphere_vbo,
-	    scene->gpu.icosphere_nbo, scene->gpu.icosphere_ebo);
+	    &scene->instanced_group, scene->gpu->icosphere_vbo,
+	    scene->gpu->icosphere_nbo, scene->gpu->icosphere_ebo);
 	billboard_group_init(&scene->billboard_group, data, total_count);
-	billboard_group_prepare(&scene->billboard_group, scene->gpu.quad_vbo,
-	                        scene->gpu.wire_quad_vbo,
-	                        scene->gpu.wire_cube_vbo);
+	billboard_group_prepare(&scene->billboard_group, scene->gpu->quad_vbo,
+	                        scene->gpu->wire_quad_vbo,
+	                        scene->gpu->wire_cube_vbo);
 
 	/* Initialize Light Probe Grid with Scene Data */
 	light_probe_grid_set_scene(&scene->lighting.probe_grid, data,
@@ -203,9 +206,9 @@ static void scene_init_ssbo(Scene* scene)
 	}
 
 	ssbo_group_init(&scene->ssbo_group, data, total_count);
-	ssbo_group_bind_mesh(&scene->ssbo_group, scene->gpu.icosphere_vbo,
-	                     scene->gpu.icosphere_nbo,
-	                     scene->gpu.icosphere_ebo);
+	ssbo_group_bind_mesh(&scene->ssbo_group, scene->gpu->icosphere_vbo,
+	                     scene->gpu->icosphere_nbo,
+	                     scene->gpu->icosphere_ebo);
 
 	/* Initialize Light Probe Grid with Scene Data (SSBO Mode) */
 	light_probe_grid_set_scene(&scene->lighting.probe_grid, data,
@@ -234,24 +237,24 @@ static void scene_init_state(Scene* scene)
 	scene->config.sorting_mode = SORTING_MODE_GPU_BITONIC;
 	scene->config.gi_mode = GI_MODE_OFF;
 	scene->config.show_probe_grid = 0;
-	scene->gpu.billboard_ubo_ptr = NULL;
+	scene->gpu->billboard_ubo_ptr = NULL;
 
 	scene->billboard_sorter = (BillboardSorter){0};
 
-	scene->gpu.dummy_black_tex =
+	scene->gpu->dummy_black_tex =
 	    render_utils_create_color_texture(0.0F, 0.0F, 0.0F, 0.0F);
-	scene->gpu.dummy_white_tex =
+	scene->gpu->dummy_white_tex =
 	    render_utils_create_color_texture(1.0F, 1.0F, 1.0F, 1.0F);
 
-	scene->gpu.brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
-	scene->gpu.hdr_texture = 0;
-	scene->gpu.recycled_hdr_tex = 0;
-	scene->gpu.spec_prefiltered_tex = 0;
-	scene->gpu.irradiance_tex = 0;
-	scene->gpu.transition_snapshot_tex = 0;
+	scene->gpu->brdf_lut_tex = build_brdf_lut_map(BRDF_LUT_MAP_SIZE);
+	scene->gpu->hdr_texture = 0;
+	scene->gpu->recycled_hdr_tex = 0;
+	scene->gpu->spec_prefiltered_tex = 0;
+	scene->gpu->irradiance_tex = 0;
+	scene->gpu->transition_snapshot_tex = 0;
 
 	for (int i = 0; i < IBL_TEXTURE_COUNT; i++) {
-		scene->gpu.bound_ibl_textures[i] = 0;
+		scene->gpu->bound_ibl_textures[i] = 0;
 	}
 
 	scene_scan_hdr_files(scene);
@@ -261,21 +264,21 @@ static void scene_init_state(Scene* scene)
 
 static int scene_init_core_shaders(Scene* scene)
 {
-	scene->shaders.skybox =
+	scene->shaders->skybox =
 	    shader_load("shaders/background.vert", "shaders/background.frag");
-	if (!scene->shaders.skybox) {
+	if (!scene->shaders->skybox) {
 		return 0;
 	}
 
-	scene->shaders.debug =
+	scene->shaders->debug =
 	    shader_load("shaders/debug_tex.vert", "shaders/debug_tex.frag");
-	if (!scene->shaders.debug) {
+	if (!scene->shaders->debug) {
 		return 0;
 	}
 
-	scene->shaders.debug_line =
+	scene->shaders->debug_line =
 	    shader_load("shaders/debug_line.vert", "shaders/debug_line.frag");
-	if (!scene->shaders.debug_line) {
+	if (!scene->shaders->debug_line) {
 		return 0;
 	}
 	return 1;
@@ -283,39 +286,40 @@ static int scene_init_core_shaders(Scene* scene)
 
 static int scene_init_billboard_shader(Scene* scene)
 {
-	scene->shaders.pbr_billboard = shader_load(
+	scene->shaders->pbr_billboard = shader_load(
 	    "shaders/pbr_ibl_billboard.vert", "shaders/pbr_ibl_billboard.frag");
-	if (!scene->shaders.pbr_billboard) {
+	if (!scene->shaders->pbr_billboard) {
 		return 0;
 	}
 
 	/* Create UBO for billboard per-frame uniforms (binding = 1) */
-	glGenBuffers(1, &scene->gpu.billboard_ubo);
-	glBindBuffer(GL_UNIFORM_BUFFER, scene->gpu.billboard_ubo);
+	glGenBuffers(1, &scene->gpu->billboard_ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, scene->gpu->billboard_ubo);
 	GLbitfield flags = (GLbitfield)GL_MAP_WRITE_BIT |
 	                   (GLbitfield)GL_MAP_PERSISTENT_BIT |
 	                   (GLbitfield)GL_MAP_COHERENT_BIT;
 	glBufferStorage(GL_UNIFORM_BUFFER, sizeof(BillboardUBO), NULL, flags);
-	scene->gpu.billboard_ubo_ptr =
+	scene->gpu->billboard_ubo_ptr =
 	    glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(BillboardUBO), flags);
-	glBindBufferBase(GL_UNIFORM_BUFFER, 1, scene->gpu.billboard_ubo);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, scene->gpu->billboard_ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	/* Set Billboard SH Sampler Indices (units 8-14) */
 	{
-		shader_use(scene->shaders.pbr_billboard);
+		shader_use(scene->shaders->pbr_billboard);
 		for (int i = 0; i < SH_TEXTURE_COUNT; i++) {
 			enum { MAX_UNIFORM_NAME_LEN = 32 };
 			char name[MAX_UNIFORM_NAME_LEN];
 			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
 			                    i);
-			scene->billboard_uniforms.sh_textures[i] =
+			scene->shaders->billboard_uniforms.sh_textures[i] =
 			    shader_get_uniform_location(
-			        scene->shaders.pbr_billboard, name);
-			if (scene->billboard_uniforms.sh_textures[i] != -1) {
-				glUniform1i(
-				    scene->billboard_uniforms.sh_textures[i],
-				    TEXTURE_UNIT_SH_START + i);
+			        scene->shaders->pbr_billboard, name);
+			if (scene->shaders->billboard_uniforms.sh_textures[i] !=
+			    -1) {
+				glUniform1i(scene->shaders->billboard_uniforms
+				                .sh_textures[i],
+				            TEXTURE_UNIT_SH_START + i);
 			}
 		}
 	}
@@ -324,24 +328,24 @@ static int scene_init_billboard_shader(Scene* scene)
 
 static int scene_init_compute_resources(Scene* scene)
 {
-	scene->gpu.spmap_program =
+	scene->gpu->spmap_program =
 	    shader_load_compute("shaders/IBL/spmap.glsl");
-	scene->gpu.irmap_program =
+	scene->gpu->irmap_program =
 	    shader_load_compute("shaders/IBL/irmap.glsl");
-	scene->gpu.lum_pass1_program =
+	scene->gpu->lum_pass1_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass1.glsl");
-	scene->gpu.lum_pass2_program =
+	scene->gpu->lum_pass2_program =
 	    shader_load_compute("shaders/IBL/luminance_reduce_pass2.glsl");
 
-	if (!scene->gpu.spmap_program || !scene->gpu.irmap_program ||
-	    !scene->gpu.lum_pass1_program || !scene->gpu.lum_pass2_program) {
+	if (!scene->gpu->spmap_program || !scene->gpu->irmap_program ||
+	    !scene->gpu->lum_pass1_program || !scene->gpu->lum_pass2_program) {
 		return 0;
 	}
 
-	ibl_coordinator_init(&scene->lighting.ibl_coord,
-	                     scene->gpu.spmap_program, scene->gpu.irmap_program,
-	                     scene->gpu.lum_pass1_program,
-	                     scene->gpu.lum_pass2_program);
+	ibl_coordinator_init(
+	    &scene->lighting.ibl_coord, scene->gpu->spmap_program,
+	    scene->gpu->irmap_program, scene->gpu->lum_pass1_program,
+	    scene->gpu->lum_pass2_program);
 	return 1;
 }
 
@@ -349,45 +353,45 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 {
 #ifdef USE_SSBO_RENDERING
 	scene_init_ssbo(scene);
-	scene->shaders.pbr_ssbo = shader_load("shaders/pbr_ibl_ssbo.vert",
-	                                      "shaders/pbr_ibl_instanced.frag");
-	if (!scene->shaders.pbr_ssbo) {
+	scene->shaders->pbr_ssbo = shader_load(
+	    "shaders/pbr_ibl_ssbo.vert", "shaders/pbr_ibl_instanced.frag");
+	if (!scene->shaders->pbr_ssbo) {
 		return 0;
 	}
-	*out_shader = scene->shaders.pbr_ssbo;
+	*out_shader = scene->shaders->pbr_ssbo;
 #else
 	scene_init_instancing(scene);
-	scene->shaders.pbr_instanced = shader_load(
+	scene->shaders->pbr_instanced = shader_load(
 	    "shaders/pbr_ibl_instanced.vert", "shaders/pbr_ibl_instanced.frag");
-	if (!scene->shaders.pbr_instanced) {
+	if (!scene->shaders->pbr_instanced) {
 		return 0;
 	}
-	*out_shader = scene->shaders.pbr_instanced;
+	*out_shader = scene->shaders->pbr_instanced;
 #endif
 
-	scene->instanced_uniforms.debug_mode =
+	scene->shaders->instanced_uniforms.debug_mode =
 	    shader_get_uniform_location(*out_shader, "debugMode");
-	scene->instanced_uniforms.cam_pos =
+	scene->shaders->instanced_uniforms.cam_pos =
 	    shader_get_uniform_location(*out_shader, "camPos");
-	scene->instanced_uniforms.projection =
+	scene->shaders->instanced_uniforms.projection =
 	    shader_get_uniform_location(*out_shader, "projection");
-	scene->instanced_uniforms.view =
+	scene->shaders->instanced_uniforms.view =
 	    shader_get_uniform_location(*out_shader, "view");
-	scene->instanced_uniforms.previous_view_proj =
+	scene->shaders->instanced_uniforms.previous_view_proj =
 	    shader_get_uniform_location(*out_shader, "previousViewProj");
-	scene->instanced_uniforms.u_specular_aa_enabled =
+	scene->shaders->instanced_uniforms.u_specular_aa_enabled =
 	    shader_get_uniform_location(*out_shader, "u_specularAAEnabled");
-	scene->instanced_uniforms.u_aa_mode =
+	scene->shaders->instanced_uniforms.u_aa_mode =
 	    shader_get_uniform_location(*out_shader, "u_aaMode");
 
 	/* Probe Grid Uniforms */
-	scene->instanced_uniforms.probe_grid_min =
+	scene->shaders->instanced_uniforms.probe_grid_min =
 	    shader_get_uniform_location(*out_shader, "u_ProbeGridMin");
-	scene->instanced_uniforms.probe_grid_max =
+	scene->shaders->instanced_uniforms.probe_grid_max =
 	    shader_get_uniform_location(*out_shader, "u_ProbeGridMax");
-	scene->instanced_uniforms.probe_grid_dim =
+	scene->shaders->instanced_uniforms.probe_grid_dim =
 	    shader_get_uniform_location(*out_shader, "u_ProbeGridDim");
-	scene->instanced_uniforms.gi_mode =
+	scene->shaders->instanced_uniforms.gi_mode =
 	    shader_get_uniform_location(*out_shader, "u_GIMode");
 
 	/* Set Instanced SH Sampler Indices (units 8-14) */
@@ -398,12 +402,13 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 			char name[MAX_UNIFORM_NAME_LEN];
 			(void)safe_snprintf(name, sizeof(name), "u_SHTexture%d",
 			                    i);
-			scene->instanced_uniforms.sh_textures[i] =
+			scene->shaders->instanced_uniforms.sh_textures[i] =
 			    shader_get_uniform_location(*out_shader, name);
-			if (scene->instanced_uniforms.sh_textures[i] != -1) {
-				glUniform1i(
-				    scene->instanced_uniforms.sh_textures[i],
-				    TEXTURE_UNIT_SH_START + i);
+			if (scene->shaders->instanced_uniforms.sh_textures[i] !=
+			    -1) {
+				glUniform1i(scene->shaders->instanced_uniforms
+				                .sh_textures[i],
+				            TEXTURE_UNIT_SH_START + i);
 			}
 		}
 	}
@@ -412,28 +417,37 @@ static int scene_init_instanced_shader(Scene* scene, Shader** out_shader)
 
 int scene_init(Scene* scene)
 {
+	/* Allocate opaque sub-structs */
+	scene->gpu = calloc(1, sizeof(SceneGPUResources));
+	scene->shaders = calloc(1, sizeof(SceneShaders));
+	scene->simulation = calloc(1, sizeof(SceneSimulation));
+	if (!scene->gpu || !scene->shaders || !scene->simulation) {
+		LOG_ERROR("Scene", "Failed to allocate scene sub-structs");
+		return 0;
+	}
+
 	scene_init_state(scene);
 
 	if (!scene_init_core_shaders(scene)) {
 		return 0;
 	}
 
-	render_utils_create_empty_vao(&scene->gpu.empty_vao);
+	render_utils_create_empty_vao(&scene->gpu->empty_vao);
 
 	if (!scene_init_billboard_shader(scene)) {
 		return 0;
 	}
 
-	render_utils_create_quad_vbo(&scene->gpu.quad_vbo);
-	render_utils_create_wire_cube_vbo(&scene->gpu.wire_cube_vbo);
-	render_utils_create_wire_quad_vbo(&scene->gpu.wire_quad_vbo);
-	skybox_init(&scene->visuals.skybox, scene->shaders.skybox);
+	render_utils_create_quad_vbo(&scene->gpu->quad_vbo);
+	render_utils_create_wire_cube_vbo(&scene->gpu->wire_cube_vbo);
+	render_utils_create_wire_quad_vbo(&scene->gpu->wire_quad_vbo);
+	skybox_init(&scene->visuals.skybox, scene->shaders->skybox);
 	icosphere_init(&scene->geometry);
 
-	glGenVertexArrays(1, &scene->gpu.icosphere_vao);
-	glGenBuffers(1, &scene->gpu.icosphere_vbo);
-	glGenBuffers(1, &scene->gpu.icosphere_nbo);
-	glGenBuffers(1, &scene->gpu.icosphere_ebo);
+	glGenVertexArrays(1, &scene->gpu->icosphere_vao);
+	glGenBuffers(1, &scene->gpu->icosphere_vbo);
+	glGenBuffers(1, &scene->gpu->icosphere_nbo);
+	glGenBuffers(1, &scene->gpu->icosphere_ebo);
 
 	scene->lighting.material_lib =
 	    material_load_presets("assets/materials/pbr_materials.json");
@@ -459,18 +473,20 @@ int scene_init(Scene* scene)
 		return 0;
 	}
 
-	scene->debug_uniforms.projection = shader_get_uniform_location(
-	    scene->shaders.debug_line, "projection");
-	scene->debug_uniforms.view =
-	    shader_get_uniform_location(scene->shaders.debug_line, "view");
-	scene->debug_uniforms.u_stippled = shader_get_uniform_location(
-	    scene->shaders.debug_line, "u_stippled");
-	scene->debug_uniforms.u_billboard_mode = shader_get_uniform_location(
-	    scene->shaders.debug_line, "u_billboardMode");
-	scene->debug_uniforms.u_use_instance_col = shader_get_uniform_location(
-	    scene->shaders.debug_line, "u_useInstanceColor");
-	scene->debug_uniforms.u_color =
-	    shader_get_uniform_location(scene->shaders.debug_line, "u_color");
+	scene->shaders->debug_uniforms.projection = shader_get_uniform_location(
+	    scene->shaders->debug_line, "projection");
+	scene->shaders->debug_uniforms.view =
+	    shader_get_uniform_location(scene->shaders->debug_line, "view");
+	scene->shaders->debug_uniforms.u_stippled = shader_get_uniform_location(
+	    scene->shaders->debug_line, "u_stippled");
+	scene->shaders->debug_uniforms.u_billboard_mode =
+	    shader_get_uniform_location(scene->shaders->debug_line,
+	                                "u_billboardMode");
+	scene->shaders->debug_uniforms.u_use_instance_col =
+	    shader_get_uniform_location(scene->shaders->debug_line,
+	                                "u_useInstanceColor");
+	scene->shaders->debug_uniforms.u_color =
+	    shader_get_uniform_location(scene->shaders->debug_line, "u_color");
 
 	return 1;
 }

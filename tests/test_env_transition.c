@@ -3,6 +3,8 @@
 #include "app.h"
 #include "app_settings.h"
 #include "env_manager.h"
+#include "scene_gpu_resources.h"
+#include "scene_shaders.h"
 #include "unity.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -39,6 +41,8 @@ void setUp(void)
 		TEST_FAIL_MESSAGE("Failed to initialize GLAD");
 	}
 
+	g_test_app->scene.gpu = calloc(1, sizeof(SceneGPUResources));
+	g_test_app->scene.shaders = calloc(1, sizeof(SceneShaders));
 	g_test_app->width = WINDOW_WIDTH;
 	g_test_app->height = WINDOW_HEIGHT;
 	g_test_app->env_mgr.transition_duration = TRANSITION_DURATION;
@@ -50,6 +54,8 @@ void tearDown(void)
 	if (g_test_app->win.handle) {
 		glfwDestroyWindow(g_test_app->win.handle);
 	}
+	free(g_test_app->scene.gpu);
+	free(g_test_app->scene.shaders);
 	free(g_test_app);
 	glfwTerminate();
 }
@@ -93,7 +99,7 @@ void test_transition_crossfade_flow(void)
 	TEST_ASSERT_EQUAL_FLOAT(1.0F, g_test_app->env_mgr.transition_alpha);
 	/* Snapshot texture should have been generated */
 	TEST_ASSERT_NOT_EQUAL(TEXTURE_ID_ZERO,
-	                      g_test_app->scene.gpu.transition_snapshot_tex);
+	                      g_test_app->scene.gpu->transition_snapshot_tex);
 }
 
 /**

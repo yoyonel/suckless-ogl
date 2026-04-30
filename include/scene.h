@@ -7,11 +7,7 @@
 #include "icosphere.h"
 #include "instanced_rendering.h"
 #include "scene_config.h"
-#include "scene_gpu_resources.h"
 #include "scene_lighting.h"
-#include "scene_shaders.h"
-#include "scene_simulation.h"
-#include "scene_uniforms.h"
 #include "scene_visuals.h"
 #include <cglm/cglm.h>
 
@@ -21,6 +17,9 @@
 
 typedef struct PostProcess PostProcess;
 typedef struct GPUProfiler GPUProfiler;
+typedef struct SceneSimulation SceneSimulation;
+typedef struct SceneShaders SceneShaders;
+typedef struct SceneGPUResources SceneGPUResources;
 
 /**
  * @struct Scene
@@ -43,23 +42,20 @@ typedef struct Scene {
 	int billboard_instance_count; /**< Active billboard count. */
 #endif
 
-	/* --- Domain Sub-Structs --- */
-	SceneVisuals visuals;       /**< Visual effects sub-system. */
-	SceneLighting lighting;     /**< IBL, probes, and materials. */
-	SceneSimulation simulation; /**< N-body simulation sub-system. */
-	SceneGPUResources gpu;      /**< GPU resource handles. */
-	SceneShaders shaders;       /**< Shader pointers. */
-	SceneConfig config;         /**< Render configuration. */
+	/* --- Domain Sub-Structs (opaque, heap-allocated) --- */
+	SceneSimulation* simulation; /**< N-body simulation sub-system. */
+	SceneGPUResources* gpu;      /**< GPU resource handles. */
+	SceneShaders* shaders;       /**< Shader pointers + uniform caches. */
+
+	/* --- Domain Sub-Structs (by-value) --- */
+	SceneVisuals visuals;   /**< Visual effects sub-system. */
+	SceneLighting lighting; /**< IBL, probes, and materials. */
+	SceneConfig config;     /**< Render configuration. */
 
 	/* --- HDR Environment --- */
 	char** hdr_files;      /**< List of found HDR files in assets. */
 	int hdr_count;         /**< Number of available environment maps. */
 	int current_hdr_index; /**< Index of active HDR in file list. */
-
-	/* --- Uniform Caches --- */
-	BillboardUniforms billboard_uniforms; /**< Cached locations. */
-	InstancedUniforms instanced_uniforms; /**< Cached locations. */
-	DebugUniforms debug_uniforms;         /**< Cached locations. */
 
 } Scene;
 

@@ -15,6 +15,7 @@
 #include "nbody.h"
 #include "scene.h"
 #include "scene_internal.h"
+#include "scene_simulation.h"
 #include "shockwave.h"
 #include "trail_renderer.h"
 #include "unity.h"
@@ -164,10 +165,14 @@ static void reset_mocks(void)
 	mock_shockwave_init_fail = false;
 }
 
+static SceneSimulation test_simulation;
+
 static Scene make_test_scene(void)
 {
 	Scene scene;
 	memset(&scene, 0, sizeof(scene));
+	memset(&test_simulation, 0, sizeof(test_simulation));
+	scene.simulation = &test_simulation;
 	return scene;
 }
 
@@ -187,11 +192,11 @@ void tearDown(void)
 void test_toggle_nbody_enables_mode(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 
 	scene_toggle_nbody(&scene);
 
-	TEST_ASSERT_TRUE(scene.simulation.nbody_mode);
+	TEST_ASSERT_TRUE(scene.simulation->nbody_mode);
 	TEST_ASSERT_EQUAL_INT(1, mock_trail_init_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_shockwave_init_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_instanced_update_calls);
@@ -202,14 +207,14 @@ void test_toggle_nbody_disables_mode(void)
 {
 	Scene scene = make_test_scene();
 	/* Enable first */
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 
 	/* Now toggle off */
 	scene_toggle_nbody(&scene);
 
-	TEST_ASSERT_FALSE(scene.simulation.nbody_mode);
+	TEST_ASSERT_FALSE(scene.simulation->nbody_mode);
 	TEST_ASSERT_EQUAL_INT(1, mock_trail_cleanup_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_shockwave_cleanup_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_instanced_cleanup_calls);
@@ -220,13 +225,13 @@ void test_toggle_nbody_disables_mode(void)
 void test_toggle_nbody_trail_init_failure_aborts(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 	mock_trail_init_fail = true;
 
 	scene_toggle_nbody(&scene);
 
 	/* Mode should stay off */
-	TEST_ASSERT_FALSE(scene.simulation.nbody_mode);
+	TEST_ASSERT_FALSE(scene.simulation->nbody_mode);
 	/* shockwave_init should NOT have been called */
 	TEST_ASSERT_EQUAL_INT(0, mock_shockwave_init_calls);
 }
@@ -234,13 +239,13 @@ void test_toggle_nbody_trail_init_failure_aborts(void)
 void test_toggle_nbody_shockwave_init_failure_cleans_trails(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 	mock_shockwave_init_fail = true;
 
 	scene_toggle_nbody(&scene);
 
 	/* Mode should stay off */
-	TEST_ASSERT_FALSE(scene.simulation.nbody_mode);
+	TEST_ASSERT_FALSE(scene.simulation->nbody_mode);
 	/* Trail was inited then cleaned up */
 	TEST_ASSERT_EQUAL_INT(1, mock_trail_init_calls);
 	TEST_ASSERT_EQUAL_INT(1, mock_trail_cleanup_calls);
@@ -251,19 +256,19 @@ void test_toggle_nbody_roundtrip(void)
 	Scene scene = make_test_scene();
 
 	/* Start off */
-	TEST_ASSERT_FALSE(scene.simulation.nbody_mode);
+	TEST_ASSERT_FALSE(scene.simulation->nbody_mode);
 
 	/* Enable */
 	scene_toggle_nbody(&scene);
-	TEST_ASSERT_TRUE(scene.simulation.nbody_mode);
+	TEST_ASSERT_TRUE(scene.simulation->nbody_mode);
 
 	/* Disable */
 	scene_toggle_nbody(&scene);
-	TEST_ASSERT_FALSE(scene.simulation.nbody_mode);
+	TEST_ASSERT_FALSE(scene.simulation->nbody_mode);
 
 	/* Enable again */
 	scene_toggle_nbody(&scene);
-	TEST_ASSERT_TRUE(scene.simulation.nbody_mode);
+	TEST_ASSERT_TRUE(scene.simulation->nbody_mode);
 }
 
 /* ---- Tests: scene_nbody_update ---- */
@@ -271,7 +276,7 @@ void test_toggle_nbody_roundtrip(void)
 void test_nbody_update_noop_when_disabled(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 
 	scene_nbody_update(&scene, 1.0F / 60.0F);
 
@@ -284,7 +289,7 @@ void test_nbody_update_noop_when_disabled(void)
 void test_nbody_update_calls_subsystems(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 
@@ -298,7 +303,7 @@ void test_nbody_update_calls_subsystems(void)
 void test_nbody_update_multiple_steps(void)
 {
 	Scene scene = make_test_scene();
-	scene.simulation.nbody_mode = 0;
+	scene.simulation->nbody_mode = 0;
 	scene_toggle_nbody(&scene);
 	reset_mocks();
 

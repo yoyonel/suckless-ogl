@@ -7,6 +7,7 @@
 #include "glad/glad.h"
 #include "nbody.h"
 #include "postprocess.h"
+#include "scene_simulation.h"
 #include "texture.h"
 #include "ui.h"
 #include "utils.h"
@@ -1178,11 +1179,11 @@ static void draw_exposure_overlay(const App* app, UILayout* layout)
 static void draw_nbody_overlay(const App* app, UILayout* layout)
 {
 	if (app->overlay.text_overlay_mode < 1 ||
-	    !app->scene.simulation.nbody_mode) {
+	    !app->scene.simulation->nbody_mode) {
 		return;
 	}
 
-	const NBodySim* sim = &app->scene.simulation.nbody_sim;
+	const NBodySim* sim = &app->scene.simulation->nbody_sim;
 	char text[NBODY_TEXT_BUFFER_SIZE];
 
 	/* Kinetic energy + time direction */
