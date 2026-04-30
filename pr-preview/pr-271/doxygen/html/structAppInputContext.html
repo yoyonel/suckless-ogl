@@ -1,0 +1,692 @@
+<!-- HTML header for doxygen 1.9.8-->
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=11" />
+  <meta name="generator" content="Doxygen 1.9.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Suckless OGL: AppInputContext Struct Reference</title>
+  <link href="tabs.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="jquery.js"></script>
+  <script type="text/javascript" src="dynsections.js"></script>
+  <link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+  <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+  $(document).ready(function() { init_search(); });
+/* @license-end */
+</script>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js", "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
+  $darkmode
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css"
+    integrity="sha512-dSQLLtgaq2iGigmy9xowRshaMzUHeiIUTvJW/SkUpb1J+ImXOPNGAI7ZC8V5/PiN/XN83B8uIk4qET7AMhdC5Q=="
+    crossorigin="anonymous" referralpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"
+    integrity="sha512-OBDlPUawuqsZGmSD+INyizwCpO5+xKyT4Okvbfz/lWld9+n0uDHj6DKyahkkRToDdzVp75JojFDR6Ucm9dvCjg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"
+    integrity="sha512-i0JFeiLhgBAMGfIEVqMQwALhhse1orgl34XyotSUNiNbDIB1qS9IK53sDochCIrwvj4nJ51CsDSOqhGyhZITGg=="
+    crossorigin="anonymous" referralpolicy="no-referrer"></script>
+  <script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js?v=2"></script>
+  <script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+  <script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+  <link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+  <style>
+    /* Reduce vertical spacing for diagrams */
+    .dotgraph {
+      margin-top: 5px !important;
+      margin-bottom: 5px !important;
+    }
+    .interactive_dotgraph {
+      margin-top: -15px !important;
+    }
+  </style>
+  <script type="text/javascript">
+    // Force dark mode before rendering to avoid flash if no preference exists
+    if (localStorage.getItem("theme-mode") === null || localStorage.getItem("theme-mode") === "dark") {
+      document.documentElement.classList.add("dark-mode");
+    }
+    window.addEventListener("DOMContentLoaded", (event) => {
+      DoxygenAwesomeDarkModeToggle.init()
+      DoxygenAwesomeFragmentCopyButton.init()
+      DoxygenAwesomeParagraphLink.init()
+      DoxygenAwesomeInteractiveToc.init()
+      DoxygenAwesomeTabs.init()
+      // 1. Highlighting Orchestrator (Aggressive)
+      document.querySelectorAll('div.fragment, pre.fragment, pre.code, code').forEach((el) => {
+        // Skip if it's an ASCII tree (heuristic)
+        if (el.innerText.includes('├──') || el.innerText.includes('└──')) return;
+        let text = el.innerText;
+        let isDoxygenMess = false;
+        // Detect literal markers (failed Doxygen/Markdown parsing)
+        if (text.includes('\\code') || text.includes('```')) {
+          isDoxygenMess = true;
+          // Strip markers
+          text = text.replace(/\\code\{[^}]*\}|\\endcode|```[a-z]*/g, '').trim();
+        }
+        // Special case: Doxygen failed parsing and outputs <code> inside a paragraph
+        if (el.tagName === 'CODE' && (text.includes('\n') || text.startsWith('c '))) {
+          isDoxygenMess = true;
+          if (text.startsWith('c ')) text = text.substring(2);
+        }
+        if (isDoxygenMess) {
+          const div = document.createElement('div');
+          div.className = 'fragment';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          const code = document.createElement('code');
+          code.textContent = text;
+          pre.appendChild(code);
+          div.appendChild(pre);
+          el.parentNode.replaceChild(div, el);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Handle Doxygen-Awesome's line structure
+        if (el.querySelector('.line')) {
+          if (el.querySelectorAll('span').length > 5) return;
+          const rawText = Array.from(el.querySelectorAll('.line')).map(l => l.innerText).join('\n');
+          el.innerHTML = '';
+          const pre = document.createElement('pre');
+          pre.style.margin = '0';
+          pre.style.padding = '0';
+          const code = document.createElement('code');
+          code.textContent = rawText;
+          pre.appendChild(code);
+          el.appendChild(pre);
+          hljs.highlightElement(code);
+          return;
+        }
+        // Skip small inline code
+        if (el.tagName === 'CODE' && text.length < 15) return;
+        hljs.highlightElement(el);
+      });
+      // 2. Dynamic iframe height adjustment
+      document.querySelectorAll('.dotgraph iframe').forEach((iframe) => {
+        iframe.addEventListener('load', () => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const svg = doc.querySelector('svg');
+            if (svg) {
+              const heightAttr = svg.getAttribute('height');
+              if (heightAttr) {
+                let h = parseFloat(heightAttr);
+                if (heightAttr.endsWith('pt')) h *= 1.33; // Convert pt to px approx
+                iframe.style.height = (h + 40) + 'px';
+              }
+            }
+          } catch (e) { }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <doxygen-awesome-dark-mode-toggle title="Toggle Light/Dark Mode"
+    style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></doxygen-awesome-dark-mode-toggle>
+    <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+      <div id="titlearea">
+        <table cellspacing="0" cellpadding="0">
+          <tbody>
+            <tr id="projectrow">
+              <td id="projectalign">
+                <div id="projectname">Suckless OGL<span
+                    id="projectnumber">&#160;1.0.0</span>
+                </div>
+                <div id="projectbrief">A lean, high-performance C11 PBR Renderer</div>
+              </td>
+            </tr>
+            <!--BEGIN FULL_SIDEBAR-->
+            <tr>
+              <td colspan="2">        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+</td>
+            </tr>
+            <!--END FULL_SIDEBAR-->
+          </tbody>
+        </table>
+      </div>
+      <!-- end header part -->
+<!-- Generated by Doxygen 1.9.1 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'Search','.html');
+/* @license-end */
+</script>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="../../index.html"><span>Back&#160;to&#160;Docs</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
+      <li>
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.svg"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Search" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.svg" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
+      <li><a href="classes.html"><span>Data&#160;Structure&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Data&#160;Fields</span></a></li>
+    </ul>
+  </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('structAppInputContext.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Data Fields</a>  </div>
+  <div class="headertitle">
+<div class="title">AppInputContext Struct Reference</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Focused context for application-level input handling.  
+ <a href="structAppInputContext.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="app__input_8h_source.html">app_input.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for AppInputContext:</div>
+<div class="dyncontent">
+<div class="center"><div class="zoom"><iframe scrolling="no" frameborder="0" src="structAppInputContext__coll__graph.svg" width="100%" height="600"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+</div>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Data Fields</h2></td></tr>
+<tr class="memitem:aef424306ce284114f58dea80cfcd9323"><td class="memItemLeft" align="right" valign="top"><a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#aef424306ce284114f58dea80cfcd9323">window</a></td></tr>
+<tr class="separator:aef424306ce284114f58dea80cfcd9323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa22ede3fbd57b28bc5979e2174a12c59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structCamera.html">Camera</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#aa22ede3fbd57b28bc5979e2174a12c59">camera</a></td></tr>
+<tr class="separator:aa22ede3fbd57b28bc5979e2174a12c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2b6d304781d3f00a901e0b7480e22f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structScene.html">Scene</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ac2b6d304781d3f00a901e0b7480e22f1">scene</a></td></tr>
+<tr class="separator:ac2b6d304781d3f00a901e0b7480e22f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0660fcc8300d5fbdad8a2e80ffd921b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPostProcess.html">PostProcess</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ad0660fcc8300d5fbdad8a2e80ffd921b">postprocess</a></td></tr>
+<tr class="separator:ad0660fcc8300d5fbdad8a2e80ffd921b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdb758c084e367120fc60af45fcf8a1e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEnvManager.html">EnvManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#abdb758c084e367120fc60af45fcf8a1e">env_mgr</a></td></tr>
+<tr class="separator:abdb758c084e367120fc60af45fcf8a1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f2657f2dd9debfe011747ce643a8ac6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structActionNotifier.html">ActionNotifier</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a4f2657f2dd9debfe011747ce643a8ac6">notifier</a></td></tr>
+<tr class="separator:a4f2657f2dd9debfe011747ce643a8ac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae9ed81377392d7e726b76c301ea3cf2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ae9ed81377392d7e726b76c301ea3cf2c">overlay</a></td></tr>
+<tr class="separator:ae9ed81377392d7e726b76c301ea3cf2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a024b1267e74915dc2721e391913397"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGPUProfilerUI.html">GPUProfilerUI</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a9a024b1267e74915dc2721e391913397">timeline_ui</a></td></tr>
+<tr class="separator:a9a024b1267e74915dc2721e391913397"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad010c6d11e3fbc8240c27d7710638e21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEffectBenchmark.html">EffectBenchmark</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ad010c6d11e3fbc8240c27d7710638e21">effect_bench</a></td></tr>
+<tr class="separator:ad010c6d11e3fbc8240c27d7710638e21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a852c51494ef768624efd6a20ae9fcff8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPerfModeContext.html">PerfModeContext</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a852c51494ef768624efd6a20ae9fcff8">perf_context</a></td></tr>
+<tr class="separator:a852c51494ef768624efd6a20ae9fcff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f1a3f1b085070c54d4ecade4d548f5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGamepadState.html">GamepadState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a6f1a3f1b085070c54d4ecade4d548f5b">gamepad</a></td></tr>
+<tr class="separator:a6f1a3f1b085070c54d4ecade4d548f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a26b7cbb253e8c43a7e8d346c1dc516"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structAsyncLoader.html">AsyncLoader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a2a26b7cbb253e8c43a7e8d346c1dc516">async_loader</a></td></tr>
+<tr class="separator:a2a26b7cbb253e8c43a7e8d346c1dc516"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb891570d79be6d7cd83b285a5a5a036"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#acb891570d79be6d7cd83b285a5a5a036">width</a></td></tr>
+<tr class="separator:acb891570d79be6d7cd83b285a5a5a036"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4037473adf9e4515586be2a8b3d7d375"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a4037473adf9e4515586be2a8b3d7d375">height</a></td></tr>
+<tr class="separator:a4037473adf9e4515586be2a8b3d7d375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a648b3c0d6abeba07b83607dbcea39d"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a8a648b3c0d6abeba07b83607dbcea39d">camera_enabled</a></td></tr>
+<tr class="separator:a8a648b3c0d6abeba07b83607dbcea39d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2cadaf1fa39af87091f84c7dc8c8957"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ae2cadaf1fa39af87091f84c7dc8c8957">is_fullscreen</a></td></tr>
+<tr class="separator:ae2cadaf1fa39af87091f84c7dc8c8957"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b726c0e570dd39270c00037f3e389ad"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a2b726c0e570dd39270c00037f3e389ad">saved_x</a></td></tr>
+<tr class="separator:a2b726c0e570dd39270c00037f3e389ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37fa65c8c5c195d47e3ae67755fe08da"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a37fa65c8c5c195d47e3ae67755fe08da">saved_y</a></td></tr>
+<tr class="separator:a37fa65c8c5c195d47e3ae67755fe08da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd48b90c8643c0d2505688819ae92484"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#acd48b90c8643c0d2505688819ae92484">saved_width</a></td></tr>
+<tr class="separator:acd48b90c8643c0d2505688819ae92484"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a660404c8121777cc20d29367ba8fbdd9"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a660404c8121777cc20d29367ba8fbdd9">saved_height</a></td></tr>
+<tr class="separator:a660404c8121777cc20d29367ba8fbdd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56f03b8ea5870141d70eb67678db4870"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a56f03b8ea5870141d70eb67678db4870">resize_pending</a></td></tr>
+<tr class="separator:a56f03b8ea5870141d70eb67678db4870"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d11531ca1f969158eaee06971d71457"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a2d11531ca1f969158eaee06971d71457">pending_width</a></td></tr>
+<tr class="separator:a2d11531ca1f969158eaee06971d71457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05bc4e02a34cf1b6fc7d7f6e60fc55c3"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#a05bc4e02a34cf1b6fc7d7f6e60fc55c3">pending_height</a></td></tr>
+<tr class="separator:a05bc4e02a34cf1b6fc7d7f6e60fc55c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb37ddae7632e27f04cad2e179926c14"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#adb37ddae7632e27f04cad2e179926c14">perf_mode_active</a></td></tr>
+<tr class="separator:adb37ddae7632e27f04cad2e179926c14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac47fff061e9c16efcc63fcfbbfa2f304"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structAppInputContext.html#ac47fff061e9c16efcc63fcfbbfa2f304">log_gpu_metrics</a></td></tr>
+<tr class="separator:ac47fff061e9c16efcc63fcfbbfa2f304"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Focused context for application-level input handling. </p>
+<p>Decouples input logic from the <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> God Object by exposing only the fields that input handlers actually need. Constructed once per frame (or per callback) from <a class="el" href="structApp.html" title="The central state container for the entire application.">App</a> fields in <a class="el" href="app_8c.html">app.c</a>. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a2a26b7cbb253e8c43a7e8d346c1dc516"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a26b7cbb253e8c43a7e8d346c1dc516">&#9670;&nbsp;</a></span>async_loader</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAsyncLoader.html">AsyncLoader</a>* AppInputContext::async_loader</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa22ede3fbd57b28bc5979e2174a12c59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa22ede3fbd57b28bc5979e2174a12c59">&#9670;&nbsp;</a></span>camera</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structCamera.html">Camera</a>* AppInputContext::camera</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8a648b3c0d6abeba07b83607dbcea39d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a648b3c0d6abeba07b83607dbcea39d">&#9670;&nbsp;</a></span>camera_enabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::camera_enabled</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad010c6d11e3fbc8240c27d7710638e21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad010c6d11e3fbc8240c27d7710638e21">&#9670;&nbsp;</a></span>effect_bench</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structEffectBenchmark.html">EffectBenchmark</a>* AppInputContext::effect_bench</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abdb758c084e367120fc60af45fcf8a1e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdb758c084e367120fc60af45fcf8a1e">&#9670;&nbsp;</a></span>env_mgr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structEnvManager.html">EnvManager</a>* AppInputContext::env_mgr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6f1a3f1b085070c54d4ecade4d548f5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f1a3f1b085070c54d4ecade4d548f5b">&#9670;&nbsp;</a></span>gamepad</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGamepadState.html">GamepadState</a>* AppInputContext::gamepad</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4037473adf9e4515586be2a8b3d7d375"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4037473adf9e4515586be2a8b3d7d375">&#9670;&nbsp;</a></span>height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae2cadaf1fa39af87091f84c7dc8c8957"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2cadaf1fa39af87091f84c7dc8c8957">&#9670;&nbsp;</a></span>is_fullscreen</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::is_fullscreen</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac47fff061e9c16efcc63fcfbbfa2f304"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac47fff061e9c16efcc63fcfbbfa2f304">&#9670;&nbsp;</a></span>log_gpu_metrics</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::log_gpu_metrics</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f2657f2dd9debfe011747ce643a8ac6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f2657f2dd9debfe011747ce643a8ac6">&#9670;&nbsp;</a></span>notifier</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structActionNotifier.html">ActionNotifier</a>* AppInputContext::notifier</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae9ed81377392d7e726b76c301ea3cf2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9ed81377392d7e726b76c301ea3cf2c">&#9670;&nbsp;</a></span>overlay</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structAppUIOverlay.html">AppUIOverlay</a>* AppInputContext::overlay</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a05bc4e02a34cf1b6fc7d7f6e60fc55c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05bc4e02a34cf1b6fc7d7f6e60fc55c3">&#9670;&nbsp;</a></span>pending_height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::pending_height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2d11531ca1f969158eaee06971d71457"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d11531ca1f969158eaee06971d71457">&#9670;&nbsp;</a></span>pending_width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::pending_width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a852c51494ef768624efd6a20ae9fcff8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a852c51494ef768624efd6a20ae9fcff8">&#9670;&nbsp;</a></span>perf_context</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPerfModeContext.html">PerfModeContext</a>* AppInputContext::perf_context</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adb37ddae7632e27f04cad2e179926c14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb37ddae7632e27f04cad2e179926c14">&#9670;&nbsp;</a></span>perf_mode_active</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::perf_mode_active</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad0660fcc8300d5fbdad8a2e80ffd921b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0660fcc8300d5fbdad8a2e80ffd921b">&#9670;&nbsp;</a></span>postprocess</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structPostProcess.html">PostProcess</a>* AppInputContext::postprocess</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a56f03b8ea5870141d70eb67678db4870"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56f03b8ea5870141d70eb67678db4870">&#9670;&nbsp;</a></span>resize_pending</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::resize_pending</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a660404c8121777cc20d29367ba8fbdd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a660404c8121777cc20d29367ba8fbdd9">&#9670;&nbsp;</a></span>saved_height</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::saved_height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd48b90c8643c0d2505688819ae92484"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd48b90c8643c0d2505688819ae92484">&#9670;&nbsp;</a></span>saved_width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::saved_width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2b726c0e570dd39270c00037f3e389ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b726c0e570dd39270c00037f3e389ad">&#9670;&nbsp;</a></span>saved_x</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::saved_x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a37fa65c8c5c195d47e3ae67755fe08da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37fa65c8c5c195d47e3ae67755fe08da">&#9670;&nbsp;</a></span>saved_y</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::saved_y</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac2b6d304781d3f00a901e0b7480e22f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2b6d304781d3f00a901e0b7480e22f1">&#9670;&nbsp;</a></span>scene</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structScene.html">Scene</a>* AppInputContext::scene</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a024b1267e74915dc2721e391913397"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a024b1267e74915dc2721e391913397">&#9670;&nbsp;</a></span>timeline_ui</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGPUProfilerUI.html">GPUProfilerUI</a>* AppInputContext::timeline_ui</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb891570d79be6d7cd83b285a5a5a036"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb891570d79be6d7cd83b285a5a5a036">&#9670;&nbsp;</a></span>width</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* AppInputContext::width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aef424306ce284114f58dea80cfcd9323"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef424306ce284114f58dea80cfcd9323">&#9670;&nbsp;</a></span>window</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="window_8h.html#a3c96d80d363e67d13a41b5d1821f3242">GLFWwindow</a>* AppInputContext::window</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>include/<a class="el" href="app__input_8h_source.html">app_input.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="structAppInputContext.html">AppInputContext</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
+  </ul>
+</div>
+</body>
+</html>
