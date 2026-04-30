@@ -2,6 +2,7 @@
 
 #include "io.h"
 #include "log.h"
+#include "platform/platform_utils.h"
 #include "utils.h"
 #include <cJSON.h>
 #include <stdint.h>
@@ -92,7 +93,8 @@ static PBRMaterial* allocate_materials(int count)
 		return NULL;
 	}
 
-	PBRMaterial* materials = malloc(sizeof(PBRMaterial) * size_check);
+	PBRMaterial* materials = platform_aligned_alloc(
+	    sizeof(PBRMaterial) * size_check, SIMD_ALIGNMENT);
 	if (materials == NULL) {
 		LOG_ERROR("material", "Failed to allocate materials array");
 		return NULL;
@@ -167,7 +169,7 @@ MaterialLib* material_load_presets(const char* path)
 	MaterialLib* lib = malloc(sizeof(MaterialLib));
 	if (lib == NULL) {
 		LOG_ERROR("material", "Failed to allocate MaterialLib");
-		free(materials);
+		platform_aligned_free(materials);
 		return NULL;
 	}
 
@@ -185,7 +187,7 @@ void material_free_lib(MaterialLib* lib)
 	}
 
 	if (lib->materials != NULL) {
-		free(lib->materials);
+		platform_aligned_free(lib->materials);
 		lib->materials = NULL;
 	}
 

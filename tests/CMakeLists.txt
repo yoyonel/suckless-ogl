@@ -630,6 +630,7 @@ add_executable(test_sh_integration
     ${CMAKE_SOURCE_DIR}/src/render_utils.c
     ${CMAKE_SOURCE_DIR}/src/utils.c
     ${CMAKE_SOURCE_DIR}/src/perf_timer.c
+    ${CMAKE_SOURCE_DIR}/src/platform/platform_utils.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_gl_standalone.c
     ${CMAKE_SOURCE_DIR}/tests/mocks/standalone/mock_log.c
 )
